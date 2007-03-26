@@ -1,0 +1,283 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMap</RootNamespace>
+    <AssemblyName>SharpMap</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\build</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEBUG_STEPINTO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\build</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SharpMap.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Converters\WellKnownBinary\GeometryFromWKB.cs" />
+    <Compile Include="Converters\WellKnownBinary\GeometryToWKB.cs" />
+    <Compile Include="Converters\WellKnownBinary\WKBByteOrder.cs" />
+    <Compile Include="Converters\WellKnownBinary\WKBGeometryType.cs" />
+    <Compile Include="Converters\WellKnownText\CoordinateSystemWktReader.cs" />
+    <Compile Include="Converters\WellKnownText\GeometryFromWKT.cs" />
+    <Compile Include="Converters\WellKnownText\GeometryToWKT.cs" />
+    <Compile Include="Converters\WellKnownText\SpatialReference.cs" />
+    <Compile Include="Converters\WellKnownText\StreamTokenizer.cs" />
+    <Compile Include="Converters\WellKnownText\TokenType.cs" />
+    <Compile Include="Converters\WellKnownText\WKTStreamTokenizer.cs" />
+    <Compile Include="CoordinateSystems\AngularUnit.cs" />
+    <Compile Include="CoordinateSystems\AxisInfo.cs" />
+    <Compile Include="CoordinateSystems\AxisOrientationEnum.cs" />
+    <Compile Include="CoordinateSystems\CoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\CoordinateSystemFactory.cs" />
+    <Compile Include="CoordinateSystems\Datum.cs" />
+    <Compile Include="CoordinateSystems\DatumType.cs" />
+    <Compile Include="CoordinateSystems\Ellipsoid.cs" />
+    <Compile Include="CoordinateSystems\GeocentricCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\GeographicCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\GeographicTransform.cs" />
+    <Compile Include="CoordinateSystems\HorizontalCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\HorizontalDatum.cs" />
+    <Compile Include="CoordinateSystems\IAngularUnit.cs" />
+    <Compile Include="CoordinateSystems\ICompoundCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\ICoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\ICoordinateSystemAuthorityFactory.cs" />
+    <Compile Include="CoordinateSystems\ICoordinateSystemFactory.cs" />
+    <Compile Include="CoordinateSystems\IDatum.cs" />
+    <Compile Include="CoordinateSystems\IEllipsoid.cs" />
+    <Compile Include="CoordinateSystems\IFittedCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\IGeocentricCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\IGeodeticSpatialReference.cs" />
+    <Compile Include="CoordinateSystems\IGeographicCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\IGeographicTransform.cs" />
+    <Compile Include="CoordinateSystems\IHorizontalCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\IHorizontalDatum.cs" />
+    <Compile Include="CoordinateSystems\IInfo.cs" />
+    <Compile Include="CoordinateSystems\ILinearUnit.cs" />
+    <Compile Include="CoordinateSystems\ILocalCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\ILocalDatum.cs" />
+    <Compile Include="CoordinateSystems\Info.cs" />
+    <Compile Include="CoordinateSystems\IParameterInfo.cs" />
+    <Compile Include="CoordinateSystems\IPrimeMeridian.cs" />
+    <Compile Include="CoordinateSystems\IProjectedCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\IProjection.cs" />
+    <Compile Include="CoordinateSystems\IUnit.cs" />
+    <Compile Include="CoordinateSystems\IVerticalCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\IVerticalDatum.cs" />
+    <Compile Include="CoordinateSystems\LinearUnit.cs" />
+    <Compile Include="CoordinateSystems\Parameter.cs" />
+    <Compile Include="CoordinateSystems\PrimeMeridian.cs" />
+    <Compile Include="CoordinateSystems\ProjectedCoordinateSystem.cs" />
+    <Compile Include="CoordinateSystems\Projection.cs" />
+    <Compile Include="CoordinateSystems\ProjectionParameter.cs" />
+    <Compile Include="CoordinateSystems\Projections\AlbersProjection.cs" />
+    <Compile Include="CoordinateSystems\Projections\LambertConformalConic.cs" />
+    <Compile Include="CoordinateSystems\Projections\MapProjection.cs" />
+    <Compile Include="CoordinateSystems\Projections\Mercator.cs" />
+    <Compile Include="CoordinateSystems\Projections\ProjectionComputationException.cs" />
+    <Compile Include="CoordinateSystems\Projections\TransverseMercator.cs" />
+    <Compile Include="CoordinateSystems\Transformations\ConcatenatedTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\CoordinateTransformation.cs" />
+    <Compile Include="CoordinateSystems\Transformations\CoordinateTransformationAuthorityFactory.cs" />
+    <Compile Include="CoordinateSystems\Transformations\CoordinateTransformationFactory.cs" />
+    <Compile Include="CoordinateSystems\Transformations\DatumTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\DomainFlags.cs" />
+    <Compile Include="CoordinateSystems\Transformations\GeocentricTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\GeographicTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\GeometryTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\ICoordinateTransformation.cs" />
+    <Compile Include="CoordinateSystems\Transformations\ICoordinateTransformationFactory.cs" />
+    <Compile Include="CoordinateSystems\Transformations\IMathTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\IMathTransformFactory.cs" />
+    <Compile Include="CoordinateSystems\Transformations\MathTransform.cs" />
+    <Compile Include="CoordinateSystems\Transformations\TransformType.cs" />
+    <Compile Include="CoordinateSystems\Unit.cs" />
+    <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
+    <Compile Include="Data\DataExceptions.cs" />
+    <Compile Include="Data\FeatureDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\Providers\GeometryProvider.cs" />
+    <Compile Include="Data\Providers\IProvider.cs" />
+    <Compile Include="Data\Providers\IUpdateableProvider.cs" />
+    <Compile Include="Data\Providers\MsSql.cs" />
+    <Compile Include="Data\Providers\OgcSimpleFeaturesForSql\Enumerations.cs" />
+    <Compile Include="Data\Providers\OleDbPoint.cs" />
+    <Compile Include="Data\Providers\Pooling\Connector.cs" />
+    <Compile Include="Data\Providers\Pooling\ConnectorPool.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseConstants.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseField.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseHeader.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseReader.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseSchema.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseWriter.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFile.cs" />
+    <Compile Include="Geometries\BoundingBox.cs" />
+    <Compile Include="Geometries\Curve.cs" />
+    <Compile Include="Geometries\Geometry.cs" />
+    <Compile Include="Geometries\GeometryCollection.cs" />
+    <Compile Include="Geometries\IGeometry.cs" />
+    <Compile Include="Geometries\IGeometryCollection.cs" />
+    <Compile Include="Geometries\ISpatialReference.cs" />
+    <Compile Include="Geometries\LinearRing.cs" />
+    <Compile Include="Geometries\LineString.cs" />
+    <Compile Include="Geometries\MultiCurve.cs" />
+    <Compile Include="Geometries\MultiLineString.cs" />
+    <Compile Include="Geometries\MultiPoint.cs" />
+    <Compile Include="Geometries\MultiPolygon.cs" />
+    <Compile Include="Geometries\MultiSurface.cs" />
+    <Compile Include="Geometries\Point.cs" />
+    <Compile Include="Geometries\Point3D.cs" />
+    <Compile Include="Geometries\Polygon.cs" />
+    <Compile Include="Geometries\SpatialRelations.cs" />
+    <Compile Include="Geometries\Surface.cs" />
+    <Compile Include="Layers\IFeatureLayer.cs" />
+    <Compile Include="Layers\ILayer.cs" />
+    <Compile Include="Layers\LabelLayer.cs" />
+    <Compile Include="Layers\Layer.cs" />
+    <Compile Include="Layers\LayerGroup.cs" />
+    <Compile Include="Layers\VectorLayer.cs" />
+    <Compile Include="Map\Map.cs" />
+    <Compile Include="Map\MapSharedState.cs" />
+    <Compile Include="Presentation\Presenters\BaseLayersPresenter.cs" />
+    <Compile Include="Rendering\Primitives\ColorMatrix.cs" />
+    <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
+    <Compile Include="Rendering\Primitives\GraphicsFigure.cs" />
+    <Compile Include="Rendering\Primitives\GraphicsFigure2D.cs" />
+    <Compile Include="Rendering\Primitives\GraphicsPath2D.cs" />
+    <Compile Include="Presentation\Presenters\IFeaturesDataPresenter.cs" />
+    <Compile Include="Rendering\Primitives\IViewSelection.cs" />
+    <Compile Include="Rendering\Primitives\IViewTransformer.cs" />
+    <Compile Include="Rendering\Renderers\ContextItemKey.cs" />
+    <Compile Include="Rendering\Renderers\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\Renderers\IRenderContext.cs" />
+    <Compile Include="Rendering\Renderers\PositionedRenderObject.cs" />
+    <Compile Include="Rendering\Renderers\BaseRasterRenderer2D.cs" />
+    <Compile Include="Rendering\Renderers\RenderContext.cs" />
+    <Compile Include="Presentation\Views\IFeaturesDataView.cs" />
+    <Compile Include="Rendering\Renderers\ILabelRenderer.cs" />
+    <Compile Include="Presentation\Presenters\ILayersPresenter.cs" />
+    <Compile Include="Presentation\Views\ILayerStyleView.cs" />
+    <Compile Include="Presentation\Views\ILayersView.cs" />
+    <Compile Include="Rendering\Renderers\IRasterRenderer.cs" />
+    <Compile Include="Presentation\Views\IToolsView.cs" />
+    <Compile Include="Presentation\Presenters\BaseMapPresenter2D.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rendering\Renderers\BaseFeatureRenderer2D.cs" />
+    <Compile Include="Rendering\Primitives\GraphicsPath.cs" />
+    <Compile Include="Rendering\Renderers\IRenderer.cs" />
+    <Compile Include="Presentation\Presenters\IMapPresenter.cs" />
+    <Compile Include="Presentation\Views\IMapView2D.cs" />
+    <Compile Include="Rendering\Renderers\IVectorRenderer2D.cs" />
+    <Compile Include="Rendering\Primitives\IViewMatrix.cs" />
+    <Compile Include="Rendering\Primitives\IViewVector.cs" />
+    <Compile Include="Rendering\Primitives\Label.cs" />
+    <Compile Include="Rendering\LabelCollisionDetection.cs" />
+    <Compile Include="Rendering\Renderers\LabelRenderer.cs" />
+    <Compile Include="Rendering\Renderers\LayerGroupRenderer.cs" />
+    <Compile Include="Rendering\LayerRenderedEventArgs.cs" />
+    <Compile Include="Rendering\LayerRendererCatalog.cs" />
+    <Compile Include="Presentation\LayerSelectedEventArgs.cs" />
+    <Compile Include="Presentation\MapPresentationPropertyChangedEventArgs.cs" />
+    <Compile Include="Map\MapTools.cs" />
+    <Compile Include="Presentation\MapZoomChangedEventArgs.cs" />
+    <Compile Include="Rendering\Primitives\Symbol2D.cs" />
+    <Compile Include="Rendering\Renderers\VectorRenderer.cs" />
+    <Compile Include="Rendering\Primitives\ViewMatrix2D.cs" />
+    <Compile Include="Rendering\3D\ViewMatrix3D.cs" />
+    <Compile Include="Rendering\3D\ViewPoint3D.cs" />
+    <Compile Include="Presentation\ViewPointHoverEventArgs.cs" />
+    <Compile Include="Rendering\Primitives\ViewRectangle2D.cs" />
+    <Compile Include="Rendering\RenderExceptions.cs" />
+    <Compile Include="Rendering\Primitives\ViewPoint2D.cs" />
+    <Compile Include="Rendering\3D\ViewRectangle3D.cs" />
+    <Compile Include="Rendering\Primitives\ViewSelection.cs" />
+    <Compile Include="Rendering\Primitives\ViewSelection2D.cs" />
+    <Compile Include="Rendering\Primitives\ViewSize2D.cs" />
+    <Compile Include="Styles\ColorBlend.cs" />
+    <Compile Include="Rendering\Thematics\CustomTheme.cs" />
+    <Compile Include="Rendering\Thematics\GradientTheme.cs" />
+    <Compile Include="Rendering\Thematics\ITheme.cs" />
+    <Compile Include="Rendering\3D\ViewSize3D.cs" />
+    <Compile Include="Styles\LinearGradientStyleBrush.cs" />
+    <Compile Include="Styles\SolidStyleBrush.cs" />
+    <Compile Include="Styles\StyleBrush.cs" />
+    <Compile Include="Styles\StyleColor.cs" />
+    <Compile Include="Styles\LineDashCap.cs" />
+    <Compile Include="Styles\LineDashStyle.cs" />
+    <Compile Include="Styles\StyleFont.cs" />
+    <Compile Include="Styles\FontFamily.cs" />
+    <Compile Include="Styles\FontStyle.cs" />
+    <Compile Include="Styles\ImageAttributes.cs" />
+    <Compile Include="Styles\IStyle.cs" />
+    <Compile Include="Styles\LabelStyle.cs" />
+    <Compile Include="Styles\StyleLineCap.cs" />
+    <Compile Include="Styles\StyleLineJoin.cs" />
+    <Compile Include="Styles\StylePen.cs" />
+    <Compile Include="Styles\StylePenAlignment.cs" />
+    <Compile Include="Styles\StyleSmoothingMode.cs" />
+    <Compile Include="Styles\Style.cs" />
+    <Compile Include="Styles\StyleTextRenderingHint.cs" />
+    <Compile Include="Styles\VectorStyle.cs" />
+    <Compile Include="Utilities\Algorithms.cs" />
+    <Compile Include="Utilities\Hashing.cs" />
+    <Compile Include="Indexing\BinaryTree.cs" />
+    <Compile Include="Indexing\GuttmanQuadraticInsert.cs" />
+    <Compile Include="Indexing\GuttmanQuadraticSplit.cs" />
+    <Compile Include="Indexing\IndexingInterfaces.cs" />
+    <Compile Include="Indexing\NullRestructuringStrategy.cs" />
+    <Compile Include="Indexing\RTree.cs" />
+    <Compile Include="Indexing\SelfOptimizingSpatialIndex.cs" />
+    <Compile Include="Indexing\DynamicRTree.cs" />
+    <Compile Include="Utilities\LeastSquaresTransform.cs" />
+    <Compile Include="Utilities\Providers.cs" />
+    <Compile Include="Utilities\Transform2D.cs" />
+    <Compile Include="Utilities\Version.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="COPYING.txt" />
+    <EmbeddedResource Include="Styles\DefaultSymbol.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
