@@ -269,7 +269,6 @@
     <Compile Include="Utilities\Version.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="COPYING.txt" />
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
