@@ -38,19 +38,18 @@ using SharpMap.Presentation;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Styles;
+using SharpMap.Tools;
 
 namespace SharpMap.Presentation.WinForms
 {
     /// <summary>
-    /// MapImage Class - MapImage control for Windows forms
     /// </summary>
     /// <remarks>
-    /// The MapImage control adds basic functionality to a Windows Form, such as dynamic pan, zoom and data query.
     /// </remarks>
     public class MapViewControl : Control, IMapView2D, IToolsView, ISupportInitialize
     {
-        private ToolSet _selectedTool;
-        private GdiMatrix _viewTransform = new GdiMatrix();
+        private MapTool _selectedTool;
+        //private GdiMatrix _viewTransform = new GdiMatrix();
         private bool _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
         private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
@@ -58,14 +57,14 @@ namespace SharpMap.Presentation.WinForms
         private Queue<KeyValuePair<PointF, GdiRenderObject>> _pathQueue = new Queue<KeyValuePair<PointF, GdiRenderObject>>();
         private Queue<KeyValuePair<PointF, Image>> _tilesQueue = new Queue<KeyValuePair<PointF, Image>>();
         private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
-        private List<ToolSet> _tools;
+        private List<MapTool> _tools;
 
         /// <summary>
         /// Initializes a new map
         /// </summary>
         public MapViewControl()
         {
-            _selectedTool = ToolSet.None;
+            _selectedTool = MapTool.None;
             this.Cursor = Cursors.Cross;
 
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -78,11 +77,11 @@ namespace SharpMap.Presentation.WinForms
             SetStyle(ControlStyles.UserPaint, true);
         }
 
-        public GdiMatrix ViewTransform
-        {
-            get { return _viewTransform; }
-            set { _viewTransform = value; }
-        }
+        //public GdiMatrix ViewTransform
+        //{
+        //    get { return _viewTransform; }
+        //    set { _viewTransform = value; }
+        //}
 
         #region IMapView2D Members
 
@@ -124,20 +123,24 @@ namespace SharpMap.Presentation.WinForms
 
         public event EventHandler ToolSelectionChanged;
 
-        public IList<ToolSet> Tools
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IList<MapTool> Tools
         {
             get { return _tools; }
             set 
             {
                 if (_tools == null)
-                    _tools = new List<ToolSet>();
+                    _tools = new List<MapTool>();
 
                 _tools.Clear();
                 _tools.AddRange(value);
             }
         }
 
-        public ToolSet SelectedTool
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public MapTool SelectedTool
         {
             get { return _selectedTool; }
             set 
@@ -155,7 +158,7 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            g.Transform = ViewTransform;
+            //g.Transform = ViewTransform;
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -165,8 +168,8 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            ToolSet currentTool = SelectedTool;
-            SelectedTool = e.Delta > 0 ? ToolSet.ZoomIn : ToolSet.ZoomOut;
+            MapTool currentTool = SelectedTool;
+            SelectedTool = e.Delta > 0 ? MapTool.ZoomIn : MapTool.ZoomOut;
 
             ViewRectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
             OnBeginAction(selectBox.Location);
@@ -236,6 +239,7 @@ namespace SharpMap.Presentation.WinForms
         private void OnViewSizeChanged()
         {
             EventHandler @event = ViewSizeChanged;
+
             if (@event != null)
                 ViewSizeChanged(this, EventArgs.Empty);
         }
@@ -243,7 +247,9 @@ namespace SharpMap.Presentation.WinForms
         private void OnHover(ViewPoint2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
+
             EventHandler<MapActionEventArgs> @event = Hover;
+
             if (@event != null)
                 @event(this, _globalActionArgs);
         }
@@ -251,7 +257,9 @@ namespace SharpMap.Presentation.WinForms
         private void OnBeginAction(ViewPoint2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
+
             EventHandler<MapActionEventArgs> @event = BeginAction;
+
             if (@event != null)
                 @event(this, _globalActionArgs);
         }
@@ -259,7 +267,9 @@ namespace SharpMap.Presentation.WinForms
         private void OnMoveTo(ViewPoint2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
+
             EventHandler<MapActionEventArgs> @event = MoveTo;
+
             if (@event != null)
                 @event(this, _globalActionArgs);
         }
@@ -267,7 +277,9 @@ namespace SharpMap.Presentation.WinForms
         private void OnEndAction(ViewPoint2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
+
             EventHandler<MapActionEventArgs> @event = EndAction;
+
             if (@event != null)
                 @event(this, _globalActionArgs);
         }
@@ -275,44 +287,10 @@ namespace SharpMap.Presentation.WinForms
         private void OnSelectedToolChanged()
         {
             EventHandler @event = ToolSelectionChanged;
+
             if (@event != null)
                 @event(this, EventArgs.Empty);
         }
-
-        //private void OnActiveQueryToolChanged(Tools tool)
-        //{
-        //    EventHandler<ActiveQueryToolChangedEventArgs> @event = ActiveToolChanged;
-        //    if (@event != null)
-        //        @event(this, new ActiveQueryToolChangedEventArgs(tool));
-        //}
-
-        //private void OnMapMouseUp(MouseEventArgs e)
-        //{
-        //    EventHandler<MapMouseEventArgs> @event = MouseUp;
-        //    if (@event != null)
-        //        @event(this, new MapMouseEventArgs(_mapView.GdiToGeo(e.Location), e.Button, e.Clicks, e.X, e.Y, e.Delta));
-        //}
-
-        //private void OnMapMouseDown(MouseEventArgs e)
-        //{
-        //    EventHandler<MapMouseEventArgs> @event = MouseDown;
-        //    if (@event != null)
-        //        @event(this, new MapMouseEventArgs(_mapView.GdiToGeo(e.Location), e.Button, e.Clicks, e.X, e.Y, e.Delta));
-        //}
-
-        //private void OnMapMouseDrag(MouseEventArgs e)
-        //{
-        //    EventHandler<MapMouseEventArgs> @event = MouseDrag;
-        //    if (@event != null)
-        //        @event(this, new MapMouseEventArgs(_mapView.GdiToGeo(e.Location), e.Button, e.Clicks, e.X, e.Y, e.Delta));
-        //}
-
-        //private void OnMapMouseMove(MouseEventArgs e)
-        //{
-        //    EventHandler<MapMouseEventArgs> @event = MouseMove;
-        //    if (@event != null)
-        //        @event(this, new MapMouseEventArgs(_mapView.GdiToGeo(e.Location), e.Button, e.Clicks, e.X, e.Y, e.Delta));
-        //}
         #endregion
 
         #region Private Helper Methods

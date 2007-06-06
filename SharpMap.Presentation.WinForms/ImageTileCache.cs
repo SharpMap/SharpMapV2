@@ -110,8 +110,8 @@ namespace SharpMap.Presentation.WinForms
             _cacheCenter = center;
 
             BoundingBox maxBoundary = _cacheCenter.GetBoundingBox().Grow(
-                MapPresenter.PixelWidth * cachedImageSize.Width / 2,
-                MapPresenter.PixelHeight * cachedImageSize.Height / 2);
+                MapPresenter.ViewPort.PixelWidth * cachedImageSize.Width / 2,
+                MapPresenter.ViewPort.PixelHeight * cachedImageSize.Height / 2);
 
             _maxBoundarySize = new SizeF((float)maxBoundary.Width, (float)maxBoundary.Height);
             initializeCacheIndex((int)CachedImageIndicies.MiddleCenter, zoomLevel);

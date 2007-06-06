@@ -32,14 +32,14 @@ using IFeatureLayerRenderer = SharpMap.Rendering.IFeatureRenderer<SharpMap.Rende
 
 namespace SharpMap.Presentation.WinForms
 {
-    public class MapPresenter : BaseMapPresenter2D
+    public class MapPresenter : MapPresenter2D
     {
         private ImageTileCache _imageTileCache;
         private GdiRenderObject[] _renderObjects;
-        private GdiMatrix _viewMatrix = new GdiMatrix();
+        //private GdiMatrix _viewMatrix = new GdiMatrix();
 
-        public MapPresenter(Map map, MapViewControl mapView, IEnumerable<IToolsView> toolsViews)
-            : base(map, mapView, toolsViews)
+        public MapPresenter(SharpMap.Map.Map map, MapViewControl mapView)
+            : base(map, mapView)
         {
             _imageTileCache = new ImageTileCache(this);
             RegisterRenderer<VectorLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiVectorRenderer(this));
@@ -62,11 +62,16 @@ namespace SharpMap.Presentation.WinForms
                     }
 
                     IEnumerable<FeatureDataRow> features = (layer as IFeatureLayer).GetFeatures(missingRegion);
-                    IFeatureLayerRenderer renderer = GetRenderer<IFeatureLayerRenderer>(MapSharedState.ActiveLayer);
-                    foreach (FeatureDataRow feature in features)
-	                {
-                        renderer.RenderFeature(feature);
-	                }
+
+                    foreach (ILayer selectedLayer in Map.SelectedLayers)
+                    {
+                        IFeatureLayerRenderer renderer = GetRenderer<IFeatureLayerRenderer>(selectedLayer);
+
+                        foreach (FeatureDataRow feature in features)
+                        {
+                            renderer.RenderFeature(feature);
+                        }
+                    }
                 }
             }
 
@@ -77,115 +82,20 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnMapViewHover(ViewPoint2D viewPoint2D)
         {
             base.OnMapViewHover(viewPoint2D);
-
-            switch (MapSharedState.SelectedTool)
-            {
-                case ToolSet.Pan:
-                    break;
-                case ToolSet.ZoomIn:
-                    break;
-                case ToolSet.ZoomOut:
-                    break;
-                case ToolSet.Query:
-                    break;
-                case ToolSet.QueryAdd:
-                    break;
-                case ToolSet.QueryRemove:
-                    break;
-                case ToolSet.FeatureAdd:
-                    break;
-                case ToolSet.FeatureRemove:
-                    break;
-                case ToolSet.None:
-                default:
-                    break;
-            }
         }
 
         protected override void OnMapViewBeginAction(ViewPoint2D viewPoint2D)
         {
             base.OnMapViewBeginAction(viewPoint2D);
-
-            switch (MapSharedState.SelectedTool)
-            {
-                case ToolSet.Pan:
-                    break;
-                case ToolSet.ZoomIn:
-                    break;
-                case ToolSet.ZoomOut:
-                    break;
-                case ToolSet.Query:
-                    break;
-                case ToolSet.QueryAdd:
-                    break;
-                case ToolSet.QueryRemove:
-                    break;
-                case ToolSet.FeatureAdd:
-                    break;
-                case ToolSet.FeatureRemove:
-                    break;
-                case ToolSet.None:
-                default:
-                    break;
-            }
         }
 
         protected override void OnMapViewMoveTo(ViewPoint2D viewPoint2D)
         {
             base.OnMapViewMoveTo(viewPoint2D);
-
-            switch (MapSharedState.SelectedTool)
-            {
-                case ToolSet.Pan:
-                    break;
-                case ToolSet.ZoomIn:
-                    MapView.Invalidate(ViewConverter.ViewToGdi(Selection.BoundingRegion));
-                    break;
-                case ToolSet.ZoomOut:
-                    MapView.Invalidate(ViewConverter.ViewToGdi(Selection.BoundingRegion));
-                    break;
-                case ToolSet.Query:
-                    MapView.Invalidate(ViewConverter.ViewToGdi(Selection.BoundingRegion));
-                    break;
-                case ToolSet.QueryAdd:
-                    break;
-                case ToolSet.QueryRemove:
-                    break;
-                case ToolSet.FeatureAdd:
-                    break;
-                case ToolSet.FeatureRemove:
-                    break;
-                case ToolSet.None:
-                default:
-                    break;
-            }
         }
 
         protected override void OnMapViewEndAction(ViewPoint2D viewPoint2D)
         {
-            switch (MapSharedState.SelectedTool)
-            {
-                case ToolSet.Pan:
-                    break;
-                case ToolSet.ZoomIn:
-                    break;
-                case ToolSet.ZoomOut:
-                    break;
-                case ToolSet.Query:
-                    break;
-                case ToolSet.QueryAdd:
-                    break;
-                case ToolSet.QueryRemove:
-                    break;
-                case ToolSet.FeatureAdd:
-                    break;
-                case ToolSet.FeatureRemove:
-                    break;
-                case ToolSet.None:
-                default:
-                    break;
-            }
-
             // Do action here...
             base.OnMapViewEndAction(viewPoint2D);
         }
