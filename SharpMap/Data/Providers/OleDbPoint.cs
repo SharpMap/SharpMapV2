@@ -17,8 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Data.OleDb;
+
+using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers
 {
@@ -30,7 +33,7 @@ namespace SharpMap.Data.Providers
 	/// and an integer-type column containing a unique identifier for each row.</para>
 	/// <para>To get good performance, make sure you have applied indexes on ID, xColumn and yColumns in your datasource table.</para>
 	/// </remarks>
-	public class OleDbPoint : IProvider, IDisposable
+	public class OleDbPoint : IProvider<uint>, IDisposable
 	{
 		/// <summary>
 		/// Initializes a new instance of the OleDbPoint provider
@@ -111,17 +114,18 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="bbox"></param>
 		/// <returns></returns>
-		public List<SharpMap.Geometries.Geometry> GetGeometriesInView(SharpMap.Geometries.BoundingBox bbox)
+		public ReadOnlyCollection<Geometry> GetGeometriesInView(BoundingBox bbox)
 		{
-			List<Geometries.Geometry> features = new List<SharpMap.Geometries.Geometry>();
+			List<Geometry> features = new List<Geometry>();
+
 			using(System.Data.OleDb.OleDbConnection conn = new OleDbConnection(_ConnectionString))
 			{
 				string strSQL = "Select " + this.XColumn + ", " + this.YColumn + " FROM " + this.Table + " WHERE ";
 				if (_defintionQuery != null && _defintionQuery != "")
 					strSQL += _defintionQuery + " AND ";
 				//Limit to the points within the boundingbox
-				strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " +
-					this.YColumn + " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " +
+                    this.YColumn + " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.Map.NumberFormat_EnUS);
 				
 				using (System.Data.OleDb.OleDbCommand command = new OleDbCommand(strSQL, conn))
 				{
@@ -137,7 +141,8 @@ namespace SharpMap.Data.Providers
 					conn.Close();
 				}
 			}
-			return features;
+
+			return features.AsReadOnly();
 		}
 
 		/// <summary>
@@ -145,7 +150,7 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="bbox"></param>
 		/// <returns></returns>
-		public List<uint> GetObjectIDsInView(SharpMap.Geometries.BoundingBox bbox)
+        public ReadOnlyCollection<uint> GetObjectIdsInView(SharpMap.Geometries.BoundingBox bbox)
 		{
 			List<uint> objectlist = new List<uint>();
 			using (System.Data.OleDb.OleDbConnection conn = new OleDbConnection(_ConnectionString))
@@ -154,8 +159,8 @@ namespace SharpMap.Data.Providers
 				if (_defintionQuery != null && _defintionQuery != "")
 					strSQL += _defintionQuery + " AND ";
 				//Limit to the points within the boundingbox
-				strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
-					" BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
+                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.Map.NumberFormat_EnUS);
 
 				using (System.Data.OleDb.OleDbCommand command = new OleDbCommand(strSQL, conn))
 				{
@@ -169,7 +174,8 @@ namespace SharpMap.Data.Providers
 					conn.Close();
 				}
 			}
-			return objectlist;
+
+			return objectlist.AsReadOnly();
 		}
 
 		/// <summary>
@@ -177,7 +183,7 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="oid">Object ID</param>
 		/// <returns>geometry</returns>
-		public SharpMap.Geometries.Geometry GetGeometryByID(uint oid)
+		public Geometry GetGeometryById(uint oid)
 		{			
 			SharpMap.Geometries.Geometry geom = null;
 			using (System.Data.OleDb.OleDbConnection conn = new OleDbConnection(_ConnectionString))
@@ -206,7 +212,7 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="geom"></param>
 		/// <param name="ds">FeatureDataSet to fill data into</param>
-		public void ExecuteIntersectionQuery(SharpMap.Geometries.Geometry geom, FeatureDataSet ds)
+		public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
 		{
 			throw new NotSupportedException("ExecuteIntersectionQuery(Geometry) is not supported by the OleDbPointProvider.");
 			//When relation model has been implemented the following will complete the query
@@ -228,17 +234,17 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="bbox">view box</param>
 		/// <param name="ds">FeatureDataSet to fill data into</param>
-		public void ExecuteIntersectionQuery(SharpMap.Geometries.BoundingBox bbox, FeatureDataSet ds)
+		public void ExecuteIntersectionQuery(BoundingBox bbox, FeatureDataSet ds)
 		{
-			List<Geometries.Geometry> features = new List<SharpMap.Geometries.Geometry>();
+			List<Geometry> features = new List<SharpMap.Geometries.Geometry>();
 			using (System.Data.OleDb.OleDbConnection conn = new OleDbConnection(_ConnectionString))
 			{
 				string strSQL = "Select * FROM " + this.Table + " WHERE ";
 				if (_defintionQuery != null && _defintionQuery != "") //If a definition query has been specified, add this as a filter on the query
 					strSQL += _defintionQuery + " AND ";
 				//Limit to the points within the boundingbox
-				strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
-					" BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
+                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.Map.NumberFormat_EnUS);
 
 				using (System.Data.OleDb.OleDbDataAdapter adapter = new OleDbDataAdapter(strSQL, conn))
 				{
@@ -301,15 +307,15 @@ namespace SharpMap.Data.Providers
 		}
 
 		/// <summary>
-		/// Returns a datarow based on a RowID
+        /// Returns a datarow based on a oid
 		/// </summary>
-		/// <param name="RowID"></param>
+        /// <param name="oid"></param>
 		/// <returns>datarow</returns>
-		public FeatureDataRow GetFeature(uint RowID)
+        public FeatureDataRow<uint> GetFeature(uint oid)
 		{
 			using (System.Data.OleDb.OleDbConnection conn = new OleDbConnection(_ConnectionString))
 			{
-				string strSQL = "select * from " + this.Table + " WHERE " + this.ObjectIdColumn + "=" + RowID.ToString();
+				string strSQL = "select * from " + this.Table + " WHERE " + this.ObjectIdColumn + "=" + oid.ToString();
 				
 				using (System.Data.OleDb.OleDbDataAdapter adapter = new OleDbDataAdapter(strSQL, conn))
 				{
@@ -319,17 +325,27 @@ namespace SharpMap.Data.Providers
 					conn.Close();
 					if (ds.Tables.Count > 0)
 					{
-						FeatureDataTable fdt = new FeatureDataTable(ds.Tables[0]);
+                        FeatureDataTable<uint> fdt = new FeatureDataTable<uint>(ds.Tables[0], "OID");
+
 						foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
 							fdt.Columns.Add(col.ColumnName, col.DataType, col.Expression);
+
 						if (ds.Tables[0].Rows.Count > 0)
 						{
 							System.Data.DataRow dr = ds.Tables[0].Rows[0];
-							SharpMap.Data.FeatureDataRow fdr = fdt.NewRow();
-							foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
-								fdr[col.ColumnName] = dr[col];
+                            SharpMap.Data.FeatureDataRow<uint> fdr = fdt.NewRow(oid);
+
+                            foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
+                            {
+                                if (String.Compare(col.ColumnName, "oid", StringComparison.CurrentCultureIgnoreCase) != 0)
+                                {
+                                    fdr[col.ColumnName] = dr[col];   
+                                }
+                            }
+
 							if (dr[this.XColumn] != DBNull.Value && dr[this.YColumn] != DBNull.Value)
 								fdr.Geometry = new SharpMap.Geometries.Point((double)dr[this.XColumn], (double)dr[this.YColumn]);
+
 							return fdr;
 						}
 						else
@@ -376,7 +392,7 @@ namespace SharpMap.Data.Providers
 		/// <summary>
 		/// Gets the connection ID of the datasource
 		/// </summary>
-		public string ConnectionID
+		public string ConnectionId
 		{
 			get { return _ConnectionString; }
 		}

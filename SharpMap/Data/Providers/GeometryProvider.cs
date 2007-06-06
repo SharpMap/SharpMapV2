@@ -17,270 +17,299 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using SharpMap.Geometries;
 using SharpMap.Data;
 
 namespace SharpMap.Data.Providers
 {
-	/// <summary>
-	/// Datasource for storing a limited set of geometries.
-	/// </summary>
-	/// <remarks>
-	/// <para>The GeometryProvider doesn’t utilize performance optimizations of spatial indexing,
-	/// and thus is primarily meant for rendering a limited set of Geometries.</para>
-	/// <para>A common use of the GeometryProvider is for highlighting a set of selected features.</para>
-	/// <example>
-	/// The following example gets data within a BoundingBox of another datasource and adds it to the map.
-	/// <code lang="C#">
-	/// List&#60;Geometry&#62; geometries = myMap.Layers[0].DataSource.GetGeometriesInView(myBox);
-	/// VectorLayer laySelected = new VectorLayer("Selected Features");
-	/// laySelected.DataSource = new GeometryProvider(geometries);
-	/// laySelected.Style.Outline = new Pen(Color.Magenta, 3f);
-	/// laySelected.Style.EnableOutline = true;
-	/// myMap.Layers.Add(laySelected);
-	/// </code>
-	/// </example>
-	/// <example>
-	/// Adding points of interest to the map. This is useful for vehicle tracking etc.
-	/// <code lang="C#">
-	/// List&#60;SharpMap.Geometries.Geometry&#62; geometries = new List&#60;SharpMap.Geometries.Geometry&#62;();
-	/// //Add two points
-	/// geometries.Add(new SharpMap.Geometries.Point(23.345,64.325));
-	/// geometries.Add(new SharpMap.Geometries.Point(23.879,64.194));
-	/// SharpMap.Layers.VectorLayer layerVehicles = new SharpMap.Layers.VectorLayer("Vechicles");
-	/// layerVehicles.DataSource = new SharpMap.Data.Providers.GeometryProvider(geometries);
-	/// layerVehicles.Style.Symbol = Bitmap.FromFile(@"C:\data\car.gif");
-	/// myMap.Layers.Add(layerVehicles);
-	/// </code>
-	/// </example>
-	/// </remarks>
-	public class GeometryProvider : SharpMap.Data.Providers.IProvider, IDisposable
-	{
-		private List<Geometry> _Geometries;
+    /// <summary>
+    /// Datasource for storing a limited set of geometries.
+    /// </summary>
+    /// <remarks>
+    /// <para>The GeometryProvider doesn’t utilize performance optimizations of spatial indexing,
+    /// and thus is primarily meant for rendering a limited set of Geometries.</para>
+    /// <para>A common use of the GeometryProvider is for highlighting a set of selected features.</para>
+    /// <example>
+    /// The following example gets data within a BoundingBox of another datasource and adds it to the map.
+    /// <code lang="C#">
+    /// List&#60;Geometry&#62; geometries = myMap.Layers[0].DataSource.GetGeometriesInView(myBox);
+    /// VectorLayer laySelected = new VectorLayer("Selected Features");
+    /// laySelected.DataSource = new GeometryProvider(geometries);
+    /// laySelected.Style.Outline = new Pen(Color.Magenta, 3f);
+    /// laySelected.Style.EnableOutline = true;
+    /// myMap.Layers.Add(laySelected);
+    /// </code>
+    /// </example>
+    /// <example>
+    /// Adding points of interest to the map. This is useful for vehicle tracking etc.
+    /// <code lang="C#">
+    /// List&#60;SharpMap.Geometries.Geometry&#62; geometries = new List&#60;SharpMap.Geometries.Geometry&#62;();
+    /// //Add two points
+    /// geometries.Add(new SharpMap.Geometries.Point(23.345,64.325));
+    /// geometries.Add(new SharpMap.Geometries.Point(23.879,64.194));
+    /// SharpMap.Layers.VectorLayer layerVehicles = new SharpMap.Layers.VectorLayer("Vechicles");
+    /// layerVehicles.DataSource = new SharpMap.Data.Providers.GeometryProvider(geometries);
+    /// layerVehicles.Style.Symbol = Bitmap.FromFile(@"C:\data\car.gif");
+    /// myMap.Layers.Add(layerVehicles);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    public class GeometryProvider : SharpMap.Data.Providers.IProvider<uint>, IDisposable
+    {
+        private List<Geometry> _geometries;
+        private int _srid = -1;
 
-		/// <summary>
-		/// Gets or sets the geometries this datasource contains
-		/// </summary>
-		public List<Geometry> Geometries
-		{
-			get { return _Geometries; }
-			set { _Geometries = value; }
-		}
+        /// <summary>
+        /// Gets or sets the geometries this datasource contains
+        /// </summary>
+        public List<Geometry> Geometries
+        {
+            get { return _geometries; }
+            set { _geometries = value; }
+        }
 
-		#region constructors
+        #region Constructors
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GeometryProvider"/>
-		/// </summary>
-		/// <param name="geometries">Set of geometries that this datasource should contain</param>
-		public GeometryProvider(List<Geometry> geometries)
-		{
-			_Geometries = geometries;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeometryProvider"/>
+        /// </summary>
+        /// <param name="geometries">Set of geometries that this datasource should contain</param>
+        public GeometryProvider(List<Geometry> geometries)
+        {
+            _geometries = geometries;
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GeometryProvider"/>
-		/// </summary>
-		/// <param name="feature">Feature to be in this datasource</param>
-		public GeometryProvider(FeatureDataRow feature)
-		{
-			_Geometries = new List<Geometry>();
-			_Geometries.Add(feature.Geometry);
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeometryProvider"/>
+        /// </summary>
+        /// <param name="feature">Feature to be in this datasource</param>
+        public GeometryProvider(FeatureDataRow feature)
+        {
+            _geometries = new List<Geometry>();
+            _geometries.Add(feature.Geometry);
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GeometryProvider"/>
-		/// </summary>
-		/// <param name="features">Features to be included in this datasource</param>
-		public GeometryProvider(FeatureDataTable features)
-		{
-			_Geometries = new List<Geometry>();
-			for (int i = 0; i < features.Count;i++ )
-				_Geometries.Add(features[i].Geometry);
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeometryProvider"/>
+        /// </summary>
+        /// <param name="features">Features to be included in this datasource</param>
+        public GeometryProvider(FeatureDataTable features)
+        {
+            _geometries = new List<Geometry>();
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GeometryProvider"/>
-		/// </summary>
-		/// <param name="geometry">Geometry to be in this datasource</param>
-		public GeometryProvider(Geometry geometry)
-		{
-			_Geometries = new List<Geometry>();
-			_Geometries.Add(geometry);
-		}
+            for (int i = 0; i < features.Count; i++)
+            {
+                _geometries.Add(features[i].Geometry);
+            }
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GeometryProvider"/>
-		/// </summary>
-		/// <param name="wellKnownBinaryGeometry"><see cref="SharpMap.Geometries.Geometry"/> as Well-known Binary to be included in this datasource</param>
-		public GeometryProvider(byte[] wellKnownBinaryGeometry) : this(SharpMap.Converters.WellKnownBinary.GeometryFromWKB.Parse(wellKnownBinaryGeometry))
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeometryProvider"/>
+        /// </summary>
+        /// <param name="geometry">Geometry to be in this datasource</param>
+        public GeometryProvider(Geometry geometry)
+        {
+            _geometries = new List<Geometry>();
+            _geometries.Add(geometry);
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GeometryProvider"/>
-		/// </summary>
-		/// <param name="wellKnownTextGeometry"><see cref="SharpMap.Geometries.Geometry"/> as Well-known Text to be included in this datasource</param>
-		public GeometryProvider(string wellKnownTextGeometry) : this(SharpMap.Converters.WellKnownText.GeometryFromWKT.Parse(wellKnownTextGeometry))
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeometryProvider"/>
+        /// </summary>
+        /// <param name="wellKnownBinaryGeometry"><see cref="SharpMap.Geometries.Geometry"/> as Well-known Binary to be included in this datasource</param>
+        public GeometryProvider(byte[] wellKnownBinaryGeometry)
+            : this(SharpMap.Converters.WellKnownBinary.GeometryFromWKB.Parse(wellKnownBinaryGeometry))
+        {
+        }
 
-		#endregion
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeometryProvider"/>
+        /// </summary>
+        /// <param name="wellKnownTextGeometry"><see cref="SharpMap.Geometries.Geometry"/> as Well-known Text to be included in this datasource</param>
+        public GeometryProvider(string wellKnownTextGeometry)
+            : this(SharpMap.Converters.WellKnownText.GeometryFromWKT.Parse(wellKnownTextGeometry))
+        {
+        }
 
-		#region IProvider Members
+        #endregion
 
-		/// <summary>
-		/// Returns features within the specified bounding box
-		/// </summary>
-		/// <param name="bbox"></param>
-		/// <returns></returns>
-		public List<Geometry> GetGeometriesInView(BoundingBox bbox)
-		{
-			List<Geometry> list = new List<Geometry>();
-			for (int i = 0; i < _Geometries.Count; i++)
-				if(!_Geometries[i].IsEmpty())
-				if (_Geometries[i].GetBoundingBox().Intersects(bbox))
-					list.Add(_Geometries[i]);
-			return list;
-		}
+        #region IProvider Members
 
-		/// <summary>
-		/// Returns all objects whose boundingbox intersects 'bbox'.
-		/// </summary>
-		/// <param name="bbox"></param>
-		/// <returns></returns>
-		public List<uint> GetObjectIDsInView(BoundingBox bbox)
-		{
-			List<uint> list = new List<uint>();
-			for (int i = 0; i < _Geometries.Count; i++)
-				if(_Geometries[i].GetBoundingBox().Intersects(bbox))
-					list.Add((uint)i);
-			return list;
-		}
+        /// <summary>
+        /// Returns features within the specified bounding box
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns></returns>
+        public ReadOnlyCollection<Geometry> GetGeometriesInView(BoundingBox box)
+        {
+            List<Geometry> list = new List<Geometry>();
 
-		/// <summary>
-		/// Returns the geometry corresponding to the Object ID
-		/// </summary>
-		/// <param name="oid">Object ID</param>
-		/// <returns>geometry</returns>
-		public Geometry GetGeometryByID(uint oid)
-		{
-			return _Geometries[(int)oid];
-		}
-				
-		/// <summary>
-		/// Throws an NotSupportedException. Attribute data is not supported by this datasource
-		/// </summary>
-		/// <param name="geom"></param>
-		/// <param name="ds">FeatureDataSet to fill data into</param>
-		public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
-		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
-		}
-		/// <summary>
-		/// Throws an NotSupportedException. Attribute data is not supported by this datasource
-		/// </summary>
-		/// <param name="box"></param>
-		/// <param name="ds">FeatureDataSet to fill data into</param>
-		public void ExecuteIntersectionQuery(SharpMap.Geometries.BoundingBox box, FeatureDataSet ds)
-		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
-		}
+            foreach (Geometry g in _geometries)
+            {
+                if (!g.IsEmpty())
+                {
+                    if (g.GetBoundingBox().Intersects(box))
+                    {
+                        list.Add(g);
+                    }
+                }
+            }
 
-		/// <summary>
-		/// Returns the number of features in the dataset
-		/// </summary>
-		/// <returns>number of features</returns>
-		public int GetFeatureCount()
-		{
-			return _Geometries.Count;
-		}
+            return list.AsReadOnly();
+        }
 
-		/// <summary>
-		/// Throws an NotSupportedException. Attribute data is not supported by this datasource
-		/// </summary>
-		/// <param name="RowID"></param>
-		/// <returns></returns>
-		public FeatureDataRow GetFeature(uint RowID)
-		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
-		}
+        /// <summary>
+        /// Returns all objects whose boundingbox intersects 'bbox'.
+        /// </summary>
+        /// <param name="bbox"></param>
+        /// <returns></returns>
+        public ReadOnlyCollection<uint> GetObjectIdsInView(BoundingBox box)
+        {
+            List<uint> list = new List<uint>();
 
-		/// <summary>
-		/// Boundingbox of dataset
-		/// </summary>
-		/// <returns>boundingbox</returns>
-		public BoundingBox GetExtents()
+            for (uint i = 0; i < _geometries.Count; i++)
+            {
+                if (_geometries[(int)i].GetBoundingBox().Intersects(box))
+                {
+                    list.Add(i);
+                }
+            }
+
+            return list.AsReadOnly();
+        }
+
+        /// <summary>
+        /// Returns the geometry corresponding to the Object ID
+        /// </summary>
+        /// <param name="oid">Object ID</param>
+        /// <returns>geometry</returns>
+        public Geometry GetGeometryById(uint oid)
+        {
+            return _geometries[(int)oid];
+        }
+
+        /// <summary>
+        /// Throws an NotSupportedException. Attribute data is not supported by this datasource
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <param name="ds">FeatureDataSet to fill data into</param>
+        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
+        {
+            throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+        }
+
+        /// <summary>
+        /// Throws an NotSupportedException. Attribute data is not supported by this datasource
+        /// </summary>
+        /// <param name="box"></param>
+        /// <param name="ds">FeatureDataSet to fill data into</param>
+        public void ExecuteIntersectionQuery(SharpMap.Geometries.BoundingBox box, FeatureDataSet ds)
+        {
+            throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+        }
+
+        /// <summary>
+        /// Returns the number of features in the dataset
+        /// </summary>
+        /// <returns>number of features</returns>
+        public int GetFeatureCount()
+        {
+            return _geometries.Count;
+        }
+
+        /// <summary>
+        /// Throws an NotSupportedException. Attribute data is not supported by this datasource
+        /// </summary>
+        /// <param name="RowID"></param>
+        /// <returns></returns>
+        public FeatureDataRow<uint> GetFeature(uint oid)
+        {
+            throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+        }
+
+        /// <summary>
+        /// Boundingbox of dataset
+        /// </summary>
+        /// <returns>boundingbox</returns>
+        public BoundingBox GetExtents()
         {
             BoundingBox box = BoundingBox.Empty;
-			if (_Geometries.Count == 0)
-				return box;
+
+            if (_geometries.Count == 0)
+            {
+                return box;
+            }
+
             foreach (Geometry g in Geometries)
+            {
                 if (!g.IsEmpty())
+                {
                     box.ExpandToInclude(g.GetBoundingBox());
+                }
+            }
 
-			return box;
-		}
+            return box;
+        }
 
-		/// <summary>
-		/// Gets the connection ID of the datasource
-		/// </summary>
-		/// <remarks>
-		/// The ConnectionID is meant for Connection Pooling which doesn't apply to this datasource. Instead
-		/// <c>String.Empty</c> is returned.
-		/// </remarks>
-		public string ConnectionID
-		{
-			get { return String.Empty; }
-		}
+        /// <summary>
+        /// Gets the connection ID of the datasource
+        /// </summary>
+        /// <remarks>
+        /// The ConnectionID is meant for Connection Pooling which doesn't apply to this datasource. Instead
+        /// <c>String.Empty</c> is returned.
+        /// </remarks>
+        public string ConnectionId
+        {
+            get { return String.Empty; }
+        }
 
-		/// <summary>
-		/// Opens the datasource
-		/// </summary>
-		public void Open()
-		{
-			//Do nothing;
-		}
+        /// <summary>
+        /// Opens the datasource
+        /// </summary>
+        public void Open()
+        {
+            //Do nothing;
+        }
 
-		/// <summary>
-		/// Closes the datasource
-		/// </summary>
-		public void Close()
-		{
-			//Do nothing;
-		}
+        /// <summary>
+        /// Closes the datasource
+        /// </summary>
+        public void Close()
+        {
+            //Do nothing;
+        }
 
-		/// <summary>
-		/// Returns true if the datasource is currently open
-		/// </summary>
-		public bool IsOpen
-		{
-			get { return true; }
-		}
+        /// <summary>
+        /// Returns true if the datasource is currently open
+        /// </summary>
+        public bool IsOpen
+        {
+            get { return true; }
+        }
 
-		#endregion
+        #endregion
 
-		private int _SRID = -1;
-		/// <summary>
-		/// The spatial reference ID (CRS)
-		/// </summary>
-		public int Srid
-		{
-			get { return _SRID; }
-			set { _SRID = value; }
-		}
+        /// <summary>
+        /// The spatial reference ID (CRS)
+        /// </summary>
+        public int Srid
+        {
+            get { return _srid; }
+            set { _srid = value; }
+        }
 
-		#region IDisposable Members
+        #region IDisposable Members
 
-		/// <summary>
-		/// Disposes the object
-		/// </summary>
-		public void Dispose()
-		{
-			_Geometries = null;
-		}
+        /// <summary>
+        /// Disposes the object
+        /// </summary>
+        public void Dispose()
+        {
+            _geometries = null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

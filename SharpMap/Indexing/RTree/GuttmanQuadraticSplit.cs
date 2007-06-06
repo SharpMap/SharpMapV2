@@ -20,82 +20,115 @@ using System.Collections.Generic;
 using System.Text;
 using SharpMap.Geometries;
 
-namespace SharpMap.Indexing
+namespace SharpMap.Indexing.RTree
 {
-    public class GuttmanQuadraticSplit : INodeSplitStrategy
+    /// <summary>
+    /// Implements a common, well accepted R-Tree node splitting strategy.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
+    /// <remarks>
+    /// This strategy follows Antonin Guttman's findings in his paper 
+    /// entitled "R-Trees: A Dynamic Index Structure for Spatial Searching", 
+    /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
+    /// </remarks>
+    public class GuttmanQuadraticSplit<TValue> : INodeSplitStrategy
+        where TValue : IEquatable<TValue>
     {
         #region INodeSplitStrategy Members
 
-        public Node SplitNode(Node node, DynamicRTreeHeuristic huristic)
+        public ISpatialIndexNode SplitNode(ISpatialIndexNode node, IndexBalanceHeuristic heuristic)
         {
             if (node == null)
+            {
                 throw new ArgumentNullException("node");
+            }
 
-            if (node is LeafNode)
-                return splitLeafNode(node as LeafNode, huristic);
-            else if (node is IndexNode)
-                return splitIndexNode(node as IndexNode, huristic);
+            if (node is RTreeLeafNode<TValue>)
+            {
+                return splitLeafNode(node as RTreeLeafNode<TValue>, heuristic as DynamicRTreeBalanceHeuristic);
+            }
+            else if (node is RTreeBranchNode<TValue>)
+            {
+                return splitBranchNode(node as RTreeBranchNode<TValue>, heuristic as DynamicRTreeBalanceHeuristic);
+            }
 
             throw new ArgumentException("Invalid node type. Must be a LeafNode or an IndexNode.", "node");
         }
 
         #endregion
 
-        private Node splitLeafNode(LeafNode node, DynamicRTreeHeuristic heuristic)
+        private RTreeLeafNode<TValue> splitLeafNode(RTreeLeafNode<TValue> node, DynamicRTreeBalanceHeuristic heuristic)
         {
-            List<RTreeIndexEntry> entries = new List<RTreeIndexEntry>(node.Entries);
-            List<RTreeIndexEntry> group1 = new List<RTreeIndexEntry>();
-            List<RTreeIndexEntry> group2 = new List<RTreeIndexEntry>();
+            List<RTreeIndexEntry<TValue>> entries = new List<RTreeIndexEntry<TValue>>(node.Items);
+            List<RTreeIndexEntry<TValue>> group1 = new List<RTreeIndexEntry<TValue>>();
+            List<RTreeIndexEntry<TValue>> group2 = new List<RTreeIndexEntry<TValue>>();
+            
             pickSeeds(entries, group1, group2);
+            
             distribute(entries, group1, group2, heuristic);
+
             if (entries.Count > 0)
             {
                 if (group1.Count < heuristic.NodeItemMinimumCount)
+                {
                     group1.AddRange(entries);
+                }
                 if (group2.Count < heuristic.NodeItemMinimumCount)
+                {
                     group2.AddRange(entries);
+                }
             }
 
             node.Clear();
             node.AddRange(group1);
-            LeafNode sibling = node.Tree.CreateLeafNode();
+            RTreeLeafNode<TValue> sibling = (node.Index as RTree<TValue>).CreateLeafNode();
             sibling.AddRange(group2);
             return sibling;
         }
 
-        private Node splitIndexNode(IndexNode indexNode, DynamicRTreeHeuristic heuristic)
+        private RTreeBranchNode<TValue> splitBranchNode(RTreeBranchNode<TValue> indexNode, IndexBalanceHeuristic heuristic)
         {
-            List<Node> children = new List<Node>(indexNode.Children);
-            List<Node> group1 = new List<Node>();
-            List<Node> group2 = new List<Node>();
+            List<ISpatialIndexNode> children = new List<ISpatialIndexNode>(indexNode.Items);
+            List<ISpatialIndexNode> group1 = new List<ISpatialIndexNode>();
+            List<ISpatialIndexNode> group2 = new List<ISpatialIndexNode>();
+
             pickSeeds(children, group1, group2);
             distribute(children, group1, group2, heuristic);
+
             if (children.Count > 0)
             {
                 if (group1.Count < heuristic.NodeItemMinimumCount)
+                {
                     group1.AddRange(children);
+                }
                 if (group2.Count < heuristic.NodeItemMinimumCount)
+                {
                     group2.AddRange(children);
+                }
             }
 
             indexNode.Clear();
             indexNode.AddRange(group1);
-            IndexNode sibling = indexNode.Tree.CreateIndexNode();
+            RTreeBranchNode<TValue> sibling = (indexNode.Index as RTree<TValue>).CreateBranchNode();
             sibling.AddRange(group2);
             return sibling;
         }
 
-        private void pickSeeds(IList<RTreeIndexEntry> entries, List<RTreeIndexEntry> group1, List<RTreeIndexEntry> group2)
+        private void pickSeeds(IList<RTreeIndexEntry<TValue>> entries, List<RTreeIndexEntry<TValue>> group1, List<RTreeIndexEntry<TValue>> group2)
         {
             double largestWaste = Double.MinValue;
-            foreach (RTreeIndexEntry entry1 in entries)
-                foreach (RTreeIndexEntry entry2 in entries)
-                {
-                    if (entry1.Id == entry2.Id)
-                        continue;
 
-                    SharpMap.Geometries.BoundingBox minBoundingRectangle = new SharpMap.Geometries.BoundingBox(entry1.Box, entry2.Box);
-                    double waste = minBoundingRectangle.GetArea() - entry1.Box.GetArea() - entry2.Box.GetArea() + entry1.Box.GetIntersectingArea(entry2.Box);
+            foreach (RTreeIndexEntry<TValue> entry1 in entries)
+            {
+                foreach (RTreeIndexEntry<TValue> entry2 in entries)
+                {
+                    if (entry1.Value.Equals(entry2.Value))
+                    {
+                        continue;
+                    }
+
+                    BoundingBox minBoundingRectangle = new BoundingBox(entry1.BoundingBox, entry2.BoundingBox);
+                    double waste = minBoundingRectangle.GetArea() - entry1.BoundingBox.GetArea() - entry2.BoundingBox.GetArea() + entry1.BoundingBox.GetIntersectingArea(entry2.BoundingBox);
 
                     if (group1.Count == 0 && group2.Count == 0)
                     {
@@ -112,22 +145,28 @@ namespace SharpMap.Indexing
                         largestWaste = waste;
                     }
                 }
+            }
 
             entries.Remove(group1[0]);
             entries.Remove(group2[0]);
         }
 
-        private void pickSeeds(IList<Node> nodes, List<Node> group1, List<Node> group2)
+        private void pickSeeds(IList<ISpatialIndexNode> nodes, List<ISpatialIndexNode> group1, List<ISpatialIndexNode> group2)
         {
             double largestWaste = Double.MinValue;
-            foreach (Node node1 in nodes)
-                foreach (Node node2 in nodes)
-                {
-                    if (node1.Id == node2.Id)
-                        continue;
 
-                    BoundingBox minBoundingRectangle = new BoundingBox(node1.Box, node2.Box);
-                    double waste = minBoundingRectangle.GetArea() - node1.Box.GetArea() - node2.Box.GetArea() + node1.Box.GetIntersectingArea(node2.Box);
+            // Here's why it's known as a quadratic algorithm - O(n^2)
+            foreach (ISpatialIndexNode node1 in nodes)
+            {
+                foreach (ISpatialIndexNode node2 in nodes)
+                {
+                    if (node1.NodeId == node2.NodeId)
+                    {
+                        continue;
+                    }
+
+                    BoundingBox minBoundingRectangle = new BoundingBox(node1.BoundingBox, node2.BoundingBox);
+                    double waste = minBoundingRectangle.GetArea() - node1.BoundingBox.GetArea() - node2.BoundingBox.GetArea() + node1.BoundingBox.GetIntersectingArea(node2.BoundingBox);
 
                     if (group1.Count == 0 && group2.Count == 0)
                     {
@@ -144,6 +183,7 @@ namespace SharpMap.Indexing
                         largestWaste = waste;
                     }
                 }
+            }
 
             nodes.Remove(group1[0]);
             nodes.Remove(group2[0]);
@@ -156,103 +196,150 @@ namespace SharpMap.Indexing
             Group2
         }
 
-        private void distribute(IList<RTreeIndexEntry> entries, List<RTreeIndexEntry> group1, List<RTreeIndexEntry> group2, DynamicRTreeHeuristic huristic)
+        private void distribute(IList<RTreeIndexEntry<TValue>> entries, List<RTreeIndexEntry<TValue>> group1, List<RTreeIndexEntry<TValue>> group2, IndexBalanceHeuristic heuristic)
         {
             if (entries.Count == 0)
+            {
                 return;
+            }
 
-            if (group1.Count == huristic.TargetNodeCount || group2.Count == huristic.TargetNodeCount)
+            if (group1.Count == heuristic.TargetNodeCount || group2.Count == heuristic.TargetNodeCount)
+            {
                 return;
+            }
 
+            RTreeIndexEntry<TValue> entry;
             BoundingBox group1Box = computeBox(group1);
             BoundingBox group2Box = computeBox(group2);
-            RTreeIndexEntry entry;
             GroupBoxLeastEnlarged group = pickNext(entries, group1Box, group2Box, out entry);
+
             switch (group)
             {
                 case GroupBoxLeastEnlarged.Group1:
                     group1.Add(entry);
                     break;
+
                 case GroupBoxLeastEnlarged.Group2:
                     group2.Add(entry);
                     break;
+
                 case GroupBoxLeastEnlarged.Tie:
                 default:
                     if (group1Box.GetArea() < group2Box.GetArea())
+                    {
                         group1.Add(entry);
+                    }
                     else if (group2Box.GetArea() < group1Box.GetArea())
+                    {
                         group2.Add(entry);
+                    }
                     else if (group1.Count < group2.Count)
+                    {
                         group1.Add(entry);
+                    }
                     else if (group2.Count < group1.Count)
+                    {
                         group2.Add(entry);
+                    }
                     else if ((DateTime.Now.Ticks / 10) % 2 == 0)
+                    {
                         group1.Add(entry);
+                    }
                     else
+                    {
                         group2.Add(entry);
+                    }
+
                     break;
             }
 
-            distribute(entries, group1, group2, huristic);
+            distribute(entries, group1, group2, heuristic);
         }
 
-        private void distribute(IList<Node> nodes, List<Node> group1, List<Node> group2, DynamicRTreeHeuristic huristic)
+        private void distribute(IList<ISpatialIndexNode> nodes, List<ISpatialIndexNode> group1, List<ISpatialIndexNode> group2, IndexBalanceHeuristic heuristic)
         {
             if (nodes.Count == 0)
+            {
                 return;
+            }
 
-            if (group1.Count == huristic.TargetNodeCount || group2.Count == huristic.TargetNodeCount)
+            if (group1.Count == heuristic.TargetNodeCount || group2.Count == heuristic.TargetNodeCount)
+            {
                 return;
+            }
 
+            ISpatialIndexNode node;
             BoundingBox group1Box = computeBox(group1);
             BoundingBox group2Box = computeBox(group2);
-            Node node;
             GroupBoxLeastEnlarged group = pickNext(nodes, group1Box, group2Box, out node);
+
             switch (group)
             {
                 case GroupBoxLeastEnlarged.Group1:
                     group1.Add(node);
                     break;
+
                 case GroupBoxLeastEnlarged.Group2:
                     group2.Add(node);
                     break;
+
                 case GroupBoxLeastEnlarged.Tie:
                 default:
                     if (group1Box.GetArea() < group2Box.GetArea())
+                    {
                         group1.Add(node);
+                    }
                     else if (group2Box.GetArea() < group1Box.GetArea())
+                    {
                         group2.Add(node);
+                    }
                     else if (group1.Count < group2.Count)
+                    {
                         group1.Add(node);
+                    }
                     else if (group2.Count < group1.Count)
+                    {
                         group2.Add(node);
+                    }
                     else if ((DateTime.Now.Ticks / 10) % 2 == 0)
+                    {
                         group1.Add(node);
+                    }
                     else
+                    {
                         group2.Add(node);
+                    }
+
                     break;
             }
 
-            distribute(nodes, group1, group2, huristic);
+            distribute(nodes, group1, group2, heuristic);
         }
 
-        private GroupBoxLeastEnlarged pickNext(IList<RTreeIndexEntry> entries, BoundingBox group1Box, BoundingBox group2Box, out RTreeIndexEntry entry)
+        private GroupBoxLeastEnlarged pickNext(IList<RTreeIndexEntry<TValue>> entries, BoundingBox group1Box, BoundingBox group2Box, out RTreeIndexEntry<TValue> entry)
         {
             double maxArealDifference = Double.MinValue;
             GroupBoxLeastEnlarged group = GroupBoxLeastEnlarged.Tie;
-            RTreeIndexEntry? nextEntry = null;
-            foreach (RTreeIndexEntry e in entries)
+            RTreeIndexEntry<TValue>? nextEntry = null;
+
+            foreach (RTreeIndexEntry<TValue> e in entries)
             {
-                double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, e.Box).GetArea() - group1Box.GetArea());
-                double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, e.Box).GetArea() - group2Box.GetArea());
+                double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, e.BoundingBox).GetArea() - group1Box.GetArea());
+                double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, e.BoundingBox).GetArea() - group2Box.GetArea());
+                
                 if (Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2) > maxArealDifference)
                 {
                     maxArealDifference = Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2);
                     nextEntry = e;
+
                     if (arealDifferenceGroup1 < arealDifferenceGroup2)
+                    {
                         group = GroupBoxLeastEnlarged.Group1;
+                    }
                     else if (arealDifferenceGroup2 < arealDifferenceGroup1)
+                    {
                         group = GroupBoxLeastEnlarged.Group2;
+                    }
                 }
             }
 
@@ -261,23 +348,30 @@ namespace SharpMap.Indexing
             return group;
         }
 
-        private GroupBoxLeastEnlarged pickNext(IList<Node> nodes, BoundingBox group1Box, BoundingBox group2Box, out Node nextNode)
+        private GroupBoxLeastEnlarged pickNext(IList<ISpatialIndexNode> nodes, BoundingBox group1Box, BoundingBox group2Box, out ISpatialIndexNode nextNode)
         {
             double maxArealDifference = Double.MinValue;
             GroupBoxLeastEnlarged group = GroupBoxLeastEnlarged.Tie;
             nextNode = null;
-            foreach (Node node in nodes)
+
+            foreach (ISpatialIndexNode node in nodes)
             {
-                double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, node.Box).GetArea() - group1Box.GetArea());
-                double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, node.Box).GetArea() - group2Box.GetArea());
+                double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, node.BoundingBox).GetArea() - group1Box.GetArea());
+                double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, node.BoundingBox).GetArea() - group2Box.GetArea());
+                
                 if (Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2) > maxArealDifference)
                 {
                     maxArealDifference = Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2);
                     nextNode = node;
+
                     if (arealDifferenceGroup1 < arealDifferenceGroup2)
+                    {
                         group = GroupBoxLeastEnlarged.Group1;
+                    }
                     else if (arealDifferenceGroup2 < arealDifferenceGroup1)
+                    {
                         group = GroupBoxLeastEnlarged.Group2;
+                    }
                 }
             }
 
@@ -285,20 +379,26 @@ namespace SharpMap.Indexing
             return group;
         }
 
-        private BoundingBox computeBox(IList<RTreeIndexEntry> entries)
+        private BoundingBox computeBox(IList<RTreeIndexEntry<TValue>> entries)
         {
             BoundingBox boundingBox = BoundingBox.Empty;
-            foreach (RTreeIndexEntry entry in entries)
-                boundingBox.ExpandToInclude(entry.Box);
+
+            foreach (RTreeIndexEntry<TValue> entry in entries)
+            {
+                boundingBox.ExpandToInclude(entry.BoundingBox);
+            }
 
             return boundingBox;
         }
 
-        private BoundingBox computeBox(IList<Node> nodes)
+        private BoundingBox computeBox(IList<ISpatialIndexNode> nodes)
         {
             BoundingBox boundingBox = BoundingBox.Empty;
-            foreach (Node node in nodes)
-                boundingBox.ExpandToInclude(node.Box);
+
+            foreach (ISpatialIndexNode node in nodes)
+            {
+                boundingBox.ExpandToInclude(node.BoundingBox);
+            }
 
             return boundingBox;
         }

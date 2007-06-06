@@ -18,13 +18,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Map;
+using SharpMap.Tools;
 
 namespace SharpMap.Presentation
 {
     public interface IToolsView
     {
-        IList<ToolSet> Tools { get; set; }
+        IList<MapTool> Tools { get; set; }
         event EventHandler ToolSelectionChanged;
-        ToolSet SelectedTool { get; set; }
+        MapTool SelectedTool { get; set; }
     }
 }

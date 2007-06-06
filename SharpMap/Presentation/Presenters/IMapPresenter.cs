@@ -34,10 +34,10 @@ namespace SharpMap.Presentation
         where TViewSize : IViewVector
         where TViewRectangle : IViewMatrix
     {
-        Map Map { get; }
+        SharpMap.Map.Map Map { get; }
         IMapView2D MapView { get; set; }
         //ToolSet ActiveTool { get; }
-        IList<IToolsView> ToolsViews { get; set; }
+        //IList<IToolsView> ToolsViews { get; set; }
         IViewSelection<TViewPoint, TViewSize, TViewRectangle> Selection { get; }
         double ViewHeight { get; }
         TViewSize ViewSize { get; set; }

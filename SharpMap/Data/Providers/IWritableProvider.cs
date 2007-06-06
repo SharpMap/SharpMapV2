@@ -22,10 +22,10 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers
 {
-    public interface IUpdateableProvider : IProvider
+    public interface IWritableProvider<TOid> : IProvider<TOid>
     {
-        void Save(FeatureDataTable features);
-        void Save(FeatureDataRow feature);
-        void Delete(FeatureDataRow feature);
+        void Save(IEnumerable<FeatureDataRow<TOid>> features);
+        void Save(FeatureDataRow<TOid> feature);
+        void Delete(FeatureDataRow<TOid> feature);
     }
 }

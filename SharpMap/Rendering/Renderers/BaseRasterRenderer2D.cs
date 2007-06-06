@@ -62,17 +62,17 @@ namespace SharpMap.Rendering.Renderers
             }
         }
 
-        public IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-            set
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
+        //public IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer
+        //{
+        //    get
+        //    {
+        //        throw new Exception("The method or operation is not implemented.");
+        //    }
+        //    set
+        //    {
+        //        throw new Exception("The method or operation is not implemented.");
+        //    }
+        //}
 
         public StyleRenderingMode StyleRenderingMode
         {

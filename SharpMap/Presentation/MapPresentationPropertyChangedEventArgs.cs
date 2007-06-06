@@ -43,4 +43,42 @@ namespace SharpMap.Presentation
             get { return _currentValue; }
         }
     }
+
+    [Serializable]
+    public class MapPresentationPropertyChangedEventArgs<TViewValue, TGeoValue> : EventArgs
+    {
+        private TViewValue _previousViewValue;
+        private TViewValue _currentViewValue;
+        private TGeoValue _previousGeoValue;
+        private TGeoValue _currentGeoValue;
+
+        public MapPresentationPropertyChangedEventArgs(TGeoValue previousGeoValue, TGeoValue currentGeoValue, TViewValue previousViewValue, TViewValue currentViewValue)
+        {
+            _previousViewValue = previousViewValue;
+            _currentViewValue = currentViewValue;
+
+            _previousGeoValue = previousGeoValue;
+            _currentGeoValue = currentGeoValue;
+        }
+
+        public TViewValue PreviousViewValue
+        {
+            get { return _previousViewValue; }
+        }
+
+        public TViewValue CurrentViewValue
+        {
+            get { return _currentViewValue; }
+        }
+
+        public TGeoValue PreviousGeoValue
+        {
+            get { return _previousGeoValue; }
+        }
+
+        public TGeoValue CurrentGeoValue
+        {
+            get { return _currentGeoValue; }
+        }
+    }
 }

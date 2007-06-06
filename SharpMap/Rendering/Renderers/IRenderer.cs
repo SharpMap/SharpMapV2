@@ -34,7 +34,7 @@ namespace SharpMap.Rendering
     {
         IStyle Style { get; set; }
         ITheme Theme { get; set; }
-        IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer { get; set; }
+        //IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer { get; set; }
         StyleRenderingMode StyleRenderingMode { get; set; }
 
         //StyleSmoothingMode SmoothingMode { get; set; }

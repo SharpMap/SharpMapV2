@@ -27,18 +27,18 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 
-using SharpMap.Indexing;
+using SharpMap.Indexing.BinaryTree;
 
 namespace SharpMap.Data.Providers
 {
-	internal class DbaseReader : IDisposable
+    internal class DbaseReader : IDisposable
     {
         private static readonly uint MaxRecordsIndexed = 10000;
 
         private DbaseHeader _header;
-		private string _filename;
-		private FileStream _dbaseFileStream;
-		private BinaryReader _dbaseReader;
+        private string _filename;
+        private FileStream _dbaseFileStream;
+        private BinaryReader _dbaseReader;
         private bool _headerIsParsed;
         private bool _isOpen;
         private Encoding _encoding;
@@ -52,13 +52,16 @@ namespace SharpMap.Data.Providers
         /// <param name="filename">The path of the DBF file to read</param>
         /// <exception cref="FileNotFoundException"><paramref name="filename">The passed 
         /// filename</paramref> doesn't exist</exception>
-		public DbaseReader(string filename)
-		{
-			if (!File.Exists(filename))
-				throw new FileNotFoundException(String.Format("Could not find file \"{0}\"", filename));
-			_filename = filename;
-			_headerIsParsed = false;
-		}
+        public DbaseReader(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException(String.Format("Could not find file \"{0}\"", filename));
+            }
+
+            _filename = filename;
+            _headerIsParsed = false;
+        }
 
         ~DbaseReader()
         {
@@ -68,12 +71,12 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// Gets a value which indicates if the reader is open: true if it is, false otherwise.
         /// </summary>
-		public bool IsOpen
-		{
-			get { return _isOpen; }
-			private set { _isOpen = value; }
-		}
-	
+        public bool IsOpen
+        {
+            get { return _isOpen; }
+            private set { _isOpen = value; }
+        }
+
         /// <summary>
         /// Opens the <see cref="DbaseReader"/> on the file specified on creation.
         /// </summary>
@@ -84,18 +87,24 @@ namespace SharpMap.Data.Providers
             Open(false);
         }
 
-		public void Open(bool exclusive)
+        public void Open(bool exclusive)
         {
             if (_isDisposed)
+            {
                 throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-            
-            if(exclusive)
-			    _dbaseFileStream = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            else
-                _dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
+            }
 
-			_dbaseReader = new BinaryReader(_dbaseFileStream);
-			_isOpen = true;
+            if (exclusive)
+            {
+                _dbaseFileStream = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+            }
+            else
+            {
+                _dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
+            }
+
+            _dbaseReader = new BinaryReader(_dbaseFileStream);
+            _isOpen = true;
 
             if (!_headerIsParsed) //Don't read the header if it's already parsed
             {
@@ -103,7 +112,7 @@ namespace SharpMap.Data.Providers
                 _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
                 _headerIsParsed = true;
             }
-		}
+        }
 
         /// <summary>
         /// Closes the xBase file.
@@ -113,39 +122,49 @@ namespace SharpMap.Data.Providers
         /// <seealso cref="Dispose" />
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and
         /// object has been disposed</exception>
-		public void Close()
+        public void Close()
         {
             if (_isDisposed)
+            {
                 throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
+            }
 
-            if(_dbaseReader != null)
-			    _dbaseReader.Close();
+            if (_dbaseReader != null)
+            {
+                _dbaseReader.Close();
+            }
 
-            if(_dbaseFileStream != null)
-			    _dbaseFileStream.Close();
-            
-			_isOpen = false;
-		}
+            if (_dbaseFileStream != null)
+            {
+                _dbaseFileStream.Close();
+            }
+
+            _isOpen = false;
+        }
 
         /// <summary>
         /// Closes all files and disposes of all resources.
         /// </summary>
         /// <seealso cref="Close"/>
-		public void Dispose()
-		{
+        public void Dispose()
+        {
             Dispose(true);
             GC.SuppressFinalize(this);
-		}
+        }
 
         protected virtual void Dispose(bool isDisposing)
         {
             if (_isDisposed) // Idempotency
+            {
                 return;
+            }
 
             if (isDisposing) // Do deterministic finalization of managed resources
             {
                 if (_isOpen)
+                {
                     this.Close();
+                }
 
                 _dbaseReader = null;
                 _dbaseFileStream = null;
@@ -175,31 +194,35 @@ namespace SharpMap.Data.Providers
             get { return _header.RecordCount; }
         }
 
-		// Binary Tree not working yet on Mono 
-		// see bug: http://bugzilla.ximian.com/show_bug.cgi?id=78502
-		#if !MONO
-		/// <summary>
-		/// Indexes a DBF column in a binary tree (B-Tree) [NOT COMPLETE]
-		/// </summary>
-		/// <typeparam name="T">datatype to be indexed</typeparam>
-		/// <param name="ColumnId">Column to index</param>
+        // Binary Tree not working yet on Mono 
+        // see bug: http://bugzilla.ximian.com/show_bug.cgi?id=78502
+#if !MONO
+        /// <summary>
+        /// Indexes a DBF column in a binary tree (B-Tree) [NOT COMPLETE]
+        /// </summary>
+        /// <typeparam name="T">datatype to be indexed</typeparam>
+        /// <param name="ColumnId">Column to index</param>
         /// <returns>A <see cref="SharpMap.Utilities.Indexing.BinaryTree{T, UInt32}"/> data 
         /// structure indexing values in a column to a row index</returns>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
         /// object has been disposed</exception>
-		public BinaryTree<T, UInt32> CreateDbfIndex<T>(int ColumnId) where T:IComparable<T>
-		{
+        public BinaryTree<UInt32, TValue> CreateDbfIndex<TValue>(int columnId) where TValue : IComparable<TValue>
+        {
             if (_isDisposed)
+            {
                 throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
+            }
 
-			BinaryTree<T, UInt32> tree = new BinaryTree<T, uint>();
+            BinaryTree<UInt32, TValue> tree = new BinaryTree<UInt32, TValue>();
 
             for (uint i = 0; i < ((_header.RecordCount > MaxRecordsIndexed) ? MaxRecordsIndexed : _header.RecordCount); i++)
-				tree.Add(new BinaryTree<T, uint>.ItemValue((T)GetValue(i, ColumnId), i));
+            {
+                tree.Add(new BinaryTree<UInt32, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
+            }
 
-			return tree;
-		}
-		#endif
+            return tree;
+        }
+#endif
 
         #region Lucene Indexing (EXPERIMENTAL)
         /*
@@ -242,11 +265,11 @@ namespace SharpMap.Data.Providers
 
         /// <summary>
         /// Returns an empty <see cref="FeatureDataTable"/> with the same schema as this reader
-		/// </summary>
-		internal FeatureDataTable<uint> NewTable
-		{
-			get { return _baseTable.Clone(); }
-		}
+        /// </summary>
+        internal FeatureDataTable<uint> NewTable
+        {
+            get { return _baseTable.Clone(); }
+        }
 
         /// <summary>
         /// Gets a value for the given <paramref name="oid">row index</paramref> and 
@@ -264,26 +287,36 @@ namespace SharpMap.Data.Providers
         /// less than 0 or greater than <see cref="RecordCount"/> - 1, 
         /// or if <paramref name="colId"/> is less than 0 or greater than 
         /// <see cref="Columns.Length"/> - 1.</exception>
-		internal object GetValue(uint oid, int colId)
+        internal object GetValue(uint oid, int colId)
         {
             if (_isDisposed)
+            {
                 throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-			
+            }
+
             if (!_isOpen)
+            {
                 throw new InvalidDbaseFileOperationException("An attempt was made to read from a closed DBF file");
-			
+            }
+
             if (oid < 0 || oid >= _header.RecordCount)
+            {
                 throw new ArgumentOutOfRangeException("Invalid DataRow requested at index " + oid.ToString());
-			
+            }
+
             if (colId >= _header.Columns.Length || colId < 0)
-				throw new ArgumentOutOfRangeException("Column index out of range");
+            {
+                throw new ArgumentOutOfRangeException("Column index out of range");
+            }
 
             // Position stream on row corresponding to oid
-			_dbaseFileStream.Seek(_header.HeaderLength + oid * _header.RecordLength, SeekOrigin.Begin);
+            _dbaseFileStream.Seek(_header.HeaderLength + oid * _header.RecordLength, SeekOrigin.Begin);
 
             // Position stream on column corresponding to colId
-			for (int i = 0; i < colId; i++)
+            for (int i = 0; i < colId; i++)
+            {
                 _dbaseReader.BaseStream.Seek(_header.Columns[i].Length, SeekOrigin.Current);
+            }
 
             try
             {
@@ -293,41 +326,47 @@ namespace SharpMap.Data.Providers
             {
                 throw new InvalidDbaseFileOperationException(String.Format("Column type {0} is not supported.", _header.Columns[colId].DataType));
             }
-		}
+        }
 
-		/// <summary>
-		/// Gets or sets the <see cref="System.Text.Encoding"/> used for parsing strings 
+        /// <summary>
+        /// Gets or sets the <see cref="System.Text.Encoding"/> used for parsing strings 
         /// from the DBase DBF file.
-		/// </summary>
-		/// <remarks>
-		/// If the encoding type isn't set, the dbase driver will try to determine 
+        /// </summary>
+        /// <remarks>
+        /// If the encoding type isn't set, the dbase driver will try to determine 
         /// the correct <see cref="System.Text.Encoding"/>.
         /// </remarks>
         /// <exception cref="ObjectDisposedException">Thrown when the property is 
         /// fetched and/or set and object has been disposed</exception>
-		public System.Text.Encoding Encoding
-		{
-			get
+        public System.Text.Encoding Encoding
+        {
+            get
             {
                 if (_isDisposed)
+                {
                     throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-                return _encoding; 
-            }
-			set
-            {
-                if (_isDisposed)
-                    throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-                _encoding = value; 
-            }
-		}
+                }
 
-		/// <summary>
-		/// Gets the feature at the specified Object ID
-		/// </summary>
-		/// <param name="oid">Row index. Zero-based.</param>
-		/// <param name="table">The feature table containing the schema used to 
+                return _encoding;
+            }
+            set
+            {
+                if (_isDisposed)
+                {
+                    throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
+                }
+
+                _encoding = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the feature at the specified Object ID
+        /// </summary>
+        /// <param name="oid">Row index. Zero-based.</param>
+        /// <param name="table">The feature table containing the schema used to 
         /// read the row.</param>
-		/// <returns>The feature row for the given row index</returns>
+        /// <returns>The feature row for the given row index</returns>
         /// <exception cref="InvalidDbaseFileOperationException">Thrown if this reader is 
         /// closed (check <see cref="IsOpen"/> before calling), or if the column is an unsupported type.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="oid"/> 
@@ -336,24 +375,39 @@ namespace SharpMap.Data.Providers
         /// null</exception>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
         /// object has been disposed</exception>
-		internal SharpMap.Data.FeatureDataRow<uint> GetFeature(uint oid, SharpMap.Data.FeatureDataTable<uint> table)
+        internal SharpMap.Data.FeatureDataRow<uint> GetFeature(uint oid, SharpMap.Data.FeatureDataTable<uint> table)
         {
             if (_isDisposed)
+            {
                 throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-			if (!_isOpen)
+            }
+
+            if (!_isOpen)
+            {
                 throw new InvalidDbaseFileOperationException("An attempt was made to read from a closed dBase file");
+            }
+
             if (oid < 0 || oid >= RecordCount)
+            {
                 throw new ArgumentOutOfRangeException("Invalid DataRow requested at index " + oid.ToString());
+            }
+
             if (Object.ReferenceEquals(table, null))
+            {
                 throw new ArgumentNullException("table");
+            }
 
             _dbaseFileStream.Seek(_header.HeaderLength + oid * _header.RecordLength, SeekOrigin.Begin);
 
             if (_dbaseReader.ReadChar() == DbaseConstants.DeletedIndicator) //is record marked deleted?
-				return null;
+            {
+                return null;
+            }
 
             SharpMap.Data.FeatureDataRow<uint> dr = table.NewRow(oid);
+
             foreach (DbaseField field in _header.Columns)
+            {
                 try
                 {
                     dr[field.ColumnName] = ReadDbfValue(field);
@@ -362,14 +416,17 @@ namespace SharpMap.Data.Providers
                 {
                     throw new InvalidDbaseFileOperationException(String.Format("Column type {0} is not supported.", field.DataType));
                 }
+            }
 
-			return dr;
-		}
+            return dr;
+        }
 
-		private object ReadDbfValue(DbaseField dbf)
-		{
+        private object ReadDbfValue(DbaseField dbf)
+        {
             if (Object.ReferenceEquals(dbf, null))
+            {
                 throw new ArgumentNullException("dbf");
+            }
 
             switch (Type.GetTypeCode(dbf.DataType))
             {
@@ -381,10 +438,14 @@ namespace SharpMap.Data.Providers
                     // Mono has not yet implemented DateTime.TryParseExact
 #if !MONO
                     if (DateTime.TryParseExact(Encoding.UTF7.GetString((_dbaseReader.ReadBytes(8))),
-                        "yyyyMMdd", Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
+                        "yyyyMMdd", SharpMap.Map.Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
+                    {
                         return date;
+                    }
                     else
+                    {
                         return DBNull.Value;
+                    }
 #else
 					try 
 					{
@@ -399,43 +460,72 @@ namespace SharpMap.Data.Providers
                 case TypeCode.Double:
                     string temp = Encoding.UTF7.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
                     double dbl = 0;
-                    if (double.TryParse(temp, NumberStyles.Float, Map.NumberFormat_EnUS, out dbl))
+
+                    if (double.TryParse(temp, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out dbl))
+                    {
                         return dbl;
+                    }
                     else
+                    {
                         return DBNull.Value;
+                    }
                 case TypeCode.Int16:
                     string temp16 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int16 i16 = 0;
-                    if (Int16.TryParse(temp16, NumberStyles.Float, Map.NumberFormat_EnUS, out i16))
+
+                    if (Int16.TryParse(temp16, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out i16))
+                    {
                         return i16;
+                    }
                     else
+                    {
                         return DBNull.Value;
+                    }
                 case TypeCode.Int32:
                     string temp32 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int32 i32 = 0;
-                    if (Int32.TryParse(temp32, NumberStyles.Float, Map.NumberFormat_EnUS, out i32))
+
+                    if (Int32.TryParse(temp32, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out i32))
+                    {
                         return i32;
+                    }
                     else
+                    {
                         return DBNull.Value;
+                    }
                 case TypeCode.Int64:
                     string temp64 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int64 i64 = 0;
-                    if (Int64.TryParse(temp64, NumberStyles.Float, Map.NumberFormat_EnUS, out i64))
+
+                    if (Int64.TryParse(temp64, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out i64))
+                    {
                         return i64;
+                    }
                     else
+                    {
                         return DBNull.Value;
+                    }
                 case TypeCode.Single:
                     string temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
                     float f = 0;
-                    if (float.TryParse(temp4, NumberStyles.Float, Map.NumberFormat_EnUS, out f))
+
+                    if (float.TryParse(temp4, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out f))
+                    {
                         return f;
+                    }
                     else
+                    {
                         return DBNull.Value;
+                    }
                 case TypeCode.String:
                     if (_encoding == null)
+                    {
                         return _header.FileEncoding.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
+                    }
                     else
+                    {
                         return _encoding.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
+                    }
                 case TypeCode.Char:
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
@@ -449,7 +539,7 @@ namespace SharpMap.Data.Providers
                 default:
                     throw new NotSupportedException("Cannot parse DBase field '" + dbf.ColumnName + "' of type '" + dbf.DataType.ToString() + "'");
             }
-		}
+        }
     }
 
     /// <summary>

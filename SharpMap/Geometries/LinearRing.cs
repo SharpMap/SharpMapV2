@@ -62,7 +62,7 @@ namespace SharpMap.Geometries
 		/// Tests whether a ring is oriented counter-clockwise.
 		/// </summary>
 		/// <returns>Returns true if ring is oriented counter-clockwise.</returns>
-		public bool IsCCW()
+		public bool IsCcw()
 		{
 			Point hip, p, prev, next;
 			int hii, i;

@@ -30,7 +30,9 @@ namespace SharpMap.Data
 	/// </summary>
 	[Serializable()]
 	public class FeatureDataSet : DataSet
-	{
+    {
+        private FeatureTableCollection _featureTables;
+
 		/// <summary>
 		/// Initializes a new instance of the FeatureDataSet class.
 		/// </summary>
@@ -51,14 +53,17 @@ namespace SharpMap.Data
 		protected FeatureDataSet(SerializationInfo info, StreamingContext context)
 		{
 			string strSchema = ((string)(info.GetValue("XmlSchema", typeof(string))));
-			if ((strSchema != null))
+			
+            if ((strSchema != null))
 			{
 				DataSet ds = new DataSet();
 				ds.ReadXmlSchema(new XmlTextReader(new System.IO.StringReader(strSchema)));
-				if ((ds.Tables["FeatureTable"] != null))
+				
+                if ((ds.Tables["FeatureTable"] != null))
 				{
 					this.Tables.Add(new FeatureDataTable(ds.Tables["FeatureTable"]));
 				}
+
 				this.DataSetName = ds.DataSetName;
 				this.Prefix = ds.Prefix;
 				this.Namespace = ds.Namespace;
@@ -71,20 +76,19 @@ namespace SharpMap.Data
 			{
 				this.InitClass();
 			}
+
 			this.GetSerializationData(info, context);
 			System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
 			//this.Tables.CollectionChanged += schemaChangedHandler;
 			this.Relations.CollectionChanged += schemaChangedHandler;
 		}
 
-		private FeatureTableCollection _FeatureTables;
-
 		/// <summary>
 		/// Gets the collection of tables contained in the FeatureDataSet
 		/// </summary>
 		public new FeatureTableCollection Tables
 		{
-			get { return _FeatureTables; }
+			get { return _featureTables; }
 		}
 
 		/// <summary>
@@ -152,7 +156,7 @@ namespace SharpMap.Data
 
 		private void InitClass()
 		{
-			_FeatureTables = new FeatureTableCollection();
+			_featureTables = new FeatureTableCollection();
 			//this.DataSetName = "FeatureDataSet";
 			this.Prefix = "";
             this.Namespace = "http://www.codeplex.com/Wiki/View.aspx?ProjectName=SharpMap/FeatureDataSet.xsd";
@@ -211,15 +215,21 @@ namespace SharpMap.Data
         public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, string columnName)
         {
             if (table == null)
+            {
                 throw new ArgumentNullException("table");
+            }
 
             if (columnName == null)
+            {
                 throw new ArgumentNullException("columnName");
+            }
 
             //table = table.Copy() as FeatureDataTable;
 
             if (!table.Columns.Contains(columnName))
+            {
                 table.Columns.Add(columnName, typeof(TOid));
+            }
 
             return InternalCreateTableWithId(table, table.Columns[columnName]);
         }
@@ -227,10 +237,14 @@ namespace SharpMap.Data
         public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, DataColumn column)
         {
             if (table == null)
+            {
                 throw new ArgumentNullException("table");
+            }
 
             if (column == null)
+            {
                 throw new ArgumentNullException("column");
+            }
 
             return InternalCreateTableWithId(table.Copy() as FeatureDataTable, column);
         }
@@ -243,7 +257,10 @@ namespace SharpMap.Data
             foreach (DataColumn col in tableCopy.Columns)
             {
                 if (String.Compare(col.ColumnName, objectIdColumn.ColumnName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
                     continue;
+                }
+                
                 DataColumn colCopy = new DataColumn(col.ColumnName, col.DataType);
                 colCopy.AllowDBNull = col.AllowDBNull;
                 colCopy.AutoIncrement = col.AutoIncrement;
@@ -252,7 +269,9 @@ namespace SharpMap.Data
                 colCopy.DateTimeMode = col.DateTimeMode;
                 colCopy.DefaultValue = col.DefaultValue;
                 foreach (DictionaryEntry entry in col.ExtendedProperties)
+                {
                     colCopy.ExtendedProperties[entry.Key] = entry.Value;
+                }
                 colCopy.MaxLength = col.MaxLength;
                 colCopy.ReadOnly = col.ReadOnly;
                 colCopy.Unique = col.Unique;
@@ -300,7 +319,9 @@ namespace SharpMap.Data
         public new IEnumerator<FeatureDataRow<TOid>> GetEnumerator()
         {
             foreach (FeatureDataRow<TOid> row in Rows)
+            {
                 yield return row;
+            }
         }
 
         /// <summary>
@@ -550,6 +571,7 @@ namespace SharpMap.Data
 		protected override void OnRowChanged(DataRowChangeEventArgs e)
 		{
 			base.OnRowChanged(e);
+
 			if ((this.FeatureDataRowChanged != null))
 			{
 				this.FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
@@ -563,6 +585,7 @@ namespace SharpMap.Data
 		protected override void OnRowChanging(DataRowChangeEventArgs e)
 		{
 			base.OnRowChanging(e);
+
 			if ((this.FeatureDataRowChanging != null))
 			{
 				this.FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
@@ -576,6 +599,7 @@ namespace SharpMap.Data
 		protected override void OnRowDeleted(DataRowChangeEventArgs e)
 		{
 			base.OnRowDeleted(e);
+
 			if ((this.FeatureDataRowDeleted != null))
 			{
 				this.FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
@@ -602,7 +626,7 @@ namespace SharpMap.Data
 		public new DataRowCollection Rows
 		{
 			get { return base.Rows; }
-			set { throw (new NotSupportedException()); }
+			set { throw new NotSupportedException(); }
 		}
 
 		/// <summary>
@@ -632,7 +656,6 @@ namespace SharpMap.Data
 	[Serializable()]
 	public class FeatureDataRow : DataRow
 	{
-
 		//private FeatureDataTable tableFeatureTable;
 
 		internal FeatureDataRow(DataRowBuilder rb) : base(rb)
@@ -680,7 +703,9 @@ namespace SharpMap.Data
             get 
             {
                 if (Table == null)
+                {
                     return default(TOid);
+                }
 
                 return (TOid)ItemArray[Table.IdColumn.Ordinal]; 
             }

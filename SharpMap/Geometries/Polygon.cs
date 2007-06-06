@@ -260,10 +260,10 @@ namespace SharpMap.Geometries
             {
                 double area = 0.0;
                 area += this._exteriorRing.Area;
-				bool extIsClockwise = this._exteriorRing.IsCCW();
+				bool extIsClockwise = this._exteriorRing.IsCcw();
 				for (int i = 0; i < _interiorRings.Count;i++ )
 					//opposite direction of exterior subtracts area
-					if (_interiorRings[i].IsCCW() != extIsClockwise)
+					if (_interiorRings[i].IsCcw() != extIsClockwise)
 						area -= _interiorRings[i].Area;
 					else
 						area += _interiorRings[i].Area;

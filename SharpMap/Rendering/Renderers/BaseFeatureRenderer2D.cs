@@ -33,7 +33,7 @@ namespace SharpMap.Rendering
         //private TLayer _layer;
         private TStyle _style;
         private ITheme _theme;
-        private IViewTransformer<ViewPoint2D, ViewRectangle2D> _viewTransform;
+        //private IViewTransformer<ViewPoint2D, ViewRectangle2D> _viewTransform;
         //private List<PositionedRenderObject2D<TRenderObject>> _renderedObjects = new List<PositionedRenderObject2D<TRenderObject>>();
         private StyleRenderingMode _renderMode;
 
@@ -120,11 +120,11 @@ namespace SharpMap.Rendering
             set { _style = value; }
         }
 
-        public IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer
-        {
-            get { return _viewTransform; }
-            set { _viewTransform = value; }
-        }
+        //public IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer
+        //{
+        //    get { return _viewTransform; }
+        //    set { _viewTransform = value; }
+        //}
 
         //public IList<PositionedRenderObject2D<TRenderObject>> RenderedObjects
         //{

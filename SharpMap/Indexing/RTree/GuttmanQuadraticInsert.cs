@@ -20,37 +20,56 @@ using System.Collections.Generic;
 using System.Text;
 using SharpMap.Geometries;
 
-namespace SharpMap.Indexing
+namespace SharpMap.Indexing.RTree
 {
-    internal class GuttmanQuadraticInsert : IEntryInsertStrategy
+    /// <summary>
+    /// Implements a common, well accepted R-Tree insertion strategy.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
+    /// <remarks>
+    /// This strategy follows Antonin Guttman's findings in his paper 
+    /// entitled "R-Trees: A Dynamic Index Structure for Spatial Searching", 
+    /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
+    /// </remarks>
+    internal class GuttmanQuadraticInsert<TValue> : IEntryInsertStrategy<RTreeIndexEntry<TValue>>
+        where TValue : IEquatable<TValue>
     {
         #region IEntryInsertStrategy Members
 
-        public void InsertEntry(RTreeIndexEntry entry, Node node, INodeSplitStrategy nodeSplitStrategy, DynamicRTreeHeuristic heuristic, out Node newSiblingFromSplit)
+        public void InsertEntry(RTreeIndexEntry<TValue> entry, ISpatialIndexNode node, INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit)
         {
             newSiblingFromSplit = null;
 
-            if (node is LeafNode)
+            if (node is RTreeLeafNode<TValue>)
             {
-                LeafNode leaf = node as LeafNode;
+                RTreeLeafNode<TValue> leaf = node as RTreeLeafNode<TValue>;
+                
                 leaf.Add(entry);
-                if (leaf.Entries.Count > heuristic.NodeItemMaximumCount)
+
+                if (leaf.Items.Count > heuristic.NodeItemMaximumCount)
+                {
                     newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
+                }
             }
             else
             {
+                RTreeBranchNode<TValue> branch = node as RTreeBranchNode<TValue>;
+
                 double leastExpandedArea = Double.PositiveInfinity;
-                Node leastExpandedChild = null;
-                foreach(Node child in (node as IndexNode).Children)
+
+                ISpatialIndexNode leastExpandedChild = null;
+
+                foreach (ISpatialIndexNode child in branch.Items)
                 {
-                    BoundingBox candidateRegion = BoundingBox.Join(child.Box, entry.Box);
-                    double expandedArea = candidateRegion.GetArea() - child.Box.GetArea();
+                    BoundingBox candidateRegion = BoundingBox.Join(child.BoundingBox, entry.BoundingBox);
+                    double expandedArea = candidateRegion.GetArea() - child.BoundingBox.GetArea();
+
                     if (expandedArea < leastExpandedArea)
                     {
                         leastExpandedChild = child;
                         leastExpandedArea = expandedArea;
                     }
-                    else if (leastExpandedChild == null || (expandedArea == leastExpandedArea && child.Box.GetArea() < leastExpandedChild.Box.GetArea()))
+                    else if (leastExpandedChild == null || (expandedArea == leastExpandedArea && child.BoundingBox.GetArea() < leastExpandedChild.BoundingBox.GetArea()))
                     {
                         leastExpandedChild = child;
                     }
@@ -60,19 +79,21 @@ namespace SharpMap.Indexing
                 InsertEntry(entry, leastExpandedChild, nodeSplitStrategy, heuristic, out newSiblingFromSplit);
 
                 // Adjust this node...
-                node.Box = BoundingBox.Join(leastExpandedChild.Box, node.Box);
+                branch.BoundingBox = BoundingBox.Join(leastExpandedChild.BoundingBox, node.BoundingBox);
                 
                 // Check for overflow and add to current node if it occured
                 if (newSiblingFromSplit != null)
                 {
                     // Add new sibling node to the current node
-                    IndexNode indexNode = node as IndexNode;
+                    RTreeBranchNode<TValue> indexNode = node as RTreeBranchNode<TValue>;
                     indexNode.Add(newSiblingFromSplit);
                     newSiblingFromSplit = null;
 
                     // Split the current node, since the child count is too high, and return the split to the caller
-                    if (indexNode.Children.Count > heuristic.NodeItemMaximumCount)
+                    if (indexNode.Items.Count > heuristic.NodeItemMaximumCount)
+                    {
                         newSiblingFromSplit = nodeSplitStrategy.SplitNode(indexNode, heuristic);
+                    }
                 }
             }
         }

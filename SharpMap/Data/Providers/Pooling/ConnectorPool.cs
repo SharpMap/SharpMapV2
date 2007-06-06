@@ -64,7 +64,7 @@ namespace SharpMap.Data.Providers.Pooling
 			{
 				foreach (Connector Connector in this.SharedConnectors)
 				{
-					if (Connector.Provider.ConnectionID == provider.ConnectionID)
+					if (Connector.Provider.ConnectionId == provider.ConnectionId)
 					{	// Bingo!
 						// Return the shared connector to caller.
 						// The connector is already in use.
@@ -79,7 +79,7 @@ namespace SharpMap.Data.Providers.Pooling
 			// (unused) connectors are beeing searched.
 			foreach (Connector Connector in this.PooledConnectors)
 			{
-				if (Connector.Provider.ConnectionID == provider.ConnectionID)
+				if (Connector.Provider.ConnectionId == provider.ConnectionId)
 				{	// Bingo!
 					// Remove the Connector from the pooled connectors list.
 					this.PooledConnectors.Remove(Connector);

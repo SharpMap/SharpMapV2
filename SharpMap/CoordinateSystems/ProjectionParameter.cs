@@ -79,7 +79,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return String.Format(SharpMap.Map.NumberFormat_EnUS, "PARAMETER[\"{0}\", {1}]", Name, Value);
+                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "PARAMETER[\"{0}\", {1}]", Name, Value);
 			}
 		}
 
@@ -90,7 +90,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return String.Format(SharpMap.Map.NumberFormat_EnUS, "<CS_ProjectionParameter Name=\"{0}\" Value=\"{1}\"/>", Name, Value);
+                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "<CS_ProjectionParameter Name=\"{0}\" Value=\"{1}\"/>", Name, Value);
 			}
 		}
 	}

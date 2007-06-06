@@ -39,6 +39,7 @@ namespace SharpMap.Data.Providers
             _dbaseFileStream = File.Open(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             _dbaseWriter = new BinaryWriter(_dbaseFileStream, Encoding.ASCII);
             _dbaseReader = new BinaryReader(_dbaseFileStream);
+
             if (_dbaseFileStream.Length > 0)
             {
                 _header = DbaseHeader.ParseDbfHeader(_dbaseReader);
@@ -58,8 +59,12 @@ namespace SharpMap.Data.Providers
         {
             _dbaseFileStream = file;
             _dbaseWriter = new BinaryWriter(_dbaseFileStream, Encoding.ASCII);
-            if(file.CanRead)
+
+            if (file.CanRead)
+            {
                 _dbaseReader = new BinaryReader(_dbaseFileStream);
+            }
+
             _schema = schema;
             _header.Columns = DbaseSchema.GetFields(schema);
             writeFullHeader();
@@ -69,8 +74,12 @@ namespace SharpMap.Data.Providers
         {
             _dbaseFileStream = file;
             _dbaseWriter = new BinaryWriter(_dbaseFileStream, Encoding.ASCII);
+            
             if (file.CanRead)
+            {
                 _dbaseReader = new BinaryReader(_dbaseFileStream);
+            }
+            
             _header.Columns = fields;
             _schema = DbaseSchema.GetFeatureTableForFields(fields);
             writeFullHeader();
@@ -92,7 +101,9 @@ namespace SharpMap.Data.Providers
             set
             {
                 if (_header != null)
+                {
                     throw new InvalidOperationException("Can't set columns after schema has been defined");
+                }
 
                 _header = new DbaseHeader();
                 _header.Columns = value;
@@ -102,10 +113,14 @@ namespace SharpMap.Data.Providers
         public void AddRows(DataTable table)
         {
             if (table == null)
+            {
                 throw new ArgumentNullException("table");
+            }
 
             foreach (DataRow row in table.Rows)
+            {
                 AddRow(row);
+            }
         }
 
         public void AddRow(DataRow row)
@@ -129,7 +144,9 @@ namespace SharpMap.Data.Providers
         public void UpdateRow(UInt32 rowIndex, DataRow row)
         {
             if (rowIndex < 0 || rowIndex >= _header.RecordCount)
+            {
                 throw new ArgumentOutOfRangeException("rowIndex");
+            }
 
             _dbaseWriter.Seek((int)(rowIndex * _header.RecordLength + _header.HeaderLength), SeekOrigin.Begin);
             writeRow(row);
@@ -141,10 +158,14 @@ namespace SharpMap.Data.Providers
         private void writeRow(DataRow row)
         {
             if (row == null)
+            {
                 throw new ArgumentNullException("row");
+            }
 
             if (row.Table == null)
+            {
                 throw new ArgumentException("Row must be associated to a table");
+            }
 
             _dbaseWriter.Write(DbaseConstants.NotDeletedIndicator);
 
@@ -159,36 +180,56 @@ namespace SharpMap.Data.Providers
                 {
                     case TypeCode.Boolean:
                         if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        {
                             _dbaseWriter.Write(DbaseConstants.BooleanNullChar);
+                        }
                         else
+                        {
                             writeBoolean((bool)row[rowColumnIndex]);
+                        }
                         break;
                     case TypeCode.DateTime:
                         if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        {
                             writeNullDateTime();
+                        }
                         else
+                        {
                             writeDateTime((DateTime)row[rowColumnIndex]);
+                        }
                         break;
                     case TypeCode.Single:
                     case TypeCode.Double:
                         if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        {
                             writeNullNumber(_header.Columns[i].Length);
+                        }
                         else
+                        {
                             writeNumber(Convert.ToDouble(row[rowColumnIndex]), _header.Columns[i].Length, _header.Columns[i].Decimals);
+                        }
                         break;
                     case TypeCode.Int16:
                     case TypeCode.Int32:
                     case TypeCode.Int64:
                         if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        {
                             writeNullNumber(_header.Columns[i].Length);
+                        }
                         else
+                        {
                             writeNumber(Convert.ToInt64(row[rowColumnIndex]), _header.Columns[i].Length);
+                        }
                         break;
                     case TypeCode.String:
                         if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        {
                             writeNullString(_header.Columns[i].Length);
+                        }
                         else
+                        {
                             writeString((string)row[rowColumnIndex], _header.Columns[i].Length);
+                        }
                         break;
                     case TypeCode.Char:
                     case TypeCode.SByte:
@@ -227,7 +268,7 @@ namespace SharpMap.Data.Providers
             _format.Length = 0;
             _format.Append(NumberFormatTemplate);
             _format.Insert(5, decimalPlaces).Insert(3, length);
-            string number = String.Format(SharpMap.Map.NumberFormat_EnUS, _format.ToString(), value);
+            string number = String.Format(SharpMap.Map.Map.NumberFormat_EnUS, _format.ToString(), value);
             _dbaseWriter.Write(number);
         }
 
@@ -264,13 +305,14 @@ namespace SharpMap.Data.Providers
         {
             _dbaseWriter.Seek(0, SeekOrigin.Begin);
             _dbaseWriter.Write(DbaseConstants.DbfVersionCode);
-            _dbaseWriter.Write(new byte[3] { (byte)(_header.LastUpdate.Year - DbaseConstants.DbaseEpoch), (byte)_header.LastUpdate.Month, (byte)_header.LastUpdate.Day});
+            _dbaseWriter.Write(new byte[3] { (byte)(_header.LastUpdate.Year - DbaseConstants.DbaseEpoch), (byte)_header.LastUpdate.Month, (byte)_header.LastUpdate.Day });
             _dbaseWriter.Write(_header.RecordCount);
             _dbaseWriter.Write(_header.HeaderLength);
             _dbaseWriter.Write(_header.RecordLength);
             _dbaseWriter.Write(new byte[DbaseConstants.EncodingOffset - (int)_dbaseWriter.BaseStream.Position]);
             _dbaseWriter.Write(_header.LanguageDriver);
             _dbaseWriter.Write(new byte[2]);
+
             foreach (DbaseField field in _header.Columns)
             {
                 string colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
@@ -280,7 +322,7 @@ namespace SharpMap.Data.Providers
                 _dbaseWriter.Write(fieldTypeCode);
                 _dbaseWriter.Write(field.Address);
 
-                if(fieldTypeCode == 'N' || fieldTypeCode == 'F')
+                if (fieldTypeCode == 'N' || fieldTypeCode == 'F')
                 {
                     _dbaseWriter.Write((byte)field.Length);
                     _dbaseWriter.Write(field.Decimals);
@@ -293,6 +335,7 @@ namespace SharpMap.Data.Providers
 
                 _dbaseWriter.Write(new byte[14]);
             }
+
             _dbaseWriter.Write(DbaseConstants.HeaderTerminator);
         }
 
@@ -314,13 +357,19 @@ namespace SharpMap.Data.Providers
                 if (isDisposing) // Deterministically dispose managed resources
                 {
                     if (_dbaseWriter != null)
+                    {
                         _dbaseWriter.Close();
+                    }
 
                     if (_dbaseReader != null)
+                    {
                         _dbaseReader.Close();
 
+                    }
                     if (_dbaseFileStream != null)
+                    {
                         _dbaseFileStream.Close();
+                    }
                 }
 
                 // Dispose unmanaged resources
@@ -336,7 +385,7 @@ namespace SharpMap.Data.Providers
         public SchemaMismatchException() : base() { }
         public SchemaMismatchException(string message) : base(message) { }
         public SchemaMismatchException(string message, Exception inner) : base(message, inner) { }
-        public SchemaMismatchException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) 
+        public SchemaMismatchException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
 }

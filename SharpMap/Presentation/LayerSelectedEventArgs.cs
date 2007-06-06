@@ -26,17 +26,17 @@ namespace SharpMap.Presentation
     [Serializable]
     public class LayerActionEventArgs : EventArgs
     {
-        private ILayer _layer;
+        private IEnumerable<ILayer> _layers;
 
-        public LayerActionEventArgs(ILayer layer)
+        public LayerActionEventArgs(IEnumerable<ILayer> layer)
         {
-            _layer = layer;
+            _layers = layer;
         }
 
-        public ILayer Layer
+        public IEnumerable<ILayer> Layers
         {
-            get { return _layer; }
-            set { _layer = value; }
+            get { return _layers; }
+            set { _layers = value; }
         }
     }
 }

@@ -181,7 +181,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return String.Format(SharpMap.Map.NumberFormat_EnUS, "TOWGS84[{0}, {1}, {2}, {3}, {4}, {5}, {6}]", Dx, Dy, Dz, Ex, Ey, Ez, Ppm);
+                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "TOWGS84[{0}, {1}, {2}, {3}, {4}, {5}, {6}]", Dx, Dy, Dz, Ex, Ey, Ez, Ppm);
 			}
 		}
 
@@ -192,7 +192,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return String.Format(SharpMap.Map.NumberFormat_EnUS, "<CS_WGS84ConversionInfo Dx=\"{0}\" Dy=\"{1}\" Dz=\"{2}\" Ex=\"{3}\" Ey=\"{4}\" Ez=\"{5}\" Ppm=\"{6}\" />", Dx, Dy, Dz, Ex, Ey, Ez, Ppm);
+                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "<CS_WGS84ConversionInfo Dx=\"{0}\" Dy=\"{1}\" Dz=\"{2}\" Ex=\"{3}\" Ey=\"{4}\" Ez=\"{5}\" Ppm=\"{6}\" />", Dx, Dy, Dz, Ex, Ey, Ez, Ppm);
 			}
 		}
 

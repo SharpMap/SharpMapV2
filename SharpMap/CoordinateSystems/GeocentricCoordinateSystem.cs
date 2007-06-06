@@ -136,7 +136,7 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS,
+                sb.AppendFormat(SharpMap.Map.Map.NumberFormat_EnUS,
 					"<CS_CoordinateSystem Dimension=\"{0}\"><CS_GeocentricCoordinateSystem>{1}",
 					this.Dimension, InfoXml);				
 				foreach (AxisInfo ai in this.AxisInfo)

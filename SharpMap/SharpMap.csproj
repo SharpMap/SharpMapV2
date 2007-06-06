@@ -18,8 +18,7 @@
     <SccProvider>
     </SccProvider>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>DI_Dev.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -133,7 +132,7 @@
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider.cs" />
     <Compile Include="Data\Providers\IProvider.cs" />
-    <Compile Include="Data\Providers\IUpdateableProvider.cs" />
+    <Compile Include="Data\Providers\IWritableProvider.cs" />
     <Compile Include="Data\Providers\MsSql.cs" />
     <Compile Include="Data\Providers\OgcSimpleFeaturesForSql\Enumerations.cs" />
     <Compile Include="Data\Providers\OleDbPoint.cs" />
@@ -165,23 +164,43 @@
     <Compile Include="Geometries\Polygon.cs" />
     <Compile Include="Geometries\SpatialRelations.cs" />
     <Compile Include="Geometries\Surface.cs" />
+    <Compile Include="Indexing\BinaryTree\BinaryTreeNode.cs" />
+    <Compile Include="Indexing\IndexBalanceHeuristic.cs" />
+    <Compile Include="Indexing\QuadTree\DynamicQuadTree.cs" />
+    <Compile Include="Indexing\QuadTree\DynamicQuadTreeBalanceHeuristic.cs" />
+    <Compile Include="Indexing\QuadTree\LinearQuadTreeEntryInsertStrategy.cs" />
+    <Compile Include="Indexing\QuadTree\LinearDynamicQuadTree.cs" />
+    <Compile Include="Indexing\QuadTree\QuadTreeNode.cs" />
+    <Compile Include="Indexing\QuadTree\LinearQuadTreeNodeSplitStrategy.cs" />
+    <Compile Include="Indexing\SpatialIndexNode.cs" />
+    <Compile Include="Indexing\ObsoleteIndexFileFormatException.cs" />
+    <Compile Include="Indexing\QuadTree\QuadTree.cs" />
+    <Compile Include="Indexing\RTree\DynamicRTreeBalanceHeuristic.cs" />
+    <Compile Include="Indexing\RTree\RTreeIndexEntry.cs" />
+    <Compile Include="Indexing\RTree\RTreeLeafNode.cs" />
+    <Compile Include="Indexing\RTree\RTreeBranchNode.cs" />
     <Compile Include="Layers\IFeatureLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />
     <Compile Include="Layers\LabelLayer.cs" />
     <Compile Include="Layers\Layer.cs" />
     <Compile Include="Layers\LayerGroup.cs" />
     <Compile Include="Layers\VectorLayer.cs" />
+    <Compile Include="Presentation\MapActionEventArgs.cs" />
+    <Compile Include="Tools\ActionContext.cs" />
+    <Compile Include="Map\LayersChangedEventArgs.cs" />
+    <Compile Include="Map\LayersChangeType.cs" />
+    <Compile Include="Map\LayersCollection.cs" />
     <Compile Include="Map\Map.cs" />
-    <Compile Include="Map\MapSharedState.cs" />
-    <Compile Include="Presentation\Presenters\BaseLayersPresenter.cs" />
+    <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
+    <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
+    <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />
+    <Compile Include="Presentation\MapViewPort2D.cs" />
     <Compile Include="Rendering\Primitives\ColorMatrix.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
     <Compile Include="Rendering\Primitives\GraphicsFigure.cs" />
     <Compile Include="Rendering\Primitives\GraphicsFigure2D.cs" />
     <Compile Include="Rendering\Primitives\GraphicsPath2D.cs" />
-    <Compile Include="Presentation\Presenters\IFeaturesDataPresenter.cs" />
     <Compile Include="Rendering\Primitives\IViewSelection.cs" />
-    <Compile Include="Rendering\Primitives\IViewTransformer.cs" />
     <Compile Include="Rendering\Renderers\ContextItemKey.cs" />
     <Compile Include="Rendering\Renderers\IFeatureRenderer.cs" />
     <Compile Include="Rendering\Renderers\IRenderContext.cs" />
@@ -190,33 +209,31 @@
     <Compile Include="Rendering\Renderers\RenderContext.cs" />
     <Compile Include="Presentation\Views\IFeaturesDataView.cs" />
     <Compile Include="Rendering\Renderers\ILabelRenderer.cs" />
-    <Compile Include="Presentation\Presenters\ILayersPresenter.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
     <Compile Include="Rendering\Renderers\IRasterRenderer.cs" />
     <Compile Include="Presentation\Views\IToolsView.cs" />
-    <Compile Include="Presentation\Presenters\BaseMapPresenter2D.cs" />
+    <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Renderers\BaseFeatureRenderer2D.cs" />
     <Compile Include="Rendering\Primitives\GraphicsPath.cs" />
     <Compile Include="Rendering\Renderers\IRenderer.cs" />
-    <Compile Include="Presentation\Presenters\IMapPresenter.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
     <Compile Include="Rendering\Renderers\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Primitives\IViewMatrix.cs" />
     <Compile Include="Rendering\Primitives\IViewVector.cs" />
     <Compile Include="Rendering\Primitives\Label.cs" />
     <Compile Include="Rendering\LabelCollisionDetection.cs" />
-    <Compile Include="Rendering\Renderers\LabelRenderer.cs" />
+    <Compile Include="Rendering\Renderers\LabelRenderer2D.cs" />
     <Compile Include="Rendering\Renderers\LayerGroupRenderer.cs" />
     <Compile Include="Rendering\LayerRenderedEventArgs.cs" />
     <Compile Include="Rendering\LayerRendererCatalog.cs" />
     <Compile Include="Presentation\LayerSelectedEventArgs.cs" />
     <Compile Include="Presentation\MapPresentationPropertyChangedEventArgs.cs" />
-    <Compile Include="Map\MapTools.cs" />
+    <Compile Include="Tools\MapTools.cs" />
     <Compile Include="Presentation\MapZoomChangedEventArgs.cs" />
     <Compile Include="Rendering\Primitives\Symbol2D.cs" />
-    <Compile Include="Rendering\Renderers\VectorRenderer.cs" />
+    <Compile Include="Rendering\Renderers\VectorRenderer2D.cs" />
     <Compile Include="Rendering\Primitives\ViewMatrix2D.cs" />
     <Compile Include="Rendering\3D\ViewMatrix3D.cs" />
     <Compile Include="Rendering\3D\ViewPoint3D.cs" />
@@ -255,14 +272,14 @@
     <Compile Include="Styles\VectorStyle.cs" />
     <Compile Include="Utilities\Algorithms.cs" />
     <Compile Include="Utilities\Hashing.cs" />
-    <Compile Include="Indexing\BinaryTree.cs" />
-    <Compile Include="Indexing\GuttmanQuadraticInsert.cs" />
-    <Compile Include="Indexing\GuttmanQuadraticSplit.cs" />
+    <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
+    <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
+    <Compile Include="Indexing\RTree\GuttmanQuadraticSplit.cs" />
     <Compile Include="Indexing\IndexingInterfaces.cs" />
-    <Compile Include="Indexing\NullRestructuringStrategy.cs" />
-    <Compile Include="Indexing\RTree.cs" />
-    <Compile Include="Indexing\SelfOptimizingSpatialIndex.cs" />
-    <Compile Include="Indexing\DynamicRTree.cs" />
+    <Compile Include="Indexing\RTree\NullRestructuringStrategy.cs" />
+    <Compile Include="Indexing\RTree\RTree.cs" />
+    <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
+    <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
     <Compile Include="Utilities\Providers.cs" />
     <Compile Include="Utilities\Transform2D.cs" />
@@ -270,6 +287,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DI_Dev.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -99,7 +99,9 @@ namespace SharpMap.Layers
             foreach (FeatureDataRow feature in features)
             {
                 if (this.CoordinateTransformation != null)
+                {
                     feature.Geometry = GeometryTransform.TransformGeometry(feature.Geometry, CoordinateTransformation.MathTransform);
+                }
 
                 yield return feature;
             }
@@ -115,21 +117,29 @@ namespace SharpMap.Layers
             get
             {
                 if (DataSource == null)
+                {
                     throw new InvalidOperationException("DataSource property not set on layer '" + this.LayerName + "'");
+                }
 
                 bool wasOpen = DataSource.IsOpen;
 
                 if (!wasOpen)
+                {
                     DataSource.Open();
+                }
 
                 BoundingBox box = DataSource.GetExtents();
-                
+
                 if (!wasOpen) //Restore state
+                {
                     DataSource.Close();
-                
+                }
+
                 if (CoordinateTransformation != null)
+                {
                     return GeometryTransform.TransformBox(box, CoordinateTransformation.MathTransform);
-                
+                }
+
                 return box;
             }
         }
@@ -142,7 +152,9 @@ namespace SharpMap.Layers
             get
             {
                 if (this.DataSource == null)
+                {
                     throw new InvalidOperationException("DataSource property not set on layer '" + this.LayerName + "'");
+                }
 
                 return this.DataSource.Srid;
             }
@@ -173,7 +185,9 @@ namespace SharpMap.Layers
         public void Dispose()
         {
             if (DataSource is IDisposable)
-                ((IDisposable)DataSource).Dispose();
+            {
+                (DataSource as IDisposable).Dispose();
+            }
         }
 
         #endregion

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
@@ -47,7 +48,7 @@ namespace SharpMap.Data.Providers
 	/// </example>
 	/// </remarks>
 	[Serializable]
-	public class MsSql : IProvider, IDisposable
+	public class MsSql : IProvider<uint>, IDisposable
 	{
 		/// <summary>
 		/// Initializes a new connection to MS Sql Server
@@ -175,7 +176,7 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="bbox"></param>
 		/// <returns></returns>
-		public List<Geometries.Geometry> GetGeometriesInView(SharpMap.Geometries.BoundingBox bbox)
+		public ReadOnlyCollection<Geometries.Geometry> GetGeometriesInView(SharpMap.Geometries.BoundingBox bbox)
 		{
 			List<Geometries.Geometry> features = new List<SharpMap.Geometries.Geometry>();
 			using (SqlConnection conn = new SqlConnection(_ConnectionString))
@@ -206,7 +207,8 @@ namespace SharpMap.Data.Providers
 					conn.Close();
 				}
 			}
-			return features;
+
+			return features.AsReadOnly();
 		}
 
 		/// <summary>
@@ -214,7 +216,7 @@ namespace SharpMap.Data.Providers
 		/// </summary>
 		/// <param name="oid">Object ID</param>
 		/// <returns>geometry</returns>
-		public SharpMap.Geometries.Geometry GetGeometryByID(uint oid)
+		public SharpMap.Geometries.Geometry GetGeometryById(uint oid)
 		{
 			SharpMap.Geometries.Geometry geom = null;
 			using (SqlConnection conn = new SqlConnection(_ConnectionString))
@@ -236,12 +238,13 @@ namespace SharpMap.Data.Providers
 			}
 			return geom;
 		}
+
 		/// <summary>
 		/// Returns geometry Object IDs whose bounding box intersects 'bbox'
 		/// </summary>
 		/// <param name="bbox"></param>
 		/// <returns></returns>
-		public List<uint> GetObjectIDsInView(SharpMap.Geometries.BoundingBox bbox)
+		public ReadOnlyCollection<uint> GetObjectIdsInView(SharpMap.Geometries.BoundingBox bbox)
 		{
 			List<uint> objectlist = new List<uint>();
 			using (SqlConnection conn = new SqlConnection(_ConnectionString))
@@ -271,7 +274,8 @@ namespace SharpMap.Data.Providers
 					conn.Close();
 				}
 			}
-			return objectlist;
+
+			return objectlist.AsReadOnly();
 		}
 
 		/// <summary>
@@ -342,44 +346,64 @@ namespace SharpMap.Data.Providers
 		}
 
 		/// <summary>
-		/// Returns a datarow based on a RowID
+		/// Returns a datarow based on an object id (OID).
 		/// </summary>
-		/// <param name="RowID"></param>
+        /// <param name="oid"></param>
 		/// <returns>datarow</returns>
-		public SharpMap.Data.FeatureDataRow GetFeature(uint RowID)
+		public SharpMap.Data.FeatureDataRow<uint> GetFeature(uint oid)
 		{
 			using (SqlConnection conn = new SqlConnection(_ConnectionString))
 			{
-				string strSQL = "SELECT *, " + this.GeometryColumn + " AS sharpmap_tempgeometry FROM " + this.Table + " WHERE " + this.ObjectIdColumn + "='" + RowID.ToString() + "'";
+				string strSQL = "SELECT *, " + this.GeometryColumn + " AS sharpmap_tempgeometry FROM " + this.Table + " WHERE " + this.ObjectIdColumn + "='" + oid.ToString() + "'";
 				using (SqlDataAdapter adapter = new SqlDataAdapter(strSQL, conn))
 				{
 					DataSet ds = new DataSet();
 					conn.Open();
 					adapter.Fill(ds);
 					conn.Close();
-					if (ds.Tables.Count > 0)
-					{
-						FeatureDataTable fdt = new FeatureDataTable(ds.Tables[0]);
-						foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
-							if (col.ColumnName != this.GeometryColumn && col.ColumnName != "sharpmap_tempgeometry" && !col.ColumnName.StartsWith("Envelope_"))
-								fdt.Columns.Add(col.ColumnName, col.DataType, col.Expression);
-						if (ds.Tables[0].Rows.Count > 0)
-						{
-							System.Data.DataRow dr = ds.Tables[0].Rows[0];
-							SharpMap.Data.FeatureDataRow fdr = fdt.NewRow();
-							foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
-								if (col.ColumnName != this.GeometryColumn && col.ColumnName != "sharpmap_tempgeometry" && !col.ColumnName.StartsWith("Envelope_"))
-									fdr[col.ColumnName] = dr[col];
-							if(dr["sharpmap_tempgeometry"] != DBNull.Value)
-								fdr.Geometry = SharpMap.Converters.WellKnownBinary.GeometryFromWKB.Parse((byte[])dr["sharpmap_tempgeometry"]);
-							return fdr;
-						}
-						else
-							return null;
 
-					}
-					else
-						return null;
+                    if (ds.Tables.Count > 0)
+                    {
+                        FeatureDataTable<uint> fdt = new FeatureDataTable<uint>(ds.Tables[0], "OID");
+
+                        foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
+                        {
+                            if (col.ColumnName != this.GeometryColumn && col.ColumnName != "sharpmap_tempgeometry" && !col.ColumnName.StartsWith("Envelope_"))
+                            {
+                                fdt.Columns.Add(col.ColumnName, col.DataType, col.Expression);
+                            }
+                        }
+
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            System.Data.DataRow dr = ds.Tables[0].Rows[0];
+                            SharpMap.Data.FeatureDataRow<uint> fdr = fdt.NewRow(oid);
+
+                            foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
+                            {
+                                if (col.ColumnName != this.GeometryColumn && col.ColumnName != "sharpmap_tempgeometry"
+                                    && !col.ColumnName.StartsWith("Envelope_") && String.Compare(col.ColumnName, "oid", StringComparison.CurrentCultureIgnoreCase) != 0)
+                                {
+                                    fdr[col.ColumnName] = dr[col];
+                                }
+                            }
+
+                            if (dr["sharpmap_tempgeometry"] != DBNull.Value)
+                            {
+                                fdr.Geometry = SharpMap.Converters.WellKnownBinary.GeometryFromWKB.Parse((byte[])dr["sharpmap_tempgeometry"]);
+                            }
+
+                            return fdr;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
 				}
 			}
 		}
@@ -413,14 +437,14 @@ namespace SharpMap.Data.Providers
 		/// <summary>
 		/// Gets the connection ID of the datasource
 		/// </summary>
-		public string ConnectionID
+		public string ConnectionId
 		{
 			get { return _ConnectionString; }
 		}
 
 		private string GetBoxClause(SharpMap.Geometries.BoundingBox bbox)
 		{
-			return String.Format(SharpMap.Map.NumberFormat_EnUS,
+            return String.Format(SharpMap.Map.Map.NumberFormat_EnUS,
 				"(Envelope_MinX < {0} AND Envelope_MaxX > {1} AND Envelope_MinY < {2} AND Envelope_MaxY > {3})",
 				bbox.Max.X, bbox.Min.X, bbox.Max.Y, bbox.Min.Y);
 		}
@@ -506,7 +530,7 @@ namespace SharpMap.Data.Providers
 		/// <param name="tablename">Name of table to create (existing table will be overwritten!)</param>
 		/// <param name="connstr">Connection string to database</param>
 		/// <returns>Number or rows inserted, -1 if failed and 0 if table created but no rows inserted.</returns>
-		public static int CreateDataTable(SharpMap.Data.Providers.IProvider datasource, string tablename, string connstr)
+        public static int CreateDataTable(SharpMap.Data.Providers.IProvider<uint> datasource, string tablename, string connstr)
 		{
 			datasource.Open();
 			FeatureDataRow geom = datasource.GetFeature(0);
@@ -536,12 +560,13 @@ namespace SharpMap.Data.Providers
 				command.CommandText = sql + ");";
 				command.ExecuteNonQuery();
 				counter++;
-				List<uint> indexes = datasource.GetObjectIDsInView(datasource.GetExtents());
+
+				ReadOnlyCollection<uint> indexes = datasource.GetObjectIdsInView(datasource.GetExtents());
 				//Select all indexes in shapefile, loop through each feature and insert them one-by-one
 				foreach (uint idx in indexes)
 				{
 					//Get feature from shapefile
-					SharpMap.Data.FeatureDataRow feature = datasource.GetFeature(idx);					
+					SharpMap.Data.FeatureDataRow<uint> feature = datasource.GetFeature(idx);					
 					if (counter == 0)
 					{
 

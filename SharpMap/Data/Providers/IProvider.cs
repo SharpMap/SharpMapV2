@@ -17,97 +17,111 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
+
+using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers
 {
+
+    /// <summary>
+    /// Interface for data providers.
+    /// </summary>
+    public interface IProvider : IDisposable
+    {
+        /// <summary>
+        /// Gets the features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// </summary>
+        /// <param name="boundingBox"></param>
+        /// <returns>Features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
+        ReadOnlyCollection<Geometry> GetGeometriesInView(BoundingBox boundingBox);
+
+        /// <summary>
+        /// Returns the data associated with all the geometries that are intersected by <paramref name="geom"/>.
+        /// </summary>
+        /// <param name="geom">Geometry to intersect with.</param>
+        /// <param name="ds">FeatureDataSet to fill data into.</param>
+        void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds);
+
+        /// <summary>
+        /// Returns the data associated with all the geometries that are intersected by <paramref name="box"/>.
+        /// </summary>
+        /// <param name="box">BoundingBox to intersect with.</param>
+        /// <param name="ds">FeatureDataSet to fill data into.</param>
+        void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet ds);
+
+        /// <summary>
+        /// Returns the number of features in the entire dataset.
+        /// </summary>
+        /// <returns>Count of the features in the entire dataset.</returns>
+        int GetFeatureCount();
+
+        /// <summary>
+        /// Geometric extent of the entire dataset.
+        /// </summary>
+        /// <returns>The extents of the dataset as a BoundingBox.</returns>
+        BoundingBox GetExtents();
+
+        /// <summary>
+        /// Gets the connection ID of the datasource.
+        /// </summary>
+        /// <remarks>
+        /// <para>The ConnectionId should be unique to the datasource (for instance the filename or the
+        /// connectionstring), and is meant to be used for connection pooling.</para>
+        /// <para>If connection pooling doesn't apply to this datasource, the ConnectionId should return String.Empty</para>
+        /// </remarks>
+        string ConnectionId { get; }
+
+        /// <summary>
+        /// Opens the datasource.
+        /// </summary>
+        void Open();
+
+        /// <summary>
+        /// Closes the datasource.
+        /// </summary>
+        void Close();
+
+        /// <summary>
+        /// Returns true if the datasource is currently open.
+        /// </summary>
+        bool IsOpen { get; }
+
+        /// <summary>
+        /// The spatial reference ID (CRS).
+        /// </summary>
+        int Srid { get; set; }
+    }
+
 	/// <summary>
-	/// Interface for data providers
+	/// Interface for data providers with features having ID values.
 	/// </summary>
-	public interface IProvider : IDisposable
+    public interface IProvider<TOid> : IProvider
 	{
 		/// <summary>
-		/// Gets the features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>
-		/// </summary>
-		/// <param name="bbox"></param>
-		/// <returns>Features within the specified <see cref="SharpMap.Geometries.BoundingBox"/></returns>
-		System.Collections.Generic.List<SharpMap.Geometries.Geometry> GetGeometriesInView(SharpMap.Geometries.BoundingBox bbox);
-
-		/// <summary>
-		/// Returns all objects whose <see cref="SharpMap.Geometries.BoundingBox"/> intersects 'bbox'.
+        /// Returns all objects whose <see cref="SharpMap.Geometries.BoundingBox"/> intersects 'boundingBox'.
 		/// </summary>
 		/// <remarks>
 		/// This method is usually much faster than the QueryFeatures method, because intersection tests
 		/// are performed on objects simplifed by their <see cref="SharpMap.Geometries.BoundingBox"/>, and using the Spatial Index
 		/// </remarks>
-		/// <param name="bbox">Box that objects should intersect</param>
+        /// <param name="boundingBox">Box that objects should intersect.</param>
 		/// <returns></returns>
-		System.Collections.Generic.List<uint> GetObjectIDsInView(SharpMap.Geometries.BoundingBox bbox);
+        ReadOnlyCollection<TOid> GetObjectIdsInView(BoundingBox boundingBox);
 
 		/// <summary>
 		/// Returns the geometry corresponding to the Object ID
 		/// </summary>
-		/// <param name="oid">Object ID</param>
-		/// <returns>geometry</returns>
-		SharpMap.Geometries.Geometry GetGeometryByID(uint oid);
-			
-		/// <summary>
-		/// Returns the data associated with all the geometries that are intersected by 'geom'
-		/// </summary>
-		/// <param name="geom">Geometry to intersect with</param>
-		/// <param name="ds">FeatureDataSet to fill data into</param>
-		void ExecuteIntersectionQuery(SharpMap.Geometries.Geometry geom, FeatureDataSet ds);
+        /// <param name="oid">Object ID.</param>
+        /// <returns>The geometry corresponding to the <paramref name="oid"/>.</returns>
+        Geometry GetGeometryById(TOid oid);
 
 		/// <summary>
-		/// Returns the data associated with all the geometries that are intersected by 'geom'
+		/// Returns a <see cref="SharpMap.Data.FeatureDataRow"/> based on an OID.
 		/// </summary>
-		/// <param name="box">Geometry to intersect with</param>
-		/// <param name="ds">FeatureDataSet to fill data into</param>
-		void ExecuteIntersectionQuery(SharpMap.Geometries.BoundingBox box, FeatureDataSet ds);
-
-		/// <summary>
-		/// Returns the number of features in the dataset
-		/// </summary>
-		/// <returns>number of features</returns>
-		int GetFeatureCount();
-
-		/// <summary>
-		/// Returns a <see cref="SharpMap.Data.FeatureDataRow"/> based on a RowID
-		/// </summary>
-		/// <param name="RowID"></param>
-		/// <returns>datarow</returns>
-		SharpMap.Data.FeatureDataRow GetFeature(uint RowID);
-		
-		/// <summary>
-		/// <see cref="SharpMap.Geometries.BoundingBox"/> of dataset
-		/// </summary>
-		/// <returns>boundingbox</returns>
-		SharpMap.Geometries.BoundingBox GetExtents();
-
-		/// <summary>
-		/// Gets the connection ID of the datasource
-		/// </summary>
-		/// <remarks>
-		/// <para>The ConnectionID should be unique to the datasource (for instance the filename or the
-		/// connectionstring), and is meant to be used for connection pooling.</para>
-		/// <para>If connection pooling doesn't apply to this datasource, the ConnectionID should return String.Empty</para>
-		/// </remarks>
-		string ConnectionID { get; }
-		/// <summary>
-		/// Opens the datasource
-		/// </summary>
-		void Open();
-		/// <summary>
-		/// Closes the datasource
-		/// </summary>
-		void Close();
-		/// <summary>
-		/// Returns true if the datasource is currently open
-		/// </summary>
-		bool IsOpen { get; }
-		/// <summary>
-		/// The spatial reference ID (CRS)
-		/// </summary>
-		int Srid { get; set;}
+        /// <param name="oid">The object id (OID) of the feature.</param>
+		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
+		FeatureDataRow<TOid> GetFeature(TOid oid);
 	}
 }

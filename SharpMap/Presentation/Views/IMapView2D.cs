@@ -28,28 +28,12 @@ namespace SharpMap.Presentation
 {
     public interface IMapView2D
     {
-        ViewSize2D ViewSize { get; set; }
+        MapViewPort2D ViewPort { get; }
+        double Dpi { get; }
         void ShowRenderedObject(ViewPoint2D location, object renderedObject);
-        event EventHandler<MapActionEventArgs> Hover;
-        event EventHandler<MapActionEventArgs> BeginAction;
-        event EventHandler<MapActionEventArgs> MoveTo;
-        event EventHandler<MapActionEventArgs> EndAction;
-        event EventHandler ViewSizeChanged;
-    }
-
-    public class MapActionEventArgs : EventArgs
-    {
-        private ViewPoint2D _actionPoint;
-
-        public MapActionEventArgs(ViewPoint2D actionPoint)
-        {
-            _actionPoint = actionPoint;
-        }
-
-        public ViewPoint2D ActionPoint
-        {
-            get { return _actionPoint; }
-            protected set { _actionPoint = value; }
-        }
+        event EventHandler<MapActionEventArgs<ViewPoint2D>> Hover;
+        event EventHandler<MapActionEventArgs<ViewPoint2D>> BeginAction;
+        event EventHandler<MapActionEventArgs<ViewPoint2D>> MoveTo;
+        event EventHandler<MapActionEventArgs<ViewPoint2D>> EndAction;
     }
 }

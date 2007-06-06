@@ -24,13 +24,25 @@ using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Rendering
 {
-    public interface IViewTransformer<TViewPoint, TViewRectangle>
+    public interface IViewTransformer
     {
-        TViewPoint TransformToView(GeoPoint point);
-        IEnumerable<TViewPoint> TransformToView(IEnumerable<GeoPoint> points);
-        GeoPoint ViewToWorld(TViewPoint p);
-        BoundingBox ViewToWorld(TViewRectangle rect);
-        TViewPoint WorldToView(GeoPoint p);
-        TViewRectangle WorldToView(BoundingBox bbox);
+        IViewVector TransformToView(GeoPoint point);
+        IEnumerable<IViewVector> TransformToView(IEnumerable<GeoPoint> points);
+        GeoPoint ViewToWorld(IViewVector viewVector);
+        BoundingBox ViewToWorld(IViewMatrix viewMatrix);
+        IViewVector WorldToView(GeoPoint geoPoint);
+        IViewMatrix WorldToView(BoundingBox bounds);
+    }
+
+    public interface IViewTransformer<TViewPoint, TViewRectangle> : IViewTransformer
+        where TViewPoint : IViewVector
+        where TViewRectangle : IViewMatrix
+    {
+        new TViewPoint TransformToView(GeoPoint point);
+        new IEnumerable<TViewPoint> TransformToView(IEnumerable<GeoPoint> points);
+        GeoPoint ViewToWorld(TViewPoint viewVector);
+        BoundingBox ViewToWorld(TViewRectangle viewMatrix);
+        new TViewPoint WorldToView(GeoPoint geoPoint);
+        new TViewRectangle WorldToView(BoundingBox bounds);
     }
 }

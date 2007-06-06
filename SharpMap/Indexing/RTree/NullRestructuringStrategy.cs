@@ -19,13 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Indexing
+namespace SharpMap.Indexing.RTree
 {
     public class NullRestructuringStrategy : IIndexRestructureStrategy
     {
-        #region IIndexRestructureStrategy Members
+        #region IIndexRestructureStrategy<RTreeIndexEntry> Members
 
-        public void RestructureNode(Node node)
+        public void RestructureNode(ISpatialIndexNode node)
         {
         }
 

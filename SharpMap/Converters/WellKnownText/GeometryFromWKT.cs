@@ -269,7 +269,7 @@ namespace SharpMap.Converters.WellKnownText
 				    geometry = ReadGeometryCollectionText(tokenizer);
 				    break;
 				default:
-					throw new Exception(String.Format(SharpMap.Map.NumberFormat_EnUS, "Geometrytype '{0}' is not supported.", type));
+                    throw new Exception(String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "Geometrytype '{0}' is not supported.", type));
 			}
 			return geometry;
 		}

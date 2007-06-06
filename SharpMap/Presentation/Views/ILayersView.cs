@@ -28,13 +28,13 @@ namespace SharpMap.Presentation
         void AddLayer(ILayer layer);
         void AddLayers(IEnumerable<ILayer> layers);
         void RemoveLayer(ILayer layer);
-        void ClearLayers();
+        void RemoveLayers(IEnumerable<ILayer> layers);
+        void RemoveAll();
         void DisableLayer(ILayer layer);
         void EnableLayer(ILayer layer);
-        ILayer SelectedLayer { get; set; }
-        ILayersPresenter Presenter { set; }
-        event EventHandler<LayerActionEventArgs> LayerSelectionChanged;
-        event EventHandler<LayerActionEventArgs> ViewLayerStyleRequested;
-        event EventHandler<LayerActionEventArgs> LayerEnabledChanged;
+        IList<ILayer> SelectedLayers { get; set; }
+        event EventHandler<LayerActionEventArgs> LayersSelectionChanged;
+        event EventHandler<LayerActionEventArgs> ViewLayerStylesRequested;
+        event EventHandler<LayerActionEventArgs> LayersEnabledChanged;
     }
 }

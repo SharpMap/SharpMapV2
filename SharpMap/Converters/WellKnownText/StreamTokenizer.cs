@@ -121,11 +121,13 @@ namespace SharpMap.Converters.WellKnownText.IO
 		public double GetNumericValue()
 		{
 			string number = this.GetStringValue();
+
 			if (this.GetTokenType()==TokenType.Number)
 			{
-				return double.Parse(number,SharpMap.Map.NumberFormat_EnUS);
+				return double.Parse(number, SharpMap.Map.Map.NumberFormat_EnUS);
 			}
-			throw new Exception(String.Format(SharpMap.Map.NumberFormat_EnUS, "The token '{0}' is not a number at line {1} column {2}.", number, this.LineNumber, this.Column)); ;
+
+            throw new Exception(String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "The token '{0}' is not a number at line {1} column {2}.", number, this.LineNumber, this.Column)); ;
 
 		}
 		/// <summary>

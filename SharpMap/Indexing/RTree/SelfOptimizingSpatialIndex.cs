@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SharpMap.Indexing
+namespace SharpMap.Indexing.RTree
 {
     [Flags]
     public enum RestructureOpportunity
@@ -63,7 +63,12 @@ namespace SharpMap.Indexing
         }
     }
 
-    public sealed class SelfOptimizingDynamicSpatialIndex : DynamicRTree
+    /// <summary>
+    /// A dynamic R-Tree which periodically restructures in order to provide more optimal indexing.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
+    public sealed class SelfOptimizingDynamicSpatialIndex<TValue> : DynamicRTree<TValue>
+        where TValue : IEquatable<TValue>
     {
         private IIndexRestructureStrategy _restructureStrategy;
         private RestructuringHuristic _restructuringHeuristic;
@@ -74,7 +79,7 @@ namespace SharpMap.Indexing
         private Thread _pollIdleThread;
         private int _periodMilliseconds = -1;
 
-        public SelfOptimizingDynamicSpatialIndex(IIndexRestructureStrategy restructureStrategy, RestructuringHuristic restructureHeuristic, IEntryInsertStrategy insertStrategy, INodeSplitStrategy nodeSplitStrategy, DynamicRTreeHeuristic indexHeuristic)
+        public SelfOptimizingDynamicSpatialIndex(IIndexRestructureStrategy restructureStrategy, RestructuringHuristic restructureHeuristic, IEntryInsertStrategy<RTreeIndexEntry<TValue>> insertStrategy, INodeSplitStrategy nodeSplitStrategy, DynamicRTreeBalanceHeuristic indexHeuristic)
             : base(insertStrategy, nodeSplitStrategy, indexHeuristic)
         {
             _periodMilliseconds = (int)(restructureHeuristic.Period / 1000.0);
@@ -117,9 +122,9 @@ namespace SharpMap.Indexing
             get { return _restructuringHeuristic; }
         }
 
-        public override void Insert(uint key, SharpMap.Geometries.BoundingBox region)
+        public override void Insert(RTreeIndexEntry<TValue> entry)
         {
-            base.Insert(key, region);
+            base.Insert(entry);
             _insertedEvent.Set();
         }
 

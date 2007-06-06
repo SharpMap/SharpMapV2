@@ -29,11 +29,11 @@ using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Rendering
 {
-    public abstract class VectorRenderer<TRenderObject> : BaseFeatureRenderer2D<VectorStyle, TRenderObject>, IVectorRenderer2D<TRenderObject>
+    public abstract class VectorRenderer2D<TRenderObject> : BaseFeatureRenderer2D<VectorStyle, TRenderObject>, IVectorRenderer2D<TRenderObject>
     {
         private static Symbol2D _defaultSymbol;
 
-        static VectorRenderer()
+        static VectorRenderer2D()
         {
         }
 
@@ -42,18 +42,22 @@ namespace SharpMap.Rendering
             get 
             {
                 if (_defaultSymbol == null)
+                {
                     lock (_defaultSymbol)
+                    {
                         if (_defaultSymbol == null)
                         {
                             Stream data = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
                             _defaultSymbol = new Symbol2D(data, new ViewSize2D(16, 16));
                         }
+                    }
+                }
 
                 return _defaultSymbol; 
             }
         }
 
-        public VectorRenderer()
+        public VectorRenderer2D()
         {
             this.Style = new VectorStyle();
             this.StyleRenderingMode = StyleRenderingMode.AntiAlias;
@@ -72,7 +76,9 @@ namespace SharpMap.Rendering
             VectorStyle style = Style;
 
             if (Theme != null)
+            {
                 style = Theme.GetStyle(feature) as VectorStyle;
+            }
 
             return RenderGeometry(feature.Geometry, style);
         }
@@ -80,9 +86,14 @@ namespace SharpMap.Rendering
         protected IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(Geometry geometry, VectorStyle style)
         {
             if (geometry == null)
+            {
                 throw new ArgumentNullException("geometry");
+            }
+
             if (style == null)
+            {
                 throw new ArgumentNullException("style");
+            }
 
             StylePen outline = null, highlightOutline = null, selectOutline = null;
 
@@ -94,20 +105,36 @@ namespace SharpMap.Rendering
             }
 
             if (geometry is Polygon)
+            {
                 return DrawPolygon(geometry as Polygon, style.Fill, style.HighlightFill, style.SelectFill, style.Outline, style.HighlightOutline, style.SelectOutline);
+            }
             else if (geometry is MultiPolygon)
+            {
                 return DrawMultiPolygon(geometry as MultiPolygon, style.Fill, style.HighlightFill, style.SelectFill, style.Outline, style.HighlightOutline, style.SelectOutline);
+            }
             else if (geometry is LineString)
+            {
                 return DrawLineString(geometry as LineString, style.Line, style.HighlightLine, style.SelectLine, style.Outline, style.HighlightOutline, style.SelectOutline);
+            }
             else if (geometry is MultiLineString)
+            {
                 return DrawMultiLineString(geometry as MultiLineString, style.Line, style.HighlightLine, style.SelectLine, style.Outline, style.HighlightOutline, style.SelectOutline);
+            }
             else if (geometry is Point)
+            {
                 return DrawPoint(geometry as Point, style.Symbol, style.HighlightSymbol, style.SelectSymbol);
+            }
             else if (geometry is MultiPoint)
+            {
                 return DrawMultiPoint(geometry as MultiPoint, style.Symbol, style.HighlightSymbol, style.SelectSymbol);
+            }
             else if (geometry is GeometryCollection)
+            {
                 foreach (Geometry g in (geometry as GeometryCollection))
+                {
                     return RenderGeometry(g, style);
+                }
+            }
 
             throw new NotSupportedException(String.Format("Geometry type is not supported: {0}", geometry.GetType()));
         }
@@ -204,10 +231,14 @@ namespace SharpMap.Rendering
             foreach (Point point in points)
             {
                 if (point == null)
+                {
                     continue;
+                }
 
                 if (symbol == null) //We have no point symbol - Use a default symbol
+                {
                     symbol = DefaultSymbol;
+                }
 
                 ViewPoint2D pointLocation = ViewTransformer.TransformToView(point);
                 TRenderObject renderedObject = DrawSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
@@ -220,7 +251,9 @@ namespace SharpMap.Rendering
         {
             GraphicsPath2D gp = new GraphicsPath2D();
             foreach (LineString line in lines)
+            {
                 gp.NewFigure(ViewTransformer.TransformToView(line.Vertices), false);
+            }
 
             TRenderObject renderedObject;
 
@@ -239,10 +272,14 @@ namespace SharpMap.Rendering
             foreach (Polygon polygon in polygons)
             {
                 if (polygon.ExteriorRing == null)
+                {
                     continue;
+                }
 
                 if (polygon.ExteriorRing.Vertices.Count <= 1)
+                {
                     continue;
+                }
 
                 GraphicsPath2D gp = new GraphicsPath2D();
 
@@ -251,7 +288,9 @@ namespace SharpMap.Rendering
 
                 // Add the interior polygons (holes)
                 foreach (LinearRing ring in polygon.InteriorRings)
+                {
                     gp.NewFigure(ViewTransformer.TransformToView(ring.Vertices), true);
+                }
 
                 TRenderObject renderedObject;
                 renderedObject = DrawPath(gp, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);

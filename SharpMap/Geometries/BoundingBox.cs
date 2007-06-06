@@ -23,10 +23,10 @@ using System.Text;
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// Bounding box type with double precision
+	/// Bounding box type with double precision.
 	/// </summary>
 	/// <remarks>
-	/// The Bounding Box represents a box whose sides are parallel to the two axes of the coordinate system.
+    /// The BoundingBox represents a box whose sides are parallel to the two axes of the coordinate system.
 	/// </remarks>
 	[Serializable]
 	public struct BoundingBox : IEquatable<BoundingBox>
@@ -42,10 +42,10 @@ namespace SharpMap.Geometries
         private bool _hasValue;
 
 		/// <summary>
-		/// Initializes a bounding box
+		/// Initializes a bounding box.
 		/// </summary>
 		/// <remarks>
-		/// In case min values are larger than max values, the parameters will be swapped to ensure correct min/max boundary
+		/// In case min values are larger than max values, the parameters will be swapped to ensure correct min/max boundary.
 		/// </remarks>
 		/// <param name="minX">left</param>
 		/// <param name="minY">bottom</param>
@@ -62,10 +62,10 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Initializes a bounding box
+		/// Initializes a bounding box.
 		/// </summary>
-		/// <param name="lowerLeft">Lower left corner</param>
-		/// <param name="upperRight">Upper right corner</param>
+		/// <param name="lowerLeft">Lower left corner.</param>
+		/// <param name="upperRight">Upper right corner.</param>
 		public BoundingBox(Point lowerLeft, Point upperRight)
             : this(0, 0, 0, 0)
 		{ 
@@ -78,6 +78,10 @@ namespace SharpMap.Geometries
             _yMax = upperRight.Y;
         }
 
+        /// <summary>
+        /// Initializes a bounding box.
+        /// </summary>
+        /// <param name="boxes">BoundingBox instances to join.</param>
         public BoundingBox(params BoundingBox[] boxes)
             : this(0, 0, 0, 0)
         {
@@ -89,9 +93,9 @@ namespace SharpMap.Geometries
         }
 
 		/// <summary>
-		/// Initializes a new Bounding Box based on the bounds from a set of geometries
+        /// Initializes a new BoundingBox based on the bounds from a set of geometries.
 		/// </summary>
-		/// <param name="objects">list of objects</param>
+        /// <param name="objects">List of <see cref="Geometry"/> objects to compute the BoundingBox for.</param>
         public BoundingBox(List<Geometry> objects)
             : this(0, 0, 0, 0)
 		{
@@ -113,9 +117,9 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Initializes a new Bounding Box based on the bounds from a set of bounding boxes
+        /// Initializes a new BoundingBox based on the bounds from a set of bounding boxes.
 		/// </summary>
-		/// <param name="objects">list of objects</param>
+        /// <param name="objects">list of <see cref="BoundingBox"/> objects to compute the BoundingBox for.</param>
         public BoundingBox(List<BoundingBox> objects)
             : this(0, 0, 0, 0)
 		{
@@ -176,11 +180,17 @@ namespace SharpMap.Geometries
             }
         }
 
+        /// <summary>
+        /// Gets the lower left corner.
+        /// </summary>
         public Point LowerLeft
         {
             get { return Min; }
         }
 
+        /// <summary>
+        /// Gets the lower right corner.
+        /// </summary>
         public Point LowerRight
         {
             get 
@@ -192,6 +202,9 @@ namespace SharpMap.Geometries
             }
         }
 
+        /// <summary>
+        /// Gets the upper left corner.
+        /// </summary>
         public Point UpperLeft
         {
             get
@@ -203,11 +216,17 @@ namespace SharpMap.Geometries
             }
         }
 
+        /// <summary>
+        /// Gets the upper right corner.
+        /// </summary>
         public Point UpperRight
         {
             get { return Max; }
         }
 
+        /// <summary>
+        /// Returns true if BoundingBox is empty, false otherwise.
+        /// </summary>
         public bool IsEmpty
         {
             get { return !_hasValue; }
@@ -221,7 +240,7 @@ namespace SharpMap.Geometries
         }
 
 		/// <summary>
-		/// Gets the left boundary
+		/// Gets the left boundary.
 		/// </summary>
 		public Double Left
 		{
@@ -230,7 +249,7 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Gets the right boundary
+		/// Gets the right boundary.
 		/// </summary>
 		public Double Right
 		{
@@ -239,7 +258,7 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Gets the top boundary
+		/// Gets the top boundary.
 		/// </summary>
 		public Double Top
 		{
@@ -248,7 +267,7 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Gets the bottom boundary
+		/// Gets the bottom boundary.
 		/// </summary>
 		public Double Bottom
 		{
@@ -257,7 +276,7 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Returns the width of the bounding box
+		/// Returns the width of the bounding box.
 		/// </summary>
 		/// <returns>Width of this <see cref="BoundingBox"/>. Returns <see cref="Double.NaN"/> if <see cref="IsEmpty"/> is true.</returns>
 		public double Width
@@ -271,7 +290,7 @@ namespace SharpMap.Geometries
             }
 		}
 		/// <summary>
-		/// Returns the height of the bounding box
+		/// Returns the height of the bounding box.
         /// </summary>
         /// <returns>Height of this <see cref="BoundingBox"/>. Returns <see cref="Double.NaN"/> if <see cref="IsEmpty"/> is true.</returns>
 		public double Height
@@ -286,9 +305,9 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Moves/translates the <see cref="BoundingBox"/> along the the specified vector
+		/// Moves/translates the <see cref="BoundingBox"/> along the the specified vector.
 		/// </summary>
-		/// <param name="vector">Offset vector</param>
+		/// <param name="vector">Offset vector.</param>
 		public void Offset(Point vector)
 		{
             _xMin += vector.X;
@@ -337,7 +356,7 @@ namespace SharpMap.Geometries
         /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>.
         /// </summary>
         /// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
-        /// <returns>True if the <paramref name="p">point</paramref> touches</returns>
+        /// <returns>True if the <paramref name="p">point</paramref> touches.</returns>
         public bool Touches(Point p)
         {
             if (p == null)
@@ -583,7 +602,7 @@ namespace SharpMap.Geometries
         }
 
         /// <summary>
-        /// Expands the <see cref="BoundingBox"/> instance to contain geometry <paramref name="geometry"/>
+        /// Expands the <see cref="BoundingBox"/> instance to contain geometry <paramref name="geometry"/>.
         /// </summary>
         /// <param name="geometry"><see cref="Geometry"/> to enlarge box to contain.</param>
         public void ExpandToInclude(Geometry geometry)
@@ -602,10 +621,10 @@ namespace SharpMap.Geometries
         }
 
 		/// <summary>
-		/// Computes the joined boundingbox of this instance and another boundingbox
+        /// Computes the joined BoundingBox of this instance and another BoundingBox.
 		/// </summary>
-		/// <param name="box">Boundingbox to join with</param>
-		/// <returns>Boundingbox containing both boundingboxes</returns>
+		/// <param name="box">BoundingBox to join with</param>
+        /// <returns>A new BoundingBox containing both BoundingBox instances.</returns>
 		public BoundingBox Join(BoundingBox box)
 		{
             if (box == BoundingBox.Empty)
@@ -618,7 +637,7 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Computes the joined boundingbox of two boundingboxes
+        /// Computes the joined BoundingBox of two BoundingBox instances.
 		/// </summary>
 		/// <param name="box1"></param>
 		/// <param name="box2"></param>
@@ -629,10 +648,10 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Computes the joined <see cref="BoundingBox"/> of an array of boundingboxes.
+        /// Computes the joined <see cref="BoundingBox"/> of an array of BoundingBox instances.
 		/// </summary>
-		/// <param name="boxes">Boxes to join</param>
-		/// <returns>Combined BoundingBox</returns>
+        /// <param name="boxes">BoundingBox instances to join.</param>
+		/// <returns>Combined BoundingBox.</returns>
 		public static BoundingBox Join(params BoundingBox[] boxes)
         {
             return new BoundingBox(boxes);
@@ -642,7 +661,7 @@ namespace SharpMap.Geometries
         /// Returns a <see cref="BoundingBox"/> with the size of this <see cref="BoundingBox"/> 
         /// decreased by the given amount in all directions.
         /// </summary>
-        /// <param name="amount">Amount to decrease in all directions</param>
+        /// <param name="amount">Amount to decrease in all directions.</param>
         public BoundingBox Shrink(double amount)
         {
             return Grow(-amount);
@@ -653,8 +672,8 @@ namespace SharpMap.Geometries
         /// decreased by <paramref name="amountInX"/> amount in the X axis, and by <paramref name="amountInY"/>
         /// in the Y axis.
         /// </summary>
-        /// <param name="amountInX">Amount to decrease the <see cref="BoudningBox"/> in the X direction.</param>
-        /// <param name="amountInY">Amount to decrease the <see cref="BoudningBox"/> in the Y direction.</param>
+        /// <param name="amountInX">Amount to decrease the <see cref="BoundingBox"/> in the X direction.</param>
+        /// <param name="amountInY">Amount to decrease the <see cref="BoundingBox"/> in the Y direction.</param>
         public BoundingBox Shrink(double amountInX, double amountInY)
         {
             return Grow(-amountInX, -amountInY);
@@ -666,19 +685,19 @@ namespace SharpMap.Geometries
         }
 
 		/// <summary>
-		/// Increases the size of the boundingbox by the givent amount in all directions
+        /// Increases the size of the BoundingBox by the givent amount in all directions
 		/// </summary>
-		/// <param name="amount">Amount to grow in all directions</param>
+		/// <param name="amount">Amount to grow in all directions.</param>
 		public BoundingBox Grow(double amount)
 		{
             return Grow(amount, amount);
 		}
 
 		/// <summary>
-		/// Increases the size of the boundingbox by the givent amount in horizontal and vertical directions
+        /// Increases the size of the BoundingBox by the givent amount in horizontal and vertical directions.
 		/// </summary>
-		/// <param name="amountInX">Amount to grow in horizontal direction</param>
-		/// <param name="amountInY">Amount to grow in vertical direction</param>
+		/// <param name="amountInX">Amount to grow in horizontal direction.</param>
+		/// <param name="amountInY">Amount to grow in vertical direction.</param>
 		public BoundingBox Grow(double amountInX, double amountInY)
 		{
 			return Grow(amountInY, amountInX, amountInY, amountInX);
@@ -695,6 +714,15 @@ namespace SharpMap.Geometries
             return box;
         }
 
+        /// <summary>
+        /// Splits the BoundingBox where it intersects with the <paramref name="point"/>.
+        /// </summary>
+        /// <param name="point">Point to perform split at.</param>
+        /// <remarks>
+        /// A BoundingBox instance may be split into 1, 2 or 4 new BoundingBox instances by a point
+        /// depending on if the point is outside, on the edge of, or inside the BoundingBox respectively.
+        /// </remarks>
+        /// <returns>An enumeration of BoundingBox instances subdivided by the point.</returns>
         public IEnumerable<BoundingBox> Split(Point point)
         {
             if (!Contains(point))
@@ -727,7 +755,7 @@ namespace SharpMap.Geometries
 		/// The distance between overlapping bounding boxes is 0.  Otherwise, the
 		/// distance is the Euclidean distance between the closest points.
 		/// </summary>
-		/// <param name="box">Box to calculate distance to</param>
+        /// <param name="box">BoundingBox to calculate distance to.</param>
 		/// <returns>The distance between this and another <see cref="BoundingBox"/>. 
         /// Returns <see cref="Double.NaN"/> if either <see cref="BoundingBox"/>'s <see cref="BoundingBox.IsEmpty"/>
         /// property is true.</returns>
@@ -754,7 +782,7 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Computes the minimum distance between this BoundingBox and a <see cref="Point"/>
+		/// Computes the minimum distance between this BoundingBox and a <see cref="Point"/>.
 		/// </summary>
 		/// <param name="p"><see cref="Point"/> to calculate distance to.</param>
 		/// <returns>Minimum distance.</returns>
@@ -789,7 +817,7 @@ namespace SharpMap.Geometries
         //}
 
 		/// <summary>
-		/// Returns the center of the bounding box
+        /// Returns the center of the BoundingBox.
 		/// </summary>
 		public Point GetCentroid()
 		{
@@ -810,9 +838,9 @@ namespace SharpMap.Geometries
         //}
 
 		/// <summary>
-		/// Returns a string representation of the <see cref="BoundingBox"/> as "(MinX, MinY) (MaxX, MaxY)"
+		/// Returns a string representation of the <see cref="BoundingBox"/> as "(MinX, MinY) (MaxX, MaxY)".
 		/// </summary>
-        /// <returns>Lower Left: (MinX, MinY) Upper Right: (MaxX, MaxY)</returns>
+        /// <returns>Lower Left: (MinX, MinY) Upper Right: (MaxX, MaxY).</returns>
 		public override string ToString()
 		{
             if (this == BoundingBox.Empty)
@@ -896,7 +924,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Checks whether min values are actually smaller than max values and in that case swaps them.
         /// </summary>
-        /// <returns>true if the bounding was changed</returns>
+        /// <returns>True if the bounding was changed, false otherwise.</returns>
         private bool checkMinMax()
         {
             bool wasSwapped = false;

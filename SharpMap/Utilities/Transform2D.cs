@@ -41,13 +41,13 @@ namespace SharpMap.Utilities
 		/// <param name="p">Point in WCS</param>
 		/// <param name="map">Map reference</param>
 		/// <returns>Point in image coordinates</returns>
-        public static ViewPoint2D WorldToMap(GeoPoint p, IMapPresenter<ViewPoint2D, ViewSize2D, ViewRectangle2D> mapPresenter)
+        public static ViewPoint2D WorldToMap(GeoPoint p, MapViewPort2D mapViewPort)
 		{
-            double heightUnit = (mapPresenter.Zoom * mapPresenter.ViewSize.Height) / mapPresenter.ViewSize.Width;
-			double left = mapPresenter.ViewCenter.X - mapPresenter.Zoom * 0.5;
-            double top = mapPresenter.ViewCenter.Y + heightUnit * 0.5 * mapPresenter.PixelAspectRatio;
-			double x = (float)((p.X - left) / mapPresenter.PixelWidth);
-			double y = (float)((top - p.Y) / mapPresenter.PixelHeight);
+            double heightUnit = (mapViewPort.Zoom * mapViewPort.ViewSize.Height) / mapViewPort.ViewSize.Width;
+			double left = mapViewPort.GeoCenter.X - mapViewPort.Zoom * 0.5;
+            double top = mapViewPort.GeoCenter.Y + heightUnit * 0.5 * mapViewPort.PixelAspectRatio;
+			double x = (float)((p.X - left) / mapViewPort.PixelWidth);
+			double y = (float)((top - p.Y) / mapViewPort.PixelHeight);
 
             ViewPoint2D result = new ViewPoint2D(x, y);
 			return result;
@@ -60,23 +60,23 @@ namespace SharpMap.Utilities
 		/// <param name="p">Point in image coordinate system</param>
 		/// <param name="map">Map reference</param>
 		/// <returns>Point in WCS</returns>
-        public static GeoPoint MapToWorld(ViewPoint2D p, IMapPresenter<ViewPoint2D, ViewSize2D, ViewRectangle2D> mapPresenter)
+        public static GeoPoint MapToWorld(ViewPoint2D p, MapViewPort2D mapViewPort)
 		{
-			BoundingBox env = mapPresenter.ViewEnvelope;
-			return new GeoPoint(env.Min.X + p.X * mapPresenter.PixelWidth, env.Max.Y - p.Y * mapPresenter.PixelHeight);
+			BoundingBox env = mapViewPort.ViewEnvelope;
+			return new GeoPoint(env.Min.X + p.X * mapViewPort.PixelWidth, env.Max.Y - p.Y * mapViewPort.PixelHeight);
 		}
 
-        public static ViewRectangle2D WorldToMap(BoundingBox box, IMapPresenter<ViewPoint2D, ViewSize2D, ViewRectangle2D> mapPresenter)
+        public static ViewRectangle2D WorldToMap(BoundingBox box, MapViewPort2D mapViewPort)
         {
-            ViewPoint2D lowerLeft = WorldToMap(box.Min, mapPresenter);
-            ViewPoint2D upperRight = WorldToMap(box.Max, mapPresenter);
+            ViewPoint2D lowerLeft = WorldToMap(box.Min, mapViewPort);
+            ViewPoint2D upperRight = WorldToMap(box.Max, mapViewPort);
             return ViewRectangle2D.FromLTRB(lowerLeft.X, upperRight.Y, upperRight.X, lowerLeft.Y);
         }
 
-        public static BoundingBox MapToWorld(ViewRectangle2D rectangle, IMapPresenter<ViewPoint2D, ViewSize2D, ViewRectangle2D> mapPresenter)
+        public static BoundingBox MapToWorld(ViewRectangle2D rectangle, MapViewPort2D mapViewPort)
         {
-            GeoPoint lowerLeft = MapToWorld(new ViewPoint2D(rectangle.Left, rectangle.Bottom), mapPresenter);
-            GeoPoint upperRight = MapToWorld(new ViewPoint2D(rectangle.Right, rectangle.Top), mapPresenter);
+            GeoPoint lowerLeft = MapToWorld(new ViewPoint2D(rectangle.Left, rectangle.Bottom), mapViewPort);
+            GeoPoint upperRight = MapToWorld(new ViewPoint2D(rectangle.Right, rectangle.Top), mapViewPort);
             return new BoundingBox(lowerLeft, upperRight);
         }
 	}

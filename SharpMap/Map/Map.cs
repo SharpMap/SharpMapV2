@@ -25,14 +25,16 @@ using System.Text;
 using System.Diagnostics;
 using System.Globalization;
 
+using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
 using SharpMap.Rendering;
 using SharpMap.Styles;
+using SharpMap.Tools;
 using SharpMap.Utilities;
 
-namespace SharpMap
+namespace SharpMap.Map
 {
     /// <summary>
     /// Map class
@@ -79,15 +81,22 @@ namespace SharpMap
 
         static Map() { }
 
-        private LayersCollection _layers = new LayersCollection();
+        private readonly object _selectedFeaturesSync = new object();
+        private readonly object _layersSync = new object();
+        private readonly object _selectedLayersSync = new object();
+        private readonly object _selectedToolSync = new object();
+        private readonly LayersCollection _layers = new LayersCollection();
+        private readonly List<ILayer> _selectedLayers = new List<ILayer>();
         private BoundingBox _envelope = BoundingBox.Empty;
-        private int _activeLayer;
+        private MapTool _selectedTool = MapTool.None;
+        private IList<FeatureDataRow> _selectedFeatures;
 
         /// <summary>
         /// Initializes a new map.
         /// </summary>
         public Map()
         {
+            _layers.LayersChanged += new EventHandler<LayersChangedEventArgs>(HandleLayersChanged);
         }
 
         /// <summary>
@@ -95,7 +104,7 @@ namespace SharpMap
         /// </summary>
         public void Dispose()
         {
-            foreach (Layer layer in Layers)
+            foreach (ILayer layer in Layers)
                 if (layer is IDisposable && layer != null)
                     ((IDisposable)layer).Dispose();
 
@@ -105,10 +114,18 @@ namespace SharpMap
         #region Events
 
         /// <summary>
-        /// Event fired when the maps layer list have been changed.
+        /// Event fired when layers have been added to the map.
         /// </summary>
-        public event EventHandler<LayersChangedEventArgs> LayersChanged;
+        public event EventHandler<LayersChangedEventArgs> LayersAdded;
 
+        /// <summary>
+        /// Event fired when layers have been removed from the map.
+        /// </summary>
+        public event EventHandler<LayersChangedEventArgs> LayersRemoved;
+
+        public event EventHandler SelectedFeaturesChanged;
+        public event EventHandler SelectedLayersChanged;
+        public event EventHandler SelectedToolChanged;
         #endregion
 
         #region Methods
@@ -119,7 +136,14 @@ namespace SharpMap
                 throw new ArgumentNullException("layer");
 
             _layers.Add(layer);
-            OnLayersChanged(layer, LayersChangedType.Added);
+        }
+
+        public void AddLayers(IEnumerable<ILayer> layers)
+        {
+            if (layers == null)
+                throw new ArgumentNullException("layers");
+
+            _layers.AddLayers(layers);
         }
 
         public void RemoveLayer(ILayer layer)
@@ -127,7 +151,6 @@ namespace SharpMap
             if (layer != null)
             {
                 _layers.Remove(layer);
-                OnLayersChanged(layer, LayersChangedType.Removed);
             }
         }
 
@@ -137,11 +160,194 @@ namespace SharpMap
             RemoveLayer(layer);
         }
 
+        public void SelectLayer(int index)
+        {
+            lock (_selectedLayersSync)
+            {
+                SelectLayers(new int[] { index });
+            }
+        }
+
+        public void SelectLayer(string name)
+        {
+            lock (_selectedLayersSync)
+            {
+                SelectLayers(new string[] { name });
+            }
+        }
+
+        public void SelectLayer(ILayer layer)
+        {
+            lock (_selectedLayersSync)
+            {
+                SelectLayers(new ILayer[] { layer });
+            }
+        }
+
+        public void SelectLayers(IEnumerable<int> indexes)
+        {
+            if (indexes == null)
+                throw new ArgumentNullException("indexes");
+
+            lock (_selectedLayersSync)
+            {
+                Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = new Converter<IEnumerable<int>, IEnumerable<ILayer>>(layersGenerator);
+                selectLayersInternal(layerGenerator(indexes));
+            }
+        }
+
+        public void SelectLayers(IEnumerable<string> layerNames)
+        {
+            if (layerNames == null)
+                throw new ArgumentNullException("layerNames");
+
+            lock (_selectedLayersSync)
+            {
+                Converter<IEnumerable<string>, IEnumerable<ILayer>> layerGenerator = new Converter<IEnumerable<string>, IEnumerable<ILayer>>(layersGenerator);
+                selectLayersInternal(layerGenerator(layerNames));
+            }
+        }
+
+        public void SelectLayers(IEnumerable<ILayer> layers)
+        {
+            if (layers == null)
+                throw new ArgumentNullException("layers");
+
+            lock (_selectedLayersSync)
+            {
+                selectLayersInternal(layers);
+            }
+        }
+
+        public void UnselectLayer(int index)
+        {
+            UnselectLayers(new int[] { index });
+        }
+
+        public void UnselectLayer(string name)
+        {
+            UnselectLayers(new string[] { name });
+        }
+
+        public void UnselectLayer(ILayer layer)
+        {
+            UnselectLayers(new ILayer[] { layer });
+        }
+
+        public void UnselectLayers(IEnumerable<int> indexes)
+        {
+            if (indexes == null)
+                throw new ArgumentNullException("indexes");
+
+            lock (_selectedLayersSync)
+            {
+                Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = new Converter<IEnumerable<int>, IEnumerable<ILayer>>(layersGenerator);
+                unselectLayersInternal(layerGenerator(indexes));
+            }
+        }
+
+        public void UnselectLayers(IEnumerable<string> layerNames)
+        {
+            if (layerNames == null)
+                throw new ArgumentNullException("layerNames");
+
+            lock (_selectedLayersSync)
+            {
+                Converter<IEnumerable<string>, IEnumerable<ILayer>> layerGenerator = new Converter<IEnumerable<string>, IEnumerable<ILayer>>(layersGenerator);
+                unselectLayersInternal(layerGenerator(layerNames));
+            }
+        }
+
+        public void UnselectLayers(IEnumerable<ILayer> layers)
+        {
+            if (layers == null)
+                throw new ArgumentNullException("layers");
+
+            lock (_selectedLayersSync)
+            {
+                unselectLayersInternal(layers);
+            }
+        }
+
+        public void SetLayerStyle(int index, Style style)
+        {
+            if (index < 0 || index >= Layers.Count)
+                throw new ArgumentOutOfRangeException("index");
+
+            setLayerStyleInternal(Layers[index], style);
+        }
+
+        public void SetLayerStyle(string name, Style style)
+        {
+            if (String.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            setLayerStyleInternal(GetLayerByName(name), style);
+        }
+
+        public void SetLayerStyle(ILayer layer, Style style)
+        {
+            if (layer == null)
+                throw new ArgumentNullException("layer");
+
+            setLayerStyleInternal(layer, style);
+        }
+
+        public void EnableLayer(int index)
+        {
+            if (index < 0 || index >= Layers.Count)
+                throw new ArgumentOutOfRangeException("index");
+
+            changeLayerEnabled(Layers[index], false);
+        }
+
+        public void EnableLayer(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            changeLayerEnabled(GetLayerByName(name), true);
+        }
+
+        public void EnableLayer(ILayer layer)
+        {
+            if (layer == null)
+                throw new ArgumentNullException("layer");
+
+            changeLayerEnabled(layer, true);
+        }
+
+        public void DisableLayer(int index)
+        {
+            if (index < 0 || index >= Layers.Count)
+                throw new ArgumentOutOfRangeException("index");
+
+            changeLayerEnabled(Layers[index], false);
+        }
+
+        public void DisableLayer(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            changeLayerEnabled(GetLayerByName(name), false);
+        }
+
+        public void DisableLayer(ILayer layer)
+        {
+            if (layer == null)
+                throw new ArgumentNullException("layer");
+
+            changeLayerEnabled(layer, false);
+        }
+
         /// <summary>
-        /// Returns an enumerable set of all layers containing the string <paramref name="layerName"/> in the <see cref="ILayer.LayerName"/> property.
+        /// Returns an enumerable set of all layers containing the string <paramref name="layerName"/> 
+        /// in the <see cref="ILayer.LayerName"/> property.
         /// </summary>
         /// <param name="layerName">String to search for.</param>
-        /// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> containing <paramref name="layerName"/>.</returns>
+        /// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
+        /// containing <paramref name="layerName"/>.</returns>
         public IEnumerable<ILayer> FindLayers(string layerName)
         {
             foreach (ILayer layer in Layers)
@@ -159,73 +365,10 @@ namespace SharpMap
         /// <returns>Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.</returns>
         public ILayer GetLayerByName(string name)
         {
-            return _layers.Find(delegate(ILayer layer) 
+            return _layers.Find(delegate(ILayer layer)
             {
                 return String.Compare(layer.LayerName, name, StringComparison.CurrentCultureIgnoreCase) == 0;
             });
-        }
-
-        #endregion
-
-        #region Properties
-
-        public BoundingBox Envelope
-        {
-            get { return _envelope; }
-            private set { _envelope = value; }
-        }
-
-        /// <summary>
-        /// Gets a collection of layers. The first layer in the list is drawn first, the last one on top.
-        /// </summary>
-        public IList<ILayer> Layers
-        {
-            get 
-            {
-                return _layers as IList<ILayer>;
-            }
-            private set 
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _layers = new LayersCollection(value);
-                BoundingBox envelope = new BoundingBox();
-
-                foreach (ILayer layer in _layers)
-                    envelope.ExpandToInclude(layer.Envelope);
-
-                Envelope = envelope;
-            }
-        }
-
-        //public ILayer ActiveLayer
-        //{
-        //    get 
-        //    {
-        //        if (_activeLayer < 0 || _activeLayer >= Layers.Count)
-        //            return null;
-
-        //        return Layers[_activeLayer]; 
-        //    }
-        //    set 
-        //    {
-        //        if (value == null)
-        //        {
-        //            _activeLayer = -1;
-        //            return;
-        //        }
-
-        //        _activeLayer = Layers.IndexOf(value); 
-        //    }
-        //}
-
-        /// <summary>
-        /// Gets or sets center of map in world coordinates.
-        /// </summary>
-        public GeoPoint Center
-        {
-            get { return _envelope.GetCentroid(); }
         }
 
         /// <summary>
@@ -237,192 +380,240 @@ namespace SharpMap
         {
             return Envelope;
         }
+
         #endregion
 
-        private void OnLayersChanged(ILayer layer, LayersChangedType changeType)
+        #region Properties
+        public IList<FeatureDataRow> SelectedFeatures
         {
-            EventHandler<LayersChangedEventArgs> @event = LayersChanged;
-            if (@event != null)
-                @event(this, new LayersChangedEventArgs(layer, changeType));
+            get
+            {
+                lock (_selectedFeaturesSync)
+                    return _selectedFeatures;
+            }
+            set
+            {
+                lock (_selectedFeaturesSync)
+                {
+                    _selectedFeatures = value;
+                    OnSelectedFeaturesChanged();
+                }
+            }
         }
 
-        #region LayersCollection class
-        private class LayersCollection : IList<ILayer>
+        public IList<ILayer> SelectedLayers
         {
-            private List<ILayer> _layers = new List<ILayer>();
-
-            public LayersCollection() { }
-
-            public LayersCollection(IEnumerable<ILayer> layers)
+            get
             {
-                _layers.AddRange(layers);
+                lock (_selectedLayersSync)
+                    return _selectedLayers.AsReadOnly();
             }
-
-            public ILayer Find(Predicate<ILayer> predicate)
+            set
             {
-                return _layers.Find(predicate);
+                lock (_selectedLayersSync)
+                {
+                    _selectedLayers.Clear();
+                    _selectedLayers.AddRange(value);
+                    OnSelectedLayersChanged();
+                }
             }
+        }
 
-            #region IList Implementation
-            public int Add(ILayer layer)
+        public MapTool SelectedTool
+        {
+            get
             {
-                if (layer == null)
-                    throw new ArgumentNullException("layer");
-
-                _layers.Add(layer);
-                return _layers.Count - 1;
+                lock (_selectedToolSync)
+                    return _selectedTool;
             }
-
-            public void Clear()
+            set
             {
+                lock (_selectedToolSync)
+                {
+                    _selectedTool = value;
+                    OnSelectedToolChanged();
+                }
+            }
+        }
+
+        public BoundingBox Envelope
+        {
+            get { return _envelope; }
+            private set { _envelope = value; }
+        }
+
+        /// <summary>
+        /// Gets a collection of layers. The first layer in the list is drawn first, the last one on top.
+        /// </summary>
+        public LayersCollection Layers
+        {
+            get
+            {
+                return _layers;
+            }
+            private set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
                 _layers.Clear();
+
+                AddLayers(value);
             }
+        }
 
-            public int Count
-            {
-                get { return _layers.Count; }
-            }
-
-            public bool Contains(ILayer layer)
-            {
-                return _layers.Contains(layer);
-            }
-
-            public int IndexOf(ILayer layer)
-            {
-                return _layers.IndexOf(layer);
-            }
-
-            public void Insert(int index, ILayer layer)
-            {
-                if (layer == null)
-                    throw new ArgumentNullException("layer");
-
-                _layers.Insert(index, layer);
-            }
-
-            public void Remove(ILayer layer)
-            {
-                if (layer == null)
-                    throw new ArgumentNullException("layer");
-
-                _layers.Remove(layer);
-            }
-
-            public void RemoveAt(int index)
-            {
-                ILayer layer = this[index];
-                _layers.RemoveAt(index);
-            }
-
-            public ILayer this[int index]
-            {
-                get { return _layers[index]; }
-                set { _layers[index] = value; }
-            }
-
-            public ILayer this[string layerName]
-            {
-                get
-                {
-                    return _layers.Find(delegate(ILayer layer)
-                        {
-                            return String.Compare(layer.LayerName, layerName, StringComparison.CurrentCultureIgnoreCase) == 0;
-                        });
-                }
-                set
-                {
-                    ILayer layer = _layers.Find(delegate(ILayer candidateLayer)
-                        {
-                            return String.Compare(candidateLayer.LayerName, layerName, StringComparison.CurrentCultureIgnoreCase) == 0;
-                        });
-
-                    int index = this.IndexOf(layer);
-                    _layers[index] = value;
-                }
-            }
-
-            public bool IsFixedSize
-            {
-                get { return false; }
-            }
-
-            public bool IsReadOnly
-            {
-                get { return false; }
-            }
-
-            public void CopyTo(ILayer[] array, int index)
-            {
-                _layers.CopyTo(array, index);
-            }
-
-            public IEnumerator<ILayer> GetEnumerator()
-            {
-                return _layers.GetEnumerator();
-            }
-            #endregion
-
-            #region IEnumerable Members
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
-
-            #endregion
-
-            #region ICollection<ILayer> Members
-
-            void ICollection<ILayer>.Add(ILayer item)
-            {
-                this.Add(item);
-            }
-
-            bool ICollection<ILayer>.Remove(ILayer item)
-            {
-                return _layers.Remove(item);
-            }
-
-            #endregion
+        /// <summary>
+        /// Gets or sets center of map in world coordinates.
+        /// </summary>
+        public GeoPoint Center
+        {
+            get { return _envelope.GetCentroid(); }
         }
         #endregion
-    }
 
-    public enum LayersChangedType
-    {
-        Unknown = 0,
-        Added,
-        Removed
-    }
-
-    public class LayersChangedEventArgs : EventArgs
-    {
-        private IEnumerable<ILayer> _changedLayers;
-        private LayersChangedType _changeType;
-
-        internal LayersChangedEventArgs(ILayer changedLayer, LayersChangedType changeType)
+        #region Event Generators
+        private void OnLayersChanged(IEnumerable<ILayer> layers, LayersChangedType changeType)
         {
-            List<ILayer> layers = new List<ILayer>();
-            layers.Add(changedLayer);
-            _changedLayers = layers;
-            _changeType = changeType;
+            EventHandler<LayersChangedEventArgs> @event = null;
+
+            switch (changeType)
+            {
+                case LayersChangedType.Added:
+                    {
+                        foreach (ILayer layer in layers)
+                            Envelope.ExpandToInclude(layer.Envelope);
+
+                        @event = LayersAdded;
+
+                        if (@event != null)
+                            @event(this, new LayersChangedEventArgs(layers, changeType));
+                    }
+                    break;
+                case LayersChangedType.Removed:
+                    {
+                        recomputeEnvelope();
+
+                        @event = LayersRemoved;
+
+                        if (@event != null)
+                            @event(this, new LayersChangedEventArgs(layers, changeType));
+                    }
+                    break;
+                case LayersChangedType.Unknown:
+                default:
+                    break;
+            }
         }
 
-        internal LayersChangedEventArgs(IEnumerable<ILayer> changedLayers, LayersChangedType changeType)
+        private void OnSelectedFeaturesChanged()
         {
-            _changedLayers = changedLayers;
-            _changeType = changeType;
+            EventHandler e = SelectedFeaturesChanged;
+
+            if (e != null)
+                e(null, EventArgs.Empty);
         }
 
-        public IEnumerable<ILayer> ChangedLayers
+        private void OnSelectedToolChanged()
         {
-            get { return _changedLayers; }
+            EventHandler e = SelectedToolChanged;
+
+            if (e != null)
+                e(null, EventArgs.Empty);
         }
 
-        public LayersChangedType ChangeType
+        private void OnSelectedLayersChanged()
         {
-            get { return _changeType; }
+            EventHandler e = SelectedLayersChanged;
+
+            if (e != null)
+                e(null, EventArgs.Empty);
         }
+        #endregion
+
+        #region Event Handlers
+        private void HandleLayersChanged(object sender, LayersChangedEventArgs e)
+        {
+            OnLayersChanged(e.ChangedLayers, e.ChangeType);
+        }
+        #endregion
+
+        #region Private helper methods
+        private void recomputeEnvelope()
+        {
+            BoundingBox envelope = BoundingBox.Empty;
+
+            foreach (ILayer layer in Layers)
+            {
+                envelope.ExpandToInclude(layer.Envelope);
+            }
+
+            Envelope = envelope;
+        }
+
+        private void changeLayerEnabled(ILayer layer, bool enabled)
+        {
+            layer.Style.Enabled = enabled;
+        }
+
+        private void setLayerStyleInternal(ILayer layer, Style style)
+        {
+            if (layer == null)
+                throw new ArgumentNullException("layer");
+
+            if (style == null)
+                throw new ArgumentNullException("style");
+
+            layer.Style = style;
+        }
+
+        private void selectLayersInternal(IEnumerable<ILayer> layers)
+        {
+            checkLayersExist();
+
+            _layers.AddLayers(layers);
+
+            OnSelectedLayersChanged();
+        }
+
+        private void unselectLayersInternal(IEnumerable<ILayer> layers)
+        {
+            checkLayersExist();
+
+            List<ILayer> removeLayers = layers is List<ILayer> ? layers as List<ILayer> : new List<ILayer>(layers);
+            _selectedLayers.RemoveAll(delegate(ILayer match) { return removeLayers.Contains(match); });
+
+            OnSelectedLayersChanged();
+        }
+
+        private IEnumerable<ILayer> layersGenerator(IEnumerable<int> layerIndexes)
+        {
+            foreach (int index in layerIndexes)
+            {
+                if (index < 0 || index >= _layers.Count)
+                    throw new ArgumentOutOfRangeException("index", index, String.Format("Layer index must be between 0 and {0}", _layers.Count));
+
+                yield return _layers[index];
+            }
+        }
+
+        private IEnumerable<ILayer> layersGenerator(IEnumerable<string> layerNames)
+        {
+            foreach (string name in layerNames)
+            {
+                if (String.IsNullOrEmpty(name))
+                    throw new ArgumentException("Layer name must not be null or empty.", "layerNames");
+
+                yield return GetLayerByName(name);
+            }
+        }
+
+        private void checkLayersExist()
+        {
+            if (_layers.Count == 0)
+            {
+                throw new InvalidOperationException("No layers are present in the map, so layer operation cannot be performed");
+            }
+        }
+        #endregion
     }
 }

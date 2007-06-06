@@ -121,7 +121,7 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS, "<CS_Projection Classname=\"{0}\">{1}", ClassName, InfoXml);
+                sb.AppendFormat(SharpMap.Map.Map.NumberFormat_EnUS, "<CS_Projection Classname=\"{0}\">{1}", ClassName, InfoXml);
 				foreach (ProjectionParameter param in Parameters)
 					sb.Append(param.XML);
 				sb.Append("</CS_Projection>");
