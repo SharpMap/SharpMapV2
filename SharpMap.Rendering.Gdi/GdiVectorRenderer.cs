@@ -44,42 +44,8 @@ namespace SharpMap.Rendering.Gdi
     /// <summary>
     /// A <see cref="VectorRenderer{GdiRenderObject}"/> which renders to GDI primatives.
     /// </summary>
-    public class GdiVectorRenderer : VectorRenderer<GdiRenderObject>
+    public class GdiVectorRenderer : VectorRenderer2D<GdiRenderObject>
     {
-        private struct BrushLookupKey
-        {
-            public RuntimeTypeHandle StyleBrushType;
-            public string StyleBrushValue;
-
-            public BrushLookupKey(RuntimeTypeHandle type, string styleBrushValue)
-            {
-                StyleBrushType = type;
-                StyleBrushValue = styleBrushValue;
-            }
-        }
-
-        private struct PenLookupKey
-        {
-            public RuntimeTypeHandle StylePenType;
-            public string StylePenValue;
-
-            public PenLookupKey(RuntimeTypeHandle type, string stylePenValue)
-            {
-                StylePenType = type;
-                StylePenValue = stylePenValue;
-            }
-        }
-
-        private struct SymbolLookupKey
-        {
-            public string SymbolValue;
-
-            public SymbolLookupKey(string symbolValue)
-            {
-                SymbolValue = symbolValue;
-            }
-        }
-
         private Dictionary<BrushLookupKey, Brush> _brushCache = new Dictionary<BrushLookupKey,Brush>();
         private Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
         private Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
@@ -242,6 +208,40 @@ namespace SharpMap.Rendering.Gdi
             }
 
             return symbol;
+        }
+
+        private struct BrushLookupKey
+        {
+            public RuntimeTypeHandle StyleBrushType;
+            public string StyleBrushValue;
+
+            public BrushLookupKey(RuntimeTypeHandle type, string styleBrushValue)
+            {
+                StyleBrushType = type;
+                StyleBrushValue = styleBrushValue;
+            }
+        }
+
+        private struct PenLookupKey
+        {
+            public RuntimeTypeHandle StylePenType;
+            public string StylePenValue;
+
+            public PenLookupKey(RuntimeTypeHandle type, string stylePenValue)
+            {
+                StylePenType = type;
+                StylePenValue = stylePenValue;
+            }
+        }
+
+        private struct SymbolLookupKey
+        {
+            public string SymbolValue;
+
+            public SymbolLookupKey(string symbolValue)
+            {
+                SymbolValue = symbolValue;
+            }
         }
     }
 }
