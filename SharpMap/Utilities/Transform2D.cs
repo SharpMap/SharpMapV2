@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -30,53 +31,75 @@ using SharpMap.Rendering;
 namespace SharpMap.Utilities
 {
 	/// <summary>
-	/// Class for transforming between world and image coordinate
+	/// Utility class for transforming between world and view coordinates.
 	/// </summary>
 	public static class Transform2D
 	{
 		/// <summary>
-		/// Transforms from world coordinate system (WCS) to image coordinates
-		/// NOTE: This method DOES NOT take the MapTransform property into account (use SharpMap.Map.MapToWorld instead)
+		/// Transforms from world coordinate system to view coordinates.
 		/// </summary>
-		/// <param name="p">Point in WCS</param>
-		/// <param name="map">Map reference</param>
-		/// <returns>Point in image coordinates</returns>
-        public static ViewPoint2D WorldToMap(GeoPoint p, MapViewPort2D mapViewPort)
+        /// <param name="worldPoint">Point in world coordinate system.</param>
+        /// <param name="mapViewPort">Map view port reference.</param>
+		/// <returns>Point in view coordinates.</returns>
+        /// <remarks>
+        /// NOTE: This method DOES NOT take the <see cref="MapViewPort2D".MapTransform>MapTransform</see> of the <see cref="MapViewPort2D"/>.
+        /// </remarks>
+        public static ViewPoint2D WorldToView(GeoPoint worldPoint, MapViewPort2D mapViewPort)
 		{
             double heightUnit = (mapViewPort.Zoom * mapViewPort.ViewSize.Height) / mapViewPort.ViewSize.Width;
 			double left = mapViewPort.GeoCenter.X - mapViewPort.Zoom * 0.5;
             double top = mapViewPort.GeoCenter.Y + heightUnit * 0.5 * mapViewPort.PixelAspectRatio;
-			double x = (float)((p.X - left) / mapViewPort.PixelWidth);
-			double y = (float)((top - p.Y) / mapViewPort.PixelHeight);
+			double x = (float)((worldPoint.X - left) / mapViewPort.PixelWidth);
+			double y = (float)((top - worldPoint.Y) / mapViewPort.PixelHeight);
 
             ViewPoint2D result = new ViewPoint2D(x, y);
 			return result;
-		}
+        }
 
-		/// <summary>
-		/// Transforms from image coordinates to world coordinate system (WCS).
-		/// NOTE: This method DOES NOT take the MapTransform property into account (use SharpMap.Map.MapToWorld instead)
-		/// </summary>
-		/// <param name="p">Point in image coordinate system</param>
-		/// <param name="map">Map reference</param>
-		/// <returns>Point in WCS</returns>
-        public static GeoPoint MapToWorld(ViewPoint2D p, MapViewPort2D mapViewPort)
-		{
-			BoundingBox env = mapViewPort.ViewEnvelope;
-			return new GeoPoint(env.Min.X + p.X * mapViewPort.PixelWidth, env.Max.Y - p.Y * mapViewPort.PixelHeight);
-		}
-
-        public static ViewRectangle2D WorldToMap(BoundingBox box, MapViewPort2D mapViewPort)
+        /// <summary>
+        /// Transforms a <see cref="BoundingBox"/> rectangle from world coordinate system to view coordinates.
+        /// </summary>
+        /// <param name="worldBounds">Rectangle in world coordinate system.</param>
+        /// <param name="mapViewPort">Map view port reference.</param>
+        /// <returns>Rectangle in view coordinates.</returns>
+        /// <remarks>
+        /// NOTE: This method DOES NOT take the <see cref="MapViewPort2D".MapTransform>MapTransform</see> of the <see cref="MapViewPort2D"/>.
+        /// </remarks>
+        public static ViewRectangle2D WorldToView(BoundingBox worldBounds, MapViewPort2D mapViewPort)
         {
-            ViewPoint2D lowerLeft = WorldToMap(box.Min, mapViewPort);
-            ViewPoint2D upperRight = WorldToMap(box.Max, mapViewPort);
+            ViewPoint2D lowerLeft = WorldToView(worldBounds.Min, mapViewPort);
+            ViewPoint2D upperRight = WorldToView(worldBounds.Max, mapViewPort);
             return ViewRectangle2D.FromLTRB(lowerLeft.X, upperRight.Y, upperRight.X, lowerLeft.Y);
         }
 
-        public static BoundingBox MapToWorld(ViewRectangle2D rectangle, MapViewPort2D mapViewPort)
+		/// <summary>
+		/// Transforms a point from view coordinates to world coordinate system.
+		/// </summary>
+        /// <param name="viewPoint">Point in view coordinates.</param>
+        /// <param name="mapViewPort">Map view port reference.</param>
+        /// <returns>Point in world coordinate system.</returns>
+        /// <remarks>
+        /// NOTE: This method DOES NOT take the <see cref="MapViewPort2D".MapTransform>MapTransform</see> of the <see cref="MapViewPort2D"/>.
+        /// </remarks>
+        public static GeoPoint ViewToWorld(ViewPoint2D viewPoint, MapViewPort2D mapViewPort)
+		{
+			BoundingBox env = mapViewPort.ViewEnvelope;
+			return new GeoPoint(env.Min.X + viewPoint.X * mapViewPort.PixelWidth, env.Max.Y - viewPoint.Y * mapViewPort.PixelHeight);
+		}
+
+        /// <summary>
+        /// Transforms a rectangle from view coordinates to world coordinate system.
+        /// </summary>
+        /// <param name="rectangle">Rectangle in view coordinates.</param>
+        /// <param name="mapViewPort">Map view port reference.</param>
+        /// <returns>Rectangle in world coordinate system.</returns>
+        /// <remarks>
+        /// NOTE: This method DOES NOT take the <see cref="MapViewPort2D".MapTransform>MapTransform</see> of the <see cref="MapViewPort2D"/>.
+        /// </remarks>
+        public static BoundingBox ViewToWorld(ViewRectangle2D rectangle, MapViewPort2D mapViewPort)
         {
-            GeoPoint lowerLeft = MapToWorld(new ViewPoint2D(rectangle.Left, rectangle.Bottom), mapViewPort);
-            GeoPoint upperRight = MapToWorld(new ViewPoint2D(rectangle.Right, rectangle.Top), mapViewPort);
+            GeoPoint lowerLeft = ViewToWorld(new ViewPoint2D(rectangle.Left, rectangle.Bottom), mapViewPort);
+            GeoPoint upperRight = ViewToWorld(new ViewPoint2D(rectangle.Right, rectangle.Top), mapViewPort);
             return new BoundingBox(lowerLeft, upperRight);
         }
 	}

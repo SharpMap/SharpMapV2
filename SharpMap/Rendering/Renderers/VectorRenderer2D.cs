@@ -240,7 +240,8 @@ namespace SharpMap.Rendering
                     symbol = DefaultSymbol;
                 }
 
-                ViewPoint2D pointLocation = ViewTransformer.TransformToView(point);
+                ViewPoint2D pointLocation; // = Transform2D.TransformToView(point);
+                throw new NotImplementedException();
                 TRenderObject renderedObject = DrawSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
                 yield return new PositionedRenderObject2D<TRenderObject>(pointLocation, renderedObject);
             }
@@ -252,7 +253,8 @@ namespace SharpMap.Rendering
             GraphicsPath2D gp = new GraphicsPath2D();
             foreach (LineString line in lines)
             {
-                gp.NewFigure(ViewTransformer.TransformToView(line.Vertices), false);
+                throw new NotImplementedException();
+                //gp.NewFigure(Transform2D.TransformToView(line.Vertices), false);
             }
 
             TRenderObject renderedObject;
@@ -284,12 +286,14 @@ namespace SharpMap.Rendering
                 GraphicsPath2D gp = new GraphicsPath2D();
 
                 // Add the exterior polygon
-                gp.NewFigure(ViewTransformer.TransformToView(polygon.ExteriorRing.Vertices), true);
+                //gp.NewFigure(ViewTransformer.TransformToView(polygon.ExteriorRing.Vertices), true);
+                throw new NotImplementedException();
 
                 // Add the interior polygons (holes)
                 foreach (LinearRing ring in polygon.InteriorRings)
                 {
-                    gp.NewFigure(ViewTransformer.TransformToView(ring.Vertices), true);
+                    //gp.NewFigure(ViewTransformer.TransformToView(ring.Vertices), true);
+                    throw new NotImplementedException();
                 }
 
                 TRenderObject renderedObject;

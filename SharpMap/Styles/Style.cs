@@ -22,17 +22,17 @@ using System.Text;
 namespace SharpMap.Styles
 {
 	/// <summary>
-	/// Defines a style used for for defining layer styles
+	/// Defines a style used for for defining layer styles.
 	/// </summary>
 	[Serializable]
-	public abstract class Style : IStyle
+	public class Style : IStyle
 	{
 		double _minVisible;
 		double _maxVisible;
 		private bool _visible;
 
 		/// <summary>
-		/// Initializes a style as sets Min=0, Max=double.MaxValue and Visible=true
+		/// Initializes a style as sets Min = 0, Max = Double.MaxValue and Visible = true
 		/// </summary>
 		public Style()
 		{

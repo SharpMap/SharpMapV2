@@ -26,6 +26,8 @@ namespace SharpMap.Rendering
     [StructLayout(LayoutKind.Sequential)]
     public struct ViewPoint2D : IViewVector
     {
+        public static readonly ViewPoint2D Zero = new ViewPoint2D(0, 0);
+
         private double _x, _y;
 
         public ViewPoint2D(double x, double y)
@@ -37,10 +39,14 @@ namespace SharpMap.Rendering
         public ViewPoint2D(double[] elements)
         {
             if (elements == null)
+            {
                 throw new ArgumentNullException("value");
+            }
 
             if (elements.Length != 2)
+            {
                 throw new ArgumentException("Elements array must have only 2 components");
+            }
 
             _x = elements[0];
             _y = elements[1];

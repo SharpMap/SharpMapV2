@@ -1,3 +1,20 @@
+// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +34,7 @@ namespace SharpMap.Presentation
     {
         private SharpMap.Map.Map _map;
         //private ViewRectangle2D _viewRectangle;
-        //private double _pixelAspectRatio = 1.0;
+        private double _pixelAspectRatio = 1.0;
         private double _viewDpi;
         private double _worldUnitsPerInch;
         private ViewSize2D _viewSize;
@@ -107,12 +124,12 @@ namespace SharpMap.Presentation
         /// </summary>
         public ViewSize2D ViewSize
         {
-            get { return ViewRectangle.Size; }
+            get { return _viewSize; }
             set
             {
-                if (value != ViewRectangle.Size)
+                if (value != _viewSize)
                 {
-                    setViewMetricsInternal(new ViewRectangle2D(ViewRectangle.Location, ViewRectangle.Size), _center, _widthInWorldUnits);
+                    setViewMetricsInternal(_viewSize, _center, Zoom);
                 }
             }
         }
@@ -122,7 +139,7 @@ namespace SharpMap.Presentation
         /// </summary>
         public BoundingBox ViewEnvelope
         {
-            get { return Transform2D.ViewToWorld(ViewRectangle, this); }
+            get { return Transform2D.ViewToWorld(new ViewRectangle2D(ViewPoint2D.Zero, ViewSize), this); }
             set
             {
                 setViewEnvelopeInternal(value);
@@ -135,7 +152,7 @@ namespace SharpMap.Presentation
         public GeoPoint GeoCenter
         {
             get { return _center.Clone(); }
-            set { setViewMetricsInternal(ViewRectangle, value, _widthInWorldUnits); }
+            set { setViewMetricsInternal(ViewSize, value, Zoom); }
         }
 
         /// <summary>
@@ -147,8 +164,8 @@ namespace SharpMap.Presentation
         /// </remarks>
         public double Zoom
         {
-            get { return _widthInWorldUnits; }
-            set { setViewMetricsInternal(ViewRectangle, GeoCenter, value); }
+            get { return WorldUnitsPerPixel * ViewSize.Width; }
+            set { setViewMetricsInternal(ViewSize, GeoCenter, value); }
         }
 
         /// <summary>
@@ -161,7 +178,7 @@ namespace SharpMap.Presentation
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("Minimum zoom must be 0 or more");
+                    throw new ArgumentOutOfRangeException("MinimumZoom", value, "Minimum zoom must be 0 or greater.");
                 }
 
                 if (_minimumZoom != value)
@@ -183,7 +200,7 @@ namespace SharpMap.Presentation
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("Maximum zoom must larger than 0");
+                    throw new ArgumentOutOfRangeException("MaximumZoom", value, "Maximum zoom must greater than 0.");
                 }
 
                 if (_maximumZoom != value)
@@ -203,6 +220,11 @@ namespace SharpMap.Presentation
             get { return _worldUnitsPerInch / _viewDpi; }
         }
 
+        public double ViewDpi
+        {
+            get { return _viewDpi; }
+        }
+
         /// <summary>
         /// Gets the width of a pixel in world coordinate units.
         /// </summary>
@@ -219,13 +241,15 @@ namespace SharpMap.Presentation
         /// unless <see cref="PixelAspectRatio"/> is different from 1.</remarks>
         public double PixelHeight
         {
-            get { return WorldUnitsPerPixel * _pixelAspectRatio; }
+            get { return WorldUnitsPerPixel * PixelAspectRatio; }
         }
 
         /// <summary>
-        /// Gets or sets the aspect-ratio of the pixel scales. A value less than 
-        /// 1 will make the map streach upwards, and larger than 1 will make it smaller.
+        /// Gets or sets the aspect ratio of the scale.
         /// </summary>
+        /// <remarks> 
+        /// A value less than 1 will make the map stretch upwards, and larger than 1 will make it more squat.
+        /// </remarks>
         /// <exception cref="ArgumentException">Throws an argument exception when value 
         /// is 0 or less.</exception>
         public double PixelAspectRatio
@@ -233,9 +257,9 @@ namespace SharpMap.Presentation
             get { return _pixelAspectRatio; }
             set
             {
-                if (_pixelAspectRatio <= 0)
+                if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("Invalid pixel aspect ratio");
+                    throw new ArgumentOutOfRangeException("PixelAspectRatio", value, "Invalid pixel aspect ratio.");
                 }
 
                 if (_pixelAspectRatio != value)
@@ -268,7 +292,7 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Gets or sets a <see cref="Matrix"/> used to transform the map image.
+        /// Gets or sets a <see cref="IViewMatrix"/> used to transform the map image.
         /// </summary>
         /// <remarks>
         /// Using the <see cref="MapTransform"/> you can alter the coordinate system of the map rendering.
@@ -308,6 +332,12 @@ namespace SharpMap.Presentation
             }
         }
 
+        /// <summary>
+        /// The invert of the <see cref="MapViewTransform"/> matrix.
+        /// </summary>
+        /// <remarks>
+        /// An inverse matrix is used to reverse the transformation of a matrix.
+        /// </remarks>
         public IViewMatrix MapViewTransformInverted
         {
             get { return _viewTransformInverted; }
@@ -315,7 +345,7 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Zooms to the extents of all layers
+        /// Zooms to the extents of all visible layers in the current <see cref="Map"/>.
         /// </summary>
         public void ZoomToExtents()
         {
@@ -376,7 +406,7 @@ namespace SharpMap.Presentation
             if (@event != null)
             {
                 @event(this, new MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>(
-                    _viewTransform.ViewToWorld(oldViewRectangle), _viewTransform.ViewToWorld(currentViewRectangle), 
+                    Transform2D.ViewToWorld(oldViewRectangle, this), Transform2D.ViewToWorld(currentViewRectangle, this), 
                     oldViewRectangle, currentViewRectangle));
             }
         }
@@ -452,20 +482,21 @@ namespace SharpMap.Presentation
                 return;
             }
 
-            setViewMetricsInternal(ViewRectangle, newCenter, _widthInWorldUnits);
+            setViewMetricsInternal(ViewSize, newCenter, Zoom);
         }
 
         private void setViewEnvelopeInternal(BoundingBox newEnvelope)
         {
-            BoundingBox currentEnvelope = ViewEnvelope;
-
-            if (currentEnvelope == newEnvelope)
+            if (ViewEnvelope == newEnvelope)
             {
                 return;
             }
 
+            BoundingBox currentEnvelope = ViewEnvelope;
+
             double widthZoomRatio = newEnvelope.Width / currentEnvelope.Width;
             double heightZoomRatio = newEnvelope.Height / currentEnvelope.Height;
+
             double newWidth = widthZoomRatio > heightZoomRatio ? newEnvelope.Width : newEnvelope.Width * heightZoomRatio;
 
             if (newWidth < _minimumZoom)
@@ -478,42 +509,38 @@ namespace SharpMap.Presentation
                 newWidth = _maximumZoom;
             }
 
-            setViewMetricsInternal(ViewRectangle, newEnvelope.GetCentroid(), newWidth);
+            setViewMetricsInternal(ViewSize, newEnvelope.GetCentroid(), newWidth);
         }
 
-        private void setViewMetricsInternal(ViewRectangle2D viewRectangle, GeoPoint center, double widthInWorldUnits)
+        private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint center, double widthInWorldUnits)
         {
-            if (viewRectangle == _viewRectangle && center == _center && widthInWorldUnits == _widthInWorldUnits)
+            double currentWorldUnitWidth = Zoom;
+
+            if (newViewSize == _viewSize && center == _center && widthInWorldUnits == currentWorldUnitWidth)
             {
                 return;
             }
 
-            ViewRectangle2D oldViewRectangle = _viewRectangle;
-            double oldWidthInWorldUnits = _widthInWorldUnits;
+            ViewSize2D oldViewSize = _viewSize;
             GeoPoint oldCenter = _center;
 
-            _viewRectangle = viewRectangle;
-            _widthInWorldUnits = widthInWorldUnits;
+            _viewSize = newViewSize;
             _center = center;
+
+            if (_viewSize != oldViewSize)
+            {
+                OnSizeChanged(oldViewSize, _viewSize);
+                OnViewRectangleChanged(new ViewRectangle2D(ViewPoint2D.Zero, oldViewSize), new ViewRectangle2D(ViewPoint2D.Zero, _viewSize));
+            }
 
             if (_center != oldCenter)
             {
                 OnMapCenterChanged(oldCenter, _center);
             }
 
-            if (_widthInWorldUnits != oldWidthInWorldUnits)
+            if (currentWorldUnitWidth != widthInWorldUnits)
             {
-                OnZoomChanged(oldWidthInWorldUnits, _widthInWorldUnits, oldCenter, _center);
-            }
-
-            if (_viewRectangle != oldViewRectangle)
-            {
-                OnViewRectangleChanged(oldViewRectangle, _viewRectangle);
-
-                if (_viewRectangle.Size != oldViewRectangle.Size)
-                {
-                    OnSizeChanged(oldViewRectangle.Size, _viewRectangle.Size);
-                }
+                OnZoomChanged(widthInWorldUnits, currentWorldUnitWidth, oldCenter, _center);
             }
         }
         #endregion

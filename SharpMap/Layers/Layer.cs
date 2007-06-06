@@ -40,7 +40,7 @@ namespace SharpMap.Layers
         private ICoordinateTransformation _coordinateTransform;
         private string _layerName;
         private int _srid = -1;
-        private IStyle _style;
+        private IStyle _style = new Style();
 
 		/// <summary>
 		/// Returns the name of the layer.
@@ -84,6 +84,28 @@ namespace SharpMap.Layers
         {
             get { return _srid; }
             set { _srid = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value which indicates if the layer is enabled (visible or able to participate in queries) or not.
+        /// </summary>
+        /// <remarks>
+        /// This property is a convenience property which exposes the value of <see cref="Style.Enabled"/>. 
+        /// If setting this property and the Style property value is null, a new <see cref="Style"/> 
+        /// object is created and assigned to the Style property, and then the Style.Enabled property is set.
+        /// </remarks>
+        public bool Enabled
+        {
+            get { return Style.Enabled; }
+            set 
+            {
+                if (Style == null)
+                {
+                    Style = new Style();
+                }
+
+                Style.Enabled = value; 
+            }
         }
 
         /// <summary>

@@ -44,7 +44,15 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// The spatial reference ID (CRS).
 		/// </summary>
-		int Srid { get; set; }
+        int Srid { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value representing the visibility of the layer.
+        /// </summary>
+        /// <remarks>
+        /// Should be the same value as <see cref="Style.Enabled"/>.
+        /// </remarks>
+        bool Enabled { get; set; }
 
         /// <summary>
         /// The style for the layer.

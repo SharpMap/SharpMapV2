@@ -105,8 +105,12 @@ namespace SharpMap.Map
         public void Dispose()
         {
             foreach (ILayer layer in Layers)
+            {
                 if (layer is IDisposable && layer != null)
+                {
                     ((IDisposable)layer).Dispose();
+                }
+            }
 
             _layers.Clear();
         }
@@ -133,7 +137,9 @@ namespace SharpMap.Map
         public void AddLayer(ILayer layer)
         {
             if (layer == null)
+            {
                 throw new ArgumentNullException("layer");
+            }
 
             _layers.Add(layer);
         }
@@ -141,7 +147,9 @@ namespace SharpMap.Map
         public void AddLayers(IEnumerable<ILayer> layers)
         {
             if (layers == null)
+            {
                 throw new ArgumentNullException("layers");
+            }
 
             _layers.AddLayers(layers);
         }
@@ -187,7 +195,9 @@ namespace SharpMap.Map
         public void SelectLayers(IEnumerable<int> indexes)
         {
             if (indexes == null)
+            {
                 throw new ArgumentNullException("indexes");
+            }
 
             lock (_selectedLayersSync)
             {
@@ -199,7 +209,9 @@ namespace SharpMap.Map
         public void SelectLayers(IEnumerable<string> layerNames)
         {
             if (layerNames == null)
+            {
                 throw new ArgumentNullException("layerNames");
+            }
 
             lock (_selectedLayersSync)
             {
@@ -211,7 +223,9 @@ namespace SharpMap.Map
         public void SelectLayers(IEnumerable<ILayer> layers)
         {
             if (layers == null)
+            {
                 throw new ArgumentNullException("layers");
+            }
 
             lock (_selectedLayersSync)
             {
@@ -237,7 +251,9 @@ namespace SharpMap.Map
         public void UnselectLayers(IEnumerable<int> indexes)
         {
             if (indexes == null)
+            {
                 throw new ArgumentNullException("indexes");
+            }
 
             lock (_selectedLayersSync)
             {
@@ -249,7 +265,9 @@ namespace SharpMap.Map
         public void UnselectLayers(IEnumerable<string> layerNames)
         {
             if (layerNames == null)
+            {
                 throw new ArgumentNullException("layerNames");
+            }
 
             lock (_selectedLayersSync)
             {
@@ -261,7 +279,9 @@ namespace SharpMap.Map
         public void UnselectLayers(IEnumerable<ILayer> layers)
         {
             if (layers == null)
+            {
                 throw new ArgumentNullException("layers");
+            }
 
             lock (_selectedLayersSync)
             {
@@ -272,7 +292,9 @@ namespace SharpMap.Map
         public void SetLayerStyle(int index, Style style)
         {
             if (index < 0 || index >= Layers.Count)
+            {
                 throw new ArgumentOutOfRangeException("index");
+            }
 
             setLayerStyleInternal(Layers[index], style);
         }
@@ -280,7 +302,9 @@ namespace SharpMap.Map
         public void SetLayerStyle(string name, Style style)
         {
             if (String.IsNullOrEmpty(name))
+            {
                 throw new ArgumentNullException("name");
+            }
 
             setLayerStyleInternal(GetLayerByName(name), style);
         }
@@ -288,7 +312,9 @@ namespace SharpMap.Map
         public void SetLayerStyle(ILayer layer, Style style)
         {
             if (layer == null)
+            {
                 throw new ArgumentNullException("layer");
+            }
 
             setLayerStyleInternal(layer, style);
         }
@@ -296,7 +322,9 @@ namespace SharpMap.Map
         public void EnableLayer(int index)
         {
             if (index < 0 || index >= Layers.Count)
+            {
                 throw new ArgumentOutOfRangeException("index");
+            }
 
             changeLayerEnabled(Layers[index], false);
         }
@@ -304,7 +332,9 @@ namespace SharpMap.Map
         public void EnableLayer(string name)
         {
             if (String.IsNullOrEmpty(name))
+            {
                 throw new ArgumentNullException("name");
+            }
 
             changeLayerEnabled(GetLayerByName(name), true);
         }
@@ -312,7 +342,9 @@ namespace SharpMap.Map
         public void EnableLayer(ILayer layer)
         {
             if (layer == null)
+            {
                 throw new ArgumentNullException("layer");
+            }
 
             changeLayerEnabled(layer, true);
         }
@@ -320,7 +352,9 @@ namespace SharpMap.Map
         public void DisableLayer(int index)
         {
             if (index < 0 || index >= Layers.Count)
+            {
                 throw new ArgumentOutOfRangeException("index");
+            }
 
             changeLayerEnabled(Layers[index], false);
         }
@@ -328,7 +362,9 @@ namespace SharpMap.Map
         public void DisableLayer(string name)
         {
             if (String.IsNullOrEmpty(name))
+            {
                 throw new ArgumentNullException("name");
+            }
 
             changeLayerEnabled(GetLayerByName(name), false);
         }
@@ -336,7 +372,9 @@ namespace SharpMap.Map
         public void DisableLayer(ILayer layer)
         {
             if (layer == null)
+            {
                 throw new ArgumentNullException("layer");
+            }
 
             changeLayerEnabled(layer, false);
         }
@@ -351,8 +389,12 @@ namespace SharpMap.Map
         public IEnumerable<ILayer> FindLayers(string layerName)
         {
             foreach (ILayer layer in Layers)
+            {
                 if (layer.LayerName.Contains(layerName))
+                {
                     yield return layer;
+                }
+            }
         }
 
         /// <summary>
@@ -389,7 +431,9 @@ namespace SharpMap.Map
             get
             {
                 lock (_selectedFeaturesSync)
+                {
                     return _selectedFeatures;
+                }
             }
             set
             {
@@ -406,7 +450,9 @@ namespace SharpMap.Map
             get
             {
                 lock (_selectedLayersSync)
+                {
                     return _selectedLayers.AsReadOnly();
+                }
             }
             set
             {
@@ -424,7 +470,9 @@ namespace SharpMap.Map
             get
             {
                 lock (_selectedToolSync)
+                {
                     return _selectedTool;
+                }
             }
             set
             {
@@ -454,7 +502,9 @@ namespace SharpMap.Map
             private set
             {
                 if (value == null)
+                {
                     throw new ArgumentNullException("value");
+                }
 
                 _layers.Clear();
 
@@ -544,7 +594,10 @@ namespace SharpMap.Map
 
             foreach (ILayer layer in Layers)
             {
-                envelope.ExpandToInclude(layer.Envelope);
+                if (layer.Enabled)
+                {
+                    envelope.ExpandToInclude(layer.Envelope);
+                }
             }
 
             Envelope = envelope;
@@ -558,10 +611,14 @@ namespace SharpMap.Map
         private void setLayerStyleInternal(ILayer layer, Style style)
         {
             if (layer == null)
+            {
                 throw new ArgumentNullException("layer");
+            }
 
             if (style == null)
+            {
                 throw new ArgumentNullException("style");
+            }
 
             layer.Style = style;
         }
@@ -590,7 +647,9 @@ namespace SharpMap.Map
             foreach (int index in layerIndexes)
             {
                 if (index < 0 || index >= _layers.Count)
+                {
                     throw new ArgumentOutOfRangeException("index", index, String.Format("Layer index must be between 0 and {0}", _layers.Count));
+                }
 
                 yield return _layers[index];
             }
@@ -601,7 +660,9 @@ namespace SharpMap.Map
             foreach (string name in layerNames)
             {
                 if (String.IsNullOrEmpty(name))
+                {
                     throw new ArgumentException("Layer name must not be null or empty.", "layerNames");
+                }
 
                 yield return GetLayerByName(name);
             }
