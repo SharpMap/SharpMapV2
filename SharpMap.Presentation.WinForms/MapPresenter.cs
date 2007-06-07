@@ -53,7 +53,6 @@ namespace SharpMap.Presentation.WinForms
 
             foreach (BoundingBox missingRegion in missingRegions)
             {
-                IRenderContext renderContext = new RenderContext();
                 foreach (ILayer layer in Map.Layers)
 	            {
                     if (!(layer is IFeatureLayer))
