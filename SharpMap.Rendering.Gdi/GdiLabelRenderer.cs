@@ -30,7 +30,7 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Gdi
 {
-    public class GdiLabelRenderer : LabelRenderer<GdiRenderObject>
+    public class GdiLabelRenderer : LabelRenderer2D<GdiRenderObject>
     {
         private Graphics _currentGraphics;
 
