@@ -36,5 +36,7 @@ namespace SharpMap.Rendering
         void Scale(IViewVector scaleVector);
         void Translate(double translationAmount);
         void Translate(IViewVector translationVector);
+        IViewVector Transform(IViewVector vector);
+        double[] Transform(params double[] vector);
     }
 }

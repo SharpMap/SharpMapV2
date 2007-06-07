@@ -109,7 +109,7 @@ namespace SharpMap.Rendering
             set { _style = value; }
         }
 
-        public IViewMatrix ViewTransform
+        public ViewMatrix2D ViewTransform
         {
             get { return _viewTransform; }
             set { _viewTransform = value; }
@@ -138,6 +138,28 @@ namespace SharpMap.Rendering
         void IDisposable.Dispose()
         {
             throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+
+
+        IViewMatrix IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>.ViewTransform
+        {
+            get
+            {
+                return ViewTransform;
+            }
+            set
+            {
+                if (!(value is ViewMatrix2D))
+                {
+                    throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
+                }
+
+                ViewTransform = value as ViewMatrix2D;
+            }
         }
 
         #endregion

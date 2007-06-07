@@ -240,7 +240,7 @@ namespace SharpMap.Rendering
                     symbol = DefaultSymbol;
                 }
 
-                ViewPoint2D pointLocation = Transform2D.TransformToView(point);
+                ViewPoint2D pointLocation = ViewTransform.Transform(point.X, point.Y);
                 TRenderObject renderedObject = DrawSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
                 yield return new PositionedRenderObject2D<TRenderObject>(pointLocation, renderedObject);
             }
@@ -252,7 +252,7 @@ namespace SharpMap.Rendering
             GraphicsPath2D gp = new GraphicsPath2D();
             foreach (LineString line in lines)
             {
-                gp.NewFigure(Transform2D.TransformToView(line.Vertices), false);
+                gp.NewFigure(ViewTransform.t .TransformToView(line.Vertices), false);
             }
 
             TRenderObject renderedObject;
