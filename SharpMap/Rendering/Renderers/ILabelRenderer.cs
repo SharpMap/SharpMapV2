@@ -23,12 +23,60 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering
 {
-    public interface ILabelRenderer 
+    /// <summary>
+    /// Interface to a graphical renderer of label data.
+    /// </summary>
+    /// <typeparam name="TViewPoint">Type of point vector used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
+    public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
+        where TViewPoint : IViewVector
+        where TViewSize : IViewVector
+        where TViewRectangle : IViewMatrix
     {
+        /// <summary>
+        /// Gets or sets a <see cref="StyleTextRenderingHint"/> to control how rendered text appears.
+        /// </summary>
         StyleTextRenderingHint TextRenderingHint { get; set; }
-        ViewSize2D MeasureString(string text, StyleFont font);
-        void DrawLabel(Label label);
-        void DrawLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor);
-        void DrawLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
+
+        /// <summary>
+        /// Measures the <typeparamref name="TViewSize"/> of a string in the given <paramref name="font"/>.
+        /// </summary>
+        /// <param name="text">The string to measure.</param>
+        /// <param name="font">The font to use to draw the string.</param>
+        /// <returns>A measurement of the string.</returns>
+        TViewSize MeasureString(string text, StyleFont font);
+
+        /// <summary>
+        /// Renders a label.
+        /// </summary>
+        /// <param name="label"><see cref="Label"/> to render.</param>
+        /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
+        TRenderObject RenderLabel(Label label);
+
+        /// <summary>
+        /// Renders a label.
+        /// </summary>
+        /// <param name="text">The label text.</param>
+        /// <param name="location">The location in graphical display coordinates to draw the label at.</param>
+        /// <param name="font">The font to use to draw the label.</param>
+        /// <param name="foreColor">The color to use to draw the label.</param>
+        /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
+        TRenderObject RenderLabel(string text, TViewPoint location, StyleFont font, StyleColor foreColor);
+
+        /// <summary>
+        /// Renders a label.
+        /// </summary>
+        /// <param name="text">The label text.</param>
+        /// <param name="location">The location in graphical display coordinates to draw the label at.</param>
+        /// <param name="offset">An offset to apply to the <paramref name="location"/> in graphical display coordinates.</param>
+        /// <param name="font">The font to use to draw the label.</param>
+        /// <param name="foreColor">The color to use to draw the label.</param>
+        /// <param name="backColor">The color to use behind the label.</param>
+        /// <param name="halo">A <see cref="StylePen"/> instance to draw an outline around the label with.</param>
+        /// <param name="rotation">An amount to rotate the label by.</param>
+        /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
+        TRenderObject RenderLabel(string text, TViewPoint location, TViewPoint offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
     }
 }

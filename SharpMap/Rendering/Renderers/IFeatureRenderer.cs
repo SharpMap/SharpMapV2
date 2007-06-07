@@ -23,11 +23,23 @@ using SharpMap.Data;
 
 namespace SharpMap.Rendering
 {
+    /// <summary>
+    /// Interface to a graphical renderer of feature data.
+    /// </summary>
+    /// <typeparam name="TViewPoint">Type of point vector used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
     public interface IFeatureRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
         where TViewPoint : IViewVector
         where TViewSize : IViewVector
         where TViewRectangle : IViewMatrix
     {
+        /// <summary>
+        /// Renders the spatial data in the <paramref name="feature"/>.
+        /// </summary>
+        /// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
+        /// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
         IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature);
     }
 }

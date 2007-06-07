@@ -33,7 +33,7 @@ namespace SharpMap.Rendering
         //private TLayer _layer;
         private TStyle _style;
         private ITheme _theme;
-        //private IViewTransformer<ViewPoint2D, ViewRectangle2D> _viewTransform;
+        private IViewMatrix _viewTransform;
         //private List<PositionedRenderObject2D<TRenderObject>> _renderedObjects = new List<PositionedRenderObject2D<TRenderObject>>();
         private StyleRenderingMode _renderMode;
 
@@ -74,17 +74,12 @@ namespace SharpMap.Rendering
 
         public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature)
         {
-            return RenderFeature(feature, null);
-        }
-
-        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature, IRenderContext renderContext)
-        {
-            IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderFeature(feature, renderContext);
+            IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderFeature(feature);
             OnFeatureRendered();
             return renderedObjects;
         }
 
-        protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, IRenderContext renderContext);
+        protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature);
 
         /// <summary>
         /// Gets or sets thematic settings for the layer. Set to null to ignore thematics
@@ -94,12 +89,6 @@ namespace SharpMap.Rendering
             get { return _theme; }
             set { _theme = value; }
         }
-
-        //public TLayer Layer
-        //{
-        //    get { return _layer; }
-        //    set { _layer = value; }
-        //}
 
         /// <summary>
         /// Render whether smoothing (antialiasing) is applied to lines 
@@ -120,52 +109,11 @@ namespace SharpMap.Rendering
             set { _style = value; }
         }
 
-        //public IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer
-        //{
-        //    get { return _viewTransform; }
-        //    set { _viewTransform = value; }
-        //}
-
-        //public IList<PositionedRenderObject2D<TRenderObject>> RenderedObjects
-        //{
-        //    get { return _renderedObjects; }
-        //    protected set 
-        //    { 
-        //        _renderedObjects.Clear();
-        //        _renderedObjects.AddRange(value);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Renders the layer to the <paramref name="view"/>.
-        ///// </summary>
-        ///// <param name="view"><see cref="IMapView2D"/> to render layer on.</param>
-        //public void Render(IMapView2D view)
-        //{
-        //    Render(view, Layer.Envelope);
-        //}
-
-        ///// <summary>
-        ///// Renders the layer to the <paramref name="view"/>.
-        ///// </summary>
-        ///// <param name="view"><see cref="IMapView2D"/> to render layer on.</param>
-        ///// <param name="region">Area of the map to render.</param>
-        //public virtual void Render(IMapView2D view, BoundingBox region)
-        //{
-        //    OnLayerRendered(view);
-        //}
-
-        //public double MinVisible
-        //{
-        //    get { return _minVisible; }
-        //    set { _minVisible = value; }
-        //}
-
-        //public double MaxVisible
-        //{
-        //    get { return _maxVisible; }
-        //    set { _maxVisible = value; }
-        //}
+        public IViewMatrix ViewTransform
+        {
+            get { return _viewTransform; }
+            set { _viewTransform = value; }
+        }
 
         #endregion
 
@@ -177,13 +125,6 @@ namespace SharpMap.Rendering
         }
 
         #endregion
-
-        //protected void OnLayerRendered()
-        //{
-        //    EventHandler<LayerRenderedEventArgs> @event = LayerRendered;
-        //    if (@event != null)
-        //        @event(this, new LayerRenderedEventArgs(Layer)); //Fire event
-        //}
 
         protected void OnFeatureRendered()
         {

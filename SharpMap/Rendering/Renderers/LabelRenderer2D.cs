@@ -28,13 +28,17 @@ using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Rendering
 {
-    public abstract class LabelRenderer<TRenderObject> : BaseFeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer
+    public abstract class LabelRenderer2D<TRenderObject> : BaseFeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
 
-        protected LabelRenderer() { }
+        protected LabelRenderer2D(StyleTextRenderingHint renderingHint, LabelStyle style) 
+        {
+            _textRenderingHint = renderingHint;
+            Style = style;
+        }
 
-        #region ILabelLayerRenderer Members
+        #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
         public StyleTextRenderingHint TextRenderingHint
         {
@@ -51,9 +55,9 @@ namespace SharpMap.Rendering
         }
 
         public abstract ViewSize2D MeasureString(string text, StyleFont font);
-        public abstract void DrawLabel(Label label);
-        public abstract void DrawLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor);
-        public abstract void DrawLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
+        public abstract TRenderObject RenderLabel(Label label);
+        public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor);
+        public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
         public event EventHandler TextRenderingHintChanged;
@@ -311,5 +315,26 @@ namespace SharpMap.Rendering
             throw new NotImplementedException();
             //label.LabelPoint = map.WorldToImage(new SharpMap.Geometries.Point(tmpx, tmpy));
         }
+
+        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+
+        IStyle IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>.Style
+        {
+            get
+            {
+                return Style;
+            }
+            set
+            {
+                if (!(value is LabelStyle))
+                {
+                    throw new ArgumentException("Style must be type LabelStyle.", "IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>.Style");
+                }
+
+                Style = (LabelStyle)value;
+            }
+        }
+
+        #endregion
     }
 }

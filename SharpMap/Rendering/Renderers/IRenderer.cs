@@ -27,44 +27,36 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering
 {
+    /// <summary>
+    /// Interface to a graphical renderer.
+    /// </summary>
+    /// <typeparam name="TViewPoint">Type of point vector used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
+    /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
     public interface IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IDisposable
         where TViewPoint : IViewVector
         where TViewSize : IViewVector
         where TViewRectangle : IViewMatrix
     {
+        /// <summary>
+        /// Gets or sets a <see cref="Style"/> used to render objects.
+        /// </summary>
         IStyle Style { get; set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="Theme"/> used to render objects.
+        /// </summary>
         ITheme Theme { get; set; }
-        //IViewTransformer<ViewPoint2D, ViewRectangle2D> ViewTransformer { get; set; }
+
+        /// <summary>
+        /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.
+        /// </summary>
+        IViewMatrix ViewTransform { get; set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="StyleRenderingMode"/> value used to render objects.
+        /// </summary>
         StyleRenderingMode StyleRenderingMode { get; set; }
-
-        //StyleSmoothingMode SmoothingMode { get; set; }
-
-        //void BeginObject(IRenderContext renderContext);
-        //void EndObject(IRenderContext renderContext);
-        //IList<TRenderObject> RenderedObjects { get; }
-
-
-        ///// <summary>
-        ///// Renders the layer to the <paramref name="mapView">presenter</paramref>.
-        ///// </summary>
-        ///// <param name="mapView">The <see cref="IMapView"/> used to render the map.</param>
-        //void Render(IMapView mapView);
-
-        ///// <summary>
-        ///// Renders the layer to the <paramref name="mapView">presenter</paramref>.
-        ///// </summary>
-        ///// <param name="mapView">The <see cref="IMapView"/> used to render the map.</param>
-        ///// <param name="region">Region to restrict rendering to.</param>
-        //void Render(IMapView mapView, BoundingBox region);
-
-        ///// <summary>
-        ///// Minimum visible zoom level
-        ///// </summary>
-        //double MinVisible { get; set; }
-
-        ///// <summary>
-        ///// Minimum visible zoom level
-        ///// </summary>
-        //double MaxVisible { get; set; }
     }
 }

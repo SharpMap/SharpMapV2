@@ -28,7 +28,7 @@ namespace SharpMap.Rendering
 {
     public class LayerGroupRenderer : BaseFeatureRenderer2D<Style, object>
     {
-        protected override IEnumerable<PositionedRenderObject2D<object>> DoRenderFeature(FeatureDataRow feature, IRenderContext renderContext)
+        protected override IEnumerable<PositionedRenderObject2D<object>> DoRenderFeature(FeatureDataRow feature)
         {
             throw new Exception("The method or operation is not implemented.");
         }

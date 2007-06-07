@@ -71,7 +71,7 @@ namespace SharpMap.Rendering
         public abstract TRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
         #endregion
 
-        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, IRenderContext renderContext)
+        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature)
         {
             VectorStyle style = Style;
 
@@ -240,8 +240,7 @@ namespace SharpMap.Rendering
                     symbol = DefaultSymbol;
                 }
 
-                ViewPoint2D pointLocation; // = Transform2D.TransformToView(point);
-                throw new NotImplementedException();
+                ViewPoint2D pointLocation = Transform2D.TransformToView(point);
                 TRenderObject renderedObject = DrawSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
                 yield return new PositionedRenderObject2D<TRenderObject>(pointLocation, renderedObject);
             }
@@ -253,8 +252,7 @@ namespace SharpMap.Rendering
             GraphicsPath2D gp = new GraphicsPath2D();
             foreach (LineString line in lines)
             {
-                throw new NotImplementedException();
-                //gp.NewFigure(Transform2D.TransformToView(line.Vertices), false);
+                gp.NewFigure(Transform2D.TransformToView(line.Vertices), false);
             }
 
             TRenderObject renderedObject;
@@ -286,14 +284,12 @@ namespace SharpMap.Rendering
                 GraphicsPath2D gp = new GraphicsPath2D();
 
                 // Add the exterior polygon
-                //gp.NewFigure(ViewTransformer.TransformToView(polygon.ExteriorRing.Vertices), true);
-                throw new NotImplementedException();
+                gp.NewFigure(ViewTransformer.TransformToView(polygon.ExteriorRing.Vertices), true);
 
                 // Add the interior polygons (holes)
                 foreach (LinearRing ring in polygon.InteriorRings)
                 {
-                    //gp.NewFigure(ViewTransformer.TransformToView(ring.Vertices), true);
-                    throw new NotImplementedException();
+                    gp.NewFigure(ViewTransformer.TransformToView(ring.Vertices), true);
                 }
 
                 TRenderObject renderedObject;

@@ -201,12 +201,9 @@
     <Compile Include="Rendering\Primitives\GraphicsFigure2D.cs" />
     <Compile Include="Rendering\Primitives\GraphicsPath2D.cs" />
     <Compile Include="Rendering\Primitives\IViewSelection.cs" />
-    <Compile Include="Rendering\Renderers\ContextItemKey.cs" />
     <Compile Include="Rendering\Renderers\IFeatureRenderer.cs" />
-    <Compile Include="Rendering\Renderers\IRenderContext.cs" />
     <Compile Include="Rendering\Renderers\PositionedRenderObject.cs" />
     <Compile Include="Rendering\Renderers\BaseRasterRenderer2D.cs" />
-    <Compile Include="Rendering\Renderers\RenderContext.cs" />
     <Compile Include="Presentation\Views\IFeaturesDataView.cs" />
     <Compile Include="Rendering\Renderers\ILabelRenderer.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />

@@ -47,11 +47,17 @@ namespace SharpMap.Rendering
         {
             ContextItemKey key = new ContextItemKey(typeof(TContextItem), id);
             object item = null;
+
             _contextCache.TryGetValue(key, out item);
+
             if (item is TContextItem)
+            {
                 return (TContextItem)item;
+            }
             else
+            {
                 return default(TContextItem);
+            }
         }
 
         #endregion
