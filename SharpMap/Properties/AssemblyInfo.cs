@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -19,34 +20,18 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 [assembly: AssemblyTitle("SharpMap Engine")]
-[assembly: AssemblyDescription("SharpMap v2.0 Alpha 1")]
+[assembly: AssemblyDescription("SharpMap v2.0 Alpha 2")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap Engine")]
-[assembly: AssemblyCopyright("Copyright © 2006 Morten Nielsen, Ricardo Stuven, Christian Giles, Rory Plaire")]
+[assembly: AssemblyCopyright("Copyright © 2006-2007 Morten Nielsen, Ricardo Stuven, Christian Giles, Rory Plaire")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM componenets.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("2f1dbd34-6f6b-4b0b-bfb4-b24a3894de6d")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
-[assembly: AssemblyVersion("0.9.0.0")]
-[assembly: AssemblyFileVersion("0.9.0.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]

@@ -240,7 +240,7 @@ namespace SharpMap.Rendering
                     symbol = DefaultSymbol;
                 }
 
-                ViewPoint2D pointLocation = ViewTransform.Transform(point.X, point.Y);
+                ViewPoint2D pointLocation = new ViewPoint2D(ViewTransform.Transform(point.X, point.Y));
                 TRenderObject renderedObject = DrawSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
                 yield return new PositionedRenderObject2D<TRenderObject>(pointLocation, renderedObject);
             }
@@ -252,7 +252,7 @@ namespace SharpMap.Rendering
             GraphicsPath2D gp = new GraphicsPath2D();
             foreach (LineString line in lines)
             {
-                gp.NewFigure(ViewTransform.t .TransformToView(line.Vertices), false);
+                gp.NewFigure(convertPointsAndTransform(line.Vertices), false);
             }
 
             TRenderObject renderedObject;
@@ -265,6 +265,14 @@ namespace SharpMap.Rendering
 
             renderedObject = DrawPath(gp, fill, highlightFill, selectFill);
             yield return new PositionedRenderObject2D<TRenderObject>(gp.Bounds.Location, renderedObject);
+        }
+
+        private IEnumerable<ViewPoint2D> convertPointsAndTransform(IEnumerable<Point> points)
+        {
+            foreach (Point geoPoint in points)
+	        {
+                yield return new ViewPoint2D(ViewTransform.Transform(geoPoint.X, geoPoint.Y));
+	        }
         }
 
         private IEnumerable<PositionedRenderObject2D<TRenderObject>> drawPolygons(IEnumerable<Polygon> polygons, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
@@ -284,12 +292,12 @@ namespace SharpMap.Rendering
                 GraphicsPath2D gp = new GraphicsPath2D();
 
                 // Add the exterior polygon
-                gp.NewFigure(ViewTransformer.TransformToView(polygon.ExteriorRing.Vertices), true);
+                gp.NewFigure(convertPointsAndTransform(polygon.ExteriorRing.Vertices), true);
 
                 // Add the interior polygons (holes)
                 foreach (LinearRing ring in polygon.InteriorRings)
                 {
-                    gp.NewFigure(ViewTransformer.TransformToView(ring.Vertices), true);
+                    gp.NewFigure(convertPointsAndTransform(ring.Vertices), true);
                 }
 
                 TRenderObject renderedObject;

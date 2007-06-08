@@ -33,7 +33,7 @@ namespace SharpMap.Rendering
         //private TLayer _layer;
         private TStyle _style;
         private ITheme _theme;
-        private IViewMatrix _viewTransform;
+        private ViewMatrix2D _viewTransform;
         //private List<PositionedRenderObject2D<TRenderObject>> _renderedObjects = new List<PositionedRenderObject2D<TRenderObject>>();
         private StyleRenderingMode _renderMode;
 
@@ -126,22 +126,6 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        protected void OnFeatureRendered()
-        {
-            EventHandler @event = FeatureRendered;
-            if (@event != null)
-                @event(this, EventArgs.Empty); //Fire event
-        }
-
-        #region IDisposable Members
-
-        void IDisposable.Dispose()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        #endregion
-
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
 
@@ -160,6 +144,22 @@ namespace SharpMap.Rendering
 
                 ViewTransform = value as ViewMatrix2D;
             }
+        }
+
+        #endregion
+
+        protected void OnFeatureRendered()
+        {
+            EventHandler @event = FeatureRendered;
+            if (@event != null)
+                @event(this, EventArgs.Empty); //Fire event
+        }
+
+        #region IDisposable Members
+
+        void IDisposable.Dispose()
+        {
+            throw new Exception("The method or operation is not implemented.");
         }
 
         #endregion

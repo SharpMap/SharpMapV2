@@ -203,6 +203,15 @@ namespace SharpMap.Rendering
             throw new Exception("The method or operation is not implemented.");
         }
 
+        public IViewVector Transform(IViewVector vector)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public double[] Transform(params double[] vector)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
         #endregion
 
         #region ICloneable Members
