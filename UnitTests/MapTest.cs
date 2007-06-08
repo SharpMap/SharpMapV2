@@ -41,7 +41,8 @@ namespace UnitTests
 			Assert.AreEqual(System.Drawing.Color.Transparent, mapView.ViewPort.BackColor);
 			Assert.AreEqual(double.MaxValue, mapView.ViewPort.MaximumZoom);
 			Assert.AreEqual(0, mapView.ViewPort.MinimumZoom);
-			Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
+            Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
+            Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), mapView.ViewPort.GeoCenter, "mapView.ViewPort.GeoCenter should be initialized to (0,0)");
 			Assert.AreEqual(1, mapView.ViewPort.Zoom, "Map zoom should be initialized to 1.0");
 		}
 
