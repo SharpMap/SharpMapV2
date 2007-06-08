@@ -62,12 +62,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets a Well-Known text representation of this object.
 		/// </summary>
-		public abstract string WKT { get; }
+		public abstract string Wkt { get; }
 
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		public abstract string XML { get; }
+		public abstract string Xml { get; }
 
 		/// <summary>
 		/// Gets the derivative of this transform at a point. If the transform does 

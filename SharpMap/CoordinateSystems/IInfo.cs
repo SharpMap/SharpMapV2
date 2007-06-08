@@ -59,11 +59,11 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this spatial reference object
 		/// as defined in the simple features specification.
 		/// </summary>
-		string WKT { get; }
+		string Wkt { get; }
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		string XML { get; }
+		string Xml { get; }
 
 		/// <summary>
 		/// Checks whether the values of this instance is equal to the values of another instance.

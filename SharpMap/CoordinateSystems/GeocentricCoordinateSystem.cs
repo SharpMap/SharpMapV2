@@ -108,12 +108,12 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string WKT
+		public override string Wkt
 		{
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat("GEOCCS[\"{0}\", {1}, {2}, {3}", Name, HorizontalDatum.WKT, PrimeMeridian.WKT, LinearUnit.WKT);
+				sb.AppendFormat("GEOCCS[\"{0}\", {1}, {2}, {3}", Name, HorizontalDatum.Wkt, PrimeMeridian.Wkt, LinearUnit.Wkt);
 				//Skip axis info if they contain default values				
 				if (AxisInfo.Count != 3 ||
 					AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientationEnum.Other ||
@@ -131,7 +131,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string XML
+		public override string Xml
 		{
 			get
 			{
@@ -142,7 +142,7 @@ namespace SharpMap.CoordinateSystems
 				foreach (AxisInfo ai in this.AxisInfo)
 					sb.Append(ai.XML);
 				sb.AppendFormat("{0}{1}{2}</CS_GeocentricCoordinateSystem></CS_CoordinateSystem>",
-					HorizontalDatum.XML, LinearUnit.XML, PrimeMeridian.XML);
+					HorizontalDatum.Xml, LinearUnit.Xml, PrimeMeridian.Xml);
 				return sb.ToString();
 			}
 		}

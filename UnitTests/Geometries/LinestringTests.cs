@@ -23,7 +23,7 @@ namespace UnitTests.Geometries
 			vertices.Add(new Point(54, 23));
 			vertices.Add(new Point(93, 12));
 			vertices.Add(new Point(104, 32));
-			l.Vertices = vertices;
+			l.Vertices.AddRange(vertices);
 			Assert.IsFalse(l.IsEmpty());
 			Assert.IsFalse(l.IsClosed);
 			Assert.AreEqual(3, l.NumPoints);

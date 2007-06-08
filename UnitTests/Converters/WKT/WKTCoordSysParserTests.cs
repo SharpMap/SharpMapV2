@@ -112,7 +112,7 @@ namespace UnitTests.Converters.WKT
 			Assert.AreEqual(9003, pcs.LinearUnit.AuthorityCode);
 			Assert.AreEqual("EPSG", pcs.Authority);
 			Assert.AreEqual(2918, pcs.AuthorityCode);
-			Assert.AreEqual(wkt, pcs.WKT);
+			Assert.AreEqual(wkt, pcs.Wkt);
 		}
 		[Test]
 		public void ParseAllWKTs()

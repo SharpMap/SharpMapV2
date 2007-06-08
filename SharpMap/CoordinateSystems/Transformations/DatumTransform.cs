@@ -39,12 +39,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 			v = _ToWgs94.GetAffineTransform();
 			_isInverse = isInverse;
 		}
-		public override string WKT
+		public override string Wkt
 		{
 			get { throw new Exception("The method or operation is not implemented."); }
 		}
 
-		public override string XML
+		public override string Xml
 		{
 			get { throw new Exception("The method or operation is not implemented."); }
 		}

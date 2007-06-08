@@ -31,7 +31,7 @@ using SharpMap.Rendering;
 namespace SharpMap.Layers
 {
     /// <summary>
-    /// Class for vector layer properties
+    /// Class for vector layer properties.
     /// </summary>
     /// <example>
     /// Adding a <see cref="VectorLayer"/> to a map:
@@ -85,6 +85,12 @@ namespace SharpMap.Layers
             get { return _dataSource; }
             set { _dataSource = value; }
         }
+
+		public new VectorStyle Style
+		{
+			get { return base.Style as VectorStyle; }
+			set { base.Style = value; }
+		}
 
         public IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region)
         {

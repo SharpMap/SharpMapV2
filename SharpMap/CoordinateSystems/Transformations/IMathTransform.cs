@@ -48,11 +48,11 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets a Well-Known text representation of this object.
 		/// </summary>
-		string WKT { get; }
+		string Wkt { get; }
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		string XML { get; }
+		string Xml { get; }
 		/// <summary>
 		/// Gets the derivative of this transform at a point. If the transform does 
 		/// not have a well-defined derivative at the point, then this function should 

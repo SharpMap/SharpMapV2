@@ -22,7 +22,7 @@ namespace UnitTests.Geometries
 			ring.Vertices.Add(new Point(10, 10));
 			ring.Vertices.Add(new Point(20, 10));
 			ring.Vertices.Add(new Point(20, 20));
-            Assert.IsFalse(ring.IsCCW());
+            Assert.IsFalse(ring.IsCcw());
 			ring.Vertices.Add(new Point(10, 20));
             ring.Vertices.Add(ring.Vertices[0].Clone());
             Assert.IsTrue(ring.IsPointWithin(new Point(15, 15)));

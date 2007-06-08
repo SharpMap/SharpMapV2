@@ -72,7 +72,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="toBaseWkt"></param>
 		/// <param name="arAxes"></param>
 		/// <returns>Fitted coordinate system</returns>
-		IFittedCoordinateSystem CreateFittedCoordinateSystem(string name, ICoordinateSystem baseCoordinateSystem, string toBaseWkt, List<AxisInfo> arAxes);
+		IFittedCoordinateSystem CreateFittedCoordinateSystem(string name, ICoordinateSystem baseCoordinateSystem, string toBaseWkt, IList<AxisInfo> axes);
 
 		/// <summary>
 		/// Creates an <see cref="IEllipsoid"/> from an major radius, and inverse flattening.
@@ -100,7 +100,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="WKT">The Well-known text representation for the spatial reference</param>
 		/// <returns>The resulting spatial reference object</returns>
-		ICoordinateSystem CreateFromWkt(string WKT);
+		ICoordinateSystem CreateFromWkt(string wkt);
 
 		/// <summary>
 		/// Creates a <see cref="IGeographicCoordinateSystem"/>, which could be Lat/Lon or Lon/Lat.
@@ -129,7 +129,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="toWgs84">Wgs84 conversion parameters</param>
 		/// <returns>Horizontal datum</returns>
 		IHorizontalDatum CreateHorizontalDatum(string name, DatumType datumType, IEllipsoid ellipsoid, Wgs84ConversionInfo toWgs84);
-				
+
 		/// <summary>
 		/// Creates a <see cref="ILocalCoordinateSystem">local coordinate system</see>.
 		/// </summary>
@@ -144,7 +144,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="unit">Units</param>
 		/// <param name="axes">Axis info</param>
 		/// <returns>Local coordinate system</returns>
-		ILocalCoordinateSystem CreateLocalCoordinateSystem(string name, ILocalDatum datum, IUnit unit, List<AxisInfo> axes);
+		ILocalCoordinateSystem CreateLocalCoordinateSystem(string name, ILocalDatum datum, IUnit unit, IList<AxisInfo> axes);
 
 		/// <summary>
 		/// Creates a <see cref="ILocalDatum"/>.
@@ -182,7 +182,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="wktProjectionClass">Projection class</param>
 		/// <param name="Parameters">Projection parameters</param>
 		/// <returns>Projection</returns>
-		IProjection CreateProjection(string name, string wktProjectionClass, List<ProjectionParameter> Parameters);
+		IProjection CreateProjection(string name, string wktProjectionClass, IList<ProjectionParameter> parameters);
 
 		/// <summary>
 		/// Creates a <see cref="IVerticalCoordinateSystem"/> from a <see cref="IVerticalDatum">datum</see> and <see cref="ILinearUnit">linear units</see>.
@@ -192,7 +192,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="verticalUnit">Unit</param>
 		/// <param name="axis">Axis info</param>
 		/// <returns>Vertical coordinate system</returns>
-		IVerticalCoordinateSystem CreateVerticalCoordinateSystem(string name, IVerticalDatum datum, ILinearUnit verticalUnit, AxisInfo axis);			
+		IVerticalCoordinateSystem CreateVerticalCoordinateSystem(string name, IVerticalDatum datum, ILinearUnit verticalUnit, AxisInfo axis);
 
 		/// <summary>
 		/// Creates a <see cref="IVerticalDatum"/> from an enumerated type value.
@@ -201,7 +201,5 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="datumType">Type of datum</param>
 		/// <returns>Vertical datum</returns>	
 		IVerticalDatum CreateVerticalDatum(string name, DatumType datumType);
-
-		
 	}
 }

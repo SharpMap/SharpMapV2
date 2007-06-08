@@ -21,17 +21,20 @@ namespace UnitTests
 			IEllipsoid ellipsoid = cFac.CreateFlattenedSphere("Clarke 1866", 6378206.4, 294.9786982138982, LinearUnit.USSurveyFoot);
 
 			IHorizontalDatum datum = cFac.CreateHorizontalDatum("Clarke 1866", DatumType.HD_Geocentric, ellipsoid, null);
+			
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Clarke 1866", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-            //System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-            System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			
+			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
+			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("central_meridian", -96));
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 23));
 			parameters.Add(new ProjectionParameter("standard_parallel_1", 29.5));
 			parameters.Add(new ProjectionParameter("standard_parallel_2", 45.5));
 			parameters.Add(new ProjectionParameter("false_easting", 0));
 			parameters.Add(new ProjectionParameter("false_northing", 0));
+			
 			IProjection projection = cFac.CreateProjection("Albers Conical Equal Area", "albers", parameters);
 
 			IProjectedCoordinateSystem coordsys = cFac.CreateProjectedCoordinateSystem("Albers Conical Equal Area", gcs, projection, LinearUnit.Metre, new AxisInfo("East", AxisOrientationEnum.East), new AxisInfo("North", AxisOrientationEnum.North));
@@ -46,6 +49,7 @@ namespace UnitTests
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05), String.Format("Albers forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Albers reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
+
 		[Test]
 		public void TestMercator_1SP_Projection()
 		{
@@ -57,8 +61,8 @@ namespace UnitTests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Bessel 1840", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-            //System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-            System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
+			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 0));
 			parameters.Add(new ProjectionParameter("central_meridian", 110));
 			parameters.Add(new ProjectionParameter("scale_factor", 0.997));
@@ -78,6 +82,7 @@ namespace UnitTests
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("Mercator_1SP forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Mercator_1SP reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
+
 		[Test]
 		public void TestMercator_2SP_Projection()
 		{
@@ -89,8 +94,8 @@ namespace UnitTests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Krassowski 1940", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-            //System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-            System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
+			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 42));
 			parameters.Add(new ProjectionParameter("central_meridian", 51));
 			parameters.Add(new ProjectionParameter("false_easting", 0));
@@ -109,6 +114,7 @@ namespace UnitTests
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("Mercator_2SP forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Mercator_2SP reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
+
 		[Test]
 		public void TestTransverseMercator_Projection()
 		{
@@ -120,8 +126,8 @@ namespace UnitTests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Airy 1830", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-            //System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-            System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
+			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 49));
 			parameters.Add(new ProjectionParameter("central_meridian", -2));
 			parameters.Add(new ProjectionParameter("scale_factor", 0.9996012717));
@@ -141,6 +147,7 @@ namespace UnitTests
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("TransverseMercator forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("TransverseMercator reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
+
 		[Test]
 		public void TestLambertConicConformal2SP_Projection()
 		{
@@ -152,8 +159,8 @@ namespace UnitTests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Clarke 1866", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-            //System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-            System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
+			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 27.833333333));
 			parameters.Add(new ProjectionParameter("central_meridian", -99));
 			parameters.Add(new ProjectionParameter("standard_parallel_1", 28.3833333333));
@@ -178,13 +185,13 @@ namespace UnitTests
 
 		[Test]
 		public void TestGeocentric()
-		{			
+		{
 			CoordinateSystemFactory cFac = new CoordinateSystemFactory();
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("ETRF89 Geographic", AngularUnit.Degrees, HorizontalDatum.ETRF89, PrimeMeridian.Greenwich,
 				new AxisInfo("East", AxisOrientationEnum.East), new AxisInfo("North", AxisOrientationEnum.North));
 			IGeocentricCoordinateSystem gcenCs = cFac.CreateGeocentricCoordinateSystem("ETRF89 Geocentric", HorizontalDatum.ETRF89, LinearUnit.Metre, PrimeMeridian.Greenwich);
 			CoordinateTransformationFactory gtFac = new CoordinateTransformationFactory();
-			ICoordinateTransformation ct = gtFac.CreateFromCoordinateSystems(gcs,gcenCs);
+			ICoordinateTransformation ct = gtFac.CreateFromCoordinateSystems(gcs, gcenCs);
 			Point pExpected = Point.FromDMS(2, 7, 46.38, 53, 48, 33.82);
 			Point3D pExpected3D = new Point3D(pExpected.X, pExpected.Y, 73.0);
 			Point3D p0 = new Point3D(3771793.97, 140253.34, 5124304.35);
@@ -218,8 +225,8 @@ namespace UnitTests
 			IGeocentricCoordinateSystem gcenCsED50 = cFac.CreateGeocentricCoordinateSystem("ED50 Geocentric", ed50, LinearUnit.Metre, PrimeMeridian.Greenwich);
 
 			//Define projections
-            //System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-            System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
+			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 0));
 			parameters.Add(new ProjectionParameter("central_meridian", 9));
 			parameters.Add(new ProjectionParameter("scale_factor", 0.9996));
@@ -230,11 +237,11 @@ namespace UnitTests
 			IProjectedCoordinateSystem utmWGS84 = cFac.CreateProjectedCoordinateSystem("WGS84 UTM Zone 32N", gcsWGS84, projection, LinearUnit.Metre, new AxisInfo("East", AxisOrientationEnum.East), new AxisInfo("North", AxisOrientationEnum.North));
 
 			//Set TOWGS84 parameters
-			wgs72.Wgs84Parameters = new Wgs84ConversionInfo(0, 0, 4.5, 0, 0, 0.554, 0.219);			
+			wgs72.Wgs84Parameters = new Wgs84ConversionInfo(0, 0, 4.5, 0, 0, 0.554, 0.219);
 			ed50.Wgs84Parameters = new Wgs84ConversionInfo(-81.0703, -89.3603, -115.7526,
 														   -0.48488, -0.02436, -0.41321,
 														   -0.540645); //Parameters for Denmark
-			
+
 			//Set up coordinate transformations
 			CoordinateTransformationFactory ctFac = new CoordinateTransformationFactory();
 			ICoordinateTransformation ctForw = ctFac.CreateFromCoordinateSystems(gcsWGS72, gcenCsWGS72); //Geographic->Geocentric (WGS72)
@@ -245,7 +252,7 @@ namespace UnitTests
 
 			//Test datum-shift from WGS72 to WGS84
 			//Point3D pGeoCenWGS72 = ctForw.MathTransform.Transform(pLongLatWGS72) as Point3D;
-			Point3D pGeoCenWGS72 = new Point3D(3657660.66, 255768.55, 5201382.11);			
+			Point3D pGeoCenWGS72 = new Point3D(3657660.66, 255768.55, 5201382.11);
 			ICoordinateTransformation geocen_ed50_2_Wgs84 = ctFac.CreateFromCoordinateSystems(gcenCsWGS72, gcenCsWGS84);
 			Point3D pGeoCenWGS84 = geocen_ed50_2_Wgs84.MathTransform.Transform(pGeoCenWGS72) as Point3D;
 			//Point3D pGeoCenWGS84 = wgs72.Wgs84Parameters.Apply(pGeoCenWGS72);
@@ -265,10 +272,12 @@ namespace UnitTests
 			//ED50_to_WGS84_Denmark: datum.Wgs84Parameters = new Wgs84ConversionInfo(-89.5, -93.8, 127.6, 0, 0, 4.5, 1.2);
 
 		}
+
 		private bool ToleranceLessThan(Point p1, Point p2, double tolerance)
 		{
 			return Math.Abs(p1.X - p2.X) < tolerance && Math.Abs(p1.Y - p2.Y) < tolerance;
 		}
+
 		private bool ToleranceLessThan(Point3D p1, Point3D p2, double tolerance)
 		{
 			return Math.Abs(p1.X - p2.X) < tolerance && Math.Abs(p1.Y - p2.Y) < tolerance && Math.Abs(p1.Z - p2.Z) < tolerance;

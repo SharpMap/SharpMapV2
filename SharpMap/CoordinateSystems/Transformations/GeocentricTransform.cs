@@ -217,11 +217,11 @@ namespace SharpMap.CoordinateSystems.Transformations
 			_isInverse = !_isInverse;
 		}
 
-		public override string WKT
+		public override string Wkt
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }
 		}
-		public override string XML
+		public override string Xml
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }
 		}

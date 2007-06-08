@@ -239,12 +239,12 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string WKT
+		public override string Wkt
 		{
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat("DATUM[\"{0}\", {1}", Name, _Ellipsoid.WKT);
+				sb.AppendFormat("DATUM[\"{0}\", {1}", Name, _Ellipsoid.Wkt);
 				if(_Wgs84ConversionInfo!=null)
 					sb.AppendFormat(", {0}", _Wgs84ConversionInfo.WKT);
 				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
@@ -257,13 +257,13 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string XML
+		public override string Xml
 		{
 			get
 			{
                 return String.Format(SharpMap.Map.Map.NumberFormat_EnUS,
 					"<CS_HorizontalDatum DatumType=\"{0}\">{1}{2}{3}</CS_HorizontalDatum>",
-					(int)DatumType, InfoXml, Ellipsoid.XML, (Wgs84Parameters==null?String.Empty:Wgs84Parameters.XML));
+					(int)DatumType, InfoXml, Ellipsoid.Xml, (Wgs84Parameters==null?String.Empty:Wgs84Parameters.XML));
 			}
 		}
 

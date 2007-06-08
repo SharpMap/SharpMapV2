@@ -98,12 +98,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 				ic.MathTransform.Invert();
 		}
 
-		public override string WKT
+		public override string Wkt
 		{
 			get { throw new Exception("The method or operation is not implemented."); }
 		}
 
-		public override string XML
+		public override string Xml
 		{
 			get { throw new Exception("The method or operation is not implemented."); }
 		}

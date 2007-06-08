@@ -13,12 +13,12 @@ namespace UnitTests.Geometries
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 50);
 			BoundingBox b2 = new BoundingBox(-20, 56, 70, 75);
 			BoundingBox bJoined = new BoundingBox(-20, 30, 70, 75);
-			Assert.AreEqual(bJoined,b1.Join(b2));
-			BoundingBox box = null;
+			Assert.AreEqual(bJoined, b1.Join(b2));
+			BoundingBox box = BoundingBox.Empty;
 			Assert.AreEqual(b1, b1.Join(box));
-			Assert.AreEqual(bJoined, BoundingBox.Join(b1,b2));
-			Assert.AreEqual(b2, BoundingBox.Join(null,b2));
-			Assert.AreEqual(b1, BoundingBox.Join(b1, null));
+			Assert.AreEqual(bJoined, BoundingBox.Join(b1, b2));
+			Assert.AreEqual(b2, BoundingBox.Join(BoundingBox.Empty, b2));
+			Assert.AreEqual(b1, BoundingBox.Join(b1, BoundingBox.Empty));
 			Assert.AreEqual(bJoined, BoundingBox.Join(b2, b1));
 		}
 		[Test]
@@ -35,7 +35,7 @@ namespace UnitTests.Geometries
 			Assert.AreEqual(55, b1.Max.Y);
 			Assert.AreEqual(20, b1.Width);
 			Assert.AreEqual(25, b1.Height);
-			Assert.AreNotSame(b1, b1.Clone());
+			//Assert.AreNotSame(b1, b1.Clone());
 			Assert.IsTrue(b1.Contains(new Point(30, 40)));
 			Assert.IsTrue(b1.Contains(new Point(20, 40)));
 			Assert.IsFalse(b1.Contains(new Point(10, 10)));
@@ -45,13 +45,13 @@ namespace UnitTests.Geometries
 			Assert.IsFalse(b1.Contains(new Point(30, 15)));
 			Assert.IsTrue(b1.Equals(new BoundingBox(20, 30, 40, 55)));
 			Assert.AreEqual(new Point(30, 42.5), b1.GetCentroid());
-			Assert.AreEqual(1, b1.LongestAxis);
+			//Assert.AreEqual(1, b1.LongestAxis);
 			Assert.AreEqual(new BoundingBox(19, 29, 41, 56), b1.Grow(1));
 			Assert.IsFalse(b1.Equals(null));
 			Assert.IsFalse(b1.Equals((object)new Polygon()));
 			Assert.AreEqual("20,30 40,55", b1.ToString());
-			Assert.AreEqual(b1,new BoundingBox(40,55,20,30));
-			Assert.AreEqual(Math.Sqrt(200), b1.Distance(new BoundingBox(50,65,60,75)));
+			Assert.AreEqual(b1, new BoundingBox(40, 55, 20, 30));
+			Assert.AreEqual(Math.Sqrt(200), b1.Distance(new BoundingBox(50, 65, 60, 75)));
 		}
 		[Test]
 		public void TestIntersect()

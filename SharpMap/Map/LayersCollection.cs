@@ -25,7 +25,12 @@ namespace SharpMap.Map
         public ILayer Find(Predicate<ILayer> predicate)
         {
             return _layers.Find(predicate);
-        }
+		}
+
+		public IEnumerable<ILayer> FindAll(Predicate<ILayer> predicate)
+		{
+			return _layers.FindAll(predicate);
+		}
 
         public void AddLayers(IEnumerable<ILayer> layers)
         {

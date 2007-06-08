@@ -131,15 +131,15 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string WKT
+		public override string Wkt
 		{
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat("PROJCS[\"{0}\", {1}, {2}",Name, GeographicCoordinateSystem.WKT, Projection.WKT);
+				sb.AppendFormat("PROJCS[\"{0}\", {1}, {2}",Name, GeographicCoordinateSystem.Wkt, Projection.Wkt);
 				for(int i=0;i<Projection.NumParameters;i++)
                     sb.AppendFormat(SharpMap.Map.Map.NumberFormat_EnUS, ", {0}", Projection.GetParameter(i).WKT);
-				sb.AppendFormat(", {0}", LinearUnit.WKT);
+				sb.AppendFormat(", {0}", LinearUnit.Wkt);
 				//Skip axis info if they contain default values
 				if (AxisInfo.Count != 2 ||
 					AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientationEnum.East ||
@@ -156,7 +156,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		public override string XML
+		public override string Xml
 		{
 			get
 			{
@@ -168,7 +168,7 @@ namespace SharpMap.CoordinateSystems
 					sb.Append(ai.XML);
 
 				sb.AppendFormat("{0}{1}{2}</CS_ProjectedCoordinateSystem></CS_CoordinateSystem>",
-					GeographicCoordinateSystem.XML, LinearUnit.XML, Projection.XML);
+					GeographicCoordinateSystem.Xml, LinearUnit.Xml, Projection.Xml);
 				return sb.ToString();
 			}
 		}

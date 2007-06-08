@@ -76,9 +76,9 @@ namespace SharpMap.Data.Providers
         /// Initializes a new instance of the <see cref="GeometryProvider"/>
         /// </summary>
         /// <param name="geometries">Set of geometries that this datasource should contain</param>
-        public GeometryProvider(List<Geometry> geometries)
+        public GeometryProvider(IEnumerable<Geometry> geometries)
         {
-            _geometries = geometries;
+            _geometries = new List<Geometry>(geometries);
         }
 
         /// <summary>
