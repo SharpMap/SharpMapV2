@@ -19,10 +19,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using SharpMap.Rendering;
 using SharpMap.Styles;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Presentation
 {
+    /// <summary>
+    /// Represents a selection on a map view.
+    /// </summary>
+    /// <typeparam name="TViewPoint">The type of point in this selection.</typeparam>
+    /// <typeparam name="TViewSize">The type of size structure in this selection.</typeparam>
+    /// <typeparam name="TViewRegion">The type of region this selection covers.</typeparam>
+    /// <remarks>
+    /// The type parameters allows this class to be customized for to accomodate structures
+    /// which represent points and areas in various dimensions.
+    /// </remarks>
     public abstract class ViewSelection<TViewPoint, TViewSize, TViewRegion> : IViewSelection<TViewPoint, TViewSize, TViewRegion>
         where TViewPoint : IViewVector
         where TViewSize : IViewVector
@@ -30,12 +41,19 @@ namespace SharpMap.Rendering
     {
         private GraphicsPath<TViewPoint, TViewRegion> _path;
         private StylePen _outline;
-        private StyleColor _fill;
+        private StyleBrush _fill;
         private TViewPoint _anchorPoint;
         private TViewRegion _boundingRegion = new TViewRegion();
 
+        /// <summary>
+        /// The default style of the selection outline.
+        /// </summary>
         public static readonly StylePen DefaultOutline;
-        public static StyleColor DefaultFill = new StyleColor(255, 32, 32, 32);
+
+        /// <summary>
+        /// The default fill of the selection.
+        /// </summary>
+        public static readonly StyleBrush DefaultFill = new SolidStyleBrush(new StyleColor(255, 32, 32, 32));
 
         static ViewSelection()
         {
@@ -45,6 +63,10 @@ namespace SharpMap.Rendering
             DefaultOutline.DashPattern = new float[] { 4, 4 };
         }
 
+        /// <summary>
+        /// Creates a new selection using the <see cref="DefaultOutline"/> and <see cref="DefaultFill"/>
+        /// for the <see cref="OutlineStyle"/> and <see cref="FillColor"/> respectively.
+        /// </summary>
         public ViewSelection()
         {
             _path = CreatePath();
@@ -52,6 +74,10 @@ namespace SharpMap.Rendering
             _fill = DefaultFill;
         }
 
+        /// <summary>
+        /// Creates a new path for the selection, but doesn't add it to the selection.
+        /// </summary>
+        /// <returns>A GraphicsPath instance representing a new selection path.</returns>
         protected abstract GraphicsPath<TViewPoint, TViewRegion> CreatePath();
 
         #region IViewSelection<TViewPoint,TViewSize,TViewRegion> Members
@@ -74,7 +100,7 @@ namespace SharpMap.Rendering
             recomputeBoundingRegion();
         }
 
-        public void MoveTo(TViewPoint location)
+        public void MoveBy(TViewPoint location)
         {
             throw new NotImplementedException("implement this");
         }
@@ -101,6 +127,7 @@ namespace SharpMap.Rendering
         }
 
         #endregion
+        
         public StylePen OutlineStyle
         {
             get { return _outline; }
@@ -113,7 +140,7 @@ namespace SharpMap.Rendering
             }
         }
 
-        public StyleColor FillColor
+        public StyleBrush FillBrush
         {
             get { return _fill; }
             private set { _fill = value; }

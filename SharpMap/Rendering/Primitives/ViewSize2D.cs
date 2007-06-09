@@ -44,7 +44,7 @@ namespace SharpMap.Rendering
 
         public override string ToString()
         {
-            return String.Format("Size - width: {0}, height: {1}", Width, Height);
+            return String.Format("[ViewSize2D] Width: {0}, Height: {1}", Width, Height);
         }
 
         public static bool operator != (ViewSize2D size1, ViewSize2D size2)

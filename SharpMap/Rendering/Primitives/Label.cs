@@ -26,7 +26,7 @@ using SharpMap.Styles;
 namespace SharpMap.Rendering
 {
 	/// <summary>
-	/// Class for storing a label instance
+	/// Class for storing a label instance.
 	/// </summary>
 	public class Label : IComparable<Label>, IComparer<Label>
     {
@@ -39,7 +39,7 @@ namespace SharpMap.Rendering
         private ViewRectangle2D? _box;
 
 		/// <summary>
-		/// Initializes a new Label instance
+		/// Initializes a new Label instance.
 		/// </summary>
 		/// <param name="text">Text to write</param>
 		/// <param name="labelpoint">Position of label</param>
@@ -56,6 +56,12 @@ namespace SharpMap.Rendering
 			_box = collisionArea;
 			_style = style;
 		}
+
+        public override string ToString()
+        {
+            return String.Format("[{0}] Text: {1}; LabelPoint: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Box: {6}",
+                GetType(), Text, LabelPoint, Font, Rotation, Priority, Box);
+        }
 
 		/// <summary>
 		/// The text of the label
@@ -85,7 +91,7 @@ namespace SharpMap.Rendering
 		}
 
 		/// <summary>
-		/// Label rotation
+		/// Label rotation.
 		/// </summary>
 		public float Rotation
 		{
@@ -94,7 +100,7 @@ namespace SharpMap.Rendering
 		}
 
 		/// <summary>
-		/// Text rotation in radians
+        /// Priority in layout.
 		/// </summary>
 		public int Priority
 		{
@@ -103,7 +109,7 @@ namespace SharpMap.Rendering
 		}
 
 		/// <summary>
-		/// Label box
+		/// Label box.
 		/// </summary>
 		public ViewRectangle2D? Box
 		{
@@ -112,7 +118,7 @@ namespace SharpMap.Rendering
 		}
 
 		/// <summary>
-		/// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label
+		/// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.
 		/// </summary>
 		public LabelStyle Style
 		{

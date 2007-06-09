@@ -6,7 +6,7 @@ using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using NUnit.Framework;
 
-namespace UnitTests.Converters.WKT
+namespace SharpMap.Tests.Converters.Wkt
 {
 	[TestFixture]
 	public class WKTCoordSysParserTests

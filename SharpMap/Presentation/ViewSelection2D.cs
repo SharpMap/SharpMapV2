@@ -19,17 +19,34 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+using SharpMap.Rendering;
+
+namespace SharpMap.Presentation
 {
+    /// <summary>
+    /// A representation of a selection on a 2D view surface.
+    /// </summary>
     public class ViewSelection2D : ViewSelection<ViewPoint2D, ViewSize2D, ViewRectangle2D>
     {
-        public static ViewSelection2D CreateRectangluarSelection(ViewPoint2D location, ViewSize2D size)
+        public override string ToString()
+        {
+            return String.Format("[ViewSelection2D] Bounds: {0}", this.Path.Bounds);
+        }
+
+        /// <summary>
+        /// Creates a rectangular selection.
+        /// </summary>
+        /// <param name="upperLeft">The upper left point of the rectangle.</param>
+        /// <param name="size">The size of the rectangle.</param>
+        /// <returns>A ViewSelection2D rectangular selection with upper left corner at <paramref name="upperLeft"/> and
+        /// the given <paramref name="size"/>.</returns>
+        public static ViewSelection2D CreateRectangluarSelection(ViewPoint2D upperLeft, ViewSize2D size)
         {
             ViewSelection2D selection = new ViewSelection2D();
-            selection.AddPoint(location);
-            selection.AddPoint(location);
-            selection.AddPoint(location);
-            selection.AddPoint(location);
+            selection.AddPoint(upperLeft);
+            selection.AddPoint(upperLeft);
+            selection.AddPoint(upperLeft);
+            selection.AddPoint(upperLeft);
 
             selection.Expand(size);
             

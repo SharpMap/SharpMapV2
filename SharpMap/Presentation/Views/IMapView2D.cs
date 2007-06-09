@@ -28,7 +28,7 @@ namespace SharpMap.Presentation
 {
     public interface IMapView2D
     {
-        MapViewPort2D ViewPort { get; }
+        MapViewPort2D ViewPort { get; set; }
         double Dpi { get; }
         void ShowRenderedObject(ViewPoint2D location, object renderedObject);
         event EventHandler<MapActionEventArgs<ViewPoint2D>> Hover;

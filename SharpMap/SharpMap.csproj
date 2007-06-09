@@ -201,7 +201,7 @@
     <Compile Include="Rendering\Primitives\GraphicsFigure.cs" />
     <Compile Include="Rendering\Primitives\GraphicsFigure2D.cs" />
     <Compile Include="Rendering\Primitives\GraphicsPath2D.cs" />
-    <Compile Include="Rendering\Primitives\IViewSelection.cs" />
+    <Compile Include="Presentation\IViewSelection.cs" />
     <Compile Include="Rendering\Renderers\IFeatureRenderer.cs" />
     <Compile Include="Rendering\Renderers\PositionedRenderObject.cs" />
     <Compile Include="Rendering\Renderers\BaseRasterRenderer2D.cs" />
@@ -240,8 +240,8 @@
     <Compile Include="Rendering\RenderExceptions.cs" />
     <Compile Include="Rendering\Primitives\ViewPoint2D.cs" />
     <Compile Include="Rendering\3D\ViewRectangle3D.cs" />
-    <Compile Include="Rendering\Primitives\ViewSelection.cs" />
-    <Compile Include="Rendering\Primitives\ViewSelection2D.cs" />
+    <Compile Include="Presentation\ViewSelection.cs" />
+    <Compile Include="Presentation\ViewSelection2D.cs" />
     <Compile Include="Rendering\Primitives\ViewSize2D.cs" />
     <Compile Include="Styles\ColorBlend.cs" />
     <Compile Include="Rendering\Thematics\CustomTheme.cs" />

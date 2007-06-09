@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using SharpMap.Geometries;
 
-namespace UnitTests.Geometries
+namespace SharpMap.Tests.Geometries
 {
 	[TestFixture]
 	public class MultiLinestringsTests

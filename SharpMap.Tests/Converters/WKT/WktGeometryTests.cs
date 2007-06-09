@@ -4,7 +4,8 @@ using System.Text;
 using NUnit.Framework;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.Geometries;
-namespace UnitTests.Converters.WKT
+
+namespace SharpMap.Tests.Converters.Wkt
 {
 	[TestFixture]
 	public class WktGeometryTests

@@ -8,7 +8,7 @@ using SharpMap.CoordinateSystems.Transformations;
 
 using NUnit.Framework;
 
-namespace UnitTests
+namespace SharpMap.Tests
 {
 	[TestFixture]
 	public class CoordinateTransformTests

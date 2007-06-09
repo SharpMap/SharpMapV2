@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using SharpMap.Geometries;
 
-namespace UnitTests.Geometries
+namespace SharpMap.Tests.Geometries
 {
 	[TestFixture]
 	public class PolygonTests

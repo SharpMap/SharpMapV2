@@ -49,6 +49,7 @@ namespace SharpMap.Presentation
         {
             _map = map;
             _viewDpi = viewDpi;
+            _worldUnitsPerInch = viewDpi;   // This gives an initial zoom equal to the width of the view...
         }
 
         /// <summary>
@@ -129,7 +130,7 @@ namespace SharpMap.Presentation
             {
                 if (value != _viewSize)
                 {
-                    setViewMetricsInternal(_viewSize, _center, Zoom);
+                    setViewMetricsInternal(_viewSize, _center, WorldUnitsPerPixel);
                 }
             }
         }
@@ -152,7 +153,7 @@ namespace SharpMap.Presentation
         public GeoPoint GeoCenter
         {
             get { return _center.Clone(); }
-            set { setViewMetricsInternal(ViewSize, value, Zoom); }
+            set { setViewMetricsInternal(ViewSize, value, WorldUnitsPerPixel); }
         }
 
         /// <summary>
@@ -165,7 +166,11 @@ namespace SharpMap.Presentation
         public double Zoom
         {
             get { return WorldUnitsPerPixel * ViewSize.Width; }
-            set { setViewMetricsInternal(ViewSize, GeoCenter, value); }
+            set 
+            {
+                double worldUnitsPerPixel = value / ViewSize.Width;
+                setViewMetricsInternal(ViewSize, GeoCenter, worldUnitsPerPixel);
+            }
         }
 
         /// <summary>
@@ -482,7 +487,7 @@ namespace SharpMap.Presentation
                 return;
             }
 
-            setViewMetricsInternal(ViewSize, newCenter, Zoom);
+            setViewMetricsInternal(ViewSize, newCenter, WorldUnitsPerPixel);
         }
 
         private void setViewEnvelopeInternal(BoundingBox newEnvelope)
@@ -509,14 +514,15 @@ namespace SharpMap.Presentation
                 newWidth = _maximumZoom;
             }
 
+            throw new NotImplementedException();
             setViewMetricsInternal(ViewSize, newEnvelope.GetCentroid(), newWidth);
         }
 
-        private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint center, double widthInWorldUnits)
+        private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint center, double worldUnitsPerPixel)
         {
-            double currentWorldUnitWidth = Zoom;
+            double currentWorldUnitsPerPixel = Zoom;
 
-            if (newViewSize == _viewSize && center == _center && widthInWorldUnits == currentWorldUnitWidth)
+            if (newViewSize == _viewSize && center == _center && worldUnitsPerPixel == currentWorldUnitsPerPixel)
             {
                 return;
             }
@@ -538,9 +544,9 @@ namespace SharpMap.Presentation
                 OnMapCenterChanged(oldCenter, _center);
             }
 
-            if (currentWorldUnitWidth != widthInWorldUnits)
+            if (currentWorldUnitsPerPixel != worldUnitsPerPixel)
             {
-                OnZoomChanged(widthInWorldUnits, currentWorldUnitWidth, oldCenter, _center);
+                OnZoomChanged(worldUnitsPerPixel, currentWorldUnitsPerPixel, oldCenter, _center);
             }
         }
         #endregion

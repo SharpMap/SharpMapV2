@@ -136,7 +136,7 @@ namespace SharpMap.Rendering
 
         public override string ToString()
         {
-            return String.Format("GraphicsPath - {0} figures of {1} points; Bounds: {2}", Figures.Count, typeof(TViewPoint).Name, ComputeBounds());
+            return String.Format("[{0}] {1} figures of {2} points; Bounds: {3}", GetType(), Figures.Count, typeof(TViewPoint).Name, ComputeBounds());
         }
 
         #region IEnumerable<GraphicsFigure<TViewPoint,TViewBounds>> Members

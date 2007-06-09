@@ -198,6 +198,11 @@ namespace SharpMap.Tools
             _endAction = endAction;
         }
 
+        public override string ToString()
+        {
+            return String.Format("MapTool: {0}", Name);
+        }
+
         public string Name
         {
             get { return _name; }

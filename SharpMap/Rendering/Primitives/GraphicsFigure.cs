@@ -82,7 +82,7 @@ namespace SharpMap.Rendering
 
         public override string ToString()
         {
-            return String.Format("GraphicsFigure - {0} {1} points", Points.Count, typeof(TViewPoint).Name);
+            return String.Format("[{0}] {1} {2} points", GetType(), Points.Count, typeof(TViewPoint).Name);
         }
 
         #region IEnumerable<TViewPoint> Members

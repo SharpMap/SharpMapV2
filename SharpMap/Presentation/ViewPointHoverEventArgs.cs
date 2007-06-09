@@ -34,5 +34,10 @@ namespace SharpMap.Presentation
             get { return _viewPoint; }
             set { _viewPoint = value; }
         }
+
+        public override string ToString()
+        {
+            return String.Format("[{0}] ViewPoint: {1}", GetType(), ViewPoint);
+        }
     }
 }

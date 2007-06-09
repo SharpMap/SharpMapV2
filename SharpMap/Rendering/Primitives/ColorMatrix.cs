@@ -59,6 +59,11 @@ namespace SharpMap.Rendering
             this._w4 = matrixToCopy._w4;
         }
 
+        public override string ToString()
+        {
+            return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}", GetType(), R, G, B, A);
+        }
+
         public double R
         {
             get { return _r1; }

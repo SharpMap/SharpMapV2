@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using SharpMap.Geometries;
 
-namespace UnitTests.Converters.WKB
+namespace SharpMap.Tests.Converters.Wkb
 {
 	[TestFixture]
 	public class WKBTests

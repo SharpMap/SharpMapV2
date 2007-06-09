@@ -6,14 +6,16 @@ using System.Text;
 
 using NUnit.Framework;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 using SharpMap.Map;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation;
 using SharpMap.Rendering;
 using SharpMap.Styles;
 
-namespace UnitTests
+namespace SharpMap.Tests
 {
 	[TestFixture]
 	public class MapTest
@@ -21,28 +23,46 @@ namespace UnitTests
 		[Test]
 		public void Initalize_MapInstance()
 		{
-			MockRepository mocks = new MockRepository();
+            MockRepository mocks = new MockRepository();
 
-			Map map = new SharpMap.Map.Map();
-			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
-			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
-			Expect.On(mapView).Call(mapView.ViewPort).Return(viewPort);
+            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 
-			mapView.ViewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(100, 100);
+            mapView.BeginAction += null;
+            LastCall.IgnoreArguments();
+            IEventRaiser beginAction = LastCall.GetEventRaiser();
 
-			mocks.ReplayAll();
+            mapView.EndAction += null;
+            LastCall.IgnoreArguments();
+            IEventRaiser endAction = LastCall.GetEventRaiser();
+
+            mapView.Hover += null;
+            LastCall.IgnoreArguments();
+            IEventRaiser hoverAction = LastCall.GetEventRaiser();
+
+            mapView.MoveTo += null;
+            LastCall.IgnoreArguments();
+            IEventRaiser moveToAction = LastCall.GetEventRaiser();
+
+            Expect.On(mapView).Call(mapView.ViewPort).Repeat.Twice().Return(viewPort);
+
+            mocks.ReplayAll();
+
+            MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+
+			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(100, 100);
 
 			Assert.IsNotNull(map);
 			Assert.IsNotNull(map.Layers);
-			Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Width);
-			Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Height);
-			Assert.AreEqual(System.Drawing.Color.Transparent, mapView.ViewPort.BackColor);
-			Assert.AreEqual(double.MaxValue, mapView.ViewPort.MaximumZoom);
-			Assert.AreEqual(0, mapView.ViewPort.MinimumZoom);
-            Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
-            Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), mapView.ViewPort.GeoCenter, "mapView.ViewPort.GeoCenter should be initialized to (0,0)");
+            Assert.AreEqual(100f, viewPort.ViewSize.Width);
+            Assert.AreEqual(100f, viewPort.ViewSize.Height);
+            Assert.AreEqual(StyleColor.Transparent, viewPort.BackColor);
+            Assert.AreEqual(double.MaxValue, viewPort.MaximumZoom);
+            Assert.AreEqual(0, viewPort.MinimumZoom);
+            Assert.AreEqual(new Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
+            Assert.AreEqual(new Point(0, 0), mapView.ViewPort.GeoCenter, "mapView.ViewPort.GeoCenter should be initialized to (0,0)");
 			Assert.AreEqual(1, mapView.ViewPort.Zoom, "Map zoom should be initialized to 1.0");
 		}
 
@@ -135,7 +155,7 @@ namespace UnitTests
 		{
 			MockRepository mocks = new MockRepository();
 
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
@@ -152,7 +172,7 @@ namespace UnitTests
 		{
 			MockRepository mocks = new MockRepository();
 
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
@@ -173,7 +193,7 @@ namespace UnitTests
 		{
 			MockRepository mocks = new MockRepository();
 
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
@@ -191,7 +211,7 @@ namespace UnitTests
 		{
 			MockRepository mocks = new MockRepository();
 
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
@@ -208,7 +228,7 @@ namespace UnitTests
 		[ExpectedException(typeof(ArgumentException))]
 		public void SetMinimumZoom_NegativeValue_ThrowException()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
 			viewPort.MinimumZoom = -1;
@@ -218,7 +238,7 @@ namespace UnitTests
 		[ExpectedException(typeof(ArgumentException))]
 		public void SetMaximumZoom_NegativeValue_ThrowException()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
 			viewPort.MaximumZoom = -1;
@@ -227,7 +247,7 @@ namespace UnitTests
 		[Test]
 		public void SetMaximumZoom_OKValue()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
 			viewPort.MaximumZoom = 100.3;
@@ -237,7 +257,7 @@ namespace UnitTests
 		[Test]
 		public void SetMinimumZoom_OKValue()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
 			viewPort.MinimumZoom = 100.3;
@@ -247,7 +267,7 @@ namespace UnitTests
 		[Test]
 		public void SetZoom_ValueOutsideMax()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
 			viewPort.MaximumZoom = 100;
@@ -258,7 +278,7 @@ namespace UnitTests
 		[Test]
 		public void SetZoom_ValueBelowMin()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 
 			viewPort.MaximumZoom = 100;
@@ -269,7 +289,7 @@ namespace UnitTests
 		[Test]
 		public void ZoomToBox_NoAspectCorrection()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
 
@@ -281,7 +301,7 @@ namespace UnitTests
 		[Test]
 		public void ZoomToBox_WithAspectCorrection()
 		{
-			Map map = new SharpMap.Map.Map();
+            SharpMap.Map.Map map = new SharpMap.Map.Map();
 			MapViewPort2D viewPort = new MapViewPort2D(map, ScreenHelper.Dpi);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
 
@@ -390,76 +410,43 @@ namespace UnitTests
 
 		static ScreenHelper()
 		{
-			IntPtr dc = CreateDC("DISPLAY", null, null, null);
-			DEVMODE devMode = new DEVMODE();
-			devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
+            IntPtr dc = IntPtr.Zero;
 
-			if (EnumDisplaySettingsEx(null, ENUM_CURRENT_SETTINGS, ref devMode, 0) == false)
-			{
-				// Can't query the DPI - just guess the most likely
-				Dpi = 96;
-				return;
-			}
+            try
+            {
+                dc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
 
-			Dpi = devMode.dmLogPixels;
+                int dpi = GetDeviceCaps(dc, LOGPIXELSX);
+
+                if (dpi == 0)
+                {
+                    // Can't query the DPI - just guess the most likely
+                    Dpi = 96;
+                }
+                else
+                {
+                    Dpi = dpi;
+                }
+            }
+            finally
+            {
+                if (dc != IntPtr.Zero)
+                {
+                    DeleteDC(dc);
+                }
+            }
 		}
 
 		[DllImport("Gdi32")]
-		private static extern IntPtr CreateDC(string driver, string device, string output, object initData);
+		private static extern IntPtr CreateDC(string driver, string device, string output, IntPtr initData);
 
 		[DllImport("Gdi32")]
 		private static extern void DeleteDC(IntPtr dc);
 
-		[DllImport("Gdi32")]
-		private static extern bool EnumDisplaySettingsEx(string deviceName, int modeNum, ref DEVMODE devMode, int flags);
+        [DllImport("Gdi32")]
+        static extern int GetDeviceCaps(IntPtr hdc, int index);
 
-		private const int ENUM_CURRENT_SETTINGS = -1;
-
-		[StructLayout(LayoutKind.Sequential)]
-		private struct DEVMODE
-		{
-			public const int CCHDEVICENAME = 32;
-			public const int CCHFORMNAME = 32;
-
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)]
-			public string dmDeviceName;
-			public short dmSpecVersion;
-			public short dmDriverVersion;
-			public short dmSize;
-			public short dmDriverExtra;
-			public int dmFields;
-
-			public short dmOrientation;
-			public short dmPaperSize;
-			public short dmPaperLength;
-			public short dmPaperWidth;
-
-			public short dmScale;
-			public short dmCopies;
-			public short dmDefaultSource;
-			public short dmPrintQuality;
-			public short dmColor;
-			public short dmDuplex;
-			public short dmYResolution;
-			public short dmTTOption;
-			public short dmCollate;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)]
-			public string dmFormName;
-			public short dmLogPixels;
-			public short dmBitsPerPel;
-			public int dmPelsWidth;
-			public int dmPelsHeight;
-			public int dmDisplayFlags;
-			public int dmDisplayFrequency;
-
-			public int dmICMMethod;
-			public int dmICMIntent;
-			public int dmMediaType;
-			public int dmDitherType;
-			public int dmReserved1;
-			public int dmReserved2;
-			public int dmPanningWidth;
-			public int dmPanningHeight;
-		}
+        private const int LOGPIXELSX = 88;
+        private const int LOGPIXELSY = 90;
 	}
 }

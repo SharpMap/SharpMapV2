@@ -47,14 +47,22 @@ namespace SharpMap.Presentation
         public MapPresenter2D(SharpMap.Map.Map map, IMapView2D mapView)
         {
             Map = map;
-            
+            Map.LayersAdded += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
+            Map.LayersRemoved += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
+            Map.SelectedFeaturesChanged += new EventHandler(Map_SelectedFeaturesChanged);
+
             MapView = mapView;
             MapView.Hover += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_Hover);
             MapView.BeginAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_BeginAction);
             MapView.MoveTo += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_MoveTo);
             MapView.EndAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_EndAction);
 
-            MapViewPort2D viewPort = new MapViewPort2D(Map, MapView.Dpi);
+            if (MapView.ViewPort == null)
+            {
+                MapView.ViewPort = new MapViewPort2D(Map, MapView.Dpi);
+            }
+
+            MapViewPort2D viewPort = MapView.ViewPort;
             viewPort.CenterChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewPoint2D, Point>>(ViewPort_CenterChanged);
             viewPort.MapTransformChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>>(ViewPort_MapTransformChanged);
             viewPort.MaximumZoomChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MaximumZoomChanged);
@@ -64,10 +72,6 @@ namespace SharpMap.Presentation
             viewPort.StyleRenderingModeChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<StyleRenderingMode>>(ViewPort_StyleRenderingModeChanged);
             viewPort.ViewRectangleChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>>(ViewPort_ViewRectangleChanged);
             viewPort.ZoomChanged += new EventHandler<MapZoomChangedEventArgs>(ViewPort_ZoomChanged);
-            
-            Map.LayersAdded += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
-            Map.LayersRemoved += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
-            Map.SelectedFeaturesChanged += new EventHandler(Map_SelectedFeaturesChanged);
         }
 
         #region IDisposable Members
@@ -78,11 +82,11 @@ namespace SharpMap.Presentation
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) 
-        { 
+        protected virtual void Dispose(bool disposing)
+        {
         }
 
-        #endregion	
+        #endregion
 
         /// <summary>
         /// The map.
@@ -184,7 +188,7 @@ namespace SharpMap.Presentation
             }
 
             IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject> renderer = null;
-            
+
             //_layerRendererCatalog.TryGetValue(layer.GetType().TypeHandle, out renderer);
             renderer = LayerRendererCatalog.Instance.Get<IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>>(layer.GetType());
             return renderer;
@@ -208,7 +212,7 @@ namespace SharpMap.Presentation
 
         protected void ModifySelection(ViewPoint2D location, ViewSize2D size)
         {
-            _selection.MoveTo(location);
+            _selection.MoveBy(location);
             _selection.Expand(size);
         }
 

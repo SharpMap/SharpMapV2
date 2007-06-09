@@ -25,6 +25,9 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Rendering
 {
+    /// <summary>
+    /// Represents a 2 dimensional graphic used for point data on a map.
+    /// </summary>
     public sealed class Symbol2D : ICloneable, IDisposable
     {
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
@@ -141,8 +144,8 @@ namespace SharpMap.Rendering
         /// <returns>A string representing the value of this <see cref="Symbol2D"/>.</returns>
         public override string ToString()
         {
-            return String.Format("Symbol2D - Size: {0}; Data Hash: {1}; Affine Transform: {2}; Color Transform: {3}; Offset: {4}; Rotation: {5}; Scale: {6}",
-                Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, Scale);
+            return String.Format("[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; Scale: {7:N}",
+                GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, Scale);
         }
 
         #region ICloneable Members
