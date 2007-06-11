@@ -31,6 +31,7 @@ namespace SharpMap.Geometries
 	public class Point : Geometry, IComparable<Point>
 	{
         private static readonly Point _empty = new Point();
+		private static readonly Point _zero = new Point(0, 0);
 
 		private double _x = 0.0;
         private double _y = 0.0;
@@ -71,13 +72,24 @@ namespace SharpMap.Geometries
 			return new Point(x, y);
 		}
 
+		/// <summary>
+		/// Gets an empty (uninitialized) point.
+		/// </summary>
         public static Point Empty
         {
             get { return _empty; }
-        }
+		}
 
 		/// <summary>
-		/// Returns a 2D <see cref="Point"/> instance from this <see cref="Point3D"/>
+		/// Gets a point representing (0, 0).
+		/// </summary>
+		public static Point Zero
+		{
+			get { return _zero; }
+		}
+
+		/// <summary>
+		/// Returns a 2D <see cref="Point"/> instance from this <see cref="Point"/>.
 		/// </summary>
 		/// <returns><see cref="Point"/></returns>
 		public Point AsPoint()
