@@ -46,8 +46,8 @@ namespace SharpMap.Utilities
         /// </remarks>
         public static ViewPoint2D WorldToView(GeoPoint worldPoint, MapViewPort2D mapViewPort)
 		{
-            double heightUnit = (mapViewPort.Zoom * mapViewPort.ViewSize.Height) / mapViewPort.ViewSize.Width;
-			double left = mapViewPort.GeoCenter.X - mapViewPort.Zoom * 0.5;
+            double heightUnit = (mapViewPort.WorldWidth * mapViewPort.ViewSize.Height) / mapViewPort.ViewSize.Width;
+            double left = mapViewPort.GeoCenter.X - mapViewPort.WorldWidth * 0.5;
             double top = mapViewPort.GeoCenter.Y + heightUnit * 0.5 * mapViewPort.PixelAspectRatio;
 			double x = (float)((worldPoint.X - left) / mapViewPort.PixelWidth);
 			double y = (float)((top - worldPoint.Y) / mapViewPort.PixelHeight);

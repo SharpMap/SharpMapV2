@@ -42,10 +42,14 @@ namespace SharpMap.Presentation
 
         private ViewPoint2D? _beginActionLocation;
         private ViewPoint2D _lastMoveLocation;
-        //private Dictionary<RuntimeTypeHandle, IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>> _layerRendererCatalog = new Dictionary<RuntimeTypeHandle, IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>>();
 
         public MapPresenter2D(SharpMap.Map.Map map, IMapView2D mapView)
         {
+            if (mapView.ViewPort == null)
+            {
+                throw new InvalidOperationException("Parameter mapView must have an initialized ViewPort property.");
+            }
+
             Map = map;
             Map.LayersAdded += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
             Map.LayersRemoved += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
@@ -57,21 +61,15 @@ namespace SharpMap.Presentation
             MapView.MoveTo += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_MoveTo);
             MapView.EndAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_EndAction);
 
-            if (MapView.ViewPort == null)
-            {
-                MapView.ViewPort = new MapViewPort2D(Map, MapView.Dpi);
-            }
-
             MapViewPort2D viewPort = MapView.ViewPort;
             viewPort.CenterChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewPoint2D, Point>>(ViewPort_CenterChanged);
             viewPort.MapTransformChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>>(ViewPort_MapTransformChanged);
-            viewPort.MaximumZoomChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MaximumZoomChanged);
-            viewPort.MinimumZoomChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MinimumZoomChanged);
+            viewPort.MaximumWorldWidthChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MaximumZoomChanged);
+            viewPort.MinimumWorldWidthChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MinimumZoomChanged);
             viewPort.PixelAspectRatioChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_PixelAspectRatioChanged);
             viewPort.SizeChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewSize2D>>(ViewPort_SizeChanged);
             viewPort.StyleRenderingModeChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<StyleRenderingMode>>(ViewPort_StyleRenderingModeChanged);
             viewPort.ViewRectangleChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>>(ViewPort_ViewRectangleChanged);
-            viewPort.ZoomChanged += new EventHandler<MapZoomChangedEventArgs>(ViewPort_ZoomChanged);
         }
 
         #region IDisposable Members

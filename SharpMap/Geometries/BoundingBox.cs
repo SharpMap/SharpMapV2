@@ -96,10 +96,10 @@ namespace SharpMap.Geometries
         /// Initializes a new BoundingBox based on the bounds from a set of geometries.
 		/// </summary>
         /// <param name="objects">List of <see cref="Geometry"/> objects to compute the BoundingBox for.</param>
-        public BoundingBox(List<Geometry> objects)
+        public BoundingBox(IEnumerable<Geometry> objects)
             : this(0, 0, 0, 0)
 		{
-			if (objects == null || objects.Count == 0)
+			if (objects == null)
 				return;
 
 			checkMinMax();
@@ -120,10 +120,10 @@ namespace SharpMap.Geometries
         /// Initializes a new BoundingBox based on the bounds from a set of bounding boxes.
 		/// </summary>
         /// <param name="objects">list of <see cref="BoundingBox"/> objects to compute the BoundingBox for.</param>
-        public BoundingBox(List<BoundingBox> objects)
+        public BoundingBox(IEnumerable<BoundingBox> objects)
             : this(0, 0, 0, 0)
 		{
-            if (objects.Count == 0)
+            if (objects == null)
                 return;
 
             foreach (BoundingBox box in objects)

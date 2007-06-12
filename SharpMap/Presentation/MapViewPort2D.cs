@@ -33,23 +33,25 @@ namespace SharpMap.Presentation
 	public class MapViewPort2D
 	{
 		private SharpMap.Map.Map _map;
-		//private ViewRectangle2D _viewRectangle;
+        private IMapView2D _view;
 		private double _pixelAspectRatio = 1.0;
 		private double _viewDpi;
 		private double _worldUnitsPerInch;
 		private ViewSize2D _viewSize;
 		private GeoPoint _center = GeoPoint.Zero;
-		private double _maximumZoom;
-		private double _minimumZoom;
+		private double _maximumWorldWidth;
+		private double _minimumWorldWidth;
 		private IViewMatrix _viewTransform = new ViewMatrix2D();
 		private IViewMatrix _viewTransformInverted = new ViewMatrix2D();
 		private StyleColor _backgroundColor;
-
-		public MapViewPort2D(SharpMap.Map.Map map, double viewDpi)
+         
+		public MapViewPort2D(SharpMap.Map.Map map, IMapView2D view)
 		{
 			_map = map;
-			_viewDpi = viewDpi;
-			_worldUnitsPerInch = viewDpi;   // This gives an initial zoom equal to the width of the view...
+            _view = view;
+            _center = map.Envelope.GetCentroid();
+			_viewDpi = view.Dpi;
+            _worldUnitsPerInch = _viewDpi;
 		}
 
 		/// <summary>
@@ -70,12 +72,12 @@ namespace SharpMap.Presentation
 		/// <summary>
 		/// Fired when the <see cref="MinimumZoom"/> has changed.
 		/// </summary>
-		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> MinimumZoomChanged;
+		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> MinimumWorldWidthChanged;
 
 		/// <summary>
 		/// Fired when the <see cref="MaximumZoom"/> has changed.
 		/// </summary>
-		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> MaximumZoomChanged;
+		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> MaximumWorldWidthChanged;
 
 		/// <summary>
 		/// Fired when the <see cref="PixelAspectRatio"/> has changed.
@@ -97,27 +99,25 @@ namespace SharpMap.Presentation
 		/// </summary>
 		public event EventHandler<MapPresentationPropertyChangedEventArgs<StyleRenderingMode>> StyleRenderingModeChanged;
 
-		/// <summary>
-		/// Event fired when the <see cref="Zoom"/> value has changed.
+        /// <summary>
+        /// Gets the height of view in world units.
 		/// </summary>
-		public event EventHandler<MapZoomChangedEventArgs> ZoomChanged;
-
-		/// <summary>
-		/// Height of view in world units.
-		/// </summary>
-		/// <returns></returns>
+        /// <returns>
+        /// The height of the view in world units, taking into account <see cref="PixelAspectRatio"/> 
+        /// (<see cref="WorldWidth"/> * <see cref="PixelAspectRatio"/> * <see cref="ViewSize.Height"/> / <see cref="ViewSize.Width"/>).
+        /// </returns>
 		public double WorldHeight
 		{
-			get { return (Zoom * ViewSize.Height) / ViewSize.Width * PixelAspectRatio; }
+            get { return WorldWidth * PixelAspectRatio * ViewSize.Height / ViewSize.Width; }
 		}
 
 		/// <summary>
-		/// Width of view in world units.
+		/// Gets the width of view in world units.
 		/// </summary>
-		/// <returns></returns>
+        /// <returns>The width of the view in world units (<see cref="ViewSize.Width" /> * <see cref="WorldUnitsPerPixel"/>).</returns>
 		public double WorldWidth
 		{
-			get { return (Zoom * ViewSize.Height) / ViewSize.Width * PixelAspectRatio; }
+			get { return ViewSize.Width * WorldUnitsPerPixel; }
 		}
 
 		/// <summary>
@@ -165,62 +165,45 @@ namespace SharpMap.Presentation
 		}
 
 		/// <summary>
-		/// Gets or sets the zoom level of map.
+        /// Gets or sets the minimum width in world units of the view.
 		/// </summary>
-		/// <remarks>
-		/// <para>The zoom level corresponds to the <see cref="Map.Width"/> of the map in world coordinate units.</para>
-		/// <para>A zoom level &lt;= 0 will result in an empty map being rendered, but will not throw an exception.</para>
-		/// </remarks>
-		public double Zoom
+		public double MinimumWorldWidth
 		{
-			get { return WorldUnitsPerPixel * ViewSize.Width; }
-			set
-			{
-				double worldUnitsPerPixel = value / ViewSize.Width;
-				setViewMetricsInternal(ViewSize, GeoCenter, worldUnitsPerPixel);
-			}
-		}
-
-		/// <summary>
-		/// Minimum zoom amount allowed.
-		/// </summary>
-		public double MinimumZoom
-		{
-			get { return _minimumZoom; }
+			get { return _minimumWorldWidth; }
 			set
 			{
 				if (value < 0)
 				{
-					throw new ArgumentOutOfRangeException("MinimumZoom", value, "Minimum zoom must be 0 or greater.");
+                    throw new ArgumentOutOfRangeException("MinimumWorldWidth", value, "Minimum world width must be 0 or greater.");
 				}
 
-				if (_minimumZoom != value)
+				if (_minimumWorldWidth != value)
 				{
-					double oldValue = _minimumZoom;
-					_minimumZoom = value;
-					OnMinimumZoomChanged(oldValue, _minimumZoom);
+					double oldValue = _minimumWorldWidth;
+					_minimumWorldWidth = value;
+					OnMinimumZoomChanged(oldValue, _minimumWorldWidth);
 				}
 			}
 		}
 
-		/// <summary>
-		/// Maximum zoom amount allowed.
+        /// <summary>
+        /// Gets or sets the minimum width in world units of the view.
 		/// </summary>
-		public double MaximumZoom
+        public double MaximumWorldWidth
 		{
-			get { return _maximumZoom; }
+			get { return _maximumWorldWidth; }
 			set
 			{
 				if (value <= 0)
 				{
-					throw new ArgumentOutOfRangeException("MaximumZoom", value, "Maximum zoom must greater than 0.");
+                    throw new ArgumentOutOfRangeException("MaximumWorldWidth", value, "Maximum world width must greater than 0.");
 				}
 
-				if (_maximumZoom != value)
+				if (_maximumWorldWidth != value)
 				{
-					double oldValue = _maximumZoom;
-					_maximumZoom = value;
-					OnMaximumZoomChanged(oldValue, _maximumZoom);
+					double oldValue = _maximumWorldWidth;
+					_maximumWorldWidth = value;
+					OnMaximumZoomChanged(oldValue, _maximumWorldWidth);
 				}
 			}
 		}
@@ -233,6 +216,9 @@ namespace SharpMap.Presentation
 			get { return _worldUnitsPerInch / _viewDpi; }
 		}
 
+        /// <summary>
+        /// Gets the dots per inch resolution of the view.
+        /// </summary>
 		public double ViewDpi
 		{
 			get { return _viewDpi; }
@@ -258,13 +244,15 @@ namespace SharpMap.Presentation
 		}
 
 		/// <summary>
-		/// Gets or sets the aspect ratio of the scale.
+        /// Gets or sets the aspect ratio of the <see cref="ViewSize.Height"/> to the <see cref="ViewSize.Width"/>.
 		/// </summary>
 		/// <remarks> 
-		/// A value less than 1 will make the map stretch upwards, and larger than 1 will make it more squat.
+        /// A value less than 1 will make the map stretch upwards (the view will cover less world distance vertically), 
+        /// and greater than 1 will make it more squat (the view will cover more world distance vertically).
 		/// </remarks>
-		/// <exception cref="ArgumentException">Throws an argument exception when value 
-		/// is 0 or less.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Throws an argument exception when value is 0 or less.
+        /// </exception>
 		public double PixelAspectRatio
 		{
 			get { return _pixelAspectRatio; }
@@ -355,14 +343,29 @@ namespace SharpMap.Presentation
 		{
 			get { return _viewTransformInverted; }
 			private set { _viewTransformInverted = value; }
-		}
+        }
+
+        /// <summary>
+        /// Zooms the view to the given width.
+        /// </summary>
+        /// <remarks>
+        /// View modifiers <see cref="MinimumWorldWidth"/>, <see cref="MaximumWorldWidth"/> and <see cref="PixelAspectRatio"/>
+        /// are taken into account when zooming to this width.
+        /// </remarks>
+        public void ZoomToWidth(double worldWidth)
+        {
+            double newHeight = worldWidth * (WorldHeight / WorldWidth);
+            double halfWidth = worldWidth * 0.5;
+            double halfHeight = newHeight * 0.5;
+            ZoomToBox(new BoundingBox(GeoCenter.X - halfWidth, GeoCenter.Y - halfHeight, GeoCenter.X + halfWidth, GeoCenter.Y + halfHeight));
+        }
 
 		/// <summary>
 		/// Zooms to the extents of all visible layers in the current <see cref="Map"/>.
 		/// </summary>
 		public void ZoomToExtents()
 		{
-			this.ZoomToBox(_map.GetExtents());
+			ZoomToBox(_map.GetExtents());
 		}
 
 		/// <summary>
@@ -384,7 +387,7 @@ namespace SharpMap.Presentation
 
 		protected virtual void OnMinimumZoomChanged(double oldMinimumZoom, double newMinimumZoom)
 		{
-			EventHandler<MapPresentationPropertyChangedEventArgs<double>> @event = MinimumZoomChanged;
+			EventHandler<MapPresentationPropertyChangedEventArgs<double>> @event = MinimumWorldWidthChanged;
 
 			if (@event != null)
 			{
@@ -394,7 +397,7 @@ namespace SharpMap.Presentation
 
 		protected virtual void OnMaximumZoomChanged(double oldMaximumZoom, double newMaximumZoom)
 		{
-			EventHandler<MapPresentationPropertyChangedEventArgs<double>> @event = MaximumZoomChanged;
+			EventHandler<MapPresentationPropertyChangedEventArgs<double>> @event = MaximumWorldWidthChanged;
 
 			if (@event != null)
 			{
@@ -412,15 +415,14 @@ namespace SharpMap.Presentation
 			}
 		}
 
-		protected virtual void OnViewRectangleChanged(ViewRectangle2D oldViewRectangle, ViewRectangle2D currentViewRectangle)
+		protected virtual void OnViewRectangleChanged(ViewRectangle2D oldViewRectangle, ViewRectangle2D currentViewRectangle, BoundingBox oldBounds, BoundingBox currentBounds)
 		{
 			EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>> @event = ViewRectangleChanged;
 
 			if (@event != null)
 			{
 				@event(this, new MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>(
-					Transform2D.ViewToWorld(oldViewRectangle, this), Transform2D.ViewToWorld(currentViewRectangle, this),
-					oldViewRectangle, currentViewRectangle));
+					oldBounds, currentBounds, oldViewRectangle, currentViewRectangle));
 			}
 		}
 
@@ -451,16 +453,6 @@ namespace SharpMap.Presentation
 			if (@event != null)
 			{
 				@event(this, new MapPresentationPropertyChangedEventArgs<StyleRenderingMode>(oldValue, newValue));
-			}
-		}
-
-		protected virtual void OnZoomChanged(double previousZoom, double currentZoom, GeoPoint previousCenter, GeoPoint currentCenter)
-		{
-			EventHandler<MapZoomChangedEventArgs> @event = ZoomChanged;
-
-			if (@event != null)
-			{
-				@event(this, new MapZoomChangedEventArgs(previousZoom, currentZoom, previousCenter, currentCenter));
 			}
 		}
 
@@ -499,52 +491,52 @@ namespace SharpMap.Presentation
 		}
 
 		private void setViewEnvelopeInternal(BoundingBox newEnvelope)
-		{
-			if (ViewEnvelope == newEnvelope)
+        {
+            BoundingBox oldEnvelope = ViewEnvelope;
+
+			if (oldEnvelope == newEnvelope)
 			{
 				return;
 			}
 
-			BoundingBox currentEnvelope = ViewEnvelope;
-
-			double widthZoomRatio = newEnvelope.Width / currentEnvelope.Width;
-			double heightZoomRatio = newEnvelope.Height / currentEnvelope.Height;
+			double widthZoomRatio = newEnvelope.Width / oldEnvelope.Width;
+			double heightZoomRatio = newEnvelope.Height / oldEnvelope.Height;
 
 			double newWidth = widthZoomRatio > heightZoomRatio ? newEnvelope.Width : newEnvelope.Width * heightZoomRatio;
 
-			if (newWidth < _minimumZoom)
+			if (newWidth < _minimumWorldWidth)
 			{
-				newWidth = _minimumZoom;
+				newWidth = _minimumWorldWidth;
 			}
 
-			if (newWidth > _maximumZoom)
+			if (newWidth > _maximumWorldWidth)
 			{
-				newWidth = _maximumZoom;
+				newWidth = _maximumWorldWidth;
 			}
 
-			throw new NotImplementedException();
-			setViewMetricsInternal(ViewSize, newEnvelope.GetCentroid(), newWidth);
+			setViewMetricsInternal(ViewSize, newEnvelope.GetCentroid(), newWidth / ViewSize.Width);
 		}
 
-		private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint center, double worldUnitsPerPixel)
-		{
-			double currentWorldUnitsPerPixel = Zoom;
+		private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint newCenter, double newWorldUnitsPerPixel)
+        {
+            ViewSize2D oldViewSize = ViewSize;
+            GeoPoint oldCenter = GeoCenter;
+            double oldWorldUnitsPerPixel = WorldUnitsPerPixel;
+            double oldWorldWidth = WorldWidth;
+            double oldWorldHeight = WorldHeight;
 
-			if (newViewSize == _viewSize && _center.Equals(center) && worldUnitsPerPixel == currentWorldUnitsPerPixel)
+			if (newViewSize == _viewSize && _center.Equals(newCenter) && newWorldUnitsPerPixel == oldWorldUnitsPerPixel)
 			{
 				return;
 			}
 
-			ViewSize2D oldViewSize = _viewSize;
-			GeoPoint oldCenter = _center;
-
-			_viewSize = newViewSize;
-			_center = center;
+            _viewSize = newViewSize;
+            _center = newCenter;
+            _worldUnitsPerInch = newWorldUnitsPerPixel * _viewDpi;
 
 			if (_viewSize != oldViewSize)
 			{
 				OnSizeChanged(oldViewSize, _viewSize);
-				OnViewRectangleChanged(new ViewRectangle2D(ViewPoint2D.Zero, oldViewSize), new ViewRectangle2D(ViewPoint2D.Zero, _viewSize));
 			}
 
 			if (!_center.Equals(oldCenter))
@@ -552,10 +544,9 @@ namespace SharpMap.Presentation
 				OnMapCenterChanged(oldCenter, _center);
 			}
 
-			if (currentWorldUnitsPerPixel != worldUnitsPerPixel)
-			{
-				OnZoomChanged(worldUnitsPerPixel, currentWorldUnitsPerPixel, oldCenter, _center);
-			}
+            OnViewRectangleChanged(new ViewRectangle2D(0, oldViewSize.Width, 0, oldViewSize.Height), new ViewRectangle2D(0, _viewSize.Width, 0, _viewSize.Height),
+                new BoundingBox(oldCenter.X - (oldWorldWidth * 0.5), oldCenter.Y - (oldWorldHeight * 0.5), oldCenter.X + (oldWorldWidth * 0.5), oldCenter.Y + (oldWorldHeight * 0.5)),
+                new BoundingBox(_center.X - (WorldWidth * 0.5), _center.Y - (WorldHeight * 0.5), _center.X + (WorldWidth * 0.5), _center.Y + (WorldHeight * 0.5)));
 		}
 		#endregion
 	}
