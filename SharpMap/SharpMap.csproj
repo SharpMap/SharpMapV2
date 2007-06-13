@@ -280,6 +280,7 @@
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
     <Compile Include="Utilities\Providers.cs" />
+    <Compile Include="Utilities\Tolerance.cs" />
     <Compile Include="Utilities\Transform2D.cs" />
     <Compile Include="Utilities\Version.cs" />
   </ItemGroup>

@@ -20,6 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using SharpMap.Utilities;
+using System.Globalization;
+
 namespace SharpMap.Geometries
 {
 	/// <summary>
@@ -68,9 +71,11 @@ namespace SharpMap.Geometries
 		/// <param name="upperRight">Upper right corner.</param>
 		public BoundingBox(Point lowerLeft, Point upperRight)
             : this(0, 0, 0, 0)
-		{ 
-            if(lowerLeft == null || upperRight == null)
+		{
+            if (lowerLeft == null || lowerLeft.IsEmpty || upperRight == null || upperRight.IsEmpty)
+            {
                 return;
+            }
 
 			_xMin = lowerLeft.X;
             _yMin = lowerLeft.Y;
@@ -85,11 +90,15 @@ namespace SharpMap.Geometries
         public BoundingBox(params BoundingBox[] boxes)
             : this(0, 0, 0, 0)
         {
-            if (boxes == null) 
+            if (boxes == null)
+            {
                 return;
+            }
 
             foreach (BoundingBox box in boxes)
+            {
                 ExpandToInclude(box);
+            }
         }
 
 		/// <summary>
@@ -99,13 +108,17 @@ namespace SharpMap.Geometries
         public BoundingBox(IEnumerable<Geometry> objects)
             : this(0, 0, 0, 0)
 		{
-			if (objects == null)
-				return;
+            if (objects == null)
+            {
+                return;
+            }
 
 			checkMinMax();
 
             foreach (Geometry g in objects)
+            {
                 ExpandToInclude(g);
+            }
 
             //{
             //    BoundingBox box = g.GetBoundingBox();
@@ -124,10 +137,14 @@ namespace SharpMap.Geometries
             : this(0, 0, 0, 0)
 		{
             if (objects == null)
+            {
                 return;
+            }
 
             foreach (BoundingBox box in objects)
+            {
                 ExpandToInclude(box);
+            }
 		}
 
 		/// <summary>
@@ -138,7 +155,9 @@ namespace SharpMap.Geometries
             get
             {
                 if (IsEmpty)
+                {
                     return Point.Empty;
+                }
 
                 return new Point(_xMin, _yMin);
             }
@@ -163,7 +182,9 @@ namespace SharpMap.Geometries
             get
             {
                 if (IsEmpty)
+                {
                     return Point.Empty;
+                }
 
                 return new Point(_xMax, _yMax);
             }
@@ -196,7 +217,9 @@ namespace SharpMap.Geometries
             get 
             {
                 if (IsEmpty)
+                {
                     return Point.Empty;
+                }
 
                 return new Point(_xMax, _yMin); 
             }
@@ -210,7 +233,9 @@ namespace SharpMap.Geometries
             get
             {
                 if (IsEmpty)
+                {
                     return Point.Empty;
+                }
 
                 return new Point(_xMin, _yMax);
             }
@@ -233,7 +258,9 @@ namespace SharpMap.Geometries
             private set
             {
                 if (value == true)
+                {
                     _xMin = _yMin = _xMax = _yMax = 0;
+                }
 
                 _hasValue = !value;
             }
@@ -278,13 +305,18 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns the width of the bounding box.
 		/// </summary>
-		/// <returns>Width of this <see cref="BoundingBox"/>. Returns <see cref="Double.NaN"/> if <see cref="IsEmpty"/> is true.</returns>
+		/// <returns>
+        /// Width of this <see cref="BoundingBox"/>. 
+        /// Returns <see cref="Double.NaN"/> if <see cref="IsEmpty"/> is true.
+        /// </returns>
 		public double Width
 		{
 			get 
             {
                 if (IsEmpty)
+                {
                     return Double.NaN;
+                }
 
                 return Math.Abs(_xMax - _xMin); 
             }
@@ -298,7 +330,9 @@ namespace SharpMap.Geometries
 			get
             {
                 if (IsEmpty)
+                {
                     return Double.NaN;
+                }
 
                 return Math.Abs(_yMax - _yMin); 
             }
@@ -327,14 +361,32 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
+        /// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>.
+		/// </summary>
+        /// <param name="box"><see cref="BoundingBox"/> to check intersection with.</param>
+		/// <returns>True if the <paramref name="box">argument</paramref> touches this <see cref="BoundingBox"/> instance in any way.</returns>
+        public bool Intersects(BoundingBox box, Tolerance tolerance)
+        {
+        }
+
+		/// <summary>
         /// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>.
         /// </summary>
         /// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
         /// <returns>True if this BoundingBox intersects the <paramref name="geometry">geometry</paramref>.</returns>
 		public bool Intersects(Geometry geometry)
 		{
-			return this.Touches(geometry);
+			return Touches(geometry);
 		}
+
+		/// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>.
+        /// </summary>
+        /// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
+        /// <returns>True if this BoundingBox intersects the <paramref name="geometry">geometry</paramref>.</returns>
+        public bool Intersects(Geometry geometry, Tolerance tolerance)
+        {
+        }
 
 		/// <summary>
         /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>.
@@ -344,12 +396,23 @@ namespace SharpMap.Geometries
 		public bool Touches(BoundingBox box)
         {
             if (this.IsEmpty || box.IsEmpty)
+            {
                 return false;
+            }
 
             return !(box.Left > Right ||
                      box.Right < Left ||
                      box.Top < Bottom ||
                      box.Bottom > Top );
+        }
+
+		/// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>.
+		/// </summary>
+        /// <param name="box"><see cref="BoundingBox"/> to check if this BoundingBox touches.</param>
+		/// <returns>True if <paramref name="box"/> touches.</returns>
+        public bool Touches(BoundingBox box, Tolerance tolerance)
+        {
         }
 
         /// <summary>
@@ -360,9 +423,20 @@ namespace SharpMap.Geometries
         public bool Touches(Point p)
         {
             if (p == null)
+            {
                 return false;
+            }
 
             return Touches(p.GetBoundingBox());
+        }
+
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>.
+        /// </summary>
+        /// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
+        /// <returns>True if the <paramref name="p">point</paramref> touches.</returns>
+        public bool Touches(Point p, Tolerance tolerance)
+        {
         }
 
 		/// <summary>
@@ -372,10 +446,21 @@ namespace SharpMap.Geometries
 		/// <returns>True if the <paramref name="geometry">geometry</paramref> touches.</returns>
 		public bool Touches(Geometry geometry)
 		{
-			if (geometry is Point) 
+            if (geometry is Point)
+            {
                 return Touches(geometry as Point);
+            }
 
 			throw new NotImplementedException("Touches: Not implemented on this geometry type");
+        }
+
+		/// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>.
+		/// </summary>
+        /// <param name="geometry"><see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.</param>
+		/// <returns>True if the <paramref name="geometry">geometry</paramref> touches.</returns>
+        public bool Touches(Geometry geometry, Tolerance tolerance)
+        {
         }
 
         /// <summary>
@@ -390,13 +475,28 @@ namespace SharpMap.Geometries
         public bool Overlaps(BoundingBox b)
         {
             if (this.IsEmpty || b.IsEmpty)
+            {
                 return false;
+            }
 
             return Contains(b) ||
                    !(b.Left >= Right ||
                      b.Right <= Left ||
                      b.Top <= Bottom ||
                      b.Bottom >= Top);
+        }
+
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>.
+        /// </summary>
+        /// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
+        /// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
+        /// return true, but <see cref="Overlaps"/> will return false.
+        /// </remarks>
+        /// <param name="b"><see cref="BoundingBox"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+        /// <returns>True if the <paramref name="b">bounding box</paramref> overlaps.</returns>
+        public bool Overlaps(BoundingBox b, Tolerance tolerance)
+        {
         }
 
         /// <summary>
@@ -412,9 +512,26 @@ namespace SharpMap.Geometries
         public bool Overlaps(Point p)
         {
             if (p == null)
+            {
                 return false;
+            }
 
             return Overlaps(p.GetBoundingBox());
+        }
+        
+
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>.
+        /// </summary>
+        /// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
+        /// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
+        /// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
+        /// <see cref="Contains"/> will return true if Overlaps returns true.
+        /// </remarks>
+        /// <param name="p"><see cref="Point"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+        /// <returns>True if the <paramref name="p">point</paramref> overlaps.</returns>
+        public bool Overlaps(Point p, Tolerance tolerance)
+        {
         }
 
         /// <summary>
@@ -431,12 +548,31 @@ namespace SharpMap.Geometries
         public bool Overlaps(Geometry geometry)
         {
             if (geometry == null)
+            {
                 return false;
+            }
 
             if (geometry is Point)
+            {
                 return Overlaps(geometry as Point);
+            }
 
             throw new NotImplementedException("Overlaps: Not implemented on this geometry type");
+        }
+
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="geometry">geometry</paramref>.
+        /// </summary>
+        /// <remarks>
+        /// A <see cref="Geometry"/> can touch and not overlap. If the <paramref name="geometry">geometry</paramref> and 
+        /// the <see cref="BoundingBox"/> share a common edge or a point, the <see cref="Touches"/> method will
+        /// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
+        /// <see cref="Contains"/> will return true if Overlaps returns true.
+        /// </remarks>
+        /// <param name="geometry"><see cref="Geometry"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+        /// <returns>True if the <paramref name="geometry">geometry</paramref> overlaps.</returns>
+        public bool Overlaps(Geometry geometry, Tolerance tolerance)
+        {
         }
 
 		/// <summary>
@@ -447,12 +583,23 @@ namespace SharpMap.Geometries
 		public bool Contains(BoundingBox box)
 		{
             if (this.IsEmpty || box.IsEmpty)
+            {
                 return false;
+            }
 
             return this.Left <= box.Left &&
                 this.Top >= box.Top &&
                 this.Right >= box.Right &&
                 this.Bottom <= box.Bottom;
+        }
+
+		/// <summary>
+		/// Returns true if this instance contains the <see cref="BoundingBox"/>.
+		/// </summary>
+        /// <param name="box"><see cref="BoundingBox"/></param>
+		/// <returns>True this <see cref="BoundingBox"/> contains the <paramref name="box">argument</paramref>.</returns>
+        public bool Contains(BoundingBox box, Tolerance tolerance)
+        {
         }
 
         /// <summary>
@@ -463,34 +610,68 @@ namespace SharpMap.Geometries
         public bool Contains(Point p)
         {
             if (p == null || this.IsEmpty || p.IsEmpty())
+            {
                 return false;
+            }
 
             if (this.Right < p.X)
+            {
                 return false;
+            }
             if (this.Left > p.X)
+            {
                 return false;
+            }
             if (this.Top < p.Y)
+            {
                 return false;
+            }
             if (this.Bottom > p.Y)
+            {
                 return false;
+            }
 
             return true;
+        }
+        
+        /// <summary>
+        /// Checks whether a <see cref="Point"/> borders or lies within the bounding box.
+        /// </summary>
+        /// <param name="p"><see cref="Point"/></param>
+        /// <returns>True if <paramref name="p">the point</paramref> borders or is within this <see cref="BoundingBox"/>.</returns>
+        public bool Contains(Point p, Tolerance tolerance)
+        {
         }
 
 		/// <summary>
         /// Returns true if this instance contains the <paramref name="geometry">.
 		/// </summary>
         /// <param name="geometry">Geometry to test if this <see cref="BoundingBox"/> contains.</param>
-        /// <returns>True if this <see cref="BoundingBox"/> contains the <paramref name="geometry">geometry</paramref>.</returns>
+        /// <returns>True if this <see cref="BoundingBox"/> contains the 
+        /// <paramref name="geometry">geometry</paramref>.</returns>
 		public bool Contains(Geometry geometry)
         {
             if (geometry == null)
+            {
                 return false;
+            }
 
-			if (geometry is Point) 
+            if (geometry is Point)
+            {
                 return Contains(geometry as Point);
+            }
 
 			throw new NotImplementedException("Contains: Not implemented on these geometries");
+        }
+
+		/// <summary>
+        /// Returns true if this instance contains the <paramref name="geometry">.
+		/// </summary>
+        /// <param name="geometry">Geometry to test if this <see cref="BoundingBox"/> contains.</param>
+        /// <returns>True if this <see cref="BoundingBox"/> contains the 
+        /// <paramref name="geometry">geometry</paramref>.</returns>
+        public bool Contains(Geometry geometry, Tolerance tolerance)
+        {
         }
 
         /// <summary>
@@ -501,7 +682,9 @@ namespace SharpMap.Geometries
         public bool Within(BoundingBox box)
         {
             if (this.IsEmpty || box.IsEmpty)
+            {
                 return false;
+            }
 
             return this.Left <= box.Left &&
                 this.Top >= box.Top &&
@@ -510,41 +693,89 @@ namespace SharpMap.Geometries
         }
 
         /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="p">argument</paramref>.
+        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="box">argument</paramref>.
+        /// </summary>
+        /// <param name="box"><see cref="BoundingBox"/></param>
+        /// <returns>True it contains</returns>
+        public bool Within(BoundingBox box, Tolerance tolerance)
+        {
+        }
+
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) 
+        /// the <paramref name="p">argument</paramref>.
         /// </summary>
         /// <param name="geometry">Point to test if it is within this <see cref="BoundingBox"/> instance.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the <paramref name="p">point</paramref>.</returns>
         public bool Within(Point p)
         {
             if (p == null || this.IsEmpty || p.IsEmpty())
+            {
                 return false;
+            }
 
             if (this.Right <= p.X)
+            {
                 return false;
+            }
             if (this.Left >= p.X)
+            {
                 return false;
+            }
             if (this.Top <= p.Y)
+            {
                 return false;
+            }
             if (this.Bottom >= p.Y)
+            {
                 return false;
+            }
 
             return true;
         }
+        
 
         /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="geometry">argument</paramref>.
+        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) 
+        /// the <paramref name="p">argument</paramref>.
+        /// </summary>
+        /// <param name="geometry">Point to test if it is within this <see cref="BoundingBox"/> instance.</param>
+        /// <returns>True if this <see cref="BoundingBox"/> is within the <paramref name="p">point</paramref>.</returns>
+        public bool Within(Point p, Tolerance tolerance)
+        {
+        }
+
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance is completely within 
+        /// (does not border) the <paramref name="geometry">argument</paramref>.
         /// </summary>
         /// <param name="geometry">Geometry to test if it is within this <see cref="BoundingBox"/> instance.</param>
-        /// <returns>True if this <see cref="BoundingBox"/> is within the <paramref name="geometry">geometry</paramref>.</returns>
+        /// <returns>True if this <see cref="BoundingBox"/> is within the 
+        /// <paramref name="geometry">geometry</paramref>.</returns>
         public bool Within(Geometry geometry)
         {
             if (geometry == null)
+            {
                 return false;
+            }
 
             if (geometry is Point)
+            {
                 return Contains(geometry as Point);
+            }
 
             throw new NotImplementedException("Contains: Not implemented on these geometries");
+        }
+        
+        /// <summary>
+        /// Returns true if this <see cref="BoundingBox"/> instance is completely within 
+        /// (does not border) the <paramref name="geometry">argument</paramref>.
+        /// </summary>
+        /// <param name="geometry">Geometry to test if it is within this <see cref="BoundingBox"/> instance.</param>
+        /// <returns>True if this <see cref="BoundingBox"/> is within the 
+        /// <paramref name="geometry">geometry</paramref>.</returns>
+        public bool Within(Geometry geometry, Tolerance tolerance)
+        {
         }
 
 		/// <summary>
@@ -568,7 +799,9 @@ namespace SharpMap.Geometries
             //    if (Min[cIndex] > r.Max[cIndex] || Max[cIndex] < r.Min[cIndex]) return 0.0;
 
             if (!r.Intersects(this))
+            {
                 return 0.0;
+            }
 
             //double ret = 1.0;
             //double f1, f2;
@@ -590,13 +823,21 @@ namespace SharpMap.Geometries
         public void ExpandToInclude(BoundingBox box)
         {
             if (box.Left < Left || IsEmpty)
+            {
                 Left = box.Left;
+            }
             if (box.Bottom < Bottom || IsEmpty)
+            {
                 Bottom = box.Bottom;
+            }
             if (box.Right > Right || IsEmpty)
+            {
                 Right = box.Right;
+            }
             if (box.Top > Top || IsEmpty)
+            {
                 Top = box.Top;
+            }
 
             IsEmpty = false;
         }
@@ -611,11 +852,28 @@ namespace SharpMap.Geometries
         }
 
         /// <summary>
+        /// Determines if two boxes share, at least partially, a common border, within the 
+        /// <see cref="Tolerance.Global">global tolerance</see>.
+        /// </summary>
+        /// <param name="box">The box to check.</param>
+        /// <returns>
+        /// True if <paramref name="box"/> shares a commons border, false if not, 
+        /// or if either or both are empty.
+        /// </returns>
+        public bool Borders(BoundingBox box)
+        {
+            return Borders(box, Tolerance.Global);
+        }
+
+        /// <summary>
         /// Determines if two boxes share, at least partially, a common border.
         /// </summary>
-        /// <param name="box">The box to check</param>
-        /// <returns>True if <paramref name="box"/> shares a commons border, false if not, or if either or both are empty.</returns>
-        public bool Borders(BoundingBox box)
+        /// <param name="box">The box to check.</param>
+        /// <param name="tolerance">The tolerance to use in comparing.</param>
+        /// <returns>
+        /// True if <paramref name="box"/> shares a commons border, false if not, or if either or both are empty.
+        /// </returns>
+        public bool Borders(BoundingBox box, Tolerance tolerance)
         {
             return this.Left == box.Left || this.Bottom == box.Bottom || this.Right == box.Right || this.Top == box.Top;
         }
@@ -628,12 +886,18 @@ namespace SharpMap.Geometries
 		public BoundingBox Join(BoundingBox box)
 		{
             if (box == BoundingBox.Empty)
+            {
                 return this;
+            }
             else if (this == BoundingBox.Empty)
+            {
                 return box;
+            }
             else
+            {
                 return new BoundingBox(Math.Min(Left, box.Left), Math.Min(Bottom, box.Bottom),
                                        Math.Max(Right, box.Right), Math.Max(Top, box.Top));
+            }
 		}
 
 		/// <summary>
@@ -658,8 +922,8 @@ namespace SharpMap.Geometries
 		}
 
         /// <summary>
-        /// Returns a <see cref="BoundingBox"/> with the size of this <see cref="BoundingBox"/> 
-        /// decreased by the given amount in all directions.
+        /// Returns a <see cref="BoundingBox"/> with a size decreased over this BoundingBox by the given 
+        /// amount in all directions.
         /// </summary>
         /// <param name="amount">Amount to decrease in all directions.</param>
         public BoundingBox Shrink(double amount)
@@ -668,41 +932,58 @@ namespace SharpMap.Geometries
         }
 
         /// <summary>
-        /// Returns a <see cref="BoundingBox"/> with the size of this <see cref="BoundingBox"/> 
-        /// decreased by <paramref name="amountInX"/> amount in the X axis, and by <paramref name="amountInY"/>
-        /// in the Y axis.
+        /// Returns a <see cref="BoundingBox"/> with a size decreased over this BoundingBox by the 
+        /// given amount in horizontal and vertical directions.
         /// </summary>
-        /// <param name="amountInX">Amount to decrease the <see cref="BoundingBox"/> in the X direction.</param>
-        /// <param name="amountInY">Amount to decrease the <see cref="BoundingBox"/> in the Y direction.</param>
+        /// <param name="amountInX">Amount to decrease in horizontal direction.</param>
+        /// <param name="amountInY">Amount to decrease in vertical direction.</param>
         public BoundingBox Shrink(double amountInX, double amountInY)
         {
             return Grow(-amountInX, -amountInY);
         }
 
+        /// <summary>
+        /// Returns a <see cref="BoundingBox"/> with a size decreased over this BoundingBox by the given 
+        /// amount in each specific direction.
+        /// </summary>
+        /// <param name="amountBottom">Amount to decrease the bottom edge by.</param>
+        /// <param name="amountLeft">Amount to decrease the left edge by.</param>
+        /// <param name="amountRight">Amount to decrease the right edge by.</param>
+        /// <param name="amountTop">Amount to decrease the top edge by.</param>
         public BoundingBox Shrink(double amountTop, double amountRight, double amountBottom, double amountLeft)
         {
             return Grow(-amountTop, -amountRight, -amountBottom, -amountLeft);
         }
 
 		/// <summary>
-        /// Increases the size of the BoundingBox by the givent amount in all directions
+        /// Returns a <see cref="BoundingBox"/> with a size increased over this BoundingBox by the given 
+        /// amount in all directions.
 		/// </summary>
-		/// <param name="amount">Amount to grow in all directions.</param>
+		/// <param name="amount">Amount to increase in all directions.</param>
 		public BoundingBox Grow(double amount)
 		{
             return Grow(amount, amount);
 		}
 
 		/// <summary>
-        /// Increases the size of the BoundingBox by the givent amount in horizontal and vertical directions.
+        /// Returns a <see cref="BoundingBox"/> with a size increased over this BoundingBox by the 
+        /// given amount in horizontal and vertical directions.
 		/// </summary>
-		/// <param name="amountInX">Amount to grow in horizontal direction.</param>
-		/// <param name="amountInY">Amount to grow in vertical direction.</param>
+		/// <param name="amountInX">Amount to increase in horizontal direction.</param>
+        /// <param name="amountInY">Amount to increase in vertical direction.</param>
 		public BoundingBox Grow(double amountInX, double amountInY)
 		{
 			return Grow(amountInY, amountInX, amountInY, amountInX);
 		}
 
+        /// <summary>
+        /// Returns a <see cref="BoundingBox"/> with a size increased over this BoundingBox by the given 
+        /// amount in each specific direction.
+        /// </summary>
+        /// <param name="amountBottom">Amount to increase the bottom edge by.</param>
+        /// <param name="amountLeft">Amount to increase the left edge by.</param>
+        /// <param name="amountRight">Amount to increase the right edge by.</param>
+        /// <param name="amountTop">Amount to increase the top edge by.</param>
         public BoundingBox Grow(double amountTop, double amountRight, double amountBottom, double amountLeft)
         {
             BoundingBox box = this; // make a copy
@@ -726,7 +1007,9 @@ namespace SharpMap.Geometries
         public IEnumerable<BoundingBox> Split(Point point)
         {
             if (!Contains(point))
+            {
                 return new BoundingBox[0];
+            }
 
             List<BoundingBox> splits = new List<BoundingBox>(4);
 
@@ -736,16 +1019,24 @@ namespace SharpMap.Geometries
             BoundingBox b4 = new BoundingBox(point.X, Bottom, Right, point.Y);
 
             if (b1.GetArea() > 0)
+            {
                 splits.Add(b1);
+            }
 
             if (b2.GetArea() > 0)
+            {
                 splits.Add(b2);
+            }
 
             if (b3.GetArea() > 0)
+            {
                 splits.Add(b3);
+            }
 
             if (b4.GetArea() > 0)
+            {
                 splits.Add(b4);
+            }
 
             return splits;
         }
@@ -767,7 +1058,9 @@ namespace SharpMap.Geometries
             double ret = 0.0;
 
             if (Contains(box))
+            {
                 return ret;
+            }
 
             ret += box.Right < Left ? Math.Pow(Left - box.Right, 2) : Math.Pow(box.Left - Right, 2);
             ret += box.Top < Bottom ? Math.Pow(Bottom - box.Top, 2) : Math.Pow(box.Bottom - Top, 2);
@@ -791,51 +1084,18 @@ namespace SharpMap.Geometries
             return Distance(p.GetBoundingBox());
 		}
 
-        ///// <summary>
-        ///// Intersection scalar (used for weighting in building the tree) 
-        ///// </summary>
-        //public uint LongestAxis
-        //{
-        //    get
-        //    {
-        //        SharpMap.Geometries.Point boxDim = this.Max - this.Min;
-        //        uint longest = 0; // longest axis
-        //        double valueOfLongest = 0; // longest axis length
-        //        // for each dimension
-        //        for (uint axisIndex = 0; axisIndex < 2; axisIndex++)
-        //        {
-        //            // check if its longer
-        //            if (boxDim[axisIndex] > valueOfLongest)
-        //            {
-        //                // store it if it is
-        //                longest = axisIndex;
-        //                valueOfLongest = boxDim[axisIndex];
-        //            }
-        //        }
-        //        return longest;
-        //    }
-        //}
-
 		/// <summary>
         /// Returns the center of the BoundingBox.
 		/// </summary>
 		public Point GetCentroid()
 		{
             if (IsEmpty)
+            {
                 return Point.Empty;
+            }
 
 			return (this.Min + this.Max) * 0.5f;
 		}
-
-// removed due to change to value (struct) semantics
-        ///// <summary>
-        ///// Creates a copy of the BoundingBox
-        ///// </summary>
-        ///// <returns></returns>
-        //public BoundingBox Clone()
-        //{
-        //    return new BoundingBox(Left, Bottom, Right, Top);
-        //}
 
 		/// <summary>
 		/// Returns a string representation of the <see cref="BoundingBox"/> as "(MinX, MinY) (MaxX, MaxY)".
@@ -844,9 +1104,11 @@ namespace SharpMap.Geometries
 		public override string ToString()
 		{
             if (this == BoundingBox.Empty)
-                return "Empty";
+            {
+                return "[BoundingBox] Empty";
+            }
 
-            return String.Format(System.Globalization.CultureInfo.CurrentCulture, "Lower Left: ({0:N}, {1:N}) Upper Right: ({2:N}, {3:N})", Left, Bottom, Right, Top);
+            return String.Format(CultureInfo.CurrentCulture, "[BoundingBox] Lower Left: ({0:N}, {1:N}) Upper Right: ({2:N}, {3:N})", Left, Bottom, Right, Top);
 		}
 
 		#region IEquatable<BoundingBox> Members
@@ -858,11 +1120,15 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public override bool Equals(object obj)
 		{
-			if (obj == null) 
+            if (obj == null)
+            {
                 return false;
+            }
 
             if (!(obj is BoundingBox))
+            {
                 return false;
+            }
 
 			BoundingBox box = (BoundingBox)obj;
 			return Equals(box);
@@ -878,23 +1144,41 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance.
+		/// Checks whether the values of this instance is equal to the values of another instance, within the 
+        /// <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
 		/// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
-		/// <returns>True if equal</returns>
+        /// <returns>True if equal within <see cref="Tolerance.Global"/>.</returns>
 		public bool Equals(BoundingBox other)
 		{
+            return Equals(other, Tolerance.Global);
+		}
+
+        /// <summary>
+        /// Checks whether the values of this instance is equal to the values of another instance, within the 
+        /// <paramref name="tolerance">given tolerance</paramref>.
+        /// </summary>
+        /// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
+        /// <param name="tolerance">The <see cref="Tolerance"/> to use to compare.</param>
+        /// <returns>True if equal within <paramref name="tolerance"/>.</returns>
+        public bool Equals(BoundingBox other, Tolerance tolerance)
+        {
             // Check empty
             if (this.IsEmpty == true && other.IsEmpty == true)
+            {
                 return true;
-            if (this.IsEmpty || other.IsEmpty)
-                return false;
+            }
 
-			return this.Left == other.Left && 
-                this.Right == other.Right && 
-                this.Top == other.Top && 
-                this.Bottom == other.Bottom;
-		}
+            if (this.IsEmpty || other.IsEmpty)
+            {
+                return false;
+            }
+
+            return tolerance.Equal(this.Left, other.Left) &&
+                tolerance.Equal(this.Right, other.Right) &&
+                tolerance.Equal(this.Top, other.Top) &&
+                tolerance.Equal(this.Bottom, other.Bottom);
+        }
 
 		#endregion
 
@@ -911,7 +1195,9 @@ namespace SharpMap.Geometries
         public static BoundingBox Intersection(BoundingBox b1, BoundingBox b2)
         {
             if (!b1.Intersects(b2))
+            {
                 return BoundingBox.Empty;
+            }
 
             return new BoundingBox(
                 b1.Left < b2.Left ? b2.Left : b1.Left,
@@ -919,7 +1205,6 @@ namespace SharpMap.Geometries
                 b1.Right > b2.Right ? b2.Right : b1.Right,
                 b1.Top > b2.Top ? b2.Top : b1.Top);
         }
-
 
         /// <summary>
         /// Checks whether min values are actually smaller than max values and in that case swaps them.

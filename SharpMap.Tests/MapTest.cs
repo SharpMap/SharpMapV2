@@ -18,50 +18,80 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Tests
 {
+    public class FakeMapView2D : IMapView2D
+    {
+        #region IMapView2D Members
+
+        public double Dpi
+        {
+            get { return ScreenHelper.Dpi; }
+        }
+
+        public event EventHandler<MapActionEventArgs<ViewPoint2D>> BeginAction;
+
+        public event EventHandler<MapActionEventArgs<ViewPoint2D>> EndAction;
+
+        public event EventHandler<MapActionEventArgs<ViewPoint2D>> Hover;
+
+        public event EventHandler<MapActionEventArgs<ViewPoint2D>> MoveTo;
+
+        public void ShowRenderedObject(ViewPoint2D location, object renderedObject)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public MapViewPort2D ViewPort
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        #endregion
+    }
+
 	[TestFixture]
 	public class MapTest
 	{
 		[Test]
 		public void Initalize_MapInstance()
-		{
+        {
             MockRepository mocks = new MockRepository();
 
             SharpMap.Map.Map map = new SharpMap.Map.Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-            SetupResult.On(mapView).Call(mapView.Dpi).Return(ScreenHelper.Dpi);
+            IMapView2D mapView = mocks.Stub<IMapView2D>();
 
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+            SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
 
             mapView.BeginAction += null;
-            LastCall.IgnoreArguments();
-            IEventRaiser beginAction = LastCall.GetEventRaiser();
+            IEventRaiser beginAction = LastCall.IgnoreArguments().GetEventRaiser();
 
             mapView.EndAction += null;
-            LastCall.IgnoreArguments();
-            IEventRaiser endAction = LastCall.GetEventRaiser();
+            IEventRaiser endAction = LastCall.IgnoreArguments().GetEventRaiser();
 
             mapView.Hover += null;
-            LastCall.IgnoreArguments();
-            IEventRaiser hoverAction = LastCall.GetEventRaiser();
+            IEventRaiser hoverAction = LastCall.IgnoreArguments().GetEventRaiser();
 
             mapView.MoveTo += null;
-            LastCall.IgnoreArguments();
-            IEventRaiser moveToAction = LastCall.GetEventRaiser();
-
-            Expect.On(mapView).Call(mapView.ViewPort).Repeat.Twice().Return(viewPort);
+            IEventRaiser moveToAction = LastCall.IgnoreArguments().GetEventRaiser();
 
             mocks.ReplayAll();
 
             MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-            viewPort.ViewSize = new ViewSize2D(100, 100);
+            mapView.ViewPort.ViewSize = new ViewSize2D(100, 100);
 
 			Assert.IsNotNull(map);
 			Assert.IsNotNull(map.Layers);
-            Assert.AreEqual(100f, viewPort.ViewSize.Width);
-            Assert.AreEqual(100f, viewPort.ViewSize.Height);
-            Assert.AreEqual(StyleColor.Transparent, viewPort.BackColor);
-            Assert.AreEqual(double.MaxValue, viewPort.MaximumWorldWidth);
-            Assert.AreEqual(0, viewPort.MinimumWorldWidth);
+            Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Width);
+            Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Height);
+            Assert.AreEqual(StyleColor.Transparent, mapView.ViewPort.BackColor);
+            Assert.AreEqual(double.MaxValue, mapView.ViewPort.MaximumWorldWidth);
+            Assert.AreEqual(0, mapView.ViewPort.MinimumWorldWidth);
             Assert.AreEqual(new Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
             Assert.AreEqual(new Point(0, 0), mapView.ViewPort.GeoCenter, "mapView.ViewPort.GeoCenter should be initialized to (0,0)");
 			Assert.AreEqual(1, mapView.ViewPort.WorldUnitsPerPixel, "World units per pixel should be initialized to 1.0");

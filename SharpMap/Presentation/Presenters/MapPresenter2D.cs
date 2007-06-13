@@ -45,11 +45,6 @@ namespace SharpMap.Presentation
 
         public MapPresenter2D(SharpMap.Map.Map map, IMapView2D mapView)
         {
-            if (mapView.ViewPort == null)
-            {
-                throw new InvalidOperationException("Parameter mapView must have an initialized ViewPort property.");
-            }
-
             Map = map;
             Map.LayersAdded += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
             Map.LayersRemoved += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
@@ -60,8 +55,9 @@ namespace SharpMap.Presentation
             MapView.BeginAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_BeginAction);
             MapView.MoveTo += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_MoveTo);
             MapView.EndAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_EndAction);
-
-            MapViewPort2D viewPort = MapView.ViewPort;
+            
+            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+            mapView.ViewPort = viewPort;
             viewPort.CenterChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewPoint2D, Point>>(ViewPort_CenterChanged);
             viewPort.MapTransformChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>>(ViewPort_MapTransformChanged);
             viewPort.MaximumWorldWidthChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MaximumZoomChanged);

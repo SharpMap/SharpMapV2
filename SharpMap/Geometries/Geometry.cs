@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
 
+using SharpMap.Utilities;
+
 namespace SharpMap.Geometries
 {
     /// <summary>
@@ -27,8 +29,8 @@ namespace SharpMap.Geometries
 	/// <see cref="Geometry"/> is an abstract (non-instantiable) class.
 	/// </summary>
 	/// <remarks>
-	/// <para>The instantiable subclasses of <see cref="Geometry"/> defined in the specification are restricted to 0, 1 and twodimensional
-	/// geometric objects that exist in two-dimensional coordinate space (R^2).</para>
+	/// <para>The instantiable subclasses of <see cref="Geometry"/> defined in the specification are restricted to 0, 
+    /// 1 and two dimensional geometric objects that exist in two-dimensional coordinate space (R<sup>2</sup>).</para>
     /// <para>All instantiable geometry classes described in this specification are defined so that valid instances of a
 	/// geometry class are topologically closed (i.e. all defined geometries include their boundary).</para>
 	/// </remarks>
@@ -36,6 +38,7 @@ namespace SharpMap.Geometries
 	public abstract class Geometry : IGeometry, IEquatable<Geometry>
 	{
 		private SharpMap.CoordinateSystems.ICoordinateSystem _spatialReference;
+        private Tolerance _tolerance = null;
 
 		/// <summary>
 		/// Gets or sets the spatial reference system associated with the <see cref="Geometry"/>.
@@ -47,6 +50,31 @@ namespace SharpMap.Geometries
 			get { return _spatialReference; }
 			set { _spatialReference = value; }
 		}
+
+        /// <summary>
+        /// Gets or sets the tolerance used in comparisons with a <see cref="Geometry"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to <see cref="Tolerance.Global"/>. If the value of this property is explicitly set,
+        /// that value is used, on an instance by instance basis, until it is set to null, which will
+        /// allow the Geometry instance to participate in the global setting.
+        /// </remarks>
+        public Tolerance Tolerance
+        {
+            get 
+            {
+                if (_tolerance == null)
+                {
+                    return Tolerance.Global;
+                }
+
+                return _tolerance; 
+            }
+            set
+            {
+                _tolerance = value;
+            }
+        }
 
 		// The following are methods that should be implemented on a geometry object according to
 		// the OpenGIS Simple Features Specification

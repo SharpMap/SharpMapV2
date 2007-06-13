@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -21,11 +22,14 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
+using SharpMap.Utilities;
+
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// A Point is a 0-dimensional geometry and represents a single location in 2D coordinate space. A Point has a x coordinate
-	/// value and a y-coordinate value. The boundary of a Point is the empty set.
+	/// A Point is a 0-dimensional geometry and represents a single location in 2D coordinate space. 
+    /// A Point has an x coordinate value and a y-coordinate value. 
+    /// The boundary of a Point is the empty set.
 	/// </summary>
 	[Serializable]
 	public class Point : Geometry, IComparable<Point>
@@ -44,7 +48,8 @@ namespace SharpMap.Geometries
 		/// <param name="y">Y coordinate</param>
 		public Point(double x, double y)
 		{
-			_x = x; _y = y;
+			_x = x; 
+            _y = y;
             SetNotEmpty();
 		}
 
@@ -75,22 +80,34 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Gets an empty (uninitialized) point.
 		/// </summary>
+        /// <remarks>
+        /// Returns a new empty point. If checking if a point is empty, especially in a loop, use <see cref="IsEmpty"/>
+        /// since it doesn't create a new object.
+        /// </remarks>
         public static Point Empty
         {
-            get { return _empty; }
+            get { return _empty.Clone(); }
 		}
 
 		/// <summary>
 		/// Gets a point representing (0, 0).
-		/// </summary>
+        /// </summary>
+        /// <remarks>
+        /// Returns a new point set to (0, 0). If checking if a point is zero, especially in a loop, use the <see cref="X"/>
+        /// and <see cref="Y"/> properties, since these operations don't create a new object.
+        /// </remarks>
 		public static Point Zero
 		{
-			get { return _zero; }
+            get { return _zero.Clone(); }
 		}
 
 		/// <summary>
 		/// Returns a 2D <see cref="Point"/> instance from this <see cref="Point"/>.
 		/// </summary>
+        /// <remarks>
+        /// This method, which implements an OGC standard, behaves the same as <see cref="Clone"/> in 
+        /// returning an exact copy of a point.
+        /// </remarks>
 		/// <returns><see cref="Point"/></returns>
 		public Point AsPoint()
 		{
@@ -105,11 +122,19 @@ namespace SharpMap.Geometries
 			get
 			{
                 if (!IsEmpty())
+                {
                     return _x;
+                }
                 else
+                {
                     throw new InvalidOperationException("Point is empty");
+                }
 			}
-			set { _x = value; SetNotEmpty(); }
+			set 
+            { 
+                _x = value;
+                SetNotEmpty(); 
+            }
 		}
 
 		/// <summary>
@@ -120,11 +145,19 @@ namespace SharpMap.Geometries
 			get
 			{
                 if (!IsEmpty())
-					return _y;
+                {
+                    return _y;
+                }
                 else
+                {
                     throw new InvalidOperationException("Point is empty");
+                }
 			}
-            set { _y = value; SetNotEmpty(); }
+            set 
+            { 
+                _y = value; 
+                SetNotEmpty(); 
+            }
 		}
 
 		/// <summary>
@@ -137,23 +170,36 @@ namespace SharpMap.Geometries
 			get
 			{
                 if (IsEmpty())
+                {
                     throw new InvalidOperationException("Point is empty");
-				else if (index == 0)
-					return this.X;
-				else if
-					(index == 1)
-					return this.Y;
-				else
-					throw (new ArgumentOutOfRangeException("Point index out of bounds"));
+                }
+                else if (index == 0)
+                {
+                    return this.X;
+                }
+                else if (index == 1)
+                {
+                    return this.Y;
+                }
+                else
+                {
+                    throw (new ArgumentOutOfRangeException("Point index out of bounds"));
+                }
 			}
 			set
 			{
-				if (index == 0)
-					this.X = value;
-				else if (index == 1)
-					this.Y = value;
-				else
+                if (index == 0)
+                {
+                    this.X = value;
+                }
+                else if (index == 1)
+                {
+                    this.Y = value;
+                }
+                else
+                {
                     throw (new ArgumentOutOfRangeException("Point index out of bounds"));
+                }
 
                 SetNotEmpty();
 			}
@@ -217,16 +263,14 @@ namespace SharpMap.Geometries
 		#region "Inherited methods from abstract class Geometry"
 
 		/// <summary>
-		/// Checks whether this instance is spatially equal to the Point 'o'
+		/// Checks whether this instance is spatially equal to <paramref name="p"/>.
 		/// </summary>
 		/// <param name="p">Point to compare to</param>
-		/// <returns></returns>
+		/// <returns>True if the points are either both empty or have the same coordinates, false otherwise.</returns>
 		public virtual bool Equals(Point p)
 		{
-			return !Object.ReferenceEquals(p, null) 
-                && p.X == _x 
-                && p.Y == _y 
-                && IsEmpty() == p.IsEmpty();
+			return !Object.ReferenceEquals(p, null)
+                && ((IsEmpty() == p.IsEmpty() == true) || (Tolerance.Equal(p.X, _x) && Tolerance.Equal(p.Y, _y)));
 		}
 
 		/// <summary>
@@ -284,13 +328,15 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public override double Distance(Geometry geom)
 		{
-			if (geom.GetType() == typeof(SharpMap.Geometries.Point))
-			{
-				Point p = geom as Point;
-				return Math.Sqrt(Math.Pow(this.X - p.X, 2) + Math.Pow(this.Y - p.Y, 2));
-			}
-			else
-				throw new NotImplementedException("The method or operation is not implemented for this geometry type.");
+            if (geom.GetType() == typeof(SharpMap.Geometries.Point))
+            {
+                Point p = geom as Point;
+                return Math.Sqrt(Math.Pow(this.X - p.X, 2) + Math.Pow(this.Y - p.Y, 2));
+            }
+            else
+            {
+                throw new NotImplementedException("The method or operation is not implemented for this geometry type.");
+            }
 		}
 		/// <summary>
 		/// Returns the distance between this point and a <see cref="BoundingBox"/>
@@ -371,7 +417,9 @@ namespace SharpMap.Geometries
 		public override BoundingBox GetBoundingBox()
 		{
             if (IsEmpty())
+            {
                 return new BoundingBox();
+            }
 
 			return new BoundingBox(this.X, this.Y, this.X, this.Y);
 		}
@@ -392,8 +440,10 @@ namespace SharpMap.Geometries
 		/// <returns>true if they touch</returns>
 		public override bool Touches(Geometry geom)
 		{
-			if (geom is Point && this.Equals(geom)) 
+            if (geom is Point && this.Equals(geom))
+            {
                 return true;
+            }
 
 			throw new NotImplementedException("Touches not implemented for this feature type");
 		}
@@ -426,6 +476,11 @@ namespace SharpMap.Geometries
 		/// <returns>Clone</returns>
 		public new Point Clone()
 		{
+            if (IsEmpty())
+            {
+                return new Point();
+            }
+
 			return new Point(this.X, this.Y);
 		}
 
@@ -434,16 +489,43 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Comparator used for ordering point first by ascending X, then by ascending Y.
 		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
+		/// <param name="other">The <see cref="Point"/> to compare.</param>
+		/// <returns>
+        /// 0 if the points are spatially equal or both empty; 1 if <paramref name="other"/> is empty or
+        /// if this point has a greater <see cref="X"/> value or equal X values and a greater <see cref="Y"/> value; 
+        /// -1 if this point is empty or if <paramref name="other"/> has a greater <see cref="X"/> value or equal X values 
+        /// and a greater <see cref="Y"/> value.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="other"/> is null.</exception>
 		public virtual int CompareTo(Point other)
 		{
-			if (this.X < other.X || this.X == other.X && this.Y < other.Y)
-				return -1;
-			else if (this.X > other.X || this.X == other.X && this.Y > other.Y)
-				return 1;
-			else// (this.X == other.X && this.Y == other.Y)
-				return 0;
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            if (this.Equals(other)) // This handles the case where both are empty. 
+            {
+                return 0;
+            }
+            else if (this.IsEmpty())
+            {
+                return -1;
+            }
+            else if (other.IsEmpty())
+            {
+                return 1;
+            }
+            else if (Tolerance.Less(this.X, other.X) || Tolerance.Equal(this.X, other.X) && Tolerance.Less(this.Y, other.Y))
+            {
+                return -1;
+            }
+            else if (Tolerance.Greater(this.X, other.X) || Tolerance.Equal(this.X, other.X) && Tolerance.Greater(this.Y, other.Y))
+            {
+                return 1;
+            }
+
+            throw new InvalidOperationException("Points cannot be compared.");
 		}
 
 		#endregion
