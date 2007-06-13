@@ -48,7 +48,6 @@ namespace SharpMap.Presentation
             Map = map;
             Map.LayersAdded += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
             Map.LayersRemoved += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
-            Map.SelectedFeaturesChanged += new EventHandler(Map_SelectedFeaturesChanged);
 
             MapView = mapView;
             MapView.Hover += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_Hover);

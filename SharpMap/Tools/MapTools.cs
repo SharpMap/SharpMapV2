@@ -200,7 +200,7 @@ namespace SharpMap.Tools
 
         public override string ToString()
         {
-            return String.Format("MapTool: {0}", Name);
+            return String.Format("MapTool: {0}", String.IsNullOrEmpty(Name) ? "<None>" : Name);
         }
 
         public string Name

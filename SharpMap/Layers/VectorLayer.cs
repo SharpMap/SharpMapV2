@@ -55,7 +55,9 @@ namespace SharpMap.Layers
     public class VectorLayer : Layer, IFeatureLayer, IDisposable
     {
         private IProvider _dataSource;
-        private Predicate<FeatureDataRow> _featureSelectionClause;
+		private Predicate<FeatureDataRow> _featureSelectionClause;
+		private readonly object _selectedFeaturesSync = new object();
+		private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
 
         /// <summary>
         /// Initializes a new layer
@@ -91,7 +93,8 @@ namespace SharpMap.Layers
 			get { return base.Style as VectorStyle; }
 			set { base.Style = value; }
 		}
-
+		
+		#region IFeatureLayer Members
         public IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region)
         {
             FeatureDataSet ds = new FeatureDataSet();
@@ -111,20 +114,44 @@ namespace SharpMap.Layers
 
                 yield return feature;
             }
-        }
+		}
 
-        #region ILayer Members
-        /// <summary>
-        /// Returns the extent of the layer
+		public event EventHandler SelectedFeaturesChanged;
+
+		public IList<FeatureDataRow> SelectedFeatures
+		{
+			get
+			{
+				lock (_selectedFeaturesSync)
+				{
+					return _selectedFeatures;
+				}
+			}
+			set
+			{
+				lock (_selectedFeaturesSync)
+				{
+					_selectedFeatures.Clear();
+					_selectedFeatures.AddRange(value);
+					onSelectedFeaturesChanged();
+				}
+			}
+		}
+
+		#endregion IFeatureLayer Members
+
+		#region ILayer Members
+		/// <summary>
+        /// Returns the extent of the layer.
         /// </summary>
-        /// <returns>Bounding box corresponding to the extent of the features in the layer</returns>
+        /// <returns>Bounding box corresponding to the extent of the features in the layer.</returns>
         public override BoundingBox Envelope
         {
             get
             {
                 if (DataSource == null)
                 {
-                    throw new InvalidOperationException("DataSource property not set on layer '" + this.LayerName + "'");
+					return BoundingBox.Empty;
                 }
 
                 bool wasOpen = DataSource.IsOpen;
@@ -197,5 +224,15 @@ namespace SharpMap.Layers
         }
 
         #endregion
-    }
+
+		private void onSelectedFeaturesChanged()
+		{
+			EventHandler e = SelectedFeaturesChanged;
+
+			if (e != null)
+			{
+				e(null, EventArgs.Empty);
+			}
+		}
+	}
 }

@@ -169,10 +169,25 @@ namespace SharpMap.Layers
             DataSource.ExecuteIntersectionQuery(region, dataSet);
             DataSource.Close();
 
-            foreach (FeatureDataRow row in dataSet.Tables[0])
-                yield return row;
+			foreach (FeatureDataRow row in dataSet.Tables[0])
+			{
+				yield return row;
+			}
         }
 
+		public event EventHandler SelectedFeaturesChanged;
+
+		public IList<FeatureDataRow> SelectedFeatures
+		{
+			get
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+			set
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+		}
         #endregion
 
         /// <summary>
@@ -223,6 +238,14 @@ namespace SharpMap.Layers
             throw new NotImplementedException();
         }
 
+        public string GetLabelText(FeatureDataRow feature)
+        {
+            if (_getLabelMethod != null)
+                return _getLabelMethod(feature);
+            else
+                return feature[this.LabelColumn].ToString();
+        }
+
         #region IDisposable Members
 
         /// <summary>
@@ -235,15 +258,7 @@ namespace SharpMap.Layers
         }
 
         #endregion
-
-        public string GetLabelText(FeatureDataRow feature)
-        {
-            if (_getLabelMethod != null)
-                return _getLabelMethod(feature);
-            else
-                return feature[this.LabelColumn].ToString();
-        }
-    }
+	}
 
     /// <summary>
     /// Labelling behaviour for Multipart geometry collections

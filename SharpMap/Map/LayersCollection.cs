@@ -52,8 +52,10 @@ namespace SharpMap.Map
         #region IList Implementation
         public int Add(ILayer layer)
         {
-            if (layer == null)
-                throw new ArgumentNullException("layer");
+			if (layer == null)
+			{
+				throw new ArgumentNullException("layer");
+			}
 
             _layers.Add(layer);
 

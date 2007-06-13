@@ -21,10 +21,5 @@ namespace SharpMap.Tools
         {
             get { return new ReadOnlyCollection<ILayer>(_map.SelectedLayers); }
         }
-
-        public ReadOnlyCollection<FeatureDataRow> SelectedFeatures
-        {
-            get { return new ReadOnlyCollection<FeatureDataRow>(_map.SelectedFeatures); }
-        }
     }
 }

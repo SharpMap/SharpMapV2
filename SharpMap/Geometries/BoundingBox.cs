@@ -29,7 +29,7 @@ namespace SharpMap.Geometries
 	/// Bounding box type with double precision.
 	/// </summary>
 	/// <remarks>
-    /// The BoundingBox represents a box whose sides are parallel to the two axes of the coordinate system.
+    /// The BoundingBox represents a 2D box whose sides are parallel to the two axes of the coordinate system.
 	/// </remarks>
 	[Serializable]
 	public struct BoundingBox : IEquatable<BoundingBox>
@@ -44,6 +44,7 @@ namespace SharpMap.Geometries
         private double _xMin, _yMin, _xMax, _yMax;
         private bool _hasValue;
 
+		#region Constructors
 		/// <summary>
 		/// Initializes a bounding box.
 		/// </summary>
@@ -72,7 +73,9 @@ namespace SharpMap.Geometries
 		public BoundingBox(Point lowerLeft, Point upperRight)
             : this(0, 0, 0, 0)
 		{
-            if (lowerLeft == null || lowerLeft.IsEmpty || upperRight == null || upperRight.IsEmpty)
+			_hasValue = false;
+
+            if (lowerLeft == null || lowerLeft.IsEmpty() || upperRight == null || upperRight.IsEmpty())
             {
                 return;
             }
@@ -81,6 +84,7 @@ namespace SharpMap.Geometries
             _yMin = lowerLeft.Y;
             _xMax = upperRight.X;
             _yMax = upperRight.Y;
+			checkMinMax();
         }
 
         /// <summary>
@@ -89,8 +93,10 @@ namespace SharpMap.Geometries
         /// <param name="boxes">BoundingBox instances to join.</param>
         public BoundingBox(params BoundingBox[] boxes)
             : this(0, 0, 0, 0)
-        {
-            if (boxes == null)
+		{
+			_hasValue = false;
+
+            if (boxes == null || boxes.Length == 0)
             {
                 return;
             }
@@ -108,6 +114,8 @@ namespace SharpMap.Geometries
         public BoundingBox(IEnumerable<Geometry> objects)
             : this(0, 0, 0, 0)
 		{
+			_hasValue = false;
+
             if (objects == null)
             {
                 return;
@@ -119,14 +127,6 @@ namespace SharpMap.Geometries
             {
                 ExpandToInclude(g);
             }
-
-            //{
-            //    BoundingBox box = g.GetBoundingBox();
-            //    _Min.X = Math.Min(box.Min.X, this.Min.X);
-            //    _Min.Y = Math.Min(box.Min.Y, this.Min.Y);
-            //    _Max.X = Math.Max(box.Max.X, this.Max.X);
-            //    _Max.Y = Math.Max(box.Max.Y, this.Max.Y);
-            //}
 		}
 
 		/// <summary>
@@ -136,6 +136,8 @@ namespace SharpMap.Geometries
         public BoundingBox(IEnumerable<BoundingBox> objects)
             : this(0, 0, 0, 0)
 		{
+			_hasValue = false;
+
             if (objects == null)
             {
                 return;
@@ -146,6 +148,9 @@ namespace SharpMap.Geometries
                 ExpandToInclude(box);
             }
 		}
+		#endregion Constructors
+
+		#region Metrics Properties
 
 		/// <summary>
 		/// Gets or sets the lower left corner.
@@ -338,448 +343,609 @@ namespace SharpMap.Geometries
             }
 		}
 
+		#endregion
+
+		#region Spatial Relationships
+
+		#region Borders
 		/// <summary>
-		/// Moves/translates the <see cref="BoundingBox"/> along the the specified vector.
+		/// Determines if two boxes share, at least partially, a common border, within the 
+		/// <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
-		/// <param name="vector">Offset vector.</param>
-		public void Offset(Point vector)
+		/// <param name="box">The box to check.</param>
+		/// <returns>
+		/// True if <paramref name="box"/> shares a commons border, false if not, 
+		/// or if either or both are empty.
+		/// </returns>
+		public bool Borders(BoundingBox box)
 		{
-            _xMin += vector.X;
-            _xMax += vector.X;
-            _yMin += vector.Y;
-            _yMax += vector.Y;
+			return Borders(box, Tolerance.Global);
 		}
 
 		/// <summary>
-        /// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>.
+		/// Determines if two boxes share, at least partially, a common border.
+		/// </summary>
+		/// <param name="box">The box to check.</param>
+		/// <param name="tolerance">The tolerance to use in comparing.</param>
+		/// <returns>
+		/// True if <paramref name="box"/> shares a commons border, false if not, or if either or both are empty.
+		/// </returns>
+		public bool Borders(BoundingBox box, Tolerance tolerance)
+		{
+			return this.Left == box.Left || this.Bottom == box.Bottom || this.Right == box.Right || this.Top == box.Top;
+		}
+		#endregion Borders
+
+		#region Contains
+		/// <summary>
+		/// Returns true if this instance contains the <see cref="BoundingBox"/>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
+		/// </summary>
+		/// <param name="box"><see cref="BoundingBox"/></param>
+		/// <returns>True this <see cref="BoundingBox"/> contains the <paramref name="box">argument</paramref>.</returns>
+		public bool Contains(BoundingBox box)
+		{
+			return Contains(box, Tolerance.Global);
+		}
+
+		/// <summary>
+		/// Returns true if this instance contains the <see cref="BoundingBox"/>., 
+		/// within the <paramref name="tolerance">given tolerance</paramref>
+		/// </summary>
+		/// <param name="box"><see cref="BoundingBox"/></param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
+		/// <returns>True this <see cref="BoundingBox"/> contains the <paramref name="box">argument</paramref>.</returns>
+		public bool Contains(BoundingBox box, Tolerance tolerance)
+		{
+			if (this.IsEmpty || box.IsEmpty)
+			{
+				return false;
+			}
+
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			return tolerance.LessOrEqual(this.Left, box.Left) &&
+				tolerance.GreaterOrEqual(this.Top, box.Top) &&
+				tolerance.GreaterOrEqual(this.Right, box.Right) &&
+				tolerance.LessOrEqual(this.Bottom, box.Bottom);
+		}
+
+		/// <summary>
+		/// Checks whether a <see cref="Point"/> borders or lies within the bounding box, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
+		/// </summary>
+		/// <param name="p"><see cref="Point"/></param>
+		/// <returns>True if <paramref name="p">the point</paramref> borders or is within this <see cref="BoundingBox"/>.</returns>
+		public bool Contains(Point p)
+		{
+			return Contains(p, Tolerance.Global);
+		}
+
+		/// <summary>
+		/// Checks whether a <see cref="Point"/> borders or lies within the bounding box, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
+		/// </summary>
+		/// <param name="p"><see cref="Point"/></param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
+		/// <returns>True if <paramref name="p">the point</paramref> borders or is within this <see cref="BoundingBox"/>.</returns>
+		public bool Contains(Point p, Tolerance tolerance)
+		{
+			if (p == null || this.IsEmpty || p.IsEmpty())
+			{
+				return false;
+			}
+
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (tolerance.Less(this.Right, p.X))
+			{
+				return false;
+			}
+			if (tolerance.Greater(this.Left, p.X))
+			{
+				return false;
+			}
+			if (tolerance.Less(this.Top, p.Y))
+			{
+				return false;
+			}
+			if (tolerance.Greater(this.Bottom, p.Y))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Returns true if this instance contains the <paramref name="geometry">, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
+		/// </summary>
+		/// <param name="geometry">Geometry to test if this <see cref="BoundingBox"/> contains.</param>
+		/// <returns>True if this <see cref="BoundingBox"/> contains the 
+		/// <paramref name="geometry">geometry</paramref>.</returns>
+		public bool Contains(Geometry geometry)
+		{
+			return Contains(geometry, Tolerance.Global);
+		}
+
+		/// <summary>
+		/// Returns true if this instance contains the <paramref name="geometry">, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
+		/// </summary>
+		/// <param name="geometry">Geometry to test if this <see cref="BoundingBox"/> contains.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
+		/// <returns>True if this <see cref="BoundingBox"/> contains the 
+		/// <paramref name="geometry">geometry</paramref>.</returns>
+		public bool Contains(Geometry geometry, Tolerance tolerance)
+		{
+			if (geometry == null)
+			{
+				return false;
+			}
+
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (geometry is Point)
+			{
+				return Contains(geometry as Point, tolerance);
+			}
+
+			throw new NotImplementedException("Contains: Not implemented on these geometries");
+		}
+		#endregion Contains
+
+		#region Intersects
+		/// <summary>
+		/// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
         /// <param name="box"><see cref="BoundingBox"/> to check intersection with.</param>
-		/// <returns>True if the <paramref name="box">argument</paramref> touches this <see cref="BoundingBox"/> instance in any way.</returns>
+		/// <returns>True if the <paramref name="box">argument</paramref> 
+		/// touches this <see cref="BoundingBox"/> instance in any way.</returns>
 		public bool Intersects(BoundingBox box)
 		{
-            return Touches(box);
+			return Intersects(box, Tolerance.Global);
 		}
 
 		/// <summary>
-        /// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>.
+		/// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
         /// <param name="box"><see cref="BoundingBox"/> to check intersection with.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
 		/// <returns>True if the <paramref name="box">argument</paramref> touches this <see cref="BoundingBox"/> instance in any way.</returns>
         public bool Intersects(BoundingBox box, Tolerance tolerance)
-        {
+		{
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			return Touches(box, tolerance);
         }
 
 		/// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
         /// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
         /// <returns>True if this BoundingBox intersects the <paramref name="geometry">geometry</paramref>.</returns>
 		public bool Intersects(Geometry geometry)
 		{
-			return Touches(geometry);
+			return Intersects(geometry, Tolerance.Global);
 		}
 
 		/// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-        /// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
+		/// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True if this BoundingBox intersects the <paramref name="geometry">geometry</paramref>.</returns>
         public bool Intersects(Geometry geometry, Tolerance tolerance)
-        {
-        }
+		{
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			return Touches(geometry, tolerance);
+		}
+		#endregion Intersects
+
+		#region Overlaps
+		/// <summary>
+		/// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
+		/// </summary>
+		/// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
+		/// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
+		/// return true, but <see cref="Overlaps"/> will return false.
+		/// </remarks>
+		/// <param name="b"><see cref="BoundingBox"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+		/// <returns>True if the <paramref name="b">bounding box</paramref> overlaps.</returns>
+		public bool Overlaps(BoundingBox b)
+		{
+			return Overlaps(b, Tolerance.Global);
+		}
 
 		/// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
+		/// </summary>
+		/// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
+		/// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
+		/// return true, but <see cref="Overlaps"/> will return false.
+		/// </remarks>
+		/// <param name="b"><see cref="BoundingBox"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
+		/// <returns>True if the <paramref name="b">bounding box</paramref> overlaps.</returns>
+		public bool Overlaps(BoundingBox b, Tolerance tolerance)
+		{
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (this.IsEmpty || b.IsEmpty)
+			{
+				return false;
+			}
+
+			return Contains(b) ||
+				   !(tolerance.GreaterOrEqual(b.Left, Right) ||
+					 tolerance.LessOrEqual(b.Right, Left) ||
+					 tolerance.LessOrEqual(b.Top, Bottom) ||
+					 tolerance.GreaterOrEqual(b.Bottom, Top));
+		}
+
+		/// <summary>
+		/// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
+		/// </summary>
+		/// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
+		/// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
+		/// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
+		/// <see cref="Contains"/> will return true if Overlaps returns true.
+		/// </remarks>
+		/// <param name="p"><see cref="Point"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+		/// <returns>True if the <paramref name="p">point</paramref> overlaps.</returns>
+		public bool Overlaps(Point p)
+		{
+			return Overlaps(p, Tolerance.Global);
+		}
+
+
+		/// <summary>
+		/// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
+		/// </summary>
+		/// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
+		/// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
+		/// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
+		/// <see cref="Contains"/> will return true if Overlaps returns true.
+		/// </remarks>
+		/// <param name="p"><see cref="Point"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
+		/// <returns>True if the <paramref name="p">point</paramref> overlaps.</returns>
+		public bool Overlaps(Point p, Tolerance tolerance)
+		{
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (p == null || p.IsEmpty())
+			{
+				return false;
+			}
+
+			return Overlaps(p.GetBoundingBox());
+		}
+
+		/// <summary>
+		/// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="geometry">geometry</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
+		/// </summary>
+		/// <remarks>
+		/// A <see cref="Geometry"/> can touch and not overlap. If the <paramref name="geometry">geometry</paramref> and 
+		/// the <see cref="BoundingBox"/> share a common edge or a point, the <see cref="Touches"/> method will
+		/// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
+		/// <see cref="Contains"/> will return true if Overlaps returns true.
+		/// </remarks>
+		/// <param name="geometry"><see cref="Geometry"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+		/// <returns>True if the <paramref name="geometry">geometry</paramref> overlaps.</returns>
+		public bool Overlaps(Geometry geometry)
+		{
+			return Overlaps(geometry, Tolerance.Global);
+		}
+
+		/// <summary>
+		/// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="geometry">geometry</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
+		/// </summary>
+		/// <remarks>
+		/// A <see cref="Geometry"/> can touch and not overlap. If the <paramref name="geometry">geometry</paramref> and 
+		/// the <see cref="BoundingBox"/> share a common edge or a point, the <see cref="Touches"/> method will
+		/// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
+		/// <see cref="Contains"/> will return true if Overlaps returns true.
+		/// </remarks>
+		/// <param name="geometry"><see cref="Geometry"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
+		/// <returns>True if the <paramref name="geometry">geometry</paramref> overlaps.</returns>
+		public bool Overlaps(Geometry geometry, Tolerance tolerance)
+		{
+			if (geometry == null)
+			{
+				return false;
+			}
+
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (geometry is Point)
+			{
+				return Overlaps(geometry as Point, tolerance);
+			}
+
+			throw new NotImplementedException("Overlaps: Not implemented on this geometry type");
+		}
+		#endregion Overlaps
+
+		#region Touches
+
+		/// <summary>
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
         /// <param name="box"><see cref="BoundingBox"/> to check if this BoundingBox touches.</param>
 		/// <returns>True if <paramref name="box"/> touches.</returns>
 		public bool Touches(BoundingBox box)
-        {
-            if (this.IsEmpty || box.IsEmpty)
-            {
-                return false;
-            }
-
-            return !(box.Left > Right ||
-                     box.Right < Left ||
-                     box.Top < Bottom ||
-                     box.Bottom > Top );
+		{
+			return Touches(box, Tolerance.Global);
         }
 
 		/// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
-        /// <param name="box"><see cref="BoundingBox"/> to check if this BoundingBox touches.</param>
+		/// <param name="box"><see cref="BoundingBox"/> to check if this BoundingBox touches.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
 		/// <returns>True if <paramref name="box"/> touches.</returns>
         public bool Touches(BoundingBox box, Tolerance tolerance)
-        {
+		{
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (this.IsEmpty || box.IsEmpty)
+			{
+				return false;
+			}
+
+			return !(tolerance.Greater(box.Left, Right) ||
+					 tolerance.Less(box.Right, Left) ||
+					 tolerance.Less(box.Top, Bottom) ||
+					 tolerance.Greater(box.Bottom, Top));
         }
 
         /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
         /// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
         /// <returns>True if the <paramref name="p">point</paramref> touches.</returns>
         public bool Touches(Point p)
         {
-            if (p == null)
-            {
-                return false;
-            }
-
-            return Touches(p.GetBoundingBox());
+			return Touches(p, Tolerance.Global);
         }
 
         /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-        /// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
+		/// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True if the <paramref name="p">point</paramref> touches.</returns>
         public bool Touches(Point p, Tolerance tolerance)
-        {
+		{
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (p == null || p.IsEmpty())
+			{
+				return false;
+			}
+
+			return Touches(p.GetBoundingBox(), tolerance);
         }
 
 		/// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
         /// <param name="geometry"><see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.</param>
 		/// <returns>True if the <paramref name="geometry">geometry</paramref> touches.</returns>
 		public bool Touches(Geometry geometry)
 		{
-            if (geometry is Point)
-            {
-                return Touches(geometry as Point);
-            }
-
-			throw new NotImplementedException("Touches: Not implemented on this geometry type");
+			return Touches(geometry, Tolerance.Global);
         }
 
 		/// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
-        /// <param name="geometry"><see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.</param>
+		/// <param name="geometry"><see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
 		/// <returns>True if the <paramref name="geometry">geometry</paramref> touches.</returns>
         public bool Touches(Geometry geometry, Tolerance tolerance)
-        {
-        }
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>.
-        /// </summary>
-        /// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
-        /// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
-        /// return true, but <see cref="Overlaps"/> will return false.
-        /// </remarks>
-        /// <param name="b"><see cref="BoundingBox"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
-        /// <returns>True if the <paramref name="b">bounding box</paramref> overlaps.</returns>
-        public bool Overlaps(BoundingBox b)
-        {
-            if (this.IsEmpty || b.IsEmpty)
-            {
-                return false;
-            }
-
-            return Contains(b) ||
-                   !(b.Left >= Right ||
-                     b.Right <= Left ||
-                     b.Top <= Bottom ||
-                     b.Bottom >= Top);
-        }
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>.
-        /// </summary>
-        /// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
-        /// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
-        /// return true, but <see cref="Overlaps"/> will return false.
-        /// </remarks>
-        /// <param name="b"><see cref="BoundingBox"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
-        /// <returns>True if the <paramref name="b">bounding box</paramref> overlaps.</returns>
-        public bool Overlaps(BoundingBox b, Tolerance tolerance)
-        {
-        }
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>.
-        /// </summary>
-        /// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
-        /// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
-        /// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
-        /// <see cref="Contains"/> will return true if Overlaps returns true.
-        /// </remarks>
-        /// <param name="p"><see cref="Point"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
-        /// <returns>True if the <paramref name="p">point</paramref> overlaps.</returns>
-        public bool Overlaps(Point p)
-        {
-            if (p == null)
-            {
-                return false;
-            }
-
-            return Overlaps(p.GetBoundingBox());
-        }
-        
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>.
-        /// </summary>
-        /// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
-        /// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
-        /// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
-        /// <see cref="Contains"/> will return true if Overlaps returns true.
-        /// </remarks>
-        /// <param name="p"><see cref="Point"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
-        /// <returns>True if the <paramref name="p">point</paramref> overlaps.</returns>
-        public bool Overlaps(Point p, Tolerance tolerance)
-        {
-        }
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="geometry">geometry</paramref>.
-        /// </summary>
-        /// <remarks>
-        /// A <see cref="Geometry"/> can touch and not overlap. If the <paramref name="geometry">geometry</paramref> and 
-        /// the <see cref="BoundingBox"/> share a common edge or a point, the <see cref="Touches"/> method will
-        /// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
-        /// <see cref="Contains"/> will return true if Overlaps returns true.
-        /// </remarks>
-        /// <param name="geometry"><see cref="Geometry"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
-        /// <returns>True if the <paramref name="geometry">geometry</paramref> overlaps.</returns>
-        public bool Overlaps(Geometry geometry)
-        {
-            if (geometry == null)
-            {
-                return false;
-            }
-
-            if (geometry is Point)
-            {
-                return Overlaps(geometry as Point);
-            }
-
-            throw new NotImplementedException("Overlaps: Not implemented on this geometry type");
-        }
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="geometry">geometry</paramref>.
-        /// </summary>
-        /// <remarks>
-        /// A <see cref="Geometry"/> can touch and not overlap. If the <paramref name="geometry">geometry</paramref> and 
-        /// the <see cref="BoundingBox"/> share a common edge or a point, the <see cref="Touches"/> method will
-        /// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
-        /// <see cref="Contains"/> will return true if Overlaps returns true.
-        /// </remarks>
-        /// <param name="geometry"><see cref="Geometry"/> to test if it overlaps this <see cref="BoundingBox"/>.</param>
-        /// <returns>True if the <paramref name="geometry">geometry</paramref> overlaps.</returns>
-        public bool Overlaps(Geometry geometry, Tolerance tolerance)
-        {
-        }
-
-		/// <summary>
-		/// Returns true if this instance contains the <see cref="BoundingBox"/>.
-		/// </summary>
-        /// <param name="box"><see cref="BoundingBox"/></param>
-		/// <returns>True this <see cref="BoundingBox"/> contains the <paramref name="box">argument</paramref>.</returns>
-		public bool Contains(BoundingBox box)
 		{
-            if (this.IsEmpty || box.IsEmpty)
-            {
-                return false;
-            }
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
 
-            return this.Left <= box.Left &&
-                this.Top >= box.Top &&
-                this.Right >= box.Right &&
-                this.Bottom <= box.Bottom;
-        }
+			if (geometry is Point)
+			{
+				return Touches(geometry as Point, tolerance);
+			}
 
+			throw new NotImplementedException("Touches: Not implemented on this geometry type");
+		}
+		#endregion Touches
+
+		#region Within
 		/// <summary>
-		/// Returns true if this instance contains the <see cref="BoundingBox"/>.
-		/// </summary>
-        /// <param name="box"><see cref="BoundingBox"/></param>
-		/// <returns>True this <see cref="BoundingBox"/> contains the <paramref name="box">argument</paramref>.</returns>
-        public bool Contains(BoundingBox box, Tolerance tolerance)
-        {
-        }
-
-        /// <summary>
-        /// Checks whether a <see cref="Point"/> borders or lies within the bounding box.
-        /// </summary>
-        /// <param name="p"><see cref="Point"/></param>
-        /// <returns>True if <paramref name="p">the point</paramref> borders or is within this <see cref="BoundingBox"/>.</returns>
-        public bool Contains(Point p)
-        {
-            if (p == null || this.IsEmpty || p.IsEmpty())
-            {
-                return false;
-            }
-
-            if (this.Right < p.X)
-            {
-                return false;
-            }
-            if (this.Left > p.X)
-            {
-                return false;
-            }
-            if (this.Top < p.Y)
-            {
-                return false;
-            }
-            if (this.Bottom > p.Y)
-            {
-                return false;
-            }
-
-            return true;
-        }
-        
-        /// <summary>
-        /// Checks whether a <see cref="Point"/> borders or lies within the bounding box.
-        /// </summary>
-        /// <param name="p"><see cref="Point"/></param>
-        /// <returns>True if <paramref name="p">the point</paramref> borders or is within this <see cref="BoundingBox"/>.</returns>
-        public bool Contains(Point p, Tolerance tolerance)
-        {
-        }
-
-		/// <summary>
-        /// Returns true if this instance contains the <paramref name="geometry">.
-		/// </summary>
-        /// <param name="geometry">Geometry to test if this <see cref="BoundingBox"/> contains.</param>
-        /// <returns>True if this <see cref="BoundingBox"/> contains the 
-        /// <paramref name="geometry">geometry</paramref>.</returns>
-		public bool Contains(Geometry geometry)
-        {
-            if (geometry == null)
-            {
-                return false;
-            }
-
-            if (geometry is Point)
-            {
-                return Contains(geometry as Point);
-            }
-
-			throw new NotImplementedException("Contains: Not implemented on these geometries");
-        }
-
-		/// <summary>
-        /// Returns true if this instance contains the <paramref name="geometry">.
-		/// </summary>
-        /// <param name="geometry">Geometry to test if this <see cref="BoundingBox"/> contains.</param>
-        /// <returns>True if this <see cref="BoundingBox"/> contains the 
-        /// <paramref name="geometry">geometry</paramref>.</returns>
-        public bool Contains(Geometry geometry, Tolerance tolerance)
-        {
-        }
-
-        /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="box">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="box">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
         /// <param name="box"><see cref="BoundingBox"/></param>
         /// <returns>True it contains</returns>
         public bool Within(BoundingBox box)
         {
-            if (this.IsEmpty || box.IsEmpty)
-            {
-                return false;
-            }
-
-            return this.Left <= box.Left &&
-                this.Top >= box.Top &&
-                this.Right >= box.Right &&
-                this.Bottom <= box.Bottom;
+			return Within(box, Tolerance.Global);
         }
 
         /// <summary>
-        /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="box">argument</paramref>.
+		/// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) the <paramref name="box">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-        /// <param name="box"><see cref="BoundingBox"/></param>
+		/// <param name="box"><see cref="BoundingBox"/></param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True it contains</returns>
         public bool Within(BoundingBox box, Tolerance tolerance)
-        {
+		{
+			if (this.IsEmpty || box.IsEmpty)
+			{
+				return false;
+			}
+
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			return tolerance.LessOrEqual(this.Left, box.Left) &&
+				 tolerance.GreaterOrEqual(this.Top, box.Top) &&
+				 tolerance.GreaterOrEqual(this.Right, box.Right) &&
+				 tolerance.LessOrEqual(this.Bottom, box.Bottom);
         }
 
         /// <summary>
         /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) 
-        /// the <paramref name="p">argument</paramref>.
+		/// the <paramref name="p">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
         /// <param name="geometry">Point to test if it is within this <see cref="BoundingBox"/> instance.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the <paramref name="p">point</paramref>.</returns>
         public bool Within(Point p)
         {
-            if (p == null || this.IsEmpty || p.IsEmpty())
-            {
-                return false;
-            }
-
-            if (this.Right <= p.X)
-            {
-                return false;
-            }
-            if (this.Left >= p.X)
-            {
-                return false;
-            }
-            if (this.Top <= p.Y)
-            {
-                return false;
-            }
-            if (this.Bottom >= p.Y)
-            {
-                return false;
-            }
-
-            return true;
+			return Within(p, Tolerance.Global);
         }
         
 
         /// <summary>
         /// Returns true if this <see cref="BoundingBox"/> instance is completely within (does not border) 
-        /// the <paramref name="p">argument</paramref>.
+		/// the <paramref name="p">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-        /// <param name="geometry">Point to test if it is within this <see cref="BoundingBox"/> instance.</param>
+		/// <param name="geometry">Point to test if it is within this <see cref="BoundingBox"/> instance.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the <paramref name="p">point</paramref>.</returns>
         public bool Within(Point p, Tolerance tolerance)
-        {
+		{
+			if (p == null || this.IsEmpty || p.IsEmpty())
+			{
+				return false;
+			}
+
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (tolerance.LessOrEqual(this.Right, p.X))
+			{
+				return false;
+			}
+			if (tolerance.GreaterOrEqual(this.Left, p.X))
+			{
+				return false;
+			}
+			if (tolerance.LessOrEqual(this.Top, p.Y))
+			{
+				return false;
+			}
+			if (tolerance.GreaterOrEqual(this.Bottom, p.Y))
+			{
+				return false;
+			}
+
+			return true;
         }
 
         /// <summary>
         /// Returns true if this <see cref="BoundingBox"/> instance is completely within 
-        /// (does not border) the <paramref name="geometry">argument</paramref>.
+		/// (does not border) the <paramref name="geometry">argument</paramref>, 
+		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
         /// <param name="geometry">Geometry to test if it is within this <see cref="BoundingBox"/> instance.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the 
         /// <paramref name="geometry">geometry</paramref>.</returns>
         public bool Within(Geometry geometry)
         {
-            if (geometry == null)
-            {
-                return false;
-            }
-
-            if (geometry is Point)
-            {
-                return Contains(geometry as Point);
-            }
-
-            throw new NotImplementedException("Contains: Not implemented on these geometries");
+			return Within(geometry, Tolerance.Global);
         }
         
         /// <summary>
         /// Returns true if this <see cref="BoundingBox"/> instance is completely within 
-        /// (does not border) the <paramref name="geometry">argument</paramref>.
+		/// (does not border) the <paramref name="geometry">argument</paramref>, 
+		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-        /// <param name="geometry">Geometry to test if it is within this <see cref="BoundingBox"/> instance.</param>
+		/// <param name="geometry">Geometry to test if it is within this <see cref="BoundingBox"/> instance.</param>
+		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the 
         /// <paramref name="geometry">geometry</paramref>.</returns>
         public bool Within(Geometry geometry, Tolerance tolerance)
-        {
-        }
+		{
+			if (geometry == null)
+			{
+				return false;
+			}
 
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (geometry is Point)
+			{
+				return Contains(geometry as Point, tolerance);
+			}
+
+			throw new NotImplementedException("Contains: Not implemented on these geometries");
+		}
+		#endregion Within
+		#endregion
+
+		#region GetArea and GetIntersectingArea
 		/// <summary>
-        /// Returns the area of the <see cref="BoundingBox"/>.
+		/// Returns the area of the <see cref="BoundingBox"/>.
 		/// </summary>
 		/// <returns>Area of box</returns>
 		public double GetArea()
@@ -794,90 +960,30 @@ namespace SharpMap.Geometries
 		/// <returns>Area</returns>
 		public double GetIntersectingArea(BoundingBox r)
 		{
-            //uint cIndex;
-            //for (cIndex = 0; cIndex < 2; cIndex++)
-            //    if (Min[cIndex] > r.Max[cIndex] || Max[cIndex] < r.Min[cIndex]) return 0.0;
+			//uint cIndex;
+			//for (cIndex = 0; cIndex < 2; cIndex++)
+			//    if (Min[cIndex] > r.Max[cIndex] || Max[cIndex] < r.Min[cIndex]) return 0.0;
 
-            if (!r.Intersects(this))
-            {
-                return 0.0;
-            }
+			if (!r.Intersects(this))
+			{
+				return 0.0;
+			}
 
-            //double ret = 1.0;
-            //double f1, f2;
+			//double ret = 1.0;
+			//double f1, f2;
 
-            //for (cIndex = 0; cIndex < 2; cIndex++)
-            //{
-            //    f1 = Math.Max(Min[cIndex], r.Min[cIndex]);
-            //    f2 = Math.Min(Max[cIndex], r.Max[cIndex]);
-            //    ret *= f2 - f1;
-            //}
+			//for (cIndex = 0; cIndex < 2; cIndex++)
+			//{
+			//    f1 = Math.Max(Min[cIndex], r.Min[cIndex]);
+			//    f2 = Math.Min(Max[cIndex], r.Max[cIndex]);
+			//    ret *= f2 - f1;
+			//}
 
 			return (Math.Min(r.Right, Right) - Math.Max(r.Left, Left)) * (Math.Min(r.Top, Top) - Math.Max(r.Bottom, Bottom));
 		}
+		#endregion
 
-        /// <summary>
-        /// Expands the <see cref="BoundingBox"/> instance to contain the space contained by <paramref name="box"/>.
-        /// </summary>
-        /// <param name="box"><see cref="BoundingBox"/> to enlarge box to contain.</param>
-        public void ExpandToInclude(BoundingBox box)
-        {
-            if (box.Left < Left || IsEmpty)
-            {
-                Left = box.Left;
-            }
-            if (box.Bottom < Bottom || IsEmpty)
-            {
-                Bottom = box.Bottom;
-            }
-            if (box.Right > Right || IsEmpty)
-            {
-                Right = box.Right;
-            }
-            if (box.Top > Top || IsEmpty)
-            {
-                Top = box.Top;
-            }
-
-            IsEmpty = false;
-        }
-
-        /// <summary>
-        /// Expands the <see cref="BoundingBox"/> instance to contain geometry <paramref name="geometry"/>.
-        /// </summary>
-        /// <param name="geometry"><see cref="Geometry"/> to enlarge box to contain.</param>
-        public void ExpandToInclude(Geometry geometry)
-        {
-            ExpandToInclude(geometry.GetBoundingBox());
-        }
-
-        /// <summary>
-        /// Determines if two boxes share, at least partially, a common border, within the 
-        /// <see cref="Tolerance.Global">global tolerance</see>.
-        /// </summary>
-        /// <param name="box">The box to check.</param>
-        /// <returns>
-        /// True if <paramref name="box"/> shares a commons border, false if not, 
-        /// or if either or both are empty.
-        /// </returns>
-        public bool Borders(BoundingBox box)
-        {
-            return Borders(box, Tolerance.Global);
-        }
-
-        /// <summary>
-        /// Determines if two boxes share, at least partially, a common border.
-        /// </summary>
-        /// <param name="box">The box to check.</param>
-        /// <param name="tolerance">The tolerance to use in comparing.</param>
-        /// <returns>
-        /// True if <paramref name="box"/> shares a commons border, false if not, or if either or both are empty.
-        /// </returns>
-        public bool Borders(BoundingBox box, Tolerance tolerance)
-        {
-            return this.Left == box.Left || this.Bottom == box.Bottom || this.Right == box.Right || this.Top == box.Top;
-        }
-
+		#region Join
 		/// <summary>
         /// Computes the joined BoundingBox of this instance and another BoundingBox.
 		/// </summary>
@@ -920,8 +1026,10 @@ namespace SharpMap.Geometries
         {
             return new BoundingBox(boxes);
 		}
+		#endregion
 
-        /// <summary>
+		#region Grow and Shrink
+		/// <summary>
         /// Returns a <see cref="BoundingBox"/> with a size decreased over this BoundingBox by the given 
         /// amount in all directions.
         /// </summary>
@@ -929,9 +1037,9 @@ namespace SharpMap.Geometries
         public BoundingBox Shrink(double amount)
         {
             return Grow(-amount);
-        }
+		}
 
-        /// <summary>
+		/// <summary>
         /// Returns a <see cref="BoundingBox"/> with a size decreased over this BoundingBox by the 
         /// given amount in horizontal and vertical directions.
         /// </summary>
@@ -993,9 +1101,62 @@ namespace SharpMap.Geometries
             box.Top += amountTop;
             box.checkMinMax();
             return box;
-        }
+		}
+		#endregion
 
-        /// <summary>
+		#region Offset
+		/// <summary>
+		/// Moves/translates the <see cref="BoundingBox"/> along the the specified vector.
+		/// </summary>
+		/// <param name="vector">Offset vector.</param>
+		public void Offset(Point vector)
+		{
+			_xMin += vector.X;
+			_xMax += vector.X;
+			_yMin += vector.Y;
+			_yMax += vector.Y;
+		}
+		#endregion Offset
+
+		#region ExpandToInclude
+		/// <summary>
+		/// Expands the <see cref="BoundingBox"/> instance to contain the space contained by <paramref name="box"/>.
+		/// </summary>
+		/// <param name="box"><see cref="BoundingBox"/> to enlarge box to contain.</param>
+		public void ExpandToInclude(BoundingBox box)
+		{
+			if (box.Left < Left || IsEmpty)
+			{
+				Left = box.Left;
+			}
+			if (box.Bottom < Bottom || IsEmpty)
+			{
+				Bottom = box.Bottom;
+			}
+			if (box.Right > Right || IsEmpty)
+			{
+				Right = box.Right;
+			}
+			if (box.Top > Top || IsEmpty)
+			{
+				Top = box.Top;
+			}
+
+			IsEmpty = false;
+		}
+
+		/// <summary>
+		/// Expands the <see cref="BoundingBox"/> instance to contain geometry <paramref name="geometry"/>.
+		/// </summary>
+		/// <param name="geometry"><see cref="Geometry"/> to enlarge box to contain.</param>
+		public void ExpandToInclude(Geometry geometry)
+		{
+			ExpandToInclude(geometry.GetBoundingBox());
+		}
+		#endregion ExpandToInclude
+
+		#region Split
+		/// <summary>
         /// Splits the BoundingBox where it intersects with the <paramref name="point"/>.
         /// </summary>
         /// <param name="point">Point to perform split at.</param>
@@ -1039,8 +1200,11 @@ namespace SharpMap.Geometries
             }
 
             return splits;
-        }
+		}
 
+		#endregion
+
+		#region Distance
 		/// <summary> 
 		/// Computes the minimum distance between this and another <see cref="BoundingBox"/>.
 		/// The distance between overlapping bounding boxes is 0.  Otherwise, the
@@ -1084,6 +1248,9 @@ namespace SharpMap.Geometries
             return Distance(p.GetBoundingBox());
 		}
 
+		#endregion
+
+		#region GetCentroid
 		/// <summary>
         /// Returns the center of the BoundingBox.
 		/// </summary>
@@ -1096,23 +1263,54 @@ namespace SharpMap.Geometries
 
 			return (this.Min + this.Max) * 0.5f;
 		}
+		#endregion
 
+		#region Equality
 		/// <summary>
-		/// Returns a string representation of the <see cref="BoundingBox"/> as "(MinX, MinY) (MaxX, MaxY)".
+		/// Checks whether the values of this instance is equal to the values of another instance, within the 
+		/// <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
-        /// <returns>Lower Left: (MinX, MinY) Upper Right: (MaxX, MaxY).</returns>
-		public override string ToString()
+		/// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
+		/// <returns>True if equal within <see cref="Tolerance.Global"/>.</returns>
+		public bool Equals(BoundingBox other)
 		{
-            if (this == BoundingBox.Empty)
-            {
-                return "[BoundingBox] Empty";
-            }
-
-            return String.Format(CultureInfo.CurrentCulture, "[BoundingBox] Lower Left: ({0:N}, {1:N}) Upper Right: ({2:N}, {3:N})", Left, Bottom, Right, Top);
+			return Equals(other, Tolerance.Global);
 		}
 
-		#region IEquatable<BoundingBox> Members
+		/// <summary>
+		/// Checks whether the values of this instance is equal to the values of another instance, within the 
+		/// <paramref name="tolerance">given tolerance</paramref>.
+		/// </summary>
+		/// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
+		/// <param name="tolerance">The <see cref="Tolerance"/> to use to compare.</param>
+		/// <returns>True if equal within <paramref name="tolerance"/>.</returns>
+		public bool Equals(BoundingBox other, Tolerance tolerance)
+		{
+			// Check empty
+			if (this.IsEmpty == true && other.IsEmpty == true)
+			{
+				return true;
+			}
 
+			if (tolerance == null)
+			{
+				tolerance = Tolerance.Global;
+			}
+
+			if (this.IsEmpty || other.IsEmpty)
+			{
+				return false;
+			}
+
+			return tolerance.Equal(this.Left, other.Left) &&
+				tolerance.Equal(this.Right, other.Right) &&
+				tolerance.Equal(this.Top, other.Top) &&
+				tolerance.Equal(this.Bottom, other.Bottom);
+		}
+
+		#endregion Equality
+
+		#region Object Overrides
 		/// <summary>
 		/// Indicates whether the current object is equal to another object of the same type.
 		/// </summary>
@@ -1144,45 +1342,22 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance, within the 
-        /// <see cref="Tolerance.Global">global tolerance</see>.
+		/// Returns a string representation of the <see cref="BoundingBox"/> as "(MinX, MinY) (MaxX, MaxY)".
 		/// </summary>
-		/// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
-        /// <returns>True if equal within <see cref="Tolerance.Global"/>.</returns>
-		public bool Equals(BoundingBox other)
+		/// <returns>Lower Left: (MinX, MinY) Upper Right: (MaxX, MaxY).</returns>
+		public override string ToString()
 		{
-            return Equals(other, Tolerance.Global);
+			if (this == BoundingBox.Empty)
+			{
+				return "[BoundingBox] Empty";
+			}
+
+			return String.Format(CultureInfo.CurrentCulture, "[BoundingBox] Lower Left: ({0:N}, {1:N}) Upper Right: ({2:N}, {3:N})", Left, Bottom, Right, Top);
 		}
+		#endregion Object Overrides
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance, within the 
-        /// <paramref name="tolerance">given tolerance</paramref>.
-        /// </summary>
-        /// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
-        /// <param name="tolerance">The <see cref="Tolerance"/> to use to compare.</param>
-        /// <returns>True if equal within <paramref name="tolerance"/>.</returns>
-        public bool Equals(BoundingBox other, Tolerance tolerance)
-        {
-            // Check empty
-            if (this.IsEmpty == true && other.IsEmpty == true)
-            {
-                return true;
-            }
-
-            if (this.IsEmpty || other.IsEmpty)
-            {
-                return false;
-            }
-
-            return tolerance.Equal(this.Left, other.Left) &&
-                tolerance.Equal(this.Right, other.Right) &&
-                tolerance.Equal(this.Top, other.Top) &&
-                tolerance.Equal(this.Bottom, other.Bottom);
-        }
-
-		#endregion
-
-        public static bool operator ==(BoundingBox box1, BoundingBox box2)
+		#region Value Operators
+		public static bool operator ==(BoundingBox box1, BoundingBox box2)
         {
             return box1.Equals(box2);
         }
@@ -1190,8 +1365,16 @@ namespace SharpMap.Geometries
         public static bool operator !=(BoundingBox box1, BoundingBox box2)
         {
             return !box1.Equals(box2);
-        }
+		}
+		#endregion
 
+		#region Intersection Static Method
+		/// <summary>
+		/// Returns the intersection of two <see cref="BoundingBox"/> instances as a BoundingBox.
+		/// </summary>
+		/// <param name="b1">The first <see cref="BoundingBox"/> to intersect.</param>
+		/// <param name="b2">The second BoundingBox to intersect.</param>
+		/// <returns>The BoundingBox which represents the shared area between <paramref name="b1"/> and <paramref name="b2"/>.</returns>
         public static BoundingBox Intersection(BoundingBox b1, BoundingBox b2)
         {
             if (!b1.Intersects(b2))
@@ -1204,9 +1387,11 @@ namespace SharpMap.Geometries
                 b1.Bottom < b2.Bottom ? b2.Bottom : b1.Bottom,
                 b1.Right > b2.Right ? b2.Right : b1.Right,
                 b1.Top > b2.Top ? b2.Top : b1.Top);
-        }
+		}
+		#endregion Intersection Static Method
 
-        /// <summary>
+		#region Private Helper Methods
+		/// <summary>
         /// Checks whether min values are actually smaller than max values and in that case swaps them.
         /// </summary>
         /// <returns>True if the bounding was changed, false otherwise.</returns>
@@ -1231,6 +1416,7 @@ namespace SharpMap.Geometries
             }
 
             return wasSwapped;
-        }
+		}
+		#endregion Private Helper Methods
     }
 }

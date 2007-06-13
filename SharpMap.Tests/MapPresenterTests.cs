@@ -18,48 +18,11 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Tests
 {
-    public class FakeMapView2D : IMapView2D
-    {
-        #region IMapView2D Members
-
-        public double Dpi
-        {
-            get { return ScreenHelper.Dpi; }
-        }
-
-        public event EventHandler<MapActionEventArgs<ViewPoint2D>> BeginAction;
-
-        public event EventHandler<MapActionEventArgs<ViewPoint2D>> EndAction;
-
-        public event EventHandler<MapActionEventArgs<ViewPoint2D>> Hover;
-
-        public event EventHandler<MapActionEventArgs<ViewPoint2D>> MoveTo;
-
-        public void ShowRenderedObject(ViewPoint2D location, object renderedObject)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        public MapViewPort2D ViewPort
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-            set
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
-
-        #endregion
-    }
-
 	[TestFixture]
-	public class MapTest
+	public class MapPresenterTests
 	{
 		[Test]
-		public void Initalize_MapInstance()
+		public void Initalize_MapPresenter()
         {
             MockRepository mocks = new MockRepository();
 
@@ -130,94 +93,6 @@ namespace SharpMap.Tests
 		//    SharpMap.Map.Map map = new SharpMap.Map.Map(new System.Drawing.Size(2, 1));
 		//    map.GetMap();
 		//}
-
-		[Test]
-		public void GetLayerByName_ReturnCorrectLayer()
-		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 1"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 3"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 2"));
-
-			SharpMap.Layers.ILayer layer = map.GetLayerByName("Layer 2");
-			Assert.IsNotNull(layer);
-			Assert.AreEqual("Layer 2", layer.LayerName);
-		}
-
-		[Test]
-		public void GetLayerByName()
-		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 1"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 3"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 2"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 3"));
-
-			ILayer layer = map.Layers["Layer 3"];
-			Assert.AreEqual("Layer 3", layer.LayerName);
-		}
-
-		[Test]
-		public void FindLayerByPredicate()
-		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 1"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 3"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 2"));
-			map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 3"));
-
-			int count = 0;
-
-			foreach (ILayer layer in map.Layers.FindAll(delegate(ILayer match)
-			{
-				return String.Compare(match.LayerName, "Layer 3", StringComparison.CurrentCultureIgnoreCase) == 0;
-			}))
-			{
-				Assert.AreEqual("Layer 3", layer.LayerName);
-				count++;
-			}
-
-			Assert.AreEqual(2, count);
-		}
-
-		[Test]
-		[ExpectedException(typeof(InvalidOperationException))]
-		public void GetExtents_EmptyMap_ThrowInvalidOperationException()
-		{
-			MockRepository mocks = new MockRepository();
-
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
-			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-
-			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-
-			mapView.ViewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(100, 100);
-
-			mapView.ViewPort.ZoomToExtents();
-		}
-
-		[Test]
-		public void GetExtents_ValidDatasource()
-		{
-			MockRepository mocks = new MockRepository();
-
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
-			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			Expect.On(mapView).Call(mapView.ViewPort).Return(viewPort);
-
-			mapView.ViewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(100, 100);
-
-			SharpMap.Layers.VectorLayer vLayer = new SharpMap.Layers.VectorLayer("Geom layer", CreateDatasource());
-
-			map.Layers.Add(vLayer);
-			SharpMap.Geometries.BoundingBox box = map.GetExtents();
-			Assert.AreEqual(new SharpMap.Geometries.BoundingBox(0, 0, 50, 346.3493254), box);
-		}
 
 		[Test]
 		public void GetPixelSize_FixedZoom_Return8_75()
@@ -407,7 +282,7 @@ namespace SharpMap.Tests
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
 
-			SharpMap.Layers.VectorLayer vLayer = new SharpMap.Layers.VectorLayer("Geom layer", CreateDatasource());
+			SharpMap.Layers.VectorLayer vLayer = new SharpMap.Layers.VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 			vLayer.Style.Outline = new StylePen(StyleColor.Red, 2f);
 			vLayer.Style.EnableOutline = true;
 			vLayer.Style.Line = new StylePen(StyleColor.Green, 2f);
@@ -437,69 +312,5 @@ namespace SharpMap.Tests
 			map.Dispose();
 			//img.Dispose();
 		}
-
-		private SharpMap.Data.Providers.IProvider CreateDatasource()
-		{
-			Collection<SharpMap.Geometries.Geometry> geoms = new Collection<SharpMap.Geometries.Geometry>();
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("POINT EMPTY"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 29 21, 29 29, 21 29, 21 21), (23 23, 23 27, 27 27, 27 23, 23 23))"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("POINT (20.564 346.3493254)"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("MULTIPOINT (20.564 346.3493254, 45 32, 23 54)"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("MULTIPOLYGON EMPTY"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("MULTILINESTRING EMPTY"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("MULTIPOINT EMPTY"));
-			geoms.Add(SharpMap.Geometries.Geometry.GeomFromText("LINESTRING EMPTY"));
-			return new SharpMap.Data.Providers.GeometryProvider(geoms);
-		}
-	}
-
-	public static class ScreenHelper
-	{
-		public static readonly double Dpi;
-
-		static ScreenHelper()
-		{
-            IntPtr dc = IntPtr.Zero;
-
-            try
-            {
-                dc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
-
-                int dpi = GetDeviceCaps(dc, LOGPIXELSX);
-
-                if (dpi == 0)
-                {
-                    // Can't query the DPI - just guess the most likely
-                    Dpi = 96;
-                }
-                else
-                {
-                    Dpi = dpi;
-                }
-            }
-            finally
-            {
-                if (dc != IntPtr.Zero)
-                {
-                    DeleteDC(dc);
-                }
-            }
-		}
-
-		[DllImport("Gdi32")]
-		private static extern IntPtr CreateDC(string driver, string device, string output, IntPtr initData);
-
-		[DllImport("Gdi32")]
-		private static extern void DeleteDC(IntPtr dc);
-
-        [DllImport("Gdi32")]
-        static extern int GetDeviceCaps(IntPtr hdc, int index);
-
-        private const int LOGPIXELSX = 88;
-        private const int LOGPIXELSY = 90;
 	}
 }
