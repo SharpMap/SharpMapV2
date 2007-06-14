@@ -23,6 +23,8 @@ using System.Text;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Styles;
+using SharpMap.CoordinateSystems;
+using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Layers
 {
@@ -44,7 +46,17 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// The spatial reference ID (CRS).
 		/// </summary>
-        int Srid { get; set; }
+		int Srid { get; set; }
+
+		/// <summary>
+		/// The dataum, projection and coordinate system used for this layer.
+		/// </summary>
+		ICoordinateSystem CoordinateSystem { get; }
+
+		/// <summary>
+		/// Applies a coordinate tranformation to the geometries in this layer.
+		/// </summary>
+		ICoordinateTransformation CoordinateTransformation { get; set; }
 
         /// <summary>
         /// Gets or sets a value representing the visibility of the layer.

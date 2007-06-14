@@ -52,7 +52,7 @@ namespace SharpMap.Data.Providers
     /// myLayer.DataSource = new SharpMap.Data.Providers.ShapeFile(@"C:\data\MyShapeData.shp");
     /// </code>
     /// </example>
-    public class ShapeFile : SharpMap.Data.Providers.IWritableProvider<uint>, IDisposable
+    public class ShapeFile : IWritableProvider<uint>, IDisposable
     {
         private static readonly int HeaderSizeBytes = 100;
         private static readonly int HeaderStartCode = 9994;
@@ -466,66 +466,59 @@ namespace SharpMap.Data.Providers
         /// Returns geometries whose bounding box intersects 'bbox'
         /// </summary>
         /// <remarks>
-        /// <para>Please note that this method doesn't guarantee that the geometries returned actually intersect 'bbox', but only
-        /// that their boundingbox intersects 'bbox'.</para>
+        /// <para>Please note that this method doesn't guarantee that the geometries returned actually intersect 'bbox', 
+		/// but only that their boundingbox intersects 'bbox'.</para>
         /// <para>This method is much faster than the QueryFeatures method, because intersection tests
         /// are performed on objects simplifed by their boundingbox, and using the Spatial Index.</para>
         /// </remarks>
         /// <param name="bbox"><see cref="BoundingBox"/> which determines the view</param>
-        /// <returns>A <see cref="List{Geometry}"/> containing the <see cref="Geometry"/> objects which are at least partially contained within the <paramref name="bbox">view</paramref>.</returns>
-        /// <exception cref="InvalidShapefileOperationException">Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
-        public ReadOnlyCollection<Geometry> GetGeometriesInView(BoundingBox bbox)
+		/// <returns>A <see cref="IEnumerable{Geometry}"/> containing the <see cref="Geometry"/> objects
+		/// which are at least partially contained within the <paramref name="bbox">view</paramref>.</returns>
+        /// <exception cref="InvalidShapefileOperationException">Thrown if method is called and the 
+		/// shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
+		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox bbox)
         {
             checkOpen();
             enableReading();
 
-            //Use the spatial index to get a list of features whose boundingbox intersects bbox
-            ReadOnlyCollection<uint> objectlist = GetObjectIdsInView(bbox);
-
-            if (objectlist.Count == 0) //no features found. Return an empty set
-            {
-                return new List<Geometry>().AsReadOnly();
-            }
-
-            List<Geometry> geometries = new List<Geometry>(objectlist.Count);
-
-            foreach (uint oid in objectlist)
+			foreach (uint oid in GetObjectIdsInView(bbox))
             {
                 Geometry g = GetGeometryById(oid);
 
                 if (!Object.ReferenceEquals(g, null))
                 {
-                    geometries.Add(g);
+					yield return g;
                 }
             }
-
-            return geometries.AsReadOnly();
         }
 
         /// <summary>
-        /// Returns all objects whose boundingbox intersects bbox.
+		/// Returns all objects whose BoundingBox intersects <paramref name="bounds"/>.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Please note that this method doesn't guarantee that the geometries returned actually intersect 'bbox', but only
-        /// that their boundingbox intersects 'bbox'.
+		/// Please note that this method doesn't guarantee that the geometries returned actually 
+		/// intersect <paramref name="bounds"/>, but only that their <see cref="BoundingBox"/> intersects bounds.
         /// </para>
         /// <para>This method is much faster than the QueryFeatures method, because intersection tests
-        /// are performed on objects simplifed by their boundingbox, and using the Spatial Index.</para>
+		/// are performed on objects simplifed by their BoundingBox, and using the spatial index.</para>
         /// </remarks>
-        /// <param name="bbox"><see cref="BoundingBox"/> which determines the view</param>
-        /// <param name="ds">The <see cref="SharpMap.Data.FeatureDataSet"/> to fill with features within the <paramref name="bbox">view</paramref>.</param>
-        /// <exception cref="InvalidShapefileOperationException">Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
-        public void ExecuteIntersectionQuery(BoundingBox bbox, FeatureDataSet ds)
+		/// <param name="bounds"><see cref="BoundingBox"/> which determines the view.</param>
+        /// <param name="ds">The <see cref="SharpMap.Data.FeatureDataSet"/> to fill 
+		/// with features within the <paramref name="bounds">view</paramref>.</param>
+        /// <exception cref="InvalidShapefileOperationException">
+		/// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet ds)
         {
             checkOpen();
             enableReading();
 
             //Use the spatial index to get a list of features whose boundingbox intersects bbox
-            ReadOnlyCollection<uint> objectlist = GetObjectIdsInView(bbox);
+            IEnumerable<uint> objects = GetObjectIdsInView(bounds);
             FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(IdColumnName);
 
-            foreach (uint oid in objectlist)
+            foreach (uint oid in objects)
             {
                 FeatureDataRow<uint> fdr = HasDbf ? _dbaseReader.GetFeature(oid, dt) : dt.NewRow(oid);
 
@@ -533,7 +526,7 @@ namespace SharpMap.Data.Providers
 
                 if (fdr.Geometry != null)
                 {
-                    if (fdr.Geometry.GetBoundingBox().Intersects(bbox))
+                    if (fdr.Geometry.GetBoundingBox().Intersects(bounds))
                     {
                         if (FilterDelegate == null || FilterDelegate(fdr))
                         {
@@ -552,27 +545,15 @@ namespace SharpMap.Data.Providers
         /// <param name="bbox"></param>
         /// <returns></returns>
         /// <exception cref="InvalidShapefileOperationException">Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
-        public ReadOnlyCollection<uint> GetObjectIdsInView(BoundingBox bbox)
+        public IEnumerable<uint> GetObjectIdsInView(BoundingBox bbox)
         {
             checkOpen();
             enableReading();
 
-            if (bbox.Contains(_envelope) || bbox == _envelope)
-            {
-                // Yea, I know creating a list of numbers can be expressed in a 
-                // half-line in other languages (Python, Lisp, etc), but not in C#
-                List<uint> idList = new List<uint>(16 < _shapeIndex.Count ? _shapeIndex.Count : 16);
-
-                for (uint id = 0; id < _shapeIndex.Count; id++)
-                {
-                    idList.Add(id);
-                }
-
-                return idList.AsReadOnly();
-            }
-
-            //Use the spatial index to get a list of features whose boundingbox intersects bbox
-            return new List<uint>(getKeysFromIndexEntries(_tree.Search(bbox))).AsReadOnly();
+			foreach (uint id in getKeysFromIndexEntries(_tree.Search(bbox)))
+			{
+				yield return id;
+			}
         }
 
         /// <summary>
@@ -2014,5 +1995,30 @@ namespace SharpMap.Data.Providers
         //    ds.Tables.Add(dt);
         //}
         #endregion
-    }
+
+		#region IProvider<uint> Members
+
+		IEnumerable<uint> IProvider<uint>.GetObjectIdsInView(BoundingBox boundingBox)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IProvider Members
+
+		public SharpMap.CoordinateSystems.Transformations.ICoordinateTransformation CoordinateTransformation
+		{
+			get
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+			set
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+		}
+
+		#endregion
+	}
 }

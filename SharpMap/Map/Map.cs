@@ -88,7 +88,6 @@ namespace SharpMap.Map
 		private readonly List<ILayer> _selectedLayers = new List<ILayer>();
 		private BoundingBox _envelope = BoundingBox.Empty;
 		private MapTool _selectedTool = MapTool.None;
-		//private IList<FeatureDataRow> _selectedFeatures;
 
 		/// <summary>
 		/// Initializes a new map.

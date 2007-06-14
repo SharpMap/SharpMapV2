@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
@@ -37,6 +38,7 @@ namespace SharpMap.Layers
     /// </remarks>
 	public abstract class Layer : ILayer, ICloneable
 	{
+		private ICoordinateSystem _coordinateSystem;
         private ICoordinateTransformation _coordinateTransform;
         private string _layerName;
         private int _srid = -1;
@@ -49,16 +51,6 @@ namespace SharpMap.Layers
 		public override string ToString()
 		{
 			return this.LayerName;
-		}
-
-		/// <summary>
-		/// Gets or sets the <see cref="SharpMap.CoordinateSystems.Transformations.ICoordinateTransformation"/> 
-        /// applied to this layer.
-		/// </summary>
-		public virtual ICoordinateTransformation CoordinateTransformation
-		{
-			get { return _coordinateTransform; }
-			set { _coordinateTransform = value; }
 		}
 
 		#region ILayer Members
@@ -84,7 +76,26 @@ namespace SharpMap.Layers
         {
             get { return _srid; }
             set { _srid = value; }
-        }
+		}
+
+		/// <summary>
+		/// Gets or sets the coordinate system of the layer.
+		/// </summary>
+		public ICoordinateSystem CoordinateSystem
+		{
+			get { return _coordinateSystem; }
+			private set { _coordinateSystem = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the <see cref="SharpMap.CoordinateSystems.Transformations.ICoordinateTransformation"/> 
+		/// applied to this layer.
+		/// </summary>
+		public virtual ICoordinateTransformation CoordinateTransformation
+		{
+			get { return _coordinateTransform; }
+			set { _coordinateTransform = value; }
+		}
 
         /// <summary>
         /// Gets or sets a value which indicates if the layer is enabled (visible or able to participate in queries) or not.
@@ -128,5 +139,5 @@ namespace SharpMap.Layers
 		public abstract object Clone();
 
 		#endregion
-    }
+	}
 }

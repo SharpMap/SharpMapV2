@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
+using SharpMap.CoordinateSystems;
+using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers
@@ -34,9 +36,9 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// Gets the features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
         /// </summary>
-        /// <param name="boundingBox"></param>
-        /// <returns>Features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
-        ReadOnlyCollection<Geometry> GetGeometriesInView(BoundingBox boundingBox);
+        /// <param name="boundingBox">BoundingBox which defines the view.</param>
+        /// <returns>An enumeration of features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
+        IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox);
 
         /// <summary>
         /// Returns the data associated with all the geometries that are intersected by <paramref name="geom"/>.
@@ -68,9 +70,11 @@ namespace SharpMap.Data.Providers
         /// Gets the connection ID of the datasource.
         /// </summary>
         /// <remarks>
-        /// <para>The ConnectionId should be unique to the datasource (for instance the filename or the
-        /// connectionstring), and is meant to be used for connection pooling.</para>
-        /// <para>If connection pooling doesn't apply to this datasource, the ConnectionId should return String.Empty</para>
+        /// <para>The ConnectionId should be unique to the datasource 
+		/// (for instance the filename or the connectionstring), and is meant 
+		/// to be used for connection pooling.</para>
+        /// <para>If connection pooling doesn't apply to this datasource, 
+		/// the ConnectionId should return String.Empty</para>
         /// </remarks>
         string ConnectionId { get; }
 
@@ -92,37 +96,16 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// The spatial reference ID (CRS).
         /// </summary>
-        int Srid { get; set; }
+		int Srid { get; set; }
+
+		/// <summary>
+		/// The dataum, projection and coordinate system used in this provider.
+		/// </summary>
+		ICoordinateSystem CoordinateSystem { get; }
+
+		/// <summary>
+		/// Applies a coordinate tranformation to the geometries in this provider.
+		/// </summary>
+		ICoordinateTransformation CoordinateTransformation { get; set; }
     }
-
-	/// <summary>
-	/// Interface for data providers with features having ID values.
-	/// </summary>
-    public interface IProvider<TOid> : IProvider
-	{
-		/// <summary>
-        /// Returns all objects whose <see cref="SharpMap.Geometries.BoundingBox"/> intersects 'boundingBox'.
-		/// </summary>
-		/// <remarks>
-		/// This method is usually much faster than the QueryFeatures method, because intersection tests
-		/// are performed on objects simplifed by their <see cref="SharpMap.Geometries.BoundingBox"/>, and using the Spatial Index
-		/// </remarks>
-        /// <param name="boundingBox">Box that objects should intersect.</param>
-		/// <returns></returns>
-        ReadOnlyCollection<TOid> GetObjectIdsInView(BoundingBox boundingBox);
-
-		/// <summary>
-		/// Returns the geometry corresponding to the Object ID
-		/// </summary>
-        /// <param name="oid">Object ID.</param>
-        /// <returns>The geometry corresponding to the <paramref name="oid"/>.</returns>
-        Geometry GetGeometryById(TOid oid);
-
-		/// <summary>
-		/// Returns a <see cref="SharpMap.Data.FeatureDataRow"/> based on an OID.
-		/// </summary>
-        /// <param name="oid">The object id (OID) of the feature.</param>
-		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
-		FeatureDataRow<TOid> GetFeature(TOid oid);
-	}
 }

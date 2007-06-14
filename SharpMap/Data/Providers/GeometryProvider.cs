@@ -21,6 +21,8 @@ using System.Collections.ObjectModel;
 using System.Text;
 using SharpMap.Geometries;
 using SharpMap.Data;
+using SharpMap.CoordinateSystems.Transformations;
+using SharpMap.CoordinateSystems;
 
 namespace SharpMap.Data.Providers
 {
@@ -56,19 +58,12 @@ namespace SharpMap.Data.Providers
     /// </code>
     /// </example>
     /// </remarks>
-    public class GeometryProvider : SharpMap.Data.Providers.IProvider<uint>, IDisposable
+    public class GeometryProvider : IProvider<uint>, IDisposable
     {
-        private List<Geometry> _geometries;
+		private ICoordinateTransformation _coordinateTransformation;
+		private ICoordinateSystem _coordinateSystem;
+        private List<Geometry> _geometries = new List<Geometry>();
         private int _srid = -1;
-
-        /// <summary>
-        /// Gets or sets the geometries this datasource contains
-        /// </summary>
-        public List<Geometry> Geometries
-        {
-            get { return _geometries; }
-            set { _geometries = value; }
-        }
 
         #region Constructors
 
@@ -135,6 +130,15 @@ namespace SharpMap.Data.Providers
 
         #endregion
 
+		/// <summary>
+		/// Gets or sets the geometries this datasource contains.
+		/// </summary>
+		public IList<Geometry> Geometries
+		{
+			get { return _geometries; }
+			set { _geometries.Clear(); _geometries.AddRange(value); }
+		}
+
         #region IProvider Members
 
         /// <summary>
@@ -142,7 +146,7 @@ namespace SharpMap.Data.Providers
         /// </summary>
         /// <param name="box"></param>
         /// <returns></returns>
-        public ReadOnlyCollection<Geometry> GetGeometriesInView(BoundingBox box)
+		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox box)
         {
             List<Geometry> list = new List<Geometry>();
 
@@ -165,19 +169,15 @@ namespace SharpMap.Data.Providers
         /// </summary>
         /// <param name="bbox"></param>
         /// <returns></returns>
-        public ReadOnlyCollection<uint> GetObjectIdsInView(BoundingBox box)
+        public IEnumerable<uint> GetObjectIdsInView(BoundingBox box)
         {
-            List<uint> list = new List<uint>();
-
             for (uint i = 0; i < _geometries.Count; i++)
             {
                 if (_geometries[(int)i].GetBoundingBox().Intersects(box))
                 {
-                    list.Add(i);
+					yield return i;
                 }
             }
-
-            return list.AsReadOnly();
         }
 
         /// <summary>
@@ -287,18 +287,29 @@ namespace SharpMap.Data.Providers
         public bool IsOpen
         {
             get { return true; }
-        }
+		}
+
+		/// <summary>
+		/// The spatial reference ID (CRS)
+		/// </summary>
+		public int Srid
+		{
+			get { return _srid; }
+			set { _srid = value; }
+		}
+
+		public ICoordinateSystem CoordinateSystem
+		{
+			get { return _coordinateSystem; }
+		}
+
+		public ICoordinateTransformation CoordinateTransformation
+		{
+			get { return _coordinateTransformation; }
+			set { _coordinateTransformation = value; }
+		}
 
         #endregion
-
-        /// <summary>
-        /// The spatial reference ID (CRS)
-        /// </summary>
-        public int Srid
-        {
-            get { return _srid; }
-            set { _srid = value; }
-        }
 
         #region IDisposable Members
 
@@ -311,5 +322,5 @@ namespace SharpMap.Data.Providers
         }
 
         #endregion
-    }
+	}
 }

@@ -133,8 +133,8 @@
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider.cs" />
     <Compile Include="Data\Providers\IProvider.cs" />
+    <Compile Include="Data\Providers\IProvider`1.cs" />
     <Compile Include="Data\Providers\IWritableProvider.cs" />
-    <Compile Include="Data\Providers\MsSql.cs" />
     <Compile Include="Data\Providers\OgcSimpleFeaturesForSql\Enumerations.cs" />
     <Compile Include="Data\Providers\OleDbPoint.cs" />
     <Compile Include="Data\Providers\Pooling\Connector.cs" />
