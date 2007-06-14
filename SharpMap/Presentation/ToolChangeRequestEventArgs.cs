@@ -19,21 +19,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SharpMap.Layers;
+using SharpMap.Tools;
 
 namespace SharpMap.Presentation
 {
-    public interface ILayersView
+    public sealed class ToolChangeRequestEventArgs : EventArgs
     {
-        void AddLayer(ILayer layer);
-        void AddLayers(IEnumerable<ILayer> layers);
-        void RemoveLayer(ILayer layer);
-        void RemoveLayers(IEnumerable<ILayer> layers);
-        void RemoveAll();
-        void DisableLayer(ILayer layer);
-        void EnableLayer(ILayer layer);
-        IList<ILayer> SelectedLayers { get; set; }
-        event EventHandler<LayerActionEventArgs> LayersSelectionChangeRequested;
-        event EventHandler<LayerActionEventArgs> LayersEnabledChangeRequested;
+        private readonly MapTool _requestedTool;
+
+        public ToolChangeRequestEventArgs(MapTool requestedTool)
+        {
+            _requestedTool = requestedTool;
+        }
+
+        public MapTool RequestedTool
+        {
+            get { return _requestedTool; }
+        }
     }
 }

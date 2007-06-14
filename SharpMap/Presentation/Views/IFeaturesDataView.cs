@@ -27,6 +27,6 @@ namespace SharpMap.Presentation
     {
         IList<FeatureDataRow> Features { get; set; }
         IEnumerable<FeatureDataRow> SelectedFeatures { get; set; }
-        event EventHandler<FeaturesSelectionChangedEventArgs> FeaturesSelectedChanged;
+        event EventHandler<FeatureSelectionChangeRequestEventArgs> FeaturesSelectionChangeRequested;
     }
 }

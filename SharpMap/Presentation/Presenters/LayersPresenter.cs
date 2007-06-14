@@ -29,8 +29,8 @@ namespace SharpMap.Presentation
     {
         private SharpMap.Map.Map _map;
         private List<ILayersView> _views = new List<ILayersView>();
-        private EventHandler<LayerActionEventArgs> _selectedLayersChangedDelegate;
-        private EventHandler<LayerActionEventArgs> _viewLayerStylesRequestedDelegate;
+        private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
+        private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
 
         protected LayersPresenter(SharpMap.Map.Map map, ILayersView view)
             : this(map, new ILayersView[] { view }) { }
@@ -39,8 +39,8 @@ namespace SharpMap.Presentation
         {
             _map = map;
 
-            _selectedLayersChangedDelegate = new EventHandler<LayerActionEventArgs>(handleLayerSelectionChanged);
-            _viewLayerStylesRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleViewLayerStyleRequested);
+            _selectedLayersChangeRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleLayerSelectionChangedRequested);
+            _visibleLayersChangeRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleVisibileLayersChangeRequested);
 
             addAndConfigureViews(views);
         }
@@ -66,8 +66,8 @@ namespace SharpMap.Presentation
         {
             foreach (ILayersView view in views)
             {
-                view.LayersSelectionChanged += _selectedLayersChangedDelegate;
-                view.ViewLayerStylesRequested += _viewLayerStylesRequestedDelegate;
+                view.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
+                view.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
                 _views.Add(view);
             }
         }
@@ -76,19 +76,18 @@ namespace SharpMap.Presentation
         {
             foreach (ILayersView view in _views)
             {
-                view.LayersSelectionChanged -= _selectedLayersChangedDelegate;
-                view.ViewLayerStylesRequested -= _viewLayerStylesRequestedDelegate;
+                view.LayersSelectionChangeRequested -= _selectedLayersChangeRequestedDelegate;
             }
 
             _views.Clear();
         }
 
-        private void handleViewLayerStyleRequested(object sender, LayerActionEventArgs e)
+        private void handleVisibileLayersChangeRequested(object sender, LayerActionEventArgs e)
         {
 
         }
 
-        private void handleLayerSelectionChanged(object sender, LayerActionEventArgs e)
+        private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)
         {
             Map.SelectLayers(e.Layers);
         }

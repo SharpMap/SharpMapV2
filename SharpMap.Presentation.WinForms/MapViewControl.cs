@@ -121,7 +121,7 @@ namespace SharpMap.Presentation.WinForms
 
         #region IToolsView Members
 
-        public event EventHandler ToolSelectionChanged;
+        public event EventHandler ToolChangeRequested;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -286,7 +286,7 @@ namespace SharpMap.Presentation.WinForms
 
         private void OnSelectedToolChanged()
         {
-            EventHandler @event = ToolSelectionChanged;
+            EventHandler @event = ToolChangeRequested;
 
             if (@event != null)
                 @event(this, EventArgs.Empty);

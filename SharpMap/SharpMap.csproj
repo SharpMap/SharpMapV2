@@ -146,6 +146,8 @@
     <Compile Include="Data\Providers\Shapefile\DbaseSchema.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseWriter.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFile.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapefileExceptions.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeType.cs" />
     <Compile Include="Geometries\BoundingBox.cs" />
     <Compile Include="Geometries\Curve.cs" />
     <Compile Include="Geometries\Geometry.cs" />
@@ -186,7 +188,11 @@
     <Compile Include="Layers\Layer.cs" />
     <Compile Include="Layers\LayerGroup.cs" />
     <Compile Include="Layers\VectorLayer.cs" />
+    <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\MapActionEventArgs.cs" />
+    <Compile Include="Presentation\Presenters\BasePresenter.cs" />
+    <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
+    <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Tools\ActionContext.cs" />
     <Compile Include="Map\LayersChangedEventArgs.cs" />
     <Compile Include="Map\LayersChangeType.cs" />
@@ -269,6 +275,7 @@
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Styles\VectorStyle.cs" />
     <Compile Include="Utilities\Algorithms.cs" />
+    <Compile Include="Utilities\ByteEncoder.cs" />
     <Compile Include="Utilities\Hashing.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />

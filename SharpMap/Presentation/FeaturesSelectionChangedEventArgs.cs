@@ -23,11 +23,11 @@ using SharpMap.Data;
 
 namespace SharpMap.Presentation
 {
-    public class FeaturesSelectionChangedEventArgs : EventArgs
+    public class FeatureSelectionChangeRequestEventArgs : EventArgs
     {
-        IEnumerable<FeatureDataRow> _selectedFeatures;
+        private readonly IEnumerable<FeatureDataRow> _selectedFeatures;
 
-        public FeaturesSelectionChangedEventArgs(IEnumerable<FeatureDataRow> selectedFeatures)
+        public FeatureSelectionChangeRequestEventArgs(IEnumerable<FeatureDataRow> selectedFeatures)
         {
             _selectedFeatures = selectedFeatures;
         }

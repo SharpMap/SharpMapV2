@@ -15,7 +15,9 @@ namespace SharpMap.Presentation
             _views = new List<IToolsView>(toolsViews);
 
             foreach (IToolsView toolView in Views)
-                toolView.ToolSelectionChanged += new EventHandler(ToolsView_ToolSelectionChanged);
+            {
+                toolView.ToolChangeRequested += new EventHandler<ToolChangeRequestEventArgs>(ToolsView_ToolSelectionChanged);
+            }
         }
 
         public SharpMap.Map.Map Map
@@ -38,7 +40,9 @@ namespace SharpMap.Presentation
             {
                 // if toolView isn't the view on which the event was raised, change the selected tool
                 if (!Object.ReferenceEquals(senderView, toolView))
+                {
                     toolView.SelectedTool = Map.SelectedTool;
+                }
             }
         }
     }

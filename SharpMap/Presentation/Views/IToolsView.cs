@@ -26,7 +26,7 @@ namespace SharpMap.Presentation
     public interface IToolsView
     {
         IList<MapTool> Tools { get; set; }
-        event EventHandler ToolSelectionChanged;
+        event EventHandler<ToolChangeRequestEventArgs> ToolChangeRequested;
         MapTool SelectedTool { get; set; }
     }
 }

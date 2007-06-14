@@ -25,19 +25,7 @@ namespace SharpMap.Presentation
 {
     public interface ILayerStyleView
     {
-        event EventHandler<LayerStyleChangedEventArgs> LayerStyleChanged;
-        Style Style { get; set; }
-    }
-
-    public class LayerStyleChangedEventArgs : EventArgs
-    {
-        private Style _style;
-
-        public Style Style
-        {
-            get { return _style; }
-            set { _style = value; }
-        }
-	
+        event EventHandler<LayerStyleChangeRequestEventArgs> LayerStyleChangeRequested;
+        IStyle Style { get; set; }
     }
 }
