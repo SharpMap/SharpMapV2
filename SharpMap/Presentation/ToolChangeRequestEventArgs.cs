@@ -23,11 +23,11 @@ using SharpMap.Tools;
 
 namespace SharpMap.Presentation
 {
-    public sealed class ToolChangeRequestEventArgs : EventArgs
+    public sealed class ToolChangeRequestedEventArgs : EventArgs
     {
         private readonly MapTool _requestedTool;
 
-        public ToolChangeRequestEventArgs(MapTool requestedTool)
+        public ToolChangeRequestedEventArgs(MapTool requestedTool)
         {
             _requestedTool = requestedTool;
         }

@@ -129,8 +129,8 @@ namespace SharpMap.Data.Providers
 				}
 
 				//Limit to the points within the boundingbox
-                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " +
-                    this.YColumn + " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " +
+                    this.YColumn + " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
 				
 				using (OleDbCommand command = new OleDbCommand(strSQL, conn))
 				{
@@ -180,8 +180,8 @@ namespace SharpMap.Data.Providers
 				}
 
 				//Limit to the points within the boundingbox
-                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
-                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
+                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
 
 				using (OleDbCommand command = new OleDbCommand(strSQL, conn))
 				{
@@ -276,8 +276,8 @@ namespace SharpMap.Data.Providers
 				if (_defintionQuery != null && _defintionQuery != "") //If a definition query has been specified, add this as a filter on the query
 					strSQL += _defintionQuery + " AND ";
 				//Limit to the points within the boundingbox
-                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
-                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
+                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
 
 				using (OleDbDataAdapter adapter = new OleDbDataAdapter(strSQL, conn))
 				{
@@ -297,7 +297,7 @@ namespace SharpMap.Data.Providers
 
 						foreach (System.Data.DataRow dr in ds2.Tables[0].Rows)
 						{
-							SharpMap.Data.FeatureDataRow fdr = fdt.NewRow();
+							FeatureDataRow fdr = fdt.NewRow();
 
 							foreach (System.Data.DataColumn col in ds2.Tables[0].Columns)
 							{
@@ -385,7 +385,7 @@ namespace SharpMap.Data.Providers
 						if (ds.Tables[0].Rows.Count > 0)
 						{
 							System.Data.DataRow dr = ds.Tables[0].Rows[0];
-							SharpMap.Data.FeatureDataRow<uint> fdr = fdt.NewRow(oid);
+							FeatureDataRow<uint> fdr = fdt.NewRow(oid);
 
 							foreach (System.Data.DataColumn col in ds.Tables[0].Columns)
 							{

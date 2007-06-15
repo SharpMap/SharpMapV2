@@ -48,7 +48,7 @@ namespace SharpMap.Data.Providers
 
         internal static FeatureDataTable<uint> GetFeatureTableForFields(DbaseField[] _dbaseColumns)
         {
-            SharpMap.Data.FeatureDataTable<uint> table = new SharpMap.Data.FeatureDataTable<uint>(DbaseSchema.OidColumnName);
+            FeatureDataTable<uint> table = new FeatureDataTable<uint>(DbaseSchema.OidColumnName);
             foreach (DbaseField dbf in _dbaseColumns)
             {
                 DataColumn col = table.Columns.Add(dbf.ColumnName, dbf.DataType);

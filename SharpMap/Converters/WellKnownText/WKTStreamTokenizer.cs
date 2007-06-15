@@ -76,7 +76,7 @@ namespace SharpMap.Converters.WellKnownText
 			this.NextToken();
 			if (this.GetStringValue()!=expectedToken)
 			{
-				throw new Exception(String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "Expecting ('{3}') but got a '{0}' at line {1} column {2}.", this.GetStringValue(), this.LineNumber, this.Column, expectedToken));
+				throw new Exception(String.Format(SharpMap.Map.NumberFormat_EnUS, "Expecting ('{3}') but got a '{0}' at line {1} column {2}.", this.GetStringValue(), this.LineNumber, this.Column, expectedToken));
 			}
 		}
 		

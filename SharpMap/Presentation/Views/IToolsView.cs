@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SharpMap.Map;
 using SharpMap.Tools;
 
 namespace SharpMap.Presentation
@@ -26,7 +25,7 @@ namespace SharpMap.Presentation
     public interface IToolsView
     {
         IList<MapTool> Tools { get; set; }
-        event EventHandler<ToolChangeRequestEventArgs> ToolChangeRequested;
+        event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
         MapTool SelectedTool { get; set; }
     }
 }

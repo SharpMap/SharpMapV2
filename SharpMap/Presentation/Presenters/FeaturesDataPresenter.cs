@@ -23,16 +23,8 @@ namespace SharpMap.Presentation
 {
     public class FeaturesDataPresenter : BasePresenter<IFeaturesDataView>
     {
-        private EventHandler _mapSelectedLayersChangeRequestHandler;
-
-        public FeaturesDataPresenter(SharpMap.Map.Map map, IFeaturesDataView view)
+        public FeaturesDataPresenter(SharpMap.Map map, IFeaturesDataView view)
             : base(map, view)
-        {
-            _mapSelectedLayersChangeRequestHandler = new EventHandler(handleMapSelectedLayersChangedRequest);
-            Map.SelectedLayersChanged += _mapSelectedLayersChangeRequestHandler;
-        }
-
-        private void handleMapSelectedLayersChangedRequest(object sender, EventArgs e)
         {
         }
     }

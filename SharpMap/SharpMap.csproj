@@ -128,7 +128,11 @@
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
     <Compile Include="Data\DataExceptions.cs" />
-    <Compile Include="Data\FeatureDataSet.cs">
+    <Compile Include="Model\Features\FeatureDataRow.cs" />
+    <Compile Include="Model\Features\FeatureDataRowChangeEventArgs.cs" />
+    <Compile Include="Model\Features\FeatureDataRowChangeEventHandler.cs" />
+    <Compile Include="Model\Features\FeatureDataRow`1.cs" />
+    <Compile Include="Model\Features\FeatureDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider.cs" />
@@ -182,22 +186,37 @@
     <Compile Include="Indexing\RTree\RTreeIndexEntry.cs" />
     <Compile Include="Indexing\RTree\RTreeLeafNode.cs" />
     <Compile Include="Indexing\RTree\RTreeBranchNode.cs" />
-    <Compile Include="Layers\IFeatureLayer.cs" />
-    <Compile Include="Layers\ILayer.cs" />
-    <Compile Include="Layers\LabelLayer.cs" />
-    <Compile Include="Layers\Layer.cs" />
-    <Compile Include="Layers\LayerGroup.cs" />
-    <Compile Include="Layers\VectorLayer.cs" />
+    <Compile Include="Model\Features\FeatureDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Model\Features\FeatureDataTable`1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Model\Features\FeatureTableCollection.cs" />
+    <Compile Include="Model\IModelCollection.cs" />
+    <Compile Include="Model\IModelObject.cs" />
+    <Compile Include="Model\Layers\IFeatureLayer.cs" />
+    <Compile Include="Model\Layers\ILayer.cs" />
+    <Compile Include="Model\Layers\LabelLayer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Model\Layers\Layer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Model\Layers\LayerGroup.cs" />
+    <Compile Include="Model\Layers\VectorLayer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\MapActionEventArgs.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Tools\ActionContext.cs" />
-    <Compile Include="Map\LayersChangedEventArgs.cs" />
-    <Compile Include="Map\LayersChangeType.cs" />
-    <Compile Include="Map\LayersCollection.cs" />
-    <Compile Include="Map\Map.cs" />
+    <Compile Include="Model\LayersCollection.cs" />
+    <Compile Include="Model\Map.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
     <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />

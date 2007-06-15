@@ -138,7 +138,7 @@ namespace SharpMap.CoordinateSystems
 				StringBuilder sb = new StringBuilder();
 				sb.AppendFormat("PROJCS[\"{0}\", {1}, {2}",Name, GeographicCoordinateSystem.Wkt, Projection.Wkt);
 				for(int i=0;i<Projection.NumParameters;i++)
-                    sb.AppendFormat(SharpMap.Map.Map.NumberFormat_EnUS, ", {0}", Projection.GetParameter(i).WKT);
+                    sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS, ", {0}", Projection.GetParameter(i).WKT);
 				sb.AppendFormat(", {0}", LinearUnit.Wkt);
 				//Skip axis info if they contain default values
 				if (AxisInfo.Count != 2 ||
@@ -161,7 +161,7 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.Map.NumberFormat_EnUS,
+                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS,
 					"<CS_CoordinateSystem Dimension=\"{0}\"><CS_ProjectedCoordinateSystem>{1}",
 					this.Dimension, InfoXml);
 				foreach (AxisInfo ai in this.AxisInfo)

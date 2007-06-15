@@ -10,9 +10,9 @@ namespace SharpMap.Tools
 {
     public class ActionContext
     {
-        private SharpMap.Map.Map _map;
+        private SharpMap.Map _map;
 
-        public ActionContext(SharpMap.Map.Map map)
+        public ActionContext(SharpMap.Map map)
         {
             _map = map;
         }

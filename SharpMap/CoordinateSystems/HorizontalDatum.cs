@@ -261,7 +261,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS,
+                return String.Format(SharpMap.Map.NumberFormat_EnUS,
 					"<CS_HorizontalDatum DatumType=\"{0}\">{1}{2}{3}</CS_HorizontalDatum>",
 					(int)DatumType, InfoXml, Ellipsoid.Xml, (Wgs84Parameters==null?String.Empty:Wgs84Parameters.XML));
 			}

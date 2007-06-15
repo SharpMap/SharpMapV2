@@ -268,7 +268,7 @@ namespace SharpMap.Data.Providers
             _format.Length = 0;
             _format.Append(NumberFormatTemplate);
             _format.Insert(5, decimalPlaces).Insert(3, length);
-            string number = String.Format(SharpMap.Map.Map.NumberFormat_EnUS, _format.ToString(), value);
+            string number = String.Format(SharpMap.Map.NumberFormat_EnUS, _format.ToString(), value);
             _dbaseWriter.Write(number);
         }
 

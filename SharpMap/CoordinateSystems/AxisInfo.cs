@@ -77,7 +77,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS, "<CS_AxisInfo Name=\"{0}\" Orientation=\"{1}\"/>", Name, Orientation.ToString().ToUpper());
+                return String.Format(SharpMap.Map.NumberFormat_EnUS, "<CS_AxisInfo Name=\"{0}\" Orientation=\"{1}\"/>", Name, Orientation.ToString().ToUpper());
 			}
 		}
 

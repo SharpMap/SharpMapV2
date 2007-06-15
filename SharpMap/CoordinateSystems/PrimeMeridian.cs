@@ -176,7 +176,7 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.Map.NumberFormat_EnUS, "PRIMEM[\"{0}\", {1}", Name, Longitude);
+                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS, "PRIMEM[\"{0}\", {1}", Name, Longitude);
 				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
 					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
 				sb.Append("]");
@@ -191,7 +191,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.Map.NumberFormat_EnUS, 
+                return String.Format(SharpMap.Map.NumberFormat_EnUS, 
 					"<CS_PrimeMeridian Longitude=\"{0}\" >{1}{2}</CS_PrimeMeridian>", Longitude, InfoXml, AngularUnit.Xml);
 			}
 		}

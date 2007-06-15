@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SharpMap.Map;
 using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
@@ -32,7 +31,7 @@ namespace SharpMap.Presentation
 {
 	public class MapViewPort2D
 	{
-		private SharpMap.Map.Map _map;
+		private SharpMap.Map _map;
         private IMapView2D _view;
 		private double _pixelAspectRatio = 1.0;
 		private double _viewDpi;
@@ -45,7 +44,7 @@ namespace SharpMap.Presentation
 		private IViewMatrix _viewTransformInverted = new ViewMatrix2D();
 		private StyleColor _backgroundColor;
          
-		public MapViewPort2D(SharpMap.Map.Map map, IMapView2D view)
+		public MapViewPort2D(SharpMap.Map map, IMapView2D view)
 		{
 			_map = map;
             _view = view;

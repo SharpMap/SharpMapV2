@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using SharpMap.Map;
 using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
@@ -36,18 +35,17 @@ namespace SharpMap.Presentation
     /// </summary>
     public class MapPresenter2D //: IViewTransformer<ViewPoint2D, ViewRectangle2D>
     {
-        private SharpMap.Map.Map _map;
+        private SharpMap.Map _map;
         private IMapView2D _concreteView;
         private ViewSelection2D _selection;
 
         private ViewPoint2D? _beginActionLocation;
         private ViewPoint2D _lastMoveLocation;
 
-        public MapPresenter2D(SharpMap.Map.Map map, IMapView2D mapView)
+        public MapPresenter2D(SharpMap.Map map, IMapView2D mapView)
         {
             Map = map;
-            Map.LayersAdded += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
-            Map.LayersRemoved += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
+            Map.LayersCollectionChanged += new EventHandler<ModelCollectionChangedEventArgs<ILayer>>(Map_LayersChanged);
 
             MapView = mapView;
             MapView.Hover += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_Hover);
@@ -84,7 +82,7 @@ namespace SharpMap.Presentation
         /// <summary>
         /// The map.
         /// </summary>
-        public SharpMap.Map.Map Map
+        public SharpMap.Map Map
         {
             get { return _map; }
             protected set { _map = value; }
@@ -263,7 +261,7 @@ namespace SharpMap.Presentation
             OnSelectedFeaturesChanged();
         }
 
-        private void Map_LayersChanged(object sender, LayersChangedEventArgs e)
+        private void Map_LayersChanged(object sender, ModelCollectionChangedEventArgs<ILayer> e)
         {
             OnLayersChanged();
         }

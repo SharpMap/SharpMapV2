@@ -31,7 +31,7 @@ namespace SharpMap.Data.Providers
 		Geometry GetGeometryById(TOid oid);
 
 		/// <summary>
-		/// Returns a <see cref="SharpMap.Data.FeatureDataRow"/> based on an OID.
+		/// Returns a <see cref="FeatureDataRow"/> based on an OID.
 		/// </summary>
 		/// <param name="oid">The object id (OID) of the feature.</param>
 		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>

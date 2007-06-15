@@ -25,61 +25,34 @@ using SharpMap.Styles;
 
 namespace SharpMap.Presentation
 {
-    public abstract class LayersPresenter
+    public class LayersPresenter : BasePresenter<ILayersView>
     {
-        private SharpMap.Map.Map _map;
-        private List<ILayersView> _views = new List<ILayersView>();
         private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
         private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
 
-        protected LayersPresenter(SharpMap.Map.Map map, ILayersView view)
-            : this(map, new ILayersView[] { view }) { }
-
-        protected LayersPresenter(SharpMap.Map.Map map, IEnumerable<ILayersView> views)
+        public LayersPresenter(SharpMap.Map map, ILayersView view)
+            : base(map, view)
         {
-            _map = map;
-
             _selectedLayersChangeRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleLayerSelectionChangedRequested);
             _visibleLayersChangeRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleVisibileLayersChangeRequested);
 
-            addAndConfigureViews(views);
-        }
+            Map.SelectedLayersChanged += new EventHandler(handleMapSelectedLayersChanged);
+            Map.LayersCollectionChanged += new EventHandler<ModelCollectionChangedEventArgs<ILayer>>(handleMapLayersCollectionChanged);
 
-        public SharpMap.Map.Map Map
-        {
-            get { return _map; }
-        }
-
-        protected ReadOnlyCollection<ILayersView> Views
-        {
-            get { return _views.AsReadOnly(); }
-            set
-            {
-                removeViews();
-                addAndConfigureViews(value);
-            }
+            View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
+            View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
         }
 
         #region Helper Functions
 
-        private void addAndConfigureViews(IEnumerable<ILayersView> views)
+        void handleMapLayersCollectionChanged(object sender, ModelCollectionChangedEventArgs<ILayer> e)
         {
-            foreach (ILayersView view in views)
-            {
-                view.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
-                view.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
-                _views.Add(view);
-            }
+            throw new Exception("The method or operation is not implemented.");
         }
 
-        private void removeViews()
+        void handleMapSelectedLayersChanged(object sender, EventArgs e)
         {
-            foreach (ILayersView view in _views)
-            {
-                view.LayersSelectionChangeRequested -= _selectedLayersChangeRequestedDelegate;
-            }
-
-            _views.Clear();
+            throw new Exception("The method or operation is not implemented.");
         }
 
         private void handleVisibileLayersChangeRequested(object sender, LayerActionEventArgs e)

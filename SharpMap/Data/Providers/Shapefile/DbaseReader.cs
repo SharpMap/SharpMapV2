@@ -375,7 +375,7 @@ namespace SharpMap.Data.Providers
         /// null</exception>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
         /// object has been disposed</exception>
-        internal SharpMap.Data.FeatureDataRow<uint> GetFeature(uint oid, SharpMap.Data.FeatureDataTable<uint> table)
+        internal FeatureDataRow<uint> GetFeature(uint oid, FeatureDataTable<uint> table)
         {
             if (_isDisposed)
             {
@@ -404,7 +404,7 @@ namespace SharpMap.Data.Providers
                 return null;
             }
 
-            SharpMap.Data.FeatureDataRow<uint> dr = table.NewRow(oid);
+            FeatureDataRow<uint> dr = table.NewRow(oid);
 
             foreach (DbaseField field in _header.Columns)
             {
@@ -438,7 +438,7 @@ namespace SharpMap.Data.Providers
                     // Mono has not yet implemented DateTime.TryParseExact
 #if !MONO
                     if (DateTime.TryParseExact(Encoding.UTF7.GetString((_dbaseReader.ReadBytes(8))),
-                        "yyyyMMdd", SharpMap.Map.Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
+                        "yyyyMMdd", SharpMap.Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
                     {
                         return date;
                     }
@@ -461,7 +461,7 @@ namespace SharpMap.Data.Providers
                     string temp = Encoding.UTF7.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
                     double dbl = 0;
 
-                    if (double.TryParse(temp, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out dbl))
+                    if (double.TryParse(temp, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out dbl))
                     {
                         return dbl;
                     }
@@ -473,7 +473,7 @@ namespace SharpMap.Data.Providers
                     string temp16 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int16 i16 = 0;
 
-                    if (Int16.TryParse(temp16, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out i16))
+                    if (Int16.TryParse(temp16, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out i16))
                     {
                         return i16;
                     }
@@ -485,7 +485,7 @@ namespace SharpMap.Data.Providers
                     string temp32 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int32 i32 = 0;
 
-                    if (Int32.TryParse(temp32, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out i32))
+                    if (Int32.TryParse(temp32, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out i32))
                     {
                         return i32;
                     }
@@ -497,7 +497,7 @@ namespace SharpMap.Data.Providers
                     string temp64 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int64 i64 = 0;
 
-                    if (Int64.TryParse(temp64, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out i64))
+                    if (Int64.TryParse(temp64, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out i64))
                     {
                         return i64;
                     }
@@ -509,7 +509,7 @@ namespace SharpMap.Data.Providers
                     string temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
                     float f = 0;
 
-                    if (float.TryParse(temp4, NumberStyles.Float, SharpMap.Map.Map.NumberFormat_EnUS, out f))
+                    if (float.TryParse(temp4, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out f))
                     {
                         return f;
                     }

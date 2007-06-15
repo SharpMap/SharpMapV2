@@ -2,48 +2,39 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using SharpMap.Tools;
+
 namespace SharpMap.Presentation
 {
-    public class ToolsPresenter
+    /// <summary>
+    /// The presenter for managing a <see cref="IToolsView">view</see> of <see cref="MapTool"/> instances.
+    /// </summary>
+    public class ToolsPresenter : BasePresenter<IToolsView>
     {
-        private readonly List<IToolsView> _views;
-        private SharpMap.Map.Map _map;
-
-        protected ToolsPresenter(SharpMap.Map.Map map, IEnumerable<IToolsView> toolsViews)
+        /// <summary>
+        /// Creates a new instance of a <see cref="ToolsPresenter"/> with the given model and view.
+        /// </summary>
+        /// <param name="map">The map model to present.</param>
+        /// <param name="toolsView">The view to accept input from and keep synchronized with the model.</param>
+        public ToolsPresenter(SharpMap.Map map, IToolsView toolsView)
+            : base(map, toolsView)
         {
-            _map = map;
-            _views = new List<IToolsView>(toolsViews);
-
-            foreach (IToolsView toolView in Views)
-            {
-                toolView.ToolChangeRequested += new EventHandler<ToolChangeRequestEventArgs>(ToolsView_ToolSelectionChanged);
-            }
+            Map.SelectedToolChanged += new EventHandler(handleSelectedToolChanged);
+            View.ToolChangeRequested += new EventHandler<ToolChangeRequestedEventArgs>(handleToolChangeRequested);
+            
+            // TODO: tool configuration should come from a config file and / or reflection
+            List<MapTool> mapTools = new List<MapTool>(new MapTool[] { MapTool.Pan, MapTool.Query, MapTool.ZoomIn, MapTool.ZoomOut });
+            View.Tools = mapTools;
         }
 
-        public SharpMap.Map.Map Map
+        private void handleToolChangeRequested(object sender, ToolChangeRequestedEventArgs e)
         {
-            get { return _map; }
+            Map.SelectedTool = e.RequestedTool;
         }
 
-        public IList<IToolsView> Views
+        private void handleSelectedToolChanged(object sender, EventArgs e)
         {
-            get { return _views; }
-        }
-
-        private void ToolsView_ToolSelectionChanged(object sender, EventArgs e)
-        {
-            IToolsView senderView = sender as IToolsView;
-
-            Map.SelectedTool = senderView.SelectedTool;
-
-            foreach (IToolsView toolView in Views)
-            {
-                // if toolView isn't the view on which the event was raised, change the selected tool
-                if (!Object.ReferenceEquals(senderView, toolView))
-                {
-                    toolView.SelectedTool = Map.SelectedTool;
-                }
-            }
+            View.SelectedTool = Map.SelectedTool;
         }
     }
 }

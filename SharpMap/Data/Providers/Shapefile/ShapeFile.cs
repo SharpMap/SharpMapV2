@@ -657,9 +657,9 @@ namespace SharpMap.Data.Providers
         /// <para>See the <see cref="FilterDelegate"/> property for more info</para>
         /// </remarks>
         /// <seealso cref="FilterDelegate"/>
-        /// <param name="dr"><see cref="SharpMap.Data.FeatureDataRow"/> to test on</param>
+        /// <param name="dr"><see cref="FeatureDataRow"/> to test on</param>
         /// <returns>true if this feature should be included, false if it should be filtered</returns>
-        public delegate bool FilterMethod(SharpMap.Data.FeatureDataRow dr);
+        public delegate bool FilterMethod(FeatureDataRow dr);
 
         /// <summary>
         /// Filter Delegate Method for limiting the datasource
@@ -668,7 +668,7 @@ namespace SharpMap.Data.Providers
         /// <example>
         /// Using an anonymous method for filtering all features where the NAME column starts with S:
         /// <code lang="C#">
-        /// myShapeDataSource.FilterDelegate = new SharpMap.Data.Providers.ShapeFile.FilterMethod(delegate(SharpMap.Data.FeatureDataRow row) { return (!row["NAME"].ToString().StartsWith("S")); });
+        /// myShapeDataSource.FilterDelegate = new SharpMap.Data.Providers.ShapeFile.FilterMethod(delegate(FeatureDataRow row) { return (!row["NAME"].ToString().StartsWith("S")); });
         /// </code>
         /// </example>
         /// <example>
@@ -676,7 +676,7 @@ namespace SharpMap.Data.Providers
         /// <code>
         /// myShapeDataSource.FilterDelegate = CountryFilter;
         /// [...]
-        /// public static bool CountryFilter(SharpMap.Data.FeatureDataRow row)
+        /// public static bool CountryFilter(FeatureDataRow row)
         /// {
         ///		if(row.Geometry.GetType()==typeof(SharpMap.Geometries.Polygon))
         ///			return ((row.Geometry as SharpMap.Geometries.Polygon).Area>5);
@@ -1938,12 +1938,12 @@ namespace SharpMap.Data.Providers
         ///// <returns></returns>
         ///// <exception cref="InvalidShapefileOperationException">Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
         //[Obsolete("Use ExecuteIntersectionQuery instead")]
-        //public SharpMap.Data.FeatureDataTable<uint> QueryFeatures(SharpMap.Geometries.Geometry geom, double distance)
+        //public FeatureDataTable<uint> QueryFeatures(SharpMap.Geometries.Geometry geom, double distance)
         //{
         //    checkOpen();
         //    EnableReading();
 
-        //    SharpMap.Data.FeatureDataTable<uint> dt = _dbaseReader.NewTable;
+        //    FeatureDataTable<uint> dt = _dbaseReader.NewTable;
         //    SharpMap.Geometries.BoundingBox bbox = geom.GetBoundingBox();
         //    bbox.Min.X -= distance; bbox.Max.X += distance;
         //    bbox.Min.Y -= distance; bbox.Max.Y += distance;
@@ -1958,7 +1958,7 @@ namespace SharpMap.Data.Providers
         //    {
         //        for (uint i = (uint)dt.Rows.Count - 1; i >= 0; i--)
         //        {
-        //            SharpMap.Data.FeatureDataRow fdr = GetFeature(objectlist[j], dt);
+        //            FeatureDataRow fdr = GetFeature(objectlist[j], dt);
         //            if (fdr != null && fdr.Geometry.Intersects(geomBuffer))
         //                dt.Rows.Add(fdr);
         //        }
@@ -1980,11 +1980,11 @@ namespace SharpMap.Data.Providers
 
         //    //Use the spatial index to get a list of features whose boundingbox intersects bbox
         //    List<uint> objectlist = GetObjectIDsInView(bbox);
-        //    SharpMap.Data.FeatureDataTable<uint> dt = _dbaseReader.NewTable;
+        //    FeatureDataTable<uint> dt = _dbaseReader.NewTable;
 
         //    foreach (uint key in objectlist)
         //    {
-        //        SharpMap.Data.FeatureDataRow<uint> fdr = _dbaseReader.GetFeature(key, dt);
+        //        FeatureDataRow<uint> fdr = _dbaseReader.GetFeature(key, dt);
         //        fdr.Geometry = ReadGeometry(key);
         //        if (fdr.Geometry != null)
         //            if (fdr.Geometry.GetBoundingBox().Intersects(bbox))
