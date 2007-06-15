@@ -20,7 +20,7 @@ namespace SharpMap.Tests
 		[Test]
 		public void GetLayerByName_ReturnCorrectLayer()
 		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
+			Map map = new Map();
 			map.Layers.Add(new VectorLayer("Layer 1"));
 			map.Layers.Add(new VectorLayer("Layer 3"));
 			map.Layers.Add(new VectorLayer("Layer 2"));
@@ -33,7 +33,7 @@ namespace SharpMap.Tests
 		[Test]
 		public void GetLayerByName()
 		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
+			Map map = new Map();
 			map.Layers.Add(new VectorLayer("Layer 1"));
 			map.Layers.Add(new VectorLayer("Layer 3"));
 			map.Layers.Add(new VectorLayer("Layer 2"));
@@ -46,7 +46,7 @@ namespace SharpMap.Tests
 		[Test]
 		public void FindLayerByPredicate()
 		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
+			Map map = new Map();
 			map.Layers.Add(new VectorLayer("Layer 1"));
 			map.Layers.Add(new VectorLayer("Layer 3"));
 			map.Layers.Add(new VectorLayer("Layer 2"));
@@ -69,7 +69,7 @@ namespace SharpMap.Tests
 		[Test]
 		public void EmptyMap_Defaults()
 		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
+			Map map = new Map();
 			Assert.AreEqual(map.GetExtents(), BoundingBox.Empty);
 			Assert.AreEqual(map.Center, Point.Empty);
 			Assert.IsNotNull(map.Layers);
@@ -81,7 +81,7 @@ namespace SharpMap.Tests
 		[Test]
 		public void GetExtents_ValidDatasource()
 		{
-			SharpMap.Map.Map map = new SharpMap.Map.Map();
+			Map map = new Map();
 
 			VectorLayer vLayer = new VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 

@@ -8,7 +8,6 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
-using SharpMap.Map;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation;
@@ -26,7 +25,7 @@ namespace SharpMap.Tests
         {
             MockRepository mocks = new MockRepository();
 
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.Stub<IMapView2D>();
 
             SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
@@ -63,7 +62,7 @@ namespace SharpMap.Tests
 		//[Test]
 		//public void ImageToWorld()
 		//{
-		//    SharpMap.Map.Map map = new SharpMap.Map.Map(new System.Drawing.Size(1000, 500));
+		//    Map map = new Map(new System.Drawing.Size(1000, 500));
 		//    map.Zoom = 360;
 		//    map.Center = new SharpMap.Geometries.Point(0, 0);
 		//    Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), map.ImageToWorld(new System.Drawing.PointF(500, 250)));
@@ -76,7 +75,7 @@ namespace SharpMap.Tests
 		//[Test]
 		//public void WorldToImage()
 		//{
-		//    SharpMap.Map.Map map = new SharpMap.Map.Map(new System.Drawing.Size(1000, 500));
+		//    Map map = new Map(new System.Drawing.Size(1000, 500));
 		//    map.Zoom = 360;
 		//    map.Center = new SharpMap.Geometries.Point(0, 0);
 		//    Assert.AreEqual(new System.Drawing.PointF(500, 250), map.WorldToImage(new SharpMap.Geometries.Point(0, 0)));
@@ -90,7 +89,7 @@ namespace SharpMap.Tests
 		//[ExpectedException(typeof(InvalidOperationException))]
 		//public void GetMap_RenderEmptyMap_ThrowInvalidOperationException()
 		//{
-		//    SharpMap.Map.Map map = new SharpMap.Map.Map(new System.Drawing.Size(2, 1));
+		//    Map map = new Map(new System.Drawing.Size(2, 1));
 		//    map.GetMap();
 		//}
 
@@ -99,7 +98,7 @@ namespace SharpMap.Tests
 		{
 			MockRepository mocks = new MockRepository();
 
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
@@ -117,7 +116,7 @@ namespace SharpMap.Tests
 		{
 			MockRepository mocks = new MockRepository();
 
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
@@ -135,7 +134,7 @@ namespace SharpMap.Tests
 		public void SetMinimumZoom_NegativeValue_ThrowException()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 
@@ -147,7 +146,7 @@ namespace SharpMap.Tests
 		public void SetMaximumZoom_NegativeValue_ThrowException()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 
@@ -158,7 +157,7 @@ namespace SharpMap.Tests
 		public void SetMaximumZoom_OKValue()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 
@@ -170,7 +169,7 @@ namespace SharpMap.Tests
 		public void SetMinimumZoom_OKValue()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 
@@ -182,7 +181,7 @@ namespace SharpMap.Tests
 		public void SetZoom_ValueOutsideMax()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 
@@ -195,7 +194,7 @@ namespace SharpMap.Tests
 		public void SetZoom_ValueBelowMin()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 
@@ -208,7 +207,7 @@ namespace SharpMap.Tests
 		public void ZoomToBox_NoAspectCorrection()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
@@ -222,7 +221,7 @@ namespace SharpMap.Tests
 		public void ZoomToBox_WithAspectCorrection()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
@@ -236,7 +235,7 @@ namespace SharpMap.Tests
 		//[ExpectedException(typeof(ApplicationException))]
 		//public void GetMap_RenderLayerWithoutDatasource_ThrowException()
 		//{
-		//    Map map = new SharpMap.Map.Map();
+		//    Map map = new Map();
 		//    map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 1"));
 		//    map.GetMap();
 		//}
@@ -245,7 +244,7 @@ namespace SharpMap.Tests
 		public void WorldToMap_DefaultMap_ReturnValue()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(500, 200);
@@ -261,7 +260,7 @@ namespace SharpMap.Tests
 		public void ImageToWorld_DefaultMap_ReturnValue()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(500, 200);
@@ -277,7 +276,7 @@ namespace SharpMap.Tests
 		public void GetMap_GeometryProvider_ReturnImage()
         {
             MockRepository mocks = new MockRepository();
-            SharpMap.Map.Map map = new SharpMap.Map.Map();
+            Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
