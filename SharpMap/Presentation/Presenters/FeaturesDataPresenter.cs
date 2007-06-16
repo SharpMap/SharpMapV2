@@ -17,15 +17,55 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+
+using SharpMap.Layers;
 
 namespace SharpMap.Presentation
 {
     public class FeaturesDataPresenter : BasePresenter<IFeaturesDataView>
     {
-        public FeaturesDataPresenter(SharpMap.Map map, IFeaturesDataView view)
+        private IFeatureLayer _featureLayer;
+        private readonly string _selectedFeaturesPropertyName;
+
+        public FeaturesDataPresenter(SharpMap.Map map, IFeatureLayer layer, IFeaturesDataView view)
             : base(map, view)
         {
+            FeatureLayer = layer;
+            FeatureLayer.PropertyChanged += new PropertyChangedEventHandler(handleFeatureLayerPropertyChanged);
+            FeatureLayer.SelectedFeaturesChanged += new EventHandler(handleFeatureLayerSelectedFeaturesChanged);
+        }
+
+        public IFeatureLayer FeatureLayer
+        {
+            get { return _featureLayer; }
+            private set { _featureLayer = value; }
+        }
+
+        void handleFeatureLayerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "LayerName":
+                    View.Title = FeatureLayer.LayerName;
+                    break;
+                case "Envelope":
+                    break;
+                case "Enabled":
+                    break;
+                case "Srid":
+                case "CoordinateSystem":
+                case "CoordinateTransformation":
+                case "Style":
+                default:
+                    break;
+            }
+        }
+
+        void handleFeatureLayerSelectedFeaturesChanged(object sender, EventArgs e)
+        {
+            View.SelectedFeatures = FeatureLayer.SelectedFeatures;
         }
     }
 }

@@ -189,6 +189,7 @@
     <Compile Include="Model\Features\FeatureDataTable.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Model\Features\FeatureDataTableView`1.cs" />
     <Compile Include="Model\Features\FeatureDataTable`1.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -203,15 +204,19 @@
     <Compile Include="Model\Layers\Layer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Model\Layers\LayerGroup.cs" />
+    <Compile Include="Model\Layers\LayerGroup.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Model\Layers\VectorLayer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Presentation\IBindingListView`1.cs" />
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\MapActionEventArgs.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
+    <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Tools\ActionContext.cs" />
     <Compile Include="Model\LayersCollection.cs" />
     <Compile Include="Model\Map.cs">

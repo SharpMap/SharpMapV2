@@ -17,13 +17,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SharpMap.Presentation
 {
-    public interface IFeaturesDataView
+    public interface IFeaturesDataView : IView
     {
-        FeatureDataTable Features { get; set; }
+        IBindingListView<FeatureDataRow> Features { get; set; }
         IEnumerable<FeatureDataRow> SelectedFeatures { get; set; }
         event EventHandler<FeatureSelectionChangeRequestEventArgs> FeaturesSelectionChangeRequested;
     }

@@ -24,32 +24,34 @@ using System.Collections;
 
 namespace SharpMap
 {
+    /// <summary>
+    /// Represents one feature table of in-memory spatial data, with an object identifier (OID) type
+    /// of <typeparamref name="TOid"/>
+    /// </summary>
+    /// <typeparam name="TOid">Type of the object id.</typeparam>
     public class FeatureDataTable<TOid> : FeatureDataTable, IEnumerable<FeatureDataRow<TOid>>
     {
         private DataColumn _idColumn;
 
+        #region Static Factory Methods
+        /// <summary>
+        /// Creates a new, empty <see cref="FeatureDataTable{TOid}"/>.
+        /// </summary>
+        /// <param name="idColumnName">The name of the id column in the feature table.</param>
+        /// <returns>A new, empty FeatureDataTable{TOid} with a single column for the id.</returns>
         public static FeatureDataTable<TOid> CreateEmpty(string idColumnName)
         {
             return CreateTableWithId(new FeatureDataTable(), idColumnName);
         }
 
-        private FeatureDataTable()
-            : base()
-        {
-        }
-
-        public FeatureDataTable(string idColumnName)
-            : base()
-        {
-            setIdColumn(idColumnName);
-        }
-
-        public FeatureDataTable(DataTable table, string idColumnName)
-            : base(table)
-        {
-            setIdColumn(idColumnName);
-        }
-
+        /// <summary>
+        /// Creates a new <see cref="FeatureDataTable{TOid}"/> for the given <paramref name="table"/>,
+        /// copying both schema and data.
+        /// </summary>
+        /// <param name="table">The table to copy.</param>
+        /// <param name="columnName">The name of the id column.</param>
+        /// <returns>A FeatureDataTable{TOid} instance which is a copy of <paramref name="table"/> 
+        /// and with id column <paramref name="columnName"/>.</returns>
         public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, string columnName)
         {
             if (table == null)
@@ -69,9 +71,17 @@ namespace SharpMap
                 table.Columns.Add(columnName, typeof(TOid));
             }
 
-            return InternalCreateTableWithId(table, table.Columns[columnName]);
+            return internalCreateTableWithId(table, table.Columns[columnName]);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="FeatureDataTable{TOid}"/> for the given <paramref name="table"/>,
+        /// copying both schema and data.
+        /// </summary>
+        /// <param name="table">The table to copy.</param>
+        /// <param name="column">The id column.</param>
+        /// <returns>A FeatureDataTable{TOid} instance which is a copy of <paramref name="table"/> 
+        /// and with id column <paramref name="column"/>.</returns>
         public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, DataColumn column)
         {
             if (table == null)
@@ -84,10 +94,10 @@ namespace SharpMap
                 throw new ArgumentNullException("column");
             }
 
-            return InternalCreateTableWithId(table.Copy() as FeatureDataTable, column);
+            return internalCreateTableWithId(table.Copy() as FeatureDataTable, column);
         }
 
-        private static FeatureDataTable<TOid> InternalCreateTableWithId(FeatureDataTable tableCopy, DataColumn objectIdColumn)
+        private static FeatureDataTable<TOid> internalCreateTableWithId(FeatureDataTable tableCopy, DataColumn objectIdColumn)
         {
             FeatureDataTable<TOid> tableWithId = new FeatureDataTable<TOid>(tableCopy, objectIdColumn.ColumnName);
 
@@ -130,11 +140,63 @@ namespace SharpMap
 
             return tableWithId;
         }
+        #endregion
 
+        #region Constructors
+        private FeatureDataTable()
+            : base()
+        {
+        }
+
+        public FeatureDataTable(string idColumnName)
+            : base()
+        {
+            setIdColumn(idColumnName);
+        }
+
+        public FeatureDataTable(DataTable table, string idColumnName)
+            : base(table)
+        {
+            setIdColumn(idColumnName);
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets the <see cref="DataColumn"/> which represents the id column for the feature table.
+        /// </summary>
         public DataColumn IdColumn
         {
             get { return _idColumn; }
-            private set { _idColumn = value; }
+            private set
+            {
+                _idColumn = value;
+                PrimaryKey = new DataColumn[] { _idColumn };
+            }
+        }
+
+        public new DataColumn[] PrimaryKey
+        {
+            get { return base.PrimaryKey; }
+            set
+            {
+                if (value.Length > 1)
+                {
+                    throw new NotSupportedException("Compound key not supported on FeatureDataTable.");
+                }
+
+                if (value.Length == 0)
+                {
+                    throw new InvalidOperationException("FeatureDataTable`1 must have an id column.");
+                }
+
+                if (value[0] != IdColumn)
+                {
+                    throw new InvalidOperationException("The primary key must be the same as the IdColumn.");
+                }
+
+                base.PrimaryKey = value;
+            }
         }
 
         /// <summary>
@@ -146,7 +208,9 @@ namespace SharpMap
         {
             get { return (FeatureDataRow<TOid>)base.Rows[index]; }
         }
+        #endregion
 
+        #region Methods
         public void AddRow(FeatureDataRow<TOid> row)
         {
             base.Rows.Add(row);
@@ -194,6 +258,9 @@ namespace SharpMap
         {
             base.Rows.Remove(row);
         }
+        #endregion
+
+        #region Overrides
 
         /// <summary>
         /// 
@@ -223,15 +290,22 @@ namespace SharpMap
             return typeof(FeatureDataRow<TOid>);
         }
 
+        #endregion
+
+        #region Private Helper Methods
         private void setIdColumn(string idColumnName)
         {
             if (String.IsNullOrEmpty(idColumnName))
+            {
                 throw new ArgumentNullException("idColumnName");
+            }
 
             if (Columns.Contains(idColumnName))
             {
                 if (Columns[idColumnName].DataType != typeof(TOid))
+                {
                     throw new InvalidOperationException("Column with name " + idColumnName + " exists, but has different type from type parameter type: " + typeof(TOid).Name);
+                }
 
                 IdColumn = Columns[idColumnName];
             }
@@ -241,5 +315,7 @@ namespace SharpMap
                 Columns.Add(IdColumn);
             }
         }
+        #endregion
+
     }
 }

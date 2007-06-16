@@ -42,11 +42,11 @@ namespace SharpMap
 		/// </summary>
 		public FeatureDataSet()
 		{
-			this.InitClass();
-			System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new System.ComponentModel.CollectionChangeEventHandler(this.SchemaChanged);
+			this.initClass();
+			System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new System.ComponentModel.CollectionChangeEventHandler(this.schemaChanged);
 			//this.Tables.CollectionChanged += schemaChangedHandler;
 			this.Relations.CollectionChanged += schemaChangedHandler;
-			this.InitClass();
+			this.initClass();
 		}
 
 		/// <summary>
@@ -79,11 +79,11 @@ namespace SharpMap
 			}
 			else
 			{
-				this.InitClass();
+				this.initClass();
 			}
 
 			this.GetSerializationData(info, context);
-			CollectionChangeEventHandler schemaChangedHandler = new CollectionChangeEventHandler(this.SchemaChanged);
+			CollectionChangeEventHandler schemaChangedHandler = new CollectionChangeEventHandler(this.schemaChanged);
 			//this.Tables.CollectionChanged += schemaChangedHandler;
 			this.Relations.CollectionChanged += schemaChangedHandler;
 		}
@@ -159,7 +159,7 @@ namespace SharpMap
 		}
 
 
-		private void InitClass()
+		private void initClass()
 		{
 			_featureTables = new FeatureTableCollection();
 			//this.DataSetName = "FeatureDataSet";
@@ -170,12 +170,12 @@ namespace SharpMap
 			this.EnforceConstraints = true;
 		}
 
-		private bool ShouldSerializeFeatureTable()
+		private bool shouldSerializeFeatureTable()
 		{
 			return false;
 		}
 
-		private void SchemaChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
+		private void schemaChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
 		{
 			if ((e.Action == System.ComponentModel.CollectionChangeAction.Remove))
 			{

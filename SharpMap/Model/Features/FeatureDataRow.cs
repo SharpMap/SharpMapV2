@@ -25,7 +25,7 @@ using SharpMap.Geometries;
 namespace SharpMap
 {
     /// <summary>
-    /// Represents a row of data in a FeatureDataTable.
+    /// Represents a row of data in a <see cref="FeatureDataTable"/>.
     /// </summary>
 #if !DEBUG_STEPINTO
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -34,7 +34,7 @@ namespace SharpMap
     public class FeatureDataRow : DataRow
     {
         //private FeatureDataTable tableFeatureTable;
-        private SharpMap.Geometries.Geometry _geometry;
+        private Geometry _geometry;
 
         internal FeatureDataRow(DataRowBuilder rb)
             : base(rb)

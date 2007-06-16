@@ -23,7 +23,7 @@ using SharpMap.Styles;
 
 namespace SharpMap.Presentation
 {
-    public interface ILayerStyleView
+    public interface ILayerStyleView : IView
     {
         event EventHandler<LayerStyleChangeRequestEventArgs> LayerStyleChangeRequested;
         IStyle Style { get; set; }

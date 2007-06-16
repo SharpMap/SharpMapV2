@@ -22,7 +22,7 @@ using SharpMap.Tools;
 
 namespace SharpMap.Presentation
 {
-    public interface IToolsView
+    public interface IToolsView : IView
     {
         IList<MapTool> Tools { get; set; }
         event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;

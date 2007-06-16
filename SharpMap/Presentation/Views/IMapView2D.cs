@@ -26,7 +26,7 @@ using SharpMap.Styles;
 
 namespace SharpMap.Presentation
 {
-    public interface IMapView2D
+    public interface IMapView2D : IView
     {
         MapViewPort2D ViewPort { get; set; }
         double Dpi { get; }
