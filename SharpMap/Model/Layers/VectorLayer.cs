@@ -35,22 +35,6 @@ namespace SharpMap.Layers
     /// </summary>
     /// <example>
     /// Adding a <see cref="VectorLayer"/> to a map:
-    /// <code lang="C#">
-    /// // Initialize a new map
-    /// SharpMap.Map myMap = new SharpMap.Map(new System.Drawing.Size(300,600));
-    /// // Create a layer
-    /// SharpMap.Layers.VectorLayer myLayer = new SharpMap.Layers.VectorLayer("My layer");
-    /// //Add datasource
-    /// myLayer.DataSource = new SharpMap.Data.Providers.ShapeFile(@"C:\data\MyShapeData.shp");
-    /// // Set up styles
-    /// myLayer.Style.Outline = new Pen(Color.Magenta, 3f);
-    /// myLayer.Style.EnableOutline = true;
-    /// myMap.Layers.Add(myLayer);
-    /// // Zoom to fit the data in the view
-    /// myMap.ZoomToExtents();
-    /// // Render the map:
-    /// System.Drawing.Image mapImage = myMap.GetMap();
-    /// </code>
     /// </example>
     public class VectorLayer : Layer, IFeatureLayer, IDisposable
     {

@@ -27,6 +27,7 @@ using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -47,9 +48,10 @@ namespace SharpMap.Presentation.WinForms
     /// <remarks>
     /// </remarks>
     public class MapViewControl : Control, IMapView2D, IToolsView, ISupportInitialize
-    {
+	{
+		private double _dpi = 96;
+		private MapViewPort2D _viewPort;
         private MapTool _selectedTool;
-        //private GdiMatrix _viewTransform = new GdiMatrix();
         private bool _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
         private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
@@ -63,7 +65,12 @@ namespace SharpMap.Presentation.WinForms
         /// Initializes a new map
         /// </summary>
         public MapViewControl()
-        {
+		{
+			using (Graphics g = CreateGraphics())
+			{
+				_dpi = g.DpiX;
+			}
+
             _selectedTool = MapTool.None;
             this.Cursor = Cursors.Cross;
 
@@ -75,15 +82,36 @@ namespace SharpMap.Presentation.WinForms
             SetStyle(ControlStyles.SupportsTransparentBackColor, false);
             SetStyle(ControlStyles.UserMouse, true);
             SetStyle(ControlStyles.UserPaint, true);
-        }
+		}
 
         //public GdiMatrix ViewTransform
         //{
         //    get { return _viewTransform; }
         //    set { _viewTransform = value; }
-        //}
+		//}
 
-        #region IMapView2D Members
+		#region IView Members
+		public string Title
+		{
+			get { return Name; }
+			set { Name = value; }
+		}
+
+		#endregion
+
+		#region IMapView2D Members
+
+		public MapViewPort2D ViewPort
+		{
+			get { return _viewPort; }
+			set { _viewPort = value;  }
+		}
+
+		[DesignTimeVisible(false)]
+		public double Dpi
+		{
+			get { return _dpi; }
+		}
 
         public ViewSize2D ViewSize
         {
@@ -107,13 +135,13 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        public event EventHandler<MapActionEventArgs> Hover;
+        public event EventHandler<MapActionEventArgs<ViewPoint2D>> Hover;
 
-        public event EventHandler<MapActionEventArgs> BeginAction;
+		public event EventHandler<MapActionEventArgs<ViewPoint2D>> BeginAction;
 
-        public event EventHandler<MapActionEventArgs> MoveTo;
+		public event EventHandler<MapActionEventArgs<ViewPoint2D>> MoveTo;
 
-        public event EventHandler<MapActionEventArgs> EndAction;
+		public event EventHandler<MapActionEventArgs<ViewPoint2D>> EndAction;
 
         public event EventHandler ViewSizeChanged;
 
@@ -121,7 +149,7 @@ namespace SharpMap.Presentation.WinForms
 
         #region IToolsView Members
 
-        public event EventHandler ToolChangeRequested;
+		public event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -147,8 +175,7 @@ namespace SharpMap.Presentation.WinForms
             {
                 if (_selectedTool != value)
                 {
-                    _selectedTool = value;
-                    OnSelectedToolChanged();
+                    OnSelectedToolChanged(value);
                 }
             }
         }
@@ -248,7 +275,7 @@ namespace SharpMap.Presentation.WinForms
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-            EventHandler<MapActionEventArgs> @event = Hover;
+            EventHandler<MapActionEventArgs<ViewPoint2D>> @event = Hover;
 
             if (@event != null)
                 @event(this, _globalActionArgs);
@@ -258,7 +285,7 @@ namespace SharpMap.Presentation.WinForms
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-            EventHandler<MapActionEventArgs> @event = BeginAction;
+			EventHandler<MapActionEventArgs<ViewPoint2D>> @event = BeginAction;
 
             if (@event != null)
                 @event(this, _globalActionArgs);
@@ -268,7 +295,7 @@ namespace SharpMap.Presentation.WinForms
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-            EventHandler<MapActionEventArgs> @event = MoveTo;
+			EventHandler<MapActionEventArgs<ViewPoint2D>> @event = MoveTo;
 
             if (@event != null)
                 @event(this, _globalActionArgs);
@@ -278,18 +305,22 @@ namespace SharpMap.Presentation.WinForms
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-            EventHandler<MapActionEventArgs> @event = EndAction;
+			EventHandler<MapActionEventArgs<ViewPoint2D>> @event = EndAction;
 
             if (@event != null)
                 @event(this, _globalActionArgs);
         }
 
-        private void OnSelectedToolChanged()
+        private void OnSelectedToolChangeRequest(MapTool requestedTool)
         {
-            EventHandler @event = ToolChangeRequested;
+            EventHandler<ToolChangeRequestedEventArgs> @event = ToolChangeRequested;
 
-            if (@event != null)
-                @event(this, EventArgs.Empty);
+			ToolChangeRequestedEventArgs args = new ToolChangeRequestedEventArgs(requestedTool);
+
+			if (@event != null)
+			{
+				@event(this, args);
+			}
         }
         #endregion
 
@@ -364,11 +395,11 @@ namespace SharpMap.Presentation.WinForms
         }
 
         #endregion
-    }
+	}
 
     #region Event Arg Classes
 
-    public class GdiMapActionEventArgs : MapActionEventArgs
+    public class GdiMapActionEventArgs : MapActionEventArgs<ViewPoint2D>
     {
         public GdiMapActionEventArgs()
             : base(new ViewPoint2D()) { }

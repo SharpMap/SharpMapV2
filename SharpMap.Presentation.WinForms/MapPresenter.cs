@@ -38,10 +38,10 @@ namespace SharpMap.Presentation.WinForms
         private GdiRenderObject[] _renderObjects;
         //private GdiMatrix _viewMatrix = new GdiMatrix();
 
-        public MapPresenter(SharpMap.Map.Map map, MapViewControl mapView)
+        public MapPresenter(SharpMap.Map map, MapViewControl mapView)
             : base(map, mapView)
         {
-            _imageTileCache = new ImageTileCache(this);
+            _imageTileCache = new ImageTileCache(map.Envelope);
             RegisterRenderer<VectorLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiVectorRenderer(this));
             RegisterRenderer<LabelLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiLabelRenderer(this));
         }

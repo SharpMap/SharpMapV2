@@ -565,9 +565,10 @@ namespace SharpMap.Geometries
 
 		#region Overlaps
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>, 
+		/// Returns true if this <see cref="BoundingBox" /> overlaps the passed <paramref name="b">BoundingBox</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
+		/// <remarks>
 		/// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
 		/// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
 		/// return true, but <see cref="Overlaps"/> will return false.
@@ -583,6 +584,7 @@ namespace SharpMap.Geometries
 		/// Returns true if this <see cref="BoundingBox"/> overlaps the passed <paramref name="b">BoundingBox</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
+		/// <remarks>
 		/// A <see cref="BoundingBox"/> can touch and not overlap. If the passed <paramref name="b">bounding box</paramref> and 
 		/// this <see cref="BoundingBox"/> share a common edge or a common point, the <see cref="Touches"/> method will
 		/// return true, but <see cref="Overlaps"/> will return false.
@@ -613,6 +615,7 @@ namespace SharpMap.Geometries
 		/// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
+		/// <remarks>
 		/// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
 		/// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
 		/// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
@@ -630,6 +633,7 @@ namespace SharpMap.Geometries
 		/// Returns true if this <see cref="BoundingBox"/> overlaps the <paramref name="p">point</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
+		/// <remarks>
 		/// A <see cref="Point"/> can touch and not overlap. If the <paramref name="p">point</paramref> and 
 		/// the <see cref="BoundingBox"/> share a common point, the <see cref="Touches"/> method will
 		/// return true, but <see cref="Overlaps"/> will return false. For <see cref="Point">points</see>,
