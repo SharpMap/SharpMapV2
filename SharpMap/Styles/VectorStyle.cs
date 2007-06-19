@@ -23,6 +23,7 @@ using System.IO;
 using System.Text;
 
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
 {

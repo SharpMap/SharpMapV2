@@ -22,6 +22,7 @@ using System.Text;
 
 using SharpMap.Geometries;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
 namespace SharpMap.Presentation

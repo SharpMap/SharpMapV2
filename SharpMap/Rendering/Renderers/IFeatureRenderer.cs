@@ -42,7 +42,7 @@ namespace SharpMap.Rendering
 		/// </summary>
 		/// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
 		/// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
-		IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
+		IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature);
 
         /// <summary>
         /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.

@@ -165,10 +165,13 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(IGeometry geometry, IStyle style)
-        {
-            return RenderGeometry(geometry, style as TStyle);
-        }
+		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature)
+		{
+		}
+
+		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature, IStyle style)
+		{
+		}
 
         #endregion
 

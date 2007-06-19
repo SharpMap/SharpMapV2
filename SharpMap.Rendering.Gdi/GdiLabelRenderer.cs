@@ -32,7 +32,7 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Rendering.Gdi
 {
-    public class GdiLabelRenderer : BaseLabelRenderer2D<GdiRenderObject>
+    public class GdiLabelRenderer : LabelRenderer2D<GdiRenderObject>
     {
         private Graphics _currentGraphics;
 
@@ -56,7 +56,7 @@ namespace SharpMap.Rendering.Gdi
             }
         }
 
-        public override GdiRenderObject RenderLabel(Label label)
+        public override GdiRenderObject RenderLabel(Label2D label)
         {
             return RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor, label.Style.BackColor, label.Style.Halo, label.Rotation);
         }

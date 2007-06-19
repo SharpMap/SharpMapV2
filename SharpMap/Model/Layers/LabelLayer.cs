@@ -49,14 +49,14 @@ namespace SharpMap.Layers
 	/// layLabel.Style.HorizontalAlignment = SharpMap.Styles.LabelStyle.HorizontalAlignmentEnum.Center;
 	/// </code>
 	/// </example>
-	public class LabelLayer : Layer, IFeatureLayer, IDisposable
+	public class LabelLayer<TLabel> : Layer, IFeatureLayer, IDisposable
     {
         private int _priority;
         private string _rotationColumn;
         private GetLabelMethod _getLabelMethod;
         private string _labelColumn;
         private IProvider _dataSource;
-        private LabelCollisionDetection.LabelFilterMethod _labelFilter;
+		private LabelCollisionDetection.LabelFilterMethod<TLabel> _labelFilter;
         private MultipartGeometryBehaviourEnum _multipartGeometryBehaviour;
 
 		/// <summary>
@@ -90,9 +90,9 @@ namespace SharpMap.Layers
 		/// Filtermethod delegate for performing filtering
 		/// </summary>
 		/// <remarks>
-		/// Default method is <see cref="SharpMap.Rendering.LabelCollisionDetection.SimpleCollisionDetection"/>
+		/// Default method is <see cref="SharpMap.Rendering.LabelCollisionDetection.SimpleCollisionDetection"/>.
 		/// </remarks>
-		public LabelCollisionDetection.LabelFilterMethod LabelFilter
+		public LabelCollisionDetection.LabelFilterMethod<TLabel> LabelFilter
 		{
 			get { return _labelFilter; }
 			set { _labelFilter = value; }

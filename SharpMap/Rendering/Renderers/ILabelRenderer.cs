@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using SharpMap.Styles;
+using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering
 {
@@ -53,7 +54,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="label"><see cref="Label"/> to render.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(Label2D label);
+        TRenderObject RenderLabel(ILabel<TViewPoint, TViewRectangle, GraphicsPath<TViewPoint, TViewRectangle>> label);
 
         /// <summary>
         /// Renders a label.

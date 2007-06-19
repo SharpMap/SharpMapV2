@@ -23,7 +23,7 @@ using System.IO;
 using SharpMap.Layers;
 using SharpMap.Styles;
 
-namespace SharpMap.Rendering.Renderers
+namespace SharpMap.Rendering.Rendering2D
 {
     public abstract class RasterRenderer2D<TStyle, TRenderObject> : IRasterRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
         where TStyle : class, IStyle

@@ -28,7 +28,7 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <summary>
 	/// Class for storing a label instance.
 	/// </summary>
-	public class Label2D : IComparable<Label2D>, IComparer<Label2D>
+	public class Label2D : ILabel<ViewPoint2D, ViewRectangle2D, GraphicsPath2D>, IComparable<Label2D>, IComparer<Label2D>
     {
         private string _text;
         private ViewPoint2D _labelPoint;
@@ -37,6 +37,7 @@ namespace SharpMap.Rendering.Rendering2D
         private float _rotation;
         private LabelStyle _style;
         private GraphicsPath2D _labelPath;
+		private ViewRectangle2D _collisionBounds;
 
 		/// <summary>
 		/// Initializes a new Label instance.
@@ -60,7 +61,7 @@ namespace SharpMap.Rendering.Rendering2D
         public override string ToString()
         {
             return String.Format("[{0}] Text: {1}; LabelPoint: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Box: {6}",
-                GetType(), Text, LabelPoint, Font, Rotation, Priority, Box);
+                GetType(), Text, LabelPoint, Font, Rotation, Priority, CollisionBounds);
         }
 
 		/// <summary>
@@ -111,10 +112,16 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Label box.
 		/// </summary>
-		public ViewRectangle2D? Box
+		public ViewRectangle2D CollisionBounds
 		{
-			get { return _box; }
-			set { _box = value; }
+			get { return _collisionBounds; }
+			set { _collisionBounds = value; }
+		}
+
+		public GraphicsPath<ViewPoint2D, ViewRectangle2D> FlowPath
+		{
+			get { return _labelPath; }
+			set { _labelPath = value; }
 		}
 
 		/// <summary>
@@ -136,13 +143,21 @@ namespace SharpMap.Rendering.Rendering2D
 		public int CompareTo(Label2D other)
 		{
 			if (this == other)
+			{
 				return 0;
+			}
 			else if (_box == null)
+			{
 				return -1;
-			else if (other.Box == null)
+			}
+			else if (other.CollisionBounds == null)
+			{
 				return 1;
+			}
 			else
-				return _box.Value.CompareTo(other.Box.Value);
+			{
+				return _box.Value.CompareTo(other.CollisionBounds.Value);
+			}
 		}
 
 		#endregion
@@ -158,6 +173,22 @@ namespace SharpMap.Rendering.Rendering2D
 		public int Compare(Label2D x, Label2D y)
 		{
 			return x.CompareTo(y);
+		}
+
+		#endregion
+
+		#region ILabel<ViewPoint2D,ViewRectangle2D,GraphicsPath2D> Members
+
+		GraphicsPath<ViewPoint2D, ViewRectangle2D> ILabel<ViewPoint2D, ViewRectangle2D, GraphicsPath2D>.FlowPath
+		{
+			get
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+			set
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
 		}
 
 		#endregion

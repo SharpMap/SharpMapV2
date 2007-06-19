@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using SharpMap.Rendering.Rendering2D;
+
 namespace SharpMap.Rendering
 {
 	/// <summary>
@@ -27,41 +29,59 @@ namespace SharpMap.Rendering
 	public class LabelCollisionDetection
 	{
 		/// <summary>
-		/// Delegate method for filtering labels. Useful for performing custom collision detection on labels
+		/// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
 		/// </summary>
 		/// <param name="labels"></param>
 		/// <returns></returns>
-		public delegate void LabelFilterMethod(List<SharpMap.Rendering.Label2D> labels);
+		public delegate IEnumerable<TLabel> LabelFilterMethod<TLabel>(IEnumerable<TLabel> labels);
 
 		#region Label filter methods
 		/// <summary>
 		/// Simple and fast label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static void SimpleCollisionDetection(List<SharpMap.Rendering.Label2D> labels)
+		public static IEnumerable<TLabel> SimpleCollisionDetection<TLabel>(IList<TLabel> labels)
 		{
-			labels.Sort(); // sort labels by intersectiontests of labelbox
+			List<TLabel> labelList = new List<TLabel>(labels);
+
+			labelList.Sort(); // sort labels by intersectiontests of labelbox
+
 			//remove labels that intersect other labels
-			for (int i = labels.Count - 1; i > 0; i--)
-				if (labels[i].CompareTo(labels[i - 1]) == 0)
+			for (int i = labelList.Count - 1; i > 0; i--)
+			{
+				if (labelList[i].CompareTo(labelList[i - 1]) == 0)
 				{
-					if (labels[i].Priority > labels[i - 1].Priority)
-						labels.RemoveAt(i - 1);
+					if (labelList[i].Priority > labelList[i - 1].Priority)
+					{
+						labelList.RemoveAt(i - 1);
+					}
 					else
-						labels.RemoveAt(i);
+					{
+						labelList.RemoveAt(i);
+					}
 				}
+			}
+
+			return labelList;
 		}
+
 		/// <summary>
 		/// Thorough label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static void ThoroughCollisionDetection(List<SharpMap.Rendering.Label2D> labels)
+		public static IEnumerable<TLabel> ThoroughCollisionDetection<TLabel>(IEnumerable<TLabel> labels)
 		{
+			List<TLabel> labelList = new List<TLabel>(labels);
+
 			labels.Sort(); // sort labels by intersectiontests of labelbox
+
 			//remove labels that intersect other labels
 			for (int i = labels.Count - 1; i > 0; i--)
+			{
 				for (int j = i - 1; j > 0; j--)
+				{
 					if (labels[i].CompareTo(labels[j]) == 0)
+					{
 						if (labels[i].Priority >= labels[j].Priority)
 						{
 							labels.RemoveAt(j);
@@ -73,6 +93,9 @@ namespace SharpMap.Rendering
 							i--;
 							break;
 						}
+					}
+				}
+			}
 		}
 		#endregion
 	}

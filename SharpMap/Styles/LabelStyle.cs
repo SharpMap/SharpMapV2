@@ -21,7 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SharpMap.Rendering; 
+using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D; 
 
 namespace SharpMap.Styles
 {

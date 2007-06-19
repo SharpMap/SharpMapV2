@@ -25,6 +25,7 @@ using SharpMap.Geometries;
 using SharpMap.Layers;
 using GeoPoint = SharpMap.Geometries.Point;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
 
