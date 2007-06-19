@@ -26,13 +26,13 @@ using SharpMap.Geometries;
 using SharpMap.Styles;
 using SharpMap.CoordinateSystems.Transformations;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class BaseLabelRenderer2D<TRenderObject> : BaseFeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
+    public abstract class LabelRenderer2D<TRenderObject> : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
 
-        protected BaseLabelRenderer2D(StyleTextRenderingHint renderingHint) 
+        protected LabelRenderer2D(StyleTextRenderingHint renderingHint) 
         {
             _textRenderingHint = renderingHint;
         }
@@ -54,7 +54,7 @@ namespace SharpMap.Rendering
         }
 
         public abstract ViewSize2D MeasureString(string text, StyleFont font);
-        public abstract TRenderObject RenderLabel(Label label);
+        public abstract TRenderObject RenderLabel(Label2D label);
         public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor);
         public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
@@ -273,7 +273,7 @@ namespace SharpMap.Rendering
         //    return label;
         //}
 
-        private void CalculateLabelOnLineString(LineString line, ref Label label)
+        private void CalculateLabelOnLineString(LineString line, ref Label2D label)
         {
             double dx, dy;
             double tmpx, tmpy;

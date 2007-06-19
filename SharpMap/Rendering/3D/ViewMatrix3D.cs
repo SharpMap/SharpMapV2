@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering3D
 {
     public class ViewMatrix3D : IViewMatrix
     {

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 using SharpMap.Data;
@@ -25,24 +26,24 @@ using SharpMap.Geometries;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class BaseFeatureRenderer2D<TStyle, TRenderObject> : IGeometryRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>
+    public abstract class FeatureRenderer2D<TStyle, TRenderObject> : IFeatureRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>
         where TStyle : class, IStyle
     {
         private ViewMatrix2D _viewTransform;
         private StyleRenderingMode _renderMode;
 
-        ~BaseFeatureRenderer2D()
+        ~FeatureRenderer2D()
         {
             Dispose(false);
         }
 
         #region Events
-        ///// <summary>
-        ///// Event fired when the layer has been rendered.
-        ///// </summary>
-        //public event EventHandler<LayerRenderedEventArgs> LayerRendered;
+		/// <summary>
+		/// Event fired when a feature is about to render to the render stream.
+		/// </summary>
+		public event CancelEventHandler FeatureRendering;
 
         /// <summary>
         /// Event fired when a feature has been rendered.
@@ -66,18 +67,38 @@ namespace SharpMap.Rendering
         }
         #endregion
 
-        #region IGeometryRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
-        /// <summary>
+		#region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
+		/// <summary>
         /// 
         /// </summary>
         /// <param name="geometry"></param>
         /// <returns></returns>
-        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(IGeometry geometry, TStyle style)
-        {
-            IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderGeometry(geometry, style);
+		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature, TStyle style)
+		{
+			bool cancel;
+
+			OnFeatureRendering(ref cancel);
+
+			if (cancel)
+			{
+				yield break;
+			}
+
+			IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderFeature(feature, style);
+
             OnFeatureRendered();
-            return renderedObjects;
-        }
+
+			foreach (PositionedRenderObject2D<TRenderObject> renderObject in renderedObjects)
+			{
+				yield return renderedObjects;
+			}
+		}
+
+		public ITheme Theme
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
 
         /// <summary>
         /// Template method to perform the actual geometry rendering.
@@ -85,7 +106,7 @@ namespace SharpMap.Rendering
         /// <param name="geometry">Geometry to render.</param>
         /// <param name="style">Style to use in rendering geometry.</param>
         /// <returns></returns>
-        protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderGeometry(IGeometry geometry, TStyle style);
+		protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, TStyle style);
 
         /// <summary>
         /// Render whether smoothing (antialiasing) is applied to lines 
@@ -142,9 +163,9 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        #region IGeometryRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+		#region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(IGeometry geometry, IStyle style)
+		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(IGeometry geometry, IStyle style)
         {
             return RenderGeometry(geometry, style as TStyle);
         }
@@ -159,5 +180,5 @@ namespace SharpMap.Rendering
         }
 
         #endregion
-    }
+	}
 }

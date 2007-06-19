@@ -31,14 +31,14 @@ namespace SharpMap.Rendering
 		/// </summary>
 		/// <param name="labels"></param>
 		/// <returns></returns>
-		public delegate void LabelFilterMethod(List<SharpMap.Rendering.Label> labels);
+		public delegate void LabelFilterMethod(List<SharpMap.Rendering.Label2D> labels);
 
 		#region Label filter methods
 		/// <summary>
 		/// Simple and fast label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static void SimpleCollisionDetection(List<SharpMap.Rendering.Label> labels)
+		public static void SimpleCollisionDetection(List<SharpMap.Rendering.Label2D> labels)
 		{
 			labels.Sort(); // sort labels by intersectiontests of labelbox
 			//remove labels that intersect other labels
@@ -55,7 +55,7 @@ namespace SharpMap.Rendering
 		/// Thorough label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static void ThoroughCollisionDetection(List<SharpMap.Rendering.Label> labels)
+		public static void ThoroughCollisionDetection(List<SharpMap.Rendering.Label2D> labels)
 		{
 			labels.Sort(); // sort labels by intersectiontests of labelbox
 			//remove labels that intersect other labels

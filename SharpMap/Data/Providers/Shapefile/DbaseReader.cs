@@ -121,7 +121,7 @@ namespace SharpMap.Data.Providers
         /// <seealso cref="Open"/>
         /// <seealso cref="Dispose" />
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and
-        /// object has been disposed</exception>
+        /// object has been disposed.</exception>
         public void Close()
         {
             if (_isDisposed)

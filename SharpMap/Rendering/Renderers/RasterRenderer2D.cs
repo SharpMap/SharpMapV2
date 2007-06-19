@@ -25,7 +25,7 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Renderers
 {
-    public abstract class BaseRasterRenderer2D<TStyle, TRenderObject> : IRasterRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
+    public abstract class RasterRenderer2D<TStyle, TRenderObject> : IRasterRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
         where TStyle : class, IStyle
     {
         #region IRasterLayerRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members

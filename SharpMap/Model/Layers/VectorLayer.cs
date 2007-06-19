@@ -43,20 +43,27 @@ namespace SharpMap.Layers
 		private readonly object _selectedFeaturesSync = new object();
 		private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
 
+		/// <summary>
+		/// Initializes a new, empty vector layer.
+		/// </summary>
+		public VectorLayer()
+		{
+		}
+
         /// <summary>
-        /// Initializes a new layer
+        /// Initializes a new layer with the given name.
         /// </summary>
-        /// <param name="layername">Name of layer</param>
+        /// <param name="layername">Name of the layer.</param>
         public VectorLayer(string layername)
         {
             this.LayerName = layername;
         }
 
         /// <summary>
-        /// Initializes a new layer with a specified datasource
+        /// Initializes a new layer with the given name and datasource.
         /// </summary>
-        /// <param name="layername">Name of layer</param>
-        /// <param name="dataSource">Data source</param>
+        /// <param name="layername">Name of the layer.</param>
+        /// <param name="dataSource">Data source.</param>
         public VectorLayer(string layername, IProvider dataSource)
             : this(layername)
         {

@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
     public class GraphicsFigure2D : GraphicsFigure<ViewPoint2D, ViewRectangle2D>
     {

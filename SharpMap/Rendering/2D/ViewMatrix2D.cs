@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
     [Serializable]
     public class ViewMatrix2D : IViewMatrix

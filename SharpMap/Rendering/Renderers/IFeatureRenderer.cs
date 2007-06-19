@@ -21,6 +21,7 @@ using System.Text;
 
 using SharpMap.Data;
 using SharpMap.Rendering.Thematics;
+using SharpMap.Styles;
 
 namespace SharpMap.Rendering
 {
@@ -35,14 +36,26 @@ namespace SharpMap.Rendering
         where TViewPoint : IViewVector
         where TViewSize : IViewVector
         where TViewRectangle : IViewMatrix
-    {
+	{
+		/// <summary>
+		/// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
+		/// </summary>
+		/// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
+		/// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
+		IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
+
         /// <summary>
-        /// Renders the spatial data in the <paramref name="feature"/>.
+        /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
         /// </summary>
         /// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
+		/// <param name="style">Style used to render the feature, overriding theme. 
+		/// Use null if no style is desired or to use <see cref="IFeatureRenderer.Theme"/>.</param>
         /// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
-        IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature);
+        IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
 
+		/// <summary>
+		/// Gets the theme by which to compute styles to apply to rendered features.
+		/// </summary>
         ITheme Theme { get; }
     }
 }

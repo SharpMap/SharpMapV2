@@ -22,30 +22,30 @@ using System.Text;
 namespace SharpMap.Rendering.Exceptions
 {
 	/// <summary>
-	/// Exception thrown when a layer rendering fails
+	/// Exception thrown when rendering fails.
 	/// </summary>
 	public class RenderException : System.Exception
 	{
 		/// <summary>
-		/// Exception thrown when layer rendering has failed
+		/// Creates a new RenderException instance.
 		/// </summary>
 		public RenderException()
 		{
 		}
 
 		/// <summary>
-		/// Exception thrown when layer rendering has failed
+		/// Creates a new RenderException instance with the given message.
 		/// </summary>
-		/// <param name="message"></param>
+		/// <param name="message">The message to include in the exception.</param>
 		public RenderException(string message) : base(message)
 		{
 		}
 
 		/// <summary>
-		/// Exception thrown when layer rendering has failed
+		/// Exception thrown when layer rendering has failed.
 		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="inner"></param>
+		/// <param name="message">The message to include in the exception.</param>
+		/// <param name="inner">A related, usually causing, exception.</param>
 		public RenderException(string message, System.Exception inner) : base(message,inner)
 		{
 		}

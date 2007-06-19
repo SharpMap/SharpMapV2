@@ -53,7 +53,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="label"><see cref="Label"/> to render.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(Label label);
+        TRenderObject RenderLabel(Label2D label);
 
         /// <summary>
         /// Renders a label.

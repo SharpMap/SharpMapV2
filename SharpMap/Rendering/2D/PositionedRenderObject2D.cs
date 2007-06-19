@@ -19,13 +19,34 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
-    public interface IRenderContext
+    public struct PositionedRenderObject2D<TRenderObject>
     {
-        void Add<TContextItem>(TContextItem item);
-        void Add<TContextItem>(TContextItem item, string id);
-        TContextItem Get<TContextItem>();
-        TContextItem Get<TContextItem>(string id);
+        private readonly double _x;
+        private readonly double _y;
+        private readonly TRenderObject _renderObject;
+
+        public PositionedRenderObject2D(double x, double y, TRenderObject renderObject)
+        {
+            _x = x;
+            _y = y;
+            _renderObject = renderObject;
+        }
+
+        public double X
+        {
+            get { return _x; }
+        }
+
+        public double Y
+        {
+            get { return _y; }
+        }
+
+        public TRenderObject RenderObject
+        {
+            get { return _renderObject; }
+        }
     }
 }

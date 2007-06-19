@@ -23,7 +23,7 @@ using System.Text;
 using SharpMap.Styles;
 using SharpMap.Utilities;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
     /// <summary>
     /// Represents a 2 dimensional graphic used for point data on a map.

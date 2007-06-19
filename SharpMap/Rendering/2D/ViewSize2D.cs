@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
     public struct ViewSize2D : IViewVector
     {

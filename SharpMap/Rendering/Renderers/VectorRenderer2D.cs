@@ -28,9 +28,13 @@ using SharpMap.Styles;
 using SharpMap.Rendering.Thematics;
 using SharpMap.CoordinateSystems.Transformations;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class VectorRenderer2D<TRenderObject> : BaseFeatureRenderer2D<VectorStyle, TRenderObject>, IVectorRenderer2D<TRenderObject>
+	/// <summary>
+	/// Provides a base class for generating rendered objects from vector shapes.
+	/// </summary>
+	/// <typeparam name="TRenderObject"></typeparam>
+    public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
     {
         private static Symbol2D _defaultSymbol;
 

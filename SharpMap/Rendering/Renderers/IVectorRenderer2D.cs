@@ -21,9 +21,9 @@ using System.Text;
 
 using SharpMap.Styles;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
-    public interface IVectorRenderer2D<TRenderObject>
+    public interface IVectorRenderer2D<TRenderObject> : IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
     {
         TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
         TRenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);

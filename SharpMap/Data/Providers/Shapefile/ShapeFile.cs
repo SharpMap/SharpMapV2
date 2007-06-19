@@ -1689,7 +1689,7 @@ namespace SharpMap.Data.Providers
                     // Workaround for trying to open the file for exclusive writing too quickly after disposing the reader
                     int numberAttemptsToOpenDbfForWriting = 0;
 
-                    while (numberAttemptsToOpenDbfForWriting < 3)
+                    while (_dbaseWriter != null && numberAttemptsToOpenDbfForWriting < 3)
                     {
                         try
                         {

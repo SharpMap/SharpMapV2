@@ -23,12 +23,12 @@ using System.Text;
 
 using SharpMap.Styles;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
 	/// <summary>
 	/// Class for storing a label instance.
 	/// </summary>
-	public class Label : IComparable<Label>, IComparer<Label>
+	public class Label2D : IComparable<Label2D>, IComparer<Label2D>
     {
         private string _text;
         private ViewPoint2D _labelPoint;
@@ -36,7 +36,7 @@ namespace SharpMap.Rendering
         private int _priority;
         private float _rotation;
         private LabelStyle _style;
-        private ViewRectangle2D? _box;
+        private GraphicsPath2D _labelPath;
 
 		/// <summary>
 		/// Initializes a new Label instance.
@@ -47,7 +47,7 @@ namespace SharpMap.Rendering
 		/// <param name="priority">Label priority used for collision detection</param>
 		/// <param name="collisionbox">Box around label for collision detection</param>
 		/// <param name="style">The style of the label</param>
-		public Label(string text, ViewPoint2D position, float rotation, int priority, ViewRectangle2D? collisionArea, LabelStyle style)
+		public Label2D(string text, ViewPoint2D position, float rotation, int priority, ViewRectangle2D? collisionArea, LabelStyle style)
 		{
 			_text = text;
 			_labelPoint = position;
@@ -133,7 +133,7 @@ namespace SharpMap.Rendering
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public int CompareTo(Label other)
+		public int CompareTo(Label2D other)
 		{
 			if (this == other)
 				return 0;
@@ -155,7 +155,7 @@ namespace SharpMap.Rendering
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int Compare(Label x, Label y)
+		public int Compare(Label2D x, Label2D y)
 		{
 			return x.CompareTo(y);
 		}
