@@ -28,14 +28,13 @@ using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Rendering
 {
-    public abstract class LabelRenderer2D<TRenderObject> : BaseFeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
+    public abstract class BaseLabelRenderer2D<TRenderObject> : BaseFeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
 
-        protected LabelRenderer2D(StyleTextRenderingHint renderingHint, LabelStyle style) 
+        protected BaseLabelRenderer2D(StyleTextRenderingHint renderingHint) 
         {
             _textRenderingHint = renderingHint;
-            Style = style;
         }
 
         #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
@@ -65,8 +64,11 @@ namespace SharpMap.Rendering
         protected virtual void OnTextRenderingHintChanged()
         {
             EventHandler @event = TextRenderingHintChanged;
+
             if (@event != null)
+            {
                 @event(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -315,27 +317,6 @@ namespace SharpMap.Rendering
             throw new NotImplementedException();
             //label.LabelPoint = map.WorldToImage(new SharpMap.Geometries.Point(tmpx, tmpy));
         }
-
-        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
-
-        IStyle IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>.Style
-        {
-            get
-            {
-                return Style;
-            }
-            set
-            {
-                if (!(value is LabelStyle))
-                {
-                    throw new ArgumentException("Style must be type LabelStyle.", "IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>.Style");
-                }
-
-                Style = (LabelStyle)value;
-            }
-        }
-
-        #endregion
 
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 

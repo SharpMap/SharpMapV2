@@ -28,7 +28,7 @@ using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Presentation;
 
-using IFeatureLayerRenderer = SharpMap.Rendering.IFeatureRenderer<SharpMap.Rendering.ViewPoint2D, SharpMap.Rendering.ViewSize2D, SharpMap.Rendering.ViewRectangle2D, SharpMap.Rendering.Gdi.GdiRenderObject>;
+using IFeatureLayerRenderer = SharpMap.Rendering.IGeometryRenderer<SharpMap.Rendering.ViewPoint2D, SharpMap.Rendering.ViewSize2D, SharpMap.Rendering.ViewRectangle2D, SharpMap.Rendering.Gdi.GdiRenderObject>;
 
 namespace SharpMap.Presentation.WinForms
 {
@@ -68,7 +68,7 @@ namespace SharpMap.Presentation.WinForms
 
                         foreach (FeatureDataRow feature in features)
                         {
-                            renderer.RenderFeature(feature);
+                            renderer.RenderGeometry(feature);
                         }
                     }
                 }

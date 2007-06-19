@@ -40,16 +40,6 @@ namespace SharpMap.Rendering
         where TViewRectangle : IViewMatrix
     {
         /// <summary>
-        /// Gets or sets a <see cref="Style"/> used to render objects.
-        /// </summary>
-        IStyle Style { get; set; }
-
-        /// <summary>
-        /// Gets or sets a <see cref="Theme"/> used to render objects.
-        /// </summary>
-        ITheme Theme { get; set; }
-
-        /// <summary>
         /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.
         /// </summary>
         IViewMatrix ViewTransform { get; set; }

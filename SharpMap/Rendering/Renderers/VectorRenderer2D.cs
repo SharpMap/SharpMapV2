@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 using SharpMap.Data;
@@ -47,7 +48,7 @@ namespace SharpMap.Rendering
                     {
                         if (_defaultSymbol == null)
                         {
-                            Stream data = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
+                            Stream data = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
                             _defaultSymbol = new Symbol2D(data, new ViewSize2D(16, 16));
                         }
                     }
@@ -59,31 +60,18 @@ namespace SharpMap.Rendering
 
         public VectorRenderer2D()
         {
-            this.Style = new VectorStyle();
             this.StyleRenderingMode = StyleRenderingMode.AntiAlias;
         }
 
         #region IVectorLayerRenderer Members
-        public abstract TRenderObject DrawPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
-        public abstract TRenderObject DrawPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
-        public abstract TRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbolData);
-        public abstract TRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select);
-        public abstract TRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
+        public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
+        public abstract TRenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
+        public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData);
+        public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select);
+        public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
         #endregion
 
-        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature)
-        {
-            VectorStyle style = Style;
-
-            if (Theme != null)
-            {
-                style = Theme.GetStyle(feature) as VectorStyle;
-            }
-
-            return RenderGeometry(feature.Geometry, style);
-        }
-
-        protected IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(Geometry geometry, VectorStyle style)
+        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderGeometry(IGeometry geometry, VectorStyle style)
         {
             if (geometry == null)
             {
@@ -241,7 +229,7 @@ namespace SharpMap.Rendering
                 }
 
                 ViewPoint2D pointLocation = new ViewPoint2D(ViewTransform.Transform(point.X, point.Y));
-                TRenderObject renderedObject = DrawSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
+                TRenderObject renderedObject = RenderSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
                 yield return new PositionedRenderObject2D<TRenderObject>(pointLocation, renderedObject);
             }
         }
@@ -259,11 +247,11 @@ namespace SharpMap.Rendering
 
             if (outline != null && highlightOutline != null && selectOutline != null)
             {
-                renderedObject = DrawPath(gp, outline, highlightOutline, selectOutline);
+                renderedObject = RenderPath(gp, outline, highlightOutline, selectOutline);
                 yield return new PositionedRenderObject2D<TRenderObject>(gp.Bounds.Location, renderedObject);
             }
 
-            renderedObject = DrawPath(gp, fill, highlightFill, selectFill);
+            renderedObject = RenderPath(gp, fill, highlightFill, selectFill);
             yield return new PositionedRenderObject2D<TRenderObject>(gp.Bounds.Location, renderedObject);
         }
 
@@ -301,7 +289,7 @@ namespace SharpMap.Rendering
                 }
 
                 TRenderObject renderedObject;
-                renderedObject = DrawPath(gp, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
+                renderedObject = RenderPath(gp, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
                 yield return new PositionedRenderObject2D<TRenderObject>(gp.Bounds.Location, renderedObject);
             }
         }

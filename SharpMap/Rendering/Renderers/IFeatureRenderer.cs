@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using SharpMap.Data;
+using SharpMap.Rendering.Thematics;
 
 namespace SharpMap.Rendering
 {
@@ -41,5 +42,7 @@ namespace SharpMap.Rendering
         /// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
         /// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
         IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature);
+
+        ITheme Theme { get; }
     }
 }

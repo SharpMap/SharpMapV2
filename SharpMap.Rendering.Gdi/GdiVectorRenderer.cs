@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Text;
+
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
@@ -37,6 +38,7 @@ using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
 using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
 
 using SharpMap.Styles;
+using SharpMap.Presentation;
 using StyleColorMatrix = SharpMap.Rendering.ColorMatrix;
 
 namespace SharpMap.Rendering.Gdi
@@ -50,9 +52,8 @@ namespace SharpMap.Rendering.Gdi
         private Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
         private Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
 
-        public GdiVectorRenderer(IViewTransformer<ViewPoint2D, ViewRectangle2D> transformer)
+        public GdiVectorRenderer()
         {
-            ViewTransformer = transformer;
         }
 
         protected override void Dispose(bool disposing)
@@ -60,16 +61,20 @@ namespace SharpMap.Rendering.Gdi
             if (disposing)
             {
                 foreach (Brush brush in _brushCache.Values)
+                {
                     brush.Dispose();
+                }
 
                 foreach (Pen pen in _penCache.Values)
+                {
                     pen.Dispose();
+                }
             }
 
             base.Dispose(disposing);            
         }
 
-        public override GdiRenderObject DrawPath(GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+        public override GdiRenderObject RenderPath(GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
         {
             int pointCount = viewPath.Points.Count;
 
@@ -78,26 +83,29 @@ namespace SharpMap.Rendering.Gdi
             foreach (GraphicsFigure2D figure in viewPath.Figures)
             {
                 gdiPath.AddLines(ViewConverter.ViewToGdi(figure.Points));
+
                 if (figure.IsClosed)
+                {
                     gdiPath.CloseFigure();
+                }
             }
 
             GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill), getBrush(selectFill), getPen(outline), getPen(highlightOutline), getPen(selectOutline));
             return holder;
         }
 
-        public override GdiRenderObject DrawPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+        public override GdiRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
         {
             SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
-            return DrawPath(path, transparentBrush, transparentBrush, transparentBrush, outline, highlightOutline, selectOutline);
+            return RenderPath(path, transparentBrush, transparentBrush, transparentBrush, outline, highlightOutline, selectOutline);
         }
 
-        public override GdiRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbolData)
+        public override GdiRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData)
         {
-            return DrawSymbol(location, symbolData, symbolData, symbolData);
+            return RenderSymbol(location, symbolData, symbolData, symbolData);
         }
 
-        public override GdiRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
+        public override GdiRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
         {
             Symbol2D highlightSymbol = symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
@@ -105,16 +113,20 @@ namespace SharpMap.Rendering.Gdi
             Symbol2D selectSymbol = symbolData.Clone();
             selectSymbol.ColorTransform = select;
 
-            return DrawSymbol(location, symbolData, highlightSymbol, selectSymbol);
+            return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
         }
 
-        public override GdiRenderObject DrawSymbol(ViewPoint2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
+        public override GdiRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
         {
             if (highlightSymbol == null)
+            {
                 highlightSymbol = symbol;
+            }
 
             if (selectSymbol == null)
+            {
                 selectSymbol = symbol;
+            }
 
             Bitmap bitmapSymbol = getSymbol(symbol);
             Matrix transform = ViewConverter.ViewToGdi(symbol.AffineTransform);
@@ -153,7 +165,9 @@ namespace SharpMap.Rendering.Gdi
         private Brush getBrush(StyleBrush styleBrush)
         {
             if (styleBrush == null)
+            {
                 return null;
+            }
 
             BrushLookupKey key = new BrushLookupKey(styleBrush.GetType().TypeHandle, styleBrush.ToString());
             Brush brush;
@@ -171,7 +185,9 @@ namespace SharpMap.Rendering.Gdi
         private Pen getPen(StylePen stylePen)
         {
             if (stylePen == null)
+            {
                 return null;
+            }
 
             PenLookupKey key = new PenLookupKey(stylePen.GetType().TypeHandle, stylePen.ToString());
             Pen pen;
@@ -189,7 +205,9 @@ namespace SharpMap.Rendering.Gdi
         private Bitmap getSymbol(Symbol2D symbol2D)
         {
             if (symbol2D == null)
+            {
                 return null;
+            }
 
             SymbolLookupKey key = new SymbolLookupKey(symbol2D.ToString());
             Bitmap symbol = null;
@@ -201,7 +219,9 @@ namespace SharpMap.Rendering.Gdi
                 symbol2D.SymbolData.Position = 0;
 
                 using (System.IO.BinaryReader reader = new System.IO.BinaryReader(symbol2D.SymbolData))
+                {
                     data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
+                }
 
                 symbol = new Bitmap(data);
                 _symbolCache[key] = symbol;

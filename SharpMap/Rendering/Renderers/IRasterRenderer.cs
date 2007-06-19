@@ -27,7 +27,7 @@ namespace SharpMap.Rendering
         where TViewSize : IViewVector
         where TViewRectangle : IViewMatrix
     {
-        void DrawRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds);
-        void DrawRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds, IViewMatrix rasterTransform);
+        TRenderObject RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds);
+        TRenderObject RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds, IViewMatrix rasterTransform);
     }
 }

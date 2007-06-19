@@ -27,14 +27,10 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering
 {
-    public abstract class BaseFeatureRenderer2D<TStyle, TRenderObject> : IFeatureRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>
+    public abstract class BaseFeatureRenderer2D<TStyle, TRenderObject> : IGeometryRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>
         where TStyle : class, IStyle
     {
-        //private TLayer _layer;
-        private TStyle _style;
-        private ITheme _theme;
         private ViewMatrix2D _viewTransform;
-        //private List<PositionedRenderObject2D<TRenderObject>> _renderedObjects = new List<PositionedRenderObject2D<TRenderObject>>();
         private StyleRenderingMode _renderMode;
 
         ~BaseFeatureRenderer2D()
@@ -70,29 +66,30 @@ namespace SharpMap.Rendering
         }
         #endregion
 
-        #region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
-
-        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature)
+        #region IGeometryRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <returns></returns>
+        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(IGeometry geometry, TStyle style)
         {
-            IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderFeature(feature);
+            IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderGeometry(geometry, style);
             OnFeatureRendered();
             return renderedObjects;
         }
 
-        protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature);
-
         /// <summary>
-        /// Gets or sets thematic settings for the layer. Set to null to ignore thematics
+        /// Template method to perform the actual geometry rendering.
         /// </summary>
-        public ITheme Theme
-        {
-            get { return _theme; }
-            set { _theme = value; }
-        }
+        /// <param name="geometry">Geometry to render.</param>
+        /// <param name="style">Style to use in rendering geometry.</param>
+        /// <returns></returns>
+        protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderGeometry(IGeometry geometry, TStyle style);
 
         /// <summary>
         /// Render whether smoothing (antialiasing) is applied to lines 
-        /// and curves and the edges of filled areas
+        /// and curves and the edges of filled areas.
         /// </summary>
         public StyleRenderingMode StyleRenderingMode
         {
@@ -101,33 +98,30 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Gets or sets the rendering style of the layer.
+        /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.
         /// </summary>
-        public TStyle Style
-        {
-            get { return _style; }
-            set { _style = value; }
-        }
-
         public ViewMatrix2D ViewTransform
         {
             get { return _viewTransform; }
             set { _viewTransform = value; }
         }
-
         #endregion
 
-        #region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Explicit Implementation
-        IStyle IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>.Style
+        #region Private helper methods
+        /// <summary>
+        /// Called when a feature is rendered.
+        /// </summary>
+        private void OnFeatureRendered()
         {
-            get { return Style; }
-            set { Style = value as TStyle; }
+            EventHandler @event = FeatureRendered;
+            if (@event != null)
+            {
+                @event(this, EventArgs.Empty); //Fire event
+            }
         }
-
         #endregion
 
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
-
 
         IViewMatrix IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>.ViewTransform
         {
@@ -148,12 +142,14 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        protected void OnFeatureRendered()
+        #region IGeometryRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+
+        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderGeometry(IGeometry geometry, IStyle style)
         {
-            EventHandler @event = FeatureRendered;
-            if (@event != null)
-                @event(this, EventArgs.Empty); //Fire event
+            return RenderGeometry(geometry, style as TStyle);
         }
+
+        #endregion
 
         #region IDisposable Members
 

@@ -23,18 +23,25 @@ namespace SharpMap.Rendering
 {
     public struct PositionedRenderObject2D<TRenderObject>
     {
-        private readonly ViewPoint2D _location;
+        private readonly double _x;
+        private readonly double _y;
         private readonly TRenderObject _renderObject;
 
-        public PositionedRenderObject2D(ViewPoint2D location, TRenderObject renderObject)
+        public PositionedRenderObject2D(double x, double y, TRenderObject renderObject)
         {
-            _location = location;
+            _x = x;
+            _y = y;
             _renderObject = renderObject;
         }
 
-        public ViewPoint2D Location
+        public double X
         {
-            get { return _location; }
+            get { return _x; }
+        }
+
+        public double Y
+        {
+            get { return _y; }
         }
 
         public TRenderObject RenderObject

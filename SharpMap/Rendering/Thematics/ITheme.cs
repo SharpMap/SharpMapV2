@@ -30,10 +30,10 @@ namespace SharpMap.Rendering.Thematics
 	public interface ITheme
 	{
 		/// <summary>
-		/// Returns the style based on a feature
+		/// Returns the style based on a feature.
 		/// </summary>
-		/// <param name="attribute">Attribute to calculate color from</param>
-		/// <returns>Color</returns>
+		/// <param name="attribute">Attribute to calculate color from.</param>
+		/// <returns>The theme-computed style.</returns>
 		IStyle GetStyle(FeatureDataRow attribute);
 	}
 }

@@ -30,9 +30,9 @@ namespace SharpMap.Rendering.Renderers
     {
         #region IRasterLayerRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
 
-        public abstract void DrawRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds);
+        public abstract void RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds);
 
-        public abstract void DrawRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IViewMatrix rasterTransform);
+        public abstract void RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IViewMatrix rasterTransform);
 
         #endregion
 
