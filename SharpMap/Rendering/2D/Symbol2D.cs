@@ -35,7 +35,9 @@ namespace SharpMap.Rendering.Rendering2D
         private Stream _symbolData;
         private ViewRectangle2D _symbolBox;
         private string _symbolDataHash;
+        private bool _disposed;
 
+        #region Object Construction/Destruction
         public Symbol2D(ViewSize2D size)
         {
             _symbolData = new MemoryStream(new byte[] { 0x0, 0x0, 0x0, 0x0 });
@@ -46,11 +48,16 @@ namespace SharpMap.Rendering.Rendering2D
             if (!symbolData.CanSeek)
             {
                 if (symbolData.Position != 0)
+                {
                     throw new InvalidOperationException("Symbol data stream isn't at the beginning, and it can't be repositioned");
+                }
 
                 MemoryStream copy = new MemoryStream();
-                using(BinaryReader reader = new BinaryReader(symbolData))
+
+                using (BinaryReader reader = new BinaryReader(symbolData))
+                {
                     copy.Write(reader.ReadBytes((int)symbolData.Length), 0, (int)symbolData.Length);
+                }
 
                 symbolData = copy;
             }
@@ -67,11 +74,36 @@ namespace SharpMap.Rendering.Rendering2D
             dispose(false);
         }
 
+        #region Dispose Pattern
+        #region IDisposable Members
         public void Dispose()
         {
-            dispose(true);
-            GC.SuppressFinalize(this);
+            if (!_disposed)
+            {
+                dispose(true);
+                _disposed = true;
+                GC.SuppressFinalize(this);
+            }
         }
+        #endregion
+
+        private void dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                if (_symbolData != null)
+                {
+                    _symbolData.Dispose();
+                }
+            }
+        }
+        #endregion
+        #endregion
 
         public ViewSize2D Size
         {
@@ -181,16 +213,5 @@ namespace SharpMap.Rendering.Rendering2D
             return this.Clone();
         }
         #endregion
-
-        private void dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_symbolData != null)
-                {
-                    _symbolData.Dispose();
-                }
-            }
-        }
     }
 }

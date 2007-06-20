@@ -39,10 +39,11 @@ namespace SharpMap.Presentation
         private SharpMap.Map _map;
         private IMapView2D _concreteView;
         private ViewSelection2D _selection;
-
+        private bool _disposed = false;
         private ViewPoint2D? _beginActionLocation;
         private ViewPoint2D _lastMoveLocation;
-
+        
+        #region Object Construction/Destruction
         public MapPresenter2D(SharpMap.Map map, IMapView2D mapView)
         {
             Map = map;
@@ -66,18 +67,30 @@ namespace SharpMap.Presentation
             viewPort.ViewRectangleChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>>(ViewPort_ViewRectangleChanged);
         }
 
+        #region Dispose Pattern
         #region IDisposable Members
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (!Disposed)
+            {
+                Dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
         }
+        #endregion
 
         protected virtual void Dispose(bool disposing)
         {
         }
 
+        protected bool Disposed
+        {
+            get { return _disposed; }
+            set { _disposed = value; }
+        }
+        #endregion
         #endregion
 
         /// <summary>

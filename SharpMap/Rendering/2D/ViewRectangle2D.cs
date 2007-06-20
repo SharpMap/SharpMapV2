@@ -30,6 +30,10 @@ namespace SharpMap.Rendering.Rendering2D
         private double _top;
         private double _right;
         private double _bottom;
+        private bool _hasValue;
+
+        public static readonly ViewRectangle2D Empty = new ViewRectangle2D();
+        public static readonly ViewRectangle2D Zero = new ViewRectangle2D(0, 0, 0, 0);
 
         public ViewRectangle2D(double left, double right, double top, double bottom)
         {
@@ -37,6 +41,7 @@ namespace SharpMap.Rendering.Rendering2D
             _right = right;
             _top = top;
             _bottom = bottom;
+            _hasValue = true;
         }
 
         public ViewRectangle2D(ViewPoint2D location, ViewSize2D size)
@@ -45,6 +50,7 @@ namespace SharpMap.Rendering.Rendering2D
             _top = location.Y;
             _right = _left + size.Width;
             _bottom = _top + size.Height;
+            _hasValue = true;
         }
 
         public double X

@@ -13,8 +13,9 @@ namespace SharpMap.Presentation
     {
         private readonly SharpMap.Map _map;
         private readonly TView _view;
-        private bool _isDisposed = false;
+        private bool _disposed = false;
 
+        #region Object Construction/Destruction
         /// <summary>
         /// Constructs a new presenter with the given map and view.
         /// </summary>
@@ -31,6 +32,49 @@ namespace SharpMap.Presentation
             Dispose(false);
         }
 
+        #region Dispose Pattern
+        #region IDisposable Members
+        /// <summary>
+        /// Releases all resources deterministically.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!Disposed)
+            {
+                Dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Releases all resources, and removes from finalization queue if <paramref name="disposing"/> is true.
+        /// </summary>
+        /// <param name="disposing">True if being called deterministically, false if being called from finalizer.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this presenter is disposed, and no longer accessible.
+        /// </summary>
+        public bool Disposed
+        {
+            get { return _disposed; }
+            set { _disposed = value; }
+        }
+        #endregion
+        #endregion
+
         /// <summary>
         /// The map to present.
         /// </summary>
@@ -42,7 +86,7 @@ namespace SharpMap.Presentation
         {
             get 
             {
-                if (IsDisposed)
+                if (Disposed)
                 {
                     throw new ObjectDisposedException(typeof(ToolsPresenter).ToString());
                 }
@@ -58,7 +102,7 @@ namespace SharpMap.Presentation
         {
             get
             {
-                if (IsDisposed)
+                if (Disposed)
                 {
                     throw new ObjectDisposedException(typeof(ToolsPresenter).ToString());
                 }
@@ -66,44 +110,5 @@ namespace SharpMap.Presentation
                 return _view; 
             }
         }
-
-        /// <summary>
-        /// Gets whether this presenter is disposed, and no longer accessible.
-        /// </summary>
-        public bool IsDisposed
-        {
-            get { return _isDisposed; }
-        }
-
-        #region IDisposable Members
-        /// <summary>
-        /// Releases all resources deterministically.
-        /// </summary>
-        public void Dispose()
-        {
-            if (!IsDisposed)
-            {
-                Dispose(true);
-            }
-        }
-
-        /// <summary>
-        /// Releases all resources, and removes from finalization queue if <paramref name="disposing"/> is true.
-        /// </summary>
-        /// <param name="disposing">True if being called deterministically, false if being called from finalizer.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        #endregion
     }
 }

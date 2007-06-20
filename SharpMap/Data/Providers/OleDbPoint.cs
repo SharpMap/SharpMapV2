@@ -46,9 +46,11 @@ namespace SharpMap.Data.Providers
 		private string _xColumn;
 		private string _objectIdColumn;
 		private string _table;
-		private bool _isOpen;
+        private bool _isOpen;
+        private bool _disposed = false;
 
-		/// <summary>
+        #region Object Construction/Destruction
+        /// <summary>
 		/// Initializes a new instance of the OleDbPoint provider
 		/// </summary>
 		/// <param name="ConnectionStr"></param>
@@ -56,16 +58,48 @@ namespace SharpMap.Data.Providers
 		/// <param name="OID_ColumnName"></param>
 		/// <param name="xColumn"></param>
 		/// <param name="yColumn"></param>
-		public OleDbPoint(string ConnectionStr, string tablename, string OID_ColumnName, string xColumn, string yColumn)
+		public OleDbPoint(string connectionString, string tableName, string oidColumnName, string xColumn, string yColumn)
 		{
-			this.Table = tablename;
+			this.Table = tableName;
 			this.XColumn = xColumn;
 			this.YColumn = yColumn;
-			this.ObjectIdColumn = OID_ColumnName;
-			this.ConnectionString = ConnectionStr;
-		}
+			this.ObjectIdColumn = oidColumnName;
+			this.ConnectionString = connectionString;
+        }
 
-		/// <summary>
+        /// <summary>
+        /// Finalizer
+        /// </summary>
+        ~OleDbPoint()
+        {
+            Dispose();
+        }
+
+        #region IDisposable Members
+        /// <summary>
+        /// Disposes the OleDbPoint provider, and releases all resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            Disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+
+        }
+
+        protected bool Disposed
+        {
+            get { return _disposed; }
+            private set { _disposed = value; }
+        }
+        #endregion
+        #endregion
+
+        /// <summary>
 		/// Data table name
 		/// </summary>
 		public string Table
@@ -499,38 +533,6 @@ namespace SharpMap.Data.Providers
 			set { _srid = value; }
 		}
 
-		#endregion
-
-		#region Disposers and finalizers
-		private bool disposed = false;
-
-		/// <summary>
-		/// Disposes the object
-		/// </summary>
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		internal void Dispose(bool disposing)
-		{
-			if (!disposed)
-			{
-				if (disposing)
-				{
-				}
-				disposed = true;
-			}
-		}
-
-		/// <summary>
-		/// Finalizer
-		/// </summary>
-		~OleDbPoint()
-		{
-			Dispose();
-		}
 		#endregion
 	}
 }

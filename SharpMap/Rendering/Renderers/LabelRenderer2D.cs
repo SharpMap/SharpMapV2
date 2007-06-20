@@ -28,20 +28,33 @@ using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Rendering.Rendering2D
 {
+    /// <summary>
+    /// The base class for 2D feature renderers which produce labels.
+    /// </summary>
+    /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
     public abstract class LabelRenderer2D<TRenderObject> : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
 
-        protected LabelRenderer2D(StyleTextRenderingHint renderingHint) 
+        protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, StyleTextRenderingHint renderingHint)
+            : base(vectorRenderer)
         {
             _textRenderingHint = renderingHint;
+        }
+
+        ~LabelRenderer2D()
+        {
+            Dispose(false);
         }
 
         #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
         public StyleTextRenderingHint TextRenderingHint
         {
-            get { return _textRenderingHint; }
+            get 
+            { 
+                return _textRenderingHint; 
+            }
             set
             {
                 if (_textRenderingHint != value)
@@ -58,6 +71,11 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor);
         public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
+
+        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, LabelStyle style)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
         public event EventHandler TextRenderingHintChanged;
 
@@ -318,10 +336,11 @@ namespace SharpMap.Rendering.Rendering2D
             //label.LabelPoint = map.WorldToImage(new SharpMap.Geometries.Point(tmpx, tmpy));
         }
 
-        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+        #region Explicit Interface Implementation
 
+        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
-        IViewMatrix IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>.ViewTransform
+        IViewMatrix IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject>.ViewTransform
         {
             get
             {
@@ -338,6 +357,16 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
+        #endregion
+
+        #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+
+        TRenderObject ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject>.RenderLabel(ILabel<ViewPoint2D, ViewRectangle2D, GraphicsPath<ViewPoint2D, ViewRectangle2D>> label)
+        {
+            return RenderLabel(label as Label2D);
+        }
+
+        #endregion
         #endregion
     }
 }

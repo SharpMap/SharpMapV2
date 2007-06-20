@@ -48,13 +48,13 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="priority">Label priority used for collision detection</param>
 		/// <param name="collisionbox">Box around label for collision detection</param>
 		/// <param name="style">The style of the label</param>
-		public Label2D(string text, ViewPoint2D position, float rotation, int priority, ViewRectangle2D? collisionArea, LabelStyle style)
+		public Label2D(string text, ViewPoint2D position, float rotation, int priority, ViewRectangle2D collisionArea, LabelStyle style)
 		{
 			_text = text;
 			_labelPoint = position;
 			_rotation = rotation;
 			_priority = priority;
-			_box = collisionArea;
+            _collisionBounds = collisionArea;
 			_style = style;
 		}
 
@@ -118,7 +118,7 @@ namespace SharpMap.Rendering.Rendering2D
 			set { _collisionBounds = value; }
 		}
 
-		public GraphicsPath<ViewPoint2D, ViewRectangle2D> FlowPath
+		public GraphicsPath2D FlowPath
 		{
 			get { return _labelPath; }
 			set { _labelPath = value; }
@@ -146,17 +146,17 @@ namespace SharpMap.Rendering.Rendering2D
 			{
 				return 0;
 			}
-			else if (_box == null)
+			else if (_collisionBounds == ViewRectangle2D.Empty)
 			{
 				return -1;
 			}
-			else if (other.CollisionBounds == null)
+            else if (other.CollisionBounds == ViewRectangle2D.Empty)
 			{
 				return 1;
 			}
 			else
 			{
-				return _box.Value.CompareTo(other.CollisionBounds.Value);
+				return _collisionBounds.CompareTo(other.CollisionBounds);
 			}
 		}
 

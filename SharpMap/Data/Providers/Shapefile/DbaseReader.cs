@@ -45,6 +45,7 @@ namespace SharpMap.Data.Providers
         private FeatureDataTable<uint> _baseTable;
         private bool _isDisposed = false;
 
+        #region Object Construction/Destruction
         /// <summary>
         /// Creates a new instance of a <see cref="DBaseReader"/> from the 
         /// <paramref name="filename"> specified path</paramref>.
@@ -67,6 +68,65 @@ namespace SharpMap.Data.Providers
         {
             Dispose(false);
         }
+
+        #region Dispose Pattern
+        /// <summary>
+        /// Closes all files and disposes of all resources.
+        /// </summary>
+        /// <seealso cref="Close"/>
+        void IDisposable.Dispose()
+        {
+            if (!Disposed)
+            {
+                Dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) // Do deterministic finalization of managed resources
+            {
+                if (_isOpen)
+                {
+                    this.Close();
+                }
+
+                _dbaseReader = null;
+                _dbaseFileStream = null;
+                _baseTable.Dispose();
+                _baseTable = null;
+            }
+
+            // Clean up any unmanaged resources
+            Disposed = true;
+        }
+
+        /// <summary>
+        /// Gets a value which indicates if this object is disposed: true if it is, false otherwise
+        /// </summary>
+        /// <seealso cref="Dispose"/>
+        public bool Disposed
+        {
+            get { return _isDisposed; }
+            private set { _isDisposed = value; }
+        }
+
+        /// <summary>
+        /// Closes the xBase file.
+        /// </summary>
+        /// <seealso cref="IsOpen"/>
+        /// <seealso cref="Open"/>
+        /// <seealso cref="Dispose" />
+        /// <exception cref="ObjectDisposedException">Thrown when the method is called and
+        /// object has been disposed.</exception>
+        public void Close()
+        {
+            (this as IDisposable).Dispose();
+        }
+        #endregion
+        #endregion
 
         /// <summary>
         /// Gets a value which indicates if the reader is open: true if it is, false otherwise.
@@ -112,78 +172,6 @@ namespace SharpMap.Data.Providers
                 _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
                 _headerIsParsed = true;
             }
-        }
-
-        /// <summary>
-        /// Closes the xBase file.
-        /// </summary>
-        /// <seealso cref="IsOpen"/>
-        /// <seealso cref="Open"/>
-        /// <seealso cref="Dispose" />
-        /// <exception cref="ObjectDisposedException">Thrown when the method is called and
-        /// object has been disposed.</exception>
-        public void Close()
-        {
-            if (_isDisposed)
-            {
-                throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-            }
-
-            if (_dbaseReader != null)
-            {
-                _dbaseReader.Close();
-            }
-
-            if (_dbaseFileStream != null)
-            {
-                _dbaseFileStream.Close();
-            }
-
-            _isOpen = false;
-        }
-
-        /// <summary>
-        /// Closes all files and disposes of all resources.
-        /// </summary>
-        /// <seealso cref="Close"/>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool isDisposing)
-        {
-            if (_isDisposed) // Idempotency
-            {
-                return;
-            }
-
-            if (isDisposing) // Do deterministic finalization of managed resources
-            {
-                if (_isOpen)
-                {
-                    this.Close();
-                }
-
-                _dbaseReader = null;
-                _dbaseFileStream = null;
-                _baseTable.Dispose();
-                _baseTable = null;
-            }
-
-            // Clean up any unmanaged resources
-            IsDisposed = true;
-        }
-
-        /// <summary>
-        /// Gets a value which indicates if this object is disposed: true if it is, false otherwise
-        /// </summary>
-        /// <seealso cref="Dispose"/>
-        public bool IsDisposed
-        {
-            get { return _isDisposed; }
-            private set { _isDisposed = value; }
         }
 
         /// <summary>

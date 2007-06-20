@@ -77,11 +77,62 @@ namespace SharpMap.Data.Providers
         private bool _exclusiveMode = false;
         private ICoordinateSystem _coordinateSystem;
         Dictionary<uint, IndexEntry> _shapeIndex = new Dictionary<uint, IndexEntry>();
+        private bool _disposed = false;
 
         /// <summary>
         /// Tree used for fast query of data
         /// </summary>
         private DynamicRTree<uint> _tree;
+
+        #region Object Construction/Destruction
+        public ShapeFile()
+        {
+        }
+
+        /// <summary>
+        /// Finalizes the object
+        /// </summary>
+        ~ShapeFile()
+        {
+            dispose(false);
+        }
+
+        #region Dispose pattern
+        /// <summary>
+        /// Disposes the object
+        /// </summary>
+        void IDisposable.Dispose()
+        {
+            if (!Disposed)
+            {
+                dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        private void dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Close();
+                _dbaseReader.Close();
+                _dbaseWriter.Close();
+                _shapeFileReader.Close();
+                _shapeFileWriter.Close();
+                _shapeFileStream.Close();
+                _tree.Dispose();
+                _tree = null;
+            }
+        }
+
+        protected internal bool Disposed
+        {
+            get { return _disposed; }
+            private set { _disposed = value; }
+        }
+        #endregion
+        #endregion
 
         #region Public Methods and Properties (SharpMap Shapefile API)
 
@@ -427,61 +478,29 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public void Close()
         {
-            if (!disposed)
-            {
-                // TODO: (ConnectionPooling)
-                /*	if (connector != null)
-                    { Pooling.ConnectorPool.ConnectorPoolManager.Release...()
-                }*/
-                if (_isOpen)
-                {
-                    if (_shapeFileWriter != null)
-                    {
-                        _shapeFileWriter.Close();
-                    }
-                    if (_shapeFileReader != null)
-                    {
-                        _shapeFileReader.Close();
-                    }
-                    if (_shapeFileStream != null)
-                    {
-                        _shapeFileStream.Close();
-                    }
-                    if (_dbaseReader != null)
-                    {
-                        _dbaseReader.Close();
-                    }
-
-                    _isOpen = false;
-                }
-
-                if (_tree != null)
-                {
-                    _tree.Dispose();
-                }
-            }
+            (this as IDisposable).Dispose();
         }
 
         /// <summary>
-        /// Returns geometries whose bounding box intersects 'bbox'
+        /// Returns geometries whose bounding box intersects <paramref name="bounds"/>.
         /// </summary>
         /// <remarks>
-        /// <para>Please note that this method doesn't guarantee that the geometries returned actually intersect 'bbox', 
-		/// but only that their boundingbox intersects 'bbox'.</para>
+        /// <para>Please note that this method doesn't guarantee that the geometries returned actually 
+        /// intersect <paramref name="bounds"/>, but only that their bounding box intersects <paramref name="bounds"/>.</para>
         /// <para>This method is much faster than the QueryFeatures method, because intersection tests
         /// are performed on objects simplifed by their boundingbox, and using the Spatial Index.</para>
         /// </remarks>
-        /// <param name="bbox"><see cref="BoundingBox"/> which determines the view</param>
+        /// <param name="bounds"><see cref="BoundingBox"/> which determines the view</param>
 		/// <returns>A <see cref="IEnumerable{Geometry}"/> containing the <see cref="Geometry"/> objects
-		/// which are at least partially contained within the <paramref name="bbox">view</paramref>.</returns>
+        /// which are at least partially contained within the given <paramref name="bounds">.</returns>
         /// <exception cref="InvalidShapefileOperationException">Thrown if method is called and the 
 		/// shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
-		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox bbox)
+		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox bounds)
         {
             checkOpen();
             enableReading();
 
-			foreach (uint oid in GetObjectIdsInView(bbox))
+			foreach (uint oid in GetObjectIdsInView(bounds))
             {
                 Geometry g = GetGeometryById(oid);
 
@@ -900,43 +919,6 @@ namespace SharpMap.Data.Providers
             throw new NotImplementedException("Not implemented in this version");
         }
         #endregion
-        #endregion
-
-        #region Disposers and finalizers
-
-        private bool disposed = false;
-
-        /// <summary>
-        /// Disposes the object
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    Close();
-                    //_Envelope = null;
-                    _tree = null;
-                }
-
-                disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Finalizes the object
-        /// </summary>
-        ~ShapeFile()
-        {
-            Dispose(false);
-        }
         #endregion
 
         #region General helper functions

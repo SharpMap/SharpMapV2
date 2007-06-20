@@ -54,8 +54,8 @@ namespace SharpMap.Rendering
         IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
 
 		/// <summary>
-		/// Gets the theme by which to compute styles to apply to rendered features.
+		/// Gets or sets the theme by which to compute styles to apply to rendered features.
 		/// </summary>
-        ITheme Theme { get; }
+        ITheme Theme { get; set; }
     }
 }

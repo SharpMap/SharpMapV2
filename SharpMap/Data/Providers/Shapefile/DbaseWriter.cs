@@ -31,9 +31,10 @@ namespace SharpMap.Data.Providers
         private BinaryReader _dbaseReader;
         private BinaryWriter _dbaseWriter;
         private DataTable _schema;
-        private bool _isDisposed = false;
+        private bool _disposed = false;
         private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
 
+        #region Object Construction/Destruction
         public DbaseWriter(string filename)
         {
             _dbaseFileStream = File.Open(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
@@ -90,10 +91,54 @@ namespace SharpMap.Data.Providers
             Dispose(false);
         }
 
+        #region Dispose Pattern
+        #region IDisposable Members
+
+        void IDisposable.Dispose()
+        {
+            if (!Disposed)
+            {
+                Dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        #endregion
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) // Deterministically dispose managed resources
+            {
+                if (_dbaseWriter != null)
+                {
+                    _dbaseWriter.Close();
+                }
+
+                if (_dbaseReader != null)
+                {
+                    _dbaseReader.Close();
+                }
+
+                if (_dbaseFileStream != null)
+                {
+                    _dbaseFileStream.Close();
+                }
+            }
+        }
+
+        protected internal bool Disposed
+        {
+            get { return _disposed; }
+            private set { _disposed = value; }
+        }
+        #endregion
+
         public void Close()
         {
-            Dispose();
+            (this as IDisposable).Dispose();
         }
+        #endregion
 
         public DbaseField[] Columns
         {
@@ -102,7 +147,7 @@ namespace SharpMap.Data.Providers
             {
                 if (_header != null)
                 {
-                    throw new InvalidOperationException("Can't set columns after schema has been defined");
+                    throw new InvalidOperationException("Can't set columns after schema has been defined.");
                 }
 
                 _header = new DbaseHeader();
@@ -138,7 +183,7 @@ namespace SharpMap.Data.Providers
 
         public void DeleteRow(UInt32 rowIndex)
         {
-            throw new NotImplementedException("Not implemented in this version");
+            throw new NotImplementedException("Not implemented in this version.");
         }
 
         public void UpdateRow(UInt32 rowIndex, DataRow row)
@@ -164,7 +209,7 @@ namespace SharpMap.Data.Providers
 
             if (row.Table == null)
             {
-                throw new ArgumentException("Row must be associated to a table");
+                throw new ArgumentException("Row must be associated to a table.");
             }
 
             _dbaseWriter.Write(DbaseConstants.NotDeletedIndicator);
@@ -172,6 +217,7 @@ namespace SharpMap.Data.Providers
             for (int i = 0; i < _header.Columns.Length; i++)
             {
                 int rowColumnIndex = row.Table.Columns.Contains(DbaseSchema.OidColumnName) ? i + 1 : i;
+
                 // TODO: reconsider type checking
                 //if ((_header.Columns[i].DataType != row.Table.Columns[rowColumnIndex].DataType) || (_header.Columns[i].Length != row.Table.Columns[rowColumnIndex].MaxLength))
                 //    throw new SchemaMismatchException(String.Format("Row doesn't match this DbaseWriter schema at column {0}", i));
@@ -242,7 +288,7 @@ namespace SharpMap.Data.Providers
                     case TypeCode.Empty:
                     case TypeCode.Object:
                     default:
-                        throw new NotSupportedException(String.Format("Type not nullable: {0}", _header.Columns[i].DataType));
+                        throw new NotSupportedException(String.Format("Type not supported: {0}", _header.Columns[i].DataType));
                 }
             }
         }
@@ -338,54 +384,5 @@ namespace SharpMap.Data.Providers
 
             _dbaseWriter.Write(DbaseConstants.HeaderTerminator);
         }
-
-        #region Dispose Pattern
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        protected virtual void Dispose(bool isDisposing)
-        {
-            if (!_isDisposed)
-            {
-                if (isDisposing) // Deterministically dispose managed resources
-                {
-                    if (_dbaseWriter != null)
-                    {
-                        _dbaseWriter.Close();
-                    }
-
-                    if (_dbaseReader != null)
-                    {
-                        _dbaseReader.Close();
-
-                    }
-                    if (_dbaseFileStream != null)
-                    {
-                        _dbaseFileStream.Close();
-                    }
-                }
-
-                // Dispose unmanaged resources
-
-                _isDisposed = true;
-            }
-        }
-        #endregion
-    }
-
-    public class SchemaMismatchException : Exception
-    {
-        public SchemaMismatchException() : base() { }
-        public SchemaMismatchException(string message) : base(message) { }
-        public SchemaMismatchException(string message, Exception inner) : base(message, inner) { }
-        public SchemaMismatchException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-            : base(info, context) { }
     }
 }

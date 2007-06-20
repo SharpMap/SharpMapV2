@@ -33,15 +33,22 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <summary>
 	/// Provides a base class for generating rendered objects from vector shapes.
 	/// </summary>
-	/// <typeparam name="TRenderObject"></typeparam>
+    /// <remarks>
+    /// This class is used to create a new IVectorRender2D for various graphics systems.
+    /// </remarks>
+	/// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
     public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
     {
-        private static Symbol2D _defaultSymbol;
+        #region Type Members
+        private static volatile Symbol2D _defaultSymbol;
 
         static VectorRenderer2D()
         {
         }
 
+        /// <summary>
+        /// The default SharpMap symbol for rendering point data.
+        /// </summary>
         public static Symbol2D DefaultSymbol
         {
             get 
@@ -61,11 +68,62 @@ namespace SharpMap.Rendering.Rendering2D
                 return _defaultSymbol; 
             }
         }
+        #endregion
 
+        private ViewMatrix2D _viewMatrix = new ViewMatrix2D();
+        private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
+        private bool _disposed = false;
+
+        #region Object Construction/Destruction
         public VectorRenderer2D()
         {
-            this.StyleRenderingMode = StyleRenderingMode.AntiAlias;
         }
+
+        ~VectorRenderer2D()
+        {
+            Dispose(false);
+        }
+
+        #region Dispose Pattern
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            if (!Disposed)
+            {
+                Dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+        #endregion
+
+        protected virtual void Dispose(bool disposing)
+        {
+
+        }
+
+        protected bool Disposed
+        {
+            get { return _disposed; }
+            set { _disposed = value; }
+        }
+        #endregion
+        #endregion
+
+        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+        public ViewMatrix2D ViewTransform
+        {
+            get { return _viewMatrix; }
+            set { _viewMatrix = value; }
+        }
+
+        public StyleRenderingMode StyleRenderingMode
+        {
+            get { return _renderMode; }
+            set { _renderMode = value; }
+        }
+        #endregion
 
         #region IVectorLayerRenderer Members
         public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
@@ -73,6 +131,29 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData);
         public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select);
         public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
+        #endregion
+
+        #region Explicit Interface Implementation
+        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+
+        IViewMatrix IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject>.ViewTransform
+        {
+            get
+            {
+                return ViewTransform;
+            }
+            set
+            {
+                if (!(value is ViewMatrix2D))
+                {
+                    throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
+                }
+
+                ViewTransform = value as ViewMatrix2D;
+            }
+        }
+
+        #endregion
         #endregion
     }
 }

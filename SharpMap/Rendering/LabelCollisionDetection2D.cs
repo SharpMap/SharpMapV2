@@ -26,23 +26,23 @@ namespace SharpMap.Rendering
 	/// <summary>
 	/// Class defining delegate for label collision detection and static predefined methods
 	/// </summary>
-	public class LabelCollisionDetection
+	public class LabelCollisionDetection2D
 	{
 		/// <summary>
 		/// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
 		/// </summary>
 		/// <param name="labels"></param>
 		/// <returns></returns>
-		public delegate IEnumerable<TLabel> LabelFilterMethod<TLabel>(IEnumerable<TLabel> labels);
+        public delegate IEnumerable<Label2D> LabelFilterDelegate(IList<Label2D> labels);
 
 		#region Label filter methods
 		/// <summary>
 		/// Simple and fast label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static IEnumerable<TLabel> SimpleCollisionDetection<TLabel>(IList<TLabel> labels)
+        public static IEnumerable<Label2D> SimpleCollisionDetection(IList<Label2D> labels)
 		{
-			List<TLabel> labelList = new List<TLabel>(labels);
+            List<Label2D> labelList = new List<Label2D>(labels);
 
 			labelList.Sort(); // sort labels by intersectiontests of labelbox
 
@@ -69,33 +69,35 @@ namespace SharpMap.Rendering
 		/// Thorough label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static IEnumerable<TLabel> ThoroughCollisionDetection<TLabel>(IEnumerable<TLabel> labels)
+        public static IEnumerable<Label2D> ThoroughCollisionDetection(IList<Label2D> labels)
 		{
-			List<TLabel> labelList = new List<TLabel>(labels);
+            List<Label2D> labelList = new List<Label2D>(labels);
 
-			labels.Sort(); // sort labels by intersectiontests of labelbox
+            labelList.Sort(); // sort labels by intersectiontests of labelbox
 
 			//remove labels that intersect other labels
-			for (int i = labels.Count - 1; i > 0; i--)
+            for (int i = labelList.Count - 1; i > 0; i--)
 			{
 				for (int j = i - 1; j > 0; j--)
 				{
-					if (labels[i].CompareTo(labels[j]) == 0)
+                    if (labelList[i].CompareTo(labelList[j]) == 0)
 					{
-						if (labels[i].Priority >= labels[j].Priority)
+                        if (labelList[i].Priority >= labelList[j].Priority)
 						{
-							labels.RemoveAt(j);
+                            labelList.RemoveAt(j);
 							i--;
 						}
 						else
 						{
-							labels.RemoveAt(i);
+                            labelList.RemoveAt(i);
 							i--;
 							break;
 						}
 					}
 				}
 			}
+
+            return labelList;
 		}
 		#endregion
 	}

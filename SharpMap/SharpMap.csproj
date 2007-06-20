@@ -218,8 +218,9 @@
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\Primitives\ILabel.cs" />
-    <Compile Include="Rendering\Renderers\FeatureGeometryRenderer2D.cs" />
+    <Compile Include="Rendering\Renderers\GeometryRenderer2D.cs" />
     <Compile Include="Rendering\Renderers\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\Renderers\IGeometryRenderer.cs" />
     <Compile Include="Rendering\Renderers\IVectorRenderer2D.cs" />
     <Compile Include="Tools\ActionContext.cs" />
     <Compile Include="Model\LayersCollection.cs" />

@@ -53,53 +53,54 @@ namespace SharpMap.Layers
     {
         private int _priority;
         private string _rotationColumn;
-        private GetLabelMethod _getLabelMethod;
+        private GenerateLabelTextDelegate _getLabelMethod;
         private string _labelColumn;
         private IProvider _dataSource;
-		private LabelCollisionDetection.LabelFilterMethod<TLabel> _labelFilter;
-        private MultipartGeometryBehaviourEnum _multipartGeometryBehaviour;
+		private LabelCollisionDetection2D.LabelFilterDelegate _labelFilter;
+        private MultipartGeometryBehaviour _multipartGeometryBehaviour;
 
 		/// <summary>
-		/// Delegate method for creating advanced label texts
+		/// Delegate method for creating advanced label text.
 		/// </summary>
-		/// <param name="fdr"></param>
-		/// <returns></returns>
-		public delegate string GetLabelMethod(FeatureDataRow fdr);
+        /// <param name="feature">The feature to label.</param>
+		/// <returns>A string to display as the label for the feature.</returns>
+		public delegate string GenerateLabelTextDelegate(FeatureDataRow feature);
 
 		/// <summary>
-		/// Creates a new instance of a LabelLayer
+		/// Creates a new instance of a LabelLayer with the given name.
 		/// </summary>
-		public LabelLayer(string layername)
+        /// <param name="layername">Name of the layer.</param>
+		public LabelLayer(string layerName)
 		{
-			this.LayerName = layername;
-			_multipartGeometryBehaviour = MultipartGeometryBehaviourEnum.All;
-			_labelFilter = LabelCollisionDetection.SimpleCollisionDetection;
+			LayerName = layerName;
+			_multipartGeometryBehaviour = MultipartGeometryBehaviour.All;
+            _labelFilter = LabelCollisionDetection2D.SimpleCollisionDetection;
 		}
 
 		/// <summary>
-		/// Gets or sets labeling behavior on multipart geometries
+		/// Gets or sets labeling behavior on multipart geometries.
 		/// </summary>
 		/// <remarks>Default value is <see cref="MultipartGeometryBehaviourEnum.All"/>.</remarks>
-		public MultipartGeometryBehaviourEnum MultipartGeometryBehaviour
+		public MultipartGeometryBehaviour MultipartGeometryBehaviour
 		{
 			get { return _multipartGeometryBehaviour; }
 			set { _multipartGeometryBehaviour = value; }
 		}
 
 		/// <summary>
-		/// Filtermethod delegate for performing filtering
+		/// Delegate for performing filtering on labels.
 		/// </summary>
 		/// <remarks>
 		/// Default method is <see cref="SharpMap.Rendering.LabelCollisionDetection.SimpleCollisionDetection"/>.
 		/// </remarks>
-		public LabelCollisionDetection.LabelFilterMethod<TLabel> LabelFilter
+        public LabelCollisionDetection2D.LabelFilterDelegate LabelFilter
 		{
 			get { return _labelFilter; }
 			set { _labelFilter = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the datasource
+		/// Gets or sets the data source.
 		/// </summary>
 		public IProvider DataSource
 		{
@@ -134,7 +135,7 @@ namespace SharpMap.Layers
 		/// </code>
 		/// </example>
 		/// </remarks>
-		public GetLabelMethod LabelStringDelegate
+		public GenerateLabelTextDelegate LabelTextDelegate
 		{
 			get { return _getLabelMethod; }
 			set { _getLabelMethod = value; }
@@ -152,7 +153,7 @@ namespace SharpMap.Layers
 		}
 
 		/// <summary>
-		/// A value indication the priority of the label in cases of label-collision detection
+		/// A value indication the priority of the label in cases of label-collision detection.
 		/// </summary>
 		public int Priority
 		{
@@ -191,42 +192,72 @@ namespace SharpMap.Layers
         #endregion
 
         /// <summary>
-        /// Gets the boundingbox of the entire layer
+        /// Gets the bounding box of the entire layer.
         /// </summary>
         public override BoundingBox Envelope
         {
             get
             {
                 if (this.DataSource == null)
+                {
                     throw (new InvalidOperationException("DataSource property not set on layer '" + this.LayerName + "'"));
+                }
 
                 bool wasOpen = DataSource.IsOpen;
 
                 if (!wasOpen)
+                {
                     DataSource.Open();
+                }
 
                 BoundingBox box = DataSource.GetExtents();
 
                 if (!wasOpen) //Restore state
+                {
                     this.DataSource.Close();
+                }
 
                 return box;
             }
         }
 
         /// <summary>
-        /// Gets or sets the SRID of this VectorLayer's data source
+        /// Gets or sets the SRID of this layer's data source.
         /// </summary>
         public override int Srid
         {
             get
             {
-                if (this.DataSource == null)
-                    throw (new InvalidOperationException("DataSource property not set on layer '" + this.LayerName + "'"));
+                if (DataSource == null)
+                {
+                    throw new InvalidOperationException(String.Format("DataSource property not set on layer '{0}'", LayerName));
+                }
 
                 return DataSource.Srid;
             }
-            set { this.DataSource.Srid = value; }
+            set 
+            { 
+                DataSource.Srid = value; 
+            }
+        }
+
+        public string GetLabelText(FeatureDataRow feature)
+        {
+            if (_getLabelMethod != null)
+            {
+                return _getLabelMethod(feature);
+            }
+            else
+            {
+                if (feature.IsNull(LabelColumn))
+                {
+                    return String.Empty;
+                }
+                else
+                {
+                    return feature[LabelColumn].ToString();
+                }
+            }
         }
 
         /// <summary>
@@ -236,14 +267,6 @@ namespace SharpMap.Layers
         public override object Clone()
         {
             throw new NotImplementedException();
-        }
-
-        public string GetLabelText(FeatureDataRow feature)
-        {
-            if (_getLabelMethod != null)
-                return _getLabelMethod(feature);
-            else
-                return feature[this.LabelColumn].ToString();
         }
 
         #region IDisposable Members
@@ -263,7 +286,7 @@ namespace SharpMap.Layers
     /// <summary>
     /// Labelling behaviour for Multipart geometry collections
     /// </summary>
-    public enum MultipartGeometryBehaviourEnum
+    public enum MultipartGeometryBehaviour
     {
         /// <summary>
         /// Place label on all parts (default)

@@ -28,6 +28,8 @@ using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
 using SharpMap.Data;
 using SharpMap.Styles;
 using SharpMap.Presentation;
+using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Geometries;
 
 namespace SharpMap.Rendering.Gdi
@@ -134,11 +136,6 @@ namespace SharpMap.Rendering.Gdi
             }
 
             throw new NotImplementedException();
-        }
-
-        protected override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> DoRenderGeometry(IGeometry geometry, LabelStyle style)
-        {
-            throw new Exception("The method or operation is not implemented.");
         }
     }
 }

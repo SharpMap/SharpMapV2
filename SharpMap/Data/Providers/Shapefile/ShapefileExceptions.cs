@@ -52,4 +52,17 @@ namespace SharpMap.Data.Providers
         public UnsupportedShapefileGeometryException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Exception thrown when a <see cref="FeatureDataTable"/> schema doesn't match the
+    /// DBase file schema
+    /// </summary>
+    public class DbfSchemaMismatchException : ShapefileException
+    {
+        public DbfSchemaMismatchException() : base() { }
+        public DbfSchemaMismatchException(string message) : base(message) { }
+        public DbfSchemaMismatchException(string message, Exception inner) : base(message, inner) { }
+        public DbfSchemaMismatchException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+    }
 }

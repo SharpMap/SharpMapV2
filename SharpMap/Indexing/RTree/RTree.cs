@@ -33,10 +33,43 @@ namespace SharpMap.Indexing.RTree
         private bool _disposed;
         private long _nextNodeId = 0;
 
+        #region Object Construction/Destruction
         public RTree()
         {
             Root = CreateLeafNode();
         }
+
+        ~RTree()
+        {
+            Dispose(false);
+        }
+
+        #region Dispose Pattern
+
+        /// <summary>
+        /// Disposes the index.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!Disposed)
+            {
+                Dispose(true);
+                Disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+        protected bool Disposed
+        {
+            get { return _disposed; }
+            private set { _disposed = value; }
+        }
+        #endregion
+        #endregion
 
         /// <summary>
         /// Root node in the R-Tree
@@ -65,32 +98,6 @@ namespace SharpMap.Indexing.RTree
         public virtual IEnumerable<RTreeIndexEntry<TValue>> Search(Geometry geometry)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Disposes the node
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (Disposed)
-                return;
-
-            if (disposing)
-            {
-                Disposed = true;
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        protected bool Disposed
-        {
-            get { return _disposed; }
-            set { _disposed = value; }
         }
 
         protected internal virtual RTreeBranchNode<TValue> CreateBranchNode()

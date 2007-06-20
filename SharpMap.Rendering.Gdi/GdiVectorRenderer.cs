@@ -39,6 +39,8 @@ using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
 
 using SharpMap.Styles;
 using SharpMap.Presentation;
+using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using StyleColorMatrix = SharpMap.Rendering.ColorMatrix;
 
 namespace SharpMap.Rendering.Gdi

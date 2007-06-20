@@ -78,6 +78,7 @@ namespace SharpMap.Indexing.RTree
         private Thread _restructureThread;
         private Thread _pollIdleThread;
         private int _periodMilliseconds = -1;
+        private volatile int _terminating = 0;
 
         public SelfOptimizingDynamicSpatialIndex(IIndexRestructureStrategy restructureStrategy, RestructuringHuristic restructureHeuristic, IEntryInsertStrategy<RTreeIndexEntry<TValue>> insertStrategy, INodeSplitStrategy nodeSplitStrategy, DynamicRTreeBalanceHeuristic indexHeuristic)
             : base(insertStrategy, nodeSplitStrategy, indexHeuristic)
@@ -90,9 +91,13 @@ namespace SharpMap.Indexing.RTree
             _insertedEvent = new AutoResetEvent(false);
             _userIdleEvent = new AutoResetEvent(false);
             _machineIdleEvent = new AutoResetEvent(false);
+            
             _restructureThread.Start();
-            if(restructureHeuristic.WhenToRestructure == RestructureOpportunity.OnMachineIdle || restructureHeuristic.WhenToRestructure == RestructureOpportunity.OnUserIdle)
+
+            if (restructureHeuristic.WhenToRestructure == RestructureOpportunity.OnMachineIdle || restructureHeuristic.WhenToRestructure == RestructureOpportunity.OnUserIdle)
+            {
                 _pollIdleThread.Start();
+            }
         }
 
         #region Resource management
@@ -104,15 +109,26 @@ namespace SharpMap.Indexing.RTree
 
         protected override void Dispose(bool disposing)
         {
-            if (Disposed)
-                return;
-
-            base.Dispose(disposing);
-
             if (disposing)
             {
-                Disposed = true;
-                GC.SuppressFinalize(this);
+                terminateThreads();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void terminateThreads()
+        {
+            Interlocked.Increment(ref _terminating);
+
+            if (!_pollIdleThread.Join(20000))
+            {
+                _pollIdleThread.Abort();
+            }
+
+            if (!_restructureThread.Join(20000))
+            {
+                _restructureThread.Abort();
             }
         }
         #endregion
@@ -151,11 +167,18 @@ namespace SharpMap.Indexing.RTree
 
         private void checkIdleness()
         {
-            if (isUserIdle())
-                _userIdleEvent.Set();
+            while (_terminating == 0)
+            {
+                if (isUserIdle())
+                {
+                    _userIdleEvent.Set();
+                }
 
-            if (isMachineIdle())
-                _machineIdleEvent.Set();
+                if (isMachineIdle())
+                {
+                    _machineIdleEvent.Set();
+                }
+            }
         }
 
         private bool isUserIdle()
@@ -174,14 +197,20 @@ namespace SharpMap.Indexing.RTree
         {
             WaitHandle[] events = new WaitHandle[] { _insertedEvent, _userIdleEvent, _machineIdleEvent };
             Random executionProbability = new Random();
-            while (!Disposed)
+
+            while (_terminating == 0)
             {
                 WaitHandle.WaitAny(events, _periodMilliseconds, false);
-                if (Disposed)
-                    return;
 
-                if(_restructuringHeuristic.ExecutionPercentage >= executionProbability.NextDouble() * 100.0)
+                if (_terminating > 0)
+                {
+                    return;
+                }
+
+                if (_restructuringHeuristic.ExecutionPercentage >= executionProbability.NextDouble() * 100.0)
+                {
                     _restructureStrategy.RestructureNode(Root);
+                }
             }
         }
     }

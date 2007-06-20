@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using SharpMap.Data;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Thematics
@@ -31,7 +32,7 @@ namespace SharpMap.Rendering.Thematics
     /// <summary>
     /// The GradientTheme class defines a gradient color thematic rendering of features based by a numeric attribute.
     /// </summary>
-    public class GradientTheme : ITheme
+    public class GradientTheme2D : ITheme
     {
         private string _columnName;
         private double _min;
@@ -85,13 +86,17 @@ namespace SharpMap.Rendering.Thematics
         /// <param name="maxValue">Maximum value</param>
         /// <param name="minStyle">Color for minimum value</param>
         /// <param name="maxStyle">Color for maximum value</param>
-        public GradientTheme(string columnName, double minValue, double maxValue, IStyle minStyle, IStyle maxStyle)
+        public GradientTheme2D(string columnName, double minValue, double maxValue, IStyle minStyle, IStyle maxStyle)
         {
             if (minStyle == null)
+            {
                 throw new ArgumentNullException("minStyle");
-            
+            }
+
             if (maxStyle == null)
+            {
                 throw new ArgumentNullException("maxStyle");
+            }
 
             _columnName = columnName;
             _min = minValue;
@@ -186,32 +191,40 @@ namespace SharpMap.Rendering.Thematics
         {
             double weighting = 0;
 
-            try 
-            { 
-                weighting = Convert.ToDouble(row[this._columnName]); 
+            try
+            {
+                weighting = Convert.ToDouble(row[this._columnName]);
             }
-            catch 
-            { 
-                throw new InvalidOperationException("Invalid attribute type in Gradient Theme. Couldn't parse weighting attribute (must be numeric)."); 
+            catch
+            {
+                throw new InvalidOperationException("Invalid attribute type in Gradient Theme. Couldn't parse weighting attribute (must be numeric).");
             }
 
             if (MinStyle == null)
+            {
                 throw new InvalidOperationException("Cannot create a gradient style if the MinStyle is missing.");
+            }
 
             if (MaxStyle == null)
+            {
                 throw new InvalidOperationException("Cannot create a gradient style if the MaxStyle is missing.");
+            }
 
             Type minStyleType = MinStyle.GetType();
             Type maxStyleType = MaxStyle.GetType();
 
             if (minStyleType != maxStyleType)
+            {
                 throw new ArgumentException("MinStyle and MaxStyle must be of the same type");
+            }
 
             CalculateStyleDelegate styleCalculator;
-             _styleTypeFunctionTable.TryGetValue(minStyleType.TypeHandle, out styleCalculator);
+            _styleTypeFunctionTable.TryGetValue(minStyleType.TypeHandle, out styleCalculator);
 
             if (styleCalculator == null)
-                    throw new ArgumentException("Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle are supported for the gradient theme");
+            {
+                throw new ArgumentException("Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle are supported for the gradient theme");
+            }
 
             return styleCalculator(MinStyle, MaxStyle, weighting);
         }
@@ -219,7 +232,9 @@ namespace SharpMap.Rendering.Thematics
         private IStyle CalculateVectorStyle(IStyle min, IStyle max, double value)
         {
             if (!(min is VectorStyle && max is VectorStyle))
+            {
                 throw new ArgumentException("Both min style and max style must be vector styles to compute a gradient vector style");
+            }
 
             VectorStyle style = new VectorStyle();
             VectorStyle vectorMin = min as VectorStyle;
@@ -231,18 +246,28 @@ namespace SharpMap.Rendering.Thematics
             style.EnableOutline = (dFrac > 0.5 ? vectorMin.EnableOutline : vectorMax.EnableOutline);
 
             if (_fillColorBlend != null)
+            {
                 style.Fill = new SolidStyleBrush(_fillColorBlend.GetColor(fFrac));
+            }
             else if (vectorMin.Fill != null && vectorMax.Fill != null)
+            {
                 style.Fill = InterpolateBrush(vectorMin.Fill, vectorMax.Fill, value);
+            }
 
             if (vectorMin.Line != null && vectorMax.Line != null)
+            {
                 style.Line = InterpolatePen(vectorMin.Line, vectorMax.Line, value);
+            }
 
             if (_lineColorBlend != null)
+            {
                 style.Line.BackgroundBrush = new SolidStyleBrush(_lineColorBlend.GetColor(fFrac));
+            }
 
             if (vectorMin.Outline != null && vectorMax.Outline != null)
+            {
                 style.Outline = InterpolatePen(vectorMin.Outline, vectorMax.Outline, value);
+            }
 
             style.MinVisible = InterpolateDouble(min.MinVisible, max.MinVisible, value);
             style.MaxVisible = InterpolateDouble(min.MaxVisible, max.MaxVisible, value);
@@ -255,7 +280,9 @@ namespace SharpMap.Rendering.Thematics
         private IStyle CalculateLabelStyle(IStyle min, IStyle max, double value)
         {
             if (!(min is LabelStyle && max is LabelStyle))
+            {
                 throw new ArgumentException("Both min style and max style must be label styles to compute a gradient label style");
+            }
 
             LabelStyle style = new LabelStyle();
             LabelStyle labelMin = min as LabelStyle;
@@ -268,20 +295,29 @@ namespace SharpMap.Rendering.Thematics
             style.Font = new StyleFont(labelMin.Font.FontFamily, new ViewSize2D(fontSize, fontSize), labelMin.Font.Style);
 
             if (labelMin.BackColor != null && labelMax.BackColor != null)
+            {
                 style.BackColor = InterpolateBrush(labelMin.BackColor, labelMax.BackColor, value);
+            }
 
             if (_textColorBlend != null)
+            {
                 style.ForeColor = _lineColorBlend.GetColor(Convert.ToSingle(Fraction(value)));
+            }
             else
+            {
                 style.ForeColor = StyleColor.Interpolate(labelMin.ForeColor, labelMax.ForeColor, value);
+            }
 
             if (labelMin.Halo != null && labelMax.Halo != null)
+            {
                 style.Halo = InterpolatePen(labelMin.Halo, labelMax.Halo, value);
+            }
 
             style.MinVisible = InterpolateDouble(labelMin.MinVisible, labelMax.MinVisible, value);
             style.MaxVisible = InterpolateDouble(labelMin.MaxVisible, labelMax.MaxVisible, value);
             style.Offset = new ViewPoint2D(InterpolateDouble(labelMin.Offset.X, labelMax.Offset.X, value),
                 InterpolateDouble(labelMin.Offset.Y, labelMax.Offset.Y, value));
+
             return style;
         }
 
@@ -328,14 +364,18 @@ namespace SharpMap.Rendering.Thematics
             pen.DashStyle = (frac > 0.5 ? max.DashStyle : min.DashStyle);
 
             if (min.DashStyle == LineDashStyle.Custom && max.DashStyle == LineDashStyle.Custom)
+            {
                 pen.DashPattern = (frac > 0.5 ? max.DashPattern : min.DashPattern);
+            }
 
             pen.DashOffset = (frac > 0.5 ? max.DashOffset : min.DashOffset);
             pen.DashCap = (frac > 0.5 ? max.DashCap : min.DashCap);
-            
+
             if (min.CompoundArray.Length > 0 && max.CompoundArray.Length > 0)
+            {
                 pen.CompoundArray = (frac > 0.5 ? max.CompoundArray : min.CompoundArray);
-            
+            }
+
             pen.Alignment = (frac > 0.5 ? max.Alignment : min.Alignment);
             //pen.CustomStartCap = (frac > 0.5 ? max.CustomStartCap : min.CustomStartCap);  //Throws ArgumentException
             //pen.CustomEndCap = (frac > 0.5 ? max.CustomEndCap : min.CustomEndCap);  //Throws ArgumentException

@@ -58,7 +58,9 @@ namespace SharpMap.Data.Providers
                 _dbaseColumns = value;
                 HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Length) + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
                 RecordLength = 1; //Deleted flag length
-                Array.ForEach<DbaseField>(_dbaseColumns, new Action<DbaseField>(delegate(DbaseField field) { RecordLength += (short)field.Length; }));
+
+                Array.ForEach<DbaseField>(_dbaseColumns, 
+                    delegate(DbaseField field) { RecordLength += (short)field.Length; });
             }
         }
 
@@ -127,7 +129,9 @@ namespace SharpMap.Data.Providers
             DbaseHeader header = new DbaseHeader();
 
             if (reader.ReadByte() != DbaseConstants.DbfVersionCode)
+            {
                 throw new NotSupportedException("Unsupported DBF Type");
+            }
 
             header.LastUpdate = new DateTime((int)reader.ReadByte() + 1900, (int)reader.ReadByte(), (int)reader.ReadByte()); //Read the last update date
             header.RecordCount = reader.ReadUInt32(); // read number of records.
@@ -142,7 +146,7 @@ namespace SharpMap.Data.Providers
             for (int i = 0; i < columns.Length; i++)
             {
                 columns[i] = new DbaseField();
-                columns[i].ColumnName = System.Text.Encoding.UTF7.GetString((reader.ReadBytes(11))).Replace("\0", "").Trim();
+                columns[i].ColumnName = header.FileEncoding.GetString(reader.ReadBytes(11)).Replace("\0", "").Trim();
                 char fieldtype = reader.ReadChar();
 
                 columns[i].Address = reader.ReadInt32();
@@ -198,10 +202,16 @@ namespace SharpMap.Data.Providers
             }
 
             header.Columns = columns;
+
             if (storedHeaderLength != header.HeaderLength)
+            {
                 throw new InvalidDbaseFileException("Recorded header length doesn't equal computed header length");
+            }
+
             if (storedRecordLength != header.RecordLength)
+            {
                 throw new InvalidDbaseFileException("Recorded record length doesn't equal computed record length");
+            }
 
             return header;
         }
@@ -285,10 +295,15 @@ namespace SharpMap.Data.Providers
         public static System.Text.Encoding GetEncoding(byte dbasecode)
         {
             Encoding encoding;
+
             if (_dbaseToEncoding.TryGetValue(dbasecode, out encoding))
+            {
                 return encoding;
+            }
             else
-                return System.Text.Encoding.UTF7;
+            {
+                return System.Text.Encoding.ASCII;
+            }
         }
     }
 }
