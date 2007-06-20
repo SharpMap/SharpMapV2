@@ -254,7 +254,7 @@
     <Compile Include="Rendering\Primitives\IViewMatrix.cs" />
     <Compile Include="Rendering\Primitives\IViewVector.cs" />
     <Compile Include="Rendering\2D\Label2D.cs" />
-    <Compile Include="Rendering\LabelCollisionDetection.cs" />
+    <Compile Include="Rendering\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\Renderers\LabelRenderer2D.cs" />
     <Compile Include="Rendering\LayerRendererCatalog.cs" />
     <Compile Include="Presentation\LayerSelectedEventArgs.cs" />
