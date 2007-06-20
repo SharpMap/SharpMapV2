@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Text;
 
 using GdiPoint = System.Drawing.Point;
@@ -70,7 +71,12 @@ namespace SharpMap.Rendering.Gdi
                 foreach (Pen pen in _penCache.Values)
                 {
                     pen.Dispose();
-                }
+				}
+
+				foreach (Bitmap bitmap in _symbolCache.Values)
+				{
+					bitmap.Dispose();
+				}
             }
 
             base.Dispose(disposing);            
@@ -217,10 +223,10 @@ namespace SharpMap.Rendering.Gdi
 
             if (symbol == null)
             {
-                System.IO.MemoryStream data = new System.IO.MemoryStream();
+                MemoryStream data = new MemoryStream();
                 symbol2D.SymbolData.Position = 0;
 
-                using (System.IO.BinaryReader reader = new System.IO.BinaryReader(symbol2D.SymbolData))
+                using (BinaryReader reader = new BinaryReader(symbol2D.SymbolData))
                 {
                     data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
                 }

@@ -31,9 +31,9 @@ namespace SharpMap.Rendering
     /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
     /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
     /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
-    public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
+    public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
         where TViewPoint : IViewVector
-        where TViewSize : IViewVector
+		where TViewSize : IViewVector
         where TViewRectangle : IViewMatrix
     {
         /// <summary>

@@ -24,6 +24,7 @@ using SharpMap.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
@@ -56,7 +57,7 @@ namespace SharpMap.Layers
         private GenerateLabelTextDelegate _getLabelMethod;
         private string _labelColumn;
         private IProvider _dataSource;
-		private LabelCollisionDetection2D.LabelFilterDelegate _labelFilter;
+		private LabelFilterDelegate<TLabel> _labelFilter;
         private MultipartGeometryBehaviour _multipartGeometryBehaviour;
 
 		/// <summary>
@@ -74,7 +75,7 @@ namespace SharpMap.Layers
 		{
 			LayerName = layerName;
 			_multipartGeometryBehaviour = MultipartGeometryBehaviour.All;
-            _labelFilter = LabelCollisionDetection2D.SimpleCollisionDetection;
+			_labelFilter = new LabelFilterDelegate<Label2D>(LabelCollisionDetection2D.SimpleCollisionDetection<Label2D>);
 		}
 
 		/// <summary>
@@ -93,7 +94,7 @@ namespace SharpMap.Layers
 		/// <remarks>
 		/// Default method is <see cref="SharpMap.Rendering.LabelCollisionDetection.SimpleCollisionDetection"/>.
 		/// </remarks>
-        public LabelCollisionDetection2D.LabelFilterDelegate LabelFilter
+        public LabelFilterDelegate<TLabel> LabelFilter
 		{
 			get { return _labelFilter; }
 			set { _labelFilter = value; }

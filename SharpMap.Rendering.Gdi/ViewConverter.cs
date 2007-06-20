@@ -37,6 +37,7 @@ using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
 using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
 
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Gdi

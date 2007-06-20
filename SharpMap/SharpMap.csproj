@@ -217,8 +217,9 @@
     <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Rendering\LabelFilterDelegate.cs" />
     <Compile Include="Rendering\Primitives\ILabel.cs" />
-    <Compile Include="Rendering\Renderers\GeometryRenderer2D.cs" />
+    <Compile Include="Rendering\Renderers\BasicGeometryRenderer2D.cs" />
     <Compile Include="Rendering\Renderers\IFeatureRenderer.cs" />
     <Compile Include="Rendering\Renderers\IGeometryRenderer.cs" />
     <Compile Include="Rendering\Renderers\IVectorRenderer2D.cs" />
@@ -254,7 +255,7 @@
     <Compile Include="Rendering\Primitives\IViewMatrix.cs" />
     <Compile Include="Rendering\Primitives\IViewVector.cs" />
     <Compile Include="Rendering\2D\Label2D.cs" />
-    <Compile Include="Rendering\LabelCollisionDetection2D.cs" />
+    <Compile Include="Rendering\2D\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\Renderers\LabelRenderer2D.cs" />
     <Compile Include="Rendering\LayerRendererCatalog.cs" />
     <Compile Include="Presentation\LayerSelectedEventArgs.cs" />

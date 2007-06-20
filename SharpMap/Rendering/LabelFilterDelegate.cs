@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -22,32 +23,10 @@ using System.Text;
 namespace SharpMap.Rendering
 {
 	/// <summary>
-	/// Exception thrown when rendering fails.
+	/// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
 	/// </summary>
-	public class RenderException : System.Exception
-	{
-		/// <summary>
-		/// Creates a new RenderException instance.
-		/// </summary>
-		public RenderException()
-		{
-		}
-
-		/// <summary>
-		/// Creates a new RenderException instance with the given message.
-		/// </summary>
-		/// <param name="message">The message to include in the exception.</param>
-		public RenderException(string message) : base(message)
-		{
-		}
-
-		/// <summary>
-		/// Exception thrown when layer rendering has failed.
-		/// </summary>
-		/// <param name="message">The message to include in the exception.</param>
-		/// <param name="inner">A related, usually causing, exception.</param>
-		public RenderException(string message, System.Exception inner) : base(message,inner)
-		{
-		}
-	}
+	/// <param name="labels">The labels to filter.</param>
+	/// <typeparam name="TLabel">Type of label to filter.</typeparam>
+	/// <returns>An enumeration over the filtered labels only.</returns>
+	public delegate IEnumerable<TLabel> LabelFilterDelegate<TLabel>(IList<TLabel> labels);
 }

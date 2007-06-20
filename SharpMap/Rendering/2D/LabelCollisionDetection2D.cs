@@ -19,30 +19,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SharpMap.Rendering.Rendering2D;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
 	/// <summary>
 	/// Class defining delegate for label collision detection and static predefined methods
 	/// </summary>
 	public class LabelCollisionDetection2D
 	{
-		/// <summary>
-		/// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
-		/// </summary>
-		/// <param name="labels"></param>
-		/// <returns></returns>
-        public delegate IEnumerable<Label2D> LabelFilterDelegate(IList<Label2D> labels);
-
 		#region Label filter methods
 		/// <summary>
 		/// Simple and fast label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-        public static IEnumerable<Label2D> SimpleCollisionDetection(IList<Label2D> labels)
+		public static IEnumerable<TLabel> SimpleCollisionDetection<TLabel>(IList<TLabel> labels)
 		{
-            List<Label2D> labelList = new List<Label2D>(labels);
+			Converter<IList<TLabel>, List<Label2D>> converter = createConverter<TLabel>();
+
+			List<Label2D> labelList = converter(labels);
 
 			labelList.Sort(); // sort labels by intersectiontests of labelbox
 
@@ -63,6 +57,20 @@ namespace SharpMap.Rendering
 			}
 
 			return labelList;
+		}
+
+		private static Converter<IList<TLabel>, List<Label2D>> createConverter<TLabel>()
+		{
+			return new Converter<IList<TLabel>, List<Label2D>>(delegate(IList<TLabel> innerLabels)
+			{
+				List<Label2D> labelList = new List<Label2D>();
+				foreach (TLabel label in innerLabels)
+				{
+					labelList.Add((Label2D)label);
+				}
+
+				return labelList;
+			});
 		}
 
 		/// <summary>
