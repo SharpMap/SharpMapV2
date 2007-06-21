@@ -335,7 +335,12 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public void Offset(IViewVector offsetVector)
-        {
+		{
+			if (IsEmpty)
+			{
+				return;
+			}
+
             Translate(offsetVector);
         }
 
@@ -345,7 +350,12 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public void Scale(double scaleAmount)
-        {
+		{
+			if (IsEmpty)
+			{
+				return;
+			}
+
             double newWidth = Width * scaleAmount;
             double newHeight = Height * scaleAmount;
 
@@ -354,7 +364,12 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public void Scale(IViewVector scaleVector)
-        {
+		{
+			if (IsEmpty)
+			{
+				return;
+			}
+
             if (scaleVector.Elements.Length != 2)
             {
                 throw new ArgumentOutOfRangeException("scaleVector", scaleVector, "Argument vector must have two elements");
@@ -368,7 +383,12 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public void Translate(double translationAmount)
-        {
+		{
+			if (IsEmpty)
+			{
+				return;
+			}
+
             Left += translationAmount;
             Top += translationAmount;
             Right += translationAmount;
@@ -377,6 +397,11 @@ namespace SharpMap.Rendering.Rendering2D
 
         public void Translate(IViewVector translationVector)
         {
+			if (IsEmpty)
+			{
+				return;
+			}
+
             if (translationVector.Elements.Length != 2)
             {
                 throw new ArgumentOutOfRangeException("translationVector", translationVector, "Argument vector must have two elements");
