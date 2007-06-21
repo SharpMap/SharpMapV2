@@ -296,7 +296,7 @@ namespace SharpMap.Tests.RenderingTests
 		public void TransformTest1()
 		{
 			ViewRectangle2D rect = new ViewRectangle2D(9, 10, -5, -6);
-			ViewRectangle2D val = rect.Transform(rect);
+			IViewVector val = rect.Transform((IViewVector)ViewPoint2D.Zero);
 		}
 		
 		[Test]
