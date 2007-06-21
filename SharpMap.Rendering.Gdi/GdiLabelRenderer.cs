@@ -34,16 +34,32 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Rendering.Gdi
 {
-    public class GdiLabelRenderer : LabelRenderer2D<GdiRenderObject>
+    public class GdiLabelRenderer : LabelRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
     {
+        Graphics _currentGraphics;
+
         public GdiLabelRenderer(GdiVectorRenderer vectorRenderer)
 			: base(vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
         }
 
+        public Graphics Graphics
+        {
+            get { return _currentGraphics; }
+            set 
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _currentGraphics = value; 
+            }
+        }
+
         public override ViewSize2D MeasureString(string text, StyleFont font)
         {
-            Graphics g = _currentGraphics;
+            Graphics g = Graphics;
 
             if (g == null)
             {
@@ -56,19 +72,19 @@ namespace SharpMap.Rendering.Gdi
             }
         }
 
-        public override GdiRenderObject RenderLabel(Label2D label)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(Label2D label)
         {
             return RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor, label.Style.BackColor, label.Style.Halo, label.Rotation);
         }
 
-        public override GdiRenderObject RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor)
         {
             return RenderLabel(text, location, new ViewPoint2D(0, 0), font, foreColor, null, null, 0);
         }
 
-        public override GdiRenderObject RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         {
-            Graphics g = _currentGraphics;
+            Graphics g = Graphics;
 
             if (rotation != 0 && rotation != float.NaN)
             {

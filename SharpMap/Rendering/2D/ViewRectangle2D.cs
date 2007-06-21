@@ -23,7 +23,6 @@ using System.Text;
 namespace SharpMap.Rendering.Rendering2D
 {
     [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
     public struct ViewRectangle2D : IViewMatrix, IComparable<ViewRectangle2D>
     {
         private double _left;
@@ -35,6 +34,7 @@ namespace SharpMap.Rendering.Rendering2D
         public static readonly ViewRectangle2D Empty = new ViewRectangle2D();
         public static readonly ViewRectangle2D Zero = new ViewRectangle2D(0, 0, 0, 0);
 
+        #region Constructors
         public ViewRectangle2D(double left, double right, double top, double bottom)
         {
             _left = left;
@@ -52,7 +52,19 @@ namespace SharpMap.Rendering.Rendering2D
             _bottom = _top + size.Height;
             _hasValue = true;
         }
+        #endregion
 
+        public override string ToString()
+        {
+            return String.Format("[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", Left, Top, Right, Top, Bottom, IsEmpty);
+        }
+
+        public override int GetHashCode()
+        {
+            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom);
+        }
+
+        #region Properties
         public double X
         {
             get { return _left; }
@@ -111,42 +123,101 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get { return _bottom - _top; }
         }
+        #endregion
 
-        public static bool operator ==(ViewRectangle2D rect1, ViewRectangle2D rect2)
+        #region Equality Testing
+        public static bool operator ==(ViewRectangle2D lhs, ViewRectangle2D rhs)
         {
-            return rect1.Left == rect2.Left &&
-                rect1.Right == rect2.Right &&
-                rect1.Top == rect2.Top &&
-                rect1.Bottom == rect2.Bottom;
+            return (lhs.Equals(rhs));
         }
 
-        public static bool operator !=(ViewRectangle2D rect1, ViewRectangle2D rect2)
+        public static bool operator !=(ViewRectangle2D lhs, ViewRectangle2D rhs)
         {
-            return !(rect1 == rect2);
+            return !(lhs.Equals(rhs));
         }
 
         public override bool Equals(object obj)
         {
+            if (obj is ViewRectangle2D)
+            {
+                return Equals((ViewRectangle2D)obj);
+            }
+
             if (obj is IViewMatrix)
+            {
                 return Equals(obj as IViewMatrix);
+            }
 
-            if (!(obj is ViewRectangle2D))
+            return false;
+        }
+
+        public bool Equals(ViewRectangle2D rectangle)
+        {
+            return this.IsEmpty == rectangle.IsEmpty &&
+                this.Left == rectangle.Left &&
+                this.Right == rectangle.Right &&
+                this.Top == rectangle.Top &&
+                this.Bottom == rectangle.Bottom;
+        }
+
+        #region IEquatable<IViewMatrix> Members
+
+        public bool Equals(IViewMatrix other)
+        {
+            if (this.IsEmpty && other.IsEmpty)
+            {
+                return true;
+            }
+
+            if (this.IsEmpty || other.IsEmpty)
+            {
                 return false;
+            }
 
-            ViewRectangle2D other = (ViewRectangle2D)obj;
+            double[,] lhs = this.Elements, rhs = other.Elements;
 
-            return other == this;
+            if (lhs.Length != rhs.Length)
+            {
+                return false;
+            }
+
+            if (lhs.Rank != rhs.Rank)
+            {
+                return false;
+            }
+
+            int rowCount = lhs.GetUpperBound(0);
+            int colCount = lhs.GetUpperBound(1);
+
+            if (rowCount != rhs.GetUpperBound(0) || 0 != rhs.GetLowerBound(0))
+            {
+                return false;
+            }
+
+            if (colCount != rhs.GetUpperBound(1) || 0 != rhs.GetLowerBound(1))
+            {
+                return false;
+            }
+
+            unchecked
+            {
+                for (int row = 0; row < rowCount; row++)
+                {
+                    for (int col = 0; col < colCount; col++)
+                    {
+                        if (lhs[row, col] != rhs[row, col])
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
 
-        public override int GetHashCode()
-        {
-            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("ViewRectangle - Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}", Left, Top, Right, Top, Bottom);
-        }
+        #endregion
+        #endregion
 
         /// <summary>
         /// Determines whether this <see cref="Rectangle"/> intersects another.
@@ -206,7 +277,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         public bool IsInvertible
         {
-            get { return false; }
+            get { throw new NotSupportedException(); }
+        }
+
+        public bool IsEmpty
+        {
+            get { return !_hasValue; }
         }
 
         public double[,] Elements
@@ -218,10 +294,14 @@ namespace SharpMap.Rendering.Rendering2D
             set
             {
                 if (value == null)
+                {
                     throw new ArgumentNullException("value");
+                }
 
                 if (value.Rank != 2 || value.GetUpperBound(0) != 2)
+                {
                     throw new ArgumentException("Elements can be set only to a 2x2 array");
+                }
 
                 Left = value[0, 0] < value[1, 0] ? value[0, 0] : value[1, 0];
                 Top = value[0, 1] < value[1, 1] ? value[0, 1] : value[1, 1];
@@ -267,7 +347,9 @@ namespace SharpMap.Rendering.Rendering2D
         public void Scale(IViewVector scaleVector)
         {
             if (scaleVector.Elements.Length != 2)
+            {
                 throw new ArgumentOutOfRangeException("scaleVector", scaleVector, "Argument vector must have two elements");
+            }
 
             double newWidth = Width * scaleVector[0];
             double newHeight = Height * scaleVector[1];
@@ -287,7 +369,9 @@ namespace SharpMap.Rendering.Rendering2D
         public void Translate(IViewVector translationVector)
         {
             if (translationVector.Elements.Length != 2)
+            {
                 throw new ArgumentOutOfRangeException("translationVector", translationVector, "Argument vector must have two elements");
+            }
 
             double xDelta = translationVector[0];
             double yDelta = translationVector[1];
@@ -316,40 +400,6 @@ namespace SharpMap.Rendering.Rendering2D
         public object Clone()
         {
             return new ViewRectangle2D(Left, Right, Top, Bottom);
-        }
-
-        #endregion
-
-        #region IEquatable<IViewMatrix> Members
-
-        public bool Equals(IViewMatrix other)
-        {
-            double[,] lhs = this.Elements, rhs = other.Elements;
-
-            if (lhs.Length != rhs.Length)
-                return false;
-
-            if (lhs.Rank != rhs.Rank)
-                return false;
-
-            int rowCount = lhs.GetUpperBound(0);
-            int colCount = lhs.GetUpperBound(1);
-
-            if (rowCount != rhs.GetUpperBound(0) || 0 != rhs.GetLowerBound(0))
-                return false;
-
-            if (colCount != rhs.GetUpperBound(1) || 0 != rhs.GetLowerBound(1))
-                return false;
-
-            unchecked
-            {
-                for (int row = 0; row < rowCount; row++)
-                    for (int col = 0; col < colCount; col++)
-                        if (lhs[row, col] != rhs[row, col])
-                            return false;
-            }
-
-            return true;
         }
 
         #endregion

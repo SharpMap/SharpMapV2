@@ -19,17 +19,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering3D
 {
     public struct ViewPoint3D : IViewVector
     {
         private double _x, _y, _z;
+        private bool _hasValue;
+
+        public static readonly ViewPoint3D Empty = new ViewPoint3D();
+        public static readonly ViewPoint3D Zero = new ViewPoint3D(0, 0, 0);
 
         public ViewPoint3D(double x, double y, double z)
         {
             _x = x;
             _y = y;
             _z = z;
+            _hasValue = true;
         }
 
         public ViewPoint3D(double[] elements)
@@ -43,6 +48,7 @@ namespace SharpMap.Rendering
             _x = elements[0];
             _y = elements[1];
             _z = elements[2];
+            _hasValue = true;
         }
 
         public double X
@@ -80,6 +86,11 @@ namespace SharpMap.Rendering
 
                 throw new IndexOutOfRangeException("The element index must be either 0, 1 or 2 for a 3D point");
             }
+        }
+
+        public bool IsEmpty
+        {
+            get { return _hasValue; }
         }
 
         #endregion

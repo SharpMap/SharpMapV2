@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,5 +29,5 @@ namespace SharpMap.Rendering
 	/// <param name="labels">The labels to filter.</param>
 	/// <typeparam name="TLabel">Type of label to filter.</typeparam>
 	/// <returns>An enumeration over the filtered labels only.</returns>
-	public delegate IEnumerable<TLabel> LabelFilterDelegate<TLabel>(IList<TLabel> labels);
+	public delegate IEnumerable LabelFilterDelegate(IList labels);
 }

@@ -18,10 +18,22 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
+
+using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Gdi
 {
-    public class GdiRasterRenderer 
+    public class GdiRasterRenderer : RasterRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
     {
+        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IViewMatrix rasterTransform)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
     }
 }

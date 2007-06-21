@@ -37,6 +37,7 @@ using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
 using SharpMap.Presentation;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Styles;
 using SharpMap.Tools;
@@ -107,7 +108,7 @@ namespace SharpMap.Presentation.WinForms
 			set { _viewPort = value;  }
 		}
 
-		[DesignTimeVisible(false)]
+		[Browsable(false)]
 		public double Dpi
 		{
 			get { return _dpi; }
@@ -175,7 +176,7 @@ namespace SharpMap.Presentation.WinForms
             {
                 if (_selectedTool != value)
                 {
-                    OnSelectedToolChanged(value);
+                    OnSelectedToolChangeRequest(value);
                 }
             }
         }

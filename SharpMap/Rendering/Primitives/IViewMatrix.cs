@@ -26,6 +26,7 @@ namespace SharpMap.Rendering
         void Reset();
         void Invert();
         bool IsInvertible { get; }
+        bool IsEmpty { get; }
         double[,] Elements { get; set; }
         void Rotate(double degreesTheta);
         void RotateAt(double degreesTheta, IViewVector center);

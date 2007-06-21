@@ -25,5 +25,6 @@ namespace SharpMap.Rendering
     {
         double[] Elements { get; }
         double this[int element] { get; }
+        bool IsEmpty { get; }
     }
 }

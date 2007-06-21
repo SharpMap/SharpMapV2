@@ -21,17 +21,38 @@ using System.Text;
 
 namespace SharpMap.Rendering.Rendering2D
 {
+    /// <summary>
+    /// A 2 dimensional measure of size.
+    /// </summary>
+    [Serializable]
     public struct ViewSize2D : IViewVector
     {
         private double _width, _height;
+        private bool _hasValue;
+
+        public static readonly ViewSize2D Empty = new ViewSize2D();
         public static readonly ViewSize2D Zero = new ViewSize2D(0, 0);
 
+        #region Constructors
         public ViewSize2D(double width, double height)
         {
             _width = width;
             _height = height;
+            _hasValue = true;
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            return String.Format("[ViewSize2D] Width: {0}, Height: {1}", Width, Height);
         }
 
+        public override int GetHashCode()
+        {
+            return unchecked(Width.GetHashCode() ^ Height.GetHashCode());
+        }
+
+        #region Properties
         public double Width
         {
             get { return _width; }
@@ -41,70 +62,38 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get { return _height; }
         }
+        #endregion
 
-        public override string ToString()
-        {
-            return String.Format("[ViewSize2D] Width: {0}, Height: {1}", Width, Height);
-        }
-
+        #region Equality Testing
         public static bool operator != (ViewSize2D size1, ViewSize2D size2)
         {
-            return size1.Width != size2.Width || size1.Height != size2.Height;
+            return !(size1.Equals(size2));
         }
 
         public static bool operator ==(ViewSize2D size1, ViewSize2D size2)
         {
-            return size1.Width == size2.Width && size1.Height == size2.Height;
+            return size1.Equals(size2);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is IViewVector)
-                return Equals(obj as IViewVector);
-
-            if (!(obj is ViewSize2D))
-                return false;
-
-            ViewSize2D other = (ViewSize2D)obj;
-
-            return this == other;
-        }
-
-        public override int GetHashCode()
-        {
-            return unchecked(Width.GetHashCode() ^ Height.GetHashCode());
-        }
-
-        #region IViewVector Members
-
-        public double[] Elements
-        {
-            get { return new double[] { Width, Height }; }
-        }
-
-        public double this[int element]
-        {
-            get 
+            if (obj is ViewSize2D)
             {
-                if (element == 0)
-                    return Width;
-                else if (element == 1)
-                    return Height;
-                else
-                    throw new ArgumentOutOfRangeException("element", element, "Index must be 0 or 1");
+                return Equals((ViewSize2D)obj);
             }
+
+            if (obj is IViewVector)
+            {
+                return Equals(obj as IViewVector);
+            }
+
+            return false;
         }
 
-        #endregion
-
-        #region ICloneable Members
-
-        public object Clone()
+        public bool Equals(ViewSize2D size)
         {
-            return new ViewSize2D(Width, Height);
+            return this.IsEmpty == size.IsEmpty && this.Width == size.Width && this.Height == size.Height;
         }
-
-        #endregion
 
         #region IEquatable<IViewVector> Members
 
@@ -123,6 +112,49 @@ namespace SharpMap.Rendering.Rendering2D
             }
 
             return true;
+        }
+
+        #endregion
+        #endregion
+
+        #region IViewVector Members
+
+        public double[] Elements
+        {
+            get { return new double[] { Width, Height }; }
+        }
+
+        public double this[int element]
+        {
+            get 
+            {
+                if (element == 0)
+                {
+                    return Width;
+                }
+                else if (element == 1)
+                {
+                    return Height;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("element", element, "Index must be 0 or 1");
+                }
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get { return !_hasValue; }
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public object Clone()
+        {
+            return new ViewSize2D(Width, Height);
         }
 
         #endregion

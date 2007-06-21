@@ -25,56 +25,31 @@ using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Presentation;
+using SharpMap.Utilities;
 
-using IFeatureLayerRenderer = SharpMap.Rendering.IGeometryRenderer<SharpMap.Rendering.ViewPoint2D, SharpMap.Rendering.ViewSize2D, SharpMap.Rendering.ViewRectangle2D, SharpMap.Rendering.Gdi.GdiRenderObject>;
+using IRenderer = SharpMap.Rendering.IRenderer<SharpMap.Rendering.Rendering2D.ViewPoint2D, SharpMap.Rendering.Rendering2D.ViewSize2D, SharpMap.Rendering.Rendering2D.ViewRectangle2D, SharpMap.Rendering.Rendering2D.PositionedRenderObject2D<SharpMap.Rendering.Gdi.GdiRenderObject>>;
 
 namespace SharpMap.Presentation.WinForms
 {
     public class MapPresenter : MapPresenter2D
     {
         private ImageTileCache _imageTileCache;
-        private GdiRenderObject[] _renderObjects;
-        //private GdiMatrix _viewMatrix = new GdiMatrix();
 
-        public MapPresenter(SharpMap.Map map, MapViewControl mapView)
+        public MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)
         {
             _imageTileCache = new ImageTileCache(map.Envelope);
-            RegisterRenderer<VectorLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiVectorRenderer(this));
-            RegisterRenderer<LabelLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiLabelRenderer(this));
+            RegisterRenderer<VectorLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiVectorRenderer());
+            IRenderer labelRenderer = new GdiLabelRenderer(new GdiVectorRenderer()) as IRenderer;
+            RegisterRenderer<LabelLayer<Label2D>, PositionedRenderObject2D<GdiRenderObject>>(labelRenderer);
         }
 
         public Image GetImage(RectangleF region)
         {
-            BoundingBox worldRegion = ViewToWorld(ViewConverter.GdiToView(region));
-            IEnumerable<BoundingBox> missingRegions = _imageTileCache.ComputeMissingRegions(worldRegion);
-
-            foreach (BoundingBox missingRegion in missingRegions)
-            {
-                foreach (ILayer layer in Map.Layers)
-	            {
-                    if (!(layer is IFeatureLayer))
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                    IEnumerable<FeatureDataRow> features = (layer as IFeatureLayer).GetFeatures(missingRegion);
-
-                    foreach (ILayer selectedLayer in Map.SelectedLayers)
-                    {
-                        IFeatureLayerRenderer renderer = GetRenderer<IFeatureLayerRenderer>(selectedLayer);
-
-                        foreach (FeatureDataRow feature in features)
-                        {
-                            renderer.RenderGeometry(feature);
-                        }
-                    }
-                }
-            }
-
-            IEnumerable<KeyValuePair<BoundingBox, Image>> images = _imageTileCache.GetCachedImagesForRegion(worldRegion);
+            BoundingBox worldRegion = Transform2D.ViewToWorld(ViewConverter.GdiToView(region), MapView.ViewPort);
             throw new NotImplementedException();
         }
 

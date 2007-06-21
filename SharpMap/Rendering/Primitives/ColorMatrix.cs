@@ -128,9 +128,13 @@ namespace SharpMap.Rendering
         {
             get
             {
-#warning: returning true here is wrong
                 return true;
             }
+        }
+
+        public bool IsEmpty
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
         }
 
         public double[,] Elements

@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -32,20 +33,27 @@ namespace SharpMap.Rendering.Rendering2D
 		/// Simple and fast label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static IEnumerable<TLabel> SimpleCollisionDetection<TLabel>(IList<TLabel> labels)
+		public static IEnumerable SimpleCollisionDetection(IList labels)
 		{
-			Converter<IList<TLabel>, List<Label2D>> converter = createConverter<TLabel>();
+            ArrayList labelList = new ArrayList(labels);
 
-			List<Label2D> labelList = converter(labels);
-
-			labelList.Sort(); // sort labels by intersectiontests of labelbox
+			labelList.Sort(); // sort labels by intersection tests of the label's collision box
 
 			//remove labels that intersect other labels
 			for (int i = labelList.Count - 1; i > 0; i--)
 			{
-				if (labelList[i].CompareTo(labelList[i - 1]) == 0)
+                Label2D label1 = labelList[i] as Label2D;
+                Label2D label2 = labelList[i - 1] as Label2D;
+
+                if (label1 == null)
+                {
+                    labelList.RemoveAt(i);
+                    continue;
+                }
+
+                if (label1.CompareTo(label2) == 0)
 				{
-					if (labelList[i].Priority > labelList[i - 1].Priority)
+                    if (label1.Priority > label2.Priority)
 					{
 						labelList.RemoveAt(i - 1);
 					}
@@ -59,27 +67,13 @@ namespace SharpMap.Rendering.Rendering2D
 			return labelList;
 		}
 
-		private static Converter<IList<TLabel>, List<Label2D>> createConverter<TLabel>()
-		{
-			return new Converter<IList<TLabel>, List<Label2D>>(delegate(IList<TLabel> innerLabels)
-			{
-				List<Label2D> labelList = new List<Label2D>();
-				foreach (TLabel label in innerLabels)
-				{
-					labelList.Add((Label2D)label);
-				}
-
-				return labelList;
-			});
-		}
-
 		/// <summary>
 		/// Thorough label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-        public static IEnumerable<Label2D> ThoroughCollisionDetection(IList<Label2D> labels)
-		{
-            List<Label2D> labelList = new List<Label2D>(labels);
+        public static IEnumerable ThoroughCollisionDetection(IList labels)
+        {
+            ArrayList labelList = new ArrayList(labels);
 
             labelList.Sort(); // sort labels by intersectiontests of labelbox
 
@@ -87,10 +81,19 @@ namespace SharpMap.Rendering.Rendering2D
             for (int i = labelList.Count - 1; i > 0; i--)
 			{
 				for (int j = i - 1; j > 0; j--)
-				{
-                    if (labelList[i].CompareTo(labelList[j]) == 0)
+                {
+                    Label2D label1 = labelList[i] as Label2D;
+                    Label2D label2 = labelList[j] as Label2D;
+
+                    if (label1 == null)
+                    {
+                        labelList.RemoveAt(i);
+                        break;
+                    }
+
+                    if (label1.CompareTo(label2) == 0)
 					{
-                        if (labelList[i].Priority >= labelList[j].Priority)
+                        if (label1.Priority >= label2.Priority)
 						{
                             labelList.RemoveAt(j);
 							i--;

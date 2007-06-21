@@ -27,7 +27,7 @@ using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Presentation.WinForms
 {
-    class ImageTileCache : LinearDynamicQuadTree<Bitmap>
+    internal class ImageTileCache : LinearDynamicQuadTree<Bitmap>
     {
 		/// <summary>
 		/// Creates a new ImageTileCache.
@@ -71,9 +71,9 @@ namespace SharpMap.Presentation.WinForms
 
 			for (int nodeIndex = 0; nodeIndex < node.Items.Count; nodeIndex++)
 			{
-				QuadTreeNode<Bitmap> node = Items[nodeIndex];
+				QuadTreeNode<Bitmap> testNode = Items[nodeIndex];
 
-				if (node.BoundingBox.Intersects(searchBounds))
+                if (testNode.BoundingBox.Intersects(searchBounds))
 				{
 					intersectNodes[++intersectNodeIndex] = nodeIndex;
 				}

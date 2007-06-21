@@ -49,7 +49,7 @@ namespace SharpMap.Rendering.Gdi
     /// <summary>
     /// A <see cref="VectorRenderer{GdiRenderObject}"/> which renders to GDI primatives.
     /// </summary>
-    public class GdiVectorRenderer : VectorRenderer2D<GdiRenderObject>
+    public class GdiVectorRenderer : VectorRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
     {
         private Dictionary<BrushLookupKey, Brush> _brushCache = new Dictionary<BrushLookupKey,Brush>();
         private Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
@@ -82,7 +82,7 @@ namespace SharpMap.Rendering.Gdi
             base.Dispose(disposing);            
         }
 
-        public override GdiRenderObject RenderPath(GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderPath(GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
         {
             int pointCount = viewPath.Points.Count;
 
@@ -98,22 +98,26 @@ namespace SharpMap.Rendering.Gdi
                 }
             }
 
+            RectangleF bounds = gdiPath.GetBounds();
+            double centerX = bounds.Left + bounds.Width / 2;
+            double centerY = bounds.Top + bounds.Height / 2;
+
             GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill), getBrush(selectFill), getPen(outline), getPen(highlightOutline), getPen(selectOutline));
-            return holder;
+            return new PositionedRenderObject2D<GdiRenderObject>(centerX, centerY, holder);
         }
 
-        public override GdiRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
         {
             SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
             return RenderPath(path, transparentBrush, transparentBrush, transparentBrush, outline, highlightOutline, selectOutline);
         }
 
-        public override GdiRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(ViewPoint2D location, Symbol2D symbolData)
         {
             return RenderSymbol(location, symbolData, symbolData, symbolData);
         }
 
-        public override GdiRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(ViewPoint2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
         {
             Symbol2D highlightSymbol = symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
@@ -124,7 +128,7 @@ namespace SharpMap.Rendering.Gdi
             return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
         }
 
-        public override GdiRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(ViewPoint2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
         {
             if (highlightSymbol == null)
             {
@@ -140,7 +144,7 @@ namespace SharpMap.Rendering.Gdi
             Matrix transform = ViewConverter.ViewToGdi(symbol.AffineTransform);
             GdiColorMatrix colorTransform = ViewConverter.ViewToGdi(symbol.ColorTransform);
             GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
-            return holder;
+            return new PositionedRenderObject2D<GdiRenderObject>(location.X, location.Y, holder);
 
             //if (symbolRotation != 0 && symbolRotation != float.NaN)
             //{

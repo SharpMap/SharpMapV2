@@ -216,6 +216,11 @@ namespace SharpMap.Rendering.Rendering3D
             }
         }
 
+        public bool IsEmpty
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
         public void Invert()
         {
             throw new Exception("The method or operation is not implemented.");

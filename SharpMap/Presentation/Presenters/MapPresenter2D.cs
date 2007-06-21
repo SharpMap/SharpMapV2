@@ -34,9 +34,9 @@ namespace SharpMap.Presentation
     /// <summary>
     /// Provides the input-handling and view-updating logic for a 2D map view.
     /// </summary>
-    public class MapPresenter2D //: IViewTransformer<ViewPoint2D, ViewRectangle2D>
+    public class MapPresenter2D
     {
-        private SharpMap.Map _map;
+        private Map _map;
         private IMapView2D _concreteView;
         private ViewSelection2D _selection;
         private bool _disposed = false;
@@ -44,7 +44,7 @@ namespace SharpMap.Presentation
         private ViewPoint2D _lastMoveLocation;
         
         #region Object Construction/Destruction
-        public MapPresenter2D(SharpMap.Map map, IMapView2D mapView)
+        public MapPresenter2D(Map map, IMapView2D mapView)
         {
             Map = map;
             Map.LayersCollectionChanged += new EventHandler<ModelCollectionChangedEventArgs<ILayer>>(Map_LayersChanged);
@@ -96,12 +96,15 @@ namespace SharpMap.Presentation
         /// <summary>
         /// The map.
         /// </summary>
-        public SharpMap.Map Map
+        public Map Map
         {
             get { return _map; }
             protected set { _map = value; }
         }
 
+        /// <summary>
+        /// The view.
+        /// </summary>
         public IMapView2D MapView
         {
             get { return _concreteView; }

@@ -22,18 +22,24 @@ using System.Text;
 
 namespace SharpMap.Rendering.Rendering2D
 {
+    /// <summary>
+    /// A point in 2 dimensional Cartesian space.
+    /// </summary>
     [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
     public struct ViewPoint2D : IViewVector
     {
+        public static readonly ViewPoint2D Empty = new ViewPoint2D();
         public static readonly ViewPoint2D Zero = new ViewPoint2D(0, 0);
 
         private double _x, _y;
+        private bool _hasValue;
 
+        #region Constructors
         public ViewPoint2D(double x, double y)
         {
             _x = x;
             _y = y;
+            _hasValue = true;
         }
 
         public ViewPoint2D(double[] elements)
@@ -50,8 +56,21 @@ namespace SharpMap.Rendering.Rendering2D
 
             _x = elements[0];
             _y = elements[1];
+            _hasValue = true;
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            return String.Format("[ViewPoint2D] ({0:N3}, {1:N3})", _x, _y);
         }
 
+        public override int GetHashCode()
+        {
+            return unchecked((int)_x ^ (int)_y);
+        }
+
+        #region Properties
         public double X
         {
             get { return _x; }
@@ -61,6 +80,52 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get { return _y; }
         }
+        #endregion
+
+        #region Equality Testing
+
+        public static bool operator ==(ViewPoint2D vector1, IViewVector vector2)
+        {
+            return vector1.Equals(vector2);
+        }
+
+        public static bool operator !=(ViewPoint2D vector1, IViewVector vector2)
+        {
+            return !(vector1 == vector2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as IViewVector);
+        }
+
+        #region IEquatable<IViewVector> Members
+
+        public bool Equals(IViewVector other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (Elements.Length != other.Elements.Length)
+            {
+                return false;
+            }
+
+            for (int elementIndex = 0; elementIndex < Elements.Length; elementIndex++)
+            {
+                if (this[elementIndex] != other[elementIndex])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion
+        #endregion
 
         #region IViewVector Members
 
@@ -74,12 +139,22 @@ namespace SharpMap.Rendering.Rendering2D
             get 
             {
                 if (element == 0)
+                {
                     return _x;
+                }
+
                 if (element == 1)
+                {
                     return _y;
+                }
 
                 throw new IndexOutOfRangeException("The element index must be either 0 or 1 for a 2D point");
             }
+        }
+
+        public bool IsEmpty
+        {
+            get { return _hasValue; }
         }
 
         #endregion
@@ -89,27 +164,6 @@ namespace SharpMap.Rendering.Rendering2D
         public object Clone()
         {
             return new ViewPoint2D(_x, _y);
-        }
-
-        #endregion
-
-        #region IEquatable<IViewVector> Members
-
-        public bool Equals(IViewVector other)
-        {
-            if (other == null)
-                return false;
-
-            if (Elements.Length != other.Elements.Length)
-                return false;
-
-            for (int elementIndex = 0; elementIndex < Elements.Length; elementIndex++)
-            {
-                if (this[elementIndex] != other[elementIndex])
-                    return false;
-            }
-
-            return true;
         }
 
         #endregion
@@ -132,30 +186,5 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #endregion
-
-        public static bool operator ==(ViewPoint2D vector1, IViewVector vector2)
-        {
-            return vector1.Equals(vector2);
-        }
-
-        public static bool operator !=(ViewPoint2D vector1, IViewVector vector2)
-        {
-            return !(vector1 == vector2);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as IViewVector);
-        }
-
-        public override int GetHashCode()
-        {
-            return unchecked((int)_x ^ (int)_y);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("ViewPoint2D - ({0:N3}, {1:N3})", _x, _y);
-        }
     }
 }

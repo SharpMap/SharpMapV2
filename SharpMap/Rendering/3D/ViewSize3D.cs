@@ -19,17 +19,41 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering3D
 {
-    public struct ViewSize3D
+    /// <summary>
+    /// A measurement of size in 3 dimensions.
+    /// </summary>
+    public struct ViewSize3D : IViewVector
     {
         private double _width, _height, _depth;
+        private bool _hasValue;
 
+        public static readonly ViewSize3D Empty = new ViewSize3D();
+        public static readonly ViewSize3D Zero = new ViewSize3D(0, 0, 0);
+
+        /// <summary>
+        /// Creates a new non-empty ViewSize3D with the given values.
+        /// </summary>
+        /// <param name="width">Width of the measurement.</param>
+        /// <param name="height">Height of the measurement.</param>
+        /// <param name="depth">Depth of the measurement.</param>
         public ViewSize3D(double width, double height, double depth)
         {
             _width = width;
             _height = height;
             _depth = depth;
+            _hasValue = true;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("[ViewSize3D] Width: {0}, Height: {1}, Depth: {1}", Width, Height, Depth);
+        }
+
+        public override int GetHashCode()
+        {
+            return unchecked(Width.GetHashCode() ^ Height.GetHashCode() ^ Depth.GetHashCode());
         }
 
         public double Width
@@ -47,34 +71,87 @@ namespace SharpMap.Rendering
             get { return _depth; }
         }
 
-        public override string ToString()
+        public override bool Equals(object obj)
         {
-            return String.Format("Size - width: {0}, height: {1}, depth: {1}", Width, Height, Depth);
+            if (!(obj is ViewSize3D))
+            {
+                return false;
+            }
+
+            return Equals((ViewSize3D)obj);
         }
+
+        public bool Equals(ViewSize3D size)
+        {
+            return this._hasValue == size._hasValue
+                && this.Width == size.Width
+                && this.Height == size.Height
+                && this.Depth == size.Depth;
+        }
+
+        #region IViewVector Members
+
+        public double[] Elements
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public double this[int element]
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public bool IsEmpty
+        {
+            get { return _hasValue; }
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public object Clone()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IEquatable<IViewVector> Members
+
+        public bool Equals(IViewVector other)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IEnumerable<double> Members
+
+        public IEnumerator<double> GetEnumerator()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
 
         public static bool operator !=(ViewSize3D size1, ViewSize3D size2)
         {
-            return size1.Width != size2.Width || size1.Height != size2.Height || size1.Depth != size2.Depth;
+            return ! (size1 == size2);
         }
 
         public static bool operator ==(ViewSize3D size1, ViewSize3D size2)
         {
-            return size1.Width == size2.Width && size1.Height == size2.Height && size1.Depth == size2.Depth;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is ViewSize3D))
-                return false;
-
-            ViewSize3D other = (ViewSize3D)obj;
-
-            return this == other;
-        }
-
-        public override int GetHashCode()
-        {
-            return unchecked(Width.GetHashCode() ^ Height.GetHashCode() ^ Depth.GetHashCode());
+            return size1.Equals(size2);
         }
     }
 }

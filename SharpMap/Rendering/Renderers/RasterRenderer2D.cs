@@ -25,8 +25,7 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class RasterRenderer2D<TStyle, TRenderObject> : IRasterRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
-        where TStyle : class, IStyle
+    public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
     {
         #region IRasterLayerRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
 
@@ -37,30 +36,6 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
-
-        public IStyle Style
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-            set
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
-
-        public SharpMap.Rendering.Thematics.ITheme Theme
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-            set
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
 
         public IViewMatrix ViewTransform
         {
@@ -85,12 +60,6 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new Exception("The method or operation is not implemented.");
             }
         }
-
-        public IList<TRenderObject> RenderedObjects
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
-
         #endregion
 
         #region IDisposable Members

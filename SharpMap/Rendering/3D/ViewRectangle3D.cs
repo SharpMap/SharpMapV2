@@ -20,10 +20,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering3D
 {
     [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
     public struct ViewRectangle3D : IViewMatrix, IComparable<ViewRectangle3D>
     {
         private double _xMin;
@@ -32,6 +31,10 @@ namespace SharpMap.Rendering
         private double _yMax;
         private double _zMin;
         private double _zMax;
+        private bool _hasValue;
+
+        public static readonly ViewRectangle3D Empty = new ViewRectangle3D();
+        public static readonly ViewRectangle3D Zero = new ViewRectangle3D(0, 0, 0, 0, 0, 0);
 
         public ViewRectangle3D(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
         {
@@ -41,6 +44,7 @@ namespace SharpMap.Rendering
             _yMax = yMax;
             _zMin = zMin;
             _zMax = zMax;
+            _hasValue = true;
         }
 
         public ViewRectangle3D(ViewPoint3D location, ViewSize3D size)
@@ -51,6 +55,7 @@ namespace SharpMap.Rendering
             _xMax = _xMin + size.Width;
             _yMax = _yMin + size.Height;
             _zMax = _zMin + size.Depth;
+            _hasValue = true;
         }
 
         public double X
@@ -146,7 +151,9 @@ namespace SharpMap.Rendering
         public override bool Equals(object obj)
         {
             if (!(obj is ViewRectangle3D))
+            {
                 return false;
+            }
 
             ViewRectangle3D other = (ViewRectangle3D)obj;
 
@@ -220,6 +227,11 @@ namespace SharpMap.Rendering
         public bool IsInvertible
         {
             get { return false; }
+        }
+
+        public bool IsEmpty
+        {
+            get { return _hasValue; }
         }
 
         public double[,] Elements

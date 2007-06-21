@@ -22,6 +22,9 @@ using System.Text;
 
 namespace SharpMap.Rendering.Rendering2D
 {
+    /// <summary>
+    /// Represents a 2 dimensional affine transform matrix (a 3x3 matrix).
+    /// </summary>
     [Serializable]
     public class ViewMatrix2D : IViewMatrix
     {
@@ -35,6 +38,7 @@ namespace SharpMap.Rendering.Rendering2D
         private double _y1, _y2, _y3;
         private double _w1, _w2, _w3;
 
+        #region Constructors
         public ViewMatrix2D()
             : this(Identity) { }
 
@@ -61,13 +65,15 @@ namespace SharpMap.Rendering.Rendering2D
             this._w2 = matrixToCopy._w2;
             this._w3 = matrixToCopy._w3;
         }
+        #endregion
 
         public override string ToString()
         {
-            return String.Format("ViewMatrix2D - [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
+            return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
                 X1, X2, X3, Y1, Y2, Y3, W1, W2, W3);
         }
 
+        #region Properties
         public double X1
         {
             get { return _x1; }
@@ -121,6 +127,7 @@ namespace SharpMap.Rendering.Rendering2D
             get { return _w3; }
             set { _w3 = value; }
         }
+        #endregion
 
         #region IViewMatrix Members
 
@@ -161,6 +168,11 @@ namespace SharpMap.Rendering.Rendering2D
 #warning: returning true here is wrong
                 return true;
             }
+        }
+
+        public bool IsEmpty
+        {
+            get { return false; }
         }
 
         public void Invert()
