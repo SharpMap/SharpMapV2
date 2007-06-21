@@ -243,29 +243,33 @@ namespace SharpMap.Tests.RenderingTests
 		[ExpectedException(typeof(ArgumentException))]
 		public void ElementsTest3()
 		{
-		}		
+		}
 
 		[Test]
+		[ExpectedException(typeof(NotSupportedException))]
 		public void RotateTest()
 		{
 		}
-		
+
 		[Test]
+		[ExpectedException(typeof(NotSupportedException))]
 		public void RotateAtTest()
 		{
 		}
-		
+
 		[Test]
 		public void GetOffsetTest()
 		{
+			throw new NotImplementedException();
 		}
 		
 		[Test]
 		public void OffsetTest()
 		{
 		}
-		
+
 		[Test]
+		[ExpectedException(typeof(NotSupportedException))]
 		public void MultiplyTest()
 		{
 		}
@@ -284,11 +288,27 @@ namespace SharpMap.Tests.RenderingTests
 		[Test]
 		public void TranslateTest1()
 		{
+			ViewRectangle2D r1 = ViewRectangle2D.Empty;
+			ViewRectangle2D r2 = ViewRectangle2D.Zero;
+
+			r1.Translate(10);
+			Assert.IsTrue(r1.IsEmpty);
+			Assert.AreEqual(r1.X, 0);
+			Assert.AreEqual(r1.Y, 0);
+			Assert.AreEqual(r1.Width, 0);
+			Assert.AreEqual(r1.Height, 0);
+
+			r2.Translate(new ViewPoint2D(3, 5));
+			Assert.AreEqual(r2.X, 3);
+			Assert.AreEqual(r2.Y, 5);
 		}
-		
+
 		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void TranslateTest2()
 		{
+			ViewRectangle2D r1 = ViewRectangle2D.Zero;
+			r1.Translate(new SharpMap.Rendering.Rendering3D.ViewPoint3D(3, 4, 5));
 		}
 		
 		[Test]
@@ -304,6 +324,7 @@ namespace SharpMap.Tests.RenderingTests
 		public void Transform2Test2()
 		{
 			ViewRectangle2D rect = new ViewRectangle2D(9, 10, -5, -6);
+			double[] val = rect.Transform(1, 4);
 		}
 	}
 	#endregion
