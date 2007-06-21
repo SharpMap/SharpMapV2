@@ -45,6 +45,7 @@ namespace SharpMap.Layers
         private string _layerName;
         private int _srid = -1;
         private IStyle _style = new Style();
+		private bool _disposed;
 
 		/// <summary>
 		/// Returns the name of the layer.
@@ -150,6 +151,20 @@ namespace SharpMap.Layers
 		public abstract object Clone();
 
 		#endregion
+
+		protected bool IsDisposed
+		{
+			get { return _disposed; }
+			set 
+			{
+				if (_disposed == true && value == false)
+				{
+					return;
+				}
+
+				_disposed = value; 
+			}
+		}
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

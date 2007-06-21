@@ -87,7 +87,6 @@ namespace SharpMap.Layers
 			}
 		}
 
-
 		#region ICloneable Members
 
 		/// <summary>
@@ -101,19 +100,24 @@ namespace SharpMap.Layers
 
 		#endregion
 
-		#region IDisposable Members
-
-		/// <summary>
-		/// Disposes the object
-		/// </summary>
-		public void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			foreach (SharpMap.Layers.Layer layer in this.Layers)
-				if (layer is IDisposable)
-					((IDisposable)layer).Dispose();
-			this.Layers.Clear();
-		}
+			if (IsDisposed)
+			{
+				return;
+			}
 
-		#endregion
+			foreach (Layer layer in Layers)
+			{
+				if (layer is IDisposable)
+				{
+					((IDisposable)layer).Dispose();
+				}
+			}
+
+			this.Layers.Clear();
+
+			base.Dispose(disposing);
+		}
 	}
 }

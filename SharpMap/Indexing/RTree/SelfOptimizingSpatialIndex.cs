@@ -118,10 +118,12 @@ namespace SharpMap.Indexing.RTree
         }
 
         private void terminateThreads()
-        {
-            Interlocked.Increment(ref _terminating);
+		{
+			#pragma warning disable 420
+			Interlocked.Increment(ref _terminating);
+			#pragma warning restore 420
 
-            if (!_pollIdleThread.Join(20000))
+			if (!_pollIdleThread.Join(20000))
             {
                 _pollIdleThread.Abort();
             }

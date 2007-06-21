@@ -84,20 +84,37 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Testing
 
-        public static bool operator ==(ViewPoint2D vector1, IViewVector vector2)
+        public static bool operator ==(ViewPoint2D lhs, IViewVector rhs)
         {
-            return vector1.Equals(vector2);
+            return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ViewPoint2D vector1, IViewVector vector2)
+        public static bool operator !=(ViewPoint2D lhs, IViewVector rhs)
         {
-            return !(vector1 == vector2);
+			return !lhs.Equals(rhs);
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as IViewVector);
-        }
+			if (obj is ViewPoint2D)
+			{
+				return Equals((ViewPoint2D)obj);
+			}
+
+			if (obj is IViewVector)
+			{
+				return Equals(obj as IViewVector);
+			}
+
+			return false;
+		}
+
+		public bool Equals(ViewPoint2D point)
+		{
+			return X == point.X &&
+				Y == point.Y &&
+				IsEmpty == point.IsEmpty;
+		}
 
         #region IEquatable<IViewVector> Members
 
@@ -131,7 +148,15 @@ namespace SharpMap.Rendering.Rendering2D
 
         public double[] Elements
         {
-            get { return new double[] { _x, _y }; }
+            get 
+			{
+				if (IsEmpty)
+				{
+					return new double[0];
+				}
+
+				return new double[] { _x, _y }; 
+			}
         }
 
         public double this[int element]
@@ -154,7 +179,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public bool IsEmpty
         {
-            get { return _hasValue; }
+            get { return !_hasValue; }
         }
 
         #endregion

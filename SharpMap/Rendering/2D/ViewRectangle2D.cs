@@ -247,12 +247,16 @@ namespace SharpMap.Rendering.Rendering2D
         /// </returns>
         public int CompareTo(ViewRectangle2D other)
         {
-            if (this.Intersects(other))
-                return 0;
+			if (this.Intersects(other))
+			{
+				return 0;
+			}
 
-            if (other.Left > Right || other.Top > Bottom)
-                return -1;
-            
+			if (other.Left > Right || other.Top > Bottom)
+			{
+				return -1;
+			}
+
             return 1;
         }
 
@@ -289,6 +293,11 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get 
             {
+				if (IsEmpty)
+				{
+					return new double[0, 0];
+				}
+
                 return new double[,] { { Left, Top }, { Right, Bottom } };
             }
             set
@@ -385,12 +394,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         public IViewVector Transform(IViewVector vector)
         {
-            throw new Exception("The method or operation is not implemented.");
+			throw new NotSupportedException();
         }
 
         public double[] Transform(params double[] vector)
-        {
-            throw new Exception("The method or operation is not implemented.");
+		{
+			throw new NotSupportedException();
         }
 
         #endregion

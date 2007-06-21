@@ -165,7 +165,6 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get
             {
-#warning: returning true here is wrong
                 return true;
             }
         }

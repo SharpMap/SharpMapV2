@@ -211,7 +211,6 @@ namespace SharpMap.Rendering.Rendering3D
         {
             get
             {
-#warning: returning true here is wrong
                 return true;
             }
         }

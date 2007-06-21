@@ -273,12 +273,21 @@ namespace SharpMap.Layers
         #region IDisposable Members
 
         /// <summary>
-        /// Disposes the object
+        /// Disposes the object.
         /// </summary>
-        public void Dispose()
+        protected override void  Dispose(bool disposing)
         {
-            if (DataSource is IDisposable)
-                ((IDisposable)DataSource).Dispose();
+			if (IsDisposed)
+			{
+				return;
+			}
+
+			if (DataSource is IDisposable)
+			{
+				(DataSource as IDisposable).Dispose();
+			}
+
+			base.Dispose(disposing);
         }
 
         #endregion

@@ -12,6 +12,7 @@ using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
 
@@ -105,7 +106,7 @@ namespace SharpMap.Tests
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			Expect.On(mapView).Call(mapView.ViewPort).Return(viewPort);
 
-			mapView.ViewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(200, 400);
+			mapView.ViewPort.ViewSize = new ViewSize2D(200, 400);
 
 			mapView.ViewPort.ZoomToWidth(3500);
 			Assert.AreEqual(8.75, mapView.ViewPort.WorldUnitsPerPixel);
@@ -123,7 +124,7 @@ namespace SharpMap.Tests
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
 			Expect.On(mapView).Call(mapView.ViewPort).Return(viewPort);
 
-			mapView.ViewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(200, 400);
+			mapView.ViewPort.ViewSize = new ViewSize2D(200, 400);
 
 			mapView.ViewPort.ZoomToWidth(3500);
 			Assert.AreEqual(1750, mapView.ViewPort.WorldHeight);
@@ -210,7 +211,7 @@ namespace SharpMap.Tests
             Map map = new Map();
 			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
+			viewPort.ViewSize = new ViewSize2D(400, 200);
 
 			viewPort.ZoomToBox(new SharpMap.Geometries.BoundingBox(20, 50, 100, 80));
 			Assert.AreEqual(new SharpMap.Geometries.Point(60, 65), map.Center);
@@ -224,7 +225,7 @@ namespace SharpMap.Tests
             Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
+			viewPort.ViewSize = new ViewSize2D(400, 200);
 
 			viewPort.ZoomToBox(new SharpMap.Geometries.BoundingBox(20, 10, 100, 180));
 			Assert.AreEqual(new SharpMap.Geometries.Point(60, 95), viewPort.GeoCenter);
@@ -247,7 +248,7 @@ namespace SharpMap.Tests
             Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(500, 200);
+			viewPort.ViewSize = new ViewSize2D(500, 200);
 
 			viewPort.GeoCenter = new SharpMap.Geometries.Point(23, 34);
 			viewPort.ZoomToWidth(1000);
@@ -263,7 +264,7 @@ namespace SharpMap.Tests
             Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(500, 200);
+			viewPort.ViewSize = new ViewSize2D(500, 200);
 
             viewPort.GeoCenter = new SharpMap.Geometries.Point(23, 34);
             viewPort.ZoomToWidth(1000);
@@ -279,7 +280,7 @@ namespace SharpMap.Tests
             Map map = new Map();
             IMapView2D mapView = mocks.CreateMock<IMapView2D>();
 			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new SharpMap.Rendering.ViewSize2D(400, 200);
+			viewPort.ViewSize = new ViewSize2D(400, 200);
 
 			SharpMap.Layers.VectorLayer vLayer = new SharpMap.Layers.VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 			vLayer.Style.Outline = new StylePen(StyleColor.Red, 2f);

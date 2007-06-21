@@ -44,27 +44,32 @@
     <Compile Include="Converters\WKB\WKBTests.cs" />
     <Compile Include="Converters\WKT\WKTCoordSysParserTests.cs" />
     <Compile Include="Converters\WKT\WktGeometryTests.cs" />
-    <Compile Include="CoordinateTransformTests.cs" />
+    <Compile Include="CoordinateTransformTests\CoordinateTransformTests.cs" />
     <Compile Include="DataSourceHelper.cs" />
-    <Compile Include="FeaturePresenterTests.cs" />
+    <Compile Include="PresentationTests\FeaturePresenterTests.cs" />
     <Compile Include="Geometries\BoundingBoxTests.cs" />
     <Compile Include="Geometries\LinestringTests.cs" />
     <Compile Include="Geometries\MultiLinestringsTests.cs" />
     <Compile Include="Geometries\PointTests.cs" />
     <Compile Include="Geometries\PolygonTests.cs" />
-    <Compile Include="LayerPresenterTests.cs" />
-    <Compile Include="LayerStylePresenterTests.cs" />
-    <Compile Include="MapPresenterTests.cs" />
-    <Compile Include="MapTests.cs" />
+    <Compile Include="PresentationTests\LayerPresenterTests.cs" />
+    <Compile Include="PresentationTests\LayerStylePresenterTests.cs" />
+    <Compile Include="PresentationTests\MapPresenterTests.cs" />
+    <Compile Include="ModelTests\MapTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScreenHelper.cs" />
-    <Compile Include="ToolsPresenterTests.cs" />
+    <Compile Include="PresentationTests\ScreenHelper.cs" />
+    <Compile Include="PresentationTests\ToolsPresenterTests.cs" />
+    <Compile Include="RenderingTests\Rendering2DTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="IndexingTests\" />
+    <Folder Include="ProviderTests\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
