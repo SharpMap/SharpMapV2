@@ -36,7 +36,7 @@ namespace SharpMap.Layers
     /// <example>
     /// Adding a <see cref="VectorLayer"/> to a map:
     /// </example>
-    public class VectorLayer : Layer, IFeatureLayer, IDisposable
+    public class VectorLayer : Layer, IFeatureLayer
     {
         private IProvider _dataSource;
 		private Predicate<FeatureDataRow> _featureSelectionClause;

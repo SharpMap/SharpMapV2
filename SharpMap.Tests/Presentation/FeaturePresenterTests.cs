@@ -4,7 +4,7 @@ using System.Text;
 
 using NUnit.Framework;
 
-namespace SharpMap.Tests
+namespace SharpMap.Tests.Presentation
 {
     [TestFixture]
     public class FeaturePresenterTests

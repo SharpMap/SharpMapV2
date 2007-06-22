@@ -9,7 +9,7 @@ using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using NUnit.Framework;
 
-namespace SharpMap.Tests
+namespace SharpMap.Tests.Presentation
 {
     [TestFixture]
     public class ToolsPresenterTests

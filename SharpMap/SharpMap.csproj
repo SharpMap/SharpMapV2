@@ -206,6 +206,9 @@
     <Compile Include="Model\Layers\LayerGroup.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Model\Layers\RasterLayer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Model\Layers\VectorLayer.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SharpMap.Tests
+namespace SharpMap.Tests.Presentation
 {
 	public static class ScreenHelper
 	{

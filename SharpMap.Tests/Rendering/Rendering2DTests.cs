@@ -8,7 +8,7 @@ using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Rendering.Rendering3D;
 
-namespace SharpMap.Tests.RenderingTests
+namespace SharpMap.Tests.Rendering
 {
 	#region ViewPoint2D
 	[TestFixture]

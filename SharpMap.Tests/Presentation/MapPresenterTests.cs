@@ -16,7 +16,7 @@ using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
 
-namespace SharpMap.Tests
+namespace SharpMap.Tests.Presentation
 {
 	[TestFixture]
 	public class MapPresenterTests

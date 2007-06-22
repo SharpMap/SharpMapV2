@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 using SharpMap.Geometries;
@@ -26,8 +27,8 @@ namespace SharpMap.Tests
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
 			
-			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
+			Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("central_meridian", -96));
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 23));
 			parameters.Add(new ProjectionParameter("standard_parallel_1", 29.5));
@@ -41,11 +42,11 @@ namespace SharpMap.Tests
 
 			ICoordinateTransformation trans = new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
 
-			SharpMap.Geometries.Point pGeo = new SharpMap.Geometries.Point(-75, 35);
-			SharpMap.Geometries.Point pUtm = trans.MathTransform.Transform(pGeo);
-			SharpMap.Geometries.Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
+			Point pGeo = new Point(-75, 35);
+			Point pUtm = trans.MathTransform.Transform(pGeo);
+			Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
-			SharpMap.Geometries.Point expected = new Point(1885472.7, 1535925);
+			Point expected = new Point(1885472.7, 1535925);
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05), String.Format("Albers forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Albers reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
@@ -61,8 +62,8 @@ namespace SharpMap.Tests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Bessel 1840", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
+			Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 0));
 			parameters.Add(new ProjectionParameter("central_meridian", 110));
 			parameters.Add(new ProjectionParameter("scale_factor", 0.997));
@@ -74,11 +75,11 @@ namespace SharpMap.Tests
 
 			ICoordinateTransformation trans = new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
 
-			SharpMap.Geometries.Point pGeo = new SharpMap.Geometries.Point(120, -3);
-			SharpMap.Geometries.Point pUtm = trans.MathTransform.Transform(pGeo);
-			SharpMap.Geometries.Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
+			Point pGeo = new Point(120, -3);
+			Point pUtm = trans.MathTransform.Transform(pGeo);
+			Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
-			SharpMap.Geometries.Point expected = new Point(5009726.58, 569150.82);
+			Point expected = new Point(5009726.58, 569150.82);
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("Mercator_1SP forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Mercator_1SP reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
@@ -94,8 +95,8 @@ namespace SharpMap.Tests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Krassowski 1940", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
+			Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 42));
 			parameters.Add(new ProjectionParameter("central_meridian", 51));
 			parameters.Add(new ProjectionParameter("false_easting", 0));
@@ -106,11 +107,11 @@ namespace SharpMap.Tests
 
 			ICoordinateTransformation trans = new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
 
-			SharpMap.Geometries.Point pGeo = new SharpMap.Geometries.Point(53, 53);
-			SharpMap.Geometries.Point pUtm = trans.MathTransform.Transform(pGeo);
-			SharpMap.Geometries.Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
+			Point pGeo = new Point(53, 53);
+			Point pUtm = trans.MathTransform.Transform(pGeo);
+			Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
-			SharpMap.Geometries.Point expected = new Point(165704.29, 5171848.07);
+			Point expected = new Point(165704.29, 5171848.07);
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("Mercator_2SP forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Mercator_2SP reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
@@ -126,8 +127,8 @@ namespace SharpMap.Tests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Airy 1830", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
+			Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 49));
 			parameters.Add(new ProjectionParameter("central_meridian", -2));
 			parameters.Add(new ProjectionParameter("scale_factor", 0.9996012717));
@@ -139,11 +140,11 @@ namespace SharpMap.Tests
 
 			ICoordinateTransformation trans = new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
 
-			SharpMap.Geometries.Point pGeo = new SharpMap.Geometries.Point(0.5, 50.5);
-			SharpMap.Geometries.Point pUtm = trans.MathTransform.Transform(pGeo);
-			SharpMap.Geometries.Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
+			Point pGeo = new Point(0.5, 50.5);
+			Point pUtm = trans.MathTransform.Transform(pGeo);
+			Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
-			SharpMap.Geometries.Point expected = new Point(577274.99, 69740.50);
+			Point expected = new Point(577274.99, 69740.50);
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("TransverseMercator forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("TransverseMercator reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 		}
@@ -159,8 +160,8 @@ namespace SharpMap.Tests
 			IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem("Clarke 1866", AngularUnit.Degrees, datum,
 				PrimeMeridian.Greenwich, new AxisInfo("Lon", AxisOrientationEnum.East),
 				new AxisInfo("Lat", AxisOrientationEnum.North));
-			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
+			Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 27.833333333));
 			parameters.Add(new ProjectionParameter("central_meridian", -99));
 			parameters.Add(new ProjectionParameter("standard_parallel_1", 28.3833333333));
@@ -173,11 +174,11 @@ namespace SharpMap.Tests
 
 			ICoordinateTransformation trans = new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
 
-			SharpMap.Geometries.Point pGeo = new SharpMap.Geometries.Point(-96, 28.5);
-			SharpMap.Geometries.Point pUtm = trans.MathTransform.Transform(pGeo);
-			SharpMap.Geometries.Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
+			Point pGeo = new Point(-96, 28.5);
+			Point pUtm = trans.MathTransform.Transform(pGeo);
+			Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
-			SharpMap.Geometries.Point expected = new Point(2963503.91, 254759.80);
+			Point expected = new Point(2963503.91, 254759.80);
 			Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("LambertConicConformal2SP forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
 			Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("LambertConicConformal2SP reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
 
@@ -225,8 +226,8 @@ namespace SharpMap.Tests
 			IGeocentricCoordinateSystem gcenCsED50 = cFac.CreateGeocentricCoordinateSystem("ED50 Geocentric", ed50, LinearUnit.Metre, PrimeMeridian.Greenwich);
 
 			//Define projections
-			//System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>(5);
-			System.Collections.ObjectModel.Collection<ProjectionParameter> parameters = new System.Collections.ObjectModel.Collection<ProjectionParameter>();
+			//Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
+			Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
 			parameters.Add(new ProjectionParameter("latitude_of_origin", 0));
 			parameters.Add(new ProjectionParameter("central_meridian", 9));
 			parameters.Add(new ProjectionParameter("scale_factor", 0.9996));
