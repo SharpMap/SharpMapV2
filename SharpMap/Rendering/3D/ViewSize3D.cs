@@ -93,12 +93,30 @@ namespace SharpMap.Rendering.Rendering3D
 
         public double[] Elements
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return new double[] { _width, _height, _depth }; }
         }
 
         public double this[int element]
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get 
+            {
+                if (element == 0)
+                {
+                    return _width;
+                }
+                else if (element == 1)
+                {
+                    return _height;
+                }
+                else if (element == 2)
+                {
+                    return _depth;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("element", element, "Index must be 0 or 1");
+                }
+            }
         }
 
         public bool IsEmpty

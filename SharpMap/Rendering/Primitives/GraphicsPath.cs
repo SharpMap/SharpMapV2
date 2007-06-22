@@ -46,10 +46,40 @@ namespace SharpMap.Rendering
         public GraphicsPath(IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>> figures)
         {
             _figures.AddRange(figures);
+
             if (_figures.Count == 0)
+            {
                 _currentFigureIndex = -1;
+            }
             else
+            {
                 _currentFigureIndex = 0;
+            }
+        }
+
+        public override string ToString()
+        {
+            return String.Format("[{0}] {1} figures of {2} points; Bounds: {3}", GetType(), Figures.Count, typeof(TViewPoint).Name, ComputeBounds());
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 19638952;
+                foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in _figures)
+                {
+                    hash ^= figure.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            GraphicsPath<TViewPoint, TViewBounds> other = obj as GraphicsPath<TViewPoint, TViewBounds>;
+            return this.Equals(other);
         }
 
         public IList<GraphicsFigure<TViewPoint, TViewBounds>> Figures
@@ -68,7 +98,9 @@ namespace SharpMap.Rendering
             set
             {
                 if (_currentFigureIndex < 0 || _currentFigureIndex >= Figures.Count)
+                {
                     throw new ArgumentOutOfRangeException("CurrentFigure", value, "CurentFigure must be the index of an existing figure in this path.");
+                }
 
                 _currentFigureIndex = value;
             }
@@ -111,32 +143,12 @@ namespace SharpMap.Rendering
             List<GraphicsFigure<TViewPoint, TViewBounds>> figuresCopy = new List<GraphicsFigure<TViewPoint, TViewBounds>>(Figures.Count);
 
             foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in Figures)
+            {
                 figuresCopy.Add(figure.Clone());
+            }
 
             GraphicsPath<TViewPoint, TViewBounds> path = CreatePath(figuresCopy);
             return path;
-        }
-
-        public override bool Equals(object obj)
-        {
-            GraphicsPath<TViewPoint, TViewBounds> other = obj as GraphicsPath<TViewPoint, TViewBounds>;
-            return this.Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 19638952;
-                foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in _figures)
-                    hash ^= figure.GetHashCode();
-                return hash;
-            }
-        }
-
-        public override string ToString()
-        {
-            return String.Format("[{0}] {1} figures of {2} points; Bounds: {3}", GetType(), Figures.Count, typeof(TViewPoint).Name, ComputeBounds());
         }
 
         #region IEnumerable<GraphicsFigure<TViewPoint,TViewBounds>> Members

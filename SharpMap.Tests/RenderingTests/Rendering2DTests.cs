@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.Rendering.Rendering3D;
 
 namespace SharpMap.Tests.RenderingTests
 {
@@ -174,19 +175,22 @@ namespace SharpMap.Tests.RenderingTests
 	public class ViewRectangle2DTests
 	{
 		[Test]
-		public void ViewSize2DEqualityTests()
+        public void ViewRectangle2DEqualityTests()
 		{
 			ViewRectangle2D r1 = new ViewRectangle2D();
 			ViewRectangle2D r2 = ViewRectangle2D.Empty;
 			ViewRectangle2D r3 = ViewRectangle2D.Zero;
 			ViewRectangle2D r4 = new ViewRectangle2D(0, 0, 0, 0);
 			ViewRectangle2D r5 = new ViewRectangle2D(9, 10, -5, -6);
+            ViewRectangle2D r6 = new ViewRectangle2D(0, 10, 0, 10);
+            ViewRectangle2D r7 = new ViewRectangle2D(new ViewPoint2D(0, 0), new ViewSize2D(10, 10));
 
 			Assert.AreEqual(r1, r2);
 			Assert.AreNotEqual(r1, r3);
 			Assert.AreEqual(r3, r4);
 			Assert.AreNotEqual(r1, r5);
 			Assert.AreNotEqual(r3, r5);
+            Assert.AreEqual(r6, r7);
 
 			IViewMatrix v1 = (IViewMatrix)r1;
 			IViewMatrix v2 = (IViewMatrix)r2;
@@ -206,83 +210,197 @@ namespace SharpMap.Tests.RenderingTests
 		[Test]
 		public void IntersectsTest()
 		{
+            ViewRectangle2D r1 = ViewRectangle2D.Empty;
+            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            ViewRectangle2D r3 = new ViewRectangle2D(0, 10, 0, 10);
+            ViewRectangle2D r4 = new ViewRectangle2D(new ViewPoint2D(5, 5), new ViewSize2D(10, 10));
+
+            Assert.IsFalse(r1.Intersects(ViewRectangle2D.Empty));
+            Assert.IsFalse(r1.Intersects(r2));
+            Assert.IsFalse(r2.Intersects(r1));
+            Assert.IsTrue(r2.Intersects(r3));
+            Assert.IsTrue(r3.Intersects(r4));
+            Assert.IsTrue(r4.Intersects(r4));
 		}
 
 		[Test]
 		public void CompareTest()
-		{
+        {
+            ViewRectangle2D r1 = ViewRectangle2D.Empty;
+            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            ViewRectangle2D r3 = new ViewRectangle2D(0, 10, 0, 10);
+            ViewRectangle2D r4 = new ViewRectangle2D(new ViewPoint2D(11, -11), new ViewSize2D(10, 10));
+            ViewRectangle2D r5 = new ViewRectangle2D(new ViewPoint2D(-11, -11), new ViewSize2D(10, 10));
+            ViewRectangle2D r6 = new ViewRectangle2D(new ViewPoint2D(11, 11), new ViewSize2D(10, 10));
+
+            Assert.AreEqual(0, r1.CompareTo(ViewRectangle2D.Empty));
+            Assert.AreEqual(-1, r1.CompareTo(r2));
+            Assert.AreEqual(1, r2.CompareTo(r1));
+            Assert.AreEqual(0, r3.CompareTo(r3));
+            Assert.AreEqual(0, r3.CompareTo(r2));
+            Assert.AreEqual(1, r4.CompareTo(r3));
+            Assert.AreEqual(-1, r5.CompareTo(r3));
+            Assert.AreEqual(1, r6.CompareTo(r3));
 		}
 
-		[Test]
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
 		public void ResetTest()
 		{
+            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            r1.Reset();
 		}
 
-		[Test]
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
 		public void InvertTest()
-		{
+        {
+            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            r1.Invert();
 		}
 
-		[Test]
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
 		public void IsInvertableTest()
-		{
+        {
+            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            Assert.IsTrue(r1.IsInvertible);
 		}
 
 		[Test]
 		public void ElementsTest1()
-		{
+        {
+            ViewRectangle2D r1 = ViewRectangle2D.Empty;
+            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            ViewRectangle2D r3 = new ViewRectangle2D(0, 10, 0, 10);
+
+            Assert.AreEqual(0, r1.Elements.Length);
+            Assert.AreEqual(4, r2.Elements.Length);
+            Assert.AreEqual(4, r3.Elements.Length);
+
+            double[,] expected = new double[,] { { 0, 0 }, { 10, 10 } };
+            double[,] actual = r3.Elements;
+
+            Assert.AreEqual(expected[0, 0], actual[0, 0]);
+            Assert.AreEqual(expected[0, 1], actual[0, 1]);
+            Assert.AreEqual(expected[1, 0], actual[1, 0]);
+            Assert.AreEqual(expected[1, 1], actual[1, 1]);
+
+            r1.Elements = expected;
+            Assert.IsFalse(r1.IsEmpty);
+            Assert.AreEqual(r1, r3);
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void ElementsTest2()
-		{
+        {
+            ViewRectangle2D r1 = ViewRectangle2D.Zero;
+            r1.Elements = null;
+
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void ElementsTest3()
-		{
+        {
+            ViewRectangle2D r1 = ViewRectangle2D.Zero;
+            r1.Elements = new double[,] { { 1, 2, 3 }, { 2, 3, 4 } };
 		}
 
 		[Test]
 		[ExpectedException(typeof(NotSupportedException))]
 		public void RotateTest()
-		{
+        {
+            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            r1.Rotate(45);
 		}
 
 		[Test]
 		[ExpectedException(typeof(NotSupportedException))]
 		public void RotateAtTest()
-		{
+        {
+            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            r1.RotateAt(45, new ViewPoint2D(0.5, 0.5));
 		}
 
-		[Test]
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
 		public void GetOffsetTest()
-		{
-			throw new NotImplementedException();
+        {
+            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            r1.GetOffset(0);
 		}
 		
 		[Test]
 		public void OffsetTest()
-		{
+        {
+            ViewRectangle2D r1 = ViewRectangle2D.Empty;
+            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+
+            ViewPoint2D offset = new ViewPoint2D(10, 10);
+
+            r1.Offset(offset);
+            Assert.IsTrue(r1.IsEmpty);
+            Assert.AreEqual(0, r1.Left);
+            Assert.AreEqual(0, r1.Right);
+            Assert.AreEqual(0, r1.Top);
+            Assert.AreEqual(0, r1.Bottom);
+
+            r2.Offset(offset);
+            Assert.AreEqual(10, r2.Left);
+            Assert.AreEqual(10, r2.Right);
+            Assert.AreEqual(10, r2.Top);
+            Assert.AreEqual(10, r2.Bottom);
 		}
 
 		[Test]
-		[ExpectedException(typeof(NotSupportedException))]
+		[Ignore("Not yet implemented")]
 		public void MultiplyTest()
-		{
+        {
 		}
 		
 		[Test]
 		public void ScaleTest1()
 		{
+            ViewRectangle2D r1 = ViewRectangle2D.Empty;
+            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            ViewRectangle2D r3 = new ViewRectangle2D(0, 1, 0, 1);
+
+            r1.Scale(10);
+            Assert.IsTrue(r1.IsEmpty);
+
+            r2.Scale(10);
+            Assert.AreEqual(0, r2.Width);
+            Assert.AreEqual(0, r2.Height);
+
+            r3.Scale(10);
+            Assert.AreEqual(10, r3.Width);
+            Assert.AreEqual(10, r3.Height);
+            Assert.AreEqual(ViewPoint2D.Zero, r3.Location);
+
+            ViewSize2D scaleSize = new ViewSize2D(-1, 5);
+            
+            r1.Scale(scaleSize);
+            Assert.IsTrue(r1.IsEmpty);
+
+            r2.Scale(scaleSize);
+            Assert.AreEqual(0, r2.Width);
+            Assert.AreEqual(0, r2.Height);
+
+            r3.Scale(scaleSize);
+            Assert.AreEqual(-10, r3.Width);
+            Assert.AreEqual(50, r3.Height);
+            Assert.AreEqual(ViewPoint2D.Zero, r3.Location);
 		}
 		
 		[Test]
 		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void ScaleTest2()
-		{
+        {
+            ViewSize3D scaleSize = new ViewSize3D(10, 10, 10);
+            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            r2.Scale(scaleSize);
 		}
 		
 		[Test]
@@ -332,20 +450,446 @@ namespace SharpMap.Tests.RenderingTests
 	#region ViewMatrix2D
 	[TestFixture]
 	public class ViewMatrix2DTests
-	{
+    {
+        [Test]
+        public void ResetTest()
+        {
+            ViewMatrix2D m1 = new ViewMatrix2D(1, 1, 0, 1, 1, 0, 0, 0, 1);
+
+            m1.Reset();
+
+            Assert.AreEqual(m1, ViewMatrix2D.Identity);
+        }
+
+        [Test]
+        [Ignore("Matrix invert not implemented on ViewMatrix2D")]
+        public void InvertTest()
+        {
+            ViewMatrix2D m1 = new ViewMatrix2D(1, 1, 0, 1, 1, 0, 0, 0, 1);
+
+            m1.Invert();
+        }
+
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void IsInvertableTest()
+        {
+            ViewMatrix2D m1 = new ViewMatrix2D(1, 1, 0, 1, 1, 0, 0, 0, 1);
+            Assert.IsTrue(m1.IsInvertible);
+        }
+
+        [Test]
+        public void ElementsTest1()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            ViewMatrix2D m2 = ViewMatrix2D.Zero;
+            ViewMatrix2D m3 = new ViewMatrix2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+            Assert.AreEqual(9, m1.Elements.Length);
+            Assert.AreEqual(9, m2.Elements.Length);
+
+            double[,] expected = new double[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+            double[,] actual = m3.Elements;
+
+            Assert.AreEqual(expected[0, 0], actual[0, 0]);
+            Assert.AreEqual(expected[0, 1], actual[0, 1]);
+            Assert.AreEqual(expected[0, 2], actual[0, 2]);
+            Assert.AreEqual(expected[1, 0], actual[1, 0]);
+            Assert.AreEqual(expected[1, 1], actual[1, 1]);
+            Assert.AreEqual(expected[1, 2], actual[1, 2]);
+            Assert.AreEqual(expected[2, 0], actual[2, 0]);
+            Assert.AreEqual(expected[2, 1], actual[2, 1]);
+            Assert.AreEqual(expected[2, 2], actual[2, 2]);
+
+            m1.Elements = expected;
+            Assert.AreEqual(m1, m3);
+            Assert.IsTrue(m1.Equals(m3 as IViewMatrix));
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ElementsTest2()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            m1.Elements = null;
+
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ElementsTest3()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            m1.Elements = new double[,] { { 1, 2, 3 }, { 2, 3, 4 } };
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void RotateTest()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void RotateAtTest()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void GetOffsetTest()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void OffsetTest()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void MultiplyTest()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void ScaleTest1()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Zero;
+            ViewMatrix2D m2 = ViewMatrix2D.Identity;
+
+            m1.Scale(10);
+            Assert.AreEqual(ViewMatrix2D.Zero, m1);
+
+            m2.Scale(10);
+            Assert.AreEqual(10, m2.X1);
+            Assert.AreEqual(10, m2.Y2);
+
+            ViewSize2D scaleSize = new ViewSize2D(-1, 5);
+
+            m1.Scale(scaleSize);
+            Assert.AreEqual(ViewMatrix2D.Zero, m1);
+
+            m2.Scale(scaleSize);
+            Assert.AreEqual(-10, m2.X1);
+            Assert.AreEqual(50, m2.Y2);
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void ScaleTest2()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+
+            // Scale by a vector for which multiplicatio isn't defined...
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void TranslateTest1()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void TranslateTest2()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            // Scale by a vector for which multiplicatio isn't defined...
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void TransformTest1()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void Transform2Test2()
+        {
+            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            // Scale by a vector for which multiplicatio isn't defined...
+        }
 	}
-	#endregion
+    #endregion
+
+    #region ColorMatrix
+    [TestFixture]
+    public class ColorMatrixTests
+    {
+        [Test]
+        public void ResetTest()
+        {
+            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+
+            m1.Reset();
+
+            Assert.AreEqual(m1, ColorMatrix.Identity);
+        }
+
+        [Test]
+        [Ignore("Matrix invert not implemented on ColorMatrix")]
+        public void InvertTest()
+        {
+            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+
+            m1.Invert();
+        }
+
+        [Test]
+        public void IsInvertableTest()
+        {
+            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+            Assert.IsTrue(m1.IsInvertible);
+        }
+
+        [Test]
+        public void ElementsTest1()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+            ColorMatrix m2 = new ColorMatrix(0.5, 0.5, 0.5, 1, 0, 0, 0);
+
+            Assert.AreEqual(25, m1.Elements.Length);
+            Assert.AreEqual(25, m2.Elements.Length);
+
+            double[,] expected = new double[,] { { 0.5, 0, 0, 0, 0 }, { 0, 0.5, 0, 0, 0 }, { 0, 0, 0.5, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
+            double[,] actual = m2.Elements;
+
+            Assert.AreEqual(expected[0, 0], actual[0, 0]);
+            Assert.AreEqual(expected[0, 1], actual[0, 1]);
+            Assert.AreEqual(expected[0, 2], actual[0, 2]);
+            Assert.AreEqual(expected[1, 0], actual[1, 0]);
+            Assert.AreEqual(expected[1, 1], actual[1, 1]);
+            Assert.AreEqual(expected[1, 2], actual[1, 2]);
+            Assert.AreEqual(expected[2, 0], actual[2, 0]);
+            Assert.AreEqual(expected[2, 1], actual[2, 1]);
+            Assert.AreEqual(expected[2, 2], actual[2, 2]);
+
+            m1.Elements = expected;
+            Assert.AreEqual(m1, m2);
+            Assert.IsTrue(m1.Equals(m2 as IViewMatrix));
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ElementsTest2()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+            m1.Elements = null;
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ElementsTest3()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+            m1.Elements = new double[,] { { 1, 2, 3 }, { 2, 3, 4 } };
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void RotateTest()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void RotateAtTest()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void GetOffsetTest()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void OffsetTest()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void MultiplyTest()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void ScaleTest1()
+        {
+            ColorMatrix m1 = ColorMatrix.Zero;
+            ColorMatrix m2 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void ScaleTest2()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+
+            // Scale by a vector for which multiplicatio isn't defined...
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void TranslateTest1()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void TranslateTest2()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+            // Scale by a vector for which multiplicatio isn't defined...
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void TransformTest1()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+        }
+
+        [Test]
+        [Ignore("Not yet implemented")]
+        public void Transform2Test2()
+        {
+            ColorMatrix m1 = ColorMatrix.Identity;
+            // Scale by a vector for which multiplicatio isn't defined...
+        }
+    }
+    #endregion
+
+    #region GraphicsPath2D
+    [TestFixture]
+    public class GraphicsPath2DTests
+    {
+        [Test]
+        public void CreateNewTest()
+        {
+        }
+
+        [Test]
+        public void AddFiguresTest()
+        {
+        }
+
+        [Test]
+        public void CurrentFigureTest1()
+        {
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CurrentFigureTest2()
+        {
+        }
+
+        public void AddPointsTest()
+        {
+        }
+
+        public void BoundsTest()
+        {
+        }
+
+        public void CloneTest()
+        {
+        }
+    }
+    #endregion
+
+    #region Symbol2D
+    [TestFixture]
+    public class Symbol2DTests
+    {
+        [Test]
+        public void SizeTest()
+        {
+        }
+
+        [Test]
+        public void DataTest()
+        {
+        }
+
+        [Test]
+        public void OffsetTest()
+        {
+        }
+
+        [Test]
+        public void RotationTest()
+        {
+        }
+
+        [Test]
+        public void ScaleTest()
+        {
+        }
+
+        [Test]
+        public void CloneTest()
+        {
+        }
+    }
+    #endregion
+
+    #region Label2D
+    [TestFixture]
+    public class Label2DTests
+    {
+        [Test]
+        public void CreateTest()
+        {
+        }
+
+        [Test]
+        public void CompareTest()
+        {
+        }
+    }
+    #endregion
+
+    #region LabelCollisionDetection2D
+    [TestFixture]
+    public class LabelCollisionDetection2DTests
+    {
+        [Test]
+        public void SimpleCollisionDetectionTest()
+        {
+        }
+
+        [Test]
+        public void ThoroughCollisionDetection()
+        {
+        }
+    }
+    #endregion
 
 	#region VectorRenderer2D
 	[TestFixture]
 	public class VectorRenderer2DTests
-	{
-	}
-	#endregion
-
-	#region Symbol2D
-	[TestFixture]
-	public class Symbol2DTests
 	{
 	}
 	#endregion
@@ -356,32 +900,51 @@ namespace SharpMap.Tests.RenderingTests
 	{
 	}
 	#endregion
-
-	#region LabelCollisionDetection2D
-	[TestFixture]
-	public class LabelCollisionDetection2DTests
-	{
-	}
-	#endregion
-	
-	#region Label2D
-	[TestFixture]
-	public class Label2DTests
-	{
-	}
-	#endregion
-	
-	#region GraphicsPath2D
-	[TestFixture]
-	public class GraphicsPath2DTests
-	{
-	}
-	#endregion
 	
 	#region BasicGeometryRenderer2D
 	[TestFixture]
 	public class BasicGeometryRenderer2DTests
 	{
+        [Test]
+        public void RenderFeatureTest()
+        {
+        }
+
+        [Test]
+        public void DrawMultiLineStringTest()
+        {
+        }
+
+        [Test]
+        public void DrawLineStringTest()
+        {
+        }
+
+        [Test]
+        public void DrawMultiPolygonTest()
+        {
+        }
+
+        [Test]
+        public void DrawPolygonTest()
+        {
+        }
+
+        [Test]
+        public void DrawPointTest()
+        {
+        }
+
+        [Test]
+        public void DrawMultiPointTest()
+        {
+        }
+
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void UnsupportedGeometryTest()
+        {
+        }
 	}
 	#endregion
 }

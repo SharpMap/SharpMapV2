@@ -105,6 +105,16 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
         #endregion
 
+        /// <summary>
+        /// Returns a string description of this symbol.
+        /// </summary>
+        /// <returns>A string representing the value of this <see cref="Symbol2D"/>.</returns>
+        public override string ToString()
+        {
+            return String.Format("[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; Scale: {7:N}",
+                GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, Scale);
+        }
+
         public ViewSize2D Size
         {
             get { return _symbolBox.Size; }
@@ -168,16 +178,6 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get { return 0.0; }
             set { }
-        }
-
-        /// <summary>
-        /// Returns a string description of this symbol.
-        /// </summary>
-        /// <returns>A string representing the value of this <see cref="Symbol2D"/>.</returns>
-        public override string ToString()
-        {
-            return String.Format("[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; Scale: {7:N}",
-                GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, Scale);
         }
 
         #region ICloneable Members

@@ -56,7 +56,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public override string ToString()
         {
-            return String.Format("[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", Left, Top, Right, Top, Bottom, IsEmpty);
+            return String.Format("[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", Left, Top, Right, Bottom, IsEmpty);
         }
 
         public override int GetHashCode()
@@ -226,33 +226,43 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>True if there is intersection, false if not.</returns>
         public bool Intersects(ViewRectangle2D rectangle)
         {
+            if (IsEmpty || rectangle.IsEmpty)
+            {
+                return false;
+            }
+
             return !(rectangle.Left > Right ||
                      rectangle.Right < Left ||
-                     rectangle.Bottom > Top ||
-                     rectangle.Top < Bottom);
+                     rectangle.Bottom < Top ||
+                     rectangle.Top > Bottom);
         }
 
-        #region IComparable<Rectangle> Members
+        #region IComparable<ViewRectangle2D> Members
 
         /// <summary>
-        /// Compares this <see cref="Rectangle"/> instance with another instance.
+        /// Compares this <see cref="ViewRectangle2D"/> instance with another instance.
         /// </summary>
         /// <remarks>
         /// </remarks>
-        /// <param name="other">Rectangle to perform intersection test with.</param>
+        /// <param name="other">ViewRectangle2D to perform comparison with.</param>
         /// <returns>
-        /// Returns 0 if the <see cref="Rectangle"/> instances intersect each other,
-        /// 1 if this Rectangle is located to the right or down from the <paramref name="other"/>
-        /// Rectange, and -1 if this Rectangle is located to the left or up from the other.
+        /// Returns 0 if the <see cref="ViewRectangle2D"/> instances intersect each other,
+        /// 1 if this rectangle is located to the right or upward from the <paramref name="other"/>
+        /// rectangle, and -1 if this rectangle is located to the left or downward from the other.
         /// </returns>
         public int CompareTo(ViewRectangle2D other)
         {
+            if (other.IsEmpty && IsEmpty)
+            {
+                return 0;
+            }
+
 			if (this.Intersects(other))
 			{
 				return 0;
 			}
 
-			if (other.Left > Right || other.Top > Bottom)
+			if (IsEmpty || other.Left > Right || other.Bottom > Top)
 			{
 				return -1;
 			}
@@ -262,9 +272,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        internal static ViewRectangle2D FromLTRB(double p, double p_2, double p_3, double p_4)
+        internal static ViewRectangle2D FromLTRB(double left, double top, double right, double bottom)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return new ViewRectangle2D(left, right, top, bottom);
         }
 
         #region IViewMatrix Members
@@ -307,7 +317,7 @@ namespace SharpMap.Rendering.Rendering2D
                     throw new ArgumentNullException("value");
                 }
 
-                if (value.Rank != 2 || value.GetUpperBound(0) != 2)
+                if (value.Rank != 2 || value.GetUpperBound(0) != 1)
                 {
                     throw new ArgumentException("Elements can be set only to a 2x2 array");
                 }
@@ -316,6 +326,7 @@ namespace SharpMap.Rendering.Rendering2D
                 Top = value[0, 1] < value[1, 1] ? value[0, 1] : value[1, 1];
                 Right = value[0, 0] < value[1, 0] ? value[1, 0] : value[0, 0];
                 Bottom = value[0, 1] < value[1, 1] ? value[1, 1] : value[0, 1];
+                _hasValue = true;
             }
         }
 
@@ -336,17 +347,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         public void Offset(IViewVector offsetVector)
 		{
-			if (IsEmpty)
-			{
-				return;
-			}
-
             Translate(offsetVector);
         }
 
         public void Multiply(IViewMatrix matrix)
         {
-            throw new NotSupportedException();
+            throw new NotImplementedException();
         }
 
         public void Scale(double scaleAmount)

@@ -26,13 +26,19 @@ namespace SharpMap.Rendering.Rendering2D
     /// Represents a 2 dimensional affine transform matrix (a 3x3 matrix).
     /// </summary>
     [Serializable]
-    public class ViewMatrix2D : IViewMatrix
+    public class ViewMatrix2D : IViewMatrix, IEquatable<ViewMatrix2D>
     {
         public readonly static ViewMatrix2D Identity
             = new ViewMatrix2D(
                 1, 0, 0,
                 0, 1, 0,
                 0, 0, 1);
+
+        public readonly static ViewMatrix2D Zero
+            = new ViewMatrix2D(
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0);
 
         private double _x1, _x2, _x3;
         private double _y1, _y2, _y3;
@@ -72,6 +78,71 @@ namespace SharpMap.Rendering.Rendering2D
             return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
                 X1, X2, X3, Y1, Y2, Y3, W1, W2, W3);
         }
+
+        public override int GetHashCode()
+        {
+            return unchecked(_x1.GetHashCode() + 24243 ^ _x2.GetHashCode() + 7318674 ^ _x3.GetHashCode() + 282 ^ _y1.GetHashCode() + 54645 ^ _y2.GetHashCode() + 42 ^ _y3.GetHashCode() + 244892 ^ _w1.GetHashCode() + 8464 ^ _w1.GetHashCode() + 36565 ^ _w2.GetHashCode() + 3210186 ^ _w3.GetHashCode() + 8373428);
+        }
+
+        #region Equality Computation
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ViewMatrix2D)
+            {
+                return Equals(obj as ViewMatrix2D);
+            }
+
+            if (obj is IViewMatrix)
+            {
+                return Equals(obj as IViewMatrix);
+            }
+
+            return false;
+        }
+
+        #region IEquatable<ViewMatrix2D> Members
+
+        public bool Equals(ViewMatrix2D other)
+        {
+            return X1 == other.X1 &&
+                X2 == other.X2 &&
+                X3 == other.X3 && 
+                Y1 == other.Y1 &&
+                Y2 == other.Y2 &&
+                Y3 == other.Y3 &&
+                W1 == other.W1 &&
+                W2 == other.W2 &&
+                W3 == other.W3;
+        }
+
+        #endregion
+
+        #region IEquatable<IViewMatrix> Members
+
+        public bool Equals(IViewMatrix other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            double[,] lhs = this.Elements;
+            double[,] rhs = other.Elements;
+
+            if (lhs.Length != rhs.Length)
+            {
+                return false;
+            }
+
+            return lhs[0, 0] == rhs[0, 0] &&
+                lhs[0, 1] == rhs[0, 1] &&
+                lhs[1, 0] == rhs[1, 0] &&
+                lhs[1, 1] == rhs[1, 1];
+        }
+
+        #endregion
+        #endregion
 
         #region Properties
         public double X1
@@ -144,8 +215,15 @@ namespace SharpMap.Rendering.Rendering2D
             }
             set
             {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
                 if (value.Rank != 2 || value.GetLength(0) != 3 || value.GetLength(1) != 3)
-                    throw new ArgumentOutOfRangeException("Elements must be a 3x3 array");
+                {
+                    throw new ArgumentException("Elements must be a 3x3 array");
+                }
 
                 _x1 = value[0, 0];
                 _x2 = value[0, 1];
@@ -236,12 +314,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         public IViewVector Transform(IViewVector vector)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public double[] Transform(params double[] vector)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -256,15 +334,6 @@ namespace SharpMap.Rendering.Rendering2D
         object ICloneable.Clone()
         {
             return this.Clone();
-        }
-
-        #endregion
-
-        #region IEquatable<IViewMatrix> Members
-
-        public bool Equals(IViewMatrix other)
-        {
-            throw new Exception("The method or operation is not implemented.");
         }
 
         #endregion

@@ -52,7 +52,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         protected override ViewRectangle2D ComputeBounds()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
     }
 }
