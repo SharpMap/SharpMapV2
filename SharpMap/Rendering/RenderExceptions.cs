@@ -16,15 +16,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Rendering
 {
 	/// <summary>
 	/// Exception thrown when rendering fails.
 	/// </summary>
-	public class RenderException : System.Exception
+	public class RenderException : Exception
 	{
 		/// <summary>
 		/// Creates a new RenderException instance.
@@ -46,7 +44,7 @@ namespace SharpMap.Rendering
 		/// </summary>
 		/// <param name="message">The message to include in the exception.</param>
 		/// <param name="inner">A related, usually causing, exception.</param>
-		public RenderException(string message, System.Exception inner) : base(message,inner)
+		public RenderException(string message, Exception inner) : base(message,inner)
 		{
 		}
 	}

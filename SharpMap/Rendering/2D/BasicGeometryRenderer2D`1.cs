@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 using SharpMap.Styles;
 using SharpMap.Geometries;
@@ -9,7 +8,7 @@ namespace SharpMap.Rendering.Rendering2D
 {
     /// <summary>
     /// A basic renderer which renders the geometric paths from feature geometry, 
-	/// taking into account <see cref="Style">styles</see> and <see cref="Theme">themes</see>.
+    /// taking into account <see cref="Style">styles</see> and <see cref="SharpMap.Rendering.Thematics.ITheme">themes</see>.
     /// </summary>
     /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
 	public class BasicGeometryRenderer2D<TRenderObject> : FeatureRenderer2D<VectorStyle, TRenderObject>, IGeometryRenderer<Symbol2D,  PositionedRenderObject2D<TRenderObject>>
@@ -51,11 +50,15 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Renders a <see cref="MultiLineString"/> to the <paramref name="view"/>.
+		/// Renders a <see cref="MultiLineString"/>.
 		/// </summary>
-		/// <param name="view">View to draw on.</param>
-		/// <param name="lines">MultiLineString to be rendered.</param>
-		/// <param name="pen">Pen style used for rendering.</param>
+        /// <param name="lines">MultiLineString to be rendered.</param>
+        /// <param name="fill">Pen used for filling (null or transparent for no filling).</param>
+        /// <param name="highlightFill">Pen used for filling when highlighted.</param>
+        /// <param name="selectFill">Pen used for filling when selected.</param>
+        /// <param name="outline">Outline pen style (null if no outline).</param>
+        /// <param name="highlightOutline">Outline pen style used when highlighted.</param>
+        /// <param name="selectOutline">Outline pen style used when selected.</param>
 		public virtual IEnumerable<PositionedRenderObject2D<TRenderObject>> DrawMultiLineString(MultiLineString lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
 			StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
@@ -63,9 +66,8 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Renders a <see cref="LineString"/> to the <paramref name="view"/>.
+		/// Renders a <see cref="LineString"/>.
 		/// </summary>
-		/// <param name="view">View to draw on.</param>
 		/// <param name="line">LineString to render.</param>
 		/// <param name="fill">Pen used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Pen used for filling when highlighted.</param>
@@ -80,9 +82,8 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Renders a <see cref="MultiPolygon"/> to the <paramref name="view"/>.
+		/// Renders a <see cref="MultiPolygon"/>.
 		/// </summary>
-		/// <param name="view">View to draw on.</param>
 		/// <param name="multipolygon">MultiPolygon to render.</param>
 		/// <param name="fill">Brush used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Brush used for filling when highlighted.</param>
@@ -90,15 +91,15 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="outline">Outline pen style (null if no outline).</param>
 		/// <param name="highlightOutline">Outline pen style used when highlighted.</param>
 		/// <param name="selectOutline">Outline pen style used when selected.</param>
-		public virtual IEnumerable<PositionedRenderObject2D<TRenderObject>> DrawMultiPolygon(MultiPolygon multipolygon, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+		public virtual IEnumerable<PositionedRenderObject2D<TRenderObject>> DrawMultiPolygon(MultiPolygon multipolygon, StyleBrush fill, StyleBrush highlightFill, 
+            StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
 			return drawPolygons(multipolygon.Polygons, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
 		}
 
 		/// <summary>
-		/// Renders a <see cref="Polygon"/> to the <paramref name="view"/>.
+		/// Renders a <see cref="Polygon"/>.
 		/// </summary>
-		/// <param name="view">View to draw on.</param>
 		/// <param name="polygon">Polygon to render</param>
 		/// <param name="fill">Brush used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Brush used for filling when highlighted.</param>
@@ -112,9 +113,8 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Renders a point to the <paramref name="view"/>.
+		/// Renders a <see cref="Point"/>.
 		/// </summary>
-		/// <param name="view">View to draw on.</param>
 		/// <param name="point">Point to render.</param>
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
@@ -125,9 +125,8 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Renders a <see cref="SharpMap.Geometries.MultiPoint"/> to the <paramref name="view"/>.
+		/// Renders a <see cref="MultiPoint"/>.
 		/// </summary>
-		/// <param name="view">View to draw on.</param>
 		/// <param name="points">MultiPoint to render.</param>
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
@@ -142,15 +141,6 @@ namespace SharpMap.Rendering.Rendering2D
             if (geometry == null)
             {
                 throw new ArgumentNullException("geometry");
-            }
-
-            StylePen outline = null, highlightOutline = null, selectOutline = null;
-
-            if (style.EnableOutline)
-            {
-                outline = style.Outline;
-                highlightOutline = style.HighlightOutline;
-                selectOutline = style.SelectOutline;
             }
 
             if (geometry is Polygon)

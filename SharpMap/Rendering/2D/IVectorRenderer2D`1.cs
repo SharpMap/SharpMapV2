@@ -15,10 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
@@ -28,7 +24,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// suitable for display.
     /// </summary>
     /// <typeparam name="TRenderObject">The type of rendered object.</typeparam>
-    public interface IVectorRenderer2D<TRenderObject> : IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
+    public interface IVectorRenderer2D<TRenderObject> : IRenderer
     {
         /// <summary>
         /// Renders a <see cref="GraphicsPath2D"/> into a rendered object.

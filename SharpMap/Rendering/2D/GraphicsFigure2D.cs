@@ -17,10 +17,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Rendering.Rendering2D
 {
+    /// <summary>
+    /// A graphical figure in 2 dimensions.
+    /// </summary>
     public class GraphicsFigure2D : GraphicsFigure<ViewPoint2D, ViewRectangle2D>
     {
         public GraphicsFigure2D(IEnumerable<ViewPoint2D> points, bool isClosed)
@@ -36,13 +38,21 @@ namespace SharpMap.Rendering.Rendering2D
             foreach (ViewPoint2D point in Points)
             {
                 if (left > point.X)
+                {
                     left = point.X;
+                }
                 if (right < point.X)
+                {
                     right = point.X;
+                }
                 if (top > point.Y)
+                {
                     top = point.Y;
+                }
                 if (bottom < point.Y)
+                {
                     bottom = point.Y;
+                }
             }
 
             return new ViewRectangle2D(left, right, top, bottom);
@@ -51,6 +61,11 @@ namespace SharpMap.Rendering.Rendering2D
         protected override GraphicsFigure<ViewPoint2D, ViewRectangle2D> CreateFigure(IEnumerable<ViewPoint2D> points, bool isClosed)
         {
             return new GraphicsFigure2D(points, isClosed);
+        }
+
+        protected override ViewRectangle2D EmptyBounds
+        {
+            get { return ViewRectangle2D.Empty; }
         }
     }
 }

@@ -16,13 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
-using SharpMap.Geometries;
-using SharpMap.Layers;
-using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering
@@ -30,14 +24,7 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Interface to a graphical renderer.
     /// </summary>
-    /// <typeparam name="TViewPoint">Type of point vector used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
-    public interface IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IDisposable
-        where TViewPoint : IViewVector
-        where TViewSize : IViewVector
-        where TViewRectangle : IViewMatrix
+    public interface IRenderer : IDisposable
     {
         /// <summary>
         /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.

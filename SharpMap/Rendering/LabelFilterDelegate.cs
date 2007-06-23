@@ -27,7 +27,6 @@ namespace SharpMap.Rendering
 	/// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
 	/// </summary>
 	/// <param name="labels">The labels to filter.</param>
-	/// <typeparam name="TLabel">Type of label to filter.</typeparam>
 	/// <returns>An enumeration over the filtered labels only.</returns>
 	public delegate IEnumerable LabelFilterDelegate(IList labels);
 }

@@ -15,11 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-using SharpMap.Data;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
@@ -28,14 +25,8 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Interface to a graphical renderer of feature data.
     /// </summary>
-    /// <typeparam name="TViewPoint">Type of point vector used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
     /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
-    public interface IFeatureRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
-        where TViewPoint : IViewVector
-        where TViewSize : IViewVector
-        where TViewRectangle : IViewMatrix
+    public interface IFeatureRenderer<TRenderObject> : IRenderer
 	{
 		/// <summary>
 		/// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
@@ -49,7 +40,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
 		/// <param name="style">Style used to render the feature, overriding theme. 
-		/// Use null if no style is desired or to use <see cref="IFeatureRenderer.Theme"/>.</param>
+		/// Use null if no style is desired or to use <see cref="Theme"/>.</param>
         /// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
         IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
 

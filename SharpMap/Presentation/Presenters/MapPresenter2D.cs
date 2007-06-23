@@ -178,7 +178,7 @@ namespace SharpMap.Presentation
         //    return WorldToView(point);
         //}
 
-        protected void RegisterRenderer<TLayerType, TRenderObject>(IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject> renderer)
+        protected void RegisterRenderer<TLayerType, TRenderObject>(IRenderer renderer)
         {
             if (renderer == null)
             {
@@ -188,17 +188,17 @@ namespace SharpMap.Presentation
             LayerRendererCatalog.Instance.Register<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>(typeof(TLayerType), renderer);
         }
 
-        public IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject> GetRendererForLayer<TRenderObject>(ILayer layer)
+        public IRenderer GetRendererForLayer<TRenderObject>(ILayer layer)
         {
             if (layer == null)
             {
                 throw new ArgumentNullException("layer");
             }
 
-            IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject> renderer = null;
+            IRenderer renderer = null;
 
             //_layerRendererCatalog.TryGetValue(layer.GetType().TypeHandle, out renderer);
-            renderer = LayerRendererCatalog.Instance.Get<IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>>(layer.GetType());
+            renderer = LayerRendererCatalog.Instance.Get<IRenderer>(layer.GetType());
             return renderer;
         }
 

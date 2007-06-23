@@ -220,9 +220,9 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         /// <summary>
-        /// Determines whether this <see cref="Rectangle"/> intersects another.
+        /// Determines whether this <see cref="ViewRectangle2D"/> intersects another.
         /// </summary>
-        /// <param name="rectangle"><see cref="Rectangle"/> to check intersection with.</param>
+        /// <param name="rectangle"><see cref="ViewRectangle2D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
         public bool Intersects(ViewRectangle2D rectangle)
         {

@@ -15,12 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SharpMap.Styles;
-using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering
 {
@@ -52,7 +47,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Renders a label.
         /// </summary>
-        /// <param name="label"><see cref="Label"/> to render.</param>
+        /// <param name="label">Label to render.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
         TRenderObject RenderLabel(ILabel<TViewPoint, TViewRectangle, GraphicsPath<TViewPoint, TViewRectangle>> label);
 

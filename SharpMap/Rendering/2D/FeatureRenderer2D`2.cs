@@ -18,11 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
-using SharpMap.Data;
-using SharpMap.Layers;
-using SharpMap.Geometries;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
@@ -33,7 +29,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// </summary>
     /// <typeparam name="TStyle">The type of style to use.</typeparam>
     /// <typeparam name="TRenderObject">The type of render object produced.</typeparam>
-    public abstract class FeatureRenderer2D<TStyle, TRenderObject> : IFeatureRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>
+    public abstract class FeatureRenderer2D<TStyle, TRenderObject> : IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>
         where TStyle : class, IStyle
     {
         private ViewMatrix2D _viewMatrix;
@@ -171,7 +167,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Template method to perform the actual geometry rendering.
         /// </summary>
-        /// <param name="geometry">Geometry to render.</param>
+        /// <param name="feature">Feature to render.</param>
         /// <param name="style">Style to use in rendering geometry.</param>
         /// <returns></returns>
 		protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, TStyle style);
@@ -211,7 +207,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region Explicit Interface Implementation
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-        IViewMatrix IRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>.ViewTransform
+        IViewMatrix IRenderer.ViewTransform
         {
             get
             {
@@ -232,7 +228,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-        IEnumerable<PositionedRenderObject2D<TRenderObject>> IFeatureRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, PositionedRenderObject2D<TRenderObject>>.RenderFeature(FeatureDataRow feature, IStyle style)
+        IEnumerable<PositionedRenderObject2D<TRenderObject>> IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.RenderFeature(FeatureDataRow feature, IStyle style)
         {
             return RenderFeature(feature, style as TStyle);
         }

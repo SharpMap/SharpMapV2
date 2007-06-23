@@ -16,17 +16,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
-using SharpMap.Data;
-using SharpMap.Geometries;
-using SharpMap.Layers;
 using SharpMap.Styles;
-using SharpMap.Rendering.Thematics;
-using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -136,7 +129,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region Explicit Interface Implementation
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
-        IViewMatrix IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject>.ViewTransform
+        IViewMatrix IRenderer.ViewTransform
         {
             get
             {

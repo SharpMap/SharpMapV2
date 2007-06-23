@@ -15,10 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering
@@ -61,7 +57,7 @@ namespace SharpMap.Rendering
 		/// <summary>
 		/// Path along which label runs.
 		/// </summary>
-		GraphicsPath<TViewPoint, TViewRectangle> FlowPath { get; set; }
+        TGraphicsPath FlowPath { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.

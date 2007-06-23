@@ -18,9 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Runtime.Serialization;
 
 using SharpMap.CoordinateSystems;
 using SharpMap.Indexing;
@@ -76,7 +74,7 @@ namespace SharpMap.Data.Providers
         private bool _coordsysReadFromFile = false;
         private bool _exclusiveMode = false;
         private ICoordinateSystem _coordinateSystem;
-        Dictionary<uint, IndexEntry> _shapeIndex = new Dictionary<uint, IndexEntry>();
+        readonly Dictionary<uint, IndexEntry> _shapeIndex = new Dictionary<uint, IndexEntry>();
         private bool _disposed = false;
 
         /// <summary>

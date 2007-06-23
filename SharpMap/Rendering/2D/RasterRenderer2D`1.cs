@@ -17,17 +17,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
-using SharpMap.Layers;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
+    public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer<ViewRectangle2D, TRenderObject>
     {
-        #region IRasterLayerRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D> Members
+        #region IRasterLayerRenderer<ViewRectangle2D, TRenderObject> Members
 
         public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds);
 
@@ -35,7 +33,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+        #region IRenderer Members
 
         public IViewMatrix ViewTransform
         {

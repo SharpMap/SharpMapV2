@@ -15,19 +15,34 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-namespace SharpMap.Rendering
+namespace SharpMap.Rendering.Rendering2D
 {
-    interface IRasterRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> : IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
-        where TViewPoint : IViewVector
-        where TViewSize : IViewVector
-        where TViewRectangle : IViewMatrix
+    public struct PositionedRenderObject2D<TRenderObject>
     {
-        IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds);
-		IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds, IViewMatrix rasterTransform);
+        private readonly double _x;
+        private readonly double _y;
+        private readonly TRenderObject _renderObject;
+
+        public PositionedRenderObject2D(double x, double y, TRenderObject renderObject)
+        {
+            _x = x;
+            _y = y;
+            _renderObject = renderObject;
+        }
+
+        public double X
+        {
+            get { return _x; }
+        }
+
+        public double Y
+        {
+            get { return _y; }
+        }
+
+        public TRenderObject RenderObject
+        {
+            get { return _renderObject; }
+        }
     }
 }

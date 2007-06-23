@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 using SharpMap.Styles;
 
@@ -173,22 +172,6 @@ namespace SharpMap.Rendering.Rendering2D
 		public int Compare(Label2D x, Label2D y)
 		{
 			return x.CompareTo(y);
-		}
-
-		#endregion
-
-		#region ILabel<ViewPoint2D,ViewRectangle2D,GraphicsPath2D> Members
-
-		GraphicsPath<ViewPoint2D, ViewRectangle2D> ILabel<ViewPoint2D, ViewRectangle2D, GraphicsPath2D>.FlowPath
-		{
-			get
-			{
-				throw new Exception("The method or operation is not implemented.");
-			}
-			set
-			{
-				throw new Exception("The method or operation is not implemented.");
-			}
 		}
 
 		#endregion

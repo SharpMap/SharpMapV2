@@ -17,14 +17,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
-using SharpMap.Data;
-using SharpMap.Layers;
 using SharpMap.Geometries;
 using SharpMap.Styles;
-using SharpMap.CoordinateSystems.Transformations;
 
 namespace SharpMap.Rendering.Rendering2D
 {

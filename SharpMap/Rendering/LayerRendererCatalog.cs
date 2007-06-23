@@ -17,9 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Layers;
 
 namespace SharpMap.Rendering
 {
@@ -27,7 +24,7 @@ namespace SharpMap.Rendering
     {
         private static readonly object _initSync = new object();
         private static volatile LayerRendererCatalog _instance;
-        Dictionary<RuntimeTypeHandle, object> _renderers = new Dictionary<RuntimeTypeHandle, object>();
+        readonly Dictionary<RuntimeTypeHandle, object> _renderers = new Dictionary<RuntimeTypeHandle, object>();
 
         private LayerRendererCatalog()
         {
@@ -52,7 +49,7 @@ namespace SharpMap.Rendering
             }
         }
 
-        public void Register<TViewPoint, TViewSize, TViewRectangle, TRenderObject>(Type layerType, IRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject> renderer)
+        public void Register<TViewPoint, TViewSize, TViewRectangle, TRenderObject>(Type layerType, IRenderer renderer)
             where TViewPoint : IViewVector
             where TViewSize : IViewVector
             where TViewRectangle : IViewMatrix
