@@ -24,7 +24,10 @@ namespace SharpMap.Rendering.Rendering2D
     /// A graphical figure in 2 dimensions.
     /// </summary>
     public class GraphicsFigure2D : GraphicsFigure<ViewPoint2D, ViewRectangle2D>
-    {
+	{
+		public GraphicsFigure2D(IEnumerable<ViewPoint2D> points)
+			: base(points) { }
+
         public GraphicsFigure2D(IEnumerable<ViewPoint2D> points, bool isClosed)
             : base(points, isClosed) { }
 

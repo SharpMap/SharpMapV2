@@ -44,7 +44,15 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="points">Points to add to the path in sequence.</param>
         /// <param name="closeFigure">True to create a closed path, false for an open path.</param>
         public GraphicsPath2D(IEnumerable<ViewPoint2D> points, bool closeFigure)
-            : base(points, closeFigure) { }
+			: base(points, closeFigure) { }
+
+		/// <summary>
+		/// Creates a new <see cref="GraphicsPath2D"/> with the given 
+		/// <see cref="GraphicsFigure2D"/> instance.
+		/// </summary>
+		/// <param name="figures">A figure to create the path from.</param>
+		public GraphicsPath2D(GraphicsFigure2D figure)
+			: base(figure) { }
 
         /// <summary>
         /// Creates a new <see cref="GraphicsPath2D"/> with the given 
@@ -60,17 +68,6 @@ namespace SharpMap.Rendering.Rendering2D
         protected override ViewRectangle2D EmptyBounds
         {
             get { return ViewRectangle2D.Empty; }
-        }
-
-        /// <summary>
-        /// Creates a new GraphicsPath with one figure from the given <paramref name="points"/>, either open or closed.
-        /// </summary>
-        /// <param name="points">Points to use in the path.</param>
-        /// <param name="closeFigure">True to close the figure, false to leave it open.</param>
-        /// <returns>A GraphicsPath instance with one figure made from the given points.</returns>
-        protected override GraphicsPath<ViewPoint2D, ViewRectangle2D> CreatePath(IEnumerable<ViewPoint2D> points, bool closeFigure)
-        {
-            return new GraphicsPath2D(points, closeFigure);
         }
 
         /// <summary>

@@ -119,7 +119,7 @@ namespace SharpMap.Tests.Converters.Wkt
 		{
 			CoordinateSystemFactory fac = new CoordinateSystemFactory();
 			int parsecount = 0;
-			System.IO.StreamReader sr = System.IO.File.OpenText(@"..\..\SharpMap\SRID.csv");
+			System.IO.StreamReader sr = System.IO.File.OpenText(@"..\..\SRID.csv");
 			string line = "";
 			while (!sr.EndOfStream)
 			{

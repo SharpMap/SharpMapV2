@@ -39,12 +39,12 @@ namespace SharpMap.Rendering
         public GraphicsFigure(IEnumerable<TViewPoint> points, bool isClosed)
         {
             _points.AddRange(points);
-            _isClosed = isClosed;
+            IsClosed = isClosed;
         }
 
         public override string ToString()
         {
-            return String.Format("[{0}] Number of {2} points: {1}", GetType(), Points.Count, typeof(TViewPoint).Name);
+            return String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count, typeof(TViewPoint).Name, IsClosed);
         }
 
         public override int GetHashCode()
@@ -52,8 +52,12 @@ namespace SharpMap.Rendering
             unchecked
             {
                 int hash = 86848163;
-                foreach (TViewPoint p in Points)
-                    hash ^= p.GetHashCode();
+				
+				foreach (TViewPoint p in Points)
+				{
+					hash ^= p.GetHashCode();
+				}
+
                 return hash;
             }
         }
@@ -98,6 +102,28 @@ namespace SharpMap.Rendering
         #endregion
         #endregion
 
+		#region Cloning
+
+		/// <summary>
+		/// Creates an exact copy of this figure.
+		/// </summary>
+		/// <returns>A point-by-point copy of this figure.</returns>
+		public GraphicsFigure<TViewPoint, TViewBounds> Clone()
+		{
+			GraphicsFigure<TViewPoint, TViewBounds> figure = CreateFigure(this.Points, IsClosed);
+			return figure;
+		}
+
+		#region ICloneable Members
+
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+
+		#endregion
+		#endregion
+
         /// <summary>
         /// Gets true if the figure is closed, false if open.
         /// </summary>
@@ -132,17 +158,6 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Creates an exact copy of this figure.
-        /// </summary>
-        /// <returns>A point-by-point copy of this figure.</returns>
-        public GraphicsFigure<TViewPoint, TViewBounds> Clone()
-        {
-            List<TViewPoint> pointsCopy = new List<TViewPoint>(_points);
-            GraphicsFigure<TViewPoint, TViewBounds> figure = CreateFigure(pointsCopy, IsClosed);
-            return figure;
-        }
-
-        /// <summary>
         /// Computes the minimum bounding rectilinear shape that contains this figure.
         /// </summary>
         /// <returns></returns>
@@ -165,8 +180,10 @@ namespace SharpMap.Rendering
 
         public IEnumerator<TViewPoint> GetEnumerator()
         {
-            foreach (TViewPoint p in _points)
-                yield return p;
+			foreach (TViewPoint p in _points)
+			{
+				yield return p;
+			}
         }
 
         #endregion
@@ -179,14 +196,5 @@ namespace SharpMap.Rendering
         }
 
         #endregion
-
-        #region ICloneable Members
-
-        object ICloneable.Clone()
-        {
-            return this.Clone();
-        }
-
-        #endregion
-    }
+	}
 }

@@ -111,7 +111,6 @@ namespace SharpMap.Rendering.Gdi
             gdiColorMatrix.Matrix40 = (float)colorMatrix.RedShift;
             gdiColorMatrix.Matrix41 = (float)colorMatrix.GreenShift;
             gdiColorMatrix.Matrix42 = (float)colorMatrix.BlueShift;
-            gdiColorMatrix.Matrix43 = (float)colorMatrix.AlphaShift;
             gdiColorMatrix.Matrix44 = 1;
             return gdiColorMatrix;
         }

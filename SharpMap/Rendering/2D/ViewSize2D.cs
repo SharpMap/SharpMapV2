@@ -31,7 +31,8 @@ namespace SharpMap.Rendering.Rendering2D
         private bool _hasValue;
 
         public static readonly ViewSize2D Empty = new ViewSize2D();
-        public static readonly ViewSize2D Zero = new ViewSize2D(0, 0);
+		public static readonly ViewSize2D Zero = new ViewSize2D(0, 0);
+		public static readonly ViewSize2D Unit = new ViewSize2D(1, 1);
 
         #region Constructors
         public ViewSize2D(double width, double height)

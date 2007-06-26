@@ -30,8 +30,6 @@ using SharpMap.Rendering.Gdi;
 using SharpMap.Presentation;
 using SharpMap.Utilities;
 
-using IRenderer = SharpMap.Rendering.IRenderer<SharpMap.Rendering.Rendering2D.ViewPoint2D, SharpMap.Rendering.Rendering2D.ViewSize2D, SharpMap.Rendering.Rendering2D.ViewRectangle2D, SharpMap.Rendering.Rendering2D.PositionedRenderObject2D<SharpMap.Rendering.Gdi.GdiRenderObject>>;
-
 namespace SharpMap.Presentation.WinForms
 {
     public class MapPresenter : MapPresenter2D

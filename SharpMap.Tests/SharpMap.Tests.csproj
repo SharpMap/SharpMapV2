@@ -68,6 +68,8 @@
     <Compile Include="Providers\GeometryProviderTests.cs" />
     <Compile Include="Providers\ShapeFileTests.cs" />
     <Compile Include="Rendering\Rendering2DTests.cs" />
+    <Compile Include="Rendering\RenderingTests.cs" />
+    <Compile Include="Rendering\Thematics.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">

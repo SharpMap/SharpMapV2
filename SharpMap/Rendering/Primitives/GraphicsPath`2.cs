@@ -88,7 +88,8 @@ namespace SharpMap.Rendering
 
         public override string ToString()
         {
-            return String.Format("[{0}] {1} figures of {2} points; Bounds: {3}", GetType(), Figures.Count, typeof(TViewPoint).Name, ComputeBounds());
+            return String.Format("[{0}] {1} figure{2} of {3} points; Bounds: {4}", 
+				GetType(), Figures.Count, (Figures.Count > 1 ? "s" : ""),  typeof(TViewPoint).Name, ComputeBounds());
         }
 
         public override int GetHashCode()
@@ -99,6 +100,7 @@ namespace SharpMap.Rendering
                 foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in _figures)
                 {
                     hash ^= figure.GetHashCode();
+					hash ^= figure.IsClosed ? 729487 : 9245;
                 }
 
                 return hash;
@@ -171,7 +173,15 @@ namespace SharpMap.Rendering
         /// </summary>
         public IList<TViewPoint> Points
         {
-            get { return CurrentFigure.Points; }
+            get 
+			{
+				if (CurrentFigure == null)
+				{
+					return new TViewPoint[] { };
+				}
+
+				return CurrentFigure.Points; 
+			}
         }
 
         /// <summary>
@@ -217,14 +227,6 @@ namespace SharpMap.Rendering
             }
         }
 
-        /// <summary>
-        /// Creates a <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with a single figure.
-        /// </summary>
-        /// <param name="points">Points in the path.</param>
-        /// <param name="isClosed">True if the path wraps from the last point to the first point, false if it is open.</param>
-        /// <returns>A <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with one figure consisting of the points in <paramref name="points"/>.</returns>
-        protected abstract GraphicsPath<TViewPoint, TViewBounds> CreatePath(IEnumerable<TViewPoint> points, bool isClosed);
-        
         /// <summary>
         /// Creates a <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with the given figures.
         /// </summary>
