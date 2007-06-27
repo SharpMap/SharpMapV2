@@ -19,6 +19,8 @@ using System;
 
 using SharpMap.Styles;
 
+using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+
 namespace SharpMap.Rendering
 {
     /// <summary>
@@ -29,7 +31,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.
         /// </summary>
-        IViewMatrix ViewTransform { get; set; }
+        IMatrix2D ViewTransform { get; set; }
 
         /// <summary>
         /// Gets or sets a <see cref="StyleRenderingMode"/> value used to render objects.

@@ -16,12 +16,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using NPack;
+using NPack.Interfaces;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering3D
 {
-    public struct ViewPoint3D : IViewVector
+    public struct ViewPoint3D : IVectorD
     {
         private double _x, _y, _z;
         private bool _hasValue;
@@ -40,15 +42,29 @@ namespace SharpMap.Rendering.Rendering3D
         public ViewPoint3D(double[] elements)
         {
             if (elements == null)
-                throw new ArgumentNullException("value");
+            {
+                throw new ArgumentNullException("elements");
+            }
 
             if (elements.Length != 3)
+            {   
                 throw new ArgumentException("Elements array must have only 3 components");
+            }
 
             _x = elements[0];
             _y = elements[1];
             _z = elements[2];
             _hasValue = true;
+        }
+
+        public override int GetHashCode()
+        {
+            return unchecked((int)_x ^ (int)_y ^ (int)_z);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("[ViewPoint3D] ({0:N3}, {1:N3}, {2:N3})", _x, _y, _z);
         }
 
         public double X
@@ -66,25 +82,43 @@ namespace SharpMap.Rendering.Rendering3D
             get { return _z; }
         }
 
-        #region IViewVector Members
+        #region IVector<DoubleComponent> Members
 
-        public double[] Elements
+        public DoubleComponent[][] ElementArray
         {
-            get { return new double[] { _x, _y, _z }; }
+            get { return new DoubleComponent[][] { new DoubleComponent[] { _x, _y, _z } }; }
         }
 
-        public double this[int element]
+        public int ComponentCount
+        {
+            get { return 3; }
+        }
+
+        public DoubleComponent this[int element]
         {
             get
             {
                 if (element == 0)
+                {
                     return _x;
+                }
+                
                 if (element == 1)
+                {   
                     return _y;
+                }
+
                 if (element == 2)
+                {
                     return _z;
+                }
 
                 throw new IndexOutOfRangeException("The element index must be either 0, 1 or 2 for a 3D point");
+            }
+            set
+            {
+                // setting members of a ValueType is not a good idea
+                throw new NotSupportedException();
             }
         }
 
@@ -95,29 +129,56 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        #region ICloneable Members
+        #region Equality Computation
 
-        public object Clone()
+        public override bool Equals(object obj)
         {
-            return new ViewPoint3D(_x, _y, _z);
+            if(obj is ViewPoint3D)
+            {
+                return Equals((ViewPoint3D) obj);
+            }
+            
+            if (obj is IVectorD)
+            {
+                return Equals(obj as IVectorD);
+            }
+
+            if(obj is IMatrixD)
+            {
+                return Equals(obj as IMatrixD);
+            }
+
+            return false;
         }
 
-        #endregion
+        public bool Equals(ViewPoint3D point)
+        {
+            return point._hasValue == _hasValue &&
+                   point._x == _x &&
+                   point._y == _y &&
+                   point._z == _z;
+        }
 
-        #region IEquatable<IViewVector> Members
+        #region IEquatable<IMatrix<DoubleComponent>> Members
 
-        public bool Equals(IViewVector other)
+        public bool Equals(IMatrix<DoubleComponent> other)
         {
             if (other == null)
-                return false;
-
-            if (Elements.Length != other.Elements.Length)
-                return false;
-
-            for (int elementIndex = 0; elementIndex < Elements.Length; elementIndex++)
             {
-                if (this[elementIndex] != other[elementIndex])
+                return false;
+            }
+
+            if (ComponentCount != other.ColumnCount)
+            {
+                return false;
+            }
+
+            for (int elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
+            {
+                if (!this[elementIndex].Equals(other[0, elementIndex]))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -125,49 +186,164 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        #region IEnumerable<double> Members
-
-        public IEnumerator<double> GetEnumerator()
-        {
-            yield return _x;
-            yield return _y;
-            yield return _z;
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
-
-        public static bool operator ==(ViewPoint3D vector1, IViewVector vector2)
+        public static bool operator ==(ViewPoint3D vector1, IVectorD vector2)
         {
             return vector1.Equals(vector2);
         }
 
-        public static bool operator !=(ViewPoint3D vector1, IViewVector vector2)
+        public static bool operator !=(ViewPoint3D vector1, IVectorD vector2)
         {
             return !(vector1 == vector2);
         }
 
-        public override bool Equals(object obj)
+        #endregion
+
+        #region IMatrix<DoubleComponent> Members
+
+        IMatrix<DoubleComponent> IMatrix<DoubleComponent>.Clone()
         {
-            return Equals(obj as IViewVector);
+            return new Vector<DoubleComponent>(_x, _y, _z);
         }
 
-        public override int GetHashCode()
+        public double Determinant
         {
-            return unchecked((int)_x ^ (int)_y ^ (int)_z);
+            get { throw new Exception("The method or operation is not implemented."); }
         }
 
-        public override string ToString()
+        public int ColumnCount
         {
-            return String.Format("ViewPoint3D - ({0:N3}, {1:N3}, {2:N3})", _x, _y, _z);
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public bool IsSingular
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public IMatrix<DoubleComponent> Inverse
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public bool IsSquare
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public bool IsSymmetrical
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public int RowCount
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public IMatrix<DoubleComponent> GetMatrix(int[] rowIndexes, int j0, int j1)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public DoubleComponent this[int row, int column]
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public IMatrix<DoubleComponent> Transpose()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IAddable<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Add(IMatrix<DoubleComponent> a)
+        {
+            checkRank(a);
+
+            DoubleComponent[] elements = a.ElementArray[0];
+            return new ViewPoint3D(elements[0] + _x, elements[1] + _y, elements[2] + _z);
+        }
+
+        #endregion
+
+        #region ISubtractable<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Subtract(IMatrix<DoubleComponent> a)
+        {
+            checkRank(a);
+
+            DoubleComponent[] elements = a.ElementArray[0];
+            return new ViewPoint3D(elements[0] - _x, elements[1] - _y, elements[2] - _z);
+        }
+
+        #endregion
+
+        #region IHasZero<IMatrix<DoubleComponent>> Members
+
+        IMatrix<DoubleComponent> IHasZero<IMatrix<DoubleComponent>>.Zero
+        {
+            get { return Zero; }
+        }
+
+        #endregion
+
+        #region INegatable<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Negative()
+        {
+            return new ViewPoint3D(-_x, -_y, -_z);
+        }
+
+        #endregion
+
+        #region IMultipliable<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Multiply(IMatrix<DoubleComponent> a)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IDivisible<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Divide(IMatrix<DoubleComponent> a)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> One
+        {
+            get { return new ViewPoint3D(1, 1, 1); }
+        }
+
+        #endregion
+
+        private void checkRank(IMatrixD a)
+        {
+            if (a.ColumnCount != ColumnCount)
+            {
+                throw new ArgumentException("Addend must have the same number of components as this vector.", "a");
+            }
+
+            if (a.RowCount != 1)
+            {
+                throw new ArgumentException("Addend must be a vector.", "a");
+            }
         }
     }
 }

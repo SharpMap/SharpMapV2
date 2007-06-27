@@ -28,11 +28,11 @@ namespace SharpMap.Tests.Rendering
 			Assert.AreNotEqual(p1, p5);
 			Assert.AreNotEqual(p3, p5);
 
-			IViewVector v1 = (IViewVector)p1;
-			IViewVector v2 = (IViewVector)p2;
-			IViewVector v3 = (IViewVector)p3;
-			IViewVector v4 = (IViewVector)p4;
-			IViewVector v5 = (IViewVector)p5;
+			IViewVector v1 = p1;
+			IViewVector v2 = p2;
+			IViewVector v3 = p3;
+			IViewVector v4 = p4;
+			IViewVector v5 = p5;
 
 			Assert.AreEqual(v1, v2);
 			Assert.AreNotEqual(v1, v3);
@@ -191,11 +191,11 @@ namespace SharpMap.Tests.Rendering
 			Assert.AreNotEqual(r3, r5);
             Assert.AreEqual(r6, r7);
 
-			IViewMatrix v1 = (IViewMatrix)r1;
-			IViewMatrix v2 = (IViewMatrix)r2;
-			IViewMatrix v3 = (IViewMatrix)r3;
-			IViewMatrix v4 = (IViewMatrix)r4;
-			IViewMatrix v5 = (IViewMatrix)r5;
+			IViewMatrix v1 = r1;
+			IViewMatrix v2 = r2;
+			IViewMatrix v3 = r3;
+			IViewMatrix v4 = r4;
+			IViewMatrix v5 = r5;
 
 			Assert.AreEqual(v1, v2);
 			Assert.AreNotEqual(v1, v3);
@@ -296,7 +296,6 @@ namespace SharpMap.Tests.Rendering
         {
             ViewRectangle2D r1 = ViewRectangle2D.Zero;
             r1.Elements = null;
-
 		}
 
 		[Test]

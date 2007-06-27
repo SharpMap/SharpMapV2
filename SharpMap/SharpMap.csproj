@@ -254,8 +254,6 @@
     <Compile Include="Rendering\Primitives\GraphicsPath`2.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
-    <Compile Include="Rendering\Primitives\IViewMatrix.cs" />
-    <Compile Include="Rendering\Primitives\IViewVector.cs" />
     <Compile Include="Rendering\2D\Label2D.cs" />
     <Compile Include="Rendering\2D\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\2D\LabelRenderer2D`1.cs" />
@@ -325,6 +323,12 @@
   <ItemGroup>
     <None Include="Rendering\RenderingClasses.cd" />
     <None Include="SharpMap.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

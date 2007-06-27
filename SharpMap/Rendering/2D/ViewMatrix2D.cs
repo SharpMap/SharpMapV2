@@ -16,9 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+using NPack;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -26,15 +24,15 @@ namespace SharpMap.Rendering.Rendering2D
     /// Represents a 2 dimensional affine transform matrix (a 3x3 matrix).
     /// </summary>
     [Serializable]
-    public class ViewMatrix2D : IViewMatrix, IEquatable<ViewMatrix2D>
+    public class ViewMatrix2D : AffineMatrix<DoubleComponent>
     {
-        public readonly static ViewMatrix2D Identity
+        public new readonly static ViewMatrix2D Identity
             = new ViewMatrix2D(
                 1, 0, 0,
                 0, 1, 0,
                 0, 0, 1);
 
-        public readonly static ViewMatrix2D Zero
+        public new readonly static ViewMatrix2D Zero
             = new ViewMatrix2D(
                 0, 0, 0,
                 0, 0, 0,
@@ -51,6 +49,7 @@ namespace SharpMap.Rendering.Rendering2D
         public ViewMatrix2D(double x1, double x2, double x3,
             double y1, double y2, double y3,
             double w1, double w2, double w3)
+            :base(3, 3)
         {
             _x1 = x1; _x2 = x2; _x3 = x3;
             _y1 = y1; _y2 = y2; _y3 = y3;
@@ -58,6 +57,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public ViewMatrix2D(ViewMatrix2D matrixToCopy)
+            : base(3, 3)
         {
             this._x1 = matrixToCopy._x1;
             this._x2 = matrixToCopy._x2;
@@ -326,14 +326,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region ICloneable Members
 
-        public ViewMatrix2D Clone()
+        public new ViewMatrix2D Clone()
         {
             return new ViewMatrix2D(this);
-        }
-
-        object ICloneable.Clone()
-        {
-            return this.Clone();
         }
 
         #endregion

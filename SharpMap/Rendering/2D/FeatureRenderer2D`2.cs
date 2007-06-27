@@ -22,6 +22,8 @@ using System.ComponentModel;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
+using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+
 namespace SharpMap.Rendering.Rendering2D
 {
     /// <summary>
@@ -207,7 +209,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region Explicit Interface Implementation
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-        IViewMatrix IRenderer.ViewTransform
+        IMatrix2D IRenderer.ViewTransform
         {
             get
             {
