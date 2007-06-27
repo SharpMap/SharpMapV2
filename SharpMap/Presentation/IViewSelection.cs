@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Text;
 
 using SharpMap.Rendering;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
@@ -30,9 +32,9 @@ namespace SharpMap.Presentation
     /// <typeparam name="TViewSize">The type of size structure in this selection.</typeparam>
     /// <typeparam name="TViewRegion">The type of region this selection covers.</typeparam>
     public interface IViewSelection<TViewPoint, TViewSize, TViewRegion>
-        where TViewPoint : IViewVector
-        where TViewSize : IViewVector
-        where TViewRegion : IViewMatrix
+        where TViewPoint : IVectorD
+        where TViewSize : IVectorD
+        where TViewRegion : IMatrixD
     {
         /// <summary>
         /// Adds a point to the selection.

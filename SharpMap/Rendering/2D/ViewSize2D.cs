@@ -17,7 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -25,7 +26,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// A 2 dimensional measure of size.
     /// </summary>
     [Serializable]
-    public struct ViewSize2D : IViewVector
+	public struct ViewSize2D : IVectorD
     {
         private double _width, _height;
         private bool _hasValue;
@@ -98,7 +99,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<IViewVector> Members
 
-        public bool Equals(IViewVector other)
+        public bool Equals(IVectorD other)
         {
             double[] myElements = Elements;
             double[] otherElements = other.Elements;

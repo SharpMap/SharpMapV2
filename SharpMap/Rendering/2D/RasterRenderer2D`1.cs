@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.IO;
 
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -29,13 +31,13 @@ namespace SharpMap.Rendering.Rendering2D
 
         public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds);
 
-        public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IViewMatrix rasterTransform);
+        public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IMatrixD rasterTransform);
 
         #endregion
 
         #region IRenderer Members
 
-        public IViewMatrix ViewTransform
+        public IMatrixD ViewTransform
         {
             get
             {

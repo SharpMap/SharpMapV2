@@ -16,11 +16,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
     [Serializable]
-    public struct ViewRectangle2D : IViewMatrix, IComparable<ViewRectangle2D>
+    public struct ViewRectangle2D : IMatrixD, IComparable<ViewRectangle2D>
     {
         public static readonly ViewRectangle2D Empty = new ViewRectangle2D();
         public static readonly ViewRectangle2D Zero = new ViewRectangle2D(0, 0, 0, 0);
@@ -145,7 +147,7 @@ namespace SharpMap.Rendering.Rendering2D
             throw new NotSupportedException();
         }
 
-        public void RotateAt(double degreesTheta, IViewVector center)
+        public void RotateAt(double degreesTheta, IVectorD center)
         {
             throw new NotSupportedException();
         }
@@ -155,12 +157,12 @@ namespace SharpMap.Rendering.Rendering2D
             throw new NotSupportedException();
         }
 
-        public void Offset(IViewVector offsetVector)
+        public void Offset(IVectorD offsetVector)
         {
             Translate(offsetVector);
         }
 
-        public void Multiply(IViewMatrix matrix)
+        public void Multiply(IMatrixD matrix)
         {
             throw new NotImplementedException();
         }
@@ -179,7 +181,7 @@ namespace SharpMap.Rendering.Rendering2D
             Bottom = Top + newHeight;
         }
 
-        public void Scale(IViewVector scaleVector)
+        public void Scale(IMatrixD scaleVector)
         {
             if (IsEmpty)
             {
@@ -212,7 +214,7 @@ namespace SharpMap.Rendering.Rendering2D
             Bottom += translationAmount;
         }
 
-        public void Translate(IViewVector translationVector)
+        public void Translate(IVectorD translationVector)
         {
             if (IsEmpty)
             {
@@ -235,7 +237,7 @@ namespace SharpMap.Rendering.Rendering2D
             Bottom += yDelta;
         }
 
-        public IViewVector Transform(IViewVector vector)
+        public IMatrixD Transform(IVectorD vector)
         {
             throw new NotSupportedException();
         }
@@ -353,7 +355,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Testing
 
-        public bool Equals(IViewMatrix other)
+        public bool Equals(IMatrixD other)
         {
             if (IsEmpty && other.IsEmpty)
             {

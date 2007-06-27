@@ -27,6 +27,8 @@ using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
@@ -41,8 +43,8 @@ namespace SharpMap.Presentation
 		private GeoPoint _center = GeoPoint.Zero;
 		private double _maximumWorldWidth;
 		private double _minimumWorldWidth;
-		private IViewMatrix _viewTransform = new ViewMatrix2D();
-		private IViewMatrix _viewTransformInverted = new ViewMatrix2D();
+		private IMatrixD _viewTransform = new ViewMatrix2D();
+		private IMatrixD _viewTransformInverted = new ViewMatrix2D();
 		private StyleColor _backgroundColor;
          
 		public MapViewPort2D(SharpMap.Map map, IMapView2D view)
@@ -87,7 +89,7 @@ namespace SharpMap.Presentation
 		/// <summary>
 		/// Fired when the <see cref="MapTransform"/> has changed.
 		/// </summary>
-		public event EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>> MapTransformChanged;
+		public event EventHandler<MapPresentationPropertyChangedEventArgs<IMatrixD>> MapTransformChanged;
 
 		/// <summary>
 		/// Fired when the <see cref="MaximumZoom"/> has changed.
@@ -308,7 +310,7 @@ namespace SharpMap.Presentation
 		///	myMap.MapTransform = mapTransform;              //Apply transformation to map view
 		/// </code>
 		/// </example>
-		public IViewMatrix MapViewTransform
+		public IMatrixD MapViewTransform
 		{
 			get { return _viewTransform; }
 			set
@@ -339,7 +341,7 @@ namespace SharpMap.Presentation
 		/// <remarks>
 		/// An inverse matrix is used to reverse the transformation of a matrix.
 		/// </remarks>
-		public IViewMatrix MapViewTransformInverted
+		public IMatrixD MapViewTransformInverted
 		{
 			get { return _viewTransformInverted; }
 			private set { _viewTransformInverted = value; }
@@ -426,7 +428,7 @@ namespace SharpMap.Presentation
 			}
 		}
 
-		protected virtual void OnMapTransformChanged(IViewMatrix oldTransform, IViewMatrix newTransform)
+		protected virtual void OnMapTransformChanged(IMatrixD oldTransform, IMatrixD newTransform)
 		{
 			EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>> @event = MapTransformChanged;
 

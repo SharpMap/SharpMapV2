@@ -18,10 +18,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NPack;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public class ColorMatrix : IViewMatrix, IEquatable<ColorMatrix>
+    public class ColorMatrix : AffineMatrix<DoubleComponent>, IEquatable<ColorMatrix>
     {
         public readonly static ColorMatrix Identity
             = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
@@ -103,7 +106,7 @@ namespace SharpMap.Rendering
         
         #region IEquatable<IViewMatrix> Members
 
-        public bool Equals(IViewMatrix other)
+        public bool Equals(IMatrixD other)
         {
             if (other == null)
             {
@@ -257,7 +260,7 @@ namespace SharpMap.Rendering
             throw new NotImplementedException();
         }
 
-        public void RotateAt(double degreesTheta, IViewVector center)
+        public void RotateAt(double degreesTheta, IVectorD center)
         {
             throw new NotImplementedException();
         }
@@ -267,12 +270,12 @@ namespace SharpMap.Rendering
             throw new NotImplementedException();
         }
 
-        public void Offset(IViewVector offsetVector)
+        public void Offset(IVectorD offsetVector)
         {
             throw new NotImplementedException();
         }
 
-        public void Multiply(IViewMatrix matrix)
+        public void Multiply(IMatrixD matrix)
         {
             throw new NotImplementedException();
         }
@@ -282,7 +285,7 @@ namespace SharpMap.Rendering
             throw new NotImplementedException();
         }
 
-        public void Scale(IViewVector scaleVector)
+        public void Scale(IVectorD scaleVector)
         {
             throw new NotImplementedException();
         }
@@ -292,12 +295,12 @@ namespace SharpMap.Rendering
             throw new NotImplementedException();
         }
 
-        public void Translate(IViewVector translationVector)
+        public void Translate(IVectorD translationVector)
         {
             throw new NotImplementedException();
         }
 
-        public IViewVector Transform(IViewVector vector)
+        public IVectorD Transform(IVectorD vector)
         {
             throw new NotImplementedException();
         }

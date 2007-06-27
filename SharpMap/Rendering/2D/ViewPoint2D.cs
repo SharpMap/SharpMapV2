@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -26,7 +28,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// A point in 2 dimensional Cartesian space.
     /// </summary>
     [Serializable]
-    public struct ViewPoint2D : IViewVector
+    public struct ViewPoint2D : IVectorD
     {
         public static readonly ViewPoint2D Empty = new ViewPoint2D();
         public static readonly ViewPoint2D Zero = new ViewPoint2D(0, 0);
@@ -84,12 +86,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Testing
 
-        public static bool operator ==(ViewPoint2D lhs, IViewVector rhs)
+        public static bool operator ==(ViewPoint2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ViewPoint2D lhs, IViewVector rhs)
+        public static bool operator !=(ViewPoint2D lhs, IVectorD rhs)
         {
 			return !lhs.Equals(rhs);
         }
@@ -118,7 +120,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<IViewVector> Members
 
-        public bool Equals(IViewVector other)
+        public bool Equals(IVectorD other)
         {
             if (other == null)
             {

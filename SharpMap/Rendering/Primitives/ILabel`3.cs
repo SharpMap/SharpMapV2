@@ -16,12 +16,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
 	public interface ILabel<TViewPoint, TViewRectangle, TGraphicsPath>
-		where TViewPoint : IViewVector
-		where TViewRectangle : IViewMatrix
+		where TViewPoint : IVectorD
+		where TViewRectangle : IMatrixD
 		where TGraphicsPath : GraphicsPath<TViewPoint, TViewRectangle>
 	{
 		/// <summary>

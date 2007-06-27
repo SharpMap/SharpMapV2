@@ -16,6 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
@@ -27,9 +29,9 @@ namespace SharpMap.Rendering
     /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
     /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
     public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
-        where TViewPoint : IViewVector
-		where TViewSize : IViewVector
-        where TViewRectangle : IViewMatrix
+        where TViewPoint : IVectorD
+		where TViewSize : IVectorD
+        where TViewRectangle : IMatrixD
     {
         /// <summary>
         /// Gets or sets a <see cref="StyleTextRenderingHint"/> to control how rendered text appears.

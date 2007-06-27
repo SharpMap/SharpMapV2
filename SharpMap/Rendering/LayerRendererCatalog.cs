@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections.Generic;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
@@ -50,9 +52,9 @@ namespace SharpMap.Rendering
         }
 
         public void Register<TViewPoint, TViewSize, TViewRectangle, TRenderObject>(Type layerType, IRenderer renderer)
-            where TViewPoint : IViewVector
-            where TViewSize : IViewVector
-            where TViewRectangle : IViewMatrix
+            where TViewPoint : IVectorD
+            where TViewSize : IVectorD
+            where TViewRectangle : IMatrixD
         {
             _renderers[layerType.TypeHandle] = renderer;
         }

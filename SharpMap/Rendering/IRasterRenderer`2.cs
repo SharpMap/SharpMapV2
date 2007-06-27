@@ -17,13 +17,15 @@
 
 using System.Collections.Generic;
 using System.IO;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
     interface IRasterRenderer<TViewRectangle, TRenderObject> : IRenderer
-        where TViewRectangle : IViewMatrix
+        where TViewRectangle : IMatrixD
     {
         IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds);
-		IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds, IViewMatrix rasterTransform);
+		IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds, IMatrixD rasterTransform);
     }
 }

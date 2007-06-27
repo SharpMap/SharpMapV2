@@ -22,11 +22,13 @@ using System.Text;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
     public class MapActionEventArgs<TPoint> : EventArgs
-        where TPoint : IViewVector
+        where TPoint : IVectorD
     {
         private TPoint _actionPoint;
 

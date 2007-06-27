@@ -21,6 +21,8 @@ using System.Text;
 
 using SharpMap.Rendering;
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
@@ -35,9 +37,9 @@ namespace SharpMap.Presentation
     /// which represent points and areas in various dimensions.
     /// </remarks>
     public abstract class ViewSelection<TViewPoint, TViewSize, TViewRegion> : IViewSelection<TViewPoint, TViewSize, TViewRegion>
-        where TViewPoint : IViewVector
-        where TViewSize : IViewVector
-        where TViewRegion : IViewMatrix, new()
+        where TViewPoint : IVectorD
+        where TViewSize : IVectorD
+        where TViewRegion : IMatrixD, new()
     {
         private GraphicsPath<TViewPoint, TViewRegion> _path;
         private StylePen _outline;

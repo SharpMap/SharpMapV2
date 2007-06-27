@@ -17,13 +17,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering3D
 {
     [Serializable]
-    public struct ViewRectangle3D : IViewMatrix, IComparable<ViewRectangle3D>
+    public struct ViewRectangle3D : IMatrixD, IComparable<ViewRectangle3D>
     {
         private double _xMin;
         private double _yMin;
@@ -251,7 +252,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotSupportedException();
         }
 
-        public void RotateAt(double degreesTheta, IViewVector center)
+        public void RotateAt(double degreesTheta, IVectorD center)
         {
             throw new NotSupportedException();
         }
@@ -261,12 +262,12 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotSupportedException();
         }
 
-        public void Offset(IViewVector offsetVector)
+        public void Offset(IVectorD offsetVector)
         {
             Translate(offsetVector);
         }
 
-        public void Multiply(IViewMatrix matrix)
+        public void Multiply(IMatrixD matrix)
         {
             throw new NotSupportedException();
         }
@@ -276,7 +277,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public void Scale(IViewVector scaleVector)
+        public void Scale(IVectorD scaleVector)
         {
             throw new Exception("The method or operation is not implemented.");
         }
@@ -286,12 +287,12 @@ namespace SharpMap.Rendering.Rendering3D
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public void Translate(IViewVector translationVector)
+        public void Translate(IVectorD translationVector)
         {
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public IViewVector Transform(IViewVector vector)
+        public IVectorD Transform(IVectorD vector)
         {
             throw new Exception("The method or operation is not implemented.");
         }
@@ -313,7 +314,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IViewMatrix> Members
 
-        public bool Equals(IViewMatrix other)
+        public bool Equals(IMatrixD other)
         {
             throw new Exception("The method or operation is not implemented.");
         }

@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
@@ -28,8 +30,8 @@ namespace SharpMap.Rendering
     /// <typeparam name="TViewPoint">Type of point used in the path.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear used to bound the path.</typeparam>
     public abstract class GraphicsPath<TViewPoint, TViewBounds> : ICloneable, IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>>, IEquatable<GraphicsPath<TViewPoint, TViewBounds>>
-        where TViewPoint : IViewVector
-        where TViewBounds : IViewMatrix
+        where TViewPoint : IVectorD
+        where TViewBounds : IMatrixD
     {
         private readonly List<GraphicsFigure<TViewPoint, TViewBounds>> _figures = new List<GraphicsFigure<TViewPoint, TViewBounds>>();
         private int _currentFigureIndex;

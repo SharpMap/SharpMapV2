@@ -20,6 +20,8 @@ using System.IO;
 using System.Reflection;
 
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -129,7 +131,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region Explicit Interface Implementation
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
-        IViewMatrix IRenderer.ViewTransform
+        IMatrixD IRenderer.ViewTransform
         {
             get
             {

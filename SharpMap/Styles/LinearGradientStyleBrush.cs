@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 using SharpMap.Rendering;
 
@@ -28,7 +30,7 @@ namespace SharpMap.Styles
         private ColorBlend _colorBlend;
         private StyleColor _startColor = StyleColor.Black;
         private StyleColor _endColor = StyleColor.White;
-        private IViewMatrix _transform;
+        private IMatrixD _transform;
 
         public ColorBlend ColorBlend
         {
@@ -48,7 +50,7 @@ namespace SharpMap.Styles
             set { _endColor = value; }
         }
 
-        public IViewMatrix Transform
+        public IMatrixD Transform
         {
             get { return _transform; }
             set { _transform = value; }

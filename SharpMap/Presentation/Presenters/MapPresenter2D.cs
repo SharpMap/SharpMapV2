@@ -28,6 +28,8 @@ using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
@@ -308,7 +310,7 @@ namespace SharpMap.Presentation
             throw new Exception("The method or operation is not implemented.");
         }
 
-        void ViewPort_MapTransformChanged(object sender, MapPresentationPropertyChangedEventArgs<IViewMatrix> e)
+        void ViewPort_MapTransformChanged(object sender, MapPresentationPropertyChangedEventArgs<IMatrixD> e)
         {
             throw new Exception("The method or operation is not implemented.");
         }

@@ -17,14 +17,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering3D
 {
     /// <summary>
     /// A measurement of size in 3 dimensions.
     /// </summary>
-    public struct ViewSize3D : IViewVector
+	public struct ViewSize3D : IVectorD
     {
         private double _width, _height, _depth;
         private bool _hasValue;
@@ -137,7 +139,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IViewVector> Members
 
-        public bool Equals(IViewVector other)
+        public bool Equals(IVectorD other)
         {
             throw new Exception("The method or operation is not implemented.");
         }

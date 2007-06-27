@@ -21,11 +21,14 @@ using System.Text;
 
 using SharpMap.Rendering;
 
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+
 namespace SharpMap.Presentation
 {
     [Serializable]
     public class ViewPointActionEventArgs<TViewPoint> : EventArgs
-        where TViewPoint : IViewVector
+        where TViewPoint : IVectorD
     {
         private TViewPoint _viewPoint;
 
