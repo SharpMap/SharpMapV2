@@ -16,13 +16,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 using SharpMap.Rendering;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+using NPack;
 
 namespace SharpMap.Presentation
 {
@@ -37,14 +36,15 @@ namespace SharpMap.Presentation
     /// which represent points and areas in various dimensions.
     /// </remarks>
     public abstract class ViewSelection<TViewPoint, TViewSize, TViewRegion> : IViewSelection<TViewPoint, TViewSize, TViewRegion>
-        where TViewPoint : IVectorD
-        where TViewSize : IVectorD
+        where TViewPoint : IVectorD, IHasEmpty
+        where TViewSize : IVectorD, IHasEmpty
         where TViewRegion : IMatrixD, new()
     {
         private GraphicsPath<TViewPoint, TViewRegion> _path;
         private StylePen _outline;
         private StyleBrush _fill;
         private TViewPoint _anchorPoint;
+        private bool _anchorPointSet = false;
         private TViewRegion _boundingRegion = new TViewRegion();
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace SharpMap.Presentation
 
         /// <summary>
         /// Creates a new selection using the <see cref="DefaultOutline"/> and <see cref="DefaultFill"/>
-        /// for the <see cref="OutlineStyle"/> and <see cref="FillColor"/> respectively.
+        /// for the <see cref="OutlineStyle"/> and <see cref="FillBrush"/> respectively.
         /// </summary>
         public ViewSelection()
         {
@@ -85,8 +85,10 @@ namespace SharpMap.Presentation
         #region IViewSelection<TViewPoint,TViewSize,TViewRegion> Members
         public void AddPoint(TViewPoint point)
         {
-            if (Path.Points.Count == 0 && ((IViewVector)AnchorPoint) == null)
+            if (Path.Points.Count == 0 && AnchorPoint.IsEmpty)
+            {
                 AnchorPoint = point;
+            }
 
             Path.Points.Add(point);
             recomputeBoundingRegion();
@@ -129,16 +131,16 @@ namespace SharpMap.Presentation
         }
 
         #endregion
-        
+
         public StylePen OutlineStyle
         {
             get { return _outline; }
-            set 
+            set
             {
                 if (value == null)
                     value = DefaultOutline;
 
-                _outline = value; 
+                _outline = value;
             }
         }
 
@@ -150,27 +152,40 @@ namespace SharpMap.Presentation
 
         private void recomputeBoundingRegion()
         {
-            double[,] boxElements = BoundingRegion.Elements;
+            DoubleComponent[][] boxElements = BoundingRegion.Elements;
             bool recorded = false;
 
             foreach (TViewPoint point in Path.Points)
             {
-                double[] pointElements = point.Elements;
-                for (int elementIndex = 0; elementIndex < pointElements.Length; elementIndex++)
+                DoubleComponent[] components = point.Components;
+
+                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
                 {
+                    for (int rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
+                    {
+                        if (components[componentIndex].GreaterThan(boxElements[rowIndex][componentIndex]))
+                        {
+
+                        }
+                        boxElements[rowIndex][componentIndex] = components[componentIndex];
+                    }
+
                     if (!recorded)
                     {
-                        boxElements[0, elementIndex] = pointElements[elementIndex];
-                        boxElements[1, elementIndex] = pointElements[elementIndex];
+
                         recorded = true;
                     }
                     else
                     {
-                        if (pointElements[elementIndex] > boxElements[0, elementIndex])
-                            boxElements[0, elementIndex] = pointElements[elementIndex];
+                        if (components[componentIndex].GreaterThan(boxElements[0][componentIndex]))
+                        {
+                            boxElements[0][componentIndex] = components[componentIndex];
+                        }
 
-                        if (pointElements[elementIndex] > boxElements[1, elementIndex])
-                            boxElements[1, elementIndex] = pointElements[elementIndex];
+                        if (components[componentIndex].GreaterThan(boxElements[1][componentIndex]))
+                        {
+                            boxElements[1][componentIndex] = components[componentIndex];
+                        }
                     }
                 }
             }

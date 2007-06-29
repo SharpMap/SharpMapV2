@@ -40,10 +40,6 @@ namespace SharpMap.Rendering.Rendering2D
                 0, 0, 0,
                 0, 0, 0);
 
-        private double _x1, _x2, _x3;
-        private double _y1, _y2, _y3;
-        private double _w1, _w2, _w3;
-
         #region Constructors
         public ViewMatrix2D()
             : this(Identity) { }
@@ -53,37 +49,46 @@ namespace SharpMap.Rendering.Rendering2D
             double w1, double w2, double w3)
             :base(3, 3)
         {
-            _x1 = x1; _x2 = x2; _x3 = x3;
-            _y1 = y1; _y2 = y2; _y3 = y3;
-            _w1 = w1; _w2 = w2; _w3 = w3;
+            X1 = x1; X2 = x2; X3 = x3;
+            Y1 = y1; Y2 = y2; Y3 = y3;
+            W1 = w1; W2 = w2; W3 = w3;
         }
 
         public ViewMatrix2D(ViewMatrix2D matrixToCopy)
             : base(3, 3)
         {
-            this._x1 = matrixToCopy._x1;
-            this._x2 = matrixToCopy._x2;
-            this._x3 = matrixToCopy._x3;
-
-            this._y1 = matrixToCopy._y1;
-            this._y2 = matrixToCopy._y2;
-            this._y3 = matrixToCopy._y3;
-
-            this._w1 = matrixToCopy._w1;
-            this._w2 = matrixToCopy._w2;
-            this._w3 = matrixToCopy._w3;
+            for (int i = 0; i < RowCount; i++)
+            {
+                Array.Copy(matrixToCopy.Elements, Elements, matrixToCopy.Elements.Length);
+            }
         }
         #endregion
 
+        #region ToString
         public override string ToString()
         {
             return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
                 X1, X2, X3, Y1, Y2, Y3, W1, W2, W3);
         }
+        #endregion
 
+        #region GetHashCode
         public override int GetHashCode()
         {
-            return unchecked(_x1.GetHashCode() + 24243 ^ _x2.GetHashCode() + 7318674 ^ _x3.GetHashCode() + 282 ^ _y1.GetHashCode() + 54645 ^ _y2.GetHashCode() + 42 ^ _y3.GetHashCode() + 244892 ^ _w1.GetHashCode() + 8464 ^ _w1.GetHashCode() + 36565 ^ _w2.GetHashCode() + 3210186 ^ _w3.GetHashCode() + 8373428);
+            return unchecked(this[0, 0].GetHashCode() + 24243 ^ this[0, 1].GetHashCode() + 7318674
+                ^ this[0, 2].GetHashCode() + 282 ^ this[1, 0].GetHashCode() + 54645
+                ^ this[1, 1].GetHashCode() + 42 ^ this[1, 2].GetHashCode() + 244892
+                ^ this[2, 0].GetHashCode() + 8464 ^ this[2, 1].GetHashCode() + 36565 ^ this[2, 2].GetHashCode() + 3210186);
+        }
+        #endregion
+
+        public new ViewMatrix2D Clone()
+        {
+            return new ViewMatrix2D(this);
+        }
+
+        public ViewPoint2D TransformVector(double x, double y)
+        {
         }
 
         #region Equality Computation
@@ -95,9 +100,9 @@ namespace SharpMap.Rendering.Rendering2D
                 return Equals(obj as ViewMatrix2D);
             }
 
-            if (obj is IViewMatrix)
+            if (obj is IMatrixD)
             {
-                return Equals(obj as IViewMatrix);
+                return Equals(obj as IMatrixD);
             }
 
             return false;
@@ -119,220 +124,62 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #endregion
-
-        #region IEquatable<IViewMatrix> Members
-
-        public bool Equals(IMatrixD other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            double[,] lhs = this.Elements;
-            double[,] rhs = other.Elements;
-
-            if (lhs.Length != rhs.Length)
-            {
-                return false;
-            }
-
-            return lhs[0, 0] == rhs[0, 0] &&
-                lhs[0, 1] == rhs[0, 1] &&
-                lhs[1, 0] == rhs[1, 0] &&
-                lhs[1, 1] == rhs[1, 1];
-        }
-
-        #endregion
         #endregion
 
         #region Properties
         public double X1
         {
-            get { return _x1; }
-            set { _x1 = value; }
+            get { return (double)this[0, 0]; }
+            set { this[0, 0] = value; }
         }
 
         public double X2
         {
-            get { return _x2; }
-            set { _x2 = value; }
+            get { return (double)this[0, 1]; }
+            set { this[0, 1] = value; }
         }
 
         public double X3
         {
-            get { return _x3; }
-            set { _x3 = value; }
+            get { return (double)this[0, 2]; }
+            set { this[0, 2] = value; }
         }
 
         public double Y1
         {
-            get { return _y1; }
-            set { _y1 = value; }
+            get { return (double)this[1, 0]; }
+            set { this[1, 0] = value; }
         }
 
         public double Y2
         {
-            get { return _y2; }
-            set { _y2 = value; }
+            get { return (double)this[1, 1]; }
+            set { this[1, 1] = value; }
         }
 
         public double Y3
         {
-            get { return _y3; }
-            set { _y3 = value; }
+            get { return (double)this[1, 2]; }
+            set { this[1, 2] = value; }
         }
 
         public double W1
         {
-            get { return _w1; }
-            set { _w1 = value; }
+            get { return (double)this[2, 0]; }
+            set { this[2, 0] = value; }
         }
 
         public double W2
         {
-            get { return _w2; }
-            set { _w2 = value; }
+            get { return (double)this[2, 1]; }
+            set { this[2, 1] = value; }
         }
 
         public double W3
         {
-            get { return _w3; }
-            set { _w3 = value; }
+            get { return (double)this[2, 2]; }
+            set { this[2, 2] = value; }
         }
-        #endregion
-
-        #region IViewMatrix Members
-
-        public double[,] Elements
-        {
-            get
-            {
-                double[,] elements = new double[,] {
-                { _x1, _x2, _x3 },
-                { _y1, _y2, _y3 },
-                { _w1, _w2, _w3 } };
-
-                return elements;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                if (value.Rank != 2 || value.GetLength(0) != 3 || value.GetLength(1) != 3)
-                {
-                    throw new ArgumentException("Elements must be a 3x3 array");
-                }
-
-                _x1 = value[0, 0];
-                _x2 = value[0, 1];
-                _x3 = value[0, 2];
-
-                _y1 = value[1, 0];
-                _y2 = value[1, 1];
-                _y3 = value[1, 2];
-
-                _w1 = value[2, 0];
-                _w2 = value[2, 1];
-                _w3 = value[2, 2];
-            }
-        }
-
-        public bool IsInvertible
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get { return false; }
-        }
-
-        public void Invert()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reset()
-        {
-            Elements = Identity.Elements;
-        }
-
-        public void Multiply(IMatrixD matrix)
-        {
-            throw new NotImplementedException();
-        }
-
-        public double GetOffset(int dimension)
-        {
-            if (dimension == 0)
-                return W1;
-            if (dimension == 1)
-                return W2;
-            else
-                throw new ArgumentOutOfRangeException("dimension", dimension, "Argument must be 0 or 1");
-        }
-
-        public void Offset(IVectorD offsetVector)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rotate(double degreesTheta)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RotateAt(double degreesTheta, IVectorD center)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Scale(double scaleAmount)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Scale(IVectorD scaleVector)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Translate(double scaleAmount)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Translate(IVectorD translationVector)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVectorD Transform(IVectorD vector)
-        {
-            throw new NotImplementedException();
-        }
-
-        public double[] Transform(params double[] vector)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region ICloneable Members
-
-        public new ViewMatrix2D Clone()
-        {
-            return new ViewMatrix2D(this);
-        }
-
         #endregion
     }
 }

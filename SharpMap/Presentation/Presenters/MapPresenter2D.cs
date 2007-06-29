@@ -49,24 +49,24 @@ namespace SharpMap.Presentation
         public MapPresenter2D(Map map, IMapView2D mapView)
         {
             Map = map;
-            Map.LayersCollectionChanged += new EventHandler<ModelCollectionChangedEventArgs<ILayer>>(Map_LayersChanged);
+            Map.LayersCollectionChanged += Map_LayersChanged;
 
             MapView = mapView;
-            MapView.Hover += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_Hover);
-            MapView.BeginAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_BeginAction);
-            MapView.MoveTo += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_MoveTo);
-            MapView.EndAction += new EventHandler<MapActionEventArgs<ViewPoint2D>>(MapView_EndAction);
+            MapView.Hover += MapView_Hover;
+            MapView.BeginAction += MapView_BeginAction;
+            MapView.MoveTo += MapView_MoveTo;
+            MapView.EndAction += MapView_EndAction;
             
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
             mapView.ViewPort = viewPort;
-            viewPort.CenterChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewPoint2D, Point>>(ViewPort_CenterChanged);
-            viewPort.MapTransformChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>>(ViewPort_MapTransformChanged);
-            viewPort.MaximumWorldWidthChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MaximumZoomChanged);
-            viewPort.MinimumWorldWidthChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_MinimumZoomChanged);
-            viewPort.PixelAspectRatioChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<double>>(ViewPort_PixelAspectRatioChanged);
-            viewPort.SizeChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewSize2D>>(ViewPort_SizeChanged);
-            viewPort.StyleRenderingModeChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<StyleRenderingMode>>(ViewPort_StyleRenderingModeChanged);
-            viewPort.ViewRectangleChanged += new EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>>(ViewPort_ViewRectangleChanged);
+            viewPort.CenterChanged += ViewPort_CenterChanged;
+            viewPort.MapTransformChanged += ViewPort_MapTransformChanged;
+            viewPort.MaximumWorldWidthChanged += ViewPort_MaximumZoomChanged;
+            viewPort.MinimumWorldWidthChanged += ViewPort_MinimumZoomChanged;
+            viewPort.PixelAspectRatioChanged += ViewPort_PixelAspectRatioChanged;
+            viewPort.SizeChanged += ViewPort_SizeChanged;
+            viewPort.StyleRenderingModeChanged += ViewPort_StyleRenderingModeChanged;
+            viewPort.ViewRectangleChanged += ViewPort_ViewRectangleChanged;
         }
 
         #region Dispose Pattern

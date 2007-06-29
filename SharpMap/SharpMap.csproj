@@ -219,6 +219,8 @@
     <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Rendering\IHasEmpty.cs" />
+    <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />
     <Compile Include="Rendering\Primitives\ILabel`3.cs" />
     <Compile Include="Rendering\2D\BasicGeometryRenderer2D`1.cs" />
@@ -265,13 +267,10 @@
     <Compile Include="Rendering\2D\Symbol2D.cs" />
     <Compile Include="Rendering\2D\VectorRenderer2D`1.cs" />
     <Compile Include="Rendering\2D\ViewMatrix2D.cs" />
-    <Compile Include="Rendering\3D\ViewMatrix3D.cs" />
-    <Compile Include="Rendering\3D\ViewPoint3D.cs" />
     <Compile Include="Presentation\ViewPointHoverEventArgs.cs" />
     <Compile Include="Rendering\2D\ViewRectangle2D.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
     <Compile Include="Rendering\2D\ViewPoint2D.cs" />
-    <Compile Include="Rendering\3D\ViewRectangle3D.cs" />
     <Compile Include="Presentation\ViewSelection.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
     <Compile Include="Rendering\2D\ViewSize2D.cs" />
@@ -279,7 +278,6 @@
     <Compile Include="Rendering\Thematics\CustomTheme.cs" />
     <Compile Include="Rendering\Thematics\GradientTheme.cs" />
     <Compile Include="Rendering\Thematics\ITheme.cs" />
-    <Compile Include="Rendering\3D\ViewSize3D.cs" />
     <Compile Include="Styles\LinearGradientStyleBrush.cs" />
     <Compile Include="Styles\SolidStyleBrush.cs" />
     <Compile Include="Styles\StyleBrush.cs" />

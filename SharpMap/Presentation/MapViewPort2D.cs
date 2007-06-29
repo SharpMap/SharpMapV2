@@ -16,25 +16,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Data;
+using NPack.Interfaces;
 using SharpMap.Geometries;
-using SharpMap.Layers;
 using GeoPoint = SharpMap.Geometries.Point;
-using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+using IAffineMatrixD = NPack.Interfaces.IAffineTranformMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
 	public class MapViewPort2D
 	{
-		private SharpMap.Map _map;
+		private Map _map;
         private IMapView2D _view;
 		private double _pixelAspectRatio = 1.0;
 		private double _viewDpi;
@@ -43,8 +39,8 @@ namespace SharpMap.Presentation
 		private GeoPoint _center = GeoPoint.Zero;
 		private double _maximumWorldWidth;
 		private double _minimumWorldWidth;
-		private IMatrixD _viewTransform = new ViewMatrix2D();
-		private IMatrixD _viewTransformInverted = new ViewMatrix2D();
+        private IAffineMatrixD _viewTransform = new ViewMatrix2D();
+        private IAffineMatrixD _viewTransformInverted = new ViewMatrix2D();
 		private StyleColor _backgroundColor;
          
 		public MapViewPort2D(SharpMap.Map map, IMapView2D view)
@@ -295,35 +291,31 @@ namespace SharpMap.Presentation
 		}
 
 		/// <summary>
-		/// Gets or sets a <see cref="IViewMatrix"/> used to transform the map image.
+        /// Gets or sets a <see cref="IAffineTranformMatrix{T}"/> used to transform the map image.
 		/// </summary>
 		/// <remarks>
-		/// Using the <see cref="MapTransform"/> you can alter the coordinate system of the map rendering.
+        /// Using the <see cref="MapViewTransform"/> you can alter the coordinate system of the map rendering.
 		/// This makes it possible to rotate or rescale the image, for instance to have another direction 
 		/// than north upwards.
 		/// </remarks>
 		/// <example>
 		/// Rotate the map output 45 degrees around its center:
 		/// <code lang="C#">
-		/// IViewMatrix mapTransform = new SharpMap.Rendering.ViewMatrix2D(); //Create transformation matrix
-		///	mapTransform.RotateAt(45, myMap.ViewCenter);    //Apply 45 degrees rotation around the center of the map
-		///	myMap.MapTransform = mapTransform;              //Apply transformation to map view
 		/// </code>
 		/// </example>
-		public IMatrixD MapViewTransform
+		public IAffineMatrixD MapViewTransform
 		{
 			get { return _viewTransform; }
 			set
 			{
 				if (_viewTransform != value)
 				{
-					IViewMatrix oldValue = _viewTransform;
+                    IAffineMatrixD oldValue = _viewTransform;
 					_viewTransform = value;
 
-					if (_viewTransform.IsInvertible)
+					if (_viewTransform.IsInvertable)
 					{
-						MapViewTransformInverted = _viewTransform.Clone() as IViewMatrix;
-						MapViewTransformInverted.Invert();
+					    MapViewTransformInverted = _viewTransform.Inverse;
 					}
 					else
 					{
@@ -341,7 +333,7 @@ namespace SharpMap.Presentation
 		/// <remarks>
 		/// An inverse matrix is used to reverse the transformation of a matrix.
 		/// </remarks>
-		public IMatrixD MapViewTransformInverted
+		public IAffineMatrixD MapViewTransformInverted
 		{
 			get { return _viewTransformInverted; }
 			private set { _viewTransformInverted = value; }
@@ -374,8 +366,8 @@ namespace SharpMap.Presentation
 		/// Zooms the map to fit a bounding box.
 		/// </summary>
 		/// <remarks>
-		/// If the ratio of either the width of the current map <see cref="Envelope">envelope</see> 
-		/// to the width of <paramref name="zoomBox"/> or of the height of the current map <see cref="Envelope">envelope</see> 
+		/// If the ratio of either the width of the current map <see cref="ViewEnvelope">envelope</see> 
+		/// to the width of <paramref name="zoomBox"/> or of the height of the current map <see cref="ViewEnvelope">envelope</see> 
 		/// to the height of <paramref name="zoomBox"/> is greater, the map envelope will be enlarged to contain the 
 		/// <paramref name="zoomBox"/> parameter.
 		/// </remarks>
@@ -430,11 +422,11 @@ namespace SharpMap.Presentation
 
 		protected virtual void OnMapTransformChanged(IMatrixD oldTransform, IMatrixD newTransform)
 		{
-			EventHandler<MapPresentationPropertyChangedEventArgs<IViewMatrix>> @event = MapTransformChanged;
+			EventHandler<MapPresentationPropertyChangedEventArgs<IMatrixD>> @event = MapTransformChanged;
 
 			if (@event != null)
 			{
-				@event(this, new MapPresentationPropertyChangedEventArgs<IViewMatrix>(oldTransform, newTransform));
+                @event(this, new MapPresentationPropertyChangedEventArgs<IMatrixD>(oldTransform, newTransform));
 			}
 		}
 

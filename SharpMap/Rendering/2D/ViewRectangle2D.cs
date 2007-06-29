@@ -16,21 +16,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using NPack;
+using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
     [Serializable]
-    public struct ViewRectangle2D : IMatrixD, IComparable<ViewRectangle2D>
+    public struct ViewRectangle2D : IViewRectangle<ViewPoint2D>, IComparable<ViewRectangle2D>, IHasEmpty
     {
         public static readonly ViewRectangle2D Empty = new ViewRectangle2D();
         public static readonly ViewRectangle2D Zero = new ViewRectangle2D(0, 0, 0, 0);
-        private double _bottom;
+
+        private DoubleComponent _bottom;
+        private DoubleComponent _left;
+        private DoubleComponent _right;
+        private DoubleComponent _top;
         private bool _hasValue;
-        private double _left;
-        private double _right;
-        private double _top;
 
         #region Constructors
 
@@ -52,6 +55,23 @@ namespace SharpMap.Rendering.Rendering2D
             _hasValue = true;
         }
 
+        #endregion
+
+        #region ToString
+        public override string ToString()
+        {
+            return
+                String.Format(
+                    "[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", Left,
+                    Top, Right, Bottom, IsEmpty);
+        }
+        #endregion
+
+        #region GetHashCode
+        public override int GetHashCode()
+        {
+            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom);
+        }
         #endregion
 
         #region IComparable<ViewRectangle2D> Members
@@ -89,182 +109,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IViewMatrix Members
-
-        public void Reset()
-        {
-            throw new NotSupportedException();
-        }
-
-        public void Invert()
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool IsInvertible
-        {
-            get { throw new NotSupportedException(); }
-        }
-
         public bool IsEmpty
         {
             get { return !_hasValue; }
-        }
-
-        public double[,] Elements
-        {
-            get
-            {
-                if (IsEmpty)
-                {
-                    return new double[0,0];
-                }
-
-                return new double[,] {{Left, Top}, {Right, Bottom}};
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                if (value.Rank != 2 || value.GetUpperBound(0) != 1)
-                {
-                    throw new ArgumentException("Elements can be set only to a 2x2 array");
-                }
-
-                Left = value[0, 0] < value[1, 0] ? value[0, 0] : value[1, 0];
-                Top = value[0, 1] < value[1, 1] ? value[0, 1] : value[1, 1];
-                Right = value[0, 0] < value[1, 0] ? value[1, 0] : value[0, 0];
-                Bottom = value[0, 1] < value[1, 1] ? value[1, 1] : value[0, 1];
-                _hasValue = true;
-            }
-        }
-
-        public void Rotate(double degreesTheta)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void RotateAt(double degreesTheta, IVectorD center)
-        {
-            throw new NotSupportedException();
-        }
-
-        public double GetOffset(int dimension)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void Offset(IVectorD offsetVector)
-        {
-            Translate(offsetVector);
-        }
-
-        public void Multiply(IMatrixD matrix)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Scale(double scaleAmount)
-        {
-            if (IsEmpty)
-            {
-                return;
-            }
-
-            double newWidth = Width*scaleAmount;
-            double newHeight = Height*scaleAmount;
-
-            Right = Left + newWidth;
-            Bottom = Top + newHeight;
-        }
-
-        public void Scale(IMatrixD scaleVector)
-        {
-            if (IsEmpty)
-            {
-                return;
-            }
-
-            if (scaleVector.Elements.Length != 2)
-            {
-                throw new ArgumentOutOfRangeException("scaleVector", scaleVector,
-                                                      "Argument vector must have two elements");
-            }
-
-            double newWidth = Width*scaleVector[0];
-            double newHeight = Height*scaleVector[1];
-
-            Right = Left + newWidth;
-            Bottom = Top + newHeight;
-        }
-
-        public void Translate(double translationAmount)
-        {
-            if (IsEmpty)
-            {
-                return;
-            }
-
-            Left += translationAmount;
-            Top += translationAmount;
-            Right += translationAmount;
-            Bottom += translationAmount;
-        }
-
-        public void Translate(IVectorD translationVector)
-        {
-            if (IsEmpty)
-            {
-                return;
-            }
-
-            if (translationVector.Elements.Length != 2)
-            {
-                throw new ArgumentOutOfRangeException("translationVector", translationVector,
-                                                      "Argument vector must have two elements");
-            }
-
-            double xDelta = translationVector[0];
-            double yDelta = translationVector[1];
-
-            Left += xDelta;
-            Right += xDelta;
-
-            Top += yDelta;
-            Bottom += yDelta;
-        }
-
-        public IMatrixD Transform(IVectorD vector)
-        {
-            throw new NotSupportedException();
-        }
-
-        public double[] Transform(params double[] vector)
-        {
-            throw new NotSupportedException();
-        }
-
-        public object Clone()
-        {
-            return new ViewRectangle2D(Left, Right, Top, Bottom);
-        }
-
-        #endregion
-
-        public override string ToString()
-        {
-            return
-                String.Format(
-                    "[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", Left,
-                    Top, Right, Bottom, IsEmpty);
-        }
-
-        public override int GetHashCode()
-        {
-            return unchecked((int) Left ^ (int) Right ^ (int) Top ^ (int) Bottom);
         }
 
         /// <summary>
@@ -290,84 +137,27 @@ namespace SharpMap.Rendering.Rendering2D
             return new ViewRectangle2D(left, right, top, bottom);
         }
 
-        #region Properties
-
-        public double X
-        {
-            get { return _left; }
-        }
-
-        public double Y
-        {
-            get { return _top; }
-        }
-
-        public double Left
-        {
-            get { return _left; }
-            private set { _left = value; }
-        }
-
-        public double Top
-        {
-            get { return _top; }
-            private set { _top = value; }
-        }
-
-        public double Right
-        {
-            get { return _right; }
-            private set { _right = value; }
-        }
-
-        public double Bottom
-        {
-            get { return _bottom; }
-            private set { _bottom = value; }
-        }
-
-        public ViewPoint2D Center
-        {
-            get { return new ViewPoint2D(X + Width/2, Y + Height/2); }
-        }
-
-        public ViewPoint2D Location
-        {
-            get { return new ViewPoint2D(_left, _top); }
-        }
-
-        public ViewSize2D Size
-        {
-            get { return new ViewSize2D(Width, Height); }
-        }
-
-        public double Width
-        {
-            get { return _right - _left; }
-        }
-
-        public double Height
-        {
-            get { return _bottom - _top; }
-        }
-
-        #endregion
-
         #region Equality Testing
 
         public bool Equals(IMatrixD other)
         {
-            if (IsEmpty && other.IsEmpty)
+            if(other is ViewRectangle2D)
+            {
+                return Equals((ViewRectangle2D) other);
+            }
+
+            if (IsEmpty && other == null)
             {
                 return true;
             }
 
-            if (IsEmpty || other.IsEmpty)
+            if (IsEmpty || other == null)
             {
                 return false;
             }
 
-            double[,] lhs = Elements, rhs = other.Elements;
+            IMatrixD thisMatrix = this;
+            DoubleComponent[][] lhs = thisMatrix.Elements, rhs = other.Elements;
 
             if (lhs.Length != rhs.Length)
             {
@@ -379,26 +169,18 @@ namespace SharpMap.Rendering.Rendering2D
                 return false;
             }
 
-            int rowCount = lhs.GetUpperBound(0);
-            int colCount = lhs.GetUpperBound(1);
-
-            if (rowCount != rhs.GetUpperBound(0) || 0 != rhs.GetLowerBound(0))
-            {
-                return false;
-            }
-
-            if (colCount != rhs.GetUpperBound(1) || 0 != rhs.GetLowerBound(1))
+            if (thisMatrix.RowCount != other.RowCount || thisMatrix.ColumnCount != other.ColumnCount)
             {
                 return false;
             }
 
             unchecked
             {
-                for (int row = 0; row < rowCount; row++)
+                for (int row = 0; row < thisMatrix.RowCount; row++)
                 {
-                    for (int col = 0; col < colCount; col++)
+                    for (int col = 0; col < thisMatrix.ColumnCount; col++)
                     {
-                        if (lhs[row, col] != rhs[row, col])
+                        if (!lhs[row][col].Equals(rhs[row][col]))
                         {
                             return false;
                         }
@@ -423,12 +205,12 @@ namespace SharpMap.Rendering.Rendering2D
         {
             if (obj is ViewRectangle2D)
             {
-                return Equals((ViewRectangle2D) obj);
+                return Equals((ViewRectangle2D)obj);
             }
 
-            if (obj is IViewMatrix)
+            if (obj is IMatrixD)
             {
-                return Equals(obj as IViewMatrix);
+                return Equals(obj as IMatrixD);
             }
 
             return false;
@@ -443,6 +225,470 @@ namespace SharpMap.Rendering.Rendering2D
                    Bottom == rectangle.Bottom;
         }
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the X value of the coordinate of the upper left corner of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Location"/>
+        public double X
+        {
+            get { return (double)_left; }
+        }
+
+        /// <summary>
+        /// Gets the Y value of the coordinate of the upper left corner of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Location"/>
+        public double Y
+        {
+            get { return (double)_top; }
+        }
+
+        /// <summary>
+        /// Gets the X value of the left edge of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Bottom"/>
+        /// <seealso cref="Right"/>
+        /// <seealso cref="Top"/>
+        public double Left
+        {
+            get { return (double)_left; }
+        }
+
+        /// <summary>
+        /// Gets the Y value of the top edge of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Bottom"/>
+        /// <seealso cref="Right"/>
+        /// <seealso cref="Left"/>
+        public double Top
+        {
+            get { return (double)_top; }
+        }
+
+        /// <summary>
+        /// Gets the X value of the right edge of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Bottom"/>
+        /// <seealso cref="Top"/>
+        /// <seealso cref="Left"/>
+        public double Right
+        {
+            get { return (double)_right; }
+        }
+
+        /// <summary>
+        /// Gets the Y value of the bottom edge of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Right"/>
+        /// <seealso cref="Top"/>
+        /// <seealso cref="Left"/>
+        public double Bottom
+        {
+            get { return (double)_bottom; }
+        }
+
+        /// <summary>
+        /// Gets the coordinates of the center of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Location"/>
+        /// <seealso cref="X"/>
+        /// <seealso cref="Y"/>
+        public ViewPoint2D Center
+        {
+            get { return new ViewPoint2D(X + Width/2, Y + Height/2); }
+        }
+
+        /// <summary>
+        /// Gets the coordinates of the upper left corner of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Center"/>
+        public ViewPoint2D Location
+        {
+            get { return new ViewPoint2D((double)_left, (double)_top); }
+        }
+
+        /// <summary>
+        /// Gets the size of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Width"/>
+        /// <seealso cref="Height"/>
+        public ViewSize2D Size
+        {
+            get { return new ViewSize2D(Width, Height); }
+        }
+
+        /// <summary>
+        /// Gets the width of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Size"/>
+        public double Width
+        {
+            get { return (double)_right.Subtract(_left); }
+        }
+
+        /// <summary>
+        /// Gets the height of the <see cref="ViewRectangle2D"/>.
+        /// </summary>
+        /// <seealso cref="Size"/>
+        public double Height
+        {
+            get { return (double)_bottom.Subtract(_top); }
+        }
+
+        #endregion
+
+        public ViewRectangle2D Clone()
+        {
+            return new ViewRectangle2D(Location, Size);
+        }
+
+        #region IViewRectangle<ViewPoint2D> Members
+
+        public ViewPoint2D LowerBounds
+        {
+            get { return Location; }
+        }
+
+        public ViewPoint2D UpperBounds
+        {
+            get { return new ViewPoint2D(X + Width, Y + Height); }
+        }
+
+        #endregion
+
+        #region IAddable<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the sum of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
+        /// </summary>
+        /// <param name="b">The second operand.</param>
+        /// <returns>The sum.</returns>
+        public IMatrixD Add(IMatrixD b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the difference of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
+        /// </summary>
+        /// <param name="b">The second operand.</param>
+        /// <returns>The difference.</returns>
+        public IMatrixD Subtract(IMatrixD b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasZero<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the additive identity.
+        /// </summary>
+        /// <value>e</value>
+        IMatrixD IHasZero<IMatrixD>.Zero
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region INegatable<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the negative of the object. Must not modify the object itself.
+        /// </summary>
+        /// <returns>The negative.</returns>
+        public IMatrixD Negative()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMultipliable<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the product of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
+        /// </summary>
+        /// <param name="b">The second operand.</param>
+        /// <returns>The product.</returns>
+        IMatrixD IMultipliable<IMatrixD>.Multiply(IMatrixD b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the quotient of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
+        /// </summary>
+        /// <param name="b">The second operand.</param>
+        /// <returns>The quotient.</returns>
+        public IMatrixD Divide(IMatrixD b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IMatrix<DoubleComponent>> Members
+
+        /// <summary>
+        /// Returns the multiplicative identity.
+        /// </summary>
+        /// <value>e</value>
+        public IMatrixD One
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IMatrix<DoubleComponent> Members
+
+        /// <summary>
+        /// Makes an element-by-element copy of the matrix.
+        /// </summary>
+        /// <returns>An exact copy of the matrix.</returns>
+        IMatrixD IMatrixD.Clone()
+        {
+            return Clone();
+        }
+
+        /// <summary>
+        /// Gets the determinant for the matrix, if it exists.
+        /// </summary>
+        double IMatrixD.Determinant
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        /// Gets the number of columns in the matrix.
+        /// </summary>
+        int IMatrixD.ColumnCount
+        {
+            get { return 2; }
+        }
+
+        /// <summary>
+        /// Gets the elements in the matrix as an array of arrays (jagged array).
+        /// </summary>
+        DoubleComponent[][] IMatrixD.Elements
+        {
+            get
+            {
+                if (IsEmpty)
+                {
+                    return new DoubleComponent[0][];
+                }
+
+                return new DoubleComponent[][] { new DoubleComponent[] { _left, _top }, new DoubleComponent[] { _right, _bottom } };
+            }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                if (value.Length != 2)
+                {
+                    throw new ArgumentException("Elements can be set only to a 2x2 array");
+                }
+
+                if (value[0] == null || value[1] == null)
+                {
+                    throw new ArgumentException("The array elements of value cannot be null.");
+                }
+
+                if (value[0].Length != 2 || value[1].Length != 2)
+                {
+                    throw new ArgumentException("Elements can be set only to a 2x2 array");
+                }
+
+                _left = value[0][0].LessThan(value[1][0]) ? value[0][0] : value[1][0];
+                _top = value[0][1].LessThan(value[1][1]) ? value[0][1] : value[1][1];
+                _right = value[0][0].LessThan(value[1][0]) ? value[1][0] : value[0][0];
+                _bottom = value[0][1].LessThan(value[1][1]) ? value[1][1] : value[0][1];
+                _hasValue = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets true if the matrix is singular (non-invertable).
+        /// </summary>
+        bool IMatrixD.IsSingular
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        /// Gets true if the matrix is invertable (non-singular).
+        /// </summary>
+        bool IMatrixD.IsInvertable
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        /// Gets the inverse of the matrix, if one exists.
+        /// </summary>
+        IMatrixD IMatrixD.Inverse
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
+        /// </summary>
+        bool IMatrixD.IsSquare
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Gets true if the matrix is symmetrical.
+        /// </summary>
+        bool IMatrixD.IsSymmetrical
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        /// Gets the number of rows in the matrix.
+        /// </summary>
+        int IMatrixD.RowCount
+        {
+            get { return 2; }
+        }
+
+        /// <summary>
+        /// Gets a submatrix.
+        /// </summary>
+        /// <param name="rowIndexes">The indexes of the rows to include.</param>
+        /// <param name="j0">The starting column to include.</param>
+        /// <param name="j1">The ending column to include.</param>
+        /// <returns></returns>
+        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Gets or sets an element in the matrix.
+        /// </summary>
+        /// <param name="row">The index of the row of the element.</param>
+        /// <param name="column">The index of the column of the element.</param>
+        /// <returns></returns>
+        DoubleComponent IMatrixD.this[int row, int column]
+        {
+            get 
+            {
+                checkIndexes(row, column);
+                
+                if(row == 0)
+                {
+                    if(column == 0)
+                    {
+                        return _left;
+                    }
+                    else
+                    {
+                        return _top;
+                    }
+                }
+                else
+                {
+                    if (column == 0)
+                    {
+                        return _right;
+                    }
+                    else
+                    {
+                        return _bottom;
+                    }
+                }
+            }
+            set
+            {
+                checkIndexes(row, column);
+
+                if (row == 0)
+                {
+                    if (column == 0)
+                    {
+                        _left = value;
+                    }
+                    else
+                    {
+                        _top = value;
+                    }
+                }
+                else
+                {
+                    if (column == 0)
+                    {
+                        _right = value;
+                    }
+                    else
+                    {
+                        _bottom = value;
+                    }
+                }
+
+                _hasValue = true;
+            }
+        }
+
+        /// <summary>
+        /// Returns the transpose of the matrix.
+        /// </summary>
+        /// <returns>The matrix with the rows as columns and columns as rows.</returns>
+        IMatrixD IMatrixD.Transpose()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Private Helper Methods
+
+        private static void checkIndex(int index)
+        {
+            if (index != 0 && index != 1)
+            {
+                throw new ArgumentOutOfRangeException("index", index, "The element index must be either 0 or 1 for a 2D point.");
+            }
+        }
+
+        private static void checkIndexes(int row, int column)
+        {
+            if (row != 0)
+            {
+                throw new ArgumentOutOfRangeException("row", row, "A ViewPoint2D has only 1 row.");
+            }
+
+            if (column < 0 || column > 1)
+            {
+                throw new ArgumentOutOfRangeException("column", row, "A ViewPoint2D has only 2 columns.");
+            }
+        }
         #endregion
     }
 }
