@@ -194,7 +194,7 @@ namespace SharpMap.Rendering.Rendering2D
 					symbol = VectorRenderer2D<TRenderObject>.DefaultSymbol;
 				}
 
-				ViewPoint2D pointLocation = new ViewPoint2D(ViewTransform.TransformVector(point));
+				ViewPoint2D pointLocation = ViewTransform.TransformVector(point.X, point.Y);
 				TRenderObject renderedObject = VectorRenderer.RenderSymbol(pointLocation, symbol, highlightSymbol, selectSymbol);
 				yield return new PositionedRenderObject2D<TRenderObject>(pointLocation.X, pointLocation.Y, renderedObject);
 			}
@@ -262,7 +262,7 @@ namespace SharpMap.Rendering.Rendering2D
         {
             foreach (Point geoPoint in points)
             {
-                yield return new ViewPoint2D(ViewTransform.Transform(geoPoint.X, geoPoint.Y));
+                yield return ViewTransform.TransformVector(geoPoint.X, geoPoint.Y);
             }
         }
 	}

@@ -35,7 +35,7 @@ namespace SharpMap.Rendering
 
         public ColorMatrix(double redLevel, double greenLevel, double blueLevel, double alphaLevel,
             double redShift, double greenShift, double blueShift)
-            : base(5, 5)
+            : base(5)
         {
             this[0, 0] = redLevel;
             this[1, 1] = greenLevel;
@@ -48,7 +48,7 @@ namespace SharpMap.Rendering
         }
 
         public ColorMatrix(IMatrixD matrixToCopy)
-            : base(5, 5)
+            : base(5)
         {
             for (int i = 0; i < RowCount; i++)
             {

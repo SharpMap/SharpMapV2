@@ -47,21 +47,24 @@ namespace SharpMap.Rendering.Rendering2D
         public ViewMatrix2D(double x1, double x2, double x3,
             double y1, double y2, double y3,
             double w1, double w2, double w3)
-            :base(3, 3)
+            :base(3)
         {
             X1 = x1; X2 = x2; X3 = x3;
             Y1 = y1; Y2 = y2; Y3 = y3;
             W1 = w1; W2 = w2; W3 = w3;
         }
 
-        public ViewMatrix2D(ViewMatrix2D matrixToCopy)
-            : base(3, 3)
+        public ViewMatrix2D(IMatrixD matrixToCopy)
+            : base(3)
         {
+            if (matrixToCopy == null) throw new ArgumentNullException("matrixToCopy");
+
             for (int i = 0; i < RowCount; i++)
             {
                 Array.Copy(matrixToCopy.Elements, Elements, matrixToCopy.Elements.Length);
             }
         }
+
         #endregion
 
         #region ToString
@@ -87,8 +90,14 @@ namespace SharpMap.Rendering.Rendering2D
             return new ViewMatrix2D(this);
         }
 
+        private readonly DoubleComponent[] _transferPoints = new DoubleComponent[2];
+
         public ViewPoint2D TransformVector(double x, double y)
         {
+            _transferPoints[0] = x;
+            _transferPoints[1] = y;
+            MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(this, _transferPoints);
+            return new ViewPoint2D((double)_transferPoints[0], (double)_transferPoints[1]);
         }
 
         #region Equality Computation
