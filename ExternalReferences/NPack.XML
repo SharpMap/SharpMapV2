@@ -4,18 +4,6 @@
         <name>NPack</name>
     </assembly>
     <members>
-        <member name="T:NPack.MatrixProcessor`1">
-            <summary>
-            Provides access to <see cref="T:NPack.Matrix`1"/> processing operations.
-            </summary>
-            <typeparam name="T">Type of matrix element.</typeparam>
-        </member>
-        <member name="T:NPack.ClrMatrixOperations`1">
-            <summary>
-            
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
         <member name="T:NPack.DoubleComponent">
             <summary>
             A vector component or matrix element which represents a <see cref="T:System.Double"/>.
@@ -262,6 +250,95 @@
             </summary>
             <returns>A formatted string displaying this value.</returns>
         </member>
+        <member name="T:NPack.MatrixProcessor`1">
+            <summary>
+            Provides access to <see cref="T:NPack.Matrix`1"/> processing operations.
+            </summary>
+            <typeparam name="T">Type of matrix element.</typeparam>
+        </member>
+        <member name="T:jp.takel.PseudoRandom.MersenneTwister">
+            <summary>
+            Generates random numbers using the Mersenne Twister algorithm.
+            </summary>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.#ctor(System.UInt32)">
+            <summary>
+            Creates a new random number generator with a non-zero seed.
+            </summary>
+            <param name="seed">A non-zero value to use as a seed.</param>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.#ctor">
+            <summary>
+            Creates a new random number generator with a default seed.
+            </summary>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.GenerateUInt">
+            <summary>
+            Generates a new random unsigned int.
+            </summary>
+            <returns>A random uint.</returns>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.NextUInt">
+            <summary>
+            Returns the next random <see cref="T:System.UInt32"/>.
+            </summary>
+            <returns>A random uint value.</returns>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.NextUInt(System.UInt32)">
+            <summary>
+            Returns the next random <see cref="T:System.UInt32"/> up to <paramref name="maxValue"/>.
+            </summary>
+            <param name="maxValue">The maximum value of the random number to create.</param>
+            <returns>A random uint value which is at most <paramref name="maxValue"/>.</returns>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.NextUInt(System.UInt32,System.UInt32)">
+            <summary>
+            Returns the next random <see cref="T:System.UInt32"/> at least <paramref name="minValue"/> 
+            and up to <paramref name="maxValue"/>.
+            </summary>
+            <param name="minValue">The minimum value of the random number to create.</param>
+            <param name="maxValue">The maximum value of the random number to create.</param>
+            <returns>A random uint value which is at least <paramref name="minValue"/> and at 
+            most <paramref name="maxValue"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <c>minValue &gt;= maxValue</c>.</exception>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.Next">
+            <summary>
+            Returns the next random <see cref="T:System.Int32"/>.
+            </summary>
+            <returns>A random int value.</returns>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.Next(System.Int32)">
+            <summary>
+            Returns the next random <see cref="T:System.Int32"/> up to <paramref name="maxValue"/>.
+            </summary>
+            <param name="maxValue">The maximum value of the random number to create.</param>
+            <returns>A random int value which is at most <paramref name="maxValue"/>.</returns>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.Next(System.Int32,System.Int32)">
+            <summary>
+            Returns the next random <see cref="T:System.Int32"/> at least <paramref name="minValue"/> 
+            and up to <paramref name="maxValue"/>.
+            </summary>
+            <param name="minValue">The minimum value of the random number to create.</param>
+            <param name="maxValue">The maximum value of the random number to create.</param>
+            <returns>A random int value which is at least <paramref name="minValue"/> and at 
+            most <paramref name="maxValue"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <c>minValue &gt;= maxValue</c>.</exception>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.NextBytes(System.Byte[])">
+            <summary>
+            Fills a buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill.</param>
+            <exception cref="T:System.ArgumentNullException">If <c>buffer == null</c>.</exception>
+        </member>
+        <member name="M:jp.takel.PseudoRandom.MersenneTwister.NextDouble">
+            <summary>
+            Returns the next random <see cref="T:System.Double"/> value.
+            </summary>
+            <returns>A random double floating point value.</returns>
+        </member>
         <member name="T:NPack.Interfaces.IMatrix`1">
             <summary>
             An interface to a generic matrix.
@@ -281,7 +358,8 @@
             <param name="rowIndexes">The indexes of the rows to include.</param>
             <param name="j0">The starting column to include.</param>
             <param name="j1">The ending column to include.</param>
-            <returns></returns>
+            <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
+            through <paramref name="j1"/>.</returns>
         </member>
         <member name="M:NPack.Interfaces.IMatrix`1.Transpose">
             <summary>
@@ -304,6 +382,11 @@
             Gets true if the matrix is singular (non-invertable).
             </summary>
         </member>
+        <member name="P:NPack.Interfaces.IMatrix`1.IsInvertable">
+            <summary>
+            Gets true if the matrix is invertable (non-singular).
+            </summary>
+        </member>
         <member name="P:NPack.Interfaces.IMatrix`1.Inverse">
             <summary>
             Gets the inverse of the matrix, if one exists.
@@ -324,7 +407,7 @@
             Gets the number of rows in the matrix.
             </summary>
         </member>
-        <member name="P:NPack.Interfaces.IMatrix`1.ElementArray">
+        <member name="P:NPack.Interfaces.IMatrix`1.Elements">
             <summary>
             Gets the elements in the matrix as an array of arrays (jagged array).
             </summary>
@@ -336,6 +419,12 @@
             <param name="row">The index of the row of the element.</param>
             <param name="column">The index of the column of the element.</param>
             <returns></returns>
+        </member>
+        <member name="T:NPack.AffineMatrix`1">
+            <summary>
+            Represents an affine transform.
+            </summary>
+            <typeparam name="T">Type of matrix element.</typeparam>
         </member>
         <member name="T:NPack.Matrix`1">
             <summary>
@@ -371,6 +460,16 @@
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when length of 'elements' is 0 
             or when the first element of 'elements' is an array of length 0.</exception>
             <exception cref="T:System.ArgumentException">When the arrays of 'elements' are not all the same length.</exception>
+        </member>
+        <member name="M:NPack.Matrix`1.GetMatrix(System.Int32[],System.Int32,System.Int32)">
+            <summary>
+            Gets a submatrix.
+            </summary>
+            <param name="rowIndicies">The indexes of the rows to include.</param>
+            <param name="j0">The starting column to include.</param>
+            <param name="j1">The ending column to include.</param>
+            <returns>A submatrix with rows given by <paramref name="rowIndicies"/> and columns <paramref name="j0"/> 
+            through <paramref name="j1"/>.</returns>
         </member>
         <member name="M:NPack.Matrix`1.Transpose">
             <summary>
@@ -453,6 +552,11 @@
             <param name="rows">Number of rows in the matrix.</param>
             <returns>A <paramref name="rows"/> by <paramref name="columns"/> matrix with random values.</returns>
         </member>
+        <member name="P:NPack.Matrix`1.Elements">
+            <summary>
+            Gets or sets an array of arrays representing the matrix elements.
+            </summary>
+        </member>
         <member name="P:NPack.Matrix`1.Item(System.Int32,System.Int32)">
             <summary>
             Indexer for the matrix.
@@ -481,6 +585,16 @@
             Gets <see langword="true"/> if the <see cref="T:NPack.Matrix`1"/> is symmetrical, false if not.
             </summary>
         </member>
+        <member name="P:NPack.Matrix`1.IsSingular">
+            <summary>
+            Gets true if the matrix is singular (non-invertable).
+            </summary>
+        </member>
+        <member name="P:NPack.Matrix`1.IsInvertable">
+            <summary>
+            Gets true if the matrix is invertable (non-singular).
+            </summary>
+        </member>
         <member name="P:NPack.Matrix`1.Determinant">
             <summary>
             Determinant if the <see cref="T:NPack.Matrix`1"/> instance is square.
@@ -505,12 +619,6 @@
             Gets an identity matrix with the same row rank.
             </summary>
         </member>
-        <member name="M:NPack.SingleComponent.ToString">
-            <summary>
-            Returns string representation of this value.
-            </summary>
-            <returns>A formatted string displaying this value.</returns>
-        </member>
         <member name="T:NPack.Interfaces.IAffineTranformMatrix`1">
             <summary>
             An interface to an affine transformation matrix.
@@ -525,9 +633,10 @@
         </member>
         <member name="M:NPack.Interfaces.IAffineTranformMatrix`1.Scale(NPack.Interfaces.IVector{`0})">
             <summary>
-            Scales the matrix by the given vector <paramref name="amount"/>.
+            Scales the matrix by the given vector <paramref name="scaleVector"/>.
             </summary>
-            <param name="amount">A vector with scaling components which correspond to the affine transform dimensions.</param>
+            <param name="scaleVector">A vector with scaling components which 
+            correspond to the affine transform dimensions.</param>
         </member>
         <member name="M:NPack.Interfaces.IAffineTranformMatrix`1.Shear(NPack.Interfaces.IVector{`0})">
             <summary>
@@ -565,7 +674,8 @@
             <summary>
             Translates the affine transform by the given translation vector.
             </summary>
-            <param name="amount">A vector whose components will translate the transform in the corresponding dimension.</param>
+            <param name="translateVector">A vector whose components will translate the transform 
+            in the corresponding dimension.</param>
         </member>
         <member name="M:NPack.Interfaces.IAffineTranformMatrix`1.TransformMatrix(NPack.Interfaces.IMatrix{`0})">
             <summary>
@@ -591,20 +701,17 @@
             <returns>The multiplication of this transform matrix with each of the input vectors, 
             with the tranform on the left-hand side of the operation.</returns>
         </member>
-        <member name="T:NPack.AffineMatrix`1">
+        <member name="P:NPack.Interfaces.IAffineTranformMatrix`1.Inverse">
             <summary>
-            Represents an affine transform.
+            Gets the inverse of the affine transform.
             </summary>
-            <typeparam name="T">Type of matrix element.</typeparam>
         </member>
-        <member name="M:NPack.AffineMatrix`1.#ctor(System.Int32,System.Int32)">
+        <member name="M:NPack.AffineMatrix`1.#ctor(System.Int32)">
             <summary>
-            Creates a new affine transform matrix with the given <paramref name="rowCount">
-            number of rows</paramref> and <paramref name="columnCount">number of columns</paramref>.
+            Creates a new identiy affine transform matrix (with default(T).One in each element of the dianonal)
+            with the given <paramref name="rank"/> for the number of rows and number of columns.
             </summary>
-            <param name="rowCount">Number of rows in the affine matrix.</param>
-            <param name="columnCount">Number of columns in the affine matrix.</param>
-            <exception cref="T:System.ArgumentException">If the matrix is not square (<c>rowCount != columnCount</c>).</exception>
+            <param name="rank">Number of rows and columns in the affine matrix.</param>
             <exception cref="T:System.NotSupportedException">If the matrix has a rank other than 3 or 4.</exception>
         </member>
         <member name="M:NPack.AffineMatrix`1.#ctor(`0[][])">
@@ -623,9 +730,9 @@
         </member>
         <member name="M:NPack.AffineMatrix`1.Scale(NPack.Interfaces.IVector{`0})">
             <summary>
-            Scales the elements in the linear transformation by the given <paramref name="amount"/>.
+            Scales the elements in the linear transformation by the given <paramref name="scaleVector"/>.
             </summary>
-            <param name="amount">Amount of scale to apply on a column-by-column basis.</param>
+            <param name="scaleVector">Amount of scale to apply on a column-by-column basis.</param>
         </member>
         <member name="M:NPack.AffineMatrix`1.Shear(NPack.Interfaces.IVector{`0})">
             <summary>
@@ -637,12 +744,6 @@
             <summary>
             Resets the affine transform to the identity matrix (a diagonal of one).
             </summary>
-        </member>
-        <member name="M:NPack.AffineMatrix`1.RotateAtOrigin(System.Double)">
-            <summary>
-            Rotates the affine transform about the origin.
-            </summary>
-            <param name="radians">Angle to rotate through.</param>
         </member>
         <member name="M:NPack.AffineMatrix`1.RotateAlong(NPack.Interfaces.IVector{`0},System.Double)">
             <summary>
@@ -669,7 +770,8 @@
             <summary>
             Translates the affine transform by the given translation vector.
             </summary>
-            <param name="amount">A vector whose components will translate the transform in the corresponding dimension.</param>
+            <param name="translateVector">A vector whose components will translate the 
+            transform in the corresponding dimension.</param>
         </member>
         <member name="M:NPack.AffineMatrix`1.TransformMatrix(NPack.Interfaces.IMatrix{`0})">
             <summary>
@@ -692,14 +794,73 @@
             Applies this transform to the given <paramref name="input"/> vectors.
             </summary>
             <param name="input">Set of vectors to transform.</param>
-            <returns>The multiplication of this transform matrix with each of the input vectors, 
-            with the tranform on the left-hand side of the operation.</returns>
         </member>
-        <member name="T:NPack.Vector`1">
+        <member name="P:NPack.AffineMatrix`1.Inverse">
+            <summary>
+            Gets the inverse of the <see cref="T:NPack.AffineMatrix`1"/>.
+            </summary>
+        </member>
+        <member name="T:NPack.Interfaces.IInvertible`1">
+            <summary>
+            Every class that defines an unary inverse operation such that
+            <c>x * inverse(x) ~= e</c> and <c>inverse(inverse(x)) ~= x</c> for all x except Zero
+            should consider implementing this interface. 
+            Types that might want to implement this would be non-integral types <see cref="T:System.Single"/>, 
+            <see cref="T:System.Double"/>, <see cref="T:System.Decimal"/>, but not integral types like <see cref="T:System.Int16"/>, 
+            <see cref="T:System.Int32"/>, or <see cref="T:System.Int64"/>, etc.
+            </summary>
+            <typeparam name="T">Type which is invertable.</typeparam>
+            <remarks>
+            Adapted from an article on lambda-computing.com: 
+            http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
+            </remarks>
+        </member>
+        <member name="M:NPack.Interfaces.IInvertible`1.Inverse">
+            <summary>
+            Returns the inverse.
+            </summary>
+            <returns>The inverse.</returns>
+        </member>
+        <member name="M:NPack.SingleComponent.ToString">
+            <summary>
+            Returns string representation of this value.
+            </summary>
+            <returns>A formatted string displaying this value.</returns>
+        </member>
+        <member name="T:NPack.Interfaces.IVector`1">
             <summary>
             A vector.
             </summary>
             <typeparam name="T">Type of components in the vector.</typeparam>
+        </member>
+        <member name="M:NPack.Interfaces.IVector`1.Clone">
+            <summary>
+            Creates a component-by-component copy of the vector.
+            </summary>
+            <returns>A copy of the vector.</returns>
+        </member>
+        <member name="M:NPack.Interfaces.IVector`1.Negative">
+            <summary>
+            Returns the vector multiplied by -1.
+            </summary>
+            <returns>The vector when multiplied by -1.</returns>
+        </member>
+        <member name="P:NPack.Interfaces.IVector`1.ComponentCount">
+            <summary>
+            Gets the number of components in the vector.
+            </summary>
+        </member>
+        <member name="P:NPack.Interfaces.IVector`1.Components">
+            <summary>
+            Gets or sets the vector component array.
+            </summary>
+        </member>
+        <member name="P:NPack.Interfaces.IVector`1.Item(System.Int32)">
+            <summary>
+            Gets or sets a component in the vector.
+            </summary>
+            <param name="index">The index of the component.</param>
+            <returns>The value of the component at the given <paramref name="index"/>.</returns>
         </member>
         <member name="T:NPack.LuDecomposition`1">
             <summary>
@@ -767,26 +928,15 @@
             Gets the pivot permutation matrix.
             </summary>
         </member>
-        <member name="T:NPack.Interfaces.IInvertible`1">
+        <member name="T:NPack.ClrMatrixOperations`1">
             <summary>
-            Every class that defines an unary inverse operation such that
-            <c>x * inverse(x) ~= e</c> and <c>inverse(inverse(x)) ~= x</c> for all x except Zero
-            should consider implementing this interface. 
-            Types that might want to implement this would be non-integral types <see cref="T:System.Single"/>, 
-            <see cref="T:System.Double"/>, <see cref="T:System.Decimal"/>, but not integral types like <see cref="T:System.Int16"/>, 
-            <see cref="T:System.Int32"/>, or <see cref="T:System.Int64"/>, etc.
+            Pure managed code matrix operations implementation.
             </summary>
-            <typeparam name="T">Type which is invertable.</typeparam>
             <remarks>
-            Adapted from an article on lambda-computing.com: 
-            http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
+            Uses fully managed code (no C++ or native interop) to calculate matrix operations. While not as
+            highly performing as other operations engines, it can be used in partial trust environments.
             </remarks>
-        </member>
-        <member name="M:NPack.Interfaces.IInvertible`1.Inverse">
-            <summary>
-            Returns the inverse.
-            </summary>
-            <returns>The inverse.</returns>
+            <typeparam name="T">Type of element in matricies.</typeparam>
         </member>
         <member name="P:NPack.NumericalMatrix`1.Norm1">
             <summary>
@@ -819,6 +969,59 @@
             <returns>
             Sum of the diagonal elements.
             </returns>
+        </member>
+        <member name="T:NPack.Vector`1">
+            <summary>
+            A vector.
+            </summary>
+            <typeparam name="T">Type of components in the vector.</typeparam>
+        </member>
+        <member name="M:NPack.Vector`1.#ctor(System.Int32)">
+            <summary>
+            Creates a new vector with the given number of components.
+            </summary>
+            <param name="componentCount">The number of components in the vector.</param>
+        </member>
+        <member name="M:NPack.Vector`1.#ctor(`0[])">
+            <summary>
+            Creates a new vector with the given components.
+            </summary>
+            <param name="components">The components to initialize the vector to.</param>
+        </member>
+        <member name="M:NPack.Vector`1.Clone">
+            <summary>
+            Creates a component-by-component copy of the vector.
+            </summary>
+            <returns>A copy of the vector.</returns>
+        </member>
+        <member name="M:NPack.Vector`1.Negative">
+            <summary>
+            Returns the vector multiplied by -1.
+            </summary>
+            <returns>The vector when multiplied by -1.</returns>
+        </member>
+        <member name="M:NPack.Vector`1.GetEnumerator">
+            <summary>
+            Gets an enumerator which enumerates over the vector's components.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerator`1"/> which returns the vectors components when iterated.</returns>
+        </member>
+        <member name="P:NPack.Vector`1.Item(System.Int32)">
+            <summary>
+            Gets or sets a component in the vector.
+            </summary>
+            <param name="index">The index of the component.</param>
+            <returns>The value of the component at the given <paramref name="index"/>.</returns>
+        </member>
+        <member name="P:NPack.Vector`1.ComponentCount">
+            <summary>
+            Gets the number of components in the vector.
+            </summary>
+        </member>
+        <member name="P:NPack.Vector`1.Components">
+            <summary>
+            Gets or sets the vector component array.
+            </summary>
         </member>
     </members>
 </doc>
