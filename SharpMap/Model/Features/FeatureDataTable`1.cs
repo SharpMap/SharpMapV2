@@ -311,8 +311,9 @@ namespace SharpMap
             }
             else
             {
-                IdColumn = new DataColumn(idColumnName, typeof(TOid));
-                Columns.Add(IdColumn);
+                DataColumn newIdColumn = new DataColumn(idColumnName, typeof(TOid));
+                Columns.Add(newIdColumn);
+                IdColumn = newIdColumn;
             }
         }
         #endregion
