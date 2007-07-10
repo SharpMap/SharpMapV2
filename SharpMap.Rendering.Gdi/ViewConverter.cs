@@ -91,12 +91,12 @@ namespace SharpMap.Rendering.Gdi
         public static GdiMatrix ViewToGdi(ViewMatrix2D viewMatrix)
         {
             GdiMatrix gdiMatrix = new GdiMatrix(
-                (float)viewMatrix.Elements[0, 0],
-                (float)viewMatrix.Elements[0, 1],
-                (float)viewMatrix.Elements[1, 0],
-                (float)viewMatrix.Elements[1, 1],
-                (float)viewMatrix.Elements[2, 0],
-                (float)viewMatrix.Elements[2, 1]);
+                (float)viewMatrix[0, 0],
+                (float)viewMatrix[0, 1],
+                (float)viewMatrix[1, 0],
+                (float)viewMatrix[1, 1],
+                (float)viewMatrix[2, 0],
+                (float)viewMatrix[2, 1]);
 
             return gdiMatrix;
         }

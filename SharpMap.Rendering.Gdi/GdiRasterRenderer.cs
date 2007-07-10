@@ -17,9 +17,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-
+using NPack;
+using NPack.Interfaces;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Gdi
@@ -31,7 +31,7 @@ namespace SharpMap.Rendering.Gdi
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IViewMatrix rasterTransform)
+        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
         {
             throw new Exception("The method or operation is not implemented.");
         }
