@@ -76,18 +76,6 @@ namespace SharpMap.Rendering.Rendering2D
         {
             return unchecked((int)_x ^ (int)_y);
         }
-        #endregion 
-
-        #region Properties
-        public double X
-        {
-            get { return (double)_x; }
-        }
-
-        public double Y
-        {
-            get { return (double)_y; }
-        }
         #endregion
 
         #region Equality Testing
@@ -102,37 +90,37 @@ namespace SharpMap.Rendering.Rendering2D
             return !lhs.Equals(rhs);
         }
 
-        public static bool operator == (ViewPoint2D lhs, IVectorD rhs)
+        public static bool operator ==(ViewPoint2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator != (ViewPoint2D lhs, IVectorD rhs)
+        public static bool operator !=(ViewPoint2D lhs, IVectorD rhs)
         {
-			return !lhs.Equals(rhs);
+            return !lhs.Equals(rhs);
         }
 
         public override bool Equals(object obj)
         {
-			if (obj is ViewPoint2D)
-			{
-				return Equals((ViewPoint2D)obj);
-			}
+            if (obj is ViewPoint2D)
+            {
+                return Equals((ViewPoint2D)obj);
+            }
 
-			if (obj is IVectorD)
-			{
+            if (obj is IVectorD)
+            {
                 return Equals(obj as IVectorD);
-			}
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		public bool Equals(ViewPoint2D point)
-		{
+        public bool Equals(ViewPoint2D point)
+        {
             return _x.Equals(point._x) &&
                 _y.Equals(point._y) &&
-				IsEmpty == point.IsEmpty;
-		}
+                IsEmpty == point.IsEmpty;
+        }
 
         #region IEquatable<IViewVector> Members
 
@@ -143,7 +131,7 @@ namespace SharpMap.Rendering.Rendering2D
                 return false;
             }
 
-            if (ComponentCount != other.ComponentCount)
+            if ((this as IVectorD).ComponentCount != other.ComponentCount)
             {
                 return false;
             }
@@ -192,6 +180,17 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
         #endregion
 
+        #region Properties
+        public double X
+        {
+            get { return (double)_x; }
+        }
+
+        public double Y
+        {
+            get { return (double)_y; }
+        }
+
         public double this[int element]
         {
             get
@@ -206,41 +205,21 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get { return !_hasValue; }
         }
+        #endregion
 
+        #region Clone
         public ViewPoint2D Clone()
         {
             return new ViewPoint2D((double)_x, (double)_y);
         }
+        #endregion
 
-        public int ComponentCount
-        {
-            get { return 2; }
-        }
-
-        /// <summary>
-        /// Gets or sets the vector component array.
-        /// </summary>
-        public DoubleComponent[] Components
-        {
-            get { return new DoubleComponent[] { _x, _y }; }
-            set 
-            { 
-                if(value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                checkIndex(value.Length);
-
-                _x = value[0];
-                _y = value[1];
-            }
-        }
-
+        #region Negative
         public ViewPoint2D Negative()
         {
             return new ViewPoint2D((double)_x.Negative(), (double)_y.Negative());
         }
+        #endregion
 
         #region IEnumerable<double> Members
 
@@ -263,6 +242,11 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IVector<DoubleComponent> Members
 
+        MatrixFormat IMatrix<DoubleComponent>.Format
+        {
+            get { return MatrixFormat.Unspecified; }
+        }
+
         IVectorD IVectorD.Clone()
         {
             return Clone();
@@ -271,6 +255,31 @@ namespace SharpMap.Rendering.Rendering2D
         IVectorD IVectorD.Negative()
         {
             return Negative();
+        }
+
+        int IVectorD.ComponentCount
+        {
+            get { return IsEmpty ? 0 : 2; }
+        }
+
+        /// <summary>
+        /// Gets or sets the vector component array.
+        /// </summary>
+        DoubleComponent[] IVectorD.Components
+        {
+            get { return new DoubleComponent[] { _x, _y }; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                checkIndex(value.Length);
+
+                _x = value[0];
+                _y = value[1];
+            }
         }
 
         DoubleComponent IVectorD.this[int index]
@@ -453,7 +462,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singluar).
         /// </summary>
-        bool IMatrixD.IsInvertable
+        bool IMatrixD.IsInvertible
         {
             get { return false; }
         }
@@ -540,7 +549,7 @@ namespace SharpMap.Rendering.Rendering2D
         IMatrixD IMatrixD.Transpose()
         {
             return
-                new Matrix<DoubleComponent>(
+                new Matrix<DoubleComponent>((this as IMatrixD).Format,
                     new DoubleComponent[][] {new DoubleComponent[] {_x}, new DoubleComponent[] {_y}});
         }
 

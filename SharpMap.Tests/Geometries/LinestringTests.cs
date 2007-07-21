@@ -14,7 +14,7 @@ namespace SharpMap.Tests.Geometries
 		{
 			LineString l = new LineString();
 			Assert.IsTrue(l.IsEmpty());
-			Assert.IsNull(l.GetBoundingBox());
+            Assert.AreEqual(BoundingBox.Empty, l.GetBoundingBox());
 			Assert.AreEqual(0, l.Length);
 			Assert.IsFalse(l.Equals(null));
 			Assert.IsTrue(l.Equals(new LineString()));

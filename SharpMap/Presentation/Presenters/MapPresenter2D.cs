@@ -16,18 +16,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
-using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using GeoPoint = SharpMap.Geometries.Point;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-using SharpMap.Utilities;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -60,13 +55,13 @@ namespace SharpMap.Presentation
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
             mapView.ViewPort = viewPort;
             viewPort.CenterChanged += ViewPort_CenterChanged;
-            viewPort.MapTransformChanged += ViewPort_MapTransformChanged;
+            viewPort.MapViewTransformChanged += ViewPort_MapTransformChanged;
             viewPort.MaximumWorldWidthChanged += ViewPort_MaximumZoomChanged;
             viewPort.MinimumWorldWidthChanged += ViewPort_MinimumZoomChanged;
             viewPort.PixelAspectRatioChanged += ViewPort_PixelAspectRatioChanged;
             viewPort.SizeChanged += ViewPort_SizeChanged;
             viewPort.StyleRenderingModeChanged += ViewPort_StyleRenderingModeChanged;
-            viewPort.ViewRectangleChanged += ViewPort_ViewRectangleChanged;
+            viewPort.ViewEnvelopeChanged += ViewPort_ViewRectangleChanged;
         }
 
         #region Dispose Pattern

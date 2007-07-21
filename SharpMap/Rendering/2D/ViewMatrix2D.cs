@@ -44,18 +44,24 @@ namespace SharpMap.Rendering.Rendering2D
         public ViewMatrix2D()
             : this(Identity) { }
 
-        public ViewMatrix2D(double x1, double x2, double x3,
-            double y1, double y2, double y3,
-            double w1, double w2, double w3)
-            :base(3)
+        public ViewMatrix2D(double x1, double x2, double offsetX,
+            double y1, double y2, double offsetY)
+            : this(x1, x2, offsetX, y1, y2, offsetY, 0, 0, 1)
         {
-            X1 = x1; X2 = x2; X3 = x3;
-            Y1 = y1; Y2 = y2; Y3 = y3;
+        }
+
+        public ViewMatrix2D(double x1, double x2, double offsetX,
+            double y1, double y2, double offsetY,
+            double w1, double w2, double w3)
+            :base(MatrixFormat.RowMajor, 3)
+        {
+            X1 = x1; X2 = x2; OffsetX = offsetX;
+            Y1 = y1; Y2 = y2; OffsetY = offsetY;
             W1 = w1; W2 = w2; W3 = w3;
         }
 
         public ViewMatrix2D(IMatrixD matrixToCopy)
-            : base(3)
+            : base(MatrixFormat.RowMajor, 3)
         {
             if (matrixToCopy == null) throw new ArgumentNullException("matrixToCopy");
 
@@ -71,7 +77,7 @@ namespace SharpMap.Rendering.Rendering2D
         public override string ToString()
         {
             return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
-                X1, X2, X3, Y1, Y2, Y3, W1, W2, W3);
+                X1, X2, OffsetX, Y1, Y2, OffsetY, W1, W2, W3);
         }
         #endregion
 
@@ -123,10 +129,10 @@ namespace SharpMap.Rendering.Rendering2D
         {
             return X1 == other.X1 &&
                 X2 == other.X2 &&
-                X3 == other.X3 && 
+                OffsetX == other.OffsetX && 
                 Y1 == other.Y1 &&
                 Y2 == other.Y2 &&
-                Y3 == other.Y3 &&
+                OffsetY == other.OffsetY &&
                 W1 == other.W1 &&
                 W2 == other.W2 &&
                 W3 == other.W3;
@@ -148,7 +154,7 @@ namespace SharpMap.Rendering.Rendering2D
             set { this[0, 1] = value; }
         }
 
-        public double X3
+        public double OffsetX
         {
             get { return (double)this[0, 2]; }
             set { this[0, 2] = value; }
@@ -166,7 +172,7 @@ namespace SharpMap.Rendering.Rendering2D
             set { this[1, 1] = value; }
         }
 
-        public double Y3
+        public double OffsetY
         {
             get { return (double)this[1, 2]; }
             set { this[1, 2] = value; }

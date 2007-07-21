@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using NPack;
 using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -52,6 +53,7 @@ namespace SharpMap.Rendering.Rendering2D
             _top = location.Y;
             _right = _left + size.Width;
             _bottom = _top + size.Height;
+
             _hasValue = true;
         }
 
@@ -62,8 +64,8 @@ namespace SharpMap.Rendering.Rendering2D
         {
             return
                 String.Format(
-                    "[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", Left,
-                    Top, Right, Bottom, IsEmpty);
+                    "[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", 
+                    Left, Top, Right, Bottom, IsEmpty);
         }
         #endregion
 
@@ -74,76 +76,13 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
-        #region IComparable<ViewRectangle2D> Members
-
-        /// <summary>
-        /// Compares this <see cref="ViewRectangle2D"/> instance with another instance.
-        /// </summary>
-        /// <remarks>
-        /// </remarks>
-        /// <param name="other">ViewRectangle2D to perform comparison with.</param>
-        /// <returns>
-        /// Returns 0 if the <see cref="ViewRectangle2D"/> instances intersect each other,
-        /// 1 if this rectangle is located to the right or upward from the <paramref name="other"/>
-        /// rectangle, and -1 if this rectangle is located to the left or downward from the other.
-        /// </returns>
-        public int CompareTo(ViewRectangle2D other)
-        {
-            if (other.IsEmpty && IsEmpty)
-            {
-                return 0;
-            }
-
-            if (Intersects(other))
-            {
-                return 0;
-            }
-
-            if (IsEmpty || other.Left > Right || other.Bottom > Top)
-            {
-                return -1;
-            }
-
-            return 1;
-        }
-
-        #endregion
-
-        public bool IsEmpty
-        {
-            get { return !_hasValue; }
-        }
-
-        /// <summary>
-        /// Determines whether this <see cref="ViewRectangle2D"/> intersects another.
-        /// </summary>
-        /// <param name="rectangle"><see cref="ViewRectangle2D"/> to check intersection with.</param>
-        /// <returns>True if there is intersection, false if not.</returns>
-        public bool Intersects(ViewRectangle2D rectangle)
-        {
-            if (IsEmpty || rectangle.IsEmpty)
-            {
-                return false;
-            }
-
-            return !(rectangle.Left > Right ||
-                     rectangle.Right < Left ||
-                     rectangle.Bottom < Top ||
-                     rectangle.Top > Bottom);
-        }
-
-        internal static ViewRectangle2D FromLTRB(double left, double top, double right, double bottom)
-        {
-            return new ViewRectangle2D(left, right, top, bottom);
-        }
-
         #region Equality Testing
 
         public bool Equals(IMatrixD other)
         {
-            if(other is ViewRectangle2D)
+            if (other is ViewRectangle2D)
             {
-                return Equals((ViewRectangle2D) other);
+                return Equals((ViewRectangle2D)other);
             }
 
             if (IsEmpty && other == null)
@@ -227,6 +166,88 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
+        #region IComparable<ViewRectangle2D> Members
+
+        /// <summary>
+        /// Compares this <see cref="ViewRectangle2D"/> instance with another instance.
+        /// </summary>
+        /// <remarks>
+        /// The comparison for non-intersecting rectangles is computed by determining where 
+        /// the top-left corner of the <paramref name="other"/> rectangle is in relation 
+        /// to the one CompareTo is called on. The following diagram shows which value is 
+        /// returned depending on the location of the top-left corner of the other rectangle:
+        /// <pre>
+        /// 
+        ///                  +1
+        /// 
+        ///                            +--------------------------------------------
+        ///                            |              |
+        ///                            |              |
+        ///                            |              |
+        ///                            |              |
+        ///                            |              |
+        ///                            |--------------+
+        ///                            |
+        ///                            |
+        ///                            |                      -1
+        ///                            |
+        ///                            |
+        /// </pre>
+        /// Any intersecting rectangle returns a 0, regardless of the position of the top-left corner.
+        /// </remarks>
+        /// <param name="other">ViewRectangle2D to perform comparison with.</param>
+        /// <returns>
+        /// Returns 0 if the <see cref="ViewRectangle2D"/> instances intersect each other,
+        /// 1 if this rectangle is located to the right or downward from the <paramref name="other"/>
+        /// rectangle, and -1 if this rectangle is located to the left or upward from the other.
+        /// </returns>
+        public int CompareTo(ViewRectangle2D other)
+        {
+            if (other.IsEmpty && IsEmpty)
+            {
+                return 0;
+            }
+
+            if (Intersects(other))
+            {
+                return 0;
+            }
+
+            if (IsEmpty || other.Left > Left || other.Top > Top)
+            {
+                return -1;
+            }
+
+            return 1;
+        }
+
+        #endregion
+
+        internal static ViewRectangle2D FromLTRB(double left, double top, double right, double bottom)
+        {
+            return new ViewRectangle2D(left, right, top, bottom);
+        }
+
+        #region Intersects
+        /// <summary>
+        /// Determines whether this <see cref="ViewRectangle2D"/> intersects another.
+        /// </summary>
+        /// <param name="rectangle"><see cref="ViewRectangle2D"/> to check intersection with.</param>
+        /// <returns>True if there is intersection, false if not.</returns>
+        public bool Intersects(ViewRectangle2D rectangle)
+        {
+            if (IsEmpty || rectangle.IsEmpty)
+            {
+                return false;
+            }
+
+            return !(rectangle.Left > Right ||
+                     rectangle.Right < Left ||
+                     rectangle.Bottom < Top ||
+                     rectangle.Top > Bottom);
+        }
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -299,7 +320,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Y"/>
         public ViewPoint2D Center
         {
-            get { return new ViewPoint2D(X + Width/2, Y + Height/2); }
+            get { return new ViewPoint2D(X + Width / 2, Y + Height / 2); }
         }
 
         /// <summary>
@@ -339,12 +360,18 @@ namespace SharpMap.Rendering.Rendering2D
             get { return (double)_bottom.Subtract(_top); }
         }
 
+        public bool IsEmpty
+        {
+            get { return !_hasValue; }
+        }
         #endregion
 
+        #region Clone
         public ViewRectangle2D Clone()
         {
             return new ViewRectangle2D(Location, Size);
         }
+        #endregion
 
         #region IViewRectangle<ViewPoint2D> Members
 
@@ -461,6 +488,11 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IMatrix<DoubleComponent> Members
 
+        MatrixFormat IMatrixD.Format
+        {
+            get { return MatrixFormat.Unspecified; }
+        }
+
         /// <summary>
         /// Makes an element-by-element copy of the matrix.
         /// </summary>
@@ -483,7 +515,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         int IMatrixD.ColumnCount
         {
-            get { return 2; }
+            get { return IsEmpty ? 0 : 2; }
         }
 
         /// <summary>
@@ -541,7 +573,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertable
+        bool IMatrixD.IsInvertible
         {
             get { throw new NotSupportedException(); }
         }
@@ -575,7 +607,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         int IMatrixD.RowCount
         {
-            get { return 2; }
+            get { return IsEmpty ? 0 : 2; }
         }
 
         /// <summary>
@@ -598,13 +630,13 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns></returns>
         DoubleComponent IMatrixD.this[int row, int column]
         {
-            get 
+            get
             {
                 checkIndexes(row, column);
-                
-                if(row == 0)
+
+                if (row == 0)
                 {
-                    if(column == 0)
+                    if (column == 0)
                     {
                         return _left;
                     }
@@ -667,27 +699,305 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region Private Helper Methods
+        #region IAffineTransformMatrix<DoubleComponent> Members
 
-        private static void checkIndex(int index)
+        /// <summary>
+        /// Scales the matrix by the given <paramref name="amount"/> in all orthoganal columns.
+        /// </summary>
+        /// <param name="amount">Amount to scale by.</param>
+        public void Scale(DoubleComponent amount)
         {
-            if (index != 0 && index != 1)
+            if (IsEmpty)
             {
-                throw new ArgumentOutOfRangeException("index", index, "The element index must be either 0 or 1 for a 2D point.");
+                return;
             }
+
+            _right = _right.Multiply(amount);
+            _bottom = _bottom.Multiply(amount);
         }
+
+        /// <summary>
+        /// Scales the matrix by the given vector <paramref name="scaleVector"/>.
+        /// </summary>
+        /// <param name="scaleVector">
+        /// A vector with scaling components which 
+        /// correspond to the affine transform dimensions.
+        /// </param>
+        public void Scale(IVectorD scaleVector)
+        {
+            if (scaleVector == null) throw new ArgumentNullException("scaleVector");
+            if (scaleVector.ComponentCount != 2)
+            {
+                throw new ArgumentException("Number of components in scale vector must be 2.", "scaleVector");
+            }
+
+            if (IsEmpty)
+            {
+                return;
+            }
+
+            _right = _right.Multiply(scaleVector[0]);
+            _bottom = _bottom.Multiply(scaleVector[1]);
+        }
+
+        /// <summary>
+        /// Translates the affine transform by the given amount in each dimension.
+        /// </summary>
+        /// <param name="amount">Amount to translate by.</param>
+        public void Translate(DoubleComponent amount)
+        {
+            if(IsEmpty)
+            {
+                return;
+            }
+
+            _left = _left.Add(amount);
+            _top = _top.Add(amount);
+            _right = _right.Add(amount);
+            _bottom = _bottom.Add(amount);
+        }
+
+        /// <summary>
+        /// Translates the affine transform by the given translation vector.
+        /// </summary>
+        /// <param name="translateVector">
+        /// A vector whose components will translate the transform 
+        /// in the corresponding dimension.
+        /// </param>
+        public void Translate(IVectorD translateVector)
+        {
+            if (translateVector == null) throw new ArgumentNullException("translateVector");
+            if (translateVector.ComponentCount != 2)
+            {
+                throw new ArgumentException("Number of components in scale vector must be 2.", "translateVector");
+            }
+
+            if (IsEmpty)
+            {
+                return;
+            }
+
+            _left = _left.Add(translateVector[0]);
+            _top = _top.Add(translateVector[1]);
+            _right = _right.Add(translateVector[0]);
+            _bottom = _bottom.Add(translateVector[1]);
+        }
+        #endregion
+
+        #region Private Helper Methods
 
         private static void checkIndexes(int row, int column)
         {
-            if (row != 0)
+            if (row < 0 || row > 1)
             {
-                throw new ArgumentOutOfRangeException("row", row, "A ViewPoint2D has only 1 row.");
+                throw new ArgumentOutOfRangeException("row", row, "A ViewRectangle2D has only 2 rows.");
             }
 
             if (column < 0 || column > 1)
             {
-                throw new ArgumentOutOfRangeException("column", row, "A ViewPoint2D has only 2 columns.");
+                throw new ArgumentOutOfRangeException("column", row, "A ViewRectangle2D has only 2 columns.");
             }
+        }
+        #endregion
+
+        #region Non-supported IAffineTransformMatrix and IMatrix memebers
+        /// <summary>
+        /// Gets the inverse of the affine transform.
+        /// </summary>
+        IAffineTransformMatrix<DoubleComponent> IAffineTransformMatrix<DoubleComponent>.Inverse
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        /// Resets the affine transform to the identity matrix (a diagonal of one).
+        /// </summary>
+        void IAffineTransformMatrix<DoubleComponent>.Reset()
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies a shear to the transform.
+        /// </summary>
+        /// <param name="shearVector">The vector used to compute the shear.</param>
+        void ITransformMatrix<DoubleComponent>.Shear(IVectorD shearVector)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies a shear to the transform.
+        /// </summary>
+        /// <param name="shearVector">The vector used to compute the shear.</param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void ITransformMatrix<DoubleComponent>.Shear(IVectorD shearVector, MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Rotates the affine transform around the given <paramref name="axis"/>.
+        /// </summary>
+        /// <param name="axis">
+        /// The axis to rotate around. May be an addition of the basis vectors.
+        /// </param>
+        /// <param name="radians">Angle to rotate through.</param>
+        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, double radians)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Rotates the affine transform around the given <paramref name="axis"/>.
+        /// </summary>
+        /// <param name="axis">
+        /// The axis to rotate around. May be an addition of the basis vectors.
+        /// </param>
+        /// <param name="radians">Angle to rotate through.</param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, double radians,
+                                                                MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Rotates the affine transform around the given <paramref name="axis"/> 
+        /// at the given <paramref name="point"/>.
+        /// </summary>
+        /// <param name="point">Point at which to compute the rotation.</param>
+        /// <param name="axis">The axis to rotate around.</param>
+        /// <param name="radians">Angle to rotate through.</param>
+        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, double radians)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Rotates the affine transform around the given <paramref name="axis"/> 
+        /// at the given <paramref name="point"/>.
+        /// </summary>
+        /// <param name="point">Point at which to compute the rotation.</param>
+        /// <param name="axis">The axis to rotate around.</param>
+        /// <param name="radians">Angle to rotate through.</param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, double radians,
+                                                             MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Scales the matrix by the given <paramref name="amount"/> in all orthoganal columns.
+        /// </summary>
+        /// <param name="amount">Amount to scale by.</param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void ITransformMatrix<DoubleComponent>.Scale(DoubleComponent amount, MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Scales the matrix by the given vector <paramref name="scaleVector"/>.
+        /// </summary>
+        /// <param name="scaleVector">
+        /// A vector with scaling components which 
+        /// correspond to the affine transform dimensions.
+        /// </param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void ITransformMatrix<DoubleComponent>.Scale(IVectorD scaleVector, MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Translates the affine transform by the given translation vector.
+        /// </summary>
+        /// <param name="amount">Amount to translate by.</param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void IAffineTransformMatrix<DoubleComponent>.Translate(DoubleComponent amount, MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Translates the affine transform by the given translation vector.
+        /// </summary>
+        /// <param name="translateVector">
+        /// A vector whose components will translate the transform 
+        /// in the corresponding dimension.
+        /// </param>
+        /// <param name="order">Order in which to apply the operation.</param>
+        void IAffineTransformMatrix<DoubleComponent>.Translate(IVectorD translateVector, MatrixOperationOrder order)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies this transform to the given <paramref name="input"/> matrix.
+        /// </summary>
+        /// <param name="input">Matrix to transform.</param>
+        /// <returns>
+        /// The multiplication of this transform matrix with the input matrix.
+        /// </returns>
+        IMatrixD ITransformMatrix<DoubleComponent>.TransformMatrix(IMatrixD input)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies this transform to the given <paramref name="input"/> matrix in place.
+        /// </summary>
+        /// <param name="input">Matrix to transform.</param>
+        /// <returns>
+        /// The multiplication of this transform matrix with the input matrix.
+        /// </returns>
+        void ITransformMatrix<DoubleComponent>.TransformMatrix(DoubleComponent[][] input)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies this transform to the given <paramref name="input"/> vector.
+        /// </summary>
+        /// <param name="input">Vector to transform.</param>
+        /// <returns>
+        /// The multiplication of this transform matrix with the input vector.
+        /// </returns>
+        IVectorD ITransformMatrix<DoubleComponent>.TransformVector(IVectorD input)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies this transform to the given <paramref name="input"/> vector in place.
+        /// </summary>
+        /// <param name="input">Vector to transform.</param>
+        void ITransformMatrix<DoubleComponent>.TransformVector(DoubleComponent[] input)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies this transform to the given <paramref name="input"/> vectors.
+        /// </summary>
+        /// <param name="input">Set of vectors to transform.</param>
+        /// <returns>
+        /// The multiplication of this transform matrix with each of the input vectors.
+        /// </returns>
+        IEnumerable<IVectorD> ITransformMatrix<DoubleComponent>.TransformVectors(IEnumerable<IVectorD> input)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Applies this transform to the given <paramref name="input"/> vectors in place.
+        /// </summary>
+        /// <param name="input">Set of vectors to transform.</param>
+        void ITransformMatrix<DoubleComponent>.TransformVectors(IEnumerable<DoubleComponent[]> input)
+        {
+            throw new NotSupportedException();
         }
         #endregion
     }

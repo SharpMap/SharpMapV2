@@ -302,7 +302,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public virtual bool Equals(Geometry other)
 		{
-			return SharpMap.Geometries.SpatialRelations.Equals(this, other);
+			return SpatialRelations.Equals(this, other);
 		}
 
 		/// <summary>
@@ -314,10 +314,15 @@ namespace SharpMap.Geometries
 		public override bool Equals(object obj)
 		{
 		    Geometry g = obj as Geometry;
-			if (Object.ReferenceEquals(g, null))
-				return false;
+
+			if (ReferenceEquals(g, null))
+			{	
+                return false;
+            }
 			else
-				return this.Equals(g);
+			{	
+                return Equals(g);
+            }
 		}
 
         /// <summary>
@@ -328,13 +333,19 @@ namespace SharpMap.Geometries
         /// <returns>True if the two <see cref="Geometry"/> instances are equal, false otherwise</returns>
         public static bool operator == (Geometry g1, Geometry g2)
         {
-            if (Object.ReferenceEquals(g1, null) && Object.ReferenceEquals(g2, null))
+            if (ReferenceEquals(g1, null) && ReferenceEquals(g2, null))
+            {
                 return true;
+            }
 
-            if (!Object.ReferenceEquals(g1, null))
+            if (!ReferenceEquals(g1, null))
+            {
                 return g1.Equals(g2);
+            }
             else
+            {
                 return g2.Equals(g1);
+            }
         }
 
         /// <summary>
@@ -345,13 +356,19 @@ namespace SharpMap.Geometries
         /// <returns>True if the two <see cref="Geometry"/> instances are not equal, false otherwise</returns>
         public static bool operator != (Geometry g1, Geometry g2)
         {
-            if (Object.ReferenceEquals(g1, null) && Object.ReferenceEquals(g2, null))
+            if (ReferenceEquals(g1, null) && ReferenceEquals(g2, null))
+            {
                 return false;
+            }
 
-            if (!Object.ReferenceEquals(g1, null))
+            if (!ReferenceEquals(g1, null))
+            {
                 return !g1.Equals(g2);
+            }
             else
+            {
                 return !g2.Equals(g1);
+            }
         }
 
 		/// <summary>
@@ -361,7 +378,7 @@ namespace SharpMap.Geometries
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
 		public override int GetHashCode()
 		{
-			return this.AsBinary().GetHashCode();
+			return AsBinary().GetHashCode();
 		}
 
 

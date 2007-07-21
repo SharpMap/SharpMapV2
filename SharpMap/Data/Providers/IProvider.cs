@@ -102,7 +102,7 @@ namespace SharpMap.Data.Providers
 		ICoordinateSystem CoordinateSystem { get; }
 
 		/// <summary>
-		/// Applies a coordinate tranformation to the geometries in this provider.
+		/// Applies a coordinate transformation to the geometries in this provider.
 		/// </summary>
 		ICoordinateTransformation CoordinateTransformation { get; set; }
     }

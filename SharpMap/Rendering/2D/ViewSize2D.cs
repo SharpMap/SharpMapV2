@@ -70,6 +70,43 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get { return (double)_height; }
         }
+
+        public double this[int element]
+        {
+            get
+            {
+                checkIndex(element);
+
+                return element == 0 ? (double)_width : (double)_height;
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get { return !_hasValue; }
+        }
+
+        public int ComponentCount
+        {
+            get { return 2; }
+        }
+
+        public DoubleComponent[] Components
+        {
+            get { return new DoubleComponent[] { _width, _height }; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                checkIndex(value.Length);
+
+                _width = value[0];
+                _height = value[1];
+            }
+        }
         #endregion
 
         #region Equality Testing
@@ -173,46 +210,9 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
         #endregion
 
-        public double this[int element]
-        {
-            get
-            {
-                checkIndex(element);
-
-                return element == 0 ? (double)_width : (double)_height;
-            }
-        }
-
-        public bool IsEmpty
-        {
-            get { return !_hasValue; }
-        }
-
         public ViewPoint2D Clone()
         {
             return new ViewPoint2D((double)_width, (double)_height);
-        }
-
-        public int ComponentCount
-        {
-            get { return 2; }
-        }
-
-        public DoubleComponent[] Components
-        {
-            get { return new DoubleComponent[] { _width, _height }; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                checkIndex(value.Length);
-
-                _width = value[0];
-                _height = value[1];
-            }
         }
 
         public ViewSize2D Negative()
@@ -240,6 +240,11 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region IVector<DoubleComponent> Members
+
+        MatrixFormat IMatrix<DoubleComponent>.Format
+        {
+            get { return MatrixFormat.Unspecified; }
+        }
 
         IVectorD IVectorD.Clone()
         {
@@ -431,7 +436,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertable
+        bool IMatrixD.IsInvertible
         {
             get { return false; }
         }
@@ -518,7 +523,7 @@ namespace SharpMap.Rendering.Rendering2D
         IMatrixD IMatrixD.Transpose()
         {
             return
-                new Matrix<DoubleComponent>(
+                new Matrix<DoubleComponent>((this as IMatrix<DoubleComponent>).Format,
                     new DoubleComponent[][] { new DoubleComponent[] { _width }, new DoubleComponent[] { _height } });
         }
 

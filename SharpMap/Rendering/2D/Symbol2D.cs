@@ -38,10 +38,13 @@ namespace SharpMap.Rendering.Rendering2D
         public Symbol2D(ViewSize2D size)
         {
             _symbolData = new MemoryStream(new byte[] { 0x0, 0x0, 0x0, 0x0 });
+            _symbolBox = new ViewRectangle2D(ViewPoint2D.Zero, size);
         }
 
         public Symbol2D(Stream symbolData, ViewSize2D size)
         {
+            _symbolBox = new ViewRectangle2D(ViewPoint2D.Zero, size);
+
             if (!symbolData.CanSeek)
             {
                 if (symbolData.Position != 0)

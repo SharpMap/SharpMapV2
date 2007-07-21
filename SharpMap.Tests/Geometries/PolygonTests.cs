@@ -17,7 +17,7 @@ namespace SharpMap.Tests.Geometries
 			Assert.AreEqual(p.NumInteriorRing, p.InteriorRings.Count);
 			Assert.IsFalse(p.Equals(null));
 			Assert.IsTrue(p.Equals(new Polygon()));
-			Assert.IsNull(p.GetBoundingBox());
+			Assert.AreEqual(BoundingBox.Empty, p.GetBoundingBox());
 			LinearRing ring = new LinearRing();
 			ring.Vertices.Add(new Point(10, 10));
 			ring.Vertices.Add(new Point(20, 10));

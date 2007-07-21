@@ -45,6 +45,10 @@
     <Compile Include="ImageTileCache.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpMap.Rendering.Gdi\SharpMap.Rendering.Gdi.csproj">
       <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
       <Name>SharpMap.Rendering.Gdi</Name>

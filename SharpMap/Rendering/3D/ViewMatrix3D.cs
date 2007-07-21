@@ -38,7 +38,7 @@ namespace SharpMap.Rendering.Rendering3D
                             double y1, double y2, double y3, double y4,
                             double z1, double z2, double z3, double z4,
                             double w1, double w2, double w3, double w4)
-            : base(4, 4)
+            : base(MatrixFormat.RowMajor, 4)
         {
             X1 = x1;
             X2 = x2;
@@ -59,7 +59,7 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         public ViewMatrix3D(IMatrixD matrixToCopy)
-            : base(4, 4)
+            : base(MatrixFormat.RowMajor, 4)
         {
             if(matrixToCopy.ColumnCount != 4)
             {
@@ -82,98 +82,98 @@ namespace SharpMap.Rendering.Rendering3D
 
         public double X1
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[0][0]; }
+            set { Elements[0][0] = value; }
         }
 
         public double X2
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[1][0]; }
+            set { Elements[1][0] = value; }
         }
 
         public double X3
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[2][0]; }
+            set { Elements[2][0] = value; }
         }
 
         public double X4
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[3][0]; }
+            set { Elements[3][0] = value; }
         }
 
         public double Y1
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[0][1]; }
+            set { Elements[0][1] = value; }
         }
 
         public double Y2
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[1][1]; }
+            set { Elements[1][1] = value; }
         }
 
         public double Y3
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[2][1]; }
+            set { Elements[2][1] = value; }
         }
 
         public double Y4
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[3][1]; }
+            set { Elements[3][1] = value; }
         }
 
         public double Z1
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[0][2]; }
+            set { Elements[0][2] = value; }
         }
 
         public double Z2
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[1][2]; }
+            set { Elements[1][2] = value; }
         }
 
         public double Z3
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[2][2]; }
+            set { Elements[2][2] = value; }
         }
 
         public double Z4
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[3][2]; }
+            set { Elements[3][2] = value; }
         }
 
         public double W1
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[0][3]; }
+            set { Elements[0][3] = value; }
         }
 
         public double W2
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[1][3]; }
+            set { Elements[1][3] = value; }
         }
 
         public double W3
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[2][3]; }
+            set { Elements[2][3] = value; }
         }
 
         public double W4
         {
-            get { return (double)ElementArray[0][0]; }
-            set { ElementArray[0][0] = value; }
+            get { return (double)Elements[3][3]; }
+            set { Elements[3][3] = value; }
         }
     }
 }

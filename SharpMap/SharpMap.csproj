@@ -219,6 +219,10 @@
     <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Rendering\3D\ViewMatrix3D.cs" />
+    <Compile Include="Rendering\3D\ViewPoint3D.cs" />
+    <Compile Include="Rendering\3D\ViewRectangle3D.cs" />
+    <Compile Include="Rendering\3D\ViewSize3D.cs" />
     <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />

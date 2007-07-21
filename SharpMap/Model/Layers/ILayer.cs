@@ -55,7 +55,7 @@ namespace SharpMap.Layers
 		ICoordinateSystem CoordinateSystem { get; }
 
 		/// <summary>
-		/// Applies a coordinate tranformation to the geometries in this layer.
+		/// Applies a coordinate transformation to the geometries in this layer.
 		/// </summary>
 		ICoordinateTransformation CoordinateTransformation { get; set; }
 

@@ -4,7 +4,7 @@ using NPack.Interfaces;
 
 namespace SharpMap.Rendering
 {
-    public interface IViewRectangle<TViewPoint> : IMatrix<DoubleComponent>
+    public interface IViewRectangle<TViewPoint> : IAffineTransformMatrix<DoubleComponent>
         where TViewPoint : IVector<DoubleComponent>
     {
         TViewPoint LowerBounds { get; }

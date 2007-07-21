@@ -17,12 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.Serialization;
-using System.Runtime.InteropServices;
-
-using SharpMap.Utilities;
 
 namespace SharpMap.Geometries
 {
@@ -171,34 +165,34 @@ namespace SharpMap.Geometries
 			{
                 if (IsEmpty())
                 {
-                    throw new InvalidOperationException("Point is empty");
+                    throw new InvalidOperationException("Point is empty.");
                 }
                 else if (index == 0)
                 {
-                    return this.X;
+                    return X;
                 }
                 else if (index == 1)
                 {
-                    return this.Y;
+                    return Y;
                 }
                 else
                 {
-                    throw (new ArgumentOutOfRangeException("Point index out of bounds"));
+                    throw (new ArgumentOutOfRangeException("index", "Point index out of bounds."));
                 }
 			}
 			set
 			{
                 if (index == 0)
                 {
-                    this.X = value;
+                    X = value;
                 }
                 else if (index == 1)
                 {
-                    this.Y = value;
+                    Y = value;
                 }
                 else
                 {
-                    throw (new ArgumentOutOfRangeException("Point index out of bounds"));
+                    throw (new ArgumentOutOfRangeException("index", "Point index out of bounds."));
                 }
 
                 SetNotEmpty();
@@ -269,8 +263,22 @@ namespace SharpMap.Geometries
 		/// <returns>True if the points are either both empty or have the same coordinates, false otherwise.</returns>
 		public virtual bool Equals(Point p)
 		{
-			return !Object.ReferenceEquals(p, null)
-                && ((IsEmpty() == p.IsEmpty() == true) || (Tolerance.Equal(p.X, _x) && Tolerance.Equal(p.Y, _y)));
+            if (ReferenceEquals(p, null))
+            {
+                return false;
+            }
+
+            if (IsEmpty() && p.IsEmpty())
+            {
+                return true;
+            }
+
+            if (IsEmpty() || p.IsEmpty())
+            {
+                return false;
+            }
+
+			return Tolerance.Equal(p.X, _x) && Tolerance.Equal(p.Y, _y);
 		}
 
 		/// <summary>
@@ -328,10 +336,10 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public override double Distance(Geometry geom)
 		{
-            if (geom.GetType() == typeof(SharpMap.Geometries.Point))
+            if (geom is Point)
             {
                 Point p = geom as Point;
-                return Math.Sqrt(Math.Pow(this.X - p.X, 2) + Math.Pow(this.Y - p.Y, 2));
+                return Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2));
             }
             else
             {
@@ -421,7 +429,7 @@ namespace SharpMap.Geometries
                 return new BoundingBox();
             }
 
-			return new BoundingBox(this.X, this.Y, this.X, this.Y);
+			return new BoundingBox(X, Y, X, Y);
 		}
 		/// <summary>
 		/// Checks whether this point touches a <see cref="BoundingBox"/>
@@ -440,7 +448,7 @@ namespace SharpMap.Geometries
 		/// <returns>true if they touch</returns>
 		public override bool Touches(Geometry geom)
 		{
-            if (geom is Point && this.Equals(geom))
+            if (geom is Point && Equals(geom))
             {
                 return true;
             }
@@ -481,7 +489,7 @@ namespace SharpMap.Geometries
                 return new Point();
             }
 
-			return new Point(this.X, this.Y);
+			return new Point(X, Y);
 		}
 
 		#region IComparable<Point> Members
@@ -504,11 +512,11 @@ namespace SharpMap.Geometries
                 throw new ArgumentNullException("other");
             }
 
-            if (this.Equals(other)) // This handles the case where both are empty. 
+            if (Equals(other)) // This handles the case where both are empty. 
             {
                 return 0;
             }
-            else if (this.IsEmpty())
+            else if (IsEmpty())
             {
                 return -1;
             }
@@ -516,11 +524,11 @@ namespace SharpMap.Geometries
             {
                 return 1;
             }
-            else if (Tolerance.Less(this.X, other.X) || Tolerance.Equal(this.X, other.X) && Tolerance.Less(this.Y, other.Y))
+            else if (Tolerance.Less(X, other.X) || Tolerance.Equal(X, other.X) && Tolerance.Less(Y, other.Y))
             {
                 return -1;
             }
-            else if (Tolerance.Greater(this.X, other.X) || Tolerance.Equal(this.X, other.X) && Tolerance.Greater(this.Y, other.Y))
+            else if (Tolerance.Greater(X, other.X) || Tolerance.Equal(X, other.X) && Tolerance.Greater(Y, other.Y))
             {
                 return 1;
             }

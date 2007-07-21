@@ -15,11 +15,10 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Diagnostics;
-using System.Text;
+using SharpMap.Rendering.Rendering2D;
+using SharpMap.Styles;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
@@ -35,10 +34,6 @@ using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
 using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
-
-using SharpMap.Rendering;
-using SharpMap.Rendering.Rendering2D;
-using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Gdi
 {

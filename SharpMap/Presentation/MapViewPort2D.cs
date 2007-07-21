@@ -24,26 +24,26 @@ using SharpMap.Styles;
 using SharpMap.Utilities;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
-using IAffineMatrixD = NPack.Interfaces.IAffineTranformMatrix<NPack.DoubleComponent>;
+using IAffineMatrixD = NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
 	public class MapViewPort2D
 	{
-		private Map _map;
+		private readonly Map _map;
         private IMapView2D _view;
 		private double _pixelAspectRatio = 1.0;
-		private double _viewDpi;
+		private readonly double _viewDpi;
 		private double _worldUnitsPerInch;
 		private ViewSize2D _viewSize;
-		private GeoPoint _center = GeoPoint.Zero;
+		private GeoPoint _center;
 		private double _maximumWorldWidth;
 		private double _minimumWorldWidth;
         private IAffineMatrixD _viewTransform = new ViewMatrix2D();
         private IAffineMatrixD _viewTransformInverted = new ViewMatrix2D();
 		private StyleColor _backgroundColor;
          
-		public MapViewPort2D(SharpMap.Map map, IMapView2D view)
+		public MapViewPort2D(Map map, IMapView2D view)
 		{
 			_map = map;
             _view = view;
@@ -63,17 +63,17 @@ namespace SharpMap.Presentation
 		public event EventHandler<MapPresentationPropertyChangedEventArgs<ViewSize2D>> SizeChanged;
 
 		/// <summary>
-		/// Fired when the <see cref="ViewRectangle"/> has changed.
+        /// Fired when the <see cref="ViewEnvelope"/> has changed.
 		/// </summary>
-		public event EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>> ViewRectangleChanged;
+		public event EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>> ViewEnvelopeChanged;
 
 		/// <summary>
-		/// Fired when the <see cref="MinimumZoom"/> has changed.
+		/// Fired when the <see cref="MinimumWorldWidth"/> has changed.
 		/// </summary>
 		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> MinimumWorldWidthChanged;
 
 		/// <summary>
-		/// Fired when the <see cref="MaximumZoom"/> has changed.
+        /// Fired when the <see cref="MaximumWorldWidth"/> has changed.
 		/// </summary>
 		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> MaximumWorldWidthChanged;
 
@@ -83,12 +83,12 @@ namespace SharpMap.Presentation
 		public event EventHandler<MapPresentationPropertyChangedEventArgs<double>> PixelAspectRatioChanged;
 
 		/// <summary>
-		/// Fired when the <see cref="MapTransform"/> has changed.
+        /// Fired when the <see cref="MapViewTransform"/> has changed.
 		/// </summary>
-		public event EventHandler<MapPresentationPropertyChangedEventArgs<IMatrixD>> MapTransformChanged;
+		public event EventHandler<MapPresentationPropertyChangedEventArgs<IMatrixD>> MapViewTransformChanged;
 
 		/// <summary>
-		/// Fired when the <see cref="MaximumZoom"/> has changed.
+		/// Fired when the <see cref="BackgroundColor"/> has changed.
 		/// </summary>
 		public event EventHandler<MapPresentationPropertyChangedEventArgs<StyleColor>> BackgroundColorChanged;
 
@@ -102,7 +102,8 @@ namespace SharpMap.Presentation
 		/// </summary>
         /// <returns>
         /// The height of the view in world units, taking into account <see cref="PixelAspectRatio"/> 
-        /// (<see cref="WorldWidth"/> * <see cref="PixelAspectRatio"/> * <see cref="ViewSize.Height"/> / <see cref="ViewSize.Width"/>).
+        /// (<see cref="WorldWidth"/> * <see cref="PixelAspectRatio"/> * 
+        /// <see cref="ViewSize"/> height / <see cref="ViewSize"/> width).
         /// </returns>
 		public double WorldHeight
 		{
@@ -112,7 +113,8 @@ namespace SharpMap.Presentation
 		/// <summary>
 		/// Gets the width of view in world units.
 		/// </summary>
-        /// <returns>The width of the view in world units (<see cref="ViewSize.Width" /> * <see cref="WorldUnitsPerPixel"/>).</returns>
+        /// <returns>The width of the view in world units (<see cref="ViewSize" /> 
+        /// height * <see cref="WorldUnitsPerPixel"/>).</returns>
 		public double WorldWidth
 		{
 			get { return ViewSize.Width * WorldUnitsPerPixel; }
@@ -155,7 +157,7 @@ namespace SharpMap.Presentation
 			{
 				if (value == null)
 				{
-					throw new ArgumentNullException("GeoCenter");
+					throw new ArgumentNullException("value");
 				}
 
 				setViewMetricsInternal(ViewSize, value, WorldUnitsPerPixel);
@@ -172,7 +174,7 @@ namespace SharpMap.Presentation
 			{
 				if (value < 0)
 				{
-                    throw new ArgumentOutOfRangeException("MinimumWorldWidth", value, "Minimum world width must be 0 or greater.");
+                    throw new ArgumentOutOfRangeException("value", value, "Minimum world width must be 0 or greater.");
 				}
 
 				if (_minimumWorldWidth != value)
@@ -194,7 +196,7 @@ namespace SharpMap.Presentation
 			{
 				if (value <= 0)
 				{
-                    throw new ArgumentOutOfRangeException("MaximumWorldWidth", value, "Maximum world width must greater than 0.");
+                    throw new ArgumentOutOfRangeException("value", value, "Maximum world width must greater than 0.");
 				}
 
 				if (_maximumWorldWidth != value)
@@ -242,11 +244,13 @@ namespace SharpMap.Presentation
 		}
 
 		/// <summary>
-        /// Gets or sets the aspect ratio of the <see cref="ViewSize.Height"/> to the <see cref="ViewSize.Width"/>.
+        /// Gets or sets the aspect ratio of the <see cref="ViewSize"/> height to the <see cref="ViewSize"/> width.
 		/// </summary>
 		/// <remarks> 
-        /// A value less than 1 will make the map stretch upwards (the view will cover less world distance vertically), 
-        /// and greater than 1 will make it more squat (the view will cover more world distance vertically).
+        /// A value less than 1 will make the map stretch upwards 
+        /// (the view will cover less world distance vertically), 
+        /// and greater than 1 will make it more squat (the view will 
+        /// cover more world distance vertically).
 		/// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">
         /// Throws an argument exception when value is 0 or less.
@@ -258,7 +262,7 @@ namespace SharpMap.Presentation
 			{
 				if (value <= 0)
 				{
-					throw new ArgumentOutOfRangeException("PixelAspectRatio", value, "Invalid pixel aspect ratio.");
+					throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
 				}
 
 				if (_pixelAspectRatio != value)
@@ -276,7 +280,7 @@ namespace SharpMap.Presentation
 		/// <remarks>
 		/// Defaults to transparent.
 		/// </remarks>
-		public StyleColor BackColor
+		public StyleColor BackgroundColor
 		{
 			get { return _backgroundColor; }
 			set
@@ -291,11 +295,14 @@ namespace SharpMap.Presentation
 		}
 
 		/// <summary>
-        /// Gets or sets a <see cref="IAffineTranformMatrix{T}"/> used to transform the map image.
+        /// Gets or sets a <see cref="IAffineTransformMatrix{T}"/> used 
+        /// to transform the map image.
 		/// </summary>
 		/// <remarks>
-        /// Using the <see cref="MapViewTransform"/> you can alter the coordinate system of the map rendering.
-		/// This makes it possible to rotate or rescale the image, for instance to have another direction 
+        /// Using the <see cref="MapViewTransform"/> you can alter 
+        /// the coordinate system of the map rendering.
+		/// This makes it possible to rotate or rescale the image, 
+		/// for instance to have another direction 
 		/// than north upwards.
 		/// </remarks>
 		/// <example>
@@ -313,7 +320,7 @@ namespace SharpMap.Presentation
                     IAffineMatrixD oldValue = _viewTransform;
 					_viewTransform = value;
 
-					if (_viewTransform.IsInvertable)
+					if (_viewTransform.IsInvertible)
 					{
 					    MapViewTransformInverted = _viewTransform.Inverse;
 					}
@@ -343,7 +350,8 @@ namespace SharpMap.Presentation
         /// Zooms the view to the given width.
         /// </summary>
         /// <remarks>
-        /// View modifiers <see cref="MinimumWorldWidth"/>, <see cref="MaximumWorldWidth"/> and <see cref="PixelAspectRatio"/>
+        /// View modifiers <see cref="MinimumWorldWidth"/>, 
+        /// <see cref="MaximumWorldWidth"/> and <see cref="PixelAspectRatio"/>
         /// are taken into account when zooming to this width.
         /// </remarks>
         public void ZoomToWidth(double worldWidth)
@@ -366,9 +374,12 @@ namespace SharpMap.Presentation
 		/// Zooms the map to fit a bounding box.
 		/// </summary>
 		/// <remarks>
-		/// If the ratio of either the width of the current map <see cref="ViewEnvelope">envelope</see> 
-		/// to the width of <paramref name="zoomBox"/> or of the height of the current map <see cref="ViewEnvelope">envelope</see> 
-		/// to the height of <paramref name="zoomBox"/> is greater, the map envelope will be enlarged to contain the 
+		/// If the ratio of either the width of the current 
+		/// map <see cref="ViewEnvelope">envelope</see> 
+		/// to the width of <paramref name="zoomBox"/> or 
+		/// of the height of the current map <see cref="ViewEnvelope">envelope</see> 
+		/// to the height of <paramref name="zoomBox"/> is 
+		/// greater, the map envelope will be enlarged to contain the 
 		/// <paramref name="zoomBox"/> parameter.
 		/// </remarks>
 		/// <param name="zoomBox"><see cref="BoundingBox"/> to set zoom to.</param>
@@ -411,7 +422,7 @@ namespace SharpMap.Presentation
 
 		protected virtual void OnViewRectangleChanged(ViewRectangle2D oldViewRectangle, ViewRectangle2D currentViewRectangle, BoundingBox oldBounds, BoundingBox currentBounds)
 		{
-			EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>> @event = ViewRectangleChanged;
+			EventHandler<MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox>> @event = ViewEnvelopeChanged;
 
 			if (@event != null)
 			{
@@ -422,7 +433,7 @@ namespace SharpMap.Presentation
 
 		protected virtual void OnMapTransformChanged(IMatrixD oldTransform, IMatrixD newTransform)
 		{
-			EventHandler<MapPresentationPropertyChangedEventArgs<IMatrixD>> @event = MapTransformChanged;
+			EventHandler<MapPresentationPropertyChangedEventArgs<IMatrixD>> @event = MapViewTransformChanged;
 
 			if (@event != null)
 			{
@@ -538,9 +549,20 @@ namespace SharpMap.Presentation
 				OnMapCenterChanged(oldCenter, _center);
 			}
 
-            OnViewRectangleChanged(new ViewRectangle2D(0, oldViewSize.Width, 0, oldViewSize.Height), new ViewRectangle2D(0, _viewSize.Width, 0, _viewSize.Height),
-                new BoundingBox(oldCenter.X - (oldWorldWidth * 0.5), oldCenter.Y - (oldWorldHeight * 0.5), oldCenter.X + (oldWorldWidth * 0.5), oldCenter.Y + (oldWorldHeight * 0.5)),
-                new BoundingBox(_center.X - (WorldWidth * 0.5), _center.Y - (WorldHeight * 0.5), _center.X + (WorldWidth * 0.5), _center.Y + (WorldHeight * 0.5)));
+		    ViewRectangle2D oldView = new ViewRectangle2D(0, oldViewSize.Width, 0, oldViewSize.Height);
+		    ViewRectangle2D newView = new ViewRectangle2D(0, _viewSize.Width, 0, _viewSize.Height);
+
+		    BoundingBox oldEnv = oldCenter == GeoPoint.Empty 
+                            ? BoundingBox.Empty
+                            : new BoundingBox(oldCenter.X - (oldWorldWidth*0.5), oldCenter.Y - (oldWorldHeight*0.5),
+		                        oldCenter.X + (oldWorldWidth*0.5), oldCenter.Y + (oldWorldHeight*0.5));
+                            
+		    BoundingBox newEnv = _center == GeoPoint.Empty 
+                            ? BoundingBox.Empty 
+                            : new BoundingBox(_center.X - (WorldWidth*0.5), _center.Y - (WorldHeight*0.5), 
+                                _center.X + (WorldWidth*0.5), _center.Y + (WorldHeight*0.5));
+
+            OnViewRectangleChanged(oldView, newView, oldEnv, newEnv);
 		}
 		#endregion
 	}

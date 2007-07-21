@@ -52,7 +52,7 @@ namespace SharpMap.Tests.Presentation
 			Assert.IsNotNull(map.Layers);
             Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Width);
             Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Height);
-            Assert.AreEqual(StyleColor.Transparent, mapView.ViewPort.BackColor);
+            Assert.AreEqual(StyleColor.Transparent, mapView.ViewPort.BackgroundColor);
             Assert.AreEqual(double.MaxValue, mapView.ViewPort.MaximumWorldWidth);
             Assert.AreEqual(0, mapView.ViewPort.MinimumWorldWidth);
             Assert.AreEqual(new Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
