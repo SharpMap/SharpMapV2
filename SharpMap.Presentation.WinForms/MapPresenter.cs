@@ -34,52 +34,12 @@ namespace SharpMap.Presentation.WinForms
 {
     public class MapPresenter : MapPresenter2D
     {
-        private ImageTileCache _imageTileCache;
-
         public MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)
         {
-            _imageTileCache = new ImageTileCache(map.Envelope);
             RegisterRenderer<VectorLayer, PositionedRenderObject2D<GdiRenderObject>>(new GdiVectorRenderer());
             IRenderer labelRenderer = new GdiLabelRenderer(new GdiVectorRenderer()) as IRenderer;
             RegisterRenderer<LabelLayer<Label2D>, PositionedRenderObject2D<GdiRenderObject>>(labelRenderer);
-        }
-
-        public Image GetImage(RectangleF region)
-        {
-            BoundingBox worldRegion = Transform2D.ViewToWorld(ViewConverter.GdiToView(region), MapView.ViewPort);
-            throw new NotImplementedException();
-        }
-
-        protected override void OnMapViewHover(ViewPoint2D viewPoint2D)
-        {
-            base.OnMapViewHover(viewPoint2D);
-        }
-
-        protected override void OnMapViewBeginAction(ViewPoint2D viewPoint2D)
-        {
-            base.OnMapViewBeginAction(viewPoint2D);
-        }
-
-        protected override void OnMapViewMoveTo(ViewPoint2D viewPoint2D)
-        {
-            base.OnMapViewMoveTo(viewPoint2D);
-        }
-
-        protected override void OnMapViewEndAction(ViewPoint2D viewPoint2D)
-        {
-            // Do action here...
-            base.OnMapViewEndAction(viewPoint2D);
-        }
-
-        protected override void OnMapViewSizeChanged()
-        {
-            base.OnMapViewSizeChanged();
-        }
-
-        public new MapViewControl MapView
-        {
-            get { return MapView as MapViewControl; }
         }
     }
 }

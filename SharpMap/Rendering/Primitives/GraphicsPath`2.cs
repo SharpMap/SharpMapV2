@@ -31,7 +31,7 @@ namespace SharpMap.Rendering
     /// <typeparam name="TViewBounds">Type of rectilinear used to bound the path.</typeparam>
     public abstract class GraphicsPath<TViewPoint, TViewBounds> : ICloneable, IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>>, IEquatable<GraphicsPath<TViewPoint, TViewBounds>>
         where TViewPoint : IVectorD
-        where TViewBounds : IMatrixD
+        where TViewBounds : IMatrixD, IEquatable<TViewBounds>
     {
         private readonly List<GraphicsFigure<TViewPoint, TViewBounds>> _figures = new List<GraphicsFigure<TViewPoint, TViewBounds>>();
         private int _currentFigureIndex;
@@ -220,7 +220,7 @@ namespace SharpMap.Rendering
         {
             get 
             {
-                if (ReferenceEquals(_bounds, null) || _bounds.Equals(EmptyBounds))
+                if (EmptyBounds.Equals(_bounds))
                 {
                     _bounds = ComputeBounds();
                 }

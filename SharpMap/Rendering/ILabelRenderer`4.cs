@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -31,7 +32,7 @@ namespace SharpMap.Rendering
     public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
         where TViewPoint : IVectorD
 		where TViewSize : IVectorD
-        where TViewRectangle : IMatrixD
+        where TViewRectangle : IMatrixD, IEquatable<TViewRectangle>
     {
         /// <summary>
         /// Gets or sets a <see cref="StyleTextRenderingHint"/> to control how rendered text appears.

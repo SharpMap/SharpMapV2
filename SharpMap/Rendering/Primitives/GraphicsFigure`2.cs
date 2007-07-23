@@ -27,7 +27,8 @@ namespace SharpMap.Rendering
     /// </summary>
     /// <typeparam name="TViewPoint">Type of point to use in the figure.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear shape to bound this figure.</typeparam>
-    public abstract class GraphicsFigure<TViewPoint, TViewBounds> : ICloneable, IEnumerable<TViewPoint>, IEquatable<GraphicsFigure<TViewPoint, TViewBounds>>
+    public abstract class GraphicsFigure<TViewPoint, TViewBounds> 
+        : ICloneable, IEnumerable<TViewPoint>, IEquatable<GraphicsFigure<TViewPoint, TViewBounds>>
         where TViewPoint : IVectorD
         where TViewBounds : IMatrixD
     {
@@ -35,20 +36,40 @@ namespace SharpMap.Rendering
         private bool _isClosed;
         private TViewBounds _bounds;
 
+        #region Object Construction
+        /// <summary>
+        /// Creates a new open <see cref="GraphicsFigure"/> from the given points.
+        /// </summary>
+        /// <param name="points">The points from which to create the figure.</param>
         public GraphicsFigure(IEnumerable<TViewPoint> points)
             : this(points, false) { }
 
+        /// <summary>
+        /// Creates a new <see cref="GraphicsFigure"/> from the given points.
+        /// </summary>
+        /// <param name="points">The points from which to create the figure.</param>
+        /// <param name="isClosed">True to close the path, false to keep it open.</param>
         public GraphicsFigure(IEnumerable<TViewPoint> points, bool isClosed)
         {
             _points.AddRange(points);
             IsClosed = isClosed;
         }
+        #endregion
 
+        #region ToString
+        /// <summary>
+        /// Returns a string representation of this <see cref="GraphicsFigure"/>.
+        /// </summary>
         public override string ToString()
         {
             return String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count, typeof(TViewPoint).Name, IsClosed);
         }
+        #endregion
 
+        #region GetHashCode
+        /// <summary>
+        /// Returns a value to use in hash sets.
+        /// </summary>
         public override int GetHashCode()
         {
             unchecked
@@ -63,6 +84,7 @@ namespace SharpMap.Rendering
                 return hash;
             }
         }
+        #endregion
 
         #region Equality Computation
         public override bool Equals(object obj)
@@ -126,15 +148,7 @@ namespace SharpMap.Rendering
 		#endregion
 		#endregion
 
-        /// <summary>
-        /// Gets true if the figure is closed, false if open.
-        /// </summary>
-        public bool IsClosed
-        {
-            get { return _isClosed; }
-            protected set { _isClosed = value; }
-        }
-
+        #region Properties
         /// <summary>
         /// Gets the bounds of this figure.
         /// </summary>
@@ -152,17 +166,41 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
+        /// Gets a value indicating an empty bounds shape.
+        /// </summary>
+        protected abstract TViewBounds EmptyBounds { get; }
+
+        /// <summary>
+        /// Gets true if the figure is closed, false if open.
+        /// </summary>
+        public bool IsClosed
+        {
+            get { return _isClosed; }
+            protected set { _isClosed = value; }
+        }
+
+        /// <summary>
         /// A list of the points in this figure.
         /// </summary>
         public IList<TViewPoint> Points
         {
             get { return _points.AsReadOnly(); }
         }
+        #endregion
 
+        public void Add(TViewPoint point)
+        {
+            _points.Add(point);
+        }
+
+        #region Protected Methods
         /// <summary>
         /// Computes the minimum bounding rectilinear shape that contains this figure.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A <typeparamref name="TViewBounds"/> instance describing a minimally bounding 
+        /// rectilinear space which contains the figure.
+        /// </returns>
         protected abstract TViewBounds ComputeBounds();
 
         /// <summary>
@@ -172,11 +210,7 @@ namespace SharpMap.Rendering
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new GraphicsFigure instance.</returns>
         protected abstract GraphicsFigure<TViewPoint, TViewBounds> CreateFigure(IEnumerable<TViewPoint> points, bool isClosed);
-
-        /// <summary>
-        /// Gets a value indicating an empty bounds shape.
-        /// </summary>
-        protected abstract TViewBounds EmptyBounds { get; }
+        #endregion
 
         #region IEnumerable<TViewPoint> Members
 

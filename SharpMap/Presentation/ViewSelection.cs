@@ -38,13 +38,12 @@ namespace SharpMap.Presentation
     public abstract class ViewSelection<TViewPoint, TViewSize, TViewRegion> : IViewSelection<TViewPoint, TViewSize, TViewRegion>
         where TViewPoint : IVectorD, IHasEmpty
         where TViewSize : IVectorD, IHasEmpty
-        where TViewRegion : IMatrixD, new()
+        where TViewRegion : IMatrixD, IEquatable<TViewRegion>, new()
     {
         private GraphicsPath<TViewPoint, TViewRegion> _path;
         private StylePen _outline;
         private StyleBrush _fill;
         private TViewPoint _anchorPoint;
-        private bool _anchorPointSet = false;
         private TViewRegion _boundingRegion = new TViewRegion();
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace SharpMap.Presentation
                 AnchorPoint = point;
             }
 
-            Path.Points.Add(point);
+            Path.CurrentFigure.Add(point);
             recomputeBoundingRegion();
         }
 

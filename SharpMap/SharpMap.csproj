@@ -217,6 +217,7 @@
     <Compile Include="Presentation\MapActionEventArgs.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\FeaturesDataPresenter.cs" />
+    <Compile Include="Presentation\SizeChangeEventArgs.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\3D\ViewMatrix3D.cs" />
@@ -239,7 +240,6 @@
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
     <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />
-    <Compile Include="Presentation\MapViewPort2D.cs" />
     <Compile Include="Rendering\Primitives\ColorMatrix.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
     <Compile Include="Rendering\Primitives\GraphicsFigure`2.cs" />
@@ -326,7 +326,7 @@
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Math\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>

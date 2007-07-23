@@ -31,81 +31,196 @@ namespace SharpMap.Presentation
     /// <summary>
     /// Provides the input-handling and view-updating logic for a 2D map view.
     /// </summary>
-    public class MapPresenter2D
+    public class MapPresenter2D : BasePresenter<IMapView2D>
     {
-        private Map _map;
-		private IMapView2D _concreteView;
-		private MapViewPort2D _viewPort;
         private ViewSelection2D _selection;
-        private bool _disposed = false;
+
         private ViewPoint2D? _beginActionLocation;
         private ViewPoint2D _lastMoveLocation;
+
+        //private readonly double _viewDpi;
+        //private double _worldUnitsPerInch;
+        //private ViewSize2D _viewSize;
+        //private GeoPoint _center;
+        private double _maximumWorldWidth;
+        private double _minimumWorldWidth;
+        private ViewMatrix2D _toViewTransform;
+        private ViewMatrix2D _toWorldTransform;
+        private StyleColor _backgroundColor;
         
         #region Object Construction/Destruction
         public MapPresenter2D(Map map, IMapView2D mapView)
+            : base(map, mapView)
         {
-            Map = map;
             Map.LayersCollectionChanged += Map_LayersChanged;
 
-            MapView = mapView;
-            MapView.Hover += MapView_Hover;
-            MapView.BeginAction += MapView_BeginAction;
-            MapView.MoveTo += MapView_MoveTo;
-            MapView.EndAction += MapView_EndAction;
-            
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-            viewPort.CenterChanged += ViewPort_CenterChanged;
-            viewPort.MapViewTransformChanged += ViewPort_MapTransformChanged;
-            viewPort.MaximumWorldWidthChanged += ViewPort_MaximumZoomChanged;
-            viewPort.MinimumWorldWidthChanged += ViewPort_MinimumZoomChanged;
-            viewPort.PixelAspectRatioChanged += ViewPort_PixelAspectRatioChanged;
-            viewPort.SizeChanged += ViewPort_SizeChanged;
-            viewPort.StyleRenderingModeChanged += ViewPort_StyleRenderingModeChanged;
-            viewPort.ViewEnvelopeChanged += ViewPort_ViewRectangleChanged;
-        }
+            View.SizeChangeRequested += View_SizeChangeRequested;
+            View.Hover += View_Hover;
+            View.BeginAction += View_BeginAction;
+            View.MoveTo += View_MoveTo;
+            View.EndAction += View_EndAction;
+            //_viewDpi = View.Dpi;
 
-        #region Dispose Pattern
-        #region IDisposable Members
+            BoundingBox extents = map.Envelope;
 
-        public void Dispose()
-        {
-            if (!Disposed)
+            GeoPoint center = extents.GetCentroid();
+
+            double initialScale = View.ViewSize.Width / extents.Width;
+
+            if (View.ViewSize.Height / extents.Height < initialScale)
             {
-                Dispose(true);
-                Disposed = true;
-                GC.SuppressFinalize(this);
+                initialScale = View.ViewSize.Height / extents.Height;
+            }
+
+            if (center != GeoPoint.Empty)
+            {
+                _toViewTransform = new ViewMatrix2D(initialScale, 0, center.X - View.ViewSize.Width / 2,
+                    0, initialScale, center.Y - View.ViewSize.Height / 2);
+
+                _toWorldTransform = _toViewTransform.Inverse as ViewMatrix2D;
+            }
+            else
+            {
+                _toViewTransform = new ViewMatrix2D();
+                _toWorldTransform = new ViewMatrix2D();
             }
         }
         #endregion
 
-        protected virtual void Dispose(bool disposing)
-        {
-        }
-
-        protected bool Disposed
-        {
-            get { return _disposed; }
-            set { _disposed = value; }
-        }
-        #endregion
-        #endregion
+        #region Properties
 
         /// <summary>
-        /// The map.
+        /// Gets or sets map background color.
         /// </summary>
-        public Map Map
+        /// <remarks>
+        /// Defaults to transparent.
+        /// </remarks>
+        public StyleColor BackgroundColor
         {
-            get { return _map; }
-            protected set { _map = value; }
+            get { return _backgroundColor; }
+            set
+            {
+                if (_backgroundColor != value)
+                {
+                    StyleColor oldValue = _backgroundColor;
+                    _backgroundColor = value;
+                }
+            }
         }
 
         /// <summary>
-        /// The view.
+        /// Gets or sets center of map in world coordinates.
         /// </summary>
-        public IMapView2D MapView
+        public GeoPoint GeoCenter
         {
-            get { return _concreteView; }
-            protected set { _concreteView = value; }
+            get 
+            {
+                ViewPoint2D values = ToWorldTransform.TransformVector(View.ViewSize.Width / 2, View.ViewSize.Height / 2);
+                return new GeoPoint(values.X, values.Y);
+            }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                setViewMetricsInternal(View.ViewSize, value, WorldUnitsPerPixel);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum width in world units of the view.
+        /// </summary>
+        public double MaximumWorldWidth
+        {
+            get { return _maximumWorldWidth; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "Maximum world width must greater than 0.");
+                }
+
+                if (_maximumWorldWidth != value)
+                {
+                    double oldValue = _maximumWorldWidth;
+                    _maximumWorldWidth = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum width in world units of the view.
+        /// </summary>
+        public double MinimumWorldWidth
+        {
+            get { return _minimumWorldWidth; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "Minimum world width must be 0 or greater.");
+                }
+
+                if (_minimumWorldWidth != value)
+                {
+                    double oldValue = _minimumWorldWidth;
+                    _minimumWorldWidth = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the width of a pixel in world coordinate units.
+        /// </summary>
+        /// <remarks>The value returned is the same as <see cref="WorldUnitsPerPixel"/>.</remarks>
+        public double PixelWidth
+        {
+            get { return WorldUnitsPerPixel; }
+        }
+
+        /// <summary>
+        /// Gets the height of a pixel in world coordinate units.
+        /// </summary>
+        /// <remarks>The value returned is the same as <see cref="WorldUnitsPerPixel"/> 
+        /// unless <see cref="PixelAspectRatio"/> is different from 1.</remarks>
+        public double PixelHeight
+        {
+            get { return WorldUnitsPerPixel * PixelAspectRatio; }
+        }
+
+        /// <summary>
+        /// Gets or sets the aspect ratio of the <see cref="ViewSize"/> height to the <see cref="ViewSize"/> width.
+        /// </summary>
+        /// <remarks> 
+        /// A value less than 1 will make the map stretch upwards 
+        /// (the view will cover less world distance vertically), 
+        /// and greater than 1 will make it more squat (the view will 
+        /// cover more world distance vertically).
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Throws an argument exception when value is 0 or less.
+        /// </exception>
+        public double PixelAspectRatio
+        {
+#warning Is this division the correct order for the PixelAspectRatio property?
+            get { return _toViewTransform.X1 / _toViewTransform.Y2; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
+                }
+
+                if (_toViewTransform.X1 / _toViewTransform.Y2 != value)
+                {
+                    double oldValue = ToViewTransform.X1 / ToViewTransform.Y2;
+                    double ratioModifier = value / oldValue;
+                    ToViewTransform.Y2 *= ratioModifier;
+                    ToWorldTransform = ToViewTransform.Inverse as ViewMatrix2D;
+                }
+            }
         }
 
         /// <summary>
@@ -117,72 +232,135 @@ namespace SharpMap.Presentation
             private set { _selection = value; }
         }
 
-        ///// <summary>
-        ///// Converts a <see cref="SharpMap.Geometries.Point" /> from world coordinates to image 
-        ///// coordinates based on the current <see cref="IMapPresenter.Zoom"/>, <see cref="IMapPresenter.Center"/> 
-        ///// and <see cref="IMapPresenter.Size"/>.
-        ///// </summary>
-        ///// <param name="p"><see cref="SharpMap.Geometries.Point" /> in world coordinates</param>
-        ///// <returns><see cref="ViewPoint">Point</see> in image coordinates</returns>
-        //public ViewPoint2D WorldToView(GeoPoint p, IMapView2D view)
-        //{
-        //    return Transform2D.WorldToMap(p, view.ViewPort);
-        //}
-
-        ///// <summary>
-        ///// Converts a <see cref="BoundingBox"/> from world coordinates to image coordinates based on the current
-        ///// <see cref="IMapPresenter.Zoom"/>, <see cref="IMapPresenter.Center"/> and <see cref="IMapPresenter.Size"/>.
-        ///// </summary>
-        ///// <param name="bbox"><see cref="BoundingBox">Rectangle</see> in world coordinates</param>
-        ///// <returns><see cref="ViewRectangle"/> in image coordinates</returns>
-        //public ViewRectangle2D WorldToView(BoundingBox bbox, IMapView2D view)
-        //{
-        //    return Transform2D.WorldToMap(bbox, view.ViewPort);
-        //}
-
-        ///// <summary>
-        ///// Converts a <see cref="System.Drawing.PointF"/> from image coordinates to world 
-        ///// coordinates based on the current <see cref="IMapPresenter.Zoom"/>, 
-        ///// <see cref="IMapPresenter.Center"/> and <see cref="IMapPresenter.Size"/>.
-        ///// </summary>
-        ///// <param name="p"><see cref="ViewPoint">Point</see> in image coordinates.</param>
-        ///// <returns><see cref="SharpMap.Geometries.Point" /> in world coordinates.</returns>
-        //public GeoPoint ViewToWorld(ViewPoint2D p, IMapView2D view)
-        //{
-        //    return Transform2D.MapToWorld(p, view.ViewPort);
-        //}
-
-        ///// <summary>
-        ///// Converts a <see cref="ViewRectangle"/> from image coordinates to world coordinates 
-        ///// based on the current <see cref="IMapPresenter.Zoom"/>, 
-        ///// <see cref="IMapPresenter.Center"/> and <see cref="IMapPresenter.Size"/>.
-        ///// </summary>
-        ///// <param name="rect"><see cref="ViewRectangle"/> in image coordinates</param>
-        ///// <returns><see cref="BoundingBox">BoundingBox</see> in world coordinates</returns>
-        //public BoundingBox ViewToWorld(ViewRectangle2D rect, IMapView2D view)
-        //{
-        //    return Transform2D.MapToWorld(rect, view.ViewPort);
-        //}
-
-        //public IEnumerable<ViewPoint2D> TransformToView(IEnumerable<GeoPoint> points)
-        //{
-        //    foreach (GeoPoint point in points)
-        //        yield return WorldToView(point);
-        //}
-
-        //public ViewPoint2D TransformToView(GeoPoint point)
-        //{
-        //    return WorldToView(point);
-        //}
-
-        protected void RegisterRenderer<TLayerType, TRenderObject>(IRenderer renderer)
+        /// <summary>
+        /// Gets or sets a <see cref="ViewMatrix2D"/> used to project the world
+        /// coordinate system into the view coordinate system.
+        /// The inverse of the <see cref="ToWorldTransform"/> matrix.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <example>
+        /// <code lang="C#">
+        /// </code>
+        /// </example>
+        public ViewMatrix2D ToViewTransform
         {
-            if (renderer == null)
+            get { return _toViewTransform; }
+            set
             {
-                throw new ArgumentNullException("renderer");
+                if (_toViewTransform != value)
+                {
+                    ViewMatrix2D oldValue = _toViewTransform;
+                    _toViewTransform = value;
+                    ToWorldTransform = _toViewTransform.Inverse as ViewMatrix2D;
+                }
             }
+        }
 
-            LayerRendererCatalog.Instance.Register<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>(typeof(TLayerType), renderer);
+        /// <summary>
+        /// Gets a <see cref="ViewMatrix2D"/> used to reverse the view projection
+        /// transform to get world coordinates.
+        /// The inverse of the <see cref="ToViewTransform"/> matrix.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        public ViewMatrix2D ToWorldTransform
+        {
+            get { return _toWorldTransform; }
+            private set { _toWorldTransform = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the extents of the current view in world units.
+        /// </summary>
+        public BoundingBox ViewEnvelope
+        {
+            get { return new BoundingBox(); }
+            set
+            {
+                setViewEnvelopeInternal(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the height of view in world units.
+        /// </summary>
+        /// <returns>
+        /// The height of the view in world units, taking into account <see cref="PixelAspectRatio"/> 
+        /// (<see cref="WorldWidth"/> * <see cref="PixelAspectRatio"/> * 
+        /// <see cref="ViewSize"/> height / <see cref="ViewSize"/> width).
+        /// </returns>
+        public double WorldHeight
+        {
+            get { return WorldWidth * PixelAspectRatio * View.ViewSize.Height / View.ViewSize.Width; }
+        }
+
+        /// <summary>
+        /// Gets the width of view in world units.
+        /// </summary>
+        /// <returns>The width of the view in world units (<see cref="ViewSize" /> 
+        /// height * <see cref="WorldUnitsPerPixel"/>).</returns>
+        public double WorldWidth
+        {
+            get { return View.ViewSize.Width * WorldUnitsPerPixel; }
+        }
+
+        /// <summary>
+        /// Gets the width of a pixel in world coordinate units.
+        /// </summary>
+        public double WorldUnitsPerPixel
+        {
+            get { return ToViewTransform.X1; }
+        }
+        #endregion
+
+        /// <summary>
+        /// Zooms the view to the given width.
+        /// </summary>
+        /// <remarks>
+        /// View modifiers <see cref="MinimumWorldWidth"/>, 
+        /// <see cref="MaximumWorldWidth"/> and <see cref="PixelAspectRatio"/>
+        /// are taken into account when zooming to this width.
+        /// </remarks>
+        public void ZoomToWidth(double worldWidth)
+        {
+            double newHeight = worldWidth * (WorldHeight / WorldWidth);
+            double halfWidth = worldWidth * 0.5;
+            double halfHeight = newHeight * 0.5;
+
+            BoundingBox widthBounds = new BoundingBox(
+                GeoCenter.X - halfWidth, 
+                GeoCenter.Y - halfHeight, 
+                GeoCenter.X + halfWidth, 
+                GeoCenter.Y + halfHeight);
+
+            ZoomToBox(widthBounds);
+        }
+
+        /// <summary>
+        /// Zooms to the extents of all visible layers in the current <see cref="Map"/>.
+        /// </summary>
+        public void ZoomToExtents()
+        {
+            ZoomToBox(Map.GetExtents());
+        }
+
+        /// <summary>
+        /// Zooms the map to fit a bounding box.
+        /// </summary>
+        /// <remarks>
+        /// If the ratio of either the width of the current 
+        /// map <see cref="ViewEnvelope">envelope</see> 
+        /// to the width of <paramref name="zoomBox"/> or 
+        /// of the height of the current map <see cref="ViewEnvelope">envelope</see> 
+        /// to the height of <paramref name="zoomBox"/> is 
+        /// greater, the map envelope will be enlarged to contain the 
+        /// <paramref name="zoomBox"/> parameter.
+        /// </remarks>
+        /// <param name="zoomBox"><see cref="BoundingBox"/> to set zoom to.</param>
+        public void ZoomToBox(BoundingBox zoomBox)
+        {
+            setViewEnvelopeInternal(zoomBox);
         }
 
         public IRenderer GetRendererForLayer<TRenderObject>(ILayer layer)
@@ -197,6 +375,17 @@ namespace SharpMap.Presentation
             //_layerRendererCatalog.TryGetValue(layer.GetType().TypeHandle, out renderer);
             renderer = LayerRendererCatalog.Instance.Get<IRenderer>(layer.GetType());
             return renderer;
+        }
+
+        protected void RegisterRenderer<TLayerType, TRenderObject>(IRenderer renderer)
+        {
+            if (renderer == null)
+            {
+                throw new ArgumentNullException("renderer");
+            }
+
+            LayerRendererCatalog.Instance.Register<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>(
+                typeof(TLayerType), renderer);
         }
 
         protected TRenderer GetRenderer<TRenderer>(ILayer layer)
@@ -226,10 +415,6 @@ namespace SharpMap.Presentation
             _selection = null;
         }
 
-        protected virtual void OnMapViewSizeChanged()
-        {
-        }
-
         protected virtual void OnMapViewHover(ViewPoint2D viewPoint2D)
         {
         }
@@ -257,16 +442,14 @@ namespace SharpMap.Presentation
             _beginActionLocation = null;
         }
 
-        protected virtual void OnSelectionModified()
-        {
-        }
-
         protected virtual void OnSelectedFeaturesChanged()
         {
+            throw new NotImplementedException();
         }
 
         protected virtual void OnLayersChanged()
         {
+            throw new NotImplementedException();
         }
 
         #region Event handlers
@@ -280,69 +463,28 @@ namespace SharpMap.Presentation
             OnLayersChanged();
         }
 
-        private void MapView_EndAction(object sender, MapActionEventArgs<ViewPoint2D> e)
+        private void View_SizeChangeRequested(object sender, SizeChangeEventArgs<ViewSize2D> e)
         {
-            OnMapViewEndAction(e.ActionPoint);
         }
 
-        private void MapView_MoveTo(object sender, MapActionEventArgs<ViewPoint2D> e)
-        {
-            OnMapViewMoveTo(e.ActionPoint);
-        }
-
-        private void MapView_BeginAction(object sender, MapActionEventArgs<ViewPoint2D> e)
-        {
-            OnMapViewBeginAction(e.ActionPoint);
-        }
-
-        private void MapView_Hover(object sender, MapActionEventArgs<ViewPoint2D> e)
+        private void View_Hover(object sender, MapActionEventArgs<ViewPoint2D> e)
         {
             OnMapViewHover(e.ActionPoint);
         }
 
-        void ViewPort_CenterChanged(object sender, MapPresentationPropertyChangedEventArgs<ViewPoint2D, Point> e)
+        private void View_BeginAction(object sender, MapActionEventArgs<ViewPoint2D> e)
         {
-            throw new Exception("The method or operation is not implemented.");
+            OnMapViewBeginAction(e.ActionPoint);
         }
 
-        void ViewPort_MapTransformChanged(object sender, MapPresentationPropertyChangedEventArgs<IMatrixD> e)
+        private void View_MoveTo(object sender, MapActionEventArgs<ViewPoint2D> e)
         {
-            throw new Exception("The method or operation is not implemented.");
+            OnMapViewMoveTo(e.ActionPoint);
         }
 
-        void ViewPort_MaximumZoomChanged(object sender, MapPresentationPropertyChangedEventArgs<double> e)
+        private void View_EndAction(object sender, MapActionEventArgs<ViewPoint2D> e)
         {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        void ViewPort_MinimumZoomChanged(object sender, MapPresentationPropertyChangedEventArgs<double> e)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        void ViewPort_PixelAspectRatioChanged(object sender, MapPresentationPropertyChangedEventArgs<double> e)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        void ViewPort_SizeChanged(object sender, MapPresentationPropertyChangedEventArgs<ViewSize2D> e)
-        {
-            OnMapViewSizeChanged();
-        }
-
-        void ViewPort_StyleRenderingModeChanged(object sender, MapPresentationPropertyChangedEventArgs<StyleRenderingMode> e)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        void ViewPort_ViewRectangleChanged(object sender, MapPresentationPropertyChangedEventArgs<ViewRectangle2D, BoundingBox> e)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        void ViewPort_ZoomChanged(object sender, MapZoomChangedEventArgs e)
-        {
-            throw new Exception("The method or operation is not implemented.");
+            OnMapViewEndAction(e.ActionPoint);
         }
         #endregion
 
@@ -350,55 +492,70 @@ namespace SharpMap.Presentation
         private void modifySelection(double xDelta, double yDelta)
         {
             Selection.Expand(new ViewSize2D(xDelta, yDelta));
-            OnSelectionModified();
+        }
+
+        private void setCenterInternal(GeoPoint newCenter)
+        {
+            if (GeoCenter == newCenter)
+            {
+                return;
+            }
+
+            setViewMetricsInternal(View.ViewSize, newCenter, WorldUnitsPerPixel);
+        }
+
+        private void setViewEnvelopeInternal(BoundingBox newEnvelope)
+        {
+            BoundingBox oldEnvelope = ViewEnvelope;
+
+            if (oldEnvelope == newEnvelope)
+            {
+                return;
+            }
+
+            double widthZoomRatio = newEnvelope.Width / oldEnvelope.Width;
+            double heightZoomRatio = newEnvelope.Height / oldEnvelope.Height;
+
+            double newWidth = widthZoomRatio > heightZoomRatio ? newEnvelope.Width : newEnvelope.Width * heightZoomRatio;
+
+            if (newWidth < _minimumWorldWidth)
+            {
+                newWidth = _minimumWorldWidth;
+            }
+
+            if (newWidth > _maximumWorldWidth)
+            {
+                newWidth = _maximumWorldWidth;
+            }
+
+            setViewMetricsInternal(View.ViewSize, newEnvelope.GetCentroid(), newWidth / View.ViewSize.Width);
+        }
+
+        private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint newCenter, double newWorldUnitsPerPixel)
+        {
+            ViewSize2D oldViewSize = View.ViewSize;
+            GeoPoint oldCenter = GeoCenter;
+            double oldWorldWidth = WorldWidth;
+            double oldWorldHeight = WorldHeight;
+
+            if (newViewSize == View.ViewSize && GeoCenter.Equals(newCenter) && newWorldUnitsPerPixel == WorldUnitsPerPixel)
+            {
+                return;
+            }
+
+            View.ViewSize = newViewSize;
+        }
+
+        private ViewPoint2D worldToView(GeoPoint geoPoint)
+        {
+            return ToViewTransform.TransformVector(geoPoint.X, geoPoint.Y);
+        }
+
+        private GeoPoint viewToWorld(ViewPoint2D viewPoint)
+        {
+            ViewPoint2D values = ToWorldTransform.TransformVector(viewPoint.X, viewPoint.Y);
+            return new GeoPoint(values.X, values.Y);
         }
         #endregion
-
-        //#region IViewTransformer Members
-
-        //IViewVector IViewTransformer.TransformToView(Point point)
-        //{
-        //    return TransformToView(point);
-        //}
-
-        //IEnumerable<IViewVector> IViewTransformer.TransformToView(IEnumerable<Point> points)
-        //{
-        //    foreach (GeoPoint geoPoint in points)
-        //    {
-        //        yield return TransformToView(geoPoint);
-        //    }
-        //}
-
-        //public Point ViewToWorld(IViewVector viewPoint)
-        //{
-        //    if (!(viewPoint is ViewPoint2D))
-        //    {
-        //        throw new ArgumentException("Parameter must be an instance of ViewPoint2D", "viewPoint");
-        //    }
-
-        //    return ViewToWorld((ViewPoint2D)viewPoint);
-        //}
-
-        //public BoundingBox ViewToWorld(IViewMatrix viewRectangle)
-        //{
-        //    if (!(viewRectangle is ViewRectangle2D))
-        //    {
-        //        throw new ArgumentException("Parameter must be an instance of ViewRectangle2D", "viewRectangle");
-        //    }
-
-        //    return ViewToWorld((ViewRectangle2D)viewRectangle);
-        //}
-
-        //IViewVector IViewTransformer.WorldToView(Point geoPoint)
-        //{
-        //    return WorldToView(geoPoint);
-        //}
-
-        //IViewMatrix IViewTransformer.WorldToView(BoundingBox bounds)
-        //{
-        //    return WorldToView(bounds);
-        //}
-
-        //#endregion
     }
 }

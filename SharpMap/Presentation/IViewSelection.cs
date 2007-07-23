@@ -34,7 +34,7 @@ namespace SharpMap.Presentation
     public interface IViewSelection<TViewPoint, TViewSize, TViewRegion>
         where TViewPoint : IVectorD
         where TViewSize : IVectorD
-        where TViewRegion : IMatrixD
+        where TViewRegion : IMatrixD, IEquatable<TViewRegion>
     {
         /// <summary>
         /// Adds a point to the selection.

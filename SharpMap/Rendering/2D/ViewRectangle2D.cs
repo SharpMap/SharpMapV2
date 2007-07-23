@@ -25,7 +25,8 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 namespace SharpMap.Rendering.Rendering2D
 {
     [Serializable]
-    public struct ViewRectangle2D : IViewRectangle<ViewPoint2D>, IComparable<ViewRectangle2D>, IHasEmpty
+    public struct ViewRectangle2D 
+        : IViewRectangle<ViewPoint2D>, IEquatable<ViewRectangle2D>, IComparable<ViewRectangle2D>, IHasEmpty
     {
         public static readonly ViewRectangle2D Empty = new ViewRectangle2D();
         public static readonly ViewRectangle2D Zero = new ViewRectangle2D(0, 0, 0, 0);

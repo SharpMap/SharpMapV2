@@ -11,7 +11,7 @@ namespace SharpMap.Presentation
     public abstract class BasePresenter<TView> : IDisposable
         where TView : class
     {
-        private readonly SharpMap.Map _map;
+        private readonly Map _map;
         private readonly TView _view;
         private bool _disposed = false;
 
@@ -82,13 +82,13 @@ namespace SharpMap.Presentation
         /// This is the model which is kept synchronized to the view, 
         /// and which input on the view modifies through this presenter.
         /// </remarks>
-        public SharpMap.Map Map
+        public Map Map
         {
             get 
             {
                 if (Disposed)
                 {
-                    throw new ObjectDisposedException(typeof(ToolsPresenter).ToString());
+                    throw new ObjectDisposedException(GetType().ToString());
                 }
 
                 return _map; 
@@ -104,7 +104,7 @@ namespace SharpMap.Presentation
             {
                 if (Disposed)
                 {
-                    throw new ObjectDisposedException(typeof(ToolsPresenter).ToString());
+                    throw new ObjectDisposedException(GetType().ToString());
                 }
 
                 return _view; 
