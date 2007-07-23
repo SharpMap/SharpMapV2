@@ -316,7 +316,6 @@
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
     <Compile Include="Utilities\Providers.cs" />
     <Compile Include="Utilities\Tolerance.cs" />
-    <Compile Include="Utilities\Transform2D.cs" />
     <Compile Include="Utilities\Version.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -327,7 +326,7 @@
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\..\Math\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>

@@ -32,24 +32,37 @@ namespace SharpMap.Presentation
 	{
 		private readonly Map _map;
         private IMapView2D _view;
-		private double _pixelAspectRatio = 1.0;
 		private readonly double _viewDpi;
-		private double _worldUnitsPerInch;
-		private ViewSize2D _viewSize;
+		//private double _worldUnitsPerInch;
+		//private ViewSize2D _viewSize;
 		private GeoPoint _center;
 		private double _maximumWorldWidth;
 		private double _minimumWorldWidth;
-        private IAffineMatrixD _viewTransform = new ViewMatrix2D();
-        private IAffineMatrixD _viewTransformInverted = new ViewMatrix2D();
+		private ViewMatrix2D _toViewTransform;
+		private ViewMatrix2D _toWorldTransform;
 		private StyleColor _backgroundColor;
          
 		public MapViewPort2D(Map map, IMapView2D view)
 		{
 			_map = map;
             _view = view;
-            _center = map.Envelope.GetCentroid();
 			_viewDpi = view.Dpi;
-            _worldUnitsPerInch = _viewDpi;
+
+			BoundingBox extents = map.Envelope;
+
+			_center = extents.GetCentroid();
+
+			double initialScale = _view.Size.Width / extents.Width;
+
+			if (_view.Size.Height / extents.Height < initialScale)
+			{
+				initialScale = _view.Size.Height / extents.Height;
+			}
+
+			_toViewTransform = new ViewMatrix2D(initialScale, 0, _center.X - _view.Size.Width / 2, 
+				0, initialScale, _center.Y - _view.Size.Height / 2);
+
+			_toWorldTransform = _toViewTransform.Inverse as ViewMatrix2D;
 		}
 
 		/// <summary>
@@ -140,7 +153,7 @@ namespace SharpMap.Presentation
 		/// </summary>
 		public BoundingBox ViewEnvelope
 		{
-			get { return Transform2D.ViewToWorld(new ViewRectangle2D(ViewPoint2D.Zero, ViewSize), this); }
+			get { return new BoundingBox(); }
 			set
 			{
 				setViewEnvelopeInternal(value);
@@ -310,26 +323,26 @@ namespace SharpMap.Presentation
 		/// <code lang="C#">
 		/// </code>
 		/// </example>
-		public IAffineMatrixD MapViewTransform
+		public ViewMatrix2D ToViewTransform
 		{
-			get { return _viewTransform; }
+			get { return _toViewTransform; }
 			set
 			{
-				if (_viewTransform != value)
+				if (_toViewTransform != value)
 				{
-                    IAffineMatrixD oldValue = _viewTransform;
-					_viewTransform = value;
+					ViewMatrix2D oldValue = _toViewTransform;
+					_toViewTransform = value;
 
-					if (_viewTransform.IsInvertible)
+					if (_toViewTransform.IsInvertible)
 					{
-					    MapViewTransformInverted = _viewTransform.Inverse;
+						ToWorldTransform = _toViewTransform.Inverse as ViewMatrix2D;
 					}
 					else
 					{
-						MapViewTransformInverted.Reset();
+						ToWorldTransform.Reset();
 					}
 
-					OnMapTransformChanged(oldValue, _viewTransform);
+					OnMapTransformChanged(oldValue, _toViewTransform);
 				}
 			}
 		}
@@ -340,10 +353,10 @@ namespace SharpMap.Presentation
 		/// <remarks>
 		/// An inverse matrix is used to reverse the transformation of a matrix.
 		/// </remarks>
-		public IAffineMatrixD MapViewTransformInverted
+		public ViewMatrix2D ToWorldTransform
 		{
-			get { return _viewTransformInverted; }
-			private set { _viewTransformInverted = value; }
+			get { return _toWorldTransform; }
+			private set { _toWorldTransform = value; }
         }
 
         /// <summary>

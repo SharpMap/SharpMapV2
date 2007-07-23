@@ -34,7 +34,8 @@ namespace SharpMap.Presentation
     public class MapPresenter2D
     {
         private Map _map;
-        private IMapView2D _concreteView;
+		private IMapView2D _concreteView;
+		private MapViewPort2D _viewPort;
         private ViewSelection2D _selection;
         private bool _disposed = false;
         private ViewPoint2D? _beginActionLocation;
@@ -53,7 +54,6 @@ namespace SharpMap.Presentation
             MapView.EndAction += MapView_EndAction;
             
             MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-            mapView.ViewPort = viewPort;
             viewPort.CenterChanged += ViewPort_CenterChanged;
             viewPort.MapViewTransformChanged += ViewPort_MapTransformChanged;
             viewPort.MaximumWorldWidthChanged += ViewPort_MaximumZoomChanged;

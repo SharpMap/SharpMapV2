@@ -24,7 +24,7 @@ namespace SharpMap.Utilities
 	/// <summary>
 	/// Version information helper class
 	/// </summary>
-	public class Version
+	public class SharpMapVersion
 	{
 		/// <summary>
 		/// Returns the current build version of SharpMap
