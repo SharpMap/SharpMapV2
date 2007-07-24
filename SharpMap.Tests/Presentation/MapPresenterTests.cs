@@ -21,6 +21,8 @@ namespace SharpMap.Tests.Presentation
 	[TestFixture]
 	public class MapPresenterTests
 	{
+		private static readonly double _e = 0.0005;
+
 		[Test]
 		public void Initalize_MapPresenter()
         {
@@ -46,18 +48,6 @@ namespace SharpMap.Tests.Presentation
             mocks.ReplayAll();
 
             MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-            mapView.ViewPort.ViewSize = new ViewSize2D(100, 100);
-
-			Assert.IsNotNull(map);
-			Assert.IsNotNull(map.Layers);
-            Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Width);
-            Assert.AreEqual(100f, mapView.ViewPort.ViewSize.Height);
-            Assert.AreEqual(StyleColor.Transparent, mapView.ViewPort.BackgroundColor);
-            Assert.AreEqual(double.MaxValue, mapView.ViewPort.MaximumWorldWidth);
-            Assert.AreEqual(0, mapView.ViewPort.MinimumWorldWidth);
-            Assert.AreEqual(new Point(0, 0), map.Center, "map.Center should be initialized to (0,0)");
-            Assert.AreEqual(new Point(0, 0), mapView.ViewPort.GeoCenter, "mapView.ViewPort.GeoCenter should be initialized to (0,0)");
-			Assert.AreEqual(1, mapView.ViewPort.WorldUnitsPerPixel, "World units per pixel should be initialized to 1.0");
 		}
 
 		//[Test]
@@ -99,137 +89,164 @@ namespace SharpMap.Tests.Presentation
 		{
 			MockRepository mocks = new MockRepository();
 
-            Map map = new Map();
-			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			mapView.ViewSize = new ViewSize2D(200, 400);
+
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			Expect.On(mapView).Call(mapView.ViewPort).Return(viewPort);
-
-			mapView.ViewPort.ViewSize = new ViewSize2D(200, 400);
-
-			mapView.ViewPort.ZoomToWidth(3500);
-			Assert.AreEqual(8.75, mapView.ViewPort.WorldUnitsPerPixel);
+			mapPresenter.ZoomToWidth(3500);
+			Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel);
 		}
 
 		[Test]
-		public void GetMapHeight_FixedZoom_Return1750()
+		public void GetWorldHeight_FixedZoom_Return1750()
 		{
 			MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
 
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			Expect.On(mapView).Call(mapView.ViewPort).Return(viewPort);
-
-			mapView.ViewPort.ViewSize = new ViewSize2D(200, 400);
-
-			mapView.ViewPort.ZoomToWidth(3500);
-			Assert.AreEqual(1750, mapView.ViewPort.WorldHeight);
+			mapPresenter.ZoomToWidth(3500);
+			Assert.AreEqual(1750, mapPresenter.WorldHeight);
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void SetMinimumZoom_NegativeValue_ThrowException()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+		{
+			MockRepository mocks = new MockRepository();
 
-			viewPort.MinimumWorldWidth = -1;
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.MinimumWorldWidth = -1;
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void SetMaximumZoom_NegativeValue_ThrowException()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-            MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+		{
+			MockRepository mocks = new MockRepository();
 
-			viewPort.MaximumWorldWidth = -1;
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.MaximumWorldWidth = -1;
 		}
 
 		[Test]
 		public void SetMaximumZoom_OKValue()
         {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+			MockRepository mocks = new MockRepository();
 
-			viewPort.MaximumWorldWidth = 100.3;
-			Assert.AreEqual(100.3, viewPort.MaximumWorldWidth);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.MaximumWorldWidth = 100.3;
+			Assert.AreEqual(100.3, mapPresenter.MaximumWorldWidth);
 		}
 
 		[Test]
 		public void SetMinimumZoom_OKValue()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+		{
+			MockRepository mocks = new MockRepository();
 
-			viewPort.MinimumWorldWidth = 100.3;
-			Assert.AreEqual(100.3, viewPort.MinimumWorldWidth);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.MinimumWorldWidth = 100.3;
+			Assert.AreEqual(100.3, mapPresenter.MinimumWorldWidth);
 		}
 
 		[Test]
 		public void SetZoom_ValueOutsideMax()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+		{
+			MockRepository mocks = new MockRepository();
 
-			viewPort.MaximumWorldWidth = 100;
-			viewPort.ZoomToWidth(150);
-			Assert.AreEqual(100, viewPort.MaximumWorldWidth);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.MaximumWorldWidth = 100;
+			mapPresenter.ZoomToWidth(150);
+			Assert.AreEqual(100, mapPresenter.WorldWidth);
 		}
 
 		[Test]
 		public void SetZoom_ValueBelowMin()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
+		{
+			MockRepository mocks = new MockRepository();
 
-			viewPort.MaximumWorldWidth = 100;
-			viewPort.ZoomToWidth(50);
-			Assert.AreEqual(100, viewPort.MinimumWorldWidth);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.MaximumWorldWidth = 100;
+			mapPresenter.ZoomToWidth(50);
+			Assert.AreEqual(100, mapPresenter.WorldWidth);
 		}
 
 		[Test]
 		public void ZoomToBox_NoAspectCorrection()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-			IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new ViewSize2D(400, 200);
+		{
+			MockRepository mocks = new MockRepository();
 
-			viewPort.ZoomToBox(new SharpMap.Geometries.BoundingBox(20, 50, 100, 80));
-			Assert.AreEqual(new SharpMap.Geometries.Point(60, 65), map.Center);
-			Assert.AreEqual(80, viewPort.WorldWidth);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.ZoomToBox(new BoundingBox(20, 50, 100, 80));
+			Assert.AreEqual(new Point(60, 65), map.Center);
+			Assert.AreEqual(80, mapPresenter.WorldWidth);
 		}
 
 		[Test]
 		public void ZoomToBox_WithAspectCorrection()
         {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new ViewSize2D(400, 200);
+			MockRepository mocks = new MockRepository();
 
-			viewPort.ZoomToBox(new SharpMap.Geometries.BoundingBox(20, 10, 100, 180));
-			Assert.AreEqual(new SharpMap.Geometries.Point(60, 95), viewPort.GeoCenter);
-			Assert.AreEqual(340, viewPort.WorldWidth);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+
+			mapPresenter.ZoomToBox(new BoundingBox(20, 10, 100, 180));
+			Assert.AreEqual(new Point(60, 95), mapPresenter.GeoCenter);
+			Assert.AreEqual(340, mapPresenter.WorldWidth);
 		}
 
 		//[Test]
@@ -242,45 +259,56 @@ namespace SharpMap.Tests.Presentation
 		//}
 
 		[Test]
-		public void WorldToMap_DefaultMap_ReturnValue()
+		public void WorldToViewTests()
         {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new ViewSize2D(500, 200);
+			MockRepository mocks = new MockRepository();
 
-			viewPort.GeoCenter = new SharpMap.Geometries.Point(23, 34);
-			viewPort.ZoomToWidth(1000);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
 
-            ViewPoint2D p = Transform2D.WorldToView(new SharpMap.Geometries.Point(8, 50), viewPort);
-			Assert.AreEqual(new ViewPoint2D(242.5f, 92), p);
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(500, 200));
+
+			mapPresenter.GeoCenter = new Point(23, 34);
+			mapPresenter.ZoomToWidth(1000);
+
+			ViewPoint2D p1 = mapPresenter.ToView(8, 50);
+			ViewPoint2D p2 = mapPresenter.ToView(new Point(8, 50));
+			Assert.AreEqual(new ViewPoint2D(242.5f, 92), p1);
+			Assert.AreEqual(p1, p2);
 		}
 
 		[Test]
-		public void ImageToWorld_DefaultMap_ReturnValue()
-        {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new ViewSize2D(500, 200);
+		public void ViewToWorldTests()
+		{
+			MockRepository mocks = new MockRepository();
 
-            viewPort.GeoCenter = new SharpMap.Geometries.Point(23, 34);
-            viewPort.ZoomToWidth(1000);
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
 
-            Point p = Transform2D.ViewToWorld(new ViewPoint2D(242.5f, 92), viewPort);
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(500, 200));
+
+			mapPresenter.GeoCenter = new Point(23, 34);
+			mapPresenter.ZoomToWidth(1000);
+
+			Point p = mapPresenter.ToWorld(242.5f, 92);
             Assert.AreEqual(new Point(8, 50), p);
 		}
 
 		[Test]
 		public void GetMap_GeometryProvider_ReturnImage()
         {
-            MockRepository mocks = new MockRepository();
-            Map map = new Map();
-            IMapView2D mapView = mocks.CreateMock<IMapView2D>();
-			MapViewPort2D viewPort = new MapViewPort2D(map, mapView);
-			viewPort.ViewSize = new ViewSize2D(400, 200);
+			MockRepository mocks = new MockRepository();
+
+			Map map = new Map();
+			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+			IMapView2D mapView = mocks.Stub<IMapView2D>();
+			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(400, 200));
 
 			SharpMap.Layers.VectorLayer vLayer = new SharpMap.Layers.VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 			vLayer.Style.Outline = new StylePen(StyleColor.Red, 2f);
@@ -305,7 +333,7 @@ namespace SharpMap.Tests.Presentation
 			vLayer4.Style.Symbol.Scale = 0.4f;
 			map.Layers.Add(vLayer4);
 
-			viewPort.ZoomToExtents();
+			mapPresenter.ZoomToExtents();
 
 			//System.Drawing.Image img = map.GetMap();
 			//Assert.IsNotNull(img);

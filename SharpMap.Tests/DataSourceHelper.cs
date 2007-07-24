@@ -5,6 +5,7 @@ using System.Text;
 
 using SharpMap.Geometries;
 using SharpMap.Data.Providers;
+using SharpMap.Layers;
 
 namespace SharpMap.Tests
 {
@@ -27,6 +28,12 @@ namespace SharpMap.Tests
 			geoms.Add(Geometry.GeomFromText("MULTIPOINT EMPTY"));
 			geoms.Add(Geometry.GeomFromText("LINESTRING EMPTY"));
 			return new GeometryProvider(geoms);
+		}
+
+		public static VectorLayer CreateVectorLayer()
+		{
+			VectorLayer layer = new VectorLayer("TestGeometries", CreateGeometryDatasource());
+			return layer;
 		}
 	}
 }

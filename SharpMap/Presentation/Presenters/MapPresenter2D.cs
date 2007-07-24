@@ -314,6 +314,27 @@ namespace SharpMap.Presentation
         }
         #endregion
 
+		public ViewPoint2D ToView(Point point)
+		{
+			return worldToView(point);
+		}
+
+		public ViewPoint2D ToView(double x, double y)
+		{
+			return ToViewTransform.TransformVector(x, y);
+		}
+
+		public Point ToWorld(ViewPoint2D point)
+		{
+			return viewToWorld(point);
+		}
+
+		public Point ToWorld(double x, double y)
+		{
+			ViewPoint2D values = ToWorldTransform.TransformVector(x, y);
+			return new GeoPoint(values.X, values.Y);
+		}
+
         /// <summary>
         /// Zooms the view to the given width.
         /// </summary>
@@ -557,5 +578,5 @@ namespace SharpMap.Presentation
             return new GeoPoint(values.X, values.Y);
         }
         #endregion
-    }
+	}
 }
