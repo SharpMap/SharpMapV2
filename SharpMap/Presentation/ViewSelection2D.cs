@@ -27,7 +27,7 @@ namespace SharpMap.Presentation
     /// <summary>
     /// A representation of a selection on a 2D view surface.
     /// </summary>
-    public class ViewSelection2D : ViewSelection<ViewPoint2D, ViewSize2D, ViewRectangle2D>
+    public class ViewSelection2D : ViewSelection<Point2D, Size2D, Rectangle2D>
     {
         public override string ToString()
         {
@@ -41,7 +41,7 @@ namespace SharpMap.Presentation
         /// <param name="size">The size of the rectangle.</param>
         /// <returns>A ViewSelection2D rectangular selection with upper left corner at <paramref name="upperLeft"/> and
         /// the given <paramref name="size"/>.</returns>
-        public static ViewSelection2D CreateRectangluarSelection(ViewPoint2D upperLeft, ViewSize2D size)
+        public static ViewSelection2D CreateRectangluarSelection(Point2D upperLeft, Size2D size)
         {
             ViewSelection2D selection = new ViewSelection2D();
             selection.AddPoint(upperLeft);
@@ -54,9 +54,9 @@ namespace SharpMap.Presentation
             return selection;
         }
 
-        protected override GraphicsPath<ViewPoint2D, ViewRectangle2D> CreatePath()
+        protected override GraphicsPath<Point2D, Rectangle2D> CreatePath()
         {
-            return new GraphicsPath2D(new ViewPoint2D[0]);
+            return new GraphicsPath2D(new Point2D[0]);
         }
     }
 }

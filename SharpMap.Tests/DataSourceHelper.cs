@@ -21,8 +21,8 @@ namespace SharpMap.Tests
 			geoms.Add(Geometry.GeomFromText("LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)"));
 			geoms.Add(Geometry.GeomFromText("MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))"));
 			geoms.Add(Geometry.GeomFromText("POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 29 21, 29 29, 21 29, 21 21), (23 23, 23 27, 27 27, 27 23, 23 23))"));
-			geoms.Add(Geometry.GeomFromText("POINT (20.564 346.3493254)"));
-			geoms.Add(Geometry.GeomFromText("MULTIPOINT (20.564 346.3493254, 45 32, 23 54)"));
+			geoms.Add(Geometry.GeomFromText("POINT (58.813841159 84.7561198972)"));
+            geoms.Add(Geometry.GeomFromText("MULTIPOINT (20 100, 45 32, 100 54)"));
 			geoms.Add(Geometry.GeomFromText("MULTIPOLYGON EMPTY"));
 			geoms.Add(Geometry.GeomFromText("MULTILINESTRING EMPTY"));
 			geoms.Add(Geometry.GeomFromText("MULTIPOINT EMPTY"));

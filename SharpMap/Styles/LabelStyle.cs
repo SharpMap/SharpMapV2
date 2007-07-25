@@ -35,9 +35,9 @@ namespace SharpMap.Styles
         private VerticalAlignmentEnum _verticalAlignment;
         private StyleTextRenderingHint _textRenderingHint;
         private StyleRenderingMode _smoothingMode;
-        private ViewSize2D _collisionBuffer;
+        private Size2D _collisionBuffer;
         private bool _collisionDetection;
-        private ViewPoint2D _offset;
+        private Point2D _offset;
         private StylePen _halo;
         private StyleFont _font;
         private StyleColor _foreColor;
@@ -48,10 +48,10 @@ namespace SharpMap.Styles
 		/// </summary>
 		public LabelStyle()
 		{
-			_font = new StyleFont("Times New Roman", new ViewSize2D(12, 12));
-			_offset = new ViewPoint2D(0, 0);
+			_font = new StyleFont("Times New Roman", new Size2D(12, 12));
+			_offset = new Point2D(0, 0);
 			_collisionDetection = false;
-			_collisionBuffer = new ViewSize2D(0, 0);
+			_collisionBuffer = new Size2D(0, 0);
 			_foreColor = StyleColor.Black;
 			_horisontalAlignment = HorizontalAlignmentEnum.Center;
 			_verticalAlignment = VerticalAlignmentEnum.Middle;
@@ -115,7 +115,7 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Specifies relative position of labels with respect to objects label point
 		/// </summary>
-        public ViewPoint2D Offset
+        public Point2D Offset
 		{
 			get { return _offset; }
 			set { _offset = value; }
@@ -134,7 +134,7 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Distance around label where collision buffer is active
 		/// </summary>
-		public ViewSize2D CollisionBuffer
+		public Size2D CollisionBuffer
 		{
 			get { return _collisionBuffer; }
 			set { _collisionBuffer = value; }

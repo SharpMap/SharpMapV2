@@ -292,7 +292,7 @@ namespace SharpMap.Rendering.Thematics
             style.Enabled = InterpolateBool(min.Enabled, max.Enabled, value);
 
             double fontSize = InterpolateDouble(labelMin.Font.Size.Width, labelMax.Font.Size.Width, value);
-            style.Font = new StyleFont(labelMin.Font.FontFamily, new ViewSize2D(fontSize, fontSize), labelMin.Font.Style);
+            style.Font = new StyleFont(labelMin.Font.FontFamily, new Size2D(fontSize, fontSize), labelMin.Font.Style);
 
             if (labelMin.BackColor != null && labelMax.BackColor != null)
             {
@@ -315,7 +315,7 @@ namespace SharpMap.Rendering.Thematics
 
             style.MinVisible = InterpolateDouble(labelMin.MinVisible, labelMax.MinVisible, value);
             style.MaxVisible = InterpolateDouble(labelMin.MaxVisible, labelMax.MaxVisible, value);
-            style.Offset = new ViewPoint2D(InterpolateDouble(labelMin.Offset.X, labelMax.Offset.X, value),
+            style.Offset = new Point2D(InterpolateDouble(labelMin.Offset.X, labelMax.Offset.X, value),
                 InterpolateDouble(labelMin.Offset.Y, labelMax.Offset.Y, value));
 
             return style;

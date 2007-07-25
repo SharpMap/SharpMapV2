@@ -55,7 +55,7 @@ namespace SharpMap.Rendering.Rendering2D
                         if (_defaultSymbol == null)
                         {
                             Stream data = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
-                            _defaultSymbol = new Symbol2D(data, new ViewSize2D(16, 16));
+                            _defaultSymbol = new Symbol2D(data, new Size2D(16, 16));
                         }
                     }
                 }
@@ -65,7 +65,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
-        private ViewMatrix2D _viewMatrix = new ViewMatrix2D();
+        private Matrix2D _viewMatrix = new Matrix2D();
         private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
         private bool _disposed = false;
 
@@ -107,7 +107,7 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
-        public ViewMatrix2D ViewTransform
+        public Matrix2D ViewTransform
         {
             get { return _viewMatrix; }
             set { _viewMatrix = value; }
@@ -123,9 +123,9 @@ namespace SharpMap.Rendering.Rendering2D
         #region IVectorLayerRenderer Members
         public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
         public abstract TRenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
-        public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData);
-        public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select);
-        public abstract TRenderObject RenderSymbol(ViewPoint2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
+        public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData);
+        public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select);
+        public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
         #endregion
 
         #region Explicit Interface Implementation
@@ -139,12 +139,12 @@ namespace SharpMap.Rendering.Rendering2D
             }
             set
             {
-                if (!(value is ViewMatrix2D))
+                if (!(value is Matrix2D))
                 {
                     throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
                 }
 
-                ViewTransform = value as ViewMatrix2D;
+                ViewTransform = value as Matrix2D;
             }
         }
 

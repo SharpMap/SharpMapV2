@@ -32,6 +32,7 @@ namespace SharpMap.Tests.Presentation
             IMapView2D mapView = mocks.Stub<IMapView2D>();
 
             SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
+            mapView.ViewSize = new Size2D(200, 400);
 
             mapView.BeginAction += null;
             IEventRaiser beginAction = LastCall.IgnoreArguments().GetEventRaiser();
@@ -89,13 +90,7 @@ namespace SharpMap.Tests.Presentation
 		{
 			MockRepository mocks = new MockRepository();
 
-			Map map = new Map();
-			map.Layers.Add(DataSourceHelper.CreateVectorLayer());
-
-			IMapView2D mapView = mocks.Stub<IMapView2D>();
-			mapView.ViewSize = new ViewSize2D(200, 400);
-
-			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+            MapPresenter2D mapPresenter = createPresenter(mocks, 100, 100);
 
 			mapPresenter.ZoomToWidth(3500);
 			Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel);
@@ -111,7 +106,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.ZoomToWidth(3500);
 			Assert.AreEqual(1750, mapPresenter.WorldHeight);
@@ -128,7 +123,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.MinimumWorldWidth = -1;
 		}
@@ -144,7 +139,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.MaximumWorldWidth = -1;
 		}
@@ -159,7 +154,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.MaximumWorldWidth = 100.3;
 			Assert.AreEqual(100.3, mapPresenter.MaximumWorldWidth);
@@ -175,7 +170,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.MinimumWorldWidth = 100.3;
 			Assert.AreEqual(100.3, mapPresenter.MinimumWorldWidth);
@@ -191,7 +186,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.MaximumWorldWidth = 100;
 			mapPresenter.ZoomToWidth(150);
@@ -208,7 +203,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.MaximumWorldWidth = 100;
 			mapPresenter.ZoomToWidth(50);
@@ -225,7 +220,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.ZoomToBox(new BoundingBox(20, 50, 100, 80));
 			Assert.AreEqual(new Point(60, 65), map.Center);
@@ -242,7 +237,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(200, 400));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(200, 400));
 
 			mapPresenter.ZoomToBox(new BoundingBox(20, 10, 100, 180));
 			Assert.AreEqual(new Point(60, 95), mapPresenter.GeoCenter);
@@ -268,14 +263,14 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(500, 200));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(500, 200));
 
 			mapPresenter.GeoCenter = new Point(23, 34);
 			mapPresenter.ZoomToWidth(1000);
 
-			ViewPoint2D p1 = mapPresenter.ToView(8, 50);
-			ViewPoint2D p2 = mapPresenter.ToView(new Point(8, 50));
-			Assert.AreEqual(new ViewPoint2D(242.5f, 92), p1);
+			Point2D p1 = mapPresenter.ToView(8, 50);
+			Point2D p2 = mapPresenter.ToView(new Point(8, 50));
+			Assert.AreEqual(new Point2D(242.5f, 92), p1);
 			Assert.AreEqual(p1, p2);
 		}
 
@@ -289,7 +284,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(500, 200));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(500, 200));
 
 			mapPresenter.GeoCenter = new Point(23, 34);
 			mapPresenter.ZoomToWidth(1000);
@@ -308,7 +303,7 @@ namespace SharpMap.Tests.Presentation
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
-			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new ViewSize2D(400, 200));
+			SetupResult.On(mapView).Call(mapView.ViewSize).Return(new Size2D(400, 200));
 
 			SharpMap.Layers.VectorLayer vLayer = new SharpMap.Layers.VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 			vLayer.Style.Outline = new StylePen(StyleColor.Red, 2f);
@@ -318,18 +313,18 @@ namespace SharpMap.Tests.Presentation
 			map.Layers.Add(vLayer);
 
 			SharpMap.Layers.VectorLayer vLayer2 = new SharpMap.Layers.VectorLayer("Geom layer 2", vLayer.DataSource);
-			vLayer2.Style.Symbol.Offset = new ViewPoint2D(3, 4);
+			vLayer2.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer2.Style.Symbol.Rotation = 45;
 			vLayer2.Style.Symbol.Scale = 0.4f;
 			map.Layers.Add(vLayer2);
 
 			SharpMap.Layers.VectorLayer vLayer3 = new SharpMap.Layers.VectorLayer("Geom layer 3", vLayer.DataSource);
-			vLayer3.Style.Symbol.Offset = new ViewPoint2D(3, 4);
+			vLayer3.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer3.Style.Symbol.Rotation = 45;
 			map.Layers.Add(vLayer3);
 
 			SharpMap.Layers.VectorLayer vLayer4 = new SharpMap.Layers.VectorLayer("Geom layer 4", vLayer.DataSource);
-			vLayer4.Style.Symbol.Offset = new ViewPoint2D(3, 4);
+			vLayer4.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer4.Style.Symbol.Scale = 0.4f;
 			map.Layers.Add(vLayer4);
 
@@ -339,6 +334,19 @@ namespace SharpMap.Tests.Presentation
 			//Assert.IsNotNull(img);
 			map.Dispose();
 			//img.Dispose();
-		}
+        }
+
+        private static MapPresenter2D createPresenter(MockRepository mocks, double width, double height)
+        {
+            Map map = new Map();
+            map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+
+            IMapView2D mapView = mocks.Stub<IMapView2D>();
+            SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
+            mapView.ViewSize = new Size2D(width, height);
+
+            MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
+            return mapPresenter;
+        }
 	}
 }

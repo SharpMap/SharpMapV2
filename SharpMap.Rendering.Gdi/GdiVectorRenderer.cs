@@ -112,12 +112,12 @@ namespace SharpMap.Rendering.Gdi
             return RenderPath(path, transparentBrush, transparentBrush, transparentBrush, outline, highlightOutline, selectOutline);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(ViewPoint2D location, Symbol2D symbolData)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData)
         {
             return RenderSymbol(location, symbolData, symbolData, symbolData);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(ViewPoint2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
         {
             Symbol2D highlightSymbol = symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
@@ -128,7 +128,7 @@ namespace SharpMap.Rendering.Gdi
             return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(ViewPoint2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
         {
             if (highlightSymbol == null)
             {

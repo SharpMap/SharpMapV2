@@ -28,22 +28,22 @@ namespace SharpMap.Rendering.Rendering2D
     public sealed class Symbol2D : ICloneable, IDisposable
     {
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
-        private ViewMatrix2D _affineTransform = ViewMatrix2D.Identity;
+        private Matrix2D _affineTransform = Matrix2D.Identity;
         private Stream _symbolData;
-        private ViewRectangle2D _symbolBox;
+        private Rectangle2D _symbolBox;
         private string _symbolDataHash;
         private bool _disposed;
 
         #region Object Construction/Destruction
-        public Symbol2D(ViewSize2D size)
+        public Symbol2D(Size2D size)
         {
             _symbolData = new MemoryStream(new byte[] { 0x0, 0x0, 0x0, 0x0 });
-            _symbolBox = new ViewRectangle2D(ViewPoint2D.Zero, size);
+            _symbolBox = new Rectangle2D(Point2D.Zero, size);
         }
 
-        public Symbol2D(Stream symbolData, ViewSize2D size)
+        public Symbol2D(Stream symbolData, Size2D size)
         {
-            _symbolBox = new ViewRectangle2D(ViewPoint2D.Zero, size);
+            _symbolBox = new Rectangle2D(Point2D.Zero, size);
 
             if (!symbolData.CanSeek)
             {
@@ -66,7 +66,7 @@ namespace SharpMap.Rendering.Rendering2D
             _symbolDataHash = Hashing.Hash(_symbolData);
         }
 
-        public Symbol2D(byte[] symbolData, ViewSize2D size)
+        public Symbol2D(byte[] symbolData, Size2D size)
             : this(new MemoryStream(symbolData), size) { }
 
         ~Symbol2D()
@@ -115,10 +115,10 @@ namespace SharpMap.Rendering.Rendering2D
                 GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, Scale);
         }
 
-        public ViewSize2D Size
+        public Size2D Size
         {
             get { return _symbolBox.Size; }
-            set { _symbolBox = new ViewRectangle2D(new ViewPoint2D(0, 0), value); }
+            set { _symbolBox = new Rectangle2D(new Point2D(0, 0), value); }
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets a <see cref="ViewMatrix2D"/> object used to transform this <see cref="Symbol2D"/>.
         /// </summary>
-        public ViewMatrix2D AffineTransform
+        public Matrix2D AffineTransform
         {
             get { return _affineTransform; }
             set { _affineTransform = value; }
@@ -154,9 +154,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets a vector by which to offset the symbol.
         /// </summary>
-        public ViewPoint2D Offset
+        public Point2D Offset
         {
-            get { return new ViewPoint2D(_affineTransform.W1, _affineTransform.W2); }
+            get { return new Point2D(_affineTransform.W1, _affineTransform.W2); }
             set { _affineTransform.W1 = value.X; _affineTransform.W2 = value.Y; }
         }
 

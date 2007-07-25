@@ -31,10 +31,11 @@ namespace SharpMap.Rendering.Rendering2D
     /// </summary>
     /// <typeparam name="TStyle">The type of style to use.</typeparam>
     /// <typeparam name="TRenderObject">The type of render object produced.</typeparam>
-    public abstract class FeatureRenderer2D<TStyle, TRenderObject> : IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>
+    public abstract class FeatureRenderer2D<TStyle, TRenderObject> 
+        : IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>
         where TStyle : class, IStyle
     {
-        private ViewMatrix2D _viewMatrix;
+        private Matrix2D _viewMatrix;
         private StyleRenderingMode _renderMode;
         private VectorRenderer2D<TRenderObject> _vectorRenderer;
         private ITheme _theme;
@@ -117,7 +118,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="feature">The feature to render.</param>
         /// <param name="style">The style to use to render the feature.</param>
         /// <returns>An enumeration of positioned render objects for display.</returns>
-		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature, TStyle style)
+		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(
+            FeatureDataRow feature, TStyle style)
 		{
 			bool cancel = false;
 
@@ -128,7 +130,8 @@ namespace SharpMap.Rendering.Rendering2D
 				yield break;
 			}
 
-			IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects = DoRenderFeature(feature, style);
+			IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects 
+                = DoRenderFeature(feature, style);
 
             OnFeatureRendered();
 
@@ -158,9 +161,10 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.
+        /// Gets or sets a matrix used to transform world 
+        /// coordinates to graphical display coordinates.
         /// </summary>
-        public ViewMatrix2D ViewTransform
+        public Matrix2D ViewTransform
         {
             get { return _viewMatrix; }
             set { _viewMatrix = value; }
@@ -172,7 +176,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="feature">Feature to render.</param>
         /// <param name="style">Style to use in rendering geometry.</param>
         /// <returns></returns>
-		protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, TStyle style);
+		protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(
+            FeatureDataRow feature, TStyle style);
         #endregion
 
         #region Private helper methods
@@ -217,12 +222,12 @@ namespace SharpMap.Rendering.Rendering2D
             }
             set
             {
-                if (!(value is ViewMatrix2D))
+                if (!(value is Matrix2D))
                 {
                     throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
                 }
 
-                ViewTransform = value as ViewMatrix2D;
+                ViewTransform = value as Matrix2D;
             }
         }
 
@@ -230,7 +235,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-        IEnumerable<PositionedRenderObject2D<TRenderObject>> IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.RenderFeature(FeatureDataRow feature, IStyle style)
+        IEnumerable<PositionedRenderObject2D<TRenderObject>> 
+            IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.RenderFeature(
+            FeatureDataRow feature, IStyle style)
         {
             return RenderFeature(feature, style as TStyle);
         }

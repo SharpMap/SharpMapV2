@@ -25,11 +25,11 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 namespace SharpMap.Rendering.Rendering2D
 {
     [Serializable]
-    public struct ViewRectangle2D 
-        : IViewRectangle<ViewPoint2D>, IEquatable<ViewRectangle2D>, IComparable<ViewRectangle2D>, IHasEmpty
+    public struct Rectangle2D 
+        : IViewRectangle<Point2D>, IEquatable<Rectangle2D>, IComparable<Rectangle2D>, IHasEmpty
     {
-        public static readonly ViewRectangle2D Empty = new ViewRectangle2D();
-        public static readonly ViewRectangle2D Zero = new ViewRectangle2D(0, 0, 0, 0);
+        public static readonly Rectangle2D Empty = new Rectangle2D();
+        public static readonly Rectangle2D Zero = new Rectangle2D(0, 0, 0, 0);
 
         private DoubleComponent _bottom;
         private DoubleComponent _left;
@@ -39,7 +39,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Constructors
 
-        public ViewRectangle2D(double left, double right, double top, double bottom)
+        public Rectangle2D(double left, double right, double top, double bottom)
         {
             _left = left;
             _right = right;
@@ -48,7 +48,7 @@ namespace SharpMap.Rendering.Rendering2D
             _hasValue = true;
         }
 
-        public ViewRectangle2D(ViewPoint2D location, ViewSize2D size)
+        public Rectangle2D(Point2D location, Size2D size)
         {
             _left = location.X;
             _top = location.Y;
@@ -81,9 +81,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         public bool Equals(IMatrixD other)
         {
-            if (other is ViewRectangle2D)
+            if (other is Rectangle2D)
             {
-                return Equals((ViewRectangle2D)other);
+                return Equals((Rectangle2D)other);
             }
 
             if (IsEmpty && other == null)
@@ -131,21 +131,21 @@ namespace SharpMap.Rendering.Rendering2D
             return true;
         }
 
-        public static bool operator ==(ViewRectangle2D lhs, ViewRectangle2D rhs)
+        public static bool operator ==(Rectangle2D lhs, Rectangle2D rhs)
         {
             return (lhs.Equals(rhs));
         }
 
-        public static bool operator !=(ViewRectangle2D lhs, ViewRectangle2D rhs)
+        public static bool operator !=(Rectangle2D lhs, Rectangle2D rhs)
         {
             return !(lhs.Equals(rhs));
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is ViewRectangle2D)
+            if (obj is Rectangle2D)
             {
-                return Equals((ViewRectangle2D)obj);
+                return Equals((Rectangle2D)obj);
             }
 
             if (obj is IMatrixD)
@@ -156,7 +156,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public bool Equals(ViewRectangle2D rectangle)
+        public bool Equals(Rectangle2D rectangle)
         {
             return IsEmpty == rectangle.IsEmpty &&
                    Left == rectangle.Left &&
@@ -202,7 +202,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// 1 if this rectangle is located to the right or downward from the <paramref name="other"/>
         /// rectangle, and -1 if this rectangle is located to the left or upward from the other.
         /// </returns>
-        public int CompareTo(ViewRectangle2D other)
+        public int CompareTo(Rectangle2D other)
         {
             if (other.IsEmpty && IsEmpty)
             {
@@ -224,9 +224,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        internal static ViewRectangle2D FromLTRB(double left, double top, double right, double bottom)
+        internal static Rectangle2D FromLTRB(double left, double top, double right, double bottom)
         {
-            return new ViewRectangle2D(left, right, top, bottom);
+            return new Rectangle2D(left, right, top, bottom);
         }
 
         #region Intersects
@@ -235,7 +235,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="rectangle"><see cref="ViewRectangle2D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
-        public bool Intersects(ViewRectangle2D rectangle)
+        public bool Intersects(Rectangle2D rectangle)
         {
             if (IsEmpty || rectangle.IsEmpty)
             {
@@ -319,18 +319,18 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Location"/>
         /// <seealso cref="X"/>
         /// <seealso cref="Y"/>
-        public ViewPoint2D Center
+        public Point2D Center
         {
-            get { return new ViewPoint2D(X + Width / 2, Y + Height / 2); }
+            get { return new Point2D(X + Width / 2, Y + Height / 2); }
         }
 
         /// <summary>
         /// Gets the coordinates of the upper left corner of the <see cref="ViewRectangle2D"/>.
         /// </summary>
         /// <seealso cref="Center"/>
-        public ViewPoint2D Location
+        public Point2D Location
         {
-            get { return new ViewPoint2D((double)_left, (double)_top); }
+            get { return new Point2D((double)_left, (double)_top); }
         }
 
         /// <summary>
@@ -338,9 +338,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <seealso cref="Width"/>
         /// <seealso cref="Height"/>
-        public ViewSize2D Size
+        public Size2D Size
         {
-            get { return new ViewSize2D(Width, Height); }
+            get { return new Size2D(Width, Height); }
         }
 
         /// <summary>
@@ -368,22 +368,22 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Clone
-        public ViewRectangle2D Clone()
+        public Rectangle2D Clone()
         {
-            return new ViewRectangle2D(Location, Size);
+            return new Rectangle2D(Location, Size);
         }
         #endregion
 
         #region IViewRectangle<ViewPoint2D> Members
 
-        public ViewPoint2D LowerBounds
+        public Point2D LowerBounds
         {
             get { return Location; }
         }
 
-        public ViewPoint2D UpperBounds
+        public Point2D UpperBounds
         {
-            get { return new ViewPoint2D(X + Width, Y + Height); }
+            get { return new Point2D(X + Width, Y + Height); }
         }
 
         #endregion

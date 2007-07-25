@@ -26,31 +26,31 @@ namespace SharpMap.Rendering.Rendering2D
     /// Represents a 2 dimensional affine transform matrix (a 3x3 matrix).
     /// </summary>
     [Serializable]
-    public class ViewMatrix2D : AffineMatrix<DoubleComponent>
+    public class Matrix2D : AffineMatrix<DoubleComponent>
     {
-        public new readonly static ViewMatrix2D Identity
-            = new ViewMatrix2D(
+        public new readonly static Matrix2D Identity
+            = new Matrix2D(
                 1, 0, 0,
                 0, 1, 0,
                 0, 0, 1);
 
-        public new readonly static ViewMatrix2D Zero
-            = new ViewMatrix2D(
+        public new readonly static Matrix2D Zero
+            = new Matrix2D(
                 0, 0, 0,
                 0, 0, 0,
                 0, 0, 0);
 
         #region Constructors
-        public ViewMatrix2D()
+        public Matrix2D()
             : this(Identity) { }
 
-        public ViewMatrix2D(double x1, double x2, double offsetX,
+        public Matrix2D(double x1, double x2, double offsetX,
             double y1, double y2, double offsetY)
             : this(x1, x2, offsetX, y1, y2, offsetY, 0, 0, 1)
         {
         }
 
-        public ViewMatrix2D(double x1, double x2, double offsetX,
+        public Matrix2D(double x1, double x2, double offsetX,
             double y1, double y2, double offsetY,
             double w1, double w2, double w3)
             :base(MatrixFormat.RowMajor, 3)
@@ -60,7 +60,7 @@ namespace SharpMap.Rendering.Rendering2D
             W1 = w1; W2 = w2; W3 = w3;
         }
 
-        public ViewMatrix2D(IMatrixD matrixToCopy)
+        public Matrix2D(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 3)
         {
             if (matrixToCopy == null) throw new ArgumentNullException("matrixToCopy");
@@ -77,7 +77,7 @@ namespace SharpMap.Rendering.Rendering2D
         public override string ToString()
         {
             return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
-                X1, X2, OffsetX, Y1, Y2, OffsetY, W1, W2, W3);
+                X1, Y1, W1, X2, Y2, W2, OffsetX, OffsetY, W3);
         }
         #endregion
 
@@ -91,28 +91,47 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
-        public new ViewMatrix2D Clone()
+        public new Matrix2D Clone()
         {
-            return new ViewMatrix2D(this);
+            return new Matrix2D(this);
         }
 
-        private readonly DoubleComponent[] _transferPoints = new DoubleComponent[2];
+        public new Matrix2D Inverse
+        {
+            get
+            {
+                return new Matrix2D(base.Inverse);
+            }
+        }
 
-        public ViewPoint2D TransformVector(double x, double y)
+        public void Scale(double x, double y)
+        {
+            base.Scale(new Point2D(x, y));
+        }
+
+        public void Translate(double x, double y)
+        {
+            base.Translate(new Point2D(x, y));
+        }
+
+        private readonly DoubleComponent[] _transferPoints = new DoubleComponent[3];
+
+        public Point2D TransformVector(double x, double y)
         {
             _transferPoints[0] = x;
             _transferPoints[1] = y;
-            MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(this, _transferPoints);
-            return new ViewPoint2D((double)_transferPoints[0], (double)_transferPoints[1]);
+            _transferPoints[2] = 1;
+            MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(_transferPoints, this);
+            return new Point2D((double)_transferPoints[0], (double)_transferPoints[1]);
         }
 
         #region Equality Computation
 
         public override bool Equals(object obj)
         {
-            if (obj is ViewMatrix2D)
+            if (obj is Matrix2D)
             {
-                return Equals(obj as ViewMatrix2D);
+                return Equals(obj as Matrix2D);
             }
 
             if (obj is IMatrixD)
@@ -125,7 +144,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<ViewMatrix2D> Members
 
-        public bool Equals(ViewMatrix2D other)
+        public bool Equals(Matrix2D other)
         {
             return X1 == other.X1 &&
                 X2 == other.X2 &&
@@ -150,20 +169,20 @@ namespace SharpMap.Rendering.Rendering2D
 
         public double X2
         {
-            get { return (double)this[0, 1]; }
-            set { this[0, 1] = value; }
+            get { return (double)this[1, 0]; }
+            set { this[1, 0] = value; }
         }
 
         public double OffsetX
         {
-            get { return (double)this[0, 2]; }
-            set { this[0, 2] = value; }
+            get { return (double)this[2, 0]; }
+            set { this[2, 0] = value; }
         }
 
         public double Y1
         {
-            get { return (double)this[1, 0]; }
-            set { this[1, 0] = value; }
+            get { return (double)this[0, 1]; }
+            set { this[0, 1] = value; }
         }
 
         public double Y2
@@ -174,20 +193,20 @@ namespace SharpMap.Rendering.Rendering2D
 
         public double OffsetY
         {
-            get { return (double)this[1, 2]; }
-            set { this[1, 2] = value; }
+            get { return (double)this[2, 1]; }
+            set { this[2, 1] = value; }
         }
 
         public double W1
         {
-            get { return (double)this[2, 0]; }
-            set { this[2, 0] = value; }
+            get { return (double)this[0, 2]; }
+            set { this[0, 2] = value; }
         }
 
         public double W2
         {
-            get { return (double)this[2, 1]; }
-            set { this[2, 1] = value; }
+            get { return (double)this[1, 2]; }
+            set { this[1, 2] = value; }
         }
 
         public double W3

@@ -37,7 +37,7 @@ namespace SharpMap.Styles
         private StyleLineCap _startCap;
         private StyleLineCap _endCap;
         private StyleLineJoin _lineJoin;
-        private ViewMatrix2D _transform;
+        private Matrix2D _transform;
         private float _width;
         private float[] _compoundArray;
         private StylePenAlignment _alignment;
@@ -123,7 +123,7 @@ namespace SharpMap.Styles
             set { _lineJoin = value; }
         }
 
-        public ViewMatrix2D Transform
+        public Matrix2D Transform
         {
             get { return _transform; }
             set { _transform = value; }

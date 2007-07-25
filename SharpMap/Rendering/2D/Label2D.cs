@@ -27,16 +27,16 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <summary>
 	/// Class for storing a label instance.
 	/// </summary>
-	public class Label2D : ILabel<ViewPoint2D, ViewRectangle2D, GraphicsPath2D>, IComparable<Label2D>, IComparer<Label2D>
+	public class Label2D : ILabel<Point2D, Rectangle2D, GraphicsPath2D>, IComparable<Label2D>, IComparer<Label2D>
     {
         private string _text;
-        private ViewPoint2D _labelPoint;
+        private Point2D _labelPoint;
         private StyleFont _font;
         private int _priority;
         private float _rotation;
         private LabelStyle _style;
         private GraphicsPath2D _labelPath;
-		private ViewRectangle2D _collisionBounds;
+		private Rectangle2D _collisionBounds;
 
 		/// <summary>
 		/// Initializes a new Label instance.
@@ -47,7 +47,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="priority">Label priority used for collision detection</param>
 		/// <param name="collisionbox">Box around label for collision detection</param>
 		/// <param name="style">The style of the label</param>
-		public Label2D(string text, ViewPoint2D position, float rotation, int priority, ViewRectangle2D collisionArea, LabelStyle style)
+		public Label2D(string text, Point2D position, float rotation, int priority, Rectangle2D collisionArea, LabelStyle style)
 		{
 			_text = text;
 			_labelPoint = position;
@@ -75,7 +75,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Label position
 		/// </summary>
-        public ViewPoint2D LabelPoint
+        public Point2D LabelPoint
 		{
 			get { return _labelPoint; }
 			set { _labelPoint = value; }
@@ -111,7 +111,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Label box.
 		/// </summary>
-		public ViewRectangle2D CollisionBounds
+		public Rectangle2D CollisionBounds
 		{
 			get { return _collisionBounds; }
 			set { _collisionBounds = value; }
@@ -145,11 +145,11 @@ namespace SharpMap.Rendering.Rendering2D
 			{
 				return 0;
 			}
-			else if (_collisionBounds == ViewRectangle2D.Empty)
+			else if (_collisionBounds == Rectangle2D.Empty)
 			{
 				return -1;
 			}
-            else if (other.CollisionBounds == ViewRectangle2D.Empty)
+            else if (other.CollisionBounds == Rectangle2D.Empty)
 			{
 				return 1;
 			}

@@ -35,8 +35,8 @@ namespace SharpMap.Presentation
     {
         private ViewSelection2D _selection;
 
-        private ViewPoint2D? _beginActionLocation;
-        private ViewPoint2D _lastMoveLocation;
+        private Point2D? _beginActionLocation;
+        private Point2D _lastMoveLocation;
 
         //private readonly double _viewDpi;
         //private double _worldUnitsPerInch;
@@ -44,8 +44,8 @@ namespace SharpMap.Presentation
         //private GeoPoint _center;
         private double _maximumWorldWidth;
         private double _minimumWorldWidth;
-        private ViewMatrix2D _toViewTransform;
-        private ViewMatrix2D _toWorldTransform;
+        private Matrix2D _toViewTransform;
+        private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
         
         #region Object Construction/Destruction
@@ -63,26 +63,35 @@ namespace SharpMap.Presentation
 
             BoundingBox extents = map.Envelope;
 
-            GeoPoint center = extents.GetCentroid();
+            GeoPoint geoCenter = extents.GetCentroid();
 
-            double initialScale = View.ViewSize.Width / extents.Width;
+            double initialScale = extents.Width / View.ViewSize.Width;
 
             if (View.ViewSize.Height / extents.Height < initialScale)
             {
-                initialScale = View.ViewSize.Height / extents.Height;
+                initialScale = extents.Height / View.ViewSize.Height;
             }
 
-            if (center != GeoPoint.Empty)
+            if (geoCenter != GeoPoint.Empty)
             {
-                _toViewTransform = new ViewMatrix2D(initialScale, 0, center.X - View.ViewSize.Width / 2,
-                    0, initialScale, center.Y - View.ViewSize.Height / 2);
+                double widthScale = 1 / initialScale;
+                double xCenterTranslation = View.ViewSize.Width / 2 - geoCenter.X;
+                
+                double heightScale = 1 / initialScale;
+                double yCenterTranslation = View.ViewSize.Height / 2 - geoCenter.Y;
 
-                _toWorldTransform = _toViewTransform.Inverse as ViewMatrix2D;
+                _toViewTransform = new Matrix2D(widthScale, 0, xCenterTranslation,
+                    0, heightScale, yCenterTranslation);
+
+                _toViewTransform.Translate(0, -View.ViewSize.Height);
+                _toViewTransform.Scale(1, -1);
+
+                _toWorldTransform = _toViewTransform.Inverse as Matrix2D;
             }
             else
             {
-                _toViewTransform = new ViewMatrix2D();
-                _toWorldTransform = new ViewMatrix2D();
+                _toViewTransform = new Matrix2D();
+                _toWorldTransform = new Matrix2D();
             }
         }
         #endregion
@@ -115,7 +124,7 @@ namespace SharpMap.Presentation
         {
             get 
             {
-                ViewPoint2D values = ToWorldTransform.TransformVector(View.ViewSize.Width / 2, View.ViewSize.Height / 2);
+                Point2D values = ToWorldTransform.TransformVector(View.ViewSize.Width / 2, View.ViewSize.Height / 2);
                 return new GeoPoint(values.X, values.Y);
             }
             set
@@ -191,7 +200,8 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Gets or sets the aspect ratio of the <see cref="ViewSize"/> height to the <see cref="ViewSize"/> width.
+        /// Gets or sets the aspect ratio of the <see cref="ViewSize"/> 
+        /// height to the <see cref="ViewSize"/> width.
         /// </summary>
         /// <remarks> 
         /// A value less than 1 will make the map stretch upwards 
@@ -205,7 +215,7 @@ namespace SharpMap.Presentation
         public double PixelAspectRatio
         {
 #warning Is this division the correct order for the PixelAspectRatio property?
-            get { return _toViewTransform.X1 / _toViewTransform.Y2; }
+            get { return Math.Abs(_toViewTransform.X1 / _toViewTransform.Y2); }
             set
             {
                 if (value <= 0)
@@ -213,12 +223,13 @@ namespace SharpMap.Presentation
                     throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
                 }
 
-                if (_toViewTransform.X1 / _toViewTransform.Y2 != value)
+                double currentRatio = Math.Abs(_toViewTransform.X1 / _toViewTransform.Y2);
+
+                if (currentRatio != value)
                 {
-                    double oldValue = ToViewTransform.X1 / ToViewTransform.Y2;
-                    double ratioModifier = value / oldValue;
+                    double ratioModifier = value / currentRatio;
                     ToViewTransform.Y2 *= ratioModifier;
-                    ToWorldTransform = ToViewTransform.Inverse as ViewMatrix2D;
+                    ToWorldTransform = ToViewTransform.Inverse as Matrix2D;
                 }
             }
         }
@@ -243,16 +254,16 @@ namespace SharpMap.Presentation
         /// <code lang="C#">
         /// </code>
         /// </example>
-        public ViewMatrix2D ToViewTransform
+        public Matrix2D ToViewTransform
         {
             get { return _toViewTransform; }
             set
             {
                 if (_toViewTransform != value)
                 {
-                    ViewMatrix2D oldValue = _toViewTransform;
+                    Matrix2D oldValue = _toViewTransform;
                     _toViewTransform = value;
-                    ToWorldTransform = _toViewTransform.Inverse as ViewMatrix2D;
+                    ToWorldTransform = _toViewTransform.Inverse as Matrix2D;
                 }
             }
         }
@@ -264,7 +275,7 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <remarks>
         /// </remarks>
-        public ViewMatrix2D ToWorldTransform
+        public Matrix2D ToWorldTransform
         {
             get { return _toWorldTransform; }
             private set { _toWorldTransform = value; }
@@ -275,7 +286,12 @@ namespace SharpMap.Presentation
         /// </summary>
         public BoundingBox ViewEnvelope
         {
-            get { return new BoundingBox(); }
+            get 
+            {
+                Point2D lowerLeft = ToWorldTransform.TransformVector(0, View.ViewSize.Height);
+                Point2D upperRight = ToWorldTransform.TransformVector(View.ViewSize.Width, 0);
+                return new BoundingBox(lowerLeft.X, lowerLeft.Y, upperRight.X, upperRight.Y);
+            }
             set
             {
                 setViewEnvelopeInternal(value);
@@ -310,28 +326,28 @@ namespace SharpMap.Presentation
         /// </summary>
         public double WorldUnitsPerPixel
         {
-            get { return ToViewTransform.X1; }
+            get { return ToWorldTransform.X1; }
         }
         #endregion
 
-		public ViewPoint2D ToView(Point point)
+		public Point2D ToView(Point point)
 		{
 			return worldToView(point);
 		}
 
-		public ViewPoint2D ToView(double x, double y)
+		public Point2D ToView(double x, double y)
 		{
 			return ToViewTransform.TransformVector(x, y);
 		}
 
-		public Point ToWorld(ViewPoint2D point)
+		public Point ToWorld(Point2D point)
 		{
 			return viewToWorld(point);
 		}
 
 		public Point ToWorld(double x, double y)
 		{
-			ViewPoint2D values = ToWorldTransform.TransformVector(x, y);
+			Point2D values = ToWorldTransform.TransformVector(x, y);
 			return new GeoPoint(values.X, values.Y);
 		}
 
@@ -349,13 +365,13 @@ namespace SharpMap.Presentation
             double halfWidth = worldWidth * 0.5;
             double halfHeight = newHeight * 0.5;
 
-            BoundingBox widthBounds = new BoundingBox(
+            BoundingBox widthWorldBounds = new BoundingBox(
                 GeoCenter.X - halfWidth, 
                 GeoCenter.Y - halfHeight, 
                 GeoCenter.X + halfWidth, 
                 GeoCenter.Y + halfHeight);
 
-            ZoomToBox(widthBounds);
+            ZoomToBox(widthWorldBounds);
         }
 
         /// <summary>
@@ -405,7 +421,7 @@ namespace SharpMap.Presentation
                 throw new ArgumentNullException("renderer");
             }
 
-            LayerRendererCatalog.Instance.Register<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>(
+            LayerRendererCatalog.Instance.Register<Point2D, Size2D, Rectangle2D, TRenderObject>(
                 typeof(TLayerType), renderer);
         }
 
@@ -420,12 +436,12 @@ namespace SharpMap.Presentation
             return LayerRendererCatalog.Instance.Get<TRenderer>(layerType);
         }
 
-        protected void CreateSelection(ViewPoint2D location)
+        protected void CreateSelection(Point2D location)
         {
-            _selection = ViewSelection2D.CreateRectangluarSelection(location, ViewSize2D.Zero);
+            _selection = ViewSelection2D.CreateRectangluarSelection(location, Size2D.Zero);
         }
 
-        protected void ModifySelection(ViewPoint2D location, ViewSize2D size)
+        protected void ModifySelection(Point2D location, Size2D size)
         {
             _selection.MoveBy(location);
             _selection.Expand(size);
@@ -436,16 +452,16 @@ namespace SharpMap.Presentation
             _selection = null;
         }
 
-        protected virtual void OnMapViewHover(ViewPoint2D viewPoint2D)
+        protected virtual void OnMapViewHover(Point2D viewPoint2D)
         {
         }
 
-        protected virtual void OnMapViewBeginAction(ViewPoint2D location)
+        protected virtual void OnMapViewBeginAction(Point2D location)
         {
             _beginActionLocation = location;
         }
 
-        protected virtual void OnMapViewMoveTo(ViewPoint2D location)
+        protected virtual void OnMapViewMoveTo(Point2D location)
         {
             double xDelta = location.X - _lastMoveLocation.X;
             double yDelta = location.Y - _lastMoveLocation.Y;
@@ -458,7 +474,7 @@ namespace SharpMap.Presentation
             _lastMoveLocation = location;
         }
 
-        protected virtual void OnMapViewEndAction(ViewPoint2D location)
+        protected virtual void OnMapViewEndAction(Point2D location)
         {
             _beginActionLocation = null;
         }
@@ -484,26 +500,26 @@ namespace SharpMap.Presentation
             OnLayersChanged();
         }
 
-        private void View_SizeChangeRequested(object sender, SizeChangeEventArgs<ViewSize2D> e)
+        private void View_SizeChangeRequested(object sender, SizeChangeEventArgs<Size2D> e)
         {
         }
 
-        private void View_Hover(object sender, MapActionEventArgs<ViewPoint2D> e)
+        private void View_Hover(object sender, MapActionEventArgs<Point2D> e)
         {
             OnMapViewHover(e.ActionPoint);
         }
 
-        private void View_BeginAction(object sender, MapActionEventArgs<ViewPoint2D> e)
+        private void View_BeginAction(object sender, MapActionEventArgs<Point2D> e)
         {
             OnMapViewBeginAction(e.ActionPoint);
         }
 
-        private void View_MoveTo(object sender, MapActionEventArgs<ViewPoint2D> e)
+        private void View_MoveTo(object sender, MapActionEventArgs<Point2D> e)
         {
             OnMapViewMoveTo(e.ActionPoint);
         }
 
-        private void View_EndAction(object sender, MapActionEventArgs<ViewPoint2D> e)
+        private void View_EndAction(object sender, MapActionEventArgs<Point2D> e)
         {
             OnMapViewEndAction(e.ActionPoint);
         }
@@ -512,7 +528,7 @@ namespace SharpMap.Presentation
         #region Private helper methods
         private void modifySelection(double xDelta, double yDelta)
         {
-            Selection.Expand(new ViewSize2D(xDelta, yDelta));
+            Selection.Expand(new Size2D(xDelta, yDelta));
         }
 
         private void setCenterInternal(GeoPoint newCenter)
@@ -552,9 +568,9 @@ namespace SharpMap.Presentation
             setViewMetricsInternal(View.ViewSize, newEnvelope.GetCentroid(), newWidth / View.ViewSize.Width);
         }
 
-        private void setViewMetricsInternal(ViewSize2D newViewSize, GeoPoint newCenter, double newWorldUnitsPerPixel)
+        private void setViewMetricsInternal(Size2D newViewSize, GeoPoint newCenter, double newWorldUnitsPerPixel)
         {
-            ViewSize2D oldViewSize = View.ViewSize;
+            Size2D oldViewSize = View.ViewSize;
             GeoPoint oldCenter = GeoCenter;
             double oldWorldWidth = WorldWidth;
             double oldWorldHeight = WorldHeight;
@@ -567,14 +583,14 @@ namespace SharpMap.Presentation
             View.ViewSize = newViewSize;
         }
 
-        private ViewPoint2D worldToView(GeoPoint geoPoint)
+        private Point2D worldToView(GeoPoint geoPoint)
         {
             return ToViewTransform.TransformVector(geoPoint.X, geoPoint.Y);
         }
 
-        private GeoPoint viewToWorld(ViewPoint2D viewPoint)
+        private GeoPoint viewToWorld(Point2D viewPoint)
         {
-            ViewPoint2D values = ToWorldTransform.TransformVector(viewPoint.X, viewPoint.Y);
+            Point2D values = ToWorldTransform.TransformVector(viewPoint.X, viewPoint.Y);
             return new GeoPoint(values.X, values.Y);
         }
         #endregion

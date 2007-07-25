@@ -270,14 +270,14 @@
     <Compile Include="Presentation\MapZoomChangedEventArgs.cs" />
     <Compile Include="Rendering\2D\Symbol2D.cs" />
     <Compile Include="Rendering\2D\VectorRenderer2D`1.cs" />
-    <Compile Include="Rendering\2D\ViewMatrix2D.cs" />
+    <Compile Include="Rendering\2D\Matrix2D.cs" />
     <Compile Include="Presentation\ViewPointHoverEventArgs.cs" />
-    <Compile Include="Rendering\2D\ViewRectangle2D.cs" />
+    <Compile Include="Rendering\2D\Rectangle2D.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
-    <Compile Include="Rendering\2D\ViewPoint2D.cs" />
+    <Compile Include="Rendering\2D\Point2D.cs" />
     <Compile Include="Presentation\ViewSelection.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
-    <Compile Include="Rendering\2D\ViewSize2D.cs" />
+    <Compile Include="Rendering\2D\Size2D.cs" />
     <Compile Include="Styles\ColorBlend.cs" />
     <Compile Include="Rendering\Thematics\CustomTheme.cs" />
     <Compile Include="Rendering\Thematics\GradientTheme.cs" />
@@ -326,7 +326,7 @@
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Math\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>

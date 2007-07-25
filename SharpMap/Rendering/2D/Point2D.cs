@@ -29,24 +29,24 @@ namespace SharpMap.Rendering.Rendering2D
     /// A point in 2 dimensional Cartesian space.
     /// </summary>
     [Serializable]
-    public struct ViewPoint2D : IVectorD, IHasEmpty
+    public struct Point2D : IVectorD, IHasEmpty
     {
-        public static readonly ViewPoint2D Empty = new ViewPoint2D();
-        public static readonly ViewPoint2D Zero = new ViewPoint2D(0, 0);
-        public static readonly ViewPoint2D One = new ViewPoint2D(1, 1);
+        public static readonly Point2D Empty = new Point2D();
+        public static readonly Point2D Zero = new Point2D(0, 0);
+        public static readonly Point2D One = new Point2D(1, 1);
 
         private DoubleComponent _x, _y;
         private bool _hasValue;
 
         #region Constructors
-        public ViewPoint2D(double x, double y)
+        public Point2D(double x, double y)
         {
             _x = x;
             _y = y;
             _hasValue = true;
         }
 
-        public ViewPoint2D(double[] elements)
+        public Point2D(double[] elements)
         {
             if (elements == null)
             {
@@ -80,31 +80,31 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Testing
 
-        public static bool operator ==(ViewPoint2D lhs, ViewPoint2D rhs)
+        public static bool operator ==(Point2D lhs, Point2D rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ViewPoint2D lhs, ViewPoint2D rhs)
+        public static bool operator !=(Point2D lhs, Point2D rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public static bool operator ==(ViewPoint2D lhs, IVectorD rhs)
+        public static bool operator ==(Point2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ViewPoint2D lhs, IVectorD rhs)
+        public static bool operator !=(Point2D lhs, IVectorD rhs)
         {
             return !lhs.Equals(rhs);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is ViewPoint2D)
+            if (obj is Point2D)
             {
-                return Equals((ViewPoint2D)obj);
+                return Equals((Point2D)obj);
             }
 
             if (obj is IVectorD)
@@ -115,7 +115,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public bool Equals(ViewPoint2D point)
+        public bool Equals(Point2D point)
         {
             return _x.Equals(point._x) &&
                 _y.Equals(point._y) &&
@@ -208,16 +208,16 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Clone
-        public ViewPoint2D Clone()
+        public Point2D Clone()
         {
-            return new ViewPoint2D((double)_x, (double)_y);
+            return new Point2D((double)_x, (double)_y);
         }
         #endregion
 
         #region Negative
-        public ViewPoint2D Negative()
+        public Point2D Negative()
         {
-            return new ViewPoint2D((double)_x.Negative(), (double)_y.Negative());
+            return new Point2D((double)_x.Negative(), (double)_y.Negative());
         }
         #endregion
 

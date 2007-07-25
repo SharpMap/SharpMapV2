@@ -23,7 +23,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// Represents a series of figures of connected points in 2D space.
     /// </summary>
-    public class GraphicsPath2D : GraphicsPath<ViewPoint2D, ViewRectangle2D>
+    public class GraphicsPath2D : GraphicsPath<Point2D, Rectangle2D>
     {
         /// <summary>
         /// Creates a new empty <see cref="GraphicsPath2D"/>.
@@ -35,7 +35,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// Creates a new, open <see cref="GraphicsPath2D"/> with the given points.
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
-        public GraphicsPath2D(IEnumerable<ViewPoint2D> points)
+        public GraphicsPath2D(IEnumerable<Point2D> points)
             : base(points) { }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
         /// <param name="closeFigure">True to create a closed path, false for an open path.</param>
-        public GraphicsPath2D(IEnumerable<ViewPoint2D> points, bool closeFigure)
+        public GraphicsPath2D(IEnumerable<Point2D> points, bool closeFigure)
 			: base(points, closeFigure) { }
 
 		/// <summary>
@@ -65,9 +65,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the empty bounds shape: <see cref="ViewRectangle2D.Empty"/>.
         /// </summary>
-        protected override ViewRectangle2D EmptyBounds
+        protected override Rectangle2D EmptyBounds
         {
-            get { return ViewRectangle2D.Empty; }
+            get { return Rectangle2D.Empty; }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="figures">Figures to make the GraphicsPath from.</param>
         /// <returns>A GraphicsPath instance with one figure for each of the GraphicsFigure 
         /// instances in the given enumeration.</returns>
-        protected override GraphicsPath<ViewPoint2D, ViewRectangle2D> CreatePath(IEnumerable<GraphicsFigure<ViewPoint2D, ViewRectangle2D>> figures)
+        protected override GraphicsPath<Point2D, Rectangle2D> CreatePath(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
         {
             return new GraphicsPath2D(convertFromBaseEnum(figures));
         }
@@ -88,7 +88,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="points">Points to use in the figure.</param>
         /// <param name="closeFigure">True to close the figure, false to leave it open.</param>
         /// <returns>A GraphicsFigure instance made from the given points.</returns>
-        protected override GraphicsFigure<ViewPoint2D, ViewRectangle2D> CreateFigure(IEnumerable<ViewPoint2D> points, bool closeFigure)
+        protected override GraphicsFigure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool closeFigure)
         {
             return new GraphicsFigure2D(points, closeFigure);
         }
@@ -97,18 +97,18 @@ namespace SharpMap.Rendering.Rendering2D
         /// Computes the <see cref="GraphicsFigure2D.Bounds"/> for this <see cref="GraphicsPath2D"/>.
         /// </summary>
         /// <returns>A <see cref="ViewRectangle2D"/> which describes the minimum bounding rectangle for this path.</returns>
-        protected override ViewRectangle2D ComputeBounds()
+        protected override Rectangle2D ComputeBounds()
         {
             if(Figures.Count == 0)
             {
-                return ViewRectangle2D.Empty;
+                return Rectangle2D.Empty;
             }
 
             double minX = Double.MaxValue, maxX = Double.MinValue, minY = Double.MaxValue, maxY = Double.MinValue;
 
             foreach (GraphicsFigure2D figure in Figures)
             {
-                ViewRectangle2D figureBounds = figure.Bounds;
+                Rectangle2D figureBounds = figure.Bounds;
 
                 if (figureBounds.Left < minX)
                 {
@@ -131,10 +131,10 @@ namespace SharpMap.Rendering.Rendering2D
                 }
             }
 
-            return new ViewRectangle2D(minX, maxX, minY, maxY);
+            return new Rectangle2D(minX, maxX, minY, maxY);
         }
 
-        private static IEnumerable<GraphicsFigure<ViewPoint2D, ViewRectangle2D>> convertToBaseEnum(IEnumerable<GraphicsFigure2D> figures)
+        private static IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> convertToBaseEnum(IEnumerable<GraphicsFigure2D> figures)
         {
             foreach (GraphicsFigure2D figure in figures)
             {
@@ -142,7 +142,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        private static IEnumerable<GraphicsFigure2D> convertFromBaseEnum(IEnumerable<GraphicsFigure<ViewPoint2D, ViewRectangle2D>> figures)
+        private static IEnumerable<GraphicsFigure2D> convertFromBaseEnum(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
         {
             foreach (GraphicsFigure2D figure in figures)
             {

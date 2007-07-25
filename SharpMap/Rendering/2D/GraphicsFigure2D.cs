@@ -23,22 +23,22 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// A graphical figure in 2 dimensions.
     /// </summary>
-    public class GraphicsFigure2D : GraphicsFigure<ViewPoint2D, ViewRectangle2D>
+    public class GraphicsFigure2D : GraphicsFigure<Point2D, Rectangle2D>
 	{
-		public GraphicsFigure2D(IEnumerable<ViewPoint2D> points)
+		public GraphicsFigure2D(IEnumerable<Point2D> points)
 			: base(points) { }
 
-        public GraphicsFigure2D(IEnumerable<ViewPoint2D> points, bool isClosed)
+        public GraphicsFigure2D(IEnumerable<Point2D> points, bool isClosed)
             : base(points, isClosed) { }
 
-        protected override ViewRectangle2D ComputeBounds()
+        protected override Rectangle2D ComputeBounds()
         {
             double left = Double.MaxValue;
             double top = Double.MaxValue;
             double right = Double.MinValue;
             double bottom = Double.MinValue;
 
-            foreach (ViewPoint2D point in Points)
+            foreach (Point2D point in Points)
             {
                 if (left > point.X)
                 {
@@ -58,17 +58,17 @@ namespace SharpMap.Rendering.Rendering2D
                 }
             }
 
-            return new ViewRectangle2D(left, right, top, bottom);
+            return new Rectangle2D(left, right, top, bottom);
         }
 
-        protected override GraphicsFigure<ViewPoint2D, ViewRectangle2D> CreateFigure(IEnumerable<ViewPoint2D> points, bool isClosed)
+        protected override GraphicsFigure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool isClosed)
         {
             return new GraphicsFigure2D(points, isClosed);
         }
 
-        protected override ViewRectangle2D EmptyBounds
+        protected override Rectangle2D EmptyBounds
         {
-            get { return ViewRectangle2D.Empty; }
+            get { return Rectangle2D.Empty; }
         }
     }
 }

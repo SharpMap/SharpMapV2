@@ -40,39 +40,39 @@ namespace SharpMap.Rendering.Gdi
     public static class ViewConverter
     {
         #region GdiToView
-        public static ViewRectangle2D GdiToView(GdiRectangle rectangle)
+        public static Rectangle2D GdiToView(GdiRectangle rectangle)
         {
-            return new ViewRectangle2D(rectangle.X, rectangle.Y,
+            return new Rectangle2D(rectangle.X, rectangle.Y,
                 rectangle.Width, rectangle.Height);
         }
 
-        public static ViewRectangle2D GdiToView(RectangleF rectangleF)
+        public static Rectangle2D GdiToView(RectangleF rectangleF)
         {
-            return new ViewRectangle2D(rectangleF.Left, rectangleF.Right, rectangleF.Top, rectangleF.Bottom);
+            return new Rectangle2D(rectangleF.Left, rectangleF.Right, rectangleF.Top, rectangleF.Bottom);
         }
 
-        public static ViewSize2D GdiToView(SizeF sizeF)
+        public static Size2D GdiToView(SizeF sizeF)
         {
-            return new ViewSize2D(sizeF.Width, sizeF.Height);
+            return new Size2D(sizeF.Width, sizeF.Height);
         }
 
-        public static ViewPoint2D GdiToView(GdiPoint point)
+        public static Point2D GdiToView(GdiPoint point)
         {
-            return new ViewPoint2D(point.X, point.Y);
+            return new Point2D(point.X, point.Y);
         }
         #endregion
 
         #region ViewToGdi
-        public static PointF[] ViewToGdi(IEnumerable<ViewPoint2D> viewPoints)
+        public static PointF[] ViewToGdi(IEnumerable<Point2D> viewPoints)
         {
             List<PointF> gdiPoints = new List<PointF>();
-            foreach (ViewPoint2D viewPoint in viewPoints)
+            foreach (Point2D viewPoint in viewPoints)
                 gdiPoints.Add(ViewToGdi(viewPoint));
 
             return gdiPoints.ToArray();
         }
 
-        public static GdiRectangle ViewToGdi(ViewRectangle2D rectangle)
+        public static GdiRectangle ViewToGdi(Rectangle2D rectangle)
         {
             return new GdiRectangle((int)rectangle.X, (int)rectangle.Y,
                 (int)rectangle.Width, (int)rectangle.Height);
@@ -83,7 +83,7 @@ namespace SharpMap.Rendering.Gdi
             return (GdiFontStyle)(int)(fontStyle);
         }
 
-        public static GdiMatrix ViewToGdi(ViewMatrix2D viewMatrix)
+        public static GdiMatrix ViewToGdi(Matrix2D viewMatrix)
         {
             GdiMatrix gdiMatrix = new GdiMatrix(
                 (float)viewMatrix[0, 0],
@@ -157,13 +157,13 @@ namespace SharpMap.Rendering.Gdi
             return gdiBrush;
         }
 
-        public static PointF ViewToGdi(ViewPoint2D viewPoint)
+        public static PointF ViewToGdi(Point2D viewPoint)
         {
             PointF gdiPoint = new PointF((float)viewPoint.X, (float)viewPoint.Y);
             return gdiPoint;
         }
 
-        public static SizeF ViewToGdi(ViewSize2D viewSize)
+        public static SizeF ViewToGdi(Size2D viewSize)
         {
             SizeF gdiSize = new SizeF((float)viewSize.Width, (float)viewSize.Height);
             return gdiSize;

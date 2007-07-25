@@ -22,11 +22,11 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ViewPoint2DEqualityTests()
         {
-            ViewPoint2D p1 = new ViewPoint2D();
-            ViewPoint2D p2 = ViewPoint2D.Empty;
-            ViewPoint2D p3 = ViewPoint2D.Zero;
-            ViewPoint2D p4 = new ViewPoint2D(0, 0);
-            ViewPoint2D p5 = new ViewPoint2D(9, 10);
+            Point2D p1 = new Point2D();
+            Point2D p2 = Point2D.Empty;
+            Point2D p3 = Point2D.Zero;
+            Point2D p4 = new Point2D(0, 0);
+            Point2D p5 = new Point2D(9, 10);
 
             Assert.AreEqual(p1, p2);
             Assert.AreNotEqual(p1, p3);
@@ -52,9 +52,9 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IVectorDTests1()
         {
-            IVectorD p1 = ViewPoint2D.Empty;
-            IVectorD p2 = ViewPoint2D.Zero;
-            IVectorD p3 = new ViewPoint2D(9, 10);
+            IVectorD p1 = Point2D.Empty;
+            IVectorD p2 = Point2D.Zero;
+            IVectorD p3 = new Point2D(9, 10);
 
             Assert.AreEqual(0, p1.ComponentCount);
             Assert.AreEqual(2, p2.ComponentCount);
@@ -66,7 +66,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void IVectorDTests2()
         {
-            ViewPoint2D p1 = new ViewPoint2D(9, 10);
+            Point2D p1 = new Point2D(9, 10);
 
             Assert.AreEqual(10, (double)p1[2], _e);
         }
@@ -74,8 +74,8 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void CloneTest()
         {
-            ViewPoint2D p1 = new ViewPoint2D(1.1, 2.2);
-            ViewPoint2D p2 = p1.Clone();
+            Point2D p1 = new Point2D(1.1, 2.2);
+            Point2D p2 = p1.Clone();
 
             Assert.AreEqual(p1, p2);
             Assert.AreNotSame(p1, p2);
@@ -84,7 +84,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IEnumerableTest()
         {
-            ViewPoint2D p1 = new ViewPoint2D(1.1, 2.2);
+            Point2D p1 = new Point2D(1.1, 2.2);
 
             int index = 0;
             foreach (double component in p1)
@@ -104,11 +104,11 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ViewSize2DEqualityTests()
         {
-            ViewSize2D s1 = new ViewSize2D();
-            ViewSize2D s2 = ViewSize2D.Empty;
-            ViewSize2D s3 = ViewSize2D.Zero;
-            ViewSize2D s4 = new ViewSize2D(0, 0);
-            ViewSize2D s5 = new ViewSize2D(9, 10);
+            Size2D s1 = new Size2D();
+            Size2D s2 = Size2D.Empty;
+            Size2D s3 = Size2D.Zero;
+            Size2D s4 = new Size2D(0, 0);
+            Size2D s5 = new Size2D(9, 10);
 
             Assert.AreEqual(s1, s2);
             Assert.AreNotEqual(s1, s3);
@@ -134,9 +134,9 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IVectorDTests1()
         {
-            IVectorD s1 = ViewPoint2D.Empty;
-            IVectorD s2 = ViewPoint2D.Zero;
-            IVectorD s3 = new ViewPoint2D(9, 10);
+            IVectorD s1 = Point2D.Empty;
+            IVectorD s2 = Point2D.Zero;
+            IVectorD s3 = new Point2D(9, 10);
 
             Assert.AreEqual(0, s1.ComponentCount);
             Assert.AreEqual(2, s2.ComponentCount);
@@ -148,7 +148,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void IVectorDTests2()
         {
-            IVectorD s1 = new ViewPoint2D(9, 10);
+            IVectorD s1 = new Point2D(9, 10);
 
             Assert.AreEqual(10, (double)s1[2], _e);
         }
@@ -156,8 +156,8 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void CloneTest()
         {
-            ViewPoint2D s1 = new ViewPoint2D(1.1, 2.2);
-            ViewPoint2D s2 = s1.Clone();
+            Point2D s1 = new Point2D(1.1, 2.2);
+            Point2D s2 = s1.Clone();
 
             Assert.AreEqual(s1, s2);
             Assert.AreNotSame(s1, s2);
@@ -166,7 +166,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IEnumerableTest()
         {
-            ViewPoint2D s1 = new ViewPoint2D(1.1, 2.2);
+            Point2D s1 = new Point2D(1.1, 2.2);
 
             int index = 0;
             foreach (double component in s1)
@@ -186,13 +186,13 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ViewRectangle2DEqualityTests()
         {
-            ViewRectangle2D r1 = new ViewRectangle2D();
-            ViewRectangle2D r2 = ViewRectangle2D.Empty;
-            ViewRectangle2D r3 = ViewRectangle2D.Zero;
-            ViewRectangle2D r4 = new ViewRectangle2D(0, 0, 0, 0);
-            ViewRectangle2D r5 = new ViewRectangle2D(9, 10, -5, -6);
-            ViewRectangle2D r6 = new ViewRectangle2D(0, 10, 0, 10);
-            ViewRectangle2D r7 = new ViewRectangle2D(new ViewPoint2D(0, 0), new ViewSize2D(10, 10));
+            Rectangle2D r1 = new Rectangle2D();
+            Rectangle2D r2 = Rectangle2D.Empty;
+            Rectangle2D r3 = Rectangle2D.Zero;
+            Rectangle2D r4 = new Rectangle2D(0, 0, 0, 0);
+            Rectangle2D r5 = new Rectangle2D(9, 10, -5, -6);
+            Rectangle2D r6 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r7 = new Rectangle2D(new Point2D(0, 0), new Size2D(10, 10));
 
             Assert.AreEqual(r1, r2);
             Assert.AreNotEqual(r1, r3);
@@ -219,12 +219,12 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IntersectsTest()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Empty;
-            ViewRectangle2D r2 = ViewRectangle2D.Zero;
-            ViewRectangle2D r3 = new ViewRectangle2D(0, 10, 0, 10);
-            ViewRectangle2D r4 = new ViewRectangle2D(new ViewPoint2D(5, 5), new ViewSize2D(10, 10));
+            Rectangle2D r1 = Rectangle2D.Empty;
+            Rectangle2D r2 = Rectangle2D.Zero;
+            Rectangle2D r3 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r4 = new Rectangle2D(new Point2D(5, 5), new Size2D(10, 10));
 
-            Assert.IsFalse(r1.Intersects(ViewRectangle2D.Empty));
+            Assert.IsFalse(r1.Intersects(Rectangle2D.Empty));
             Assert.IsFalse(r1.Intersects(r2));
             Assert.IsFalse(r2.Intersects(r1));
             Assert.IsTrue(r2.Intersects(r3));
@@ -235,14 +235,14 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void CompareTest()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Empty;
-            ViewRectangle2D r2 = ViewRectangle2D.Zero;
-            ViewRectangle2D r3 = new ViewRectangle2D(0, 10, 0, 10);
-            ViewRectangle2D r4 = new ViewRectangle2D(new ViewPoint2D(11, -11), new ViewSize2D(10, 10));
-            ViewRectangle2D r5 = new ViewRectangle2D(new ViewPoint2D(-11, -11), new ViewSize2D(10, 10));
-            ViewRectangle2D r6 = new ViewRectangle2D(new ViewPoint2D(11, 11), new ViewSize2D(10, 10));
+            Rectangle2D r1 = Rectangle2D.Empty;
+            Rectangle2D r2 = Rectangle2D.Zero;
+            Rectangle2D r3 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r4 = new Rectangle2D(new Point2D(11, -11), new Size2D(10, 10));
+            Rectangle2D r5 = new Rectangle2D(new Point2D(-11, -11), new Size2D(10, 10));
+            Rectangle2D r6 = new Rectangle2D(new Point2D(11, 11), new Size2D(10, 10));
 
-            Assert.AreEqual(0, r1.CompareTo(ViewRectangle2D.Empty));
+            Assert.AreEqual(0, r1.CompareTo(Rectangle2D.Empty));
             Assert.AreEqual(-1, r1.CompareTo(r2));
             Assert.AreEqual(1, r2.CompareTo(r1));
             Assert.AreEqual(0, r3.CompareTo(r3));
@@ -256,7 +256,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(NotSupportedException))]
         public void InvertTest()
         {
-            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            Rectangle2D r1 = new Rectangle2D(0, 1, 0, 1);
             Assert.IsNull((r1 as IMatrixD).Inverse);
         }
 
@@ -264,16 +264,16 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(NotSupportedException))]
         public void IsInvertableTest()
         {
-            ViewRectangle2D r1 = new ViewRectangle2D(0, 1, 0, 1);
+            Rectangle2D r1 = new Rectangle2D(0, 1, 0, 1);
             Assert.IsTrue((r1 as IMatrixD).IsInvertible);
         }
 
         [Test]
         public void ElementsTest1()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Empty;
-            ViewRectangle2D r2 = ViewRectangle2D.Zero;
-            ViewRectangle2D r3 = new ViewRectangle2D(0, 10, 0, 10);
+            Rectangle2D r1 = Rectangle2D.Empty;
+            Rectangle2D r2 = Rectangle2D.Zero;
+            Rectangle2D r3 = new Rectangle2D(0, 10, 0, 10);
 
             Assert.AreEqual(0, (r1 as IMatrixD).ColumnCount);
             Assert.AreEqual(2, (r2 as IMatrixD).ColumnCount);
@@ -289,7 +289,7 @@ namespace SharpMap.Tests.Rendering
 
             IMatrixD r1Matrix = r1;
             r1Matrix.Elements = expected;
-            r1 = (ViewRectangle2D) r1Matrix;
+            r1 = (Rectangle2D) r1Matrix;
             Assert.IsFalse(r1.IsEmpty);
             Assert.AreEqual(r1, r3);
         }
@@ -298,7 +298,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentNullException))]
         public void ElementsTest2()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Zero;
+            Rectangle2D r1 = Rectangle2D.Zero;
             (r1 as IMatrixD).Elements = null;
         }
 
@@ -306,7 +306,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentException))]
         public void ElementsTest3()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Zero;
+            Rectangle2D r1 = Rectangle2D.Zero;
             (r1 as IMatrixD).Elements = new DoubleComponent[][] 
                 { 
                     new DoubleComponent[] { 1, 2, 3 }, new DoubleComponent[] { 2, 3, 4 } 
@@ -322,9 +322,9 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ScaleTest1()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Empty;
-            ViewRectangle2D r2 = ViewRectangle2D.Zero;
-            ViewRectangle2D r3 = new ViewRectangle2D(0, 1, 0, 1);
+            Rectangle2D r1 = Rectangle2D.Empty;
+            Rectangle2D r2 = Rectangle2D.Zero;
+            Rectangle2D r3 = new Rectangle2D(0, 1, 0, 1);
 
             r1.Scale(10);
             Assert.IsTrue(r1.IsEmpty);
@@ -336,9 +336,9 @@ namespace SharpMap.Tests.Rendering
             r3.Scale(10);
             Assert.AreEqual(10, r3.Width);
             Assert.AreEqual(10, r3.Height);
-            Assert.AreEqual(ViewPoint2D.Zero, r3.Location);
+            Assert.AreEqual(Point2D.Zero, r3.Location);
 
-            ViewSize2D scaleSize = new ViewSize2D(-1, 5);
+            Size2D scaleSize = new Size2D(-1, 5);
 
             r1.Scale(scaleSize);
             Assert.IsTrue(r1.IsEmpty);
@@ -350,7 +350,7 @@ namespace SharpMap.Tests.Rendering
             r3.Scale(scaleSize);
             Assert.AreEqual(-10, r3.Width);
             Assert.AreEqual(50, r3.Height);
-            Assert.AreEqual(ViewPoint2D.Zero, r3.Location);
+            Assert.AreEqual(Point2D.Zero, r3.Location);
         }
 
         [Test]
@@ -358,15 +358,15 @@ namespace SharpMap.Tests.Rendering
         public void ScaleTest2()
         {
             ViewSize3D scaleSize = new ViewSize3D(10, 10, 10);
-            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            Rectangle2D r2 = Rectangle2D.Zero;
             r2.Scale(scaleSize);
         }
 
         [Test]
         public void TranslateTest1()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Empty;
-            ViewRectangle2D r2 = ViewRectangle2D.Zero;
+            Rectangle2D r1 = Rectangle2D.Empty;
+            Rectangle2D r2 = Rectangle2D.Zero;
 
             r1.Translate(10);
             Assert.IsTrue(r1.IsEmpty);
@@ -375,7 +375,7 @@ namespace SharpMap.Tests.Rendering
             Assert.AreEqual(0, r1.Width);
             Assert.AreEqual(0, r1.Height);
 
-            r2.Translate(new ViewPoint2D(3, 5));
+            r2.Translate(new Point2D(3, 5));
             Assert.AreEqual(r2.X, 3);
             Assert.AreEqual(r2.Y, 5);
         }
@@ -384,7 +384,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentException))]
         public void TranslateTest2()
         {
-            ViewRectangle2D r1 = ViewRectangle2D.Zero;
+            Rectangle2D r1 = Rectangle2D.Zero;
             r1.Translate(new ViewPoint3D(3, 4, 5));
         }
 
@@ -392,15 +392,15 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(NotSupportedException))]
         public void TransformTest1()
         {
-            ViewRectangle2D rect = new ViewRectangle2D(9, 10, -5, -6);
-            IVectorD val = (rect as ITransformMatrixD).TransformVector((IVectorD)ViewPoint2D.Zero);
+            Rectangle2D rect = new Rectangle2D(9, 10, -5, -6);
+            IVectorD val = (rect as ITransformMatrixD).TransformVector((IVectorD)Point2D.Zero);
         }
 
         [Test]
         [ExpectedException(typeof(NotSupportedException))]
         public void TransformTest2()
         {
-            ViewRectangle2D rect = new ViewRectangle2D(9, 10, -5, -6);
+            Rectangle2D rect = new Rectangle2D(9, 10, -5, -6);
             (rect as ITransformMatrixD).TransformVector(new DoubleComponent[] { 1, 4 });
         }
     }
@@ -415,18 +415,18 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ResetTest()
         {
-            ViewMatrix2D m1 = new ViewMatrix2D(1, 1, 0, 1, 1, 0);
+            Matrix2D m1 = new Matrix2D(1, 1, 0, 1, 1, 0);
 
             m1.Reset();
 
-            Assert.AreEqual(m1, ViewMatrix2D.Identity);
+            Assert.AreEqual(m1, Matrix2D.Identity);
         }
 
         [Test]
         public void InvertTest()
         {
-            ViewMatrix2D m1 = new ViewMatrix2D(1, 2, 0, 3, 4, 0);
-            ViewMatrix2D expected = new ViewMatrix2D(-2, 1, 0, 1.5, -0.5, 0);
+            Matrix2D m1 = new Matrix2D(1, 2, 0, 3, 4, 0);
+            Matrix2D expected = new Matrix2D(-2, 1, 0, 1.5, -0.5, 0);
 
             IMatrix<DoubleComponent> m1Inverse = m1.Inverse;
 
@@ -442,8 +442,8 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IsInvertableTest()
         {
-            ViewMatrix2D m1 = new ViewMatrix2D(1, 1, 0, 1, 1, 0);
-            ViewMatrix2D m2 = new ViewMatrix2D(1, 2, 0, 3, 4, 0);
+            Matrix2D m1 = new Matrix2D(1, 1, 0, 1, 1, 0);
+            Matrix2D m2 = new Matrix2D(1, 2, 0, 3, 4, 0);
             Assert.IsFalse(m1.IsInvertible);
             Assert.IsTrue(m2.IsInvertible);
         }
@@ -451,9 +451,9 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ElementsTest1()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
-            ViewMatrix2D m2 = ViewMatrix2D.Zero;
-            ViewMatrix2D m3 = new ViewMatrix2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            Matrix2D m1 = Matrix2D.Identity;
+            Matrix2D m2 = Matrix2D.Zero;
+            Matrix2D m3 = new Matrix2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
             Assert.AreEqual(3, m1.RowCount);
             Assert.AreEqual(3, m2.ColumnCount);
@@ -485,7 +485,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentNullException))]
         public void ElementsTest2()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
             m1.Elements = null;
 
         }
@@ -494,7 +494,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(ArgumentException))]
         public void ElementsTest3()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
             m1.Elements = new DoubleComponent[][] { new DoubleComponent[] { 1, 2, 3 }, new DoubleComponent[] { 2, 3, 4 } };
         }
 
@@ -502,41 +502,41 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void RotateTest()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
         }
 
         [Test]
         [Ignore("Test not yet implemented")]
         public void RotateAtTest()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
         }
 
         [Test]
         [Ignore("Test not yet implemented")]
         public void MultiplyTest()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
         }
 
         [Test]
         [Ignore("Test not yet implemented")]
         public void ScaleTest1()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Zero;
-            ViewMatrix2D m2 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Zero;
+            Matrix2D m2 = Matrix2D.Identity;
 
             m1.Scale(10);
-            Assert.AreEqual(ViewMatrix2D.Zero, m1);
+            Assert.AreEqual(Matrix2D.Zero, m1);
 
             m2.Scale(10);
             Assert.AreEqual(10, m2.X1);
             Assert.AreEqual(10, m2.Y2);
 
-            ViewSize2D scaleSize = new ViewSize2D(-1, 5);
+            Size2D scaleSize = new Size2D(-1, 5);
 
             m1.Scale(scaleSize);
-            Assert.AreEqual(ViewMatrix2D.Zero, m1);
+            Assert.AreEqual(Matrix2D.Zero, m1);
 
             m2.Scale(scaleSize);
             Assert.AreEqual(-10, m2.X1);
@@ -547,7 +547,7 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void ScaleTest2()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
 
             // Scale by a vector for which multiplicatio isn't defined...
         }
@@ -556,14 +556,14 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void TranslateTest1()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
         }
 
         [Test]
         [Ignore("Test not yet implemented")]
         public void TranslateTest2()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
             // Scale by a vector for which multiplicatio isn't defined...
         }
 
@@ -571,14 +571,14 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void TransformTest1()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
         }
 
         [Test]
         [Ignore("Test not yet implemented")]
         public void Transform2Test2()
         {
-            ViewMatrix2D m1 = ViewMatrix2D.Identity;
+            Matrix2D m1 = Matrix2D.Identity;
             // Scale by a vector for which multiplicatio isn't defined...
         }
     }
@@ -591,7 +591,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void CreateNewTest()
         {
-            ViewPoint2D[] points = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsFigure2D f1 = new GraphicsFigure2D(points, true);
             Assert.AreEqual(4, f1.Points.Count);
 
@@ -604,9 +604,9 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void EqualityTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
-            ViewPoint2D[] points2 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(2, 0), new ViewPoint2D(2, 2), new ViewPoint2D(0, 2) };
-            ViewPoint2D[] points3 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(2, 0), new ViewPoint2D(2, 2), new ViewPoint2D(0, 2), new ViewPoint2D(0, 2) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
+            Point2D[] points2 = new Point2D[] { new Point2D(0, 0), new Point2D(2, 0), new Point2D(2, 2), new Point2D(0, 2) };
+            Point2D[] points3 = new Point2D[] { new Point2D(0, 0), new Point2D(2, 0), new Point2D(2, 2), new Point2D(0, 2), new Point2D(0, 2) };
 
             GraphicsFigure2D f1 = new GraphicsFigure2D(points1, true);
             GraphicsFigure2D f2 = new GraphicsFigure2D(points1, true);
@@ -627,30 +627,30 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(NotSupportedException))]
         public void AddPointsTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
             GraphicsFigure2D f1 = new GraphicsFigure2D(points1, false);
 
-            f1.Points.Add(new ViewPoint2D(5, 5));
+            f1.Points.Add(new Point2D(5, 5));
         }
 
         [Test]
         public void ToStringTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsFigure2D f1 = new GraphicsFigure2D(points1);
 
-            string expected = String.Format("[{0}] Number of {1} points: 4; Closed: False", typeof(GraphicsFigure2D), typeof(ViewPoint2D).Name);
+            string expected = String.Format("[{0}] Number of {1} points: 4; Closed: False", typeof(GraphicsFigure2D), typeof(Point2D).Name);
             Assert.AreEqual(expected, f1.ToString());
         }
 
         [Test]
         public void CloneTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
             GraphicsFigure2D f1 = new GraphicsFigure2D(points1);
-            GraphicsFigure<ViewPoint2D, ViewRectangle2D> f2 = f1.Clone();
+            GraphicsFigure<Point2D, Rectangle2D> f2 = f1.Clone();
             GraphicsFigure2D f3 = (f1 as ICloneable).Clone() as GraphicsFigure2D;
 
             Assert.AreEqual(f1, f2);
@@ -660,7 +660,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void EnumTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
             GraphicsFigure2D f1 = new GraphicsFigure2D(points1);
 
@@ -681,7 +681,7 @@ namespace SharpMap.Tests.Rendering
             GraphicsPath2D p1 = new GraphicsPath2D();
             Assert.AreEqual(0, p1.Figures.Count);
 
-            ViewPoint2D[] points = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsPath2D p2 = new GraphicsPath2D(points);
             Assert.AreEqual(1, p2.Figures.Count);
             Assert.AreEqual(4, p2.CurrentFigure.Points.Count);
@@ -702,7 +702,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void AddFiguresTest()
         {
-            ViewPoint2D[] points = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
             GraphicsPath2D p1 = new GraphicsPath2D();
             p1.NewFigure(points, false);
@@ -712,13 +712,13 @@ namespace SharpMap.Tests.Rendering
             Assert.AreEqual(4, p1.CurrentFigure.Points.Count);
             Assert.IsFalse(p1.CurrentFigure.IsClosed);
             Assert.AreEqual(p1.Bounds, p1.CurrentFigure.Bounds);
-            Assert.AreEqual(p1.Bounds, new ViewRectangle2D(0, 1, 0, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 1, 0, 1));
         }
 
         [Test]
         public void CurrentFigureTest1()
         {
-            ViewPoint2D[] points = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
             GraphicsFigure2D f1 = new GraphicsFigure2D(points, true);
             GraphicsPath2D p1 = new GraphicsPath2D(f1);
@@ -741,7 +741,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(InvalidOperationException))]
         public void CurrentFigureTest2()
         {
-            ViewPoint2D[] points = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
             GraphicsFigure2D f1 = new GraphicsFigure2D(points, true);
             GraphicsPath2D p1 = new GraphicsPath2D();
@@ -755,29 +755,29 @@ namespace SharpMap.Tests.Rendering
         {
             GraphicsPath2D p1 = new GraphicsPath2D();
 
-            Assert.IsTrue(p1.Bounds == ViewRectangle2D.Empty);
+            Assert.IsTrue(p1.Bounds == Rectangle2D.Empty);
 
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
-            ViewPoint2D[] points2 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(10, 0), new ViewPoint2D(10, 1), new ViewPoint2D(0, 1) };
-            ViewPoint2D[] points3 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(-1, 0), new ViewPoint2D(-1, -1), new ViewPoint2D(0, -1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
+            Point2D[] points2 = new Point2D[] { new Point2D(0, 0), new Point2D(10, 0), new Point2D(10, 1), new Point2D(0, 1) };
+            Point2D[] points3 = new Point2D[] { new Point2D(0, 0), new Point2D(-1, 0), new Point2D(-1, -1), new Point2D(0, -1) };
 
             p1.NewFigure(points1, true);
-            Assert.AreEqual(p1.Bounds, new ViewRectangle2D(0, 1, 0, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 1, 0, 1));
 
             p1.NewFigure(points2, true);
-            Assert.AreEqual(p1.Bounds, new ViewRectangle2D(0, 10, 0, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 10, 0, 1));
 
             p1.NewFigure(points3, true);
-            Assert.AreEqual(p1.Bounds, new ViewRectangle2D(-1, 10, -1, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(-1, 10, -1, 1));
         }
 
         [Test]
         public void CloneTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsPath2D p1 = new GraphicsPath2D(points1, true);
 
-            GraphicsPath<ViewPoint2D, ViewRectangle2D> p2 = p1.Clone();
+            GraphicsPath<Point2D, Rectangle2D> p2 = p1.Clone();
             Assert.AreEqual(p1, p2);
 
             GraphicsPath2D p3 = (p1 as ICloneable).Clone() as GraphicsPath2D;
@@ -794,8 +794,8 @@ namespace SharpMap.Tests.Rendering
             GraphicsPath2D p2 = new GraphicsPath2D();
             Assert.IsTrue(p1.Equals(p2));
 
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
-            ViewPoint2D[] points2 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(2, 0), new ViewPoint2D(2, 2), new ViewPoint2D(0, 2) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
+            Point2D[] points2 = new Point2D[] { new Point2D(0, 0), new Point2D(2, 0), new Point2D(2, 2), new Point2D(0, 2) };
 
             GraphicsPath2D p3 = new GraphicsPath2D(points1);
             GraphicsPath2D p4 = new GraphicsPath2D(points1);
@@ -826,10 +826,10 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ToStringTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsPath2D p1 = new GraphicsPath2D(points1);
 
-            ViewRectangle2D bounds = new ViewRectangle2D(ViewPoint2D.Zero, ViewSize2D.Unit);
+            Rectangle2D bounds = new Rectangle2D(Point2D.Zero, Size2D.Unit);
             string expected = String.Format("[{0}] 1 figure of ViewPoint2D points; Bounds: {1}", typeof(GraphicsPath2D), bounds);
 
             Assert.AreEqual(expected, p1.ToString());
@@ -838,7 +838,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void GetHashCodeTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsPath2D p1 = new GraphicsPath2D();
             GraphicsPath2D p2 = new GraphicsPath2D();
             GraphicsPath2D p3 = new GraphicsPath2D(points1);
@@ -856,13 +856,13 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void EnumPointsTest()
         {
-            ViewPoint2D[] points1 = new ViewPoint2D[] { new ViewPoint2D(0, 0), new ViewPoint2D(1, 0), new ViewPoint2D(1, 1), new ViewPoint2D(0, 1) };
+            Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
             GraphicsPath2D p1 = new GraphicsPath2D(points1);
 
             int i = 0;
             foreach (GraphicsFigure2D figure in p1)
             {
-                foreach (ViewPoint2D point in figure)
+                foreach (Point2D point in figure)
                 {
                     Assert.AreEqual(points1[i++], point);
                 }
@@ -889,8 +889,8 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void SizeTest()
         {
-            Symbol2D s1 = new Symbol2D(new ViewSize2D(16, 16));
-            Assert.AreEqual(new ViewSize2D(16, 16), s1.Size);
+            Symbol2D s1 = new Symbol2D(new Size2D(16, 16));
+            Assert.AreEqual(new Size2D(16, 16), s1.Size);
         }
 
         [Test]

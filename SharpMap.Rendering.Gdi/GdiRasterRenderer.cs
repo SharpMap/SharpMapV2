@@ -26,12 +26,12 @@ namespace SharpMap.Rendering.Gdi
 {
     public class GdiRasterRenderer : RasterRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
     {
-        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds)
+        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
         {
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, ViewRectangle2D viewBounds, ViewRectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
+        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
         {
             throw new Exception("The method or operation is not implemented.");
         }

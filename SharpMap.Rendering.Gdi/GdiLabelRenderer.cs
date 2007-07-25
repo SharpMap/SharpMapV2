@@ -57,13 +57,13 @@ namespace SharpMap.Rendering.Gdi
             }
         }
 
-        public override ViewSize2D MeasureString(string text, StyleFont font)
+        public override Size2D MeasureString(string text, StyleFont font)
         {
             Graphics g = Graphics;
 
             if (g == null)
             {
-                return new ViewSize2D(0, 0);
+                return new Size2D(0, 0);
             }
 
             using (GdiFont gdiFont = new GdiFont(font.FontFamily.Name, (float)font.Size.Height, ViewConverter.ViewToGdi(font.Style), GraphicsUnit.Pixel))
@@ -77,12 +77,12 @@ namespace SharpMap.Rendering.Gdi
             return RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor, label.Style.BackColor, label.Style.Halo, label.Rotation);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor)
         {
-            return RenderLabel(text, location, new ViewPoint2D(0, 0), font, foreColor, null, null, 0);
+            return RenderLabel(text, location, new Point2D(0, 0), font, foreColor, null, null, 0);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
+        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         {
             Graphics g = Graphics;
 

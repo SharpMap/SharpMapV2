@@ -27,7 +27,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// The base class for 2D feature renderers which produce labels.
     /// </summary>
     /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
-    public abstract class LabelRenderer2D<TRenderObject> : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<ViewPoint2D, ViewSize2D, ViewRectangle2D, TRenderObject>
+    public abstract class LabelRenderer2D<TRenderObject> : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
 
@@ -61,10 +61,10 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        public abstract ViewSize2D MeasureString(string text, StyleFont font);
+        public abstract Size2D MeasureString(string text, StyleFont font);
         public abstract TRenderObject RenderLabel(Label2D label);
-        public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, StyleFont font, StyleColor foreColor);
-        public abstract TRenderObject RenderLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
+        public abstract TRenderObject RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor);
+        public abstract TRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
         protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, LabelStyle style)
@@ -335,7 +335,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
-        TRenderObject ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject>.RenderLabel(ILabel<ViewPoint2D, ViewRectangle2D, GraphicsPath<ViewPoint2D, ViewRectangle2D>> label)
+        TRenderObject ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, GraphicsPath<Point2D, Rectangle2D>> label)
         {
             return RenderLabel(label as Label2D);
         }

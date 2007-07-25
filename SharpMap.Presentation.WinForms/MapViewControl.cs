@@ -102,13 +102,13 @@ namespace SharpMap.Presentation.WinForms
 			get { return _dpi; }
 		}
 
-        public ViewSize2D ViewSize
+        public Size2D ViewSize
         {
             get { return ViewConverter.GdiToView(base.Size); }
             set { base.Size = GdiSize.Round(ViewConverter.ViewToGdi(value)); }
         }
 
-        public void ShowRenderedObject(ViewPoint2D location, object renderedObject)
+        public void ShowRenderedObject(Point2D location, object renderedObject)
         {
             PointF point = ViewConverter.ViewToGdi(location);
 
@@ -124,15 +124,15 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        public event EventHandler<MapActionEventArgs<ViewPoint2D>> Hover;
+        public event EventHandler<MapActionEventArgs<Point2D>> Hover;
 
-		public event EventHandler<MapActionEventArgs<ViewPoint2D>> BeginAction;
+		public event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
 
-		public event EventHandler<MapActionEventArgs<ViewPoint2D>> MoveTo;
+		public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
 
-        public event EventHandler<MapActionEventArgs<ViewPoint2D>> EndAction;
+        public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
 
-        public event EventHandler<SizeChangeEventArgs<ViewSize2D>> SizeChangeRequested;
+        public event EventHandler<SizeChangeEventArgs<Size2D>> SizeChangeRequested;
 
         #endregion
 
@@ -187,9 +187,9 @@ namespace SharpMap.Presentation.WinForms
             MapTool currentTool = SelectedTool;
             SelectedTool = e.Delta > 0 ? MapTool.ZoomIn : MapTool.ZoomOut;
 
-            ViewRectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
+            Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
             OnBeginAction(selectBox.Location);
-            ViewPoint2D endPoint = new ViewPoint2D(selectBox.Right, selectBox.Bottom);
+            Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
             OnMoveTo(endPoint);
             OnEndAction(endPoint);
 
@@ -254,22 +254,22 @@ namespace SharpMap.Presentation.WinForms
         #region Event Invokers
         private void OnViewSizeChangeRequested(GdiSize sizeRequested)
         {
-            EventHandler<SizeChangeEventArgs<ViewSize2D>> @event = SizeChangeRequested;
+            EventHandler<SizeChangeEventArgs<Size2D>> @event = SizeChangeRequested;
 
             if (@event != null)
             {
-                SizeChangeEventArgs<ViewSize2D> args 
-                    = new SizeChangeEventArgs<ViewSize2D>(ViewConverter.GdiToView(sizeRequested));
+                SizeChangeEventArgs<Size2D> args 
+                    = new SizeChangeEventArgs<Size2D>(ViewConverter.GdiToView(sizeRequested));
 
                 SizeChangeRequested(this, args);
             }
         }
 
-        private void OnHover(ViewPoint2D actionLocation)
+        private void OnHover(Point2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-            EventHandler<MapActionEventArgs<ViewPoint2D>> @event = Hover;
+            EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
 
             if (@event != null)
             {
@@ -277,21 +277,21 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void OnBeginAction(ViewPoint2D actionLocation)
+        private void OnBeginAction(Point2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-			EventHandler<MapActionEventArgs<ViewPoint2D>> @event = BeginAction;
+			EventHandler<MapActionEventArgs<Point2D>> @event = BeginAction;
 
             if (@event != null)
                 @event(this, _globalActionArgs);
         }
 
-        private void OnMoveTo(ViewPoint2D actionLocation)
+        private void OnMoveTo(Point2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-			EventHandler<MapActionEventArgs<ViewPoint2D>> @event = MoveTo;
+			EventHandler<MapActionEventArgs<Point2D>> @event = MoveTo;
 
             if (@event != null)
             {
@@ -299,11 +299,11 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void OnEndAction(ViewPoint2D actionLocation)
+        private void OnEndAction(Point2D actionLocation)
         {
             _globalActionArgs.SetActionPoint(actionLocation);
 
-			EventHandler<MapActionEventArgs<ViewPoint2D>> @event = EndAction;
+			EventHandler<MapActionEventArgs<Point2D>> @event = EndAction;
 
             if (@event != null)
             {
@@ -331,14 +331,14 @@ namespace SharpMap.Presentation.WinForms
             return Math.Abs(_mouseDownLocation.X - point.X) <= 3 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
         }
 
-        private ViewRectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
+        private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
         {
             float scale = (float)Math.Pow(2, (float)Math.Abs(deltaDegrees) / 360f);
             RectangleF zoomBox = ClientRectangle;
             PointF center = new PointF((zoomBox.Width + zoomBox.Left) / 2, (zoomBox.Height + zoomBox.Top) / 2);
             PointF centerDeltaVector = new PointF(location.X - center.X, location.Y - center.Y);
             zoomBox.Offset(centerDeltaVector);
-            return new ViewRectangle2D(zoomBox.Left, zoomBox.Right, zoomBox.Top, zoomBox.Bottom);
+            return new Rectangle2D(zoomBox.Left, zoomBox.Right, zoomBox.Top, zoomBox.Bottom);
         }
 
         //private void createSelectionBox(GdiPoint from, GdiPoint previousTo, GdiPoint to)
@@ -399,12 +399,12 @@ namespace SharpMap.Presentation.WinForms
 
     #region Event Arg Classes
 
-    public class GdiMapActionEventArgs : MapActionEventArgs<ViewPoint2D>
+    public class GdiMapActionEventArgs : MapActionEventArgs<Point2D>
     {
         public GdiMapActionEventArgs()
-            : base(new ViewPoint2D()) { }
+            : base(new Point2D()) { }
 
-        public void SetActionPoint(ViewPoint2D actionLocation)
+        public void SetActionPoint(Point2D actionLocation)
         {
             ActionPoint = actionLocation;
         }

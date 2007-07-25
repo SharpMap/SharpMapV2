@@ -28,17 +28,17 @@ namespace SharpMap.Rendering.Rendering2D
     /// A 2 dimensional measure of size.
     /// </summary>
     [Serializable]
-	public struct ViewSize2D : IVectorD, IHasEmpty
+	public struct Size2D : IVectorD, IHasEmpty
     {
         private DoubleComponent _width, _height;
         private bool _hasValue;
 
-        public static readonly ViewSize2D Empty = new ViewSize2D();
-		public static readonly ViewSize2D Zero = new ViewSize2D(0, 0);
-		public static readonly ViewSize2D Unit = new ViewSize2D(1, 1);
+        public static readonly Size2D Empty = new Size2D();
+		public static readonly Size2D Zero = new Size2D(0, 0);
+		public static readonly Size2D Unit = new Size2D(1, 1);
 
         #region Constructors
-        public ViewSize2D(double width, double height)
+        public Size2D(double width, double height)
         {
             _width = width;
             _height = height;
@@ -110,31 +110,31 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Equality Testing
-        public static bool operator ==(ViewSize2D lhs, ViewSize2D rhs)
+        public static bool operator ==(Size2D lhs, Size2D rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ViewSize2D lhs, ViewSize2D rhs)
+        public static bool operator !=(Size2D lhs, Size2D rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public static bool operator ==(ViewSize2D lhs, IVectorD rhs)
+        public static bool operator ==(Size2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(ViewSize2D lhs, IVectorD rhs)
+        public static bool operator !=(Size2D lhs, IVectorD rhs)
         {
             return !lhs.Equals(rhs);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is ViewSize2D)
+            if (obj is Size2D)
             {
-                return Equals((ViewSize2D)obj);
+                return Equals((Size2D)obj);
             }
 
             if (obj is IVectorD)
@@ -145,7 +145,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public bool Equals(ViewSize2D size)
+        public bool Equals(Size2D size)
         {
             return _width.Equals(size._width) &&
                 _height.Equals(size._height) &&
@@ -210,14 +210,14 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
         #endregion
 
-        public ViewPoint2D Clone()
+        public Point2D Clone()
         {
-            return new ViewPoint2D((double)_width, (double)_height);
+            return new Point2D((double)_width, (double)_height);
         }
 
-        public ViewSize2D Negative()
+        public Size2D Negative()
         {
-            return new ViewSize2D((double)_width.Negative(), (double)_height.Negative());
+            return new Size2D((double)_width.Negative(), (double)_height.Negative());
         }
 
         #region IEnumerable<double> Members
