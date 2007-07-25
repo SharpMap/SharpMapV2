@@ -102,17 +102,27 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 return new Matrix2D(base.Inverse);
             }
-        }
+		}
 
         public void Scale(double x, double y)
         {
             base.Scale(new Point2D(x, y));
-        }
+		}
+
+		public void ScalePrepend(double x, double y)
+		{
+			base.Scale(new Point2D(x, y), MatrixOperationOrder.Prepend);
+		}
 
         public void Translate(double x, double y)
         {
             base.Translate(new Point2D(x, y));
-        }
+		}
+
+		public void TranslatePrepend(double x, double y)
+		{
+			base.Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
+		}
 
         private readonly DoubleComponent[] _transferPoints = new DoubleComponent[3];
 

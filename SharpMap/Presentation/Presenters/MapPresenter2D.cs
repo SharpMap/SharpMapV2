@@ -42,8 +42,8 @@ namespace SharpMap.Presentation
         //private double _worldUnitsPerInch;
         //private ViewSize2D _viewSize;
         //private GeoPoint _center;
-        private double _maximumWorldWidth;
-        private double _minimumWorldWidth;
+        private double _maximumWorldWidth = Double.PositiveInfinity;
+        private double _minimumWorldWidth = 0.0;
         private Matrix2D _toViewTransform;
         private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
@@ -553,19 +553,19 @@ namespace SharpMap.Presentation
             double widthZoomRatio = newEnvelope.Width / oldEnvelope.Width;
             double heightZoomRatio = newEnvelope.Height / oldEnvelope.Height;
 
-            double newWidth = widthZoomRatio > heightZoomRatio ? newEnvelope.Width : newEnvelope.Width * heightZoomRatio;
+			double newWorldWidth = widthZoomRatio > heightZoomRatio ? newEnvelope.Width : newEnvelope.Width * heightZoomRatio / widthZoomRatio;
 
-            if (newWidth < _minimumWorldWidth)
+            if (newWorldWidth < _minimumWorldWidth)
             {
-                newWidth = _minimumWorldWidth;
+                newWorldWidth = _minimumWorldWidth;
             }
 
-            if (newWidth > _maximumWorldWidth)
+            if (newWorldWidth > _maximumWorldWidth)
             {
-                newWidth = _maximumWorldWidth;
+                newWorldWidth = _maximumWorldWidth;
             }
 
-            setViewMetricsInternal(View.ViewSize, newEnvelope.GetCentroid(), newWidth / View.ViewSize.Width);
+            setViewMetricsInternal(View.ViewSize, newEnvelope.GetCentroid(), newWorldWidth / View.ViewSize.Width);
         }
 
         private void setViewMetricsInternal(Size2D newViewSize, GeoPoint newCenter, double newWorldUnitsPerPixel)
@@ -575,12 +575,32 @@ namespace SharpMap.Presentation
             double oldWorldWidth = WorldWidth;
             double oldWorldHeight = WorldHeight;
 
-            if (newViewSize == View.ViewSize && GeoCenter.Equals(newCenter) && newWorldUnitsPerPixel == WorldUnitsPerPixel)
-            {
-                return;
+			bool viewMatrixChanged = false;
+
+            if (newViewSize != View.ViewSize)
+			{
+				View.ViewSize = newViewSize;
             }
 
-            View.ViewSize = newViewSize;
+			if (!GeoCenter.Equals(newCenter))
+			{
+				double x = newCenter.X - GeoCenter.X;
+				double y = newCenter.Y - GeoCenter.Y;
+				ToViewTransform.TranslatePrepend(x, y);
+				viewMatrixChanged = true;
+			}
+
+			if (newWorldUnitsPerPixel != WorldUnitsPerPixel)
+			{
+				double newScale = 1 / newWorldUnitsPerPixel;
+				ToViewTransform.ScalePrepend(newScale, newScale * PixelAspectRatio);
+				viewMatrixChanged = true;
+			}
+
+			if (viewMatrixChanged)
+			{
+				ToWorldTransform = ToViewTransform.Inverse;
+			}
         }
 
         private Point2D worldToView(GeoPoint geoPoint)

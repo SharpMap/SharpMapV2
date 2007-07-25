@@ -90,7 +90,7 @@ namespace SharpMap.Tests.Presentation
 		{
 			MockRepository mocks = new MockRepository();
 
-            MapPresenter2D mapPresenter = createPresenter(mocks, 100, 100);
+            MapPresenter2D mapPresenter = createPresenter(mocks, 400, 400);
 
 			mapPresenter.ZoomToWidth(3500);
 			Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel);
