@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 
 using SharpMap.Utilities;
 
@@ -28,11 +29,15 @@ namespace SharpMap.Rendering.Rendering2D
     public sealed class Symbol2D : ICloneable, IDisposable
     {
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
-        private Matrix2D _affineTransform = Matrix2D.Identity;
+        private Matrix2D _rotationTransform = Matrix2D.Identity;
+        private Matrix2D _scalingTransform = Matrix2D.Identity;
+        private Matrix2D _translationTransform = Matrix2D.Identity;
         private Stream _symbolData;
         private Rectangle2D _symbolBox;
         private string _symbolDataHash;
         private bool _disposed;
+
+        public static readonly Symbol2D Default = new Symbol2D(Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png"), new Size2D(16, 16));
 
         #region Object Construction/Destruction
         public Symbol2D(Size2D size)
@@ -111,10 +116,13 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A string representing the value of this <see cref="Symbol2D"/>.</returns>
         public override string ToString()
         {
-            return String.Format("[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; Scale: {7:N}",
-                GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, Scale);
+            return String.Format("[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; ScaleX: {7:N}; ScaleY: {8:N}",
+                GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, ScaleX, ScaleY);
         }
 
+        /// <summary>
+        /// Gets or sets the size of this symbol.
+        /// </summary>
         public Size2D Size
         {
             get { return _symbolBox.Size; }
@@ -138,8 +146,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public Matrix2D AffineTransform
         {
-            get { return _affineTransform; }
-            set { _affineTransform = value; }
+            get { return new Matrix2D(_rotationTransform.Multiply(_scalingTransform).Multiply(_translationTransform)); }
+            //TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
+            set { throw new NotImplementedException(); }
         }
 
         /// <summary>
@@ -156,28 +165,46 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public Point2D Offset
         {
-            get { return new Point2D(_affineTransform.W1, _affineTransform.W2); }
-            set { _affineTransform.W1 = value.X; _affineTransform.W2 = value.Y; }
+            get { return new Point2D(_translationTransform.OffsetX, _translationTransform.OffsetY); }
+            set { _translationTransform.OffsetX = value.X; _translationTransform.OffsetY = value.Y; }
         }
 
-        // TODO: do the math to get the rotation out of the matrix
         /// <summary>
-        /// Gets or sets a value by which to rotate this symbol.
+        /// Gets or sets a value by which to rotate this symbol, in radians.
         /// </summary>
         public double Rotation
         {
-            get { return 0.0; }
-            set { }
+            get 
+            { 
+                return Math.Asin(_rotationTransform.X2) + _rotationTransform.X1 < 0 ? Math.PI : 0;
+            }
+            set { _rotationTransform.Rotate(value); }
         }
 
-        // TODO: do the math to get the scale out of the matrix
         /// <summary>
-        /// Gets or sets a value by which to scale this symbol.
+        /// Sets a value by which to scale this symbol's width and height.
         /// </summary>
         public double Scale
         {
-            get { return 0.0; }
-            set { }
+            set { _scalingTransform.X1 = _scalingTransform.Y2 = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value by which to scale this symbol's width.
+        /// </summary>
+        public double ScaleX
+        {
+            get { return _scalingTransform.X1; }
+            set { _scalingTransform.X1 = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value by which to scale this symbol's height.
+        /// </summary>
+        public double ScaleY
+        {
+            get { return _scalingTransform.Y2; }
+            set { _scalingTransform.Y2 = value; }
         }
 
         #region ICloneable Members

@@ -257,7 +257,7 @@ namespace SharpMap.Tests.Presentation
 			VectorLayer vLayer2 = new VectorLayer("Geom layer 2", vLayer.DataSource);
 			vLayer2.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer2.Style.Symbol.Rotation = 45;
-			vLayer2.Style.Symbol.Scale = 0.4f;
+            vLayer2.Style.Symbol.Scale = 0.4f;
 			map.Layers.Add(vLayer2);
 
 			VectorLayer vLayer3 = new VectorLayer("Geom layer 3", vLayer.DataSource);
@@ -266,8 +266,8 @@ namespace SharpMap.Tests.Presentation
 			map.Layers.Add(vLayer3);
 
 			VectorLayer vLayer4 = new VectorLayer("Geom layer 4", vLayer.DataSource);
-			vLayer4.Style.Symbol.Offset = new Point2D(3, 4);
-			vLayer4.Style.Symbol.Scale = 0.4f;
+            vLayer4.Style.Symbol.Offset = new Point2D(3, 4);
+            vLayer2.Style.Symbol.Scale = 0.4f;
 			map.Layers.Add(vLayer4);
 
 			mapPresenter.ZoomToExtents();

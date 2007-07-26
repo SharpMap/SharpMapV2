@@ -25,32 +25,57 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// Represents a 2 dimensional affine transform matrix (a 3x3 matrix).
     /// </summary>
+    /// <remarks>
+    /// Matrix2D is arranged in row-major format, like GDI+, WPF and DirectX matrixes, where
+    /// the translate components are in the 3rd row.
+    /// </remarks>
     [Serializable]
     public class Matrix2D : AffineMatrix<DoubleComponent>
     {
-        public new readonly static Matrix2D Identity
+        private readonly static Matrix2D _identity
             = new Matrix2D(
                 1, 0, 0,
                 0, 1, 0,
                 0, 0, 1);
 
-        public new readonly static Matrix2D Zero
-            = new Matrix2D(
-                0, 0, 0,
-                0, 0, 0,
-                0, 0, 0);
+        /// <summary>
+        /// Gets an identity 2D matrix.
+        /// </summary>
+        /// <remarks>
+        /// A 3x3 affine transform matrix, with 1s in the diagonal, and 0s everywhere else:
+        /// 
+        ///     | 1  0  0 |
+        ///     | 0  1  0 |
+        ///     | 0  0  1 |
+        /// </remarks>
+        public new static Matrix2D Identity
+        {
+            get { return _identity.Clone(); }
+        }
 
         #region Constructors
+        /// <summary>
+        /// Creates a new identity Matrix2D.
+        /// </summary>
         public Matrix2D()
-            : this(Identity) { }
+            : this(1, 0, 0, 0, 1, 0) { }
 
+        /// <summary>
+        /// Creates a new Matrix2D with the given values.
+        /// </summary>
+        /// <param name="x1">The first row, first column component.</param>
+        /// <param name="x2">The second row, first column component.</param>
+        /// <param name="offsetX">The third row, first column component.</param>
+        /// <param name="y1">The second row, first column component.</param>
+        /// <param name="y2">The second row, second column component.</param>
+        /// <param name="offsetY">The second row, third column component.</param>
         public Matrix2D(double x1, double x2, double offsetX,
             double y1, double y2, double offsetY)
             : this(x1, x2, offsetX, y1, y2, offsetY, 0, 0, 1)
         {
         }
 
-        public Matrix2D(double x1, double x2, double offsetX,
+        protected Matrix2D(double x1, double x2, double offsetX,
             double y1, double y2, double offsetY,
             double w1, double w2, double w3)
             :base(MatrixFormat.RowMajor, 3)
@@ -91,11 +116,18 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
+        /// <summary>
+        /// Creates an element-for-element copy of the 2D matrix.
+        /// </summary>
+        /// <returns>An identical 2D matrix.</returns>
         public new Matrix2D Clone()
         {
             return new Matrix2D(this);
         }
 
+        /// <summary>
+        /// Gets the inverse of the 2D matrix.
+        /// </summary>
         public new Matrix2D Inverse
         {
             get
@@ -104,28 +136,63 @@ namespace SharpMap.Rendering.Rendering2D
             }
 		}
 
+        /// <summary>
+        /// Appends a scale factor to this matrix.
+        /// </summary>
+        /// <param name="x">Scale to apply to the X dimension.</param>
+        /// <param name="y">Scale to apply to the Y dimension.</param>
         public void Scale(double x, double y)
         {
             base.Scale(new Point2D(x, y));
 		}
 
+        /// <summary>
+        /// Prepends a scale factor to this matrix.
+        /// </summary>
+        /// <param name="x">Scale to apply to the X dimension.</param>
+        /// <param name="y">Scale to apply to the Y dimension.</param>
 		public void ScalePrepend(double x, double y)
 		{
 			base.Scale(new Point2D(x, y), MatrixOperationOrder.Prepend);
 		}
 
+        /// <summary>
+        /// Appends a translation vector to this matrix.
+        /// </summary>
+        /// <param name="x">X component of the translation vector.</param>
+        /// <param name="y">Y component of the translation vector.</param>
         public void Translate(double x, double y)
         {
             base.Translate(new Point2D(x, y));
-		}
+        }
 
+        /// <summary>
+        /// Prepends a translation vector to this matrix.
+        /// </summary>
+        /// <param name="x">X component of the translation vector.</param>
+        /// <param name="y">Y component of the translation vector.</param>
 		public void TranslatePrepend(double x, double y)
 		{
 			base.Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
 		}
 
+        /// <summary>
+        /// Appends a rotation in radians onto this matrix.
+        /// </summary>
+        /// <param name="theta">Amount to rotate, in radians.</param>
+        public void Rotate(double theta)
+        {
+            RotateAlong(null, theta);
+        }
+
         private readonly DoubleComponent[] _transferPoints = new DoubleComponent[3];
 
+        /// <summary>
+        /// Transforms a point by multiplying it with this matrix.
+        /// </summary>
+        /// <param name="x">X component of the point.</param>
+        /// <param name="y">Y component of the point.</param>
+        /// <returns>A Point2D describing the transformed input.</returns>
         public Point2D TransformVector(double x, double y)
         {
             _transferPoints[0] = x;

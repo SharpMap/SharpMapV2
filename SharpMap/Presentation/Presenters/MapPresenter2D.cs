@@ -44,9 +44,11 @@ namespace SharpMap.Presentation
         //private GeoPoint _center;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth = 0.0;
-        private Matrix2D _originTransform = new Matrix2D();
-        private Matrix2D _mapActionTransform = new Matrix2D();
-        private Matrix2D _toViewTransform = new Matrix2D();
+        private Matrix2D _originNormalizeTransform = new Matrix2D();
+        private Matrix2D _rotationTransform = new Matrix2D();
+        private Matrix2D _translationTransform = new Matrix2D();
+        private Matrix2D _scaleTransform = new Matrix2D();
+        private Matrix2D _toViewCoordinates = new Matrix2D();
         private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
         
@@ -76,22 +78,22 @@ namespace SharpMap.Presentation
 
             if (geoCenter != GeoPoint.Empty)
             {
-                _originTransform.OffsetX = -extents.Left;
-                _originTransform.OffsetY = -extents.Bottom;
+                _originNormalizeTransform.OffsetX = -extents.Left;
+                _originNormalizeTransform.OffsetY = -extents.Bottom;
 
                 double widthScale = 1 / initialScale;
                 double heightScale = 1 / initialScale;
 
-                _mapActionTransform = new Matrix2D(widthScale, 0, 0, 0, heightScale, 0);
+                _scaleTransform = new Matrix2D(widthScale, 0, 0, 0, heightScale, 0);
 
-                _toViewTransform.Translate(0, -View.ViewSize.Height);
-                _toViewTransform.Scale(1, -1);
+                _toViewCoordinates.Translate(0, -View.ViewSize.Height);
+                _toViewCoordinates.Scale(1, -1);
 
                 ToWorldTransform = ToViewTransform.Inverse as Matrix2D;
             }
             else
             {
-                _toViewTransform = new Matrix2D();
+                _toViewCoordinates = new Matrix2D();
                 _toWorldTransform = new Matrix2D();
             }
         }
@@ -215,8 +217,7 @@ namespace SharpMap.Presentation
         /// </exception>
         public double PixelAspectRatio
         {
-#warning Is this division the correct order for the PixelAspectRatio property?
-            get { return Math.Abs(ToViewTransform.X1 / ToViewTransform.Y2); }
+            get { return Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1); }
             set
             {
                 if (value <= 0)
@@ -224,7 +225,7 @@ namespace SharpMap.Presentation
                     throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
                 }
 
-                double currentRatio = Math.Abs(ToViewTransform.X1 / ToViewTransform.Y2);
+                double currentRatio = Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1);
 
                 if (currentRatio != value)
                 {
@@ -257,7 +258,16 @@ namespace SharpMap.Presentation
         /// </example>
         public Matrix2D ToViewTransform
         {
-            get { return new Matrix2D(_originTransform.Multiply(_mapActionTransform).Multiply(_toViewTransform)); }
+            get 
+            {
+                IMatrixD combined = _originNormalizeTransform
+                    .Multiply(_rotationTransform)
+                    .Multiply(_translationTransform)
+                    .Multiply(_scaleTransform)
+                    .Multiply(_toViewCoordinates);
+
+                return new Matrix2D(combined); 
+            }
             //set
             //{
             //    if (_toViewTransform != value)
@@ -503,6 +513,9 @@ namespace SharpMap.Presentation
 
         private void View_SizeChangeRequested(object sender, SizeChangeEventArgs<Size2D> e)
         {
+            _toViewCoordinates.OffsetY = e.Size.Height;
+            _toWorldTransform = ToViewTransform.Inverse;
+            View.ViewSize = e.Size;
         }
 
         private void View_Hover(object sender, MapActionEventArgs<Point2D> e)
@@ -589,16 +602,16 @@ namespace SharpMap.Presentation
 			{
                 double x = newCenter.X - oldCenter.X;
                 double y = newCenter.Y - oldCenter.Y;
-                _originTransform.OffsetX += x;
-                _originTransform.OffsetY += y;
+                _originNormalizeTransform.OffsetX += x;
+                _originNormalizeTransform.OffsetY += y;
 				viewMatrixChanged = true;
 			}
 
 			if (newWorldUnitsPerPixel != WorldUnitsPerPixel)
 			{
                 double newScale = 1 / newWorldUnitsPerPixel;
-                _mapActionTransform.Y2 = newScale * PixelAspectRatio;
-                _mapActionTransform.X1 = newScale;
+                _scaleTransform.Y2 = newScale * PixelAspectRatio;
+                _scaleTransform.X1 = newScale;
 				viewMatrixChanged = true;
 			}
 

@@ -13,14 +13,14 @@ using NPack;
 
 namespace SharpMap.Tests.Rendering
 {
-    #region ViewPoint2D
+    #region Point2D
     [TestFixture]
-    public class ViewPoint2DTests
+    public class Point2DTests
     {
         private static readonly double _e = 0.0005;
 
         [Test]
-        public void ViewPoint2DEqualityTests()
+        public void Point2DEqualityTests()
         {
             Point2D p1 = new Point2D();
             Point2D p2 = Point2D.Empty;
@@ -95,14 +95,14 @@ namespace SharpMap.Tests.Rendering
     }
     #endregion
 
-    #region ViewSize2D
+    #region Size2D
     [TestFixture]
-    public class ViewSize2DTests
+    public class Size2DTests
     {
         private static readonly double _e = 0.0005;
 
         [Test]
-        public void ViewSize2DEqualityTests()
+        public void Size2DEqualityTests()
         {
             Size2D s1 = new Size2D();
             Size2D s2 = Size2D.Empty;
@@ -177,14 +177,14 @@ namespace SharpMap.Tests.Rendering
     }
     #endregion
 
-    #region ViewRectangle2D
+    #region Rectangle2D
     [TestFixture]
-    public class ViewRectangle2DTests
+    public class Rectangle2DTests
     {
         private static readonly double _e = 0.0005;
 
         [Test]
-        public void ViewRectangle2DEqualityTests()
+        public void Rectangle2DEqualityTests()
         {
             Rectangle2D r1 = new Rectangle2D();
             Rectangle2D r2 = Rectangle2D.Empty;
@@ -406,9 +406,9 @@ namespace SharpMap.Tests.Rendering
     }
     #endregion
 
-    #region ViewMatrix2D
+    #region Matrix2D
     [TestFixture]
-    public class ViewMatrix2DTests
+    public class Matrix2DTests
     {
         private static readonly double _e = 0.0005;
 
@@ -452,17 +452,17 @@ namespace SharpMap.Tests.Rendering
         public void ElementsTest1()
         {
             Matrix2D m1 = Matrix2D.Identity;
-            Matrix2D m2 = Matrix2D.Zero;
-            Matrix2D m3 = new Matrix2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            Matrix2D m2 = new Matrix2D(0, 0, 0, 0, 0, 0);
+            Matrix2D m3 = new Matrix2D(1, 2, 3, 4, 5, 6);
 
             Assert.AreEqual(3, m1.RowCount);
             Assert.AreEqual(3, m2.ColumnCount);
 
             DoubleComponent[][] expected = new DoubleComponent[][] 
                 { 
-                    new DoubleComponent[] { 1, 2, 3 }, 
-                    new DoubleComponent[] { 4, 5, 6 }, 
-                    new DoubleComponent[] { 7, 8, 9 } 
+                    new DoubleComponent[] { 1, 4, 0 }, 
+                    new DoubleComponent[] { 2, 5, 0 }, 
+                    new DoubleComponent[] { 3, 6, 1 } 
                 };
             DoubleComponent[][] actual = m3.Elements;
 
@@ -523,11 +523,11 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void ScaleTest1()
         {
-            Matrix2D m1 = Matrix2D.Zero;
+            Matrix2D m1 = new Matrix2D(0, 0, 0, 0, 0, 0);
             Matrix2D m2 = Matrix2D.Identity;
 
             m1.Scale(10);
-            Assert.AreEqual(Matrix2D.Zero, m1);
+            Assert.AreEqual(new Matrix2D(0, 0, 0, 0, 0, 0), m1);
 
             m2.Scale(10);
             Assert.AreEqual(10, m2.X1);
@@ -536,7 +536,7 @@ namespace SharpMap.Tests.Rendering
             Size2D scaleSize = new Size2D(-1, 5);
 
             m1.Scale(scaleSize);
-            Assert.AreEqual(Matrix2D.Zero, m1);
+            Assert.AreEqual(new Matrix2D(0, 0, 0, 0, 0, 0), m1);
 
             m2.Scale(scaleSize);
             Assert.AreEqual(-10, m2.X1);
@@ -830,7 +830,7 @@ namespace SharpMap.Tests.Rendering
             GraphicsPath2D p1 = new GraphicsPath2D(points1);
 
             Rectangle2D bounds = new Rectangle2D(Point2D.Zero, Size2D.Unit);
-            string expected = String.Format("[{0}] 1 figure of ViewPoint2D points; Bounds: {1}", typeof(GraphicsPath2D), bounds);
+            string expected = String.Format("[{0}] 1 figure of Point2D points; Bounds: {1}", typeof(GraphicsPath2D), bounds);
 
             Assert.AreEqual(expected, p1.ToString());
         }

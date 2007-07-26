@@ -32,7 +32,7 @@ namespace SharpMap.Styles
 	/// </summary>
 	public class VectorStyle : Style
 	{
-		#region Private members
+		#region Private fields
         private StylePen _lineStyle;
         private StylePen _highlightLineStyle;
         private StylePen _selectLineStyle;
@@ -51,21 +51,36 @@ namespace SharpMap.Styles
 		#endregion
 
 		/// <summary>
-		/// Initializes a new VectorStyle and sets the default values
+		/// Initializes a new VectorStyle with default values.
 		/// </summary>
 		/// <remarks>
 		/// Default style values when initialized:<br/>
-		/// *LineStyle: 1px solid black<br/>
-		/// *FillStyle: Solid black<br/>
-		/// *Outline: No Outline
-		/// *Symbol: null-reference
+        /// <list type="table">
+        /// <item>
+        /// <term>LineStyle</term>
+        /// <description>1px solid black</description>
+        /// </item>
+        /// <item>
+        /// <term>FillStyle</term>
+        /// <description>Solid black</description>
+        /// </item>
+        /// <item>
+        /// <term>Outline</term>
+        /// <description>No Outline</description>
+        /// </item>
+        /// <item>
+        /// <term>Symbol</term>
+        /// <description>SharpMap.Rendering.Rendering2D.Symbol2D.Default</description>
+        /// </item>
+        /// </list>
 		/// </remarks>
 		public VectorStyle()
 		{
-			this.Outline = new StylePen(StyleColor.Black, 1);
-			this.Line = new StylePen(StyleColor.Black, 1);
-            this.Fill = new SolidStyleBrush(StyleColor.Black);
-			this.EnableOutline = false;
+			Outline = new StylePen(StyleColor.Black, 1);
+			Line = new StylePen(StyleColor.Black, 1);
+            Fill = new SolidStyleBrush(StyleColor.Black);
+            Symbol = Symbol2D.Default;
+			EnableOutline = false;
 		}
 
 		#region Properties

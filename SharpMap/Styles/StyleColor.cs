@@ -23,17 +23,23 @@ using System.Text;
 
 namespace SharpMap.Styles
 {
+    /// <summary>
+    /// Represents a 32-bit color in BGRA (blue, green, red, alpha) format.
+    /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
-    public struct StyleColor
+    public struct StyleColor : IEquatable<StyleColor>
     {
+        #region Private fields
         [FieldOffset(0)] private byte _b;
         [FieldOffset(1)] private byte _g;
         [FieldOffset(2)] private byte _r;
         [FieldOffset(3)] private byte _a;
 
         [FieldOffset(0)] private uint _bgra;
+        #endregion
 
+        #region Constructors
         public StyleColor(uint bgra)
         {
             _b = _g = _r = _a = 0;
@@ -48,11 +54,7 @@ namespace SharpMap.Styles
             _r = clampToByte(r);
             _a = clampToByte(a);
         }
-
-        private static byte clampToByte(int value)
-        {
-            return value > 255 ? (byte)255 : value < 0 ? (byte)0 : (byte)value;
-        }
+        #endregion
 
         public static StyleColor FromBgra(uint bgra)
         {
@@ -65,9 +67,9 @@ namespace SharpMap.Styles
         }
 
         /// <summary> 
-        /// Creates a color using HSB
+        /// Creates a color using HSB.
         /// </summary> 
-        /// <remarks>Adapted from the algoritm in "Computer Graphics: Principles and Practice in C", ISBN: 978-0201848403</remarks>
+        /// <remarks>Adapted from the algorithm in "Computer Graphics: Principles and Practice in C", ISBN: 978-0201848403</remarks>
         /// <param name="hue">The hue value.</param> 
         /// <param name="saturation">The saturation value.</param> 
         /// <param name="brightness">The brightness value.</param> 
@@ -79,26 +81,41 @@ namespace SharpMap.Styles
             return c;
         }
 
+        /// <summary>
+        /// Gets the color value as a BGRA-encoded <see cref="Uint32"/>.
+        /// </summary>
         public UInt32 Bgra
         {
             get { return _bgra; }
         }
 
+        /// <summary>
+        /// Gets the blue component of this color.
+        /// </summary>
         public Byte B
         {
             get { return _b; }
         }
 
+        /// <summary>
+        /// Gets the green component of this color.
+        /// </summary>
         public Byte G
         {
             get { return _g; }
         }
 
+        /// <summary>
+        /// Gets the red component of this color.
+        /// </summary>
         public Byte R
         {
             get { return _a; }
         }
 
+        /// <summary>
+        /// Gets the alpha component of this color.
+        /// </summary>
         public Byte A
         {
             get { return _a; }
@@ -133,10 +150,13 @@ namespace SharpMap.Styles
 
         /// <summary>
         /// Gets the luminance of the color based on the values 
-        /// of the red, green, and blue components. <see cref="A">Alpha</see>
+        /// of the red, green, and blue components. 
+        /// </summary>
+        /// <remarks>
+        /// <see cref="A">Alpha</see>
         /// is not used in the computation, since the resulting luminance depends on 
         /// what is blended with the alpha.
-        /// </summary>
+        /// </remarks>
         /// <returns>A value in the range [0 to 1] (inclusive).</returns>
         public double Luminance
         {
@@ -148,12 +168,19 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets the hue of the color based on the values
+        /// of the red, green and blue components.
+        /// </summary>
+        /// <returns>A value in the range [0 to 360] (inclusive).</returns>
         public double Hue
         {
             get
             {
                 if (R == G && G == B)
+                {
                     return 0.0;
+                }
 
                 double redFactor = ((double)R) / 255.0;
                 double greenFactor = ((double)G) / 255.0;
@@ -162,36 +189,57 @@ namespace SharpMap.Styles
                 double smallestFactor = redFactor;
 
                 if (greenFactor > largestFactor)
+                {
                     largestFactor = greenFactor;
+                }
 
                 if (blueFactor > largestFactor)
+                {
                     largestFactor = blueFactor;
+                }
 
                 if (greenFactor < smallestFactor)
+                {
                     smallestFactor = greenFactor;
+                }
 
                 if (blueFactor < smallestFactor)
+                {
                     smallestFactor = blueFactor;
+                }
 
                 double majorFactorDifference = largestFactor - smallestFactor;
                 double hue = 0.0;
 
                 if (redFactor == largestFactor)
+                {
                     hue = (greenFactor - blueFactor) / majorFactorDifference;
+                }
                 else if (greenFactor == largestFactor)
+                {
                     hue = 2.0 + ((blueFactor - redFactor) / majorFactorDifference);
+                }
                 else if (blueFactor == largestFactor)
+                {
                     hue = 4.0 + ((redFactor - greenFactor) / majorFactorDifference);
+                }
 
                 hue *= 60.0;
 
                 if (hue < 0.0)
+                {
                     hue += 360.0;
+                }
 
                 return hue;
             }
         }
 
+        /// <summary>
+        /// Gets the saturation of the color based on the values
+        /// of the red, green and blue components.
+        /// </summary>
+        /// <returns>A value in the range [0 to 1] (inclusive).</returns>
         public double Saturation
         {
             get
@@ -203,21 +251,31 @@ namespace SharpMap.Styles
 
                 double largestFactor = redFactor;
                 double smallestFactor = redFactor;
-                
+
                 if (greenFactor > largestFactor)
+                {
                     largestFactor = greenFactor;
+                }
 
                 if (blueFactor > largestFactor)
+                {
                     largestFactor = blueFactor;
+                }
 
                 if (greenFactor < smallestFactor)
+                {
                     smallestFactor = greenFactor;
+                }
 
                 if (blueFactor < smallestFactor)
+                {
                     smallestFactor = blueFactor;
+                }
 
                 if (largestFactor == smallestFactor)
+                {
                     return saturation;
+                }
 
                 double average = (largestFactor + smallestFactor) / 2.0;
                 
@@ -230,6 +288,14 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating the relative brightness of this color.
+        /// </summary>
+        /// <remarks>
+        /// The human eye perceives different colors as having different brightness. 
+        /// Yellow, for example, is brighter than blue. This method computes the relative
+        /// brightness of a given color.
+        /// </remarks>
         public double Brightness
         {
             get
@@ -241,16 +307,24 @@ namespace SharpMap.Styles
                 double smallestFactor = redFactor;
 
                 if (greenFactor > largestFactor)
+                {
                     largestFactor = greenFactor;
+                }
 
                 if (blueFactor > largestFactor)
+                {
                     largestFactor = blueFactor;
+                }
 
                 if (greenFactor < smallestFactor)
+                {
                     smallestFactor = greenFactor;
+                }
 
                 if (blueFactor < smallestFactor)
+                {
                     smallestFactor = blueFactor;
+                }
 
                 return ((largestFactor + smallestFactor) / 2f);
             }
@@ -311,6 +385,35 @@ namespace SharpMap.Styles
             }
         }
 
+        #region Equality Computation
+
+        #region IEquatable<StyleColor> Members
+
+        /// <summary>
+        /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
+        /// </summary>
+        public bool Equals(StyleColor other)
+        {
+            return this == other;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is StyleColor && ((StyleColor)obj).Bgra == Bgra)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Returns true if two <see cref="Color"/> instances are equal, false if they are not equal.
         /// </summary>
@@ -326,7 +429,9 @@ namespace SharpMap.Styles
         {
             return color1.Bgra != color2.Bgra;
         }
+        #endregion
 
+        #region Conversion Operators
         /// <summary>
         /// Casts a <see cref="Color"/> to a <see cref="UInt32"/>.
         /// </summary>
@@ -342,18 +447,9 @@ namespace SharpMap.Styles
         {
             return new StyleColor(value);
         }
+        #endregion
 
-        /// <summary>
-        /// Compares two Color instance to determine if they are equal.
-        /// </summary>
-        public override bool Equals(object obj)
-        {
-            if (obj != null && obj is StyleColor && ((StyleColor)obj).Bgra == this.Bgra)
-                return true;
-            else
-                return false;
-        }
-
+        #region GetHashCode
         /// <summary>
         /// Returns a hash code for this color value.
         /// </summary>
@@ -362,66 +458,27 @@ namespace SharpMap.Styles
         {
             unchecked { return (int)Bgra; }
         }
+        #endregion
 
-        private void setByHsb(double h, double s, double v)
-        {
-            _r = 0;
-            _g = 0;
-            _b = 0;
-            _a = 255;
-
-            double temp1, temp2;
-            double r = 0, g = 0, b = 0;
-
-            if (v == 0)
-                return;
-
-            if (s == 0)
-            {
-                r = g = b = v;
-            }
-            else
-            {
-                h = h % 360;
-                temp2 = ((v <= 0.5) ? v * (1.0 + s) : v + s - (v * s));
-                temp1 = 2.0 * v - temp2;
-
-                double[] t3 = new double[] { h + 1.0 / 3.0, h, h - 1.0 / 3.0 };
-                double[] clr = new double[] { 0, 0, 0 };
-
-                for (int i = 0; i < 3; i++)
-                {
-                    if (t3[i] < 0)
-                        t3[i] += 1.0;
-
-                    if (t3[i] > 1)
-                        t3[i] -= 1.0;
-
-                    if (6.0 * t3[i] < 1.0)
-                        clr[i] = temp1 + (temp2 - temp1) * t3[i] * 6.0;
-                    else if (2.0 * t3[i] < 1.0)
-                        clr[i] = temp2;
-                    else if (3.0 * t3[i] < 2.0)
-                        clr[i] = (temp1 + (temp2 - temp1) * ((2.0 / 3.0) - t3[i]) * 6.0);
-                    else
-                        clr[i] = temp1;
-                }
-
-                r = clr[0];
-                g = clr[1];
-                b = clr[2];
-            }
-
-            _b = (byte)(255 * b);
-            _g = (byte)(255 * g);
-            _r = (byte)(255 * r);
-        }
-
+        #region Predefined Color Properties
+        /// <summary>
+        /// Gets a transparent color (BRGA = 255, 255, 255, 0).
+        /// </summary>
+        /// <remarks>
+        /// The alpha component is 0, making this color completely transparent.
+        /// </remarks>
         public static StyleColor Transparent
         {
             get { return StyleColor.FromBgra(255, 255, 255, 0); }
         }
 
+        /// <summary>
+        /// Gets a very light blue (BRGA = 255, 248, 240, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(240, 248, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor AliceBlue
         {
             get
@@ -1541,7 +1598,12 @@ namespace SharpMap.Styles
                 return StyleColor.FromBgra(50, 205, 154, 255);
             }
         }
+        #endregion
 
+        #region Zero
+        /// <summary>
+        /// Gets a zero value as a StyleColor.
+        /// </summary>
         public static StyleColor Zero
         {
             get
@@ -1549,7 +1611,9 @@ namespace SharpMap.Styles
                 return (StyleColor)0;
             }
         }
+        #endregion
 
+        #region Predefined Colors Dictionary
         private static Dictionary<string, StyleColor> _predefinedColors;
 
         /// <summary>
@@ -1574,5 +1638,79 @@ namespace SharpMap.Styles
                 return new Dictionary<string, StyleColor>(_predefinedColors);
             }
         }
+        #endregion
+
+        #region Private helper methods
+        private static byte clampToByte(int value)
+        {
+            return value > 255 ? (byte)255 : value < 0 ? (byte)0 : (byte)value;
+        }
+
+        private void setByHsb(double h, double s, double v)
+        {
+            _r = 0;
+            _g = 0;
+            _b = 0;
+            _a = 255;
+
+            double temp1, temp2;
+            double r = 0, g = 0, b = 0;
+
+            if (v == 0)
+                return;
+
+            if (s == 0)
+            {
+                r = g = b = v;
+            }
+            else
+            {
+                h = h % 360;
+                temp2 = ((v <= 0.5) ? v * (1.0 + s) : v + s - (v * s));
+                temp1 = 2.0 * v - temp2;
+
+                double[] t3 = new double[] { h + 1.0 / 3.0, h, h - 1.0 / 3.0 };
+                double[] clr = new double[] { 0, 0, 0 };
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (t3[i] < 0)
+                    {
+                        t3[i] += 1.0;
+                    }
+
+                    if (t3[i] > 1)
+                    {
+                        t3[i] -= 1.0;
+                    }
+
+                    if (6.0 * t3[i] < 1.0)
+                    {
+                        clr[i] = temp1 + (temp2 - temp1) * t3[i] * 6.0;
+                    }
+                    else if (2.0 * t3[i] < 1.0)
+                    {
+                        clr[i] = temp2;
+                    }
+                    else if (3.0 * t3[i] < 2.0)
+                    {
+                        clr[i] = (temp1 + (temp2 - temp1) * ((2.0 / 3.0) - t3[i]) * 6.0);
+                    }
+                    else
+                    {
+                        clr[i] = temp1;
+                    }
+                }
+
+                r = clr[0];
+                g = clr[1];
+                b = clr[2];
+            }
+
+            _b = (byte)(255 * b);
+            _g = (byte)(255 * g);
+            _r = (byte)(255 * r);
+        }
+        #endregion
     }
 }
