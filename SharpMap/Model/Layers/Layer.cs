@@ -44,9 +44,10 @@ namespace SharpMap.Layers
         private ICoordinateTransformation _coordinateTransform;
         private string _layerName;
         private int _srid = -1;
-        private IStyle _style = new Style();
+        private IStyle _style;
 		private bool _disposed;
 
+		#region ToString
 		/// <summary>
 		/// Returns the name of the layer.
 		/// </summary>
@@ -55,10 +56,11 @@ namespace SharpMap.Layers
 		{
 			return this.LayerName;
 		}
+		#endregion
 
-        #region ILayer Members
+		#region ILayer Members
 
-        public event EventHandler ObjectChanged;
+		public event EventHandler ObjectChanged;
 
         /// <summary>
 		/// Gets the extent of the layer.
@@ -152,6 +154,10 @@ namespace SharpMap.Layers
 
 		#endregion
 
+		#region IsDisposed
+		/// <summary>
+		/// Gets or sets a value indicating this object is disposed.
+		/// </summary>
 		protected bool IsDisposed
 		{
 			get { return _disposed; }
@@ -165,7 +171,13 @@ namespace SharpMap.Layers
 				_disposed = value; 
 			}
 		}
+		#endregion
 
+		#region OnPropertyChanged
+		/// <summary>
+		/// Raises the <see cref="PropertyChanged"/> event.
+		/// </summary>
+		/// <param name="propertyName">Name of the property changed.</param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler e = PropertyChanged;
@@ -175,6 +187,7 @@ namespace SharpMap.Layers
                 PropertyChangedEventArgs args = new PropertyChangedEventArgs(propertyName);
                 e(this, args);
             }
-        }
-    }
+		}
+		#endregion
+	}
 }

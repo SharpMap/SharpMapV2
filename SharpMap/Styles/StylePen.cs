@@ -24,10 +24,14 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
 {
+	/// <summary>
+	/// Represents a style for drawing lines.
+	/// </summary>
     [Serializable]
     public class StylePen
-    {
-        private float _miterLimit;
+	{
+		#region Fields
+		private float _miterLimit;
         private StyleBrush _backgroundBrush;
         private float _dashOffset;
         private LineDashCap _dashCap;
@@ -41,108 +45,173 @@ namespace SharpMap.Styles
         private float _width;
         private float[] _compoundArray;
         private StylePenAlignment _alignment;
+		#endregion
 
-        public StylePen(StyleColor color, float width)
+		#region Object Constructors
+		/// <summary>
+		/// Creates a new <see cref="StylePen"/> with the given solid
+		/// <paramref name="color"/> and <paramref name="width"/>.
+		/// </summary>
+		/// <param name="color">Color of the pen.</param>
+		/// <param name="width">Width of the pen.</param>
+		public StylePen(StyleColor color, float width)
             : this(new SolidStyleBrush(color), width) { }
 
+		/// <summary>
+		/// Creates a new pen with the given <see cref="StyleBrush"/>
+		/// and <paramref name="width"/>.
+		/// </summary>
+		/// <param name="backgroundBrush">The StyleBrush which describes the color of the line.</param>
+		/// <param name="width">The width of the line.</param>
         public StylePen(StyleBrush backgroundBrush, float width)
         {
             _backgroundBrush = backgroundBrush;
             _width = width;
-        }
+		}
+		#endregion
 
-        public StylePenAlignment Alignment
+		#region ToString
+		public override string ToString()
+		{
+			return String.Format(
+				"[StylePen] Width: {0}; Alignment: {2}; CompoundArray: {3}; MiterLimit: {4}; DashOffset: {5}; DashPattern: {6}; DashBrushes: {7}; DashStyle: {8}; StartCap: {9}; EndCap: {10}; DashCap: {11}; LineJoin: {12}; Transform: {13}; Background: {1};",
+				Width, BackgroundBrush.ToString(), Alignment, printFloatArray(CompoundArray), MiterLimit, DashOffset, DashPattern, printBrushes(DashBrushes), DashStyle, StartCap, EndCap, DashCap, LineJoin, Transform);
+		}
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Gets or sets the alignment of the pen.
+		/// </summary>
+		public StylePenAlignment Alignment
         {
             get { return _alignment; }
             set { _alignment = value; }
         }
 
+		/// <summary>
+		/// Gets or sets an array of widths used to create a compound line.
+		/// </summary>
         public float[] CompoundArray
         {
             get { return _compoundArray; }
             set { _compoundArray = value; }
         }
 
+		/// <summary>
+		/// Gets or sets a value which limits the length of a miter at a line joint.
+		/// </summary>
         public float MiterLimit
         {
             get { return _miterLimit; }
             set { _miterLimit = value; }
         }
 
+		/// <summary>
+		/// Gets or sets a brush used to paint the line.
+		/// </summary>
         public StyleBrush BackgroundBrush
         {
             get { return _backgroundBrush; }
             set { _backgroundBrush = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the offset of the start of the dash pattern.
+		/// </summary>
         public float DashOffset
         {
             get { return _dashOffset; }
             set { _dashOffset = value; }
         }
 
+		/// <summary>
+		/// Gets or sets an array of values used as widths in a dash pattern.
+		/// </summary>
         public float[] DashPattern
         {
             get { return _dashPattern; }
             set { _dashPattern = value; }
         }
 
+		/// <summary>
+		/// Gets or sets an array of brushes used to draw the dashes in a pen.
+		/// </summary>
         public StyleBrush[] DashBrushes
         {
             get { return _dashBrushes; }
             set { _dashBrushes = value; }
         }
 
+		/// <summary>
+		/// Gets or sets a value used to compute the dash pattern.
+		/// </summary>
         public LineDashStyle DashStyle
         {
             get { return _dashStyle; }
             set { _dashStyle = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the type of line terminator at the beginning
+		/// of a line.
+		/// </summary>
         public StyleLineCap StartCap
         {
             get { return _startCap; }
             set { _startCap = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the type of line terminator at the end
+		/// of a line.
+		/// </summary>
         public StyleLineCap EndCap
         {
             get { return _endCap; }
             set { _endCap = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the type of ending present at the start and end
+		/// of a dash in the line.
+		/// </summary>
         public LineDashCap DashCap
         {
             get { return _dashCap; }
             set { _dashCap = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the type of joint drawn where a line contains a join.
+		/// </summary>
         public StyleLineJoin LineJoin
         {
             get { return _lineJoin; }
             set { _lineJoin = value; }
         }
 
+		/// <summary>
+		/// Gets or sets a matrix transformation for drawing with the pen.
+		/// </summary>
         public Matrix2D Transform
         {
             get { return _transform; }
             set { _transform = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the width of the line drawn by this pen.
+		/// </summary>
         public float Width
         {
             get { return _width; }
             set { _width = value; }
-        }
+		}
+		#endregion
 
-        public override string ToString()
-        {
-            return String.Format(
-                "StylePen - Width: {0}; Background: {1}; Alignment: {2}; CompoundArray: {3}; MiterLimit: {4}; DashOffset: {5}; DashPattern: {6}; DashBrushes: {7}; DashStyle: {8}; StartCap: {9}; EndCap: {10}; DashCap: {11}; LineJoin: {12}; Transform: {13};", 
-                Width, BackgroundBrush.ToString(), Alignment, printFloatArray(CompoundArray), MiterLimit, DashOffset, DashPattern, printBrushes(DashBrushes), DashStyle, StartCap, EndCap, DashCap, LineJoin, Transform);
-        }
-
-        private string printBrushes(StyleBrush[] brushes)
+		#region Private Helper Methods
+		private string printBrushes(StyleBrush[] brushes)
         {
             if (brushes == null || brushes.Length == 0)
                 return String.Empty;
@@ -174,6 +243,7 @@ namespace SharpMap.Styles
 
             buffer.Length -= 2;
             return buffer.ToString();
-        }
-    }
+		}
+		#endregion
+	}
 }

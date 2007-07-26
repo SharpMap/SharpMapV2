@@ -46,7 +46,7 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// Initializes a new, empty vector layer.
 		/// </summary>
-		public VectorLayer()
+		public VectorLayer() : this(String.Empty)
 		{
 		}
 
@@ -54,9 +54,9 @@ namespace SharpMap.Layers
         /// Initializes a new layer with the given name.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
-        public VectorLayer(string layername)
+		public VectorLayer(string layername)
+			: this(layername, null)
         {
-            this.LayerName = layername;
         }
 
         /// <summary>
@@ -65,9 +65,10 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public VectorLayer(string layername, IProvider dataSource)
-            : this(layername)
-        {
+		{
+			this.LayerName = layername;
             _dataSource = dataSource;
+			Style = new VectorStyle();
         }
 
         /// <summary>
