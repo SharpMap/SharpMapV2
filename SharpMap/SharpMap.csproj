@@ -326,7 +326,7 @@
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Math\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>

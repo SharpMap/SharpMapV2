@@ -44,7 +44,9 @@ namespace SharpMap.Presentation
         //private GeoPoint _center;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth = 0.0;
-        private Matrix2D _toViewTransform;
+        private Matrix2D _originTransform = new Matrix2D();
+        private Matrix2D _mapActionTransform = new Matrix2D();
+        private Matrix2D _toViewTransform = new Matrix2D();
         private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
         
@@ -67,26 +69,25 @@ namespace SharpMap.Presentation
 
             double initialScale = extents.Width / View.ViewSize.Width;
 
-            if (View.ViewSize.Height / extents.Height < initialScale)
+            if (extents.Height / View.ViewSize.Height < initialScale)
             {
                 initialScale = extents.Height / View.ViewSize.Height;
             }
 
             if (geoCenter != GeoPoint.Empty)
             {
-                double widthScale = 1 / initialScale;
-                double xCenterTranslation = View.ViewSize.Width / 2 - geoCenter.X;
-                
-                double heightScale = 1 / initialScale;
-                double yCenterTranslation = View.ViewSize.Height / 2 - geoCenter.Y;
+                _originTransform.OffsetX = -extents.Left;
+                _originTransform.OffsetY = -extents.Bottom;
 
-                _toViewTransform = new Matrix2D(widthScale, 0, xCenterTranslation,
-                    0, heightScale, yCenterTranslation);
+                double widthScale = 1 / initialScale;
+                double heightScale = 1 / initialScale;
+
+                _mapActionTransform = new Matrix2D(widthScale, 0, 0, 0, heightScale, 0);
 
                 _toViewTransform.Translate(0, -View.ViewSize.Height);
                 _toViewTransform.Scale(1, -1);
 
-                _toWorldTransform = _toViewTransform.Inverse as Matrix2D;
+                ToWorldTransform = ToViewTransform.Inverse as Matrix2D;
             }
             else
             {
@@ -215,7 +216,7 @@ namespace SharpMap.Presentation
         public double PixelAspectRatio
         {
 #warning Is this division the correct order for the PixelAspectRatio property?
-            get { return Math.Abs(_toViewTransform.X1 / _toViewTransform.Y2); }
+            get { return Math.Abs(ToViewTransform.X1 / ToViewTransform.Y2); }
             set
             {
                 if (value <= 0)
@@ -223,7 +224,7 @@ namespace SharpMap.Presentation
                     throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
                 }
 
-                double currentRatio = Math.Abs(_toViewTransform.X1 / _toViewTransform.Y2);
+                double currentRatio = Math.Abs(ToViewTransform.X1 / ToViewTransform.Y2);
 
                 if (currentRatio != value)
                 {
@@ -256,16 +257,16 @@ namespace SharpMap.Presentation
         /// </example>
         public Matrix2D ToViewTransform
         {
-            get { return _toViewTransform; }
-            set
-            {
-                if (_toViewTransform != value)
-                {
-                    Matrix2D oldValue = _toViewTransform;
-                    _toViewTransform = value;
-                    ToWorldTransform = _toViewTransform.Inverse as Matrix2D;
-                }
-            }
+            get { return new Matrix2D(_originTransform.Multiply(_mapActionTransform).Multiply(_toViewTransform)); }
+            //set
+            //{
+            //    if (_toViewTransform != value)
+            //    {
+            //        Matrix2D oldValue = _toViewTransform;
+            //        _toViewTransform = value;
+            //        ToWorldTransform = _toViewTransform.Inverse as Matrix2D;
+            //    }
+            //}
         }
 
         /// <summary>
@@ -553,7 +554,9 @@ namespace SharpMap.Presentation
             double widthZoomRatio = newEnvelope.Width / oldEnvelope.Width;
             double heightZoomRatio = newEnvelope.Height / oldEnvelope.Height;
 
-			double newWorldWidth = widthZoomRatio > heightZoomRatio ? newEnvelope.Width : newEnvelope.Width * heightZoomRatio / widthZoomRatio;
+			double newWorldWidth = widthZoomRatio > heightZoomRatio 
+                ? newEnvelope.Width 
+                : newEnvelope.Width * heightZoomRatio / widthZoomRatio;
 
             if (newWorldWidth < _minimumWorldWidth)
             {
@@ -584,16 +587,18 @@ namespace SharpMap.Presentation
 
 			if (!GeoCenter.Equals(newCenter))
 			{
-				double x = newCenter.X - GeoCenter.X;
-				double y = newCenter.Y - GeoCenter.Y;
-				ToViewTransform.TranslatePrepend(x, y);
+                double x = newCenter.X - oldCenter.X;
+                double y = newCenter.Y - oldCenter.Y;
+                _originTransform.OffsetX += x;
+                _originTransform.OffsetY += y;
 				viewMatrixChanged = true;
 			}
 
 			if (newWorldUnitsPerPixel != WorldUnitsPerPixel)
 			{
-				double newScale = 1 / newWorldUnitsPerPixel;
-				ToViewTransform.ScalePrepend(newScale, newScale * PixelAspectRatio);
+                double newScale = 1 / newWorldUnitsPerPixel;
+                _mapActionTransform.Y2 = newScale * PixelAspectRatio;
+                _mapActionTransform.X1 = newScale;
 				viewMatrixChanged = true;
 			}
 
