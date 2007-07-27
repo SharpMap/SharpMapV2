@@ -1063,24 +1063,15 @@ namespace SharpMap.Data.Providers
 
             DynamicRTree<uint> index = new SelfOptimizingDynamicSpatialIndex<uint>(restructureStrategy, restructureHeuristic, insertStrategy, nodeSplitStrategy, indexHeuristic);
 
-            FeatureDataSet features = new FeatureDataSet();
-            ExecuteIntersectionQuery(GetExtents(), features);
-
-            if (features.Tables.Count < 1)
+            for (uint i = 0; i < (uint)GetFeatureCount(); i++)
             {
-                return index;
-            }
+                Geometry geom = readGeometry(i);
+                if (geom == null)
+                    continue;
 
-            FeatureDataTable<uint> featureTable = features.Tables[0] as FeatureDataTable<uint>;
-
-            foreach (FeatureDataRow<uint> feature in featureTable)
-            {
-                BoundingBox box = feature.Geometry.GetBoundingBox();
-
+                BoundingBox box = geom.GetBoundingBox();
                 if (!double.IsNaN(box.Left) && !double.IsNaN(box.Right) && !double.IsNaN(box.Bottom) && !double.IsNaN(box.Top))
-                {
-                    index.Insert(new RTreeIndexEntry<uint>(feature.Id, box));
-                }
+                    index.Insert(new RTreeIndexEntry<uint>(i, box));
             }
 
             return index;
