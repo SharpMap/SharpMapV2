@@ -87,7 +87,7 @@ namespace SharpMap.Tests
 
 			map.Layers.Add(vLayer);
 			BoundingBox box = map.GetExtents();
-			Assert.AreEqual(new BoundingBox(0, 0, 50, 346.3493254), box);
+			Assert.AreEqual(new BoundingBox(0, 0, 100, 100), box);
 		}
 	}
 }

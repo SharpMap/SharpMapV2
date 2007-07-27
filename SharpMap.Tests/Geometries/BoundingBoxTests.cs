@@ -64,8 +64,8 @@ namespace SharpMap.Tests.Geometries
 			Assert.AreEqual(25, b1.Height);
 
 			Assert.AreEqual(new Point(40, 55), b1.UpperRight);
-			Assert.AreEqual(new Point(40, 30), b1.UpperLeft);
-			Assert.AreEqual(new Point(20, 55), b1.LowerRight);
+			Assert.AreEqual(new Point(20, 55), b1.UpperLeft);
+			Assert.AreEqual(new Point(40, 30), b1.LowerRight);
 			Assert.AreEqual(new Point(20, 30), b1.LowerLeft);
 
 			Assert.AreEqual(b1, new BoundingBox(40, 55, 20, 30));

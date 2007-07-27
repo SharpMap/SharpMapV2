@@ -92,8 +92,8 @@ namespace SharpMap.Tests.Presentation
 
             MapPresenter2D mapPresenter = createPresenter(mocks, 400, 500);
 
-			mapPresenter.ZoomToWidth(3500);
-			Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel);
+			mapPresenter.ZoomToWorldWidth(3500);
+			Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel, _e);
 		}
 
 		[Test]
@@ -103,7 +103,7 @@ namespace SharpMap.Tests.Presentation
 
             MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
 
-			mapPresenter.ZoomToWidth(3500);
+			mapPresenter.ZoomToWorldWidth(3500);
 			Assert.AreEqual(1750, mapPresenter.WorldHeight);
 		}
 
@@ -159,7 +159,7 @@ namespace SharpMap.Tests.Presentation
             MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
 
 			mapPresenter.MaximumWorldWidth = 100;
-			mapPresenter.ZoomToWidth(150);
+			mapPresenter.ZoomToWorldWidth(150);
 			Assert.AreEqual(100, mapPresenter.WorldWidth);
 		}
 
@@ -171,7 +171,7 @@ namespace SharpMap.Tests.Presentation
             MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
 
 			mapPresenter.MinimumWorldWidth = 100;
-			mapPresenter.ZoomToWidth(50);
+			mapPresenter.ZoomToWorldWidth(50);
 			Assert.AreEqual(100, mapPresenter.WorldWidth);
 		}
 
@@ -180,7 +180,7 @@ namespace SharpMap.Tests.Presentation
 		{
             MockRepository mocks = new MockRepository();
 
-            MapPresenter2D mapPresenter = createPresenter(mocks, 400, 400);
+            MapPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
 			mapPresenter.ZoomToBox(new BoundingBox(20, 50, 100, 80));
             Assert.AreEqual(new Point(60, 65), mapPresenter.GeoCenter);
@@ -193,7 +193,7 @@ namespace SharpMap.Tests.Presentation
             MockRepository mocks = new MockRepository();
 
             MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
-
+            mapPresenter.PixelAspectRatio = 2;
 			mapPresenter.ZoomToBox(new BoundingBox(20, 10, 100, 180));
 			Assert.AreEqual(new Point(60, 95), mapPresenter.GeoCenter);
 			Assert.AreEqual(340, mapPresenter.WorldWidth);
@@ -213,14 +213,14 @@ namespace SharpMap.Tests.Presentation
         {
             MockRepository mocks = new MockRepository();
 
-            MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
+            MapPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
 			mapPresenter.GeoCenter = new Point(23, 34);
-			mapPresenter.ZoomToWidth(1000);
+			mapPresenter.ZoomToWorldWidth(2500);
 
 			Point2D p1 = mapPresenter.ToView(8, 50);
 			Point2D p2 = mapPresenter.ToView(new Point(8, 50));
-			Assert.AreEqual(new Point2D(242.5f, 92), p1);
+			Assert.AreEqual(new Point2D(494, 493.6), p1);
 			Assert.AreEqual(p1, p2);
 		}
 
@@ -232,10 +232,12 @@ namespace SharpMap.Tests.Presentation
             MapPresenter2D mapPresenter = createPresenter(mocks, 500, 200);
 
 			mapPresenter.GeoCenter = new Point(23, 34);
-			mapPresenter.ZoomToWidth(1000);
+			mapPresenter.ZoomToWorldWidth(1000);
 
-			Point p = mapPresenter.ToWorld(242.5f, 92);
-            Assert.AreEqual(new Point(8, 50), p);
+            Point p1 = mapPresenter.ToWorld(242.5f, 92);
+            Point p2 = mapPresenter.ToWorld(new Point2D(242.5f, 92));
+            Assert.AreEqual(new Point(8, 50), p1);
+            Assert.AreEqual(p1, p2);
 		}
 
 		[Test]

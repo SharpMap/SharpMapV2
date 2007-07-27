@@ -90,9 +90,12 @@ namespace SharpMap.Rendering.Rendering2D
         {
             if (matrixToCopy == null) throw new ArgumentNullException("matrixToCopy");
 
-            for (int i = 0; i < RowCount; i++)
+            for (int i = 0; i < 3; i++)
             {
-                Array.Copy(matrixToCopy.Elements, Elements, matrixToCopy.Elements.Length);
+                for (int j = 0; j < 3; j++)
+                {
+                    this[i, j] = matrixToCopy[i, j];
+                }
             }
         }
 

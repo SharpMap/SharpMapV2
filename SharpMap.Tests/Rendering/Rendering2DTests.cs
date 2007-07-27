@@ -413,13 +413,21 @@ namespace SharpMap.Tests.Rendering
         private static readonly double _e = 0.0005;
 
         [Test]
+        public void IdentityTest()
+        {
+            Matrix2D m1 = Matrix2D.Identity;
+            m1[0, 0] = 3;
+            Assert.AreNotEqual(Matrix2D.Identity, m1);
+        }
+
+        [Test]
         public void ResetTest()
         {
             Matrix2D m1 = new Matrix2D(1, 1, 0, 1, 1, 0);
 
             m1.Reset();
 
-            Assert.AreEqual(m1, Matrix2D.Identity);
+            Assert.AreEqual(Matrix2D.Identity, m1);
         }
 
         [Test]
