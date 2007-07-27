@@ -43,12 +43,12 @@ namespace SharpMap.Rendering.Gdi
         public static Rectangle2D GdiToView(GdiRectangle rectangle)
         {
             return new Rectangle2D(rectangle.X, rectangle.Y,
-                rectangle.Width, rectangle.Height);
+                rectangle.Width + rectangle.X, rectangle.Height + rectangle.Y);
         }
 
         public static Rectangle2D GdiToView(RectangleF rectangleF)
         {
-            return new Rectangle2D(rectangleF.Left, rectangleF.Right, rectangleF.Top, rectangleF.Bottom);
+            return new Rectangle2D(rectangleF.Left, rectangleF.Top, rectangleF.Right, rectangleF.Bottom);
         }
 
         public static Size2D GdiToView(SizeF sizeF)

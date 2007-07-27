@@ -139,30 +139,57 @@ namespace SharpMap.Tests.Presentation
 			mapPresenter.MinimumWorldWidth = 100;
 			mapPresenter.ZoomToWorldWidth(50);
 			Assert.AreEqual(100, mapPresenter.WorldWidth);
-		}
+        }
+
+        [Test]
+        public void ZoomToViewBounds_NoAspectCorrection()
+        {
+            MockRepository mocks = new MockRepository();
+
+            MapPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
+
+            mapPresenter.ZoomToViewBounds(new Rectangle2D(300, 300, 900, 900));
+            Assert.AreEqual(new Point(60, 40), mapPresenter.GeoCenter);
+            Assert.AreEqual(60, mapPresenter.WorldWidth);
+            Assert.AreEqual(60, mapPresenter.WorldHeight);
+        }
+
+        [Test]
+        public void ZoomToViewBounds_WithAspectCorrection()
+        {
+            MockRepository mocks = new MockRepository();
+
+            MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
+            mapPresenter.WorldAspectRatio = 2;
+            mapPresenter.ZoomToViewBounds(new Rectangle2D(100, 50, 300, 150));
+            Assert.AreEqual(new Point(50, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(50, mapPresenter.WorldWidth);
+            Assert.AreEqual(50, mapPresenter.WorldHeight);
+        }
 
 		[Test]
-		public void ZoomToBox_NoAspectCorrection()
+        public void ZoomToWorldBounds_NoAspectCorrection()
 		{
             MockRepository mocks = new MockRepository();
 
             MapPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
-			mapPresenter.ZoomToBox(new BoundingBox(20, 50, 100, 80));
+			mapPresenter.ZoomToWorldBounds(new BoundingBox(20, 50, 100, 80));
             Assert.AreEqual(new Point(60, 65), mapPresenter.GeoCenter);
 			Assert.AreEqual(80, mapPresenter.WorldWidth);
 		}
 
 		[Test]
-		public void ZoomToBox_WithAspectCorrection()
+        public void ZoomToWorldBounds_WithAspectCorrection()
         {
             MockRepository mocks = new MockRepository();
 
             MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
-            mapPresenter.PixelAspectRatio = 2;
-			mapPresenter.ZoomToBox(new BoundingBox(20, 10, 100, 180));
+            mapPresenter.WorldAspectRatio = 2;
+			mapPresenter.ZoomToWorldBounds(new BoundingBox(20, 10, 100, 180));
 			Assert.AreEqual(new Point(60, 95), mapPresenter.GeoCenter);
-			Assert.AreEqual(340, mapPresenter.WorldWidth);
+            Assert.AreEqual(170, mapPresenter.WorldWidth);
+            Assert.AreEqual(170, mapPresenter.WorldHeight);
 		}
 
 		[Test]

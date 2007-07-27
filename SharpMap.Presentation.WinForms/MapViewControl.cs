@@ -338,7 +338,7 @@ namespace SharpMap.Presentation.WinForms
             PointF center = new PointF((zoomBox.Width + zoomBox.Left) / 2, (zoomBox.Height + zoomBox.Top) / 2);
             PointF centerDeltaVector = new PointF(location.X - center.X, location.Y - center.Y);
             zoomBox.Offset(centerDeltaVector);
-            return new Rectangle2D(zoomBox.Left, zoomBox.Right, zoomBox.Top, zoomBox.Bottom);
+            return new Rectangle2D(zoomBox.Left, zoomBox.Top, zoomBox.Right, zoomBox.Bottom);
         }
 
         //private void createSelectionBox(GdiPoint from, GdiPoint previousTo, GdiPoint to)

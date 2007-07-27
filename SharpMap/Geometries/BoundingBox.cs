@@ -73,7 +73,7 @@ namespace SharpMap.Geometries
 		public BoundingBox(Point lowerLeft, Point upperRight)
             : this(0, 0, 0, 0)
 		{
-			_hasValue = false;
+			_hasValue = true;
 
             if (lowerLeft == null || lowerLeft.IsEmpty() || upperRight == null || upperRight.IsEmpty())
             {

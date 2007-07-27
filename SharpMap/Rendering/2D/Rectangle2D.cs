@@ -39,7 +39,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Constructors
 
-        public Rectangle2D(double left, double right, double top, double bottom)
+        public Rectangle2D(double left, double top, double right, double bottom)
         {
             _left = left;
             _right = right;
@@ -226,7 +226,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         internal static Rectangle2D FromLTRB(double left, double top, double right, double bottom)
         {
-            return new Rectangle2D(left, right, top, bottom);
+            return new Rectangle2D(left, top, right, bottom);
         }
 
         #region Intersects

@@ -88,11 +88,10 @@ namespace SharpMap.Presentation
                 _originNormalizeTransform.OffsetX = -extents.Left;
                 _originNormalizeTransform.OffsetY = -extents.Bottom;
 
-                double widthScale = 1 / initialScale;
-                double heightScale = 1 / initialScale;
+                _scaleTransform.X1 =  _scaleTransform.Y2 = 1 / initialScale;
 
-                _scaleTransform.X1 = widthScale;
-                _scaleTransform.Y2 = heightScale;
+                _translationTransform.OffsetX = -geoCenter.X;
+                _translationTransform.OffsetY = -geoCenter.Y;
 
                 _toViewCoordinates.Translate(View.ViewSize.Width / 2, -View.ViewSize.Height / 2);
                 _toViewCoordinates.Scale(1, -1);
@@ -190,7 +189,7 @@ namespace SharpMap.Presentation
         /// Gets the width of a pixel in world coordinate units.
         /// </summary>
         /// <remarks>The value returned is the same as <see cref="WorldUnitsPerPixel"/>.</remarks>
-        public double PixelWidth
+        public double PixelWorldWidth
         {
             get { return WorldUnitsPerPixel; }
         }
@@ -200,43 +199,9 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <remarks>The value returned is the same as <see cref="WorldUnitsPerPixel"/> 
         /// unless <see cref="PixelAspectRatio"/> is different from 1.</remarks>
-        public double PixelHeight
+        public double PixelWorldHeight
         {
-            get { return WorldUnitsPerPixel * PixelAspectRatio; }
-        }
-
-        /// <summary>
-        /// Gets or sets the aspect ratio of the <see cref="ViewSize"/> 
-        /// height to the <see cref="ViewSize"/> width.
-        /// </summary>
-        /// <remarks> 
-        /// A value less than 1 will make the map stretch upwards 
-        /// (the view will cover less world distance vertically), 
-        /// and greater than 1 will make it more squat (the view will 
-        /// cover more world distance vertically).
-        /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Throws an argument exception when value is 0 or less.
-        /// </exception>
-        public double PixelAspectRatio
-        {
-            get { return Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1); }
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
-                }
-
-                double currentRatio = Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1);
-
-                if (currentRatio != value)
-                {
-                    double ratioModifier = value / currentRatio;
-                    _scaleTransform.Y2 *= ratioModifier;
-                    ToWorldTransform = ToViewTransform.Inverse as Matrix2D;
-                }
-            }
+            get { return WorldUnitsPerPixel * WorldAspectRatio; }
         }
 
         /// <summary>
@@ -249,7 +214,7 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Gets or sets a <see cref="ViewMatrix2D"/> used to project the world
+        /// Gets or sets a <see cref="Matrix2D"/> used to project the world
         /// coordinate system into the view coordinate system. 
         /// The inverse of the <see cref="ToWorldTransform"/> matrix.
         /// </summary>
@@ -274,7 +239,7 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Gets a <see cref="ViewMatrix2D"/> used to reverse the view projection
+        /// Gets a <see cref="Matrix2D"/> used to reverse the view projection
         /// transform to get world coordinates.
         /// The inverse of the <see cref="ToViewTransform"/> matrix.
         /// </summary>
@@ -304,6 +269,40 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
+        /// Gets or sets the aspect ratio of the <see cref="WorldHeight"/> 
+        /// to the <see cref="WorldWidth"/>.
+        /// </summary>
+        /// <remarks> 
+        /// A value less than 1 will make the map stretch upwards 
+        /// (the view will cover less world distance vertically), 
+        /// and greater than 1 will make it more squat (the view will 
+        /// cover more world distance vertically).
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Throws an exception when value is 0 or less.
+        /// </exception>
+        public double WorldAspectRatio
+        {
+            get { return 1 / Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1); }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "Invalid pixel aspect ratio.");
+                }
+
+                double currentRatio = WorldAspectRatio;
+
+                if (currentRatio != value)
+                {
+                    double ratioModifier = value / currentRatio;
+                    _scaleTransform.Y2 /= ratioModifier;
+                    ToWorldTransform = ToViewTransform.Inverse as Matrix2D;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the height of view in world units.
         /// </summary>
         /// <returns>
@@ -313,7 +312,7 @@ namespace SharpMap.Presentation
         /// </returns>
         public double WorldHeight
         {
-            get { return WorldWidth * PixelAspectRatio * View.ViewSize.Height / View.ViewSize.Width; }
+            get { return WorldWidth * WorldAspectRatio * View.ViewSize.Height / View.ViewSize.Width; }
         }
 
         /// <summary>
@@ -394,7 +393,7 @@ namespace SharpMap.Presentation
                 centerX + halfWidth,
                 centerY + halfHeight);
 
-            ZoomToBox(widthWorldBounds);
+            ZoomToWorldBounds(widthWorldBounds);
         }
 
         /// <summary>
@@ -402,25 +401,44 @@ namespace SharpMap.Presentation
         /// </summary>
         public void ZoomToExtents()
         {
-            ZoomToBox(Map.GetExtents());
+            ZoomToWorldBounds(Map.GetExtents());
         }
 
         /// <summary>
-        /// Zooms the map to fit a bounding box.
+        /// Zooms the map to fit a world bounding box.
         /// </summary>
         /// <remarks>
-        /// If the ratio of either the width of the current 
-        /// map <see cref="ViewEnvelope">envelope</see> 
-        /// to the width of <paramref name="zoomBox"/> or 
-        /// of the height of the current map <see cref="ViewEnvelope">envelope</see> 
-        /// to the height of <paramref name="zoomBox"/> is 
-        /// greater, the map envelope will be enlarged to contain the 
-        /// <paramref name="zoomBox"/> parameter.
+        /// The <paramref name="zoomBox"/> value is stretched
+        /// to fit the current view. For example, if a view has a size of
+        /// 100 x 100, which is a 1:1 ratio, and the bounds of zoomBox are 
+        /// 200 x 100, which is a 2:1 ratio, the bounds are stretched to be 
+        /// 200 x 200 to match the view size ratio. This ensures that at least
+        /// all of the area selected in the zoomBox is displayed, and possibly more
+        /// area.
         /// </remarks>
         /// <param name="zoomBox"><see cref="BoundingBox"/> to set zoom to.</param>
-        public void ZoomToBox(BoundingBox zoomBox)
+        public void ZoomToWorldBounds(BoundingBox zoomBox)
         {
             setViewEnvelopeInternal(zoomBox);
+        }
+
+        /// <summary>
+        /// Zooms the map to fit a view bounding box. 
+        /// </summary>
+        /// <remarks>
+        /// Transforms view coordinates into
+        /// world coordinates using <see cref="ToWorldTransform"/> to perform zoom. 
+        /// This means the heuristic to determine the final value of <see cref="ViewEnvelope"/>
+        /// after the zoom is the same as in <see cref="ZoomToWorldBounds"/>.
+        /// </remarks>
+        /// <param name="viewBounds">
+        /// The view bounds, translated into world bounds,
+        /// to set the zoom to.
+        /// </param>
+        public void ZoomToViewBounds(Rectangle2D viewBounds)
+        {
+            BoundingBox worldBounds = new BoundingBox(ToWorld(viewBounds.LowerBounds), ToWorld(viewBounds.UpperBounds));
+            setViewEnvelopeInternal(worldBounds);
         }
         #endregion
 
@@ -619,7 +637,7 @@ namespace SharpMap.Presentation
 			if (newWorldUnitsPerPixel != WorldUnitsPerPixel)
 			{
                 double newScale = 1 / newWorldUnitsPerPixel;
-                _scaleTransform.Y2 = newScale * PixelAspectRatio;
+                _scaleTransform.Y2 = newScale / WorldAspectRatio;
                 _scaleTransform.X1 = newScale;
 				viewMatrixChanged = true;
 			}

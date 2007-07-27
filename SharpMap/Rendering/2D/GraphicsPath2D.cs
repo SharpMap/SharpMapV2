@@ -131,7 +131,7 @@ namespace SharpMap.Rendering.Rendering2D
                 }
             }
 
-            return new Rectangle2D(minX, maxX, minY, maxY);
+            return new Rectangle2D(minX, minY, maxX, maxY);
         }
 
         private static IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> convertToBaseEnum(IEnumerable<GraphicsFigure2D> figures)

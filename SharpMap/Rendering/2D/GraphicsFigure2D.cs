@@ -58,7 +58,7 @@ namespace SharpMap.Rendering.Rendering2D
                 }
             }
 
-            return new Rectangle2D(left, right, top, bottom);
+            return new Rectangle2D(left, top, right, bottom);
         }
 
         protected override GraphicsFigure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool isClosed)

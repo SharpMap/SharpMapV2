@@ -191,7 +191,7 @@ namespace SharpMap.Tests.Rendering
             Rectangle2D r3 = Rectangle2D.Zero;
             Rectangle2D r4 = new Rectangle2D(0, 0, 0, 0);
             Rectangle2D r5 = new Rectangle2D(9, 10, -5, -6);
-            Rectangle2D r6 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r6 = new Rectangle2D(0, 0, 10, 10);
             Rectangle2D r7 = new Rectangle2D(new Point2D(0, 0), new Size2D(10, 10));
 
             Assert.AreEqual(r1, r2);
@@ -221,7 +221,7 @@ namespace SharpMap.Tests.Rendering
         {
             Rectangle2D r1 = Rectangle2D.Empty;
             Rectangle2D r2 = Rectangle2D.Zero;
-            Rectangle2D r3 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r3 = new Rectangle2D(0, 0, 10, 10);
             Rectangle2D r4 = new Rectangle2D(new Point2D(5, 5), new Size2D(10, 10));
 
             Assert.IsFalse(r1.Intersects(Rectangle2D.Empty));
@@ -237,7 +237,7 @@ namespace SharpMap.Tests.Rendering
         {
             Rectangle2D r1 = Rectangle2D.Empty;
             Rectangle2D r2 = Rectangle2D.Zero;
-            Rectangle2D r3 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r3 = new Rectangle2D(0, 0, 10, 10);
             Rectangle2D r4 = new Rectangle2D(new Point2D(11, -11), new Size2D(10, 10));
             Rectangle2D r5 = new Rectangle2D(new Point2D(-11, -11), new Size2D(10, 10));
             Rectangle2D r6 = new Rectangle2D(new Point2D(11, 11), new Size2D(10, 10));
@@ -256,7 +256,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(NotSupportedException))]
         public void InvertTest()
         {
-            Rectangle2D r1 = new Rectangle2D(0, 1, 0, 1);
+            Rectangle2D r1 = new Rectangle2D(0, 0, 1, 1);
             Assert.IsNull((r1 as IMatrixD).Inverse);
         }
 
@@ -264,7 +264,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof(NotSupportedException))]
         public void IsInvertableTest()
         {
-            Rectangle2D r1 = new Rectangle2D(0, 1, 0, 1);
+            Rectangle2D r1 = new Rectangle2D(0, 0, 1, 1);
             Assert.IsTrue((r1 as IMatrixD).IsInvertible);
         }
 
@@ -273,7 +273,7 @@ namespace SharpMap.Tests.Rendering
         {
             Rectangle2D r1 = Rectangle2D.Empty;
             Rectangle2D r2 = Rectangle2D.Zero;
-            Rectangle2D r3 = new Rectangle2D(0, 10, 0, 10);
+            Rectangle2D r3 = new Rectangle2D(0, 0, 10, 10);
 
             Assert.AreEqual(0, (r1 as IMatrixD).ColumnCount);
             Assert.AreEqual(2, (r2 as IMatrixD).ColumnCount);
@@ -324,7 +324,7 @@ namespace SharpMap.Tests.Rendering
         {
             Rectangle2D r1 = Rectangle2D.Empty;
             Rectangle2D r2 = Rectangle2D.Zero;
-            Rectangle2D r3 = new Rectangle2D(0, 1, 0, 1);
+            Rectangle2D r3 = new Rectangle2D(0, 0, 1, 1);
 
             r1.Scale(10);
             Assert.IsTrue(r1.IsEmpty);
@@ -720,7 +720,7 @@ namespace SharpMap.Tests.Rendering
             Assert.AreEqual(4, p1.CurrentFigure.Points.Count);
             Assert.IsFalse(p1.CurrentFigure.IsClosed);
             Assert.AreEqual(p1.Bounds, p1.CurrentFigure.Bounds);
-            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 1, 0, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 0, 1, 1));
         }
 
         [Test]
@@ -770,13 +770,13 @@ namespace SharpMap.Tests.Rendering
             Point2D[] points3 = new Point2D[] { new Point2D(0, 0), new Point2D(-1, 0), new Point2D(-1, -1), new Point2D(0, -1) };
 
             p1.NewFigure(points1, true);
-            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 1, 0, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 0, 1, 1));
 
             p1.NewFigure(points2, true);
-            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 10, 0, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(0, 0, 10, 1));
 
             p1.NewFigure(points3, true);
-            Assert.AreEqual(p1.Bounds, new Rectangle2D(-1, 10, -1, 1));
+            Assert.AreEqual(p1.Bounds, new Rectangle2D(-1, -1, 10, 1));
         }
 
         [Test]
