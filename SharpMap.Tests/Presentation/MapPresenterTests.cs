@@ -51,40 +51,6 @@ namespace SharpMap.Tests.Presentation
             MapPresenter2D mapPresenter = new MapPresenter2D(map, mapView);
 		}
 
-		//[Test]
-		//public void ImageToWorld()
-		//{
-		//    Map map = new Map(new System.Drawing.Size(1000, 500));
-		//    map.Zoom = 360;
-		//    map.Center = new SharpMap.Geometries.Point(0, 0);
-		//    Assert.AreEqual(new SharpMap.Geometries.Point(0, 0), map.ImageToWorld(new System.Drawing.PointF(500, 250)));
-		//    Assert.AreEqual(new SharpMap.Geometries.Point(-180, 90), map.ImageToWorld(new System.Drawing.PointF(0, 0)));
-		//    Assert.AreEqual(new SharpMap.Geometries.Point(-180, -90), map.ImageToWorld(new System.Drawing.PointF(0, 500)));
-		//    Assert.AreEqual(new SharpMap.Geometries.Point(180, 90), map.ImageToWorld(new System.Drawing.PointF(1000, 0)));
-		//    Assert.AreEqual(new SharpMap.Geometries.Point(180, -90), map.ImageToWorld(new System.Drawing.PointF(1000, 500)));
-		//}
-
-		//[Test]
-		//public void WorldToImage()
-		//{
-		//    Map map = new Map(new System.Drawing.Size(1000, 500));
-		//    map.Zoom = 360;
-		//    map.Center = new SharpMap.Geometries.Point(0, 0);
-		//    Assert.AreEqual(new System.Drawing.PointF(500, 250), map.WorldToImage(new SharpMap.Geometries.Point(0, 0)));
-		//    Assert.AreEqual(new System.Drawing.PointF(0, 0), map.WorldToImage(new SharpMap.Geometries.Point(-180, 90)));
-		//    Assert.AreEqual(new System.Drawing.PointF(0, 500), map.WorldToImage(new SharpMap.Geometries.Point(-180, -90)));
-		//    Assert.AreEqual(new System.Drawing.PointF(1000, 0), map.WorldToImage(new SharpMap.Geometries.Point(180, 90)));
-		//    Assert.AreEqual(new System.Drawing.PointF(1000, 500), map.WorldToImage(new SharpMap.Geometries.Point(180, -90)));
-		//}
-
-		//[Test]
-		//[ExpectedException(typeof(InvalidOperationException))]
-		//public void GetMap_RenderEmptyMap_ThrowInvalidOperationException()
-		//{
-		//    Map map = new Map(new System.Drawing.Size(2, 1));
-		//    map.GetMap();
-		//}
-
 		[Test]
 		public void GetPixelSize_FixedZoom_Return8_75()
 		{
@@ -199,15 +165,6 @@ namespace SharpMap.Tests.Presentation
 			Assert.AreEqual(340, mapPresenter.WorldWidth);
 		}
 
-		//[Test]
-		//[ExpectedException(typeof(ApplicationException))]
-		//public void GetMap_RenderLayerWithoutDatasource_ThrowException()
-		//{
-		//    Map map = new Map();
-		//    map.Layers.Add(new SharpMap.Layers.VectorLayer("Layer 1"));
-		//    map.GetMap();
-		//}
-
 		[Test]
 		public void WorldToViewTests()
         {
@@ -274,10 +231,7 @@ namespace SharpMap.Tests.Presentation
 
 			mapPresenter.ZoomToExtents();
 
-			//System.Drawing.Image img = map.GetMap();
-			//Assert.IsNotNull(img);
 			map.Dispose();
-			//img.Dispose();
         }
 
         private static MapPresenter2D createPresenter(MockRepository mocks, double width, double height)
