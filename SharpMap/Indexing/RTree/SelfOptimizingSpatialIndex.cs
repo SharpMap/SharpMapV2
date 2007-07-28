@@ -123,12 +123,12 @@ namespace SharpMap.Indexing.RTree
 			Interlocked.Increment(ref _terminating);
 			#pragma warning restore 420
 
-			if (!_pollIdleThread.Join(20000))
+			if (_pollIdleThread.IsAlive && !_pollIdleThread.Join(20000))
             {
                 _pollIdleThread.Abort();
             }
 
-            if (!_restructureThread.Join(20000))
+            if (_pollIdleThread.IsAlive && !_restructureThread.Join(20000))
             {
                 _restructureThread.Abort();
             }

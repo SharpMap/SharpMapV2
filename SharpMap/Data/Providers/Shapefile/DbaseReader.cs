@@ -88,16 +88,13 @@ namespace SharpMap.Data.Providers
         {
             if (disposing) // Do deterministic finalization of managed resources
             {
-                if (_isOpen)
-                {
-                    this.Close();
-                }
-
                 _dbaseReader = null;
                 _dbaseFileStream = null;
-                _baseTable.Dispose();
+                if (_baseTable != null) _baseTable.Dispose();
                 _baseTable = null;
             }
+
+            _isOpen = false;
 
             // Clean up any unmanaged resources
             Disposed = true;

@@ -120,7 +120,7 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void ScaleTest1()
         {
-            ColorMatrix m1 = ColorMatrix.Zero;
+            ColorMatrix m1 = new ColorMatrix(0, 0, 0, 0, 0, 0, 0);
             ColorMatrix m2 = ColorMatrix.Identity;
         }
 

@@ -24,11 +24,13 @@ namespace SharpMap.Rendering
 {
     public class ColorMatrix : AffineMatrix<DoubleComponent>, IEquatable<ColorMatrix>
     {
-        public new readonly static ColorMatrix Identity
+        private readonly static ColorMatrix _identity
             = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
 
-        public new readonly static ColorMatrix Zero
-            = new ColorMatrix(0, 0, 0, 0, 0, 0, 0);
+        public static new ColorMatrix Identity
+        {
+            get { return _identity.Clone(); }
+        }
 
         public ColorMatrix()
             : this(Identity) { }
@@ -50,9 +52,12 @@ namespace SharpMap.Rendering
         public ColorMatrix(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 5)
         {
-            for (int i = 0; i < RowCount; i++)
+            for (int i = 0; i < 5; i++)
             {
-                Array.Copy(matrixToCopy.Elements, Elements, matrixToCopy.Elements.Length);
+                for (int j = 0; j < 5; j++)
+                {
+                    this[i, j] = matrixToCopy[i, j];
+                }
             }
         }
 
