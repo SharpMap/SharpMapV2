@@ -89,7 +89,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <returns></returns>
 		public override IMathTransform Inverse()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		public override void Invert()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
 		}
 	}
 }

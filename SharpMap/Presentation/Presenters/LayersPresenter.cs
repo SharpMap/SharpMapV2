@@ -47,12 +47,12 @@ namespace SharpMap.Presentation
 
         void handleMapLayersCollectionChanged(object sender, ModelCollectionChangedEventArgs<ILayer> e)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         void handleMapSelectedLayersChanged(object sender, EventArgs e)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         private void handleVisibileLayersChangeRequested(object sender, LayerActionEventArgs e)

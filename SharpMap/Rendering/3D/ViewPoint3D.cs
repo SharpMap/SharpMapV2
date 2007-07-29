@@ -222,59 +222,59 @@ namespace SharpMap.Rendering.Rendering3D
 
         public double Determinant
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public int ColumnCount
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool IsSingular
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public IMatrix<DoubleComponent> Inverse
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool IsSquare
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool IsSymmetrical
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public int RowCount
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public IMatrix<DoubleComponent> GetMatrix(int[] rowIndexes, int j0, int j1)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public DoubleComponent this[int row, int column]
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
         public IMatrix<DoubleComponent> Transpose()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -325,7 +325,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public IMatrix<DoubleComponent> Multiply(IMatrix<DoubleComponent> a)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion

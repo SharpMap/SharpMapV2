@@ -243,11 +243,11 @@ namespace SharpMap.Rendering.Rendering3D
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
@@ -505,32 +505,32 @@ namespace SharpMap.Rendering.Rendering3D
 
         public void Scale(double scaleAmount)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void Scale(IVectorD scaleVector)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void Translate(double translationAmount)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void Translate(IVectorD translationVector)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public IVectorD Transform(IVectorD vector)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public double[] Transform(params double[] vector)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -538,7 +538,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public object Clone()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -547,7 +547,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public bool Equals(IMatrixD other)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion

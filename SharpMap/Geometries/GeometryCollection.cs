@@ -97,7 +97,7 @@ namespace SharpMap.Geometries
 		/// <returns>True if the GeometryCollections are equals</returns>
 		public bool Equals(GeometryCollection g)
 		{
-			if (Object.ReferenceEquals(g, null))
+			if (ReferenceEquals(g, null))
 				return false;
 
 			if (g.Collection.Count != this.Collection.Count)
@@ -122,8 +122,10 @@ namespace SharpMap.Geometries
 		{
 			int hash = 0;
 
-            foreach(Geometry g in Collection)
+			foreach (Geometry g in Collection)
+			{
 				hash = hash ^ g.GetHashCode();
+			}
 
 			return hash;
 		}

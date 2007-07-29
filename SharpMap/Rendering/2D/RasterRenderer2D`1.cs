@@ -41,11 +41,11 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
@@ -53,11 +53,11 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
         #endregion
@@ -66,7 +66,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public void Dispose()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion

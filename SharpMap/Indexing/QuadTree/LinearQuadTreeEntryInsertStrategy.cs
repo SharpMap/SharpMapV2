@@ -56,7 +56,7 @@ namespace SharpMap.Indexing.QuadTree
 
         private void insertEntryRecursive(QuadTreeNode<TValue> quadTreeNode, TValue entry, INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
     }
 

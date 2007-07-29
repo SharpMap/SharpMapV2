@@ -35,7 +35,8 @@ namespace SharpMap.Data.Providers
 
             foreach (DataRow row in schema.Rows)
             {
-				if (row[DbaseSchema.ColumnNameColumn].Equals(DbaseSchema.OidColumnName))
+				if (String.Compare(row[DbaseSchema.ColumnNameColumn] as string, DbaseSchema.OidColumnName, 
+					StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
 					continue;
 				}
@@ -54,15 +55,24 @@ namespace SharpMap.Data.Providers
         internal static FeatureDataTable<uint> GetFeatureTableForFields(DbaseField[] _dbaseColumns)
         {
             FeatureDataTable<uint> table = new FeatureDataTable<uint>(DbaseSchema.OidColumnName);
+
             foreach (DbaseField dbf in _dbaseColumns)
             {
                 DataColumn col = table.Columns.Add(dbf.ColumnName, dbf.DataType);
-                if (dbf.DataType == typeof(string))
-                    col.MaxLength = dbf.Length;
-                else
-                    col.ExtendedProperties[DbaseSchema.LengthExtendedProperty] = dbf.Length;
-                if (dbf.Decimals > 0)
-                    col.ExtendedProperties[DbaseSchema.NumericPrecisionExtendedProperty] = dbf.Decimals;
+
+				if (dbf.DataType == typeof(string))
+				{
+					col.MaxLength = dbf.Length;
+				}
+				else
+				{
+					col.ExtendedProperties[DbaseSchema.LengthExtendedProperty] = dbf.Length;
+				}
+
+				if (dbf.Decimals > 0)
+				{
+					col.ExtendedProperties[DbaseSchema.NumericPrecisionExtendedProperty] = dbf.Decimals;
+				}
             }
 
             return table;

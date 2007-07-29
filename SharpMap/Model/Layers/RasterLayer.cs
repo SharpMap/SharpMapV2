@@ -11,12 +11,12 @@ namespace SharpMap.Layers
 	{
 		public override BoundingBox Envelope
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public override object Clone()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
 		}
 	}
 }

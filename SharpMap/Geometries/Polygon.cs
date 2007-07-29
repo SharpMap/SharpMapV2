@@ -134,15 +134,29 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public bool Equals(Polygon p)
 		{
-			if (Object.ReferenceEquals(p, null))
+			if (ReferenceEquals(p, null))
+			{
 				return false;
+			}
+
 			if (!p.ExteriorRing.Equals(this.ExteriorRing))
+			{
 				return false;
+			}
+
 			if (p.InteriorRings.Count != this.InteriorRings.Count)
+			{
 				return false;
+			}
+
 			for (int i = 0; i < p.InteriorRings.Count; i++)
+			{
 				if (!p.InteriorRings[i].Equals(this.InteriorRings[i]))
+				{
 					return false;
+				}
+			}
+
 			return true;
 		}
 
@@ -154,8 +168,12 @@ namespace SharpMap.Geometries
 		public override int GetHashCode()
 		{
 			int hash = ExteriorRing.GetHashCode(); ;
+			
 			for (int i = 0; i < InteriorRings.Count; i++)
+			{
 				hash = hash ^ InteriorRings[i].GetHashCode();
+			}
+
 			return hash;
 		}
 

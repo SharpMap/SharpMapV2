@@ -69,7 +69,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, LabelStyle style)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public event EventHandler TextRenderingHintChanged;

@@ -96,9 +96,6 @@ namespace SharpMap.Data.Providers
             }
 
             _isOpen = false;
-
-            // Clean up any unmanaged resources
-            Disposed = true;
         }
 
         /// <summary>
@@ -321,14 +318,16 @@ namespace SharpMap.Data.Providers
         /// <remarks>
         /// If the encoding type isn't set, the dbase driver will try to determine 
         /// the correct <see cref="System.Text.Encoding"/>.
-        /// </remarks>
-        /// <exception cref="ObjectDisposedException">Thrown when the property is 
-        /// fetched and/or set and object has been disposed</exception>
+		/// </remarks>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown when the property is 
+		/// fetched and/or set and object has been disposed.
+		/// </exception>
         public System.Text.Encoding Encoding
         {
             get
             {
-                if (_isDisposed)
+				if (Disposed)
                 {
                     throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
                 }
@@ -337,7 +336,7 @@ namespace SharpMap.Data.Providers
             }
             set
             {
-                if (_isDisposed)
+				if (Disposed)
                 {
                     throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
                 }
@@ -378,12 +377,12 @@ namespace SharpMap.Data.Providers
                 throw new ArgumentOutOfRangeException("Invalid DataRow requested at index " + oid.ToString());
             }
 
-            if (Object.ReferenceEquals(table, null))
+            if (ReferenceEquals(table, null))
             {
                 throw new ArgumentNullException("table");
             }
 
-            _dbaseFileStream.Seek(_header.HeaderLength + oid * _header.RecordLength, SeekOrigin.Begin);
+            _dbaseFileStream.Seek((oid * _header.RecordLength) + _header.HeaderLength, SeekOrigin.Begin);
 
             if (_dbaseReader.ReadChar() == DbaseConstants.DeletedIndicator) //is record marked deleted?
             {
@@ -409,7 +408,7 @@ namespace SharpMap.Data.Providers
 
         private object ReadDbfValue(DbaseField dbf)
         {
-            if (Object.ReferenceEquals(dbf, null))
+            if (ReferenceEquals(dbf, null))
             {
                 throw new ArgumentNullException("dbf");
             }
@@ -424,7 +423,7 @@ namespace SharpMap.Data.Providers
                     // Mono has not yet implemented DateTime.TryParseExact
 #if !MONO
                     if (DateTime.TryParseExact(Encoding.UTF7.GetString((_dbaseReader.ReadBytes(8))),
-                        "yyyyMMdd", SharpMap.Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
+                        "yyyyMMdd", Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
                     {
                         return date;
                     }
@@ -447,7 +446,7 @@ namespace SharpMap.Data.Providers
                     string temp = Encoding.UTF7.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
                     double dbl = 0;
 
-                    if (double.TryParse(temp, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out dbl))
+                    if (double.TryParse(temp, NumberStyles.Float, Map.NumberFormat_EnUS, out dbl))
                     {
                         return dbl;
                     }
@@ -459,7 +458,7 @@ namespace SharpMap.Data.Providers
                     string temp16 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int16 i16 = 0;
 
-                    if (Int16.TryParse(temp16, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out i16))
+                    if (Int16.TryParse(temp16, NumberStyles.Float, Map.NumberFormat_EnUS, out i16))
                     {
                         return i16;
                     }
@@ -471,7 +470,7 @@ namespace SharpMap.Data.Providers
                     string temp32 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int32 i32 = 0;
 
-                    if (Int32.TryParse(temp32, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out i32))
+                    if (Int32.TryParse(temp32, NumberStyles.Float, Map.NumberFormat_EnUS, out i32))
                     {
                         return i32;
                     }
@@ -483,7 +482,7 @@ namespace SharpMap.Data.Providers
                     string temp64 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int64 i64 = 0;
 
-                    if (Int64.TryParse(temp64, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out i64))
+                    if (Int64.TryParse(temp64, NumberStyles.Float, Map.NumberFormat_EnUS, out i64))
                     {
                         return i64;
                     }
@@ -495,7 +494,7 @@ namespace SharpMap.Data.Providers
                     string temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
                     float f = 0;
 
-                    if (float.TryParse(temp4, NumberStyles.Float, SharpMap.Map.NumberFormat_EnUS, out f))
+                    if (float.TryParse(temp4, NumberStyles.Float, Map.NumberFormat_EnUS, out f))
                     {
                         return f;
                     }
@@ -503,15 +502,14 @@ namespace SharpMap.Data.Providers
                     {
                         return DBNull.Value;
                     }
-                case TypeCode.String:
-                    if (_encoding == null)
-                    {
-                        return _header.FileEncoding.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
-                    }
-                    else
-                    {
-                        return _encoding.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
-                    }
+				case TypeCode.String:
+					{
+						byte[] chars = _dbaseReader.ReadBytes(dbf.Length);
+						string value = (_encoding == null)
+							? _header.FileEncoding.GetString(chars)
+							: _encoding.GetString(chars);
+						return value.Replace("\0", "").Trim();
+					}
                 case TypeCode.Char:
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:

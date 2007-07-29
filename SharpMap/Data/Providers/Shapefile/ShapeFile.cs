@@ -207,8 +207,16 @@ namespace SharpMap.Data.Providers
         #endregion
         #endregion
 
-        #region Public Methods and Properties (SharpMap ShapeFile API)
-        /// <summary>
+		#region ToString
+		public override string ToString()
+		{
+			return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {3}; Extents: {4}",
+				ConnectionId, HasDbf, GetFeatureCount(), GetExtents());
+		}
+		#endregion
+
+		#region Public Methods and Properties (SharpMap ShapeFile API)
+		/// <summary>
         /// Creates a new <see cref="ShapeFile"/> instance and .shp and .shx file on disk.
         /// </summary>
         /// <param name="directory">Directory to create the shapefile in.</param>
@@ -661,7 +669,7 @@ namespace SharpMap.Data.Providers
             {
                 Geometry g = GetGeometryById(oid);
 
-                if (!Object.ReferenceEquals(g, null))
+                if (!ReferenceEquals(g, null))
                 {
 					yield return g;
                 }
@@ -815,10 +823,11 @@ namespace SharpMap.Data.Providers
         }
 
         /// <summary>
-        /// Returns the total number of features in the datasource (without any filter applied)
+        /// Returns the total number of features in the datasource (without any filter applied).
         /// </summary>
-        /// <returns></returns>
-        /// <exception cref="InvalidShapeFileOperationException">Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
+        /// <returns>
+		/// The number of features contained in the shapefile.
+		/// </returns>
         public int GetFeatureCount()
         {
             if (IsOpen)
@@ -1248,18 +1257,18 @@ namespace SharpMap.Data.Providers
 					// Workaround for trying to open the file for exclusive writing too quickly after disposing the reader
 					int numberAttemptsToOpenDbfForWriting = 0;
 
-					while (_dbaseWriter != null && numberAttemptsToOpenDbfForWriting < 3)
+					do
 					{
 						try
 						{
 							_dbaseWriter = new DbaseWriter(DbfFilename);
 						}
-						catch (System.IO.IOException)
+						catch (IOException)
 						{
 							System.Threading.Thread.Sleep(200);
 							numberAttemptsToOpenDbfForWriting++;
 						}
-					}
+					} while (_dbaseWriter == null && numberAttemptsToOpenDbfForWriting <= 3);
 
 					if (_dbaseWriter == null)
 					{

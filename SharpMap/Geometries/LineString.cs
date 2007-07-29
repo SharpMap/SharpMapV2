@@ -101,13 +101,22 @@ namespace SharpMap.Geometries
         /// <returns>true of the objects are spatially equal</returns>
         public bool Equals(LineString l)
         {
-            if (Object.ReferenceEquals(l, null))
-                return false;
-            if (l.Vertices.Count != this.Vertices.Count)
-                return false;
-            for (int i = 0; i < l.Vertices.Count; i++)
-                if (!l.Vertices[i].Equals(this.Vertices[i]))
-                    return false;
+			if (ReferenceEquals(l, null))
+			{
+				return false;
+			}
+			if (l.Vertices.Count != this.Vertices.Count)
+			{
+				return false;
+			}
+			for (int i = 0; i < l.Vertices.Count; i++)
+			{
+				if (!l.Vertices[i].Equals(this.Vertices[i]))
+				{
+					return false;
+				}
+			}
+
             return true;
         }
 
@@ -119,8 +128,12 @@ namespace SharpMap.Geometries
         public override int GetHashCode()
         {
             int hash = 0;
-            for (int i = 0; i < Vertices.Count; i++)
-                hash = hash ^ Vertices[i].GetHashCode();
+			
+			for (int i = 0; i < Vertices.Count; i++)
+			{
+				hash = hash ^ Vertices[i].GetHashCode();
+			}
+
             return hash;
         }
 

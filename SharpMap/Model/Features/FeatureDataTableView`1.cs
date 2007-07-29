@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using SharpMap.Presentation;
+using System.ComponentModel;
 
 namespace SharpMap
 {
@@ -28,12 +29,12 @@ namespace SharpMap
 
         public FeatureDataRow<TOid> AddNew()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public int Find(System.ComponentModel.PropertyDescriptor property, FeatureDataRow<TOid> key)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -42,28 +43,28 @@ namespace SharpMap
 
         public int IndexOf(FeatureDataRow<TOid> item)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void Insert(int index, FeatureDataRow<TOid> item)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void RemoveAt(int index)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public FeatureDataRow<TOid> this[int index]
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
@@ -73,37 +74,37 @@ namespace SharpMap
 
         public void Add(FeatureDataRow<TOid> item)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void Clear()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public bool Contains(FeatureDataRow<TOid> item)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void CopyTo(FeatureDataRow<TOid>[] array, int arrayIndex)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public int Count
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool IsReadOnly
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool Remove(FeatureDataRow<TOid> item)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -112,7 +113,7 @@ namespace SharpMap
 
         public IEnumerator<FeatureDataRow<TOid>> GetEnumerator()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -121,7 +122,7 @@ namespace SharpMap
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -130,39 +131,39 @@ namespace SharpMap
 
         public void ApplySort(System.ComponentModel.ListSortDescriptionCollection sorts)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public string Filter
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
         public void RemoveFilter()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public System.ComponentModel.ListSortDescriptionCollection SortDescriptions
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool SupportsAdvancedSorting
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool SupportsFiltering
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         #endregion
@@ -171,79 +172,79 @@ namespace SharpMap
 
         public void AddIndex(System.ComponentModel.PropertyDescriptor property)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         object System.ComponentModel.IBindingList.AddNew()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public bool AllowEdit
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool AllowNew
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool AllowRemove
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public void ApplySort(System.ComponentModel.PropertyDescriptor property, System.ComponentModel.ListSortDirection direction)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public int Find(System.ComponentModel.PropertyDescriptor property, object key)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public bool IsSorted
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
-        public event System.ComponentModel.ListChangedEventHandler ListChanged;
+        public event ListChangedEventHandler ListChanged;
 
-        public void RemoveIndex(System.ComponentModel.PropertyDescriptor property)
+        public void RemoveIndex(PropertyDescriptor property)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void RemoveSort()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public System.ComponentModel.ListSortDirection SortDirection
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public System.ComponentModel.PropertyDescriptor SortProperty
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool SupportsChangeNotification
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool SupportsSearching
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public bool SupportsSorting
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         #endregion
@@ -252,43 +253,43 @@ namespace SharpMap
 
         public int Add(object value)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public bool Contains(object value)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public int IndexOf(object value)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public void Insert(int index, object value)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public bool IsFixedSize
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public void Remove(object value)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         object System.Collections.IList.this[int index]
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
@@ -298,17 +299,17 @@ namespace SharpMap
 
         public void CopyTo(Array array, int index)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public bool IsSynchronized
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         public object SyncRoot
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { throw new NotImplementedException(); }
         }
 
         #endregion
@@ -317,12 +318,12 @@ namespace SharpMap
 
         public System.ComponentModel.PropertyDescriptorCollection GetItemProperties(System.ComponentModel.PropertyDescriptor[] listAccessors)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public string GetListName(System.ComponentModel.PropertyDescriptor[] listAccessors)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion

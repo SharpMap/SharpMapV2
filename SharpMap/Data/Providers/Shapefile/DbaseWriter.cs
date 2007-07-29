@@ -25,14 +25,15 @@ namespace SharpMap.Data.Providers
 {
     internal class DbaseWriter : IDisposable
     {
-        private const string NumberFormatTemplate = "{0,:F}";
-        private DbaseHeader _header = new DbaseHeader();
+		private const string NumberFormatTemplate = "{0,:F}";
+		private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
+		private DbaseHeader _header = new DbaseHeader();
+		private Encoding _encoding;
         private FileStream _dbaseFileStream;
         private BinaryReader _dbaseReader;
         private BinaryWriter _dbaseWriter;
         private DataTable _schema;
         private bool _disposed = false;
-        private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
 
         #region Object Construction/Destruction
         public DbaseWriter(string filename)
@@ -140,7 +141,8 @@ namespace SharpMap.Data.Providers
         }
         #endregion
 
-        public DbaseField[] Columns
+		#region Columns Property
+		public DbaseField[] Columns
         {
             get { return _header == null ? null : _header.Columns; }
             set
@@ -153,9 +155,44 @@ namespace SharpMap.Data.Providers
                 _header = new DbaseHeader();
                 _header.Columns = value;
             }
-        }
+		}
+		#endregion
 
-        public void AddRows(DataTable table)
+		/// <summary>
+		/// Gets or sets the <see cref="System.Text.Encoding"/> used for writing strings 
+		/// to the DBase DBF file.
+		/// </summary>
+		/// <remarks>
+		/// If the encoding type isn't set, the dbase driver will try to determine 
+		/// the correct <see cref="System.Text.Encoding"/>.
+		/// </remarks>
+		/// <exception cref="ObjectDisposedException">
+		/// Thrown when the property is 
+		/// fetched and/or set and object has been disposed.
+		/// </exception>
+		public Encoding Encoding
+		{
+			get
+			{
+				if (Disposed)
+				{
+					throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
+				}
+
+				return _encoding;
+			}
+			set
+			{
+				if (Disposed)
+				{
+					throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
+				}
+
+				_encoding = value;
+			}
+		}
+
+		public void AddRows(DataTable table)
         {
             if (table == null)
             {
@@ -170,7 +207,7 @@ namespace SharpMap.Data.Providers
 
         public void AddRow(DataRow row)
         {
-            _dbaseWriter.Seek((int)(_header.RecordCount * _header.RecordLength + _header.HeaderLength), SeekOrigin.Begin);
+            _dbaseWriter.Seek((int)((_header.RecordCount * _header.RecordLength) + _header.HeaderLength), SeekOrigin.Begin);
 
             writeRow(row);
             _dbaseWriter.Seek(0, SeekOrigin.End);
@@ -198,9 +235,10 @@ namespace SharpMap.Data.Providers
 
             _header.LastUpdate = DateTime.Now;
             _dbaseWriter.Flush();
-        }
+		}
 
-        private void writeRow(DataRow row)
+		#region Private helper methods
+		private void writeRow(DataRow row)
         {
             if (row == null)
             {
@@ -214,67 +252,73 @@ namespace SharpMap.Data.Providers
 
             _dbaseWriter.Write(DbaseConstants.NotDeletedIndicator);
 
-            for (int i = 0; i < _header.Columns.Length; i++)
+			int dbaseColumnIndex = 0;
+
+			for (int dataRowColumnIndex = 0; dbaseColumnIndex < _header.Columns.Length; dataRowColumnIndex++)
             {
-                int rowColumnIndex = row.Table.Columns.Contains(DbaseSchema.OidColumnName) ? i + 1 : i;
+				if(String.Compare(row.Table.Columns[dataRowColumnIndex].ColumnName, DbaseSchema.OidColumnName, 
+					StringComparison.CurrentCultureIgnoreCase) == 0)
+				{
+					continue;
+				}
 
                 // TODO: reconsider type checking
-                //if ((_header.Columns[i].DataType != row.Table.Columns[rowColumnIndex].DataType) || (_header.Columns[i].Length != row.Table.Columns[rowColumnIndex].MaxLength))
+                //if ((_header.Columns[rowColumnIndex].DataType != row.Table.Columns[rowColumnIndex].DataType) || (_header.Columns[rowColumnIndex].Length != row.Table.Columns[rowColumnIndex].MaxLength))
                 //    throw new SchemaMismatchException(String.Format("Row doesn't match this DbaseWriter schema at column {0}", i));
 
-                switch (Type.GetTypeCode(_header.Columns[i].DataType))
+				switch (Type.GetTypeCode(_header.Columns[dbaseColumnIndex].DataType))
                 {
                     case TypeCode.Boolean:
-                        if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
                         {
                             _dbaseWriter.Write(DbaseConstants.BooleanNullChar);
                         }
                         else
                         {
-                            writeBoolean((bool)row[rowColumnIndex]);
+                            writeBoolean((bool)row[dataRowColumnIndex]);
                         }
                         break;
                     case TypeCode.DateTime:
-                        if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
                         {
                             writeNullDateTime();
                         }
                         else
                         {
-                            writeDateTime((DateTime)row[rowColumnIndex]);
+                            writeDateTime((DateTime)row[dataRowColumnIndex]);
                         }
                         break;
                     case TypeCode.Single:
                     case TypeCode.Double:
-                        if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
                         {
-                            writeNullNumber(_header.Columns[i].Length);
+                            writeNullNumber(_header.Columns[dbaseColumnIndex].Length);
                         }
                         else
                         {
-                            writeNumber(Convert.ToDouble(row[rowColumnIndex]), _header.Columns[i].Length, _header.Columns[i].Decimals);
+                            writeNumber(Convert.ToDouble(row[dataRowColumnIndex]), _header.Columns[dbaseColumnIndex].Length, _header.Columns[dbaseColumnIndex].Decimals);
                         }
                         break;
                     case TypeCode.Int16:
                     case TypeCode.Int32:
                     case TypeCode.Int64:
-                        if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
                         {
-                            writeNullNumber(_header.Columns[i].Length);
+                            writeNullNumber(_header.Columns[dbaseColumnIndex].Length);
                         }
                         else
                         {
-                            writeNumber(Convert.ToInt64(row[rowColumnIndex]), _header.Columns[i].Length);
+                            writeNumber(Convert.ToInt64(row[dataRowColumnIndex]), _header.Columns[dbaseColumnIndex].Length);
                         }
                         break;
                     case TypeCode.String:
-                        if (row[rowColumnIndex] == null || row[rowColumnIndex] == DBNull.Value)
+                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
                         {
-                            writeNullString(_header.Columns[i].Length);
+                            writeNullString(_header.Columns[dbaseColumnIndex].Length);
                         }
                         else
                         {
-                            writeString((string)row[rowColumnIndex], _header.Columns[i].Length);
+                            writeString((string)row[dataRowColumnIndex], _header.Columns[dbaseColumnIndex].Length);
                         }
                         break;
                     case TypeCode.Char:
@@ -288,8 +332,10 @@ namespace SharpMap.Data.Providers
                     case TypeCode.Empty:
                     case TypeCode.Object:
                     default:
-                        throw new NotSupportedException(String.Format("Type not supported: {0}", _header.Columns[i].DataType));
+                        throw new NotSupportedException(String.Format("Type not supported: {0}", _header.Columns[dbaseColumnIndex].DataType));
                 }
+
+				dbaseColumnIndex++;
             }
         }
 
@@ -300,7 +346,8 @@ namespace SharpMap.Data.Providers
 
         private void writeNullString(int length)
         {
-            _dbaseWriter.Write(new String('\0', length));
+			byte[] bytes = Encoding.ASCII.GetBytes(new String('\0', length));
+			_dbaseWriter.Write(bytes);
         }
 
         private void writeNullNumber(int length)
@@ -314,8 +361,9 @@ namespace SharpMap.Data.Providers
             _format.Length = 0;
             _format.Append(NumberFormatTemplate);
             _format.Insert(5, decimalPlaces).Insert(3, length);
-            string number = String.Format(SharpMap.Map.NumberFormat_EnUS, _format.ToString(), value);
-            _dbaseWriter.Write(number);
+            string number = String.Format(Map.NumberFormat_EnUS, _format.ToString(), value);
+			byte[] bytes = Encoding.ASCII.GetBytes(number);
+			_dbaseWriter.Write(bytes);
         }
 
         private void writeNumber(long value, short length)
@@ -326,18 +374,23 @@ namespace SharpMap.Data.Providers
 
         private void writeDateTime(DateTime dateTime)
         {
-            _dbaseWriter.Write(dateTime.ToString("yyyyMMDD"));
+			byte[] bytes = Encoding.ASCII.GetBytes(dateTime.ToString("yyyyMMdd"));
+            _dbaseWriter.Write(bytes);
         }
 
         private void writeString(string value, int length)
         {
-            value = (value ?? String.Empty) + new String('\0', length);
-            _dbaseWriter.Write(value.Substring(0, length));
+            value = (value ?? String.Empty) + new String((char)0x0, length);
+			byte[] chars = (_encoding == null)
+				? _header.FileEncoding.GetBytes(value.Substring(0, length))
+				: _encoding.GetBytes(value.Substring(0, length));
+			_dbaseWriter.Write(chars);
         }
 
         private void writeBoolean(bool value)
         {
-            _dbaseWriter.Write(value ? "T" : "F");
+			byte[] bytes = value ? Encoding.ASCII.GetBytes("T") : Encoding.ASCII.GetBytes("F");
+			_dbaseWriter.Write(bytes);
         }
 
         private void updateHeader()
@@ -387,6 +440,7 @@ namespace SharpMap.Data.Providers
             }
 
             _dbaseWriter.Write(DbaseConstants.HeaderTerminator);
-        }
-    }
+		}
+		#endregion
+	}
 }

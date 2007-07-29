@@ -48,7 +48,7 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>The resulting spatial reference object</returns>
 		public ICoordinateSystem CreateFromXml(string xml)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

@@ -28,12 +28,12 @@ namespace SharpMap.Rendering.Gdi
     {
         public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
     }
 }

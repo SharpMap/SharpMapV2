@@ -97,14 +97,14 @@ namespace SharpMap
             get { return _layers.Count; }
         }
 
-        public bool Contains(ILayer layer)
+        public bool Contains(ILayer item)
         {
-            return _layers.Contains(layer);
+            return _layers.Contains(item);
         }
 
-        public int IndexOf(ILayer layer)
+		public int IndexOf(ILayer item)
         {
-            return _layers.IndexOf(layer);
+			return _layers.IndexOf(item);
         }
 
         public void Insert(int index, ILayer layer)
@@ -174,9 +174,9 @@ namespace SharpMap
             get { return false; }
         }
 
-        public void CopyTo(ILayer[] array, int index)
+        public void CopyTo(ILayer[] array, int arrayIndex)
         {
-            _layers.CopyTo(array, index);
+            _layers.CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<ILayer> GetEnumerator()

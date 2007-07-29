@@ -128,7 +128,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public object Clone()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public bool Equals(IVectorD other)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -146,7 +146,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public IEnumerator<double> GetEnumerator()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion

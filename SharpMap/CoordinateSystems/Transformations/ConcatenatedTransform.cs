@@ -100,12 +100,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 
 		public override string Wkt
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public override string Xml
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get { throw new NotImplementedException(); }
 		}
 	}
 }

@@ -183,11 +183,11 @@ namespace SharpMap.Layers
 		{
 			get
 			{
-				throw new Exception("The method or operation is not implemented.");
+				throw new NotImplementedException();
 			}
 			set
 			{
-				throw new Exception("The method or operation is not implemented.");
+				throw new NotImplementedException();
 			}
 		}
         #endregion

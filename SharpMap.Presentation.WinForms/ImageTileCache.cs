@@ -43,7 +43,8 @@ namespace SharpMap.Presentation.WinForms
 		{
 			QuadTreeNode<Bitmap> tileNode = new QuadTreeNode<Bitmap>();
 			tileNode.Value = tile;
-			tileNode.BoundingBox = tileBounds;
+#warning This doesn't compile in Orcas B2, but it does in VS2005
+			//tileNode.BoundingBox = tileBounds;
 			Add(tileNode);
 		}
 

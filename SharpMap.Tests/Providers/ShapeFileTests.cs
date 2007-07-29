@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using NUnit.Framework;
-using SharpMap.Data.Providers;
-using System.IO;
 using System.Data;
-using SharpMap.CoordinateSystems;
-using SharpMap.Utilities;
+using System.IO;
+using NUnit.Framework;
 using SharpMap.Converters.WellKnownText;
+using SharpMap.CoordinateSystems;
+using SharpMap.Data.Providers;
 using SharpMap.Geometries;
-using System.Threading;
 
 namespace SharpMap.Tests.Provider
 {
@@ -481,7 +477,7 @@ namespace SharpMap.Tests.Provider
 			FeatureDataTable<uint> schema = new FeatureDataTable<uint>("oid");
 			schema.Columns.AddRange(new DataColumn[] {
 				new DataColumn("Name", typeof(String)),
-				new DataColumn("Date_Created", typeof(DateTime)),
+				new DataColumn("DateCreated", typeof(DateTime)),
 				new DataColumn("Visits", typeof(int)),
 				new DataColumn("Weight", typeof(float))
 			});
@@ -492,7 +488,7 @@ namespace SharpMap.Tests.Provider
 			DateTime dateCreated = DateTime.Now;
 			FeatureDataRow<uint> feature = schema.NewRow(1);
 			feature["Name"] = "Test feature";
-			feature["Date_Created"] = dateCreated;
+			feature["DateCreated"] = dateCreated;
 			feature["Visits"] = 0;
 			feature["Weight"] = 100.0f;
 			feature.Geometry = new Point(0, 0);
@@ -501,7 +497,7 @@ namespace SharpMap.Tests.Provider
 
 			shapeFile.Close();
 
-			shapeFile = new ShapeFile(@"UnitTestData\Test2");
+			shapeFile = new ShapeFile(@"UnitTestData\Test2.shp");
 			shapeFile.Open();
 
 			Assert.AreEqual(1, shapeFile.GetFeatureCount());
@@ -515,7 +511,10 @@ namespace SharpMap.Tests.Provider
 			FeatureDataRow<uint> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<uint>;
 			Assert.AreEqual(new Point(0, 0), newFeature.Geometry);
 			Assert.AreEqual(newFeature["Name"], "Test feature");
-			Assert.AreEqual(newFeature["Date_Created"], dateCreated);
+			DateTime dateCreatedActual = (DateTime)newFeature["DateCreated"];
+			Assert.AreEqual(dateCreatedActual.Year, dateCreated.Year);
+			Assert.AreEqual(dateCreatedActual.Month, dateCreated.Month);
+			Assert.AreEqual(dateCreatedActual.Day, dateCreated.Day);
 			Assert.AreEqual(newFeature["Visits"], 0);
 			Assert.AreEqual(newFeature["Weight"], 100.0f);
         }

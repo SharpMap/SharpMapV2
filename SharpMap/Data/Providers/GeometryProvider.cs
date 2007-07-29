@@ -301,6 +301,7 @@ namespace SharpMap.Data.Providers
 		public ICoordinateSystem SpatialReference
 		{
 			get { return _coordinateSystem; }
+			set { _coordinateSystem = value; }
 		}
 
 		public ICoordinateTransformation CoordinateTransformation
