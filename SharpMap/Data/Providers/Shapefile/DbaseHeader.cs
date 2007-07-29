@@ -133,29 +133,35 @@ namespace SharpMap.Data.Providers
                 throw new NotSupportedException("Unsupported DBF Type");
             }
 
-            header.LastUpdate = new DateTime((int)reader.ReadByte() + 1900, (int)reader.ReadByte(), (int)reader.ReadByte()); //Read the last update date
+			header.LastUpdate = new DateTime((int)reader.ReadByte() + DbaseConstants.DbaseEpoch, (int)reader.ReadByte(), 
+				(int)reader.ReadByte()); //Read the last update date
             header.RecordCount = reader.ReadUInt32(); // read number of records.
             short storedHeaderLength = reader.ReadInt16(); // read length of header structure.
             short storedRecordLength = reader.ReadInt16(); // read length of a record
             reader.BaseStream.Seek(DbaseConstants.EncodingOffset, SeekOrigin.Begin); //Seek to encoding flag
             header.LanguageDriver = reader.ReadByte(); //Read and parse Language driver
             reader.BaseStream.Seek(DbaseConstants.ColumnDescriptionOffset, SeekOrigin.Begin); //Move past the reserved bytes
+            int numberOfColumns = (storedHeaderLength - DbaseConstants.ColumnDescriptionOffset) 
+				/ DbaseConstants.ColumnDescriptionLength;  // calculate the number of DataColumns in the header
 
-            int numberOfColumns = (storedHeaderLength - DbaseConstants.ColumnDescriptionOffset) / DbaseConstants.ColumnDescriptionLength;  // calculate the number of DataColumns in the header
             DbaseField[] columns = new DbaseField[numberOfColumns];
+
             for (int i = 0; i < columns.Length; i++)
             {
                 columns[i] = new DbaseField();
                 columns[i].ColumnName = header.FileEncoding.GetString(reader.ReadBytes(11)).Replace("\0", "").Trim();
-                char fieldtype = reader.ReadChar();
-
+				char fieldtype = reader.ReadChar();
                 columns[i].Address = reader.ReadInt32();
-
                 short fieldLength = reader.ReadByte();
-                if (fieldtype == 'N' || fieldtype == 'F')
-                    columns[i].Decimals = reader.ReadByte();
-                else
-                    fieldLength += (short)((short)reader.ReadByte() << 8);
+
+				if (fieldtype == 'N' || fieldtype == 'F')
+				{
+					columns[i].Decimals = reader.ReadByte();
+				}
+				else
+				{
+					fieldLength += (short)((short)reader.ReadByte() << 8);
+				}
 
                 columns[i].Length = fieldLength;
 
@@ -174,14 +180,10 @@ namespace SharpMap.Data.Providers
                         //If the number doesn't have any decimals, make the type an integer, if possible
                         if (columns[i].Decimals == 0)
                         {
-                            if (columns[i].Length <= 4)
-                                columns[i].DataType = typeof(Int16);
-                            else if (columns[i].Length <= 9)
-                                columns[i].DataType = typeof(Int32);
-                            else if (columns[i].Length <= 18)
-                                columns[i].DataType = typeof(Int64);
-                            else
-                                columns[i].DataType = typeof(double);
+                            if (columns[i].Length <= 4) columns[i].DataType = typeof(Int16);
+                            else if (columns[i].Length <= 9) columns[i].DataType = typeof(Int32);
+                            else if (columns[i].Length <= 18) columns[i].DataType = typeof(Int64);
+                            else columns[i].DataType = typeof(double);
                         }
                         else
                             columns[i].DataType = typeof(double);
@@ -205,12 +207,12 @@ namespace SharpMap.Data.Providers
 
             if (storedHeaderLength != header.HeaderLength)
             {
-                throw new InvalidDbaseFileException("Recorded header length doesn't equal computed header length");
+                throw new InvalidDbaseFileException("Recorded header length doesn't equal computed header length.");
             }
 
             if (storedRecordLength != header.RecordLength)
             {
-                throw new InvalidDbaseFileException("Recorded record length doesn't equal computed record length");
+                throw new InvalidDbaseFileException("Recorded record length doesn't equal computed record length.");
             }
 
             return header;

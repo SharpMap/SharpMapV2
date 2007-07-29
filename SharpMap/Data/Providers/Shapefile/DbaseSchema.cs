@@ -24,16 +24,21 @@ namespace SharpMap.Data.Providers
 {
     internal static class DbaseSchema
     {
-        internal static DbaseField[] GetFields(System.Data.DataTable schema)
+        internal static DbaseField[] GetFields(DataTable schema)
         {
-            if (schema == null)
-                throw new ArgumentNullException("schema");
+			if (schema == null)
+			{
+				throw new ArgumentNullException("schema");
+			}
 
             List<DbaseField> fields = new List<DbaseField>();
+
             foreach (DataRow row in schema.Rows)
             {
-                if (row[DbaseSchema.ColumnNameColumn].Equals(DbaseSchema.OidColumnName))
-                    continue;
+				if (row[DbaseSchema.ColumnNameColumn].Equals(DbaseSchema.OidColumnName))
+				{
+					continue;
+				}
 
                 DbaseField field = new DbaseField();
                 field.ColumnName = row[DbaseSchema.ColumnNameColumn] as string;
@@ -246,8 +251,15 @@ namespace SharpMap.Data.Providers
             foreach (DataColumn column in table.Columns)
             {
                 DataColumn[] keyColumns = table.PrimaryKey ?? new DataColumn[] { };
-                int length = column.ExtendedProperties.ContainsKey(LengthExtendedProperty) ? Convert.ToInt32(column.ExtendedProperties[LengthExtendedProperty]) : column.MaxLength;
-                short precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty) ? Convert.ToInt16(column.ExtendedProperties[NumericPrecisionExtendedProperty]) : (short)0;
+                
+				int length = column.ExtendedProperties.ContainsKey(LengthExtendedProperty) 
+					? Convert.ToInt32(column.ExtendedProperties[LengthExtendedProperty]) 
+					: getLengthByHeuristic(column);
+                
+				short precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty) 
+					? Convert.ToInt16(column.ExtendedProperties[NumericPrecisionExtendedProperty]) 
+					: (short)0;
+
                 schema.Rows.Add(
                     column.ColumnName,
                     length,
@@ -265,6 +277,35 @@ namespace SharpMap.Data.Providers
 
             return schema;
         }
+
+		private static int getLengthByHeuristic(DataColumn column)
+		{
+			switch (Type.GetTypeCode(column.DataType))
+			{
+				case TypeCode.Boolean:
+					return 1;
+				case TypeCode.DateTime:
+					return 8;
+				case TypeCode.Byte:
+				case TypeCode.SByte:
+				case TypeCode.Int16:
+				case TypeCode.Int32:
+				case TypeCode.Int64:
+				case TypeCode.UInt16:
+				case TypeCode.UInt32:
+				case TypeCode.UInt64:
+					return 18;
+				case TypeCode.Decimal:
+				case TypeCode.Single:
+				case TypeCode.Double:
+					return 20;
+				case TypeCode.Char:
+				case TypeCode.String:
+					return 254;
+				default:
+					throw new NotSupportedException("Type is not supported");
+			}
+		}
 
         internal static readonly string OidColumnName = "OID";
         internal static readonly string ColumnNameColumn = "ColumnName";

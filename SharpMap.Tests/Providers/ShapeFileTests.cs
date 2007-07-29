@@ -16,7 +16,19 @@ namespace SharpMap.Tests.Provider
 {
 	[TestFixture]
 	public class ShapeFileTests
-    {
+	{
+		[TestFixtureSetUp]
+		public void FixtureSetup()
+		{
+			Directory.CreateDirectory("UnitTestData");
+		}
+
+		[TestFixtureTearDown]
+		public void FixtureTeardown()
+		{
+			Directory.Delete("UnitTestData", true);
+		}
+
 		[TearDown]
 		public void Teardown()
 		{
@@ -52,7 +64,7 @@ namespace SharpMap.Tests.Provider
 				new DataColumn("Visits", typeof(int)),
 				new DataColumn("Weight", typeof(float))
 			});
-			ShapeFile shapeFile = ShapeFile.Create(".", "Test1", ShapeType.Point, schema);
+			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test1", ShapeType.Point, schema);
 			Assert.IsTrue(File.Exists("Test1.shp"));
 			Assert.IsTrue(File.Exists("Test1.shx"));
 			Assert.IsTrue(File.Exists("Test1.dbf"));
@@ -184,47 +196,47 @@ namespace SharpMap.Tests.Provider
         [Test]
         public void SetFilenameTest()
 		{
-			if (File.Exists(@"NewBCROADS.SHP")) File.Delete(@"NewBCROADS.SHP");
-			if (File.Exists(@"NewBCROADS.SHX")) File.Delete(@"NewBCROADS.SHX");
-			if (File.Exists(@"NewBCROADS.DBF")) File.Delete(@"NewBCROADS.DBF");
-			if (File.Exists(@"NewBCROADS.SBN")) File.Delete(@"NewBCROADS.SBN");
-			if (File.Exists(@"NewBCROADS.SBX")) File.Delete(@"NewBCROADS.SBX");
-			if (File.Exists(@"NewBCROADS.PRJ")) File.Delete(@"NewBCROADS.PRJ");
+			if (File.Exists(@"UnitTestData\NewBCROADS.SHP")) File.Delete(@"UnitTestData\NewBCROADS.SHP");
+			if (File.Exists(@"UnitTestData\NewBCROADS.SHX")) File.Delete(@"UnitTestData\NewBCROADS.SHX");
+			if (File.Exists(@"UnitTestData\NewBCROADS.DBF")) File.Delete(@"UnitTestData\NewBCROADS.DBF");
+			if (File.Exists(@"UnitTestData\NewBCROADS.SBN")) File.Delete(@"UnitTestData\NewBCROADS.SBN");
+			if (File.Exists(@"UnitTestData\NewBCROADS.SBX")) File.Delete(@"UnitTestData\NewBCROADS.SBX");
+			if (File.Exists(@"UnitTestData\NewBCROADS.PRJ")) File.Delete(@"UnitTestData\NewBCROADS.PRJ");
 
-			File.Copy(@"..\TestData\BCROADS.SHP", @"BCROADSCopy.SHP", true);
-			File.Copy(@"..\TestData\BCROADS.SHX", @"BCROADSCopy.SHX", true);
-			File.Copy(@"..\TestData\BCROADS.DBF", @"BCROADSCopy.DBF", true);
-			File.Copy(@"..\TestData\BCROADS.SBN", @"BCROADSCopy.SBN", true);
-			File.Copy(@"..\TestData\BCROADS.SBX", @"BCROADSCopy.SBX", true);
-			File.Copy(@"..\TestData\BCROADS.PRJ", @"BCROADSCopy.PRJ", true);
+			File.Copy(@"..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
+			File.Copy(@"..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
+			File.Copy(@"..\TestData\BCROADS.DBF", @"UnitTestData\BCROADSCopy.DBF", true);
+			File.Copy(@"..\TestData\BCROADS.SBN", @"UnitTestData\BCROADSCopy.SBN", true);
+			File.Copy(@"..\TestData\BCROADS.SBX", @"UnitTestData\BCROADSCopy.SBX", true);
+			File.Copy(@"..\TestData\BCROADS.PRJ", @"UnitTestData\BCROADSCopy.PRJ", true);
 
-			ShapeFile shapeFile = new ShapeFile(@"BCROADSCopy.SHP");
-			shapeFile.Filename = @"NewBCROADS.SHP";
+			ShapeFile shapeFile = new ShapeFile(@"UnitTestData\BCROADSCopy.SHP");
+			shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
 
-			Assert.IsTrue(File.Exists(@"NewBCROADS.SHP"));
-			Assert.IsTrue(File.Exists(@"NewBCROADS.SHX"));
-			Assert.IsTrue(File.Exists(@"NewBCROADS.DBF"));
-			Assert.IsTrue(File.Exists(@"NewBCROADS.SBN"));
-			Assert.IsTrue(File.Exists(@"NewBCROADS.SBX"));
-			Assert.IsTrue(File.Exists(@"NewBCROADS.PRJ"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SHP"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SHX"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.DBF"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SBN"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SBX"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.PRJ"));
 
 			shapeFile.Open();
-			Assert.AreEqual(@"NewBCROADS.SHP", shapeFile.Filename);
+			Assert.AreEqual(@"UnitTestData\NewBCROADS.SHP", shapeFile.Filename);
 			shapeFile.Close();
 
-			File.Delete(@"BCROADSCopy.SHP");
-			File.Delete(@"BCROADSCopy.SHX");
-			File.Delete(@"BCROADSCopy.DBF");
-			File.Delete(@"BCROADSCopy.SBN");
-			File.Delete(@"BCROADSCopy.SBX");
-			File.Delete(@"BCROADSCopy.PRJ");
+			File.Delete(@"UnitTestData\BCROADSCopy.SHP");
+			File.Delete(@"UnitTestData\BCROADSCopy.SHX");
+			File.Delete(@"UnitTestData\BCROADSCopy.DBF");
+			File.Delete(@"UnitTestData\BCROADSCopy.SBN");
+			File.Delete(@"UnitTestData\BCROADSCopy.SBX");
+			File.Delete(@"UnitTestData\BCROADSCopy.PRJ");
 
-			File.Delete(@"NewBCROADS.SHP");
-			File.Delete(@"NewBCROADS.SHX");
-			File.Delete(@"NewBCROADS.DBF");
-			File.Delete(@"NewBCROADS.SBN");
-			File.Delete(@"NewBCROADS.SBX");
-			File.Delete(@"NewBCROADS.PRJ");
+			File.Delete(@"UnitTestData\NewBCROADS.SHP");
+			File.Delete(@"UnitTestData\NewBCROADS.SHX");
+			File.Delete(@"UnitTestData\NewBCROADS.DBF");
+			File.Delete(@"UnitTestData\NewBCROADS.SBN");
+			File.Delete(@"UnitTestData\NewBCROADS.SBX");
+			File.Delete(@"UnitTestData\NewBCROADS.PRJ");
         }
 
         [Test]
@@ -233,20 +245,20 @@ namespace SharpMap.Tests.Provider
 		{
 			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
 			shapeFile.Open();
-			shapeFile.Filename = @"NewBCROADS.SHP";
+			shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
         }
 
         [Test]
 		[ExpectedException(typeof(ShapeFileInvalidOperationException))]
         public void SetFilenameWhenFileExistsThrowsExceptionTest()
 		{
-			File.Copy(@"..\TestData\BCROADS.SHP", @"BCROADSCopy.SHP", true);
-			File.Copy(@"..\TestData\BCROADS.SHX", @"BCROADSCopy.SHX", true);
-			File.Copy(@"..\TestData\BCROADS.SHP", @"NewBCROADS.SHP", true);
-			File.Copy(@"..\TestData\BCROADS.SHX", @"NewBCROADS.SHX", true);
+			File.Copy(@"..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
+			File.Copy(@"..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
+			File.Copy(@"..\TestData\BCROADS.SHP", @"UnitTestData\NewBCROADS.SHP", true);
+			File.Copy(@"..\TestData\BCROADS.SHX", @"UnitTestData\NewBCROADS.SHX", true);
 
-			ShapeFile shapeFile = new ShapeFile(@"BCROADSCopy.SHP");
-			shapeFile.Filename = @"NewBCROADS.SHP";
+			ShapeFile shapeFile = new ShapeFile(@"UnitTestData\BCROADSCopy.SHP");
+			shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
         }
 
         [Test]
@@ -254,7 +266,7 @@ namespace SharpMap.Tests.Provider
         public void SetFilenameToNonShpExtensionThrowsExceptionTest()
 		{
 			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
-			shapeFile.Filename = @"NewBCROADS.abc";
+			shapeFile.Filename = @"UnitTestData\NewBCROADS.abc";
         }
 
         [Test]
@@ -464,9 +476,48 @@ namespace SharpMap.Tests.Provider
         }
 
         [Test]
-        [Ignore("Test not yet implemented")]
         public void SaveRowTest()
-        {
+		{
+			FeatureDataTable<uint> schema = new FeatureDataTable<uint>("oid");
+			schema.Columns.AddRange(new DataColumn[] {
+				new DataColumn("Name", typeof(String)),
+				new DataColumn("Date_Created", typeof(DateTime)),
+				new DataColumn("Visits", typeof(int)),
+				new DataColumn("Weight", typeof(float))
+			});
+
+			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test2", ShapeType.Point, schema);
+			shapeFile.Open();
+
+			DateTime dateCreated = DateTime.Now;
+			FeatureDataRow<uint> feature = schema.NewRow(1);
+			feature["Name"] = "Test feature";
+			feature["Date_Created"] = dateCreated;
+			feature["Visits"] = 0;
+			feature["Weight"] = 100.0f;
+			feature.Geometry = new Point(0, 0);
+
+			shapeFile.Save(feature);
+
+			shapeFile.Close();
+
+			shapeFile = new ShapeFile(@"UnitTestData\Test2");
+			shapeFile.Open();
+
+			Assert.AreEqual(1, shapeFile.GetFeatureCount());
+			FeatureDataSet dataSet = new FeatureDataSet();
+
+			shapeFile.ExecuteIntersectionQuery(new BoundingBox(0, 0, 0, 0), dataSet);
+
+			Assert.AreEqual(1, dataSet.Tables.Count);
+			Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
+
+			FeatureDataRow<uint> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<uint>;
+			Assert.AreEqual(new Point(0, 0), newFeature.Geometry);
+			Assert.AreEqual(newFeature["Name"], "Test feature");
+			Assert.AreEqual(newFeature["Date_Created"], dateCreated);
+			Assert.AreEqual(newFeature["Visits"], 0);
+			Assert.AreEqual(newFeature["Weight"], 100.0f);
         }
 
         [Test]

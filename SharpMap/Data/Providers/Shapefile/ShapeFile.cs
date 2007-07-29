@@ -453,8 +453,8 @@ namespace SharpMap.Data.Providers
                             String.Format("Invalid shapefile filename: {0}.", value));
 					}
 
-					string oldName = Path.GetDirectoryName(_filename) + Path.GetFileNameWithoutExtension(_filename);
-					string newName = Path.GetDirectoryName(value) + Path.GetFileNameWithoutExtension(value);
+					string oldName = Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
+					string newName = Path.Combine(Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value));
 
 					File.Copy(oldName + ".shp", newName + ".shp");
 					File.Copy(oldName + ".shx", newName + ".shx");

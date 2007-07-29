@@ -350,8 +350,12 @@ namespace SharpMap.Data.Providers
         private void writeFullHeader()
         {
             _dbaseWriter.Seek(0, SeekOrigin.Begin);
-            _dbaseWriter.Write(DbaseConstants.DbfVersionCode);
-            _dbaseWriter.Write(new byte[3] { (byte)(_header.LastUpdate.Year - DbaseConstants.DbaseEpoch), (byte)_header.LastUpdate.Month, (byte)_header.LastUpdate.Day });
+            _dbaseWriter.Write((byte)DbaseConstants.DbfVersionCode);
+            _dbaseWriter.Write(new byte[3] 
+				{	(byte)(_header.LastUpdate.Year - DbaseConstants.DbaseEpoch), 
+					(byte)_header.LastUpdate.Month, 
+					(byte)_header.LastUpdate.Day 
+				});
             _dbaseWriter.Write(_header.RecordCount);
             _dbaseWriter.Write(_header.HeaderLength);
             _dbaseWriter.Write(_header.RecordLength);
