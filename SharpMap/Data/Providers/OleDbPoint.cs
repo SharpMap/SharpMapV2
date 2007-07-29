@@ -186,7 +186,7 @@ namespace SharpMap.Data.Providers
 			}
 		}
 
-		public ICoordinateSystem CoordinateSystem
+		public ICoordinateSystem SpatialReference
 		{
 			get { return _coordinateSystem; }
 		}

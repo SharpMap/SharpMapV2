@@ -99,7 +99,7 @@ namespace SharpMap.Data.Providers
 		/// <summary>
 		/// The dataum, projection and coordinate system used in this provider.
 		/// </summary>
-		ICoordinateSystem CoordinateSystem { get; }
+		ICoordinateSystem SpatialReference { get; }
 
 		/// <summary>
 		/// Applies a coordinate transformation to the geometries in this provider.

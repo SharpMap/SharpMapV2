@@ -298,7 +298,7 @@ namespace SharpMap.Data.Providers
 			set { _srid = value; }
 		}
 
-		public ICoordinateSystem CoordinateSystem
+		public ICoordinateSystem SpatialReference
 		{
 			get { return _coordinateSystem; }
 		}

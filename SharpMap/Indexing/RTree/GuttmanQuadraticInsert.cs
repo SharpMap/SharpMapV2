@@ -31,7 +31,7 @@ namespace SharpMap.Indexing.RTree
     /// entitled "R-Trees: A Dynamic Index Structure for Spatial Searching", 
     /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
     /// </remarks>
-    internal class GuttmanQuadraticInsert<TValue> : IEntryInsertStrategy<RTreeIndexEntry<TValue>>
+    public class GuttmanQuadraticInsert<TValue> : IEntryInsertStrategy<RTreeIndexEntry<TValue>>
         where TValue : IEquatable<TValue>
     {
         #region IEntryInsertStrategy Members

@@ -9,12 +9,12 @@ namespace SharpMap.Tests.Geometries
 	public class BoundingBoxTests
 	{
 		[Test]
-		public void TestIntersection()
+		public void IntersectionTest()
 		{
 		}
 
 		[Test]
-		public void TestJoin()
+		public void JoinTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 50);
 			BoundingBox b2 = new BoundingBox(-20, 56, 70, 75);
@@ -29,7 +29,7 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestExpandToInclude()
+		public void ExpandToIncludeTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 50);
 			BoundingBox b2 = new BoundingBox(-20, 56, 70, 75);
@@ -43,12 +43,12 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestOffset()
+		public void OffsetTest()
 		{
 		}
 
 		[Test]
-		public void TestMetricsProperties()
+		public void MetricsPropertiesTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.IsFalse(b1.IsEmpty);
@@ -72,7 +72,7 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestToString()
+		public void ToStringTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.AreEqual("[BoundingBox] Lower Left: (20.00, 30.00) Upper Right: (40.00, 55.00)", b1.ToString());
@@ -80,21 +80,21 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestGetHashCode()
+		public void GetHashCodeTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.AreEqual(b1.GetHashCode(), (int)(b1.Left + b1.Bottom + b1.Right + b1.Top));
 		}
 
 		[Test]
-		public void TestGetArea()
+		public void GetAreaTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.AreEqual(b1.GetArea(), 20 * 25);
 		}
 
 		[Test]
-		public void TestGetIntersectingArea()
+		public void GetIntersectingAreaTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			BoundingBox b2 = new BoundingBox(20, 30, 40, 55);
@@ -106,28 +106,28 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestDistance()
+		public void DistanceTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.AreEqual(Math.Sqrt(200), b1.Distance(new BoundingBox(50, 65, 60, 75)));
 		}
 
 		[Test]
-		public void TestGetCentroid()
+		public void GetCentroidTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.AreEqual(new Point(30, 42.5), b1.GetCentroid());
 		}
 
 		[Test]
-		public void TestGrowAndShrink()
+		public void GrowAndShrinkTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.AreEqual(new BoundingBox(19, 29, 41, 56), b1.Grow(1));
 		}
 
 		[Test]
-		public void TestValueOperators()
+		public void ValueOperatorsTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			BoundingBox b2 = new BoundingBox(20, 30, 40, 55);
@@ -140,7 +140,7 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestEquality()
+		public void EqualityTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			BoundingBox b2 = new BoundingBox(20, 30, 40, 55);
@@ -155,17 +155,17 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestSplit()
+		public void SplitTest()
 		{
 		}
 
 		[Test]
-		public void TestBorders()
+		public void BordersTest()
 		{
 		}
 
 		[Test]
-		public void TestContains()
+		public void ContainsTest()
 		{
 			BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
 			Assert.IsTrue(b1.Contains(new Point(30, 40)));
@@ -178,7 +178,7 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestIntersect()
+		public void IntersectTest()
 		{
 			//Test disjoint
 			BoundingBox b1 = new BoundingBox(0, 0, 10, 10);
@@ -226,17 +226,17 @@ namespace SharpMap.Tests.Geometries
 		}
 
 		[Test]
-		public void TestOverlaps()
+		public void OverlapsTest()
 		{
 		}
 
 		[Test]
-		public void TestTouches()
+		public void TouchesTest()
 		{
 		}
 
 		[Test]
-		public void TestWithin()
+		public void WithinTest()
 		{
 		}
 	}

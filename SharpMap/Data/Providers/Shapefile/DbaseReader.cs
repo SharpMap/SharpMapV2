@@ -88,6 +88,7 @@ namespace SharpMap.Data.Providers
         {
             if (disposing) // Do deterministic finalization of managed resources
             {
+				if (_dbaseReader != null) _dbaseReader.Close();
                 _dbaseReader = null;
                 _dbaseFileStream = null;
                 if (_baseTable != null) _baseTable.Dispose();

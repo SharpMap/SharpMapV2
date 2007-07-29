@@ -21,6 +21,7 @@ using System.Text;
 using System.Runtime.Serialization;
 
 using SharpMap.Utilities;
+using SharpMap.CoordinateSystems;
 
 namespace SharpMap.Geometries
 {
@@ -37,15 +38,17 @@ namespace SharpMap.Geometries
 	[Serializable]
 	public abstract class Geometry : IGeometry, IEquatable<Geometry>
 	{
-		private SharpMap.CoordinateSystems.ICoordinateSystem _spatialReference;
+		private ICoordinateSystem _spatialReference;
         private Tolerance _tolerance = null;
 
 		/// <summary>
 		/// Gets or sets the spatial reference system associated with the <see cref="Geometry"/>.
-		/// A <see cref="Geometry"/> may not have had a spatial reference system defined for
-		/// it, in which case *spatialRef will be NULL.
 		/// </summary>
-		public SharpMap.CoordinateSystems.ICoordinateSystem SpatialReference
+		/// <remarks>
+		/// A <see cref="Geometry"/> may not have had a spatial reference system defined for
+		/// it, in which case SpatialReference will be NULL.
+		/// </remarks>
+		public ICoordinateSystem SpatialReference
 		{
 			get { return _spatialReference; }
 			set { _spatialReference = value; }

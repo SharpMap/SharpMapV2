@@ -20,36 +20,36 @@ namespace SharpMap.Data.Providers
     /// <summary>
     /// Exception thrown when the shapefile is invalid or corrupt.
     /// </summary>
-    public class InvalidShapeFileException : ShapeFileException
+    public class ShapeFileIsInvalidException : ShapeFileException
     {
-        public InvalidShapeFileException() : base() { }
-        public InvalidShapeFileException(string message) : base(message) { }
-        public InvalidShapeFileException(string message, Exception inner) : base(message, inner) { }
-        public InvalidShapeFileException(SerializationInfo info, StreamingContext context)
+        public ShapeFileIsInvalidException() : base() { }
+        public ShapeFileIsInvalidException(string message) : base(message) { }
+        public ShapeFileIsInvalidException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileIsInvalidException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 
     /// <summary>
     /// Exception thrown when an operation is attempted which is not defined for the state of the <see cref="ShapeFile"/>
     /// </summary>
-    public class InvalidShapeFileOperationException : ShapeFileException
+    public class ShapeFileInvalidOperationException : ShapeFileException
     {
-        public InvalidShapeFileOperationException() : base() { }
-        public InvalidShapeFileOperationException(string message) : base(message) { }
-        public InvalidShapeFileOperationException(string message, Exception inner) : base(message, inner) { }
-        public InvalidShapeFileOperationException(SerializationInfo info, StreamingContext context)
+        public ShapeFileInvalidOperationException() : base() { }
+        public ShapeFileInvalidOperationException(string message) : base(message) { }
+        public ShapeFileInvalidOperationException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileInvalidOperationException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 
     /// <summary>
     /// Exception thrown when a geometry type exists in a shapefile which is not currently supported.
     /// </summary>
-    public class UnsupportedShapeFileGeometryException : ShapeFileException
+    public class ShapeFileUnsupportedGeometryException : ShapeFileException
     {
-        public UnsupportedShapeFileGeometryException() : base() { }
-        public UnsupportedShapeFileGeometryException(string message) : base(message) { }
-        public UnsupportedShapeFileGeometryException(string message, Exception inner) : base(message, inner) { }
-        public UnsupportedShapeFileGeometryException(SerializationInfo info, StreamingContext context)
+        public ShapeFileUnsupportedGeometryException() : base() { }
+        public ShapeFileUnsupportedGeometryException(string message) : base(message) { }
+        public ShapeFileUnsupportedGeometryException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileUnsupportedGeometryException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 
