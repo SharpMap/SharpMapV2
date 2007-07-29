@@ -130,10 +130,15 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is GeographicTransform))
+			GeographicTransform other = obj as GeographicTransform;
+
+			if (other == null)
+			{
 				return false;
-			GeographicTransform gt = obj as GeographicTransform;
-			return gt.SourceGCS.EqualParams(this.SourceGCS) && gt.TargetGCS.EqualParams(this.TargetGCS);
+			}
+
+			return other.SourceGCS.EqualParams(SourceGCS)
+				&& other.TargetGCS.EqualParams(TargetGCS);
 		}
 		#endregion
 	}

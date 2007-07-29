@@ -156,12 +156,16 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is GeocentricCoordinateSystem))
+			GeocentricCoordinateSystem other = obj as GeocentricCoordinateSystem;
+
+			if (other == null)
+			{
 				return false;
-			GeocentricCoordinateSystem gcc = obj as GeocentricCoordinateSystem;
-			return gcc.HorizontalDatum.EqualParams(this.HorizontalDatum) &&
-				gcc.LinearUnit.EqualParams(this.LinearUnit) &&
-				gcc.PrimeMeridian.EqualParams(this.PrimeMeridian);
+			}
+			
+			return other.HorizontalDatum.EqualParams(HorizontalDatum) &&
+				other.LinearUnit.EqualParams(LinearUnit) &&
+				other.PrimeMeridian.EqualParams(PrimeMeridian);
 		}
 		#endregion
 	}

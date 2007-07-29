@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Utilities;
 
 namespace SharpMap.CoordinateSystems
 {
@@ -42,6 +43,28 @@ namespace SharpMap.CoordinateSystems
 		{
 			_Name = name;
 			_Value = value;
+		}
+
+		public override string ToString()
+		{
+			return String.Format("[ProjectionParameter] {0} = {1}", Name, Value);
+		}
+
+		public override bool Equals(object obj)
+		{
+			Parameter other = obj as Parameter;
+
+			if (other == null)
+			{
+				return false;
+			}
+
+			return other.Name == Name && Tolerance.Equal<Parameter>(Value, other.Value);
+		}
+
+		public override int GetHashCode()
+		{
+			return Name.GetHashCode() ^ Value.GetHashCode();
 		}
 
 		private string _Name;

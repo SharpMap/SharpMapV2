@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Utilities;
 
 namespace SharpMap.CoordinateSystems
 {
@@ -32,7 +33,9 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="semiMajorAxis">Semi major axis</param>
 		/// <param name="semiMinorAxis">Semi minor axis</param>
 		/// <param name="inverseFlattening">Inverse flattening</param>
-		/// <param name="isIvfDefinitive">Inverse Flattening is definitive for this ellipsoid (Semi-minor axis will be overridden)</param>
+		/// <param name="isIvfDefinitive">
+		/// Inverse Flattening is definitive for this ellipsoid (Semi-minor axis will be overridden)
+		/// </param>
 		/// <param name="axisUnit">Axis unit</param>
 		/// <param name="name">Name</param>
 		/// <param name="authority">Authority name</param>
@@ -269,17 +272,21 @@ namespace SharpMap.CoordinateSystems
 		/// Only parameters used for coordinate system are used for comparison.
 		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
 		/// </summary>
-		/// <param name="obj"></param>
+		/// <param name="obj">Object to determine equality with.</param>
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is SharpMap.CoordinateSystems.Ellipsoid))
-				return false;
 			Ellipsoid e = obj as Ellipsoid;
-			return (e.InverseFlattening == this.InverseFlattening &&
-					e.IsIvfDefinitive == this.IsIvfDefinitive &&
-					e.SemiMajorAxis == this.SemiMajorAxis &&
-					e.SemiMinorAxis == this.SemiMinorAxis &&
+			
+			if (e == null)
+			{
+				return false;
+			}
+
+			return (Tolerance.Equal<Ellipsoid>(e.InverseFlattening, InverseFlattening) &&
+					Tolerance.Equal<Ellipsoid>(e.SemiMajorAxis, SemiMajorAxis) &&
+					Tolerance.Equal<Ellipsoid>(e.SemiMinorAxis, SemiMinorAxis) &&
+					e.IsIvfDefinitive == IsIvfDefinitive &&
 					e.AxisUnit.EqualParams(this.AxisUnit));
 		}
 	}

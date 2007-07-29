@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Utilities;
 
 namespace SharpMap.CoordinateSystems
 {
@@ -135,13 +136,18 @@ namespace SharpMap.CoordinateSystems
 		/// Only parameters used for coordinate system are used for comparison.
 		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
 		/// </summary>
-		/// <param name="obj"></param>
+		/// <param name="obj">Object to compare.</param>
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is SharpMap.CoordinateSystems.AngularUnit))
+			AngularUnit other = obj as AngularUnit;
+
+			if (other == null)
+			{
 				return false;
-			return (obj as AngularUnit).RadiansPerUnit == this.RadiansPerUnit;
+			}
+
+			return Tolerance.Equal<AngularUnit>(other.RadiansPerUnit, RadiansPerUnit);
 		}
 	}
 }

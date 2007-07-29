@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Utilities;
 
 namespace SharpMap.CoordinateSystems
 {
@@ -37,8 +38,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Unit(double conversionFactor, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
-			:
-			base(name, authority, authorityCode, alias, abbreviation, remarks)
+			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_ConversionFactor = conversionFactor;
 		}
@@ -101,9 +101,14 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is SharpMap.CoordinateSystems.Unit))
+			Unit other = obj as Unit;
+
+			if (other == null)
+			{
 				return false;
-			return (obj as Unit).ConversionFactor == this.ConversionFactor;
+			}
+			
+			return Tolerance.Equal<Unit>(other.ConversionFactor, ConversionFactor);
 		}
     }
 }

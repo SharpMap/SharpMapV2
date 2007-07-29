@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Utilities;
 
 namespace SharpMap.CoordinateSystems
 {
@@ -139,9 +140,14 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is SharpMap.CoordinateSystems.LinearUnit))
+			LinearUnit other = obj as LinearUnit;
+
+			if (other == null)
+			{
 				return false;
-			return (obj as LinearUnit).MetersPerUnit == this.MetersPerUnit;
+			}
+
+			return Tolerance.Equal<LinearUnit>(other.MetersPerUnit, MetersPerUnit);
 		}		
 	}
 }

@@ -182,23 +182,35 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is ProjectedCoordinateSystem))
-				return false;
-			ProjectedCoordinateSystem pcs = obj as ProjectedCoordinateSystem;
-			if(pcs.Dimension != this.Dimension)
-				return false;
-			for (int i = 0; i < pcs.Dimension; i++)
+			ProjectedCoordinateSystem other = obj as ProjectedCoordinateSystem;
+			
+			if (other == null)
 			{
-				if(pcs.GetAxis(i).Orientation != this.GetAxis(i).Orientation)
-					return false;
-				if (!pcs.GetUnits(i).EqualParams(this.GetUnits(i)))
-					return false;
+				return false;
 			}
 
-			return	pcs.GeographicCoordinateSystem.EqualParams(this.GeographicCoordinateSystem) && 
-					pcs.HorizontalDatum.EqualParams(this.HorizontalDatum) &&
-					pcs.LinearUnit.EqualParams(this.LinearUnit) &&
-					pcs.Projection.EqualParams(this.Projection);
+			if (other.Dimension != Dimension)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < other.Dimension; i++)
+			{
+				if (other.GetAxis(i).Orientation != GetAxis(i).Orientation)
+				{
+					return false;
+				}
+
+				if (!other.GetUnits(i).EqualParams(GetUnits(i)))
+				{
+					return false;
+				}
+			}
+
+			return other.GeographicCoordinateSystem.EqualParams(GeographicCoordinateSystem) &&
+					other.HorizontalDatum.EqualParams(HorizontalDatum) &&
+					other.LinearUnit.EqualParams(LinearUnit) &&
+					other.Projection.EqualParams(Projection);
 		}
 
 		#endregion

@@ -278,13 +278,25 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is SharpMap.CoordinateSystems.HorizontalDatum))
-				return false;
 			HorizontalDatum datum = obj as HorizontalDatum;
-			if(datum.Wgs84Parameters==null && this.Wgs84Parameters!=null) return false;
-			if(datum.Wgs84Parameters!=null && !datum.Wgs84Parameters.Equals(this.Wgs84Parameters))
+
+			if (datum == null)
+			{
 				return false;
-			return datum.Ellipsoid == this.Ellipsoid && this.DatumType == datum.DatumType;
+			}
+
+			if (datum.Wgs84Parameters == null && Wgs84Parameters != null)
+			{
+				return false;
+			}
+
+			if (datum.Wgs84Parameters != null && !datum.Wgs84Parameters.Equals(Wgs84Parameters))
+			{
+				return false;
+			}
+
+			return datum.Ellipsoid.EqualParams(Ellipsoid) 
+				&& DatumType == datum.DatumType;
 		}
-}
+	}
 }

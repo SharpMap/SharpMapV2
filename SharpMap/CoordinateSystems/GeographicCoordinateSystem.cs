@@ -57,7 +57,8 @@ namespace SharpMap.CoordinateSystems
 		#region Predefined geographic coordinate systems
 
 		/// <summary>
-		/// Creates a decimal degrees geographic coordinate system based on the WGS84 ellipsoid, suitable for GPS measurements
+		/// Creates a decimal degrees geographic coordinate system 
+		/// based on the WGS84 ellipsoid, suitable for GPS measurements.
 		/// </summary>
 		public static GeographicCoordinateSystem WGS84
 		{
@@ -66,8 +67,8 @@ namespace SharpMap.CoordinateSystems
 				axes.Add(new AxisInfo("Lon", AxisOrientationEnum.East));
 				axes.Add(new AxisInfo("Lat", AxisOrientationEnum.North));
 				return new GeographicCoordinateSystem(SharpMap.CoordinateSystems.AngularUnit.Degrees,
-					SharpMap.CoordinateSystems.HorizontalDatum.WGS84, SharpMap.CoordinateSystems.PrimeMeridian.Greenwich, axes,
-					"WGS 84", "EPSG", 4326, String.Empty, string.Empty, string.Empty);
+					SharpMap.CoordinateSystems.HorizontalDatum.WGS84, SharpMap.CoordinateSystems.PrimeMeridian.Greenwich, 
+					axes, "WGS 84", "EPSG", 4326, String.Empty, string.Empty, string.Empty);
 			}
 		}
 
@@ -182,26 +183,60 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is GeographicCoordinateSystem))
-				return false;
-			GeographicCoordinateSystem gcs = obj as GeographicCoordinateSystem;
-			if (gcs.Dimension != this.Dimension) return false;
-			if (this.WGS84ConversionInfo != null && gcs.WGS84ConversionInfo == null) return false;
-			if (this.WGS84ConversionInfo == null && gcs.WGS84ConversionInfo != null) return false;
-			if (this.WGS84ConversionInfo != null && gcs.WGS84ConversionInfo != null)
+			GeographicCoordinateSystem other = obj as GeographicCoordinateSystem;
+
+			if (other == null)
 			{
-				if (this.WGS84ConversionInfo.Count != gcs.WGS84ConversionInfo.Count) return false;
-				for (int i = 0; i < this.WGS84ConversionInfo.Count; i++)
-					if (!gcs.WGS84ConversionInfo[i].Equals(this.WGS84ConversionInfo[i]))
-						return false;
+				return false;
 			}
-			if (this.AxisInfo.Count != gcs.AxisInfo.Count) return false;			
-			for (int i = 0; i < gcs.AxisInfo.Count; i++)
-				if (gcs.AxisInfo[i].Orientation != this.AxisInfo[i].Orientation)
+
+			if (other.Dimension != Dimension)
+			{
+				return false;
+			}
+
+			if (WGS84ConversionInfo != null && other.WGS84ConversionInfo == null)
+			{
+				return false;
+			}
+			
+			if (WGS84ConversionInfo == null && other.WGS84ConversionInfo != null)
+			{
+				return false;
+			}
+
+			if (WGS84ConversionInfo != null && other.WGS84ConversionInfo != null)
+			{
+				if (WGS84ConversionInfo.Count != other.WGS84ConversionInfo.Count)
+				{
 					return false;
-			return gcs.AngularUnit.EqualParams(this.AngularUnit) &&
-					gcs.HorizontalDatum.EqualParams(this.HorizontalDatum) &&
-					gcs.PrimeMeridian.EqualParams(this.PrimeMeridian);
+				}
+
+				for (int i = 0; i < WGS84ConversionInfo.Count; i++)
+				{
+					if (!other.WGS84ConversionInfo[i].Equals(WGS84ConversionInfo[i]))
+					{
+						return false;
+					}
+				}
+			}
+
+			if (AxisInfo.Count != other.AxisInfo.Count)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < other.AxisInfo.Count; i++)
+			{
+				if (other.AxisInfo[i].Orientation != AxisInfo[i].Orientation)
+				{
+					return false;
+				}
+			}
+
+			return other.AngularUnit.EqualParams(AngularUnit) &&
+					other.HorizontalDatum.EqualParams(HorizontalDatum) &&
+					other.PrimeMeridian.EqualParams(PrimeMeridian);
 		}
 		#endregion
 	}

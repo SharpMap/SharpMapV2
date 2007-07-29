@@ -77,9 +77,14 @@ namespace SharpMap.CoordinateSystems
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
 		{
-			if (!(obj is SharpMap.CoordinateSystems.Ellipsoid))
+			Datum other = obj as Datum;
+			
+			if (other == null)
+			{
 				return false;
-			return (obj as Datum).DatumType == this.DatumType;
+			}
+
+			return other.DatumType == DatumType;
 		}
 	}
 }
