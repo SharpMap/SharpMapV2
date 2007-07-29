@@ -33,7 +33,8 @@ namespace SharpMap.Utilities
         public static readonly double DefaultToleranceValue = 1E-9;
 
         private static readonly object _globalToleranceSetSync = new object();
-        private static Tolerance _globalTolerance = new Tolerance();
+		private static Tolerance _globalTolerance = new Tolerance();
+		private static readonly Dictionary<RuntimeTypeHandle, Tolerance> _toleranceRegistry = new Dictionary<RuntimeTypeHandle, Tolerance>();
 
         /// <summary>
         /// The globally accessible tolerance. Used to change the tolerance computation
@@ -50,6 +51,117 @@ namespace SharpMap.Utilities
                 }
             }
         }
+
+		/// <summary>
+		/// Registers a tolerance to be used for a specific type.
+		/// </summary>
+		/// <typeparam name="TValue">
+		/// The type to register a tolerance for.
+		/// </typeparam>
+		/// <param name="tolerance">The tolerance to register.</param>
+		public static void RegisterTolerance<TValue>(Tolerance tolerance)
+		{
+			RuntimeTypeHandle key = typeof(TValue).TypeHandle;
+
+			if (tolerance == null)
+			{
+				_toleranceRegistry.Remove(key);
+			}
+			else
+			{
+				_toleranceRegistry[key] = tolerance;
+			}
+		}
+
+		/// <summary>
+		/// Unregisters the tolerance value for a specific type.
+		/// </summary>
+		/// <typeparam name="TValue">
+		/// The type to unregister a tolerance for.
+		/// </typeparam>
+		public static void UnregisterTolerance<TValue>()
+		{
+			RuntimeTypeHandle key = typeof(TValue).TypeHandle;
+			_toleranceRegistry.Remove(key);
+		}
+
+		public static bool Equal<TValue>(double leftHand, double rightHand)
+		{
+			Tolerance t;
+			if (_toleranceRegistry.TryGetValue(typeof(TValue).TypeHandle, out t))
+			{
+				return t.Equal(leftHand, rightHand);
+			}
+			else
+			{
+				return Global.Equal(leftHand, rightHand);
+			}
+		}
+
+		public static bool Greater<TValue>(double leftHand, double rightHand)
+		{
+			Tolerance t;
+			if (_toleranceRegistry.TryGetValue(typeof(TValue).TypeHandle, out t))
+			{
+				return t.Greater(leftHand, rightHand);
+			}
+			else
+			{
+				return Global.Greater(leftHand, rightHand);
+			}
+		}
+
+		public static bool GreaterOrEqual<TValue>(double leftHand, double rightHand)
+		{
+			Tolerance t;
+			if (_toleranceRegistry.TryGetValue(typeof(TValue).TypeHandle, out t))
+			{
+				return t.GreaterOrEqual(leftHand, rightHand);
+			}
+			else
+			{
+				return Global.GreaterOrEqual(leftHand, rightHand);
+			}
+		}
+
+		public static bool Less<TValue>(double leftHand, double rightHand)
+		{
+			Tolerance t;
+			if (_toleranceRegistry.TryGetValue(typeof(TValue).TypeHandle, out t))
+			{
+				return t.Less(leftHand, rightHand);
+			}
+			else
+			{
+				return Global.Less(leftHand, rightHand);
+			}
+		}
+
+		public static bool LessOrEqual<TValue>(double leftHand, double rightHand)
+		{
+			Tolerance t;
+			if (_toleranceRegistry.TryGetValue(typeof(TValue).TypeHandle, out t))
+			{
+				return t.LessOrEqual(leftHand, rightHand);
+			}
+			else
+			{
+				return Global.LessOrEqual(leftHand, rightHand);
+			}
+		}
+
+		public static int Compare<TValue>(double leftHand, double rightHand)
+		{
+			Tolerance t;
+			if (_toleranceRegistry.TryGetValue(typeof(TValue).TypeHandle, out t))
+			{
+				return t.Compare(leftHand, rightHand);
+			}
+			else
+			{
+				return Global.Compare(leftHand, rightHand);
+			}
+		}
 
         private double _toleranceValue = DefaultToleranceValue;
 
