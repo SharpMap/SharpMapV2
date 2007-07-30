@@ -442,37 +442,58 @@ namespace SharpMap.Tests.Provider
         }
 
         [Test]
-        [Ignore("Test not yet implemented")]
         public void GetFeatureCountTest()
-        {
+		{
+			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
+			int expected = 7291;
+			int actual = shapeFile.GetFeatureCount();
+			Assert.AreEqual(expected, actual);
         }
 
         [Test]
-        [Ignore("Test not yet implemented")]
         public void GetFeatureTest()
-        {
+		{
+			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
+			shapeFile.Open();
+			FeatureDataRow<uint> feature = shapeFile.GetFeature(0);
+			Assert.AreEqual(0, feature.Id);
+			shapeFile.Close();
         }
 
         [Test]
-        [Ignore("Test not yet implemented")]
         public void GetExtentsTest()
-        {
+		{
+			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
+			BoundingBox expected = new BoundingBox(7332083.2127965018, 236823.71867240831, 7538428.618, 405610.34692560317);
+			BoundingBox actual = shapeFile.GetExtents();
+			Assert.AreEqual(expected, actual);
         }
 
         [Test]
-        [Ignore("Test not yet implemented")]
         public void ConnectionIdTest()
-        {
+		{
+			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
+			Assert.AreEqual(@"..\TestData\BCROADS.SHP", shapeFile.ConnectionId);
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+		[Test]
+		[Ignore("Srid is broken and not well thought out.")]
         public void SridTest()
-        {
+		{
+			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
+			shapeFile.Open();
+			Assert.AreEqual(0, shapeFile.Srid);
+			shapeFile.Close();
+
+
+			shapeFile = new ShapeFile(@"..\TestData\BCROADSWithoutDbf.SHP");
+			shapeFile.Open();
+			Assert.AreEqual(-1, shapeFile.Srid);
+			shapeFile.Close();
         }
 
         [Test]
-        public void SaveRowTest()
+        public void InsertRowTest()
 		{
 			FeatureDataTable<uint> schema = new FeatureDataTable<uint>("oid");
 			schema.Columns.AddRange(new DataColumn[] {
@@ -493,8 +514,7 @@ namespace SharpMap.Tests.Provider
 			feature["Weight"] = 100.0f;
 			feature.Geometry = new Point(0, 0);
 
-			shapeFile.Save(feature);
-
+			shapeFile.Insert(feature);
 			shapeFile.Close();
 
 			shapeFile = new ShapeFile(@"UnitTestData\Test2.shp");
@@ -517,12 +537,61 @@ namespace SharpMap.Tests.Provider
 			Assert.AreEqual(dateCreatedActual.Day, dateCreated.Day);
 			Assert.AreEqual(newFeature["Visits"], 0);
 			Assert.AreEqual(newFeature["Weight"], 100.0f);
+			shapeFile.Close();
         }
 
         [Test]
-        [Ignore("Test not yet implemented")]
-        public void SaveRowsTest()
-        {
+		public void InsertRowsTest()
+		{
+			FeatureDataTable<uint> schema = new FeatureDataTable<uint>("OID");
+			schema.Columns.AddRange(new DataColumn[] {
+				new DataColumn("Name", typeof(String)),
+				new DataColumn("DateCreated", typeof(DateTime)),
+				new DataColumn("Visits", typeof(Int64)),
+				new DataColumn("Weight", typeof(double))
+			});
+
+			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test3", ShapeType.MultiPoint, schema);
+			shapeFile.Open();
+
+			Random rnd = new Random();
+			BoundingBox computedBounds = BoundingBox.Empty;
+
+			List<FeatureDataRow<uint>> rows = new List<FeatureDataRow<uint>>();
+
+			for (int i = 1; i <= 10000; i++)
+			{
+				DateTime dateCreated = new DateTime(rnd.Next(1900, 2155), rnd.Next(1, 12), rnd.Next(1, 28));
+				FeatureDataRow<uint> feature = schema.NewRow((uint)i);
+
+				char[] chars = new char[rnd.Next(0, 254)];
+				for (int charIndex = 0; charIndex < chars.Length; charIndex++)
+				{
+					chars[charIndex] = (char)(byte)rnd.Next(1, 126);
+				}
+
+				feature["Name"] = new String(chars);
+				feature["DateCreated"] = dateCreated;
+				feature["Visits"] = rnd.Next(0, Int32.MaxValue) << rnd.Next(0, 32);
+				feature["Weight"] = rnd.NextDouble() * rnd.Next(0, 100000);
+				
+				MultiPoint p = new MultiPoint();
+
+				int pointCount = rnd.Next(1, 100);
+				for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
+				{
+					p.Points.Add(new Point(rnd.NextDouble() * rnd.Next(200000, 700000), rnd.NextDouble() * rnd.Next(5000000, 5100000))); 
+				}
+
+				computedBounds.ExpandToInclude(p.GetBoundingBox());
+
+				feature.Geometry = p;
+
+				rows.Add(feature);
+			}
+
+			shapeFile.Insert(rows);
+			shapeFile.Close();
         }
 
         [Test]

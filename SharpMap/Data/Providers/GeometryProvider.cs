@@ -290,7 +290,7 @@ namespace SharpMap.Data.Providers
 		}
 
 		/// <summary>
-		/// The spatial reference ID (CRS)
+		/// The spatial reference ID.
 		/// </summary>
 		public int Srid
 		{

@@ -37,15 +37,15 @@ namespace SharpMap.Data.Providers
     /// A data provider for the ESRI ShapeFile spatial data format.
     /// </summary>
     /// <remarks>
-    /// <para>The ShapeFile provider is used for accessing ESRI ShapeFiles. The ShapeFile should at least contain the
-    /// [filename].shp and, if feature-data is to be used, also [filename].dbf file.</para>
-    /// <para>The first time the ShapeFile is accessed, SharpMap will automatically create a spatial index
-    /// of the ShapeFile, and save it as [filename].shp.sidx. If you change or update the contents of the .shp file,
-    /// delete the .sidx file to force SharpMap to rebuild it. In web applications, the index will automatically
-    /// be cached to memory for faster access, so to reload the index, you will need to restart the web application
-    /// as well.</para>
     /// <para>
-    /// M and Z values in a shapefile is currently ignored by SharpMap.
+	/// The ShapeFile provider is used for accessing ESRI ShapeFiles. 
+	/// The ShapeFile should at least contain the [filename].shp 
+	/// and the [filename].shx index file. 
+	/// If feature-data is to be used a [filename].dbf file should 
+	/// also be present.
+	/// </para>
+    /// <para>
+    /// M and Z values in a shapefile are currently ignored by SharpMap.
     /// </para>
     /// </remarks>
     /// <example>
@@ -72,15 +72,6 @@ namespace SharpMap.Data.Providers
         public delegate bool FilterMethod(FeatureDataRow dr);
         #endregion
 
-        #region Constant lookup values
-        private static readonly int HeaderSizeBytes = 100;
-        private static readonly int HeaderStartCode = 9994;
-        private static readonly int VersionCode = 1000;
-        private static readonly int ShapeRecordHeaderByteLength = 8;
-        private static readonly int BoundingBoxFieldByteLength = 32;
-        public static readonly string IdColumnName = "OID";
-        #endregion
-
         #region Fields
         private FilterMethod _filterDelegate;
         private ShapeType _shapeType;
@@ -97,9 +88,10 @@ namespace SharpMap.Data.Providers
         private bool _coordsysReadFromFile = false;
         private bool _exclusiveMode = false;
         private ICoordinateSystem _coordinateSystem;
-        readonly Dictionary<uint, IndexEntry> _shapeIndex = new Dictionary<uint, IndexEntry>();
         private bool _disposed = false;
         private DynamicRTree<uint> _tree;
+		private ShapeFileHeader _header;
+		private ShapeFileIndex _shapeFileIndex;
         #endregion
 
         #region Object Construction/Destruction
@@ -124,6 +116,14 @@ namespace SharpMap.Data.Providers
         public ShapeFile(string filename, bool fileBasedIndex)
         {
             _filename = filename;
+			
+			using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
+			{
+				_header = new ShapeFileHeader(reader);
+			}
+
+			_shapeFileIndex = new ShapeFileIndex(this);
+
             _hasFileBasedSpatialIndex = fileBasedIndex;
 
             // Initialize DBF
@@ -208,6 +208,10 @@ namespace SharpMap.Data.Providers
         #endregion
 
 		#region ToString
+		/// <summary>
+		/// Provides a string representation of the essential ShapeFile info.
+		/// </summary>
+		/// <returns>A string with the Name, HasDbf, FeatureCount and Extents values.</returns>
 		public override string ToString()
 		{
 			return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {3}; Extents: {4}",
@@ -299,10 +303,10 @@ namespace SharpMap.Data.Providers
             using (BinaryWriter writer = new BinaryWriter(buffer))
             {
                 writer.Seek(0, SeekOrigin.Begin);
-                writer.Write(ByteEncoder.GetBigEndian(HeaderStartCode));
+                writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderStartCode));
                 writer.Write(new byte[20]);
-                writer.Write(ByteEncoder.GetBigEndian(HeaderSizeBytes / 2));
-                writer.Write(ByteEncoder.GetLittleEndian(VersionCode));
+				writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderSizeBytes / 2));
+				writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
                 writer.Write(ByteEncoder.GetLittleEndian((int)type));
                 writer.Write(ByteEncoder.GetLittleEndian(0.0));
                 writer.Write(ByteEncoder.GetLittleEndian(0.0));
@@ -500,18 +504,6 @@ namespace SharpMap.Data.Providers
         }
 
         /// <summary>
-        /// Gets the record index (.shx file) filename for the given shapefile
-        /// </summary>
-        public string IndexFilename
-        {
-            get 
-            {
-                return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)), 
-                    Path.GetFileNameWithoutExtension(_filename) + ".shx"); 
-            }
-        }
-
-        /// <summary>
         /// Gets the name of the DBase attribute file.
         /// </summary>
         public string DbfFilename
@@ -529,7 +521,19 @@ namespace SharpMap.Data.Providers
         public bool HasDbf
         {
             get { return File.Exists(DbfFilename); }
-        }
+		}
+
+		/// <summary>
+		/// Gets the record index (.shx file) filename for the given shapefile
+		/// </summary>
+		public string IndexFilename
+		{
+			get
+			{
+				return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
+					Path.GetFileNameWithoutExtension(_filename) + ".shx");
+			}
+		}
 
         /// <summary>
         /// Gets or sets the encoding used for parsing strings from the DBase DBF file.
@@ -606,16 +610,13 @@ namespace SharpMap.Data.Providers
                 try
                 {
                     enableReading();
-                    _isOpen = true;
+					_isOpen = true;
 
-                    // Parse shape header
-                    parseHeader();
+					// Parse shape header
+					_header = new ShapeFileHeader(_shapeFileReader);
 
                     // Read projection file
                     parseProjection();
-
-                    // Read in .shx index
-                    parseIndex();
 
                     // Load spatial (r-tree) index
                     loadSpatialIndex(_hasFileBasedSpatialIndex);
@@ -700,7 +701,7 @@ namespace SharpMap.Data.Providers
 
             //Use the spatial index to get a list of features whose boundingbox intersects bbox
             IEnumerable<uint> objects = GetObjectIdsInView(bounds);
-            FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(IdColumnName);
+            FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
 
             foreach (uint oid in objects)
             {
@@ -739,7 +740,7 @@ namespace SharpMap.Data.Providers
             checkOpen();
             enableReading();
 
-            FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(IdColumnName);
+			FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
             BoundingBox boundingBox = geom.GetBoundingBox();
 
             //Get candidates by intersecting the spatial index tree
@@ -832,12 +833,12 @@ namespace SharpMap.Data.Providers
         {
             if (IsOpen)
             {
-                return _shapeIndex.Count;
+                return _shapeFileIndex.Count;
             }
             else // Assume the feature count from the fixed record-length .shx file
             {
                 FileInfo info = new FileInfo(IndexFilename);
-                return (int)((info.Length - HeaderSizeBytes) / ShapeRecordHeaderByteLength);
+				return (int)((info.Length - ShapeFileConstants.HeaderSizeBytes) / ShapeFileConstants.ShapeRecordHeaderByteLength);
             }
         }
 
@@ -908,14 +909,7 @@ namespace SharpMap.Data.Providers
                 return _tree.Root.BoundingBox;
             }
 
-            if (_envelope != BoundingBox.Empty)
-            {
-                return _envelope;
-            }
-
-            enableReading();
-            parseHeader();
-            return _envelope;
+            return _header.Envelope;
         }
 
         /// <summary>
@@ -930,7 +924,7 @@ namespace SharpMap.Data.Providers
         }
 
         /// <summary>
-        /// Gets or sets the spatial reference ID (CRS)
+        /// Gets or sets the spatial reference ID.
         /// </summary>
         public int Srid
         {
@@ -943,106 +937,351 @@ namespace SharpMap.Data.Providers
         #region IWritableProvider Members
 
         /// <summary>
-        /// Saves a feature to a shapefile
+        /// Adds a feature to the end of a shapefile.
         /// </summary>
-        /// <param name="feature">Feature to save</param>
-        /// <exception cref="InvalidShapeFileOperationException">Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.</exception>
-        public void Save(FeatureDataRow<uint> feature)
-        {
-            //throw new NotImplementedException("Not implemented in this version");
+        /// <param name="feature">Feature to append.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+		/// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="feature"/> is null.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown if <paramref name="feature.Geometry"/> is null.
+		/// </exception>
+        public void Insert(FeatureDataRow<uint> feature)
+		{
+			if (feature == null)
+			{
+				throw new ArgumentNullException("feature");
+			}
 
-            checkOpen();
-            
-            if (feature == null)
-            {
-                throw new ArgumentNullException("feature");
-            }
+			if (feature.Geometry == null)
+			{
+				throw new InvalidOperationException("Cannot insert a feature with a null geometry");
+			}
 
-            enableWriting();
+			checkOpen();
+			enableWriting();
 
-            writeFeatureRow(feature);
+			if (HasDbf)
+			{
+				_dbaseWriter.AddRow(feature);
+			}
 
-            writeIndex();
-            writeHeader(_shapeFileWriter);
+			uint id = _shapeFileIndex.GetNextId();
+			feature[ShapeFileConstants.IdColumnName] = id;
+
+			_shapeFileIndex.AddFeatureToIndex(feature);
+
+			int offset = _shapeFileIndex[id].Offset;
+			int length = _shapeFileIndex[id].Length;
+
+			_header.Envelope = BoundingBox.Join(_header.Envelope, feature.Geometry.GetBoundingBox());
+
+			writeGeometry(feature.Geometry, id, offset, length);
+			_header.WriteHeader(_shapeFileWriter, _shapeFileIndex.ComputeShapeFileSizeInWords());
+			_shapeFileIndex.Save();
         }
 
         /// <summary>
-        /// Saves features to a shapefile.
+        /// Adds features to the end of a shapefile.
         /// </summary>
-        /// <param name="feature">Enumeration of features to save.</param>
+		/// <param name="feature">Enumeration of features to append.</param>
         /// <exception cref="InvalidShapeFileOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public void Save(IEnumerable<FeatureDataRow<uint>> rows)
-        {
-            checkOpen();
-            
-            if (rows == null)
-            {
-                throw new ArgumentNullException("rows");
-            }
-
-            enableWriting();
-
-            foreach (FeatureDataRow row in rows)
-            {
-                writeFeatureRow(row);
-            }
-
-            writeIndex();
-            writeHeader(_shapeFileWriter);
-        }
-
-        /// <summary>
-        /// Saves features to the shapefile.
-        /// </summary>
-        /// <param name="table">
-        /// A FeatureDataTable containing feature data and geometry.
-        /// </param>
-        /// <exception cref="InvalidShapeFileOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public void Save(FeatureDataTable<uint> table)
-        {
-            if (table == null)
-            {
-                throw new ArgumentNullException("table");
-            }
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="features"/> is null.
+		/// </exception>
+		public void Insert(IEnumerable<FeatureDataRow<uint>> features)
+		{
+			if (features == null)
+			{
+				throw new ArgumentNullException("features");
+			}
 
             checkOpen();
             enableWriting();
 
-            _shapeFileStream.Position = HeaderSizeBytes;
-            foreach (FeatureDataRow row in table.Rows)
-            {
-                if (row is FeatureDataRow<uint>)
-                {
-                    _tree.Insert(new RTreeIndexEntry<uint>((row as FeatureDataRow<uint>).Id, row.Geometry.GetBoundingBox()));
-                }
-                else
-                {
-                    _tree.Insert(new RTreeIndexEntry<uint>(getNextId(), row.Geometry.GetBoundingBox()));
-                }
+			BoundingBox featuresEnvelope = BoundingBox.Empty;
 
-                writeFeatureRow(row);
+            foreach (FeatureDataRow<uint> feature in features)
+            {
+				BoundingBox b = feature.Geometry == null 
+					? BoundingBox.Empty 
+					: feature.Geometry.GetBoundingBox();
+
+				featuresEnvelope.ExpandToInclude(b);
+
+				uint id = _shapeFileIndex.GetNextId();
+				_shapeFileIndex.AddFeatureToIndex(feature);
+				feature[ShapeFileConstants.IdColumnName] = id;
+				
+				int offset = _shapeFileIndex[id].Offset;
+				int length = _shapeFileIndex[id].Length;
+
+				writeGeometry(feature.Geometry, id, offset, length);
             }
 
-            writeIndex();
-            writeHeader(_shapeFileWriter);
-        }
+			_shapeFileIndex.Save();
 
-        /// <summary>
-        /// Not implemented.
-        /// </summary>
-        /// <param name="feature">Feature to delete.</param>
-        public void Delete(FeatureDataRow<uint> feature)
-        {
-            throw new NotImplementedException("Not implemented in this version");
-        }
+			_header.Envelope = BoundingBox.Join(_header.Envelope, featuresEnvelope);
+			_header.WriteHeader(_shapeFileWriter, _shapeFileIndex.ComputeShapeFileSizeInWords());
+		}
+
+		/// <summary>
+		/// Updates a feature in a shapefile by deleting the previous 
+		/// version and inserting the updated version.
+		/// </summary>
+		/// <param name="feature">Feature to update.</param>
+		/// <exception cref="InvalidShapeFileOperationException">
+		/// Thrown if method is called and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="feature"/> is null.
+		/// </exception>
+		public void Update(FeatureDataRow<uint> feature)
+		{
+			if (feature == null) throw new ArgumentNullException("feature");
+
+			if (feature.RowState != DataRowState.Modified)
+			{
+				return;
+			}
+
+			checkOpen();
+			enableWriting();
+
+			if (feature.IsGeometryModified)
+			{
+				Delete(feature);
+				Insert(feature);
+			}
+			else if (HasDbf)
+			{
+				_dbaseWriter.UpdateRow(feature.Id, feature);
+			}
+
+			feature.AcceptChanges();
+		}
+
+		/// <summary>
+		/// Updates a set of features in a shapefile by deleting the previous 
+		/// versions and inserting the updated versions.
+		/// </summary>
+		/// <param name="feature">Enumeration of features to update.</param>
+		/// <exception cref="InvalidShapeFileOperationException">
+		/// Thrown if method is called and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="features"/> is null.
+		/// </exception>
+		public void Update(IEnumerable<FeatureDataRow<uint>> features)
+		{
+			if (features == null) throw new ArgumentNullException("feature");
+
+			checkOpen();
+			enableWriting();
+
+			foreach (FeatureDataRow<uint> feature in features)
+			{
+				if (feature.RowState != DataRowState.Modified)
+				{
+					continue;
+				}
+
+				if (feature.IsGeometryModified)
+				{
+					Delete(feature);
+					Insert(feature);
+				}
+				else if (HasDbf)
+				{
+					_dbaseWriter.UpdateRow(feature.Id, feature);
+				}
+
+				feature.AcceptChanges();
+			}
+		}
+
+		/// <summary>
+		/// Deletes a row from the shapefile by marking it as deleted.
+		/// </summary>
+		/// <param name="feature">Feature to delete.</param>
+		/// <exception cref="InvalidShapeFileOperationException">
+		/// Thrown if method is called and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="features"/> is null.
+		/// </exception>
+		public void Delete(FeatureDataRow<uint> feature)
+		{
+			if (feature == null)
+			{
+				throw new ArgumentNullException("feature");
+			}
+
+			if (!_shapeFileIndex.ContainsKey(feature.Id))
+			{
+				return;
+			}
+
+			checkOpen();
+			enableWriting();
+
+			feature.Geometry = null;
+
+			uint id = feature.Id;
+			int length = _shapeFileIndex[id].Length;
+			int offset = _shapeFileIndex[id].Offset;
+			writeGeometry(null, feature.Id, offset, length);
+		}
+
+		/// <summary>
+		/// Deletes a set of rows from the shapefile by marking them as deleted.
+		/// </summary>
+		/// <param name="features">Features to delete.</param>
+		/// <exception cref="InvalidShapeFileOperationException">
+		/// Thrown if method is called and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if <paramref name="features"/> is null.
+		/// </exception>
+		public void Delete(IEnumerable<FeatureDataRow<uint>> features)
+		{
+			if (features == null)
+			{
+				throw new ArgumentNullException("features");
+			}
+
+			checkOpen();
+			enableWriting();
+
+			foreach (FeatureDataRow<uint> feature in features)
+			{
+				if (!_shapeFileIndex.ContainsKey(feature.Id))
+				{
+					continue;
+				}
+
+				feature.Geometry = null;
+
+				uint id = feature.Id;
+				int length = _shapeFileIndex[id].Length;
+				int offset = _shapeFileIndex[id].Offset;
+				writeGeometry(null, feature.Id, offset, length);
+			}
+		}
+
+		///// <summary>
+		///// Saves features to the shapefile.
+		///// </summary>
+		///// <param name="table">
+		///// A FeatureDataTable containing feature data and geometry.
+		///// </param>
+		///// <exception cref="InvalidShapeFileOperationException">
+		///// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+		///// </exception>
+		//public void Save(FeatureDataTable<uint> table)
+		//{
+		//    if (table == null)
+		//    {
+		//        throw new ArgumentNullException("table");
+		//    }
+
+		//    checkOpen();
+		//    enableWriting();
+
+		//    _shapeFileStream.Position = ShapeFileConstants.HeaderSizeBytes;
+		//    foreach (FeatureDataRow row in table.Rows)
+		//    {
+		//        if (row is FeatureDataRow<uint>)
+		//        {
+		//            _tree.Insert(new RTreeIndexEntry<uint>((row as FeatureDataRow<uint>).Id, row.Geometry.GetBoundingBox()));
+		//        }
+		//        else
+		//        {
+		//            _tree.Insert(new RTreeIndexEntry<uint>(getNextId(), row.Geometry.GetBoundingBox()));
+		//        }
+
+		//        writeFeatureRow(row);
+		//    }
+
+		//    writeIndex();
+		//    writeHeader(_shapeFileWriter);
+		//}
         #endregion
         #endregion
 
         #region General helper functions
+
+		internal static int ComputeGeometryLengthInWords(Geometry geometry)
+		{
+			if (geometry == null)
+			{
+				throw new NotSupportedException("Writing null shapes not supported in this version.");
+			}
+
+			int byteCount = 0;
+
+			if (geometry is Point)
+			{
+				byteCount = 20; // ShapeType integer + 2 doubles at 8 bytes each
+			}
+			else if (geometry is MultiPoint)
+			{
+				byteCount = 4 /* ShapeType Integer */
+					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 /* NumPoints integer */
+					+ 16 * (geometry as MultiPoint).Points.Count;
+			}
+			else if (geometry is LineString)
+			{
+				byteCount = 4 /* ShapeType Integer */
+					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
+					+ 4 /* Parts Array 1 integer long */
+					+ 16 * (geometry as LineString).Vertices.Count;
+			}
+			else if (geometry is MultiLineString)
+			{
+				int pointCount = 0;
+
+				foreach (LineString line in (geometry as MultiLineString).LineStrings)
+				{
+					pointCount += line.Vertices.Count;
+				}
+
+				byteCount = 4 /* ShapeType Integer */
+					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
+					+ 4 * (geometry as MultiLineString).LineStrings.Count /* Parts array of integer indexes */
+					+ 16 * pointCount;
+			}
+			else if (geometry is Polygon)
+			{
+				int pointCount = (geometry as Polygon).ExteriorRing.Vertices.Count;
+
+				foreach (LinearRing ring in (geometry as Polygon).InteriorRings)
+				{
+					pointCount += ring.Vertices.Count;
+				}
+
+				byteCount = 4 /* ShapeType Integer */
+					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
+					+ 4 * ((geometry as Polygon).InteriorRings.Count + 1 /* Parts array of rings: count of interior + 1 for exterior ring */)
+					+ 16 * pointCount;
+			}
+			else
+			{
+				throw new NotSupportedException("Currently unsupported geometry type.");
+			}
+
+			return byteCount / 2; // number of 16-bit words
+		}
+
         private void checkOpen()
         {
             if (!IsOpen)
@@ -1050,80 +1289,6 @@ namespace SharpMap.Data.Providers
                 throw new ShapeFileInvalidOperationException("An attempt was made to access a closed datasource.");
             }
         }
-
-        private uint getNextId()
-        {
-            return (uint)_shapeIndex.Count;
-        }
-
-        private int computeFileLengthInWords()
-        {
-            int length = HeaderSizeBytes / 2;
-
-            foreach (KeyValuePair<uint, IndexEntry> kvp in _shapeIndex)
-            {
-                length += kvp.Value.Length + ShapeFile.ShapeRecordHeaderByteLength / 2;
-            }
-
-            return length;
-        }
-
-        private int computeGeometryLengthInWords(Geometry geometry)
-        {
-            if (geometry == null)
-            {
-                throw new NotSupportedException("Writing null shapes not supported in this version");
-            }
-
-            int byteCount = 0;
-
-            if (geometry is Point)
-            {
-                byteCount = 20; // ShapeType integer + 2 doubles at 8 bytes each
-            }
-            else if (geometry is MultiPoint)
-            {
-                byteCount = 4 /* ShapeType Integer */ + BoundingBoxFieldByteLength + 4 /* NumPoints integer */ + 16 * (geometry as MultiPoint).Points.Count;
-            }
-            else if (geometry is LineString)
-            {
-                byteCount = 4 /* ShapeType Integer */ + BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
-                    + 4 /* Parts Array 1 integer long */ + 16 * (geometry as LineString).Vertices.Count;
-            }
-            else if (geometry is MultiLineString)
-            {
-                int pointCount = 0;
-
-                foreach (LineString line in (geometry as MultiLineString).LineStrings)
-                {
-                    pointCount += line.Vertices.Count;
-                }
-
-                byteCount = 4 /* ShapeType Integer */ + BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
-                    + 4 * (geometry as MultiLineString).LineStrings.Count /* Parts array of integer indexes */
-                    + 16 * pointCount;
-            }
-            else if (geometry is Polygon)
-            {
-                int pointCount = (geometry as Polygon).ExteriorRing.Vertices.Count;
-
-                foreach (LinearRing ring in (geometry as Polygon).InteriorRings)
-                {
-                    pointCount += ring.Vertices.Count;
-                }
-
-                byteCount = 4 /* ShapeType Integer */ + BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
-                    + 4 * ((geometry as Polygon).InteriorRings.Count + 1 /* Parts array of rings: count of interior + 1 for exterior ring */)
-                    + 16 * pointCount;
-            }
-            else
-            {
-                throw new NotSupportedException("Currently unsupported geometry type.");
-            }
-
-            return byteCount / 2; // number of 16-bit words
-        }
-
 
         private IEnumerable<uint> getKeysFromIndexEntries(IEnumerable<RTreeIndexEntry<uint>> entries)
         {
@@ -1152,7 +1317,7 @@ namespace SharpMap.Data.Providers
             {
                 if (!HasDbf)
                 {
-                    dt = FeatureDataTable<uint>.CreateEmpty(IdColumnName);
+					dt = FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
                 }
                 else
                 {
@@ -1172,7 +1337,6 @@ namespace SharpMap.Data.Providers
                 return null;
             }
         }
-
 
 		private void enableReading()
 		{
@@ -1416,9 +1580,9 @@ namespace SharpMap.Data.Providers
             enableReading();
             List<BoundingBox> boxes = new List<BoundingBox>();
 
-            foreach (KeyValuePair<uint, IndexEntry> kvp in _shapeIndex)
+            foreach (KeyValuePair<uint, ShapeFileIndex.IndexEntry> kvp in _shapeFileIndex)
             {
-                _shapeFileStream.Seek(kvp.Value.AbsoluteByteOffset + ShapeRecordHeaderByteLength, SeekOrigin.Begin);
+				_shapeFileStream.Seek(kvp.Value.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
 
                 if ((ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32()) != ShapeType.Null)
                 {
@@ -1457,7 +1621,7 @@ namespace SharpMap.Data.Providers
         private Geometry readGeometry(uint oid)
         {
             enableReading();
-            _shapeFileReader.BaseStream.Seek(_shapeIndex[oid].AbsoluteByteOffset + ShapeRecordHeaderByteLength, SeekOrigin.Begin);
+			_shapeFileReader.BaseStream.Seek(_shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
 
 			// Shape type is a common value to all geometry
             ShapeType type = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
@@ -1568,7 +1732,7 @@ namespace SharpMap.Data.Providers
         private Geometry readMultiPoint()
         {
 			// Skip min/max box
-            _shapeFileReader.BaseStream.Seek(BoundingBoxFieldByteLength, SeekOrigin.Current);
+            _shapeFileReader.BaseStream.Seek(ShapeFileConstants.BoundingBoxFieldByteLength, SeekOrigin.Current);
 
             MultiPoint feature = new MultiPoint();
 
@@ -1592,7 +1756,7 @@ namespace SharpMap.Data.Providers
         private void readPolyStructure(out int parts, out int points, out int[] segments)
 		{
 			// Skip min/max box
-            _shapeFileReader.BaseStream.Seek(BoundingBoxFieldByteLength, SeekOrigin.Current);
+            _shapeFileReader.BaseStream.Seek(ShapeFileConstants.BoundingBoxFieldByteLength, SeekOrigin.Current);
 
 			// Get number of parts (segments)
 			parts = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
@@ -1729,105 +1893,9 @@ namespace SharpMap.Data.Providers
         }
         #endregion
 
-        #region File parsing helper functions
+		#region File parsing helpers
 
-        /// <summary>
-        /// Reads and parses the header of the .shp index file
-        /// </summary>
-        /// <remarks>
-        /// From ESRI ShapeFile Technical Description document
-        /// 
-        /// http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
-        /// 
-        /// Byte
-        /// Position    Field           Value       Type    Order
-        /// -----------------------------------------------------
-        /// Byte 0      File Code       9994        Integer Big
-        /// Byte 4      Unused          0           Integer Big
-        /// Byte 8      Unused          0           Integer Big
-        /// Byte 12     Unused          0           Integer Big
-        /// Byte 16     Unused          0           Integer Big
-        /// Byte 20     Unused          0           Integer Big
-        /// Byte 24     File Length     File Length Integer Big
-        /// Byte 28     Version         1000        Integer Little
-        /// Byte 32     Shape Type      Shape Type  Integer Little
-        /// Byte 36     Bounding Box    Xmin        Double  Little
-        /// Byte 44     Bounding Box    Ymin        Double  Little
-        /// Byte 52     Bounding Box    Xmax        Double  Little
-        /// Byte 60     Bounding Box    Ymax        Double  Little
-        /// Byte 68*    Bounding Box    Zmin        Double  Little
-        /// Byte 76*    Bounding Box    Zmax        Double  Little
-        /// Byte 84*    Bounding Box    Mmin        Double  Little
-        /// Byte 92*    Bounding Box    Mmax        Double  Little
-        /// 
-        /// * Unused, with value 0.0, if not Measured or Z type
-        /// 
-        /// The "Integer" type corresponds to the CLS Int32 type, and "Double" to CLS Double (IEEE 754).
-        /// </remarks>
-        private void parseHeader()
-        {
-            _shapeFileReader.BaseStream.Seek(0, SeekOrigin.Begin);
-
-            //Check file header
-            if (ByteEncoder.GetBigEndian(_shapeFileReader.ReadInt32()) != HeaderStartCode)
-            {
-                throw new ShapeFileIsInvalidException("Invalid ShapeFile (.shp)");
-            }
-
-            _shapeFileReader.BaseStream.Seek(24, 0); //seek to File Length
-            int fileLength = ByteEncoder.GetBigEndian(_shapeFileReader.ReadInt32()); //Read filelength as big-endian. The length is number of 16-bit words in file
-
-            _shapeFileReader.BaseStream.Seek(32, 0); //seek to ShapeType
-            _shapeType = (ShapeType)_shapeFileReader.ReadInt32();
-
-            //Read the spatial bounding box of the contents
-            _shapeFileReader.BaseStream.Seek(36, 0); //seek to box
-            _envelope = new SharpMap.Geometries.BoundingBox(
-                ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
-                ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
-                ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
-                ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()));
-        }
-
-        /// <summary>
-        /// Parses the .shx shapefile index file
-        /// </summary>
-        /// <remarks>
-        /// The index file is organized to give a matching offset and content length for each entry in the .shp file.
-        /// 
-        /// From ESRI ShapeFile Technical Description document
-        /// 
-        /// http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
-        /// 
-        /// Byte
-        /// Position    Field           Value           Type    Order
-        /// ---------------------------------------------------------
-        /// Byte 0      Offset          Offset          Integer Big
-        /// Byte 4      Content Length  Content Length  Integer Big
-        /// 
-        /// The Integer type corresponds to the CLS Int32 type.
-        /// </remarks>
-        private void parseIndex()
-        {
-            FileStream indexStream;
-            BinaryReader indexReader;
-
-            using (indexStream = new FileStream(IndexFilename, FileMode.Open, FileAccess.Read))
-            using (indexReader = new BinaryReader(indexStream, Encoding.Unicode))
-            {
-                indexStream.Seek(HeaderSizeBytes, SeekOrigin.Begin);
-                uint recordNumber = 0;
-                while (indexStream.Position < indexStream.Length)
-                {
-                    IndexEntry entry = new IndexEntry();
-                    entry.Offset = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
-                    entry.Length = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
-                    _shapeIndex[recordNumber++] = entry;
-                }
-            }
-        }
-
-        /// <summary>
+		/// <summary>
         /// Reads and parses the projection if a projection file exists
         /// </summary>
         private void parseProjection()
@@ -1854,126 +1922,69 @@ namespace SharpMap.Data.Providers
         #endregion
 
         #region File writing helper functions
-        private void writeFeatureRow(FeatureDataRow feature)
+		//private void writeFeatureRow(FeatureDataRow feature)
+		//{
+		//    uint recordNumber = addIndexEntry(feature);
+
+		//    if (HasDbf)
+		//    {
+		//        _dbaseWriter.AddRow(feature);
+		//    }
+
+		//    writeGeometry(feature.Geometry, recordNumber, _shapeIndex[recordNumber].Length);
+		//}
+
+
+        private void writeGeometry(Geometry g, uint recordNumber, int recordOffsetInWords, int recordLengthInWords)
         {
-            uint recordNumber = addIndexEntry(feature);
+			_shapeFileStream.Position = recordOffsetInWords;
 
-            if (HasDbf)
-            {
-                _dbaseWriter.AddRow(feature);
-            }
-
-            writeGeometry(feature.Geometry, recordNumber, _shapeIndex[recordNumber].Length);
-        }
-
-        private void writeFeatureRow(FeatureDataRow<uint> feature)
-        {
-            uint recordNumber = feature.Id;
-
-            if (!_shapeIndex.ContainsKey(recordNumber))
-            {
-                recordNumber = addIndexEntry(feature);
-
-                if (HasDbf)
-                {
-                    _dbaseWriter.AddRow(feature);
-                }
-            }
-            else if (HasDbf)
-            {
-                _dbaseWriter.UpdateRow(recordNumber, feature);
-            }
-
-            writeGeometry(feature.Geometry, recordNumber, _shapeIndex[recordNumber].Length);
-        }
-
-        private uint addIndexEntry(FeatureDataRow feature)
-        {
-            IndexEntry entry = new IndexEntry();
-            entry.Length = computeGeometryLengthInWords(feature.Geometry);
-            entry.Offset = computeFileLengthInWords();
-            uint id = getNextId();
-            _shapeIndex[id] = entry;
-            return id;
-        }
-
-        private void writeHeader(BinaryWriter writer)
-        {
-            BoundingBox boundingBox = GetExtents();
-            writer.Seek(0, SeekOrigin.Begin);
-            writer.Write(ByteEncoder.GetBigEndian(HeaderStartCode));
-            writer.Write(new byte[20]);
-            writer.Write(ByteEncoder.GetBigEndian(computeFileLengthInWords()));
-            writer.Write(ByteEncoder.GetLittleEndian(VersionCode));
-            writer.Write(ByteEncoder.GetLittleEndian((int)ShapeType));
-            writer.Write(ByteEncoder.GetLittleEndian(boundingBox.Left));
-            writer.Write(ByteEncoder.GetLittleEndian(boundingBox.Bottom));
-            writer.Write(ByteEncoder.GetLittleEndian(boundingBox.Right));
-            writer.Write(ByteEncoder.GetLittleEndian(boundingBox.Top));
-            writer.Write(new byte[32]); // Z-values and M-values
-        }
-
-        private void writeIndex()
-        {
-            IndexEntry[] indexEntries = new IndexEntry[_shapeIndex.Count];
-
-            foreach (KeyValuePair<uint, IndexEntry> kvp in _shapeIndex)
-            {
-                indexEntries[kvp.Key] = kvp.Value;
-            }
-
-            using (FileStream indexStream = File.Open(IndexFilename, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (BinaryWriter indexWriter = new BinaryWriter(indexStream))
-            {
-                writeHeader(indexWriter);
-
-                foreach (IndexEntry entry in indexEntries)
-                {
-                    indexWriter.Write(ByteEncoder.GetBigEndian(entry.Offset));
-                    indexWriter.Write(ByteEncoder.GetBigEndian(entry.Length));
-                }
-
-                indexWriter.Flush();
-            }
-        }
-
-        private void writeGeometry(Geometry g, uint recordNumber, int recordLengthInWords)
-        {
-            if (g == null)
-            {
-                throw new NotSupportedException("Writing null shapes not supported in this version");
-            }
-
-            _shapeFileStream.Position = _shapeIndex[recordNumber].AbsoluteByteOffset;
 			// Record numbers are 1- based in shapefile
             recordNumber += 1; 
+
             _shapeFileWriter.Write(ByteEncoder.GetBigEndian(recordNumber));
             _shapeFileWriter.Write(ByteEncoder.GetBigEndian(recordLengthInWords));
 
-            if (g is Point)
-            {
-                writePoint(g as Point);
-            }
-            else if (g is MultiPoint)
-            {
-                writeMultiPoint(g as MultiPoint);
-            }
-            else if (g is LineString)
-            {
-                writeLineString(g as LineString);
-            }
-            else if (g is MultiLineString)
-            {
-                writeMultiLineString(g as MultiLineString);
-            }
-            else if (g is Polygon)
-            {
-                writePolygon(g as Polygon);
-            }
-            else
-            {
-                throw new NotSupportedException(String.Format("Writing geometry type {0} is not supported in the current version", g.GetType()));
-            }
+			if (g == null)
+			{
+				throw new NotSupportedException("Writing null shapes not supported in this version");
+			}
+
+			switch (ShapeType)
+			{
+				case ShapeType.Point:
+					writePoint(g as Point);
+					break;
+				case ShapeType.PolyLine:
+					if (g is LineString)
+					{
+						writeLineString(g as LineString);
+					}
+					else if (g is MultiLineString)
+					{
+						writeMultiLineString(g as MultiLineString);
+					}
+					break;
+				case ShapeType.Polygon:
+					writePolygon(g as Polygon);
+					break;
+				case ShapeType.MultiPoint:
+					writeMultiPoint(g as MultiPoint);
+					break;
+				case ShapeType.PointZ:
+				case ShapeType.PolyLineZ:
+				case ShapeType.PolygonZ:
+				case ShapeType.MultiPointZ:
+				case ShapeType.PointM:
+				case ShapeType.PolyLineM:
+				case ShapeType.PolygonM:
+				case ShapeType.MultiPointM:
+				case ShapeType.MultiPatch:
+				case ShapeType.Null:
+				default:
+					throw new NotSupportedException(String.Format(
+						"Writing geometry type {0} is not supported in the current version.", ShapeType));
+			}
         }
 
         private void writeCoordinate(double x, double y)
@@ -2063,56 +2074,6 @@ namespace SharpMap.Data.Providers
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((int)ShapeType.Polygon));
             writePolySegments(polygon.GetBoundingBox(), parts, allPoints.ToArray());
-        }
-        #endregion
-
-        #region IndexEntry struct
-        /// <summary>
-        /// Entry for each feature to determine the position and length of the geometry in the .shp file.
-        /// </summary>
-        private struct IndexEntry
-        {
-            private int _offset;
-            private int _length;
-
-            /// <summary>
-            /// Number of 16-bit words taken up by the record
-            /// </summary>
-            public int Length
-            {
-                get { return _length; }
-                set { _length = value; }
-            }
-
-            /// <summary>
-            /// Offset of the record in 16-bit words from the beginning of the shapefile
-            /// </summary>
-            public int Offset
-            {
-                get { return _offset; }
-                set { _offset = value; }
-            }
-
-            /// <summary>
-            /// Number of bytes in the record
-            /// </summary>
-            public int ByteLength
-            {
-                get { return _length * 2; }
-            }
-
-            /// <summary>
-            /// Record offest in bytes from the beginning of the shapefile
-            /// </summary>
-            public int AbsoluteByteOffset
-            {
-                get { return _offset * 2; }
-            }
-
-            public override string ToString()
-            {
-                return String.Format("[IndexEntry] Offset: {0}; Length: {1}; Stream Position: {2}", Offset, Length, AbsoluteByteOffset);
-            }
         }
         #endregion
 

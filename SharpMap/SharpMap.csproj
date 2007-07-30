@@ -136,6 +136,9 @@
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
     <Compile Include="Data\DataExceptions.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileConstants.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileHeader.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileIndex.cs" />
     <Compile Include="Model\Features\FeatureDataRow.cs" />
     <Compile Include="Model\Features\FeatureDataRowChangeEventArgs.cs" />
     <Compile Include="Model\Features\FeatureDataRowChangeEventHandler.cs" />

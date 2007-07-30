@@ -22,7 +22,7 @@ using System.Text;
 namespace SharpMap.CoordinateSystems
 {
 	/// <summary>
-	/// An aggregate of two coordinate systems (CRS). One of these is usually a 
+	/// An aggregate of two coordinate reference systems (CRS). One of these is usually a 
 	/// CRS based on a two dimensional coordinate system such as a geographic or
 	/// a projected coordinate system with a horizontal datum. The other is a 
 	/// vertical CRS which is a one-dimensional coordinate system with a vertical

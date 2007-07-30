@@ -78,7 +78,7 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// The spatial reference ID (CRS).
+        /// The spatial reference ID.
         /// </summary>
         public virtual int Srid
         {

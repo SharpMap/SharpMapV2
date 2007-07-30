@@ -92,7 +92,7 @@ namespace SharpMap.Data.Providers
         bool IsOpen { get; }
 
         /// <summary>
-        /// The spatial reference ID (CRS).
+        /// The spatial reference ID.
         /// </summary>
 		int Srid { get; set; }
 

@@ -24,8 +24,11 @@ namespace SharpMap.Data.Providers
 {
     public interface IWritableProvider<TOid> : IProvider<TOid>
     {
-        void Save(IEnumerable<FeatureDataRow<TOid>> features);
-        void Save(FeatureDataRow<TOid> feature);
-        void Delete(FeatureDataRow<TOid> feature);
+		void Insert(FeatureDataRow<TOid> feature);
+		void Insert(IEnumerable<FeatureDataRow<TOid>> features);
+		void Update(FeatureDataRow<TOid> feature);
+		void Update(IEnumerable<FeatureDataRow<TOid>> features);
+		void Delete(FeatureDataRow<TOid> feature);
+		void Delete(IEnumerable<FeatureDataRow<TOid>> feature);
     }
 }

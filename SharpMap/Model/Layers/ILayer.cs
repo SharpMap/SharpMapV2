@@ -45,7 +45,7 @@ namespace SharpMap.Layers
 		BoundingBox Envelope { get; }
 	
 		/// <summary>
-		/// The spatial reference ID (CRS).
+		/// The spatial reference ID.
 		/// </summary>
 		int Srid { get; set; }
 

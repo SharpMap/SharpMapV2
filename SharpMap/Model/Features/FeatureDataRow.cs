@@ -35,11 +35,18 @@ namespace SharpMap
     {
         //private FeatureDataTable tableFeatureTable;
         private Geometry _geometry;
+		private bool _isGeometryModified = false;
 
         internal FeatureDataRow(DataRowBuilder rb)
             : base(rb)
         {
         }
+
+		public new void AcceptChanges()
+		{
+			base.AcceptChanges();
+			_isGeometryModified = false;
+		}
 
         /// <summary>
         /// The geometry of the current feature
@@ -47,11 +54,26 @@ namespace SharpMap
         public Geometry Geometry
         {
             get { return _geometry; }
-            set { _geometry = value; }
+            set 
+			{
+				if (ReferenceEquals(_geometry, value))
+				{
+					return;
+				}
+
+				if (_geometry != null && _geometry.Equals(value))
+				{
+					return;
+				}
+
+				_geometry = value;
+				_isGeometryModified = true;
+				SetModified();
+			}
         }
 
         /// <summary>
-        /// Returns true of the geometry is null
+        /// Returns true of the geometry is null.
         /// </summary>
         /// <returns></returns>
         public bool IsFeatureGeometryNull()
@@ -60,11 +82,16 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Sets the geometry column to null
+        /// Sets the geometry column to null.
         /// </summary>
         public void SetFeatureGeometryNull()
         {
             this.Geometry = null;
         }
+
+		public bool IsGeometryModified
+		{
+			get { return _isGeometryModified; }
+		}
     }
 }
