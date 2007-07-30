@@ -1928,7 +1928,7 @@ namespace SharpMap.Data.Providers
 
         private void writeGeometry(Geometry g, uint recordNumber, int recordOffsetInWords, int recordLengthInWords)
         {
-			_shapeFileStream.Position = recordOffsetInWords;
+			_shapeFileStream.Position = recordOffsetInWords * 2;
 
 			// Record numbers are 1- based in shapefile
             recordNumber += 1; 
