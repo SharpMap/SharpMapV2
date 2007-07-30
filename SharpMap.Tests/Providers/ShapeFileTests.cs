@@ -493,7 +493,7 @@ namespace SharpMap.Tests.Provider
         }
 
         [Test]
-        public void InsertRowTest()
+		public void InsertFeatureTest()
 		{
 			FeatureDataTable<uint> schema = new FeatureDataTable<uint>("oid");
 			schema.Columns.AddRange(new DataColumn[] {
@@ -541,7 +541,7 @@ namespace SharpMap.Tests.Provider
         }
 
         [Test]
-		public void InsertRowsTest()
+		public void InsertFeaturesTest()
 		{
 			FeatureDataTable<uint> schema = new FeatureDataTable<uint>("OID");
 			schema.Columns.AddRange(new DataColumn[] {
@@ -592,18 +592,30 @@ namespace SharpMap.Tests.Provider
 
 			shapeFile.Insert(rows);
 			shapeFile.Close();
-        }
+		}
 
-        [Test]
-        [Ignore("Test not yet implemented")]
-        public void SaveTableTest()
-        {
-        }
+		[Test]
+		[Ignore("Test not yet implemented")]
+		public void UpdateFeatureTest()
+		{
+		}
 
-        [Test]
-        [Ignore("Delete method not yet implemented")]
-        public void DeleteRowTest()
-        {
+		[Test]
+		[Ignore("Test not yet implemented")]
+		public void UpdateFeaturesTest()
+		{
+		}
+
+		[Test]
+		[Ignore("Test not yet implemented")]
+		public void DeleteFeatureTest()
+		{
+		}
+
+		[Test]
+		[Ignore("Test not yet implemented")]
+		public void DeleteFeaturesTest()
+		{
 		}
 
 		private static IProjectedCoordinateSystem createExpectedCoordinateSystem()
