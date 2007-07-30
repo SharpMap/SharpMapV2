@@ -30,7 +30,7 @@ namespace SharpMap.Styles
 	/// <summary>
 	/// Defines a style used for rendering vector data
 	/// </summary>
-	public class VectorStyle : Style
+	public class VectorStyle : Style, IFeatureLayerStyle
 	{
 		#region Private fields
         private StylePen _lineStyle;
@@ -48,6 +48,7 @@ namespace SharpMap.Styles
         private Symbol2D _selectSymbol;
         private StyleRenderingMode _smoothingMode;
         private StyleTextRenderingHint _textRenderingHint;
+        private bool _areFeaturesSelectable = true;
 		#endregion
 
 		/// <summary>
@@ -56,6 +57,10 @@ namespace SharpMap.Styles
 		/// <remarks>
 		/// Default style values when initialized:<br/>
         /// <list type="table">
+        /// <item>
+        /// <term>AreFeaturesSelectable</term>
+        /// <description>True</description>
+        /// </item>
         /// <item>
         /// <term>LineStyle</term>
         /// <description>1px solid black</description>
@@ -200,7 +205,7 @@ namespace SharpMap.Styles
         /// Render whether smoothing (antialiasing) is applied to lines 
         /// and curves and the edges of filled areas
         /// </summary>
-        public StyleRenderingMode SmoothingMode
+        public StyleRenderingMode RenderingMode
         {
             get { return _smoothingMode; }
             set { _smoothingMode = value; }
@@ -214,6 +219,21 @@ namespace SharpMap.Styles
             get { return _textRenderingHint; }
             set { _textRenderingHint = value; }
         }
+
+        #region IFeatureLayerStyle Members
+
+        /// <summary>
+        /// Gets or sets a value to determine if features can 
+        /// be selected on this layer.
+        /// </summary>
+        public bool AreFeaturesSelectable
+        {
+            get { return _areFeaturesSelectable; }
+            set { _areFeaturesSelectable = value; }
+        }
+
+        #endregion
 		#endregion
-	}
+
+    }
 }

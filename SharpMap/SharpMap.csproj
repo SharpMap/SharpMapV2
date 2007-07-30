@@ -244,6 +244,7 @@
     <Compile Include="Rendering\IFeatureRenderer`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\2D\IVectorRenderer2D`1.cs" />
+    <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Tools\ActionContext.cs" />
     <Compile Include="Model\LayersCollection.cs" />
     <Compile Include="Model\Map.cs">
@@ -310,7 +311,7 @@
     <Compile Include="Styles\StyleLineJoin.cs" />
     <Compile Include="Styles\StylePen.cs" />
     <Compile Include="Styles\StylePenAlignment.cs" />
-    <Compile Include="Styles\StyleSmoothingMode.cs" />
+    <Compile Include="Styles\StyleRenderingMode.cs" />
     <Compile Include="Styles\Style.cs" />
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Styles\VectorStyle.cs" />
