@@ -512,7 +512,7 @@ namespace SharpMap.Tests.Provider
 			feature["DateCreated"] = dateCreated;
 			feature["Visits"] = 0;
 			feature["Weight"] = 100.0f;
-			feature.Geometry = new Point(0, 0);
+			feature.Geometry = new Point(1, 1);
 
 			shapeFile.Insert(feature);
 			shapeFile.Close();
@@ -523,13 +523,13 @@ namespace SharpMap.Tests.Provider
 			Assert.AreEqual(1, shapeFile.GetFeatureCount());
 			FeatureDataSet dataSet = new FeatureDataSet();
 
-			shapeFile.ExecuteIntersectionQuery(new BoundingBox(0, 0, 0, 0), dataSet);
+			shapeFile.ExecuteIntersectionQuery(new BoundingBox(1, 1, 1, 1), dataSet);
 
 			Assert.AreEqual(1, dataSet.Tables.Count);
 			Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
 
 			FeatureDataRow<uint> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<uint>;
-			Assert.AreEqual(new Point(0, 0), newFeature.Geometry);
+			Assert.AreEqual(new Point(1, 1), newFeature.Geometry);
 			Assert.AreEqual(newFeature["Name"], "Test feature");
 			DateTime dateCreatedActual = (DateTime)newFeature["DateCreated"];
 			Assert.AreEqual(dateCreatedActual.Year, dateCreated.Year);
@@ -551,7 +551,7 @@ namespace SharpMap.Tests.Provider
 				new DataColumn("Weight", typeof(double))
 			});
 
-			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test3", ShapeType.MultiPoint, schema);
+			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test3", ShapeType.PolyLine, schema);
 			shapeFile.Open();
 
 			Random rnd = new Random();
@@ -559,7 +559,7 @@ namespace SharpMap.Tests.Provider
 
 			List<FeatureDataRow<uint>> rows = new List<FeatureDataRow<uint>>();
 
-			for (int i = 1; i <= 10000; i++)
+			for (int i = 0; i < 10000; i++)
 			{
 				DateTime dateCreated = new DateTime(rnd.Next(1900, 2155), rnd.Next(1, 12), rnd.Next(1, 28));
 				FeatureDataRow<uint> feature = schema.NewRow((uint)i);
@@ -567,25 +567,27 @@ namespace SharpMap.Tests.Provider
 				char[] chars = new char[rnd.Next(0, 254)];
 				for (int charIndex = 0; charIndex < chars.Length; charIndex++)
 				{
-					chars[charIndex] = (char)(byte)rnd.Next(1, 126);
+					chars[charIndex] = (char)(byte)rnd.Next(32, 126);
 				}
 
 				feature["Name"] = new String(chars);
 				feature["DateCreated"] = dateCreated;
 				feature["Visits"] = rnd.Next(0, Int32.MaxValue) << rnd.Next(0, 32);
 				feature["Weight"] = rnd.NextDouble() * rnd.Next(0, 100000);
-				
-				MultiPoint p = new MultiPoint();
+
+                LineString line = new LineString();
 
 				int pointCount = rnd.Next(1, 100);
 				for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
 				{
-					p.Points.Add(new Point(rnd.NextDouble() * rnd.Next(200000, 700000), rnd.NextDouble() * rnd.Next(5000000, 5100000))); 
+                    Point p = new Point(rnd.NextDouble() * rnd.Next(200000, 700000), 
+                        rnd.NextDouble() * rnd.Next(5000000, 5100000));
+					line.Vertices.Add(p); 
 				}
 
-				computedBounds.ExpandToInclude(p.GetBoundingBox());
+				computedBounds.ExpandToInclude(line.GetBoundingBox());
 
-				feature.Geometry = p;
+				feature.Geometry = line;
 
 				rows.Add(feature);
 			}

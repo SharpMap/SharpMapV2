@@ -952,21 +952,28 @@ namespace SharpMap.Data.Providers
 			checkOpen();
 			enableWriting();
 
-			if (HasDbf)
-			{
-				_dbaseWriter.AddRow(feature);
-			}
-
 			uint id = _shapeFileIndex.GetNextId();
 			feature[ShapeFileConstants.IdColumnName] = id;
 
 			_shapeFileIndex.AddFeatureToIndex(feature);
 
+            BoundingBox featureEnvelope = feature.Geometry.GetBoundingBox();
+
+            if (_tree != null)
+            {
+                _tree.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
+            }
+
 			int offset = _shapeFileIndex[id].Offset;
 			int length = _shapeFileIndex[id].Length;
 
 			_header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
-			_header.Envelope = BoundingBox.Join(_header.Envelope, feature.Geometry.GetBoundingBox());
+            _header.Envelope = BoundingBox.Join(_header.Envelope, featureEnvelope);
+
+            if (HasDbf)
+            {
+                _dbaseWriter.AddRow(feature);
+            }
 
 			writeGeometry(feature.Geometry, id, offset, length);
 			_header.WriteHeader(_shapeFileWriter);
@@ -992,25 +999,37 @@ namespace SharpMap.Data.Providers
 
             checkOpen();
             enableWriting();
-
+             
 			BoundingBox featuresEnvelope = BoundingBox.Empty;
 
             foreach (FeatureDataRow<uint> feature in features)
             {
-				BoundingBox b = feature.Geometry == null 
+                BoundingBox featureEnvelope = feature.Geometry == null 
 					? BoundingBox.Empty 
 					: feature.Geometry.GetBoundingBox();
 
-				featuresEnvelope.ExpandToInclude(b);
+                featuresEnvelope.ExpandToInclude(featureEnvelope);
 
 				uint id = _shapeFileIndex.GetNextId();
-				_shapeFileIndex.AddFeatureToIndex(feature);
+
+                _shapeFileIndex.AddFeatureToIndex(feature);
+
+                if (_tree != null)
+                {
+                    _tree.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
+                }
+
 				feature[ShapeFileConstants.IdColumnName] = id;
 				
 				int offset = _shapeFileIndex[id].Offset;
 				int length = _shapeFileIndex[id].Length;
 
-				writeGeometry(feature.Geometry, id, offset, length);
+                writeGeometry(feature.Geometry, id, offset, length);
+
+                if (HasDbf)
+                {
+                    _dbaseWriter.AddRow(feature);
+                }
             }
 
 			_shapeFileIndex.Save();
