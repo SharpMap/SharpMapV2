@@ -34,20 +34,20 @@ namespace SharpMap.Tests.Provider
         [Test]
         public void CreatNeweNoAttributesTest()
         {
-			ShapeFile shapeFile = ShapeFile.Create(".", "Test1", ShapeType.Polygon);
-			Assert.IsTrue(File.Exists("Test1.shp"));
-			Assert.IsTrue(File.Exists("Test1.shx"));
-			Assert.IsFalse(File.Exists("Test1.dbf"));
+			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test1", ShapeType.Polygon);
+			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shp"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shx"));
+			Assert.IsFalse(File.Exists(@"UnitTestData\Test1.dbf"));
 			shapeFile.Close();
-			File.Delete("Test1.shp");
-			File.Delete("Test1.shx");
+			File.Delete(@"UnitTestData\Test1.shp");
+			File.Delete(@"UnitTestData\Test1.shx");
 		}
 
 		[Test]
 		[ExpectedException(typeof(ShapeFileInvalidOperationException))]
 		public void CreatNeweNoAttributesNullShapeTypeFailsTest()
 		{
-			ShapeFile.Create(".", "Test1", ShapeType.Null);
+			ShapeFile.Create("UnitTestData", "Test1", ShapeType.Null);
 		}
 
         [Test]
@@ -61,14 +61,14 @@ namespace SharpMap.Tests.Provider
 				new DataColumn("Weight", typeof(float))
 			});
 			ShapeFile shapeFile = ShapeFile.Create("UnitTestData", "Test1", ShapeType.Point, schema);
-			Assert.IsTrue(File.Exists("Test1.shp"));
-			Assert.IsTrue(File.Exists("Test1.shx"));
-			Assert.IsTrue(File.Exists("Test1.dbf"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shp"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shx"));
+			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.dbf"));
 			Assert.IsTrue(shapeFile.HasDbf);
 			shapeFile.Close();
-			File.Delete("Test1.shp");
-			File.Delete("Test1.shx");
-			File.Delete("Test1.dbf");
+			File.Delete(@"UnitTestData\Test1.shp");
+			File.Delete(@"UnitTestData\Test1.shx");
+			File.Delete(@"UnitTestData\Test1.dbf");
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace SharpMap.Tests.Provider
 			shapeFile.SpatialReference = cs;
 			Assert.IsNotNull(shapeFile.SpatialReference);
 
-			Geometry g = shapeFile.GetGeometryById(1);
+			Geometry g = shapeFile.GetGeometryById(0);
 
 			Assert.IsTrue(g.SpatialReference.EqualParams(createExpectedCoordinateSystem()));
 

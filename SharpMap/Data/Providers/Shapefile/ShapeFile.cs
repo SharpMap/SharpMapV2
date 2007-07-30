@@ -74,7 +74,6 @@ namespace SharpMap.Data.Providers
 
         #region Fields
         private FilterMethod _filterDelegate;
-        private ShapeType _shapeType;
         private int _srid = -1;
         private string _filename;
         private BoundingBox _envelope = BoundingBox.Empty;
@@ -214,7 +213,7 @@ namespace SharpMap.Data.Providers
 		/// <returns>A string with the Name, HasDbf, FeatureCount and Extents values.</returns>
 		public override string ToString()
 		{
-			return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {3}; Extents: {4}",
+			return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {2}; Extents: {3}",
 				ConnectionId, HasDbf, GetFeatureCount(), GetExtents());
 		}
 		#endregion
@@ -422,7 +421,7 @@ namespace SharpMap.Data.Providers
             get
             {
                 checkOpen();
-                return _shapeType;
+                return _header.ShapeType;
             }
         }
 
@@ -611,9 +610,6 @@ namespace SharpMap.Data.Providers
                 {
                     enableReading();
 					_isOpen = true;
-
-					// Parse shape header
-					_header = new ShapeFileHeader(_shapeFileReader);
 
                     // Read projection file
                     parseProjection();
@@ -830,16 +826,8 @@ namespace SharpMap.Data.Providers
 		/// The number of features contained in the shapefile.
 		/// </returns>
         public int GetFeatureCount()
-        {
-            if (IsOpen)
-            {
-                return _shapeFileIndex.Count;
-            }
-            else // Assume the feature count from the fixed record-length .shx file
-            {
-                FileInfo info = new FileInfo(IndexFilename);
-				return (int)((info.Length - ShapeFileConstants.HeaderSizeBytes) / ShapeFileConstants.ShapeRecordHeaderByteLength);
-            }
+		{
+			return _shapeFileIndex.Count;
         }
 
         /// <summary>
@@ -977,10 +965,11 @@ namespace SharpMap.Data.Providers
 			int offset = _shapeFileIndex[id].Offset;
 			int length = _shapeFileIndex[id].Length;
 
+			_header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
 			_header.Envelope = BoundingBox.Join(_header.Envelope, feature.Geometry.GetBoundingBox());
 
 			writeGeometry(feature.Geometry, id, offset, length);
-			_header.WriteHeader(_shapeFileWriter, _shapeFileIndex.ComputeShapeFileSizeInWords());
+			_header.WriteHeader(_shapeFileWriter);
 			_shapeFileIndex.Save();
         }
 
@@ -1027,7 +1016,8 @@ namespace SharpMap.Data.Providers
 			_shapeFileIndex.Save();
 
 			_header.Envelope = BoundingBox.Join(_header.Envelope, featuresEnvelope);
-			_header.WriteHeader(_shapeFileWriter, _shapeFileIndex.ComputeShapeFileSizeInWords());
+			_header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
+			_header.WriteHeader(_shapeFileWriter);
 		}
 
 		/// <summary>
@@ -1590,7 +1580,7 @@ namespace SharpMap.Data.Providers
                     double yMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
                     double xMax, yMax;
 
-                    if (_shapeType == ShapeType.Point)
+                    if (ShapeType == ShapeType.Point)
                     {
                         xMax = xMin;
                         yMax = yMin;
@@ -1621,7 +1611,8 @@ namespace SharpMap.Data.Providers
         private Geometry readGeometry(uint oid)
         {
             enableReading();
-			_shapeFileReader.BaseStream.Seek(_shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
+			_shapeFileReader.BaseStream.Seek(
+				_shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
 
 			// Shape type is a common value to all geometry
             ShapeType type = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
@@ -1634,7 +1625,7 @@ namespace SharpMap.Data.Providers
 
 			Geometry g;
 
-            switch (_shapeType)
+			switch (ShapeType)
             {
                 case ShapeType.Point:
                     g = readPoint();
@@ -1673,8 +1664,8 @@ namespace SharpMap.Data.Providers
 					g = readMultiPointM();
 					break;
                 default:
-                    throw new ShapeFileUnsupportedGeometryException("ShapeFile type " 
-						+ _shapeType.ToString() + " not supported");
+                    throw new ShapeFileUnsupportedGeometryException("ShapeFile type "
+						+ ShapeType.ToString() + " not supported");
             }
 
 			g.SpatialReference = SpatialReference;

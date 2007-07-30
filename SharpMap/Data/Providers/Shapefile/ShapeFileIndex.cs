@@ -41,9 +41,24 @@ namespace SharpMap.Data.Providers
 
 			_indexFile = file;
 
-			using (BinaryReader reader = new BinaryReader(_indexFile.OpenRead()))
+			using (FileStream indexStream = _indexFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
+			using (BinaryReader reader = new BinaryReader(indexStream))
 			{
 				_header = new ShapeFileHeader(reader);
+
+				indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
+
+				int featureCount = (int)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes) 
+					/ ShapeFileConstants.IndexRecordByteLength);
+
+				for (int id = 0; id < featureCount; id++)
+				{
+					int offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
+					int length = ByteEncoder.GetBigEndian(reader.ReadInt32());
+
+					IndexEntry entry = new IndexEntry(length, offset);
+					_shapeIndex.Add((uint)id, entry);
+				}
 			}
 		}
 
@@ -52,20 +67,6 @@ namespace SharpMap.Data.Providers
 		public ShapeFile ShapeFile
 		{
 			get { return _shapeFile; }
-		}
-
-		public void Save()
-		{
-			using (BinaryWriter writer = new BinaryWriter(_indexFile.Open(FileMode.Truncate, FileAccess.Write, FileShare.None)))
-			{
-				_header.WriteHeader(writer, computeIndexLengthInWords());
-
-				foreach (IndexEntry entry in _shapeIndex.Values)
-				{
-					writer.Write(ByteEncoder.GetBigEndian(entry.Offset));
-					writer.Write(ByteEncoder.GetBigEndian(entry.Length));
-				}
-			}
 		}
 
 		public void AddFeatureToIndex(FeatureDataRow<uint> feature)
@@ -84,6 +85,41 @@ namespace SharpMap.Data.Providers
 
 			IndexEntry entry = new IndexEntry(length, offset);
 			_shapeIndex[id] = entry;
+		}
+
+		public int ComputeShapeFileSizeInWords()
+		{
+			if (_shapeIndex.Count == 0)
+			{
+				return ShapeFileConstants.HeaderSizeBytes / 2;
+			}
+
+			IndexEntry lastEntry = _shapeIndex.Values[_shapeIndex.Count - 1];
+			return lastEntry.Offset + lastEntry.Length;
+		}
+
+		public uint GetNextId()
+		{
+			return (uint)_shapeIndex.Count;
+		}
+
+		public void Save()
+		{
+			using (FileStream indexStream = _indexFile.Open(FileMode.Create, FileAccess.Write, FileShare.None))
+			using (BinaryWriter indexWriter = new BinaryWriter(indexStream))
+			{
+				_header.Envelope = ShapeFile.GetExtents();
+				_header.FileLengthInWords = computeIndexLengthInWords();
+				_header.WriteHeader(indexWriter);
+
+				foreach (IndexEntry entry in _shapeIndex.Values)
+				{
+					indexWriter.Write(ByteEncoder.GetBigEndian(entry.Offset));
+					indexWriter.Write(ByteEncoder.GetBigEndian(entry.Length));
+				}
+
+				indexWriter.Flush();
+			}
 		}
 
 		#region IDictionary<uint,IndexEntry> Members
@@ -192,40 +228,11 @@ namespace SharpMap.Data.Providers
 
 		#endregion
 
-		internal uint GetNextId()
-		{
-			return (uint)_shapeIndex.Count;
-		}
-
-		internal int ComputeShapeFileSizeInWords()
-		{
-			IndexEntry lastEntry = _shapeIndex.Values[_shapeIndex.Count - 1];
-			return lastEntry.Offset + lastEntry.Length;
-		}
-
+		#region Private helper methods
 		private int computeIndexLengthInWords()
 		{
 			return ((_shapeIndex.Count * ShapeFileConstants.IndexRecordByteLength) 
 				+ ShapeFileConstants.HeaderSizeBytes) / 2;
-		}
-
-		private void writeIndex()
-		{
-			using (FileStream indexStream = _indexFile.Open(FileMode.Create, FileAccess.Write, FileShare.None))
-			using (BinaryWriter indexWriter = new BinaryWriter(indexStream))
-			{
-				_header.WriteHeader(indexWriter, computeIndexLengthInWords());
-
-				foreach (KeyValuePair<uint, IndexEntry> entry in _shapeIndex)
-				{
-					long offset = (entry.Key * ShapeFileConstants.IndexRecordByteLength) + ShapeFileConstants.HeaderSizeBytes;
-					indexWriter.Seek((int)offset, SeekOrigin.Begin);
-					indexWriter.Write(ByteEncoder.GetBigEndian(entry.Value.Offset));
-					indexWriter.Write(ByteEncoder.GetBigEndian(entry.Value.Length));
-				}
-
-				indexWriter.Flush();
-			}
 		}
 
 		#region File parsing helpers
@@ -263,6 +270,7 @@ namespace SharpMap.Data.Providers
 				}
 			}
 		}
+		#endregion
 		#endregion
 
 		#region IndexEntry struct

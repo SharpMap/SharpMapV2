@@ -10,11 +10,18 @@ namespace SharpMap.Data.Providers
 	internal class ShapeFileHeader
 	{
 		private ShapeType _shapeType;
-		private BoundingBox _envelope; 
+		private BoundingBox _envelope;
+		private int _fileLengthInWords;
 
 		public ShapeFileHeader(BinaryReader reader)
 		{
 			parseHeader(reader);
+		}
+
+		public override string ToString()
+		{
+			return String.Format("[ShapeFileHeader] ShapeType: {0}; Envelope: {1}; FileLengthInWords: {2}", 
+				ShapeType, Envelope, FileLengthInWords);
 		}
 
 		public ShapeType ShapeType
@@ -29,12 +36,18 @@ namespace SharpMap.Data.Providers
 			set { _envelope = value; }
 		}
 
-		public void WriteHeader(BinaryWriter writer, int fileWordLength)
+		public int FileLengthInWords
+		{
+			get { return _fileLengthInWords; }
+			set { _fileLengthInWords = value; }
+		}
+
+		public void WriteHeader(BinaryWriter writer)
 		{
 			writer.Seek(0, SeekOrigin.Begin);
 			writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderStartCode));
 			writer.Write(new byte[20]);
-			writer.Write(ByteEncoder.GetBigEndian(fileWordLength));
+			writer.Write(ByteEncoder.GetBigEndian(FileLengthInWords));
 			writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
 			writer.Write(ByteEncoder.GetLittleEndian((int)ShapeType));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Left));
@@ -82,25 +95,36 @@ namespace SharpMap.Data.Providers
 		{
 			reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
-			//Check file header
+			// Check file header
 			if (ByteEncoder.GetBigEndian(reader.ReadInt32()) != ShapeFileConstants.HeaderStartCode)
 			{
 				throw new ShapeFileIsInvalidException("Invalid ShapeFile (.shp)");
 			}
 
-			reader.BaseStream.Seek(24, 0); //seek to File Length
-			int fileLength = ByteEncoder.GetBigEndian(reader.ReadInt32()); //Read filelength as big-endian. The length is number of 16-bit words in file
+			// Seek to File Length
+			reader.BaseStream.Seek(24, 0); 
 
-			reader.BaseStream.Seek(32, 0); //seek to ShapeType
+			// Read filelength as big-endian. The length is number of 16-bit words in file
+			FileLengthInWords = ByteEncoder.GetBigEndian(reader.ReadInt32());
+
+			// Seek to ShapeType
+			reader.BaseStream.Seek(32, 0); 
 			ShapeType = (ShapeType)reader.ReadInt32();
 
-			//Read the spatial bounding box of the contents
-			reader.BaseStream.Seek(36, 0); //seek to box
+			// Seek to bounding box of shapefile
+			reader.BaseStream.Seek(36, 0); 
+
+			// Read the spatial bounding box of the contents
 			Envelope = new BoundingBox(
 				ByteEncoder.GetLittleEndian(reader.ReadDouble()),
 				ByteEncoder.GetLittleEndian(reader.ReadDouble()),
 				ByteEncoder.GetLittleEndian(reader.ReadDouble()),
 				ByteEncoder.GetLittleEndian(reader.ReadDouble()));
+
+			if (Envelope == new BoundingBox(0, 0, 0, 0))
+			{
+				Envelope = BoundingBox.Empty;
+			}
 		}
 		#endregion
 		

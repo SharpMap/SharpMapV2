@@ -67,8 +67,11 @@ namespace SharpMap
 				}
 
 				_geometry = value;
-				_isGeometryModified = true;
-				SetModified();
+
+				if (RowState != DataRowState.Detached)
+				{
+					_isGeometryModified = true;
+				}
 			}
         }
 
