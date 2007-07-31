@@ -22,7 +22,7 @@ using System.Text;
 
 namespace SharpMap.Presentation
 {
-    public interface IFeaturesDataView : IView
+    public interface IAttributeView : IView
     {
         IBindingListView<FeatureDataRow> Features { get; set; }
         IEnumerable<FeatureDataRow> SelectedFeatures { get; set; }

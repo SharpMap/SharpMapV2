@@ -24,12 +24,12 @@ using SharpMap.Layers;
 
 namespace SharpMap.Presentation
 {
-    public class FeaturesDataPresenter : BasePresenter<IFeaturesDataView>
+    public class AttributePresenter : BasePresenter<IAttributeView>
     {
         private IFeatureLayer _featureLayer;
         private readonly string _selectedFeaturesPropertyName;
 
-        public FeaturesDataPresenter(SharpMap.Map map, IFeatureLayer layer, IFeaturesDataView view)
+        public AttributePresenter(SharpMap.Map map, IFeatureLayer layer, IAttributeView view)
             : base(map, view)
         {
             FeatureLayer = layer;
