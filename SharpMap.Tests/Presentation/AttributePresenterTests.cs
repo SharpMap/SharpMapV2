@@ -7,39 +7,40 @@ using NUnit.Framework;
 namespace SharpMap.Tests.Presentation
 {
     [TestFixture]
-    public class FeaturePresenterTests
+    public class AttributePresenterTests
 	{
 		[Test]
-		[Ignore]
+		[Ignore("Test not yet implemented")]
 		public void AddFeaturesTest()
 		{
 		}
 
 		[Test]
-		[Ignore]
+		[Ignore("Test not yet implemented")]
 		public void RemoveFeaturesTest()
 		{
 		}
 
 		[Test]
-		[Ignore]
+		[Ignore("Test not yet implemented")]
 		public void ChangeAttributeTest()
 		{
 		}
 
 		[Test]
-		[Ignore]
+		[Ignore("Test not yet implemented")]
 		public void SortFeaturesTest()
 		{
 		}
 
 		[Test]
-		[Ignore]
+		[Ignore("Test not yet implemented")]
 		public void FilterFeaturesTest()
 		{
 		}
 
 		[Test]
+		[Ignore("Test not yet implemented")]
 		public void SelectFeaturesTest()
 		{
 		}

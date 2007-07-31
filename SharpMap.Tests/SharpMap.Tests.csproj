@@ -62,7 +62,7 @@
     <Compile Include="Model\FeatureDataSetTests.cs" />
     <Compile Include="Model\LayersCollectionTests.cs" />
     <Compile Include="Model\LayerTests.cs" />
-    <Compile Include="Presentation\FeaturePresenterTests.cs" />
+    <Compile Include="Presentation\AttributePresenterTests.cs" />
     <Compile Include="Geometries\BoundingBoxTests.cs" />
     <Compile Include="Geometries\LinestringTests.cs" />
     <Compile Include="Geometries\MultiLinestringsTests.cs" />
@@ -77,9 +77,20 @@
     <Compile Include="Presentation\ToolsPresenterTests.cs" />
     <Compile Include="Providers\GeometryProviderTests.cs" />
     <Compile Include="Providers\ShapeFileTests.cs" />
-    <Compile Include="Rendering\Rendering2DTests.cs" />
+    <Compile Include="Rendering\BasicGeometryRenderer2DTests.cs" />
+    <Compile Include="Rendering\GraphicsFigure2DTests.cs" />
+    <Compile Include="Rendering\GraphicsPath2DTests.cs" />
+    <Compile Include="Rendering\Label2DTests.cs" />
+    <Compile Include="Rendering\LabelCollisionDetection2DTests.cs" />
+    <Compile Include="Rendering\Matrix2DTests.cs" />
+    <Compile Include="Rendering\Point2DTests.cs" />
+    <Compile Include="Rendering\RasterRenderer2DTests.cs" />
+    <Compile Include="Rendering\Rectangle2DTests.cs" />
     <Compile Include="Rendering\RenderingTests.cs" />
+    <Compile Include="Rendering\Size2DTests.cs" />
+    <Compile Include="Rendering\Symbol2DTests.cs" />
     <Compile Include="Rendering\Thematics.cs" />
+    <Compile Include="Rendering\VectorRenderer2DTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">
