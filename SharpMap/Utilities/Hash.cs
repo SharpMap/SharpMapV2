@@ -23,19 +23,24 @@ using System.Security.Cryptography;
 
 namespace SharpMap.Utilities
 {
-    public static class Hashing
+    /// <summary>
+    /// Generates hash values for data streams and objects.
+    /// </summary>
+    public static class Hash
     {
         private const string Digits = "0123456789ABCDEF";
         private static readonly SHA1Managed _hash = new SHA1Managed();
 
-        public static string Hash(Stream data)
+        public static string AsString(Stream data)
         {
             long streamPos = data.Position;
             data.Seek(0, SeekOrigin.Begin);
             byte[] hashValue;
 
             lock (_hash)
+            {
                 hashValue = _hash.ComputeHash(data);
+            }
 
             data.Position = streamPos;
 

@@ -367,12 +367,6 @@ namespace SharpMap.Data.Providers
             {
                 _tree = createSpatialIndex();
             }
-
-            // TODO: Remove this when connection pooling is implemented:
-            if (System.Web.HttpContext.Current != null)
-            {
-                System.Web.HttpContext.Current.Cache.Insert(_filename, _tree, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromDays(1));
-            }
         }
 
         /// <summary>
@@ -1539,41 +1533,13 @@ namespace SharpMap.Data.Providers
             //Only load the tree if we haven't already loaded it, or if we want to force a rebuild
             if (_tree == null || forceRebuild)
             {
-                // Is this a web application? If so lets store the index in the cache so we don't
-                // need to rebuild it for each request
-                if (System.Web.HttpContext.Current != null)
+                if (!loadFromFile)
                 {
-                    //Check if the tree exists in the cache
-                    if (System.Web.HttpContext.Current.Cache[_filename] != null)
-                    {
-                        _tree = (DynamicRTree<uint>)System.Web.HttpContext.Current.Cache[_filename];
-                    }
-                    else
-                    {
-                        if (!loadFromFile)
-                        {
-                            _tree = createSpatialIndex();
-                        }
-                        else
-                        {
-                            _tree = createSpatialIndexFromFile(_filename);
-                        }
-
-                        //Store the tree in the web cache
-                        // TODO: Remove this when connection pooling is implemented
-                        System.Web.HttpContext.Current.Cache.Insert(_filename, _tree, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromDays(1));
-                    }
+                    _tree = createSpatialIndex();
                 }
                 else
                 {
-                    if (!loadFromFile)
-                    {
-                        _tree = createSpatialIndex();
-                    }
-                    else
-                    {
-                        _tree = createSpatialIndexFromFile(_filename);
-                    }
+                    _tree = createSpatialIndexFromFile(_filename);
                 }
             }
         }

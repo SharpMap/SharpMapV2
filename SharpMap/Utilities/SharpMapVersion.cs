@@ -16,8 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
 
 namespace SharpMap.Utilities
 {
@@ -30,9 +29,9 @@ namespace SharpMap.Utilities
 		/// Returns the current build version of SharpMap
 		/// </summary>
 		/// <returns></returns>
-		public static System.Version GetCurrentVersion()
+		public static Version GetCurrentVersion()
 		{
-			return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			return Assembly.GetExecutingAssembly().GetName().Version;
 		}
 	}
 }

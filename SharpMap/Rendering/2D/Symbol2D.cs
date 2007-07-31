@@ -68,7 +68,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
 
             _symbolData = symbolData;
-            _symbolDataHash = Hashing.Hash(_symbolData);
+            _symbolDataHash = Hash.AsString(_symbolData);
         }
 
         public Symbol2D(byte[] symbolData, Size2D size)

@@ -51,9 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\WellKnownBinary\GeometryFromWKB.cs" />
@@ -315,9 +313,8 @@
     <Compile Include="Styles\Style.cs" />
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Styles\VectorStyle.cs" />
-    <Compile Include="Utilities\Algorithms.cs" />
     <Compile Include="Utilities\ByteEncoder.cs" />
-    <Compile Include="Utilities\Hashing.cs" />
+    <Compile Include="Utilities\Hash.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticSplit.cs" />
@@ -327,9 +324,8 @@
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
-    <Compile Include="Utilities\Providers.cs" />
     <Compile Include="Utilities\Tolerance.cs" />
-    <Compile Include="Utilities\Version.cs" />
+    <Compile Include="Utilities\SharpMapVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
