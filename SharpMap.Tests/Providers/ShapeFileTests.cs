@@ -521,6 +521,7 @@ namespace SharpMap.Tests.Provider
 			shapeFile.Open();
 
 			Assert.AreEqual(1, shapeFile.GetFeatureCount());
+
 			FeatureDataSet dataSet = new FeatureDataSet();
 
 			shapeFile.ExecuteIntersectionQuery(new BoundingBox(1, 1, 1, 1), dataSet);
@@ -580,8 +581,9 @@ namespace SharpMap.Tests.Provider
 				int pointCount = rnd.Next(1, 100);
 				for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
 				{
-                    Point p = new Point(rnd.NextDouble() * rnd.Next(200000, 700000), 
-                        rnd.NextDouble() * rnd.Next(5000000, 5100000));
+                    Point p = new Point(rnd.NextDouble() * rnd.Next(200000, 700000),
+						(rnd.NextDouble() * rnd.Next(1000000)) + 50000000);
+
 					line.Vertices.Add(p); 
 				}
 
@@ -594,6 +596,19 @@ namespace SharpMap.Tests.Provider
 
 			shapeFile.Insert(rows);
 			shapeFile.Close();
+
+			shapeFile = new ShapeFile(@"UnitTestData\Test3.shp", true);
+			shapeFile.Open();
+
+			Assert.AreEqual(10000, shapeFile.GetFeatureCount());
+			Assert.AreEqual(computedBounds, shapeFile.GetExtents());
+
+			FeatureDataSet dataSet = new FeatureDataSet();
+
+			shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), dataSet);
+
+			Assert.AreEqual(1, dataSet.Tables.Count);
+			Assert.AreEqual(10000, dataSet.Tables[0].Rows.Count);
 		}
 
 		[Test]

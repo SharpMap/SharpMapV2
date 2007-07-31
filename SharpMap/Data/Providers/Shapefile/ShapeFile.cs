@@ -1407,7 +1407,7 @@ namespace SharpMap.Data.Providers
 				}
 				else
 				{
-					_shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
+					_shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
 				}
 
 				_shapeFileWriter = new BinaryWriter(_shapeFileStream);
@@ -1529,15 +1529,15 @@ namespace SharpMap.Data.Providers
             loadSpatialIndex(false, false);
         }
 
-        private void loadSpatialIndex(bool LoadFromFile)
+        private void loadSpatialIndex(bool loadFromFile)
         {
-            loadSpatialIndex(false, LoadFromFile);
+            loadSpatialIndex(false, loadFromFile);
         }
 
-        private void loadSpatialIndex(bool ForceRebuild, bool LoadFromFile)
+        private void loadSpatialIndex(bool forceRebuild, bool loadFromFile)
         {
             //Only load the tree if we haven't already loaded it, or if we want to force a rebuild
-            if (_tree == null || ForceRebuild)
+            if (_tree == null || forceRebuild)
             {
                 // Is this a web application? If so lets store the index in the cache so we don't
                 // need to rebuild it for each request
@@ -1550,7 +1550,7 @@ namespace SharpMap.Data.Providers
                     }
                     else
                     {
-                        if (!LoadFromFile)
+                        if (!loadFromFile)
                         {
                             _tree = createSpatialIndex();
                         }
@@ -1566,7 +1566,7 @@ namespace SharpMap.Data.Providers
                 }
                 else
                 {
-                    if (!LoadFromFile)
+                    if (!loadFromFile)
                     {
                         _tree = createSpatialIndex();
                     }
@@ -1806,8 +1806,10 @@ namespace SharpMap.Data.Providers
 
                 for (int i = segments[lineId]; i < segments[lineId + 1]; i++)
                 {
-                    line.Vertices.Add(new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()), 
-						ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble())));
+					Point p = new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
+						ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()));
+
+                    line.Vertices.Add(p);
                 }
 
                 mline.LineStrings.Add(line);
@@ -1957,7 +1959,7 @@ namespace SharpMap.Data.Providers
 
 			if (g == null)
 			{
-				throw new NotSupportedException("Writing null shapes not supported in this version");
+				_shapeFileWriter.Write(ByteEncoder.GetLittleEndian((int)ShapeType.Null));
 			}
 
 			switch (ShapeType)
@@ -1995,6 +1997,8 @@ namespace SharpMap.Data.Providers
 					throw new NotSupportedException(String.Format(
 						"Writing geometry type {0} is not supported in the current version.", ShapeType));
 			}
+
+			_shapeFileWriter.Flush();
         }
 
         private void writeCoordinate(double x, double y)
@@ -2041,7 +2045,7 @@ namespace SharpMap.Data.Providers
             }
 
             foreach (SharpMap.Geometries.Point point in points)
-            {
+			{
                 writeCoordinate(point.X, point.Y);
             }
         }

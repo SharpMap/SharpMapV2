@@ -95,7 +95,7 @@ namespace SharpMap.Data.Providers
 			}
 
 			IndexEntry lastEntry = _shapeIndex.Values[_shapeIndex.Count - 1];
-			return lastEntry.Offset + lastEntry.Length;
+			return lastEntry.Offset + lastEntry.Length + ShapeFileConstants.ShapeRecordHeaderByteLength / 2;
 		}
 
 		public uint GetNextId()

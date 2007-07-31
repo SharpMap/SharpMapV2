@@ -328,11 +328,15 @@ namespace SharpMap.Geometries
         {
             BoundingBox bbox = BoundingBox.Empty;
 
-            if (Vertices == null || Vertices.Count == 0)
-                return bbox;
+			if (Vertices == null || Vertices.Count == 0)
+			{
+				return bbox;
+			}
 
-            foreach (Point p in Vertices)
-                bbox.ExpandToInclude(p);
+			foreach (Point p in Vertices)
+			{
+				bbox.ExpandToInclude(p);
+			}
 
             return bbox;
         }
