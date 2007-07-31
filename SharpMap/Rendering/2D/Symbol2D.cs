@@ -37,8 +37,6 @@ namespace SharpMap.Rendering.Rendering2D
         private string _symbolDataHash;
         private bool _disposed;
 
-        public static readonly Symbol2D Default = new Symbol2D(Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png"), new Size2D(16, 16));
-
         #region Object Construction/Destruction
         public Symbol2D(Size2D size)
         {

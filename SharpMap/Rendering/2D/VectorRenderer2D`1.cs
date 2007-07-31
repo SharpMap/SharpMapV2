@@ -34,40 +34,12 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
     public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
     {
-        #region Type Members
-        private static volatile Symbol2D _defaultSymbol;
 
-        static VectorRenderer2D()
-        {
-        }
-
-        /// <summary>
-        /// The default SharpMap symbol for rendering point data.
-        /// </summary>
-        public static Symbol2D DefaultSymbol
-        {
-            get 
-            {
-                if (_defaultSymbol == null)
-                {
-                    lock (_defaultSymbol)
-                    {
-                        if (_defaultSymbol == null)
-                        {
-                            Stream data = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
-                            _defaultSymbol = new Symbol2D(data, new Size2D(16, 16));
-                        }
-                    }
-                }
-
-                return _defaultSymbol; 
-            }
-        }
-        #endregion
-
+        #region Fields
         private Matrix2D _viewMatrix = new Matrix2D();
         private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
         private bool _disposed = false;
+        #endregion
 
         #region Object Construction/Destruction
         public VectorRenderer2D()

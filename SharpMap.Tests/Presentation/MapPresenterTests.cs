@@ -225,6 +225,7 @@ namespace SharpMap.Tests.Presentation
 		}
 
 		[Test]
+        [Ignore("Test not yet completed")]
 		public void GetMap_GeometryProvider_ReturnImage()
         {
             MockRepository mocks = new MockRepository();
@@ -241,6 +242,9 @@ namespace SharpMap.Tests.Presentation
 			map.Layers.Add(vLayer);
 
 			VectorLayer vLayer2 = new VectorLayer("Geom layer 2", vLayer.DataSource);
+            System.IO.Stream data = System.Reflection.Assembly.GetAssembly(typeof(Map))
+                .GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
+            vLayer2.Style.Symbol = new Symbol2D(data, new Size2D(16, 16));
 			vLayer2.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer2.Style.Symbol.Rotation = 45;
             vLayer2.Style.Symbol.Scale = 0.4f;

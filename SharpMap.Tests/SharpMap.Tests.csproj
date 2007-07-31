@@ -86,7 +86,7 @@
     <Compile Include="Rendering\Point2DTests.cs" />
     <Compile Include="Rendering\RasterRenderer2DTests.cs" />
     <Compile Include="Rendering\Rectangle2DTests.cs" />
-    <Compile Include="Rendering\RenderingTests.cs" />
+    <Compile Include="Rendering\ColorMatrixTests.cs" />
     <Compile Include="Rendering\Size2DTests.cs" />
     <Compile Include="Rendering\Symbol2DTests.cs" />
     <Compile Include="Rendering\ThematicsTests.cs" />

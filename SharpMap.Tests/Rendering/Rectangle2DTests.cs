@@ -13,7 +13,6 @@ using NPack;
 
 namespace SharpMap.Tests.Rendering
 {
-
 	#region Rectangle2D
 	[TestFixture]
 	public class Rectangle2DTests

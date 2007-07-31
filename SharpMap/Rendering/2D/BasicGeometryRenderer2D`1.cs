@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 using SharpMap.Styles;
 using SharpMap.Geometries;
@@ -14,7 +16,39 @@ namespace SharpMap.Rendering.Rendering2D
     /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
 	public class BasicGeometryRenderer2D<TRenderObject> : FeatureRenderer2D<VectorStyle, TRenderObject>, 
         IGeometryRenderer<Symbol2D,  PositionedRenderObject2D<TRenderObject>>
-	{
+    {
+        
+        #region Type Members
+        private static volatile Symbol2D _defaultSymbol;
+
+        /// <summary>
+        /// The default basic symbol for rendering point data.
+        /// </summary>
+        public static Symbol2D DefaultSymbol
+        {
+            get
+            {
+                if (_defaultSymbol == null)
+                {
+                    lock (_defaultSymbol)
+                    {
+                        if (_defaultSymbol == null)
+                        {
+                            Stream data = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
+                            _defaultSymbol = new Symbol2D(data, new Size2D(16, 16));
+                        }
+                    }
+                }
+
+                return _defaultSymbol;
+            }
+        }
+
+        static BasicGeometryRenderer2D()
+        {
+        }
+        #endregion
+
 		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
             : base(vectorRenderer)
 		{
@@ -210,7 +244,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 				if (symbol == null) //We have no point symbol - Use a default symbol
 				{
-					symbol = VectorRenderer2D<TRenderObject>.DefaultSymbol;
+					symbol = DefaultSymbol;
 				}
 
 				Point2D pointLocation = ViewTransform.TransformVector(point.X, point.Y);

@@ -75,7 +75,7 @@ namespace SharpMap.Styles
         /// </item>
         /// <item>
         /// <term>Symbol</term>
-        /// <description>SharpMap.Rendering.Rendering2D.Symbol2D.Default</description>
+        /// <description>Null reference (uses the geometry renderer default)</description>
         /// </item>
         /// </list>
 		/// </remarks>
@@ -84,7 +84,6 @@ namespace SharpMap.Styles
 			Outline = new StylePen(StyleColor.Black, 1);
 			Line = new StylePen(StyleColor.Black, 1);
             Fill = new SolidStyleBrush(StyleColor.Black);
-            Symbol = Symbol2D.Default;
 			EnableOutline = false;
 		}
 
