@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Data.OleDb;
+using System.Globalization;
 
 using SharpMap.Geometries;
 using SharpMap.CoordinateSystems.Transformations;
@@ -46,7 +47,9 @@ namespace SharpMap.Data.Providers.OleDbSpatial
     /// </para>
 	/// </remarks>
 	public class OleDbPoint : IProvider<uint>, IDisposable
-	{
+    {
+        private static readonly NumberFormatInfo NumberFormat_enUS = new CultureInfo("en-US", false).NumberFormat;
+
 		private ICoordinateSystem _coordinateSystem;
 		private ICoordinateTransformation _coordinateTransformation;
 		private int _srid = -1;
@@ -173,8 +176,8 @@ namespace SharpMap.Data.Providers.OleDbSpatial
 				}
 
 				//Limit to the points within the boundingbox
-                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " +
-                    this.YColumn + " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(NumberFormat_enUS) + " AND " + bbox.Right.ToString(NumberFormat_enUS) + " AND " +
+                    this.YColumn + " BETWEEN " + bbox.Bottom.ToString(NumberFormat_enUS) + " AND " + bbox.Top.ToString(NumberFormat_enUS);
 				
 				using (OleDbCommand command = new OleDbCommand(strSQL, conn))
 				{
@@ -224,8 +227,8 @@ namespace SharpMap.Data.Providers.OleDbSpatial
 				}
 
 				//Limit to the points within the boundingbox
-                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
-                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(NumberFormat_enUS) + " AND " + bbox.Right.ToString(NumberFormat_enUS) + " AND " + this.YColumn +
+                    " BETWEEN " + bbox.Bottom.ToString(NumberFormat_enUS) + " AND " + bbox.Top.ToString(NumberFormat_enUS);
 
 				using (OleDbCommand command = new OleDbCommand(strSQL, conn))
 				{
@@ -320,8 +323,8 @@ namespace SharpMap.Data.Providers.OleDbSpatial
 				if (_defintionQuery != null && _defintionQuery != "") //If a definition query has been specified, add this as a filter on the query
 					strSQL += _defintionQuery + " AND ";
 				//Limit to the points within the boundingbox
-                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Right.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + this.YColumn +
-                    " BETWEEN " + bbox.Bottom.ToString(SharpMap.Map.NumberFormat_EnUS) + " AND " + bbox.Top.ToString(SharpMap.Map.NumberFormat_EnUS);
+                strSQL += this.XColumn + " BETWEEN " + bbox.Left.ToString(NumberFormat_enUS) + " AND " + bbox.Right.ToString(NumberFormat_enUS) + " AND " + this.YColumn +
+                    " BETWEEN " + bbox.Bottom.ToString(NumberFormat_enUS) + " AND " + bbox.Top.ToString(NumberFormat_enUS);
 
 				using (OleDbDataAdapter adapter = new OleDbDataAdapter(strSQL, conn))
 				{
