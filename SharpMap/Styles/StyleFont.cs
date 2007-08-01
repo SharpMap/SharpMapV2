@@ -28,8 +28,8 @@ namespace SharpMap.Styles
     public class StyleFont
     {
         private Size2D _size;
-        private FontFamily _fontFamily;
-        private FontStyle _style = FontStyle.Regular;
+        private StyleFontFamily _fontFamily;
+        private StyleFontStyle _style = StyleFontStyle.Regular;
         private string _fontName;
 
         public StyleFont(string fontName, Size2D emSize)
@@ -38,7 +38,7 @@ namespace SharpMap.Styles
             _size = emSize;
         }
 
-        public StyleFont(FontFamily family, Size2D emSize, FontStyle style)
+        public StyleFont(StyleFontFamily family, Size2D emSize, StyleFontStyle style)
         {
             _fontFamily = family;
             _size = emSize;
@@ -51,13 +51,13 @@ namespace SharpMap.Styles
             set { _size = value; }
         }
 
-        public FontFamily FontFamily
+        public StyleFontFamily FontFamily
         {
             get { return _fontFamily; }
             set { _fontFamily = value; }
         }
 
-        public FontStyle Style
+        public StyleFontStyle Style
         {
             get { return _style; }
             set { _style = value; }

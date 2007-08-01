@@ -284,7 +284,7 @@
     <Compile Include="Presentation\ViewSelection.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
     <Compile Include="Rendering\2D\Size2D.cs" />
-    <Compile Include="Styles\ColorBlend.cs" />
+    <Compile Include="Styles\StyleColorBlend.cs" />
     <Compile Include="Rendering\Thematics\CustomTheme.cs" />
     <Compile Include="Rendering\Thematics\GradientTheme.cs" />
     <Compile Include="Rendering\Thematics\ITheme.cs" />
@@ -295,8 +295,8 @@
     <Compile Include="Styles\LineDashCap.cs" />
     <Compile Include="Styles\LineDashStyle.cs" />
     <Compile Include="Styles\StyleFont.cs" />
-    <Compile Include="Styles\FontFamily.cs" />
-    <Compile Include="Styles\FontStyle.cs" />
+    <Compile Include="Styles\StyleFontFamily.cs" />
+    <Compile Include="Styles\StyleFontStyle.cs" />
     <Compile Include="Styles\ImageAttributes.cs" />
     <Compile Include="Styles\IStyle.cs" />
     <Compile Include="Styles\LabelStyle.cs" />

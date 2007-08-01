@@ -56,6 +56,11 @@ namespace SharpMap.Styles
         }
         #endregion
 
+        public override string ToString()
+        {
+            return "[StyleColor] " + (LookupColorName(this) ?? String.Format("B = {0}; G = {1}; R = {2}; A = {3}", B, G, R, A));
+        }
+
         public static StyleColor FromBgra(uint bgra)
         {
             return new StyleColor(bgra);
@@ -110,7 +115,7 @@ namespace SharpMap.Styles
         /// </summary>
         public Byte R
         {
-            get { return _a; }
+            get { return _r; }
         }
 
         /// <summary>
@@ -252,25 +257,10 @@ namespace SharpMap.Styles
                 double largestFactor = redFactor;
                 double smallestFactor = redFactor;
 
-                if (greenFactor > largestFactor)
-                {
-                    largestFactor = greenFactor;
-                }
-
-                if (blueFactor > largestFactor)
-                {
-                    largestFactor = blueFactor;
-                }
-
-                if (greenFactor < smallestFactor)
-                {
-                    smallestFactor = greenFactor;
-                }
-
-                if (blueFactor < smallestFactor)
-                {
-                    smallestFactor = blueFactor;
-                }
+                if (greenFactor > largestFactor) largestFactor = greenFactor;
+                if (blueFactor > largestFactor) largestFactor = blueFactor;
+                if (greenFactor < smallestFactor) smallestFactor = greenFactor;
+                if (blueFactor < smallestFactor) smallestFactor = blueFactor;
 
                 if (largestFactor == smallestFactor)
                 {
@@ -300,32 +290,21 @@ namespace SharpMap.Styles
         {
             get
             {
+                // Normalize color vector (to between 0 and 1)
                 double redFactor = ((double)R) / 255.0;
                 double greenFactor = ((double)G) / 255.0;
                 double blueFactor = ((double)B) / 255.0;
+
                 double largestFactor = redFactor;
                 double smallestFactor = redFactor;
 
-                if (greenFactor > largestFactor)
-                {
-                    largestFactor = greenFactor;
-                }
+                // Find the largest and smallest components
+                if (greenFactor > largestFactor) largestFactor = greenFactor;
+                if (blueFactor > largestFactor) largestFactor = blueFactor;
+                if (greenFactor < smallestFactor) smallestFactor = greenFactor;
+                if (blueFactor < smallestFactor) smallestFactor = blueFactor;
 
-                if (blueFactor > largestFactor)
-                {
-                    largestFactor = blueFactor;
-                }
-
-                if (greenFactor < smallestFactor)
-                {
-                    smallestFactor = greenFactor;
-                }
-
-                if (blueFactor < smallestFactor)
-                {
-                    smallestFactor = blueFactor;
-                }
-
+                // Return the midpoint as the brightness
                 return ((largestFactor + smallestFactor) / 2f);
             }
         }
@@ -358,17 +337,22 @@ namespace SharpMap.Styles
         /// the value used is 0 or 100 respectively.</remarks>
         public static StyleColor Interpolate(StyleColor color1, StyleColor color2, double blendFactor)
         {
-            if (blendFactor < 0)
-                blendFactor = 0;
-            if (blendFactor > 100)
-                blendFactor = 100;
+            // Clamp values
+            if (blendFactor < 0) blendFactor = 0;
+            if (blendFactor > 100) blendFactor = 100;
 
             blendFactor /= 100;
 
+            // Compute interpolated value based on the linear distance
+            // between 0 and 1
             if (blendFactor == 1)
+            {
                 return color2;
+            }
             else if (blendFactor == 0)
+            {
                 return color1;
+            }
             else
             {
                 double r = Math.Abs(color1.R - color2.R) * blendFactor + color1.R;
@@ -2586,28 +2570,72 @@ namespace SharpMap.Styles
         }
         #endregion
 
-        #region Predefined Colors Dictionary
-        private static Dictionary<string, StyleColor> _predefinedColors;
+        #region Color name lookup by value
+        private static object _colorNameLookupSync = new object();
+        private static Dictionary<StyleColor, string> _colorNameLookup = new Dictionary<StyleColor, string>();
 
         /// <summary>
-        /// Gets a <see cref="Dictionary{string, Color}"/> that contains replicas of those 
-        /// predefined in System.Drawing.Color.
+        /// Gets the name of a color, if one exists.
+        /// </summary>
+        /// <param name="color">The color value to lookup.</param>
+        /// <returns>The name of the color if one exists, otherwise null.</returns>
+        public static string LookupColorName(StyleColor color)
+        {
+            if (_colorNameLookup.Count == 0)
+            {
+                lock (_colorNameLookupSync)
+                {
+                    if (_colorNameLookup.Count == 0)
+                    {
+                        Type colorType = typeof(StyleColor);
+                        PropertyInfo[] propInfos = colorType.GetProperties(BindingFlags.Static | BindingFlags.Public);
+
+                        foreach (PropertyInfo pi in propInfos)
+                        {
+                            if (pi.PropertyType == colorType)
+                            {
+                                _colorNameLookup[(StyleColor)pi.GetValue(null, null)] = pi.Name;
+                            }
+                        }
+                    }
+                }
+            }
+
+            string name = null;
+            _colorNameLookup.TryGetValue(color, out name);
+            return name;
+        }
+
+        #endregion
+
+        #region Predefined Colors Dictionary
+        private static object _predefinedColorsSync = new object();
+        private static Dictionary<string, StyleColor> _predefinedColors = new Dictionary<string,StyleColor>();
+
+        /// <summary>
+        /// Gets a <see cref="Dictionary{string, StyleColor}"/> which indexes
+        /// a StyleColor value by its name.
         /// </summary>
         public static Dictionary<string, StyleColor> PredefinedColors
         {
             get
             {
-                if (_predefinedColors != null)
+                if (_predefinedColors.Count == 0)
                 {
-                    Type colorType = typeof(StyleColor);
-                    PropertyInfo[] propInfos = colorType.GetProperties(BindingFlags.Static | BindingFlags.Public);
-                    Dictionary<string, StyleColor> colors = new Dictionary<string, StyleColor>();
-
-                    foreach (PropertyInfo pi in propInfos)
+                    lock (_predefinedColorsSync)
                     {
-                        if (pi.PropertyType == colorType)
+                        if (_predefinedColors.Count == 0)
                         {
-                            colors.Add(pi.Name, (StyleColor)pi.GetValue(null, null));
+                            Type colorType = typeof(StyleColor);
+                            PropertyInfo[] propInfos = colorType.GetProperties(BindingFlags.Static | BindingFlags.Public);
+
+                            foreach (PropertyInfo pi in propInfos)
+                            {
+                                if (pi.PropertyType == colorType)
+                                {
+                                    _predefinedColors.Add(pi.Name, (StyleColor)pi.GetValue(null, null));
+                                }
+                            }
                         }
                     }
                 }

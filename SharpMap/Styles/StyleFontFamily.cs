@@ -22,11 +22,11 @@ using System.Text;
 namespace SharpMap.Styles
 {
     [Serializable]
-    public sealed class FontFamily
+    public sealed class StyleFontFamily
     {
         private string _familyName;
 
-        public FontFamily(string name)
+        public StyleFontFamily(string name)
         {
             _familyName = name;
         }

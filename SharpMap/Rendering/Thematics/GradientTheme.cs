@@ -39,9 +39,9 @@ namespace SharpMap.Rendering.Thematics
         private double _max;
         private IStyle _minStyle;
         private IStyle _maxStyle;
-        private ColorBlend _fillColorBlend;
-        private ColorBlend _lineColorBlend;
-        private ColorBlend _textColorBlend;
+        private StyleColorBlend _fillColorBlend;
+        private StyleColorBlend _lineColorBlend;
+        private StyleColorBlend _textColorBlend;
         private Dictionary<RuntimeTypeHandle, CalculateStyleDelegate> _styleTypeFunctionTable = new Dictionary<RuntimeTypeHandle, CalculateStyleDelegate>();
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace SharpMap.Rendering.Thematics
         /// <summary>
         /// Gets or sets the <see cref="SharpMap.Rendering.Thematics.ColorBlend"/> used on labels
         /// </summary>
-        public ColorBlend TextColorBlend
+        public StyleColorBlend TextColorBlend
         {
             get { return _textColorBlend; }
             set { _textColorBlend = value; }
@@ -164,7 +164,7 @@ namespace SharpMap.Rendering.Thematics
         /// <summary>
         /// Gets or sets the <see cref="SharpMap.Rendering.Thematics.ColorBlend"/> used on lines
         /// </summary>
-        public ColorBlend LineColorBlend
+        public StyleColorBlend LineColorBlend
         {
             get { return _lineColorBlend; }
             set { _lineColorBlend = value; }
@@ -173,7 +173,7 @@ namespace SharpMap.Rendering.Thematics
         /// <summary>
         /// Gets or sets the <see cref="SharpMap.Rendering.Thematics.ColorBlend"/> used as Fill
         /// </summary>
-        public ColorBlend FillColorBlend
+        public StyleColorBlend FillColorBlend
         {
             get { return _fillColorBlend; }
             set { _fillColorBlend = value; }

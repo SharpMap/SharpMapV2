@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 using SharpMap.Rendering;
@@ -31,7 +30,9 @@ namespace SharpMap.Styles
     public class StylePen
 	{
 		#region Fields
-		private float _miterLimit;
+        // This default (10.0f) is the same in both GDI+ and WPF 
+        // for the MiterLimit value on the respective Pen objects.
+		private float _miterLimit = 10.0f;
         private StyleBrush _backgroundBrush;
         private float _dashOffset;
         private LineDashCap _dashCap;
@@ -41,7 +42,7 @@ namespace SharpMap.Styles
         private StyleLineCap _startCap;
         private StyleLineCap _endCap;
         private StyleLineJoin _lineJoin;
-        private Matrix2D _transform;
+        private Matrix2D _transform = new Matrix2D();
         private float _width;
         private float[] _compoundArray;
         private StylePenAlignment _alignment;
@@ -101,10 +102,21 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Gets or sets a value which limits the length of a miter at a line joint.
 		/// </summary>
+        /// <remarks>
+        /// If the value is set to less than 1.0f, the value is clamped to 1.0f.
+        /// </remarks>
         public float MiterLimit
         {
             get { return _miterLimit; }
-            set { _miterLimit = value; }
+            set 
+            {
+                if (value < 1.0f)
+                {
+                    value = 1.0f;
+                }
+
+                _miterLimit = value; 
+            }
         }
 
 		/// <summary>
@@ -194,10 +206,21 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Gets or sets a matrix transformation for drawing with the pen.
 		/// </summary>
+        /// <remarks>
+        /// If set to null, a <see cref="Matrix2D.Identity"/> matrix will be used instead.
+        /// </remarks>
         public Matrix2D Transform
         {
             get { return _transform; }
-            set { _transform = value; }
+            set 
+            {
+                if (value == null)
+                {
+                    value = new Matrix2D();
+                }
+
+                _transform = value; 
+            }
         }
 
 		/// <summary>

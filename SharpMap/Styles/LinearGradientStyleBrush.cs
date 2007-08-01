@@ -27,12 +27,12 @@ namespace SharpMap.Styles
 {
     public class LinearGradientStyleBrush : StyleBrush
     {
-        private ColorBlend _colorBlend;
+        private StyleColorBlend _colorBlend;
         private StyleColor _startColor = StyleColor.Black;
         private StyleColor _endColor = StyleColor.White;
         private IMatrixD _transform;
 
-        public ColorBlend ColorBlend
+        public StyleColorBlend ColorBlend
         {
             get { return _colorBlend; }
             set { _colorBlend = value; }

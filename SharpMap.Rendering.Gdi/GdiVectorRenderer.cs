@@ -242,38 +242,67 @@ namespace SharpMap.Rendering.Gdi
             return symbol;
         }
 
-        private struct BrushLookupKey
+        private struct BrushLookupKey : IEquatable<BrushLookupKey>
         {
-            public RuntimeTypeHandle StyleBrushType;
-            public string StyleBrushValue;
+            public readonly RuntimeTypeHandle StyleBrushType;
+            public readonly string StyleBrushValue;
 
             public BrushLookupKey(RuntimeTypeHandle type, string styleBrushValue)
             {
                 StyleBrushType = type;
                 StyleBrushValue = styleBrushValue;
             }
+
+            #region IEquatable<BrushLookupKey> Members
+
+            public bool Equals(BrushLookupKey other)
+            {
+                return other.StyleBrushType.Equals(StyleBrushType)
+                    && other.StyleBrushValue == StyleBrushValue;
+            }
+
+            #endregion
         }
 
-        private struct PenLookupKey
+        private struct PenLookupKey : IEquatable<PenLookupKey>
         {
-            public RuntimeTypeHandle StylePenType;
-            public string StylePenValue;
+            public readonly RuntimeTypeHandle StylePenType;
+            public readonly string StylePenValue;
 
             public PenLookupKey(RuntimeTypeHandle type, string stylePenValue)
             {
                 StylePenType = type;
                 StylePenValue = stylePenValue;
             }
+
+            #region IEquatable<PenLookupKey> Members
+
+            public bool Equals(PenLookupKey other)
+            {
+                return other.StylePenType.Equals(StylePenType)
+                    && other.StylePenValue == StylePenValue;
+            }
+
+            #endregion
         }
 
-        private struct SymbolLookupKey
+        private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
         {
-            public string SymbolValue;
+            public readonly string SymbolValue;
 
             public SymbolLookupKey(string symbolValue)
             {
                 SymbolValue = symbolValue;
             }
+
+            #region IEquatable<SymbolLookupKey> Members
+
+            public bool Equals(SymbolLookupKey other)
+            {
+                return other.SymbolValue == SymbolValue;
+            }
+
+            #endregion
         }
     }
 }

@@ -34,6 +34,7 @@ using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
 using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
+using System.Drawing.Drawing2D;
 
 namespace SharpMap.Rendering.Gdi
 {
@@ -67,8 +68,9 @@ namespace SharpMap.Rendering.Gdi
         {
             List<PointF> gdiPoints = new List<PointF>();
             foreach (Point2D viewPoint in viewPoints)
+            {
                 gdiPoints.Add(ViewToGdi(viewPoint));
-
+            }
             return gdiPoints.ToArray();
         }
 
@@ -78,7 +80,7 @@ namespace SharpMap.Rendering.Gdi
                 (int)rectangle.Width, (int)rectangle.Height);
         }
 
-        public static GdiFontStyle ViewToGdi(SharpMap.Styles.FontStyle fontStyle)
+        public static GdiFontStyle ViewToGdi(SharpMap.Styles.StyleFontStyle fontStyle)
         {
             return (GdiFontStyle)(int)(fontStyle);
         }
@@ -115,7 +117,7 @@ namespace SharpMap.Rendering.Gdi
             return GdiColor.FromArgb(color.A, color.R, color.G, color.B);
         }
 
-        public static GdiFontFamily ViewToGdi(SharpMap.Styles.FontFamily fontFamily)
+        public static GdiFontFamily ViewToGdi(SharpMap.Styles.StyleFontFamily fontFamily)
         {
             if (fontFamily == null)
                 return null;
@@ -126,22 +128,26 @@ namespace SharpMap.Rendering.Gdi
         public static GdiPen ViewToGdi(StylePen pen)
         {
             if (pen == null)
+            {
                 return null;
+            }
 
-            GdiPen gdiPen = new GdiPen(ViewConverter.ViewToGdi(pen.BackgroundBrush), (float)pen.Width);
-            gdiPen.Alignment = (System.Drawing.Drawing2D.PenAlignment)(int)pen.Alignment;
-            gdiPen.CompoundArray = pen.CompoundArray;
+            GdiBrush brush = ViewConverter.ViewToGdi(pen.BackgroundBrush);
+            GdiPen gdiPen = new GdiPen(brush, (float)pen.Width);
+
+            gdiPen.Alignment = (PenAlignment)(int)pen.Alignment;
+            if (pen.CompoundArray != null) gdiPen.CompoundArray = pen.CompoundArray;
             //gdiPen.CustomEndCap = new System.Drawing.Drawing2D.CustomLineCap();
             //gdiPen.CustomStartCap = new System.Drawing.Drawing2D.CustomLineCap();
-            gdiPen.DashCap = (System.Drawing.Drawing2D.DashCap)(int)pen.DashCap;
+            gdiPen.DashCap = (DashCap)(int)pen.DashCap;
             gdiPen.DashOffset = pen.DashOffset;
-            gdiPen.DashPattern = pen.DashPattern;
-            gdiPen.DashStyle = (System.Drawing.Drawing2D.DashStyle)(int)pen.DashStyle;
-            gdiPen.EndCap = (System.Drawing.Drawing2D.LineCap)(int)pen.EndCap;
-            gdiPen.LineJoin = (System.Drawing.Drawing2D.LineJoin)(int)pen.LineJoin;
+            if (pen.DashPattern != null) gdiPen.DashPattern = pen.DashPattern;
+            gdiPen.DashStyle = (DashStyle)(int)pen.DashStyle;
+            gdiPen.EndCap = (LineCap)(int)pen.EndCap;
+            gdiPen.LineJoin = (LineJoin)(int)pen.LineJoin;
             gdiPen.MiterLimit = pen.MiterLimit;
             //gdiPen.PenType = System.Drawing.Drawing2D.PenType...
-            gdiPen.StartCap = (System.Drawing.Drawing2D.LineCap)(int)pen.StartCap;
+            gdiPen.StartCap = (LineCap)(int)pen.StartCap;
             gdiPen.Transform = ViewConverter.ViewToGdi(pen.Transform);
 
             return gdiPen;
@@ -150,7 +156,9 @@ namespace SharpMap.Rendering.Gdi
         public static GdiBrush ViewToGdi(StyleBrush brush)
         {
             if (brush == null)
+            {
                 return null;
+            }
 
             // TODO: need to accomodate other types of view brushes
             SolidBrush gdiBrush = new SolidBrush(ViewConverter.ViewToGdi(brush.Color));

@@ -22,7 +22,7 @@ using System.Text;
 namespace SharpMap.Styles
 {
     [Flags]
-    public enum FontStyle
+    public enum StyleFontStyle
     {
         Bold = 1,
         Italic = 2,

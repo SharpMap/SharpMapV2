@@ -29,12 +29,12 @@ namespace SharpMap.Styles
     /// in a multicolor gradient.
 	/// </summary>
 	/// <seealso cref="SharpMap.Rendering.Thematics.GradientTheme"/>
-	public class ColorBlend
+	public class StyleColorBlend
 	{
         private StyleColor[] _colors;
         private float[] _positions;
 
-        internal ColorBlend() { }
+        internal StyleColorBlend() { }
 
 		/// <summary>
 		/// Gets or sets an array of colors that represents the colors to use at 
@@ -79,7 +79,7 @@ namespace SharpMap.Styles
         /// colors to use at corresponding positions along a gradient.</param>
 		/// <param name="positions">An array of values that specify percentages of 
         /// distance along the gradient line.</param>
-		public ColorBlend(StyleColor[] colors, float[] positions)
+		public StyleColorBlend(StyleColor[] colors, float[] positions)
 		{
 			_colors = colors;
 			_positions = positions;
@@ -94,20 +94,30 @@ namespace SharpMap.Styles
 		/// <returns>Color on scale</returns>
 		public StyleColor GetColor(float pos)
 		{
-			if (_colors.Length != _positions.Length)
-				throw (new ArgumentException("Colors and Positions arrays must be of equal length"));
-			
+            if (_colors.Length != _positions.Length)
+            {
+                throw (new ArgumentException("Colors and Positions arrays must be of equal length"));
+            }
+
             if (_colors.Length < 2)
-				throw (new ArgumentException("At least two colors must be defined in the ColorBlend"));
-			
+            {
+                throw (new ArgumentException("At least two colors must be defined in the ColorBlend"));
+            }
+
             if (_positions[0] != 0f)
-				throw (new ArgumentException("First position value must be 0.0f"));
-			
+            {
+                throw (new ArgumentException("First position value must be 0.0f"));
+            }
+
             if (_positions[_positions.Length - 1] != 1f)
-				throw (new ArgumentException("Last position value must be 1.0f"));
-			
-            if (pos > 1 || pos < 0) 
+            {
+                throw (new ArgumentException("Last position value must be 1.0f"));
+            }
+
+            if (pos > 1 || pos < 0)
+            {
                 pos -= (float)Math.Floor(pos);
+            }
 
 			int i = 1;
 
@@ -148,11 +158,11 @@ namespace SharpMap.Styles
 		/// Colors span the following with an interval of 1/6:
 		/// { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet }
 		/// </remarks>
-		public static ColorBlend Rainbow7
+		public static StyleColorBlend Rainbow7
 		{
 			get
 			{
-				ColorBlend cb = new ColorBlend();
+				StyleColorBlend cb = new StyleColorBlend();
 				cb._positions = new float[7];
 				for (int i = 1; i < 7; i++)
 					cb.Positions[i] = i / 6f;
@@ -168,11 +178,11 @@ namespace SharpMap.Styles
 		/// Colors span the following with an interval of 0.25:
 		/// { Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue }
 		/// </remarks>
-		public static ColorBlend Rainbow5
+		public static StyleColorBlend Rainbow5
 		{
 			get
 			{
-				return new ColorBlend(
+				return new StyleColorBlend(
 					new StyleColor[] { StyleColor.Red, StyleColor.Yellow, StyleColor.Green, StyleColor.Cyan, StyleColor.Blue },
 					new float[] { 0f, 0.25f, 0.5f, 0.75f, 1f });
 			}
@@ -181,88 +191,88 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Gets a linear gradient scale from black to white
 		/// </summary>
-		public static ColorBlend BlackToWhite
+		public static StyleColorBlend BlackToWhite
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Black, StyleColor.White }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Black, StyleColor.White }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from white to black
 		/// </summary>
-		public static ColorBlend WhiteToBlack
+		public static StyleColorBlend WhiteToBlack
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.White, StyleColor.Black }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.White, StyleColor.Black }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from red to green
 		/// </summary>
-		public static ColorBlend RedToGreen
+		public static StyleColorBlend RedToGreen
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Green }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Green }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from green to red
 		/// </summary>
-		public static ColorBlend GreenToRed
+		public static StyleColorBlend GreenToRed
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Red }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Red }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from blue to green
 		/// </summary>
-		public static ColorBlend BlueToGreen
+		public static StyleColorBlend BlueToGreen
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Green }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Green }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from green to blue
 		/// </summary>
-		public static ColorBlend GreenToBlue
+		public static StyleColorBlend GreenToBlue
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Blue }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Blue }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from red to blue
 		/// </summary>
-		public static ColorBlend RedToBlue
+		public static StyleColorBlend RedToBlue
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Blue }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Blue }, new float[] { 0f, 1f });
 			}
 		}
 
 		/// <summary>
 		/// Gets a linear gradient scale from blue to red
 		/// </summary>
-		public static ColorBlend BlueToRed
+		public static StyleColorBlend BlueToRed
 		{
 			get
 			{
-				return new ColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Red }, new float[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Red }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -276,17 +286,17 @@ namespace SharpMap.Styles
 		/// <param name="fromColor"></param>
 		/// <param name="toColor"></param>
 		/// <returns></returns>
-		public static ColorBlend TwoColors(StyleColor fromColor, StyleColor toColor)
+		public static StyleColorBlend TwoColors(StyleColor fromColor, StyleColor toColor)
 		{
-			return new ColorBlend(new StyleColor[] { fromColor, toColor }, new float[] { 0f, 1f });
+			return new StyleColorBlend(new StyleColor[] { fromColor, toColor }, new float[] { 0f, 1f });
 		}
 
 		/// <summary>
 		/// Creates a linear gradient scale from three colors
 		/// </summary>
-		public static ColorBlend ThreeColors(StyleColor fromColor, StyleColor middleColor, StyleColor toColor)
+		public static StyleColorBlend ThreeColors(StyleColor fromColor, StyleColor middleColor, StyleColor toColor)
 		{
-			return new ColorBlend(new StyleColor[] { fromColor, middleColor, toColor }, 
+			return new StyleColorBlend(new StyleColor[] { fromColor, middleColor, toColor }, 
                 new float[] { 0f, 0.5f, 1f });
 		}
 
