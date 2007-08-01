@@ -18,6 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
+using System.IO;
+using System.Xml;
 
 namespace SharpMap.Converters.WellKnownText
 {
@@ -27,25 +30,35 @@ namespace SharpMap.Converters.WellKnownText
 	public class SpatialReference
 	{
 		/// <summary>
-		/// Converts a Spatial Reference ID to a Well-known Text representation
+		/// Converts a Spatial Reference ID to a Well-Known Text representation
 		/// </summary>
-		/// <param name="srid">Spatial Reference ID</param>
-		/// <returns>Well-known text</returns>
+		/// <param name="srid">
+        /// Spatial Reference ID.
+        /// </param>
+		/// <returns>
+        /// Well-Known text.
+        /// </returns>
 		public static string SridToWkt(int srid)
 		{
 			
-			System.Xml.XmlDocument xmldoc = new System.Xml.XmlDocument();
+			XmlDocument xmldoc = new XmlDocument();
 			
-			string file = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase) + "\\SpatialRefSys.xml";
+			string file = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) 
+                + "\\SpatialRefSys.xml";
 
             xmldoc.Load(file);
 			
-            System.Xml.XmlNode node = xmldoc.DocumentElement.SelectSingleNode("/SpatialReference/ReferenceSystem[SRID='" + srid.ToString() + "']");
-			
-            if(node!=null)
-				return node.LastChild.InnerText;
-			else
-				return "";
+            System.Xml.XmlNode node = xmldoc.DocumentElement.SelectSingleNode(
+                "/SpatialReference/ReferenceSystem[SRID='" + srid.ToString() + "']");
+
+            if (node != null)
+            {
+                return node.LastChild.InnerText;
+            }
+            else
+            {
+                return String.Empty;
+            }
 		}
 	}
 }

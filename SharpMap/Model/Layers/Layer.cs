@@ -24,6 +24,7 @@ using System.Text;
 
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
+using SharpMap.Data.Providers;
 using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
 using SharpMap.Rendering;
@@ -32,13 +33,14 @@ using SharpMap.Styles;
 namespace SharpMap.Layers
 {
 	/// <summary>
-	/// Abstract class for common layer properties.
+	/// Abstract class for common layer properties and behavior.
 	/// </summary>
     /// <remarks>
-    /// Implement this class instead of the ILayer interface to gain basic layer functionality.
+    /// Implement this class instead of the ILayer interface to 
+    /// obtain basic layer functionality.
     /// </remarks>
     [Serializable]
-	public abstract class Layer : MarshalByValueComponent, ILayer, ICloneable
+	public abstract class Layer : ILayer, IModelObject, ICloneable
 	{
 		private ICoordinateSystem _coordinateSystem;
         private ICoordinateTransformation _coordinateTransform;
@@ -46,9 +48,79 @@ namespace SharpMap.Layers
         private int _srid = -1;
         private IStyle _style;
 		private bool _disposed;
+        private BoundingBox _visibleRegion;
+        private IProvider _dataSource;
 
-		#region ToString
-		/// <summary>
+        #region Object Creation / Disposal
+        protected Layer(IProvider dataSource)
+        {
+            _dataSource = dataSource;
+        }
+
+        #region Dispose Pattern
+        ~Layer()
+        {
+            Dispose(false);
+        }
+
+        #region IDisposable Members
+        /// <summary>
+        /// Releases all resources deterministically.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                Dispose(true);
+                _disposed = true;
+                GC.SuppressFinalize(this);
+
+                EventHandler e = Disposed;
+                if (e != null)
+                {
+                    e(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Releases all resources, and removes from finalization 
+        /// queue if <paramref name="disposing"/> is true.
+        /// </summary>
+        /// <param name="disposing">
+        /// True if being called deterministically, false if being called from finalizer.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_dataSource != null)
+	            {
+                    _dataSource.Dispose();
+	            }
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this layer is disposed, and no longer accessible.
+        /// </summary>
+        public bool IsDisposed
+        {
+            get { return _disposed; }
+        }
+
+        /// <summary>
+        /// Event fired when the layer is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
+        #endregion
+
+        #endregion
+
+        #region ToString
+        /// <summary>
 		/// Returns the name of the layer.
 		/// </summary>
 		/// <returns></returns>
@@ -58,14 +130,73 @@ namespace SharpMap.Layers
 		}
 		#endregion
 
-		#region ILayer Members
-
-		public event EventHandler ObjectChanged;
+        #region ILayer Members
 
         /// <summary>
-		/// Gets the extent of the layer.
+        /// Gets the coordinate system of the layer.
+        /// </summary>
+        public ICoordinateSystem CoordinateSystem
+        {
+            get { return _coordinateSystem; }
+            private set { _coordinateSystem = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="ICoordinateTransformation"/> 
+        /// applied to this layer.
+        /// </summary>
+        public virtual ICoordinateTransformation CoordinateTransformation
+        {
+            get { return _coordinateTransform; }
+            set 
+            { 
+                _coordinateTransform = value;
+                OnPropertyChanged("CoordinateTransformation");
+            }
+        }
+
+        /// <summary>
+        /// Gets the data source used to create this layer.
+        /// </summary>
+        public IProvider DataSource 
+        {
+            get { return _dataSource; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value which indicates if the layer 
+        /// is enabled (visible or able to participate in queries) or not.
+        /// </summary>
+        /// <remarks>
+        /// This property is a convenience property which exposes 
+        /// the value of <see cref="Style.Enabled"/>. 
+        /// If setting this property and the Style property 
+        /// value is null, a new <see cref="Style"/> 
+        /// object is created and assigned to the Style property, 
+        /// and then the Style.Enabled property is set.
+        /// </remarks>
+        public bool Enabled
+        {
+            get { return Style.Enabled; }
+            set
+            {
+                if (Style == null)
+                {
+                    Style = new Style();
+                }
+
+                Style.Enabled = value;
+                OnPropertyChanged("Enabled");
+            }
+        }
+
+        /// <summary>
+		/// Gets the full extent of the layer.
 		/// </summary>
-		/// <returns><see cref="BoundingBox"/> corresponding to the extent of the features in the layer.</returns>
+		/// <returns>
+        /// <see cref="BoundingBox"/> corresponding to the 
+        /// extent of the features in the layer.
+        /// </returns>
         public abstract BoundingBox Envelope { get; }
 
         /// <summary>
@@ -74,7 +205,12 @@ namespace SharpMap.Layers
         public string LayerName
         {
             get { return _layerName; }
-            set { _layerName = value; }
+            set 
+            {
+                if (String.IsNullOrEmpty(value)) throw new ArgumentException("LayerName must not be null or empty.");
+                _layerName = value;
+                OnPropertyChanged("LayerName");
+            }
         }
 
         /// <summary>
@@ -83,49 +219,12 @@ namespace SharpMap.Layers
         public virtual int Srid
         {
             get { return _srid; }
-            set { _srid = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the coordinate system of the layer.
-		/// </summary>
-		public ICoordinateSystem CoordinateSystem
-		{
-			get { return _coordinateSystem; }
-			private set { _coordinateSystem = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the <see cref="SharpMap.CoordinateSystems.Transformations.ICoordinateTransformation"/> 
-		/// applied to this layer.
-		/// </summary>
-		public virtual ICoordinateTransformation CoordinateTransformation
-		{
-			get { return _coordinateTransform; }
-			set { _coordinateTransform = value; }
-		}
-
-        /// <summary>
-        /// Gets or sets a value which indicates if the layer is enabled (visible or able to participate in queries) or not.
-        /// </summary>
-        /// <remarks>
-        /// This property is a convenience property which exposes the value of <see cref="Style.Enabled"/>. 
-        /// If setting this property and the Style property value is null, a new <see cref="Style"/> 
-        /// object is created and assigned to the Style property, and then the Style.Enabled property is set.
-        /// </remarks>
-        public bool Enabled
-        {
-            get { return Style.Enabled; }
             set 
-            {
-                if (Style == null)
-                {
-                    Style = new Style();
-                }
-
-                Style.Enabled = value; 
+            { 
+                _srid = value;
+                OnPropertyChanged("Srid");
             }
-        }
+		}
 
         /// <summary>
         /// The style for the layer.
@@ -133,9 +232,38 @@ namespace SharpMap.Layers
         public IStyle Style
         {
             get { return _style; }
-            set { _style = value; }
+            set 
+            { 
+                _style = value;
+                OnPropertyChanged("Style");
+            }
         }
 
+        /// <summary>
+        /// Gets or sets the visible region for this layer.
+        /// </summary>
+        public BoundingBox VisibleRegion 
+        {
+            get { return _visibleRegion; }
+            set
+            {
+                bool cancel = false;
+                OnVisibleRegionChanging(value, ref cancel);
+                _visibleRegion = value;
+                OnVisibleRegionChanged();
+                OnPropertyChanged("VisibleRegion");
+            }
+        }
+
+        private void OnVisibleRegionChanged()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region INotifyPropertyChanged Members
@@ -154,25 +282,6 @@ namespace SharpMap.Layers
 
 		#endregion
 
-		#region IsDisposed
-		/// <summary>
-		/// Gets or sets a value indicating this object is disposed.
-		/// </summary>
-		protected bool IsDisposed
-		{
-			get { return _disposed; }
-			set 
-			{
-				if (_disposed == true && value == false)
-				{
-					return;
-				}
-
-				_disposed = value; 
-			}
-		}
-		#endregion
-
 		#region OnPropertyChanged
 		/// <summary>
 		/// Raises the <see cref="PropertyChanged"/> event.
@@ -189,5 +298,5 @@ namespace SharpMap.Layers
             }
 		}
 		#endregion
-	}
+    }
 }

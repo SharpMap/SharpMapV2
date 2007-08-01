@@ -29,12 +29,14 @@ namespace SharpMap.Rendering
     public interface IRenderer : IDisposable
     {
         /// <summary>
-        /// Gets or sets a matrix used to transform world coordinates to graphical display coordinates.
+        /// Gets or sets a matrix used to transform 
+        /// coordinate values during rendering.
         /// </summary>
-        IMatrix2D ViewTransform { get; set; }
+        IMatrix2D RenderTransform { get; set; }
 
         /// <summary>
-        /// Gets or sets a <see cref="StyleRenderingMode"/> value used to render objects.
+        /// Gets or sets a <see cref="StyleRenderingMode"/> 
+        /// value used to render objects.
         /// </summary>
         StyleRenderingMode StyleRenderingMode { get; set; }
     }

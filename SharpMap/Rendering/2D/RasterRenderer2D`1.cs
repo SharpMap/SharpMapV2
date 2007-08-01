@@ -37,7 +37,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IRenderer Members
 
-        public IMatrixD ViewTransform
+        public IMatrixD RenderTransform
         {
             get
             {

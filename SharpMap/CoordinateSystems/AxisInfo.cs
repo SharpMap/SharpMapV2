@@ -25,7 +25,10 @@ namespace SharpMap.CoordinateSystems
 	/// Details of axis. This is used to label axes, and indicate the orientation.
 	/// </summary>
 	public class AxisInfo
-	{
+    {
+        private string _Name;
+        private AxisOrientationEnum _Orientation;
+
 		/// <summary>
 		/// Initializes a new instance of an AxisInfo.
 		/// </summary>
@@ -37,18 +40,15 @@ namespace SharpMap.CoordinateSystems
 			_Orientation = orientation;
 		}
 
-		private string _Name;
-
 		/// <summary>
-		/// Human readable name for axis. Possible values are X, Y, Long, Lat or any other short string.
+		/// Human readable name for axis. Possible values are X, Y, 
+        /// Long, Lat or any other short string.
 		/// </summary>
 		public string Name
 		{
 			get { return _Name; }
 			set { _Name = value; }
 		}
-
-		private AxisOrientationEnum _Orientation;
 
 		/// <summary>
 		/// Gets enumerated value for orientation.
@@ -67,7 +67,8 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return String.Format("AXIS[\"{0}\", {1}]", Name, Orientation.ToString().ToUpper());
+				return String.Format("AXIS[\"{0}\", {1}]", Name, 
+                    Orientation.ToString().ToUpper());
 			}
 		}
 		/// <summary>
@@ -77,7 +78,9 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.NumberFormat_EnUS, "<CS_AxisInfo Name=\"{0}\" Orientation=\"{1}\"/>", Name, Orientation.ToString().ToUpper());
+                return String.Format(Info.NumberFormat, 
+                    "<CS_AxisInfo Name=\"{0}\" Orientation=\"{1}\"/>", Name, 
+                    Orientation.ToString().ToUpper());
 			}
 		}
 

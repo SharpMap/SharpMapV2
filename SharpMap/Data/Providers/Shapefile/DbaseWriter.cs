@@ -20,11 +20,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Data;
+using System.Globalization;
 
 namespace SharpMap.Data.Providers
 {
     internal class DbaseWriter : IDisposable
     {
+        private static readonly NumberFormatInfo NumberFormat_enUS = new CultureInfo("en-US", false).NumberFormat;
 		private const string NumberFormatTemplate = "{0,:F}";
 		private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
 		private DbaseHeader _header = new DbaseHeader();
@@ -97,10 +99,10 @@ namespace SharpMap.Data.Providers
 
         void IDisposable.Dispose()
         {
-            if (!Disposed)
+            if (!IsDisposed)
             {
                 Dispose(true);
-                Disposed = true;
+                IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
@@ -128,7 +130,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        protected internal bool Disposed
+        protected internal bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
@@ -174,7 +176,7 @@ namespace SharpMap.Data.Providers
 		{
 			get
 			{
-				if (Disposed)
+				if (IsDisposed)
 				{
 					throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
 				}
@@ -183,7 +185,7 @@ namespace SharpMap.Data.Providers
 			}
 			set
 			{
-				if (Disposed)
+				if (IsDisposed)
 				{
 					throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
 				}
@@ -361,7 +363,7 @@ namespace SharpMap.Data.Providers
             _format.Length = 0;
             _format.Append(NumberFormatTemplate);
             _format.Insert(5, decimalPlaces).Insert(3, length);
-            string number = String.Format(Map.NumberFormat_EnUS, _format.ToString(), value);
+            string number = String.Format(NumberFormat_enUS, _format.ToString(), value);
 			byte[] bytes = Encoding.ASCII.GetBytes(number);
 			_dbaseWriter.Write(bytes);
         }

@@ -1,4 +1,4 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+﻿// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 // Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
@@ -20,18 +20,18 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("SharpMap Engine")]
+[assembly: AssemblyTitle("SharpMap OleDb Spatial Provider")]
 [assembly: AssemblyDescription("SharpMap v2.0 Alpha 2")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap")]
-[assembly: AssemblyCopyright("Copyright � 2006-2007 Morten Nielsen, Ricardo Stuven, Christian Giles, Rory Plaire")]
+[assembly: AssemblyCopyright("Copyright © 2006-2007 Morten Nielsen, Ricardo Stuven, Christian Giles, Rory Plaire")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("2f1dbd34-6f6b-4b0b-bfb4-b24a3894de6d")]
+[assembly: Guid("6fc6e3f8-f81a-4a2a-b2ec-9bac913d98d5")]
 
 [assembly: AssemblyVersion("1.3.0.0")]
 [assembly: AssemblyFileVersion("1.3.0.0")]

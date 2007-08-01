@@ -22,32 +22,33 @@ using System.Text;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 using SharpMap.Data;
-using SharpMap.Data.Providers;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
+using SharpMap.Data.Providers;
 
 namespace SharpMap.Layers
 {
 	/// <summary>
-	/// Label layer class
+	/// A layer to generate labels from feature data.
 	/// </summary>
 	/// <example>
-	/// Creates a new label layer and sets the label text to the "Name" column in the FeatureDataTable of the datasource
+	/// Creates a new label layer and sets the label text to the 
+    /// "Name" column in the FeatureDataTable of the datasource
 	/// <code lang="C#">
 	/// //Set up a label layer
-	/// SharpMap.Layers.LabelLayer layLabel = new SharpMap.Layers.LabelLayer("Country labels");
-	/// layLabel.DataSource = layCountries.DataSource;
-	/// layLabel.Enabled = true;
-	/// layLabel.LabelColumn = "Name";
-	/// layLabel.Style = new SharpMap.Styles.LabelStyle();
-	/// layLabel.Style.CollisionDetection = true;
-	/// layLabel.Style.CollisionBuffer = new SizeF(20, 20);
-	/// layLabel.Style.ForeColor = Color.White;
-	/// layLabel.Style.Font = new Font(FontFamily.GenericSerif, 8);
-	/// layLabel.MaxVisible = 90;
-	/// layLabel.Style.HorizontalAlignment = SharpMap.Styles.LabelStyle.HorizontalAlignmentEnum.Center;
+	/// SharpMap.Layers.LabelLayer labelLayer = new LabelLayer("Country labels");
+	/// labelLayer.DataSource = layCountries.DataSource;
+	/// labelLayer.Enabled = true;
+	/// labelLayer.LabelColumn = "Name";
+	/// labelLayer.Style = new SharpMap.Styles.LabelStyle();
+	/// labelLayer.Style.CollisionDetection = true;
+	/// labelLayer.Style.CollisionBuffer = new Size2D(20, 20);
+	/// labelLayer.Style.ForeColor = Color.White;
+	/// labelLayer.Style.Font = new Font(FontFamily.GenericSerif, 8);
+	/// labelLayer.MaxVisible = 90;
+	/// labelLayer.Style.HorizontalAlignment = SharpMap.Styles.LabelStyle.HorizontalAlignmentEnum.Center;
 	/// </code>
 	/// </example>
 	public class LabelLayer<TLabel> : Layer, IFeatureLayer, IDisposable
@@ -56,9 +57,8 @@ namespace SharpMap.Layers
         private string _rotationColumn;
         private GenerateLabelTextDelegate _getLabelMethod;
         private string _labelColumn;
-        private IProvider _dataSource;
 		private LabelFilterDelegate _labelFilter;
-        private MultipartGeometryBehaviour _multipartGeometryBehaviour;
+        private MultipartGeometryLabelingBehaviour _multipartGeometryBehaviour;
 
 		/// <summary>
 		/// Delegate method for creating advanced label text.
@@ -71,18 +71,21 @@ namespace SharpMap.Layers
 		/// Creates a new instance of a LabelLayer with the given name.
 		/// </summary>
         /// <param name="layername">Name of the layer.</param>
-		public LabelLayer(string layerName)
+		public LabelLayer(string layerName, IProvider dataSource)
+            : base(dataSource)
 		{
 			LayerName = layerName;
-			_multipartGeometryBehaviour = MultipartGeometryBehaviour.All;
-			_labelFilter = new LabelFilterDelegate(LabelCollisionDetection2D.SimpleCollisionDetection);
+            _multipartGeometryBehaviour = MultipartGeometryLabelingBehaviour.All;
+			_labelFilter = LabelCollisionDetection2D.SimpleCollisionDetection;
 		}
 
 		/// <summary>
 		/// Gets or sets labeling behavior on multipart geometries.
 		/// </summary>
-		/// <remarks>Default value is <see cref="MultipartGeometryBehaviourEnum.All"/>.</remarks>
-		public MultipartGeometryBehaviour MultipartGeometryBehaviour
+		/// <remarks>
+        /// Default value is <see cref="MultipartGeometryBehaviourEnum.All"/>.
+        /// </remarks>
+        public MultipartGeometryLabelingBehaviour MultipartGeometryLabelingBehaviour
 		{
 			get { return _multipartGeometryBehaviour; }
 			set { _multipartGeometryBehaviour = value; }
@@ -92,21 +95,12 @@ namespace SharpMap.Layers
 		/// Delegate for performing filtering on labels.
 		/// </summary>
 		/// <remarks>
-		/// Default method is <see cref="SharpMap.Rendering.LabelCollisionDetection.SimpleCollisionDetection"/>.
+        /// Default method is <see cref="LabelCollisionDetection2D.SimpleCollisionDetection"/>.
 		/// </remarks>
         public LabelFilterDelegate LabelFilter
 		{
 			get { return _labelFilter; }
 			set { _labelFilter = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the data source.
-		/// </summary>
-		public IProvider DataSource
-		{
-			get { return _dataSource; }
-			set { _dataSource = value; }
 		}
 
 		/// <summary>
@@ -125,11 +119,15 @@ namespace SharpMap.Layers
 		/// Gets or sets the method for creating a custom label string based on a feature.
 		/// </summary>
 		/// <remarks>
-		/// <para>If this method is not null, it will override the <see cref="LabelColumn"/> value.</para>
-		/// <para>The label delegate must take a <see cref="FeatureDataRow"/> and return a string.</para>
+		/// <para>
+        /// If this method is not null, it will override the <see cref="LabelColumn"/> value.
+        /// </para>
+		/// <para>
+        /// The label delegate must take a <see cref="FeatureDataRow"/> and return a string.
+        /// </para>
 		/// <example>
-		/// Creating a label-text by combining attributes "ROADNAME" and "STATE" into one string, using
-		/// an anonymous delegate:
+		/// Creating a label-text by combining attributes "ROADNAME" and "STATE" 
+        /// into one string, using an anonymous delegate:
 		/// <code lang="C#">
 		/// myLabelLayer.LabelStringDelegate = delegate(FeatureDataRow fdr)
 		///				{ return fdr["ROADNAME"].ToString() + ", " + fdr["STATE"].ToString(); };
@@ -164,18 +162,30 @@ namespace SharpMap.Layers
 
         #region IFeatureLayer Members
 
-        public IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region)
+        public FeatureDataTable VisibleFeatures
         {
-            FeatureDataSet dataSet = new FeatureDataSet();
-            DataSource.Open();
-            DataSource.ExecuteIntersectionQuery(region, dataSet);
-            DataSource.Close();
-
-			foreach (FeatureDataRow row in dataSet.Tables[0])
-			{
-				yield return row;
-			}
+            get
+            {
+                // Execute query if necessary and return table...
+                throw new NotImplementedException();
+            }
         }
+
+        public event EventHandler VisibleFeaturesChanged;
+
+        public IList<FeatureDataRow> HighlightedFeatures
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public event EventHandler HighlightedFeaturesChanged;
 
 		public event EventHandler SelectedFeaturesChanged;
 
@@ -291,31 +301,5 @@ namespace SharpMap.Layers
         }
 
         #endregion
-	}
-
-    /// <summary>
-    /// Labelling behaviour for Multipart geometry collections
-    /// </summary>
-    public enum MultipartGeometryBehaviour
-    {
-        /// <summary>
-        /// Place label on all parts (default)
-        /// </summary>
-        All,
-        /// <summary>
-        /// Place label on object which the greatest length or area.
-        /// </summary>
-        /// <remarks>
-        /// Multipoint geometries will default to <see cref="First"/>
-        /// </remarks>
-        Largest,
-        /// <summary>
-        /// The center of the combined geometries
-        /// </summary>
-        CommonCenter,
-        /// <summary>
-        /// Center of the first geometry in the collection (fastest method)
-        /// </summary>
-        First
     }
 }

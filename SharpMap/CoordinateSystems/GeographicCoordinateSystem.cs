@@ -143,13 +143,21 @@ namespace SharpMap.CoordinateSystems
 				StringBuilder sb = new StringBuilder();
 				sb.AppendFormat("GEOGCS[\"{0}\", {1}, {2}, {3}",Name, HorizontalDatum.Wkt, PrimeMeridian.Wkt, AngularUnit.Wkt);
 				//Skip axis info if they contain default values
-				if (AxisInfo.Count != 2 ||
-					AxisInfo[0].Name != "Lon" || AxisInfo[0].Orientation != AxisOrientationEnum.East ||
-					AxisInfo[1].Name != "Lat" || AxisInfo[1].Orientation != AxisOrientationEnum.North)
-					for (int i = 0; i < AxisInfo.Count; i++)
-						sb.AppendFormat(", {0}", GetAxis(i).WKT);
-				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
-					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                if (AxisInfo.Count != 2 ||
+                    AxisInfo[0].Name != "Lon" || AxisInfo[0].Orientation != AxisOrientationEnum.East ||
+                    AxisInfo[1].Name != "Lat" || AxisInfo[1].Orientation != AxisOrientationEnum.North)
+                {
+                    for (int i = 0; i < AxisInfo.Count; i++)
+                    {
+                        sb.AppendFormat(", {0}", GetAxis(i).WKT);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                {
+                    sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                }
+
 				sb.Append("]");
 				return sb.ToString();
 			}
@@ -163,14 +171,20 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS,
+                
+                sb.AppendFormat(NumberFormat,
 					"<CS_CoordinateSystem Dimension=\"{0}\"><CS_GeographicCoordinateSystem>{1}",
-					this.Dimension, InfoXml);
-				foreach(AxisInfo ai in this.AxisInfo)
-					sb.Append(ai.XML);
+					Dimension, InfoXml);
+                
+                foreach (AxisInfo ai in AxisInfo)
+                {
+                    sb.Append(ai.XML);
+                }
+
 				sb.AppendFormat("{0}{1}{2}</CS_GeographicCoordinateSystem></CS_CoordinateSystem>",
 					HorizontalDatum.Xml, AngularUnit.Xml, PrimeMeridian.Xml);
-				return sb.ToString();				
+				
+                return sb.ToString();				
 			}
 		}
 

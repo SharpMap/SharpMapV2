@@ -38,7 +38,6 @@ namespace SharpMap.Layers
     /// </example>
     public class VectorLayer : Layer, IFeatureLayer
     {
-        private IProvider _dataSource;
 		private Predicate<FeatureDataRow> _featureSelectionClause;
 		private readonly object _selectedFeaturesSync = new object();
 		private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
@@ -46,18 +45,10 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// Initializes a new, empty vector layer.
 		/// </summary>
-		public VectorLayer() : this(String.Empty)
+        public VectorLayer(IProvider dataSource)
+            : this(String.Empty, dataSource)
 		{
 		}
-
-        /// <summary>
-        /// Initializes a new layer with the given name.
-        /// </summary>
-        /// <param name="layername">Name of the layer.</param>
-		public VectorLayer(string layername)
-			: this(layername, null)
-        {
-        }
 
         /// <summary>
         /// Initializes a new layer with the given name and datasource.
@@ -65,19 +56,10 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public VectorLayer(string layername, IProvider dataSource)
+            : base(dataSource)
 		{
-			this.LayerName = layername;
-            _dataSource = dataSource;
+			LayerName = layername;
 			Style = new VectorStyle();
-        }
-
-        /// <summary>
-        /// Gets or sets the datasource
-        /// </summary>
-        public IProvider DataSource
-        {
-            get { return _dataSource; }
-            set { _dataSource = value; }
         }
 
 		public new VectorStyle Style
@@ -85,8 +67,30 @@ namespace SharpMap.Layers
 			get { return base.Style as VectorStyle; }
 			set { base.Style = value; }
 		}
-		
-		#region IFeatureLayer Members
+
+        #region IFeatureLayer Members
+
+        public FeatureDataTable VisibleFeatures
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public event EventHandler VisibleFeaturesChanged;
+
+        public IList<FeatureDataRow> HighlightedFeatures
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public event EventHandler HighlightedFeaturesChanged;
+
         public IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region)
         {
             FeatureDataSet ds = new FeatureDataSet();
@@ -224,7 +228,8 @@ namespace SharpMap.Layers
 
         #endregion
 
-		private void onSelectedFeaturesChanged()
+        #region Private helper methods
+        private void onSelectedFeaturesChanged()
 		{
 			EventHandler e = SelectedFeaturesChanged;
 
@@ -232,6 +237,7 @@ namespace SharpMap.Layers
 			{
 				e(null, EventArgs.Empty);
 			}
-		}
-	}
+        }
+        #endregion
+    }
 }

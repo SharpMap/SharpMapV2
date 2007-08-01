@@ -37,9 +37,9 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal PrimeMeridian(double longitude, IAngularUnit angularUnit, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
-			:
-			base(name, authority, authorityCode, alias, abbreviation, remarks)
+		internal PrimeMeridian(double longitude, IAngularUnit angularUnit, string name, 
+            string authority, long authorityCode, string alias, string abbreviation, string remarks)
+			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_Longitude = longitude;
 			_AngularUnit = angularUnit;
@@ -176,9 +176,13 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS, "PRIMEM[\"{0}\", {1}", Name, Longitude);
-				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
-					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                sb.AppendFormat(Info.NumberFormat, "PRIMEM[\"{0}\", {1}", Name, Longitude);
+
+                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                {
+                    sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                }
+
 				sb.Append("]");
 				return sb.ToString();
 			}
@@ -191,8 +195,9 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.NumberFormat_EnUS, 
-					"<CS_PrimeMeridian Longitude=\"{0}\" >{1}{2}</CS_PrimeMeridian>", Longitude, InfoXml, AngularUnit.Xml);
+                return String.Format(Info.NumberFormat, 
+					"<CS_PrimeMeridian Longitude=\"{0}\" >{1}{2}</CS_PrimeMeridian>", 
+                    Longitude, InfoXml, AngularUnit.Xml);
 			}
 		}
 
@@ -204,11 +209,16 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
 		public override bool EqualParams(object obj)
-		{
-			if (!(obj is SharpMap.CoordinateSystems.PrimeMeridian))
-				return false;
-			PrimeMeridian prime = obj as PrimeMeridian;
-			return prime.AngularUnit.EqualParams(this.AngularUnit) && prime.Longitude == this.Longitude;
+        {
+            PrimeMeridian other = obj as PrimeMeridian;
+
+            if (obj == null)
+            {
+                return false;
+            }
+
+			return other.AngularUnit.EqualParams(AngularUnit) 
+                && other.Longitude == Longitude;
 		}
 
 		#endregion

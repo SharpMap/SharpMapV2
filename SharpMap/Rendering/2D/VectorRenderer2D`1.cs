@@ -34,7 +34,6 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
     public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
     {
-
         #region Fields
         private Matrix2D _viewMatrix = new Matrix2D();
         private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
@@ -56,10 +55,10 @@ namespace SharpMap.Rendering.Rendering2D
 
         public void Dispose()
         {
-            if (!Disposed)
+            if (!IsDisposed)
             {
                 Dispose(true);
-                Disposed = true;
+                IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
@@ -70,16 +69,16 @@ namespace SharpMap.Rendering.Rendering2D
 
         }
 
-        protected bool Disposed
+        protected bool IsDisposed
         {
             get { return _disposed; }
-            set { _disposed = value; }
+            private set { _disposed = value; }
         }
         #endregion
         #endregion
 
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
-        public Matrix2D ViewTransform
+        public Matrix2D RenderTransform
         {
             get { return _viewMatrix; }
             set { _viewMatrix = value; }
@@ -103,11 +102,11 @@ namespace SharpMap.Rendering.Rendering2D
         #region Explicit Interface Implementation
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
 
-        IMatrixD IRenderer.ViewTransform
+        IMatrixD IRenderer.RenderTransform
         {
             get
             {
-                return ViewTransform;
+                return RenderTransform;
             }
             set
             {
@@ -116,7 +115,7 @@ namespace SharpMap.Rendering.Rendering2D
                     throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
                 }
 
-                ViewTransform = value as Matrix2D;
+                RenderTransform = value as Matrix2D;
             }
         }
 

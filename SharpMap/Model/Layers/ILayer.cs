@@ -26,6 +26,7 @@ using SharpMap.Rendering;
 using SharpMap.Styles;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
+using SharpMap.Data.Providers;
 
 namespace SharpMap.Layers
 {
@@ -34,30 +35,20 @@ namespace SharpMap.Layers
 	/// </summary>
 	public interface ILayer : IModelObject
     {
-		/// <summary>
-		/// Name of layer.
-		/// </summary>
-		string LayerName { get; set; }
+        /// <summary>
+        /// The dataum, projection and coordinate system used for this layer.
+        /// </summary>
+        ICoordinateSystem CoordinateSystem { get; }
 
-		/// <summary>
-		/// Gets the boundingbox of the entire layer.
-		/// </summary>
-		BoundingBox Envelope { get; }
-	
-		/// <summary>
-		/// The spatial reference ID.
-		/// </summary>
-		int Srid { get; set; }
+        /// <summary>
+        /// Applies a coordinate transformation to the geometries in this layer.
+        /// </summary>
+        ICoordinateTransformation CoordinateTransformation { get; set; }
 
-		/// <summary>
-		/// The dataum, projection and coordinate system used for this layer.
-		/// </summary>
-		ICoordinateSystem CoordinateSystem { get; }
-
-		/// <summary>
-		/// Applies a coordinate transformation to the geometries in this layer.
-		/// </summary>
-		ICoordinateTransformation CoordinateTransformation { get; set; }
+        /// <summary>
+        /// Gets the data source used to create this layer.
+        /// </summary>
+        IProvider DataSource { get; }
 
         /// <summary>
         /// Gets or sets a value representing the visibility of the layer.
@@ -67,9 +58,29 @@ namespace SharpMap.Layers
         /// </remarks>
         bool Enabled { get; set; }
 
+		/// <summary>
+		/// Gets the boundingbox of the entire layer.
+		/// </summary>
+        BoundingBox Envelope { get; }
+
+        /// <summary>
+        /// Name of layer.
+        /// </summary>
+        string LayerName { get; set; }
+	
+		/// <summary>
+		/// The spatial reference ID.
+		/// </summary>
+		int Srid { get; set; }
+
         /// <summary>
         /// The style for the layer.
         /// </summary>
         IStyle Style { get; set; }
+
+        /// <summary>
+        /// Gets or sets the visible region for this layer.
+        /// </summary>
+        BoundingBox VisibleRegion { get; set; }
 	}
 }

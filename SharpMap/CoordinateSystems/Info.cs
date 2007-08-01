@@ -18,35 +18,72 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace SharpMap.CoordinateSystems
 {
 	/// <summary>
-	/// The Info object defines the standard information
-	/// stored with spatial reference objects
-	/// </summary>
+	/// The Info object implements the standard metadata
+	/// for spatial reference objects.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The metadata items ‘Abbreviation’, ‘Alias’, ‘Authority’, ‘AuthorityCode’, ‘Name’ and ‘Remarks’ 
+    /// were specified in the Simple Features interfaces, so they have been kept here.
+    /// </para>
+    /// <para>
+    /// This specification does not dictate what the contents of these items 
+    /// should be. However, the following guidelines are suggested:
+    /// </para>
+    /// <para>
+    /// When <see cref="ICoordinateSystemAuthorityFactory"/> is used to create an object, 
+    /// the ‘Authority’ and 'AuthorityCode' values should be set to the authority name of the 
+    /// factory object, and the authority code supplied by the client, respectively. The other 
+    /// values may or may not be set. (If the authority is EPSG, the implementer may consider 
+    /// using the corresponding metadata values in the EPSG tables.)
+    /// </para>
+    /// <para>
+    /// When <see cref="CoordinateSystemFactory"/> creates an object, the 'Name' should 
+    /// be set to the value supplied by the client. All of the other metadata items should 
+    /// be left empty.</para>
+    /// </remarks>
 	public abstract class Info : IInfo
-	{
+    {
+        private static NumberFormatInfo _numberFormat = new CultureInfo("en-US", false).NumberFormat;
+
+        public static NumberFormatInfo NumberFormat
+        {
+            get { return _numberFormat; }
+            set { _numberFormat = value; }
+        }
+
 		/// <summary>
-		/// A base interface for metadata applicable to coordinate system objects.
+        /// Creates a new Info object.
 		/// </summary>
 		/// <remarks>
-		/// <para>The metadata items ‘Abbreviation’, ‘Alias’, ‘Authority’, ‘AuthorityCode’, ‘Name’ and ‘Remarks’ 
-		/// were specified in the Simple Features interfaces, so they have been kept here.</para>
-		/// <para>This specification does not dictate what the contents of these items 
-		/// should be. However, the following guidelines are suggested:</para>
-		/// <para>When <see cref="ICoordinateSystemAuthorityFactory"/> is used to create an object, 
+		/// <para>
+        /// The metadata items ‘Abbreviation’, ‘Alias’, ‘Authority’, ‘AuthorityCode’, ‘Name’ and ‘Remarks’ 
+		/// were specified in the Simple Features interfaces, so they have been kept here.
+        /// </para>
+		/// <para>
+        /// This specification does not dictate what the contents of these items 
+		/// should be. However, the following guidelines are suggested:
+        /// </para>
+		/// <para>
+        /// When <see cref="ICoordinateSystemAuthorityFactory"/> is used to create an object, 
 		/// the ‘Authority’ and 'AuthorityCode' values should be set to the authority name of the 
 		/// factory object, and the authority code supplied by the client, respectively. The other 
 		/// values may or may not be set. (If the authority is EPSG, the implementer may consider 
-		/// using the corresponding metadata values in the EPSG tables.)</para>
-		/// <para>When <see cref="CoordinateSystemFactory"/> creates an object, the 'Name' should 
-		/// be set to the value supplied by the client. All of the other metadata items should be left 
-		/// empty</para>
+		/// using the corresponding metadata values in the EPSG tables.)
+        /// </para>
+		/// <para>
+        /// When <see cref="CoordinateSystemFactory"/> creates an object, the 'Name' should 
+		/// be set to the value supplied by the client. All of the other metadata items should 
+        /// be left empty.</para>
 		/// </remarks>
 		/// <param name="name">Name</param>
 		/// <param name="authority">Authority name</param>
-		/// <param name="code">Authority-specific identification code.</param>
+		/// <param name="code">Authority-specific identification code</param>
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
@@ -66,7 +103,7 @@ namespace SharpMap.CoordinateSystems
 			_remarks = remarks;
 		}
 
-		#region ISpatialReferenceInfo Members
+		#region IInfo Members
 
 		private string _name;
 		private string _authority;
@@ -193,7 +230,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public abstract bool EqualParams(object obj);
+        public abstract bool EqualParams(object obj);
 
 		#endregion
 	}

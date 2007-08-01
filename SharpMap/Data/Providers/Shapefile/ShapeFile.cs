@@ -146,10 +146,10 @@ namespace SharpMap.Data.Providers
         /// </summary>
         void IDisposable.Dispose()
         {
-            if (!Disposed)
+            if (!IsDisposed)
             {
                 dispose(true);
-                Disposed = true;
+                IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
@@ -198,7 +198,7 @@ namespace SharpMap.Data.Providers
             _isOpen = false;
         }
 
-        protected internal bool Disposed
+        protected internal bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }

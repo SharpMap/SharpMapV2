@@ -51,10 +51,10 @@ namespace SharpMap.Indexing.RTree
         /// </summary>
         public void Dispose()
         {
-            if (!Disposed)
+            if (!IsDisposed)
             {
                 Dispose(true);
-                Disposed = true;
+                IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
@@ -63,7 +63,7 @@ namespace SharpMap.Indexing.RTree
         {
         }
 
-        protected bool Disposed
+        protected bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }

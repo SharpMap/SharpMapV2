@@ -18,48 +18,59 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace SharpMap.CoordinateSystems
 {
-	/// <summary>
-	/// The ISpatialReferenceInfo interface defines the standard 
-	/// information stored with spatial reference objects. This
-	/// interface is reused for many of the spatial reference
-	/// objects in the system.
+    /// <summary>
+    /// A base interface to access metadata for spatial reference objects.
 	/// </summary>
+    /// <remarks>
+    /// The IInfo interface defines the standard 
+    /// information stored with spatial reference objects. This
+    /// interface is reused for many of the spatial reference
+    /// objects in the system.
+    /// </remarks>
 	public interface IInfo
 	{
 		/// <summary>
 		/// Gets or sets the name of the object.
 		/// </summary>
 		string Name { get; }
+
 		/// <summary>
 		/// Gets or sets the authority name for this object, e.g., “POSC”,
 		/// is this is a standard object with an authority specific
 		/// identity code. Returns “CUSTOM” if this is a custom object.
 		/// </summary>
 		string Authority { get; }
+
 		/// <summary>
 		/// Gets or sets the authority specific identification code of the object
 		/// </summary>
 		long AuthorityCode { get; }
+
 		/// <summary>
 		/// Gets or sets the alias of the object.
 		/// </summary>
 		string Alias { get; }
+
 		/// <summary>
 		/// Gets or sets the abbreviation of the object.
 		/// </summary>
 		string Abbreviation { get; }
+
 		/// <summary>
 		/// Gets or sets the provider-supplied remarks for the object.
 		/// </summary>
 		string Remarks { get; }
+
 		/// <summary>
 		/// Returns the Well-known text for this spatial reference object
 		/// as defined in the simple features specification.
 		/// </summary>
 		string Wkt { get; }
+
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>

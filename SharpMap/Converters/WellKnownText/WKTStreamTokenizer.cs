@@ -39,6 +39,7 @@
 using System;
 using System.IO;
 using SharpMap.Converters.WellKnownText.IO;
+using System.Globalization;
 #endregion
 
 namespace SharpMap.Converters.WellKnownText
@@ -48,6 +49,7 @@ namespace SharpMap.Converters.WellKnownText
 	/// </summary>
 	internal class WktStreamTokenizer : StreamTokenizer
 	{
+        internal static readonly NumberFormatInfo NumberFormat_enUS = new CultureInfo("en-US", false).NumberFormat;
 
 		#region Constructors
 
@@ -73,10 +75,13 @@ namespace SharpMap.Converters.WellKnownText
 		/// <param name="expectedToken">The expected token.</param>
 		internal void ReadToken(string expectedToken)
 		{
-			this.NextToken();
-			if (this.GetStringValue()!=expectedToken)
+			NextToken();
+
+			if (GetStringValue() != expectedToken)
 			{
-				throw new Exception(String.Format(SharpMap.Map.NumberFormat_EnUS, "Expecting ('{3}') but got a '{0}' at line {1} column {2}.", this.GetStringValue(), this.LineNumber, this.Column, expectedToken));
+                throw new ParseException(String.Format(NumberFormat_enUS, 
+                    "Expecting ('{3}') but got a '{0}' at line {1} column {2}.", 
+                    GetStringValue(), LineNumber, Column, expectedToken));
 			}
 		}
 		
@@ -89,14 +94,16 @@ namespace SharpMap.Converters.WellKnownText
 		/// <returns>The string inside the double quotes.</returns>
 		public string ReadDoubleQuotedWord()
 		{
-			string word="";
-			ReadToken("\"");	
+			string word = String.Empty;
+			ReadToken("\"");
 			NextToken(false);
-			while (GetStringValue()!="\"")
+
+			while (GetStringValue() != "\"")
 			{
-				word = word+ this.GetStringValue();
+                word += GetStringValue();
 				NextToken(false);
 			} 
+
 			return word;
 		}
 
@@ -105,15 +112,18 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="authority">String to place the authority in.</param>
 		/// <param name="authorityCode">String to place the authority code in.</param>
-		public void ReadAuthority(ref string authority,ref long authorityCode)
+		public void ReadAuthority(ref string authority, ref long authorityCode)
 		{
-			//AUTHORITY["EPGS","9102"]]
-			if(GetStringValue() != "AUTHORITY")
-				ReadToken("AUTHORITY");
+			// AUTHORITY["EPGS","9102"]]
+            if (GetStringValue() != "AUTHORITY")
+            {
+                ReadToken("AUTHORITY");
+            }
+
 			ReadToken("[");
 			authority = this.ReadDoubleQuotedWord();
 			ReadToken(",");
-			long.TryParse(this.ReadDoubleQuotedWord(),out authorityCode);			
+			Int64.TryParse(this.ReadDoubleQuotedWord(), out authorityCode);
 			ReadToken("]");
 		}
 		#endregion

@@ -22,7 +22,7 @@ using System.Text;
 
 namespace SharpMap
 {
-    public interface IModelObject : INotifyPropertyChanged
+    public interface IModelObject : INotifyPropertyChanged, IDisposable
     {
     }
 }

@@ -110,9 +110,13 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS, "UNIT[\"{0}\", {1}", Name, RadiansPerUnit);
-				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
-					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                sb.AppendFormat(NumberFormat, "UNIT[\"{0}\", {1}", Name, RadiansPerUnit);
+
+                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                {
+                    sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                }
+
 				sb.Append("]");
 				return sb.ToString();				
 			}
@@ -125,7 +129,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.NumberFormat_EnUS, "<CS_AngularUnit RadiansPerUnit=\"{0}\">{1}</CS_AngularUnit>", RadiansPerUnit, InfoXml);
+                return String.Format(NumberFormat, "<CS_AngularUnit RadiansPerUnit=\"{0}\">{1}</CS_AngularUnit>", RadiansPerUnit, InfoXml);
 			}
 		}
 

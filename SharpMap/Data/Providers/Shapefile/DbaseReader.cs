@@ -34,6 +34,7 @@ namespace SharpMap.Data.Providers
     internal class DbaseReader : IDisposable
     {
         private static readonly uint MaxRecordsIndexed = 10000;
+        private static readonly NumberFormatInfo NumberFormat_enUS = new CultureInfo("en-US", false).NumberFormat;
 
         private DbaseHeader _header;
         private string _filename;
@@ -76,10 +77,10 @@ namespace SharpMap.Data.Providers
         /// <seealso cref="Close"/>
         void IDisposable.Dispose()
         {
-            if (!Disposed)
+            if (!IsDisposed)
             {
                 Dispose(true);
-                Disposed = true;
+                IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
@@ -102,7 +103,7 @@ namespace SharpMap.Data.Providers
         /// Gets a value which indicates if this object is disposed: true if it is, false otherwise
         /// </summary>
         /// <seealso cref="Dispose"/>
-        public bool Disposed
+        public bool IsDisposed
         {
             get { return _isDisposed; }
             private set { _isDisposed = value; }
@@ -327,7 +328,7 @@ namespace SharpMap.Data.Providers
         {
             get
             {
-				if (Disposed)
+				if (IsDisposed)
                 {
                     throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
                 }
@@ -336,7 +337,7 @@ namespace SharpMap.Data.Providers
             }
             set
             {
-				if (Disposed)
+				if (IsDisposed)
                 {
                     throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
                 }
@@ -423,7 +424,7 @@ namespace SharpMap.Data.Providers
                     // Mono has not yet implemented DateTime.TryParseExact
 #if !MONO
                     if (DateTime.TryParseExact(Encoding.UTF7.GetString((_dbaseReader.ReadBytes(8))),
-                        "yyyyMMdd", Map.NumberFormat_EnUS, DateTimeStyles.None, out date))
+                        "yyyyMMdd", NumberFormat_enUS, DateTimeStyles.None, out date))
                     {
                         return date;
                     }
@@ -446,7 +447,7 @@ namespace SharpMap.Data.Providers
                     string temp = Encoding.UTF7.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
                     double dbl = 0;
 
-                    if (double.TryParse(temp, NumberStyles.Float, Map.NumberFormat_EnUS, out dbl))
+                    if (double.TryParse(temp, NumberStyles.Float, NumberFormat_enUS, out dbl))
                     {
                         return dbl;
                     }
@@ -458,7 +459,7 @@ namespace SharpMap.Data.Providers
                     string temp16 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int16 i16 = 0;
 
-                    if (Int16.TryParse(temp16, NumberStyles.Float, Map.NumberFormat_EnUS, out i16))
+                    if (Int16.TryParse(temp16, NumberStyles.Float, NumberFormat_enUS, out i16))
                     {
                         return i16;
                     }
@@ -470,7 +471,7 @@ namespace SharpMap.Data.Providers
                     string temp32 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int32 i32 = 0;
 
-                    if (Int32.TryParse(temp32, NumberStyles.Float, Map.NumberFormat_EnUS, out i32))
+                    if (Int32.TryParse(temp32, NumberStyles.Float, NumberFormat_enUS, out i32))
                     {
                         return i32;
                     }
@@ -482,7 +483,7 @@ namespace SharpMap.Data.Providers
                     string temp64 = Encoding.UTF7.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                     Int64 i64 = 0;
 
-                    if (Int64.TryParse(temp64, NumberStyles.Float, Map.NumberFormat_EnUS, out i64))
+                    if (Int64.TryParse(temp64, NumberStyles.Float, NumberFormat_enUS, out i64))
                     {
                         return i64;
                     }
@@ -494,7 +495,7 @@ namespace SharpMap.Data.Providers
                     string temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
                     float f = 0;
 
-                    if (float.TryParse(temp4, NumberStyles.Float, Map.NumberFormat_EnUS, out f))
+                    if (float.TryParse(temp4, NumberStyles.Float, NumberFormat_enUS, out f))
                     {
                         return f;
                     }

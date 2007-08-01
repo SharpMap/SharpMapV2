@@ -40,6 +40,7 @@ using System;
 using System.IO;
 using System.Text;
 using SharpMap.Converters.WellKnownText;
+using System.Globalization;
 #endregion
 
 // http://java.sun.com/j2se/1.4/docs/api/java/io/StreamTokenizer.html
@@ -50,15 +51,25 @@ using SharpMap.Converters.WellKnownText;
 
 namespace SharpMap.Converters.WellKnownText.IO
 {
+	/// <summary>
+    /// Parses input character data into tokens.
+	/// </summary>
+	/// <remarks>
+    /// <para>
+    /// The StreamTokenizer class takes an input character stream and parses 
+    /// it into "tokens", allowing the tokens to be read one at a time. 
+    /// The parsing process is controlled by a table and a number of flags 
+    /// that can be set to various states. The stream tokenizer can recognize 
+    /// identifiers, numbers, quoted strings, and various comment styles.
+    /// </para>
+	/// This is a crude c# implementation of Java's 
+    /// <a href="http://java.sun.com/products/jdk/1.2/docs/api/java/io/StreamTokenizer.html">StreamTokenizer</a> 
+    /// class.
+	/// </remarks>
+	internal class StreamTokenizer
+    {
+        private readonly static NumberFormatInfo NumberFormat_EnUS = new CultureInfo("en-US", false).NumberFormat;
 
-	///<summary>
-	///The StreamTokenizer class takes an input stream and parses it into "tokens", allowing the tokens to be read one at a time. The parsing process is controlled by a table and a number of flags that can be set to various states. The stream tokenizer can recognize identifiers, numbers, quoted strings, and various comment style
-	///</summary>
-	///<remarks>
-	///This is a crude c# implementation of Java's <a href="http://java.sun.com/products/jdk/1.2/docs/api/java/io/StreamTokenizer.html">StreamTokenizer</a> class.
-	///</remarks>
-	internal class StreamTokenizer 
-	{	
 		TokenType _currentTokenType;
 		TextReader _reader;
 		string _currentToken;
@@ -122,12 +133,12 @@ namespace SharpMap.Converters.WellKnownText.IO
 		{
 			string number = this.GetStringValue();
 
-			if (this.GetTokenType()==TokenType.Number)
+			if (GetTokenType() == TokenType.Number)
 			{
-				return double.Parse(number, SharpMap.Map.NumberFormat_EnUS);
+				return double.Parse(number, NumberFormat_EnUS);
 			}
 
-            throw new Exception(String.Format(SharpMap.Map.NumberFormat_EnUS, "The token '{0}' is not a number at line {1} column {2}.", number, this.LineNumber, this.Column)); ;
+            throw new Exception(String.Format(NumberFormat_EnUS, "The token '{0}' is not a number at line {1} column {2}.", number, this.LineNumber, this.Column)); ;
 
 		}
 		/// <summary>

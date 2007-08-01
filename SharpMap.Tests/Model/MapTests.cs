@@ -11,6 +11,7 @@ using SharpMap.Presentation;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Tools;
+using SharpMap.Data.Providers;
 
 namespace SharpMap.Tests
 {
@@ -20,10 +21,14 @@ namespace SharpMap.Tests
 		[Test]
 		public void GetLayerByName_ReturnCorrectLayer()
 		{
+            MockRepository mocks = new MockRepository();
+
 			Map map = new Map();
-			map.Layers.Add(new VectorLayer("Layer 1"));
-			map.Layers.Add(new VectorLayer("Layer 3"));
-			map.Layers.Add(new VectorLayer("Layer 2"));
+            IProvider dataSource = mocks.Stub<IProvider>();
+
+			map.Layers.Add(new VectorLayer("Layer 1", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
 
 			ILayer layer = map.GetLayerByName("Layer 2");
 			Assert.IsNotNull(layer);
@@ -32,12 +37,16 @@ namespace SharpMap.Tests
 
 		[Test]
 		public void GetLayerByName()
-		{
-			Map map = new Map();
-			map.Layers.Add(new VectorLayer("Layer 1"));
-			map.Layers.Add(new VectorLayer("Layer 3"));
-			map.Layers.Add(new VectorLayer("Layer 2"));
-			map.Layers.Add(new VectorLayer("Layer 3"));
+        {
+            MockRepository mocks = new MockRepository();
+
+            Map map = new Map();
+            IProvider dataSource = mocks.Stub<IProvider>();
+
+            map.Layers.Add(new VectorLayer("Layer 1", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
 
 			ILayer layer = map.Layers["Layer 3"];
 			Assert.AreEqual("Layer 3", layer.LayerName);
@@ -45,12 +54,16 @@ namespace SharpMap.Tests
 
 		[Test]
 		public void FindLayerByPredicate()
-		{
-			Map map = new Map();
-			map.Layers.Add(new VectorLayer("Layer 1"));
-			map.Layers.Add(new VectorLayer("Layer 3"));
-			map.Layers.Add(new VectorLayer("Layer 2"));
-			map.Layers.Add(new VectorLayer("Layer 3"));
+        {
+            MockRepository mocks = new MockRepository();
+
+            Map map = new Map();
+            IProvider dataSource = mocks.Stub<IProvider>();
+
+            map.Layers.Add(new VectorLayer("Layer 1", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
+            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
 
 			int count = 0;
 
@@ -74,7 +87,7 @@ namespace SharpMap.Tests
 			Assert.AreEqual(map.Center, Point.Empty);
 			Assert.IsNotNull(map.Layers);
 			Assert.AreEqual(map.Layers.Count, 0);
-			Assert.AreEqual(map.SelectedTool, MapTool.None);
+			Assert.AreEqual(map.ActiveTool, MapTool.None);
 			Assert.IsNotNull(map.SelectedLayers);
 		}
 

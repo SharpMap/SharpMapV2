@@ -39,19 +39,27 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SharpMap.Geometries;
+using System.IO;
+using System.Globalization;
 
 namespace SharpMap.Converters.WellKnownText
 {
 	/// <summary>
-	///  Converts a Well-known Text representation to a <see cref="SharpMap.Geometries.Geometry"/> instance.
+	/// Converts a Well-Known Text representation to a <see cref="Geometry"/> instance.
 	/// </summary>
 	/// <remarks>
-	/// <para>The Well-Known Text (WKT) representation of Geometry is designed to exchange geometry data in ASCII form.</para>
+	/// <para>
+    /// The Well-Known Text (WKT) representation of Geometry is designed to 
+    /// exchange geometry data in ASCII form.
+    /// </para>
 	/// Examples of WKT representations of geometry objects are:
 	/// <list type="table">
-	/// <listheader><term>Geometry </term><description>WKT Representation</description></listheader>
+	/// <listheader><term>Geometry </term>
+    /// <description>WKT Representation</description>
+    /// </listheader>
 	/// <item><term>A Point</term>
-	/// <description>POINT(15 20)<br/> Note that point coordinates are specified with no separating comma.</description></item>
+	/// <description>POINT(15 20)<br/> Note that point coordinates are specified 
+    /// with no separating comma.</description></item>
 	/// <item><term>A LineString with four points:</term>
 	/// <description>LINESTRING(0 0, 10 10, 20 25, 50 60)</description></item>
 	/// <item><term>A Polygon with one exterior ring and one interior ring:</term>
@@ -67,62 +75,84 @@ namespace SharpMap.Converters.WellKnownText
 	/// </list>
 	/// </remarks>
 	public class GeometryFromWKT
-	{
+    {
 		/// <summary>
-		/// Converts a Well-known text representation to a <see cref="SharpMap.Geometries.Geometry"/>.
+		/// Converts a Well-known text representation to a 
+        /// <see cref="Geometry"/>.
 		/// </summary>
-		/// <param name="wellKnownText">A <see cref="SharpMap.Geometries.Geometry"/> tagged text string ( see the OpenGIS Simple Features Specification.</param>
-		/// <returns>Returns a <see cref="SharpMap.Geometries.Geometry"/> specified by wellKnownText.  Throws an exception if there is a parsing problem.</returns>
+		/// <param name="wellKnownText">
+        /// A <see cref="Geometry"/> tagged text string 
+        /// (see the OpenGIS Simple Features Specification).
+        /// </param>
+		/// <returns>
+        /// Returns a <see cref="Geometry"/> specified by wellKnownText.  
+        /// Throws an exception if there is a parsing problem.
+        /// </returns>
 		public static Geometry Parse(string wellKnownText)
 		{
 			// throws a parsing exception is there is a problem.
-			System.IO.StringReader reader = new System.IO.StringReader(wellKnownText);
+			StringReader reader = new StringReader(wellKnownText);
 			return Parse(reader);
 		}
 
 		/// <summary>
-		/// Converts a Well-known Text representation to a <see cref="SharpMap.Geometries.Geometry"/>.
+		/// Converts a Well-Known Text representation to a 
+        /// <see cref="Geometry"/>.
 		/// </summary>
-		/// <param name="reader">A Reader which will return a Geometry Tagged Text
-		/// string (see the OpenGIS Simple Features Specification)</param>
-		/// <returns>Returns a <see cref="SharpMap.Geometries.Geometry"/> read from StreamReader. 
-		/// An exception will be thrown if there is a parsing problem.</returns>
-		public static Geometry Parse(System.IO.TextReader reader)
+		/// <param name="reader">
+        /// A reader which will return a Geometry Tagged Text
+		/// string (see the OpenGIS Simple Features Specification).</param>
+		/// <returns>
+        /// Returns a <see cref="Geometry"/> read from StreamReader. 
+		/// An exception will be thrown if there is a parsing problem.
+        /// </returns>
+		public static Geometry Parse(TextReader reader)
 		{
 			WktStreamTokenizer tokenizer = new WktStreamTokenizer(reader);
 
-			return ReadGeometryTaggedText(tokenizer);
+			return readGeometryTaggedText(tokenizer);
 		}
 
 		/// <summary>
 		/// Returns the next array of Coordinates in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text format.  The
-		/// next element returned by the stream should be "(" (the beginning of "(x1 y1, x2 y2, ..., xn yn)" or
-		/// "EMPTY".</param>
-		/// <returns>The next array of Coordinates in the stream, or an empty array of "EMPTY" is the
-		/// next element returned by the stream.</returns>
-		private static List<SharpMap.Geometries.Point> GetCoordinates(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text format. 
+        /// The next element returned by the stream should be "(" 
+        /// (the beginning of "(x1 y1, x2 y2, ..., xn yn)" or "EMPTY".
+        /// </param>
+		/// <returns>
+        /// The next array of Coordinates in the stream, or an empty array of 
+        /// "EMPTY" is the next element returned by the stream.
+        /// </returns>
+		private static List<Point> getCoordinates(WktStreamTokenizer tokenizer)
 		{
-			List<SharpMap.Geometries.Point> coordinates = new List<SharpMap.Geometries.Point>();
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken=="EMPTY")
-				return coordinates;
+			List<Point> coordinates = new List<Point>();
 
-			SharpMap.Geometries.Point externalCoordinate = new SharpMap.Geometries.Point();
-			SharpMap.Geometries.Point internalCoordinate = new SharpMap.Geometries.Point();
-			externalCoordinate.X = GetNextNumber(tokenizer);
-			externalCoordinate.Y = GetNextNumber(tokenizer);
+			string nextToken = getNextEmptyOrOpener(tokenizer);
+            
+            if (nextToken == "EMPTY")
+            {
+                return coordinates;
+            }
+			
+            Point externalCoordinate = new Point();
+			Point internalCoordinate = new Point();
+
+			externalCoordinate.X = getNextNumber(tokenizer);
+			externalCoordinate.Y = getNextNumber(tokenizer);
 			coordinates.Add(externalCoordinate);
-			nextToken = GetNextCloserOrComma(tokenizer);
-			while (nextToken==",")
+			nextToken = getNextCloserOrComma(tokenizer);
+			
+            while (nextToken==",")
 			{
-				internalCoordinate = new SharpMap.Geometries.Point();
-				internalCoordinate.X = GetNextNumber(tokenizer);
-				internalCoordinate.Y = GetNextNumber(tokenizer);
+				internalCoordinate = new Point();
+				internalCoordinate.X = getNextNumber(tokenizer);
+				internalCoordinate.Y = getNextNumber(tokenizer);
 				coordinates.Add(internalCoordinate);
-				nextToken = GetNextCloserOrComma(tokenizer);
+				nextToken = getNextCloserOrComma(tokenizer);
 			}
+
 			return coordinates;
 		}
 
@@ -130,13 +160,13 @@ namespace SharpMap.Converters.WellKnownText
 		/// <summary>
 		/// Returns the next number in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known text format.  The next token
-		/// must be a number.</param>
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in well-known text format. 
+        /// The next token must be a number.
+        /// </param>
 		/// <returns>Returns the next number in the stream.</returns>
-		/// <remarks>
-		/// ParseException is thrown if the next token is not a number.
-		/// </remarks>
-		private static double GetNextNumber(WktStreamTokenizer tokenizer)
+        /// <exception cref="ParseException">Thrown if the next token is not a number.</exception>
+		private static double getNextNumber(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.NextToken();
 			return tokenizer.GetNumericValue();
@@ -145,298 +175,399 @@ namespace SharpMap.Converters.WellKnownText
 		/// <summary>
 		/// Returns the next "EMPTY" or "(" in the stream as uppercase text.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
-		/// format. The next token must be "EMPTY" or "(".</param>
-		/// <returns>the next "EMPTY" or "(" in the stream as uppercase
-		/// text.</returns>
-		/// <remarks>
-		/// ParseException is thrown if the next token is not "EMPTY" or "(".
-		/// </remarks>
-		private static string GetNextEmptyOrOpener(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next token must be "EMPTY" or "(".
+        /// </param>
+		/// <returns>
+        /// The next "EMPTY" or "(" in the stream as uppercase text.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if the next token is not "EMPTY" or "(".
+        /// </exception>
+		private static string getNextEmptyOrOpener(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.NextToken();
 			string nextWord = tokenizer.GetStringValue();
-			if (nextWord == "EMPTY" || nextWord == "(")
-				return nextWord;
+            
+            if (nextWord == "EMPTY" || nextWord == "(")
+            {
+                return nextWord;
+            }
 
-			throw new Exception("Expected 'EMPTY' or '(' but encountered '" + nextWord + "'");
+			throw new ParseException("Expected 'EMPTY' or '(' but encountered '" + nextWord + "'");
 
 		}
 
 		/// <summary>
 		/// Returns the next ")" or "," in the stream.
 		/// </summary>
-		/// <param name="tokenizer">tokenizer over a stream of text in Well-known Text
-		/// format. The next token must be ")" or ",".</param>
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next token must be ")" or ",".
+        /// </param>
 		/// <returns>Returns the next ")" or "," in the stream.</returns>
-		/// <remarks>
-		/// ParseException is thrown if the next token is not ")" or ",".
-		/// </remarks>
-		private static string GetNextCloserOrComma(WktStreamTokenizer tokenizer)
+        /// <exception cref="ParseException">
+        /// Thrown if the next token is not ")" or ",".
+        /// </exception>
+		private static string getNextCloserOrComma(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.NextToken();
 			string nextWord = tokenizer.GetStringValue();
+
 			if (nextWord == "," || nextWord == ")")
 			{
 				return nextWord;
 			}
-			throw new Exception("Expected ')' or ',' but encountered '" + nextWord + "'");
+
+			throw new ParseException("Expected ')' or ',' but encountered '" + nextWord + "'");
 		}
 
 		/// <summary>
 		/// Returns the next ")" in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
-		/// format. The next token must be ")".</param>
-		/// <returns>Returns the next ")" in the stream.</returns>
-		/// <remarks>
-		/// ParseException is thrown if the next token is not ")".
-		/// </remarks>
-		private static string GetNextCloser(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next token must be ")".
+        /// </param>
+		/// <returns>
+        /// Returns the next ")" in the stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if the next token is not ")".
+        /// </exception>
+		private static string getNextCloser(WktStreamTokenizer tokenizer)
 		{
 
-			string nextWord = GetNextWord(tokenizer);
-			if (nextWord == ")")
-				return nextWord;
+			string nextWord = getNextWord(tokenizer);
 
-			throw new Exception("Expected ')' but encountered '" + nextWord + "'");
+            if (nextWord == ")")
+            {
+                return nextWord;
+            }
+
+            throw new ParseException("Expected ')' but encountered '" + nextWord + "'");
 		}
 
 		/// <summary>
 		/// Returns the next word in the stream as uppercase text.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
-		/// format. The next token must be a word.</param>
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next token must be a word.
+        /// </param>
 		/// <returns>Returns the next word in the stream as uppercase text.</returns>
-		/// <remarks>
-		/// Exception is thrown if the next token is not a word.
-		/// </remarks>
-		private static string GetNextWord(WktStreamTokenizer tokenizer)
+        /// <exception cref="ParseException">
+        /// Thrown if the next token is not a word.
+        /// </exception>
+		private static string getNextWord(WktStreamTokenizer tokenizer)
 		{
 			TokenType type = tokenizer.NextToken();
 			string token = tokenizer.GetStringValue();
-			if (type == TokenType.Number)
-				throw new Exception("Expected a number but got " + token);
-			else if (type == TokenType.Word)
-				return token.ToUpper();
-			else if (token == "(")
-				return "(";
-			else if (token == ")")
-				return ")";
-			else if (token == ",")
-				return ",";
+            if (type == TokenType.Number)
+            {
+                throw new Exception("Expected a number but got " + token);
+            }
+            else if (type == TokenType.Word)
+            {
+                return token.ToUpper();
+            }
+            else if (token == "(")
+            {
+                return "(";
+            }
+            else if (token == ")")
+            {
+                return ")";
+            }
+            else if (token == ",")
+            {
+                return ",";
+            }
 
-			throw new Exception("Not a valid symbol in WKT format.");
+			throw new ParseException("Not a valid symbol in WKT format.");
 		}
 
 		/// <summary>
 		/// Creates a Geometry using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
+		/// <param name="tokenizer">Tokenizer over a stream of text in Well-Known Text
 		/// format. The next tokens must form a &lt;Geometry Tagged Text&gt;.</param>
 		/// <returns>Returns a Geometry specified by the next token in the stream.</returns>
 		/// <remarks>
 		/// Exception is thrown if the coordinates used to create a Polygon
 		/// shell and holes do not form closed linestrings, or if an unexpected
 		/// token is encountered.
-		/// </remarks>
-		private static Geometry ReadGeometryTaggedText(WktStreamTokenizer tokenizer)
+        /// </remarks>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered.
+        /// </exception>
+        /// <exception cref="NotSupportedException">
+        /// Thrown if an unsupported geometry is encountered.
+        /// </exception>
+		private static Geometry readGeometryTaggedText(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.NextToken();
 			string type = tokenizer.GetStringValue().ToUpper();
 			Geometry geometry = null;
+
 			switch (type)
 			{
 				case "POINT":
-				    geometry = ReadPointText(tokenizer);
+				    geometry = readPointText(tokenizer);
 				    break;
 				case "LINESTRING":
-				    geometry = ReadLineStringText(tokenizer);
+				    geometry = readLineStringText(tokenizer);
 				    break;
 				case "MULTIPOINT":
-				    geometry = ReadMultiPointText(tokenizer);
+				    geometry = readMultiPointText(tokenizer);
 				    break;
 				case "MULTILINESTRING":
-				    geometry = ReadMultiLineStringText(tokenizer);
+				    geometry = readMultiLineStringText(tokenizer);
 				    break;
 				case "POLYGON":
-				    geometry = ReadPolygonText(tokenizer);
+				    geometry = readPolygonText(tokenizer);
 				    break;
 				case "MULTIPOLYGON":
-				    geometry = ReadMultiPolygonText(tokenizer);
+				    geometry = readMultiPolygonText(tokenizer);
 				    break;
 				case "GEOMETRYCOLLECTION":
-				    geometry = ReadGeometryCollectionText(tokenizer);
+				    geometry = readGeometryCollectionText(tokenizer);
 				    break;
 				default:
-                    throw new Exception(String.Format(SharpMap.Map.NumberFormat_EnUS, "Geometrytype '{0}' is not supported.", type));
+                    throw new NotSupportedException(String.Format(WktStreamTokenizer.NumberFormat_enUS, 
+                        "Geometrytype '{0}' is not supported.", type));
 			}
+
 			return geometry;
 		}
 
 		/// <summary>
 		/// Creates a <see cref="MultiPolygon"/> using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer">tokenizer over a stream of text in Well-known Text
+		/// <param name="tokenizer">tokenizer over a stream of text in Well-Known Text
 		/// format. The next tokens must form a MultiPolygon.</param>
-		/// <returns>a <code>MultiPolygon</code> specified by the next token in the 
-		/// stream, or if if the coordinates used to create the <see cref="Polygon"/>
-		/// shells and holes do not form closed linestrings.</returns>
-		private static MultiPolygon ReadMultiPolygonText(WktStreamTokenizer tokenizer)
+		/// <returns>
+        /// A <see cref="MultiPolygon"/> specified by the next token in the 
+		/// stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered or 
+        /// if if the coordinates used to create the <see cref="Polygon"/>
+        /// shells and holes do not form closed linestrings.
+        /// </exception>
+		private static MultiPolygon readMultiPolygonText(WktStreamTokenizer tokenizer)
 		{
 			MultiPolygon polygons = new MultiPolygon();
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken == "EMPTY")
-				return polygons;
+			string nextToken = getNextEmptyOrOpener(tokenizer);
 
-			Polygon polygon = ReadPolygonText(tokenizer);
+            if (nextToken == "EMPTY")
+            {
+                return polygons;
+            }
+
+			Polygon polygon = readPolygonText(tokenizer);
 			polygons.Polygons.Add(polygon);
-			nextToken = GetNextCloserOrComma(tokenizer);
-			while (nextToken == ",")
+			nextToken = getNextCloserOrComma(tokenizer);
+			
+            while (nextToken == ",")
 			{
-				polygon = ReadPolygonText(tokenizer);
+				polygon = readPolygonText(tokenizer);
 				polygons.Polygons.Add(polygon);
-				nextToken = GetNextCloserOrComma(tokenizer);
+				nextToken = getNextCloserOrComma(tokenizer);
 			}
+
 			return polygons;
 		}
 
 		/// <summary>
 		/// Creates a Polygon using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
-		///  format. The next tokens must form a &lt;Polygon Text&gt;.</param>
-		/// <returns>Returns a Polygon specified by the next token
-		///  in the stream</returns>
-		///  <remarks>
-		///  ParseException is thown if the coordinates used to create the Polygon
-		///  shell and holes do not form closed linestrings, or if an unexpected
-		///  token is encountered.
-		///  </remarks>
-		private static Polygon ReadPolygonText(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next tokens must form a &lt;Polygon Text&gt;.</param>
+		/// <returns>
+        /// Returns a Polygon specified by the next token
+		/// in the stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered or 
+        /// if if the coordinates used to create the <see cref="Polygon"/>
+        /// shells and holes do not form closed linestrings.
+        /// </exception>
+		private static Polygon readPolygonText(WktStreamTokenizer tokenizer)
 		{
 			Polygon pol = new Polygon();
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken == "EMPTY")
-				return pol;
+			string nextToken = getNextEmptyOrOpener(tokenizer);
 
-			pol.ExteriorRing = new LinearRing(GetCoordinates(tokenizer));
-			nextToken = GetNextCloserOrComma(tokenizer);
-			while (nextToken == ",")
+            if (nextToken == "EMPTY")
+            {
+                return pol;
+            }
+			
+            pol.ExteriorRing = new LinearRing(getCoordinates(tokenizer));
+			nextToken = getNextCloserOrComma(tokenizer);
+			
+            while (nextToken == ",")
 			{
 				//Add holes
-				pol.InteriorRings.Add(new LinearRing(GetCoordinates(tokenizer)));
-				nextToken = GetNextCloserOrComma(tokenizer);
+				pol.InteriorRings.Add(new LinearRing(getCoordinates(tokenizer)));
+				nextToken = getNextCloserOrComma(tokenizer);
 			}
-			return pol;
 
+			return pol;
 		}
 
 
 		/// <summary>
 		/// Creates a Point using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
-		/// format. The next tokens must form a &lt;Point Text&gt;.</param>
-		/// <returns>Returns a Point specified by the next token in
-		/// the stream.</returns>
-		/// <remarks>
-		/// ParseException is thrown if an unexpected token is encountered.
-		/// </remarks>
-		private static Point ReadPointText(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next tokens must form a &lt;Point Text&gt;.
+        /// </param>
+		/// <returns>
+        /// Returns a Point specified by the next token in
+		/// the stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered.
+        /// </exception>
+		private static Point readPointText(WktStreamTokenizer tokenizer)
 		{
 			Point p = new Point();
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken == "EMPTY")
-				return p;
-			p.X = GetNextNumber(tokenizer);
-			p.Y = GetNextNumber(tokenizer);
-			GetNextCloser(tokenizer);
+			string nextToken = getNextEmptyOrOpener(tokenizer);
+            
+            if (nextToken == "EMPTY")
+            {
+                return p;
+            }
+
+			p.X = getNextNumber(tokenizer);
+			p.Y = getNextNumber(tokenizer);
+			getNextCloser(tokenizer);
+
 			return p;
 		}
 
 		/// <summary>
 		/// Creates a Point using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text
-		/// format. The next tokens must form a &lt;Point Text&gt;.</param>
-		/// <returns>Returns a Point specified by the next token in
-		/// the stream.</returns>
-		/// <remarks>
-		/// ParseException is thrown if an unexpected token is encountered.
-		/// </remarks>
-		private static MultiPoint ReadMultiPointText(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next tokens must form a &lt;Point Text&gt;.
+        /// </param>
+		/// <returns>
+        /// Returns a Point specified by the next token in
+		/// the stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered.
+        /// </exception>
+		private static MultiPoint readMultiPointText(WktStreamTokenizer tokenizer)
 		{
-			SharpMap.Geometries.MultiPoint mp = new MultiPoint();
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken == "EMPTY")
-				return mp;
-			mp.Points.Add(new SharpMap.Geometries.Point(GetNextNumber(tokenizer),GetNextNumber(tokenizer)));
-			nextToken = GetNextCloserOrComma(tokenizer);
+			MultiPoint mp = new MultiPoint();
+			string nextToken = getNextEmptyOrOpener(tokenizer);
+            
+            if (nextToken == "EMPTY")
+            {
+                return mp;
+            }
+
+			mp.Points.Add(new SharpMap.Geometries.Point(getNextNumber(tokenizer),getNextNumber(tokenizer)));
+			nextToken = getNextCloserOrComma(tokenizer);
+
 			while (nextToken == ",")
 			{
-				mp.Points.Add(new SharpMap.Geometries.Point(GetNextNumber(tokenizer), GetNextNumber(tokenizer)));
-				nextToken = GetNextCloserOrComma(tokenizer);
+				mp.Points.Add(new SharpMap.Geometries.Point(getNextNumber(tokenizer), getNextNumber(tokenizer)));
+				nextToken = getNextCloserOrComma(tokenizer);
 			}
+
 			return mp;
 		}
 
 		/// <summary>
 		/// Creates a <see cref="MultiLineString"/> using the next token in the stream. 
 		/// </summary>
-		/// <param name="tokenizer">tokenizer over a stream of text in Well-known Text format. The next tokens must form a MultiLineString Text</param>
-		/// <returns>a <see cref="MultiLineString"/> specified by the next token in the stream</returns>
-		private static MultiLineString ReadMultiLineStringText(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text format. 
+        /// The next tokens must form a &lt;MultiLineString Text&gt;.
+        /// </param>
+		/// <returns>
+        /// A <see cref="MultiLineString"/> specified by the next token in the stream.
+        /// </returns>
+		private static MultiLineString readMultiLineStringText(WktStreamTokenizer tokenizer)
 		{
 			MultiLineString lines = new MultiLineString();
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken == "EMPTY")
-				return lines;
+			string nextToken = getNextEmptyOrOpener(tokenizer);
+            
+            if (nextToken == "EMPTY")
+            {
+                return lines;
+            }
 
-			lines.LineStrings.Add(ReadLineStringText(tokenizer));
-			nextToken = GetNextCloserOrComma(tokenizer);
-			while (nextToken == ",")
+			lines.LineStrings.Add(readLineStringText(tokenizer));
+			nextToken = getNextCloserOrComma(tokenizer);
+			
+            while (nextToken == ",")
 			{
-				lines.LineStrings.Add(ReadLineStringText(tokenizer));
-				nextToken = GetNextCloserOrComma(tokenizer);
+				lines.LineStrings.Add(readLineStringText(tokenizer));
+				nextToken = getNextCloserOrComma(tokenizer);
 			}
-			return lines;
+			
+            return lines;
 		}
 
 		/// <summary>
 		/// Creates a LineString using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer">Tokenizer over a stream of text in Well-known Text format.  The next
-		/// tokens must form a LineString Text.</param>
-		/// <returns>Returns a LineString specified by the next token in the stream.</returns>
-		/// <remarks>
-		/// ParseException is thrown if an unexpected token is encountered.
-		/// </remarks>
-		private static LineString ReadLineStringText(WktStreamTokenizer tokenizer)
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text format.  
+        /// The next tokens must form a &lt;LineString Text&gt;.
+        /// </param>
+		/// <returns>
+        /// Returns a LineString specified by the next token in the stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered.
+        /// </exception>
+		private static LineString readLineStringText(WktStreamTokenizer tokenizer)
 		{
-			return new SharpMap.Geometries.LineString(GetCoordinates(tokenizer));
+			return new LineString(getCoordinates(tokenizer));
 		}
 
 		/// <summary>
 		/// Creates a <see cref="GeometryCollection"/> using the next token in the stream.
 		/// </summary>
-		/// <param name="tokenizer"> Tokenizer over a stream of text in Well-known Text
-		/// format. The next tokens must form a GeometryCollection Text.</param>
+		/// <param name="tokenizer">
+        /// Tokenizer over a stream of text in Well-Known Text
+		/// format. The next tokens must form a GeometryCollection Text.
+        /// </param>
 		/// <returns>
-		/// A <see cref="GeometryCollection"/> specified by the next token in the stream.</returns>
-		private static GeometryCollection ReadGeometryCollectionText(WktStreamTokenizer tokenizer)
+		/// A <see cref="GeometryCollection"/> specified by the next token in the stream.
+        /// </returns>
+        /// <exception cref="ParseException">
+        /// Thrown if an unexpected token is encountered.
+        /// </exception>
+		private static GeometryCollection readGeometryCollectionText(WktStreamTokenizer tokenizer)
 		{
 			GeometryCollection geometries = new GeometryCollection();			
-			string nextToken = GetNextEmptyOrOpener(tokenizer);
-			if (nextToken.Equals("EMPTY"))
-				return geometries;
-			geometries.Collection.Add(ReadGeometryTaggedText(tokenizer));
-			nextToken = GetNextCloserOrComma(tokenizer);
-			while (nextToken.Equals(","))
+			string nextToken = getNextEmptyOrOpener(tokenizer);
+
+            if (nextToken.Equals("EMPTY"))
+            {
+                return geometries;
+            }
+			
+            geometries.Collection.Add(readGeometryTaggedText(tokenizer));
+			nextToken = getNextCloserOrComma(tokenizer);
+			
+            while (nextToken.Equals(","))
 			{
-				geometries.Collection.Add(ReadGeometryTaggedText(tokenizer));
-				nextToken = GetNextCloserOrComma(tokenizer);
+				geometries.Collection.Add(readGeometryTaggedText(tokenizer));
+				nextToken = getNextCloserOrComma(tokenizer);
 			}
+
 			return geometries;
 		}        
 

@@ -214,7 +214,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region Explicit Interface Implementation
         #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-        IMatrix2D IRenderer.ViewTransform
+        IMatrix2D IRenderer.RenderTransform
         {
             get
             {

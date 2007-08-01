@@ -54,6 +54,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ParseException.cs" />
     <Compile Include="Converters\WellKnownBinary\GeometryFromWKB.cs" />
     <Compile Include="Converters\WellKnownBinary\GeometryToWKB.cs" />
     <Compile Include="Converters\WellKnownBinary\WKBByteOrder.cs" />
@@ -149,7 +150,6 @@
     <Compile Include="Data\Providers\IProvider`1.cs" />
     <Compile Include="Data\Providers\IWritableProvider.cs" />
     <Compile Include="Data\Providers\OgcSimpleFeaturesForSql\Enumerations.cs" />
-    <Compile Include="Data\Providers\OleDbPoint.cs" />
     <Compile Include="Data\Providers\Pooling\Connector.cs" />
     <Compile Include="Data\Providers\Pooling\ConnectorPool.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseConstants.cs" />
@@ -208,19 +208,15 @@
     <Compile Include="Model\Layers\IFeatureLayer.cs" />
     <Compile Include="Model\Layers\ILayer.cs" />
     <Compile Include="Model\Layers\LabelLayer.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\Layers\Layer.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\Layers\LayerGroup.cs">
-      <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Model\Layers\MultipartGeometryLabelingBehavor.cs" />
     <Compile Include="Model\Layers\RasterLayer.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\Layers\VectorLayer.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Presentation\IBindingListView`1.cs" />
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
@@ -246,7 +242,6 @@
     <Compile Include="Tools\ActionContext.cs" />
     <Compile Include="Model\LayersCollection.cs" />
     <Compile Include="Model\Map.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
@@ -331,6 +326,7 @@
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Model\Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />
     <None Include="SharpMap.snk" />
   </ItemGroup>

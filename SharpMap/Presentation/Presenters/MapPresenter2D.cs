@@ -72,7 +72,7 @@ namespace SharpMap.Presentation
             View.EndAction += View_EndAction;
             //_viewDpi = View.Dpi;
 
-            BoundingBox extents = map.Envelope;
+            BoundingBox extents = map.VisibleEnvelope;
 
             GeoPoint geoCenter = extents.GetCentroid();
 

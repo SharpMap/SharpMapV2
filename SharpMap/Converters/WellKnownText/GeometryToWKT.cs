@@ -249,7 +249,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// <returns>The double as a string, not in scientific notation.</returns>
 		private static string WriteNumber(double d) 
 		{
-            return d.ToString(SharpMap.Map.NumberFormat_EnUS);
+            return d.ToString(WktStreamTokenizer.NumberFormat_enUS);
 		}
 
 		/// <summary>

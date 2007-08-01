@@ -26,8 +26,11 @@ namespace SharpMap.Layers
 {
     public interface IFeatureLayer : ILayer
     {
-		IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region);
-		event EventHandler SelectedFeaturesChanged;
-		IList<FeatureDataRow> SelectedFeatures { get; set; }
+        FeatureDataTable VisibleFeatures { get; }
+        event EventHandler VisibleFeaturesChanged;
+        IList<FeatureDataRow> SelectedFeatures { get; set; }
+        event EventHandler SelectedFeaturesChanged;
+        IList<FeatureDataRow> HighlightedFeatures { get; set; }
+        event EventHandler HighlightedFeaturesChanged;
     }
 }

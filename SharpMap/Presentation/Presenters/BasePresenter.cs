@@ -39,22 +39,25 @@ namespace SharpMap.Presentation
         /// </summary>
         public void Dispose()
         {
-            if (!Disposed)
+            if (!IsDisposed)
             {
                 Dispose(true);
-                Disposed = true;
+                _disposed = true;
                 GC.SuppressFinalize(this);
             }
         }
         #endregion
 
         /// <summary>
-        /// Releases all resources, and removes from finalization queue if <paramref name="disposing"/> is true.
+        /// Releases all resources, and removes from finalization 
+        /// queue if <paramref name="disposing"/> is true.
         /// </summary>
-        /// <param name="disposing">True if being called deterministically, false if being called from finalizer.</param>
+        /// <param name="disposing">
+        /// True if being called deterministically, false if being called from finalizer.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
-            if (Disposed)
+            if (IsDisposed)
             {
                 return;
             }
@@ -67,11 +70,15 @@ namespace SharpMap.Presentation
         /// <summary>
         /// Gets whether this presenter is disposed, and no longer accessible.
         /// </summary>
-        public bool Disposed
+        public bool IsDisposed
         {
             get { return _disposed; }
-            set { _disposed = value; }
         }
+
+        /// <summary>
+        /// Event fired when the presenter is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
         #endregion
         #endregion
 
@@ -86,7 +93,7 @@ namespace SharpMap.Presentation
         {
             get 
             {
-                if (Disposed)
+                if (IsDisposed)
                 {
                     throw new ObjectDisposedException(GetType().ToString());
                 }
@@ -102,7 +109,7 @@ namespace SharpMap.Presentation
         {
             get
             {
-                if (Disposed)
+                if (IsDisposed)
                 {
                     throw new ObjectDisposedException(GetType().ToString());
                 }

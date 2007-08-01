@@ -33,7 +33,10 @@ namespace SharpMap.CoordinateSystems
 	/// where the units are always meters and degrees.)
 	/// </remarks>
 	public class ProjectionParameter
-	{
+    {
+        private string _name;
+        private double _value;
+
 		/// <summary>
 		/// Initializes an instance of a ProjectionParameter
 		/// </summary>
@@ -41,8 +44,8 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="value">Parameter value</param>
 		public ProjectionParameter(string name, double value)
 		{
-			_Name = name;
-			_Value = value;
+			_name = name;
+			_value = value;
 		}
 
 		public override string ToString()
@@ -59,7 +62,8 @@ namespace SharpMap.CoordinateSystems
 				return false;
 			}
 
-			return other.Name == Name && Tolerance.Equal<Parameter>(Value, other.Value);
+			return other.Name == Name 
+                && Tolerance.Equal<Parameter>(Value, other.Value);
 		}
 
 		public override int GetHashCode()
@@ -67,18 +71,14 @@ namespace SharpMap.CoordinateSystems
 			return Name.GetHashCode() ^ Value.GetHashCode();
 		}
 
-		private string _Name;
-
 		/// <summary>
 		/// Parameter name.
 		/// </summary>
 		public string Name
 		{
-			get { return _Name; }
-			set { _Name = value; }
+			get { return _name; }
+			set { _name = value; }
 		}
-
-		private double _Value;
 
 		/// <summary>
 		/// Parameter value.
@@ -89,8 +89,8 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		public double Value
 		{
-			get { return _Value; }
-			set { _Value = value; }
+			get { return _value; }
+			set { _value = value; }
 		}
 
 
@@ -102,7 +102,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.NumberFormat_EnUS, "PARAMETER[\"{0}\", {1}]", Name, Value);
+                return String.Format(Info.NumberFormat, "PARAMETER[\"{0}\", {1}]", Name, Value);
 			}
 		}
 
@@ -113,7 +113,8 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-                return String.Format(SharpMap.Map.NumberFormat_EnUS, "<CS_ProjectionParameter Name=\"{0}\" Value=\"{1}\"/>", Name, Value);
+                return String.Format(Info.NumberFormat, 
+                    "<CS_ProjectionParameter Name=\"{0}\" Value=\"{1}\"/>", Name, Value);
 			}
 		}
 	}

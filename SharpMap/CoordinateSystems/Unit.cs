@@ -27,6 +27,8 @@ namespace SharpMap.CoordinateSystems
 	/// </summary>
     public class Unit : Info, IUnit
     {
+        private double _conversionFactor;
+
 		/// <summary>
 		/// Initializes a new unit
 		/// </summary>
@@ -40,7 +42,7 @@ namespace SharpMap.CoordinateSystems
 		internal Unit(double conversionFactor, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
-			_ConversionFactor = conversionFactor;
+			_conversionFactor = conversionFactor;
 		}
 
 		/// <summary>
@@ -53,15 +55,13 @@ namespace SharpMap.CoordinateSystems
 		{
 		}
 
-		private double _ConversionFactor;
-
 		/// <summary>
 		/// Gets or sets the number of units per base-unit.
 		/// </summary>
 		public double ConversionFactor
 		{
-			get { return _ConversionFactor; }
-			set { _ConversionFactor = value; }
+			get { return _conversionFactor; }
+			set { _conversionFactor = value; }
 		}
 
 		/// <summary>
@@ -73,10 +73,15 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS, "UNIT[\"{0}\", {1}", Name, _ConversionFactor);
-				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
-					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                sb.AppendFormat(Info.NumberFormat, "UNIT[\"{0}\", {1}", Name, _conversionFactor);
+                
+                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                {
+                    sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                }
+
 				sb.Append("]");
+
 				return sb.ToString();
 			}
 		}

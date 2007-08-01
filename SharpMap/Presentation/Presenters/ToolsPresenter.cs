@@ -29,12 +29,12 @@ namespace SharpMap.Presentation
 
         private void handleToolChangeRequested(object sender, ToolChangeRequestedEventArgs e)
         {
-            Map.SelectedTool = e.RequestedTool;
+            Map.ActiveTool = e.RequestedTool;
         }
 
         private void handleSelectedToolChanged(object sender, EventArgs e)
         {
-            View.SelectedTool = Map.SelectedTool;
+            View.SelectedTool = Map.ActiveTool;
         }
     }
 }

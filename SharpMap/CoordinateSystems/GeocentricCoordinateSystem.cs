@@ -113,16 +113,26 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat("GEOCCS[\"{0}\", {1}, {2}, {3}", Name, HorizontalDatum.Wkt, PrimeMeridian.Wkt, LinearUnit.Wkt);
-				//Skip axis info if they contain default values				
-				if (AxisInfo.Count != 3 ||
-					AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientationEnum.Other ||
-					AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientationEnum.East ||
-					AxisInfo[2].Name != "Z" || AxisInfo[2].Orientation != AxisOrientationEnum.North)
-					for (int i = 0; i < AxisInfo.Count; i++)
-						sb.AppendFormat(", {0}", GetAxis(i).WKT);
-				if (!String.IsNullOrEmpty(Authority) && AuthorityCode>0)
-					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+				
+                sb.AppendFormat("GEOCCS[\"{0}\", {1}, {2}, {3}", Name, HorizontalDatum.Wkt, PrimeMeridian.Wkt, LinearUnit.Wkt);
+				
+                //Skip axis info if they contain default values				
+                if (AxisInfo.Count != 3 ||
+                    AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientationEnum.Other ||
+                    AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientationEnum.East ||
+                    AxisInfo[2].Name != "Z" || AxisInfo[2].Orientation != AxisOrientationEnum.North)
+                {
+                    for (int i = 0; i < AxisInfo.Count; i++)
+                    {
+                        sb.AppendFormat(", {0}", GetAxis(i).WKT);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                {
+                    sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                }
+
 				sb.Append("]");
 				return sb.ToString();
 			}
@@ -136,13 +146,19 @@ namespace SharpMap.CoordinateSystems
 			get
 			{
 				StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(SharpMap.Map.NumberFormat_EnUS,
+
+                sb.AppendFormat(NumberFormat,
 					"<CS_CoordinateSystem Dimension=\"{0}\"><CS_GeocentricCoordinateSystem>{1}",
-					this.Dimension, InfoXml);				
-				foreach (AxisInfo ai in this.AxisInfo)
-					sb.Append(ai.XML);
+					Dimension, InfoXml);
+
+                foreach (AxisInfo ai in AxisInfo)
+                {
+                    sb.Append(ai.XML);
+                }
+
 				sb.AppendFormat("{0}{1}{2}</CS_GeocentricCoordinateSystem></CS_CoordinateSystem>",
 					HorizontalDatum.Xml, LinearUnit.Xml, PrimeMeridian.Xml);
+
 				return sb.ToString();
 			}
 		}

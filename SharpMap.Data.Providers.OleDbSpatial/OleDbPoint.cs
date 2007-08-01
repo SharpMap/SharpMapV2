@@ -25,15 +25,25 @@ using SharpMap.Geometries;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.CoordinateSystems;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data.Providers.OleDbSpatial
 {
 	/// <summary>
-	/// The OleDbPoint provider is used for rendering point data from an OleDb compatible datasource.
+	/// The OleDbPoint provider is used for rendering 
+    /// point data from an OleDb compliant datasource.
 	/// </summary>
 	/// <remarks>
-	/// <para>The data source will need to have two double-type columns, xColumn and yColumn that contains the coordinates of the point,
-	/// and an integer-type column containing a unique identifier for each row.</para>
-	/// <para>To get good performance, make sure you have applied indexes on ID, xColumn and yColumns in your datasource table.</para>
+	/// <para>
+    /// The data source will need to have two columns of type <see cref="System.Data.SqlDbType.Float"/>: 
+    /// 'x' and 'y'. These columns contain the coordinates of the point.
+    /// Also required is a column of type <see cref="System.Data.SqlDbType.Int"/>,
+    /// containing a unique identifier for each row.
+    /// </para>
+	/// <para>
+    /// To get decent performance, make sure you have applied indexes on 
+    /// the 'x' and 'y' columns along with the id column in your datasource table.
+    /// The 'x' and 'y' columns are queried during a <see cref="ExecuteIntersectionQuery"/> 
+    /// to determine if they are within the bounds given.
+    /// </para>
 	/// </remarks>
 	public class OleDbPoint : IProvider<uint>, IDisposable
 	{
@@ -49,7 +59,7 @@ namespace SharpMap.Data.Providers
         private bool _isOpen;
         private bool _disposed = false;
 
-        #region Object Construction/Destruction
+        #region Object Construction / Disposal
         /// <summary>
 		/// Initializes a new instance of the OleDbPoint provider
 		/// </summary>
@@ -82,7 +92,7 @@ namespace SharpMap.Data.Providers
         public void Dispose()
         {
             Dispose(true);
-            Disposed = true;
+            IsDisposed = true;
             GC.SuppressFinalize(this);
         }
 
@@ -91,7 +101,7 @@ namespace SharpMap.Data.Providers
 
         }
 
-        protected bool Disposed
+        protected bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }

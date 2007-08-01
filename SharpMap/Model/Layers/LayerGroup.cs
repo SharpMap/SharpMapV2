@@ -22,6 +22,10 @@ using System.Text;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Styles;
+using SharpMap.CoordinateSystems;
+using SharpMap.CoordinateSystems.Transformations;
+using SharpMap.Data.Providers;
+using System.ComponentModel;
 
 namespace SharpMap.Layers
 {
@@ -29,30 +33,102 @@ namespace SharpMap.Layers
 	/// Class for holding a group of layers.
 	/// </summary>
 	/// <remarks>
-	/// The Group layer is useful for grouping a set of layers,
-	/// for instance a set of image tiles, and expose them as a single layer
+	/// A <see cref="LayerGroup"/> is useful for grouping a set of layers,
+	/// for instance a set of image tiles, or a feature layer and a label layer, 
+    /// and expose them as a single layer.
 	/// </remarks>
-	public class LayerGroup : Layer, IDisposable
+	public class LayerGroup : ILayer, INotifyPropertyChanged, IDisposable, ICloneable
 	{
-        private List<Layer> _layers;
+        private List<ILayer> _layers = new List<ILayer>();
+        private bool _disposed;
 
-		/// <summary>
-		/// Initializes a new group layer
+        #region Object Creation / Disposal
+        /// <summary>
+		/// Initializes a new group layer.
 		/// </summary>
-		/// <param name="layername">Name of layer</param>
+		/// <param name="layername">Name of the layer group.</param>
 		public LayerGroup(string layername)
 		{
-			this.LayerName = layername;
-			_layers = new List<Layer>();
+			LayerName = layername;
 		}
+        
+        #region Dispose Pattern
+        ~LayerGroup()
+        {
+            Dispose(false);
+        }
 
-		/// <summary>
+        #region IDisposable Members
+        /// <summary>
+        /// Releases all resources deterministically.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                Dispose(true);
+                _disposed = true;
+                GC.SuppressFinalize(this);
+
+                EventHandler e = Disposed;
+                if (e != null)
+                {
+                    e(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Releases all resources, and removes from finalization 
+        /// queue if <paramref name="disposing"/> is true.
+        /// </summary>
+        /// <param name="disposing">
+        /// True if being called deterministically, false if being called from finalizer.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            foreach (Layer layer in Layers)
+            {
+                if (layer is IDisposable)
+                {
+                    ((IDisposable)layer).Dispose();
+                }
+            }
+
+            this.Layers.Clear();
+        }
+
+        /// <summary>
+        /// Gets whether this layer is disposed, and no longer accessible.
+        /// </summary>
+        public bool IsDisposed
+        {
+            get { return _disposed; }
+        }
+
+        /// <summary>
+        /// Event fired when the layer is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
+        #endregion
+
+        #endregion
+
+
+        /// <summary>
 		/// Sublayers in the group
 		/// </summary>
-		public List<Layer> Layers
+		public IList<ILayer> Layers
 		{
 			get { return _layers; }
-			set { _layers = value; }
+			set { _layers = new List<ILayer>(value);  }
 		}
 
 		/// <summary>
@@ -60,64 +136,154 @@ namespace SharpMap.Layers
 		/// </summary>
 		/// <param name="name">Name of layer</param>
 		/// <returns>Layer</returns>
-		public Layer GetLayerByName(string name)
+		public ILayer GetLayerByName(string name)
 		{
-            return _layers.Find(delegate(SharpMap.Layers.Layer layer) { return layer.LayerName.Equals(name); });
-		}
+            return _layers.Find(delegate(ILayer layer) 
+            { 
+                return String.Compare(layer.LayerName, name, StringComparison.CurrentCultureIgnoreCase) == 0; 
+            });
+        }
 
-		/// <summary>
-		/// Returns the extent of the layer
-		/// </summary>
-		/// <returns>Bounding box corresponding to the extent of the features in the layer</returns>
-		public override BoundingBox Envelope
-		{
-			get
+        #region ILayer Members
+
+        public ICoordinateSystem CoordinateSystem
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public ICoordinateTransformation CoordinateTransformation
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IProvider DataSource
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool Enabled
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns the extent of the layer
+        /// </summary>
+        /// <returns>
+        /// Bounding box corresponding to the extent of the features in the layer.
+        /// </returns>
+        public BoundingBox Envelope
+        {
+            get
             {
                 BoundingBox bbox = BoundingBox.Empty;
-				
-                if (this.Layers.Count == 0)
-					return bbox;
 
-                Layers.ForEach(delegate(Layer layer) 
-                { 
-                    bbox.ExpandToInclude(layer.Envelope); 
+                if (this.Layers.Count == 0)
+                {
+                    return bbox;
+                }
+
+                _layers.ForEach(delegate(ILayer layer)
+                {
+                    bbox.ExpandToInclude(layer.Envelope);
                 });
 
-				return bbox;
-			}
-		}
+                return bbox;
+            }
+        }
+
+        public string LayerName
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int Srid
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IStyle Style
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public BoundingBox VisibleRegion
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        public ILayer Clone()
+        {
+            throw new NotImplementedException();
+        }
 
 		#region ICloneable Members
 
 		/// <summary>
-		/// Clones the layer
+		/// Clones the layer.
 		/// </summary>
-		/// <returns>cloned object</returns>
-		public override object Clone()
+		/// <returns>A deep-copy of the layer.</returns>
+        object ICloneable.Clone()
 		{
-			throw new NotImplementedException();
+            return Clone();
 		}
 
 		#endregion
 
-		protected override void Dispose(bool disposing)
-		{
-			if (IsDisposed)
-			{
-				return;
-			}
+        #region INotifyPropertyChanged Members
 
-			foreach (Layer layer in Layers)
-			{
-				if (layer is IDisposable)
-				{
-					((IDisposable)layer).Dispose();
-				}
-			}
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-			this.Layers.Clear();
-
-			base.Dispose(disposing);
-		}
-	}
+        #endregion
+    }
 }
