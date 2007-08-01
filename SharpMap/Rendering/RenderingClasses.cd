@@ -4,16 +4,16 @@
   <Class Name="SharpMap.Rendering.Rendering2D.BasicGeometryRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
     <Position X="7.25" Y="7.25" Width="3.25" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\BasicGeometryRenderer2D.cs</FileName>
-      <HashCode>ABYAAAAAAAAAAIAAAAAACAAAAAgAAAAIAAAAAoAACAI=</HashCode>
+      <FileName>Rendering\2D\BasicGeometryRenderer2D`1.cs</FileName>
+      <HashCode>AJYAAAAAAAAAAIAAAAAACAAAAAgAAAAIAACAAoAACAI=</HashCode>
     </TypeIdentifier>
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <InheritanceLine Type="SharpMap.Rendering.Rendering2D.FeatureRenderer2D&lt;TStyle, TRenderObject&gt;" ManuallyRouted="true">
       <Path>
-        <Point X="14.75" Y="5.509" />
-        <Point X="14.75" Y="6.09" />
+        <Point X="13.75" Y="5.509" />
+        <Point X="13.75" Y="6.09" />
         <Point X="12.09" Y="6.09" />
         <Point X="12.09" Y="7.01" />
         <Point X="8.875" Y="7.01" />
@@ -23,87 +23,87 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="SharpMap.Rendering.Rendering2D.VectorRenderer2D&lt;TRenderObject&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="9" Y="5" Width="2.75" />
+    <Position X="8.25" Y="5" Width="2.75" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\VectorRenderer2D.cs</FileName>
-      <HashCode>AICAAAAAACAEQAAAAAAQAAAAAIACAAAAAACgAAACAIA=</HashCode>
+      <FileName>Rendering\2D\VectorRenderer2D`1.cs</FileName>
+      <HashCode>AACAAAAAECAEQAAAAAACABAAAIACAAAAAAAAAAAAAIA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="SharpMap.Rendering.Rendering2D.FeatureRenderer2D&lt;TStyle, TRenderObject&gt;" Collapsed="true">
-    <Position X="12.25" Y="5" Width="5" />
+    <Position X="12.25" Y="5" Width="3" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\FeatureRenderer2D.cs</FileName>
-      <HashCode>ABygCAAAACAEQQAQACAAACAAAAACAAgAAAAhAQACAAg=</HashCode>
+      <FileName>Rendering\2D\FeatureRenderer2D`2.cs</FileName>
+      <HashCode>ABygCAAAACAEQAAQACACASAAAAACAAgAAAAhAAACAAg=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="SharpMap.Rendering.Rendering2D.LabelRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
-    <Position X="12.25" Y="7.25" Width="5" />
+    <Position X="12.25" Y="7.25" Width="2.75" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\LabelRenderer2D.cs</FileName>
-      <HashCode>AIQAQAAEAAAAACAAAAAACAAAAIAAAABCAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\2D\LabelRenderer2D`1.cs</FileName>
+      <HashCode>AAQAQAAEAAAAACAAAAAACAAAAIAAAABCAAAgAAAAAAA=</HashCode>
     </TypeIdentifier>
     <InheritanceLine Type="SharpMap.Rendering.Rendering2D.FeatureRenderer2D&lt;TStyle, TRenderObject&gt;" ManuallyRouted="true">
       <Path>
-        <Point X="14.75" Y="5.509" />
-        <Point X="14.75" Y="6.09" />
+        <Point X="13.75" Y="5.509" />
+        <Point X="13.75" Y="6.09" />
         <Point X="12.09" Y="6.09" />
         <Point X="12.09" Y="7.01" />
-        <Point X="14.75" Y="7.01" />
-        <Point X="14.75" Y="7.25" />
+        <Point X="13.625" Y="7.01" />
+        <Point X="13.625" Y="7.25" />
       </Path>
     </InheritanceLine>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="SharpMap.Rendering.Rendering2D.RasterRenderer2D&lt;TRenderObject&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="3.25" Y="5" Width="5.25" />
+    <Position X="3.25" Y="5" Width="3.5" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\RasterRenderer2D.cs</FileName>
-      <HashCode>AAAAAAAAACQAQAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Rendering\2D\RasterRenderer2D`1.cs</FileName>
+      <HashCode>AAAAAAAAECQAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="SharpMap.Rendering.Rendering2D.IVectorRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
-    <Position X="9" Y="3.5" Width="2.75" />
+    <Position X="8.25" Y="3.5" Width="2.75" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\IVectorRenderer2D.cs</FileName>
+      <FileName>Rendering\2D\IVectorRenderer2D`1.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAIA=</HashCode>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="SharpMap.Rendering.IFeatureRenderer&lt;TViewPoint, TViewSize, TViewRectangle, TRenderObject&gt;" Collapsed="true">
-    <Position X="12.25" Y="3.5" Width="5" />
+  <Interface Name="SharpMap.Rendering.IFeatureRenderer&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="12.25" Y="3.5" Width="3" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\IFeatureRenderer.cs</FileName>
+      <FileName>Rendering\IFeatureRenderer`1.cs</FileName>
       <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Interface Name="SharpMap.Rendering.IGeometryRenderer&lt;TSymbol, TRenderObject&gt;" Collapsed="true">
     <Position X="7.25" Y="6.25" Width="3.25" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\IGeometryRenderer.cs</FileName>
+      <FileName>Rendering\IGeometryRenderer`2.cs</FileName>
       <HashCode>ABIAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAACAI=</HashCode>
     </TypeIdentifier>
   </Interface>
   <Interface Name="SharpMap.Rendering.ILabelRenderer&lt;TViewPoint, TViewSize, TViewRectangle, TRenderObject&gt;" Collapsed="true">
     <Position X="12.25" Y="6.25" Width="5" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\ILabelRenderer.cs</FileName>
+      <FileName>Rendering\ILabelRenderer`4.cs</FileName>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAIAAAABAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="SharpMap.Rendering.IRasterRenderer&lt;TViewPoint, TViewSize, TViewRectangle, TRenderObject&gt;" Collapsed="true">
-    <Position X="3.25" Y="3.5" Width="5.25" />
+  <Interface Name="SharpMap.Rendering.IRasterRenderer&lt;TViewRectangle, TRenderObject&gt;" Collapsed="true">
+    <Position X="3.25" Y="3.5" Width="3.5" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\IRasterRenderer.cs</FileName>
+      <FileName>Rendering\IRasterRenderer`2.cs</FileName>
       <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="SharpMap.Rendering.IRenderer&lt;TViewPoint, TViewSize, TViewRectangle, TRenderObject&gt;" Collapsed="true">
-    <Position X="3.25" Y="2" Width="4.75" />
+  <Interface Name="SharpMap.Rendering.IRenderer" Collapsed="true">
+    <Position X="9" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <FileName>Rendering\Renderers\IRenderer.cs</FileName>
-      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Rendering\IRenderer.cs</FileName>
+      <HashCode>AAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
 </ClassDiagram>
