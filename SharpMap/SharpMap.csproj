@@ -149,7 +149,7 @@
     <Compile Include="Data\Providers\IProvider.cs" />
     <Compile Include="Data\Providers\IProvider`1.cs" />
     <Compile Include="Data\Providers\IWritableProvider.cs" />
-    <Compile Include="Data\Providers\OgcSimpleFeaturesForSql\Enumerations.cs" />
+    <Compile Include="Data\Providers\OgcEnumerations.cs" />
     <Compile Include="Data\Providers\Pooling\Connector.cs" />
     <Compile Include="Data\Providers\Pooling\ConnectorPool.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseConstants.cs" />
