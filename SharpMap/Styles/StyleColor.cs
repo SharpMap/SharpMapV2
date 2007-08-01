@@ -473,7 +473,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Gets a very light blue (BRGA = 255, 248, 240, 255).
+        /// Gets a bluish-white (BRGA = 255, 248, 240, 255).
         /// </summary>
         /// <remarks>
         /// Here is an example: 
@@ -487,6 +487,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 215, 235, 250, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(250, 235, 215); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor AntiqueWhite
         {
             get
@@ -495,6 +502,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 255, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 255, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Aqua
         {
             get
@@ -503,6 +517,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 212, 255, 127, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(127, 255, 212); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Aquamarine
         {
             get
@@ -511,6 +532,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 255, 240, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(240, 255, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Azure
         {
             get
@@ -519,6 +547,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 220, 245, 245, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(245, 245, 220); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Beige
         {
             get
@@ -527,6 +562,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 196, 228, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 228, 196); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Bisque
         {
             get
@@ -535,6 +577,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 0, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 0, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Black
         {
             get
@@ -543,6 +592,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 205, 235, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 235, 205); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor BlanchedAlmond
         {
             get
@@ -551,6 +607,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 0, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 0, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Blue
         {
             get
@@ -559,6 +622,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 226, 43, 138, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(138, 43, 226); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor BlueViolet
         {
             get
@@ -567,6 +637,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 42, 42, 165, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(165, 42, 42); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Brown
         {
             get
@@ -575,6 +652,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 135, 184, 222, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(222, 184, 135); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor BurlyWood
         {
             get
@@ -583,6 +667,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 160, 158, 95, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(95, 158, 160); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor CadetBlue
         {
             get
@@ -591,6 +682,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 255, 127, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(127, 255, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Chartreuse
         {
             get
@@ -599,6 +697,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 30, 105, 210, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(210, 105, 30); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Chocolate
         {
             get
@@ -607,6 +712,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 80, 127, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 127, 80); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Coral
         {
             get
@@ -615,6 +727,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 237, 149, 100, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(100, 149, 237); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor CornflowerBlue
         {
             get
@@ -623,6 +742,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 220, 248, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 248, 220); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Cornsilk
         {
             get
@@ -631,6 +757,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 60, 20, 220, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(220, 20, 60); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Crimson
         {
             get
@@ -639,6 +772,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 255, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 255, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Cyan
         {
             get
@@ -647,6 +787,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 139, 0, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 0, 139); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkBlue
         {
             get
@@ -655,6 +802,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 139, 139, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 139, 139); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkCyan
         {
             get
@@ -663,6 +817,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 11, 134, 184, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(184, 134, 11); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkGoldenrod
         {
             get
@@ -671,6 +832,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 169, 169, 169, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(169, 169, 169); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkGray
         {
             get
@@ -679,6 +847,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 100, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 100, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkGreen
         {
             get
@@ -687,6 +862,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 107, 183, 189, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(189, 183, 107); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkKhaki
         {
             get
@@ -695,6 +877,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 139, 0, 139, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(139, 0, 139); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkMagenta
         {
             get
@@ -703,6 +892,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 47, 107, 85, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(85, 107, 47); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkOliveGreen
         {
             get
@@ -711,6 +907,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 140, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 140, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkOrange
         {
             get
@@ -719,6 +922,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 204, 50, 153, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(153, 50, 204); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkOrchid
         {
             get
@@ -727,6 +937,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 0, 139, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(139, 0, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkRed
         {
             get
@@ -735,6 +952,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 122, 150, 233, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(233, 150, 122); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkSalmon
         {
             get
@@ -743,6 +967,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 139, 188, 143, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(143, 188, 139); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkSeaGreen
         {
             get
@@ -751,6 +982,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 139, 61, 72, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(72, 61, 139); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkSlateBlue
         {
             get
@@ -759,6 +997,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 79, 79, 47, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(47, 79, 79); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkSlateGray
         {
             get
@@ -767,6 +1012,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 209, 206, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 206, 209); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkTurquoise
         {
             get
@@ -775,6 +1027,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 211, 0, 148, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(148, 0, 211); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DarkViolet
         {
             get
@@ -783,6 +1042,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 147, 20, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 20, 147); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DeepPink
         {
             get
@@ -791,6 +1057,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 191, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 191, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DeepSkyBlue
         {
             get
@@ -799,6 +1072,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 105, 105, 105, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(105, 105, 105); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DimGray
         {
             get
@@ -807,6 +1087,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 144, 30, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(30, 144, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor DodgerBlue
         {
             get
@@ -815,6 +1102,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 34, 34, 178, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(178, 34, 34); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Firebrick
         {
             get
@@ -823,6 +1117,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 240, 250, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 250, 240); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor FloralWhite
         {
             get
@@ -831,6 +1132,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 34, 139, 34, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(34, 139, 34); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor ForestGreen
         {
             get
@@ -839,6 +1147,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 0, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 0, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Fuchsia
         {
             get
@@ -847,6 +1162,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 220, 220, 220, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(220, 220, 220); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Gainsboro
         {
             get
@@ -855,6 +1177,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 248, 248, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(248, 248, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor GhostWhite
         {
             get
@@ -863,6 +1192,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 215, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 215, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Gold
         {
             get
@@ -871,6 +1207,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 32, 165, 218, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(218, 165, 32); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Goldenrod
         {
             get
@@ -879,6 +1222,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 128, 128, 128, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(128, 128, 128); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Gray
         {
             get
@@ -887,6 +1237,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 128, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 128, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Green
         {
             get
@@ -895,6 +1252,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 47, 255, 173, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(173, 255, 47); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor GreenYellow
         {
             get
@@ -903,6 +1267,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 240, 255, 240, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(240, 255, 240); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Honeydew
         {
             get
@@ -911,6 +1282,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 180, 105, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 105, 180); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor HotPink
         {
             get
@@ -919,6 +1297,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 92, 92, 205, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(205, 92, 92); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor IndianRed
         {
             get
@@ -927,6 +1312,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 130, 0, 75, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(75, 0, 130); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Indigo
         {
             get
@@ -935,6 +1327,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 240, 255, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 255, 240); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Ivory
         {
             get
@@ -943,6 +1342,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 140, 230, 240, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(240, 230, 140); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Khaki
         {
             get
@@ -951,6 +1357,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 250, 230, 230, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(230, 230, 250); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Lavender
         {
             get
@@ -959,6 +1372,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 245, 240, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 240, 245); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LavenderBlush
         {
             get
@@ -967,6 +1387,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 252, 124, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 124, 252); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LawnGreen
         {
             get
@@ -975,6 +1402,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 205, 250, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 250, 205); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LemonChiffon
         {
             get
@@ -983,6 +1417,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 230, 216, 173, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(173, 216, 230); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightBlue
         {
             get
@@ -991,6 +1432,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 128, 128, 240, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(240, 128, 128); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightCoral
         {
             get
@@ -999,6 +1447,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 255, 224, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(224, 255, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightCyan
         {
             get
@@ -1007,6 +1462,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 210, 250, 250, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(250, 250, 210); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightGoldenrodYellow
         {
             get
@@ -1015,6 +1477,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 144, 238, 144, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(144, 238, 144); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightGreen
         {
             get
@@ -1023,6 +1492,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 211, 211, 211, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(211, 211, 211); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightGray
         {
             get
@@ -1031,6 +1507,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 193, 182, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 182, 193); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightPink
         {
             get
@@ -1039,6 +1522,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 122, 160, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 160, 122); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightSalmon
         {
             get
@@ -1047,6 +1537,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 170, 178, 32, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(32, 178, 170); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightSeaGreen
         {
             get
@@ -1055,6 +1552,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 250, 206, 135, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(135, 206, 250); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightSkyBlue
         {
             get
@@ -1063,6 +1567,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 153, 136, 119, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(119, 136, 153); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightSlateGray
         {
             get
@@ -1071,6 +1582,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 222, 196, 176, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(176, 196, 222); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightSteelBlue
         {
             get
@@ -1079,6 +1597,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 224, 255, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 255, 224); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LightYellow
         {
             get
@@ -1087,6 +1612,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 255, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 255, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Lime
         {
             get
@@ -1095,6 +1627,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 50, 205, 50, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(50, 205, 50); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor LimeGreen
         {
             get
@@ -1103,6 +1642,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 230, 240, 250, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(250, 240, 230); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Linen
         {
             get
@@ -1111,6 +1657,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 255, 0, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 0, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Magenta
         {
             get
@@ -1119,6 +1672,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 0, 128, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(128, 0, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Maroon
         {
             get
@@ -1127,6 +1687,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 170, 205, 102, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(102, 205, 170); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumAquamarine
         {
             get
@@ -1135,6 +1702,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 205, 0, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 0, 205); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumBlue
         {
             get
@@ -1143,6 +1717,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 211, 85, 186, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(186, 85, 211); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumOrchid
         {
             get
@@ -1151,6 +1732,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 219, 112, 147, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(147, 112, 219); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumPurple
         {
             get
@@ -1159,6 +1747,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 113, 179, 60, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(60, 179, 113); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumSeaGreen
         {
             get
@@ -1167,6 +1762,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 238, 104, 123, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(123, 104, 238); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumSlateBlue
         {
             get
@@ -1175,6 +1777,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 154, 250, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 250, 154); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumSpringGreen
         {
             get
@@ -1183,6 +1792,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 204, 209, 72, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(72, 209, 204); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumTurquoise
         {
             get
@@ -1191,6 +1807,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 133, 21, 199, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(199, 21, 133); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MediumVioletRed
         {
             get
@@ -1199,6 +1822,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 112, 25, 25, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(25, 25, 112); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MidnightBlue
         {
             get
@@ -1207,6 +1837,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 250, 255, 245, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(245, 255, 250); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MintCream
         {
             get
@@ -1215,6 +1852,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 225, 228, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 228, 225); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor MistyRose
         {
             get
@@ -1223,6 +1867,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 181, 228, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 228, 181); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Moccasin
         {
             get
@@ -1231,6 +1882,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 173, 222, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 222, 173); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor NavajoWhite
         {
             get
@@ -1239,6 +1897,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 128, 0, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 0, 128); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Navy
         {
             get
@@ -1247,6 +1912,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 230, 245, 253, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(253, 245, 230); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor OldLace
         {
             get
@@ -1255,6 +1927,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 128, 128, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(128, 128, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Olive
         {
             get
@@ -1263,6 +1942,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 35, 142, 107, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(107, 142, 35); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor OliveDrab
         {
             get
@@ -1271,6 +1957,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 165, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 165, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Orange
         {
             get
@@ -1279,6 +1972,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 69, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 69, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor OrangeRed
         {
             get
@@ -1287,6 +1987,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 214, 112, 218, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(218, 112, 214); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Orchid
         {
             get
@@ -1295,6 +2002,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 170, 232, 238, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(238, 232, 170); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PaleGoldenrod
         {
             get
@@ -1303,6 +2017,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 152, 251, 152, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(152, 251, 152); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PaleGreen
         {
             get
@@ -1311,6 +2032,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 238, 238, 175, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(175, 238, 238); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PaleTurquoise
         {
             get
@@ -1319,6 +2047,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 147, 112, 219, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(219, 112, 147); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PaleVioletRed
         {
             get
@@ -1327,6 +2062,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 213, 239, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 239, 213); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PapayaWhip
         {
             get
@@ -1335,6 +2077,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 185, 218, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 218, 185); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PeachPuff
         {
             get
@@ -1343,6 +2092,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 63, 133, 205, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(205, 133, 63); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Peru
         {
             get
@@ -1351,6 +2107,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 203, 192, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 192, 203); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Pink
         {
             get
@@ -1359,6 +2122,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 221, 160, 221, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(221, 160, 221); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Plum
         {
             get
@@ -1367,6 +2137,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 230, 224, 176, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(176, 224, 230); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor PowderBlue
         {
             get
@@ -1375,6 +2152,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 128, 0, 128, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(128, 0, 128); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Purple
         {
             get
@@ -1383,6 +2167,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 0, 0, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 0, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Red
         {
             get
@@ -1391,6 +2182,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 143, 143, 188, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(188, 143, 143); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor RosyBrown
         {
             get
@@ -1399,6 +2197,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 225, 105, 65, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(65, 105, 225); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor RoyalBlue
         {
             get
@@ -1407,6 +2212,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 19, 69, 139, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(139, 69, 19); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SaddleBrown
         {
             get
@@ -1415,6 +2227,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 114, 128, 250, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(250, 128, 114); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Salmon
         {
             get
@@ -1423,6 +2242,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 96, 164, 244, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(244, 164, 96); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SandyBrown
         {
             get
@@ -1431,6 +2257,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 87, 139, 46, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(46, 139, 87); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SeaGreen
         {
             get
@@ -1439,6 +2272,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 238, 245, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 245, 238); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SeaShell
         {
             get
@@ -1447,6 +2287,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 45, 82, 160, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(160, 82, 45); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Sienna
         {
             get
@@ -1455,6 +2302,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 192, 192, 192, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(192, 192, 192); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Silver
         {
             get
@@ -1463,6 +2317,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 235, 206, 135, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(135, 206, 235); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SkyBlue
         {
             get
@@ -1471,6 +2332,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 205, 90, 106, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(106, 90, 205); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SlateBlue
         {
             get
@@ -1479,6 +2347,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 144, 128, 112, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(112, 128, 144); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SlateGray
         {
             get
@@ -1487,6 +2362,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 250, 250, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 250, 250); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Snow
         {
             get
@@ -1495,6 +2377,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// (BRGA = 127, 255, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 255, 127); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SpringGreen
         {
             get
@@ -1503,6 +2392,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a greyish pastel blue (BRGA = 180, 130, 70, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(70, 130, 180); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor SteelBlue
         {
             get
@@ -1511,6 +2407,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a light brown (BRGA = 140, 180, 210, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(210, 180, 140); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Tan
         {
             get
@@ -1519,6 +2422,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a blueish-green (BRGA = 128, 128, 0, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(0, 128, 128); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Teal
         {
             get
@@ -1527,6 +2437,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a medium pastel purple (BRGA = 216, 191, 216, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(216, 191, 216); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Thistle
         {
             get
@@ -1535,6 +2452,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a bright orangish-red (BRGA = 71, 99, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 99, 71); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Tomato
         {
             get
@@ -1543,6 +2467,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a bright greenish-blue (BRGA = 208, 224, 64, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(64, 224, 208); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Turquoise
         {
             get
@@ -1551,6 +2482,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a bright pinkish-purple (BRGA = 238, 130, 238, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(238, 130, 238); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Violet
         {
             get
@@ -1559,6 +2497,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a light tan (BRGA = 179, 222, 245, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(245, 222, 179); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Wheat
         {
             get
@@ -1567,6 +2512,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a pure white (BRGA = 255, 255, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 255, 255); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor White
         {
             get
@@ -1575,6 +2527,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a very light whitish-grey (BRGA = 245, 245, 245, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(245, 245, 245); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor WhiteSmoke
         {
             get
@@ -1583,6 +2542,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a pure yellow (BRGA = 0, 255, 255, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 255, 0); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor Yellow
         {
             get
@@ -1591,6 +2557,13 @@ namespace SharpMap.Styles
             }
         }
 
+        /// <summary>
+        /// Gets a bright yellow-green (BRGA = 50, 205, 154, 255).
+        /// </summary>
+        /// <remarks>
+        /// Here is an example: 
+        /// <div style="width: 100%; height: 25px; background-color: rgb(255, 154, 205); border: solid 1px black;"></div>
+        /// </remarks>
         public static StyleColor YellowGreen
         {
             get
@@ -1631,8 +2604,12 @@ namespace SharpMap.Styles
                     Dictionary<string, StyleColor> colors = new Dictionary<string, StyleColor>();
 
                     foreach (PropertyInfo pi in propInfos)
+                    {
                         if (pi.PropertyType == colorType)
+                        {
                             colors.Add(pi.Name, (StyleColor)pi.GetValue(null, null));
+                        }
+                    }
                 }
 
                 return new Dictionary<string, StyleColor>(_predefinedColors);
