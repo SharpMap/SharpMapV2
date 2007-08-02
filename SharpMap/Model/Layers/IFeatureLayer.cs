@@ -26,11 +26,11 @@ namespace SharpMap.Layers
 {
     public interface IFeatureLayer : ILayer
     {
-        FeatureDataTable VisibleFeatures { get; }
-        event EventHandler VisibleFeaturesChanged;
-        IList<FeatureDataRow> SelectedFeatures { get; set; }
-        event EventHandler SelectedFeaturesChanged;
         IList<FeatureDataRow> HighlightedFeatures { get; set; }
+        IList<FeatureDataRow> SelectedFeatures { get; set; }
+        FeatureDataTable VisibleFeatures { get; }
         event EventHandler HighlightedFeaturesChanged;
+        event EventHandler SelectedFeaturesChanged;
+        event EventHandler VisibleFeaturesChanged;
     }
 }

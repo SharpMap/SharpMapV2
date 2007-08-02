@@ -11,7 +11,6 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
     public struct RTreeIndexEntry<TValue>
-        where TValue : IEquatable<TValue>
     {
         public RTreeIndexEntry(TValue value, BoundingBox box)
         {

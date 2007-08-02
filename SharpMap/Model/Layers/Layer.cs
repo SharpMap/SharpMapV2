@@ -40,7 +40,7 @@ namespace SharpMap.Layers
     /// obtain basic layer functionality.
     /// </remarks>
     [Serializable]
-	public abstract class Layer : ILayer, IModelObject, ICloneable
+    public abstract class Layer : ILayer, ICloneable
 	{
 		private ICoordinateSystem _coordinateSystem;
         private ICoordinateTransformation _coordinateTransform;
@@ -255,15 +255,9 @@ namespace SharpMap.Layers
             }
         }
 
-        private void OnVisibleRegionChanged()
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract void OnVisibleRegionChanged();
 
-        protected void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract void OnVisibleRegionChanging(BoundingBox value, ref bool cancel);
         #endregion
 
         #region INotifyPropertyChanged Members

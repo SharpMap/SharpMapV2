@@ -32,7 +32,6 @@ namespace SharpMap.Indexing.RTree
     /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
     /// </remarks>
     public class GuttmanQuadraticSplit<TValue> : INodeSplitStrategy
-        where TValue : IEquatable<TValue>
     {
         #region INodeSplitStrategy Members
 

@@ -11,7 +11,7 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
     public class RTreeLeafNode<TValue> : SpatialIndexNode<RTreeIndexEntry<TValue>, RTreeIndexEntry<TValue>>
-        where TValue : IEquatable<TValue>
+        
     {
         internal RTreeLeafNode(ISearchableSpatialIndex<RTreeIndexEntry<TValue>> index)
         {

@@ -38,11 +38,13 @@ namespace SharpMap.Layers
     /// </example>
     public class VectorLayer : Layer, IFeatureLayer
     {
-		private Predicate<FeatureDataRow> _featureSelectionClause;
+        #region Fields
 		private readonly object _selectedFeaturesSync = new object();
 		private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
+        #endregion
 
-		/// <summary>
+        #region Object Construction / Disposal
+        /// <summary>
 		/// Initializes a new, empty vector layer.
 		/// </summary>
         public VectorLayer(IProvider dataSource)
@@ -62,19 +64,32 @@ namespace SharpMap.Layers
 			Style = new VectorStyle();
         }
 
-		public new VectorStyle Style
-		{
-			get { return base.Style as VectorStyle; }
-			set { base.Style = value; }
-		}
+        #region IDisposable Members
 
-        #region IFeatureLayer Members
-
-        public FeatureDataTable VisibleFeatures
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        protected override void Dispose(bool disposing)
         {
-            get { throw new NotImplementedException(); }
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            if (DataSource is IDisposable)
+            {
+                (DataSource as IDisposable).Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
+        #endregion
+        #endregion
+
+        #region IFeatureLayer Members
+        public event EventHandler SelectedFeaturesChanged;
+        public event EventHandler HighlightedFeaturesChanged;
         public event EventHandler VisibleFeaturesChanged;
 
         public IList<FeatureDataRow> HighlightedFeatures
@@ -89,10 +104,34 @@ namespace SharpMap.Layers
             }
         }
 
-        public event EventHandler HighlightedFeaturesChanged;
+        public IList<FeatureDataRow> SelectedFeatures
+        {
+            get
+            {
+                lock (_selectedFeaturesSync)
+                {
+                    return _selectedFeatures.AsReadOnly();
+                }
+            }
+            set
+            {
+                lock (_selectedFeaturesSync)
+                {
+                    _selectedFeatures.Clear();
+                    _selectedFeatures.AddRange(value);
+                    onSelectedFeaturesChanged();
+                }
+            }
+        }
+
+        public FeatureDataTable VisibleFeatures
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         public IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region)
         {
+#error this has to be refactored since the Map holds the reference to the FeatureDataSet
             FeatureDataSet ds = new FeatureDataSet();
 
             DataSource.Open();
@@ -110,31 +149,9 @@ namespace SharpMap.Layers
 
                 yield return feature;
             }
-		}
+        }
 
-		public event EventHandler SelectedFeaturesChanged;
-
-		public IList<FeatureDataRow> SelectedFeatures
-		{
-			get
-			{
-				lock (_selectedFeaturesSync)
-				{
-					return _selectedFeatures;
-				}
-			}
-			set
-			{
-				lock (_selectedFeaturesSync)
-				{
-					_selectedFeatures.Clear();
-					_selectedFeatures.AddRange(value);
-					onSelectedFeaturesChanged();
-				}
-			}
-		}
-
-		#endregion IFeatureLayer Members
+		#endregion
 
 		#region ILayer Members
 		/// <summary>
@@ -189,8 +206,25 @@ namespace SharpMap.Layers
             }
             set { this.DataSource.Srid = value; }
         }
+        #endregion
 
+        #region Layer Overrides
 
+        public new VectorStyle Style
+        {
+            get { return base.Style as VectorStyle; }
+            set { base.Style = value; }
+        }
+
+        protected override void OnVisibleRegionChanged()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region ICloneable Members
@@ -202,28 +236,6 @@ namespace SharpMap.Layers
         public override object Clone()
         {
             throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Disposes the object.
-        /// </summary>
-        protected override void  Dispose(bool disposing)
-        {
-			if (IsDisposed)
-			{
-				return;
-			}
-
-            if (DataSource is IDisposable)
-            {
-                (DataSource as IDisposable).Dispose();
-            }
-
-			base.Dispose(disposing);
         }
 
         #endregion

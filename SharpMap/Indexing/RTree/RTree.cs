@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SharpMap.Geometries;
+using System.Threading;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -27,7 +28,7 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
     public abstract class RTree<TValue> : ISearchableSpatialIndex<RTreeIndexEntry<TValue>>, IDisposable
-        where TValue : IEquatable<TValue>
+        
     {
         private ISpatialIndexNode _root;
         private bool _disposed;
@@ -92,7 +93,8 @@ namespace SharpMap.Indexing.RTree
         }
 
         /// <summary>
-        /// Searches the tree and looks for intersections with the <see cref="Geometry"/> <paramref name="geometry"/>.
+        /// Searches the tree and looks for intersections with the
+        /// given <paramref name="geometry"/>.
         /// </summary>
         /// <param name="box">Geometry to intersect the index with.</param>
         public virtual IEnumerable<RTreeIndexEntry<TValue>> Search(Geometry geometry)
@@ -130,7 +132,7 @@ namespace SharpMap.Indexing.RTree
 
         private uint getNewNodeId()
         {
-            return (uint)System.Threading.Interlocked.Increment(ref _nextNodeId);
+            return (uint)Interlocked.Increment(ref _nextNodeId);
         }
 
         /// <summary>

@@ -30,14 +30,14 @@ namespace SharpMap.Presentation
         private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
         private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
 
-        public LayersPresenter(SharpMap.Map map, ILayersView view)
+        public LayersPresenter(Map map, ILayersView view)
             : base(map, view)
         {
-            _selectedLayersChangeRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleLayerSelectionChangedRequested);
-            _visibleLayersChangeRequestedDelegate = new EventHandler<LayerActionEventArgs>(handleVisibileLayersChangeRequested);
+            _selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
+            _visibleLayersChangeRequestedDelegate = handleVisibileLayersChangeRequested;
 
-            Map.SelectedLayersChanged += new EventHandler(handleMapSelectedLayersChanged);
-            Map.LayersCollectionChanged += new EventHandler<ModelCollectionChangedEventArgs<ILayer>>(handleMapLayersCollectionChanged);
+            Map.SelectedLayersChanged += handleMapSelectedLayersChanged;
+            Map.LayersChanged += handleMapLayersCollectionChanged;
 
             View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
             View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
@@ -45,7 +45,7 @@ namespace SharpMap.Presentation
 
         #region Helper Functions
 
-        void handleMapLayersCollectionChanged(object sender, ModelCollectionChangedEventArgs<ILayer> e)
+        void handleMapLayersCollectionChanged(object sender, LayersChangedEventArgs e)
         {
             throw new NotImplementedException();
         }

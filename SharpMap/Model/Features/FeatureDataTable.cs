@@ -19,13 +19,13 @@ namespace SharpMap
         /// Initializes a new instance of the FeatureDataTable class with no arguments.
         /// </summary>
         public FeatureDataTable()
-            : base()
         {
-            this.initClass();
+            initClass();
         }
 
         /// <summary>
-        /// Intitalizes a new instance of the FeatureDataTable class with the specified table name
+        /// Intitalizes a new instance of the FeatureDataTable class and
+        /// copies the name and structure of the given <paramref name="table"/>.
         /// </summary>
         /// <param name="table"></param>
         public FeatureDataTable(DataTable table)
@@ -36,20 +36,22 @@ namespace SharpMap
 
             if (table.DataSet == null || (table.CaseSensitive != table.DataSet.CaseSensitive))
             {
-                this.CaseSensitive = table.CaseSensitive;
-            }
-            if (table.DataSet == null || (table.Locale.ToString() != table.DataSet.Locale.ToString()))
-            {
-                this.Locale = table.Locale;
-            }
-            if (table.DataSet == null || (table.Namespace != table.DataSet.Namespace))
-            {
-                this.Namespace = table.Namespace;
+                CaseSensitive = table.CaseSensitive;
             }
 
-            this.Prefix = table.Prefix;
-            this.MinimumCapacity = table.MinimumCapacity;
-            this.DisplayExpression = table.DisplayExpression;
+            if (table.DataSet == null || (table.Locale.ToString() != table.DataSet.Locale.ToString()))
+            {
+                Locale = table.Locale;
+            }
+
+            if (table.DataSet == null || (table.Namespace != table.DataSet.Namespace))
+            {
+                Namespace = table.Namespace;
+            }
+
+            Prefix = table.Prefix;
+            MinimumCapacity = table.MinimumCapacity;
+            DisplayExpression = table.DisplayExpression;
         }
         #endregion
 

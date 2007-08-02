@@ -23,6 +23,16 @@ namespace SharpMap.Layers
 		public override object Clone()
 		{
 			throw new NotImplementedException();
-		}
+        }
+
+        protected override void OnVisibleRegionChanged()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }

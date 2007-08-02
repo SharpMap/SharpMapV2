@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
+using SharpMap;
 using SharpMap.Layers;
 using SharpMap.Presentation;
 using SharpMap.Geometries;
@@ -26,9 +27,9 @@ namespace SharpMap.Tests
 			Map map = new Map();
             IProvider dataSource = mocks.Stub<IProvider>();
 
-			map.Layers.Add(new VectorLayer("Layer 1", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new VectorLayer("Layer 1", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 2", dataSource));
 
 			ILayer layer = map.GetLayerByName("Layer 2");
 			Assert.IsNotNull(layer);
@@ -36,20 +37,18 @@ namespace SharpMap.Tests
 		}
 
 		[Test]
-		public void GetLayerByName()
+        [ExpectedException(typeof(DuplicateLayerException))]
+		public void DuplicateLayerNamesThrowsException()
         {
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
             IProvider dataSource = mocks.Stub<IProvider>();
 
-            map.Layers.Add(new VectorLayer("Layer 1", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-
-			ILayer layer = map.Layers["Layer 3"];
-			Assert.AreEqual("Layer 3", layer.LayerName);
+            map.AddLayer(new VectorLayer("Layer 1", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
 		}
 
 		[Test]
@@ -60,17 +59,14 @@ namespace SharpMap.Tests
             Map map = new Map();
             IProvider dataSource = mocks.Stub<IProvider>();
 
-            map.Layers.Add(new VectorLayer("Layer 1", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 1", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new VectorLayer("Layer 4", dataSource));
 
 			int count = 0;
 
-			foreach (ILayer layer in map.Layers.FindAll(delegate(ILayer match)
-			{
-				return String.Compare(match.LayerName, "Layer 3", StringComparison.CurrentCultureIgnoreCase) == 0;
-			}))
+            foreach (ILayer layer in map.FindLayers("Layer 3"))
 			{
 				Assert.AreEqual("Layer 3", layer.LayerName);
 				count++;
@@ -98,7 +94,7 @@ namespace SharpMap.Tests
 
 			VectorLayer vLayer = new VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 
-			map.Layers.Add(vLayer);
+			map.AddLayer(vLayer);
 			BoundingBox box = map.GetExtents();
 			Assert.AreEqual(new BoundingBox(0, 0, 100, 100), box);
 		}

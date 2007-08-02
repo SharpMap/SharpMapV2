@@ -23,6 +23,12 @@ using System.Data;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using SharpMap.Indexing.RTree;
+using System.Globalization;
+using System.Xml.Schema;
+using System.IO;
+using SharpMap.Indexing;
+using SharpMap.Geometries;
 
 namespace SharpMap
 {
@@ -35,18 +41,23 @@ namespace SharpMap
 	[Serializable()]
 	public class FeatureDataSet : DataSet
     {
+        #region Fields
         private FeatureTableCollection _featureTables;
+        private SelfOptimizingDynamicSpatialIndex<FeatureDataRow> _rTreeIndex;
+        private BoundingBox _visibleRegion;
+        #endregion
 
-		/// <summary>
+        #region Constructors
+        /// <summary>
 		/// Initializes a new instance of the FeatureDataSet class.
 		/// </summary>
 		public FeatureDataSet()
 		{
-			this.initClass();
-			System.ComponentModel.CollectionChangeEventHandler schemaChangedHandler = new System.ComponentModel.CollectionChangeEventHandler(this.schemaChanged);
+			initClass();
+			CollectionChangeEventHandler schemaChangedHandler = schemaChanged;
 			//this.Tables.CollectionChanged += schemaChangedHandler;
-			this.Relations.CollectionChanged += schemaChangedHandler;
-			this.initClass();
+			Relations.CollectionChanged += schemaChangedHandler;
+			initClass();
 		}
 
 		/// <summary>
@@ -66,30 +77,37 @@ namespace SharpMap
 				
                 if ((ds.Tables["FeatureTable"] != null))
 				{
-					this.Tables.Add(new FeatureDataTable(ds.Tables["FeatureTable"]));
+					Tables.Add(new FeatureDataTable(ds.Tables["FeatureTable"]));
 				}
 
-				this.DataSetName = ds.DataSetName;
-				this.Prefix = ds.Prefix;
-				this.Namespace = ds.Namespace;
-				this.Locale = ds.Locale;
-				this.CaseSensitive = ds.CaseSensitive;
-				this.EnforceConstraints = ds.EnforceConstraints;
-				this.Merge(ds, false, System.Data.MissingSchemaAction.Add);
+				DataSetName = ds.DataSetName;
+				Prefix = ds.Prefix;
+				Namespace = ds.Namespace;
+				Locale = ds.Locale;
+				CaseSensitive = ds.CaseSensitive;
+				EnforceConstraints = ds.EnforceConstraints;
+				Merge(ds, false, System.Data.MissingSchemaAction.Add);
 			}
 			else
 			{
-				this.initClass();
+				initClass();
 			}
 
-			this.GetSerializationData(info, context);
-			CollectionChangeEventHandler schemaChangedHandler = new CollectionChangeEventHandler(this.schemaChanged);
-			//this.Tables.CollectionChanged += schemaChangedHandler;
-			this.Relations.CollectionChanged += schemaChangedHandler;
-		}
+			GetSerializationData(info, context);
+			CollectionChangeEventHandler schemaChangedHandler = schemaChanged;
+			//Tables.CollectionChanged += schemaChangedHandler;
+			Relations.CollectionChanged += schemaChangedHandler;
+        }
+        #endregion
 
-		/// <summary>
-		/// Gets the collection of tables contained in the FeatureDataSet
+        public BoundingBox VisibleRegion
+        {
+            get { return _visibleRegion; }
+            set { _visibleRegion = value; }
+        }
+
+        /// <summary>
+		/// Gets the collection of tables contained in the FeatureDataSet.
 		/// </summary>
 		public new FeatureTableCollection Tables
 		{
@@ -97,16 +115,19 @@ namespace SharpMap
 		}
 
 		/// <summary>
-		/// Copies the structure of the FeatureDataSet, including all FeatureDataTable schemas, relations, and constraints. Does not copy any data. 
+		/// Copies the structure of the FeatureDataSet, 
+        /// including all FeatureDataTable schemas, relations, 
+        /// and constraints. Does not copy any data. 
 		/// </summary>
 		/// <returns></returns>
 		public new FeatureDataSet Clone()
 		{
-			FeatureDataSet cln = ((FeatureDataSet)(base.Clone()));
-			return cln;
-		}
+            FeatureDataSet copy = base.Clone() as FeatureDataSet;
+			return copy;
+        }
 
-		/// <summary>
+        #region Overrides
+        /// <summary>
 		/// Gets a value indicating whether Tables property should be persisted.
 		/// </summary>
 		/// <returns></returns>
@@ -130,7 +151,7 @@ namespace SharpMap
 		/// <param name="reader"></param>
 		protected override void ReadXmlSerializable(XmlReader reader)
 		{
-			this.Reset();
+			Reset();
 			DataSet ds = new DataSet();
 			ds.ReadXml(reader);
 			//if ((ds.Tables["FeatureTable"] != null))
@@ -143,31 +164,39 @@ namespace SharpMap
 			this.Locale = ds.Locale;
 			this.CaseSensitive = ds.CaseSensitive;
 			this.EnforceConstraints = ds.EnforceConstraints;
-			this.Merge(ds, false, System.Data.MissingSchemaAction.Add);
+			this.Merge(ds, false, MissingSchemaAction.Add);
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		protected override System.Xml.Schema.XmlSchema GetSchemaSerializable()
+		protected override XmlSchema GetSchemaSerializable()
 		{
-			System.IO.MemoryStream stream = new System.IO.MemoryStream();
-			this.WriteXmlSchema(new XmlTextWriter(stream, null));
+			MemoryStream stream = new MemoryStream();
+			WriteXmlSchema(new XmlTextWriter(stream, null));
 			stream.Position = 0;
-			return System.Xml.Schema.XmlSchema.Read(new XmlTextReader(stream), null);
-		}
+			return XmlSchema.Read(new XmlTextReader(stream), null);
+        }
+        #endregion
 
-
-		private void initClass()
+        #region Private helper methods
+        private void initClass()
 		{
-			_featureTables = new FeatureTableCollection();
+			_featureTables = new FeatureTableCollection(base.Tables);
 			//this.DataSetName = "FeatureDataSet";
-			this.Prefix = "";
-            this.Namespace = "http://www.codeplex.com/Wiki/View.aspx?ProjectName=SharpMap/FeatureDataSet.xsd";
-			this.Locale = new System.Globalization.CultureInfo("en-US");
-			this.CaseSensitive = false;
-			this.EnforceConstraints = true;
+			Prefix = "";
+            Namespace = "http://www.codeplex.com/Wiki/View.aspx?ProjectName=SharpMap/FeatureDataSet.xsd";
+			Locale = new CultureInfo("en-US");
+			CaseSensitive = false;
+			EnforceConstraints = true;
+
+            IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
+            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.Default, 4.0);
+            IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>();
+            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
+            _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
+                restructureHeuristic, insertStrategy, nodeSplitStrategy, new DynamicRTreeBalanceHeuristic()); 
 		}
 
 		private bool shouldSerializeFeatureTable()
@@ -175,13 +204,14 @@ namespace SharpMap
 			return false;
 		}
 
-		private void schemaChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
+		private void schemaChanged(object sender, CollectionChangeEventArgs e)
 		{
-			if ((e.Action == System.ComponentModel.CollectionChangeAction.Remove))
+			if (e.Action == CollectionChangeAction.Remove)
 			{
 				//this.InitVars();
 			}
-		}
-	}
+        }
+        #endregion
+    }
 }
 

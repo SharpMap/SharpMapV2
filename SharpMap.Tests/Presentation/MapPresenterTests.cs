@@ -239,7 +239,7 @@ namespace SharpMap.Tests.Presentation
 			vLayer.Style.EnableOutline = true;
 			vLayer.Style.Line = new StylePen(StyleColor.Green, 2f);
 			vLayer.Style.Fill = new SolidStyleBrush(StyleColor.Yellow);
-			map.Layers.Add(vLayer);
+			map.AddLayer(vLayer);
 
 			VectorLayer vLayer2 = new VectorLayer("Geom layer 2", vLayer.DataSource);
             System.IO.Stream data = System.Reflection.Assembly.GetAssembly(typeof(Map))
@@ -248,17 +248,17 @@ namespace SharpMap.Tests.Presentation
 			vLayer2.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer2.Style.Symbol.Rotation = 45;
             vLayer2.Style.Symbol.Scale = 0.4f;
-			map.Layers.Add(vLayer2);
+            map.AddLayer(vLayer2);
 
 			VectorLayer vLayer3 = new VectorLayer("Geom layer 3", vLayer.DataSource);
 			vLayer3.Style.Symbol.Offset = new Point2D(3, 4);
 			vLayer3.Style.Symbol.Rotation = 45;
-			map.Layers.Add(vLayer3);
+			map.AddLayer(vLayer3);
 
 			VectorLayer vLayer4 = new VectorLayer("Geom layer 4", vLayer.DataSource);
             vLayer4.Style.Symbol.Offset = new Point2D(3, 4);
             vLayer2.Style.Symbol.Scale = 0.4f;
-			map.Layers.Add(vLayer4);
+            map.AddLayer(vLayer4);
 
 			mapPresenter.ZoomToExtents();
 
@@ -268,7 +268,7 @@ namespace SharpMap.Tests.Presentation
         private static MapPresenter2D createPresenter(MockRepository mocks, double width, double height)
         {
             Map map = new Map();
-            map.Layers.Add(DataSourceHelper.CreateVectorLayer());
+            map.AddLayer(DataSourceHelper.CreateVectorLayer());
 
             IMapView2D mapView = mocks.Stub<IMapView2D>();
             SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);

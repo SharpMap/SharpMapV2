@@ -53,21 +53,26 @@ namespace SharpMap.Layers
 	/// </example>
 	public class LabelLayer<TLabel> : Layer, IFeatureLayer, IDisposable
     {
+        #region Nested Classes
+        /// <summary>
+		/// Delegate method for creating advanced label text.
+		/// </summary>
+        /// <param name="feature">The feature to label.</param>
+		/// <returns>A string to display as the label for the feature.</returns>
+		public delegate string GenerateLabelTextDelegate(FeatureDataRow feature);
+        #endregion
+
+        #region Fields
         private int _priority;
         private string _rotationColumn;
         private GenerateLabelTextDelegate _getLabelMethod;
         private string _labelColumn;
 		private LabelFilterDelegate _labelFilter;
         private MultipartGeometryLabelingBehaviour _multipartGeometryBehaviour;
+        #endregion
 
-		/// <summary>
-		/// Delegate method for creating advanced label text.
-		/// </summary>
-        /// <param name="feature">The feature to label.</param>
-		/// <returns>A string to display as the label for the feature.</returns>
-		public delegate string GenerateLabelTextDelegate(FeatureDataRow feature);
-
-		/// <summary>
+        #region Object Construction / Disposal
+        /// <summary>
 		/// Creates a new instance of a LabelLayer with the given name.
 		/// </summary>
         /// <param name="layername">Name of the layer.</param>
@@ -79,7 +84,30 @@ namespace SharpMap.Layers
 			_labelFilter = LabelCollisionDetection2D.SimpleCollisionDetection;
 		}
 
-		/// <summary>
+        #region IDisposable Members
+
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        protected override void  Dispose(bool disposing)
+        {
+			if (IsDisposed)
+			{
+				return;
+			}
+
+			if (DataSource is IDisposable && DataSource != null)
+			{
+				(DataSource as IDisposable).Dispose();
+			}
+
+			base.Dispose(disposing);
+        }
+
+        #endregion
+        #endregion
+
+        /// <summary>
 		/// Gets or sets labeling behavior on multipart geometries.
 		/// </summary>
 		/// <remarks>
@@ -199,7 +227,17 @@ namespace SharpMap.Layers
 			{
 				throw new NotImplementedException();
 			}
-		}
+        }
+
+        protected override void OnVisibleRegionChanged()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         /// <summary>
@@ -279,27 +317,5 @@ namespace SharpMap.Layers
         {
             throw new NotImplementedException();
         }
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Disposes the object.
-        /// </summary>
-        protected override void  Dispose(bool disposing)
-        {
-			if (IsDisposed)
-			{
-				return;
-			}
-
-			if (DataSource is IDisposable)
-			{
-				(DataSource as IDisposable).Dispose();
-			}
-
-			base.Dispose(disposing);
-        }
-
-        #endregion
     }
 }

@@ -63,7 +63,7 @@ namespace SharpMap.Presentation
         public MapPresenter2D(Map map, IMapView2D mapView)
             : base(map, mapView)
         {
-            Map.LayersCollectionChanged += Map_LayersChanged;
+            Map.LayersChanged += Map_LayersChanged;
 
             View.SizeChangeRequested += View_SizeChangeRequested;
             View.Hover += View_Hover;
@@ -72,7 +72,7 @@ namespace SharpMap.Presentation
             View.EndAction += View_EndAction;
             //_viewDpi = View.Dpi;
 
-            BoundingBox extents = map.VisibleEnvelope;
+            BoundingBox extents = map.VisibleRegion;
 
             GeoPoint geoCenter = extents.GetCentroid();
 
@@ -527,7 +527,7 @@ namespace SharpMap.Presentation
             OnSelectedFeaturesChanged();
         }
 
-        private void Map_LayersChanged(object sender, ModelCollectionChangedEventArgs<ILayer> e)
+        private void Map_LayersChanged(object sender, LayersChangedEventArgs e)
         {
             OnLayersChanged();
         }

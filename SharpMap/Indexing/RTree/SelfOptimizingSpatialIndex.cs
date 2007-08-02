@@ -68,7 +68,6 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
     public sealed class SelfOptimizingDynamicSpatialIndex<TValue> : DynamicRTree<TValue>
-        where TValue : IEquatable<TValue>
     {
         private IIndexRestructureStrategy _restructureStrategy;
         private RestructuringHuristic _restructuringHeuristic;

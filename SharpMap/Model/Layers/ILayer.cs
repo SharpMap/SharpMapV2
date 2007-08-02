@@ -33,7 +33,7 @@ namespace SharpMap.Layers
 	/// <summary>
 	/// Interface for map layers.
 	/// </summary>
-	public interface ILayer : IModelObject
+	public interface ILayer : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// The dataum, projection and coordinate system used for this layer.
