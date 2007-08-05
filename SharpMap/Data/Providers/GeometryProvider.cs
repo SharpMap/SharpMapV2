@@ -205,9 +205,34 @@ namespace SharpMap.Data.Providers
         /// </summary>
         /// <param name="box"></param>
         /// <param name="ds">FeatureDataSet to fill data into</param>
-        public void ExecuteIntersectionQuery(SharpMap.Geometries.BoundingBox box, FeatureDataSet ds)
+        public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet ds)
         {
             throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+        }
+
+        public void GetSchema(FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public System.Data.IDataReader ExecuteIntersectionQuery(Geometry geom)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public System.Data.IDataReader ExecuteIntersectionQuery(BoundingBox box)
+        {
+            throw new Exception("The method or operation is not implemented.");
         }
 
         /// <summary>
@@ -323,5 +348,5 @@ namespace SharpMap.Data.Providers
         }
 
         #endregion
-	}
+    }
 }

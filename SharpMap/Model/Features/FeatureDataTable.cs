@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
+using SharpMap.Geometries;
+using System.Diagnostics;
 
 namespace SharpMap
 {
@@ -14,6 +16,10 @@ namespace SharpMap
     [Serializable()]
     public class FeatureDataTable : DataTable, IEnumerable<FeatureDataRow>
     {
+        #region Fields
+        private BoundingBox _envelope;
+        #endregion
+
         #region Constructors
         /// <summary>
         /// Initializes a new instance of the FeatureDataTable class with no arguments.
@@ -98,6 +104,11 @@ namespace SharpMap
             get { return base.Rows.Count; }
         }
 
+        public BoundingBox Envelope
+        {
+            get { return _envelope; }
+        }
+
         /// <summary>
         /// Gets the feature data row at the specified index
         /// </summary>
@@ -159,13 +170,18 @@ namespace SharpMap
         {
             base.Rows.Remove(row);
         }
+
+        internal void RowGeometryChanged(FeatureDataRow row)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Protected Methods and Overrides
         /// <summary>
-        /// 
+        /// Creates and returns a new instance of a FeatureDataTable.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An empty FeatureDataTable.</returns>
         protected override DataTable CreateInstance()
         {
             return new FeatureDataTable();
@@ -177,20 +193,24 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Creates a new FeatureDataRow with the same schema as the table, based on a datarow builder
+        /// Creates a new FeatureDataRow with the same schema as the table, 
+        /// based on a datarow builder.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
+        /// <param name="builder">
+        /// The DataRowBuilder instance to use to construct
+        /// a new row.
+        /// </param>
+        /// <returns>A new DataRow using the schema in the DataRowBuilder.</returns>
         protected override DataRow NewRowFromBuilder(DataRowBuilder builder)
         {
             return new FeatureDataRow(builder);
         }
 
         /// <summary>
-        /// 
+        /// Returns the FeatureDataRow type.
         /// </summary>
-        /// <returns></returns>
-        protected override System.Type GetRowType()
+        /// <returns>The <see cref="Type"/> <see cref="FeatureDataRow"/>.</returns>
+        protected override Type GetRowType()
         {
             return typeof(FeatureDataRow);
         }
@@ -206,9 +226,21 @@ namespace SharpMap
         {
             base.OnRowChanged(e);
 
-            if ((this.FeatureDataRowChanged != null))
+            Debug.Assert(e.Row is FeatureDataRow);
+
+            if (e.Action == DataRowAction.Add)
             {
-                this.FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRow r = e.Row as FeatureDataRow;
+                _envelope = _envelope.Join(r.Geometry.GetBoundingBox());
+            }
+            else if (e.Action == DataRowAction.Delete)
+            {
+                throw new NotSupportedException("Can't subtract bounding box");
+            }
+
+            if ((FeatureDataRowChanged != null))
+            {
+                FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
             }
         }
 
@@ -220,9 +252,9 @@ namespace SharpMap
         {
             base.OnRowChanging(e);
 
-            if ((this.FeatureDataRowChanging != null))
+            if ((FeatureDataRowChanging != null))
             {
-                this.FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
             }
         }
 
@@ -234,9 +266,9 @@ namespace SharpMap
         {
             base.OnRowDeleted(e);
 
-            if ((this.FeatureDataRowDeleted != null))
+            if ((FeatureDataRowDeleted != null))
             {
-                this.FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
             }
         }
 
@@ -247,9 +279,9 @@ namespace SharpMap
         protected override void OnRowDeleting(DataRowChangeEventArgs e)
         {
             base.OnRowDeleting(e);
-            if ((this.FeatureDataRowDeleting != null))
+            if ((FeatureDataRowDeleting != null))
             {
-                this.FeatureDataRowDeleting(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowDeleting(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
             }
         }
         #endregion

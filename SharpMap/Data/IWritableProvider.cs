@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using SharpMap.Geometries;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data
 {
     public interface IWritableProvider<TOid> : IProvider<TOid>
     {

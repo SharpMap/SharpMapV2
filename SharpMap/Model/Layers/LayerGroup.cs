@@ -24,7 +24,7 @@ using SharpMap.Rendering;
 using SharpMap.Styles;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Data.Providers;
+using SharpMap.Data;
 using System.ComponentModel;
 
 namespace SharpMap.Layers

@@ -62,11 +62,11 @@ namespace SharpMap.Data.Providers.Pooling
 			get { return this._ShareCount; }
 		}
 
-		private SharpMap.Data.Providers.IProvider _Provider;
+		private IProvider _Provider;
 		/// <summary>
 		/// Used to connect to the data source. 
 		/// </summary>
-		internal SharpMap.Data.Providers.IProvider Provider
+		internal IProvider Provider
 		{
 			get { return _Provider; }
 			set
@@ -85,7 +85,7 @@ namespace SharpMap.Data.Providers.Pooling
 		/// <summary>
 		/// Construcor, initializes the Connector object.
 		/// </summary>
-		internal Connector(SharpMap.Data.Providers.IProvider provider, bool Shared)
+		internal Connector(IProvider provider, bool Shared)
 		{
 			this.Provider = provider;
 			this._Shared = Shared;

@@ -12,6 +12,7 @@ using SharpMap.Presentation;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Tools;
+using SharpMap.Data;
 using SharpMap.Data.Providers;
 
 namespace SharpMap.Tests

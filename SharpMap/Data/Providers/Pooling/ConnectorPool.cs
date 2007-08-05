@@ -56,7 +56,7 @@ namespace SharpMap.Data.Providers.Pooling
 		/// <param name="provider">Provider requested to connect to the database server</param>
 		/// <param name="Shared">Allows multiple connections on a single connector. </param>
 		/// <returns>A pooled connector object.</returns>
-		internal Connector RequestConnector(SharpMap.Data.Providers.IProvider provider, bool Shared)
+		internal Connector RequestConnector(SharpMap.Data.IProvider provider, bool Shared)
 		{
 			// if a shared connector is requested then the Shared
 			// Connector List is searched first:

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 
 using SharpMap.Geometries;
+using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Layers;
 

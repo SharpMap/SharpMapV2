@@ -71,6 +71,7 @@ namespace SharpMap
 				if (RowState != DataRowState.Detached)
 				{
 					_isGeometryModified = true;
+                    Table.RowGeometryChanged(this);
 				}
 			}
         }
@@ -81,7 +82,21 @@ namespace SharpMap
         /// <returns></returns>
         public bool IsFeatureGeometryNull()
         {
-            return this.Geometry == null;
+            return Geometry == null;
+        }
+
+        public bool IsGeometryModified
+        {
+            get { return _isGeometryModified; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="FeatureDataTable"/> for which this
+        /// row has schema.
+        /// </summary>
+        public new FeatureDataTable Table
+        {
+            get { return base.Table as FeatureDataTable; }
         }
 
         /// <summary>
@@ -89,12 +104,7 @@ namespace SharpMap
         /// </summary>
         public void SetFeatureGeometryNull()
         {
-            this.Geometry = null;
+            Geometry = null;
         }
-
-		public bool IsGeometryModified
-		{
-			get { return _isGeometryModified; }
-		}
     }
 }

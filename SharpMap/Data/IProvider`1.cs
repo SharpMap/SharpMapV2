@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SharpMap.Geometries;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data
 {
 	/// <summary>
 	/// Interface for data providers with features having ID values.

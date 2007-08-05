@@ -22,35 +22,70 @@ using System.Collections.Generic;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
+using System.Data;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data
 {
-
     /// <summary>
     /// Interface for data providers.
     /// </summary>
     public interface IProvider : IDisposable
     {
         /// <summary>
-        /// Gets the features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// Gets the features within the specified 
+        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
         /// </summary>
         /// <param name="boundingBox">BoundingBox which defines the view.</param>
         /// <returns>An enumeration of features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
         IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox);
 
-        /// <summary>
-        /// Returns the data associated with all the geometries that are intersected by <paramref name="geom"/>.
-        /// </summary>
-        /// <param name="geom">Geometry to intersect with.</param>
-        /// <param name="ds">FeatureDataSet to fill data into.</param>
-        void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds);
+        void GetSchema(FeatureDataTable table);
 
         /// <summary>
-        /// Returns the data associated with all the geometries that are intersected by <paramref name="box"/>.
+        /// Retrieves the features intersected by <paramref name="geom"/>.
+        /// </summary>
+        /// <param name="geom">Geometry to intersect with.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet dataSet);
+
+        /// <summary>
+        /// Retrieves the features intersected by <paramref name="geom"/>.
+        /// </summary>
+        /// <param name="geom">Geometry to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table);
+
+        /// <summary>
+        /// Retrieves a <see cref="IDataReader"/> for the features that 
+        /// are intersected by <paramref name="geom"/>.
+        /// </summary>
+        /// <param name="geom">Geometry to intersect with.</param>
+        /// <returns>An IDataReader to iterate over the results.</returns>
+        IDataReader ExecuteIntersectionQuery(Geometry geom);
+
+        /// <summary>
+        /// Retrieves the data associated with all the geometries that 
+        /// are intersected by <paramref name="box"/>.
         /// </summary>
         /// <param name="box">BoundingBox to intersect with.</param>
-        /// <param name="ds">FeatureDataSet to fill data into.</param>
-        void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet ds);
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet dataSet);
+
+        /// <summary>
+        /// Retrieves the data associated with all the geometries that 
+        /// are intersected by <paramref name="box"/>.
+        /// </summary>
+        /// <param name="box">BoundingBox to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table);
+
+        /// <summary>
+        /// Retrieves a <see cref="IDataReader"/> for the features that 
+        /// are intersected by <paramref name="box"/>.
+        /// </summary>
+        /// <param name="box">BoundingBox to intersect with.</param>
+        /// <returns>An IDataReader to iterate over the results.</returns>
+        IDataReader ExecuteIntersectionQuery(BoundingBox box);
 
         /// <summary>
         /// Returns the number of features in the entire dataset.
@@ -97,12 +132,14 @@ namespace SharpMap.Data.Providers
 		int Srid { get; set; }
 
 		/// <summary>
-		/// The dataum, projection and coordinate system used in this provider.
+		/// The dataum, projection and coordinate system used in this 
+        /// provider.
 		/// </summary>
 		ICoordinateSystem SpatialReference { get; }
 
 		/// <summary>
-		/// Applies a coordinate transformation to the geometries in this provider.
+		/// Applies a coordinate transformation to the geometries in 
+        /// this provider.
 		/// </summary>
 		ICoordinateTransformation CoordinateTransformation { get; set; }
     }

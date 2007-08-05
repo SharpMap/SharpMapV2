@@ -39,8 +39,13 @@ namespace SharpMap.Layers
     public class VectorLayer : Layer, IFeatureLayer
     {
         #region Fields
-		private readonly object _selectedFeaturesSync = new object();
-		private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
+        private readonly object _selectedFeaturesSync = new object();
+        private readonly object _highlightedFeaturesSync = new object();
+        private FeatureDataTable _features = new FeatureDataTable();
+        private FeatureDataView _visibleFeatureView;
+        private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
+        private List<FeatureDataRow> _highlightedFeatures = new List<FeatureDataRow>();
+        private BoundingBox _extents;
         #endregion
 
         #region Object Construction / Disposal
@@ -62,6 +67,8 @@ namespace SharpMap.Layers
 		{
 			LayerName = layername;
 			Style = new VectorStyle();
+
+            initFromDataSource();
         }
 
         #region IDisposable Members
@@ -124,31 +131,14 @@ namespace SharpMap.Layers
             }
         }
 
-        public FeatureDataTable VisibleFeatures
+        public FeatureDataView VisibleFeatures
         {
-            get { throw new NotImplementedException(); }
+            get { return _visibleFeatureView; }
         }
 
-        public IEnumerable<FeatureDataRow> GetFeatures(BoundingBox region)
+        public FeatureDataTable Features
         {
-#error this has to be refactored since the Map holds the reference to the FeatureDataSet
-            FeatureDataSet ds = new FeatureDataSet();
-
-            DataSource.Open();
-            DataSource.ExecuteIntersectionQuery(region, ds);
-            DataSource.Close();
-
-            FeatureDataTable features = ds.Tables[0] as FeatureDataTable;
-
-            foreach (FeatureDataRow feature in features)
-            {
-                if (this.CoordinateTransformation != null)
-                {
-                    feature.Geometry = GeometryTransform.TransformGeometry(feature.Geometry, CoordinateTransformation.MathTransform);
-                }
-
-                yield return feature;
-            }
+            get { return _features; }
         }
 
 		#endregion
@@ -157,36 +147,15 @@ namespace SharpMap.Layers
 		/// <summary>
         /// Returns the extent of the layer.
         /// </summary>
-        /// <returns>Bounding box corresponding to the extent of the features in the layer.</returns>
+        /// <returns>
+        /// Bounding box corresponding to the extent 
+        /// of the features in the layer.
+        /// </returns>
         public override BoundingBox Envelope
         {
             get
             {
-                if (DataSource == null)
-                {
-					return BoundingBox.Empty;
-                }
-
-                bool wasOpen = DataSource.IsOpen;
-
-                if (!wasOpen)
-                {
-                    DataSource.Open();
-                }
-
-                BoundingBox box = DataSource.GetExtents();
-
-                if (!wasOpen) //Restore state
-                {
-                    DataSource.Close();
-                }
-
-                if (CoordinateTransformation != null)
-                {
-                    return GeometryTransform.TransformBox(box, CoordinateTransformation.MathTransform);
-                }
-
-                return box;
+                return _extents;
             }
         }
 
@@ -197,14 +166,14 @@ namespace SharpMap.Layers
         {
             get
             {
-                if (this.DataSource == null)
+                if (DataSource == null)
                 {
-                    throw new InvalidOperationException("DataSource property not set on layer '" + this.LayerName + "'");
+                    throw new InvalidOperationException("DataSource property is null on layer '" + LayerName + "'");
                 }
 
-                return this.DataSource.Srid;
+                return DataSource.Srid;
             }
-            set { this.DataSource.Srid = value; }
+            set { DataSource.Srid = value; }
         }
         #endregion
 
@@ -216,14 +185,9 @@ namespace SharpMap.Layers
             set { base.Style = value; }
         }
 
-        protected override void OnVisibleRegionChanged()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
         {
-            throw new NotImplementedException();
+            DataSource.ExecuteIntersectionQuery(value, _features);
         }
         #endregion
 
@@ -241,6 +205,21 @@ namespace SharpMap.Layers
         #endregion
 
         #region Private helper methods
+
+        private void initFromDataSource()
+        {
+            DataSource.Open();
+            DataSource.GetSchema(_features);
+            _extents = DataSource.GetExtents();
+
+            if (CoordinateTransformation != null)
+            {
+                _extents = GeometryTransform.TransformBox(_extents, CoordinateTransformation.MathTransform);
+            }
+
+            DataSource.Close();
+        }
+
         private void onSelectedFeaturesChanged()
 		{
 			EventHandler e = SelectedFeaturesChanged;

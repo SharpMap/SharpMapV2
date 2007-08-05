@@ -4,7 +4,7 @@ using System.Text;
 
 using SharpMap.Layers;
 using SharpMap.Geometries;
-using SharpMap.Data.Providers;
+using SharpMap.Data;
 
 namespace SharpMap.Layers
 {

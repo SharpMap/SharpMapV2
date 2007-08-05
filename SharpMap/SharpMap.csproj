@@ -147,9 +147,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider.cs" />
-    <Compile Include="Data\Providers\IProvider.cs" />
-    <Compile Include="Data\Providers\IProvider`1.cs" />
-    <Compile Include="Data\Providers\IWritableProvider.cs" />
+    <Compile Include="Data\IProvider.cs" />
+    <Compile Include="Data\IProvider`1.cs" />
+    <Compile Include="Data\IWritableProvider.cs" />
     <Compile Include="Data\Providers\OgcEnumerations.cs" />
     <Compile Include="Data\Providers\Pooling\Connector.cs" />
     <Compile Include="Data\Providers\Pooling\ConnectorPool.cs" />
@@ -201,6 +201,9 @@
     </Compile>
     <Compile Include="Model\Features\FeatureDataTableView`1.cs" />
     <Compile Include="Model\Features\FeatureDataTable`1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Model\Features\FeatureDataView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\Features\FeatureTableCollection.cs" />

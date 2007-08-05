@@ -24,7 +24,7 @@ using System.Text;
 
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Data.Providers;
+using SharpMap.Data;
 using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
 using SharpMap.Rendering;
@@ -255,7 +255,9 @@ namespace SharpMap.Layers
             }
         }
 
-        protected abstract void OnVisibleRegionChanged();
+        protected virtual void OnVisibleRegionChanged()
+        {
+        }
 
         protected abstract void OnVisibleRegionChanging(BoundingBox value, ref bool cancel);
         #endregion

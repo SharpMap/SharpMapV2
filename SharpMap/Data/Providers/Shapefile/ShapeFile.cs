@@ -667,6 +667,11 @@ namespace SharpMap.Data.Providers
             }
         }
 
+        public void GetSchema(FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
         /// <summary>
 		/// Returns all objects whose BoundingBox intersects <paramref name="bounds"/>.
         /// </summary>
@@ -714,6 +719,16 @@ namespace SharpMap.Data.Providers
             ds.Tables.Add(dt);
         }
 
+        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataReader ExecuteIntersectionQuery(Geometry geom)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Returns the data associated with all the geometries that are intersected by 'geom'.
         /// Please note that the ShapeFile provider currently doesn't fully support geometryintersection
@@ -757,6 +772,28 @@ namespace SharpMap.Data.Providers
             }
 
             ds.Tables.Add(dt);
+        }
+
+        public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataReader ExecuteIntersectionQuery(BoundingBox box)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICoordinateTransformation CoordinateTransformation
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -2065,21 +2102,5 @@ namespace SharpMap.Data.Providers
 		}
 
 		#endregion
-
-		#region IProvider Members
-
-		public ICoordinateTransformation CoordinateTransformation
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		#endregion
-	}
+    }
 }

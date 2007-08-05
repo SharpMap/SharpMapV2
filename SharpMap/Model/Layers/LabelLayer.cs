@@ -190,7 +190,12 @@ namespace SharpMap.Layers
 
         #region IFeatureLayer Members
 
-        public FeatureDataTable VisibleFeatures
+        public FeatureDataTable Features
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public FeatureDataView VisibleFeatures
         {
             get
             {
