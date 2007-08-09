@@ -38,17 +38,6 @@ namespace SharpMap.Layers
     /// "Name" column in the FeatureDataTable of the datasource
 	/// <code lang="C#">
 	/// //Set up a label layer
-	/// SharpMap.Layers.LabelLayer labelLayer = new LabelLayer("Country labels");
-	/// labelLayer.DataSource = layCountries.DataSource;
-	/// labelLayer.Enabled = true;
-	/// labelLayer.LabelColumn = "Name";
-	/// labelLayer.Style = new SharpMap.Styles.LabelStyle();
-	/// labelLayer.Style.CollisionDetection = true;
-	/// labelLayer.Style.CollisionBuffer = new Size2D(20, 20);
-	/// labelLayer.Style.ForeColor = Color.White;
-	/// labelLayer.Style.Font = new Font(FontFamily.GenericSerif, 8);
-	/// labelLayer.MaxVisible = 90;
-	/// labelLayer.Style.HorizontalAlignment = SharpMap.Styles.LabelStyle.HorizontalAlignmentEnum.Center;
 	/// </code>
 	/// </example>
 	public class LabelLayer<TLabel> : Layer, IFeatureLayer, IDisposable
@@ -123,7 +112,8 @@ namespace SharpMap.Layers
 		/// Delegate for performing filtering on labels.
 		/// </summary>
 		/// <remarks>
-        /// Default method is <see cref="LabelCollisionDetection2D.SimpleCollisionDetection"/>.
+        /// Default method is 
+        /// <see cref="LabelCollisionDetection2D.SimpleCollisionDetection"/>.
 		/// </remarks>
         public LabelFilterDelegate LabelFilter
 		{
@@ -135,7 +125,8 @@ namespace SharpMap.Layers
 		/// Data column or expression where label text is extracted from.
 		/// </summary>
 		/// <remarks>
-		/// This property is overriden by the <see cref="LabelStringDelegate"/>.
+		/// This property is overriden by the 
+        /// <see cref="LabelStringDelegate"/>.
 		/// </remarks>
 		public string LabelColumn
 		{
@@ -144,18 +135,21 @@ namespace SharpMap.Layers
 		}
 
 		/// <summary>
-		/// Gets or sets the method for creating a custom label string based on a feature.
+		/// Gets or sets the method for creating a custom label string 
+        /// based on a feature.
 		/// </summary>
 		/// <remarks>
 		/// <para>
-        /// If this method is not null, it will override the <see cref="LabelColumn"/> value.
+        /// If this method is not null, it will override the 
+        /// <see cref="LabelColumn"/> value.
         /// </para>
 		/// <para>
-        /// The label delegate must take a <see cref="FeatureDataRow"/> and return a string.
+        /// The label delegate must take a <see cref="FeatureDataRow"/> 
+        /// and return a string.
         /// </para>
 		/// <example>
-		/// Creating a label-text by combining attributes "ROADNAME" and "STATE" 
-        /// into one string, using an anonymous delegate:
+		/// Creating a label-text by combining attributes "ROADNAME" 
+        /// and "STATE" into one string, using an anonymous delegate:
 		/// <code lang="C#">
 		/// myLabelLayer.LabelStringDelegate = delegate(FeatureDataRow fdr)
 		///				{ return fdr["ROADNAME"].ToString() + ", " + fdr["STATE"].ToString(); };
@@ -206,7 +200,7 @@ namespace SharpMap.Layers
 
         public event EventHandler VisibleFeaturesChanged;
 
-        public IList<FeatureDataRow> HighlightedFeatures
+        public FeatureDataView HighlightedFeatures
         {
             get
             {
@@ -222,7 +216,7 @@ namespace SharpMap.Layers
 
 		public event EventHandler SelectedFeaturesChanged;
 
-		public IList<FeatureDataRow> SelectedFeatures
+        public FeatureDataView SelectedFeatures
 		{
 			get
 			{
@@ -276,9 +270,9 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets or sets the SRID of this layer's data source.
+        /// Gets the <abbr name="spatial reference ID">SRID</abbr> of this layer's data source.
         /// </summary>
-        public override int Srid
+        public override int? Srid
         {
             get
             {
@@ -288,10 +282,6 @@ namespace SharpMap.Layers
                 }
 
                 return DataSource.Srid;
-            }
-            set 
-            { 
-                DataSource.Srid = value; 
             }
         }
 

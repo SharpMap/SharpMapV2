@@ -74,7 +74,7 @@ namespace SharpMap.Data.Providers
 
         #region Fields
         private FilterMethod _filterDelegate;
-        private int _srid = -1;
+        private int? _srid = -1;
         private string _filename;
         private BoundingBox _envelope = BoundingBox.Empty;
         private DbaseReader _dbaseReader;
@@ -945,7 +945,7 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// Gets or sets the spatial reference ID.
         /// </summary>
-        public int Srid
+        public int? Srid
         {
             get { return _srid; }
             set { _srid = value; }

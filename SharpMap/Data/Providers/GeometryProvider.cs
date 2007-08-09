@@ -23,6 +23,7 @@ using SharpMap.Geometries;
 using SharpMap.Data;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.CoordinateSystems;
+using System.Data;
 
 namespace SharpMap.Data.Providers
 {
@@ -63,7 +64,7 @@ namespace SharpMap.Data.Providers
 		private ICoordinateTransformation _coordinateTransformation;
 		private ICoordinateSystem _coordinateSystem;
         private List<Geometry> _geometries = new List<Geometry>();
-        private int _srid = -1;
+        private int? _srid = -1;
 
         #region Constructors
 
@@ -230,7 +231,7 @@ namespace SharpMap.Data.Providers
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public System.Data.IDataReader ExecuteIntersectionQuery(BoundingBox box)
+        public IDataReader ExecuteIntersectionQuery(BoundingBox box)
         {
             throw new Exception("The method or operation is not implemented.");
         }
@@ -317,7 +318,7 @@ namespace SharpMap.Data.Providers
 		/// <summary>
 		/// The spatial reference ID.
 		/// </summary>
-		public int Srid
+		public int? Srid
 		{
 			get { return _srid; }
 			set { _srid = value; }

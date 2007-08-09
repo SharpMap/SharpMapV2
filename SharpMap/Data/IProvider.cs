@@ -129,7 +129,7 @@ namespace SharpMap.Data
         /// <summary>
         /// The spatial reference ID.
         /// </summary>
-		int Srid { get; set; }
+		int? Srid { get; set; }
 
 		/// <summary>
 		/// The dataum, projection and coordinate system used in this 

@@ -45,7 +45,6 @@ namespace SharpMap.Layers
 		private ICoordinateSystem _coordinateSystem;
         private ICoordinateTransformation _coordinateTransform;
         private string _layerName;
-        private int _srid = -1;
         private IStyle _style;
 		private bool _disposed;
         private BoundingBox _visibleRegion;
@@ -214,16 +213,11 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// The spatial reference ID.
+        /// The spatial reference ID of the layer data source.
         /// </summary>
-        public virtual int Srid
+        public virtual int? Srid
         {
-            get { return _srid; }
-            set 
-            { 
-                _srid = value;
-                OnPropertyChanged("Srid");
-            }
+            get { return _dataSource.Srid; }
 		}
 
         /// <summary>

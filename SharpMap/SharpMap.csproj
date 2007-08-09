@@ -221,6 +221,7 @@
     </Compile>
     <Compile Include="Model\Layers\VectorLayer.cs">
     </Compile>
+    <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\IBindingListView`1.cs" />
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\MapActionEventArgs.cs" />

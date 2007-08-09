@@ -224,13 +224,9 @@ namespace SharpMap.Layers
             }
         }
 
-        public int Srid
+        public int? Srid
         {
             get
-            {
-                throw new NotImplementedException();
-            }
-            set
             {
                 throw new NotImplementedException();
             }

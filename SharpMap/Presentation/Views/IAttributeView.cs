@@ -22,10 +22,31 @@ using System.Text;
 
 namespace SharpMap.Presentation
 {
+    /// <summary>
+    /// Defines a view for attribute data.
+    /// </summary>
     public interface IAttributeView : IView
     {
-        IBindingListView<FeatureDataRow> Features { get; set; }
-        IEnumerable<FeatureDataRow> SelectedFeatures { get; set; }
+        /// <summary>
+        /// Gets or sets the features to display the attributes for.
+        /// </summary>
+        FeatureDataView Features { get; set; }
+
+        /// <summary>
+        /// Gets or sets the features which are selected in the view.
+        /// </summary>
+        FeatureDataView SelectedFeatures { get; set; }
+
+        /// <summary>
+        /// Raises an event to request that the controlling presenter
+        /// change the features shown in this view.
+        /// </summary>
+        event EventHandler<FeatureChangeRequestEventArgs> FeaturesChangeRequested;
+
+        /// <summary>
+        /// Raises an event to request that the controlling presenter
+        /// change the selected features shown in this view.
+        /// </summary>
         event EventHandler<FeatureSelectionChangeRequestEventArgs> FeaturesSelectionChangeRequested;
     }
 }

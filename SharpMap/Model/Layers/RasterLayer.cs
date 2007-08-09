@@ -8,6 +8,12 @@ using SharpMap.Data;
 
 namespace SharpMap.Layers
 {
+    /// <summary>
+    /// A map layer of raster data.
+    /// </summary>
+    /// <example>
+    /// Adding a <see cref="RasterLayer"/> to a map:
+    /// </example>
 	public class RasterLayer : Layer
 	{
         public RasterLayer(IProvider dataSource)

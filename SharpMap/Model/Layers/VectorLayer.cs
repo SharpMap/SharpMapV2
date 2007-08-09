@@ -31,7 +31,7 @@ using SharpMap.Rendering;
 namespace SharpMap.Layers
 {
     /// <summary>
-    /// Class for vector layer properties.
+    /// A map layer of vector geometries.
     /// </summary>
     /// <example>
     /// Adding a <see cref="VectorLayer"/> to a map:
@@ -41,11 +41,11 @@ namespace SharpMap.Layers
         #region Fields
         private readonly object _selectedFeaturesSync = new object();
         private readonly object _highlightedFeaturesSync = new object();
-        private FeatureDataTable _features = new FeatureDataTable();
+        private FeatureDataTable _cachedFeatures = new FeatureDataTable();
         private FeatureDataView _visibleFeatureView;
-        private List<FeatureDataRow> _selectedFeatures = new List<FeatureDataRow>();
-        private List<FeatureDataRow> _highlightedFeatures = new List<FeatureDataRow>();
-        private BoundingBox _extents;
+        private FeatureDataView _selectedFeatures;
+        private FeatureDataView _highlightedFeatures;
+        private BoundingBox _fullExtents;
         #endregion
 
         #region Object Construction / Disposal
@@ -63,10 +63,21 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public VectorLayer(string layername, IProvider dataSource)
-            : base(dataSource)
+            : this(layername, new VectorStyle(), dataSource)
 		{
-			LayerName = layername;
-			Style = new VectorStyle();
+        }
+
+        /// <summary>
+        /// Initializes a new layer with the given name, style and datasource.
+        /// </summary>
+        /// <param name="layername">Name of the layer.</param>
+        /// <param name="style">Style to apply to the layer.</param>
+        /// <param name="dataSource">Data source.</param>
+        public VectorLayer(string layername, VectorStyle style, IProvider dataSource)
+            : base(dataSource)
+        {
+            LayerName = layername;
+            Style = style;
 
             initFromDataSource();
         }
@@ -99,33 +110,39 @@ namespace SharpMap.Layers
         public event EventHandler HighlightedFeaturesChanged;
         public event EventHandler VisibleFeaturesChanged;
 
-        public IList<FeatureDataRow> HighlightedFeatures
+        public FeatureDataView HighlightedFeatures
         {
             get
             {
-                throw new NotImplementedException();
+                lock (_highlightedFeaturesSync)
+                {
+                    return _highlightedFeatures;
+                }
             }
             set
             {
-                throw new NotImplementedException();
+                lock (_highlightedFeaturesSync)
+                {
+                    _highlightedFeatures = value;
+                    onHighlightedFeaturesChanged();
+                }
             }
         }
 
-        public IList<FeatureDataRow> SelectedFeatures
+        public FeatureDataView SelectedFeatures
         {
             get
             {
                 lock (_selectedFeaturesSync)
                 {
-                    return _selectedFeatures.AsReadOnly();
+                    return _selectedFeatures;
                 }
             }
             set
             {
                 lock (_selectedFeaturesSync)
                 {
-                    _selectedFeatures.Clear();
-                    _selectedFeatures.AddRange(value);
+                    _selectedFeatures = value;
                     onSelectedFeaturesChanged();
                 }
             }
@@ -138,31 +155,31 @@ namespace SharpMap.Layers
 
         public FeatureDataTable Features
         {
-            get { return _features; }
+            get { return _cachedFeatures; }
         }
 
 		#endregion
 
 		#region ILayer Members
 		/// <summary>
-        /// Returns the extent of the layer.
+        /// Returns the full extents of all the features in the layer.
         /// </summary>
         /// <returns>
-        /// Bounding box corresponding to the extent 
+        /// Bounding box corresponding to the full extent 
         /// of the features in the layer.
         /// </returns>
         public override BoundingBox Envelope
         {
             get
             {
-                return _extents;
+                return _fullExtents;
             }
         }
 
         /// <summary>
-        /// Gets or sets the SRID of this VectorLayer's data source
+        /// Gets the <abbr name="spatial reference ID">SRID</abbr> of this VectorLayer's data source.
         /// </summary>
-        public override int Srid
+        public override int? Srid
         {
             get
             {
@@ -173,7 +190,6 @@ namespace SharpMap.Layers
 
                 return DataSource.Srid;
             }
-            set { DataSource.Srid = value; }
         }
         #endregion
 
@@ -187,7 +203,7 @@ namespace SharpMap.Layers
 
         protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
         {
-            DataSource.ExecuteIntersectionQuery(value, _features);
+            DataSource.ExecuteIntersectionQuery(value, _cachedFeatures);
         }
         #endregion
 
@@ -209,12 +225,14 @@ namespace SharpMap.Layers
         private void initFromDataSource()
         {
             DataSource.Open();
-            DataSource.GetSchema(_features);
-            _extents = DataSource.GetExtents();
+
+            DataSource.GetSchema(_cachedFeatures);
+            _fullExtents = DataSource.GetExtents();
 
             if (CoordinateTransformation != null)
             {
-                _extents = GeometryTransform.TransformBox(_extents, CoordinateTransformation.MathTransform);
+                _fullExtents = GeometryTransform.TransformBox(_fullExtents, 
+                    CoordinateTransformation.MathTransform);
             }
 
             DataSource.Close();
@@ -226,8 +244,18 @@ namespace SharpMap.Layers
 
 			if (e != null)
 			{
-				e(null, EventArgs.Empty);
+				e(this, EventArgs.Empty);
 			}
+        }
+
+        private void onHighlightedFeaturesChanged()
+        {
+            EventHandler e = HighlightedFeaturesChanged;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
         }
         #endregion
     }

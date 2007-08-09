@@ -17,21 +17,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 using SharpMap.Data;
-using SharpMap.Geometries;
 
-namespace SharpMap.Layers
+namespace SharpMap.Presentation
 {
-    public interface IFeatureLayer : ILayer
+    public class FeatureChangeRequestEventArgs : EventArgs
     {
-        FeatureDataTable Features { get; }
-        FeatureDataView HighlightedFeatures { get; set; }
-        FeatureDataView SelectedFeatures { get; set; }
-        FeatureDataView VisibleFeatures { get; }
-        event EventHandler HighlightedFeaturesChanged;
-        event EventHandler SelectedFeaturesChanged;
-        event EventHandler VisibleFeaturesChanged;
+        private readonly IEnumerable<FeatureDataRow> _features;
+
+        public FeatureChangeRequestEventArgs(IEnumerable<FeatureDataRow> features)
+        {
+            _features = features;
+        }
+
+        public IEnumerable<FeatureDataRow> Features
+        {
+            get { return _features; }
+        }
     }
 }
