@@ -4,6 +4,11 @@ using System.Text;
 using System.Data;
 using SharpMap.Geometries;
 using System.Diagnostics;
+using System.Reflection.Emit;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.ComponentModel;
+using System.Threading;
 
 namespace SharpMap
 {
@@ -16,17 +21,40 @@ namespace SharpMap
     [Serializable()]
     public class FeatureDataTable : DataTable, IEnumerable<FeatureDataRow>
     {
-        #region Fields
+        #region Nested Types
+        private delegate FeatureDataView GetDefaultViewDelegate(FeatureDataTable table);
+        #endregion
+
+        #region Type Fields
+        private static readonly GetDefaultViewDelegate _getDefaultView;
+        #endregion
+
+        #region Static Constructors
+        static FeatureDataTable()
+        {
+            DynamicMethod get_DefaultViewMethod = new DynamicMethod("get_DefaultView_DynamicMethod",
+                typeof(FeatureDataView), null, typeof(DataTable));
+
+            ILGenerator il = get_DefaultViewMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, typeof(DataTable).GetField("defaultView", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ret);
+
+            _getDefaultView = get_DefaultViewMethod.CreateDelegate(typeof(GetDefaultViewDelegate)) 
+                as GetDefaultViewDelegate;
+        }
+        #endregion
+
+        #region Object Fields
         private BoundingBox _envelope;
         #endregion
 
-        #region Constructors
+        #region Object Constructors
         /// <summary>
         /// Initializes a new instance of the FeatureDataTable class with no arguments.
         /// </summary>
         public FeatureDataTable()
         {
-            initClass();
         }
 
         /// <summary>
@@ -86,24 +114,53 @@ namespace SharpMap
         #region Properties
 
         /// <summary>
-        /// Gets the collection of rows that belong to this table.
+        /// Gets the number of feature rows in the feature table.
         /// </summary>
-        /// <exception cref="NotSupportedException">Thrown if this property is set.</exception>
-        public new DataRowCollection Rows
-        {
-            get { return base.Rows; }
-            set { throw new NotSupportedException(); }
-        }
-
-        /// <summary>
-        /// Gets the number of rows in the table
-        /// </summary>
-        [System.ComponentModel.Browsable(false)]
+        [Browsable(false)]
         public int Count
         {
             get { return base.Rows.Count; }
         }
 
+        public new FeatureDataSet DataSet
+        {
+            get { return (FeatureDataSet)base.DataSet; }
+        }
+
+        public new FeatureDataView DefaultView
+        {
+            get
+            {
+                FeatureDataView defaultView = DefaultViewInternal;
+
+                if (defaultView == null)
+                {
+                    if (DataSet != null)
+                    {
+                        defaultView = DataSet.DefaultViewManager.CreateDataView(this);
+                    }
+                    else
+                    {
+                        defaultView = new FeatureDataView(this, true);
+                        defaultView.SetIndex2("", DataViewRowState.CurrentRows, null, true);
+                    }
+
+                    FeatureDataView baseDefaultView = _getDefaultView(this);
+                    defaultView = Interlocked.CompareExchange<FeatureDataView>(ref baseDefaultView, defaultView, null);
+                    
+                    if (defaultView == null)
+                    {
+                        defaultView = baseDefaultView;
+                    }
+                }
+
+                return defaultView;
+            }
+        }
+
+        /// <summary>
+        /// Gets the full extents of all features in the feature table.
+        /// </summary>
         public BoundingBox Envelope
         {
             get { return _envelope; }
@@ -116,7 +173,19 @@ namespace SharpMap
         /// <returns>FeatureDataRow</returns>
         public FeatureDataRow this[int index]
         {
-            get { return (FeatureDataRow)base.Rows[index]; }
+            get { return base.Rows[index] as FeatureDataRow; }
+        }
+
+        /// <summary>
+        /// Gets the collection of rows that belong to this table.
+        /// </summary>
+        /// <exception cref="NotSupportedException">
+        /// Thrown if this property is set.
+        /// </exception>
+        public new DataRowCollection Rows
+        {
+            get { return base.Rows; }
+            set { throw new NotSupportedException(); }
         }
         #endregion
 
@@ -149,7 +218,6 @@ namespace SharpMap
         public new FeatureDataTable Clone()
         {
             FeatureDataTable cln = ((FeatureDataTable)(base.Clone()));
-            cln.InitVars();
             return cln;
         }
 
@@ -159,7 +227,7 @@ namespace SharpMap
         /// <returns></returns>
         public new FeatureDataRow NewRow()
         {
-            return (FeatureDataRow)base.NewRow();
+            return base.NewRow() as FeatureDataRow;
         }
 
         /// <summary>
@@ -169,11 +237,6 @@ namespace SharpMap
         public void RemoveRow(FeatureDataRow row)
         {
             base.Rows.Remove(row);
-        }
-
-        internal void RowGeometryChanged(FeatureDataRow row)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 
@@ -185,11 +248,6 @@ namespace SharpMap
         protected override DataTable CreateInstance()
         {
             return new FeatureDataTable();
-        }
-
-        protected void InitVars()
-        {
-            //this.columnFeatureGeometry = this.Columns["FeatureGeometry"];
         }
 
         /// <summary>
@@ -286,13 +344,20 @@ namespace SharpMap
         }
         #endregion
 
-        #region Private Helper Methods
-
-        private void initClass()
+        #region Internal helper methods
+        internal FeatureDataView DefaultViewInternal
         {
-            //this.columnFeatureGeometry = new DataColumn("FeatureGeometry", typeof(SharpMap.Geometries.Geometry), null, System.Data.MappingType.Element);
-            //this.Columns.Add(this.columnFeatureGeometry);
+            get { return _getDefaultView(this); }
         }
+
+        internal void RowGeometryChanged(FeatureDataRow row)
+        {
+            row.BeginEdit();
+            row.EndEdit();
+        }
+        #endregion
+
+        #region Private Helper Methods
 
         #endregion
 

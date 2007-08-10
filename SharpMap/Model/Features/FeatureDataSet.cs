@@ -29,6 +29,9 @@ using System.Xml.Schema;
 using System.IO;
 using SharpMap.Indexing;
 using SharpMap.Geometries;
+using System.Threading;
+using System.Reflection.Emit;
+using System.Reflection;
 
 namespace SharpMap
 {
@@ -41,10 +44,51 @@ namespace SharpMap
 	[Serializable()]
 	public class FeatureDataSet : DataSet
     {
-        #region Fields
+        #region Nested Types
+        private delegate void SetDefaultViewManagerDelegate(FeatureDataSet dataSet, FeatureDataViewManager viewManager);
+        private delegate FeatureDataViewManager GetDefaultViewManagerDelegate(FeatureDataSet dataSet);
+        #endregion
+
+        #region Type Fields
+        private static readonly SetDefaultViewManagerDelegate _setDefaultViewManager;
+        private static readonly GetDefaultViewManagerDelegate _getDefaultViewManager;
+        #endregion
+
+        #region Static Constructor
+        static FeatureDataSet()
+        {
+            // Create DefaultViewManager getter method
+            DynamicMethod get_DefaultViewManagerMethod = new DynamicMethod("get_DefaultViewManager_DynamicMethod",
+                typeof(FeatureDataViewManager), null, typeof(DataSet));
+
+            ILGenerator il = get_DefaultViewManagerMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, typeof(DataSet).GetField("defaultViewManager", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ret);
+
+            _getDefaultViewManager = get_DefaultViewManagerMethod.CreateDelegate(typeof(GetDefaultViewManagerDelegate))
+                as GetDefaultViewManagerDelegate;
+
+            // Create DefaultViewManager setter method
+            DynamicMethod set_DefaultViewManagerMethod = new DynamicMethod("set_DefaultViewManager_DynamicMethod",
+                typeof(FeatureDataViewManager), null, typeof(DataSet));
+
+            il = set_DefaultViewManagerMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Stfld, typeof(DataSet).GetField("defaultViewManager", BindingFlags.Instance | BindingFlags.NonPublic));
+
+            _setDefaultViewManager = set_DefaultViewManagerMethod.CreateDelegate(typeof(SetDefaultViewManagerDelegate))
+                as SetDefaultViewManagerDelegate;
+        }
+        #endregion
+
+        #region Object Fields
         private FeatureTableCollection _featureTables;
         private SelfOptimizingDynamicSpatialIndex<FeatureDataRow> _rTreeIndex;
         private BoundingBox _visibleRegion;
+        private object _defaultViewManagerSync = new object();
+        private int _defaultViewManagerInitialized = 0;
         #endregion
 
         #region Constructors
@@ -99,6 +143,34 @@ namespace SharpMap
 			Relations.CollectionChanged += schemaChangedHandler;
         }
         #endregion
+
+        public new FeatureDataViewManager DefaultViewManager
+        {
+            get
+            {
+                if (_defaultViewManagerInitialized == 0)
+                {
+                    lock (_defaultViewManagerSync)
+                    {
+                        if (_defaultViewManagerInitialized == 0)
+                        {
+                            Interlocked.Increment(ref _defaultViewManagerInitialized);
+
+                            // Read value to initialize base storage field.
+                            DataViewManager temp = base.DefaultViewManager;
+
+                            // Replace base storage field with subclass instance
+                            _setDefaultViewManager(this, new FeatureDataViewManager(this, true));
+
+                            // Get rid of initial instance, since we don't need it
+                            temp.Dispose();
+                        }
+                    }
+                }
+
+                return _getDefaultViewManager(this);
+            }
+        }
 
         public BoundingBox VisibleRegion
         {

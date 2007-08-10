@@ -60,6 +60,7 @@
     <Compile Include="Indexing\RTreeTests.cs" />
     <Compile Include="Indexing\SelfOptimizingSpatialIndexTests.cs" />
     <Compile Include="Model\FeatureDataSetTests.cs" />
+    <Compile Include="Model\FeatureDataTableTests.cs" />
     <Compile Include="Model\LayersCollectionTests.cs" />
     <Compile Include="Model\LayerTests.cs" />
     <Compile Include="Presentation\AttributePresenterTests.cs" />

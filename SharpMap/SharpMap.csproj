@@ -206,6 +206,9 @@
     <Compile Include="Model\Features\FeatureDataView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Model\Features\FeatureDataViewManager.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Model\Features\FeatureTableCollection.cs" />
     <Compile Include="Model\LayersChangedEventArgs.cs" />
     <Compile Include="Model\Layers\IFeatureLayer.cs" />

@@ -9,5 +9,6 @@ namespace SharpMap.Tests.ModelTests
 	[TestFixture]
 	public class FeatureDataSetTests
 	{
+        
 	}
 }
