@@ -236,7 +236,7 @@ namespace SharpMap
         private static SetDefaultViewManagerDelegate generateSetDefaultViewManagerDelegate()
         {
             DynamicMethod set_DefaultViewManagerMethod = new DynamicMethod("set_DefaultViewManager_DynamicMethod",
-                typeof(FeatureDataViewManager), null, typeof(DataSet));
+                null, new Type[] { typeof(FeatureDataSet), typeof(FeatureDataViewManager) }, typeof(DataSet));
 
             ILGenerator il = set_DefaultViewManagerMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
@@ -250,7 +250,7 @@ namespace SharpMap
         private static GetDefaultViewManagerDelegate generateGetDefaultViewManagerDelegate()
         {
             DynamicMethod get_DefaultViewManagerMethod = new DynamicMethod("get_DefaultViewManager_DynamicMethod",
-                typeof(FeatureDataViewManager), null, typeof(DataSet));
+                typeof(FeatureDataViewManager), new Type[] { typeof(FeatureDataSet) }, typeof(DataSet));
 
             ILGenerator il = get_DefaultViewManagerMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
