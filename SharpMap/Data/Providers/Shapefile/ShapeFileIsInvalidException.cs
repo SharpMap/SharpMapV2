@@ -16,23 +16,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
-using SharpMap.Data;
-using SharpMap.Geometries;
-
-namespace SharpMap.Layers
+namespace SharpMap.Data.Providers.ShapeFile
 {
-    public interface IFeatureLayer : ILayer
+    /// <summary>
+    /// Exception thrown when the shapefile is invalid or corrupt.
+    /// </summary>
+    public class ShapeFileIsInvalidException : ShapeFileException
     {
-        IVectorLayerProvider DataSource { get; }
-        FeatureDataTable Features { get; }
-        FeatureDataView HighlightedFeatures { get; set; }
-        FeatureDataView SelectedFeatures { get; set; }
-        FeatureDataView VisibleFeatures { get; }
-        event EventHandler HighlightedFeaturesChanged;
-        event EventHandler SelectedFeaturesChanged;
-        event EventHandler VisibleFeaturesChanged;
+        public ShapeFileIsInvalidException() : base() { }
+        public ShapeFileIsInvalidException(string message) : base(message) { }
+        public ShapeFileIsInvalidException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileIsInvalidException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

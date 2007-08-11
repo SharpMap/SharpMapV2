@@ -22,7 +22,7 @@ using System.Text;
 using System.Data;
 using System.Globalization;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data.Providers.ShapeFile
 {
     internal class DbaseWriter : IDisposable
     {

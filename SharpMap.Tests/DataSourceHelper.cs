@@ -7,13 +7,14 @@ using SharpMap.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Layers;
+using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Data.Providers.GeometryProvider;
 
 namespace SharpMap.Tests
 {
-
-	public static class DataSourceHelper
+    internal static class DataSourceHelper
 	{
-		public static IProvider CreateGeometryDatasource()
+        internal static ILayerProvider CreateGeometryDatasource()
 		{
 			Collection<Geometry> geoms = new Collection<Geometry>();
 			geoms.Add(Geometry.GeomFromText("POINT EMPTY"));
@@ -31,10 +32,16 @@ namespace SharpMap.Tests
 			return new GeometryProvider(geoms);
 		}
 
-		public static VectorLayer CreateVectorLayer()
+        internal static VectorLayer CreateVectorLayer()
 		{
 			VectorLayer layer = new VectorLayer("TestGeometries", CreateGeometryDatasource());
 			return layer;
 		}
-	}
+
+        internal static FeatureProvider CreateFeatureDatasource()
+        {
+            FeatureProvider provider = new FeatureProvider();
+            return provider;
+        }
+    }
 }

@@ -16,7 +16,7 @@ namespace SharpMap.Layers
     /// </example>
 	public class RasterLayer : Layer
 	{
-        public RasterLayer(IProvider dataSource)
+        public RasterLayer(ILayerProvider dataSource)
             : base(dataSource)
         {
         }

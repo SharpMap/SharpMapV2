@@ -31,19 +31,19 @@ using SharpMap.Converters.WellKnownText;
 using System.Diagnostics;
 using SharpMap.CoordinateSystems.Transformations;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data.Providers.ShapeFile
 {
     /// <summary>
     /// A data provider for the ESRI ShapeFile spatial data format.
     /// </summary>
     /// <remarks>
     /// <para>
-	/// The ShapeFile provider is used for accessing ESRI ShapeFiles. 
-	/// The ShapeFile should at least contain the [filename].shp 
-	/// and the [filename].shx index file. 
-	/// If feature-data is to be used a [filename].dbf file should 
-	/// also be present.
-	/// </para>
+    /// The ShapeFile provider is used for accessing ESRI ShapeFiles. 
+    /// The ShapeFile should at least contain the [filename].shp 
+    /// and the [filename].shx index file. 
+    /// If feature-data is to be used a [filename].dbf file should 
+    /// also be present.
+    /// </para>
     /// <para>
     /// M and Z values in a shapefile are currently ignored by SharpMap.
     /// </para>
@@ -55,7 +55,7 @@ namespace SharpMap.Data.Providers
     /// myLayer.DataSource = new SharpMap.Data.Providers.ShapeFile(@"C:\data\MyShapeData.shp");
     /// </code>
     /// </example>
-    public class ShapeFile : IWritableProvider<uint>, IDisposable
+    public class ShapeFile : IWritableVectorLayerProvider<uint>, IDisposable
     {
         #region FilterMethod
         /// <summary>
@@ -74,7 +74,7 @@ namespace SharpMap.Data.Providers
 
         #region Fields
         private FilterMethod _filterDelegate;
-        private int? _srid = -1;
+        private int? _srid;
         private string _filename;
         private BoundingBox _envelope = BoundingBox.Empty;
         private DbaseReader _dbaseReader;
@@ -89,8 +89,10 @@ namespace SharpMap.Data.Providers
         private ICoordinateSystem _coordinateSystem;
         private bool _disposed = false;
         private DynamicRTree<uint> _tree;
-		private ShapeFileHeader _header;
-		private ShapeFileIndex _shapeFileIndex;
+        private ShapeFileHeader _header;
+        private ShapeFileIndex _shapeFileIndex;
+        private ShapeFileDataReader _currentReader;
+        private object _readerSync = new object();
         #endregion
 
         #region Object Construction/Destruction
@@ -115,13 +117,13 @@ namespace SharpMap.Data.Providers
         public ShapeFile(string filename, bool fileBasedIndex)
         {
             _filename = filename;
-			
-			using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
-			{
-				_header = new ShapeFileHeader(reader);
-			}
 
-			_shapeFileIndex = new ShapeFileIndex(this);
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
+            {
+                _header = new ShapeFileHeader(reader);
+            }
+
+            _shapeFileIndex = new ShapeFileIndex(this);
 
             _hasFileBasedSpatialIndex = fileBasedIndex;
 
@@ -161,31 +163,31 @@ namespace SharpMap.Data.Providers
                 if (_dbaseReader != null)
                 {
                     _dbaseReader.Close();
-					_dbaseReader = null;
+                    _dbaseReader = null;
                 }
 
                 if (_dbaseWriter != null)
                 {
-					_dbaseWriter.Close();
-					_dbaseWriter = null;
+                    _dbaseWriter.Close();
+                    _dbaseWriter = null;
                 }
 
                 if (_shapeFileReader != null)
                 {
                     _shapeFileReader.Close();
-					_shapeFileReader = null;
+                    _shapeFileReader = null;
                 }
 
                 if (_shapeFileWriter != null)
                 {
                     _shapeFileWriter.Close();
-					_shapeFileWriter = null;
+                    _shapeFileWriter = null;
                 }
 
                 if (_shapeFileStream != null)
                 {
-					_shapeFileStream.Close();
-					_shapeFileStream = null;
+                    _shapeFileStream.Close();
+                    _shapeFileStream = null;
                 }
 
                 if (_tree != null)
@@ -206,20 +208,20 @@ namespace SharpMap.Data.Providers
         #endregion
         #endregion
 
-		#region ToString
-		/// <summary>
-		/// Provides a string representation of the essential ShapeFile info.
-		/// </summary>
-		/// <returns>A string with the Name, HasDbf, FeatureCount and Extents values.</returns>
-		public override string ToString()
-		{
-			return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {2}; Extents: {3}",
-				ConnectionId, HasDbf, GetFeatureCount(), GetExtents());
-		}
-		#endregion
+        #region ToString
+        /// <summary>
+        /// Provides a string representation of the essential ShapeFile info.
+        /// </summary>
+        /// <returns>A string with the Name, HasDbf, FeatureCount and Extents values.</returns>
+        public override string ToString()
+        {
+            return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {2}; Extents: {3}",
+                ConnectionId, HasDbf, GetFeatureCount(), GetExtents());
+        }
+        #endregion
 
-		#region Public Methods and Properties (SharpMap ShapeFile API)
-		/// <summary>
+        #region Public Methods and Properties (SharpMap ShapeFile API)
+        /// <summary>
         /// Creates a new <see cref="ShapeFile"/> instance and .shp and .shx file on disk.
         /// </summary>
         /// <param name="directory">Directory to create the shapefile in.</param>
@@ -240,16 +242,16 @@ namespace SharpMap.Data.Providers
         /// <param name="type">Type of shape to store in the shapefile.</param>
         /// <param name="schema">The schema for the attributes DBase file.</param>
         /// <returns>A ShapeFile instance.</returns>
-		/// <exception cref="ShapeFileInvalidOperationException">Thrown if <paramref name="type"/> is <see cref="ShapeType.Null"/>.</exception>
+        /// <exception cref="ShapeFileInvalidOperationException">Thrown if <paramref name="type"/> is <see cref="ShapeType.Null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="directory"/> is not a valid path.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="layerName"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="layerName"/> has invalid path characters.</exception>
         public static ShapeFile Create(string directory, string layerName, ShapeType type, FeatureDataTable schema)
         {
-			if (type == ShapeType.Null)
-			{
-				throw new ShapeFileInvalidOperationException("Cannot create a shapefile with a null geometry type");
-			}
+            if (type == ShapeType.Null)
+            {
+                throw new ShapeFileInvalidOperationException("Cannot create a shapefile with a null geometry type");
+            }
 
             if (String.IsNullOrEmpty(directory) || directory.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
             {
@@ -257,7 +259,7 @@ namespace SharpMap.Data.Providers
             }
 
             DirectoryInfo directoryInfo = new DirectoryInfo(directory);
-            
+
             return Create(directoryInfo, layerName, type, schema);
         }
 
@@ -304,8 +306,8 @@ namespace SharpMap.Data.Providers
                 writer.Seek(0, SeekOrigin.Begin);
                 writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderStartCode));
                 writer.Write(new byte[20]);
-				writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderSizeBytes / 2));
-				writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
+                writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderSizeBytes / 2));
+                writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
                 writer.Write(ByteEncoder.GetLittleEndian((int)type));
                 writer.Write(ByteEncoder.GetLittleEndian(0.0));
                 writer.Write(ByteEncoder.GetLittleEndian(0.0));
@@ -338,7 +340,6 @@ namespace SharpMap.Data.Providers
             return new ShapeFile(shapeFile);
         }
 
-
         /// <summary>
         /// Forces a rebuild of the spatial index. 
         /// If the instance of the ShapeFile provider
@@ -370,33 +371,6 @@ namespace SharpMap.Data.Providers
         }
 
         /// <summary>
-        /// Gets or sets the coordinate system of the ShapeFile. 
-        /// </summary>
-		/// <remarks>
-		/// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
-		/// description of the coordinate system this will automatically be read.
-		/// If this is not the case, the coordinate system will default to null.
-		/// </remarks>
-        /// <exception cref="InvalidShapeFileOperationException">
-        /// Thrown if property is set and the coordinate system is read from file.
-        /// </exception>
-        public ICoordinateSystem SpatialReference
-        {
-            get { return _coordinateSystem; }
-            set
-            {
-                //checkOpen();
-                if (_coordsysReadFromFile)
-                {
-                    throw new ShapeFileInvalidOperationException(
-                        "Coordinate system is specified in projection file and is read only");
-                }
-
-                _coordinateSystem = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the <see cref="SharpMap.Data.Providers.ShapeType">
         /// shape geometry type</see> in this shapefile.
         /// </summary>
@@ -424,8 +398,8 @@ namespace SharpMap.Data.Providers
         /// </summary>
         /// <remarks>If the filename changes, indexes will be rebuilt</remarks>
         /// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is executed and the shapefile is open or 
-		/// if set and the specified filename already exists.
+        /// Thrown if method is executed and the shapefile is open or 
+        /// if set and the specified filename already exists.
         /// Check <see cref="IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="FileNotFoundException">
@@ -448,50 +422,50 @@ namespace SharpMap.Data.Providers
 
                     if (File.Exists(value))
                     {
-						throw new ShapeFileInvalidOperationException(String.Format(
-							"Can't rename shapefile because a file of with the name {0} already exists.", value));
+                        throw new ShapeFileInvalidOperationException(String.Format(
+                            "Can't rename shapefile because a file of with the name {0} already exists.", value));
                     }
 
                     if (String.Compare(Path.GetExtension(value), ".shp", true) != 0)
                     {
                         throw new ShapeFileIsInvalidException(
                             String.Format("Invalid shapefile filename: {0}.", value));
-					}
+                    }
 
-					string oldName = Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
-					string newName = Path.Combine(Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value));
+                    string oldName = Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
+                    string newName = Path.Combine(Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value));
 
-					File.Copy(oldName + ".shp", newName + ".shp");
-					File.Copy(oldName + ".shx", newName + ".shx");
-					if (File.Exists(oldName + ".dbf")) File.Copy(oldName + ".dbf", newName + ".dbf");
-					if (File.Exists(oldName + ".sbn")) File.Copy(oldName + ".sbn", newName + ".sbn");
-					if (File.Exists(oldName + ".sbx")) File.Copy(oldName + ".sbx", newName + ".sbx");
-					if (File.Exists(oldName + ".prj")) File.Copy(oldName + ".prj", newName + ".prj");
-					if (File.Exists(oldName + ".fbx")) File.Copy(oldName + ".fbx", newName + ".fbx");
-					if (File.Exists(oldName + ".fbn")) File.Copy(oldName + ".fbn", newName + ".fbn");
-					if (File.Exists(oldName + ".ain")) File.Copy(oldName + ".ain", newName + ".ain");
-					if (File.Exists(oldName + ".aih")) File.Copy(oldName + ".aih", newName + ".aih");
-					if (File.Exists(oldName + ".atx")) File.Copy(oldName + ".atx", newName + ".atx");
+                    File.Copy(oldName + ".shp", newName + ".shp");
+                    File.Copy(oldName + ".shx", newName + ".shx");
+                    if (File.Exists(oldName + ".dbf")) File.Copy(oldName + ".dbf", newName + ".dbf");
+                    if (File.Exists(oldName + ".sbn")) File.Copy(oldName + ".sbn", newName + ".sbn");
+                    if (File.Exists(oldName + ".sbx")) File.Copy(oldName + ".sbx", newName + ".sbx");
+                    if (File.Exists(oldName + ".prj")) File.Copy(oldName + ".prj", newName + ".prj");
+                    if (File.Exists(oldName + ".fbx")) File.Copy(oldName + ".fbx", newName + ".fbx");
+                    if (File.Exists(oldName + ".fbn")) File.Copy(oldName + ".fbn", newName + ".fbn");
+                    if (File.Exists(oldName + ".ain")) File.Copy(oldName + ".ain", newName + ".ain");
+                    if (File.Exists(oldName + ".aih")) File.Copy(oldName + ".aih", newName + ".aih");
+                    if (File.Exists(oldName + ".atx")) File.Copy(oldName + ".atx", newName + ".atx");
 
-					File.Delete(oldName + ".shp");
-					File.Delete(oldName + ".shx");
-					if (File.Exists(oldName + ".dbf")) File.Delete(oldName + ".dbf");
-					if (File.Exists(oldName + ".sbn")) File.Delete(oldName + ".sbn");
-					if (File.Exists(oldName + ".sbx")) File.Delete(oldName + ".sbx");
-					if (File.Exists(oldName + ".prj")) File.Delete(oldName + ".prj");
-					if (File.Exists(oldName + ".fbx")) File.Delete(oldName + ".fbx");
-					if (File.Exists(oldName + ".fbn")) File.Delete(oldName + ".fbn");
-					if (File.Exists(oldName + ".ain")) File.Delete(oldName + ".ain");
-					if (File.Exists(oldName + ".aih")) File.Delete(oldName + ".aih");
-					if (File.Exists(oldName + ".atx")) File.Delete(oldName + ".atx");
+                    File.Delete(oldName + ".shp");
+                    File.Delete(oldName + ".shx");
+                    if (File.Exists(oldName + ".dbf")) File.Delete(oldName + ".dbf");
+                    if (File.Exists(oldName + ".sbn")) File.Delete(oldName + ".sbn");
+                    if (File.Exists(oldName + ".sbx")) File.Delete(oldName + ".sbx");
+                    if (File.Exists(oldName + ".prj")) File.Delete(oldName + ".prj");
+                    if (File.Exists(oldName + ".fbx")) File.Delete(oldName + ".fbx");
+                    if (File.Exists(oldName + ".fbn")) File.Delete(oldName + ".fbn");
+                    if (File.Exists(oldName + ".ain")) File.Delete(oldName + ".ain");
+                    if (File.Exists(oldName + ".aih")) File.Delete(oldName + ".aih");
+                    if (File.Exists(oldName + ".atx")) File.Delete(oldName + ".atx");
 
                     _filename = value;
 
-					if (_dbaseReader != null)
-					{
-						_dbaseReader.Close();
-						_dbaseReader = null;
-					}
+                    if (_dbaseReader != null)
+                    {
+                        _dbaseReader.Close();
+                        _dbaseReader = null;
+                    }
                 }
             }
         }
@@ -501,10 +475,10 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public string DbfFilename
         {
-            get 
-            { 
-                return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)), 
-                    Path.GetFileNameWithoutExtension(_filename) + ".dbf"); 
+            get
+            {
+                return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
+                    Path.GetFileNameWithoutExtension(_filename) + ".dbf");
             }
         }
 
@@ -514,19 +488,19 @@ namespace SharpMap.Data.Providers
         public bool HasDbf
         {
             get { return File.Exists(DbfFilename); }
-		}
+        }
 
-		/// <summary>
-		/// Gets the record index (.shx file) filename for the given shapefile
-		/// </summary>
-		public string IndexFilename
-		{
-			get
-			{
-				return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
-					Path.GetFileNameWithoutExtension(_filename) + ".shx");
-			}
-		}
+        /// <summary>
+        /// Gets the record index (.shx file) filename for the given shapefile
+        /// </summary>
+        public string IndexFilename
+        {
+            get
+            {
+                return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
+                    Path.GetFileNameWithoutExtension(_filename) + ".shx");
+            }
+        }
 
         /// <summary>
         /// Gets or sets the encoding used for parsing strings from the DBase DBF file.
@@ -569,23 +543,6 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        #region IProvider Members
-        /// <summary>
-        /// Returns true if the datasource is currently open
-        /// </summary>		
-        public bool IsOpen
-        {
-            get { return _isOpen; }
-        }
-
-        /// <summary>
-        /// Opens the datasource
-        /// </summary>
-        public void Open()
-        {
-            Open(false);
-        }
-
         /// <summary>
         /// Opens the shapefile with optional exclusive access for faster write performance during bulk updates.
         /// </summary>
@@ -603,7 +560,7 @@ namespace SharpMap.Data.Providers
                 try
                 {
                     enableReading();
-					_isOpen = true;
+                    _isOpen = true;
 
                     // Read projection file
                     parseProjection();
@@ -617,248 +574,6 @@ namespace SharpMap.Data.Providers
                     throw;
                 }
             }
-        }
-
-        /// <summary>
-        /// Closes the datasource
-        /// </summary>
-        public void Close()
-        {
-            (this as IDisposable).Dispose();
-        }
-
-        /// <summary>
-        /// Returns geometries whose bounding box intersects <paramref name="bounds"/>.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-		/// Please note that this method doesn't guarantee that the geometries returned actually 
-        /// intersect <paramref name="bounds"/>, but only that their bounding box intersects <paramref name="bounds"/>.
-		/// </para>
-        /// <para>
-		/// This method is much faster than the QueryFeatures method, because intersection tests
-        /// are performed on objects simplifed by their BoundingBox, and using the spatial index.
-		/// </para>
-        /// </remarks>
-        /// <param name="bounds">
-		/// <see cref="BoundingBox"/> which determines the view.
-		/// </param>
-		/// <returns>
-		/// A <see cref="IEnumerable{Geometry}"/> containing the <see cref="Geometry"/> objects
-        /// which are at least partially contained within the given <paramref name="bounds"/>.
-		/// </returns>
-        /// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the 
-		/// shapefile is closed. Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox bounds)
-        {
-            checkOpen();
-            enableReading();
-
-			foreach (uint oid in GetObjectIdsInView(bounds))
-            {
-                Geometry g = GetGeometryById(oid);
-
-                if (!ReferenceEquals(g, null))
-                {
-					yield return g;
-                }
-            }
-        }
-
-        public void GetSchema(FeatureDataTable table)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        /// <summary>
-		/// Returns all objects whose BoundingBox intersects <paramref name="bounds"/>.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-		/// Please note that this method doesn't guarantee that the geometries returned actually 
-		/// intersect <paramref name="bounds"/>, but only that their <see cref="BoundingBox"/> intersects bounds.
-        /// </para>
-        /// <para>This method is much faster than the QueryFeatures method, because intersection tests
-		/// are performed on objects simplifed by their BoundingBox, and using the spatial index.</para>
-        /// </remarks>
-		/// <param name="bounds"><see cref="BoundingBox"/> which determines the view.</param>
-        /// <param name="ds">The <see cref="SharpMap.Data.FeatureDataSet"/> to fill 
-		/// with features within the <paramref name="bounds">view</paramref>.</param>
-        /// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet ds)
-        {
-            checkOpen();
-            enableReading();
-
-            //Use the spatial index to get a list of features whose boundingbox intersects bbox
-            IEnumerable<uint> objects = GetObjectIdsInView(bounds);
-            FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
-
-            foreach (uint oid in objects)
-            {
-                FeatureDataRow<uint> fdr = HasDbf ? _dbaseReader.GetFeature(oid, dt) : dt.NewRow(oid);
-
-                fdr.Geometry = readGeometry(oid);
-
-                if (fdr.Geometry != null)
-                {
-                    if (fdr.Geometry.GetBoundingBox().Intersects(bounds))
-                    {
-                        if (FilterDelegate == null || FilterDelegate(fdr))
-                        {
-                            dt.AddRow(fdr);
-                        }
-                    }
-                }
-            }
-
-            ds.Tables.Add(dt);
-        }
-
-        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDataReader ExecuteIntersectionQuery(Geometry geom)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Returns the data associated with all the geometries that are intersected by 'geom'.
-        /// Please note that the ShapeFile provider currently doesn't fully support geometryintersection
-        /// and thus only BoundingBox/BoundingBox querying are performed. The results are NOT
-        /// guaranteed to lie withing 'geom'.
-        /// </summary>
-        /// <param name="geom"></param>
-        /// <param name="ds">FeatureDataSet to fill with data.</param>
-        /// <exception cref="InvalidShapeFileOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
-        {
-            checkOpen();
-            enableReading();
-
-			FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
-            BoundingBox boundingBox = geom.GetBoundingBox();
-
-            //Get candidates by intersecting the spatial index tree
-            IEnumerable<uint> oidList = getKeysFromIndexEntries(_tree.Search(boundingBox));
-
-            foreach (uint oid in oidList)
-            {
-                for (uint i = (uint)dt.Rows.Count - 1; i >= 0; i--)
-                {
-                    FeatureDataRow<uint> fdr = getFeature(oid, dt);
-
-                    if (fdr.Geometry != null)
-                    {
-                        if (fdr.Geometry.GetBoundingBox().Intersects(boundingBox))
-                        {
-                            // TODO: replace above line with this:  if(fdr.Geometry.Intersects(bbox))  when relation model is complete
-                            if (FilterDelegate == null || FilterDelegate(fdr))
-                            {
-                                dt.AddRow(fdr);
-                            }
-                        }
-                    }
-                }
-            }
-
-            ds.Tables.Add(dt);
-        }
-
-        public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDataReader ExecuteIntersectionQuery(BoundingBox box)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICoordinateTransformation CoordinateTransformation
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
-        /// Returns geometry Object IDs whose bounding box intersects <paramref name="bbox"/>.
-        /// </summary>
-        /// <param name="bbox">Bounds which to search for objects in.</param>
-        /// <returns>
-        /// An enumeration of object ids which have geometries whose 
-        /// bounding box is intersected by <paramref name="bbox"/>.
-        /// </returns>
-        /// <exception cref="InvalidShapeFileOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public IEnumerable<uint> GetObjectIdsInView(BoundingBox bbox)
-        {
-            checkOpen();
-            enableReading();
-
-			foreach (uint id in getKeysFromIndexEntries(_tree.Search(bbox)))
-			{
-				yield return id;
-			}
-        }
-
-        /// <summary>
-        /// Returns the geometry corresponding to the Object ID
-        /// </summary>
-        /// <param name="oid">Object ID</param>
-        /// <returns><see cref="Geometry"/></returns>
-        /// <exception cref="InvalidShapeFileOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public Geometry GetGeometryById(uint oid)
-        {
-            checkOpen();
-            enableReading();
-
-            if (FilterDelegate != null) //Apply filtering
-            {
-                FeatureDataRow fdr = GetFeature(oid);
-
-                if (fdr != null)
-                {
-                    return fdr.Geometry;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return readGeometry(oid);
-            }
-        }
-
-        /// <summary>
-        /// Returns the total number of features in the datasource (without any filter applied).
-        /// </summary>
-        /// <returns>
-		/// The number of features contained in the shapefile.
-		/// </returns>
-        public int GetFeatureCount()
-		{
-			return _shapeFileIndex.Count;
         }
 
         /// <summary>
@@ -900,19 +615,45 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        /// <summary>
-        /// Gets a feature row from the datasource with the specified id.
-        /// </summary>
-        /// <param name="oid">Id of the feautre to return.</param>
-        /// <returns>
-        /// The feature corresponding to <paramref name="oid" />, or null if no feature is found.
-        /// </returns>
-        /// <exception cref="InvalidShapeFileOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public FeatureDataRow<uint> GetFeature(uint oid)
+        #region ILayerProvider Members
+
+        public ICoordinateTransformation CoordinateTransformation
         {
-            return getFeature(oid, null);
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coordinate system of the ShapeFile. 
+        /// </summary>
+        /// <remarks>
+        /// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
+        /// description of the coordinate system this will automatically be read.
+        /// If this is not the case, the coordinate system will default to null.
+        /// </remarks>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if property is set and the coordinate system is read from file.
+        /// </exception>
+        public ICoordinateSystem SpatialReference
+        {
+            get { return _coordinateSystem; }
+            set
+            {
+                //checkOpen();
+                if (_coordsysReadFromFile)
+                {
+                    throw new ShapeFileInvalidOperationException(
+                        "Coordinate system is specified in projection file and is read only");
+                }
+
+                _coordinateSystem = value;
+            }
         }
 
         /// <summary>
@@ -951,42 +692,329 @@ namespace SharpMap.Data.Providers
             set { _srid = value; }
         }
 
+        /// <summary>
+        /// Returns true if the datasource is currently open
+        /// </summary>		
+        public bool IsOpen
+        {
+            get { return _isOpen; }
+        }
+
+        /// <summary>
+        /// Opens the datasource
+        /// </summary>
+        public void Open()
+        {
+            Open(false);
+        }
+
+        /// <summary>
+        /// Closes the datasource
+        /// </summary>
+        public void Close()
+        {
+            (this as IDisposable).Dispose();
+        }
         #endregion
 
-        #region IWritableProvider Members
+        #region IVectorLayerProvider Members
+        /// <summary>
+        /// Returns the data associated with all the geometries that are intersected by 'geom'.
+        /// Please note that the ShapeFile provider currently doesn't fully support geometryintersection
+        /// and thus only BoundingBox/BoundingBox querying are performed. The results are NOT
+        /// guaranteed to lie withing 'geom'.
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <param name="ds">FeatureDataSet to fill with data.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
+        {
+            checkOpen();
+            enableReading();
+
+            FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+            BoundingBox boundingBox = geom.GetBoundingBox();
+
+            //Get candidates by intersecting the spatial index tree
+            IEnumerable<uint> oidList = getKeysFromIndexEntries(_tree.Search(boundingBox));
+
+            foreach (uint oid in oidList)
+            {
+                for (uint i = (uint)dt.Rows.Count - 1; i >= 0; i--)
+                {
+                    FeatureDataRow<uint> fdr = getFeature(oid, dt);
+
+                    if (fdr.Geometry != null)
+                    {
+                        if (fdr.Geometry.GetBoundingBox().Intersects(boundingBox))
+                        {
+                            // TODO: replace above line with this:  if(fdr.Geometry.Intersects(bbox))  when relation model is complete
+                            if (FilterDelegate == null || FilterDelegate(fdr))
+                            {
+                                dt.AddRow(fdr);
+                            }
+                        }
+                    }
+                }
+            }
+
+            ds.Tables.Add(dt);
+        }
+
+        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(Geometry geom)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns all objects whose BoundingBox intersects <paramref name="bounds"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Please note that this method doesn't guarantee that the geometries returned actually 
+        /// intersect <paramref name="bounds"/>, but only that their <see cref="BoundingBox"/> intersects bounds.
+        /// </para>
+        /// <para>This method is much faster than the QueryFeatures method, because intersection tests
+        /// are performed on objects simplifed by their BoundingBox, and using the spatial index.</para>
+        /// </remarks>
+        /// <param name="bounds"><see cref="BoundingBox"/> which determines the view.</param>
+        /// <param name="ds">The <see cref="SharpMap.Data.FeatureDataSet"/> to fill 
+        /// with features within the <paramref name="bounds">view</paramref>.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet ds)
+        {
+            checkOpen();
+            enableReading();
+
+            //Use the spatial index to get a list of features whose boundingbox intersects bbox
+            IEnumerable<uint> objects = GetObjectIdsInView(bounds);
+            FeatureDataTable<uint> dt = HasDbf ? _dbaseReader.NewTable : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+
+            foreach (uint oid in objects)
+            {
+                FeatureDataRow<uint> fdr = HasDbf ? _dbaseReader.GetFeature(oid, dt) : dt.NewRow(oid);
+
+                fdr.Geometry = readGeometry(oid);
+
+                if (fdr.Geometry != null)
+                {
+                    if (fdr.Geometry.GetBoundingBox().Intersects(bounds))
+                    {
+                        if (FilterDelegate == null || FilterDelegate(fdr))
+                        {
+                            dt.AddRow(fdr);
+                        }
+                    }
+                }
+            }
+
+            ds.Tables.Add(dt);
+        }
+
+        public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box)
+        {
+            lock (_readerSync)
+            {
+                if (_currentReader != null)
+                {
+                    throw new ShapeFileInvalidOperationException("Can't open another ShapeFileDataReader on this ShapeFile, since another reader is already active.");
+                }
+
+                enableReading();
+                _currentReader = new ShapeFileDataReader(this, box);
+                _currentReader.Disposed += readerDisposed;
+                return _currentReader;
+            }
+        }
+
+        /// <summary>
+        /// Returns geometries whose bounding box intersects <paramref name="bounds"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Please note that this method doesn't guarantee that the geometries returned actually 
+        /// intersect <paramref name="bounds"/>, but only that their bounding box intersects <paramref name="bounds"/>.
+        /// </para>
+        /// <para>
+        /// This method is much faster than the QueryFeatures method, because intersection tests
+        /// are performed on objects simplifed by their BoundingBox, and using the spatial index.
+        /// </para>
+        /// </remarks>
+        /// <param name="bounds">
+        /// <see cref="BoundingBox"/> which determines the view.
+        /// </param>
+        /// <returns>
+        /// A <see cref="IEnumerable{Geometry}"/> containing the <see cref="Geometry"/> objects
+        /// which are at least partially contained within the given <paramref name="bounds"/>.
+        /// </returns>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the 
+        /// shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        public IEnumerable<Geometry> GetGeometriesInView(BoundingBox bounds)
+        {
+            checkOpen();
+            enableReading();
+
+            foreach (uint oid in GetObjectIdsInView(bounds))
+            {
+                Geometry g = GetGeometryById(oid);
+
+                if (!ReferenceEquals(g, null))
+                {
+                    yield return g;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the total number of features in the datasource (without any filter applied).
+        /// </summary>
+        /// <returns>
+        /// The number of features contained in the shapefile.
+        /// </returns>
+        public int GetFeatureCount()
+        {
+            return _shapeFileIndex.Count;
+        }
+
+        public DataTable GetSchemaTable()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void SetTableSchema(FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IVectorLayerProvider<uint> Members
+
+        /// <summary>
+        /// Returns geometry Object IDs whose bounding box intersects <paramref name="bbox"/>.
+        /// </summary>
+        /// <param name="bbox">Bounds which to search for objects in.</param>
+        /// <returns>
+        /// An enumeration of object ids which have geometries whose 
+        /// bounding box is intersected by <paramref name="bbox"/>.
+        /// </returns>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        public IEnumerable<uint> GetObjectIdsInView(BoundingBox bbox)
+        {
+            checkOpen();
+            enableReading();
+
+            foreach (uint id in getKeysFromIndexEntries(_tree.Search(bbox)))
+            {
+                yield return id;
+            }
+        }
+
+        /// <summary>
+        /// Returns the geometry corresponding to the Object ID
+        /// </summary>
+        /// <param name="oid">Object ID</param>
+        /// <returns><see cref="Geometry"/></returns>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        public Geometry GetGeometryById(uint oid)
+        {
+            checkOpen();
+            enableReading();
+
+            if (FilterDelegate != null) //Apply filtering
+            {
+                FeatureDataRow fdr = GetFeature(oid);
+
+                if (fdr != null)
+                {
+                    return fdr.Geometry;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return readGeometry(oid);
+            }
+        }
+
+        /// <summary>
+        /// Gets a feature row from the datasource with the specified id.
+        /// </summary>
+        /// <param name="oid">Id of the feautre to return.</param>
+        /// <returns>
+        /// The feature corresponding to <paramref name="oid" />, or null if no feature is found.
+        /// </returns>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        public FeatureDataRow<uint> GetFeature(uint oid)
+        {
+            return getFeature(oid, null);
+        }
+
+        public void SetTableSchema(FeatureDataTable<uint> table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+        #endregion
+
+        #region IWritableVectorLayerProvider<uint> Members
 
         /// <summary>
         /// Adds a feature to the end of a shapefile.
         /// </summary>
         /// <param name="feature">Feature to append.</param>
         /// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="feature"/> is null.
-		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		/// Thrown if <paramref name="feature.Geometry"/> is null.
-		/// </exception>
+        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="feature"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if <paramref name="feature.Geometry"/> is null.
+        /// </exception>
         public void Insert(FeatureDataRow<uint> feature)
-		{
-			if (feature == null)
-			{
-				throw new ArgumentNullException("feature");
-			}
+        {
+            if (feature == null)
+            {
+                throw new ArgumentNullException("feature");
+            }
 
-			if (feature.Geometry == null)
-			{
-				throw new InvalidOperationException("Cannot insert a feature with a null geometry");
-			}
+            if (feature.Geometry == null)
+            {
+                throw new InvalidOperationException("Cannot insert a feature with a null geometry");
+            }
 
-			checkOpen();
-			enableWriting();
+            checkOpen();
+            enableWriting();
 
-			uint id = _shapeFileIndex.GetNextId();
-			feature[ShapeFileConstants.IdColumnName] = id;
+            uint id = _shapeFileIndex.GetNextId();
+            feature[ShapeFileConstants.IdColumnName] = id;
 
-			_shapeFileIndex.AddFeatureToIndex(feature);
+            _shapeFileIndex.AddFeatureToIndex(feature);
 
             BoundingBox featureEnvelope = feature.Geometry.GetBoundingBox();
 
@@ -995,10 +1023,10 @@ namespace SharpMap.Data.Providers
                 _tree.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
             }
 
-			int offset = _shapeFileIndex[id].Offset;
-			int length = _shapeFileIndex[id].Length;
+            int offset = _shapeFileIndex[id].Offset;
+            int length = _shapeFileIndex[id].Length;
 
-			_header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
+            _header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
             _header.Envelope = BoundingBox.Join(_header.Envelope, featureEnvelope);
 
             if (HasDbf)
@@ -1006,42 +1034,42 @@ namespace SharpMap.Data.Providers
                 _dbaseWriter.AddRow(feature);
             }
 
-			writeGeometry(feature.Geometry, id, offset, length);
-			_header.WriteHeader(_shapeFileWriter);
-			_shapeFileIndex.Save();
+            writeGeometry(feature.Geometry, id, offset, length);
+            _header.WriteHeader(_shapeFileWriter);
+            _shapeFileIndex.Save();
         }
 
         /// <summary>
         /// Adds features to the end of a shapefile.
         /// </summary>
-		/// <param name="feature">Enumeration of features to append.</param>
+        /// <param name="feature">Enumeration of features to append.</param>
         /// <exception cref="InvalidShapeFileOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="features"/> is null.
-		/// </exception>
-		public void Insert(IEnumerable<FeatureDataRow<uint>> features)
-		{
-			if (features == null)
-			{
-				throw new ArgumentNullException("features");
-			}
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="features"/> is null.
+        /// </exception>
+        public void Insert(IEnumerable<FeatureDataRow<uint>> features)
+        {
+            if (features == null)
+            {
+                throw new ArgumentNullException("features");
+            }
 
             checkOpen();
             enableWriting();
-             
-			BoundingBox featuresEnvelope = BoundingBox.Empty;
+
+            BoundingBox featuresEnvelope = BoundingBox.Empty;
 
             foreach (FeatureDataRow<uint> feature in features)
             {
-                BoundingBox featureEnvelope = feature.Geometry == null 
-					? BoundingBox.Empty 
-					: feature.Geometry.GetBoundingBox();
+                BoundingBox featureEnvelope = feature.Geometry == null
+                    ? BoundingBox.Empty
+                    : feature.Geometry.GetBoundingBox();
 
                 featuresEnvelope.ExpandToInclude(featureEnvelope);
 
-				uint id = _shapeFileIndex.GetNextId();
+                uint id = _shapeFileIndex.GetNextId();
 
                 _shapeFileIndex.AddFeatureToIndex(feature);
 
@@ -1050,10 +1078,10 @@ namespace SharpMap.Data.Providers
                     _tree.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
                 }
 
-				feature[ShapeFileConstants.IdColumnName] = id;
-				
-				int offset = _shapeFileIndex[id].Offset;
-				int length = _shapeFileIndex[id].Length;
+                feature[ShapeFileConstants.IdColumnName] = id;
+
+                int offset = _shapeFileIndex[id].Offset;
+                int length = _shapeFileIndex[id].Length;
 
                 writeGeometry(feature.Geometry, id, offset, length);
 
@@ -1063,264 +1091,273 @@ namespace SharpMap.Data.Providers
                 }
             }
 
-			_shapeFileIndex.Save();
+            _shapeFileIndex.Save();
 
-			_header.Envelope = BoundingBox.Join(_header.Envelope, featuresEnvelope);
-			_header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
-			_header.WriteHeader(_shapeFileWriter);
-		}
+            _header.Envelope = BoundingBox.Join(_header.Envelope, featuresEnvelope);
+            _header.FileLengthInWords = _shapeFileIndex.ComputeShapeFileSizeInWords();
+            _header.WriteHeader(_shapeFileWriter);
+        }
 
-		/// <summary>
-		/// Updates a feature in a shapefile by deleting the previous 
-		/// version and inserting the updated version.
-		/// </summary>
-		/// <param name="feature">Feature to update.</param>
-		/// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the shapefile is closed. 
-		/// Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="feature"/> is null.
-		/// </exception>
-		public void Update(FeatureDataRow<uint> feature)
-		{
-			if (feature == null) throw new ArgumentNullException("feature");
+        /// <summary>
+        /// Updates a feature in a shapefile by deleting the previous 
+        /// version and inserting the updated version.
+        /// </summary>
+        /// <param name="feature">Feature to update.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="feature"/> is null.
+        /// </exception>
+        public void Update(FeatureDataRow<uint> feature)
+        {
+            if (feature == null) throw new ArgumentNullException("feature");
 
-			if (feature.RowState != DataRowState.Modified)
-			{
-				return;
-			}
+            if (feature.RowState != DataRowState.Modified)
+            {
+                return;
+            }
 
-			checkOpen();
-			enableWriting();
+            checkOpen();
+            enableWriting();
 
-			if (feature.IsGeometryModified)
-			{
-				Delete(feature);
-				Insert(feature);
-			}
-			else if (HasDbf)
-			{
-				_dbaseWriter.UpdateRow(feature.Id, feature);
-			}
+            if (feature.IsGeometryModified)
+            {
+                Delete(feature);
+                Insert(feature);
+            }
+            else if (HasDbf)
+            {
+                _dbaseWriter.UpdateRow(feature.Id, feature);
+            }
 
-			feature.AcceptChanges();
-		}
+            feature.AcceptChanges();
+        }
 
-		/// <summary>
-		/// Updates a set of features in a shapefile by deleting the previous 
-		/// versions and inserting the updated versions.
-		/// </summary>
-		/// <param name="feature">Enumeration of features to update.</param>
-		/// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the shapefile is closed. 
-		/// Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="features"/> is null.
-		/// </exception>
-		public void Update(IEnumerable<FeatureDataRow<uint>> features)
-		{
-			if (features == null) throw new ArgumentNullException("feature");
+        /// <summary>
+        /// Updates a set of features in a shapefile by deleting the previous 
+        /// versions and inserting the updated versions.
+        /// </summary>
+        /// <param name="feature">Enumeration of features to update.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="features"/> is null.
+        /// </exception>
+        public void Update(IEnumerable<FeatureDataRow<uint>> features)
+        {
+            if (features == null) throw new ArgumentNullException("feature");
 
-			checkOpen();
-			enableWriting();
+            checkOpen();
+            enableWriting();
 
-			foreach (FeatureDataRow<uint> feature in features)
-			{
-				if (feature.RowState != DataRowState.Modified)
-				{
-					continue;
-				}
+            foreach (FeatureDataRow<uint> feature in features)
+            {
+                if (feature.RowState != DataRowState.Modified)
+                {
+                    continue;
+                }
 
-				if (feature.IsGeometryModified)
-				{
-					Delete(feature);
-					Insert(feature);
-				}
-				else if (HasDbf)
-				{
-					_dbaseWriter.UpdateRow(feature.Id, feature);
-				}
+                if (feature.IsGeometryModified)
+                {
+                    Delete(feature);
+                    Insert(feature);
+                }
+                else if (HasDbf)
+                {
+                    _dbaseWriter.UpdateRow(feature.Id, feature);
+                }
 
-				feature.AcceptChanges();
-			}
-		}
+                feature.AcceptChanges();
+            }
+        }
 
-		/// <summary>
-		/// Deletes a row from the shapefile by marking it as deleted.
-		/// </summary>
-		/// <param name="feature">Feature to delete.</param>
-		/// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the shapefile is closed. 
-		/// Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="features"/> is null.
-		/// </exception>
-		public void Delete(FeatureDataRow<uint> feature)
-		{
-			if (feature == null)
-			{
-				throw new ArgumentNullException("feature");
-			}
+        /// <summary>
+        /// Deletes a row from the shapefile by marking it as deleted.
+        /// </summary>
+        /// <param name="feature">Feature to delete.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="features"/> is null.
+        /// </exception>
+        public void Delete(FeatureDataRow<uint> feature)
+        {
+            if (feature == null)
+            {
+                throw new ArgumentNullException("feature");
+            }
 
-			if (!_shapeFileIndex.ContainsKey(feature.Id))
-			{
-				return;
-			}
+            if (!_shapeFileIndex.ContainsKey(feature.Id))
+            {
+                return;
+            }
 
-			checkOpen();
-			enableWriting();
+            checkOpen();
+            enableWriting();
 
-			feature.Geometry = null;
+            feature.Geometry = null;
 
-			uint id = feature.Id;
-			int length = _shapeFileIndex[id].Length;
-			int offset = _shapeFileIndex[id].Offset;
-			writeGeometry(null, feature.Id, offset, length);
-		}
+            uint id = feature.Id;
+            int length = _shapeFileIndex[id].Length;
+            int offset = _shapeFileIndex[id].Offset;
+            writeGeometry(null, feature.Id, offset, length);
+        }
 
-		/// <summary>
-		/// Deletes a set of rows from the shapefile by marking them as deleted.
-		/// </summary>
-		/// <param name="features">Features to delete.</param>
-		/// <exception cref="InvalidShapeFileOperationException">
-		/// Thrown if method is called and the shapefile is closed. 
-		/// Check <see cref="IsOpen"/> before calling.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="features"/> is null.
-		/// </exception>
-		public void Delete(IEnumerable<FeatureDataRow<uint>> features)
-		{
-			if (features == null)
-			{
-				throw new ArgumentNullException("features");
-			}
+        /// <summary>
+        /// Deletes a set of rows from the shapefile by marking them as deleted.
+        /// </summary>
+        /// <param name="features">Features to delete.</param>
+        /// <exception cref="InvalidShapeFileOperationException">
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="features"/> is null.
+        /// </exception>
+        public void Delete(IEnumerable<FeatureDataRow<uint>> features)
+        {
+            if (features == null)
+            {
+                throw new ArgumentNullException("features");
+            }
 
-			checkOpen();
-			enableWriting();
+            checkOpen();
+            enableWriting();
 
-			foreach (FeatureDataRow<uint> feature in features)
-			{
-				if (!_shapeFileIndex.ContainsKey(feature.Id))
-				{
-					continue;
-				}
+            foreach (FeatureDataRow<uint> feature in features)
+            {
+                if (!_shapeFileIndex.ContainsKey(feature.Id))
+                {
+                    continue;
+                }
 
-				feature.Geometry = null;
+                feature.Geometry = null;
 
-				uint id = feature.Id;
-				int length = _shapeFileIndex[id].Length;
-				int offset = _shapeFileIndex[id].Offset;
-				writeGeometry(null, feature.Id, offset, length);
-			}
-		}
+                uint id = feature.Id;
+                int length = _shapeFileIndex[id].Length;
+                int offset = _shapeFileIndex[id].Offset;
+                writeGeometry(null, feature.Id, offset, length);
+            }
+        }
 
-		///// <summary>
-		///// Saves features to the shapefile.
-		///// </summary>
-		///// <param name="table">
-		///// A FeatureDataTable containing feature data and geometry.
-		///// </param>
-		///// <exception cref="InvalidShapeFileOperationException">
-		///// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
-		///// </exception>
-		//public void Save(FeatureDataTable<uint> table)
-		//{
-		//    if (table == null)
-		//    {
-		//        throw new ArgumentNullException("table");
-		//    }
+        ///// <summary>
+        ///// Saves features to the shapefile.
+        ///// </summary>
+        ///// <param name="table">
+        ///// A FeatureDataTable containing feature data and geometry.
+        ///// </param>
+        ///// <exception cref="InvalidShapeFileOperationException">
+        ///// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        ///// </exception>
+        //public void Save(FeatureDataTable<uint> table)
+        //{
+        //    if (table == null)
+        //    {
+        //        throw new ArgumentNullException("table");
+        //    }
 
-		//    checkOpen();
-		//    enableWriting();
+        //    checkOpen();
+        //    enableWriting();
 
-		//    _shapeFileStream.Position = ShapeFileConstants.HeaderSizeBytes;
-		//    foreach (FeatureDataRow row in table.Rows)
-		//    {
-		//        if (row is FeatureDataRow<uint>)
-		//        {
-		//            _tree.Insert(new RTreeIndexEntry<uint>((row as FeatureDataRow<uint>).Id, row.Geometry.GetBoundingBox()));
-		//        }
-		//        else
-		//        {
-		//            _tree.Insert(new RTreeIndexEntry<uint>(getNextId(), row.Geometry.GetBoundingBox()));
-		//        }
+        //    _shapeFileStream.Position = ShapeFileConstants.HeaderSizeBytes;
+        //    foreach (FeatureDataRow row in table.Rows)
+        //    {
+        //        if (row is FeatureDataRow<uint>)
+        //        {
+        //            _tree.Insert(new RTreeIndexEntry<uint>((row as FeatureDataRow<uint>).Id, row.Geometry.GetBoundingBox()));
+        //        }
+        //        else
+        //        {
+        //            _tree.Insert(new RTreeIndexEntry<uint>(getNextId(), row.Geometry.GetBoundingBox()));
+        //        }
 
-		//        writeFeatureRow(row);
-		//    }
+        //        writeFeatureRow(row);
+        //    }
 
-		//    writeIndex();
-		//    writeHeader(_shapeFileWriter);
-		//}
+        //    writeIndex();
+        //    writeHeader(_shapeFileWriter);
+        //}
         #endregion
+        #endregion
+
+        #region IVectorLayerProvider<uint> Explicit Members
+
+        IEnumerable<uint> IVectorLayerProvider<uint>.GetObjectIdsInView(BoundingBox boundingBox)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region General helper functions
 
-		internal static int ComputeGeometryLengthInWords(Geometry geometry)
-		{
-			if (geometry == null)
-			{
-				throw new NotSupportedException("Writing null shapes not supported in this version.");
-			}
+        internal static int ComputeGeometryLengthInWords(Geometry geometry)
+        {
+            if (geometry == null)
+            {
+                throw new NotSupportedException("Writing null shapes not supported in this version.");
+            }
 
-			int byteCount = 0;
+            int byteCount = 0;
 
-			if (geometry is Point)
-			{
-				byteCount = 20; // ShapeType integer + 2 doubles at 8 bytes each
-			}
-			else if (geometry is MultiPoint)
-			{
-				byteCount = 4 /* ShapeType Integer */
-					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 /* NumPoints integer */
-					+ 16 * (geometry as MultiPoint).Points.Count;
-			}
-			else if (geometry is LineString)
-			{
-				byteCount = 4 /* ShapeType Integer */
-					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
-					+ 4 /* Parts Array 1 integer long */
-					+ 16 * (geometry as LineString).Vertices.Count;
-			}
-			else if (geometry is MultiLineString)
-			{
-				int pointCount = 0;
+            if (geometry is Point)
+            {
+                byteCount = 20; // ShapeType integer + 2 doubles at 8 bytes each
+            }
+            else if (geometry is MultiPoint)
+            {
+                byteCount = 4 /* ShapeType Integer */
+                    + ShapeFileConstants.BoundingBoxFieldByteLength + 4 /* NumPoints integer */
+                    + 16 * (geometry as MultiPoint).Points.Count;
+            }
+            else if (geometry is LineString)
+            {
+                byteCount = 4 /* ShapeType Integer */
+                    + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
+                    + 4 /* Parts Array 1 integer long */
+                    + 16 * (geometry as LineString).Vertices.Count;
+            }
+            else if (geometry is MultiLineString)
+            {
+                int pointCount = 0;
 
-				foreach (LineString line in (geometry as MultiLineString).LineStrings)
-				{
-					pointCount += line.Vertices.Count;
-				}
+                foreach (LineString line in (geometry as MultiLineString).LineStrings)
+                {
+                    pointCount += line.Vertices.Count;
+                }
 
-				byteCount = 4 /* ShapeType Integer */
-					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
-					+ 4 * (geometry as MultiLineString).LineStrings.Count /* Parts array of integer indexes */
-					+ 16 * pointCount;
-			}
-			else if (geometry is Polygon)
-			{
-				int pointCount = (geometry as Polygon).ExteriorRing.Vertices.Count;
+                byteCount = 4 /* ShapeType Integer */
+                    + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
+                    + 4 * (geometry as MultiLineString).LineStrings.Count /* Parts array of integer indexes */
+                    + 16 * pointCount;
+            }
+            else if (geometry is Polygon)
+            {
+                int pointCount = (geometry as Polygon).ExteriorRing.Vertices.Count;
 
-				foreach (LinearRing ring in (geometry as Polygon).InteriorRings)
-				{
-					pointCount += ring.Vertices.Count;
-				}
+                foreach (LinearRing ring in (geometry as Polygon).InteriorRings)
+                {
+                    pointCount += ring.Vertices.Count;
+                }
 
-				byteCount = 4 /* ShapeType Integer */
-					+ ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
-					+ 4 * ((geometry as Polygon).InteriorRings.Count + 1 /* Parts array of rings: count of interior + 1 for exterior ring */)
-					+ 16 * pointCount;
-			}
-			else
-			{
-				throw new NotSupportedException("Currently unsupported geometry type.");
-			}
+                byteCount = 4 /* ShapeType Integer */
+                    + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
+                    + 4 * ((geometry as Polygon).InteriorRings.Count + 1 /* Parts array of rings: count of interior + 1 for exterior ring */)
+                    + 16 * pointCount;
+            }
+            else
+            {
+                throw new NotSupportedException("Currently unsupported geometry type.");
+            }
 
-			return byteCount / 2; // number of 16-bit words
-		}
+            return byteCount / 2; // number of 16-bit words
+        }
 
         private void checkOpen()
         {
@@ -1357,7 +1394,7 @@ namespace SharpMap.Data.Providers
             {
                 if (!HasDbf)
                 {
-					dt = FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                    dt = FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
                 }
                 else
                 {
@@ -1378,109 +1415,122 @@ namespace SharpMap.Data.Providers
             }
         }
 
-		private void enableReading()
-		{
-			if (_shapeFileReader == null || !_shapeFileStream.CanRead)
-			{
-				if (_shapeFileStream != null)
-				{
-					_shapeFileStream.Close();
-				}
+        private void enableReading()
+        {
+            if (_shapeFileReader == null || !_shapeFileStream.CanRead)
+            {
+                if (_shapeFileStream != null)
+                {
+                    _shapeFileStream.Close();
+                }
 
-				if (_exclusiveMode)
-				{
-					_shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-				}
-				else
-				{
-					_shapeFileStream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-				}
+                if (_exclusiveMode)
+                {
+                    _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                }
+                else
+                {
+                    _shapeFileStream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
 
-				_shapeFileReader = new BinaryReader(_shapeFileStream);
-			}
+                _shapeFileReader = new BinaryReader(_shapeFileStream);
+            }
 
-			if (HasDbf)
-			{
-				if (_dbaseReader == null)
-				{
-					if (!_exclusiveMode)
-					{
-						if (_dbaseWriter != null)
-						{
-							_dbaseWriter.Close();
-						}
+            if (HasDbf)
+            {
+                if (_dbaseReader == null)
+                {
+                    if (!_exclusiveMode)
+                    {
+                        if (_dbaseWriter != null)
+                        {
+                            _dbaseWriter.Close();
+                        }
 
-						_dbaseWriter = null;
-					}
+                        _dbaseWriter = null;
+                    }
 
-					_dbaseReader = new DbaseReader(DbfFilename);
-				}
+                    _dbaseReader = new DbaseReader(DbfFilename);
+                }
 
-				if (!_dbaseReader.IsOpen)
-				{
-					_dbaseReader.Open();
-				}
-			}
-		}
+                if (!_dbaseReader.IsOpen)
+                {
+                    _dbaseReader.Open();
+                }
+            }
+        }
 
-		private void enableWriting()
-		{
-			if (_shapeFileWriter == null || !_shapeFileStream.CanWrite)
-			{
-				if (_shapeFileStream != null)
-				{
-					_shapeFileStream.Close();
-				}
+        private void enableWriting()
+        {
+            if (_currentReader != null)
+            {
+                throw new ShapeFileInvalidOperationException("Can't write to shapefile, since a ShapeFileDataReader is actively reading it.");
+            }
 
-				if (_exclusiveMode)
-				{
-					_shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-				}
-				else
-				{
-					_shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
-				}
+            if (_shapeFileWriter == null || !_shapeFileStream.CanWrite)
+            {
+                if (_shapeFileStream != null)
+                {
+                    _shapeFileStream.Close();
+                }
 
-				_shapeFileWriter = new BinaryWriter(_shapeFileStream);
-			}
+                if (_exclusiveMode)
+                {
+                    _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                }
+                else
+                {
+                    _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+                }
 
-			if (HasDbf)
-			{
-				if (_dbaseWriter == null)
-				{
-					if (!_exclusiveMode)
-					{
-						if (_dbaseReader != null)
-						{
-							_dbaseReader.Close();
-						}
+                _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+            }
 
-						_dbaseReader = null;
-					}
+            if (HasDbf)
+            {
+                if (_dbaseWriter == null)
+                {
+                    if (!_exclusiveMode)
+                    {
+                        if (_dbaseReader != null)
+                        {
+                            _dbaseReader.Close();
+                        }
 
-					// Workaround for trying to open the file for exclusive writing too quickly after disposing the reader
-					int numberAttemptsToOpenDbfForWriting = 0;
+                        _dbaseReader = null;
+                    }
 
-					do
-					{
-						try
-						{
-							_dbaseWriter = new DbaseWriter(DbfFilename);
-						}
-						catch (IOException)
-						{
-							System.Threading.Thread.Sleep(200);
-							numberAttemptsToOpenDbfForWriting++;
-						}
-					} while (_dbaseWriter == null && numberAttemptsToOpenDbfForWriting <= 3);
+                    // Workaround for trying to open the file for exclusive writing too quickly after disposing the reader
+                    int numberAttemptsToOpenDbfForWriting = 0;
 
-					if (_dbaseWriter == null)
-					{
-						throw new ShapeFileException("Can't open Dbase file for writing.");
-					}
-				}
-			}
-		}
+                    do
+                    {
+                        try
+                        {
+                            _dbaseWriter = new DbaseWriter(DbfFilename);
+                        }
+                        catch (IOException)
+                        {
+                            System.Threading.Thread.Sleep(200);
+                            numberAttemptsToOpenDbfForWriting++;
+                        }
+                    } while (_dbaseWriter == null && numberAttemptsToOpenDbfForWriting <= 3);
+
+                    if (_dbaseWriter == null)
+                    {
+                        throw new ShapeFileException("Can't open Dbase file for writing.");
+                    }
+                }
+            }
+        }
+
+        private void readerDisposed(object sender, EventArgs e)
+        {
+            lock (_readerSync)
+            {
+                _currentReader = null;
+            }
+        }
         #endregion
 
         #region Spatial indexing helper functions
@@ -1539,17 +1589,17 @@ namespace SharpMap.Data.Providers
             {
                 Geometry geom = readGeometry(i);
 
-				if (geom == null)
-				{
-					continue;
-				}
+                if (geom == null)
+                {
+                    continue;
+                }
 
                 BoundingBox box = geom.GetBoundingBox();
 
-				if (!double.IsNaN(box.Left) && !double.IsNaN(box.Right) && !double.IsNaN(box.Bottom) && !double.IsNaN(box.Top))
-				{
-					index.Insert(new RTreeIndexEntry<uint>(i, box));
-				}
+                if (!double.IsNaN(box.Left) && !double.IsNaN(box.Right) && !double.IsNaN(box.Bottom) && !double.IsNaN(box.Top))
+                {
+                    index.Insert(new RTreeIndexEntry<uint>(i, box));
+                }
             }
 
             return index;
@@ -1594,7 +1644,7 @@ namespace SharpMap.Data.Providers
 
             foreach (KeyValuePair<uint, ShapeFileIndex.IndexEntry> kvp in _shapeFileIndex)
             {
-				_shapeFileStream.Seek(kvp.Value.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
+                _shapeFileStream.Seek(kvp.Value.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
 
                 if ((ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32()) != ShapeType.Null)
                 {
@@ -1624,74 +1674,74 @@ namespace SharpMap.Data.Providers
         /// Reads and parses the geometry with ID 'oid' from the ShapeFile.
         /// </summary>
         /// <remarks>
-		/// <see cref="FilterDelegate">Filtering</see> is not applied to this method.
-		/// </remarks>
+        /// <see cref="FilterDelegate">Filtering</see> is not applied to this method.
+        /// </remarks>
         /// <param name="oid">Object ID</param>
         /// <returns>
-		/// <see cref="SharpMap.Geometries.Geometry"/> instance from the ShapeFile corresponding to <paramref name="oid"/>.
-		/// </returns>
+        /// <see cref="SharpMap.Geometries.Geometry"/> instance from the ShapeFile corresponding to <paramref name="oid"/>.
+        /// </returns>
         private Geometry readGeometry(uint oid)
         {
             enableReading();
-			_shapeFileReader.BaseStream.Seek(
-				_shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
+            _shapeFileReader.BaseStream.Seek(
+                _shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength, SeekOrigin.Begin);
 
-			// Shape type is a common value to all geometry
+            // Shape type is a common value to all geometry
             ShapeType type = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
 
-			// Null geometries encode deleted lines, so object ids remain consistent
-			if (type == ShapeType.Null)
-			{
-				return null;
-			}
+            // Null geometries encode deleted lines, so object ids remain consistent
+            if (type == ShapeType.Null)
+            {
+                return null;
+            }
 
-			Geometry g;
+            Geometry g;
 
-			switch (ShapeType)
+            switch (ShapeType)
             {
                 case ShapeType.Point:
                     g = readPoint();
-					break;
+                    break;
                 case ShapeType.PolyLine:
-					g = readPolyLine();
-					break;
+                    g = readPolyLine();
+                    break;
                 case ShapeType.Polygon:
-					g = readPolygon();
-					break;
+                    g = readPolygon();
+                    break;
                 case ShapeType.MultiPoint:
-					g = readMultiPoint();
-					break;
+                    g = readMultiPoint();
+                    break;
                 case ShapeType.PointZ:
-					g = readPointZ();
-					break;
+                    g = readPointZ();
+                    break;
                 case ShapeType.PolyLineZ:
-					g = readPolyLineZ();
-					break;
+                    g = readPolyLineZ();
+                    break;
                 case ShapeType.PolygonZ:
-					g = readPolygonZ();
-					break;
+                    g = readPolygonZ();
+                    break;
                 case ShapeType.MultiPointZ:
-					g = readMultiPointZ();
-					break;
+                    g = readMultiPointZ();
+                    break;
                 case ShapeType.PointM:
-					g = readPointM();
-					break;
+                    g = readPointM();
+                    break;
                 case ShapeType.PolyLineM:
-					g = readPolyLineM();
-					break;
+                    g = readPolyLineM();
+                    break;
                 case ShapeType.PolygonM:
-					g = readPolygonM();
-					break;
+                    g = readPolygonM();
+                    break;
                 case ShapeType.MultiPointM:
-					g = readMultiPointM();
-					break;
+                    g = readMultiPointM();
+                    break;
                 default:
                     throw new ShapeFileUnsupportedGeometryException("ShapeFile type "
-						+ ShapeType.ToString() + " not supported");
+                        + ShapeType.ToString() + " not supported");
             }
 
-			g.SpatialReference = SpatialReference;
-			return g;
+            g.SpatialReference = SpatialReference;
+            return g;
         }
 
         private Geometry readMultiPointM()
@@ -1736,21 +1786,21 @@ namespace SharpMap.Data.Providers
 
         private Geometry readPoint()
         {
-            Point point = new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()), 
-				ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()));
+            Point point = new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
+                ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()));
 
             return point;
         }
 
         private Geometry readMultiPoint()
         {
-			// Skip min/max box
+            // Skip min/max box
             _shapeFileReader.BaseStream.Seek(ShapeFileConstants.BoundingBoxFieldByteLength, SeekOrigin.Current);
 
             MultiPoint feature = new MultiPoint();
 
-			// Get the number of points
-            int nPoints = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32()); 
+            // Get the number of points
+            int nPoints = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
 
             if (nPoints == 0)
             {
@@ -1759,23 +1809,23 @@ namespace SharpMap.Data.Providers
 
             for (int i = 0; i < nPoints; i++)
             {
-                feature.Points.Add(new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()), 
-					ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble())));
+                feature.Points.Add(new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
+                    ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble())));
             }
 
             return feature;
         }
 
         private void readPolyStructure(out int parts, out int points, out int[] segments)
-		{
-			// Skip min/max box
+        {
+            // Skip min/max box
             _shapeFileReader.BaseStream.Seek(ShapeFileConstants.BoundingBoxFieldByteLength, SeekOrigin.Current);
 
-			// Get number of parts (segments)
-			parts = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
+            // Get number of parts (segments)
+            parts = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
 
-			// Get number of points
-			points = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32()); 
+            // Get number of points
+            points = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
 
             segments = new int[parts + 1];
 
@@ -1798,7 +1848,7 @@ namespace SharpMap.Data.Providers
 
             if (parts == 0)
             {
-				throw new ShapeFileIsInvalidException("Polyline found with 0 parts.");
+                throw new ShapeFileIsInvalidException("Polyline found with 0 parts.");
             }
 
             MultiLineString mline = new MultiLineString();
@@ -1809,8 +1859,8 @@ namespace SharpMap.Data.Providers
 
                 for (int i = segments[lineId]; i < segments[lineId + 1]; i++)
                 {
-					Point p = new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
-						ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()));
+                    Point p = new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
+                        ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()));
 
                     line.Vertices.Add(p);
                 }
@@ -1833,10 +1883,10 @@ namespace SharpMap.Data.Providers
             int[] segments;
             readPolyStructure(out parts, out points, out segments);
 
-			if (parts == 0)
-			{
-				throw new ShapeFileIsInvalidException("Polygon found with 0 parts.");
-			}
+            if (parts == 0)
+            {
+                throw new ShapeFileIsInvalidException("Polygon found with 0 parts.");
+            }
 
             // First read all the rings
             List<LinearRing> rings = new List<LinearRing>();
@@ -1847,8 +1897,8 @@ namespace SharpMap.Data.Providers
 
                 for (int i = segments[ringId]; i < segments[ringId + 1]; i++)
                 {
-                    ring.Vertices.Add(new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()), 
-						ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble())));
+                    ring.Vertices.Add(new Point(ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble()),
+                        ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble())));
                 }
 
                 rings.Add(ring);
@@ -1867,8 +1917,8 @@ namespace SharpMap.Data.Providers
                 }
             }
 
-			//We only have one polygon
-            if (polygonCount == 1) 
+            //We only have one polygon
+            if (polygonCount == 1)
             {
                 Polygon poly = new Polygon();
                 poly.ExteriorRing = rings[0];
@@ -1908,9 +1958,9 @@ namespace SharpMap.Data.Providers
         }
         #endregion
 
-		#region File parsing helpers
+        #region File parsing helpers
 
-		/// <summary>
+        /// <summary>
         /// Reads and parses the projection if a projection file exists
         /// </summary>
         private void parseProjection()
@@ -1927,8 +1977,8 @@ namespace SharpMap.Data.Providers
                 }
                 catch (ArgumentException ex)
                 {
-                    Trace.TraceWarning("Coordinate system file '" + projfile 
-						+ "' found, but could not be parsed. WKT parser returned:" + ex.Message);
+                    Trace.TraceWarning("Coordinate system file '" + projfile
+                        + "' found, but could not be parsed. WKT parser returned:" + ex.Message);
 
                     throw new ShapeFileIsInvalidException("Invalid .prj file", ex);
                 }
@@ -1937,71 +1987,71 @@ namespace SharpMap.Data.Providers
         #endregion
 
         #region File writing helper functions
-		//private void writeFeatureRow(FeatureDataRow feature)
-		//{
-		//    uint recordNumber = addIndexEntry(feature);
+        //private void writeFeatureRow(FeatureDataRow feature)
+        //{
+        //    uint recordNumber = addIndexEntry(feature);
 
-		//    if (HasDbf)
-		//    {
-		//        _dbaseWriter.AddRow(feature);
-		//    }
+        //    if (HasDbf)
+        //    {
+        //        _dbaseWriter.AddRow(feature);
+        //    }
 
-		//    writeGeometry(feature.Geometry, recordNumber, _shapeIndex[recordNumber].Length);
-		//}
+        //    writeGeometry(feature.Geometry, recordNumber, _shapeIndex[recordNumber].Length);
+        //}
 
 
         private void writeGeometry(Geometry g, uint recordNumber, int recordOffsetInWords, int recordLengthInWords)
         {
-			_shapeFileStream.Position = recordOffsetInWords * 2;
+            _shapeFileStream.Position = recordOffsetInWords * 2;
 
-			// Record numbers are 1- based in shapefile
-            recordNumber += 1; 
+            // Record numbers are 1- based in shapefile
+            recordNumber += 1;
 
             _shapeFileWriter.Write(ByteEncoder.GetBigEndian(recordNumber));
             _shapeFileWriter.Write(ByteEncoder.GetBigEndian(recordLengthInWords));
 
-			if (g == null)
-			{
-				_shapeFileWriter.Write(ByteEncoder.GetLittleEndian((int)ShapeType.Null));
-			}
+            if (g == null)
+            {
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((int)ShapeType.Null));
+            }
 
-			switch (ShapeType)
-			{
-				case ShapeType.Point:
-					writePoint(g as Point);
-					break;
-				case ShapeType.PolyLine:
-					if (g is LineString)
-					{
-						writeLineString(g as LineString);
-					}
-					else if (g is MultiLineString)
-					{
-						writeMultiLineString(g as MultiLineString);
-					}
-					break;
-				case ShapeType.Polygon:
-					writePolygon(g as Polygon);
-					break;
-				case ShapeType.MultiPoint:
-					writeMultiPoint(g as MultiPoint);
-					break;
-				case ShapeType.PointZ:
-				case ShapeType.PolyLineZ:
-				case ShapeType.PolygonZ:
-				case ShapeType.MultiPointZ:
-				case ShapeType.PointM:
-				case ShapeType.PolyLineM:
-				case ShapeType.PolygonM:
-				case ShapeType.MultiPointM:
-				case ShapeType.MultiPatch:
-				case ShapeType.Null:
-				default:
-					throw new NotSupportedException(String.Format(
-						"Writing geometry type {0} is not supported in the current version.", ShapeType));
-			}
+            switch (ShapeType)
+            {
+                case ShapeType.Point:
+                    writePoint(g as Point);
+                    break;
+                case ShapeType.PolyLine:
+                    if (g is LineString)
+                    {
+                        writeLineString(g as LineString);
+                    }
+                    else if (g is MultiLineString)
+                    {
+                        writeMultiLineString(g as MultiLineString);
+                    }
+                    break;
+                case ShapeType.Polygon:
+                    writePolygon(g as Polygon);
+                    break;
+                case ShapeType.MultiPoint:
+                    writeMultiPoint(g as MultiPoint);
+                    break;
+                case ShapeType.PointZ:
+                case ShapeType.PolyLineZ:
+                case ShapeType.PolygonZ:
+                case ShapeType.MultiPointZ:
+                case ShapeType.PointM:
+                case ShapeType.PolyLineM:
+                case ShapeType.PolygonM:
+                case ShapeType.MultiPointM:
+                case ShapeType.MultiPatch:
+                case ShapeType.Null:
+                default:
+                    throw new NotSupportedException(String.Format(
+                        "Writing geometry type {0} is not supported in the current version.", ShapeType));
+            }
 
-			_shapeFileWriter.Flush();
+            _shapeFileWriter.Flush();
         }
 
         private void writeCoordinate(double x, double y)
@@ -2048,7 +2098,7 @@ namespace SharpMap.Data.Providers
             }
 
             foreach (SharpMap.Geometries.Point point in points)
-			{
+            {
                 writeCoordinate(point.X, point.Y);
             }
         }
@@ -2093,14 +2143,5 @@ namespace SharpMap.Data.Providers
             writePolySegments(polygon.GetBoundingBox(), parts, allPoints.ToArray());
         }
         #endregion
-
-		#region IProvider<uint> Members
-
-		IEnumerable<uint> IProvider<uint>.GetObjectIdsInView(BoundingBox boundingBox)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
     }
 }

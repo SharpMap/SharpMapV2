@@ -30,7 +30,7 @@
     <Position X="9.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <FileName>Model\Layers\VectorLayer.cs</FileName>
-      <HashCode>ACAgAAIACCABAIDAQAAFAgAACACkgAAABAoAAAAIABA=</HashCode>
+      <HashCode>ACAgAAIACCABAoDAQAAFAgAACACkgAAABAoAAAAIABA=</HashCode>
     </TypeIdentifier>
     <Compartments>
       <Compartment Name="Protected" Collapsed="true" />
@@ -49,7 +49,7 @@
     <Position X="7.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <FileName>Model\Layers\LabelLayer.cs</FileName>
-      <HashCode>ASAAAAKBACAAEKCEAAAFAgAEEAGlAIAAAAAAACAABBA=</HashCode>
+      <HashCode>ASAAAAKBACAAEqCEAAAFAgAEEAGlAIAAAAAAACAABBA=</HashCode>
     </TypeIdentifier>
     <Compartments>
       <Compartment Name="Protected" Collapsed="true" />
@@ -83,7 +83,7 @@
     <Position X="10.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <FileName>Model\Features\FeatureDataSet.cs</FileName>
-      <HashCode>gQAAAAAAAiAAQAIBAAAA0AAABBAAABAAAAAAAAgRBBA=</HashCode>
+      <HashCode>gQAAAAAAQiAAQAIAAAAA0AAABBAAABAAAAAAAAgRBBA=</HashCode>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Tables" />
@@ -109,11 +109,8 @@
     <Position X="13" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <FileName>Model\Features\FeatureDataTable.cs</FileName>
-      <HashCode>ICCQBAAIACAAAFCADAAQAASACACACAEAlIAAEgAAADA=</HashCode>
+      <HashCode>ICCQhgAIACAAAFCBDAAQAACACAKACAEAlIAAEgAAADg=</HashCode>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Rows" />
-    </ShowAsCollectionAssociation>
     <Compartments>
       <Compartment Name="Protected" Collapsed="true" />
       <Compartment Name="Private" Collapsed="true" />
@@ -124,6 +121,11 @@
           <NewMemberFileName>Model\Features\FeatureDataTable.cs</NewMemberFileName>
         </TypeIdentifier>
       </Delegate>
+      <Class Name="SharpMap.FeatureDataTable.LoadFeaturesAdapter" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Features\FeatureDataTable.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
     </NestedTypes>
     <Lollipop Position="0.2" />
   </Class>

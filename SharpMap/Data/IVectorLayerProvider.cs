@@ -18,28 +18,33 @@
 
 using System;
 using System.Collections.Generic;
-
-using SharpMap.CoordinateSystems;
-using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Geometries;
 using System.Data;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {
     /// <summary>
-    /// Interface for data providers.
+    /// Interface for vector data providers.
     /// </summary>
-    public interface IProvider : IDisposable
+    public interface IVectorLayerProvider : ILayerProvider
     {
         /// <summary>
         /// Gets the features within the specified 
         /// <see cref="SharpMap.Geometries.BoundingBox"/>.
         /// </summary>
         /// <param name="boundingBox">BoundingBox which defines the view.</param>
-        /// <returns>An enumeration of features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
+        /// <returns>An enumeration of features within the specified 
+        /// <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
         IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox);
 
-        void GetSchema(FeatureDataTable table);
+        /// <summary>
+        /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema
+        /// for the configured provider. Provides the same result as 
+        /// <see cref="IDataReader.GetSchemaTable"/>.
+        /// </summary>
+        /// <seealso cref="IDataReader.GetSchemaTable"/>
+        /// <returns>A DataTable that describes the column metadata.</returns>
+        DataTable GetSchemaTable();
 
         /// <summary>
         /// Retrieves the features intersected by <paramref name="geom"/>.
@@ -56,12 +61,12 @@ namespace SharpMap.Data
         void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table);
 
         /// <summary>
-        /// Retrieves a <see cref="IDataReader"/> for the features that 
+        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
         /// are intersected by <paramref name="geom"/>.
         /// </summary>
         /// <param name="geom">Geometry to intersect with.</param>
-        /// <returns>An IDataReader to iterate over the results.</returns>
-        IDataReader ExecuteIntersectionQuery(Geometry geom);
+        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
+        IFeatureDataReader ExecuteIntersectionQuery(Geometry geom);
 
         /// <summary>
         /// Retrieves the data associated with all the geometries that 
@@ -80,12 +85,12 @@ namespace SharpMap.Data
         void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table);
 
         /// <summary>
-        /// Retrieves a <see cref="IDataReader"/> for the features that 
+        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
         /// are intersected by <paramref name="box"/>.
         /// </summary>
         /// <param name="box">BoundingBox to intersect with.</param>
-        /// <returns>An IDataReader to iterate over the results.</returns>
-        IDataReader ExecuteIntersectionQuery(BoundingBox box);
+        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
+        IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box);
 
         /// <summary>
         /// Returns the number of features in the entire dataset.
@@ -94,53 +99,10 @@ namespace SharpMap.Data
         int GetFeatureCount();
 
         /// <summary>
-        /// Geometric extent of the entire dataset.
+        /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 
+        /// present in the IProvider with the given connection.
         /// </summary>
-        /// <returns>The extents of the dataset as a BoundingBox.</returns>
-        BoundingBox GetExtents();
-
-        /// <summary>
-        /// Gets the connection ID of the datasource.
-        /// </summary>
-        /// <remarks>
-        /// <para>The ConnectionId should be unique to the datasource 
-		/// (for instance the filename or the connectionstring), and is meant 
-		/// to be used for connection pooling.</para>
-        /// <para>If connection pooling doesn't apply to this datasource, 
-		/// the ConnectionId should return String.Empty</para>
-        /// </remarks>
-        string ConnectionId { get; }
-
-        /// <summary>
-        /// Opens the datasource.
-        /// </summary>
-        void Open();
-
-        /// <summary>
-        /// Closes the datasource.
-        /// </summary>
-        void Close();
-
-        /// <summary>
-        /// Returns true if the datasource is currently open.
-        /// </summary>
-        bool IsOpen { get; }
-
-        /// <summary>
-        /// The spatial reference ID.
-        /// </summary>
-		int? Srid { get; set; }
-
-		/// <summary>
-		/// The dataum, projection and coordinate system used in this 
-        /// provider.
-		/// </summary>
-		ICoordinateSystem SpatialReference { get; }
-
-		/// <summary>
-		/// Applies a coordinate transformation to the geometries in 
-        /// this provider.
-		/// </summary>
-		ICoordinateTransformation CoordinateTransformation { get; set; }
+        /// <param name="table">The FeatureDataTable to configure the schema of.</param>
+        void SetTableSchema(FeatureDataTable table);
     }
 }

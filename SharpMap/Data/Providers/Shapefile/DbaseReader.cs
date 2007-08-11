@@ -29,7 +29,7 @@ using System.Text;
 
 using SharpMap.Indexing.BinaryTree;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data.Providers.ShapeFile
 {
     internal class DbaseReader : IDisposable
     {

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data.Providers.ShapeFile
 {
     internal static class DbaseSchema
     {

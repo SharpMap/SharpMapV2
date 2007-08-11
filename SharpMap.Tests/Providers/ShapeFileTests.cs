@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using SharpMap.Data.Providers;
+using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Provider

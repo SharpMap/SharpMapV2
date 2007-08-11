@@ -21,7 +21,7 @@ using System.IO;
 using System.Text;
 using System.Data;
 
-namespace SharpMap.Data.Providers
+namespace SharpMap.Data.Providers.ShapeFile
 {
     internal class DbaseHeader
     {

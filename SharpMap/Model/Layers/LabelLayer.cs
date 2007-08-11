@@ -65,7 +65,7 @@ namespace SharpMap.Layers
 		/// Creates a new instance of a LabelLayer with the given name.
 		/// </summary>
         /// <param name="layername">Name of the layer.</param>
-		public LabelLayer(string layerName, IProvider dataSource)
+		public LabelLayer(string layerName, ILayerProvider dataSource)
             : base(dataSource)
 		{
 			LayerName = layerName;
@@ -183,6 +183,11 @@ namespace SharpMap.Layers
         }
 
         #region IFeatureLayer Members
+
+        public new IVectorLayerProvider DataSource
+        {
+            get { return base.DataSource as IVectorLayerProvider; }
+        }
 
         public FeatureDataTable Features
         {

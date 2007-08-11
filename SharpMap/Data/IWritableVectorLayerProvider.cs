@@ -22,13 +22,13 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {
-    public interface IWritableProvider<TOid> : IProvider<TOid>
+    public interface IWritableVectorLayerProvider<TOid> : IVectorLayerProvider<TOid>
     {
 		void Insert(FeatureDataRow<TOid> feature);
 		void Insert(IEnumerable<FeatureDataRow<TOid>> features);
 		void Update(FeatureDataRow<TOid> feature);
 		void Update(IEnumerable<FeatureDataRow<TOid>> features);
 		void Delete(FeatureDataRow<TOid> feature);
-		void Delete(IEnumerable<FeatureDataRow<TOid>> feature);
+		void Delete(IEnumerable<FeatureDataRow<TOid>> features);
     }
 }

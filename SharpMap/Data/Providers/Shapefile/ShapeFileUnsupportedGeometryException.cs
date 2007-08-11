@@ -16,23 +16,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
-using SharpMap.Data;
-using SharpMap.Geometries;
-
-namespace SharpMap.Layers
+namespace SharpMap.Data.Providers.ShapeFile
 {
-    public interface IFeatureLayer : ILayer
+    /// <summary>
+    /// Exception thrown when a geometry type exists in a shapefile which is not currently supported.
+    /// </summary>
+    public class ShapeFileUnsupportedGeometryException : ShapeFileException
     {
-        IVectorLayerProvider DataSource { get; }
-        FeatureDataTable Features { get; }
-        FeatureDataView HighlightedFeatures { get; set; }
-        FeatureDataView SelectedFeatures { get; set; }
-        FeatureDataView VisibleFeatures { get; }
-        event EventHandler HighlightedFeaturesChanged;
-        event EventHandler SelectedFeaturesChanged;
-        event EventHandler VisibleFeaturesChanged;
+        public ShapeFileUnsupportedGeometryException() : base() { }
+        public ShapeFileUnsupportedGeometryException(string message) : base(message) { }
+        public ShapeFileUnsupportedGeometryException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileUnsupportedGeometryException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

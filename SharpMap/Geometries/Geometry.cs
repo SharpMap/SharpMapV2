@@ -285,18 +285,14 @@ namespace SharpMap.Geometries
 
 		#endregion
 
-		#region ICloneable Members
-
 		/// <summary>
-		/// This method must be overridden using 'public new [derived_data_type] Clone()'
+        /// Creates a deep copy of the geometry.
 		/// </summary>
 		/// <returns>Copy of Geometry</returns>
-		public Geometry Clone()
+		public virtual Geometry Clone()
 		{
-			throw (new ApplicationException("Clone() has not been implemented on derived datatype"));
+			throw new NotSupportedException("Clone() has not been implemented on derived geometry type.");
 		}
-
-		#endregion
 
 		#region IEquatable<Geometry> Members
 

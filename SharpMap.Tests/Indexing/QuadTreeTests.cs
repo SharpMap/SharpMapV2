@@ -4,7 +4,7 @@ using System.Text;
 
 using NUnit.Framework;
 
-namespace SharpMap.Tests.IndexingTests
+namespace SharpMap.Tests.Indexing
 {
 	[TestFixture]
 	public class QuadTreeTests

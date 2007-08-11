@@ -48,7 +48,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the data source used to create this layer.
         /// </summary>
-        IProvider DataSource { get; }
+        ILayerProvider DataSource { get; }
 
         /// <summary>
         /// Gets or sets a value representing the visibility of the layer.

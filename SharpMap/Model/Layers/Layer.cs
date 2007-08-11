@@ -48,10 +48,10 @@ namespace SharpMap.Layers
         private IStyle _style;
 		private bool _disposed;
         private BoundingBox _visibleRegion;
-        private IProvider _dataSource;
+        private ILayerProvider _dataSource;
 
         #region Object Creation / Disposal
-        protected Layer(IProvider dataSource)
+        protected Layer(ILayerProvider dataSource)
         {
             _dataSource = dataSource;
         }
@@ -157,7 +157,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the data source used to create this layer.
         /// </summary>
-        public IProvider DataSource 
+        public ILayerProvider DataSource 
         {
             get { return _dataSource; }
         }

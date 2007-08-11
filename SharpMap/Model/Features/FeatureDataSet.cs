@@ -19,19 +19,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Xml;
-using System.Runtime.Serialization;
 using System.ComponentModel;
-using SharpMap.Indexing.RTree;
+using System.Data;
 using System.Globalization;
-using System.Xml.Schema;
 using System.IO;
-using SharpMap.Indexing;
-using SharpMap.Geometries;
-using System.Threading;
-using System.Reflection.Emit;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.Serialization;
+using System.Threading;
+using System.Xml;
+using System.Xml.Schema;
+
+using SharpMap.Geometries;
 
 namespace SharpMap
 {
@@ -58,34 +57,15 @@ namespace SharpMap
         static FeatureDataSet()
         {
             // Create DefaultViewManager getter method
-            DynamicMethod get_DefaultViewManagerMethod = new DynamicMethod("get_DefaultViewManager_DynamicMethod",
-                typeof(FeatureDataViewManager), null, typeof(DataSet));
-
-            ILGenerator il = get_DefaultViewManagerMethod.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, typeof(DataSet).GetField("defaultViewManager", BindingFlags.Instance | BindingFlags.NonPublic));
-            il.Emit(OpCodes.Ret);
-
-            _getDefaultViewManager = get_DefaultViewManagerMethod.CreateDelegate(typeof(GetDefaultViewManagerDelegate))
-                as GetDefaultViewManagerDelegate;
+            _getDefaultViewManager = generateGetDefaultViewManagerDelegate();
 
             // Create DefaultViewManager setter method
-            DynamicMethod set_DefaultViewManagerMethod = new DynamicMethod("set_DefaultViewManager_DynamicMethod",
-                typeof(FeatureDataViewManager), null, typeof(DataSet));
-
-            il = set_DefaultViewManagerMethod.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Stfld, typeof(DataSet).GetField("defaultViewManager", BindingFlags.Instance | BindingFlags.NonPublic));
-
-            _setDefaultViewManager = set_DefaultViewManagerMethod.CreateDelegate(typeof(SetDefaultViewManagerDelegate))
-                as SetDefaultViewManagerDelegate;
+            _setDefaultViewManager = generateSetDefaultViewManagerDelegate();
         }
         #endregion
 
         #region Object Fields
         private FeatureTableCollection _featureTables;
-        private SelfOptimizingDynamicSpatialIndex<FeatureDataRow> _rTreeIndex;
         private BoundingBox _visibleRegion;
         private object _defaultViewManagerSync = new object();
         private int _defaultViewManagerInitialized = 0;
@@ -252,6 +232,36 @@ namespace SharpMap
         }
         #endregion
 
+        #region Private static helper methods
+        private static SetDefaultViewManagerDelegate generateSetDefaultViewManagerDelegate()
+        {
+            DynamicMethod set_DefaultViewManagerMethod = new DynamicMethod("set_DefaultViewManager_DynamicMethod",
+                typeof(FeatureDataViewManager), null, typeof(DataSet));
+
+            ILGenerator il = set_DefaultViewManagerMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Stfld, typeof(DataSet).GetField("defaultViewManager", BindingFlags.Instance | BindingFlags.NonPublic));
+
+            return set_DefaultViewManagerMethod.CreateDelegate(typeof(SetDefaultViewManagerDelegate))
+                as SetDefaultViewManagerDelegate;
+        }
+
+        private static GetDefaultViewManagerDelegate generateGetDefaultViewManagerDelegate()
+        {
+            DynamicMethod get_DefaultViewManagerMethod = new DynamicMethod("get_DefaultViewManager_DynamicMethod",
+                typeof(FeatureDataViewManager), null, typeof(DataSet));
+
+            ILGenerator il = get_DefaultViewManagerMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, typeof(DataSet).GetField("defaultViewManager", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ret);
+
+            return get_DefaultViewManagerMethod.CreateDelegate(typeof(GetDefaultViewManagerDelegate))
+                as GetDefaultViewManagerDelegate;
+        }
+        #endregion
+
         #region Private helper methods
         private void initClass()
 		{
@@ -262,13 +272,6 @@ namespace SharpMap
 			Locale = new CultureInfo("en-US");
 			CaseSensitive = false;
 			EnforceConstraints = true;
-
-            IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
-            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.Default, 4.0);
-            IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>();
-            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
-            _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
-                restructureHeuristic, insertStrategy, nodeSplitStrategy, new DynamicRTreeBalanceHeuristic()); 
 		}
 
 		private bool shouldSerializeFeatureTable()

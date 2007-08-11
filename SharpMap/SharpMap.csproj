@@ -135,9 +135,19 @@
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
     <Compile Include="Data\DataExceptions.cs" />
+    <Compile Include="Data\IFeatureDataReader.cs" />
+    <Compile Include="Data\IVectorLayerProvider.cs" />
+    <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
+    <Compile Include="Data\Providers\FeatureProvider\FeatureProvider.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbfSchemaMismatchException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileConstants.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileDataReader.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileHeader.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileIndex.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileInvalidOperationException.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
     <Compile Include="Model\DuplicateLayerException.cs" />
     <Compile Include="Model\Features\FeatureDataRow.cs" />
     <Compile Include="Model\Features\FeatureDataRowChangeEventArgs.cs" />
@@ -146,13 +156,11 @@
     <Compile Include="Model\Features\FeatureDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\Providers\GeometryProvider.cs" />
-    <Compile Include="Data\IProvider.cs" />
-    <Compile Include="Data\IProvider`1.cs" />
-    <Compile Include="Data\IWritableProvider.cs" />
+    <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
+    <Compile Include="Data\ILayerProvider.cs" />
+    <Compile Include="Data\IVectorLayerProvider`1.cs" />
+    <Compile Include="Data\IWritableVectorLayerProvider.cs" />
     <Compile Include="Data\Providers\OgcEnumerations.cs" />
-    <Compile Include="Data\Providers\Pooling\Connector.cs" />
-    <Compile Include="Data\Providers\Pooling\ConnectorPool.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseConstants.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseField.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseHeader.cs" />
@@ -160,7 +168,6 @@
     <Compile Include="Data\Providers\Shapefile\DbaseSchema.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseWriter.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFile.cs" />
-    <Compile Include="Data\Providers\Shapefile\ShapefileExceptions.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeType.cs" />
     <Compile Include="Geometries\BoundingBox.cs" />
     <Compile Include="Geometries\Curve.cs" />

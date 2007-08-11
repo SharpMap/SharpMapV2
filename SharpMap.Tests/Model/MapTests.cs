@@ -15,7 +15,7 @@ using SharpMap.Tools;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 
-namespace SharpMap.Tests
+namespace SharpMap.Tests.Model
 {
 	[TestFixture]
 	public class MapTests
@@ -26,7 +26,7 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
 			Map map = new Map();
-            IProvider dataSource = mocks.Stub<IProvider>();
+            ILayerProvider dataSource = mocks.Stub<ILayerProvider>();
 
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
             map.AddLayer(new VectorLayer("Layer 3", dataSource));
@@ -44,7 +44,7 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-            IProvider dataSource = mocks.Stub<IProvider>();
+            ILayerProvider dataSource = mocks.Stub<ILayerProvider>();
 
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
             map.AddLayer(new VectorLayer("Layer 3", dataSource));
@@ -58,7 +58,7 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-            IProvider dataSource = mocks.Stub<IProvider>();
+            ILayerProvider dataSource = mocks.Stub<ILayerProvider>();
 
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
             map.AddLayer(new VectorLayer("Layer 3", dataSource));

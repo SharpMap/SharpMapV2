@@ -166,7 +166,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public IProvider DataSource
+        public ILayerProvider DataSource
         {
             get
             {

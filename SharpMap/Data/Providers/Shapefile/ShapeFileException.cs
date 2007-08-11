@@ -1,4 +1,5 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,23 +17,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
-using SharpMap.Data;
-using SharpMap.Geometries;
-
-namespace SharpMap.Layers
+namespace SharpMap.Data.Providers.ShapeFile
 {
-    public interface IFeatureLayer : ILayer
+    /// <summary>
+    /// Exception thrown during shapefile operations
+    /// </summary>
+    public class ShapeFileException : SharpMapDataException
     {
-        IVectorLayerProvider DataSource { get; }
-        FeatureDataTable Features { get; }
-        FeatureDataView HighlightedFeatures { get; set; }
-        FeatureDataView SelectedFeatures { get; set; }
-        FeatureDataView VisibleFeatures { get; }
-        event EventHandler HighlightedFeaturesChanged;
-        event EventHandler SelectedFeaturesChanged;
-        event EventHandler VisibleFeaturesChanged;
+        public ShapeFileException() : base() { }
+        public ShapeFileException(string message) : base(message) { }
+        public ShapeFileException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

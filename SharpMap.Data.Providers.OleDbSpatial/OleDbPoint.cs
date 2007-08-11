@@ -46,13 +46,13 @@ namespace SharpMap.Data.Providers.OleDbSpatial
     /// to determine if they are within the bounds given.
     /// </para>
 	/// </remarks>
-	public class OleDbPoint : IProvider<uint>, IDisposable
+	public class OleDbPoint : IVectorLayerProvider<uint>, IDisposable
     {
         private static readonly NumberFormatInfo NumberFormat_enUS = new CultureInfo("en-US", false).NumberFormat;
 
 		private ICoordinateSystem _coordinateSystem;
 		private ICoordinateTransformation _coordinateTransformation;
-		private int _srid = -1;
+		private int? _srid;
 		private string _defintionQuery;
 		private string _connectionString;
 		private string _yColumn;
@@ -460,92 +460,140 @@ namespace SharpMap.Data.Providers.OleDbSpatial
 					}
 				}
 			}
-		}
+        }
 
-		/// <summary>
-		/// Boundingbox of dataset
-		/// </summary>
-		/// <returns>boundingbox</returns>
-		public BoundingBox GetExtents()
-		{
+        #endregion
+
+        #region ILayerProvider Members
+        /// <summary>
+        /// Boundingbox of dataset
+        /// </summary>
+        /// <returns>boundingbox</returns>
+        public BoundingBox GetExtents()
+        {
             BoundingBox box = BoundingBox.Empty;
 
-			using (OleDbConnection conn = new OleDbConnection(_connectionString))
-			{
-				string strSQL = "Select Min(" + this.XColumn + ") as MinX, Min(" + this.YColumn + ") As MinY, " +
-									   "Max(" + this.XColumn + ") As MaxX, Max(" + this.YColumn + ") As MaxY FROM " + this.Table;
+            using (OleDbConnection conn = new OleDbConnection(_connectionString))
+            {
+                string strSQL = "Select Min(" + this.XColumn + ") as MinX, Min(" + this.YColumn + ") As MinY, " +
+                                       "Max(" + this.XColumn + ") As MaxX, Max(" + this.YColumn + ") As MaxY FROM " + this.Table;
 
-				if (_defintionQuery != null && _defintionQuery != "") //If a definition query has been specified, add this as a filter on the query
-				{
-					strSQL += " WHERE " + _defintionQuery;
-				}
+                if (_defintionQuery != null && _defintionQuery != "") //If a definition query has been specified, add this as a filter on the query
+                {
+                    strSQL += " WHERE " + _defintionQuery;
+                }
 
-				using (OleDbCommand command = new OleDbCommand(strSQL, conn))
-				{
-					conn.Open();
-					
-					using (OleDbDataReader dr = command.ExecuteReader())
-					{
-						if(dr.Read())
-						{
-							//If the read row is OK, create a point geometry from the XColumn and YColumn and return it
-							if (dr[0] != DBNull.Value && dr[1] != DBNull.Value && dr[2] != DBNull.Value && dr[3] != DBNull.Value)
-							{
-								box = new BoundingBox((double)dr[0], (double)dr[1], (double)dr[2], (double)dr[3]);
-							}
-						}
-					}
+                using (OleDbCommand command = new OleDbCommand(strSQL, conn))
+                {
+                    conn.Open();
 
-					conn.Close();
-				}
-			}
+                    using (OleDbDataReader dr = command.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            //If the read row is OK, create a point geometry from the XColumn and YColumn and return it
+                            if (dr[0] != DBNull.Value && dr[1] != DBNull.Value && dr[2] != DBNull.Value && dr[3] != DBNull.Value)
+                            {
+                                box = new BoundingBox((double)dr[0], (double)dr[1], (double)dr[2], (double)dr[3]);
+                            }
+                        }
+                    }
 
-			return box;
-		}
+                    conn.Close();
+                }
+            }
 
-		/// <summary>
-		/// Gets the connection ID of the datasource.
-		/// </summary>
-		public string ConnectionId
-		{
-			get { return _connectionString; }
-		}
+            return box;
+        }
 
-		/// <summary>
-		/// Opens the datasource.
-		/// </summary>
-		public void Open()
-		{
-			//Don't really do anything. OleDb's ConnectionPooling takes over here
-			_isOpen = true;
-		}
+        /// <summary>
+        /// Gets the connection ID of the datasource.
+        /// </summary>
+        public string ConnectionId
+        {
+            get { return _connectionString; }
+        }
 
-		/// <summary>
-		/// Closes the datasource.
-		/// </summary>
-		public void Close()
-		{
-			//Don't really do anything. OleDb's ConnectionPooling takes over here
-			_isOpen = false;
-		}
+        /// <summary>
+        /// Opens the datasource.
+        /// </summary>
+        public void Open()
+        {
+            //Don't really do anything. OleDb's ConnectionPooling takes over here
+            _isOpen = true;
+        }
 
-		/// <summary>
-		/// Returns true if the datasource is currently open.
-		/// </summary>
-		public bool IsOpen
-		{
-			get { return _isOpen; }
-		}
+        /// <summary>
+        /// Closes the datasource.
+        /// </summary>
+        public void Close()
+        {
+            //Don't really do anything. OleDb's ConnectionPooling takes over here
+            _isOpen = false;
+        }
 
-		/// <summary>
-		/// The spatial reference ID.
-		/// </summary>
-		public int Srid
-		{
-			get { return _srid; }
-			set { _srid = value; }
-		}
+        /// <summary>
+        /// Returns true if the datasource is currently open.
+        /// </summary>
+        public bool IsOpen
+        {
+            get { return _isOpen; }
+        }
 
-		#endregion
-	}
+        /// <summary>
+        /// The spatial reference ID.
+        /// </summary>
+        public int? Srid
+        {
+            get { return _srid; }
+            set { _srid = value; }
+        }
+
+        #endregion
+
+        #region IVectorLayerProvider<uint> Members
+
+
+        public void SetTableSchema(FeatureDataTable<uint> table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IVectorLayerProvider Members
+
+
+        public System.Data.DataTable GetSchemaTable()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(Geometry geom)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void SetTableSchema(FeatureDataTable table)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+    }
 }

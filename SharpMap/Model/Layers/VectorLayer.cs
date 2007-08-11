@@ -52,7 +52,7 @@ namespace SharpMap.Layers
         /// <summary>
 		/// Initializes a new, empty vector layer.
 		/// </summary>
-        public VectorLayer(IProvider dataSource)
+        public VectorLayer(ILayerProvider dataSource)
             : this(String.Empty, dataSource)
 		{
 		}
@@ -62,7 +62,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public VectorLayer(string layername, IProvider dataSource)
+        public VectorLayer(string layername, ILayerProvider dataSource)
             : this(layername, new VectorStyle(), dataSource)
 		{
         }
@@ -73,7 +73,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public VectorLayer(string layername, VectorStyle style, IProvider dataSource)
+        public VectorLayer(string layername, VectorStyle style, ILayerProvider dataSource)
             : base(dataSource)
         {
             LayerName = layername;
@@ -109,6 +109,11 @@ namespace SharpMap.Layers
         public event EventHandler SelectedFeaturesChanged;
         public event EventHandler HighlightedFeaturesChanged;
         public event EventHandler VisibleFeaturesChanged;
+
+        public new IVectorLayerProvider DataSource
+        {
+            get { return base.DataSource as IVectorLayerProvider; }
+        }
 
         public FeatureDataView HighlightedFeatures
         {
@@ -226,7 +231,7 @@ namespace SharpMap.Layers
         {
             DataSource.Open();
 
-            DataSource.GetSchema(_cachedFeatures);
+            DataSource.SetTableSchema(_cachedFeatures);
             _fullExtents = DataSource.GetExtents();
 
             if (CoordinateTransformation != null)
