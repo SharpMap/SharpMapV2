@@ -143,6 +143,7 @@ namespace SharpMap
         #endregion
 
         #region Constructors
+
         private FeatureDataTable()
             : base()
         {

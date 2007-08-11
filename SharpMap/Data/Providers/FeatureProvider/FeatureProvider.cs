@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Data;
+
 using SharpMap.Geometries;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.CoordinateSystems;
@@ -9,16 +10,27 @@ namespace SharpMap.Data.Providers.FeatureProvider
 {
     public class FeatureProvider : IWritableVectorLayerProvider<Guid>
     {
+        FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>("id");
+
+        public FeatureProvider(params DataColumn[] columns)
+        {
+            DataColumn nameColumn = new DataColumn("FeatureName", typeof(string));
+            _features.Columns.Add(nameColumn);
+        }
+
         #region IWritableVectorLayerProvider<Guid> Members
 
         public void Insert(FeatureDataRow<Guid> feature)
         {
-            throw new NotImplementedException();
+            _features.ImportRow(feature);
         }
 
         public void Insert(IEnumerable<FeatureDataRow<Guid>> features)
         {
-            throw new NotImplementedException();
+            foreach (FeatureDataRow<Guid> feature in features)
+            {
+                Insert(feature);
+            }
         }
 
         public void Update(FeatureDataRow<Guid> feature)
@@ -159,7 +171,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public BoundingBox GetExtents()
         {
-            throw new NotImplementedException();
+            return _features.Envelope;
         }
 
         public string ConnectionId

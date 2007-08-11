@@ -253,6 +253,15 @@ namespace SharpMap
             }
         }
 
+        public new void ImportRow(FeatureDataRow featureRow)
+        {
+            base.ImportRow(featureRow);
+            FeatureDataRow importedRow = Rows[Rows.Count - 1] as FeatureDataRow;
+            importedRow.Geometry = featureRow.Geometry == null
+                ? null
+                : featureRow.Geometry.Clone();
+        }
+
         public override void Load(IDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
         {
             if (!(reader is IFeatureDataReader))
