@@ -48,7 +48,7 @@ namespace SharpMap.Layers
         private IStyle _style;
 		private bool _disposed;
         private BoundingBox _visibleRegion;
-        private ILayerProvider _dataSource;
+        private readonly ILayerProvider _dataSource;
 
         #region Object Creation / Disposal
         protected Layer(ILayerProvider dataSource)
@@ -168,7 +168,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <remarks>
         /// This property is a convenience property which exposes 
-        /// the value of <see cref="Style.Enabled"/>. 
+        /// the value of <see cref="SharpMap.Styles.Style.Enabled"/>. 
         /// If setting this property and the Style property 
         /// value is null, a new <see cref="Style"/> 
         /// object is created and assigned to the Style property, 

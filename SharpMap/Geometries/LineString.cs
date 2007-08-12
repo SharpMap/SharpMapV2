@@ -343,15 +343,19 @@ namespace SharpMap.Geometries
 
         #region ICloneable Members
 
-        /// <summary>
-        /// Return a copy of this geometry
-        /// </summary>
-        /// <returns>Copy of Geometry</returns>
-        public new LineString Clone()
+		/// <summary>
+		/// Creates a deep copy of the LineString.
+		/// </summary>
+		/// <returns>A copy of the LineString instance.</returns>
+        public override Geometry Clone()
         {
             LineString l = new LineString();
-            for (int i = 0; i < _vertices.Count; i++)
-                l.Vertices.Add(_vertices[i].Clone());
+			
+			for (int i = 0; i < _vertices.Count; i++)
+			{
+				l.Vertices.Add(_vertices[i].Clone() as Point);
+			}
+
             return l;
         }
 

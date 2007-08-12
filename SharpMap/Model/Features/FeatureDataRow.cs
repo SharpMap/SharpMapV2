@@ -17,30 +17,29 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using SharpMap.Geometries;
 
 namespace SharpMap
 {
-    /// <summary>
-    /// Represents a row of data in a <see cref="FeatureDataTable"/>.
-    /// </summary>
+	/// <summary>
+	/// Represents a row of data in a <see cref="FeatureDataTable"/>.
+	/// </summary>
 #if !DEBUG_STEPINTO
 	[System.Diagnostics.DebuggerStepThrough()]
 #endif
-    [Serializable()]
-    public class FeatureDataRow : DataRow
-    {
-        //private FeatureDataTable tableFeatureTable;
-        private Geometry _geometry;
+
+	[Serializable]
+	public class FeatureDataRow : DataRow
+	{
+		//private FeatureDataTable tableFeatureTable;
+		private Geometry _geometry;
 		private bool _isGeometryModified = false;
 
-        internal FeatureDataRow(DataRowBuilder rb)
-            : base(rb)
-        {
-        }
+		internal FeatureDataRow(DataRowBuilder rb)
+			: base(rb)
+		{
+		}
 
 		public new void AcceptChanges()
 		{
@@ -48,13 +47,13 @@ namespace SharpMap
 			_isGeometryModified = false;
 		}
 
-        /// <summary>
-        /// The geometry of the current feature
-        /// </summary>
-        public Geometry Geometry
-        {
-            get { return _geometry; }
-            set 
+		/// <summary>
+		/// The geometry of the current feature
+		/// </summary>
+		public Geometry Geometry
+		{
+			get { return _geometry; }
+			set
 			{
 				if (ReferenceEquals(_geometry, value))
 				{
@@ -71,40 +70,40 @@ namespace SharpMap
 				if (RowState != DataRowState.Detached)
 				{
 					_isGeometryModified = true;
-                    Table.RowGeometryChanged(this);
+					Table.RowGeometryChanged(this);
 				}
 			}
-        }
+		}
 
-        /// <summary>
-        /// Returns true of the geometry is null.
-        /// </summary>
-        /// <returns></returns>
-        public bool IsFeatureGeometryNull()
-        {
-            return Geometry == null;
-        }
+		/// <summary>
+		/// Returns true of the geometry is null.
+		/// </summary>
+		/// <returns></returns>
+		public bool IsFeatureGeometryNull()
+		{
+			return Geometry == null;
+		}
 
-        public bool IsGeometryModified
-        {
-            get { return _isGeometryModified; }
-        }
+		public bool IsGeometryModified
+		{
+			get { return _isGeometryModified; }
+		}
 
-        /// <summary>
-        /// Gets the <see cref="FeatureDataTable"/> for which this
-        /// row has schema.
-        /// </summary>
-        public new FeatureDataTable Table
-        {
-            get { return base.Table as FeatureDataTable; }
-        }
+		/// <summary>
+		/// Gets the <see cref="FeatureDataTable"/> for which this
+		/// row has schema.
+		/// </summary>
+		public new FeatureDataTable Table
+		{
+			get { return base.Table as FeatureDataTable; }
+		}
 
-        /// <summary>
-        /// Sets the geometry column to null.
-        /// </summary>
-        public void SetFeatureGeometryNull()
-        {
-            Geometry = null;
-        }
-    }
+		/// <summary>
+		/// Sets the geometry column to null.
+		/// </summary>
+		public void SetFeatureGeometryNull()
+		{
+			Geometry = null;
+		}
+	}
 }

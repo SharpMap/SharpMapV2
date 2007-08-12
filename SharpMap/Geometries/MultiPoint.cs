@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Geometries
 {
@@ -33,17 +32,19 @@ namespace SharpMap.Geometries
 		/// Initializes a new MultiPoint collection
 		/// </summary>
 		public MultiPoint()
-            : this(16) { }
+			: this(16)
+		{
+		}
 
-        public MultiPoint(int initialCapacity)
-        {
-            _points = new List<Point>(initialCapacity);
-        }
+		public MultiPoint(int initialCapacity)
+		{
+			_points = new List<Point>(initialCapacity);
+		}
 
 		/// <summary>
 		/// Gets the point at <paramref name="index"/> in the MultiPoint collection.
 		/// </summary>
-        /// <param name="index">Index in collection</param>
+		/// <param name="index">Index in collection</param>
 		/// <returns>Point</returns>
 		public new Point this[int index]
 		{
@@ -114,9 +115,9 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-        /// Returns the shortest distance between any two points in the two geometries
-        /// as calculated in the spatial reference system of this Geometry.
-        /// </summary>
+		/// Returns the shortest distance between any two points in the two geometries
+		/// as calculated in the spatial reference system of this Geometry.
+		/// </summary>
 		/// <param name="geom">Geometry to calculate distance to</param>
 		/// <returns>Shortest distance between any two points in the two geometries</returns>
 		public override double Distance(Geometry geom)
@@ -191,19 +192,19 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <returns></returns>
 		public override BoundingBox GetBoundingBox()
-        {
-            BoundingBox bbox = BoundingBox.Empty;
+		{
+			BoundingBox bbox = BoundingBox.Empty;
 			if (_points == null || _points.Count == 0)
 				return bbox;
-            foreach (Point p in Points)
-                bbox.ExpandToInclude(p);
-            //for (int i = 1; i < _Points.Count; i++)
-            //{
-            //    bbox.Min.X = _Points[i].X < bbox.Min.X ? _Points[i].X : bbox.Min.X;
-            //    bbox.Min.Y = _Points[i].Y < bbox.Min.Y ? _Points[i].Y : bbox.Min.Y;
-            //    bbox.Max.X = _Points[i].X > bbox.Max.X ? _Points[i].X : bbox.Max.X;
-            //    bbox.Max.Y = _Points[i].Y > bbox.Max.Y ? _Points[i].Y : bbox.Max.Y;
-            //}
+			foreach (Point p in Points)
+				bbox.ExpandToInclude(p);
+			//for (int i = 1; i < _Points.Count; i++)
+			//{
+			//    bbox.Min.X = _Points[i].X < bbox.Min.X ? _Points[i].X : bbox.Min.X;
+			//    bbox.Min.Y = _Points[i].Y < bbox.Min.Y ? _Points[i].Y : bbox.Min.Y;
+			//    bbox.Max.X = _Points[i].X > bbox.Max.X ? _Points[i].X : bbox.Max.X;
+			//    bbox.Max.Y = _Points[i].Y > bbox.Max.Y ? _Points[i].Y : bbox.Max.Y;
+			//}
 			return bbox;
 		}
 
@@ -214,8 +215,12 @@ namespace SharpMap.Geometries
 		public new MultiPoint Clone()
 		{
 			MultiPoint geoms = new MultiPoint();
-			foreach(Point p in Points)
-				geoms.Points.Add(p.Clone());
+
+			foreach (Point p in Points)
+			{
+				geoms.Points.Add(p.Clone() as Point);
+			}
+
 			return geoms;
 		}
 
@@ -227,9 +232,10 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public override IEnumerator<Geometry> GetEnumerator()
 		{
-			foreach (Point p in this._points)
+			foreach (Point p in _points)
 				yield return p;
 		}
+
 		#endregion
 	}
 }

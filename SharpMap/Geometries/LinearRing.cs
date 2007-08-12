@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Geometries
 {
@@ -38,25 +37,9 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Initializes an instance of a LinearRing
 		/// </summary>
-		public LinearRing() : base()
+		public LinearRing()
 		{
 		}
-
-		#region ICloneable Members
-
-		/// <summary>
-		/// Return a copy of this geometry
-		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new LinearRing Clone()
-		{
-			LinearRing l = new LinearRing();
-			for (int i = 0; i < this.Vertices.Count; i++)
-				l.Vertices.Add(this.Vertices[i].Clone());
-			return l;
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Tests whether a ring is oriented counter-clockwise.
@@ -66,31 +49,35 @@ namespace SharpMap.Geometries
 		{
 			Point hip, p, prev, next;
 			int hii, i;
-			int nPts = this.Vertices.Count;
+			int nPts = Vertices.Count;
 
 			// check that this is a valid ring - if not, simply return a dummy value
-			if (nPts < 4) return false;
+			if (nPts < 4)
+			{
+				return false;
+			}
 
 			// algorithm to check if a Ring is stored in CCW order
 			// find highest point
-			hip = this.Vertices[0];
+			hip = Vertices[0];
 			hii = 0;
 			for (i = 1; i < nPts; i++)
 			{
-				p = this.Vertices[i];
+				p = Vertices[i];
 				if (p.Y > hip.Y)
 				{
 					hip = p;
 					hii = i;
 				}
 			}
+
 			// find points on either side of highest
 			int iPrev = hii - 1;
 			if (iPrev < 0) iPrev = nPts - 2;
 			int iNext = hii + 1;
 			if (iNext >= nPts) iNext = 1;
-			prev = this.Vertices[iPrev];
-			next = this.Vertices[iNext];
+			prev = Vertices[iPrev];
+			next = Vertices[iNext];
 			// translate so that hip is at the origin.
 			// This will not affect the area calculation, and will avoid
 			// finite-accuracy errors (i.e very small vectors with very large coordinates)
@@ -119,7 +106,6 @@ namespace SharpMap.Geometries
 				// if area is positive, points are ordered CCW
 				return (disc > 0.0);
 			}
-
 		}
 
 		/// <summary>
@@ -127,25 +113,27 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public double Area
 		{
-			get {
-				if (this.Vertices.Count < 3)
+			get
+			{
+				if (Vertices.Count < 3)
 					return 0;
 				double sum = 0;
-				double ax = this.Vertices[0].X;
-				double ay = this.Vertices[0].Y;
-				for(int i = 1; i < this.Vertices.Count - 1; i++)
+				double ax = Vertices[0].X;
+				double ay = Vertices[0].Y;
+				for (int i = 1; i < Vertices.Count - 1; i++)
 				{
-					double bx = this.Vertices[i].X;
-					double by = this.Vertices[i].Y;
-					double cx = this.Vertices[i + 1].X;
-					double cy = this.Vertices[i + 1].Y;
+					double bx = Vertices[i].X;
+					double by = Vertices[i].Y;
+					double cx = Vertices[i + 1].X;
+					double cy = Vertices[i + 1].Y;
 					sum += ax * by - ay * bx +
-						ay * cx - ax * cy +
-						bx * cy - cx * by;
+						   ay * cx - ax * cy +
+						   bx * cy - cx * by;
 				}
 				return Math.Abs(-sum / 2);
 			}
 		}
+
 		/// <summary>
 		/// Returns true of the Point 'p' is within the instance of this ring
 		/// </summary>
@@ -154,12 +142,12 @@ namespace SharpMap.Geometries
 		public bool IsPointWithin(Point p)
 		{
 			bool c = false;
-			for (int i = 0; i < this.Vertices.Count; i++)
-				for (int j = i + 1; j < this.Vertices.Count - 1; j++)
+			for (int i = 0; i < Vertices.Count; i++)
+				for (int j = i + 1; j < Vertices.Count - 1; j++)
 				{
-					if ((((this.Vertices[i].Y <= p.Y) && (p.Y < this.Vertices[j].Y)) ||
-						 ((this.Vertices[j].Y <= p.Y) && (p.Y < this.Vertices[i].Y))) &&
-						(p.X < (this.Vertices[j].X - this.Vertices[i].X) * (p.Y - this.Vertices[i].Y) / (this.Vertices[j].Y - this.Vertices[i].Y) + this.Vertices[i].X))
+					if ((((Vertices[i].Y <= p.Y) && (p.Y < Vertices[j].Y)) ||
+						 ((Vertices[j].Y <= p.Y) && (p.Y < Vertices[i].Y))) &&
+						(p.X < (Vertices[j].X - Vertices[i].X) * (p.Y - Vertices[i].Y) / (Vertices[j].Y - Vertices[i].Y) + Vertices[i].X))
 						c = !c;
 				}
 			return c;

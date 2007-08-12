@@ -32,12 +32,12 @@ namespace SharpMap.Styles
 		private bool _visible;
 
 		/// <summary>
-		/// Initializes a style as sets Min = 0, Max = Double.MaxValue and Visible = true
+		/// Initializes a style as sets Min = 0, Max = Double.PositiveInfinity and Visible = true
 		/// </summary>
 		public Style()
 		{
 			_minVisible = 0;
-			_maxVisible = double.MaxValue;
+			_maxVisible = double.PositiveInfinity;
 			_visible = true;
 		}
 

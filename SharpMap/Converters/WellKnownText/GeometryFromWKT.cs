@@ -74,7 +74,7 @@ namespace SharpMap.Converters.WellKnownText
 	/// <description>GEOMETRYCOLLECTION(POINT(10 10), POINT(30 30), LINESTRING(15 15, 20 20))</description></item>
 	/// </list>
 	/// </remarks>
-	public class GeometryFromWKT
+	public class GeometryFromWkt
     {
 		/// <summary>
 		/// Converts a Well-known text representation to a 

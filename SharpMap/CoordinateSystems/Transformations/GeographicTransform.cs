@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using SharpMap.Geometries;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {
@@ -63,10 +63,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		public override string Wkt
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 		}
 
 		/// <summary>
@@ -74,10 +71,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		public override string Xml
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 		}
 
 		#endregion
@@ -97,12 +91,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		/// <param name="point"></param>
 		/// <returns></returns>
-		public override SharpMap.Geometries.Point Transform(SharpMap.Geometries.Point point)
+		public override Point Transform(Point point)
 		{
-			SharpMap.Geometries.Point pOut = point.Clone();
+			Point pOut = point.Clone() as Point;
 			pOut.X /= SourceGCS.AngularUnit.RadiansPerUnit;
-			pOut.X -= SourceGCS.PrimeMeridian.Longitude / SourceGCS.PrimeMeridian.AngularUnit.RadiansPerUnit;
-			pOut.X += TargetGCS.PrimeMeridian.Longitude / TargetGCS.PrimeMeridian.AngularUnit.RadiansPerUnit;
+			pOut.X -= SourceGCS.PrimeMeridian.Longitude/SourceGCS.PrimeMeridian.AngularUnit.RadiansPerUnit;
+			pOut.X += TargetGCS.PrimeMeridian.Longitude/TargetGCS.PrimeMeridian.AngularUnit.RadiansPerUnit;
 			pOut.X *= SourceGCS.AngularUnit.RadiansPerUnit;
 			return pOut;
 		}
@@ -124,11 +118,15 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </remarks>
 		/// <param name="points"></param>
 		/// <returns></returns>
-		public override List<SharpMap.Geometries.Point> TransformList(List<SharpMap.Geometries.Point> points)
+		public override List<Point> TransformList(List<Point> points)
 		{
-			List<SharpMap.Geometries.Point> trans = new List<SharpMap.Geometries.Point>(points.Count);
-			foreach (SharpMap.Geometries.Point p in points)
+			List<Point> trans = new List<Point>(points.Count);
+
+			foreach (Point p in points)
+			{
 				trans.Add(Transform(p));
+			}
+
 			return trans;
 		}
 

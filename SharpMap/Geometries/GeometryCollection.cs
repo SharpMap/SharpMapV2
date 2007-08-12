@@ -16,8 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Geometries
 {
@@ -32,32 +32,37 @@ namespace SharpMap.Geometries
 	/// between elements.
 	/// </remarks>
 	public class GeometryCollection : Geometry, IGeometryCollection, IEnumerable<Geometry>
-    {
-        private List<Geometry> _geometries;
+	{
+		private readonly List<Geometry> _geometries;
 
 		/// <summary>
 		/// Initializes a new GeometryCollection
 		/// </summary>
 		public GeometryCollection()
-            : this(16) { }
+			: this(16)
+		{
+		}
 
-        /// <summary>
-        /// Initializes a new GeometryCollection
-        /// </summary>
-        public GeometryCollection(int initialCapacity)
-        {
-            _geometries = new List<Geometry>(initialCapacity);
-        }
+		/// <summary>
+		/// Initializes a new GeometryCollection
+		/// </summary>
+		public GeometryCollection(int initialCapacity)
+		{
+			_geometries = new List<Geometry>(initialCapacity);
+		}
 
 		/// <summary>
 		/// Gets the number of geometries in the collection.
 		/// </summary>
-		public virtual int NumGeometries { get { return _geometries.Count; } }
+		public virtual int NumGeometries
+		{
+			get { return _geometries.Count; }
+		}
 
 		/// <summary>
 		/// Returns an indexed geometry in the collection.
 		/// </summary>
-        /// <param name="index">Geometry index.</param>
+		/// <param name="index">Geometry index.</param>
 		/// <returns>Geometry at given index.</returns>
 		public virtual Geometry Geometry(int index)
 		{
@@ -81,11 +86,17 @@ namespace SharpMap.Geometries
 		public override bool IsEmpty()
 		{
 			if (_geometries == null)
+			{
 				return true;
+			}
 
-			foreach(Geometry g in Collection)
+			foreach (Geometry g in Collection)
+			{
 				if (!g.IsEmpty())
+				{
 					return false;
+				}
+			}
 
 			return true;
 		}
@@ -98,17 +109,25 @@ namespace SharpMap.Geometries
 		public bool Equals(GeometryCollection g)
 		{
 			if (ReferenceEquals(g, null))
+			{
 				return false;
+			}
 
-			if (g.Collection.Count != this.Collection.Count)
+			if (g.Collection.Count != Collection.Count)
+			{
 				return false;
+			}
 
-            unchecked
-            {
-                for (int i = 0; i < g.Collection.Count; i++)
-                    if (!g.Collection[i].Equals(this.Collection[i] as Geometry))
-                        return false;
-            }
+			unchecked
+			{
+				for (int i = 0; i < g.Collection.Count; i++)
+				{
+					if (!g.Collection[i].Equals(Collection[i]))
+					{
+						return false;
+					}
+				}
+			}
 
 			return true;
 		}
@@ -133,7 +152,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Gets or sets the GeometryCollection
 		/// </summary>
-		public virtual List<Geometry> Collection 
+		public virtual List<Geometry> Collection
 		{
 			get { return _geometries; }
 		}
@@ -145,18 +164,18 @@ namespace SharpMap.Geometries
 		/// <remarks>This specification is restricted to geometries in two-dimensional coordinate space.</remarks>
 		public override int Dimension
 		{
-			get 
-            {
+			get
+			{
 				int dim = 0;
-                
-                Collection.ForEach(delegate(Geometry g)
-                {
-                    if (dim < g.Dimension)
-                        dim = g.Dimension;
-                });
+
+				Collection.ForEach(delegate(Geometry g)
+									{
+										if (dim < g.Dimension)
+											dim = g.Dimension;
+									});
 
 				return dim;
-			} 
+			}
 		}
 
 		/// <summary>
@@ -164,16 +183,13 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <returns></returns>
 		public override BoundingBox GetBoundingBox()
-        {
-            BoundingBox b = BoundingBox.Empty;
+		{
+			BoundingBox b = BoundingBox.Empty;
 
-			if (this.Collection.Count == 0)
+			if (Collection.Count == 0)
 				return b;
 
-            Collection.ForEach(delegate(Geometry g) 
-            { 
-                b.ExpandToInclude(g.GetBoundingBox()); 
-            });
+			Collection.ForEach(delegate(Geometry g) { b.ExpandToInclude(g.GetBoundingBox()); });
 
 			return b;
 		}
@@ -277,13 +293,13 @@ namespace SharpMap.Geometries
 		#region ICloneable Members
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a deep copy of the GeometryCollection.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new GeometryCollection Clone()
+		/// <returns>A copy of the GeometryCollection instance.</returns>
+		public override Geometry Clone()
 		{
 			GeometryCollection geoms = new GeometryCollection();
-            Collection.ForEach(new Action<Geometry>(delegate(Geometry g) { geoms.Collection.Add(g.Clone()); }));
+			Collection.ForEach((delegate(Geometry g) { geoms.Collection.Add(g.Clone()); }));
 			return geoms;
 		}
 
@@ -297,7 +313,7 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public virtual IEnumerator<Geometry> GetEnumerator()
 		{
-			foreach (Geometry g in this.Collection)
+			foreach (Geometry g in Collection)
 				yield return g;
 		}
 
@@ -308,9 +324,9 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Gets an enumerator for enumerating the geometries in the GeometryCollection
 		/// </summary>
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			foreach (Geometry g in this.Collection)
+			foreach (Geometry g in Collection)
 				yield return g;
 		}
 

@@ -16,16 +16,16 @@ namespace SharpMap.Tests.Converters.Wkb
 		[Test]
 		public void Convert()
 		{
-			Geometry gML0 = Geometry.GeomFromText(multiLinestring);
-			Geometry gLi0 = Geometry.GeomFromText(linestring);
-			Geometry gPl0 = Geometry.GeomFromText(polygon);
-			Geometry gPn0 = Geometry.GeomFromText(point);
-			Geometry gMp0 = Geometry.GeomFromText(multipoint);
-			Geometry gML1 = Geometry.GeomFromWKB(gML0.AsBinary());
-			Geometry gLi1 = Geometry.GeomFromWKB(gLi0.AsBinary());
-			Geometry gPl1 = Geometry.GeomFromWKB(gPl0.AsBinary());
-			Geometry gPn1 = Geometry.GeomFromWKB(gPn0.AsBinary());
-			Geometry gMp1 = Geometry.GeomFromWKB(gMp0.AsBinary());
+			Geometry gML0 = Geometry.FromText(multiLinestring);
+			Geometry gLi0 = Geometry.FromText(linestring);
+			Geometry gPl0 = Geometry.FromText(polygon);
+			Geometry gPn0 = Geometry.FromText(point);
+			Geometry gMp0 = Geometry.FromText(multipoint);
+			Geometry gML1 = Geometry.FromWKB(gML0.AsBinary());
+			Geometry gLi1 = Geometry.FromWKB(gLi0.AsBinary());
+			Geometry gPl1 = Geometry.FromWKB(gPl0.AsBinary());
+			Geometry gPn1 = Geometry.FromWKB(gPn0.AsBinary());
+			Geometry gMp1 = Geometry.FromWKB(gMp0.AsBinary());
 			Assert.AreEqual(gML0, gML1);
 			Assert.AreEqual(gLi0, gLi1);
 			Assert.AreEqual(gPl0, gPl1);

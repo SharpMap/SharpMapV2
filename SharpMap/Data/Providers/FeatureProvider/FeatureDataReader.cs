@@ -1,197 +1,330 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
-    public class FeatureDataReader : IFeatureDataReader
-    {
-        #region IFeatureDataReader Members
+	public class FeatureDataReader : IFeatureDataReader
+	{
+		private readonly FeatureDataTable _table;
+		private readonly BoundingBox _queryRegion;
+		private int _currentRow = 0;
+		private bool _isDisposed;
 
-        public Geometry GetGeometry()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		#region Object Construction / Disposal
+		internal FeatureDataReader(FeatureDataTable source, BoundingBox queryRegion)
+		{
+			if (source == null) throw new ArgumentNullException("source");
 
-        #endregion
+			_table = new FeatureDataTable();
+			source.CopyTableSchema(_table);
+			_queryRegion = queryRegion;
 
-        #region IDataReader Members
+			foreach (FeatureDataRow row in source)
+			{
+				if (row.Geometry != null && row.Geometry.GetBoundingBox().Intersects(_queryRegion))
+				{
+					_table.ImportRow(row);
+				}
+			}
+		}
 
-        public void Close()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		#region Dispose pattern
 
-        public int Depth
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
+		#region IDisposable Members
 
-        public DataTable GetSchemaTable()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public void Dispose()
+		{
+			if (IsDisposed)
+			{
+				return;
+			}
 
-        public bool IsClosed
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
+			Dispose(true);
+			IsDisposed = true;
+			GC.SuppressFinalize(this);
+		}
 
-        public bool NextResult()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		private void Dispose(bool disposing)
+		{
+			if (IsDisposed)
+			{
+				return;
+			}
 
-        public bool Read()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+			if (disposing)
+			{
+				if (_table != null)
+				{
+					_table.Dispose();
+				}
+			}
+		}
 
-        public int RecordsAffected
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
+		#endregion
 
-        #endregion
+		private bool IsDisposed
+		{
+			get { return _isDisposed; }
+			set { _isDisposed = value; }
+		}
+		#endregion
 
-        #region IDisposable Members
+		#endregion
 
-        public void Dispose()
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		#region IFeatureDataReader Members
 
-        #endregion
+		public Geometry GetGeometry()
+		{
+			checkState();
+			return _table[_currentRow].Geometry.Clone();
+		}
 
-        #region IDataRecord Members
+		#endregion
 
-        public int FieldCount
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
+		#region IDataReader Members
 
-        public bool GetBoolean(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public void Close()
+		{
+			Dispose();
+		}
 
-        public byte GetByte(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public int Depth
+		{
+			get
+			{
+				checkState();
+				return 0;
+			}
+		}
 
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public DataTable GetSchemaTable()
+		{
+			throw new NotImplementedException();
+		}
 
-        public char GetChar(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public bool IsClosed
+		{
+			get { return IsDisposed; }
+		}
 
-        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public bool NextResult()
+		{
+			return false;
+		}
 
-        public IDataReader GetData(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public bool Read()
+		{
+			checkState();
 
-        public string GetDataTypeName(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+			if (_currentRow + 1 < _table.FeatureCount)
+			{
+				_currentRow++;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 
-        public DateTime GetDateTime(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public int RecordsAffected
+		{
+			get { return _table.FeatureCount; }
+		}
 
-        public decimal GetDecimal(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		#endregion
 
-        public double GetDouble(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		#region IDataRecord Members
 
-        public Type GetFieldType(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public int FieldCount
+		{
+			get
+			{
+				if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+				return _table.Columns.Count;
+			}
+		}
 
-        public float GetFloat(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public bool GetBoolean(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToBoolean(_table[_currentRow][i]);
+		}
 
-        public Guid GetGuid(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public byte GetByte(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToByte(_table[_currentRow][i]);
+		}
 
-        public short GetInt16(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+		{
+			throw new NotImplementedException();
+		}
 
-        public int GetInt32(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public char GetChar(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToChar(_table[_currentRow][i]);
+		}
 
-        public long GetInt64(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+		{
+			throw new NotImplementedException();
+		}
 
-        public string GetName(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public IDataReader GetData(int i)
+		{
+			throw new NotImplementedException();
+		}
 
-        public int GetOrdinal(string name)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public string GetDataTypeName(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return _table.Columns[i].DataType.ToString();
+		}
 
-        public string GetString(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public DateTime GetDateTime(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToDateTime(_table[_currentRow][i]);
+		}
 
-        public object GetValue(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public decimal GetDecimal(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToDecimal(_table[_currentRow][i]);
+		}
 
-        public int GetValues(object[] values)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public double GetDouble(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToDouble(_table[_currentRow][i]);
+		}
 
-        public bool IsDBNull(int i)
-        {
-            throw new Exception("The method or operation is not implemented.");
-        }
+		public Type GetFieldType(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return _table.Columns[i].DataType;
+		}
 
-        public object this[string name]
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
+		public float GetFloat(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToSingle(_table[_currentRow][i]);
+		}
 
-        public object this[int i]
-        {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
+		public Guid GetGuid(int i)
+		{
+			throw new NotImplementedException();
+		}
 
-        #endregion
-    }
+		public short GetInt16(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToInt16(_table[_currentRow][i]);
+		}
+
+		public int GetInt32(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToInt32(_table[_currentRow][i]);
+		}
+
+		public long GetInt64(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToInt64(_table[_currentRow][i]);
+		}
+
+		public string GetName(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return _table.Columns[i].ColumnName;
+		}
+
+		public int GetOrdinal(string name)
+		{
+			checkState();
+			return _table.Columns[name].Ordinal;
+		}
+
+		public string GetString(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return Convert.ToString(_table[_currentRow][i]);
+		}
+
+		public object GetValue(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return _table[_currentRow][i];
+		}
+
+		public int GetValues(object[] values)
+		{
+			checkState();
+
+			if (values == null) throw new ArgumentNullException("values");
+
+			int count = values.Length > FieldCount ? FieldCount : values.Length;
+
+			for (int i = 0; i < count; i++)
+			{
+				values[i] = _table[_currentRow][i];
+			}
+
+			return count;
+		}
+
+		public bool IsDBNull(int i)
+		{
+			checkState();
+			checkIndex(i);
+			return _table[_currentRow].IsNull(i);
+		}
+
+		public object this[string name]
+		{
+			get { checkState(); return _table[_currentRow][name]; }
+		}
+
+		public object this[int i]
+		{
+			get { checkState(); return _table[_currentRow][i]; }
+		}
+
+		#endregion
+
+		#region Private helper methods
+
+		private void checkIndex(int i)
+		{
+			if (i < 0 || i >= FieldCount) throw new IndexOutOfRangeException("Column index out of range: " + i);
+		}
+
+		private void checkState()
+		{
+			if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+			if (_currentRow >= RecordsAffected) throw new InvalidOperationException("Attempt to read beyond end of records.");
+		}
+		#endregion
+	}
 }
