@@ -284,7 +284,9 @@ namespace SharpMap
 				target[columnIndex] = source[columnIndex];
 			}
 
-			target.Geometry = source.Geometry.Clone();
+			target.Geometry = source.Geometry == null 
+                ? null
+                : source.Geometry.Clone();
 		}
 
 		public override void Load(IDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
@@ -391,7 +393,9 @@ namespace SharpMap
 		{
 			Debug.Assert(e.Row is FeatureDataRow);
 
-			if (e.Action == DataRowAction.Add)
+			if (e.Action == DataRowAction.Add 
+                || e.Action == DataRowAction.ChangeCurrentAndOriginal
+                || e.Action == DataRowAction.Change)
 			{
 				FeatureDataRow r = e.Row as FeatureDataRow;
 				if (r.Geometry != null)

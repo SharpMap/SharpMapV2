@@ -28,15 +28,18 @@ namespace SharpMap.Geometries
     [Serializable]
     public class LineString : Curve
     {
-        private List<Point> _vertices;
+        private readonly List<Point> _vertices = new List<Point>();
 
         /// <summary>
         /// Initializes an instance of a LineString from a set of vertices.
         /// </summary>
         /// <param name="vertices"></param>
-        public LineString(List<Point> vertices)
+        public LineString(IEnumerable<Point> vertices)
         {
-            _vertices = vertices;
+            foreach (Point p in vertices)
+            {
+                _vertices.Add(p.Clone() as Point);
+            }
         }
 
         /// <summary>
@@ -50,7 +53,6 @@ namespace SharpMap.Geometries
         public virtual List<Point> Vertices
         {
             get { return _vertices; }
-            private set { _vertices = value; }
         }
 
         #region OpenGIS Methods
@@ -75,22 +77,6 @@ namespace SharpMap.Geometries
             get { return _vertices.Count; }
         }
         #endregion
-
-        ///// <summary>
-        ///// Transforms the linestring to image coordinates, based on the map.
-        ///// </summary>
-        ///// <param name="map">Map to base coordinates on.</param>
-        ///// <returns>The <see cref="LineString"/> in image coordinates.</returns>
-        //public System.Drawing.PointF[] TransformToImage(Map map)
-        //{
-        //    System.Drawing.PointF[] v = new System.Drawing.PointF[_vertices.Count];
-
-        //    for (int i = 0; i < this.Vertices.Count; i++)
-        //        v[i] = SharpMap.Utilities.Transform.WorldToMap(_vertices[i], map);
-
-        //    return v;
-        //}	
-
 
         #region "Inherited methods from abstract class Geometry"
 
@@ -299,12 +285,16 @@ namespace SharpMap.Geometries
             get
             {
                 if (Vertices.Count < 2)
+                {
                     return 0;
+                }
 
                 double sum = 0;
 
                 for (int i = 1; i < Vertices.Count; i++)
+                {
                     sum += Vertices[i].Distance(Vertices[i - 1]);
+                }
 
                 return sum;
             }

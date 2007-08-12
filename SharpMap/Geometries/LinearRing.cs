@@ -41,6 +41,16 @@ namespace SharpMap.Geometries
 		{
 		}
 
+        /// <summary>
+        /// Creates a deep copy of the LinearRing.
+        /// </summary>
+        /// <returns>A copy of the LinearRing instance.</returns>
+        public override Geometry Clone()
+        {
+            LinearRing ring = new LinearRing(Vertices);
+            return ring;
+        }
+
 		/// <summary>
 		/// Tests whether a ring is oriented counter-clockwise.
 		/// </summary>
@@ -78,6 +88,7 @@ namespace SharpMap.Geometries
 			if (iNext >= nPts) iNext = 1;
 			prev = Vertices[iPrev];
 			next = Vertices[iNext];
+
 			// translate so that hip is at the origin.
 			// This will not affect the area calculation, and will avoid
 			// finite-accuracy errors (i.e very small vectors with very large coordinates)
@@ -86,16 +97,17 @@ namespace SharpMap.Geometries
 			double prev2y = prev.Y - hip.Y;
 			double next2x = next.X - hip.X;
 			double next2y = next.Y - hip.Y;
+
 			// compute cross-product of vectors hip->next and hip->prev
 			// (e.g. area of parallelogram they enclose)
 			double disc = next2x * prev2y - next2y * prev2x;
+
 			// If disc is exactly 0, lines are collinear.  There are two possible cases:
 			//	(1) the lines lie along the x axis in opposite directions
 			//	(2) the line lie on top of one another
 			//  (2) should never happen, so we're going to ignore it!
 			//	(Might want to assert this)
 			//  (1) is handled by checking if next is left of prev ==> CCW
-
 			if (disc == 0.0)
 			{
 				// poly is CCW if prev x is right of next x

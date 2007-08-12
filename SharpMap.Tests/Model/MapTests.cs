@@ -44,7 +44,7 @@ namespace SharpMap.Tests.Model
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-            ILayerProvider dataSource = mocks.Stub<ILayerProvider>();
+            IVectorLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource();
 
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
             map.AddLayer(new VectorLayer("Layer 3", dataSource));

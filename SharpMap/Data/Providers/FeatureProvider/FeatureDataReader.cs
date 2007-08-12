@@ -8,6 +8,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 	public class FeatureDataReader : IFeatureDataReader
 	{
 		private readonly FeatureDataTable _table;
+        private DataTable _schemaTable;
 		private readonly BoundingBox _queryRegion;
 		private int _currentRow = 0;
 		private bool _isDisposed;
@@ -101,7 +102,13 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		public DataTable GetSchemaTable()
 		{
-			throw new NotImplementedException();
+            if (_schemaTable == null)
+            {
+                DataTableReader reader = new DataTableReader(_table);
+                _schemaTable = reader.GetSchemaTable();
+            }
+
+            return _schemaTable;
 		}
 
 		public bool IsClosed
