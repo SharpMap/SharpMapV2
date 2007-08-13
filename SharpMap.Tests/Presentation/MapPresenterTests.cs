@@ -262,7 +262,7 @@ namespace SharpMap.Tests.Presentation
 		private static MapPresenter2D createPresenter(MockRepository mocks, double width, double height)
 		{
 			Map map = new Map();
-			map.AddLayer(DataSourceHelper.CreateVectorLayer());
+			map.AddLayer(DataSourceHelper.CreateFeatureVectorLayer());
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);

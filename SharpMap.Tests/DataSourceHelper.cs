@@ -29,11 +29,17 @@ namespace SharpMap.Tests
 			geoms.Add(Geometry.FromText("MULTIPOINT EMPTY"));
 			geoms.Add(Geometry.FromText("LINESTRING EMPTY"));
 			return new GeometryProvider(geoms);
-		}
+        }
 
-		internal static VectorLayer CreateVectorLayer()
+        internal static VectorLayer CreateGeometryVectorLayer()
+        {
+            VectorLayer layer = new VectorLayer("TestGeometries", CreateGeometryDatasource());
+            return layer;
+        }
+
+		internal static VectorLayer CreateFeatureVectorLayer()
 		{
-			VectorLayer layer = new VectorLayer("TestGeometries", CreateFeatureDatasource());
+			VectorLayer layer = new VectorLayer("TestFeatures", CreateFeatureDatasource());
 			return layer;
 		}
 
