@@ -69,7 +69,7 @@ namespace SharpMap.Data
         IFeatureDataReader ExecuteIntersectionQuery(Geometry geom);
 
         /// <summary>
-        /// Retrieves the data associated with all the geometries that 
+        /// Retrieves the data associated with all the features that 
         /// are intersected by <paramref name="box"/>.
         /// </summary>
         /// <param name="box">BoundingBox to intersect with.</param>
@@ -77,7 +77,7 @@ namespace SharpMap.Data
         void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet dataSet);
 
         /// <summary>
-        /// Retrieves the data associated with all the geometries that 
+        /// Retrieves the data associated with all the features that 
         /// are intersected by <paramref name="box"/>.
         /// </summary>
         /// <param name="box">BoundingBox to intersect with.</param>

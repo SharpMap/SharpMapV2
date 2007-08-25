@@ -141,19 +141,26 @@ namespace SharpMap
 		{
 			if (layer == null) throw new ArgumentNullException("layer");
 
-			lock (_layersChangeSync)
+		    checkForDuplicateLayerName(layer);
+
+		    lock (_layersChangeSync)
 			{
 				_layers.Add(layer);
 				OnLayersChanged(new ILayer[] {layer}, LayersChangeType.Added);
 			}
 		}
 
-		public void AddLayers(IEnumerable<ILayer> layers)
+	    public void AddLayers(IEnumerable<ILayer> layers)
 		{
 			if (layers == null) throw new ArgumentNullException("layers");
 
 			lock (_layersChangeSync)
 			{
+			    foreach (ILayer layer in layers)
+			    {
+			        checkForDuplicateLayerName(layer);
+			    }
+
 				_layers.AddRange(layers);
 				OnLayersChanged(layers, LayersChangeType.Added);
 			}
@@ -630,7 +637,19 @@ namespace SharpMap
 
 		#endregion
 
-		#region Private helper methods
+        #region Private helper methods
+
+        private void checkForDuplicateLayerName(ILayer layer)
+        {
+            Predicate<ILayer> namesMatch =
+                delegate(ILayer match)
+                {
+                    return String.Compare(match.LayerName, layer.LayerName,
+                                          StringComparison.CurrentCultureIgnoreCase) == 0;
+                };
+
+            if (_layers.Exists(namesMatch)) throw new DuplicateLayerException(layer.LayerName);
+        }
 
 		private void recomputeEnvelope()
 		{

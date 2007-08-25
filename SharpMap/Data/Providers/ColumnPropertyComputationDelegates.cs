@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,15 +16,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Data;
-using SharpMap.Geometries;
 
-namespace SharpMap.Data
+namespace SharpMap.Data.Providers
 {
-    /// <summary>
-    /// Provides a fast-forward, read-only data stream to geometry data.
-    /// </summary>
-    public interface IFeatureDataReader : IDataReader
-    {
-        Geometry GetGeometry();
-    }
+    public delegate int ColumnLengthComputationDelegate(DataColumn column);
+    public delegate short ColumnPrecisionComputationDelegate(DataColumn column);
+    public delegate short ColumnScaleComputationDelegate(DataColumn column);
 }

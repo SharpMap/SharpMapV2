@@ -52,7 +52,7 @@ namespace SharpMap.Layers
         /// <summary>
 		/// Initializes a new, empty vector layer.
 		/// </summary>
-        public VectorLayer(ILayerProvider dataSource)
+        public VectorLayer(IVectorLayerProvider dataSource)
             : this(String.Empty, dataSource)
 		{
 		}
@@ -62,7 +62,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public VectorLayer(string layername, ILayerProvider dataSource)
+        public VectorLayer(string layername, IVectorLayerProvider dataSource)
             : this(layername, new VectorStyle(), dataSource)
 		{
         }
@@ -73,7 +73,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public VectorLayer(string layername, VectorStyle style, ILayerProvider dataSource)
+        public VectorLayer(string layername, VectorStyle style, IVectorLayerProvider dataSource)
             : base(dataSource)
         {
             LayerName = layername;
@@ -198,12 +198,26 @@ namespace SharpMap.Layers
         }
         #endregion
 
-        #region Layer Overrides
-
         public new VectorStyle Style
         {
             get { return base.Style as VectorStyle; }
             set { base.Style = value; }
+        }
+
+        #region Layer Overrides
+
+        IStyle ILayer.Style
+        {
+            get { return Style; }
+            set 
+            {
+                if (!(value is VectorStyle))
+                {
+                    throw new ArgumentException("Style value must be of type VectorStyle.", "value");
+                }
+
+                Style = value as VectorStyle; 
+            }
         }
 
         protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)

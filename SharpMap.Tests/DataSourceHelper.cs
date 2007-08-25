@@ -11,7 +11,7 @@ namespace SharpMap.Tests
 {
 	internal static class DataSourceHelper
 	{
-		internal static ILayerProvider CreateGeometryDatasource()
+        internal static IVectorLayerProvider CreateGeometryDatasource()
 		{
 			Collection<Geometry> geoms = new Collection<Geometry>();
 			geoms.Add(Geometry.FromText("POINT EMPTY"));

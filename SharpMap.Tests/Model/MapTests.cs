@@ -1,19 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 using NUnit.Framework;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
-
-using SharpMap;
-using SharpMap.Layers;
-using SharpMap.Presentation;
-using SharpMap.Geometries;
-using SharpMap.Rendering;
-using SharpMap.Tools;
 using SharpMap.Data;
-using SharpMap.Data.Providers;
+using SharpMap.Geometries;
+using SharpMap.Layers;
+using SharpMap.Tools;
 
 namespace SharpMap.Tests.Model
 {
@@ -26,7 +17,7 @@ namespace SharpMap.Tests.Model
             MockRepository mocks = new MockRepository();
 
 			Map map = new Map();
-            ILayerProvider dataSource = mocks.Stub<ILayerProvider>();
+            IVectorLayerProvider dataSource = mocks.Stub<IVectorLayerProvider>();
 
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
             map.AddLayer(new VectorLayer("Layer 3", dataSource));
@@ -41,8 +32,6 @@ namespace SharpMap.Tests.Model
         [ExpectedException(typeof(DuplicateLayerException))]
 		public void DuplicateLayerNamesThrowsException()
         {
-            MockRepository mocks = new MockRepository();
-
             Map map = new Map();
             IVectorLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource();
 
@@ -58,18 +47,18 @@ namespace SharpMap.Tests.Model
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-            ILayerProvider dataSource = mocks.Stub<ILayerProvider>();
+            IVectorLayerProvider dataSource = mocks.Stub<IVectorLayerProvider>();
 
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
-            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3a", dataSource));
             map.AddLayer(new VectorLayer("Layer 2", dataSource));
-            map.AddLayer(new VectorLayer("Layer 4", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3b", dataSource));
 
 			int count = 0;
 
             foreach (ILayer layer in map.FindLayers("Layer 3"))
 			{
-				Assert.AreEqual("Layer 3", layer.LayerName);
+                Assert.IsTrue(layer.LayerName.StartsWith("Layer 3"));
 				count++;
 			}
 

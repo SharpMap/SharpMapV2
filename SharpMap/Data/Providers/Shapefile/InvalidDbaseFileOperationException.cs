@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,16 +15,21 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System.Data;
-using SharpMap.Geometries;
+using System;
+using System.Runtime.Serialization;
 
-namespace SharpMap.Data
-{
+namespace SharpMap.Data.Providers.ShapeFile
+{    
     /// <summary>
-    /// Provides a fast-forward, read-only data stream to geometry data.
+    /// Exception thrown when the requested operation is 
+    /// invalid for the state of the reader.
     /// </summary>
-    public interface IFeatureDataReader : IDataReader
+    public class InvalidDbaseFileOperationException : Exception
     {
-        Geometry GetGeometry();
+        public InvalidDbaseFileOperationException() { }
+        public InvalidDbaseFileOperationException(string message) : base(message) { }
+        public InvalidDbaseFileOperationException(string message, Exception inner) : base(message, inner) { }
+        public InvalidDbaseFileOperationException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

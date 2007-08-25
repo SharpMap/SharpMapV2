@@ -315,29 +315,38 @@ namespace SharpMap.Data.Providers.GeometryProvider
 			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
 		}
 
-		public IFeatureDataReader ExecuteIntersectionQuery(Geometry geom)
-		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+        /// <summary>
+        /// Throws an NotSupportedException. Geometry intersection is not yet supported.
+        /// </summary>
+        /// <param name="geometry">The geometry used to intersect with.</param>
+        public IFeatureDataReader ExecuteIntersectionQuery(Geometry geometry)
+        {
+            throw new NotSupportedException();
 		}
 
-		public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
+        /// <summary>
+        /// Throws an NotSupportedException. Geometry intersection is not yet supported.
+        /// </summary>
+        /// <param name="geometry">The geometry used to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        public void ExecuteIntersectionQuery(Geometry geometry, FeatureDataTable table)
 		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+			throw new NotSupportedException();
 		}
 
 		/// <summary>
-		/// Throws an NotSupportedException. Attribute data is not supported by this datasource.
+		/// Throws an NotSupportedException. Geometry intersection is not yet supported.
 		/// </summary>
-		/// <param name="geom"></param>
-		/// <param name="ds">FeatureDataSet to fill data into</param>
-		public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
-		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+        /// <param name="geometry">The geometry used to intersect with.</param>
+		/// <param name="ds">FeatureDataSet to fill data into.</param>
+		public void ExecuteIntersectionQuery(Geometry geometry, FeatureDataSet ds)
+        {
+            throw new NotSupportedException();
 		}
 
 		public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box)
 		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+		    return new GeometryDataReader(this, box);
 		}
 
 		public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)

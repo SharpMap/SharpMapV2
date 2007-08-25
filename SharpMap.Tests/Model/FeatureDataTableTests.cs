@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using SharpMap;
 using System.Data;
-using SharpMap.Geometries;
-using SharpMap.Data.Providers.ShapeFile;
+using NUnit.Framework;
 using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Model
 {
@@ -58,7 +54,7 @@ namespace SharpMap.Tests.Model
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             FeatureDataTable changes = table.GetChanges();
-            Assert.AreEqual(1, table.FeatureCount);
+            Assert.AreEqual(1, changes.FeatureCount);
         }
 
         [Test]
@@ -95,6 +91,7 @@ namespace SharpMap.Tests.Model
             Assert.AreEqual(0, view.Count);
             Assert.AreSame(table, view.Table);
             FeatureDataView featureView = view as FeatureDataView;
+            Assert.IsNotNull(featureView);
             Assert.AreEqual(BoundingBox.Empty, featureView.VisibleRegion);
             Assert.AreEqual(DataViewRowState.CurrentRows, view.RowStateFilter);
         }

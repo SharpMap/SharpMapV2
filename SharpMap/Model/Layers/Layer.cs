@@ -241,6 +241,11 @@ namespace SharpMap.Layers
             get { return _visibleRegion; }
             set
             {
+                if(value == VisibleRegion)
+                {
+                    return;
+                }
+
                 bool cancel = false;
                 OnVisibleRegionChanging(value, ref cancel);
                 _visibleRegion = value;
