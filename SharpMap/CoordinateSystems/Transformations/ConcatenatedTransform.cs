@@ -18,13 +18,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpMap.Geometries;
+using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {
 	internal class ConcatenatedTransform : MathTransform
 	{
 		protected IMathTransform _inverse;
-
+		private List<ICoordinateTransformation> _coordinateTransformationList;
 
 		public ConcatenatedTransform()
 			: this(new List<ICoordinateTransformation>())
@@ -33,44 +35,54 @@ namespace SharpMap.CoordinateSystems.Transformations
 
 		public ConcatenatedTransform(List<ICoordinateTransformation> transformlist)
 		{
-			_CoordinateTransformationList = transformlist;
+			_coordinateTransformationList = transformlist;
 		}
-
-		private List<ICoordinateTransformation> _CoordinateTransformationList;
 
 		public List<ICoordinateTransformation> CoordinateTransformationList
 		{
-			get { return _CoordinateTransformationList; }
+			get { return _coordinateTransformationList; }
 			set
 			{
-				_CoordinateTransformationList = value;
+				_coordinateTransformationList = value;
 				_inverse = null;
 			}
 		}
-		
-		public override SharpMap.Geometries.Point Transform(SharpMap.Geometries.Point point)
+
+		public override Point Transform(Point point)
 		{
-			if (point is SharpMap.Geometries.Point3D)
+			if (point is Point3D)
 			{
-				SharpMap.Geometries.Point pnt = (point as SharpMap.Geometries.Point3D).Clone();
-				foreach (ICoordinateTransformation ct in _CoordinateTransformationList)
+				Point pnt = (point as Point3D).Clone();
+
+				foreach (ICoordinateTransformation ct in _coordinateTransformationList)
+				{
 					pnt = ct.MathTransform.Transform(pnt);
+				}
+
 				return pnt;
 			}
 			else
 			{
-				SharpMap.Geometries.Point pnt = point.Clone();
-				foreach (ICoordinateTransformation ct in _CoordinateTransformationList)
+				Point pnt = point.Clone() as Point;
+
+				foreach (ICoordinateTransformation ct in _coordinateTransformationList)
+				{
 					pnt = ct.MathTransform.Transform(pnt);
+				}
+
 				return pnt;
 			}
 		}
 
-		public override List<SharpMap.Geometries.Point> TransformList(List<SharpMap.Geometries.Point> points)
+		public override List<Point> TransformList(List<Point> points)
 		{
-			List<SharpMap.Geometries.Point> pnts = new List<SharpMap.Geometries.Point>(points.Count);
-			foreach (ICoordinateTransformation ct in _CoordinateTransformationList)
+			List<Point> pnts = new List<Point>(points.Count);
+
+			foreach (ICoordinateTransformation ct in _coordinateTransformationList)
+			{
 				pnts = ct.MathTransform.TransformList(pnts);
+			}
+
 			return pnts;
 		}
 
@@ -82,20 +94,22 @@ namespace SharpMap.CoordinateSystems.Transformations
 		{
 			if (_inverse == null)
 			{
-				_inverse = new ConcatenatedTransform(_CoordinateTransformationList);
+				_inverse = new ConcatenatedTransform(_coordinateTransformationList);
 				_inverse.Invert();
 			}
 			return _inverse;
 		}
-		
+
 		/// <summary>
 		/// Reverses the transformation
 		/// </summary>
 		public override void Invert()
 		{
-			_CoordinateTransformationList.Reverse();
-			foreach (ICoordinateTransformation ic in _CoordinateTransformationList)
+			_coordinateTransformationList.Reverse();
+			foreach (ICoordinateTransformation ic in _coordinateTransformationList)
+			{
 				ic.MathTransform.Invert();
+			}
 		}
 
 		public override string Wkt

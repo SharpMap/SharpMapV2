@@ -8,7 +8,7 @@ using SharpMap.Geometries;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace SharpMap.Tests.IndexingTests
+namespace SharpMap.Tests.Indexing
 {
 	[TestFixture]
 	public class RTreeTests

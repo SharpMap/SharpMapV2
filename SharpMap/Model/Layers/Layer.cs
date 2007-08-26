@@ -18,16 +18,12 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Data.Providers;
+using SharpMap.Data;
 using SharpMap.Geometries;
-using GeoPoint = SharpMap.Geometries.Point;
-using SharpMap.Rendering;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -40,19 +36,18 @@ namespace SharpMap.Layers
     /// obtain basic layer functionality.
     /// </remarks>
     [Serializable]
-	public abstract class Layer : ILayer, IModelObject, ICloneable
+    public abstract class Layer : ILayer, ICloneable
 	{
 		private ICoordinateSystem _coordinateSystem;
         private ICoordinateTransformation _coordinateTransform;
         private string _layerName;
-        private int _srid = -1;
         private IStyle _style;
 		private bool _disposed;
         private BoundingBox _visibleRegion;
-        private IProvider _dataSource;
+        private readonly ILayerProvider _dataSource;
 
         #region Object Creation / Disposal
-        protected Layer(IProvider dataSource)
+        protected Layer(ILayerProvider dataSource)
         {
             _dataSource = dataSource;
         }
@@ -158,7 +153,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the data source used to create this layer.
         /// </summary>
-        public IProvider DataSource 
+        public ILayerProvider DataSource 
         {
             get { return _dataSource; }
         }
@@ -169,7 +164,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <remarks>
         /// This property is a convenience property which exposes 
-        /// the value of <see cref="Style.Enabled"/>. 
+        /// the value of <see cref="SharpMap.Styles.Style.Enabled"/>. 
         /// If setting this property and the Style property 
         /// value is null, a new <see cref="Style"/> 
         /// object is created and assigned to the Style property, 
@@ -214,16 +209,11 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// The spatial reference ID.
+        /// The spatial reference ID of the layer data source.
         /// </summary>
-        public virtual int Srid
+        public virtual int? Srid
         {
-            get { return _srid; }
-            set 
-            { 
-                _srid = value;
-                OnPropertyChanged("Srid");
-            }
+            get { return _dataSource.Srid; }
 		}
 
         /// <summary>
@@ -247,6 +237,11 @@ namespace SharpMap.Layers
             get { return _visibleRegion; }
             set
             {
+                if(value == VisibleRegion)
+                {
+                    return;
+                }
+
                 bool cancel = false;
                 OnVisibleRegionChanging(value, ref cancel);
                 _visibleRegion = value;
@@ -255,15 +250,11 @@ namespace SharpMap.Layers
             }
         }
 
-        private void OnVisibleRegionChanged()
+        protected virtual void OnVisibleRegionChanged()
         {
-            throw new NotImplementedException();
         }
 
-        protected void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract void OnVisibleRegionChanging(BoundingBox value, ref bool cancel);
         #endregion
 
         #region INotifyPropertyChanged Members

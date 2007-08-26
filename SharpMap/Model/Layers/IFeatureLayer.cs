@@ -16,21 +16,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SharpMap.Data;
-using SharpMap.Geometries;
 
 namespace SharpMap.Layers
 {
-    public interface IFeatureLayer : ILayer
-    {
-        FeatureDataTable VisibleFeatures { get; }
-        event EventHandler VisibleFeaturesChanged;
-        IList<FeatureDataRow> SelectedFeatures { get; set; }
-        event EventHandler SelectedFeaturesChanged;
-        IList<FeatureDataRow> HighlightedFeatures { get; set; }
-        event EventHandler HighlightedFeaturesChanged;
-    }
+	public interface IFeatureLayer : ILayer
+	{
+		new IVectorLayerProvider DataSource { get; }
+		FeatureDataTable Features { get; }
+		FeatureDataView HighlightedFeatures { get; set; }
+		FeatureDataView SelectedFeatures { get; set; }
+		FeatureDataView VisibleFeatures { get; }
+		event EventHandler HighlightedFeaturesChanged;
+		event EventHandler SelectedFeaturesChanged;
+		event EventHandler VisibleFeaturesChanged;
+	}
 }

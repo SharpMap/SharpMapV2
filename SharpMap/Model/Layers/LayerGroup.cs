@@ -24,7 +24,7 @@ using SharpMap.Rendering;
 using SharpMap.Styles;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Data.Providers;
+using SharpMap.Data;
 using System.ComponentModel;
 
 namespace SharpMap.Layers
@@ -166,7 +166,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public IProvider DataSource
+        public ILayerProvider DataSource
         {
             get
             {
@@ -224,13 +224,9 @@ namespace SharpMap.Layers
             }
         }
 
-        public int Srid
+        public int? Srid
         {
             get
-            {
-                throw new NotImplementedException();
-            }
-            set
             {
                 throw new NotImplementedException();
             }

@@ -80,7 +80,7 @@ namespace SharpMap.Geometries
         /// </remarks>
         public static Point Empty
         {
-            get { return _empty.Clone(); }
+            get { return _empty.Clone() as Point; }
 		}
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace SharpMap.Geometries
         /// </remarks>
 		public static Point Zero
 		{
-            get { return _zero.Clone(); }
+            get { return _zero.Clone() as Point; }
 		}
 
 		/// <summary>
@@ -479,10 +479,10 @@ namespace SharpMap.Geometries
 		#endregion
 
 		/// <summary>
-		/// This method must be overridden using 'public new [derived_data_type] Clone()'
+		/// Creates a deep copy of the Point.
 		/// </summary>
-		/// <returns>Clone</returns>
-		public new Point Clone()
+		/// <returns>A copy of the Point instance.</returns>
+		public override Geometry Clone()
 		{
             if (IsEmpty())
             {

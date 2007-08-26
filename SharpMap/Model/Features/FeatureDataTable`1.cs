@@ -17,10 +17,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
-using System.Collections;
 
 namespace SharpMap
 {
@@ -143,16 +142,21 @@ namespace SharpMap
         #endregion
 
         #region Constructors
+
         private FeatureDataTable()
-            : base()
         {
         }
 
         public FeatureDataTable(string idColumnName)
-            : base()
         {
             setIdColumn(idColumnName);
-        }
+		}
+
+		public FeatureDataTable(string tableName, string idColumnName)
+			: base(tableName)
+		{
+			setIdColumn(idColumnName);
+		}
 
         public FeatureDataTable(DataTable table, string idColumnName)
             : base(table)
@@ -245,7 +249,7 @@ namespace SharpMap
         /// <returns></returns>
         public FeatureDataRow<TOid> NewRow(TOid id)
         {
-            FeatureDataRow<TOid> row = base.NewRow() as FeatureDataRow<TOid>;
+            FeatureDataRow<TOid> row = NewRow() as FeatureDataRow<TOid>;
             row[IdColumn] = id;
             return row;
         }

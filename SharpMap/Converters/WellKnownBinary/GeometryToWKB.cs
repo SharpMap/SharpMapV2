@@ -46,13 +46,14 @@ namespace SharpMap.Converters.WellKnownBinary
 {
 
 	/// <summary>
-	/// Converts a <see cref="SharpMap.Geometries.Geometry"/> instance to a Well-known Binary string representation.
+	/// Converts a <see cref="SharpMap.Geometries.Geometry"/> instance 
+	/// to a Well-Known Binary string representation.
 	/// </summary>
 	/// <remarks>
-	/// <para>The Well-known Binary Representation for <see cref="SharpMap.Geometries.Geometry"/> (WKBGeometry) provides a portable 
+	/// <para>The Well-Known Binary Representation for <see cref="SharpMap.Geometries.Geometry"/> (WKBGeometry) provides a portable 
 	/// representation of a <see cref="SharpMap.Geometries.Geometry"/> value as a contiguous stream of bytes. It permits <see cref="SharpMap.Geometries.Geometry"/> 
 	/// values to be exchanged between an ODBC client and an SQL database in binary form.</para>
-	/// <para>The Well-known Binary Representation for <see cref="SharpMap.Geometries.Geometry"/> is obtained by serializing a <see cref="SharpMap.Geometries.Geometry"/>
+	/// <para>The Well-Known Binary Representation for <see cref="SharpMap.Geometries.Geometry"/> is obtained by serializing a <see cref="SharpMap.Geometries.Geometry"/>
 	/// instance as a sequence of numeric types drawn from the set {Unsigned Integer, Double} and
 	/// then serializing each numeric type as a sequence of bytes using one of two well defined,
 	/// standard, binary representations for numeric types (NDR, XDR). The specific binary encoding
@@ -60,7 +61,7 @@ namespace SharpMap.Converters.WellKnownBinary
 	/// the serialized bytes. The only difference between the two encodings of geometry is one of
 	/// byte order, the XDR encoding is Big Endian, the NDR encoding is Little Endian.</para>
 	/// </remarks> 
-	public class GeometryToWKB
+	public class GeometryToWkb
 	{
 		//private const byte WKBByteOrder = 0;
 
@@ -111,31 +112,31 @@ namespace SharpMap.Converters.WellKnownBinary
 			{
 				//Points are type 1.
 				case "SharpMap.Geometries.Point":
-					WriteUInt32((uint)WKBGeometryType.wkbPoint, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.Point, bWriter, byteorder);
 					break;
 				//Linestrings are type 2.
 				case "SharpMap.Geometries.LineString":
-					WriteUInt32((uint)WKBGeometryType.wkbLineString, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.LineString, bWriter, byteorder);
 					break;
 				//Polygons are type 3.
 				case "SharpMap.Geometries.Polygon":
-					WriteUInt32((uint)WKBGeometryType.wkbPolygon, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.Polygon, bWriter, byteorder);
 					break;
 				//Mulitpoints are type 4.
 				case "SharpMap.Geometries.MultiPoint":
-					WriteUInt32((uint)WKBGeometryType.wkbMultiPoint, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.MultiPoint, bWriter, byteorder);
 					break;
 				//Multilinestrings are type 5.
 				case "SharpMap.Geometries.MultiLineString":
-					WriteUInt32((uint)WKBGeometryType.wkbMultiLineString, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.MultiLineString, bWriter, byteorder);
 					break;
 				//Multipolygons are type 6.
 				case "SharpMap.Geometries.MultiPolygon":
-					WriteUInt32((uint)WKBGeometryType.wkbMultiPolygon, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.MultiPolygon, bWriter, byteorder);
 					break;
 				//Geometrycollections are type 7.
 				case "SharpMap.Geometries.GeometryCollection":
-					WriteUInt32((uint)WKBGeometryType.wkbGeometryCollection, bWriter, byteorder);
+					WriteUInt32((uint)WkbGeometryType.GeometryCollection, bWriter, byteorder);
 					break;
 				//If the type is not of the above 7 throw an exception.
 				default:
@@ -258,7 +259,7 @@ namespace SharpMap.Converters.WellKnownBinary
 			{
 				//Write Points Header
 				bWriter.Write((byte)byteorder);
-				WriteUInt32((uint)WKBGeometryType.wkbPoint, bWriter, byteorder);
+				WriteUInt32((uint)WkbGeometryType.Point, bWriter, byteorder);
 				//Write each point.
 				WritePoint((Point)p, bWriter, byteorder);
 			}
@@ -280,7 +281,7 @@ namespace SharpMap.Converters.WellKnownBinary
 			{
 				//Write LineString Header
 				bWriter.Write((byte)byteorder);
-				WriteUInt32((uint)WKBGeometryType.wkbLineString, bWriter, byteorder);
+				WriteUInt32((uint)WkbGeometryType.LineString, bWriter, byteorder);
 				//Write each linestring.
 				WriteLineString(ls, bWriter, byteorder);
 			}
@@ -302,7 +303,7 @@ namespace SharpMap.Converters.WellKnownBinary
 			{
 				//Write polygon header
 				bWriter.Write((byte)byteorder);
-				WriteUInt32((uint)WKBGeometryType.wkbPolygon, bWriter, byteorder);
+				WriteUInt32((uint)WkbGeometryType.Polygon, bWriter, byteorder);
 				//Write each polygon.
 				WritePolygon(poly, bWriter, byteorder);
 			}

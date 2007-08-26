@@ -18,187 +18,196 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
-using System.Diagnostics;
-using System.Globalization;
-
-using SharpMap.Data;
-using SharpMap.Layers;
+using SharpMap.CoordinateSystems;
 using SharpMap.Geometries;
-using GeoPoint = SharpMap.Geometries.Point;
-using SharpMap.Rendering;
+using SharpMap.Layers;
 using SharpMap.Styles;
 using SharpMap.Tools;
-using SharpMap.Utilities;
-using SharpMap.CoordinateSystems;
+using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap
 {
 	/// <summary>
 	/// A map is a collection of <see cref="Layer">layers</see> 
-    /// composed into a single frame of spatial reference.
+	/// composed into a single frame of spatial reference.
 	/// </summary>
 	[DesignTimeVisible(false)]
-	public class Map : IModelObject, IDisposable
+	public class Map : INotifyPropertyChanged, IDisposable
 	{
-		static Map() { }
-
-        #region Fields
-        private readonly object _layersSync = new object();
-		private readonly object _selectedLayersSync = new object();
-		private readonly object _activeToolSync = new object();
-        private readonly object _spatialReferenceSync = new object();
-
-		private readonly LayersCollection _layers = new LayersCollection();
-		private readonly List<ILayer> _selectedLayers = new List<ILayer>();
-		private BoundingBox _envelope = BoundingBox.Empty;
-        private MapTool _activeTool = MapTool.None;
-        private ICoordinateSystem _spatialReference;
-        private bool _disposed;
-        #endregion
-
-        #region Object Creation / Disposal
-        /// <summary>
-		/// Initializes a new map.
-		/// </summary>
-		public Map()
+		static Map()
 		{
-			_layers.CollectionChanged += HandleLayersChanged;
 		}
 
-        #region Dispose Pattern
-        ~Map()
-        {
-            Dispose(false);
-        }
+		#region Fields
 
-        #region IDisposable Members
-        /// <summary>
-        /// Releases all resources deterministically.
-        /// </summary>
-        public void Dispose()
-        {
-            if (!IsDisposed)
-            {
-                Dispose(true);
-                _disposed = true;
-                GC.SuppressFinalize(this);
+		private readonly object _layersChangeSync = new object();
+		private readonly object _activeToolSync = new object();
 
-                EventHandler e = Disposed;
-                if (e != null)
-                {
-                    e(this, EventArgs.Empty);
-                }
-            }
-        }
+		private readonly List<ILayer> _layers = new List<ILayer>();
+		private readonly List<ILayer> _selectedLayers = new List<ILayer>();
+		private BoundingBox _envelope = BoundingBox.Empty;
+		private MapTool _activeTool = MapTool.None;
+		private ICoordinateSystem _spatialReference;
+		private bool _disposed;
 
-        #endregion
+		#endregion
+
+		#region Object Creation / Disposal
+
+		#region Dispose Pattern
+
+		~Map()
+		{
+			Dispose(false);
+		}
+
+		#region IDisposable Members
+
+		/// <summary>
+		/// Releases all resources deterministically.
+		/// </summary>
+		public void Dispose()
+		{
+			if (!IsDisposed)
+			{
+				Dispose(true);
+				_disposed = true;
+				GC.SuppressFinalize(this);
+
+				EventHandler e = Disposed;
+				if (e != null)
+				{
+					e(this, EventArgs.Empty);
+				}
+			}
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Disposes the map object and all layers.
 		/// </summary>
 		protected virtual void Dispose(bool disposing)
 		{
-            if (disposing)
-            {
-                foreach (ILayer layer in Layers)
-                {
-                    if (layer is IDisposable && layer != null)
-                    {
-                        ((IDisposable)layer).Dispose();
-                    }
-                }
+			if (disposing)
+			{
+				foreach (ILayer layer in Layers)
+				{
+					if (layer != null)
+					{
+						layer.Dispose();
+					}
+				}
 
-                _layers.Clear();
-            }
-        }
+				_layers.Clear();
+			}
+		}
 
-        /// <summary>
-        /// Gets whether this layer is disposed, and no longer accessible.
-        /// </summary>
-        public bool IsDisposed
-        {
-            get { return _disposed; }
-        }
+		/// <summary>
+		/// Gets whether this layer is disposed, and no longer accessible.
+		/// </summary>
+		public bool IsDisposed
+		{
+			get { return _disposed; }
+		}
 
-        /// <summary>
-        /// Event fired when the layer is disposed.
-        /// </summary>
-        public event EventHandler Disposed;
-        #endregion
-        #endregion
+		/// <summary>
+		/// Event fired when the layer is disposed.
+		/// </summary>
+		public event EventHandler Disposed;
 
-        #region Events
+		#endregion
 
-        /// <summary>
+		#endregion
+
+		#region Events
+
+		/// <summary>
 		/// Event fired when layers have been added to the map.
 		/// </summary>
-        public event EventHandler<ModelCollectionChangedEventArgs<ILayer>> LayersCollectionChanged;
+		public event EventHandler<LayersChangedEventArgs> LayersChanged;
 
 		public event EventHandler SelectedLayersChanged;
 		public event EventHandler SelectedToolChanged;
+
 		#endregion
 
 		#region Methods
 
 		public void AddLayer(ILayer layer)
 		{
-			if (layer == null)
-			{
-				throw new ArgumentNullException("layer");
-			}
+			if (layer == null) throw new ArgumentNullException("layer");
 
-			_layers.Add(layer);
+		    checkForDuplicateLayerName(layer);
+
+		    lock (_layersChangeSync)
+			{
+				_layers.Add(layer);
+				OnLayersChanged(new ILayer[] {layer}, LayersChangeType.Added);
+			}
 		}
 
-		public void AddLayers(IEnumerable<ILayer> layers)
+	    public void AddLayers(IEnumerable<ILayer> layers)
 		{
-			if (layers == null)
-			{
-				throw new ArgumentNullException("layers");
-			}
+			if (layers == null) throw new ArgumentNullException("layers");
 
-			_layers.AddLayers(layers);
+			lock (_layersChangeSync)
+			{
+			    foreach (ILayer layer in layers)
+			    {
+			        checkForDuplicateLayerName(layer);
+			    }
+
+				_layers.AddRange(layers);
+				OnLayersChanged(layers, LayersChangeType.Added);
+			}
 		}
 
 		public void RemoveLayer(ILayer layer)
 		{
 			if (layer != null)
 			{
-				_layers.Remove(layer);
+				lock (_layersChangeSync)
+				{
+					_layers.Remove(layer);
+					OnLayersChanged(new ILayer[] {layer}, LayersChangeType.Removed);
+				}
 			}
 		}
 
 		public void RemoveLayer(string name)
 		{
-			ILayer layer = GetLayerByName(name);
-			RemoveLayer(layer);
+			lock (_layersChangeSync)
+			{
+				ILayer layer = GetLayerByName(name);
+				RemoveLayer(layer);
+			}
 		}
 
 		public void SelectLayer(int index)
 		{
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
-				SelectLayers(new int[] { index });
+				SelectLayers(new int[] {index});
 			}
 		}
 
 		public void SelectLayer(string name)
 		{
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
-				SelectLayers(new string[] { name });
+				SelectLayers(new string[] {name});
 			}
 		}
 
 		public void SelectLayer(ILayer layer)
 		{
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
-				SelectLayers(new ILayer[] { layer });
+				SelectLayers(new ILayer[] {layer});
 			}
 		}
 
@@ -206,10 +215,9 @@ namespace SharpMap
 		{
 			if (indexes == null) throw new ArgumentNullException("indexes");
 
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
-				Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator 
-                    = new Converter<IEnumerable<int>, IEnumerable<ILayer>>(layersGenerator);
+				Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
 				selectLayersInternal(layerGenerator(indexes));
 			}
 		}
@@ -218,10 +226,9 @@ namespace SharpMap
 		{
 			if (layerNames == null) throw new ArgumentNullException("layerNames");
 
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
-				Converter<IEnumerable<string>, IEnumerable<ILayer>> layerGenerator 
-                    = new Converter<IEnumerable<string>, IEnumerable<ILayer>>(layersGenerator);
+				Converter<IEnumerable<string>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
 				selectLayersInternal(layerGenerator(layerNames));
 			}
 		}
@@ -230,7 +237,7 @@ namespace SharpMap
 		{
 			if (layers == null) throw new ArgumentNullException("layers");
 
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
 				selectLayersInternal(layers);
 			}
@@ -238,24 +245,24 @@ namespace SharpMap
 
 		public void UnselectLayer(int index)
 		{
-			UnselectLayers(new int[] { index });
+			UnselectLayers(new int[] {index});
 		}
 
 		public void UnselectLayer(string name)
 		{
-			UnselectLayers(new string[] { name });
+			UnselectLayers(new string[] {name});
 		}
 
 		public void UnselectLayer(ILayer layer)
 		{
-			UnselectLayers(new ILayer[] { layer });
+			UnselectLayers(new ILayer[] {layer});
 		}
 
 		public void UnselectLayers(IEnumerable<int> indexes)
 		{
 			if (indexes == null) throw new ArgumentNullException("indexes");
 
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
 				Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
 				unselectLayersInternal(layerGenerator(indexes));
@@ -264,25 +271,19 @@ namespace SharpMap
 
 		public void UnselectLayers(IEnumerable<string> layerNames)
 		{
-			if (layerNames == null)
-			{
-				throw new ArgumentNullException("layerNames");
-			}
+			if (layerNames == null) throw new ArgumentNullException("layerNames");
 
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
-                unselectLayersInternal(layersGenerator(layerNames));
+				unselectLayersInternal(layersGenerator(layerNames));
 			}
 		}
 
 		public void UnselectLayers(IEnumerable<ILayer> layers)
 		{
-			if (layers == null)
-			{
-				throw new ArgumentNullException("layers");
-			}
+			if (layers == null) throw new ArgumentNullException("layers");
 
-			lock (_selectedLayersSync)
+			lock (_layersChangeSync)
 			{
 				unselectLayersInternal(layers);
 			}
@@ -292,79 +293,110 @@ namespace SharpMap
 		{
 			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
 
-			setLayerStyleInternal(Layers[index], style);
+			lock (_layersChangeSync)
+			{
+				setLayerStyleInternal(Layers[index], style);
+			}
 		}
 
 		public void SetLayerStyle(string name, Style style)
 		{
 			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
-			setLayerStyleInternal(GetLayerByName(name), style);
+			lock (_layersChangeSync)
+			{
+				setLayerStyleInternal(GetLayerByName(name), style);
+			}
 		}
 
 		public void SetLayerStyle(ILayer layer, Style style)
 		{
 			if (layer == null) throw new ArgumentNullException("layer");
 
-			setLayerStyleInternal(layer, style);
+			lock (_layersChangeSync)
+			{
+				setLayerStyleInternal(layer, style);
+			}
 		}
 
 		public void EnableLayer(int index)
 		{
 			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
 
-			changeLayerEnabled(Layers[index], false);
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(Layers[index], false);
+			}
 		}
 
 		public void EnableLayer(string name)
 		{
 			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
-			changeLayerEnabled(GetLayerByName(name), true);
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(GetLayerByName(name), true);
+			}
 		}
 
 		public void EnableLayer(ILayer layer)
 		{
 			if (layer == null) throw new ArgumentNullException("layer");
 
-			changeLayerEnabled(layer, true);
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(layer, true);
+			}
 		}
 
 		public void DisableLayer(int index)
 		{
 			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
 
-			changeLayerEnabled(Layers[index], false);
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(Layers[index], false);
+			}
 		}
 
 		public void DisableLayer(string name)
 		{
 			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
-			changeLayerEnabled(GetLayerByName(name), false);
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(GetLayerByName(name), false);
+			}
 		}
 
 		public void DisableLayer(ILayer layer)
 		{
 			if (layer == null) throw new ArgumentNullException("layer");
 
-			changeLayerEnabled(layer, false);
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(layer, false);
+			}
 		}
 
 		/// <summary>
-		/// Returns an enumerable set of all layers containing the string <paramref name="layerName"/> 
+		/// Returns an enumerable set of all layers containing the string <paramref name="layerNamePart"/> 
 		/// in the <see cref="ILayer.LayerName"/> property.
 		/// </summary>
-		/// <param name="layerName">String to search for.</param>
+		/// <param name="layerNamePart">String to search for.</param>
 		/// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
-		/// containing <paramref name="layerName"/>.</returns>
-		public IEnumerable<ILayer> FindLayers(string layerName)
+		/// containing <paramref name="layerNamePart"/>.</returns>
+		public IEnumerable<ILayer> FindLayers(string layerNamePart)
 		{
-			foreach (ILayer layer in Layers)
+			lock (_layersChangeSync)
 			{
-				if (layer.LayerName.Contains(layerName))
+				layerNamePart = layerNamePart.ToLower();
+				foreach (ILayer layer in Layers)
 				{
-					yield return layer;
+					if (layer.LayerName.ToLower().Contains(layerNamePart))
+					{
+						yield return layer;
+					}
 				}
 			}
 		}
@@ -379,11 +411,14 @@ namespace SharpMap
 		/// <returns>Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.</returns>
 		public ILayer GetLayerByName(string name)
 		{
-			return _layers.Find(delegate(ILayer layer)
+			lock (_layersChangeSync)
 			{
-				return String.Compare(layer.LayerName, name, 
-                    StringComparison.CurrentCultureIgnoreCase) == 0;
-			});
+				return _layers.Find(delegate(ILayer layer)
+				                    	{
+				                    		return String.Compare(layer.LayerName, name,
+				                    		                      StringComparison.CurrentCultureIgnoreCase) == 0;
+				                    	});
+			}
 		}
 
 		/// <summary>
@@ -393,74 +428,24 @@ namespace SharpMap
 		/// <returns>Full map extents.</returns>
 		public BoundingBox GetExtents()
 		{
-            BoundingBox extents = BoundingBox.Empty;
+			BoundingBox extents = BoundingBox.Empty;
 
-            foreach (ILayer layer in Layers)
-            {
-                extents.ExpandToInclude(layer.Envelope);
-            }
+			foreach (ILayer layer in Layers)
+			{
+				extents.ExpandToInclude(layer.Envelope);
+			}
 
-            return extents;
+			return extents;
 		}
 
 		#endregion
 
 		#region Properties
 
-        /// <summary>
-        /// Gets or sets a list of layers which are
-        /// selected.
-        /// </summary>
-		public IList<ILayer> SelectedLayers
-		{
-			get
-			{
-				lock (_selectedLayersSync)
-				{
-					return _selectedLayers.AsReadOnly();
-				}
-			}
-			set
-            {
-                if (value == null) throw new ArgumentNullException("value");
-
-                foreach (ILayer layer in value)
-                {
-                    if (!Layers.Contains(layer))
-                    {
-                        throw new ArgumentException(
-                            "The set of layers contains a layer {0} which is not " +
-                            "currently part of the map. Please add the layer to " +
-                            "the map before selecting it.");
-                    }
-                }
-
-				lock (_selectedLayersSync)
-				{
-					_selectedLayers.Clear();
-					_selectedLayers.AddRange(value);
-					OnSelectedLayersChanged();
-				}
-			}
-		}
-
-        /// <summary>
-        /// Gets or sets the spatial reference for the entire map.
-        /// </summary>
-        public ICoordinateSystem SpatialReference
-        {
-            get { return _spatialReference; }
-            set 
-            {
-                if (value == null) throw new ArgumentNullException("value");
-                _spatialReference = value; 
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the currently active tool used to
-        /// interact with the map.
-        /// </summary>
+		/// <summary>
+		/// Gets or sets the currently active tool used to
+		/// interact with the map.
+		/// </summary>
 		public MapTool ActiveTool
 		{
 			get
@@ -471,44 +456,14 @@ namespace SharpMap
 				}
 			}
 			set
-            {
-                if (value == null) throw new ArgumentNullException("value");
+			{
+				if (value == null) throw new ArgumentNullException("value");
 
 				lock (_activeToolSync)
 				{
 					_activeTool = value;
 					OnActiveToolChanged();
 				}
-			}
-		}
-
-        /// <summary>
-        /// Gets or sets the current visible envelope of the map.
-        /// </summary>
-		public BoundingBox VisibleEnvelope
-		{
-			get { return _envelope; }
-			set 
-            {
-                _envelope = value; 
-            }
-		}
-
-		/// <summary>
-		/// Gets a collection of layers. 
-        /// The first layer in the list is drawn first, the last one on top.
-		/// </summary>
-		public LayersCollection Layers
-		{
-			get
-			{
-				return _layers;
-			}
-			private set
-			{
-				_layers.Clear();
-
-				AddLayers(value);
 			}
 		}
 
@@ -519,39 +474,145 @@ namespace SharpMap
 		{
 			get { return _envelope.GetCentroid(); }
 		}
+
+		/// <summary>
+		/// Gets a collection of layers. 
+		/// The first layer in the list is drawn first, the last one on top.
+		/// </summary>
+		public ReadOnlyCollection<ILayer> Layers
+		{
+			get
+			{
+				lock (_layersChangeSync)
+				{
+					return _layers.AsReadOnly();
+				}
+			}
+			private set
+			{
+				_layers.Clear();
+
+				AddLayers(value);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a list of layers which are
+		/// selected.
+		/// </summary>
+		public ReadOnlyCollection<ILayer> SelectedLayers
+		{
+			get
+			{
+				lock (_layersChangeSync)
+				{
+					return _selectedLayers.AsReadOnly();
+				}
+			}
+			set
+			{
+				if (value == null) throw new ArgumentNullException("value");
+
+				foreach (ILayer layer in value)
+				{
+					if (!Layers.Contains(layer))
+					{
+						throw new ArgumentException(
+							"The set of layers contains a layer {0} which is not " +
+							"currently part of the map. Please add the layer to " +
+							"the map before selecting it.");
+					}
+				}
+
+				lock (_layersChangeSync)
+				{
+					_selectedLayers.Clear();
+					_selectedLayers.AddRange(value);
+					OnSelectedLayersChanged();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the spatial reference for the entire map.
+		/// </summary>
+		public ICoordinateSystem SpatialReference
+		{
+			get { return _spatialReference; }
+			set
+			{
+				if (value == null) throw new ArgumentNullException("value");
+				_spatialReference = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the currently visible features in all the enabled layers in the map.
+		/// </summary>
+		public FeatureDataSet VisibleFeatures
+		{
+			get { throw new NotImplementedException(); }
+			set { }
+		}
+
+		/// <summary>
+		/// Gets or sets the current visible envelope of the map.
+		/// </summary>
+		public BoundingBox VisibleRegion
+		{
+			get { return _envelope; }
+			set
+			{
+				_envelope = value;
+
+				foreach (ILayer layer in Layers)
+				{
+					layer.VisibleRegion = value;
+				}
+
+				OnVisibleRegionChanged();
+			}
+		}
+
 		#endregion
 
 		#region Event Generators
-		private void OnLayersChanged(IEnumerable<ILayer> layers, CollectionChangeAction action)
-		{
-			EventHandler<ModelCollectionChangedEventArgs<ILayer>> @event = null;
 
+		private void OnVisibleRegionChanged()
+		{
+			PropertyChangedEventHandler e = PropertyChanged;
+
+			if (e != null)
+			{
+				e(this, new PropertyChangedEventArgs("VisibleRegion"));
+			}
+		}
+
+		private void OnLayersChanged(IEnumerable<ILayer> layers, LayersChangeType action)
+		{
 			switch (action)
 			{
-				case CollectionChangeAction.Add:
+				case LayersChangeType.Added:
 					{
+						BoundingBox newRegion = VisibleRegion;
+
 						foreach (ILayer layer in layers)
 						{
-							VisibleEnvelope = VisibleEnvelope.Join(layer.Envelope);
+							newRegion.ExpandToInclude(layer.Envelope);
 						}
+
+						VisibleRegion = newRegion;
 					}
 					break;
-				case CollectionChangeAction.Remove:
+				case LayersChangeType.Removed:
 					{
 						recomputeEnvelope();
 					}
 					break;
-				case CollectionChangeAction.Refresh:
-                default:
-
-                    @event = LayersCollectionChanged;
-
-                    if (@event != null)
-                    {
-                        @event(this, new ModelCollectionChangedEventArgs<ILayer>(layers, action));
-                    }
-
-					break;
+				case LayersChangeType.Enabled:
+				case LayersChangeType.Disabled:
+				default:
+					throw new NotSupportedException();
 			}
 		}
 
@@ -574,16 +635,23 @@ namespace SharpMap
 				e(null, EventArgs.Empty);
 			}
 		}
+
 		#endregion
 
-		#region Event Handlers
-        private void HandleLayersChanged(object sender, ModelCollectionChangedEventArgs<ILayer> e)
-		{
-			OnLayersChanged(e.Elements, e.Action);
-		}
-		#endregion
+        #region Private helper methods
 
-		#region Private helper methods
+        private void checkForDuplicateLayerName(ILayer layer)
+        {
+            Predicate<ILayer> namesMatch =
+                delegate(ILayer match)
+                {
+                    return String.Compare(match.LayerName, layer.LayerName,
+                                          StringComparison.CurrentCultureIgnoreCase) == 0;
+                };
+
+            if (_layers.Exists(namesMatch)) throw new DuplicateLayerException(layer.LayerName);
+        }
+
 		private void recomputeEnvelope()
 		{
 			BoundingBox envelope = BoundingBox.Empty;
@@ -596,7 +664,7 @@ namespace SharpMap
 				}
 			}
 
-			VisibleEnvelope = envelope;
+			VisibleRegion = envelope;
 		}
 
 		private void changeLayerEnabled(ILayer layer, bool enabled)
@@ -623,7 +691,7 @@ namespace SharpMap
 		{
 			checkLayersExist();
 
-			_layers.AddLayers(layers);
+			_selectedLayers.AddRange(layers);
 
 			OnSelectedLayersChanged();
 		}
@@ -644,7 +712,8 @@ namespace SharpMap
 			{
 				if (index < 0 || index >= _layers.Count)
 				{
-					throw new ArgumentOutOfRangeException("index", index, String.Format("Layer index must be between 0 and {0}", _layers.Count));
+					throw new ArgumentOutOfRangeException("layerIndexes", index,
+					                                      String.Format("Layer index must be between 0 and {0}", _layers.Count));
 				}
 
 				yield return _layers[index];
@@ -671,12 +740,13 @@ namespace SharpMap
 				throw new InvalidOperationException("No layers are present in the map, so layer operation cannot be performed");
 			}
 		}
+
 		#endregion
 
-        #region INotifyPropertyChanged Members
+		#region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
-    }
+		#endregion
+	}
 }

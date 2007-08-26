@@ -15,10 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.Geometries
 {
 	/// <summary>
@@ -33,6 +29,7 @@ namespace SharpMap.Geometries
 		{
 			get { return 1; }
 		}
+
 		/// <summary>
 		/// Returns true if this MultiCurve is closed (StartPoint=EndPoint for each curve in this MultiCurve)
 		/// </summary>

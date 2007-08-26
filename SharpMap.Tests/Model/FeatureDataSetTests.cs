@@ -4,10 +4,11 @@ using System.Text;
 
 using NUnit.Framework;
 
-namespace SharpMap.Tests.ModelTests
+namespace SharpMap.Tests.Model
 {
 	[TestFixture]
 	public class FeatureDataSetTests
 	{
+        
 	}
 }

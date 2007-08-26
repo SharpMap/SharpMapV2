@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Geometries
 {
@@ -33,12 +32,14 @@ namespace SharpMap.Geometries
 		/// Instantiates a MultiPolygon
 		/// </summary>
 		public MultiPolygon()
-            : this(8) { }
+			: this(8)
+		{
+		}
 
-        public MultiPolygon(int initialCapacity)
-        {
-            _polygons = new List<Polygon>(initialCapacity);
-        }
+		public MultiPolygon(int initialCapacity)
+		{
+			_polygons = new List<Polygon>(initialCapacity);
+		}
 
 		/// <summary>
 		/// Collection of polygons in the multipolygon
@@ -65,11 +66,17 @@ namespace SharpMap.Geometries
 		public override bool IsEmpty()
 		{
 			if (_polygons == null || _polygons.Count == 0)
+			{
 				return true;
+			}
 
-			foreach(Polygon poly in Polygons)
+			foreach (Polygon poly in Polygons)
+			{
 				if (!poly.IsEmpty())
+				{
 					return false;
+				}
+			}
 
 			return true;
 		}
@@ -175,15 +182,12 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public override double Area
 		{
-			get 
-            {
+			get
+			{
 				double result = 0;
-                // Some tests say the ForEach method is faster than foreach (fastest C# loop construct)
-                // Others say there is no difference [codekaizen; 2006-09-05]
-                Polygons.ForEach(delegate(Polygon poly) 
-                { 
-                    result += poly.Area; 
-                });
+				// Some tests say the ForEach method is faster than foreach (fastest C# loop construct)
+				// Others say there is no difference [codekaizen; 2006-09-05]
+				Polygons.ForEach(delegate(Polygon poly) { result += poly.Area; });
 
 				return result;
 			}
@@ -229,30 +233,36 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <returns>bounding box</returns>
 		public override BoundingBox GetBoundingBox()
-        {
-            BoundingBox bbox = BoundingBox.Empty;
-			
-            if (Polygons==null || Polygons.Count == 0)
-                return bbox;
-            
-            foreach (Polygon poly in Polygons)
-                bbox.ExpandToInclude(poly.GetBoundingBox());
+		{
+			BoundingBox bbox = BoundingBox.Empty;
+
+			if (Polygons == null || Polygons.Count == 0)
+			{
+				return bbox;
+			}
+
+			foreach (Polygon poly in Polygons)
+			{
+				bbox.ExpandToInclude(poly.GetBoundingBox());
+			}
 
 			return bbox;
 		}
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a copy of this geometry.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new MultiPolygon Clone()
+		/// <returns>Copy of the MultiPolygon.</returns>
+		public override Geometry Clone()
 		{
-			MultiPolygon geoms = new MultiPolygon();
+			MultiPolygon multiPolygon = new MultiPolygon();
 
-			foreach(Polygon poly in Polygons)
-                geoms.Polygons.Add(poly.Clone());
+			foreach (Polygon poly in Polygons)
+			{
+				multiPolygon.Polygons.Add(poly.Clone() as Polygon);
+			}
 
-			return geoms;
+			return multiPolygon;
 		}
 
 		#region IEnumerable<Geometry> Members
@@ -266,6 +276,7 @@ namespace SharpMap.Geometries
 			foreach (Polygon p in Polygons)
 				yield return p;
 		}
+
 		#endregion
 	}
 }

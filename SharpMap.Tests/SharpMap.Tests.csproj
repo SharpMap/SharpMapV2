@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{96AD10C7-AAB9-49AB-B7F6-F7AD15778F0D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,6 +60,7 @@
     <Compile Include="Indexing\RTreeTests.cs" />
     <Compile Include="Indexing\SelfOptimizingSpatialIndexTests.cs" />
     <Compile Include="Model\FeatureDataSetTests.cs" />
+    <Compile Include="Model\FeatureDataTableTests.cs" />
     <Compile Include="Model\LayersCollectionTests.cs" />
     <Compile Include="Model\LayerTests.cs" />
     <Compile Include="Presentation\AttributePresenterTests.cs" />

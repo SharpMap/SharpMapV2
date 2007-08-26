@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Geometries
 {
@@ -27,18 +26,20 @@ namespace SharpMap.Geometries
 	[Serializable]
 	public class MultiLineString : MultiCurve
 	{
-		private List<LineString> _lineStrings;
+		private readonly List<LineString> _lineStrings;
 
 		/// <summary>
 		/// Initializes an instance of a MultiLineString
 		/// </summary>
 		public MultiLineString()
-            : this(8) { }
+			: this(8)
+		{
+		}
 
-        public MultiLineString(int initialCapacity)
-        {
-            _lineStrings = new List<LineString>(initialCapacity);
-        }
+		public MultiLineString(int initialCapacity)
+		{
+			_lineStrings = new List<LineString>(initialCapacity);
+		}
 
 		/// <summary>
 		/// Collection of <see cref="LineString">LineStrings</see> in the <see cref="MultiLineString"/>
@@ -65,8 +66,8 @@ namespace SharpMap.Geometries
 		{
 			get
 			{
-                foreach (LineString lineString in _lineStrings)
-                    if (!lineString.IsClosed)
+				foreach (LineString lineString in _lineStrings)
+					if (!lineString.IsClosed)
 						return false;
 
 				return true;
@@ -78,12 +79,12 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public override double Length
 		{
-			get 
-            {
-                double l = 0;
+			get
+			{
+				double l = 0;
 
-                foreach (LineString lineString in _lineStrings)
-                    l += lineString.Length;
+				foreach (LineString lineString in _lineStrings)
+					l += lineString.Length;
 
 				return l;
 			}
@@ -98,8 +99,8 @@ namespace SharpMap.Geometries
 			if (_lineStrings == null || _lineStrings.Count == 0)
 				return true;
 
-            foreach (LineString lineString in _lineStrings)
-				if(!lineString.IsEmpty())
+			foreach (LineString lineString in _lineStrings)
+				if (!lineString.IsEmpty())
 					return false;
 
 			return true;
@@ -225,29 +226,35 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public override BoundingBox GetBoundingBox()
 		{
-            BoundingBox bbox = BoundingBox.Empty;
+			BoundingBox bbox = BoundingBox.Empty;
 
-			if (_lineStrings==null || _lineStrings.Count == 0)
-                return bbox;
+			if (_lineStrings == null || _lineStrings.Count == 0)
+			{
+				return bbox;
+			}
 
-            foreach (LineString lineString in _lineStrings)
-                bbox.ExpandToInclude(lineString.GetBoundingBox());
+			foreach (LineString lineString in _lineStrings)
+			{
+				bbox.ExpandToInclude(lineString.GetBoundingBox());
+			}
 
 			return bbox;
 		}
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a copy of this geometry.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new MultiLineString Clone()
+		/// <returns>Copy of the MultiLineString.</returns>
+		public override Geometry Clone()
 		{
-            MultiLineString geoms = new MultiLineString();
+			MultiLineString multiLineString = new MultiLineString();
 
-            foreach (LineString lineString in _lineStrings)
-                geoms.LineStrings.Add(lineString.Clone());
+			foreach (LineString lineString in _lineStrings)
+			{
+				multiLineString.LineStrings.Add(lineString.Clone() as LineString);
+			}
 
-			return geoms;
+			return multiLineString;
 		}
 
 		#region IEnumerable<Geometry> Members
@@ -258,9 +265,12 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public override IEnumerator<Geometry> GetEnumerator()
 		{
-			foreach (LineString l in this._lineStrings)
+			foreach (LineString l in _lineStrings)
+			{
 				yield return l;
+			}
 		}
+
 		#endregion
 	}
 }

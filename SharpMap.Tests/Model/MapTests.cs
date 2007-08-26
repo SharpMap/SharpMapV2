@@ -1,34 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
+using System;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
-
-using SharpMap.Layers;
-using SharpMap.Presentation;
+using SharpMap.Data;
 using SharpMap.Geometries;
-using SharpMap.Rendering;
+using SharpMap.Layers;
 using SharpMap.Tools;
-using SharpMap.Data.Providers;
 
-namespace SharpMap.Tests
+namespace SharpMap.Tests.Model
 {
 	[TestFixture]
 	public class MapTests
 	{
 		[Test]
-		public void GetLayerByName_ReturnCorrectLayer()
+		public void GetLayerByNameReturnsCorrectLayer()
 		{
             MockRepository mocks = new MockRepository();
 
 			Map map = new Map();
-            IProvider dataSource = mocks.Stub<IProvider>();
+            IVectorLayerProvider dataSource = mocks.Stub<IVectorLayerProvider>();
 
-			map.Layers.Add(new VectorLayer("Layer 1", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new VectorLayer("Layer 1", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 2", dataSource));
 
 			ILayer layer = map.GetLayerByName("Layer 2");
 			Assert.IsNotNull(layer);
@@ -36,43 +30,36 @@ namespace SharpMap.Tests
 		}
 
 		[Test]
-		public void GetLayerByName()
+        [ExpectedException(typeof(DuplicateLayerException))]
+		public void DuplicateLayerNamesThrowsException()
         {
-            MockRepository mocks = new MockRepository();
-
             Map map = new Map();
-            IProvider dataSource = mocks.Stub<IProvider>();
+            IVectorLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource();
 
-            map.Layers.Add(new VectorLayer("Layer 1", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-
-			ILayer layer = map.Layers["Layer 3"];
-			Assert.AreEqual("Layer 3", layer.LayerName);
+            map.AddLayer(new VectorLayer("Layer 1", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3", dataSource));
 		}
 
 		[Test]
-		public void FindLayerByPredicate()
+		public void FindLayerByPredicateReturnsMatchingLayers()
         {
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-            IProvider dataSource = mocks.Stub<IProvider>();
+            IVectorLayerProvider dataSource = mocks.Stub<IVectorLayerProvider>();
 
-            map.Layers.Add(new VectorLayer("Layer 1", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 2", dataSource));
-            map.Layers.Add(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new VectorLayer("Layer 1", dataSource));
+            map.AddLayer(new VectorLayer("Layer 3a", dataSource));
+            map.AddLayer(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new VectorLayer("layer 3b", dataSource));
 
 			int count = 0;
 
-			foreach (ILayer layer in map.Layers.FindAll(delegate(ILayer match)
+            foreach (ILayer layer in map.FindLayers("Layer 3"))
 			{
-				return String.Compare(match.LayerName, "Layer 3", StringComparison.CurrentCultureIgnoreCase) == 0;
-			}))
-			{
-				Assert.AreEqual("Layer 3", layer.LayerName);
+                Assert.IsTrue(layer.LayerName.StartsWith("Layer 3", StringComparison.CurrentCultureIgnoreCase));
 				count++;
 			}
 
@@ -98,7 +85,7 @@ namespace SharpMap.Tests
 
 			VectorLayer vLayer = new VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 
-			map.Layers.Add(vLayer);
+			map.AddLayer(vLayer);
 			BoundingBox box = map.GetExtents();
 			Assert.AreEqual(new BoundingBox(0, 0, 100, 100), box);
 		}

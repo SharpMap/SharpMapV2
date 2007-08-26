@@ -26,14 +26,14 @@ using SharpMap.Rendering;
 using SharpMap.Styles;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Data.Providers;
+using SharpMap.Data;
 
 namespace SharpMap.Layers
 {
 	/// <summary>
 	/// Interface for map layers.
 	/// </summary>
-	public interface ILayer : IModelObject
+	public interface ILayer : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// The dataum, projection and coordinate system used for this layer.
@@ -48,7 +48,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the data source used to create this layer.
         /// </summary>
-        IProvider DataSource { get; }
+        ILayerProvider DataSource { get; }
 
         /// <summary>
         /// Gets or sets a value representing the visibility of the layer.
@@ -69,9 +69,9 @@ namespace SharpMap.Layers
         string LayerName { get; set; }
 	
 		/// <summary>
-		/// The spatial reference ID.
+		/// The spatial reference ID of the layer data source.
 		/// </summary>
-		int Srid { get; set; }
+		int? Srid { get; }
 
         /// <summary>
         /// The style for the layer.

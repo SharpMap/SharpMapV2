@@ -16,26 +16,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-using SharpMap.Geometries;
-using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.Styles;
 
 namespace SharpMap.Presentation
 {
-    public interface IMapView2D : IView
-    {
-        double Dpi { get; }
+	public interface IMapView2D : IView
+	{
+		double Dpi { get; }
 		Size2D ViewSize { get; set; }
-        void ShowRenderedObject(Point2D location, object renderedObject);
-        event EventHandler<SizeChangeEventArgs<Size2D>> SizeChangeRequested;
-        event EventHandler<MapActionEventArgs<Point2D>> Hover;
-        event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
-        event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
-        event EventHandler<MapActionEventArgs<Point2D>> EndAction;
-    }
+		void ShowRenderedObject(Point2D location, object renderedObject);
+		event EventHandler<SizeChangeEventArgs<Size2D>> SizeChangeRequested;
+		event EventHandler<MapActionEventArgs<Point2D>> Hover;
+		event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
+		event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
+		event EventHandler<MapActionEventArgs<Point2D>> EndAction;
+	}
 }

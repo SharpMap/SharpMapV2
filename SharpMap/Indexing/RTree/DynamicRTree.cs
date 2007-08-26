@@ -43,7 +43,6 @@ namespace SharpMap.Indexing.RTree
     /// </remarks>
     public class DynamicRTree<TValue> 
 		: RTree<TValue>, IUpdatableSpatialIndex<RTreeIndexEntry<TValue>>, ISerializable
-        where TValue : IEquatable<TValue>
 	{
 		#region Fields
 		private static readonly BinaryFormatter _keyFormatter = new BinaryFormatter();

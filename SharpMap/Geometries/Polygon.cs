@@ -17,16 +17,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// A Polygon is a planar Surface, defined by 1 exterior boundary and 0 or more interior boundaries. Each
+	/// A Polygon is a planar Surface, defined by 1 exterior boundary 
+	/// and 0 or more interior boundaries. Each
 	/// interior boundary defines a hole in the Polygon.
 	/// </summary>
 	/// <remarks>
-	/// Vertices of rings defining holes in polygons are in the opposite direction of the exterior ring.
+	/// Vertices of rings defining holes in polygons 
+	/// are in the opposite direction of the exterior ring.
 	/// </remarks>
 	[Serializable]
 	public class Polygon : Surface
@@ -35,33 +36,40 @@ namespace SharpMap.Geometries
 		private List<LinearRing> _interiorRings = new List<LinearRing>();
 
 		/// <summary>
-		/// Instatiates a polygon based on one extorier ring and a collection of interior rings.
+		/// Instatiates a polygon based on one extorier ring 
+		/// and a collection of interior rings.
 		/// </summary>
-        /// <param name="exteriorRing">Exterior <see cref="LinearRing"/></param>
-        /// <param name="interiorRings">Interior LinearRings</param>
+		/// <param name="exteriorRing">Exterior <see cref="LinearRing"/></param>
+		/// <param name="interiorRings">Interior LinearRings</param>
 		public Polygon(LinearRing exteriorRing, IEnumerable<LinearRing> interiorRings)
 		{
 			_exteriorRing = exteriorRing;
 
-            if (interiorRings != null)
-                _interiorRings.AddRange(interiorRings);
+			if (interiorRings != null)
+				_interiorRings.AddRange(interiorRings);
 		}
 
 		/// <summary>
 		/// Instatiates a polygon based on one exterior ring.
 		/// </summary>
 		/// <param name="exteriorRing">Exterior ring</param>
-		public Polygon(LinearRing exteriorRing) : this(exteriorRing, null) { }
+		public Polygon(LinearRing exteriorRing) : this(exteriorRing, null)
+		{
+		}
 
 		/// <summary>
 		/// Instatiates an empty polygon.
 		/// </summary>
-		public Polygon() : this(new LinearRing()) { }
+		public Polygon() : this(new LinearRing())
+		{
+		}
 
 		/// <summary>
 		/// Gets or sets the exterior ring of this Polygon
 		/// </summary>
-		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
+		/// <remarks>
+		/// This method is supplied as part of the OpenGIS Simple Features Specification.
+		/// </remarks>
 		public LinearRing ExteriorRing
 		{
 			get { return _exteriorRing; }
@@ -80,7 +88,9 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns the Nth interior ring for this Polygon as a LineString
 		/// </summary>
-		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
+		/// <remarks>
+		/// This method is supplied as part of the OpenGIS Simple Features Specification.
+		/// </remarks>
 		/// <param name="N"></param>
 		/// <returns></returns>
 		public LinearRing InteriorRing(int N)
@@ -91,41 +101,41 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns the number of interior rings in this Polygon
 		/// </summary>
-		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
+		/// <remarks>
+		/// This method is supplied as part of the OpenGIS Simple Features Specification.
+		/// </remarks>
 		/// <returns></returns>
 		public int NumInteriorRing
 		{
 			get { return _interiorRings.Count; }
 		}
 
-        ///// <summary>
-        ///// Transforms the polygon to image coordinates, based on the map
-        ///// </summary>
-        ///// <param name="map">Map to base coordinates on</param>
-        ///// <returns>Polygon in image coordinates</returns>
-        //public RenderPoint[] TransformToView(SharpMap.Map map)
-        //{
+		///// <summary>
+		///// Transforms the polygon to image coordinates, based on the map
+		///// </summary>
+		///// <param name="map">Map to base coordinates on</param>
+		///// <returns>Polygon in image coordinates</returns>
+		//public RenderPoint[] TransformToView(SharpMap.Map map)
+		//{
 
-        //    int vertices = _ExteriorRing.Vertices.Count;
-        //    for (int i = 0; i < _InteriorRings.Count;i++)
-        //        vertices += _InteriorRings[i].Vertices.Count;
+		//    int vertices = _ExteriorRing.Vertices.Count;
+		//    for (int i = 0; i < _InteriorRings.Count;i++)
+		//        vertices += _InteriorRings[i].Vertices.Count;
 
-        //    System.Drawing.PointF[] v = new System.Drawing.PointF[vertices];
-        //    for (int i = 0; i < _ExteriorRing.Vertices.Count; i++)
-        //        v[i] = SharpMap.Utilities.Transform.WorldToMap(_ExteriorRing.Vertices[i], map);
-        //    int j = _ExteriorRing.Vertices.Count;
-        //    for (int k = 0; k < _InteriorRings.Count;k++)
-        //    {
-        //        for (int i = 0; i < _InteriorRings[k].Vertices.Count; i++)
-        //            v[j + i] = SharpMap.Utilities.Transform.WorldToMap(_InteriorRings[k].Vertices[i], map);
-        //        j += _InteriorRings[k].Vertices.Count;
-        //    }
-        //    return v;
-        //}
+		//    System.Drawing.PointF[] v = new System.Drawing.PointF[vertices];
+		//    for (int i = 0; i < _ExteriorRing.Vertices.Count; i++)
+		//        v[i] = SharpMap.Utilities.Transform.WorldToMap(_ExteriorRing.Vertices[i], map);
+		//    int j = _ExteriorRing.Vertices.Count;
+		//    for (int k = 0; k < _InteriorRings.Count;k++)
+		//    {
+		//        for (int i = 0; i < _InteriorRings[k].Vertices.Count; i++)
+		//            v[j + i] = SharpMap.Utilities.Transform.WorldToMap(_InteriorRings[k].Vertices[i], map);
+		//        j += _InteriorRings[k].Vertices.Count;
+		//    }
+		//    return v;
+		//}
 
-
-
-#region "Inherited methods from abstract class Geometry"
+		#region "Inherited methods from abstract class Geometry"
 
 		/// <summary>
 		/// Determines if this Polygon and the specified Polygon object has the same values
@@ -139,19 +149,19 @@ namespace SharpMap.Geometries
 				return false;
 			}
 
-			if (!p.ExteriorRing.Equals(this.ExteriorRing))
+			if (!p.ExteriorRing.Equals(ExteriorRing))
 			{
 				return false;
 			}
 
-			if (p.InteriorRings.Count != this.InteriorRings.Count)
+			if (p.InteriorRings.Count != InteriorRings.Count)
 			{
 				return false;
 			}
 
 			for (int i = 0; i < p.InteriorRings.Count; i++)
 			{
-				if (!p.InteriorRings[i].Equals(this.InteriorRings[i]))
+				if (!p.InteriorRings[i].Equals(InteriorRings[i]))
 				{
 					return false;
 				}
@@ -167,8 +177,9 @@ namespace SharpMap.Geometries
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
 		public override int GetHashCode()
 		{
-			int hash = ExteriorRing.GetHashCode(); ;
-			
+			int hash = ExteriorRing.GetHashCode();
+			;
+
 			for (int i = 0; i < InteriorRings.Count; i++)
 			{
 				hash = hash ^ InteriorRings[i].GetHashCode();
@@ -267,7 +278,7 @@ namespace SharpMap.Geometries
 			throw new NotImplementedException();
 		}
 
-#endregion
+		#endregion
 
 		/// <summary>
 		/// The area of this Surface, as measured in the spatial reference system of this Surface.
@@ -275,17 +286,17 @@ namespace SharpMap.Geometries
 		public override double Area
 		{
 			get
-            {
-                double area = 0.0;
-                area += this._exteriorRing.Area;
-				bool extIsClockwise = this._exteriorRing.IsCcw();
-				for (int i = 0; i < _interiorRings.Count;i++ )
+			{
+				double area = 0.0;
+				area += _exteriorRing.Area;
+				bool extIsClockwise = _exteriorRing.IsCcw();
+				for (int i = 0; i < _interiorRings.Count; i++)
 					//opposite direction of exterior subtracts area
 					if (_interiorRings[i].IsCcw() != extIsClockwise)
 						area -= _interiorRings[i].Area;
 					else
 						area += _interiorRings[i].Area;
-                return area;
+				return area;
 			}
 		}
 
@@ -295,7 +306,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public override Point Centroid
 		{
-			get { return this.ExteriorRing.GetBoundingBox().GetCentroid(); }
+			get { return ExteriorRing.GetBoundingBox().GetCentroid(); }
 		}
 
 		/// <summary>
@@ -305,43 +316,47 @@ namespace SharpMap.Geometries
 		{
 			get { throw new NotImplementedException(); }
 		}
+
 		/// <summary>
 		/// Returns the bounding box of the object
 		/// </summary>
 		/// <returns>bounding box</returns>
 		public override BoundingBox GetBoundingBox()
-        {
-            BoundingBox bbox = BoundingBox.Empty;
-			if (_exteriorRing==null || _exteriorRing.Vertices.Count == 0) return bbox;
-            foreach (Point p in ExteriorRing.Vertices)
-                bbox.ExpandToInclude(p);
+		{
+			BoundingBox bbox = BoundingBox.Empty;
+			if (_exteriorRing == null || _exteriorRing.Vertices.Count == 0) return bbox;
+			foreach (Point p in ExteriorRing.Vertices)
+				bbox.ExpandToInclude(p);
 
-            //for (int i = 1; i < _ExteriorRing.Vertices.Count; i++)
-            //{
-            //    bbox.Min.X = Math.Min(_ExteriorRing.Vertices[i].X, bbox.Min.X);
-            //    bbox.Min.Y = Math.Min(_ExteriorRing.Vertices[i].Y, bbox.Min.Y);
-            //    bbox.Max.X = Math.Max(_ExteriorRing.Vertices[i].X, bbox.Max.X);
-            //    bbox.Max.Y = Math.Max(_ExteriorRing.Vertices[i].Y, bbox.Max.Y);
-            //}
+			//for (int i = 1; i < _ExteriorRing.Vertices.Count; i++)
+			//{
+			//    bbox.Min.X = Math.Min(_ExteriorRing.Vertices[i].X, bbox.Min.X);
+			//    bbox.Min.Y = Math.Min(_ExteriorRing.Vertices[i].Y, bbox.Min.Y);
+			//    bbox.Max.X = Math.Max(_ExteriorRing.Vertices[i].X, bbox.Max.X);
+			//    bbox.Max.Y = Math.Max(_ExteriorRing.Vertices[i].Y, bbox.Max.Y);
+			//}
 			return bbox;
 		}
 
 		#region ICloneable Members
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a deep copy of the Polygon.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new Polygon Clone()
+		/// <returns>A copy of the Polygon instance.</returns>
+		public override Geometry Clone()
 		{
 			Polygon p = new Polygon();
-			p.ExteriorRing = this.ExteriorRing.Clone() as LinearRing;
-			foreach(LinearRing ring in InteriorRings)
+			p.ExteriorRing = ExteriorRing.Clone() as LinearRing;
+
+			foreach (LinearRing ring in InteriorRings)
+			{
 				p.InteriorRings.Add(ring.Clone() as LinearRing);
+			}
+
 			return p;
 		}
 
 		#endregion
-
 	}
 }

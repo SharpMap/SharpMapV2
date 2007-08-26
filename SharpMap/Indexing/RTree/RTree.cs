@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SharpMap.Geometries;
+using System.Threading;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -27,7 +28,7 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
     public abstract class RTree<TValue> : ISearchableSpatialIndex<RTreeIndexEntry<TValue>>, IDisposable
-        where TValue : IEquatable<TValue>
+        
     {
         private ISpatialIndexNode _root;
         private bool _disposed;
@@ -36,7 +37,7 @@ namespace SharpMap.Indexing.RTree
         #region Object Construction/Destruction
         public RTree()
         {
-            Root = CreateLeafNode();
+            initIndex();
         }
 
         ~RTree()
@@ -71,6 +72,7 @@ namespace SharpMap.Indexing.RTree
         #endregion
         #endregion
 
+        #region Properties
         /// <summary>
         /// Root node in the R-Tree
         /// </summary>
@@ -78,6 +80,16 @@ namespace SharpMap.Indexing.RTree
         {
             get { return _root; }
             protected set { _root = value; }
+        }
+        #endregion
+
+        #region Public methods
+        /// <summary>
+        /// Clears the index of all entries.
+        /// </summary>
+        public void Clear()
+        {
+            initIndex();
         }
 
         /// <summary>
@@ -92,14 +104,21 @@ namespace SharpMap.Indexing.RTree
         }
 
         /// <summary>
-        /// Searches the tree and looks for intersections with the <see cref="Geometry"/> <paramref name="geometry"/>.
+        /// Searches the tree and looks for intersections with the
+        /// given <paramref name="geometry"/>.
         /// </summary>
         /// <param name="box">Geometry to intersect the index with.</param>
         public virtual IEnumerable<RTreeIndexEntry<TValue>> Search(Geometry geometry)
         {
             throw new NotImplementedException();
         }
+        #endregion
 
+        #region Protected / Internal methods
+        /// <summary>
+        /// Creates a new index branch node with an empty bounding box.
+        /// </summary>
+        /// <returns>A new branch node for the R-Tree.</returns>
         protected internal virtual RTreeBranchNode<TValue> CreateBranchNode()
         {
             RTreeBranchNode<TValue> node = new RTreeBranchNode<TValue>(this);
@@ -107,6 +126,10 @@ namespace SharpMap.Indexing.RTree
             return node;
         }
 
+        /// <summary>
+        /// Creates a new index branch node with the given bounding box.
+        /// </summary>
+        /// <returns>A new branch node for the R-Tree.</returns>
         protected internal virtual RTreeBranchNode<TValue> CreateBranchNode(BoundingBox boundingBox)
         {
             RTreeBranchNode<TValue> node = CreateBranchNode();
@@ -114,6 +137,10 @@ namespace SharpMap.Indexing.RTree
             return node;
         }
 
+        /// <summary>
+        /// Creates a new index leaf node with an empty bounding box.
+        /// </summary>
+        /// <returns>A new leaf node for the R-Tree.</returns>
         protected internal virtual RTreeLeafNode<TValue> CreateLeafNode()
         {
             RTreeLeafNode<TValue> node = new RTreeLeafNode<TValue>(this);
@@ -121,6 +148,10 @@ namespace SharpMap.Indexing.RTree
             return node;
         }
 
+        /// <summary>
+        /// Creates a new index leaf node with the given bounding box.
+        /// </summary>
+        /// <returns>A new leaf node for the R-Tree.</returns>
         protected internal virtual RTreeLeafNode<TValue> CreateLeafNode(BoundingBox boundingBox)
         {
             RTreeLeafNode<TValue> node = CreateLeafNode();
@@ -128,31 +159,25 @@ namespace SharpMap.Indexing.RTree
             return node;
         }
 
-        private uint getNewNodeId()
-        {
-            return (uint)System.Threading.Interlocked.Increment(ref _nextNodeId);
-        }
-
         /// <summary>
-        /// Recursive function that traverses the tree and looks for intersections with a given <see cref="BoundingBox">region</see>.
+        /// Recursive function that traverses the tree and looks for intersections 
+        /// with a given <see cref="BoundingBox">region</see>.
         /// </summary>
         /// <remarks>
-        /// Nothing is added to the list if <paramref name="box"/> equals <see cref="BoundingBox.Empty"/>.
+        /// Nothing is added to the list if <paramref name="box"/> equals 
+        /// <see cref="BoundingBox.Empty"/>.
         /// </remarks>
         /// <param name="box">Boundingbox to intersect with</param>
         /// <param name="node">Node to search from</param>
         /// <param name="list">List of found intersections</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="node"/> is null or if <paramref name="list"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="node"/> 
+        /// is null or if <paramref name="list"/> is null.
+        /// </exception>
         protected void IntersectTreeRecursive(BoundingBox box, ISpatialIndexNode node, List<RTreeIndexEntry<TValue>> list)
         {
-            if (node == null)
-            {
-                throw new ArgumentNullException("node");
-            }
-            if (list == null)
-            {
-                throw new ArgumentNullException("list");
-            }
+            if (node == null) throw new ArgumentNullException("node");
+            if (list == null) throw new ArgumentNullException("list");
 
             if (box == BoundingBox.Empty)
             {
@@ -184,5 +209,20 @@ namespace SharpMap.Indexing.RTree
                 throw new InvalidOperationException("Unknown node type: " + node.GetType());
             }
         }
+
+        #endregion
+
+        #region Private helper methods
+
+        private void initIndex()
+        {
+            Root = CreateLeafNode();
+        }
+
+        private uint getNewNodeId()
+        {
+            return (uint)Interlocked.Increment(ref _nextNodeId);
+        }
+        #endregion
     }
 }

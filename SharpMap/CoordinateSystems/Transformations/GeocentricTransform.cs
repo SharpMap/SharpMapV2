@@ -17,10 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using SharpMap.Geometries;
-using SharpMap.CoordinateSystems;
-using SharpMap.CoordinateSystems.Transformations;
+using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {
@@ -44,23 +42,27 @@ namespace SharpMap.CoordinateSystems.Transformations
 	/// </remarks>
 	internal class GeocentricTransform : MathTransform
 	{
-		private const double COS_67P5 = 0.38268343236508977;  /* cosine of 67.5 degrees */
-		private const double AD_C = 1.0026000;            /* Toms region 1 constant */
+		private const double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */
+		private const double AD_C = 1.0026000; /* Toms region 1 constant */
 
- 
+
 		protected bool _isInverse = false;
+
 		/// <summary>
 		/// Eccentricity squared : (a^2 - b^2)/a^2
 		/// </summary>
-		private double es;
-		private double semiMajor;		// major axis
-		private double semiMinor;		// minor axis
-		private double ab;				// Semi_major / semi_minor
-		private double ba;				// Semi_minor / semi_major
+		private readonly double es;
+
+		private readonly double semiMajor; // major axis
+		private readonly double semiMinor; // minor axis
+		private double ab; // Semi_major / semi_minor
+		private double ba; // Semi_minor / semi_major
+
 		/// <summary>
 		/// Second eccentricity squared : (a^2 - b^2)/b^2    
 		/// </summary>
 		private double ses;
+
 		protected List<ProjectionParameter> _Parameters;
 		protected MathTransform _inverse;
 
@@ -82,10 +84,14 @@ namespace SharpMap.CoordinateSystems.Transformations
 		internal GeocentricTransform(List<ProjectionParameter> parameters)
 		{
 			_Parameters = parameters;
-			semiMajor = _Parameters.Find(delegate(ProjectionParameter par)
-								{ return par.Name.Equals("semi_major", StringComparison.OrdinalIgnoreCase); }).Value;
-			semiMinor = _Parameters.Find(delegate(ProjectionParameter par)
-								{ return par.Name.Equals("semi_minor", StringComparison.OrdinalIgnoreCase); }).Value;
+			semiMajor =
+				_Parameters.Find(
+					delegate(ProjectionParameter par) { return par.Name.Equals("semi_major", StringComparison.OrdinalIgnoreCase); }).
+					Value;
+			semiMinor =
+				_Parameters.Find(
+					delegate(ProjectionParameter par) { return par.Name.Equals("semi_minor", StringComparison.OrdinalIgnoreCase); }).
+					Value;
 
 			es = 1.0 - (semiMinor * semiMinor) / (semiMajor * semiMajor); //e^2
 			ses = (Math.Pow(semiMajor, 2) - Math.Pow(semiMinor, 2)) / Math.Pow(semiMinor, 2);
@@ -101,7 +107,10 @@ namespace SharpMap.CoordinateSystems.Transformations
 		public override IMathTransform Inverse()
 		{
 			if (_inverse == null)
-				_inverse = new GeocentricTransform(this._Parameters, !_isInverse);
+			{
+				_inverse = new GeocentricTransform(_Parameters, !_isInverse);
+			}
+
 			return _inverse;
 		}
 
@@ -110,7 +119,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		/// <param name="lonlat">The point in decimal degrees.</param>
 		/// <returns>Point in projected meters</returns>
-		private SharpMap.Geometries.Point DegreesToMeters(SharpMap.Geometries.Point lonlat)
+		private Point DegreesToMeters(Point lonlat)
 		{
 			double lon = Degrees2Radians(lonlat.X);
 			double lat = Degrees2Radians(lonlat.Y);
@@ -120,7 +129,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 			double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
 			double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
 			double z = ((1 - es) * v + h) * Math.Sin(lat);
-			return new SharpMap.Geometries.Point3D(x, y, z);
+			return new Point3D(x, y, z);
 		}
 
 		/// <summary>
@@ -128,44 +137,58 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		/// <param name="pnt">Point in meters</param>
 		/// <returns>Transformed point in decimal degrees</returns>		
-		private SharpMap.Geometries.Point MetersToDegrees(SharpMap.Geometries.Point pnt)
+		private Point MetersToDegrees(Point pnt)
 		{
 			if (!(pnt is Point3D))
+			{
 				throw new ArgumentException("Need 3D point to convert from geocentric coordinates");
+			}
+
 			//The following method is based on Proj.4
-						
+
 			bool At_Pole = false; // indicates whether location is in polar region */
 			double Z = (pnt as Point3D).Z;
 
 			double lon = 0;
 			double lat = 0;
 			double Height = 0;
+
 			if (pnt.X != 0.0)
+			{
 				lon = Math.Atan2(pnt.Y, pnt.X);
+			}
 			else
 			{
 				if (pnt.Y > 0)
-					lon = Math.PI/2;
+				{
+					lon = Math.PI / 2;
+				}
 				else if (pnt.Y < 0)
+				{
 					lon = -Math.PI * 0.5;
+				}
 				else
 				{
 					At_Pole = true;
 					lon = 0.0;
 					if (Z > 0.0)
-					{  /* north pole */
+					{
+						/* north pole */
 						lat = Math.PI * 0.5;
 					}
 					else if (Z < 0.0)
-					{  /* south pole */
+					{
+						/* south pole */
 						lat = -Math.PI * 0.5;
 					}
 					else
-					{  /* center of earth */
+					{
+						/* center of earth */
 						return new Point3D(Radians2Degrees(lon), Radians2Degrees(Math.PI * 0.5), -semiMinor);
 					}
 				}
 			}
+
 			double W2 = pnt.X * pnt.X + pnt.Y * pnt.Y; // Square of distance from Z axis
 			double W = Math.Sqrt(W2); // distance from Z axis
 			double T0 = Z * AD_C; // initial estimate of vertical component
@@ -179,33 +202,48 @@ namespace SharpMap.CoordinateSystems.Transformations
 			double Sin_p1 = T1 / S1; //sin(phi1), phi1 is estimated latitude
 			double Cos_p1 = Sum / S1; //cos(phi1)
 			double Rn = semiMajor / Math.Sqrt(1.0 - es * Sin_p1 * Sin_p1); //Earth radius at location
+
 			if (Cos_p1 >= COS_67P5)
+			{
 				Height = W / Cos_p1 - Rn;
+			}
 			else if (Cos_p1 <= -COS_67P5)
+			{
 				Height = W / -Cos_p1 - Rn;
+			}
 			else
+			{
 				Height = Z / Sin_p1 + Rn * (es - 1.0);
-			if(!At_Pole)
+			}
+			if (!At_Pole)
+			{
 				lat = Math.Atan(Sin_p1 / Cos_p1);
+			}
+
 			return new Point3D(Radians2Degrees(lon), Radians2Degrees(lat), Height);
 		}
 
-		public override SharpMap.Geometries.Point Transform(SharpMap.Geometries.Point point)
+		public override Point Transform(Point point)
 		{
 			if (!_isInverse)
-				return this.DegreesToMeters(point);
+			{
+				return DegreesToMeters(point);
+			}
 			else
-				return this.MetersToDegrees(point);
+			{
+				return MetersToDegrees(point);
+			}
 		}
 
-		public override List<SharpMap.Geometries.Point> TransformList(List<SharpMap.Geometries.Point> points)
+		public override List<Point> TransformList(List<Point> points)
 		{
-			List<SharpMap.Geometries.Point> result = new List<SharpMap.Geometries.Point>(points.Count);
+			List<Point> result = new List<Point>(points.Count);
 			for (int i = 0; i < points.Count; i++)
 			{
-				SharpMap.Geometries.Point point = points[i];
+				Point point = points[i];
 				result.Add(Transform(point));
 			}
+
 			return result;
 		}
 
@@ -221,6 +259,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }
 		}
+
 		public override string Xml
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }

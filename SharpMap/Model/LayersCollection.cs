@@ -27,8 +27,8 @@ using SharpMap.Layers;
 namespace SharpMap
 {
     /// <summary>
-    /// Implementation of <see cref="IList{T}"/> which provides notification when layers are added
-    /// or removed.
+    /// Implementation of <see cref="IList{T}"/> which provides 
+    /// notification when layers are added or removed.
     /// </summary>
     public class LayersCollection : IModelCollection<ILayer>
     {

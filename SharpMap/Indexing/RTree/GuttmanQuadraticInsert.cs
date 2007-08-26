@@ -32,11 +32,12 @@ namespace SharpMap.Indexing.RTree
     /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
     /// </remarks>
     public class GuttmanQuadraticInsert<TValue> : IEntryInsertStrategy<RTreeIndexEntry<TValue>>
-        where TValue : IEquatable<TValue>
     {
         #region IEntryInsertStrategy Members
 
-        public void InsertEntry(RTreeIndexEntry<TValue> entry, ISpatialIndexNode node, INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit)
+        public void InsertEntry(RTreeIndexEntry<TValue> entry, ISpatialIndexNode node, 
+            INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, 
+            out ISpatialIndexNode newSiblingFromSplit)
         {
             newSiblingFromSplit = null;
 
@@ -69,7 +70,9 @@ namespace SharpMap.Indexing.RTree
                         leastExpandedChild = child;
                         leastExpandedArea = expandedArea;
                     }
-                    else if (leastExpandedChild == null || (expandedArea == leastExpandedArea && child.BoundingBox.GetArea() < leastExpandedChild.BoundingBox.GetArea()))
+                    else if (leastExpandedChild == null 
+                        || (expandedArea == leastExpandedArea 
+                                && child.BoundingBox.GetArea() < leastExpandedChild.BoundingBox.GetArea()))
                     {
                         leastExpandedChild = child;
                     }

@@ -42,16 +42,16 @@ using System.Text;
 namespace SharpMap.Converters.WellKnownBinary
 {
 	/// <summary>
-	/// Enumeration to determine geometrytype in Well-known Binary
+	/// Enumeration to determine geometry type in a Well-Known Binary string.
 	/// </summary>
-	internal enum WKBGeometryType : uint
+	internal enum WkbGeometryType : uint
 	{
-		wkbPoint = 1,
-		wkbLineString = 2,
-		wkbPolygon = 3,
-		wkbMultiPoint = 4,
-		wkbMultiLineString = 5,
-		wkbMultiPolygon = 6,
-		wkbGeometryCollection = 7
+		Point = 1,
+		LineString = 2,
+		Polygon = 3,
+		MultiPoint = 4,
+		MultiLineString = 5,
+		MultiPolygon = 6,
+		GeometryCollection = 7
 	}
 }
