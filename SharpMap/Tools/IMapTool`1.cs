@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,23 +16,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Tools
 {
-    public class SizeChangeEventArgs<TSize> : EventArgs
-        where TSize : IVectorD
-    {
-        private readonly TSize _size;
-
-        public SizeChangeEventArgs(TSize size)
-        {
-            _size = size;
-        }
-
-        public TSize Size
-        {
-            get { return _size; }
-        }
-    }
+	public interface IMapTool<TMapView>
+	{
+		string Name { get; }
+		Action<ActionContext<TMapView>> QueryAction { get; }
+		Action<ActionContext<TMapView>> BeginAction { get; }
+		Action<ActionContext<TMapView>> ExtendAction { get; }
+		Action<ActionContext<TMapView>> EndAction { get; }
+	}
 }

@@ -37,10 +37,6 @@ namespace SharpMap
 	[DesignTimeVisible(false)]
 	public class Map : INotifyPropertyChanged, IDisposable
 	{
-		static Map()
-		{
-		}
-
 		#region Fields
 
 		private readonly object _layersChangeSync = new object();
@@ -49,7 +45,7 @@ namespace SharpMap
 		private readonly List<ILayer> _layers = new List<ILayer>();
 		private readonly List<ILayer> _selectedLayers = new List<ILayer>();
 		private BoundingBox _envelope = BoundingBox.Empty;
-		private MapTool _activeTool = MapTool.None;
+		private MapTool _activeTool = StandardMapTools2D.None;
 		private ICoordinateSystem _spatialReference;
 		private bool _disposed;
 
@@ -166,6 +162,130 @@ namespace SharpMap
 			}
 		}
 
+		public void DisableLayer(int index)
+		{
+			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
+
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(Layers[index], false);
+			}
+		}
+
+		public void DisableLayer(string name)
+		{
+			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(GetLayerByName(name), false);
+			}
+		}
+
+		public void DisableLayer(ILayer layer)
+		{
+			if (layer == null) throw new ArgumentNullException("layer");
+
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(layer, false);
+			}
+		}
+
+		public void EnableLayer(int index)
+		{
+			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
+
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(Layers[index], false);
+			}
+		}
+
+		public void EnableLayer(string name)
+		{
+			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(GetLayerByName(name), true);
+			}
+		}
+
+		public void EnableLayer(ILayer layer)
+		{
+			if (layer == null) throw new ArgumentNullException("layer");
+
+			lock (_layersChangeSync)
+			{
+				changeLayerEnabled(layer, true);
+			}
+		}
+
+		/// <summary>
+		/// Returns an enumerable set of all layers containing the string <paramref name="layerNamePart"/> 
+		/// in the <see cref="ILayer.LayerName"/> property.
+		/// </summary>
+		/// <param name="layerNamePart">String to search for.</param>
+		/// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
+		/// containing <paramref name="layerNamePart"/>.</returns>
+		public IEnumerable<ILayer> FindLayers(string layerNamePart)
+		{
+			lock (_layersChangeSync)
+			{
+				layerNamePart = layerNamePart.ToLower();
+				foreach (ILayer layer in Layers)
+				{
+					if (layer.LayerName.ToLower().Contains(layerNamePart))
+					{
+						yield return layer;
+					}
+				}
+			}
+		}
+
+		public MapTool<TMapView> GetActiveTool<TMapView>()
+		{
+			return ActiveTool as MapTool<TMapView>;
+		}
+
+		/// <summary>
+		/// Gets the extents of the map based on the extents of all the layers 
+		/// in the layers collection.
+		/// </summary>
+		/// <returns>Full map extents.</returns>
+		public BoundingBox GetExtents()
+		{
+			BoundingBox extents = BoundingBox.Empty;
+
+			foreach (ILayer layer in Layers)
+			{
+				extents.ExpandToInclude(layer.Envelope);
+			}
+
+			return extents;
+		}
+
+		/// <summary>
+		/// Returns a layer by its name.
+		/// </summary>
+		/// <remarks>
+		/// Performs culture-sensitive, case-insensitive search.
+		/// </remarks>
+		/// <param name="name">Name of layer.</param>
+		/// <returns>Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.</returns>
+		public ILayer GetLayerByName(string name)
+		{
+			lock (_layersChangeSync)
+			{
+				return _layers.Find(delegate(ILayer layer)
+				                    	{
+				                    		return String.Compare(layer.LayerName, name,
+				                    		                      StringComparison.CurrentCultureIgnoreCase) == 0;
+				                    	});
+			}
+		}
+
 		public void RemoveLayer(ILayer layer)
 		{
 			if (layer != null)
@@ -173,7 +293,7 @@ namespace SharpMap
 				lock (_layersChangeSync)
 				{
 					_layers.Remove(layer);
-					OnLayersChanged(new ILayer[] {layer}, LayersChangeType.Removed);
+					OnLayersChanged(new ILayer[] { layer }, LayersChangeType.Removed);
 				}
 			}
 		}
@@ -191,7 +311,7 @@ namespace SharpMap
 		{
 			lock (_layersChangeSync)
 			{
-				SelectLayers(new int[] {index});
+				SelectLayers(new int[] { index });
 			}
 		}
 
@@ -199,7 +319,7 @@ namespace SharpMap
 		{
 			lock (_layersChangeSync)
 			{
-				SelectLayers(new string[] {name});
+				SelectLayers(new string[] { name });
 			}
 		}
 
@@ -207,7 +327,7 @@ namespace SharpMap
 		{
 			lock (_layersChangeSync)
 			{
-				SelectLayers(new ILayer[] {layer});
+				SelectLayers(new ILayer[] { layer });
 			}
 		}
 
@@ -243,19 +363,49 @@ namespace SharpMap
 			}
 		}
 
+		public void SetLayerStyle(int index, Style style)
+		{
+			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
+
+			lock (_layersChangeSync)
+			{
+				setLayerStyleInternal(Layers[index], style);
+			}
+		}
+
+		public void SetLayerStyle(string name, Style style)
+		{
+			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+
+			lock (_layersChangeSync)
+			{
+				setLayerStyleInternal(GetLayerByName(name), style);
+			}
+		}
+
+		public void SetLayerStyle(ILayer layer, Style style)
+		{
+			if (layer == null) throw new ArgumentNullException("layer");
+
+			lock (_layersChangeSync)
+			{
+				setLayerStyleInternal(layer, style);
+			}
+		}
+
 		public void UnselectLayer(int index)
 		{
-			UnselectLayers(new int[] {index});
+			UnselectLayers(new int[] { index });
 		}
 
 		public void UnselectLayer(string name)
 		{
-			UnselectLayers(new string[] {name});
+			UnselectLayers(new string[] { name });
 		}
 
 		public void UnselectLayer(ILayer layer)
 		{
-			UnselectLayers(new ILayer[] {layer});
+			UnselectLayers(new ILayer[] { layer });
 		}
 
 		public void UnselectLayers(IEnumerable<int> indexes)
@@ -288,156 +438,6 @@ namespace SharpMap
 				unselectLayersInternal(layers);
 			}
 		}
-
-		public void SetLayerStyle(int index, Style style)
-		{
-			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
-
-			lock (_layersChangeSync)
-			{
-				setLayerStyleInternal(Layers[index], style);
-			}
-		}
-
-		public void SetLayerStyle(string name, Style style)
-		{
-			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
-
-			lock (_layersChangeSync)
-			{
-				setLayerStyleInternal(GetLayerByName(name), style);
-			}
-		}
-
-		public void SetLayerStyle(ILayer layer, Style style)
-		{
-			if (layer == null) throw new ArgumentNullException("layer");
-
-			lock (_layersChangeSync)
-			{
-				setLayerStyleInternal(layer, style);
-			}
-		}
-
-		public void EnableLayer(int index)
-		{
-			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
-
-			lock (_layersChangeSync)
-			{
-				changeLayerEnabled(Layers[index], false);
-			}
-		}
-
-		public void EnableLayer(string name)
-		{
-			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
-
-			lock (_layersChangeSync)
-			{
-				changeLayerEnabled(GetLayerByName(name), true);
-			}
-		}
-
-		public void EnableLayer(ILayer layer)
-		{
-			if (layer == null) throw new ArgumentNullException("layer");
-
-			lock (_layersChangeSync)
-			{
-				changeLayerEnabled(layer, true);
-			}
-		}
-
-		public void DisableLayer(int index)
-		{
-			if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
-
-			lock (_layersChangeSync)
-			{
-				changeLayerEnabled(Layers[index], false);
-			}
-		}
-
-		public void DisableLayer(string name)
-		{
-			if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
-
-			lock (_layersChangeSync)
-			{
-				changeLayerEnabled(GetLayerByName(name), false);
-			}
-		}
-
-		public void DisableLayer(ILayer layer)
-		{
-			if (layer == null) throw new ArgumentNullException("layer");
-
-			lock (_layersChangeSync)
-			{
-				changeLayerEnabled(layer, false);
-			}
-		}
-
-		/// <summary>
-		/// Returns an enumerable set of all layers containing the string <paramref name="layerNamePart"/> 
-		/// in the <see cref="ILayer.LayerName"/> property.
-		/// </summary>
-		/// <param name="layerNamePart">String to search for.</param>
-		/// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
-		/// containing <paramref name="layerNamePart"/>.</returns>
-		public IEnumerable<ILayer> FindLayers(string layerNamePart)
-		{
-			lock (_layersChangeSync)
-			{
-				layerNamePart = layerNamePart.ToLower();
-				foreach (ILayer layer in Layers)
-				{
-					if (layer.LayerName.ToLower().Contains(layerNamePart))
-					{
-						yield return layer;
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Returns a layer by its name.
-		/// </summary>
-		/// <remarks>
-		/// Performs culture-sensitive, case-insensitive search.
-		/// </remarks>
-		/// <param name="name">Name of layer.</param>
-		/// <returns>Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.</returns>
-		public ILayer GetLayerByName(string name)
-		{
-			lock (_layersChangeSync)
-			{
-				return _layers.Find(delegate(ILayer layer)
-				                    	{
-				                    		return String.Compare(layer.LayerName, name,
-				                    		                      StringComparison.CurrentCultureIgnoreCase) == 0;
-				                    	});
-			}
-		}
-
-		/// <summary>
-		/// Gets the extents of the map based on the extents of all the layers 
-		/// in the layers collection.
-		/// </summary>
-		/// <returns>Full map extents.</returns>
-		public BoundingBox GetExtents()
-		{
-			BoundingBox extents = BoundingBox.Empty;
-
-			foreach (ILayer layer in Layers)
-			{
-				extents.ExpandToInclude(layer.Envelope);
-			}
-
-			return extents;
-		}
-
 		#endregion
 
 		#region Properties

@@ -40,7 +40,8 @@ namespace SharpMap.Presentation
             View.ToolChangeRequested += new EventHandler<ToolChangeRequestedEventArgs>(handleToolChangeRequested);
             
             // TODO: tool configuration should come from a config file and / or reflection
-            List<MapTool> mapTools = new List<MapTool>(new MapTool[] { MapTool.Pan, MapTool.Query, MapTool.ZoomIn, MapTool.ZoomOut });
+			List<MapTool> mapTools = new List<MapTool>(
+				new MapTool[] { StandardMapTools2D.Pan, StandardMapTools2D.Query, StandardMapTools2D.ZoomIn, StandardMapTools2D.ZoomOut });
             View.Tools = mapTools;
         }
 

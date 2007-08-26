@@ -243,7 +243,6 @@
     <Compile Include="Presentation\MapActionEventArgs.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\AttributePresenter.cs" />
-    <Compile Include="Presentation\SizeChangeEventArgs.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\Rendering3D\ViewMatrix3D.cs" />
@@ -259,7 +258,7 @@
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
-    <Compile Include="Tools\ActionContext.cs" />
+    <Compile Include="Tools\ActionContext`1.cs" />
     <Compile Include="Model\Map.cs">
     </Compile>
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
@@ -290,8 +289,10 @@
     <Compile Include="Rendering\Rendering2D\LabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererCatalog.cs" />
     <Compile Include="Presentation\LayerSelectedEventArgs.cs" />
-    <Compile Include="Presentation\MapPresentationPropertyChangedEventArgs.cs" />
-    <Compile Include="Tools\MapTools.cs" />
+    <Compile Include="Presentation\MapViewPropertyChangeEventArgs.cs" />
+    <Compile Include="Tools\IMapTool`1.cs" />
+    <Compile Include="Tools\MapTool.cs" />
+    <Compile Include="Tools\MapTool`1.cs" />
     <Compile Include="Presentation\MapZoomChangedEventArgs.cs" />
     <Compile Include="Rendering\Rendering2D\Symbol2D.cs" />
     <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
@@ -327,6 +328,7 @@
     <Compile Include="Styles\Style.cs" />
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Styles\VectorStyle.cs" />
+    <Compile Include="Tools\StandardMapTools2D.cs" />
     <Compile Include="Utilities\ByteEncoder.cs" />
     <Compile Include="Utilities\Hash.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />

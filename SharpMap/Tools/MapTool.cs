@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,28 +15,20 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
-using SharpMap.Layers;
-using SharpMap.Data;
-
 namespace SharpMap.Tools
 {
-    public class ActionContext
-    {
-        private SharpMap.Map _map;
+	public abstract class MapTool
+	{
+		private readonly string _name;
 
-        public ActionContext(SharpMap.Map map)
-        {
-            _map = map;
-        }
+		protected MapTool(string name)
+		{
+			_name = name;
+		}
 
-        public ReadOnlyCollection<ILayer> SelectedLayers
-        {
-            get { return new ReadOnlyCollection<ILayer>(_map.SelectedLayers); }
-        }
-    }
+		public string Name
+		{
+			get { return _name; }
+		}
+	}
 }
