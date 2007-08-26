@@ -24,11 +24,26 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
+	/// <summary>
+	/// Represents an axis-aligned 2D rectangle in screen coordinates.
+	/// </summary>
+	/// <remarks>
+	/// Since the Rectangle2D is in screen coordinates, the <see cref="Top"/> 
+	/// property is less than the <see cref="Bottom"/> property when the <see cref="Height"/>
+	/// is positive, and Bottom is less than Top when the Height is negative.
+	/// </remarks>
     [Serializable]
     public struct Rectangle2D 
         : IViewRectangle<Point2D>, IEquatable<Rectangle2D>, IComparable<Rectangle2D>, IHasEmpty
     {
+		/// <summary>
+		/// An empty Rectangle2D, having no value.
+		/// </summary>
         public static readonly Rectangle2D Empty = new Rectangle2D();
+
+		/// <summary>
+		/// A Rectangle2D with zero height and zero width centered at (0, 0).
+		/// </summary>
         public static readonly Rectangle2D Zero = new Rectangle2D(0, 0, 0, 0);
 
         private DoubleComponent _bottom;
@@ -38,7 +53,13 @@ namespace SharpMap.Rendering.Rendering2D
         private bool _hasValue;
 
         #region Constructors
-
+		/// <summary>
+		/// Creates a new Rectangle2D with the given values for the sides.
+		/// </summary>
+		/// <param name="left">The X value of the left side.</param>
+		/// <param name="top">The Y value of the top side.</param>
+		/// <param name="right">The X value of the right side.</param>
+		/// <param name="bottom">The Y value of the bottom side.</param>
         public Rectangle2D(double left, double top, double right, double bottom)
         {
             _left = left;
@@ -48,6 +69,12 @@ namespace SharpMap.Rendering.Rendering2D
             _hasValue = true;
         }
 
+		/// <summary>
+		/// Creates a new Rectangle2D with the upper-left at
+		/// <paramref name="location"/>, and the given <paramref name="size"/>.
+		/// </summary>
+		/// <param name="location">The upper-left point of the Rectangle2D.</param>
+		/// <param name="size">The size of the Rectangle2D.</param>
         public Rectangle2D(Point2D location, Size2D size)
         {
             _left = location.X;
@@ -65,7 +92,7 @@ namespace SharpMap.Rendering.Rendering2D
         {
             return
                 String.Format(
-                    "[ViewRectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", 
+                    "[Rectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", 
                     Left, Top, Right, Bottom, IsEmpty);
         }
         #endregion
@@ -167,10 +194,10 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IComparable<ViewRectangle2D> Members
+        #region IComparable<Rectangle2D> Members
 
         /// <summary>
-        /// Compares this <see cref="ViewRectangle2D"/> instance with another instance.
+        /// Compares this <see cref="Rectangle2D"/> instance with another instance.
         /// </summary>
         /// <remarks>
         /// The comparison for non-intersecting rectangles is computed by determining where 
@@ -196,9 +223,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// </pre>
         /// Any intersecting rectangle returns a 0, regardless of the position of the top-left corner.
         /// </remarks>
-        /// <param name="other">ViewRectangle2D to perform comparison with.</param>
+        /// <param name="other">Rectangle2D to perform comparison with.</param>
         /// <returns>
-        /// Returns 0 if the <see cref="ViewRectangle2D"/> instances intersect each other,
+        /// Returns 0 if the <see cref="Rectangle2D"/> instances intersect each other,
         /// 1 if this rectangle is located to the right or downward from the <paramref name="other"/>
         /// rectangle, and -1 if this rectangle is located to the left or upward from the other.
         /// </returns>
@@ -231,9 +258,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Intersects
         /// <summary>
-        /// Determines whether this <see cref="ViewRectangle2D"/> intersects another.
+        /// Determines whether this <see cref="Rectangle2D"/> intersects another.
         /// </summary>
-        /// <param name="rectangle"><see cref="ViewRectangle2D"/> to check intersection with.</param>
+        /// <param name="rectangle"><see cref="Rectangle2D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
         public bool Intersects(Rectangle2D rectangle)
         {
@@ -252,7 +279,8 @@ namespace SharpMap.Rendering.Rendering2D
         #region Properties
 
         /// <summary>
-        /// Gets the X value of the coordinate of the upper left corner of the <see cref="ViewRectangle2D"/>.
+        /// Gets the X value of the coordinate of the upper left 
+        /// corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
         public double X
@@ -261,7 +289,8 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the Y value of the coordinate of the upper left corner of the <see cref="ViewRectangle2D"/>.
+        /// Gets the Y value of the coordinate of the upper left 
+        /// corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
         public double Y
@@ -270,7 +299,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the X value of the left edge of the <see cref="ViewRectangle2D"/>.
+        /// Gets the X value of the left edge of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
@@ -281,7 +310,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the Y value of the top edge of the <see cref="ViewRectangle2D"/>.
+        /// Gets the Y value of the top edge of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
@@ -292,7 +321,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the X value of the right edge of the <see cref="ViewRectangle2D"/>.
+        /// Gets the X value of the right edge of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Top"/>
@@ -303,7 +332,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the Y value of the bottom edge of the <see cref="ViewRectangle2D"/>.
+        /// Gets the Y value of the bottom edge of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
@@ -314,7 +343,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the coordinates of the center of the <see cref="ViewRectangle2D"/>.
+        /// Gets the coordinates of the center of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
         /// <seealso cref="X"/>
@@ -325,7 +354,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the coordinates of the upper left corner of the <see cref="ViewRectangle2D"/>.
+        /// Gets the coordinates of the upper left corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Center"/>
         public Point2D Location
@@ -334,7 +363,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the size of the <see cref="ViewRectangle2D"/>.
+        /// Gets the size of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Width"/>
         /// <seealso cref="Height"/>
@@ -344,7 +373,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the width of the <see cref="ViewRectangle2D"/>.
+        /// Gets the width of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Size"/>
         public double Width
@@ -353,7 +382,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the height of the <see cref="ViewRectangle2D"/>.
+        /// Gets the height of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Size"/>
         public double Height
@@ -361,6 +390,9 @@ namespace SharpMap.Rendering.Rendering2D
             get { return (double)_bottom.Subtract(_top); }
         }
 
+		/// <summary>
+		/// Gets true if the Rectangle2D has no set value.
+		/// </summary>
         public bool IsEmpty
         {
             get { return !_hasValue; }
@@ -374,16 +406,36 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
-        #region IViewRectangle<ViewPoint2D> Members
+		public Point2D UpperLeft
+		{
+			get { return Location; }
+		}
 
-        public Point2D LowerBounds
+		public Point2D UpperRight
+		{
+			get { return new Point2D(X + Width, Y); }
+		}
+
+		public Point2D LowerLeft
+		{
+			get { return new Point2D(X, Y + Height); }
+		}
+
+		public Point2D LowerRight
+		{
+			get { return new Point2D(X + Width, Y + Height); }
+		}
+
+        #region IViewRectangle<Point2D> Members
+
+		Point2D IViewRectangle<Point2D>.GetLowerBound(IVector<DoubleComponent> axis)
         {
-            get { return Location; }
+			return UpperLeft;
         }
 
-        public Point2D UpperBounds
+		Point2D IViewRectangle<Point2D>.GetUpperBound(IVector<DoubleComponent> axis)
         {
-            get { return new Point2D(X + Width, Y + Height); }
+			return LowerRight;
         }
 
         #endregion
@@ -791,12 +843,12 @@ namespace SharpMap.Rendering.Rendering2D
         {
             if (row < 0 || row > 1)
             {
-                throw new ArgumentOutOfRangeException("row", row, "A ViewRectangle2D has only 2 rows.");
+                throw new ArgumentOutOfRangeException("row", row, "A Rectangle2D has only 2 rows.");
             }
 
             if (column < 0 || column > 1)
             {
-                throw new ArgumentOutOfRangeException("column", row, "A ViewRectangle2D has only 2 columns.");
+                throw new ArgumentOutOfRangeException("column", row, "A Rectangle2D has only 2 columns.");
             }
         }
         #endregion

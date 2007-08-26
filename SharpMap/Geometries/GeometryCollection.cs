@@ -299,7 +299,12 @@ namespace SharpMap.Geometries
 		public override Geometry Clone()
 		{
 			GeometryCollection geoms = new GeometryCollection();
-			Collection.ForEach((delegate(Geometry g) { geoms.Collection.Add(g.Clone()); }));
+
+			foreach (Geometry geometry in Collection)
+			{
+				geoms.Collection.Add(geometry.Clone());	
+			}
+
 			return geoms;
 		}
 

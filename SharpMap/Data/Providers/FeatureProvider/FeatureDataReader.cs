@@ -10,7 +10,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		private readonly FeatureDataTable _table;
         private DataTable _schemaTable;
 		private readonly BoundingBox _queryRegion;
-		private int _currentRow = 0;
+		private int _currentRow = -1;
 		private bool _isDisposed;
 
 		#region Object Construction / Disposal
@@ -125,7 +125,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		{
 			checkState();
 
-			if (_currentRow + 1 < _table.FeatureCount)
+			if (_currentRow < _table.FeatureCount - 1)
 			{
 				_currentRow++;
 				return true;

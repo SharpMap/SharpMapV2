@@ -27,7 +27,7 @@ namespace SharpMap.Rendering.Rendering2D
 {
     public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer<Rectangle2D, TRenderObject>
     {
-        #region IRasterLayerRenderer<ViewRectangle2D, TRenderObject> Members
+        #region IRasterLayerRenderer<Rectangle2D, TRenderObject> Members
 
         public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds);
 

@@ -63,7 +63,7 @@ namespace SharpMap.Rendering.Rendering2D
             : base(convertToBaseEnum(figures)) { }
 
         /// <summary>
-        /// Gets the empty bounds shape: <see cref="ViewRectangle2D.Empty"/>.
+        /// Gets the empty bounds shape: <see cref="Rectangle2D.Empty"/>.
         /// </summary>
         protected override Rectangle2D EmptyBounds
         {
@@ -96,7 +96,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Computes the <see cref="GraphicsFigure2D.Bounds"/> for this <see cref="GraphicsPath2D"/>.
         /// </summary>
-        /// <returns>A <see cref="ViewRectangle2D"/> which describes the minimum bounding rectangle for this path.</returns>
+        /// <returns>A <see cref="Rectangle2D"/> which describes the minimum bounding rectangle for this path.</returns>
         protected override Rectangle2D ComputeBounds()
         {
             if(Figures.Count == 0)

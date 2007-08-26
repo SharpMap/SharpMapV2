@@ -67,7 +67,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region ToString
         public override string ToString()
         {
-            return String.Format("[ViewPoint2D] ({0:N3}, {1:N3})", _x, _y);
+            return String.Format("[Point2D] ({0:N3}, {1:N3})", _x, _y);
         }
         #endregion
 
@@ -569,12 +569,12 @@ namespace SharpMap.Rendering.Rendering2D
         {
             if (row != 0)
             {
-                throw new ArgumentOutOfRangeException("row", row, "A ViewPoint2D has only 1 row.");
+                throw new ArgumentOutOfRangeException("row", row, "A Point2D has only 1 row.");
             }
 
             if (column < 0 || column > 1)
             {
-                throw new ArgumentOutOfRangeException("column", row, "A ViewPoint2D has only 2 columns.");
+                throw new ArgumentOutOfRangeException("column", row, "A Point2D has only 2 columns.");
             }
         }
         #endregion

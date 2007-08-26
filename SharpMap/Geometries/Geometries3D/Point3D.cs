@@ -16,34 +16,32 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.Serialization;
-using System.Runtime.InteropServices;
 
-namespace SharpMap.Geometries
+namespace SharpMap.Geometries.Geometries3D
 {
-    /// <summary>
-    /// A Point3D is a 0-dimensional geometry and represents a single location in 3D coordinate space. A Point3D has a x coordinate
-	/// value, a y-coordinate value and a z-coordinate value. The boundary of a Point3D is the empty set.
-    /// </summary>
-    [Serializable]
+	/// <summary>
+	/// A Point3D is a 0-dimensional geometry and represents a single location 
+	/// in 3D coordinate space. A Point3D has a x coordinate value, 
+	/// a y-coordinate value and a z-coordinate value. 
+	/// The boundary of a Point3D is the empty set.
+	/// </summary>
+	[Serializable]
 	public class Point3D : Point
-    {
-        private static readonly Point3D _empty = new Point3D();
-        private double _z;
-		
+	{
+		private static readonly Point3D _empty = new Point3D();
+		private double _z;
+
 		/// <summary>
 		/// Initializes a new Point
 		/// </summary>
 		/// <param name="x">X coordinate</param>
 		/// <param name="y">Y coordinate</param>
 		/// <param name="z">Z coordinate</param>
-        public Point3D(double x, double y, double z) 
-            : base(x, y)
-        {
-            _z = z;
-        }
+		public Point3D(double x, double y, double z)
+			: base(x, y)
+		{
+			_z = z;
+		}
 
 		/// <summary>
 		/// Initializes a new Point
@@ -59,25 +57,30 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Initializes a new Point at (0,0)
 		/// </summary>
-		public Point3D() 
-        { 
-            SetEmpty(); 
-        }
-		
+		public Point3D()
+		{
+			SetEmpty();
+		}
+
 		/// <summary>
 		/// Gets or sets the Z coordinate of the point
 		/// </summary>
 		public double Z
-        {
+		{
 			get
 			{
 				if (!IsEmpty())
 					return _z;
-				else 
-                    throw new InvalidOperationException("Point is empty");
+				else
+					throw new InvalidOperationException("Point is empty");
 			}
-            set { _z = value; SetNotEmpty(); }
-        }
+			set
+			{
+				_z = value;
+				SetNotEmpty();
+			}
+		}
+
 		/// <summary>
 		/// Returns part of coordinate. Index 0 = X, Index 1 = Y, , Index 2 = Z
 		/// </summary>
@@ -89,26 +92,26 @@ namespace SharpMap.Geometries
 			{
 				if (index == 2)
 				{
-					if(IsEmpty())
+					if (IsEmpty())
 						throw new InvalidOperationException("Point is empty");
 
-					return this.Z;
+					return Z;
 				}
-				else 
+				else
 					return base[index];
 			}
 			set
 			{
 				if (index == 2)
 				{
-					this.Z = value;
-                    SetNotEmpty();
+					Z = value;
+					SetNotEmpty();
 				}
-				else 
-                    base[index] = value;
+				else
+					base[index] = value;
 			}
-
 		}
+
 		/// <summary>
 		/// Returns the number of ordinates for this point
 		/// </summary>
@@ -118,6 +121,7 @@ namespace SharpMap.Geometries
 		}
 
 		#region Operators
+
 		/// <summary>
 		/// Vector + Vector
 		/// </summary>
@@ -125,7 +129,9 @@ namespace SharpMap.Geometries
 		/// <param name="v2">Vector</param>
 		/// <returns></returns>
 		public static Point3D operator +(Point3D v1, Point3D v2)
-		{ return new Point3D(v1.X + v2.X, v1.Y + v2.Y, v1.Z+v2.Z); }
+		{
+			return new Point3D(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
+		}
 
 
 		/// <summary>
@@ -135,7 +141,9 @@ namespace SharpMap.Geometries
 		/// <param name="v2">Vector</param>
 		/// <returns>Cross product</returns>
 		public static Point3D operator -(Point3D v1, Point3D v2)
-		{ return new Point3D(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z); }
+		{
+			return new Point3D(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
+		}
 
 		/// <summary>
 		/// Vector * Scalar
@@ -144,11 +152,13 @@ namespace SharpMap.Geometries
 		/// <param name="d">Scalar (double)</param>
 		/// <returns></returns>
 		public static Point3D operator *(Point3D m, double d)
-		{ return new Point3D(m.X * d, m.Y * d, m.Z * d); }
+		{
+			return new Point3D(m.X*d, m.Y*d, m.Z*d);
+		}
 
-#endregion
+		#endregion
 
-        #region "Inherited methods from abstract class Geometry"
+		#region "Inherited methods from abstract class Geometry"
 
 		/// <summary>
 		/// Checks whether this instance is spatially equal to the Point 'o'
@@ -159,6 +169,7 @@ namespace SharpMap.Geometries
 		{
 			return base.Equals(p) && p.Z == _z;
 		}
+
 		/// <summary>
 		/// Serves as a hash function for a particular type. <see cref="GetHashCode"/> is suitable for use 
 		/// in hashing algorithms and data structures like a hash table.
@@ -168,24 +179,25 @@ namespace SharpMap.Geometries
 		{
 			return base.GetHashCode() ^ _z.GetHashCode();
 		}
+
 		/// <summary>
 		/// Returns the distance between this geometry instance and another geometry, as
 		/// measured in the spatial reference system of this instance.
 		/// </summary>
 		/// <param name="geom"></param>
 		/// <returns></returns>
-        public override double Distance(Geometry geom)
-        {
-			if (geom.GetType() == typeof(SharpMap.Geometries.Point3D))
+		public override double Distance(Geometry geom)
+		{
+			if (geom.GetType() == typeof (Point3D))
 			{
 				Point3D p = geom as Point3D;
-				return Math.Sqrt(Math.Pow(this.X - p.X, 2) + Math.Pow(this.Y - p.Y, 2) + Math.Pow(this.Z - p.Z, 2));
+				return Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2) + Math.Pow(Z - p.Z, 2));
 			}
 			else
 				return base.Distance(geom);
-        }
+		}
 
-#endregion
+		#endregion
 
 		/// <summary>
 		/// This method must be overridden using 'public new [derived_data_type] Clone()'
@@ -193,7 +205,7 @@ namespace SharpMap.Geometries
 		/// <returns>Clone</returns>
 		public new Point3D Clone()
 		{
-			return new Point3D(this.X, this.Y, this.Z);
+			return new Point3D(X, Y, Z);
 		}
 
 		#region IEqualityComparer<Point3D> Members
@@ -206,11 +218,11 @@ namespace SharpMap.Geometries
 		/// <returns>true if the points a spatially equal</returns>
 		public bool Equals(Point3D p1, Point3D p2)
 		{
-			return (p1.X==p2.X && p1.Y==p2.Y && p1.Z==p2.Z);
+			return (p1.X == p2.X && p1.Y == p2.Y && p1.Z == p2.Z);
 		}
 
 		#endregion
-			
+
 		#region IComparable<Point> Members
 
 		/// <summary>
@@ -220,20 +232,20 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public virtual int CompareTo(Point3D other)
 		{
-			if (this.X < other.X || this.X == other.X && this.Y < other.Y || this.X == other.X && this.Y == other.Y && this.Z < other.Z)
+			if (X < other.X || X == other.X && Y < other.Y || X == other.X && Y == other.Y && Z < other.Z)
 				return -1;
-			else if (this.X > other.X || this.X == other.X && this.Y > other.Y || this.X == other.X && this.Y == other.Y && this.Z > other.Z)
+			else if (X > other.X || X == other.X && Y > other.Y || X == other.X && Y == other.Y && Z > other.Z)
 				return 1;
-			else// (this.X == other.X && this.Y == other.Y && this.Z == other.Z)
+			else // (this.X == other.X && this.Y == other.Y && this.Z == other.Z)
 				return 0;
 		}
 
 		#endregion
 
-        protected override void SetEmpty()
-        {
-            base.SetEmpty();
-            _z = 0;
-        }
+		protected override void SetEmpty()
+		{
+			base.SetEmpty();
+			_z = 0;
+		}
 	}
 }

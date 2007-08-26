@@ -21,11 +21,13 @@ using System.Collections.Generic;
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// A Polygon is a planar Surface, defined by 1 exterior boundary and 0 or more interior boundaries. Each
+	/// A Polygon is a planar Surface, defined by 1 exterior boundary 
+	/// and 0 or more interior boundaries. Each
 	/// interior boundary defines a hole in the Polygon.
 	/// </summary>
 	/// <remarks>
-	/// Vertices of rings defining holes in polygons are in the opposite direction of the exterior ring.
+	/// Vertices of rings defining holes in polygons 
+	/// are in the opposite direction of the exterior ring.
 	/// </remarks>
 	[Serializable]
 	public class Polygon : Surface
@@ -34,7 +36,8 @@ namespace SharpMap.Geometries
 		private List<LinearRing> _interiorRings = new List<LinearRing>();
 
 		/// <summary>
-		/// Instatiates a polygon based on one extorier ring and a collection of interior rings.
+		/// Instatiates a polygon based on one extorier ring 
+		/// and a collection of interior rings.
 		/// </summary>
 		/// <param name="exteriorRing">Exterior <see cref="LinearRing"/></param>
 		/// <param name="interiorRings">Interior LinearRings</param>
@@ -64,7 +67,9 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Gets or sets the exterior ring of this Polygon
 		/// </summary>
-		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
+		/// <remarks>
+		/// This method is supplied as part of the OpenGIS Simple Features Specification.
+		/// </remarks>
 		public LinearRing ExteriorRing
 		{
 			get { return _exteriorRing; }
@@ -83,7 +88,9 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns the Nth interior ring for this Polygon as a LineString
 		/// </summary>
-		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
+		/// <remarks>
+		/// This method is supplied as part of the OpenGIS Simple Features Specification.
+		/// </remarks>
 		/// <param name="N"></param>
 		/// <returns></returns>
 		public LinearRing InteriorRing(int N)
@@ -94,7 +101,9 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns the number of interior rings in this Polygon
 		/// </summary>
-		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
+		/// <remarks>
+		/// This method is supplied as part of the OpenGIS Simple Features Specification.
+		/// </remarks>
 		/// <returns></returns>
 		public int NumInteriorRing
 		{

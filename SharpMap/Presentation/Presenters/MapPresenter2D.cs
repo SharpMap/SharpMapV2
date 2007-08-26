@@ -71,11 +71,11 @@ namespace SharpMap.Presentation
 
 			GeoPoint geoCenter = extents.GetCentroid();
 
-			double initialScale = extents.Width/View.ViewSize.Width;
+			double initialScale = extents.Width / View.ViewSize.Width;
 
-			if (extents.Height/View.ViewSize.Height < initialScale)
+			if (extents.Height / View.ViewSize.Height < initialScale)
 			{
-				initialScale = extents.Height/View.ViewSize.Height;
+				initialScale = extents.Height / View.ViewSize.Height;
 			}
 
 			if (geoCenter != GeoPoint.Empty)
@@ -83,12 +83,12 @@ namespace SharpMap.Presentation
 				_originNormalizeTransform.OffsetX = -extents.Left;
 				_originNormalizeTransform.OffsetY = -extents.Bottom;
 
-				_scaleTransform.X1 = _scaleTransform.Y2 = 1/initialScale;
+				_scaleTransform.X1 = _scaleTransform.Y2 = 1 / initialScale;
 
 				_translationTransform.OffsetX = -geoCenter.X;
 				_translationTransform.OffsetY = -geoCenter.Y;
 
-				_toViewCoordinates.Translate(View.ViewSize.Width/2, -View.ViewSize.Height/2);
+				_toViewCoordinates.Translate(View.ViewSize.Width / 2, -View.ViewSize.Height / 2);
 				_toViewCoordinates.Scale(1, -1);
 			}
 
@@ -124,7 +124,7 @@ namespace SharpMap.Presentation
 		{
 			get
 			{
-				Point2D values = ToWorldTransform.TransformVector(View.ViewSize.Width/2, View.ViewSize.Height/2);
+				Point2D values = ToWorldTransform.TransformVector(View.ViewSize.Width / 2, View.ViewSize.Height / 2);
 				return new GeoPoint(values.X, values.Y);
 			}
 			set
@@ -194,7 +194,7 @@ namespace SharpMap.Presentation
 		/// unless <see cref="WorldAspectRatio"/> is different from 1.</remarks>
 		public double PixelWorldHeight
 		{
-			get { return WorldUnitsPerPixel*WorldAspectRatio; }
+			get { return WorldUnitsPerPixel * WorldAspectRatio; }
 		}
 
 		/// <summary>
@@ -265,7 +265,7 @@ namespace SharpMap.Presentation
 		/// </exception>
 		public double WorldAspectRatio
 		{
-			get { return 1/Math.Abs(_scaleTransform.Y2/_scaleTransform.X1); }
+			get { return 1 / Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1); }
 			set
 			{
 				if (value <= 0)
@@ -277,7 +277,7 @@ namespace SharpMap.Presentation
 
 				if (currentRatio != value)
 				{
-					double ratioModifier = value/currentRatio;
+					double ratioModifier = value / currentRatio;
 					_scaleTransform.Y2 /= ratioModifier;
 					ToWorldTransform = ToViewTransform.Inverse;
 				}
@@ -295,7 +295,7 @@ namespace SharpMap.Presentation
 		/// </returns>
 		public double WorldHeight
 		{
-			get { return WorldWidth*WorldAspectRatio*View.ViewSize.Height/View.ViewSize.Width; }
+			get { return WorldWidth * WorldAspectRatio * View.ViewSize.Height / View.ViewSize.Width; }
 		}
 
 		/// <summary>
@@ -305,7 +305,7 @@ namespace SharpMap.Presentation
 		/// height * <see cref="WorldUnitsPerPixel"/>).</returns>
 		public double WorldWidth
 		{
-			get { return View.ViewSize.Width*WorldUnitsPerPixel; }
+			get { return View.ViewSize.Width * WorldUnitsPerPixel; }
 		}
 
 		/// <summary>
@@ -365,9 +365,9 @@ namespace SharpMap.Presentation
 		/// </remarks>
 		public void ZoomToWorldWidth(double newWorldWidth)
 		{
-			double newHeight = newWorldWidth*(WorldHeight/WorldWidth);
-			double halfWidth = newWorldWidth*0.5;
-			double halfHeight = newHeight*0.5;
+			double newHeight = newWorldWidth * (WorldHeight / WorldWidth);
+			double halfWidth = newWorldWidth * 0.5;
+			double halfHeight = newHeight * 0.5;
 
 			GeoPoint center = GeoCenter;
 			double centerX = center.X, centerY = center.Y;
@@ -422,7 +422,7 @@ namespace SharpMap.Presentation
 		/// </param>
 		public void ZoomToViewBounds(Rectangle2D viewBounds)
 		{
-			BoundingBox worldBounds = new BoundingBox(ToWorld(viewBounds.LowerBounds), ToWorld(viewBounds.UpperBounds));
+			BoundingBox worldBounds = new BoundingBox(ToWorld(viewBounds.LowerLeft), ToWorld(viewBounds.UpperRight));
 			setViewEnvelopeInternal(worldBounds);
 		}
 
@@ -438,7 +438,7 @@ namespace SharpMap.Presentation
 			}
 
 			LayerRendererCatalog.Instance.Register<Point2D, Size2D, Rectangle2D, TRenderObject>(
-				typeof (TLayerType), renderer);
+				typeof(TLayerType), renderer);
 		}
 
 		protected TRenderer GetRenderer<TRenderer>(ILayer layer)
@@ -470,7 +470,7 @@ namespace SharpMap.Presentation
 
 		#region Event Generators
 
-		protected virtual void OnMapViewHover(Point2D viewPoint2D)
+		protected virtual void OnMapViewHover(Point2D Point2D)
 		{
 		}
 
@@ -525,8 +525,8 @@ namespace SharpMap.Presentation
 
 		private void View_SizeChangeRequested(object sender, SizeChangeEventArgs<Size2D> e)
 		{
-			_toViewCoordinates.OffsetX = e.Size.Width/2;
-			_toViewCoordinates.OffsetY = e.Size.Height/2;
+			_toViewCoordinates.OffsetX = e.Size.Width / 2;
+			_toViewCoordinates.OffsetY = e.Size.Height / 2;
 			ToWorldTransform = ToViewTransform.Inverse;
 			View.ViewSize = e.Size;
 		}
@@ -579,12 +579,12 @@ namespace SharpMap.Presentation
 				return;
 			}
 
-			double widthZoomRatio = newEnvelope.Width/oldEnvelope.Width;
-			double heightZoomRatio = newEnvelope.Height/oldEnvelope.Height;
+			double widthZoomRatio = newEnvelope.Width / oldEnvelope.Width;
+			double heightZoomRatio = newEnvelope.Height / oldEnvelope.Height;
 
 			double newWorldWidth = widthZoomRatio > heightZoomRatio
-			                       	? newEnvelope.Width
-			                       	: newEnvelope.Width*heightZoomRatio/widthZoomRatio;
+									? newEnvelope.Width
+									: newEnvelope.Width * heightZoomRatio / widthZoomRatio;
 
 			if (newWorldWidth < _minimumWorldWidth)
 			{
@@ -605,7 +605,7 @@ namespace SharpMap.Presentation
 			GeoPoint oldCenter = GeoCenter;
 			double oldWorldWidth = WorldWidth;
 			double oldWorldHeight = WorldHeight;
-			double newWorldHeight = newWorldWidth*(oldWorldHeight/oldWorldWidth);
+			double newWorldHeight = newWorldWidth * (oldWorldHeight / oldWorldWidth);
 
 			bool viewMatrixChanged = false;
 
@@ -625,12 +625,12 @@ namespace SharpMap.Presentation
 				viewMatrixChanged = true;
 			}
 
-			double newWorldUnitsPerPixel = newWorldWidth/View.ViewSize.Width;
+			double newWorldUnitsPerPixel = newWorldWidth / View.ViewSize.Width;
 
 			if (newWorldUnitsPerPixel != WorldUnitsPerPixel)
 			{
-				double newScale = 1/newWorldUnitsPerPixel;
-				_scaleTransform.Y2 = newScale/WorldAspectRatio;
+				double newScale = 1 / newWorldUnitsPerPixel;
+				_scaleTransform.Y2 = newScale / WorldAspectRatio;
 				_scaleTransform.X1 = newScale;
 				viewMatrixChanged = true;
 			}

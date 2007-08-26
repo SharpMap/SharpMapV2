@@ -315,21 +315,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
 			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
 		}
 
-        /// <summary>
-        /// Throws an NotSupportedException. Geometry intersection is not yet supported.
-        /// </summary>
-        /// <param name="geometry">The geometry used to intersect with.</param>
-        public IFeatureDataReader ExecuteIntersectionQuery(Geometry geometry)
-        {
-            throw new NotSupportedException();
-		}
-
-        /// <summary>
-        /// Throws an NotSupportedException. Geometry intersection is not yet supported.
-        /// </summary>
-        /// <param name="geometry">The geometry used to intersect with.</param>
-        /// <param name="table">FeatureDataTable to fill data into.</param>
-        public void ExecuteIntersectionQuery(Geometry geometry, FeatureDataTable table)
+		/// <summary>
+		/// Throws an NotSupportedException. Geometry intersection is not yet supported.
+		/// </summary>
+		/// <param name="geometry">The geometry used to intersect with.</param>
+		public IFeatureDataReader ExecuteIntersectionQuery(Geometry geometry)
 		{
 			throw new NotSupportedException();
 		}
@@ -337,31 +327,75 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <summary>
 		/// Throws an NotSupportedException. Geometry intersection is not yet supported.
 		/// </summary>
-        /// <param name="geometry">The geometry used to intersect with.</param>
+		/// <param name="geometry">The geometry used to intersect with.</param>
+		/// <param name="table">FeatureDataTable to fill data into.</param>
+		public void ExecuteIntersectionQuery(Geometry geometry, FeatureDataTable table)
+		{
+			throw new NotSupportedException();
+		}
+
+		/// <summary>
+		/// Throws an NotSupportedException. Geometry intersection is not yet supported.
+		/// </summary>
+		/// <param name="geometry">The geometry used to intersect with.</param>
 		/// <param name="ds">FeatureDataSet to fill data into.</param>
 		public void ExecuteIntersectionQuery(Geometry geometry, FeatureDataSet ds)
-        {
-            throw new NotSupportedException();
+		{
+			throw new NotSupportedException();
 		}
 
 		public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box)
 		{
-		    return new GeometryDataReader(this, box);
+			return new GeometryDataReader(this, box);
 		}
 
 		public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
 		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+			if (table == null) throw new ArgumentNullException("table");
+
+			List<Geometry> intersection = new List<Geometry>();
+
+			foreach (Geometry geometry in Geometries)
+			{
+				if (box.Intersects(geometry.GetBoundingBox()))
+				{
+					intersection.Add(geometry);
+				}
+			}
+
+			foreach (FeatureDataRow row in table)
+			{
+				if (intersection.Exists(delegate(Geometry match) { return match.Equals(row.Geometry); }))
+				{
+					intersection.Remove(row.Geometry);
+				}
+			}
+
+			foreach (Geometry geometry in intersection)
+			{
+				FeatureDataRow row = table.NewRow();
+				row.Geometry = geometry;
+				table.AddRow(row);
+			}
 		}
 
 		/// <summary>
-		/// Throws an NotSupportedException. Attribute data is not supported by this datasource.
 		/// </summary>
 		/// <param name="box"></param>
 		/// <param name="ds">FeatureDataSet to fill data into</param>
 		public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet ds)
 		{
-			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
+			if (ds == null) throw new ArgumentNullException("ds");
+
+			FeatureDataTable table = ds.Tables[ConnectionId];
+
+			if(table == null)
+			{
+				table = new FeatureDataTable(ConnectionId);
+				ds.Tables.Add(table);
+			}
+
+			ExecuteIntersectionQuery(box, table);
 		}
 
 		/// <summary>
@@ -386,7 +420,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		{
 			for (uint i = 0; i < _geometries.Count; i++)
 			{
-				if (_geometries[(int) i].GetBoundingBox().Intersects(box))
+				if (_geometries[(int)i].GetBoundingBox().Intersects(box))
 				{
 					yield return i;
 				}
@@ -410,7 +444,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <returns>geometry</returns>
 		public Geometry GetGeometryById(uint oid)
 		{
-			return _geometries[(int) oid];
+			return _geometries[(int)oid];
 		}
 
 		public void SetTableSchema(FeatureDataTable<uint> table)

@@ -33,7 +33,39 @@ namespace SharpMap
 		{
 			public new int Fill(DataTable[] dataTables, IDataReader dataReader, int startRecord, int maxRecords)
 			{
-				return base.Fill(dataTables, dataReader, startRecord, maxRecords);
+				if(dataTables.Length == 0)
+				{
+					return 0;
+				}
+
+				int tableIndex = 0;
+
+				do
+				{
+					IFeatureDataReader featureReader = dataReader as IFeatureDataReader;
+					
+					if(featureReader == null)
+					{
+						throw new ArgumentException("Parameter 'dataReader' must be a valid IFeatureDataReader instance.");
+					}
+
+					FeatureDataTable table = dataTables[tableIndex] as FeatureDataTable;
+					if (table == null) throw new ArgumentException("Components of 'dataTables' must be value FeatureDataTable instances.");
+
+					while (featureReader.Read())
+					{
+						FeatureDataRow feature = table.NewRow();
+						object[] values = new object[table.Columns.Count];
+						featureReader.GetValues(values);
+						feature.ItemArray = values;
+						feature.Geometry = featureReader.GetGeometry();
+						table.AddRow(feature);
+					}
+
+					tableIndex++;
+				} while (dataReader.NextResult());
+
+				return dataTables[0].Rows.Count;
 			}
 		}
 
@@ -149,7 +181,7 @@ namespace SharpMap
 
 		public new FeatureDataSet DataSet
 		{
-			get { return (FeatureDataSet) base.DataSet; }
+			get { return (FeatureDataSet)base.DataSet; }
 		}
 
 		public new FeatureDataView DefaultView
@@ -236,7 +268,7 @@ namespace SharpMap
 		/// <returns></returns>
 		public new FeatureDataTable Clone()
 		{
-			FeatureDataTable cln = ((FeatureDataTable) (base.Clone()));
+			FeatureDataTable cln = ((FeatureDataTable)(base.Clone()));
 			return cln;
 		}
 
@@ -283,19 +315,19 @@ namespace SharpMap
 
 		private void copyRow(FeatureDataRow source, FeatureDataRow target)
 		{
-			if(source.Table.Columns.Count != target.Table.Columns.Count)
+			if (source.Table.Columns.Count != target.Table.Columns.Count)
 			{
 				throw new InvalidOperationException("Can't import a feature row with a different number of columns.");
 			}
 
-			for(int columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
+			for (int columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
 			{
 				target[columnIndex] = source[columnIndex];
 			}
 
-			target.Geometry = source.Geometry == null 
-                ? null
-                : source.Geometry.Clone();
+			target.Geometry = source.Geometry == null
+				? null
+				: source.Geometry.Clone();
 		}
 
 		public override void Load(IDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
@@ -321,7 +353,7 @@ namespace SharpMap
 				adapter.FillError += errorHandler;
 			}
 
-			adapter.Fill(new DataTable[] {this}, reader, 0, 0);
+			adapter.Fill(new DataTable[] { this }, reader, 0, 0);
 
 			if (!reader.IsClosed && !reader.NextResult())
 			{
@@ -387,7 +419,7 @@ namespace SharpMap
 		/// <returns>The <see cref="Type"/> <see cref="FeatureDataRow"/>.</returns>
 		protected override Type GetRowType()
 		{
-			return typeof (FeatureDataRow);
+			return typeof(FeatureDataRow);
 		}
 
 		#endregion
@@ -402,9 +434,9 @@ namespace SharpMap
 		{
 			Debug.Assert(e.Row is FeatureDataRow);
 
-			if (e.Action == DataRowAction.Add 
-                || e.Action == DataRowAction.ChangeCurrentAndOriginal
-                || e.Action == DataRowAction.Change)
+			if (e.Action == DataRowAction.Add
+				|| e.Action == DataRowAction.ChangeCurrentAndOriginal
+				|| e.Action == DataRowAction.Change)
 			{
 				FeatureDataRow r = e.Row as FeatureDataRow;
 				if (r.Geometry != null)
@@ -419,7 +451,7 @@ namespace SharpMap
 
 			if ((FeatureDataRowChanged != null))
 			{
-				FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow) (e.Row)), e.Action));
+				FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
 			}
 
 			base.OnRowChanged(e);
@@ -435,7 +467,7 @@ namespace SharpMap
 
 			if ((FeatureDataRowChanging != null))
 			{
-				FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow) (e.Row)), e.Action));
+				FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
 			}
 		}
 
@@ -449,7 +481,7 @@ namespace SharpMap
 
 			if ((FeatureDataRowDeleted != null))
 			{
-				FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow) (e.Row)), e.Action));
+				FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
 			}
 		}
 
@@ -462,7 +494,7 @@ namespace SharpMap
 			base.OnRowDeleting(e);
 			if ((FeatureDataRowDeleting != null))
 			{
-				FeatureDataRowDeleting(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow) (e.Row)), e.Action));
+				FeatureDataRowDeleting(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
 			}
 		}
 
@@ -519,16 +551,16 @@ namespace SharpMap
 		private static GetDefaultViewDelegate generateGetDefaultViewDelegate()
 		{
 			DynamicMethod get_DefaultViewMethod = new DynamicMethod("get_DefaultView_DynamicMethod",
-			                                                        typeof (FeatureDataView),
-			                                                        new Type[] {typeof (FeatureDataTable)}, typeof (DataTable));
+																	typeof(FeatureDataView),
+																	new Type[] { typeof(FeatureDataTable) }, typeof(DataTable));
 
 			ILGenerator il = get_DefaultViewMethod.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
-			il.Emit(OpCodes.Ldfld, typeof (DataTable).GetField("defaultView", BindingFlags.Instance | BindingFlags.NonPublic));
+			il.Emit(OpCodes.Ldfld, typeof(DataTable).GetField("defaultView", BindingFlags.Instance | BindingFlags.NonPublic));
 			il.Emit(OpCodes.Ret);
 
-			return get_DefaultViewMethod.CreateDelegate(typeof (GetDefaultViewDelegate))
-			       as GetDefaultViewDelegate;
+			return get_DefaultViewMethod.CreateDelegate(typeof(GetDefaultViewDelegate))
+				   as GetDefaultViewDelegate;
 		}
 
 		#endregion
@@ -542,9 +574,9 @@ namespace SharpMap
 			IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>();
 			INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
 			_rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
-			                                                                    restructureHeuristic, insertStrategy,
-			                                                                    nodeSplitStrategy,
-			                                                                    new DynamicRTreeBalanceHeuristic());
+																				restructureHeuristic, insertStrategy,
+																				nodeSplitStrategy,
+																				new DynamicRTreeBalanceHeuristic());
 		}
 
 		#endregion

@@ -80,7 +80,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#endregion
 
-		#region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+		#region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
 		public Matrix2D RenderTransform
 		{
@@ -117,7 +117,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#region Explicit Interface Implementation
 
-		#region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+		#region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
 		IMatrixD IRenderer.RenderTransform
 		{

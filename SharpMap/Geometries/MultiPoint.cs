@@ -209,19 +209,19 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a copy of this geometry.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new MultiPoint Clone()
+		/// <returns>Copy of the MultiPoint.</returns>
+		public override Geometry Clone()
 		{
-			MultiPoint geoms = new MultiPoint();
+			MultiPoint multiPoint = new MultiPoint();
 
 			foreach (Point p in Points)
 			{
-				geoms.Points.Add(p.Clone() as Point);
+				multiPoint.Points.Add(p.Clone() as Point);
 			}
 
-			return geoms;
+			return multiPoint;
 		}
 
 		#region IEnumerable<Geometry> Members

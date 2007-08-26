@@ -242,19 +242,19 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a copy of this geometry.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new MultiLineString Clone()
+		/// <returns>Copy of the MultiLineString.</returns>
+		public override Geometry Clone()
 		{
-			MultiLineString geoms = new MultiLineString();
+			MultiLineString multiLineString = new MultiLineString();
 
 			foreach (LineString lineString in _lineStrings)
 			{
-				geoms.LineStrings.Add(lineString.Clone() as LineString);
+				multiLineString.LineStrings.Add(lineString.Clone() as LineString);
 			}
 
-			return geoms;
+			return multiLineString;
 		}
 
 		#region IEnumerable<Geometry> Members

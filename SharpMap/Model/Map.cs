@@ -380,19 +380,20 @@ namespace SharpMap
 		}
 
 		/// <summary>
-		/// Returns an enumerable set of all layers containing the string <paramref name="layerName"/> 
+		/// Returns an enumerable set of all layers containing the string <paramref name="layerNamePart"/> 
 		/// in the <see cref="ILayer.LayerName"/> property.
 		/// </summary>
-		/// <param name="layerName">String to search for.</param>
+		/// <param name="layerNamePart">String to search for.</param>
 		/// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
-		/// containing <paramref name="layerName"/>.</returns>
-		public IEnumerable<ILayer> FindLayers(string layerName)
+		/// containing <paramref name="layerNamePart"/>.</returns>
+		public IEnumerable<ILayer> FindLayers(string layerNamePart)
 		{
 			lock (_layersChangeSync)
 			{
+				layerNamePart = layerNamePart.ToLower();
 				foreach (ILayer layer in Layers)
 				{
-					if (layer.LayerName.Contains(layerName))
+					if (layer.LayerName.ToLower().Contains(layerNamePart))
 					{
 						yield return layer;
 					}

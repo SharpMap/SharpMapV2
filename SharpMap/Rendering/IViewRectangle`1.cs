@@ -23,7 +23,7 @@ namespace SharpMap.Rendering
     public interface IViewRectangle<TViewPoint> : IAffineTransformMatrix<DoubleComponent>
         where TViewPoint : IVector<DoubleComponent>
     {
-        TViewPoint LowerBounds { get; }
-        TViewPoint UpperBounds { get; }
+		TViewPoint GetLowerBound(IVector<DoubleComponent> axis);
+		TViewPoint GetUpperBound(IVector<DoubleComponent> axis);
     }
 }

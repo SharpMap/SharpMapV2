@@ -92,9 +92,9 @@ namespace SharpMap.Layers
 				return;
 			}
 
-			if (DataSource is IDisposable)
+			if (DataSource != null)
 			{
-				(DataSource as IDisposable).Dispose();
+				DataSource.Dispose();
 			}
 
 			base.Dispose(disposing);

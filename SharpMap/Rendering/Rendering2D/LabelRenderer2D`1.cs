@@ -43,7 +43,7 @@ namespace SharpMap.Rendering.Rendering2D
             Dispose(false);
         }
 
-        #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+        #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
         public StyleTextRenderingHint TextRenderingHint
         {
@@ -238,7 +238,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="backColor">Background color.</param>
         /// <param name="halo">Halo to be drawn around the label text.</param>
         /// <param name="rotation">Text rotation in degrees.</param>
-        //public void DrawLabel(string text, ViewPoint2D location, ViewPoint2D offset, StyleFont font,
+        //public void DrawLabel(string text, Point2D location, Point2D offset, StyleFont font,
         //    StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         //{
         //    DrawLabel(text, location, offset, font, foreColor, backColor, halo, rotation);
@@ -249,11 +249,11 @@ namespace SharpMap.Rendering.Rendering2D
         //    LabelLayer layer = null;
         //    ViewSize2D size = MeasureString(text, style.Font);
 
-        //    ViewPoint2D position = ViewTransformer.WorldToView(feature.GetBoundingBox().GetCentroid());
+        //    Point2D position = ViewTransformer.WorldToView(feature.GetBoundingBox().GetCentroid());
         //    double x = position.X - size.Width * (short)style.HorizontalAlignment * 0.5f;
         //    double y = position.Y - size.Height * (short)style.VerticalAlignment * 0.5f;
 
-        //    position = new ViewPoint2D(x, y);
+        //    position = new Point2D(x, y);
 
         //    if (position.X - size.Width > ViewTransformer.ViewSize.Width || position.X + size.Width < 0 ||
         //        position.Y - size.Height > ViewTransformer.ViewSize.Height || position.Y + size.Height < 0)
@@ -271,7 +271,7 @@ namespace SharpMap.Rendering.Rendering2D
         //    {
         //        //Collision detection is enabled so we need to measure the size of the string
         //        label = new Label(text, position, rotation, layer.Priority,
-        //            new ViewRectangle2D(position.X - size.Width * 0.5f - style.CollisionBuffer.Width, position.Y + size.Height * 0.5f + style.CollisionBuffer.Height,
+        //            new Rectangle2D(position.X - size.Width * 0.5f - style.CollisionBuffer.Width, position.Y + size.Height * 0.5f + style.CollisionBuffer.Height,
         //            size.Width + 2f * style.CollisionBuffer.Width, size.Height + style.CollisionBuffer.Height * 2f), style);
         //    }
 
@@ -335,7 +335,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Explicit Interface Implementation
 
-        #region ILabelRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+        #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
         TRenderObject ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, GraphicsPath<Point2D, Rectangle2D>> label)
         {

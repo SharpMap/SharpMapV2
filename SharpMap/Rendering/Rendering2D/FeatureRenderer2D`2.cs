@@ -101,7 +101,7 @@ namespace SharpMap.Rendering.Rendering2D
         public event EventHandler FeatureRendered;
         #endregion
 
-        #region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+        #region IFeatureRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
         /// <summary>
         /// Renders a feature into displayable render objects.
         /// </summary>
@@ -212,7 +212,7 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Explicit Interface Implementation
-        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+        #region IRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
         IMatrix2D IRenderer.RenderTransform
         {
@@ -233,7 +233,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IFeatureRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+        #region IFeatureRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
         IEnumerable<PositionedRenderObject2D<TRenderObject>> 
             IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.RenderFeature(

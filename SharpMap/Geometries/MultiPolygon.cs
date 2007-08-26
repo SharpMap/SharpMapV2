@@ -250,19 +250,19 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Return a copy of this geometry
+		/// Creates a copy of this geometry.
 		/// </summary>
-		/// <returns>Copy of Geometry</returns>
-		public new MultiPolygon Clone()
+		/// <returns>Copy of the MultiPolygon.</returns>
+		public override Geometry Clone()
 		{
-			MultiPolygon geoms = new MultiPolygon();
+			MultiPolygon multiPolygon = new MultiPolygon();
 
 			foreach (Polygon poly in Polygons)
 			{
-				geoms.Polygons.Add(poly.Clone() as Polygon);
+				multiPolygon.Polygons.Add(poly.Clone() as Polygon);
 			}
 
-			return geoms;
+			return multiPolygon;
 		}
 
 		#region IEnumerable<Geometry> Members

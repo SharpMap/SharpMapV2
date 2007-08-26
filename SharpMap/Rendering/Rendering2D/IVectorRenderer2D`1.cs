@@ -52,7 +52,7 @@ namespace SharpMap.Rendering.Rendering2D
             StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
         
         /// <summary>
-        /// Renders a <see cref="ViewPoint2D">point</see> into a rendered object.
+        /// Renders a <see cref="Point2D">point</see> into a rendered object.
         /// </summary>
         /// <param name="location">The point to render.</param>
         /// <param name="symbolData">The symbol to use for the point.</param>
@@ -60,7 +60,7 @@ namespace SharpMap.Rendering.Rendering2D
         TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData);
 
         /// <summary>
-        /// Renders a <see cref="ViewPoint2D">point</see> into a rendered object.
+        /// Renders a <see cref="Point2D">point</see> into a rendered object.
         /// </summary>
         /// <param name="location">The point to render.</param>
         /// <param name="symbolData">The symbol to use for the point.</param>
@@ -71,7 +71,7 @@ namespace SharpMap.Rendering.Rendering2D
             ColorMatrix highlight, ColorMatrix select);
 
         /// <summary>
-        /// Renders a <see cref="ViewPoint2D">point</see> into a rendered object.
+        /// Renders a <see cref="Point2D">point</see> into a rendered object.
         /// </summary>
         /// <param name="location">The point to render.</param>
         /// <param name="symbolData">The symbol to use for the point.</param>
