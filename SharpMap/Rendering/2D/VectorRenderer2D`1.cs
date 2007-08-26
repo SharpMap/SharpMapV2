@@ -16,9 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.IO;
-using System.Reflection;
-
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -28,98 +25,116 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <summary>
 	/// Provides a base class for generating rendered objects from vector shapes.
 	/// </summary>
-    /// <remarks>
-    /// This class is used to create a new IVectorRender2D for various graphics systems.
-    /// </remarks>
+	/// <remarks>
+	/// This class is used to create a new IVectorRender2D for various graphics systems.
+	/// </remarks>
 	/// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
-    public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
-    {
-        #region Fields
-        private Matrix2D _viewMatrix = new Matrix2D();
-        private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
-        private bool _disposed = false;
-        #endregion
+	public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
+	{
+		#region Fields
 
-        #region Object Construction/Destruction
-        public VectorRenderer2D()
-        {
-        }
+		private Matrix2D _viewMatrix = new Matrix2D();
+		private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
+		private bool _disposed = false;
 
-        ~VectorRenderer2D()
-        {
-            Dispose(false);
-        }
+		#endregion
 
-        #region Dispose Pattern
-        #region IDisposable Members
+		#region Object Construction/Destruction
 
-        public void Dispose()
-        {
-            if (!IsDisposed)
-            {
-                Dispose(true);
-                IsDisposed = true;
-                GC.SuppressFinalize(this);
-            }
-        }
-        #endregion
+		public VectorRenderer2D()
+		{
+		}
 
-        protected virtual void Dispose(bool disposing)
-        {
+		~VectorRenderer2D()
+		{
+			Dispose(false);
+		}
 
-        }
+		#region Dispose Pattern
 
-        protected bool IsDisposed
-        {
-            get { return _disposed; }
-            private set { _disposed = value; }
-        }
-        #endregion
-        #endregion
+		#region IDisposable Members
 
-        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
-        public Matrix2D RenderTransform
-        {
-            get { return _viewMatrix; }
-            set { _viewMatrix = value; }
-        }
+		public void Dispose()
+		{
+			if (!IsDisposed)
+			{
+				Dispose(true);
+				IsDisposed = true;
+				GC.SuppressFinalize(this);
+			}
+		}
 
-        public StyleRenderingMode StyleRenderingMode
-        {
-            get { return _renderMode; }
-            set { _renderMode = value; }
-        }
-        #endregion
+		#endregion
 
-        #region IVectorLayerRenderer Members
-        public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
-        public abstract TRenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
-        public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData);
-        public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select);
-        public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
-        #endregion
+		protected virtual void Dispose(bool disposing)
+		{
+		}
 
-        #region Explicit Interface Implementation
-        #region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+		protected bool IsDisposed
+		{
+			get { return _disposed; }
+			private set { _disposed = value; }
+		}
 
-        IMatrixD IRenderer.RenderTransform
-        {
-            get
-            {
-                return RenderTransform;
-            }
-            set
-            {
-                if (!(value is Matrix2D))
-                {
-                    throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
-                }
+		#endregion
 
-                RenderTransform = value as Matrix2D;
-            }
-        }
+		#endregion
 
-        #endregion
-        #endregion
-    }
+		#region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+
+		public Matrix2D RenderTransform
+		{
+			get { return _viewMatrix; }
+			set { _viewMatrix = value; }
+		}
+
+		public StyleRenderingMode StyleRenderingMode
+		{
+			get { return _renderMode; }
+			set { _renderMode = value; }
+		}
+
+		#endregion
+
+		#region IVectorLayerRenderer Members
+
+		public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline,
+		                                         StylePen selectOutline);
+
+		public abstract TRenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill,
+		                                         StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
+		                                         StylePen selectOutline);
+
+		public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData);
+
+		public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, ColorMatrix highlight,
+		                                           ColorMatrix select);
+
+		public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, Symbol2D highlightSymbolData,
+		                                           Symbol2D selectSymbolData);
+
+		#endregion
+
+		#region Explicit Interface Implementation
+
+		#region IRenderer<ViewPoint2D,ViewSize2D,ViewRectangle2D,TRenderObject> Members
+
+		IMatrixD IRenderer.RenderTransform
+		{
+			get { return RenderTransform; }
+			set
+			{
+				if (!(value is Matrix2D))
+				{
+					throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
+				}
+
+				RenderTransform = value as Matrix2D;
+			}
+		}
+
+		#endregion
+
+		#endregion
+	}
 }

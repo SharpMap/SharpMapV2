@@ -18,16 +18,12 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using SharpMap.Geometries;
-using GeoPoint = SharpMap.Geometries.Point;
-using SharpMap.Rendering;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers

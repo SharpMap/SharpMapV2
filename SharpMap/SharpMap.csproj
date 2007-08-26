@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -137,9 +137,15 @@
     <Compile Include="Data\DataExceptions.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
     <Compile Include="Data\IVectorLayerProvider.cs" />
+    <Compile Include="Data\Providers\ColumnPropertyComputationDelegates.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureProvider.cs" />
+    <Compile Include="Data\Providers\GeometryProvider\GeometryDataReader.cs" />
+    <Compile Include="Data\Providers\ProviderSchemaHelper.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseEncodingRegistry.cs" />
     <Compile Include="Data\Providers\Shapefile\DbfSchemaMismatchException.cs" />
+    <Compile Include="Data\Providers\Shapefile\InvalidDbaseFileException.cs" />
+    <Compile Include="Data\Providers\Shapefile\InvalidDbaseFileOperationException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileConstants.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileDataReader.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileException.cs" />

@@ -22,6 +22,9 @@ using System.Runtime.Serialization;
 
 namespace SharpMap.Data
 {
+	/// <summary>
+	/// The base class for data exceptions in SharpMap.
+	/// </summary>
     public class SharpMapDataException : Exception
     {
         public SharpMapDataException() : base() { }
@@ -30,30 +33,30 @@ namespace SharpMap.Data
         public SharpMapDataException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
-    public class LayerNotFoundException : SharpMapDataException
-    {
-        private string _layerName;
-        private string _connectionId;
+	//public class LayerNotFoundException : SharpMapDataException
+	//{
+	//    private string _layerName;
+	//    private string _connectionId;
 
-        public LayerNotFoundException(string layerName, string connectionId) : this(layerName, connectionId, null) { }
-        public LayerNotFoundException(string layerName, string connectionId, string message) : this(layerName, connectionId, message, null) { }
-        public LayerNotFoundException(string layerName, string connectionId, string message, Exception inner)
-            : base(message, inner) 
-        {
-            _layerName = layerName;
-            _connectionId = connectionId;
-        }
+	//    public LayerNotFoundException(string layerName, string connectionId) : this(layerName, connectionId, null) { }
+	//    public LayerNotFoundException(string layerName, string connectionId, string message) : this(layerName, connectionId, message, null) { }
+	//    public LayerNotFoundException(string layerName, string connectionId, string message, Exception inner)
+	//        : base(message, inner) 
+	//    {
+	//        _layerName = layerName;
+	//        _connectionId = connectionId;
+	//    }
         
-        public LayerNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+	//    public LayerNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
-        public string LayerName
-        {
-            get { return _layerName; }
-        }
+	//    public string LayerName
+	//    {
+	//        get { return _layerName; }
+	//    }
 
-        public string ConnectionId
-        {
-            get { return _connectionId; }
-        }
-    }
+	//    public string ConnectionId
+	//    {
+	//        get { return _connectionId; }
+	//    }
+	//}
 }

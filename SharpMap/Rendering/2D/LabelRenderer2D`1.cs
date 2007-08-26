@@ -27,12 +27,13 @@ namespace SharpMap.Rendering.Rendering2D
     /// The base class for 2D feature renderers which produce labels.
     /// </summary>
     /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
-    public abstract class LabelRenderer2D<TRenderObject> : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
+    public abstract class LabelRenderer2D<TRenderObject> 
+		: FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
 
-        protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, StyleTextRenderingHint renderingHint)
-            : base(vectorRenderer)
+        protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, 
+			StyleTextRenderingHint renderingHint) : base(vectorRenderer)
         {
             _textRenderingHint = renderingHint;
         }
@@ -67,7 +68,8 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract TRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
-        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(FeatureDataRow feature, LabelStyle style)
+        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(
+			FeatureDataRow feature, LabelStyle style)
         {
             throw new NotImplementedException();
         }

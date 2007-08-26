@@ -25,6 +25,10 @@ namespace SharpMap.Data
     /// </summary>
     public interface IFeatureDataReader : IDataReader
     {
+		/// <summary>
+		/// Gets the geometry for the current position in the reader.
+		/// </summary>
+		/// <returns>A Geometry instance.</returns>
         Geometry GetGeometry();
     }
 }

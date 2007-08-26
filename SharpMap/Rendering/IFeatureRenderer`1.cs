@@ -25,27 +25,42 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Interface to a graphical renderer of feature data.
     /// </summary>
-    /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
+    /// <typeparam name="TRenderObject">
+    /// Type of object used by the graphics library to perform drawing.
+    /// </typeparam>
     public interface IFeatureRenderer<TRenderObject> : IRenderer
 	{
 		/// <summary>
 		/// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
 		/// </summary>
-		/// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
-		/// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
+		/// <param name="feature">
+		/// A <see cref="FeatureDataRow"/> instance with spatial data.
+		/// </param>
+		/// <returns>
+		/// An enumeration of <typeparamref name="TRenderObject"/> instances 
+		/// used to draw the spatial data.
+		/// </returns>
 		IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature);
 
         /// <summary>
         /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
         /// </summary>
-        /// <param name="feature">A <see cref="FeatureDataRow"/> instance with spatial data.</param>
-		/// <param name="style">Style used to render the feature, overriding theme. 
-		/// Use null if no style is desired or to use <see cref="Theme"/>.</param>
-        /// <returns>An enumeration of <typeparamref name="TRenderObject"/> instances used to draw the spatial data.</returns>
+        /// <param name="feature">
+        /// A <see cref="FeatureDataRow"/> instance with spatial data.
+        /// </param>
+		/// <param name="style">
+		/// Style used to render the feature, overriding theme. 
+		/// Use null if no style is desired or to use <see cref="Theme"/>.
+		/// </param>
+        /// <returns>
+        /// An enumeration of <typeparamref name="TRenderObject"/> 
+        /// instances used to draw the spatial data.
+        /// </returns>
         IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
 
 		/// <summary>
-		/// Gets or sets the theme by which to compute styles to apply to rendered features.
+		/// Gets or sets the theme by which to compute styles 
+		/// to apply to rendered features.
 		/// </summary>
         ITheme Theme { get; set; }
     }

@@ -71,6 +71,15 @@ namespace SharpMap
 		}
 
 		/// <summary>
+		/// Initializes a new instance of the FeatureDataTable class with the given
+		/// table name.
+		/// </summary>
+		public FeatureDataTable(string tableName)
+			: base(tableName)
+		{
+		}
+
+		/// <summary>
 		/// Intitalizes a new instance of the FeatureDataTable class and
 		/// copies the name and structure of the given <paramref name="table"/>.
 		/// </summary>

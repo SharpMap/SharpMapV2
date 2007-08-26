@@ -17,15 +17,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("SharpMap Engine")]
-[assembly: AssemblyDescription("SharpMap v2.0 Alpha 2")]
+[assembly: AssemblyDescription("SharpMap v2.0 Beta 1")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap")]
-[assembly: AssemblyCopyright("Copyright © 2006-2007 Morten Nielsen, Ricardo Stuven, Christian Giles, Rory Plaire")]
+[assembly: AssemblyCopyright("Copyright © 2005-2007 Morten Nielsen, Ricardo Stuven, Christian Gräfe, Rory Plaire")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,5 +32,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("2f1dbd34-6f6b-4b0b-bfb4-b24a3894de6d")]
 
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]

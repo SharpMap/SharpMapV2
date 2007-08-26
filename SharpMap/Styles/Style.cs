@@ -16,8 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Styles
 {
@@ -27,8 +25,8 @@ namespace SharpMap.Styles
 	[Serializable]
 	public class Style : IStyle
 	{
-		double _minVisible;
-		double _maxVisible;
+		private double _minVisible;
+		private double _maxVisible;
 		private bool _visible;
 
 		/// <summary>
@@ -49,6 +47,7 @@ namespace SharpMap.Styles
 			get { return _minVisible; }
 			set { _minVisible = value; }
 		}
+
 		/// <summary>
 		/// Gets or sets the maximum zoom value where the style is applied
 		/// </summary>

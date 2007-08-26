@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-
+using System.Threading;
 using SharpMap.Styles;
 using SharpMap.Geometries;
 
@@ -36,7 +36,7 @@ namespace SharpMap.Rendering.Rendering2D
     {
         
         #region Type Members
-        private static volatile Symbol2D _defaultSymbol;
+        private static object _defaultSymbol;
 
         /// <summary>
         /// The default basic symbol for rendering point data.
@@ -45,27 +45,28 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get
             {
-                if (_defaultSymbol == null)
+                if (Thread.VolatileRead(ref _defaultSymbol) == null)
                 {
                     lock (_defaultSymbol)
                     {
-                        if (_defaultSymbol == null)
+						if (Thread.VolatileRead(ref _defaultSymbol) == null)
                         {
-                            Stream data = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
-                            _defaultSymbol = new Symbol2D(data, new Size2D(16, 16));
+                            Stream data = Assembly.GetExecutingAssembly()
+								.GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
+                            Thread.VolatileWrite(ref _defaultSymbol, new Symbol2D(data, new Size2D(16, 16)));
                         }
                     }
                 }
 
-                return _defaultSymbol;
+				return _defaultSymbol as Symbol2D;
             }
         }
 
-        static BasicGeometryRenderer2D()
-        {
-        }
+		// DON'T remove - this eliminates the .beforefieldinit IL metadata
+        static BasicGeometryRenderer2D() { }
         #endregion
 
+		#region Object construction and disposal
 		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
             : base(vectorRenderer)
 		{
@@ -74,9 +75,10 @@ namespace SharpMap.Rendering.Rendering2D
         ~BasicGeometryRenderer2D()
         {
             Dispose(false);
-        }
+		}
+		#endregion
 
-        /// <summary>
+		/// <summary>
         /// Renders the geometry of the <paramref name="feature"/>.
         /// </summary>
         /// <param name="feature">The feature to render.</param>
@@ -198,9 +200,10 @@ namespace SharpMap.Rendering.Rendering2D
             MultiPoint points, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
 		{
 			return drawPoints(points.Points, symbol, highlightSymbol, selectSymbol);
-        }
+		}
 
-        private IEnumerable<PositionedRenderObject2D<TRenderObject>> renderGeometry(
+		#region Private helper methods
+		private IEnumerable<PositionedRenderObject2D<TRenderObject>> renderGeometry(
             IGeometry geometry, VectorStyle style)
         {
             if (geometry == null)
@@ -342,6 +345,7 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 yield return ViewTransform.TransformVector(geoPoint.X, geoPoint.Y);
             }
-        }
+		}
+		#endregion
 	}
 }

@@ -37,11 +37,11 @@ namespace SharpMap.Rendering.Rendering2D
     {
         private Matrix2D _viewMatrix;
         private StyleRenderingMode _renderMode;
-        private VectorRenderer2D<TRenderObject> _vectorRenderer;
+        private readonly VectorRenderer2D<TRenderObject> _vectorRenderer;
         private ITheme _theme;
         private bool _disposed;
 
-        #region Object Construction/Destruction
+        #region Object construction and disposal
         protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
             : this(vectorRenderer, null)
         {
