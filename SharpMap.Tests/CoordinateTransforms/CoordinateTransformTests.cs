@@ -8,6 +8,7 @@ using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 
 using NUnit.Framework;
+using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.Tests
 {

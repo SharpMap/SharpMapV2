@@ -263,6 +263,7 @@ namespace SharpMap.Tests.Presentation
 		{
 			Map map = new Map();
 			map.AddLayer(DataSourceHelper.CreateFeatureVectorLayer());
+			//map.AddLayer(DataSourceHelper.CreateGeometryVectorLayer());
 
 			IMapView2D mapView = mocks.Stub<IMapView2D>();
 			SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);

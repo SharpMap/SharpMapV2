@@ -1,4 +1,5 @@
 
+using System;
 using NUnit.Framework;
 using Rhino.Mocks;
 using SharpMap.Data;
@@ -12,7 +13,7 @@ namespace SharpMap.Tests.Model
 	public class MapTests
 	{
 		[Test]
-		public void GetLayerByName_ReturnCorrectLayer()
+		public void GetLayerByNameReturnsCorrectLayer()
 		{
             MockRepository mocks = new MockRepository();
 
@@ -42,7 +43,7 @@ namespace SharpMap.Tests.Model
 		}
 
 		[Test]
-		public void FindLayerByPredicate()
+		public void FindLayerByPredicateReturnsMatchingLayers()
         {
             MockRepository mocks = new MockRepository();
 
@@ -52,13 +53,13 @@ namespace SharpMap.Tests.Model
             map.AddLayer(new VectorLayer("Layer 1", dataSource));
             map.AddLayer(new VectorLayer("Layer 3a", dataSource));
             map.AddLayer(new VectorLayer("Layer 2", dataSource));
-            map.AddLayer(new VectorLayer("Layer 3b", dataSource));
+            map.AddLayer(new VectorLayer("layer 3b", dataSource));
 
 			int count = 0;
 
             foreach (ILayer layer in map.FindLayers("Layer 3"))
 			{
-                Assert.IsTrue(layer.LayerName.StartsWith("Layer 3"));
+                Assert.IsTrue(layer.LayerName.StartsWith("Layer 3", StringComparison.CurrentCultureIgnoreCase));
 				count++;
 			}
 
