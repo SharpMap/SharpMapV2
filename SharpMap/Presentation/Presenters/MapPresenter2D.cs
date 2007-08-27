@@ -32,7 +32,7 @@ namespace SharpMap.Presentation
 	/// <summary>
 	/// Provides the input-handling and view-updating logic for a 2D map view.
 	/// </summary>
-	public class MapPresenter2D : BasePresenter<IMapView2D>
+	public abstract class MapPresenter2D : BasePresenter<IMapView2D>
 	{
 		#region Private fields
 
@@ -48,7 +48,8 @@ namespace SharpMap.Presentation
 		private readonly Matrix2D _toViewCoordinates = new Matrix2D();
 		private Matrix2D _toWorldTransform;
 		private StyleColor _backgroundColor;
-
+		private readonly IRenderer _vectorRenderer;
+		private readonly IRenderer _rasterRenderer;
 		#endregion
 
 		#region Object Construction/Destruction
@@ -61,6 +62,9 @@ namespace SharpMap.Presentation
 		protected MapPresenter2D(Map map, IMapView2D mapView)
 			: base(map, mapView)
 		{
+			_vectorRenderer = CreateVectorRenderer();
+			_rasterRenderer = CreateRasterRenderer();
+
 			Map.LayersChanged += Map_LayersChanged;
 			Map.SelectedToolChanged += Map_SelectedToolChanged;
 			Map.PropertyChanged += Map_PropertyChanged;
@@ -109,54 +113,15 @@ namespace SharpMap.Presentation
 			ToWorldTransformInternal = ToViewTransformInternal.Inverse;
 		}
 
-		protected virtual void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
-		{
-#if DEBUG
-			throw new NotImplementedException(); 
-#endif
-		}
-
-		protected virtual void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint, Point2D fromPoint2D, Point2D toPoint2D)
-		{
-#if DEBUG
-			throw new NotImplementedException();
-#endif
-		}
-
-		protected virtual void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth)
-		{
-#if DEBUG
-			throw new NotImplementedException();
-#endif
-		}
-
-		protected virtual void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth)
-		{
-#if DEBUG
-			throw new NotImplementedException();
-#endif
-		}
-
-		protected virtual void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope)
-		{
-#if DEBUG
-			throw new NotImplementedException();
-#endif
-		}
-
-		protected virtual void SetViewSize(Size2D fromSize, Size2D toSize)
-		{
-#if DEBUG
-			throw new NotImplementedException();
-#endif
-		}
-
-		protected virtual void SetViewWorldAspectRatio(double fromRatio, double toRatio)
-		{
-#if DEBUG
-			throw new NotImplementedException();
-#endif
-		}
+		protected abstract IRenderer CreateVectorRenderer();
+		protected abstract IRenderer CreateRasterRenderer();
+		protected abstract void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor);
+		protected abstract void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint);
+		protected abstract void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth);
+		protected abstract void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth);
+		protected abstract void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope);
+		protected abstract void SetViewSize(Size2D fromSize, Size2D toSize);
+		protected abstract void SetViewWorldAspectRatio(double fromRatio, double toRatio);
 
 		#endregion
 
@@ -321,7 +286,7 @@ namespace SharpMap.Presentation
 		}
 
 		/// <summary>
-		/// Gets or sets the aspect ratio of the <see cref="WorldHeight"/> 
+		/// Gets or sets the aspect ratio of the <see cref="WorldHeightInternal"/> 
 		/// to the <see cref="WorldWidthInternal"/>.
 		/// </summary>
 		/// <remarks> 
@@ -364,7 +329,7 @@ namespace SharpMap.Presentation
 		/// <see cref="BasePresenter{IMapView2D}.View"/> ViewSize height 
 		/// / <see cref="BasePresenter{IMapView2D}.View"/> ViewSize width).
 		/// </returns>
-		protected double WorldHeight
+		protected double WorldHeightInternal
 		{
 			get { return WorldWidthInternal * WorldAspectRatioInternal * View.ViewSize.Height / View.ViewSize.Width; }
 		}
@@ -401,7 +366,7 @@ namespace SharpMap.Presentation
 			IRenderer renderer;
 
 			//_layerRendererCatalog.TryGetValue(layer.GetType().TypeHandle, out renderer);
-			renderer = LayerRendererCatalog.Instance.Get<IRenderer>(layer.GetType());
+			renderer = LayerRendererRegistry.Instance.Get<IRenderer>(layer.GetType());
 			return renderer;
 		}
 
@@ -484,7 +449,7 @@ namespace SharpMap.Presentation
 		/// </remarks>
 		protected void ZoomToWorldWidthInternal(double newWorldWidth)
 		{
-			double newHeight = newWorldWidth * (WorldHeight / WorldWidthInternal);
+			double newHeight = newWorldWidth * (WorldHeightInternal / WorldWidthInternal);
 			double halfWidth = newWorldWidth * 0.5;
 			double halfHeight = newHeight * 0.5;
 
@@ -504,18 +469,18 @@ namespace SharpMap.Presentation
 
 		#region Protected Methods
 
-		protected void RegisterRenderer<TLayerType, TRenderObject>(IRenderer renderer)
+		protected void RegisterRenderer<TLayerType>(IRenderer renderer)
 		{
 			if (renderer == null)
 			{
 				throw new ArgumentNullException("renderer");
 			}
 
-			LayerRendererCatalog.Instance.Register<Point2D, Size2D, Rectangle2D, TRenderObject>(
-				typeof(TLayerType), renderer);
+			LayerRendererRegistry.Instance.Register(typeof(TLayerType), renderer);
 		}
 
 		protected TRenderer GetRenderer<TRenderer>(ILayer layer)
+			where TRenderer : class 
 		{
 			if (layer == null)
 			{
@@ -523,7 +488,7 @@ namespace SharpMap.Presentation
 			}
 
 			Type layerType = layer.GetType();
-			return LayerRendererCatalog.Instance.Get<TRenderer>(layerType);
+			return LayerRendererRegistry.Instance.Get<TRenderer>(layerType);
 		}
 
 		protected void CreateSelection(Point2D location)
@@ -603,12 +568,11 @@ namespace SharpMap.Presentation
 			SetViewBackgroundColor(e.CurrentValue, e.RequestedValue);
 		}
 
-		private void View_GeoCenterChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point2D, Point> e)
+		private void View_GeoCenterChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point> e)
 		{
-			GeoCenterInternal = e.RequestedGeoValue;
+			GeoCenterInternal = e.RequestedValue;
 
-			SetViewGeoCenter(e.RequestedGeoValue, e.CurrentGeoValue,
-				e.RequestedViewValue, e.CurrentViewValue);
+			SetViewGeoCenter(e.RequestedValue, e.CurrentValue);
 		}
 
 		private void View_MaximumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)

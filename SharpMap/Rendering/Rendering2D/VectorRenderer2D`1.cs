@@ -31,19 +31,15 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
 	public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
 	{
-		#region Fields
+		#region Instance fields
 
 		private Matrix2D _viewMatrix = new Matrix2D();
 		private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
-		private bool _disposed = false;
+		private bool _isDisposed = false;
 
 		#endregion
 
-		#region Object Construction/Destruction
-
-		public VectorRenderer2D()
-		{
-		}
+		#region Object construction and disposal
 
 		~VectorRenderer2D()
 		{
@@ -72,8 +68,8 @@ namespace SharpMap.Rendering.Rendering2D
 
 		protected bool IsDisposed
 		{
-			get { return _disposed; }
-			private set { _disposed = value; }
+			get { return _isDisposed; }
+			private set { _isDisposed = value; }
 		}
 
 		#endregion

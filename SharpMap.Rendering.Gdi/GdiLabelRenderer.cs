@@ -66,9 +66,9 @@ namespace SharpMap.Rendering.Gdi
                 return new Size2D(0, 0);
             }
 
-            using (GdiFont gdiFont = new GdiFont(font.FontFamily.Name, (float)font.Size.Height, ViewConverter.ViewToGdi(font.Style), GraphicsUnit.Pixel))
+            using (GdiFont gdiFont = new GdiFont(font.FontFamily.Name, (float)font.Size.Height, ViewConverter.Convert(font.Style), GraphicsUnit.Pixel))
             {
-                return ViewConverter.GdiToView(g.MeasureString(text, gdiFont));
+                return ViewConverter.Convert(g.MeasureString(text, gdiFont));
             }
         }
 
@@ -93,7 +93,7 @@ namespace SharpMap.Rendering.Gdi
                 g.RotateTransform(rotation);
                 g.TranslateTransform((float)-font.Size.Width / 2, (float)-font.Size.Height / 2);
 
-                using (Brush backBrush = ViewConverter.ViewToGdi(backColor))
+                using (Brush backBrush = ViewConverter.Convert(backColor))
                 {
                     if (backColor != null && backBrush != GdiBrushes.Transparent)
                     {
@@ -103,9 +103,9 @@ namespace SharpMap.Rendering.Gdi
 
                 GdiGraphicsPath path = new GdiGraphicsPath();
 
-                path.AddString(text, ViewConverter.ViewToGdi(font.FontFamily), (int)font.Style, (float)font.Size.Height, new GdiPoint(0, 0), null);
+                path.AddString(text, ViewConverter.Convert(font.FontFamily), (int)font.Style, (float)font.Size.Height, new GdiPoint(0, 0), null);
 
-                using (Pen haloPen = ViewConverter.ViewToGdi(halo))
+                using (Pen haloPen = ViewConverter.Convert(halo))
                 {
                     if (haloPen != null)
                     {
@@ -113,7 +113,7 @@ namespace SharpMap.Rendering.Gdi
                     }
                 }
 
-                using (SolidBrush foreBrush = new SolidBrush(ViewConverter.ViewToGdi(foreColor)))
+                using (SolidBrush foreBrush = new SolidBrush(ViewConverter.Convert(foreColor)))
                 {
                     g.FillPath(foreBrush, path);
                 }
@@ -122,7 +122,7 @@ namespace SharpMap.Rendering.Gdi
             }
             else
             {
-                using (Brush backBrush = ViewConverter.ViewToGdi(backColor))
+                using (Brush backBrush = ViewConverter.Convert(backColor))
                 {
                     if (backBrush != null && backBrush != GdiBrushes.Transparent)
                     {
@@ -132,10 +132,10 @@ namespace SharpMap.Rendering.Gdi
 
                 GdiGraphicsPath path = new GdiGraphicsPath();
 
-                PointF labelPoint = ViewConverter.ViewToGdi(location);
-                path.AddString(text, ViewConverter.ViewToGdi(font.FontFamily), (int)font.Style, (float)font.Size.Height, labelPoint, null);
+                PointF labelPoint = ViewConverter.Convert(location);
+                path.AddString(text, ViewConverter.Convert(font.FontFamily), (int)font.Style, (float)font.Size.Height, labelPoint, null);
 
-                using (Pen haloPen = ViewConverter.ViewToGdi(halo))
+                using (Pen haloPen = ViewConverter.Convert(halo))
                 {
                     if (haloPen != null)
                     {
@@ -143,7 +143,7 @@ namespace SharpMap.Rendering.Gdi
                     }
                 }
 
-                using (SolidBrush foreBrush = new SolidBrush(ViewConverter.ViewToGdi(foreColor)))
+                using (SolidBrush foreBrush = new SolidBrush(ViewConverter.Convert(foreColor)))
                 {
                     g.FillPath(foreBrush, path);
                 }

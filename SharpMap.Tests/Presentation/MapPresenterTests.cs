@@ -64,7 +64,7 @@ namespace SharpMap.Tests.Presentation
 			MapPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
 
 			mapPresenter.ZoomToWorldWidth(3500);
-			Assert.AreEqual(1750, mapPresenter.WorldHeight);
+			Assert.AreEqual(1750, mapPresenter.WorldHeightInternal);
 		}
 
 		[Test]
@@ -145,7 +145,7 @@ namespace SharpMap.Tests.Presentation
 			mapPresenter.ZoomToViewBounds(new Rectangle2D(300, 300, 900, 900));
 			Assert.AreEqual(new Point(60, 40), mapPresenter.GeoCenter);
 			Assert.AreEqual(60, mapPresenter.WorldWidth);
-			Assert.AreEqual(60, mapPresenter.WorldHeight);
+			Assert.AreEqual(60, mapPresenter.WorldHeightInternal);
 		}
 
 		[Test]
@@ -158,7 +158,7 @@ namespace SharpMap.Tests.Presentation
 			mapPresenter.ZoomToViewBounds(new Rectangle2D(100, 50, 300, 150));
 			Assert.AreEqual(new Point(50, 50), mapPresenter.GeoCenter);
 			Assert.AreEqual(50, mapPresenter.WorldWidth);
-			Assert.AreEqual(50, mapPresenter.WorldHeight);
+			Assert.AreEqual(50, mapPresenter.WorldHeightInternal);
 		}
 
 		[Test]
@@ -183,7 +183,7 @@ namespace SharpMap.Tests.Presentation
 			mapPresenter.ZoomToWorldBounds(new BoundingBox(20, 10, 100, 180));
 			Assert.AreEqual(new Point(60, 95), mapPresenter.GeoCenter);
 			Assert.AreEqual(170, mapPresenter.WorldWidth);
-			Assert.AreEqual(170, mapPresenter.WorldHeight);
+			Assert.AreEqual(170, mapPresenter.WorldHeightInternal);
 		}
 
 		[Test]

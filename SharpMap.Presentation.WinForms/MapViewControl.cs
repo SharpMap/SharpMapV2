@@ -21,71 +21,104 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
+using SharpMap.Geometries;
+using SharpMap.Rendering.Gdi;
+using SharpMap.Rendering.Rendering2D;
+using SharpMap.Styles;
+using SharpMap.Tools;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-
-using SharpMap.Layers;
-using SharpMap.Data;
-using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
-using SharpMap.Presentation;
-using SharpMap.Rendering;
-using SharpMap.Rendering.Rendering2D;
-using SharpMap.Rendering.Gdi;
-using SharpMap.Styles;
-using SharpMap.Tools;
 
 namespace SharpMap.Presentation.WinForms
 {
-    /// <summary>
-    /// </summary>
-    /// <remarks>
-    /// </remarks>
-    public class MapViewControl : Control, IMapView2D, IToolsView, ISupportInitialize
+	/// <summary>
+	/// Provides a WinForms control for viewing maps.
+	/// </summary>
+	public class MapViewControl : Control, IMapView2D, IToolsView
 	{
-		private double _dpi = 96;
-        private MapTool _selectedTool;
-        private bool _dragging = false;
-        private GdiPoint _mouseDownLocation = GdiPoint.Empty;
-        private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
-        private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
-        private Queue<KeyValuePair<PointF, GdiRenderObject>> _pathQueue = new Queue<KeyValuePair<PointF, GdiRenderObject>>();
-        private Queue<KeyValuePair<PointF, Image>> _tilesQueue = new Queue<KeyValuePair<PointF, Image>>();
-        private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
-        private List<MapTool> _tools;
+		private readonly double _dpi = 96;
+		private bool _dragging = false;
+		private GdiPoint _mouseDownLocation = GdiPoint.Empty;
+		private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
+		private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
+		private Queue<KeyValuePair<PointF, GdiRenderObject>> _pathQueue = new Queue<KeyValuePair<PointF, GdiRenderObject>>();
+		private Queue<KeyValuePair<PointF, Image>> _tilesQueue = new Queue<KeyValuePair<PointF, Image>>();
+		private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
+		private List<MapTool> _tools;
+		private MapPresenter _presenter;
+		private bool _backgroundBeingSet;
 
-        /// <summary>
-        /// Initializes a new map
-        /// </summary>
-        public MapViewControl()
+		/// <summary>
+		/// Initializes a new WinForms map view control.
+		/// </summary>
+		public MapViewControl()
 		{
 			using (Graphics g = CreateGraphics())
 			{
 				_dpi = g.DpiX;
 			}
 
-            _selectedTool = MapTool.None;
-            this.Cursor = Cursors.Cross;
+			Cursor = Cursors.Cross;
 
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            SetStyle(ControlStyles.Opaque, true);
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.ResizeRedraw, false);
-            SetStyle(ControlStyles.Selectable, true);
-            SetStyle(ControlStyles.SupportsTransparentBackColor, false);
-            SetStyle(ControlStyles.UserMouse, true);
-            SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.ResizeRedraw, false);
+			SetStyle(ControlStyles.Selectable, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, false);
+			SetStyle(ControlStyles.UserMouse, true);
+			SetStyle(ControlStyles.UserPaint, true);
+		}
+
+		public Map Map
+		{
+			private get
+			{
+				return _presenter.Map;
+			}
+			set
+			{
+				_presenter = new MapPresenter(value, this);
+			}
+		}
+
+		internal bool BackgroundBeingSet
+		{
+			get { return _backgroundBeingSet; }
+			set { _backgroundBeingSet = value; }
+		}
+
+		public override Color BackColor
+		{
+			get
+			{
+				return base.BackColor;
+			}
+			set
+			{
+				if (BackgroundBeingSet)
+				{
+					return;
+				}
+
+				BackgroundBeingSet = true;
+				base.BackColor = value;
+				BackgroundBeingSet = false;
+			}
+		}
+
+		protected override void OnBackColorChanged(EventArgs e)
+		{
+			base.OnBackColorChanged(e);
+			BackgroundColor = ViewConverter.Convert(BackColor);
 		}
 
 		#region IView Members
+
 		public string Title
 		{
 			get { return Name; }
@@ -102,218 +135,329 @@ namespace SharpMap.Presentation.WinForms
 			get { return _dpi; }
 		}
 
-        public Size2D ViewSize
-        {
-            get { return ViewConverter.GdiToView(base.Size); }
-            set { base.Size = GdiSize.Round(ViewConverter.ViewToGdi(value)); }
-        }
+		public void ShowRenderedObject(Point2D location, object renderedObject)
+		{
+			PointF point = ViewConverter.Convert(location);
 
-        public void ShowRenderedObject(Point2D location, object renderedObject)
-        {
-            PointF point = ViewConverter.ViewToGdi(location);
+			if (renderedObject is GdiRenderObject)
+			{
+				GdiRenderObject ro = (GdiRenderObject) renderedObject;
+				_pathQueue.Enqueue(new KeyValuePair<PointF, GdiRenderObject>(point, ro));
+			}
+			else if (renderedObject is Image)
+			{
+				Image tile = renderedObject as Image;
+				_tilesQueue.Enqueue(new KeyValuePair<PointF, Image>(point, tile));
+			}
+		}
 
-            if (renderedObject is GdiRenderObject)
-            {
-                GdiRenderObject ro = (GdiRenderObject)renderedObject;
-                _pathQueue.Enqueue(new KeyValuePair<PointF, GdiRenderObject>(point, ro));
-            }
-            else if (renderedObject is Image)
-            {
-                Image tile = renderedObject as Image;
-                _tilesQueue.Enqueue(new KeyValuePair<PointF, Image>(point, tile));
-            }
-        }
-
-        public event EventHandler<MapActionEventArgs<Point2D>> Hover;
-
+		public event EventHandler<MapActionEventArgs<Point2D>> Hover;
 		public event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
-
 		public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
+		public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
+		public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
+		public event EventHandler ZoomToExtentsRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
+		public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
 
-        public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
+		public StyleColor BackgroundColor
+		{
+			get { return _presenter.BackgroundColor; }
+			set
+			{
+				if (BackgroundBeingSet)
+				{
+					return;
+				}
 
-        public event EventHandler<SizeChangeEventArgs<Size2D>> SizeChangeRequested;
+				BackgroundBeingSet = true;
+				OnRequestBackgroundColorChange(BackgroundColor, value);
+				BackgroundBeingSet = false;
+			}
+		}
 
-        #endregion
+		public GeoPoint GeoCenter
+		{
+			get { return _presenter.GeoCenter; }
+			set { OnRequestGeoCenterChange(GeoCenter, value); }
+		}
 
-        #region IToolsView Members
+		public double MaximumWorldWidth
+		{
+			get { return _presenter.MaximumWorldWidth; }
+			set { OnRequestMaximumWorldWidthChange(MaximumWorldWidth, value); }
+		}
+
+		public double MinimumWorldWidth
+		{
+			get { return _presenter.MinimumWorldWidth; }
+			set { OnRequestMinimumWorldWidthChange(MinimumWorldWidth, value); }
+		}
+
+		public double PixelWorldWidth
+		{
+			get { return _presenter.PixelWorldWidth; }
+		}
+
+		public double PixelWorldHeight
+		{
+			get { return _presenter.PixelWorldHeight; }
+		}
+
+		public ViewSelection2D Selection
+		{
+			get { return _presenter.Selection; }
+		}
+
+		public Matrix2D ToViewTransform
+		{
+			get { return _presenter.ToViewTransform; }
+		}
+
+		public Matrix2D ToWorldTransform
+		{
+			get { return _presenter.ToWorldTransform; }
+		}
+
+		public BoundingBox ViewEnvelope
+		{
+			get { return _presenter.ViewEnvelope; }
+			set { OnRequestViewEnvelopeChange(ViewEnvelope, value); ; }
+		}
+
+		public Size2D ViewSize
+		{
+			get { return ViewConverter.Convert(Size); }
+			set { Size = GdiSize.Round(ViewConverter.Convert(value)); }
+		}
+
+		public double WorldAspectRatio
+		{
+			get { return _presenter.WorldAspectRatio; }
+			set { OnRequestWorldAspectRatioChange(WorldAspectRatio, value); }
+		}
+
+		public double WorldHeight
+		{
+			get { return _presenter.WorldHeight; }
+		}
+
+		public double WorldWidth
+		{
+			get { return _presenter.WorldWidth; }
+		}
+
+		public double WorldUnitsPerPixel
+		{
+			get { return _presenter.WorldUnitsPerPixel; }
+		}
+
+		public void ZoomToExtents()
+		{
+			_presenter.ZoomToExtents();
+		}
+
+		public void ZoomToViewBounds(Rectangle2D viewBounds)
+		{
+			_presenter.ZoomToViewBounds(viewBounds);
+		}
+
+		public void ZoomToWorldBounds(BoundingBox zoomBox)
+		{
+			_presenter.ZoomToWorldBounds(zoomBox);
+		}
+
+		public void ZoomToWorldWidth(double newWorldWidth)
+		{
+			_presenter.ZoomToWorldWidth(newWorldWidth);
+		}
+
+		#endregion
+
+		#region IToolsView Members
 
 		public event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IList<MapTool> Tools
-        {
-            get { return _tools; }
-            set 
-            {
-                if (_tools == null)
-                    _tools = new List<MapTool>();
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IList<MapTool> Tools
+		{
+			get { return _tools; }
+			set
+			{
+				if (_tools == null)
+					_tools = new List<MapTool>();
 
-                _tools.Clear();
-                _tools.AddRange(value);
-            }
-        }
+				_tools.Clear();
+				_tools.AddRange(value);
+			}
+		}
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MapTool SelectedTool
-        {
-            get { return _selectedTool; }
-            set 
-            {
-                if (_selectedTool != value)
-                {
-                    OnSelectedToolChangeRequest(value);
-                }
-            }
-        }
-        #endregion
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public MapTool SelectedTool
+		{
+			get { return Map.ActiveTool; }
+			set
+			{
+				if (Map.ActiveTool != value)
+				{
+					OnSelectedToolChangeRequest(value);
+				}
+			}
+		}
 
-        #region Control Overrides
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            //g.Transform = ViewTransform;
-        }
+		#endregion
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-        }
+		#region Control Overrides
 
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            MapTool currentTool = SelectedTool;
-            SelectedTool = e.Delta > 0 ? MapTool.ZoomIn : MapTool.ZoomOut;
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			Graphics g = e.Graphics;
+			//g.Transform = ViewTransform;
+		}
 
-            Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
-            OnBeginAction(selectBox.Location);
-            Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
-            OnMoveTo(endPoint);
-            OnEndAction(endPoint);
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			MapTool currentTool = SelectedTool;
+			SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
 
-            SelectedTool = currentTool;
+			Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
+			OnBeginAction(selectBox.Location);
+			Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
+			OnMoveTo(endPoint);
+			OnEndAction(endPoint);
 
-            base.OnMouseWheel(e);
-        }
+			SelectedTool = currentTool;
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (!_dragging && _mouseDownLocation != GdiPoint.Empty && e.Button == MouseButtons.Left)
-            {
-                _mouseRelativeLocation = new GdiPoint(e.X - _mouseDownLocation.X, e.Y - _mouseDownLocation.Y);
+			base.OnMouseWheel(e);
+		}
 
-                if (!withinDragTolerance(e.Location))
-                {
-                    _dragging = true;
-                    _mousePreviousLocation = _mouseDownLocation;
-                }
-            }
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			if (!_dragging && _mouseDownLocation != GdiPoint.Empty && e.Button == MouseButtons.Left)
+			{
+				_mouseRelativeLocation = new GdiPoint(e.X - _mouseDownLocation.X, e.Y - _mouseDownLocation.Y);
 
-            if (_dragging)
-            {
-                OnMoveTo(ViewConverter.GdiToView(e.Location));
-                _mousePreviousLocation = e.Location;
-            }
+				if (!withinDragTolerance(e.Location))
+				{
+					_dragging = true;
+					_mousePreviousLocation = _mouseDownLocation;
+				}
+			}
 
-            base.OnMouseMove(e);
-        }
+			if (_dragging)
+			{
+				OnMoveTo(ViewConverter.Convert(e.Location));
+				_mousePreviousLocation = e.Location;
+			}
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left) //dragging
-            {
-                _mouseDownLocation = e.Location;
-                OnBeginAction(ViewConverter.GdiToView(e.Location));
-            }
+			base.OnMouseMove(e);
+		}
 
-            base.OnMouseDown(e);
-        }
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left) //dragging
+			{
+				_mouseDownLocation = e.Location;
+				OnBeginAction(ViewConverter.Convert(e.Location));
+			}
 
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                OnEndAction(ViewConverter.GdiToView(e.Location));
-            }
+			base.OnMouseDown(e);
+		}
 
-            _mouseDownLocation = GdiPoint.Empty;
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				OnEndAction(ViewConverter.Convert(e.Location));
+			}
 
-            if (_dragging)
-            {
-                _dragging = false;
-                _mouseRelativeLocation = GdiPoint.Empty;
-                _mousePreviousLocation = GdiPoint.Empty;
-            }
+			_mouseDownLocation = GdiPoint.Empty;
 
-            base.OnMouseUp(e);
-        }
-        #endregion
+			if (_dragging)
+			{
+				_dragging = false;
+				_mouseRelativeLocation = GdiPoint.Empty;
+				_mousePreviousLocation = GdiPoint.Empty;
+			}
 
-        #region Event Invokers
-        private void OnViewSizeChangeRequested(GdiSize sizeRequested)
-        {
-            EventHandler<SizeChangeEventArgs<Size2D>> @event = SizeChangeRequested;
+			base.OnMouseUp(e);
+		}
 
-            if (@event != null)
-            {
-                SizeChangeEventArgs<Size2D> args 
-                    = new SizeChangeEventArgs<Size2D>(ViewConverter.GdiToView(sizeRequested));
+		#endregion
 
-                SizeChangeRequested(this, args);
-            }
-        }
+		#region Event Invokers
 
-        private void OnHover(Point2D actionLocation)
-        {
-            _globalActionArgs.SetActionPoint(actionLocation);
+		protected virtual void OnViewSizeChangeRequested(GdiSize sizeRequested)
+		{
+			EventHandler<MapViewPropertyChangeEventArgs<Size2D>> @event = SizeChangeRequested;
 
-            EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
+			if (@event != null)
+			{
+				MapViewPropertyChangeEventArgs<Size2D> args = new MapViewPropertyChangeEventArgs<Size2D>(
+					ViewConverter.Convert(Size), ViewConverter.Convert(sizeRequested));
 
-            if (@event != null)
-            {
-                @event(this, _globalActionArgs);
-            }
-        }
+				SizeChangeRequested(this, args);
+			}
+		}
 
-        private void OnBeginAction(Point2D actionLocation)
-        {
-            _globalActionArgs.SetActionPoint(actionLocation);
+		protected virtual void OnHover(Point2D actionLocation)
+		{
+			_globalActionArgs.SetActionPoint(actionLocation);
+
+			EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
+
+			if (@event != null)
+			{
+				@event(this, _globalActionArgs);
+			}
+		}
+
+		protected virtual void OnBeginAction(Point2D actionLocation)
+		{
+			_globalActionArgs.SetActionPoint(actionLocation);
 
 			EventHandler<MapActionEventArgs<Point2D>> @event = BeginAction;
 
-            if (@event != null)
-                @event(this, _globalActionArgs);
-        }
+			if (@event != null)
+				@event(this, _globalActionArgs);
+		}
 
-        private void OnMoveTo(Point2D actionLocation)
-        {
-            _globalActionArgs.SetActionPoint(actionLocation);
+		protected virtual void OnMoveTo(Point2D actionLocation)
+		{
+			_globalActionArgs.SetActionPoint(actionLocation);
 
 			EventHandler<MapActionEventArgs<Point2D>> @event = MoveTo;
 
-            if (@event != null)
-            {
-                @event(this, _globalActionArgs);
-            }
-        }
+			if (@event != null)
+			{
+				@event(this, _globalActionArgs);
+			}
+		}
 
-        private void OnEndAction(Point2D actionLocation)
-        {
-            _globalActionArgs.SetActionPoint(actionLocation);
+		protected virtual void OnEndAction(Point2D actionLocation)
+		{
+			_globalActionArgs.SetActionPoint(actionLocation);
 
 			EventHandler<MapActionEventArgs<Point2D>> @event = EndAction;
 
-            if (@event != null)
-            {
-                @event(this, _globalActionArgs);
-            }
-        }
+			if (@event != null)
+			{
+				@event(this, _globalActionArgs);
+			}
+		}
 
-        private void OnSelectedToolChangeRequest(MapTool requestedTool)
-        {
-            EventHandler<ToolChangeRequestedEventArgs> @event = ToolChangeRequested;
+		protected virtual void OnSelectedToolChangeRequest(MapTool requestedTool)
+		{
+			EventHandler<ToolChangeRequestedEventArgs> @event = ToolChangeRequested;
 
 			ToolChangeRequestedEventArgs args = new ToolChangeRequestedEventArgs(requestedTool);
 
@@ -321,145 +465,181 @@ namespace SharpMap.Presentation.WinForms
 			{
 				@event(this, args);
 			}
-        }
-        #endregion
+		}
 
-        #region Private Helper Methods
 
-        private bool withinDragTolerance(GdiPoint point)
-        {
-            return Math.Abs(_mouseDownLocation.X - point.X) <= 3 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
-        }
+		protected virtual void OnRequestBackgroundColorChange(StyleColor current, StyleColor requested)
+		{
+			EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> e = BackgroundColorChangeRequested;
 
-        private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
-        {
-            float scale = (float)Math.Pow(2, (float)Math.Abs(deltaDegrees) / 360f);
-            RectangleF zoomBox = ClientRectangle;
-            PointF center = new PointF((zoomBox.Width + zoomBox.Left) / 2, (zoomBox.Height + zoomBox.Top) / 2);
-            PointF centerDeltaVector = new PointF(location.X - center.X, location.Y - center.Y);
-            zoomBox.Offset(centerDeltaVector);
-            return new Rectangle2D(zoomBox.Left, zoomBox.Top, zoomBox.Right, zoomBox.Bottom);
-        }
+			if (e != null)
+			{
+				e(this, new MapViewPropertyChangeEventArgs<StyleColor>(current, requested));
+			}
+		}
 
-        //private void createSelectionBox(GdiPoint from, GdiPoint previousTo, GdiPoint to)
-        //{
-        //    //Debug.Write(String.Format("Old- W:{0}, H:{1}\t", _selectionRectangle.Width, _selectionRectangle.Height));
-        //    _selectionRectangle = createRectangleFromPoints(from, to);
-        //    //Debug.Write(String.Format("Now- W:{0}, H:{1}\t", _selectionRectangle.Width, _selectionRectangle.Height));
+		protected virtual void OnRequestGeoCenterChange(GeoPoint current, GeoPoint requested)
+		{
+			EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> e = GeoCenterChangeRequested;
 
-        //    //Debug.WriteLine(String.Format("P- W:{0}, H:{1}\tC- W:{2}, H:{3}", previousTo.X - from.X, previousTo.Y - from.Y, to.X - from.X, to.Y - from.Y));
+			if (e != null)
+			{
+				MapViewPropertyChangeEventArgs<GeoPoint> args = 
+					new MapViewPropertyChangeEventArgs<GeoPoint>(current, requested);
 
-        //    Rectangle redrawArea = createRectangleFromPoints(from, previousTo);
+				e(this, args);
+			}
+		}
 
-        //    if (redrawArea.Width < _selectionRectangle.Width || redrawArea.Height < _selectionRectangle.Height)
-        //        redrawArea = Rectangle.Union(_selectionRectangle, redrawArea);
+		private void OnRequestMaximumWorldWidthChange(double current, double requested)
+		{
+			throw new NotImplementedException();
+		}
 
-        //    redrawArea.Inflate(1, 1);
+		private void OnRequestMinimumWorldWidthChange(double current, double requested)
+		{
+			throw new NotImplementedException();
+		}
 
-        //    //Debug.WriteLine(String.Format("\tS: ({0,4}, {1,4}) W:{2,4} H:{3,4}; \tC: ({4,4}, {5,4}) W:{6,4} H:{7,4};",
-        //    //    _selectionRectangle.X, _selectionRectangle.Y, _selectionRectangle.Width, _selectionRectangle.Height,
-        //    //    redrawArea.X, redrawArea.Y, redrawArea.Width, redrawArea.Height));
-        //    Invalidate(redrawArea);
-        //}
+		private void OnRequestViewEnvelopeChange(BoundingBox current, BoundingBox requested)
+		{
+			throw new NotImplementedException();
+		}
 
-        //private void drawSelectionBox(Graphics g, Rectangle selectionRectangle)
-        //{
-        //    g.DrawRectangle(Pens.Black, selectionRectangle);
-        //}
+		private void OnRequestWorldAspectRatioChange(double current, double requested)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
 
-        //private void clearSelectionBox(GdiPoint boxCorner1, GdiPoint boxCorner2)
-        //{
-        //    _selectionRectangle = Rectangle.Empty;
-        //    Rectangle box = createRectangleFromPoints(boxCorner1, boxCorner2);
-        //    Invalidate(box);
-        //}
+		#region Private Helper Methods
 
-        //private Rectangle createRectangleFromPoints(GdiPoint boxCorner1, GdiPoint boxCorner2)
-        //{
-        //    return Rectangle.FromLTRB(
-        //        Math.Min(boxCorner1.X, boxCorner2.X),
-        //        Math.Min(boxCorner1.Y, boxCorner2.Y),
-        //        Math.Max(boxCorner1.X, boxCorner2.X),
-        //        Math.Max(boxCorner1.Y, boxCorner2.Y));
-        //}
-        #endregion
+		private bool withinDragTolerance(GdiPoint point)
+		{
+			return Math.Abs(_mouseDownLocation.X - point.X) <= 3 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
+		}
 
-        #region ISupportInitialize Members
+		private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
+		{
+			float scale = (float) Math.Pow(2, (float) Math.Abs(deltaDegrees)/360f);
+			RectangleF zoomBox = ClientRectangle;
+			PointF center = new PointF((zoomBox.Width + zoomBox.Left)/2, (zoomBox.Height + zoomBox.Top)/2);
+			PointF centerDeltaVector = new PointF(location.X - center.X, location.Y - center.Y);
+			zoomBox.Offset(centerDeltaVector);
+			return new Rectangle2D(zoomBox.Left, zoomBox.Top, zoomBox.Right, zoomBox.Bottom);
+		}
 
-        public void BeginInit()
-        {
-        }
+		//private void createSelectionBox(GdiPoint from, GdiPoint previousTo, GdiPoint to)
+		//{
+		//    //Debug.Write(String.Format("Old- W:{0}, H:{1}\t", _selectionRectangle.Width, _selectionRectangle.Height));
+		//    _selectionRectangle = createRectangleFromPoints(from, to);
+		//    //Debug.Write(String.Format("Now- W:{0}, H:{1}\t", _selectionRectangle.Width, _selectionRectangle.Height));
 
-        public void EndInit()
-        {
-        }
+		//    //Debug.WriteLine(String.Format("P- W:{0}, H:{1}\tC- W:{2}, H:{3}", previousTo.X - from.X, previousTo.Y - from.Y, to.X - from.X, to.Y - from.Y));
 
-        #endregion
-    }
+		//    Rectangle redrawArea = createRectangleFromPoints(from, previousTo);
 
-    #region Event Arg Classes
+		//    if (redrawArea.Width < _selectionRectangle.Width || redrawArea.Height < _selectionRectangle.Height)
+		//        redrawArea = Rectangle.Union(_selectionRectangle, redrawArea);
 
-    public class GdiMapActionEventArgs : MapActionEventArgs<Point2D>
-    {
-        public GdiMapActionEventArgs()
-            : base(new Point2D()) { }
+		//    redrawArea.Inflate(1, 1);
 
-        public void SetActionPoint(Point2D actionLocation)
-        {
-            ActionPoint = actionLocation;
-        }
-    }
+		//    //Debug.WriteLine(String.Format("\tS: ({0,4}, {1,4}) W:{2,4} H:{3,4}; \tC: ({4,4}, {5,4}) W:{6,4} H:{7,4};",
+		//    //    _selectionRectangle.X, _selectionRectangle.Y, _selectionRectangle.Width, _selectionRectangle.Height,
+		//    //    redrawArea.X, redrawArea.Y, redrawArea.Width, redrawArea.Height));
+		//    Invalidate(redrawArea);
+		//}
 
-    //public class MapMouseEventArgs : MouseEventArgs
-    //{
-    //    private GeoPoint _worldLocation;
+		//private void drawSelectionBox(Graphics g, Rectangle selectionRectangle)
+		//{
+		//    g.DrawRectangle(Pens.Black, selectionRectangle);
+		//}
 
-    //    internal MapMouseEventArgs(GeoPoint worldLocation, MouseButtons buttons, int clicks, int x, int y, int delta)
-    //        : base(buttons, clicks, x, y, delta)
-    //    {
-    //        _worldLocation = worldLocation;
-    //    }
+		//private void clearSelectionBox(GdiPoint boxCorner1, GdiPoint boxCorner2)
+		//{
+		//    _selectionRectangle = Rectangle.Empty;
+		//    Rectangle box = createRectangleFromPoints(boxCorner1, boxCorner2);
+		//    Invalidate(box);
+		//}
 
-    //    public GeoPoint WorldLocation
-    //    {
-    //        get { return _worldLocation; }
-    //    }
+		//private Rectangle createRectangleFromPoints(GdiPoint boxCorner1, GdiPoint boxCorner2)
+		//{
+		//    return Rectangle.FromLTRB(
+		//        Math.Min(boxCorner1.X, boxCorner2.X),
+		//        Math.Min(boxCorner1.Y, boxCorner2.Y),
+		//        Math.Max(boxCorner1.X, boxCorner2.X),
+		//        Math.Max(boxCorner1.Y, boxCorner2.Y));
+		//}
 
-    //    public GdiPoint ImageLocation
-    //    {
-    //        get { return this.Location; }
-    //    }
-    //}
+		#endregion
+	}
 
-    //public class MapQueryEventArgs : EventArgs
-    //{
-    //    private IEnumerable<FeatureDataRow> _data;
+	#region Event Arg Classes
 
-    //    internal MapQueryEventArgs(IEnumerable<FeatureDataRow> queriedFeatures)
-    //    {
-    //        _data = queriedFeatures;
-    //    }
+	public class GdiMapActionEventArgs : MapActionEventArgs<Point2D>
+	{
+		public GdiMapActionEventArgs()
+			: base(new Point2D())
+		{
+		}
 
-    //    public IEnumerable<FeatureDataRow> QueriedFeatures
-    //    {
-    //        get { return _data; }
-    //    }
-    //}
+		public void SetActionPoint(Point2D actionLocation)
+		{
+			ActionPoint = actionLocation;
+		}
+	}
 
-    //public class ActiveQueryToolChangedEventArgs : EventArgs
-    //{
-    //    private Tools _tool;
+	//public class MapMouseEventArgs : MouseEventArgs
+	//{
+	//    private GeoPoint _worldLocation;
 
-    //    internal ActiveQueryToolChangedEventArgs(Tools tool)
-    //    {
-    //        _tool = tool;
-    //    }
+	//    internal MapMouseEventArgs(GeoPoint worldLocation, MouseButtons buttons, int clicks, int x, int y, int delta)
+	//        : base(buttons, clicks, x, y, delta)
+	//    {
+	//        _worldLocation = worldLocation;
+	//    }
 
-    //    public Tools Tool
-    //    {
-    //        get { return _tool; }
-    //        set { _tool = value; }
-    //    }
-    //}
-    #endregion
+	//    public GeoPoint WorldLocation
+	//    {
+	//        get { return _worldLocation; }
+	//    }
+
+	//    public GdiPoint ImageLocation
+	//    {
+	//        get { return this.Location; }
+	//    }
+	//}
+
+	//public class MapQueryEventArgs : EventArgs
+	//{
+	//    private IEnumerable<FeatureDataRow> _data;
+
+	//    internal MapQueryEventArgs(IEnumerable<FeatureDataRow> queriedFeatures)
+	//    {
+	//        _data = queriedFeatures;
+	//    }
+
+	//    public IEnumerable<FeatureDataRow> QueriedFeatures
+	//    {
+	//        get { return _data; }
+	//    }
+	//}
+
+	//public class ActiveQueryToolChangedEventArgs : EventArgs
+	//{
+	//    private Tools _tool;
+
+	//    internal ActiveQueryToolChangedEventArgs(Tools tool)
+	//    {
+	//        _tool = tool;
+	//    }
+
+	//    public Tools Tool
+	//    {
+	//        get { return _tool; }
+	//        set { _tool = value; }
+	//    }
+	//}
+
+	#endregion
 }

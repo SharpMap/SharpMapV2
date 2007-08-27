@@ -287,7 +287,7 @@
     <Compile Include="Rendering\Rendering2D\Label2D.cs" />
     <Compile Include="Rendering\Rendering2D\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\Rendering2D\LabelRenderer2D`1.cs" />
-    <Compile Include="Rendering\LayerRendererCatalog.cs" />
+    <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\LayerSelectedEventArgs.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs.cs" />
     <Compile Include="Tools\IMapTool`1.cs" />

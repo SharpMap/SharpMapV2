@@ -18,10 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
-using System.Text;
-
+using SharpMap.Rendering.Rendering2D;
+using SharpMap.Styles;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
@@ -37,272 +36,284 @@ using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
 using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
-
-using SharpMap.Styles;
-using SharpMap.Presentation;
-using SharpMap.Rendering;
-using SharpMap.Rendering.Rendering2D;
 using StyleColorMatrix = SharpMap.Rendering.ColorMatrix;
 
 namespace SharpMap.Rendering.Gdi
 {
-    /// <summary>
-    /// A <see cref="VectorRenderer{GdiRenderObject}"/> which renders to GDI primatives.
-    /// </summary>
-    public class GdiVectorRenderer : VectorRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
-    {
-        private Dictionary<BrushLookupKey, Brush> _brushCache = new Dictionary<BrushLookupKey,Brush>();
-        private Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
-        private Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
+	/// <summary>
+	/// A <see cref="VectorRenderer2D{TRenderObject}"/> 
+	/// which renders to GDI primatives.
+	/// </summary>
+	public class GdiVectorRenderer : VectorRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
+	{
+		#region Instance fields
+		private readonly Dictionary<BrushLookupKey, GdiBrush> _brushCache = new Dictionary<BrushLookupKey, Brush>();
+		private readonly Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
+		private readonly Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
+		#endregion
 
-        public GdiVectorRenderer()
-        {
-        }
+		#region Dispose override
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				foreach (Brush brush in _brushCache.Values)
+				{
+					brush.Dispose();
+				}
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                foreach (Brush brush in _brushCache.Values)
-                {
-                    brush.Dispose();
-                }
-
-                foreach (Pen pen in _penCache.Values)
-                {
-                    pen.Dispose();
+				foreach (Pen pen in _penCache.Values)
+				{
+					pen.Dispose();
 				}
 
 				foreach (Bitmap bitmap in _symbolCache.Values)
 				{
 					bitmap.Dispose();
 				}
-            }
+			}
 
-            base.Dispose(disposing);            
-        }
+			base.Dispose(disposing);
+		}
+		#endregion
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderPath(GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
-        {
-            int pointCount = viewPath.Points.Count;
+		#region Render overrides
+		public override PositionedRenderObject2D<GdiRenderObject> RenderPath(
+			GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill,
+			StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+		{
+			GdiGraphicsPath gdiPath = new GdiGraphicsPath();
 
-            GdiGraphicsPath gdiPath = new GdiGraphicsPath();
+			foreach (GraphicsFigure2D figure in viewPath.Figures)
+			{
+				gdiPath.AddLines(ViewConverter.Convert(figure.Points));
 
-            foreach (GraphicsFigure2D figure in viewPath.Figures)
-            {
-                gdiPath.AddLines(ViewConverter.ViewToGdi(figure.Points));
+				if (figure.IsClosed)
+				{
+					gdiPath.CloseFigure();
+				}
+			}
 
-                if (figure.IsClosed)
-                {
-                    gdiPath.CloseFigure();
-                }
-            }
+			RectangleF bounds = gdiPath.GetBounds();
+			double centerX = bounds.Left + bounds.Width / 2;
+			double centerY = bounds.Top + bounds.Height / 2;
 
-            RectangleF bounds = gdiPath.GetBounds();
-            double centerX = bounds.Left + bounds.Width / 2;
-            double centerY = bounds.Top + bounds.Height / 2;
+			GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill),
+														 getBrush(selectFill), getPen(outline), getPen(highlightOutline),
+														 getPen(selectOutline));
 
-            GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill), getBrush(selectFill), getPen(outline), getPen(highlightOutline), getPen(selectOutline));
-            return new PositionedRenderObject2D<GdiRenderObject>(centerX, centerY, holder);
-        }
+			return new PositionedRenderObject2D<GdiRenderObject>(centerX, centerY, holder);
+		}
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
-        {
-            SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
-            return RenderPath(path, transparentBrush, transparentBrush, transparentBrush, outline, highlightOutline, selectOutline);
-        }
+		public override PositionedRenderObject2D<GdiRenderObject> RenderPath(GraphicsPath2D path, StylePen outline,
+																			 StylePen highlightOutline, StylePen selectOutline)
+		{
+			SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
+			return RenderPath(path, transparentBrush, transparentBrush,
+				transparentBrush, outline, highlightOutline, selectOutline);
+		}
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData)
-        {
-            return RenderSymbol(location, symbolData, symbolData, symbolData);
-        }
+		public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData)
+		{
+			return RenderSymbol(location, symbolData, symbolData, symbolData);
+		}
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData, StyleColorMatrix highlight, StyleColorMatrix select)
-        {
-            Symbol2D highlightSymbol = symbolData.Clone();
-            highlightSymbol.ColorTransform = highlight;
+		public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData,
+																			   StyleColorMatrix highlight,
+																			   StyleColorMatrix select)
+		{
+			Symbol2D highlightSymbol = symbolData.Clone();
+			highlightSymbol.ColorTransform = highlight;
 
-            Symbol2D selectSymbol = symbolData.Clone();
-            selectSymbol.ColorTransform = select;
+			Symbol2D selectSymbol = symbolData.Clone();
+			selectSymbol.ColorTransform = select;
 
-            return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
-        }
+			return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
+		}
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
-        {
-            if (highlightSymbol == null)
-            {
-                highlightSymbol = symbol;
-            }
+		public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbol,
+																			   Symbol2D highlightSymbol, Symbol2D selectSymbol)
+		{
+			if (highlightSymbol == null)
+			{
+				highlightSymbol = symbol;
+			}
 
-            if (selectSymbol == null)
-            {
-                selectSymbol = symbol;
-            }
+			if (selectSymbol == null)
+			{
+				selectSymbol = symbol;
+			}
 
-            Bitmap bitmapSymbol = getSymbol(symbol);
-            Matrix transform = ViewConverter.ViewToGdi(symbol.AffineTransform);
-            GdiColorMatrix colorTransform = ViewConverter.ViewToGdi(symbol.ColorTransform);
-            GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
-            return new PositionedRenderObject2D<GdiRenderObject>(location.X, location.Y, holder);
+			Bitmap bitmapSymbol = getSymbol(symbol);
+			GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
+			GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
+			GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
+			return new PositionedRenderObject2D<GdiRenderObject>(location.X, location.Y, holder);
 
-            //if (symbolRotation != 0 && symbolRotation != float.NaN)
-            //{
-            //    g.TranslateTransform(pointLocation.X, pointLocation.Y);
-            //    g.RotateTransform(symbolRotation);
-            //    g.TranslateTransform(-symbol.Width / 2, -symbol.Height / 2);
-            //    if (symbolScale == 1f)
-            //        g.DrawImageUnscaled(symbol, (int)(pointLocation.X - symbol.Width / 2 + symbolOffset.X), (int)(pointLocation.Y - symbol.Height / 2 + symbolOffset.Y));
-            //    else
-            //    {
-            //        float width = symbol.Width * symbolScale;
-            //        float height = symbol.Height * symbolScale;
-            //        g.DrawImage(symbol, (int)pointLocation.X - width / 2 + symbolOffset.X * symbolScale, (int)pointLocation.Y - height / 2 + symbolOffset.Y * symbolScale, width, height);
-            //    }
-            //    g.Transform = map.MapTransform;
-            //}
-            //else
-            //{
-            //    if (symbolScale == 1f)
-            //        g.DrawImageUnscaled(symbol, (int)(pointLocation.X - symbol.Width / 2 + symbolOffset.X), (int)(pointLocation.Y - symbol.Height / 2 + symbolOffset.Y));
-            //    else
-            //    {
-            //        float width = symbol.Width * symbolScale;
-            //        float height = symbol.Height * symbolScale;
+			//if (symbolRotation != 0 && symbolRotation != float.NaN)
+			//{
+			//    g.TranslateTransform(pointLocation.X, pointLocation.Y);
+			//    g.RotateTransform(symbolRotation);
+			//    g.TranslateTransform(-symbol.Width / 2, -symbol.Height / 2);
+			//    if (symbolScale == 1f)
+			//        g.DrawImageUnscaled(symbol, (int)(pointLocation.X - symbol.Width / 2 + symbolOffset.X), (int)(pointLocation.Y - symbol.Height / 2 + symbolOffset.Y));
+			//    else
+			//    {
+			//        float width = symbol.Width * symbolScale;
+			//        float height = symbol.Height * symbolScale;
+			//        g.DrawImage(symbol, (int)pointLocation.X - width / 2 + symbolOffset.X * symbolScale, (int)pointLocation.Y - height / 2 + symbolOffset.Y * symbolScale, width, height);
+			//    }
+			//    g.Transform = map.MapTransform;
+			//}
+			//else
+			//{
+			//    if (symbolScale == 1f)
+			//        g.DrawImageUnscaled(symbol, (int)(pointLocation.X - symbol.Width / 2 + symbolOffset.X), (int)(pointLocation.Y - symbol.Height / 2 + symbolOffset.Y));
+			//    else
+			//    {
+			//        float width = symbol.Width * symbolScale;
+			//        float height = symbol.Height * symbolScale;
 
-            //    }
-            //}
-        }
+			//    }
+			//}
+		}
 
-        private Brush getBrush(StyleBrush styleBrush)
-        {
-            if (styleBrush == null)
-            {
-                return null;
-            }
+		#endregion
 
-            BrushLookupKey key = new BrushLookupKey(styleBrush.GetType().TypeHandle, styleBrush.ToString());
-            Brush brush;
-            _brushCache.TryGetValue(key, out brush);
+		#region Private helper methods
 
-            if (brush == null)
-            {
-                brush = ViewConverter.ViewToGdi(styleBrush);
-                _brushCache[key] = brush;
-            }
+		private Brush getBrush(StyleBrush styleBrush)
+		{
+			if (styleBrush == null)
+			{
+				return null;
+			}
 
-            return brush;
-        }
+			BrushLookupKey key = new BrushLookupKey(styleBrush.GetType().TypeHandle, styleBrush.ToString());
+			Brush brush;
+			_brushCache.TryGetValue(key, out brush);
 
-        private Pen getPen(StylePen stylePen)
-        {
-            if (stylePen == null)
-            {
-                return null;
-            }
+			if (brush == null)
+			{
+				brush = ViewConverter.Convert(styleBrush);
+				_brushCache[key] = brush;
+			}
 
-            PenLookupKey key = new PenLookupKey(stylePen.GetType().TypeHandle, stylePen.ToString());
-            Pen pen;
-            _penCache.TryGetValue(key, out pen);
+			return brush;
+		}
 
-            if (pen == null)
-            {
-                pen = ViewConverter.ViewToGdi(stylePen);
-                _penCache[key] = pen;
-            }
+		private Pen getPen(StylePen stylePen)
+		{
+			if (stylePen == null)
+			{
+				return null;
+			}
 
-            return pen;
-        }
+			PenLookupKey key = new PenLookupKey(stylePen.GetType().TypeHandle, stylePen.ToString());
+			Pen pen;
+			_penCache.TryGetValue(key, out pen);
 
-        private Bitmap getSymbol(Symbol2D symbol2D)
-        {
-            if (symbol2D == null)
-            {
-                return null;
-            }
+			if (pen == null)
+			{
+				pen = ViewConverter.Convert(stylePen);
+				_penCache[key] = pen;
+			}
 
-            SymbolLookupKey key = new SymbolLookupKey(symbol2D.ToString());
-            Bitmap symbol = null;
-            _symbolCache.TryGetValue(key, out symbol);
+			return pen;
+		}
 
-            if (symbol == null)
-            {
-                MemoryStream data = new MemoryStream();
-                symbol2D.SymbolData.Position = 0;
+		private Bitmap getSymbol(Symbol2D symbol2D)
+		{
+			if (symbol2D == null)
+			{
+				return null;
+			}
 
-                using (BinaryReader reader = new BinaryReader(symbol2D.SymbolData))
-                {
-                    data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
-                }
+			SymbolLookupKey key = new SymbolLookupKey(symbol2D.ToString());
+			Bitmap symbol;
+			_symbolCache.TryGetValue(key, out symbol);
 
-                symbol = new Bitmap(data);
-                _symbolCache[key] = symbol;
-            }
+			if (symbol == null)
+			{
+				MemoryStream data = new MemoryStream();
+				symbol2D.SymbolData.Position = 0;
 
-            return symbol;
-        }
+				using (BinaryReader reader = new BinaryReader(symbol2D.SymbolData))
+				{
+					data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
+				}
 
-        private struct BrushLookupKey : IEquatable<BrushLookupKey>
-        {
-            public readonly RuntimeTypeHandle StyleBrushType;
-            public readonly string StyleBrushValue;
+				symbol = new Bitmap(data);
+				_symbolCache[key] = symbol;
+			}
 
-            public BrushLookupKey(RuntimeTypeHandle type, string styleBrushValue)
-            {
-                StyleBrushType = type;
-                StyleBrushValue = styleBrushValue;
-            }
+			return symbol;
+		} 
+		#endregion
 
-            #region IEquatable<BrushLookupKey> Members
+		#region Nested types
+		private struct BrushLookupKey : IEquatable<BrushLookupKey>
+		{
+			public readonly RuntimeTypeHandle StyleBrushType;
+			public readonly string StyleBrushValue;
 
-            public bool Equals(BrushLookupKey other)
-            {
-                return other.StyleBrushType.Equals(StyleBrushType)
-                    && other.StyleBrushValue == StyleBrushValue;
-            }
+			public BrushLookupKey(RuntimeTypeHandle type, string styleBrushValue)
+			{
+				StyleBrushType = type;
+				StyleBrushValue = styleBrushValue;
+			}
 
-            #endregion
-        }
+			#region IEquatable<BrushLookupKey> Members
 
-        private struct PenLookupKey : IEquatable<PenLookupKey>
-        {
-            public readonly RuntimeTypeHandle StylePenType;
-            public readonly string StylePenValue;
+			public bool Equals(BrushLookupKey other)
+			{
+				return other.StyleBrushType.Equals(StyleBrushType)
+					   && other.StyleBrushValue == StyleBrushValue;
+			}
 
-            public PenLookupKey(RuntimeTypeHandle type, string stylePenValue)
-            {
-                StylePenType = type;
-                StylePenValue = stylePenValue;
-            }
+			#endregion
+		}
 
-            #region IEquatable<PenLookupKey> Members
+		private struct PenLookupKey : IEquatable<PenLookupKey>
+		{
+			public readonly RuntimeTypeHandle StylePenType;
+			public readonly string StylePenValue;
 
-            public bool Equals(PenLookupKey other)
-            {
-                return other.StylePenType.Equals(StylePenType)
-                    && other.StylePenValue == StylePenValue;
-            }
+			public PenLookupKey(RuntimeTypeHandle type, string stylePenValue)
+			{
+				StylePenType = type;
+				StylePenValue = stylePenValue;
+			}
 
-            #endregion
-        }
+			#region IEquatable<PenLookupKey> Members
 
-        private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
-        {
-            public readonly string SymbolValue;
+			public bool Equals(PenLookupKey other)
+			{
+				return other.StylePenType.Equals(StylePenType)
+					   && other.StylePenValue == StylePenValue;
+			}
 
-            public SymbolLookupKey(string symbolValue)
-            {
-                SymbolValue = symbolValue;
-            }
+			#endregion
+		}
 
-            #region IEquatable<SymbolLookupKey> Members
+		private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
+		{
+			public readonly string SymbolValue;
 
-            public bool Equals(SymbolLookupKey other)
-            {
-                return other.SymbolValue == SymbolValue;
-            }
+			public SymbolLookupKey(string symbolValue)
+			{
+				SymbolValue = symbolValue;
+			}
 
-            #endregion
-        }
-    }
+			#region IEquatable<SymbolLookupKey> Members
+
+			public bool Equals(SymbolLookupKey other)
+			{
+				return other.SymbolValue == SymbolValue;
+			}
+
+			#endregion
+		} 
+		#endregion
+	}
 }

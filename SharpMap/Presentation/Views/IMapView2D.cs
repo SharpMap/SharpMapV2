@@ -29,7 +29,7 @@ namespace SharpMap.Presentation
 		event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
 		event EventHandler<MapActionEventArgs<Point2D>> EndAction;
 		event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-		event EventHandler<MapViewPropertyChangeEventArgs<Point2D, Point>> GeoCenterChangeRequested;
+		event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
