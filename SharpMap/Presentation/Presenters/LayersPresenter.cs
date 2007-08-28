@@ -16,12 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
-using SharpMap.Layers;
-using SharpMap.Styles;
+using System.ComponentModel;
 
 namespace SharpMap.Presentation
 {
@@ -36,7 +31,7 @@ namespace SharpMap.Presentation
             _selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
             _visibleLayersChangeRequestedDelegate = handleVisibileLayersChangeRequested;
 
-            Map.SelectedLayersChanged += handleMapSelectedLayersChanged;
+            Map.PropertyChanged += handleMapPropertyChanged;
             Map.LayersChanged += handleMapLayersCollectionChanged;
 
             View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
@@ -45,25 +40,25 @@ namespace SharpMap.Presentation
 
         #region Helper Functions
 
-        void handleMapLayersCollectionChanged(object sender, LayersChangedEventArgs e)
+        private void handleMapLayersCollectionChanged(object sender, LayersChangedEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        void handleMapSelectedLayersChanged(object sender, EventArgs e)
+        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             throw new NotImplementedException();
         }
 
         private void handleVisibileLayersChangeRequested(object sender, LayerActionEventArgs e)
         {
-
         }
 
         private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)
         {
             Map.SelectLayers(e.Layers);
         }
+
         #endregion
     }
 }

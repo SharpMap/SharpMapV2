@@ -74,7 +74,7 @@ namespace SharpMap.Tests.Model
 			Assert.AreEqual(map.Center, Point.Empty);
 			Assert.IsNotNull(map.Layers);
 			Assert.AreEqual(map.Layers.Count, 0);
-			Assert.AreEqual(map.ActiveTool, MapTool.None);
+			Assert.AreEqual(map.ActiveTool, StandardMapTools2D.None);
 			Assert.IsNotNull(map.SelectedLayers);
 		}
 

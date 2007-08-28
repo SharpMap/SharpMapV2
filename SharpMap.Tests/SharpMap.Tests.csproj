@@ -71,7 +71,7 @@
     <Compile Include="Geometries\PolygonTests.cs" />
     <Compile Include="Presentation\LayerPresenterTests.cs" />
     <Compile Include="Presentation\LayerStylePresenterTests.cs" />
-    <Compile Include="Presentation\MapPresenterTests.cs" />
+    <Compile Include="Presentation\MapPresenter2DTests.cs" />
     <Compile Include="Model\MapTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Presentation\ScreenHelper.cs" />

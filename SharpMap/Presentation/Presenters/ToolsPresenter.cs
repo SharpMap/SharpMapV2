@@ -17,8 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
+using System.ComponentModel;
 using SharpMap.Tools;
 
 namespace SharpMap.Presentation
@@ -33,26 +32,31 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <param name="map">The map model to present.</param>
         /// <param name="toolsView">The view to accept input from and keep synchronized with the model.</param>
-        public ToolsPresenter(SharpMap.Map map, IToolsView toolsView)
+        public ToolsPresenter(Map map, IToolsView toolsView)
             : base(map, toolsView)
         {
-            Map.SelectedToolChanged += new EventHandler(handleSelectedToolChanged);
-            View.ToolChangeRequested += new EventHandler<ToolChangeRequestedEventArgs>(handleToolChangeRequested);
-            
+            Map.PropertyChanged += handleMapPropertyChanged;
+            View.ToolChangeRequested += handleToolChangeRequested;
+
             // TODO: tool configuration should come from a config file and / or reflection
-			List<MapTool> mapTools = new List<MapTool>(
-				new MapTool[] { StandardMapTools2D.Pan, StandardMapTools2D.Query, StandardMapTools2D.ZoomIn, StandardMapTools2D.ZoomOut });
+            List<MapTool> mapTools = new List<MapTool>(
+                new MapTool[]
+                    {
+                        StandardMapTools2D.Pan, StandardMapTools2D.Query, StandardMapTools2D.ZoomIn,
+                        StandardMapTools2D.ZoomOut
+                    });
+
             View.Tools = mapTools;
+        }
+
+        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void handleToolChangeRequested(object sender, ToolChangeRequestedEventArgs e)
         {
             Map.ActiveTool = e.RequestedTool;
-        }
-
-        private void handleSelectedToolChanged(object sender, EventArgs e)
-        {
-            View.SelectedTool = Map.ActiveTool;
         }
     }
 }

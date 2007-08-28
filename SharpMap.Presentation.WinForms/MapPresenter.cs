@@ -141,39 +141,11 @@ namespace SharpMap.Presentation.WinForms
 
 		#endregion
 
-		protected override void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
-		{
-			ViewControl.BackColor = ViewConverter.Convert(toColor);
-		}
-
-		protected override void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope)
-		{
-			ViewEnvelopeInternal = toEnvelope;
-		}
-
-		protected override void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint)
-		{
-			GeoCenterInternal = toGeoPoint;
-		}
-
-		protected override void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth)
-		{
-			MaximumWorldWidthInternal = toMaxWidth;
-		}
-
-		protected override void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth)
-		{
-			MinimumWorldWidthInternal = toMinWidth;
-		}
-
-		protected override void SetViewSize(Size2D fromSize, Size2D toSize)
-		{
-			ViewControl.ViewSize = toSize;
-		}
-
-		protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
-		{
-			WorldAspectRatioInternal = toRatio;
-		}
+        #region View property setters
+        protected override void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
+        {
+            ViewControl.BackColor = ViewConverter.Convert(toColor);
+        }
+        #endregion
 	}
 }

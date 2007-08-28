@@ -74,6 +74,9 @@ namespace SharpMap.Presentation.WinForms
 			SetStyle(ControlStyles.UserPaint, true);
 		}
 
+        /// <summary>
+        /// Sets the map to display.
+        /// </summary>
 		public Map Map
 		{
 			private get
@@ -92,31 +95,6 @@ namespace SharpMap.Presentation.WinForms
 			set { _backgroundBeingSet = value; }
 		}
 
-		public override Color BackColor
-		{
-			get
-			{
-				return base.BackColor;
-			}
-			set
-			{
-				if (BackgroundBeingSet)
-				{
-					return;
-				}
-
-				BackgroundBeingSet = true;
-				base.BackColor = value;
-				BackgroundBeingSet = false;
-			}
-		}
-
-		protected override void OnBackColorChanged(EventArgs e)
-		{
-			base.OnBackColorChanged(e);
-			BackgroundColor = ViewConverter.Convert(BackColor);
-		}
-
 		#region IView Members
 
 		public string Title
@@ -127,157 +105,180 @@ namespace SharpMap.Presentation.WinForms
 
 		#endregion
 
-		#region IMapView2D Members
+        #region IMapView2D Members
 
-		[Browsable(false)]
-		public double Dpi
-		{
-			get { return _dpi; }
-		}
+        #region Events
+        public event EventHandler<MapActionEventArgs<Point2D>> Hover;
+        public event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
+        public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
+        public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
+        public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
+        public event EventHandler ZoomToExtentsRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested; 
+        #endregion
+        
+        #region Properties
 
-		public void ShowRenderedObject(Point2D location, object renderedObject)
-		{
-			PointF point = ViewConverter.Convert(location);
+        [Browsable(false)]
+        public StyleColor BackgroundColor
+        {
+            get { return _presenter.BackgroundColor; }
+            set
+            {
+                if (BackgroundBeingSet)
+                {
+                    return;
+                }
 
-			if (renderedObject is GdiRenderObject)
-			{
-				GdiRenderObject ro = (GdiRenderObject) renderedObject;
-				_pathQueue.Enqueue(new KeyValuePair<PointF, GdiRenderObject>(point, ro));
-			}
-			else if (renderedObject is Image)
-			{
-				Image tile = renderedObject as Image;
-				_tilesQueue.Enqueue(new KeyValuePair<PointF, Image>(point, tile));
-			}
-		}
+                BackgroundBeingSet = true;
+                OnRequestBackgroundColorChange(BackgroundColor, value);
+                BackgroundBeingSet = false;
+            }
+        }
 
-		public event EventHandler<MapActionEventArgs<Point2D>> Hover;
-		public event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
-		public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
-		public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
-		public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
-		public event EventHandler ZoomToExtentsRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
-		public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
+        [Browsable(false)]
+        public double Dpi
+        {
+            get { return _dpi; }
+        }
 
-		public StyleColor BackgroundColor
-		{
-			get { return _presenter.BackgroundColor; }
-			set
-			{
-				if (BackgroundBeingSet)
-				{
-					return;
-				}
+        [Browsable(false)]
+        public GeoPoint GeoCenter
+        {
+            get { return _presenter.GeoCenter; }
+            set { OnRequestGeoCenterChange(GeoCenter, value); }
+        }
 
-				BackgroundBeingSet = true;
-				OnRequestBackgroundColorChange(BackgroundColor, value);
-				BackgroundBeingSet = false;
-			}
-		}
+        [Browsable(false)]
+        public double MaximumWorldWidth
+        {
+            get { return _presenter.MaximumWorldWidth; }
+            set { OnRequestMaximumWorldWidthChange(MaximumWorldWidth, value); }
+        }
 
-		public GeoPoint GeoCenter
-		{
-			get { return _presenter.GeoCenter; }
-			set { OnRequestGeoCenterChange(GeoCenter, value); }
-		}
+        [Browsable(false)]
+        public double MinimumWorldWidth
+        {
+            get { return _presenter.MinimumWorldWidth; }
+            set { OnRequestMinimumWorldWidthChange(MinimumWorldWidth, value); }
+        }
 
-		public double MaximumWorldWidth
-		{
-			get { return _presenter.MaximumWorldWidth; }
-			set { OnRequestMaximumWorldWidthChange(MaximumWorldWidth, value); }
-		}
+        [Browsable(false)]
+        public double PixelWorldWidth
+        {
+            get { return _presenter.PixelWorldWidth; }
+        }
 
-		public double MinimumWorldWidth
-		{
-			get { return _presenter.MinimumWorldWidth; }
-			set { OnRequestMinimumWorldWidthChange(MinimumWorldWidth, value); }
-		}
+        [Browsable(false)]
+        public double PixelWorldHeight
+        {
+            get { return _presenter.PixelWorldHeight; }
+        }
 
-		public double PixelWorldWidth
-		{
-			get { return _presenter.PixelWorldWidth; }
-		}
+        [Browsable(false)]
+        public ViewSelection2D Selection
+        {
+            get { return _presenter.Selection; }
+        }
 
-		public double PixelWorldHeight
-		{
-			get { return _presenter.PixelWorldHeight; }
-		}
+        [Browsable(false)]
+        public Matrix2D ToViewTransform
+        {
+            get { return _presenter.ToViewTransform; }
+        }
 
-		public ViewSelection2D Selection
-		{
-			get { return _presenter.Selection; }
-		}
+        [Browsable(false)]
+        public Matrix2D ToWorldTransform
+        {
+            get { return _presenter.ToWorldTransform; }
+        }
 
-		public Matrix2D ToViewTransform
-		{
-			get { return _presenter.ToViewTransform; }
-		}
+        [Browsable(false)]
+        public BoundingBox ViewEnvelope
+        {
+            get { return _presenter.ViewEnvelope; }
+            set { OnRequestViewEnvelopeChange(ViewEnvelope, value); ; }
+        }
 
-		public Matrix2D ToWorldTransform
-		{
-			get { return _presenter.ToWorldTransform; }
-		}
+        [Browsable(false)]
+        public Size2D ViewSize
+        {
+            get { return ViewConverter.Convert(Size); }
+            set { Size = GdiSize.Round(ViewConverter.Convert(value)); }
+        }
 
-		public BoundingBox ViewEnvelope
-		{
-			get { return _presenter.ViewEnvelope; }
-			set { OnRequestViewEnvelopeChange(ViewEnvelope, value); ; }
-		}
+        [Browsable(false)]
+        public double WorldAspectRatio
+        {
+            get { return _presenter.WorldAspectRatio; }
+            set { OnRequestWorldAspectRatioChange(WorldAspectRatio, value); }
+        }
 
-		public Size2D ViewSize
-		{
-			get { return ViewConverter.Convert(Size); }
-			set { Size = GdiSize.Round(ViewConverter.Convert(value)); }
-		}
+        [Browsable(false)]
+        public double WorldHeight
+        {
+            get { return _presenter.WorldHeight; }
+        }
 
-		public double WorldAspectRatio
-		{
-			get { return _presenter.WorldAspectRatio; }
-			set { OnRequestWorldAspectRatioChange(WorldAspectRatio, value); }
-		}
+        [Browsable(false)]
+        public double WorldWidth
+        {
+            get { return _presenter.WorldWidth; }
+        }
 
-		public double WorldHeight
-		{
-			get { return _presenter.WorldHeight; }
-		}
+        [Browsable(false)]
+        public double WorldUnitsPerPixel
+        {
+            get { return _presenter.WorldUnitsPerPixel; }
+        } 
+        #endregion
 
-		public double WorldWidth
-		{
-			get { return _presenter.WorldWidth; }
-		}
+        #region Methods
 
-		public double WorldUnitsPerPixel
-		{
-			get { return _presenter.WorldUnitsPerPixel; }
-		}
+        public void ShowRenderedObject(Point2D location, object renderedObject)
+        {
+            PointF point = ViewConverter.Convert(location);
 
-		public void ZoomToExtents()
-		{
-			_presenter.ZoomToExtents();
-		}
+            if (renderedObject is GdiRenderObject)
+            {
+                GdiRenderObject ro = (GdiRenderObject)renderedObject;
+                _pathQueue.Enqueue(new KeyValuePair<PointF, GdiRenderObject>(point, ro));
+            }
+            else if (renderedObject is Image)
+            {
+                Image tile = renderedObject as Image;
+                _tilesQueue.Enqueue(new KeyValuePair<PointF, Image>(point, tile));
+            }
+        }
 
-		public void ZoomToViewBounds(Rectangle2D viewBounds)
-		{
-			_presenter.ZoomToViewBounds(viewBounds);
-		}
+        public void ZoomToExtents()
+        {
+            OnRequestZoomToExtents();
+        }
 
-		public void ZoomToWorldBounds(BoundingBox zoomBox)
-		{
-			_presenter.ZoomToWorldBounds(zoomBox);
-		}
+        public void ZoomToViewBounds(Rectangle2D viewBounds)
+        {
+            OnRequestZoomToViewBounds(viewBounds);
+        }
 
-		public void ZoomToWorldWidth(double newWorldWidth)
-		{
-			_presenter.ZoomToWorldWidth(newWorldWidth);
-		}
+        public void ZoomToWorldBounds(BoundingBox zoomBox)
+        {
+            OnRequestZoomToWorldBounds(zoomBox);
+        }
+
+        public void ZoomToWorldWidth(double newWorldWidth)
+        {
+            OnRequestZoomToWorldWidth(newWorldWidth);
+        } 
+        #endregion
 
 		#endregion
 
@@ -316,7 +317,32 @@ namespace SharpMap.Presentation.WinForms
 
 		#endregion
 
-		#region Control Overrides
+        #region Control Overrides
+
+        public override Color BackColor
+        {
+            get
+            {
+                return base.BackColor;
+            }
+            set
+            {
+                if (BackgroundBeingSet)
+                {
+                    return;
+                }
+
+                BackgroundBeingSet = true;
+                base.BackColor = value;
+                BackgroundBeingSet = false;
+            }
+        }
+
+        protected override void OnBackColorChanged(EventArgs e)
+        {
+            base.OnBackColorChanged(e);
+            BackgroundColor = ViewConverter.Convert(BackColor);
+        }
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
@@ -492,24 +518,105 @@ namespace SharpMap.Presentation.WinForms
 		}
 
 		private void OnRequestMaximumWorldWidthChange(double current, double requested)
-		{
-			throw new NotImplementedException();
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = MaximumWorldWidthChangeRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                e(this, args);
+            }
 		}
 
 		private void OnRequestMinimumWorldWidthChange(double current, double requested)
-		{
-			throw new NotImplementedException();
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = MinimumWorldWidthChangeRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                e(this, args);
+            }
 		}
 
 		private void OnRequestViewEnvelopeChange(BoundingBox current, BoundingBox requested)
-		{
-			throw new NotImplementedException();
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ViewEnvelopeChangeRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<BoundingBox> args =
+                    new MapViewPropertyChangeEventArgs<BoundingBox>(current, requested);
+
+                e(this, args);
+            }
 		}
 
 		private void OnRequestWorldAspectRatioChange(double current, double requested)
-		{
-			throw new NotImplementedException();
-		}
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = WorldAspectRatioChangeRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                e(this, args);
+            }
+        }
+
+        private void OnRequestZoomToExtents()
+        {
+            EventHandler e = ZoomToExtentsRequested;
+
+            if(e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnRequestZoomToViewBounds(Rectangle2D viewBounds)
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> e = ZoomToViewBoundsRequested;
+
+            if(e != null)
+            {
+                MapViewPropertyChangeEventArgs<Rectangle2D> args =
+                    new MapViewPropertyChangeEventArgs<Rectangle2D>(ViewConverter.Convert(ClientRectangle), viewBounds);
+
+                e(this, args);
+            }
+        }
+
+        private void OnRequestZoomToWorldBounds(BoundingBox zoomBox)
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ZoomToWorldBoundsRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<BoundingBox> args =
+                    new MapViewPropertyChangeEventArgs<BoundingBox>(ViewEnvelope, zoomBox);
+
+                e(this, args);
+            }
+        }
+
+        private void OnRequestZoomToWorldWidth(double newWorldWidth)
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = ZoomToWorldWidthRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(WorldWidth, newWorldWidth);
+
+                e(this, args);
+            }
+        }
 		#endregion
 
 		#region Private Helper Methods

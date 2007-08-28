@@ -37,6 +37,11 @@ namespace SharpMap
 	[DesignTimeVisible(false)]
 	public class Map : INotifyPropertyChanged, IDisposable
 	{
+        public const string ActiveToolPropertyName = "ActiveTool";
+        public const string SpatialReferencePropertyName = "SpatialReference";
+        public const string VisibleRegionPropertyName = "VisibleRegion";
+        public const string SelectedLayersPropertyName = "SelectedLayers";
+
 		#region Fields
 
 		private readonly object _layersChangeSync = new object();
@@ -124,10 +129,13 @@ namespace SharpMap
 		/// <summary>
 		/// Event fired when layers have been added to the map.
 		/// </summary>
-		public event EventHandler<LayersChangedEventArgs> LayersChanged;
+        public event EventHandler<LayersChangedEventArgs> LayersChanged;
 
-		public event EventHandler SelectedLayersChanged;
-		public event EventHandler SelectedToolChanged;
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
 
 		#endregion
 
@@ -142,7 +150,7 @@ namespace SharpMap
 		    lock (_layersChangeSync)
 			{
 				_layers.Add(layer);
-				OnLayersChanged(new ILayer[] {layer}, LayersChangeType.Added);
+				onLayersChanged(new ILayer[] {layer}, LayersChangeType.Added);
 			}
 		}
 
@@ -158,7 +166,7 @@ namespace SharpMap
 			    }
 
 				_layers.AddRange(layers);
-				OnLayersChanged(layers, LayersChangeType.Added);
+				onLayersChanged(layers, LayersChangeType.Added);
 			}
 		}
 
@@ -293,7 +301,7 @@ namespace SharpMap
 				lock (_layersChangeSync)
 				{
 					_layers.Remove(layer);
-					OnLayersChanged(new ILayer[] { layer }, LayersChangeType.Removed);
+					onLayersChanged(new ILayer[] { layer }, LayersChangeType.Removed);
 				}
 			}
 		}
@@ -462,7 +470,7 @@ namespace SharpMap
 				lock (_activeToolSync)
 				{
 					_activeTool = value;
-					OnActiveToolChanged();
+					onActiveToolChanged();
 				}
 			}
 		}
@@ -528,7 +536,7 @@ namespace SharpMap
 				{
 					_selectedLayers.Clear();
 					_selectedLayers.AddRange(value);
-					OnSelectedLayersChanged();
+					onSelectedLayersChanged();
 				}
 			}
 		}
@@ -542,7 +550,14 @@ namespace SharpMap
 			set
 			{
 				if (value == null) throw new ArgumentNullException("value");
+                
+                if(value == _spatialReference)
+                {
+                    return;
+                }
+
 				_spatialReference = value;
+                onSpatialReferenceChanged();
 			}
 		}
 
@@ -552,7 +567,6 @@ namespace SharpMap
 		public FeatureDataSet VisibleFeatures
 		{
 			get { throw new NotImplementedException(); }
-			set { }
 		}
 
 		/// <summary>
@@ -570,25 +584,35 @@ namespace SharpMap
 					layer.VisibleRegion = value;
 				}
 
-				OnVisibleRegionChanged();
+				onVisibleRegionChanged();
 			}
 		}
 
 		#endregion
 
-		#region Event Generators
+        #region Event Generators
 
-		private void OnVisibleRegionChanged()
-		{
-			PropertyChangedEventHandler e = PropertyChanged;
+        private void onActiveToolChanged()
+        {
+            raisePropertyChanged(ActiveToolPropertyName);
+        }
 
-			if (e != null)
-			{
-				e(this, new PropertyChangedEventArgs("VisibleRegion"));
-			}
-		}
+	    private void onSpatialReferenceChanged()
+        {
+            raisePropertyChanged(SpatialReferencePropertyName);
+        }
 
-		private void OnLayersChanged(IEnumerable<ILayer> layers, LayersChangeType action)
+		private void onVisibleRegionChanged()
+        {
+            raisePropertyChanged(VisibleRegionPropertyName);
+        }
+
+        private void onSelectedLayersChanged()
+        {
+            raisePropertyChanged(SelectedLayersPropertyName);
+        }
+
+		private void onLayersChanged(IEnumerable<ILayer> layers, LayersChangeType action)
 		{
 			switch (action)
 			{
@@ -616,25 +640,15 @@ namespace SharpMap
 			}
 		}
 
-		private void OnActiveToolChanged()
-		{
-			EventHandler e = SelectedToolChanged;
+        private void raisePropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler e = PropertyChanged;
 
-			if (e != null)
-			{
-				e(null, EventArgs.Empty);
-			}
-		}
-
-		private void OnSelectedLayersChanged()
-		{
-			EventHandler e = SelectedLayersChanged;
-
-			if (e != null)
-			{
-				e(null, EventArgs.Empty);
-			}
-		}
+            if (e != null)
+            {
+                e(null, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
 		#endregion
 
@@ -667,12 +681,12 @@ namespace SharpMap
 			VisibleRegion = envelope;
 		}
 
-		private void changeLayerEnabled(ILayer layer, bool enabled)
+		private static void changeLayerEnabled(ILayer layer, bool enabled)
 		{
 			layer.Style.Enabled = enabled;
 		}
 
-		private void setLayerStyleInternal(ILayer layer, Style style)
+		private static void setLayerStyleInternal(ILayer layer, IStyle style)
 		{
 			if (layer == null)
 			{
@@ -693,17 +707,20 @@ namespace SharpMap
 
 			_selectedLayers.AddRange(layers);
 
-			OnSelectedLayersChanged();
+			onSelectedLayersChanged();
 		}
 
 		private void unselectLayersInternal(IEnumerable<ILayer> layers)
 		{
 			checkLayersExist();
 
-			List<ILayer> removeLayers = layers is List<ILayer> ? layers as List<ILayer> : new List<ILayer>(layers);
+			List<ILayer> removeLayers = layers is List<ILayer> 
+                ? layers as List<ILayer> 
+                : new List<ILayer>(layers);
+
 			_selectedLayers.RemoveAll(delegate(ILayer match) { return removeLayers.Contains(match); });
 
-			OnSelectedLayersChanged();
+			onSelectedLayersChanged();
 		}
 
 		private IEnumerable<ILayer> layersGenerator(IEnumerable<int> layerIndexes)
@@ -737,15 +754,10 @@ namespace SharpMap
 		{
 			if (_layers.Count == 0)
 			{
-				throw new InvalidOperationException("No layers are present in the map, so layer operation cannot be performed");
+				throw new InvalidOperationException(
+                    "No layers are present in the map, so layer operation cannot be performed");
 			}
 		}
-
-		#endregion
-
-		#region INotifyPropertyChanged Members
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion
 	}
