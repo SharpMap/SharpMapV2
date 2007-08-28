@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using NPack;
+using NPack.Interfaces;
 using SharpMap.CoordinateSystems;
 using SharpMap.Geometries;
 using SharpMap.Layers;
@@ -252,9 +254,10 @@ namespace SharpMap
 			}
 		}
 
-		public MapTool<TMapView> GetActiveTool<TMapView>()
+		public MapTool<TMapView, TPoint> GetActiveTool<TMapView, TPoint>()
+			where TPoint : IVector<DoubleComponent>
 		{
-			return ActiveTool as MapTool<TMapView>;
+			return ActiveTool as MapTool<TMapView, TPoint>;
 		}
 
 		/// <summary>

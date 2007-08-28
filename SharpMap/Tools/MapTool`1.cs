@@ -16,20 +16,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using NPack;
+using NPack.Interfaces;
+using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Tools
 {
-	public class MapTool<TMapView> : MapTool, IMapTool<TMapView>
+	public class MapTool<TMapView, TPoint> : MapTool, IMapTool<TMapView, TPoint>
+		where TPoint : IVector<DoubleComponent>
 	{
-		private readonly Action<ActionContext<TMapView>> _queryAction;
-		private readonly Action<ActionContext<TMapView>> _beginAction;
-		private readonly Action<ActionContext<TMapView>> _extendAction;
-		private readonly Action<ActionContext<TMapView>> _endAction;
+		private readonly Action<ActionContext<TMapView, TPoint>> _queryAction;
+		private readonly Action<ActionContext<TMapView, TPoint>> _beginAction;
+		private readonly Action<ActionContext<TMapView, TPoint>> _extendAction;
+		private readonly Action<ActionContext<TMapView, TPoint>> _endAction;
 
-		public MapTool(string name, Action<ActionContext<TMapView>> queryAction,
-			Action<ActionContext<TMapView>> beginAction,
-			Action<ActionContext<TMapView>> extendAction,
-			Action<ActionContext<TMapView>> endAction)
+		public MapTool(string name, Action<ActionContext<TMapView, TPoint>> queryAction,
+			Action<ActionContext<TMapView, TPoint>> beginAction,
+			Action<ActionContext<TMapView, TPoint>> extendAction,
+			Action<ActionContext<TMapView, TPoint>> endAction)
 			: base(name)
 		{
 			_queryAction = queryAction;
@@ -45,22 +49,22 @@ namespace SharpMap.Tools
 
 		#region IMapTool Members
 
-		public Action<ActionContext<TMapView>> QueryAction
+		public Action<ActionContext<TMapView, TPoint>> QueryAction
 		{
 			get { return _queryAction; }
 		}
 
-		public Action<ActionContext<TMapView>> BeginAction
+		public Action<ActionContext<TMapView, TPoint>> BeginAction
 		{
 			get { return _beginAction; }
 		}
 
-		public Action<ActionContext<TMapView>> ExtendAction
+		public Action<ActionContext<TMapView, TPoint>> ExtendAction
 		{
 			get { return _extendAction; }
 		}
 
-		public Action<ActionContext<TMapView>> EndAction
+		public Action<ActionContext<TMapView, TPoint>> EndAction
 		{
 			get { return _endAction; }
 		}

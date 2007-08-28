@@ -546,22 +546,22 @@ namespace SharpMap.Presentation
 
         private void View_Hover(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D>().QueryAction(new ActionContext<IMapView2D>(Map, View));
+			Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void View_BeginAction(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D>().BeginAction(new ActionContext<IMapView2D>(Map, View));
+			Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void View_MoveTo(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D>().ExtendAction(new ActionContext<IMapView2D>(Map, View));
+			Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void View_EndAction(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D>().EndAction(new ActionContext<IMapView2D>(Map, View));
+			Map.GetActiveTool<IMapView2D, Point2D>().EndAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void View_BackgroundColorChangeRequested(object sender, MapViewPropertyChangeEventArgs<StyleColor> e)

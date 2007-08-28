@@ -15,17 +15,24 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using NPack;
+using NPack.Interfaces;
+using SharpMap.Presentation;
+
 namespace SharpMap.Tools
 {
-	public struct ActionContext<TMapView>
+	public struct ActionContext<TMapView, TPoint>
+		where TPoint : IVector<DoubleComponent>
 	{
 		private readonly Map _map;
 		private readonly TMapView _view;
+		private readonly MapActionEventArgs<TPoint> _args;
 
-		public ActionContext(Map map, TMapView view)
+		public ActionContext(Map map, TMapView view, MapActionEventArgs<TPoint> args)
 		{
 			_map = map;
 			_view = view;
+			_args = args;
 		}
 
 		public Map Map
@@ -36,6 +43,11 @@ namespace SharpMap.Tools
 		public TMapView MapView
 		{
 			get { return _view; }
+		}
+
+		public MapActionEventArgs<TPoint> ActionArgs
+		{
+			get { return _args; }
 		}
 	}
 }

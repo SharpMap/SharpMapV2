@@ -17,6 +17,7 @@
 
 using System;
 using SharpMap.Presentation;
+using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Tools
 {
@@ -25,206 +26,206 @@ namespace SharpMap.Tools
 		/// <summary>
 		/// No active tool
 		/// </summary>
-		public static readonly MapTool<IMapView2D> None;
+		public static readonly MapTool<IMapView2D, Point2D> None;
 
 		/// <summary>
 		/// Pan
 		/// </summary>
-		public static readonly MapTool<IMapView2D> Pan;
+		public static readonly MapTool<IMapView2D, Point2D> Pan;
 
 		/// <summary>
 		/// Zoom in
 		/// </summary>
-		public static readonly MapTool<IMapView2D> ZoomIn;
+		public static readonly MapTool<IMapView2D, Point2D> ZoomIn;
 
 		/// <summary>
 		/// Zoom out
 		/// </summary>
-		public static readonly MapTool<IMapView2D> ZoomOut;
+		public static readonly MapTool<IMapView2D, Point2D> ZoomOut;
 
 		/// <summary>
 		/// Query tool
 		/// </summary>
-		public static readonly MapTool<IMapView2D> Query;
+		public static readonly MapTool<IMapView2D, Point2D> Query;
 
 		/// <summary>
 		/// QueryAdd tool
 		/// </summary>
-		public static readonly MapTool<IMapView2D> QueryAdd;
+		public static readonly MapTool<IMapView2D, Point2D> QueryAdd;
 
 		/// <summary>
 		/// QueryRemove tool
 		/// </summary>
-		public static readonly MapTool<IMapView2D> QueryRemove;
+		public static readonly MapTool<IMapView2D, Point2D> QueryRemove;
 
 		/// <summary>
 		/// Add feature tool
 		/// </summary>
-		public static readonly MapTool<IMapView2D> FeatureAdd;
+		public static readonly MapTool<IMapView2D, Point2D> FeatureAdd;
 
 		/// <summary>
 		/// Remove feature tool
 		/// </summary>
-		public static readonly MapTool<IMapView2D> FeatureRemove;
+		public static readonly MapTool<IMapView2D, Point2D> FeatureRemove;
 
 
 		static StandardMapTools2D()
 		{
-			None = new MapTool<IMapView2D>(String.Empty, DoNothing, DoNothing, DoNothing, DoNothing);
-			Pan = new MapTool<IMapView2D>("Pan", QueryPan, BeginPan, ContinuePan, EndPan);
-			ZoomIn = new MapTool<IMapView2D>("ZoomIn", QueryZoomIn, BeginZoomIn, ContinueZoomIn, EndZoomIn);
-			ZoomOut = new MapTool<IMapView2D>("ZoomOut", QueryZoomOut, BeginZoomOut, ContinueZoomOut, EndZoomOut);
-			Query = new MapTool<IMapView2D>("Query", QueryQuery, BeginQuery, ContinueQuery, EndQuery);
-			QueryAdd = new MapTool<IMapView2D>("QueryAdd", QueryQueryAdd, BeginQueryAdd, ContinueQueryAdd, EndQueryAdd);
-			QueryRemove = new MapTool<IMapView2D>("QueryRemove", QueryQueryRemove, BeginQueryRemove, ContinueQueryRemove, EndQueryRemove);
-			FeatureAdd = new MapTool<IMapView2D>("FeatureAdd", QueryFeatureAdd, BeginFeatureAdd, ContinueFeatureAdd, EndFeatureAdd);
-			FeatureRemove = new MapTool<IMapView2D>("FeatureRemove", QueryFeatureRemove, BeginFeatureRemove, ContinueFeatureRemove, EndFeatureRemove);
+			None = new MapTool<IMapView2D, Point2D>(String.Empty, DoNothing, DoNothing, DoNothing, DoNothing);
+			Pan = new MapTool<IMapView2D, Point2D>("Pan", QueryPan, BeginPan, ContinuePan, EndPan);
+			ZoomIn = new MapTool<IMapView2D, Point2D>("ZoomIn", QueryZoomIn, BeginZoomIn, ContinueZoomIn, EndZoomIn);
+			ZoomOut = new MapTool<IMapView2D, Point2D>("ZoomOut", QueryZoomOut, BeginZoomOut, ContinueZoomOut, EndZoomOut);
+			Query = new MapTool<IMapView2D, Point2D>("Query", QueryQuery, BeginQuery, ContinueQuery, EndQuery);
+			QueryAdd = new MapTool<IMapView2D, Point2D>("QueryAdd", QueryQueryAdd, BeginQueryAdd, ContinueQueryAdd, EndQueryAdd);
+			QueryRemove = new MapTool<IMapView2D, Point2D>("QueryRemove", QueryQueryRemove, BeginQueryRemove, ContinueQueryRemove, EndQueryRemove);
+			FeatureAdd = new MapTool<IMapView2D, Point2D>("FeatureAdd", QueryFeatureAdd, BeginFeatureAdd, ContinueFeatureAdd, EndFeatureAdd);
+			FeatureRemove = new MapTool<IMapView2D, Point2D>("FeatureRemove", QueryFeatureRemove, BeginFeatureRemove, ContinueFeatureRemove, EndFeatureRemove);
 		}
 
-		private static void DoNothing(ActionContext<IMapView2D> context)
+		private static void DoNothing(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
 		#region Panning
-		private static void QueryPan(ActionContext<IMapView2D> context)
+		private static void QueryPan(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginPan(ActionContext<IMapView2D> context)
+		private static void BeginPan(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinuePan(ActionContext<IMapView2D> context)
+		private static void ContinuePan(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndPan(ActionContext<IMapView2D> context)
+		private static void EndPan(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 		#endregion
 
 		#region Zoom in
-		private static void QueryZoomIn(ActionContext<IMapView2D> context)
+		private static void QueryZoomIn(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginZoomIn(ActionContext<IMapView2D> context)
+		private static void BeginZoomIn(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueZoomIn(ActionContext<IMapView2D> context)
+		private static void ContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndZoomIn(ActionContext<IMapView2D> context)
+		private static void EndZoomIn(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion
 
 		#region Zoom out
-		private static void QueryZoomOut(ActionContext<IMapView2D> context)
+		private static void QueryZoomOut(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginZoomOut(ActionContext<IMapView2D> context)
+		private static void BeginZoomOut(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueZoomOut(ActionContext<IMapView2D> context)
+		private static void ContinueZoomOut(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndZoomOut(ActionContext<IMapView2D> context)
+		private static void EndZoomOut(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion
 
 		#region Query
-		private static void QueryQuery(ActionContext<IMapView2D> context)
+		private static void QueryQuery(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginQuery(ActionContext<IMapView2D> context)
+		private static void BeginQuery(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueQuery(ActionContext<IMapView2D> context)
+		private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndQuery(ActionContext<IMapView2D> context)
+		private static void EndQuery(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion
 
 		#region Query add
-		private static void QueryQueryAdd(ActionContext<IMapView2D> context)
+		private static void QueryQueryAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginQueryAdd(ActionContext<IMapView2D> context)
+		private static void BeginQueryAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueQueryAdd(ActionContext<IMapView2D> context)
+		private static void ContinueQueryAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndQueryAdd(ActionContext<IMapView2D> context)
+		private static void EndQueryAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion
 
 		#region Query remove
-		private static void QueryQueryRemove(ActionContext<IMapView2D> context)
+		private static void QueryQueryRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginQueryRemove(ActionContext<IMapView2D> context)
+		private static void BeginQueryRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueQueryRemove(ActionContext<IMapView2D> context)
+		private static void ContinueQueryRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndQueryRemove(ActionContext<IMapView2D> context)
+		private static void EndQueryRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion
 
 		#region Feature add
-		private static void QueryFeatureAdd(ActionContext<IMapView2D> context)
+		private static void QueryFeatureAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginFeatureAdd(ActionContext<IMapView2D> context)
+		private static void BeginFeatureAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueFeatureAdd(ActionContext<IMapView2D> context)
+		private static void ContinueFeatureAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndFeatureAdd(ActionContext<IMapView2D> context)
+		private static void EndFeatureAdd(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion
 
 		#region Feature remove
-		private static void QueryFeatureRemove(ActionContext<IMapView2D> context)
+		private static void QueryFeatureRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void BeginFeatureRemove(ActionContext<IMapView2D> context)
+		private static void BeginFeatureRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void ContinueFeatureRemove(ActionContext<IMapView2D> context)
+		private static void ContinueFeatureRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		}
 
-		private static void EndFeatureRemove(ActionContext<IMapView2D> context)
+		private static void EndFeatureRemove(ActionContext<IMapView2D, Point2D> context)
 		{
 		} 
 		#endregion

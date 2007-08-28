@@ -16,31 +16,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Geometries;
-using SharpMap.Rendering;
-using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
-    public class MapActionEventArgs<TPoint> : EventArgs
-        where TPoint : IVectorD
-    {
-        private TPoint _actionPoint;
+	public class MapActionEventArgs<TPoint> : EventArgs
+		where TPoint : IVectorD
+	{
+		private TPoint _actionPoint;
 
-        public MapActionEventArgs(TPoint actionPoint)
-        {
-            _actionPoint = actionPoint;
-        }
+		public MapActionEventArgs(TPoint actionPoint)
+		{
+			_actionPoint = actionPoint;
+		}
 
-        public TPoint ActionPoint
-        {
-            get { return _actionPoint; }
-            protected set { _actionPoint = value; }
-        }
-    }
+		public TPoint ActionPoint
+		{
+			get { return _actionPoint; }
+			protected set { _actionPoint = value; }
+		}
+	}
 }

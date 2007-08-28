@@ -22,6 +22,7 @@ namespace SharpMap.Tests.Presentation
         #region Manual fakes
         private class ViewEvents
         {
+        	public IMapView2D View;
             public IEventRaiser Hover;
             public IEventRaiser Begin;
             public IEventRaiser MoveTo;
@@ -254,9 +255,12 @@ namespace SharpMap.Tests.Presentation
         {
             MockRepository mocks = new MockRepository();
 
-            TestPresenter2D mapPresenter = createPresenter(mocks, 400, 500);
+        	ViewEvents events;
+            TestPresenter2D mapPresenter = createPresenter(mocks, 400, 500, out events);
             Map map = mapPresenter.Map;
             map.ActiveTool = StandardMapTools2D.Pan;
+			MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(new Point2D(200, 250));
+			events.Begin.Raise(events.View, args);
         }
 
         [Test]
@@ -498,6 +502,7 @@ namespace SharpMap.Tests.Presentation
             mapView.ViewSize = new Size2D(width, height);
 
             events = new ViewEvents();
+        	events.View = mapView;
 
             mapView.Hover += null;
             events.Hover = LastCall.IgnoreArguments().GetEventRaiser();
