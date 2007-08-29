@@ -137,6 +137,7 @@
     <Compile Include="Data\DataExceptions.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
     <Compile Include="Data\IVectorLayerProvider.cs" />
+    <Compile Include="Data\LayerDataNotFoundException.cs" />
     <Compile Include="Data\Providers\ColumnPropertyComputationDelegates.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureProvider.cs" />

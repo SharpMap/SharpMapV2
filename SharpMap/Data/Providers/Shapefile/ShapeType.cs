@@ -16,14 +16,12 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
 namespace SharpMap.Data.Providers.ShapeFile
 {
     /// <summary>
     /// <see cref="ShapeFile"/> geometry types.
     /// </summary>
-    public enum ShapeType : int
+    public enum ShapeType
     {
         /// <summary>
         /// Null shape with no geometric data.
@@ -83,7 +81,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <remarks>
         /// A PointZ has 3 components to the coordinate vector, allowing it to be positioned 
         /// anywhere in 3D space.
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.Point3D"/>.
+        /// SharpMap interprets this as <see cref="SharpMap.Geometries.Geometries3D.Point3D"/>.
         /// </remarks>
         PointZ = 11,
 
