@@ -48,10 +48,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public Point2D(double[] elements)
         {
-            if (elements == null)
-            {
-                throw new ArgumentNullException("elements");
-            }
+            if (elements == null) throw new ArgumentNullException("elements");
 
             if (elements.Length != 2)
             {
@@ -60,6 +57,20 @@ namespace SharpMap.Rendering.Rendering2D
 
             _x = elements[0];
             _y = elements[1];
+            _hasValue = true;
+        }
+
+        public Point2D(IVectorD vector)
+        {
+            if (vector == null) throw new ArgumentNullException("vector");
+
+            if (vector.ComponentCount != 2)
+            {
+                throw new ArgumentException("Elements array must have only 2 components.");
+            }
+
+            _x = vector[0];
+            _y = vector[1];
             _hasValue = true;
         }
         #endregion
@@ -287,7 +298,7 @@ namespace SharpMap.Rendering.Rendering2D
             get
             {
                 checkIndex(index);
-                return this[index]; 
+                return this[index];
             }
             set
             {
@@ -550,7 +561,7 @@ namespace SharpMap.Rendering.Rendering2D
         {
             return
                 new Matrix<DoubleComponent>((this as IMatrixD).Format,
-                    new DoubleComponent[][] {new DoubleComponent[] {_x}, new DoubleComponent[] {_y}});
+                    new DoubleComponent[][] { new DoubleComponent[] { _x }, new DoubleComponent[] { _y } });
         }
 
         #endregion
@@ -577,6 +588,93 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentOutOfRangeException("column", row, "A Point2D has only 2 columns.");
             }
         }
+        #endregion
+
+        public static Point2D operator +(Point2D lhs, Point2D rhs)
+        {
+            return new Point2D(lhs.Add(rhs));
+        }
+
+        public static Point2D operator -(Point2D lhs, Point2D rhs)
+        {
+            return new Point2D(lhs.Subtract(rhs));
+        }
+
+        #region INegatable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
+        {
+            return new Point2D(-X, -Y);
+        }
+
+        #endregion
+
+        #region ISubtractable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(IVector<DoubleComponent> b)
+        {
+            if (b == null) throw new ArgumentNullException("b");
+
+            if (b.ComponentCount != 2)
+            {
+                throw new ArgumentException("Vector must have only 2 components.");
+            }
+
+            return new Point2D(X - (double)b[0], Y - (double)b[1]);
+        }
+
+        #endregion
+
+        #region IHasZero<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IHasZero<IVector<DoubleComponent>>.Zero
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IAddable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
+        {
+            if (b == null) throw new ArgumentNullException("b");
+
+            if (b.ComponentCount != 2)
+            {
+                throw new ArgumentException("Vector must have only 2 components.");
+            }
+
+            return new Point2D(X - (double)b[0], Y - (double)b[1]);
+        }
+
+        #endregion
+
+        #region IDivisible<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Divide(IVector<DoubleComponent> b)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
+        {
+            get { return new Point2D(1, 1); }
+        }
+
+        #endregion
+
+        #region IMultipliable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
+        {
+            throw new NotSupportedException();
+        }
+
         #endregion
     }
 }

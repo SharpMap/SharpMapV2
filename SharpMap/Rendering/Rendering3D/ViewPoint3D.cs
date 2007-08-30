@@ -618,5 +618,68 @@ namespace SharpMap.Rendering.Rendering3D
         {
             throw new NotImplementedException();
         }
+
+        #region INegatable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(IVector<DoubleComponent> b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasZero<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IHasZero<IVector<DoubleComponent>>.Zero
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IAddable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Divide(IVector<DoubleComponent> b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IMultipliable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

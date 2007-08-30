@@ -28,14 +28,14 @@ namespace SharpMap.Rendering.Rendering2D
     /// A 2 dimensional measure of size.
     /// </summary>
     [Serializable]
-	public struct Size2D : IVectorD, IHasEmpty
+    public struct Size2D : IVectorD, IHasEmpty
     {
         private DoubleComponent _width, _height;
         private bool _hasValue;
 
         public static readonly Size2D Empty = new Size2D();
-		public static readonly Size2D Zero = new Size2D(0, 0);
-		public static readonly Size2D Unit = new Size2D(1, 1);
+        public static readonly Size2D Zero = new Size2D(0, 0);
+        public static readonly Size2D Unit = new Size2D(1, 1);
 
         #region Constructors
         public Size2D(double width, double height)
@@ -551,6 +551,83 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentOutOfRangeException("column", row, "A Point2D has only 2 columns.");
             }
         }
+        #endregion
+
+        #region INegatable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
+        {
+            return new Size2D(-Width, -Height);
+        }
+
+        #endregion
+
+        #region ISubtractable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(IVector<DoubleComponent> b)
+        {
+            if (b == null) throw new ArgumentNullException("b");
+
+            if (b.ComponentCount != 2)
+            {
+                throw new ArgumentException("Vector must have only 2 components.");
+            }
+
+            return new Size2D(Width - (double)b[0], Height - (double)b[1]);
+        }
+
+        #endregion
+
+        #region IHasZero<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IHasZero<IVector<DoubleComponent>>.Zero
+        {
+            get { return Zero; }
+        }
+
+        #endregion
+
+        #region IAddable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
+        {
+            if (b == null) throw new ArgumentNullException("b");
+
+            if (b.ComponentCount != 2)
+            {
+                throw new ArgumentException("Vector must have only 2 components.");
+            }
+
+            return new Size2D(Width + (double)b[0], Height + (double)b[1]);
+        }
+
+        #endregion
+
+        #region IDivisible<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Divide(IVector<DoubleComponent> b)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
+        {
+            get { return new Size2D(1, 1); }
+        }
+
+        #endregion
+
+        #region IMultipliable<IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
+        {
+            throw new NotSupportedException();
+        }
+
         #endregion
     }
 }

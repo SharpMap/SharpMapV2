@@ -31,7 +31,8 @@ namespace SharpMap.Presentation
 		event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
-		event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
 		event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
@@ -64,6 +65,8 @@ namespace SharpMap.Presentation
 		/// Gets or sets the minimum width in world units of the view.
 		/// </summary>
 		double MinimumWorldWidth { get; set; }
+
+	    void Offset(Point2D offsetVector);
 		
 		/// <summary>
 		/// Gets the width of a pixel in world coordinate units.

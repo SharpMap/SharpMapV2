@@ -231,7 +231,409 @@ namespace SharpMap.Tests.Presentation
             {
                 throw new NotImplementedException();
             }
-        } 
+        }
+
+        private class TestView2D : IMapView2D
+        {
+            private readonly TestPresenter2D _presenter;
+            private Size2D _size;
+            private Rectangle2D _bounds;
+
+            public TestView2D(Map map)
+            {
+                _presenter = new TestPresenter2D(map, this);
+            }
+
+            #region IMapView2D Members
+
+            #region Events
+            public event EventHandler<MapActionEventArgs<Point2D>> Hover;
+            public event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
+            public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
+            public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
+            public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
+            public event EventHandler ZoomToExtentsRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
+            #endregion
+
+            #region Properties
+
+            public StyleColor BackgroundColor
+            {
+                get { return _presenter.BackgroundColor; }
+                set { OnRequestBackgroundColorChange(BackgroundColor, value); }
+            }
+
+            public double Dpi
+            {
+                get { return ScreenHelper.Dpi; }
+            }
+
+            public Point GeoCenter
+            {
+                get { return _presenter.GeoCenter; }
+                set { OnRequestGeoCenterChange(GeoCenter, value); }
+            }
+
+            public double MaximumWorldWidth
+            {
+                get { return _presenter.MaximumWorldWidth; }
+                set { OnRequestMaximumWorldWidthChange(MaximumWorldWidth, value); }
+            }
+
+            public double MinimumWorldWidth
+            {
+                get { return _presenter.MinimumWorldWidth; }
+                set { OnRequestMinimumWorldWidthChange(MinimumWorldWidth, value); }
+            }
+
+            public double PixelWorldWidth
+            {
+                get { return _presenter.PixelWorldWidth; }
+            }
+
+            public double PixelWorldHeight
+            {
+                get { return _presenter.PixelWorldHeight; }
+            }
+
+            public ViewSelection2D Selection
+            {
+                get { return _presenter.Selection; }
+            }
+
+            public Matrix2D ToViewTransform
+            {
+                get { return _presenter.ToViewTransform; }
+            }
+
+            public Matrix2D ToWorldTransform
+            {
+                get { return _presenter.ToWorldTransform; }
+            }
+
+            public BoundingBox ViewEnvelope
+            {
+                get { return _presenter.ViewEnvelope; }
+                set { OnRequestViewEnvelopeChange(ViewEnvelope, value); ; }
+            }
+
+            public Size2D ViewSize
+            {
+                get { return _size; }
+                set { _size = value; }
+            }
+
+            public double WorldAspectRatio
+            {
+                get { return _presenter.WorldAspectRatio; }
+                set { OnRequestWorldAspectRatioChange(WorldAspectRatio, value); }
+            }
+
+            public double WorldHeight
+            {
+                get { return _presenter.WorldHeight; }
+            }
+
+            public double WorldWidth
+            {
+                get { return _presenter.WorldWidth; }
+            }
+
+            public double WorldUnitsPerPixel
+            {
+                get { return _presenter.WorldUnitsPerPixel; }
+            }
+            #endregion
+
+            #region Methods
+            public void Offset(Point2D offsetVector)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ShowRenderedObject(Point2D location, object renderedObject)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ZoomToExtents()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ZoomToViewBounds(Rectangle2D viewBounds)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ZoomToWorldBounds(BoundingBox zoomBox)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ZoomToWorldWidth(double newWorldWidth)
+            {
+                throw new NotImplementedException();
+            } 
+            #endregion
+
+            #endregion
+
+            #region IView Members
+
+            public bool Visible
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public bool Enabled
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public void Hide()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Show()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string Title
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            #endregion
+
+            protected virtual void OnViewSizeChangeRequested(Size2D sizeRequested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<Size2D>> @event = SizeChangeRequested;
+
+                if (@event != null)
+                {
+                    MapViewPropertyChangeEventArgs<Size2D> args = new MapViewPropertyChangeEventArgs<Size2D>(
+                        _size, sizeRequested);
+
+                    SizeChangeRequested(this, args);
+                }
+            }
+
+            protected virtual void OnHover(Point2D actionLocation)
+            {
+                EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
+
+                if (@event != null)
+                {
+                    MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(actionLocation);
+                    @event(this, args);
+                }
+            }
+
+            protected virtual void OnBeginAction(Point2D actionLocation)
+            {
+                EventHandler<MapActionEventArgs<Point2D>> @event = BeginAction;
+
+                if (@event != null)
+                {
+                    MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(actionLocation);
+                    @event(this, args);
+                }
+            }
+
+            protected virtual void OnMoveTo(Point2D actionLocation)
+            {
+                EventHandler<MapActionEventArgs<Point2D>> @event = MoveTo;
+
+                if (@event != null)
+                {
+                    MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(actionLocation);
+                    @event(this, args);
+                }
+            }
+
+            protected virtual void OnEndAction(Point2D actionLocation)
+            {
+                EventHandler<MapActionEventArgs<Point2D>> @event = EndAction;
+
+                if (@event != null)
+                {
+                    MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(actionLocation);
+                    @event(this, args);
+                }
+            }
+
+            protected virtual void OnRequestBackgroundColorChange(StyleColor current, StyleColor requested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> e = BackgroundColorChangeRequested;
+
+                if (e != null)
+                {
+                    e(this, new MapViewPropertyChangeEventArgs<StyleColor>(current, requested));
+                }
+            }
+
+            protected virtual void OnRequestGeoCenterChange(Point current, Point requested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<Point>> e = GeoCenterChangeRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<Point> args =
+                        new MapViewPropertyChangeEventArgs<Point>(current, requested);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestMaximumWorldWidthChange(double current, double requested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<double>> e = MaximumWorldWidthChangeRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<double> args =
+                        new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestMinimumWorldWidthChange(double current, double requested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<double>> e = MinimumWorldWidthChangeRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<double> args =
+                        new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestViewEnvelopeChange(BoundingBox current, BoundingBox requested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ViewEnvelopeChangeRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<BoundingBox> args =
+                        new MapViewPropertyChangeEventArgs<BoundingBox>(current, requested);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestWorldAspectRatioChange(double current, double requested)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<double>> e = WorldAspectRatioChangeRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<double> args =
+                        new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestOffset(Point2D offset)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<Point2D>> e = OffsetChangeRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<Point2D> args =
+                        new MapViewPropertyChangeEventArgs<Point2D>(Point2D.Zero, offset);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestZoomToExtents()
+            {
+                EventHandler e = ZoomToExtentsRequested;
+
+                if (e != null)
+                {
+                    e(this, EventArgs.Empty);
+                }
+            }
+
+            private void OnRequestZoomToViewBounds(Rectangle2D viewBounds)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> e = ZoomToViewBoundsRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<Rectangle2D> args =
+                        new MapViewPropertyChangeEventArgs<Rectangle2D>(_bounds, viewBounds);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestZoomToWorldBounds(BoundingBox zoomBox)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ZoomToWorldBoundsRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<BoundingBox> args =
+                        new MapViewPropertyChangeEventArgs<BoundingBox>(ViewEnvelope, zoomBox);
+
+                    e(this, args);
+                }
+            }
+
+            private void OnRequestZoomToWorldWidth(double newWorldWidth)
+            {
+                EventHandler<MapViewPropertyChangeEventArgs<double>> e = ZoomToWorldWidthRequested;
+
+                if (e != null)
+                {
+                    MapViewPropertyChangeEventArgs<double> args =
+                        new MapViewPropertyChangeEventArgs<double>(WorldWidth, newWorldWidth);
+
+                    e(this, args);
+                }
+            }
+        }
+
         #endregion
 
         [Test]
@@ -257,10 +659,18 @@ namespace SharpMap.Tests.Presentation
 
         	ViewEvents events;
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 500, out events);
+
             Map map = mapPresenter.Map;
+            
             map.ActiveTool = StandardMapTools2D.Pan;
-			MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(new Point2D(200, 250));
+			
+            MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(new Point2D(200, 250));
 			events.Begin.Raise(events.View, args);
+
+            args = new MapActionEventArgs<Point2D>(new Point2D(250, 250));
+            events.MoveTo.Raise(events.View, args);
+
+            events.End.Raise(events.View, args);
         }
 
         [Test]
@@ -499,6 +909,8 @@ namespace SharpMap.Tests.Presentation
 
             IMapView2D mapView = mocks.Stub<IMapView2D>();
             SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
+            mapView.Offset(Point2D.Empty);
+
             mapView.ViewSize = new Size2D(width, height);
 
             events = new ViewEvents();

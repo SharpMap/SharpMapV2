@@ -65,24 +65,25 @@ namespace SharpMap.Presentation
             _vectorRenderer = CreateVectorRenderer();
             _rasterRenderer = CreateRasterRenderer();
 
-            Map.LayersChanged += Map_LayersChanged;
-            Map.PropertyChanged += Map_PropertyChanged;
+            Map.LayersChanged += map_LayersChanged;
+            Map.PropertyChanged += map_PropertyChanged;
 
-            View.Hover += View_Hover;
-            View.BeginAction += View_BeginAction;
-            View.MoveTo += View_MoveTo;
-            View.EndAction += View_EndAction;
-            View.BackgroundColorChangeRequested += View_BackgroundColorChangeRequested;
-            View.GeoCenterChangeRequested += View_GeoCenterChangeRequested;
-            View.MaximumWorldWidthChangeRequested += View_MaximumWorldWidthChangeRequested;
-            View.MinimumWorldWidthChangeRequested += View_MinimumWorldWidthChangeRequested;
-            View.SizeChangeRequested += View_SizeChangeRequested;
-            View.ViewEnvelopeChangeRequested += View_ViewEnvelopeChangeRequested;
-            View.WorldAspectRatioChangeRequested += View_WorldAspectRatioChangeRequested;
-            View.ZoomToExtentsRequested += View_ZoomToExtentsRequested;
-            View.ZoomToViewBoundsRequested += View_ZoomToViewBoundsRequested;
-            View.ZoomToWorldBoundsRequested += View_ZoomToWorldBoundsRequested;
-            View.ZoomToWorldWidthRequested += View_ZoomToWorldWidthRequested;
+            View.Hover += view_Hover;
+            View.BeginAction += view_BeginAction;
+            View.MoveTo += view_MoveTo;
+            View.EndAction += view_EndAction;
+            View.BackgroundColorChangeRequested += view_BackgroundColorChangeRequested;
+            View.GeoCenterChangeRequested += view_GeoCenterChangeRequested;
+            View.MaximumWorldWidthChangeRequested += view_MaximumWorldWidthChangeRequested;
+            View.MinimumWorldWidthChangeRequested += view_MinimumWorldWidthChangeRequested;
+            View.OffsetChangeRequested += view_OffsetChangeRequested;
+            View.SizeChangeRequested += view_SizeChangeRequested;
+            View.ViewEnvelopeChangeRequested += view_ViewEnvelopeChangeRequested;
+            View.WorldAspectRatioChangeRequested += view_WorldAspectRatioChangeRequested;
+            View.ZoomToExtentsRequested += view_ZoomToExtentsRequested;
+            View.ZoomToViewBoundsRequested += view_ZoomToViewBoundsRequested;
+            View.ZoomToWorldBoundsRequested += view_ZoomToWorldBoundsRequested;
+            View.ZoomToWorldWidthRequested += view_ZoomToWorldWidthRequested;
 
             BoundingBox extents = map.VisibleRegion;
 
@@ -511,12 +512,12 @@ namespace SharpMap.Presentation
         #region Event handlers
         #region Map events
 
-        private void Map_LayersChanged(object sender, LayersChangedEventArgs e)
+        private void map_LayersChanged(object sender, LayersChangedEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        private void Map_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void map_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -535,8 +536,14 @@ namespace SharpMap.Presentation
         #endregion
 
         #region View events
+        private void view_OffsetChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point2D> e)
+        {
+            GeoPoint geoOffset = ToWorld(e.RequestedValue);
+            GeoPoint newCenter = GeoCenterInternal + geoOffset;
+            GeoCenterInternal = newCenter;
+        }
 
-        private void View_SizeChangeRequested(object sender, MapViewPropertyChangeEventArgs<Size2D> e)
+        private void view_SizeChangeRequested(object sender, MapViewPropertyChangeEventArgs<Size2D> e)
         {
             _toViewCoordinates.OffsetX = e.RequestedValue.Width / 2;
             _toViewCoordinates.OffsetY = e.RequestedValue.Height / 2;
@@ -544,82 +551,82 @@ namespace SharpMap.Presentation
             SetViewSize(e.CurrentValue, e.RequestedValue);
         }
 
-        private void View_Hover(object sender, MapActionEventArgs<Point2D> e)
+        private void view_Hover(object sender, MapActionEventArgs<Point2D> e)
         {
 			Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
-        private void View_BeginAction(object sender, MapActionEventArgs<Point2D> e)
+        private void view_BeginAction(object sender, MapActionEventArgs<Point2D> e)
         {
 			Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
-        private void View_MoveTo(object sender, MapActionEventArgs<Point2D> e)
+        private void view_MoveTo(object sender, MapActionEventArgs<Point2D> e)
         {
 			Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
-        private void View_EndAction(object sender, MapActionEventArgs<Point2D> e)
+        private void view_EndAction(object sender, MapActionEventArgs<Point2D> e)
         {
 			Map.GetActiveTool<IMapView2D, Point2D>().EndAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
-        private void View_BackgroundColorChangeRequested(object sender, MapViewPropertyChangeEventArgs<StyleColor> e)
+        private void view_BackgroundColorChangeRequested(object sender, MapViewPropertyChangeEventArgs<StyleColor> e)
         {
             SetViewBackgroundColor(e.CurrentValue, e.RequestedValue);
         }
 
-        private void View_GeoCenterChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point> e)
+        private void view_GeoCenterChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point> e)
         {
             GeoCenterInternal = e.RequestedValue;
 
             SetViewGeoCenter(e.RequestedValue, e.CurrentValue);
         }
 
-        private void View_MaximumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
+        private void view_MaximumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             MaximumWorldWidthInternal = e.RequestedValue;
 
             SetViewMaximumWorldWidth(e.RequestedValue, e.CurrentValue);
         }
 
-        private void View_MinimumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
+        private void view_MinimumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             MinimumWorldWidthInternal = e.RequestedValue;
 
             SetViewMinimumWorldWidth(e.RequestedValue, e.CurrentValue);
         }
 
-        private void View_ViewEnvelopeChangeRequested(object sender, MapViewPropertyChangeEventArgs<BoundingBox> e)
+        private void view_ViewEnvelopeChangeRequested(object sender, MapViewPropertyChangeEventArgs<BoundingBox> e)
         {
             ViewEnvelopeInternal = e.RequestedValue;
 
             SetViewEnvelope(e.RequestedValue, e.CurrentValue);
         }
 
-        private void View_WorldAspectRatioChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
+        private void view_WorldAspectRatioChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             WorldAspectRatioInternal = e.RequestedValue;
 
             SetViewWorldAspectRatio(e.RequestedValue, e.CurrentValue);
         }
 
-        private void View_ZoomToExtentsRequested(object sender, EventArgs e)
+        private void view_ZoomToExtentsRequested(object sender, EventArgs e)
         {
             ZoomToExtentsInternal();
         }
 
-        private void View_ZoomToViewBoundsRequested(object sender, MapViewPropertyChangeEventArgs<Rectangle2D> e)
+        private void view_ZoomToViewBoundsRequested(object sender, MapViewPropertyChangeEventArgs<Rectangle2D> e)
         {
             ZoomToViewBoundsInternal(e.RequestedValue);
         }
 
-        private void View_ZoomToWorldBoundsRequested(object sender, MapViewPropertyChangeEventArgs<BoundingBox> e)
+        private void view_ZoomToWorldBoundsRequested(object sender, MapViewPropertyChangeEventArgs<BoundingBox> e)
         {
             ZoomToWorldBoundsInternal(e.RequestedValue);
         }
 
-        private void View_ZoomToWorldWidthRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
+        private void view_ZoomToWorldWidthRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             ZoomToWorldWidthInternal(e.RequestedValue);
         }

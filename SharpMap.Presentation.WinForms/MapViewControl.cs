@@ -116,6 +116,7 @@ namespace SharpMap.Presentation.WinForms
         public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
@@ -242,6 +243,10 @@ namespace SharpMap.Presentation.WinForms
         #endregion
 
         #region Methods
+        public void Offset(Point2D offsetVector)
+        {
+            OnRequestOffset(offsetVector);
+        }
 
         public void ShowRenderedObject(Point2D location, object renderedObject)
         {
@@ -437,46 +442,44 @@ namespace SharpMap.Presentation.WinForms
 
 		protected virtual void OnHover(Point2D actionLocation)
 		{
-			_globalActionArgs.SetActionPoint(actionLocation);
-
 			EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
 
 			if (@event != null)
-			{
+            {
+                _globalActionArgs.SetActionPoint(actionLocation);
 				@event(this, _globalActionArgs);
 			}
 		}
 
 		protected virtual void OnBeginAction(Point2D actionLocation)
 		{
-			_globalActionArgs.SetActionPoint(actionLocation);
-
 			EventHandler<MapActionEventArgs<Point2D>> @event = BeginAction;
 
-			if (@event != null)
-				@event(this, _globalActionArgs);
+            if (@event != null)
+            {
+                _globalActionArgs.SetActionPoint(actionLocation);
+                @event(this, _globalActionArgs);
+            }
 		}
 
 		protected virtual void OnMoveTo(Point2D actionLocation)
 		{
-			_globalActionArgs.SetActionPoint(actionLocation);
-
 			EventHandler<MapActionEventArgs<Point2D>> @event = MoveTo;
 
 			if (@event != null)
-			{
+            {
+                _globalActionArgs.SetActionPoint(actionLocation);
 				@event(this, _globalActionArgs);
 			}
 		}
 
 		protected virtual void OnEndAction(Point2D actionLocation)
 		{
-			_globalActionArgs.SetActionPoint(actionLocation);
-
 			EventHandler<MapActionEventArgs<Point2D>> @event = EndAction;
 
 			if (@event != null)
-			{
+            {
+                _globalActionArgs.SetActionPoint(actionLocation);
 				@event(this, _globalActionArgs);
 			}
 		}
@@ -564,6 +567,19 @@ namespace SharpMap.Presentation.WinForms
             {
                 MapViewPropertyChangeEventArgs<double> args =
                     new MapViewPropertyChangeEventArgs<double>(current, requested);
+
+                e(this, args);
+            }
+        }
+
+        private void OnRequestOffset(Point2D offset)
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<Point2D>> e = OffsetChangeRequested;
+
+            if (e != null)
+            {
+                MapViewPropertyChangeEventArgs<Point2D> args =
+                    new MapViewPropertyChangeEventArgs<Point2D>(Point2D.Zero, offset);
 
                 e(this, args);
             }
@@ -679,7 +695,7 @@ namespace SharpMap.Presentation.WinForms
 		//}
 
 		#endregion
-	}
+    }
 
 	#region Event Arg Classes
 

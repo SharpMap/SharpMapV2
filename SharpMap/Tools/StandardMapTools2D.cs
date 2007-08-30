@@ -16,13 +16,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using NPack;
+using NPack.Interfaces;
 using SharpMap.Presentation;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Tools
 {
 	public static class StandardMapTools2D
-	{
+    {
+        private static readonly Dictionary<IMapView2D, Point2D> _actionPositions
+            = new Dictionary<IMapView2D, Point2D>();
+
 		/// <summary>
 		/// No active tool
 		/// </summary>
@@ -93,14 +99,20 @@ namespace SharpMap.Tools
 
 		private static void BeginPan(ActionContext<IMapView2D, Point2D> context)
 		{
+		    _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
 		}
 
 		private static void ContinuePan(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+		    IMapView2D view = context.MapView;
+            Point2D previousPoint = _actionPositions[view];
+            Point2D difference = context.ActionArgs.ActionPoint - previousPoint;
+            view.Offset(difference);
 		}
 
 		private static void EndPan(ActionContext<IMapView2D, Point2D> context)
 		{
+		    _actionPositions.Remove(context.MapView);
 		}
 		#endregion
 

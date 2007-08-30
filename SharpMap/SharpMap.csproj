@@ -134,7 +134,7 @@
     <Compile Include="CoordinateSystems\Transformations\TransformType.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
-    <Compile Include="Data\DataExceptions.cs" />
+    <Compile Include="Data\SharpMapDataException.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
     <Compile Include="Data\IVectorLayerProvider.cs" />
     <Compile Include="Data\LayerDataNotFoundException.cs" />
