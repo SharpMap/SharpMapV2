@@ -106,7 +106,9 @@ namespace SharpMap.Tools
         {
 		    IMapView2D view = context.MapView;
             Point2D previousPoint = _actionPositions[view];
-            Point2D difference = context.ActionArgs.ActionPoint - previousPoint;
+		    Point2D currentPoint = context.ActionArgs.ActionPoint;
+            Point2D difference = currentPoint - previousPoint;
+            _actionPositions[view] = currentPoint;
             view.Offset(difference);
 		}
 

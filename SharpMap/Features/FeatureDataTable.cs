@@ -268,7 +268,7 @@ namespace SharpMap.Features
         /// </summary>
         public bool IsSpatiallyIndexed
         {
-            get { return _rTreeIndex == null; }
+            get { return _rTreeIndex != null; }
             set
             {
                 if (value && _rTreeIndex == null)

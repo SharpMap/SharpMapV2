@@ -20,14 +20,19 @@ namespace SharpMap.Tests.Presentation
         private static readonly double _e = 0.0005;
 
         #region Manual fakes
+
+        #region ViewEvents
         private class ViewEvents
         {
-        	public IMapView2D View;
+            public IMapView2D View;
             public IEventRaiser Hover;
             public IEventRaiser Begin;
             public IEventRaiser MoveTo;
             public IEventRaiser End;
-        }
+        } 
+        #endregion
+
+        #region TestVectorRenderer2D
 
         private class TestVectorRenderer2D : VectorRenderer2D<object>
         {
@@ -60,7 +65,10 @@ namespace SharpMap.Tests.Presentation
             {
                 throw new NotImplementedException();
             }
-        }
+        } 
+        #endregion
+        
+        #region TestPresenter2D
 
         private class TestPresenter2D : MapPresenter2D
         {
@@ -225,6 +233,10 @@ namespace SharpMap.Tests.Presentation
             {
             }
         }
+
+        #endregion
+
+        #region TestView2D
 
         private class TestView2D : IMapView2D
         {
@@ -423,7 +435,7 @@ namespace SharpMap.Tests.Presentation
             public void ZoomToWorldWidth(double newWorldWidth)
             {
                 OnRequestZoomToWorldWidth(newWorldWidth);
-            } 
+            }
             #endregion
 
             #endregion
@@ -671,7 +683,8 @@ namespace SharpMap.Tests.Presentation
                     e(this, args);
                 }
             }
-        }
+        } 
+        #endregion
 
         #endregion
 

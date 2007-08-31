@@ -537,6 +537,7 @@ namespace SharpMap.Presentation
         #endregion
 
         #region View events
+        // Handles the offset request from the view
         private void view_OffsetChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point2D> e)
         {
             GeoPoint geoOffset = ToWorldInternal(e.RequestedValue);
@@ -544,6 +545,7 @@ namespace SharpMap.Presentation
             GeoCenterInternal = newCenter;
         }
 
+        // Handles the size-change request from the view
         private void view_SizeChangeRequested(object sender, MapViewPropertyChangeEventArgs<Size2D> e)
         {
             _toViewCoordinates.OffsetX = e.RequestedValue.Width / 2;
@@ -552,81 +554,95 @@ namespace SharpMap.Presentation
             SetViewSize(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the hover request from the view
         private void view_Hover(object sender, MapActionEventArgs<Point2D> e)
         {
             Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
+        // Handles the begin action request from the view
         private void view_BeginAction(object sender, MapActionEventArgs<Point2D> e)
         {
             Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
+        // Handles the move-to request from the view
         private void view_MoveTo(object sender, MapActionEventArgs<Point2D> e)
         {
             Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
+        // Handles the end action request from the view
         private void view_EndAction(object sender, MapActionEventArgs<Point2D> e)
         {
             Map.GetActiveTool<IMapView2D, Point2D>().EndAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
+        // Handles the background color change request from the view
         private void view_BackgroundColorChangeRequested(object sender, MapViewPropertyChangeEventArgs<StyleColor> e)
         {
             SetViewBackgroundColor(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the geographic view center change request from the view
         private void view_GeoCenterChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point> e)
         {
             GeoCenterInternal = e.RequestedValue;
 
-            SetViewGeoCenter(e.RequestedValue, e.CurrentValue);
+            SetViewGeoCenter(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the maximum world width change request from the view
         private void view_MaximumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             MaximumWorldWidthInternal = e.RequestedValue;
 
-            SetViewMaximumWorldWidth(e.RequestedValue, e.CurrentValue);
+            SetViewMaximumWorldWidth(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the minimum world width change request from the view
         private void view_MinimumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             MinimumWorldWidthInternal = e.RequestedValue;
 
-            SetViewMinimumWorldWidth(e.RequestedValue, e.CurrentValue);
+            SetViewMinimumWorldWidth(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the view envelope change request from the view
         private void view_ViewEnvelopeChangeRequested(object sender, MapViewPropertyChangeEventArgs<BoundingBox> e)
         {
             ViewEnvelopeInternal = e.RequestedValue;
 
-            SetViewEnvelope(e.RequestedValue, e.CurrentValue);
+            SetViewEnvelope(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the world aspect ratio change request from the view
         private void view_WorldAspectRatioChangeRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             WorldAspectRatioInternal = e.RequestedValue;
 
-            SetViewWorldAspectRatio(e.RequestedValue, e.CurrentValue);
+            SetViewWorldAspectRatio(e.CurrentValue, e.RequestedValue);
         }
 
+        // Handles the view zoom to extents request from the view
         private void view_ZoomToExtentsRequested(object sender, EventArgs e)
         {
             ZoomToExtentsInternal();
         }
 
+        // Handles the view zoom to specified view bounds request from the view
         private void view_ZoomToViewBoundsRequested(object sender, MapViewPropertyChangeEventArgs<Rectangle2D> e)
         {
             ZoomToViewBoundsInternal(e.RequestedValue);
         }
 
+        // Handles the view zoom to specified world bounds request from the view
         private void view_ZoomToWorldBoundsRequested(object sender, MapViewPropertyChangeEventArgs<BoundingBox> e)
         {
             ZoomToWorldBoundsInternal(e.RequestedValue);
         }
 
+        // Handles the view zoom to specified world width request from the view
         private void view_ZoomToWorldWidthRequested(object sender, MapViewPropertyChangeEventArgs<double> e)
         {
             ZoomToWorldWidthInternal(e.RequestedValue);
@@ -651,6 +667,7 @@ namespace SharpMap.Presentation
             setViewMetricsInternal(View.ViewSize, newCenter, WorldWidthInternal);
         }
 
+        // Performs computations to set the view metrics to the given envelope.
         private void setViewEnvelopeInternal(BoundingBox newEnvelope)
         {
             BoundingBox oldEnvelope = ViewEnvelopeInternal;
@@ -680,26 +697,31 @@ namespace SharpMap.Presentation
             setViewMetricsInternal(View.ViewSize, newEnvelope.GetCentroid(), newWorldWidth);
         }
 
+        // Performs computations to set the view metrics given the parameters
+        // of the view size, the geographic center of the view, and how much
+        // of the world to show in the view by width.
         private void setViewMetricsInternal(Size2D newViewSize, GeoPoint newCenter, double newWorldWidth)
         {
             GeoPoint oldCenter = GeoCenterInternal;
 
             bool viewMatrixChanged = false;
 
+            // Change view size
             if (newViewSize != View.ViewSize)
             {
                 View.ViewSize = newViewSize;
             }
 
+            // Change geographic center of the view by translating pan matrix
             if (!oldCenter.Equals(newCenter))
             {
-                //// Compute how much the scaling shifted the edges from the center, 
-                //// and how much the center shift offsets the origin.
                 _translationTransform.OffsetX += -(newCenter.X - oldCenter.X);
                 _translationTransform.OffsetY += -(newCenter.Y - oldCenter.Y);
                 viewMatrixChanged = true;
             }
 
+            // Compute new world units per pixel based on view size and desired 
+            // world width
             double newWorldUnitsPerPixel = newWorldWidth / View.ViewSize.Width;
 
             if (newWorldUnitsPerPixel != WorldUnitsPerPixelInternal)
@@ -710,6 +732,8 @@ namespace SharpMap.Presentation
                 viewMatrixChanged = true;
             }
 
+            // If the view metrics have changed, recompute the inverse view matrix
+            // and set the visible region of the map.
             if (viewMatrixChanged)
             {
                 ToWorldTransformInternal = ToViewTransformInternal.Inverse;
@@ -721,11 +745,13 @@ namespace SharpMap.Presentation
             }
         }
 
+        // Computes the view space coordinates of a point in world space
         private Point2D worldToView(GeoPoint geoPoint)
         {
             return ToViewTransformInternal.TransformVector(geoPoint.X, geoPoint.Y);
         }
 
+        // Computes the world space coordinates of a point in view space
         private GeoPoint viewToWorld(Point2D viewPoint)
         {
             Point2D values = ToWorldTransformInternal.TransformVector(viewPoint.X, viewPoint.Y);
