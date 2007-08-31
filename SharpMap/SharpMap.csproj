@@ -156,12 +156,12 @@
     <Compile Include="Data\Providers\Shapefile\ShapeFileInvalidOperationException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
-    <Compile Include="Model\Layers\DuplicateLayerException.cs" />
-    <Compile Include="Model\Features\FeatureDataRow.cs" />
-    <Compile Include="Model\Features\FeatureDataRowChangeEventArgs.cs" />
-    <Compile Include="Model\Features\FeatureDataRowChangeEventHandler.cs" />
-    <Compile Include="Model\Features\FeatureDataRow`1.cs" />
-    <Compile Include="Model\Features\FeatureDataSet.cs">
+    <Compile Include="Layers\DuplicateLayerException.cs" />
+    <Compile Include="Features\FeatureDataRow.cs" />
+    <Compile Include="Features\FeatureDataRowChangeEventArgs.cs" />
+    <Compile Include="Features\FeatureDataRowChangeEventHandler.cs" />
+    <Compile Include="Features\FeatureDataRow`1.cs" />
+    <Compile Include="Features\FeatureDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
@@ -211,34 +211,34 @@
     <Compile Include="Indexing\RTree\RTreeIndexEntry.cs" />
     <Compile Include="Indexing\RTree\RTreeLeafNode.cs" />
     <Compile Include="Indexing\RTree\RTreeBranchNode.cs" />
-    <Compile Include="Model\Features\FeatureDataTable.cs">
+    <Compile Include="Features\FeatureDataTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Model\Features\FeatureDataTableView`1.cs" />
-    <Compile Include="Model\Features\FeatureDataTable`1.cs">
+    <Compile Include="Features\FeatureDataTableView`1.cs" />
+    <Compile Include="Features\FeatureDataTable`1.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Model\Features\FeatureDataView.cs">
+    <Compile Include="Features\FeatureDataView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Model\Features\FeatureDataViewManager.cs">
+    <Compile Include="Features\FeatureDataViewManager.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Model\Features\FeatureTableCollection.cs" />
-    <Compile Include="Model\Layers\LayersChangedEventArgs.cs" />
-    <Compile Include="Model\Layers\IFeatureLayer.cs" />
-    <Compile Include="Model\Layers\ILayer.cs" />
-    <Compile Include="Model\Layers\IRasterLayer.cs" />
-    <Compile Include="Model\Layers\LabelLayer.cs">
+    <Compile Include="Features\FeatureTableCollection.cs" />
+    <Compile Include="Layers\LayersChangedEventArgs.cs" />
+    <Compile Include="Layers\IFeatureLayer.cs" />
+    <Compile Include="Layers\ILayer.cs" />
+    <Compile Include="Layers\IRasterLayer.cs" />
+    <Compile Include="Layers\LabelLayer.cs">
     </Compile>
-    <Compile Include="Model\Layers\Layer.cs">
+    <Compile Include="Layers\Layer.cs">
     </Compile>
-    <Compile Include="Model\Layers\LayerGroup.cs">
+    <Compile Include="Layers\LayerGroup.cs">
     </Compile>
-    <Compile Include="Model\Layers\MultipartGeometryLabelingBehavor.cs" />
-    <Compile Include="Model\Layers\RasterLayer.cs">
+    <Compile Include="Layers\MultipartGeometryLabelingBehavor.cs" />
+    <Compile Include="Layers\RasterLayer.cs">
     </Compile>
-    <Compile Include="Model\Layers\VectorLayer.cs">
+    <Compile Include="Layers\VectorLayer.cs">
     </Compile>
     <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\IBindingListView`1.cs" />
@@ -262,7 +262,7 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Tools\ActionContext`1.cs" />
-    <Compile Include="Model\Map.cs">
+    <Compile Include="Map.cs">
     </Compile>
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
@@ -350,7 +350,7 @@
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Model\Map Model.cd" />
+    <None Include="Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />
     <None Include="SharpMap.snk" />
   </ItemGroup>
