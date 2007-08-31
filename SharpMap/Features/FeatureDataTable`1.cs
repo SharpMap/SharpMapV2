@@ -21,7 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
-namespace SharpMap
+namespace SharpMap.Features
 {
     /// <summary>
     /// Represents one feature table of in-memory spatial data, with an object identifier (OID) type

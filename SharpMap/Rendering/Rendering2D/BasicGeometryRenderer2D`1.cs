@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using SharpMap.Features;
 using SharpMap.Styles;
 using SharpMap.Geometries;
 

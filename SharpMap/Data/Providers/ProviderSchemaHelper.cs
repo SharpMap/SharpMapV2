@@ -17,6 +17,7 @@
 
 using System;
 using System.Data;
+using SharpMap.Features;
 
 namespace SharpMap.Data.Providers
 {

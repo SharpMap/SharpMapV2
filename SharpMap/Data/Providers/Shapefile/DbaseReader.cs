@@ -24,6 +24,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using SharpMap.Features;
 using SharpMap.Indexing.BinaryTree;
 
 namespace SharpMap.Data.Providers.ShapeFile

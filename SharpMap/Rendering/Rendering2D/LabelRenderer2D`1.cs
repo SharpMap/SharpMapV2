@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Styles;
 
@@ -89,7 +89,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Renders the layer to the <paramref name="view"/>.
         /// </summary>
-        /// <param name="view"><see cref="IMapView"/> to render layer on.</param>
+        /// <param name="view"><see cref="IMapView2D"/> to render layer on.</param>
         /// <param name="region">Area of the map to render.</param>
         //protected void Render(BoundingBox region)
         //{

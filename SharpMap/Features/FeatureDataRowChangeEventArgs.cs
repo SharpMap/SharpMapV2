@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 
-namespace SharpMap
+namespace SharpMap.Features
 {
     /// <summary>
     /// Occurs after a FeatureDataRow has been changed successfully.

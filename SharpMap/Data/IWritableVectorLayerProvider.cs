@@ -15,20 +15,18 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using SharpMap.Geometries;
+using SharpMap.Features;
 
 namespace SharpMap.Data
 {
     public interface IWritableVectorLayerProvider<TOid> : IVectorLayerProvider<TOid>
     {
-		void Insert(FeatureDataRow<TOid> feature);
-		void Insert(IEnumerable<FeatureDataRow<TOid>> features);
-		void Update(FeatureDataRow<TOid> feature);
-		void Update(IEnumerable<FeatureDataRow<TOid>> features);
-		void Delete(FeatureDataRow<TOid> feature);
-		void Delete(IEnumerable<FeatureDataRow<TOid>> features);
+        void Insert(FeatureDataRow<TOid> feature);
+        void Insert(IEnumerable<FeatureDataRow<TOid>> features);
+        void Update(FeatureDataRow<TOid> feature);
+        void Update(IEnumerable<FeatureDataRow<TOid>> features);
+        void Delete(FeatureDataRow<TOid> feature);
+        void Delete(IEnumerable<FeatureDataRow<TOid>> features);
     }
 }

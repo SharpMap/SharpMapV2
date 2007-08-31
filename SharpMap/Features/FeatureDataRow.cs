@@ -20,7 +20,7 @@ using System;
 using System.Data;
 using SharpMap.Geometries;
 
-namespace SharpMap
+namespace SharpMap.Features
 {
 	/// <summary>
 	/// Represents a geographic feature, stored as 

@@ -17,20 +17,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Data;
 using System.ComponentModel;
+using System.Data;
 
-namespace SharpMap
+namespace SharpMap.Features
 {
     /// <summary>
     /// Represents the collection of tables for the FeatureDataSet.
     /// </summary>
-    [Serializable()]
+    [Serializable]
     public class FeatureTableCollection : IList<FeatureDataTable>
     {
-        DataTableCollection _tables;
+        private readonly DataTableCollection _tables;
 
         public FeatureTableCollection(DataTableCollection tables)
         {
@@ -146,6 +146,7 @@ namespace SharpMap
         #endregion
 
         #region IList<FeatureDataTable> Members
+
         void IList<FeatureDataTable>.Insert(int index, FeatureDataTable item)
         {
             throw new NotSupportedException();
@@ -153,21 +154,15 @@ namespace SharpMap
 
         FeatureDataTable IList<FeatureDataTable>.this[int index]
         {
-            get
-            {
-                return this[index];
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get { return this[index]; }
+            set { throw new NotSupportedException(); }
         }
 
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -188,7 +183,8 @@ namespace SharpMap
             fireEvent(collectionChangeAction, collection, e);
         }
 
-        private void fireEvent(CollectionChangeAction collectionChangeAction, object collection, CollectionChangeEventHandler e)
+        private void fireEvent(CollectionChangeAction collectionChangeAction, object collection,
+                               CollectionChangeEventHandler e)
         {
             if (e != null)
             {
@@ -208,8 +204,8 @@ namespace SharpMap
             {
                 if (!(e.Element is FeatureDataTable))
                 {
-                    throw new InvalidOperationException("The table being added to the FeatureDataSet "+
-                        "must be of type FeatureDataTable.");
+                    throw new InvalidOperationException("The table being added to the FeatureDataSet " +
+                                                        "must be of type FeatureDataTable.");
                 }
             }
 

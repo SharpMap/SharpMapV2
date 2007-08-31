@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SharpMap.Features;
 using SharpMap.Geometries;
 
 namespace SharpMap.Data

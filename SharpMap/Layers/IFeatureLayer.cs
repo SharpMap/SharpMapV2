@@ -17,6 +17,7 @@
 
 using System;
 using SharpMap.Data;
+using SharpMap.Features;
 
 namespace SharpMap.Layers
 {

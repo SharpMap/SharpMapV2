@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Features;
 using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Model

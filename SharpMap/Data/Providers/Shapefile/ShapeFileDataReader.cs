@@ -16,9 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
+using SharpMap.Features;
 using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
@@ -33,13 +32,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         private bool _isDisposed;
 
         #region Object Construction / Disposal
+
         internal ShapeFileDataReader(ShapeFile source, BoundingBox queryRegion)
         {
             _queryRegion = queryRegion;
             _shapeFile = source;
             _schemaTable = source.GetSchemaTable();
         }
-        
+
         #region Dispose Pattern
 
         ~ShapeFileDataReader()
@@ -126,7 +126,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             get
             {
-                checkState(); 
+                checkState();
                 return true;
             }
         }
@@ -181,8 +181,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 {
                     featureBounds = _currentFeature.Geometry.GetBoundingBox();
                 }
-            }
-            while (_currentRecord < featureCount && !_queryRegion.Intersects(featureBounds));
+            } while (_currentRecord < featureCount && !_queryRegion.Intersects(featureBounds));
 
             return _currentRecord < featureCount;
         }
@@ -200,7 +199,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             get
             {
-                checkState(); 
+                checkState();
                 return _schemaTable.Rows.Count;
             }
         }
@@ -387,7 +386,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public object this[string name]
         {
-            get { checkState(); return _currentFeature[name]; }
+            get
+            {
+                checkState();
+                return _currentFeature[name];
+            }
         }
 
         public object this[int i]
@@ -397,14 +400,13 @@ namespace SharpMap.Data.Providers.ShapeFile
                 checkState();
                 checkIndex(i);
 
-                return _currentFeature[i]; 
+                return _currentFeature[i];
             }
         }
 
         #endregion
 
         #region Private helper methods
-
 
         private void checkIndex(int i)
         {
@@ -422,6 +424,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new InvalidOperationException("The Read method must be called before accessing values.");
             }
         }
+
         #endregion
     }
 }

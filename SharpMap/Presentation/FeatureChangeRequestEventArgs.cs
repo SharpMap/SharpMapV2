@@ -17,8 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-
-using SharpMap.Data;
+using SharpMap.Features;
 
 namespace SharpMap.Presentation
 {

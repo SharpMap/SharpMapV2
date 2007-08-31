@@ -214,7 +214,6 @@
     <Compile Include="Features\FeatureDataTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Features\FeatureDataTableView`1.cs" />
     <Compile Include="Features\FeatureDataTable`1.cs">
       <SubType>Component</SubType>
     </Compile>
