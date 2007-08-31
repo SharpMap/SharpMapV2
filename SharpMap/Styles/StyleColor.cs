@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,11 +15,32 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+// Initially copied from Paint.Net under the following MIT license:
+//
+// Paint.NET
+// Copyright (C) dotPDN LLC, Rick Brewster, Chris Crosetto, Tom Jackson, Michael Kelsey, Brandon Ortiz, 
+// Craig Taylor, Chris Trevino, and Luke Walker.
+// Portions Copyright (C) Microsoft Corporation. All Rights Reserved.
+// MIT License: http://www.opensource.org/licenses/mit-license.php
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+// and associated documentation files (the "Software"), to deal in the Software without restriction, 
+// including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+// subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all copies or substantial 
+// portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace SharpMap.Styles
 {
@@ -31,15 +52,23 @@ namespace SharpMap.Styles
     public struct StyleColor : IEquatable<StyleColor>
     {
         #region Private fields
-        [FieldOffset(0)] private byte _b;
-        [FieldOffset(1)] private byte _g;
-        [FieldOffset(2)] private byte _r;
-        [FieldOffset(3)] private byte _a;
 
-        [FieldOffset(0)] private uint _bgra;
+        [FieldOffset(0)]
+        private byte _b;
+        [FieldOffset(1)]
+        private byte _g;
+        [FieldOffset(2)]
+        private byte _r;
+        [FieldOffset(3)]
+        private byte _a;
+
+        [FieldOffset(0)]
+        private uint _bgra;
+
         #endregion
 
         #region Constructors
+
         public StyleColor(uint bgra)
         {
             _b = _g = _r = _a = 0;
@@ -54,11 +83,13 @@ namespace SharpMap.Styles
             _r = clampToByte(r);
             _a = clampToByte(a);
         }
+
         #endregion
 
         public override string ToString()
         {
-            return "[StyleColor] " + (LookupColorName(this) ?? String.Format("B = {0}; G = {1}; R = {2}; A = {3}", B, G, R, A));
+            return "[StyleColor] " + (LookupColorName(this) 
+                ?? String.Format("B = {0}; G = {1}; R = {2}; A = {3}", B, G, R, A));
         }
 
         public static StyleColor FromBgra(uint bgra)
@@ -74,11 +105,14 @@ namespace SharpMap.Styles
         /// <summary> 
         /// Creates a color using HSB.
         /// </summary> 
-        /// <remarks>Adapted from the algorithm in "Computer Graphics: Principles and Practice in C", ISBN: 978-0201848403</remarks>
+        /// <remarks>
+        /// Adapted from the algorithm in "Computer Graphics: Principles and Practice in C", 
+        /// ISBN: 978-0201848403
+        /// </remarks>
         /// <param name="hue">The hue value.</param> 
         /// <param name="saturation">The saturation value.</param> 
         /// <param name="brightness">The brightness value.</param> 
-        /// <returns>A <see cref="Color"/> structure containing the equivalent RGBA values</returns> 
+        /// <returns>A <see cref="StyleColor"/> structure containing the equivalent RGBA values</returns> 
         public static StyleColor FromHsb(double hue, double saturation, double brightness)
         {
             StyleColor c = new StyleColor();
@@ -87,7 +121,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Gets the color value as a BGRA-encoded <see cref="Uint32"/>.
+        /// Gets the color value as a BGRA-encoded <see cref="UInt32"/>.
         /// </summary>
         public UInt32 Bgra
         {
@@ -167,9 +201,9 @@ namespace SharpMap.Styles
         {
             get
             {
-                return ((BlueLuminanceFactor * (double)B)
-                    + (GreenLuminanceFactor * (double)G)
-                    + (RedLuminanceFactor * (double)R)) / 255.0;
+                return ((BlueLuminanceFactor * B)
+                        + (GreenLuminanceFactor * G)
+                        + (RedLuminanceFactor * R)) / 255.0;
             }
         }
 
@@ -187,9 +221,9 @@ namespace SharpMap.Styles
                     return 0.0;
                 }
 
-                double redFactor = ((double)R) / 255.0;
-                double greenFactor = ((double)G) / 255.0;
-                double blueFactor = ((double)B) / 255.0;
+                double redFactor = R / 255.0;
+                double greenFactor = G / 255.0;
+                double blueFactor = B / 255.0;
                 double largestFactor = redFactor;
                 double smallestFactor = redFactor;
 
@@ -249,9 +283,9 @@ namespace SharpMap.Styles
         {
             get
             {
-                double redFactor = ((double)R) / 255.0;
-                double greenFactor = ((double)G) / 255.0;
-                double blueFactor = ((double)B) / 255.0;
+                double redFactor = R / 255.0;
+                double greenFactor = G / 255.0;
+                double blueFactor = B / 255.0;
                 double saturation = 0.0;
 
                 double largestFactor = redFactor;
@@ -268,7 +302,7 @@ namespace SharpMap.Styles
                 }
 
                 double average = (largestFactor + smallestFactor) / 2.0;
-                
+
                 if (average <= 0.5)
                 {
                     return ((largestFactor - smallestFactor) / (largestFactor + smallestFactor));
@@ -291,9 +325,9 @@ namespace SharpMap.Styles
             get
             {
                 // Normalize color vector (to between 0 and 1)
-                double redFactor = ((double)R) / 255.0;
-                double greenFactor = ((double)G) / 255.0;
-                double blueFactor = ((double)B) / 255.0;
+                double redFactor = R / 255.0;
+                double greenFactor = G / 255.0;
+                double blueFactor = B / 255.0;
 
                 double largestFactor = redFactor;
                 double smallestFactor = redFactor;
@@ -310,12 +344,12 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Evenly interpolates between two <see cref="Color"/> values
+        /// Evenly interpolates between two <see cref="StyleColor"/> values
         /// in the RGB color space.
         /// </summary>
         /// <param name="color1">The first color to interpolate between</param>
         /// <param name="color2">The second color to interpolate between</param>
-        /// <returns>A <see cref="Color"/> on the midpoint of the distance between 
+        /// <returns>A <see cref="StyleColor"/> on the midpoint of the distance between 
         /// <paramref name="color1"/> and <paramref name="color2"/>.</returns>
         public static StyleColor Interpolate(StyleColor color1, StyleColor color2)
         {
@@ -323,14 +357,14 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Interpolates between two <see cref="Color"/> values
+        /// Interpolates between two <see cref="StyleColor"/> values
         /// in the RGB color space.
         /// </summary>
         /// <param name="color1">The first color to interpolate between</param>
         /// <param name="color2">The second color to interpolate between</param>
         /// <param name="blendFactor">The percentage of the distance between 
         /// <paramref name="color1"/> and <paramref name="color2"/> to return.</param>
-        /// <returns>A <see cref="Color"/> which is <paramref name="blendFactor"/> percent
+        /// <returns>A <see cref="StyleColor"/> which is <paramref name="blendFactor"/> percent
         /// of the distance between <paramref name="color1"/> and <paramref name="color2"/>.
         /// </returns>
         /// <remarks>If <paramref name="blendFactor"/> is less than 0 or more than 100,
@@ -399,7 +433,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Returns true if two <see cref="Color"/> instances are equal, false if they are not equal.
+        /// Returns true if two <see cref="StyleColor"/> instances are equal, false if they are not equal.
         /// </summary>
         public static bool operator ==(StyleColor color1, StyleColor color2)
         {
@@ -407,17 +441,19 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Returns true if two <see cref="Color"/> instances are not equal, false if they are equal.
+        /// Returns true if two <see cref="StyleColor"/> instances are not equal, false if they are equal.
         /// </summary>
         public static bool operator !=(StyleColor color1, StyleColor color2)
         {
             return color1.Bgra != color2.Bgra;
         }
+
         #endregion
 
         #region Conversion Operators
+
         /// <summary>
-        /// Casts a <see cref="Color"/> to a <see cref="UInt32"/>.
+        /// Casts a <see cref="StyleColor"/> to a <see cref="UInt32"/>.
         /// </summary>
         public static explicit operator UInt32(StyleColor color)
         {
@@ -425,26 +461,33 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Casts a <see cref="UInt32"/> to a <see cref="Color"/>.
+        /// Casts a <see cref="UInt32"/> to a <see cref="StyleColor"/>.
         /// </summary>
         public static explicit operator StyleColor(UInt32 value)
         {
             return new StyleColor(value);
         }
+
         #endregion
 
         #region GetHashCode
+
         /// <summary>
         /// Returns a hash code for this color value.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
         {
-            unchecked { return (int)Bgra; }
+            unchecked
+            {
+                return (int)Bgra;
+            }
         }
+
         #endregion
 
         #region Predefined Color Properties
+
         /// <summary>
         /// Gets a transparent color (BRGA = 255, 255, 255, 0).
         /// </summary>
@@ -453,7 +496,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Transparent
         {
-            get { return StyleColor.FromBgra(255, 255, 255, 0); }
+            get { return FromBgra(255, 255, 255, 0); }
         }
 
         /// <summary>
@@ -465,10 +508,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor AliceBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 248, 240, 255);
-            }
+            get { return FromBgra(255, 248, 240, 255); }
         }
 
         /// <summary>
@@ -480,10 +520,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor AntiqueWhite
         {
-            get
-            {
-                return StyleColor.FromBgra(215, 235, 250, 255);
-            }
+            get { return FromBgra(215, 235, 250, 255); }
         }
 
         /// <summary>
@@ -495,10 +532,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Aqua
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 255, 0, 255);
-            }
+            get { return FromBgra(255, 255, 0, 255); }
         }
 
         /// <summary>
@@ -510,10 +544,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Aquamarine
         {
-            get
-            {
-                return StyleColor.FromBgra(212, 255, 127, 255);
-            }
+            get { return FromBgra(212, 255, 127, 255); }
         }
 
         /// <summary>
@@ -525,10 +556,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Azure
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 255, 240, 255);
-            }
+            get { return FromBgra(255, 255, 240, 255); }
         }
 
         /// <summary>
@@ -540,10 +568,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Beige
         {
-            get
-            {
-                return StyleColor.FromBgra(220, 245, 245, 255);
-            }
+            get { return FromBgra(220, 245, 245, 255); }
         }
 
         /// <summary>
@@ -555,10 +580,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Bisque
         {
-            get
-            {
-                return StyleColor.FromBgra(196, 228, 255, 255);
-            }
+            get { return FromBgra(196, 228, 255, 255); }
         }
 
         /// <summary>
@@ -570,10 +592,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Black
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 0, 0, 255);
-            }
+            get { return FromBgra(0, 0, 0, 255); }
         }
 
         /// <summary>
@@ -585,10 +604,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor BlanchedAlmond
         {
-            get
-            {
-                return StyleColor.FromBgra(205, 235, 255, 255);
-            }
+            get { return FromBgra(205, 235, 255, 255); }
         }
 
         /// <summary>
@@ -600,10 +616,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Blue
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 0, 0, 255);
-            }
+            get { return FromBgra(255, 0, 0, 255); }
         }
 
         /// <summary>
@@ -615,10 +628,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor BlueViolet
         {
-            get
-            {
-                return StyleColor.FromBgra(226, 43, 138, 255);
-            }
+            get { return FromBgra(226, 43, 138, 255); }
         }
 
         /// <summary>
@@ -630,10 +640,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Brown
         {
-            get
-            {
-                return StyleColor.FromBgra(42, 42, 165, 255);
-            }
+            get { return FromBgra(42, 42, 165, 255); }
         }
 
         /// <summary>
@@ -645,10 +652,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor BurlyWood
         {
-            get
-            {
-                return StyleColor.FromBgra(135, 184, 222, 255);
-            }
+            get { return FromBgra(135, 184, 222, 255); }
         }
 
         /// <summary>
@@ -660,10 +664,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor CadetBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(160, 158, 95, 255);
-            }
+            get { return FromBgra(160, 158, 95, 255); }
         }
 
         /// <summary>
@@ -675,10 +676,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Chartreuse
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 255, 127, 255);
-            }
+            get { return FromBgra(0, 255, 127, 255); }
         }
 
         /// <summary>
@@ -690,10 +688,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Chocolate
         {
-            get
-            {
-                return StyleColor.FromBgra(30, 105, 210, 255);
-            }
+            get { return FromBgra(30, 105, 210, 255); }
         }
 
         /// <summary>
@@ -705,10 +700,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Coral
         {
-            get
-            {
-                return StyleColor.FromBgra(80, 127, 255, 255);
-            }
+            get { return FromBgra(80, 127, 255, 255); }
         }
 
         /// <summary>
@@ -720,10 +712,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor CornflowerBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(237, 149, 100, 255);
-            }
+            get { return FromBgra(237, 149, 100, 255); }
         }
 
         /// <summary>
@@ -735,10 +724,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Cornsilk
         {
-            get
-            {
-                return StyleColor.FromBgra(220, 248, 255, 255);
-            }
+            get { return FromBgra(220, 248, 255, 255); }
         }
 
         /// <summary>
@@ -750,10 +736,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Crimson
         {
-            get
-            {
-                return StyleColor.FromBgra(60, 20, 220, 255);
-            }
+            get { return FromBgra(60, 20, 220, 255); }
         }
 
         /// <summary>
@@ -765,10 +748,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Cyan
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 255, 0, 255);
-            }
+            get { return FromBgra(255, 255, 0, 255); }
         }
 
         /// <summary>
@@ -780,10 +760,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(139, 0, 0, 255);
-            }
+            get { return FromBgra(139, 0, 0, 255); }
         }
 
         /// <summary>
@@ -795,10 +772,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkCyan
         {
-            get
-            {
-                return StyleColor.FromBgra(139, 139, 0, 255);
-            }
+            get { return FromBgra(139, 139, 0, 255); }
         }
 
         /// <summary>
@@ -810,10 +784,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkGoldenrod
         {
-            get
-            {
-                return StyleColor.FromBgra(11, 134, 184, 255);
-            }
+            get { return FromBgra(11, 134, 184, 255); }
         }
 
         /// <summary>
@@ -825,10 +796,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkGray
         {
-            get
-            {
-                return StyleColor.FromBgra(169, 169, 169, 255);
-            }
+            get { return FromBgra(169, 169, 169, 255); }
         }
 
         /// <summary>
@@ -840,10 +808,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 100, 0, 255);
-            }
+            get { return FromBgra(0, 100, 0, 255); }
         }
 
         /// <summary>
@@ -855,10 +820,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkKhaki
         {
-            get
-            {
-                return StyleColor.FromBgra(107, 183, 189, 255);
-            }
+            get { return FromBgra(107, 183, 189, 255); }
         }
 
         /// <summary>
@@ -870,10 +832,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkMagenta
         {
-            get
-            {
-                return StyleColor.FromBgra(139, 0, 139, 255);
-            }
+            get { return FromBgra(139, 0, 139, 255); }
         }
 
         /// <summary>
@@ -885,10 +844,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkOliveGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(47, 107, 85, 255);
-            }
+            get { return FromBgra(47, 107, 85, 255); }
         }
 
         /// <summary>
@@ -900,10 +856,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkOrange
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 140, 255, 255);
-            }
+            get { return FromBgra(0, 140, 255, 255); }
         }
 
         /// <summary>
@@ -915,10 +868,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkOrchid
         {
-            get
-            {
-                return StyleColor.FromBgra(204, 50, 153, 255);
-            }
+            get { return FromBgra(204, 50, 153, 255); }
         }
 
         /// <summary>
@@ -930,10 +880,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkRed
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 0, 139, 255);
-            }
+            get { return FromBgra(0, 0, 139, 255); }
         }
 
         /// <summary>
@@ -945,10 +892,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkSalmon
         {
-            get
-            {
-                return StyleColor.FromBgra(122, 150, 233, 255);
-            }
+            get { return FromBgra(122, 150, 233, 255); }
         }
 
         /// <summary>
@@ -960,10 +904,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkSeaGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(139, 188, 143, 255);
-            }
+            get { return FromBgra(139, 188, 143, 255); }
         }
 
         /// <summary>
@@ -975,10 +916,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkSlateBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(139, 61, 72, 255);
-            }
+            get { return FromBgra(139, 61, 72, 255); }
         }
 
         /// <summary>
@@ -990,10 +928,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkSlateGray
         {
-            get
-            {
-                return StyleColor.FromBgra(79, 79, 47, 255);
-            }
+            get { return FromBgra(79, 79, 47, 255); }
         }
 
         /// <summary>
@@ -1005,10 +940,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkTurquoise
         {
-            get
-            {
-                return StyleColor.FromBgra(209, 206, 0, 255);
-            }
+            get { return FromBgra(209, 206, 0, 255); }
         }
 
         /// <summary>
@@ -1020,10 +952,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DarkViolet
         {
-            get
-            {
-                return StyleColor.FromBgra(211, 0, 148, 255);
-            }
+            get { return FromBgra(211, 0, 148, 255); }
         }
 
         /// <summary>
@@ -1035,10 +964,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DeepPink
         {
-            get
-            {
-                return StyleColor.FromBgra(147, 20, 255, 255);
-            }
+            get { return FromBgra(147, 20, 255, 255); }
         }
 
         /// <summary>
@@ -1050,10 +976,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DeepSkyBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 191, 0, 255);
-            }
+            get { return FromBgra(255, 191, 0, 255); }
         }
 
         /// <summary>
@@ -1065,10 +988,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DimGray
         {
-            get
-            {
-                return StyleColor.FromBgra(105, 105, 105, 255);
-            }
+            get { return FromBgra(105, 105, 105, 255); }
         }
 
         /// <summary>
@@ -1080,10 +1000,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor DodgerBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 144, 30, 255);
-            }
+            get { return FromBgra(255, 144, 30, 255); }
         }
 
         /// <summary>
@@ -1095,10 +1012,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Firebrick
         {
-            get
-            {
-                return StyleColor.FromBgra(34, 34, 178, 255);
-            }
+            get { return FromBgra(34, 34, 178, 255); }
         }
 
         /// <summary>
@@ -1110,10 +1024,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor FloralWhite
         {
-            get
-            {
-                return StyleColor.FromBgra(240, 250, 255, 255);
-            }
+            get { return FromBgra(240, 250, 255, 255); }
         }
 
         /// <summary>
@@ -1125,10 +1036,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor ForestGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(34, 139, 34, 255);
-            }
+            get { return FromBgra(34, 139, 34, 255); }
         }
 
         /// <summary>
@@ -1140,10 +1048,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Fuchsia
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 0, 255, 255);
-            }
+            get { return FromBgra(255, 0, 255, 255); }
         }
 
         /// <summary>
@@ -1155,10 +1060,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Gainsboro
         {
-            get
-            {
-                return StyleColor.FromBgra(220, 220, 220, 255);
-            }
+            get { return FromBgra(220, 220, 220, 255); }
         }
 
         /// <summary>
@@ -1170,10 +1072,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor GhostWhite
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 248, 248, 255);
-            }
+            get { return FromBgra(255, 248, 248, 255); }
         }
 
         /// <summary>
@@ -1185,10 +1084,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Gold
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 215, 255, 255);
-            }
+            get { return FromBgra(0, 215, 255, 255); }
         }
 
         /// <summary>
@@ -1200,10 +1096,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Goldenrod
         {
-            get
-            {
-                return StyleColor.FromBgra(32, 165, 218, 255);
-            }
+            get { return FromBgra(32, 165, 218, 255); }
         }
 
         /// <summary>
@@ -1215,10 +1108,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Gray
         {
-            get
-            {
-                return StyleColor.FromBgra(128, 128, 128, 255);
-            }
+            get { return FromBgra(128, 128, 128, 255); }
         }
 
         /// <summary>
@@ -1230,10 +1120,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Green
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 128, 0, 255);
-            }
+            get { return FromBgra(0, 128, 0, 255); }
         }
 
         /// <summary>
@@ -1245,10 +1132,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor GreenYellow
         {
-            get
-            {
-                return StyleColor.FromBgra(47, 255, 173, 255);
-            }
+            get { return FromBgra(47, 255, 173, 255); }
         }
 
         /// <summary>
@@ -1260,10 +1144,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Honeydew
         {
-            get
-            {
-                return StyleColor.FromBgra(240, 255, 240, 255);
-            }
+            get { return FromBgra(240, 255, 240, 255); }
         }
 
         /// <summary>
@@ -1275,10 +1156,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor HotPink
         {
-            get
-            {
-                return StyleColor.FromBgra(180, 105, 255, 255);
-            }
+            get { return FromBgra(180, 105, 255, 255); }
         }
 
         /// <summary>
@@ -1290,10 +1168,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor IndianRed
         {
-            get
-            {
-                return StyleColor.FromBgra(92, 92, 205, 255);
-            }
+            get { return FromBgra(92, 92, 205, 255); }
         }
 
         /// <summary>
@@ -1305,10 +1180,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Indigo
         {
-            get
-            {
-                return StyleColor.FromBgra(130, 0, 75, 255);
-            }
+            get { return FromBgra(130, 0, 75, 255); }
         }
 
         /// <summary>
@@ -1320,10 +1192,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Ivory
         {
-            get
-            {
-                return StyleColor.FromBgra(240, 255, 255, 255);
-            }
+            get { return FromBgra(240, 255, 255, 255); }
         }
 
         /// <summary>
@@ -1335,10 +1204,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Khaki
         {
-            get
-            {
-                return StyleColor.FromBgra(140, 230, 240, 255);
-            }
+            get { return FromBgra(140, 230, 240, 255); }
         }
 
         /// <summary>
@@ -1350,10 +1216,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Lavender
         {
-            get
-            {
-                return StyleColor.FromBgra(250, 230, 230, 255);
-            }
+            get { return FromBgra(250, 230, 230, 255); }
         }
 
         /// <summary>
@@ -1365,10 +1228,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LavenderBlush
         {
-            get
-            {
-                return StyleColor.FromBgra(245, 240, 255, 255);
-            }
+            get { return FromBgra(245, 240, 255, 255); }
         }
 
         /// <summary>
@@ -1380,10 +1240,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LawnGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 252, 124, 255);
-            }
+            get { return FromBgra(0, 252, 124, 255); }
         }
 
         /// <summary>
@@ -1395,10 +1252,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LemonChiffon
         {
-            get
-            {
-                return StyleColor.FromBgra(205, 250, 255, 255);
-            }
+            get { return FromBgra(205, 250, 255, 255); }
         }
 
         /// <summary>
@@ -1410,10 +1264,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(230, 216, 173, 255);
-            }
+            get { return FromBgra(230, 216, 173, 255); }
         }
 
         /// <summary>
@@ -1425,10 +1276,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightCoral
         {
-            get
-            {
-                return StyleColor.FromBgra(128, 128, 240, 255);
-            }
+            get { return FromBgra(128, 128, 240, 255); }
         }
 
         /// <summary>
@@ -1440,10 +1288,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightCyan
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 255, 224, 255);
-            }
+            get { return FromBgra(255, 255, 224, 255); }
         }
 
         /// <summary>
@@ -1455,10 +1300,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightGoldenrodYellow
         {
-            get
-            {
-                return StyleColor.FromBgra(210, 250, 250, 255);
-            }
+            get { return FromBgra(210, 250, 250, 255); }
         }
 
         /// <summary>
@@ -1470,10 +1312,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(144, 238, 144, 255);
-            }
+            get { return FromBgra(144, 238, 144, 255); }
         }
 
         /// <summary>
@@ -1485,10 +1324,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightGray
         {
-            get
-            {
-                return StyleColor.FromBgra(211, 211, 211, 255);
-            }
+            get { return FromBgra(211, 211, 211, 255); }
         }
 
         /// <summary>
@@ -1500,10 +1336,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightPink
         {
-            get
-            {
-                return StyleColor.FromBgra(193, 182, 255, 255);
-            }
+            get { return FromBgra(193, 182, 255, 255); }
         }
 
         /// <summary>
@@ -1515,10 +1348,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightSalmon
         {
-            get
-            {
-                return StyleColor.FromBgra(122, 160, 255, 255);
-            }
+            get { return FromBgra(122, 160, 255, 255); }
         }
 
         /// <summary>
@@ -1530,10 +1360,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightSeaGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(170, 178, 32, 255);
-            }
+            get { return FromBgra(170, 178, 32, 255); }
         }
 
         /// <summary>
@@ -1545,10 +1372,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightSkyBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(250, 206, 135, 255);
-            }
+            get { return FromBgra(250, 206, 135, 255); }
         }
 
         /// <summary>
@@ -1560,10 +1384,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightSlateGray
         {
-            get
-            {
-                return StyleColor.FromBgra(153, 136, 119, 255);
-            }
+            get { return FromBgra(153, 136, 119, 255); }
         }
 
         /// <summary>
@@ -1575,10 +1396,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightSteelBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(222, 196, 176, 255);
-            }
+            get { return FromBgra(222, 196, 176, 255); }
         }
 
         /// <summary>
@@ -1590,10 +1408,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LightYellow
         {
-            get
-            {
-                return StyleColor.FromBgra(224, 255, 255, 255);
-            }
+            get { return FromBgra(224, 255, 255, 255); }
         }
 
         /// <summary>
@@ -1605,10 +1420,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Lime
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 255, 0, 255);
-            }
+            get { return FromBgra(0, 255, 0, 255); }
         }
 
         /// <summary>
@@ -1620,10 +1432,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor LimeGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(50, 205, 50, 255);
-            }
+            get { return FromBgra(50, 205, 50, 255); }
         }
 
         /// <summary>
@@ -1635,10 +1444,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Linen
         {
-            get
-            {
-                return StyleColor.FromBgra(230, 240, 250, 255);
-            }
+            get { return FromBgra(230, 240, 250, 255); }
         }
 
         /// <summary>
@@ -1650,10 +1456,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Magenta
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 0, 255, 255);
-            }
+            get { return FromBgra(255, 0, 255, 255); }
         }
 
         /// <summary>
@@ -1665,10 +1468,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Maroon
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 0, 128, 255);
-            }
+            get { return FromBgra(0, 0, 128, 255); }
         }
 
         /// <summary>
@@ -1680,10 +1480,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumAquamarine
         {
-            get
-            {
-                return StyleColor.FromBgra(170, 205, 102, 255);
-            }
+            get { return FromBgra(170, 205, 102, 255); }
         }
 
         /// <summary>
@@ -1695,10 +1492,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(205, 0, 0, 255);
-            }
+            get { return FromBgra(205, 0, 0, 255); }
         }
 
         /// <summary>
@@ -1710,10 +1504,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumOrchid
         {
-            get
-            {
-                return StyleColor.FromBgra(211, 85, 186, 255);
-            }
+            get { return FromBgra(211, 85, 186, 255); }
         }
 
         /// <summary>
@@ -1725,10 +1516,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumPurple
         {
-            get
-            {
-                return StyleColor.FromBgra(219, 112, 147, 255);
-            }
+            get { return FromBgra(219, 112, 147, 255); }
         }
 
         /// <summary>
@@ -1740,10 +1528,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumSeaGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(113, 179, 60, 255);
-            }
+            get { return FromBgra(113, 179, 60, 255); }
         }
 
         /// <summary>
@@ -1755,10 +1540,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumSlateBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(238, 104, 123, 255);
-            }
+            get { return FromBgra(238, 104, 123, 255); }
         }
 
         /// <summary>
@@ -1770,10 +1552,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumSpringGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(154, 250, 0, 255);
-            }
+            get { return FromBgra(154, 250, 0, 255); }
         }
 
         /// <summary>
@@ -1785,10 +1564,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumTurquoise
         {
-            get
-            {
-                return StyleColor.FromBgra(204, 209, 72, 255);
-            }
+            get { return FromBgra(204, 209, 72, 255); }
         }
 
         /// <summary>
@@ -1800,10 +1576,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MediumVioletRed
         {
-            get
-            {
-                return StyleColor.FromBgra(133, 21, 199, 255);
-            }
+            get { return FromBgra(133, 21, 199, 255); }
         }
 
         /// <summary>
@@ -1815,10 +1588,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MidnightBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(112, 25, 25, 255);
-            }
+            get { return FromBgra(112, 25, 25, 255); }
         }
 
         /// <summary>
@@ -1830,10 +1600,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MintCream
         {
-            get
-            {
-                return StyleColor.FromBgra(250, 255, 245, 255);
-            }
+            get { return FromBgra(250, 255, 245, 255); }
         }
 
         /// <summary>
@@ -1845,10 +1612,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor MistyRose
         {
-            get
-            {
-                return StyleColor.FromBgra(225, 228, 255, 255);
-            }
+            get { return FromBgra(225, 228, 255, 255); }
         }
 
         /// <summary>
@@ -1860,10 +1624,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Moccasin
         {
-            get
-            {
-                return StyleColor.FromBgra(181, 228, 255, 255);
-            }
+            get { return FromBgra(181, 228, 255, 255); }
         }
 
         /// <summary>
@@ -1875,10 +1636,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor NavajoWhite
         {
-            get
-            {
-                return StyleColor.FromBgra(173, 222, 255, 255);
-            }
+            get { return FromBgra(173, 222, 255, 255); }
         }
 
         /// <summary>
@@ -1890,10 +1648,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Navy
         {
-            get
-            {
-                return StyleColor.FromBgra(128, 0, 0, 255);
-            }
+            get { return FromBgra(128, 0, 0, 255); }
         }
 
         /// <summary>
@@ -1905,10 +1660,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor OldLace
         {
-            get
-            {
-                return StyleColor.FromBgra(230, 245, 253, 255);
-            }
+            get { return FromBgra(230, 245, 253, 255); }
         }
 
         /// <summary>
@@ -1920,10 +1672,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Olive
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 128, 128, 255);
-            }
+            get { return FromBgra(0, 128, 128, 255); }
         }
 
         /// <summary>
@@ -1935,10 +1684,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor OliveDrab
         {
-            get
-            {
-                return StyleColor.FromBgra(35, 142, 107, 255);
-            }
+            get { return FromBgra(35, 142, 107, 255); }
         }
 
         /// <summary>
@@ -1950,10 +1696,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Orange
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 165, 255, 255);
-            }
+            get { return FromBgra(0, 165, 255, 255); }
         }
 
         /// <summary>
@@ -1965,10 +1708,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor OrangeRed
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 69, 255, 255);
-            }
+            get { return FromBgra(0, 69, 255, 255); }
         }
 
         /// <summary>
@@ -1980,10 +1720,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Orchid
         {
-            get
-            {
-                return StyleColor.FromBgra(214, 112, 218, 255);
-            }
+            get { return FromBgra(214, 112, 218, 255); }
         }
 
         /// <summary>
@@ -1995,10 +1732,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PaleGoldenrod
         {
-            get
-            {
-                return StyleColor.FromBgra(170, 232, 238, 255);
-            }
+            get { return FromBgra(170, 232, 238, 255); }
         }
 
         /// <summary>
@@ -2010,10 +1744,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PaleGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(152, 251, 152, 255);
-            }
+            get { return FromBgra(152, 251, 152, 255); }
         }
 
         /// <summary>
@@ -2025,10 +1756,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PaleTurquoise
         {
-            get
-            {
-                return StyleColor.FromBgra(238, 238, 175, 255);
-            }
+            get { return FromBgra(238, 238, 175, 255); }
         }
 
         /// <summary>
@@ -2040,10 +1768,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PaleVioletRed
         {
-            get
-            {
-                return StyleColor.FromBgra(147, 112, 219, 255);
-            }
+            get { return FromBgra(147, 112, 219, 255); }
         }
 
         /// <summary>
@@ -2055,10 +1780,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PapayaWhip
         {
-            get
-            {
-                return StyleColor.FromBgra(213, 239, 255, 255);
-            }
+            get { return FromBgra(213, 239, 255, 255); }
         }
 
         /// <summary>
@@ -2070,10 +1792,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PeachPuff
         {
-            get
-            {
-                return StyleColor.FromBgra(185, 218, 255, 255);
-            }
+            get { return FromBgra(185, 218, 255, 255); }
         }
 
         /// <summary>
@@ -2085,10 +1804,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Peru
         {
-            get
-            {
-                return StyleColor.FromBgra(63, 133, 205, 255);
-            }
+            get { return FromBgra(63, 133, 205, 255); }
         }
 
         /// <summary>
@@ -2100,10 +1816,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Pink
         {
-            get
-            {
-                return StyleColor.FromBgra(203, 192, 255, 255);
-            }
+            get { return FromBgra(203, 192, 255, 255); }
         }
 
         /// <summary>
@@ -2115,10 +1828,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Plum
         {
-            get
-            {
-                return StyleColor.FromBgra(221, 160, 221, 255);
-            }
+            get { return FromBgra(221, 160, 221, 255); }
         }
 
         /// <summary>
@@ -2130,10 +1840,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor PowderBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(230, 224, 176, 255);
-            }
+            get { return FromBgra(230, 224, 176, 255); }
         }
 
         /// <summary>
@@ -2145,10 +1852,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Purple
         {
-            get
-            {
-                return StyleColor.FromBgra(128, 0, 128, 255);
-            }
+            get { return FromBgra(128, 0, 128, 255); }
         }
 
         /// <summary>
@@ -2160,10 +1864,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Red
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 0, 255, 255);
-            }
+            get { return FromBgra(0, 0, 255, 255); }
         }
 
         /// <summary>
@@ -2175,10 +1876,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor RosyBrown
         {
-            get
-            {
-                return StyleColor.FromBgra(143, 143, 188, 255);
-            }
+            get { return FromBgra(143, 143, 188, 255); }
         }
 
         /// <summary>
@@ -2190,10 +1888,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor RoyalBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(225, 105, 65, 255);
-            }
+            get { return FromBgra(225, 105, 65, 255); }
         }
 
         /// <summary>
@@ -2205,10 +1900,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SaddleBrown
         {
-            get
-            {
-                return StyleColor.FromBgra(19, 69, 139, 255);
-            }
+            get { return FromBgra(19, 69, 139, 255); }
         }
 
         /// <summary>
@@ -2220,10 +1912,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Salmon
         {
-            get
-            {
-                return StyleColor.FromBgra(114, 128, 250, 255);
-            }
+            get { return FromBgra(114, 128, 250, 255); }
         }
 
         /// <summary>
@@ -2235,10 +1924,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SandyBrown
         {
-            get
-            {
-                return StyleColor.FromBgra(96, 164, 244, 255);
-            }
+            get { return FromBgra(96, 164, 244, 255); }
         }
 
         /// <summary>
@@ -2250,10 +1936,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SeaGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(87, 139, 46, 255);
-            }
+            get { return FromBgra(87, 139, 46, 255); }
         }
 
         /// <summary>
@@ -2265,10 +1948,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SeaShell
         {
-            get
-            {
-                return StyleColor.FromBgra(238, 245, 255, 255);
-            }
+            get { return FromBgra(238, 245, 255, 255); }
         }
 
         /// <summary>
@@ -2280,10 +1960,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Sienna
         {
-            get
-            {
-                return StyleColor.FromBgra(45, 82, 160, 255);
-            }
+            get { return FromBgra(45, 82, 160, 255); }
         }
 
         /// <summary>
@@ -2295,10 +1972,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Silver
         {
-            get
-            {
-                return StyleColor.FromBgra(192, 192, 192, 255);
-            }
+            get { return FromBgra(192, 192, 192, 255); }
         }
 
         /// <summary>
@@ -2310,10 +1984,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SkyBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(235, 206, 135, 255);
-            }
+            get { return FromBgra(235, 206, 135, 255); }
         }
 
         /// <summary>
@@ -2325,10 +1996,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SlateBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(205, 90, 106, 255);
-            }
+            get { return FromBgra(205, 90, 106, 255); }
         }
 
         /// <summary>
@@ -2340,10 +2008,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SlateGray
         {
-            get
-            {
-                return StyleColor.FromBgra(144, 128, 112, 255);
-            }
+            get { return FromBgra(144, 128, 112, 255); }
         }
 
         /// <summary>
@@ -2355,10 +2020,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Snow
         {
-            get
-            {
-                return StyleColor.FromBgra(250, 250, 255, 255);
-            }
+            get { return FromBgra(250, 250, 255, 255); }
         }
 
         /// <summary>
@@ -2370,10 +2032,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SpringGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(127, 255, 0, 255);
-            }
+            get { return FromBgra(127, 255, 0, 255); }
         }
 
         /// <summary>
@@ -2385,10 +2044,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor SteelBlue
         {
-            get
-            {
-                return StyleColor.FromBgra(180, 130, 70, 255);
-            }
+            get { return FromBgra(180, 130, 70, 255); }
         }
 
         /// <summary>
@@ -2400,10 +2056,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Tan
         {
-            get
-            {
-                return StyleColor.FromBgra(140, 180, 210, 255);
-            }
+            get { return FromBgra(140, 180, 210, 255); }
         }
 
         /// <summary>
@@ -2415,10 +2068,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Teal
         {
-            get
-            {
-                return StyleColor.FromBgra(128, 128, 0, 255);
-            }
+            get { return FromBgra(128, 128, 0, 255); }
         }
 
         /// <summary>
@@ -2430,10 +2080,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Thistle
         {
-            get
-            {
-                return StyleColor.FromBgra(216, 191, 216, 255);
-            }
+            get { return FromBgra(216, 191, 216, 255); }
         }
 
         /// <summary>
@@ -2445,10 +2092,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Tomato
         {
-            get
-            {
-                return StyleColor.FromBgra(71, 99, 255, 255);
-            }
+            get { return FromBgra(71, 99, 255, 255); }
         }
 
         /// <summary>
@@ -2460,10 +2104,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Turquoise
         {
-            get
-            {
-                return StyleColor.FromBgra(208, 224, 64, 255);
-            }
+            get { return FromBgra(208, 224, 64, 255); }
         }
 
         /// <summary>
@@ -2475,10 +2116,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Violet
         {
-            get
-            {
-                return StyleColor.FromBgra(238, 130, 238, 255);
-            }
+            get { return FromBgra(238, 130, 238, 255); }
         }
 
         /// <summary>
@@ -2490,10 +2128,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Wheat
         {
-            get
-            {
-                return StyleColor.FromBgra(179, 222, 245, 255);
-            }
+            get { return FromBgra(179, 222, 245, 255); }
         }
 
         /// <summary>
@@ -2505,10 +2140,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor White
         {
-            get
-            {
-                return StyleColor.FromBgra(255, 255, 255, 255);
-            }
+            get { return FromBgra(255, 255, 255, 255); }
         }
 
         /// <summary>
@@ -2520,10 +2152,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor WhiteSmoke
         {
-            get
-            {
-                return StyleColor.FromBgra(245, 245, 245, 255);
-            }
+            get { return FromBgra(245, 245, 245, 255); }
         }
 
         /// <summary>
@@ -2535,10 +2164,7 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor Yellow
         {
-            get
-            {
-                return StyleColor.FromBgra(0, 255, 255, 255);
-            }
+            get { return FromBgra(0, 255, 255, 255); }
         }
 
         /// <summary>
@@ -2550,29 +2176,27 @@ namespace SharpMap.Styles
         /// </remarks>
         public static StyleColor YellowGreen
         {
-            get
-            {
-                return StyleColor.FromBgra(50, 205, 154, 255);
-            }
+            get { return FromBgra(50, 205, 154, 255); }
         }
+
         #endregion
 
         #region Zero
+
         /// <summary>
         /// Gets a zero value as a StyleColor.
         /// </summary>
         public static StyleColor Zero
         {
-            get
-            {
-                return (StyleColor)0;
-            }
+            get { return (StyleColor)0; }
         }
+
         #endregion
 
         #region Color name lookup by value
-        private static object _colorNameLookupSync = new object();
-        private static Dictionary<StyleColor, string> _colorNameLookup = new Dictionary<StyleColor, string>();
+
+        private static readonly object _colorNameLookupSync = new object();
+        private static readonly Dictionary<StyleColor, string> _colorNameLookup = new Dictionary<StyleColor, string>();
 
         /// <summary>
         /// Gets the name of a color, if one exists.
@@ -2601,7 +2225,7 @@ namespace SharpMap.Styles
                 }
             }
 
-            string name = null;
+            string name;
             _colorNameLookup.TryGetValue(color, out name);
             return name;
         }
@@ -2609,11 +2233,12 @@ namespace SharpMap.Styles
         #endregion
 
         #region Predefined Colors Dictionary
-        private static object _predefinedColorsSync = new object();
-        private static Dictionary<string, StyleColor> _predefinedColors = new Dictionary<string,StyleColor>();
+
+        private static readonly object _predefinedColorsSync = new object();
+        private static readonly Dictionary<string, StyleColor> _predefinedColors = new Dictionary<string, StyleColor>();
 
         /// <summary>
-        /// Gets a <see cref="Dictionary{string, StyleColor}"/> which indexes
+        /// Gets a <see cref="System.Collections.Generic.Dictionary{String, StyleColor}"/> which indexes
         /// a StyleColor value by its name.
         /// </summary>
         public static Dictionary<string, StyleColor> PredefinedColors
@@ -2627,7 +2252,8 @@ namespace SharpMap.Styles
                         if (_predefinedColors.Count == 0)
                         {
                             Type colorType = typeof(StyleColor);
-                            PropertyInfo[] propInfos = colorType.GetProperties(BindingFlags.Static | BindingFlags.Public);
+                            PropertyInfo[] propInfos =
+                                colorType.GetProperties(BindingFlags.Static | BindingFlags.Public);
 
                             foreach (PropertyInfo pi in propInfos)
                             {
@@ -2643,9 +2269,11 @@ namespace SharpMap.Styles
                 return new Dictionary<string, StyleColor>(_predefinedColors);
             }
         }
+
         #endregion
 
         #region Private helper methods
+
         private static byte clampToByte(int value)
         {
             return value > 255 ? (byte)255 : value < 0 ? (byte)0 : (byte)value;
@@ -2658,11 +2286,12 @@ namespace SharpMap.Styles
             _b = 0;
             _a = 255;
 
-            double temp1, temp2;
-            double r = 0, g = 0, b = 0;
+            double r, g, b;
 
             if (v == 0)
+            {
                 return;
+            }
 
             if (s == 0)
             {
@@ -2670,6 +2299,7 @@ namespace SharpMap.Styles
             }
             else
             {
+                double temp1, temp2;
                 h = h % 360;
                 temp2 = ((v <= 0.5) ? v * (1.0 + s) : v + s - (v * s));
                 temp1 = 2.0 * v - temp2;
@@ -2716,6 +2346,7 @@ namespace SharpMap.Styles
             _g = (byte)(255 * g);
             _r = (byte)(255 * r);
         }
+
         #endregion
     }
 }

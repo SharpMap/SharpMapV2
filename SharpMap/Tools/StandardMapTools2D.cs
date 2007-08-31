@@ -17,8 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using NPack;
-using NPack.Interfaces;
 using SharpMap.Presentation;
 using SharpMap.Rendering.Rendering2D;
 

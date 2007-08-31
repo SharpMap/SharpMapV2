@@ -19,66 +19,41 @@ using System;
 
 namespace SharpMap.Presentation
 {
+    /// <summary>
+    /// Represents arguments for map view property changes.
+    /// </summary>
+    /// <typeparam name="TParam">Type of the propery which changed.</typeparam>
 	[Serializable]
 	public class MapViewPropertyChangeEventArgs<TParam> : EventArgs
 	{
 		private readonly TParam _currentValue;
 		private readonly TParam _requestedValue;
 
+        /// <summary>
+        /// Creates a new instance of the MapViewPropertyChangeEventArgs class.
+        /// </summary>
+        /// <param name="currentValue"></param>
+        /// <param name="requestedValue"></param>
 		public MapViewPropertyChangeEventArgs(TParam currentValue, TParam requestedValue)
 		{
 			_currentValue = currentValue;
 			_requestedValue = requestedValue;
 		}
 
+        /// <summary>
+        /// Gets the current value of the view property.
+        /// </summary>
 		public TParam CurrentValue
 		{
 			get { return _currentValue; }
 		}
 
+        /// <summary>
+        /// Gets the requested value of the property.
+        /// </summary>
 		public TParam RequestedValue
 		{
 			get { return _requestedValue; }
-		}
-	}
-
-	[Serializable]
-	public class MapViewPropertyChangeEventArgs<TViewValue, TGeoValue> : EventArgs
-	{
-		private readonly TViewValue _currentViewValue;
-		private readonly TViewValue _requestedViewValue;
-		private readonly TGeoValue _currentGeoValue;
-		private readonly TGeoValue _requestedGeoValue;
-
-		public MapViewPropertyChangeEventArgs(
-			TGeoValue currentGeoValue, TGeoValue requestedGeoValue,
-			TViewValue currentViewValue, TViewValue requestedViewValue)
-		{
-			_currentViewValue = currentViewValue;
-			_requestedViewValue = requestedViewValue;
-
-			_currentGeoValue = currentGeoValue;
-			_requestedGeoValue = requestedGeoValue;
-		}
-
-		public TGeoValue CurrentGeoValue
-		{
-			get { return _currentGeoValue; }
-		}
-
-		public TViewValue CurrentViewValue
-		{
-			get { return _currentViewValue; }
-		}
-
-		public TGeoValue RequestedGeoValue
-		{
-			get { return _requestedGeoValue; }
-		}
-
-		public TViewValue RequestedViewValue
-		{
-			get { return _requestedViewValue; }
 		}
 	}
 }

@@ -19,9 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Data;
+using SharpMap.Features;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
@@ -42,7 +40,9 @@ namespace SharpMap.Rendering.Thematics
         private StyleColorBlend _fillColorBlend;
         private StyleColorBlend _lineColorBlend;
         private StyleColorBlend _textColorBlend;
-        private Dictionary<RuntimeTypeHandle, CalculateStyleDelegate> _styleTypeFunctionTable = new Dictionary<RuntimeTypeHandle, CalculateStyleDelegate>();
+
+        private Dictionary<RuntimeTypeHandle, CalculateStyleDelegate> _styleTypeFunctionTable =
+            new Dictionary<RuntimeTypeHandle, CalculateStyleDelegate>();
 
         /// <summary>
         /// Initializes a new instance of the GradientTheme class
@@ -103,8 +103,8 @@ namespace SharpMap.Rendering.Thematics
             _max = maxValue;
             _maxStyle = maxStyle;
             _minStyle = minStyle;
-            _styleTypeFunctionTable[typeof(VectorStyle).TypeHandle] = new CalculateStyleDelegate(CalculateVectorStyle);
-            _styleTypeFunctionTable[typeof(LabelStyle).TypeHandle] = new CalculateStyleDelegate(CalculateLabelStyle);
+            _styleTypeFunctionTable[typeof (VectorStyle).TypeHandle] = new CalculateStyleDelegate(CalculateVectorStyle);
+            _styleTypeFunctionTable[typeof (LabelStyle).TypeHandle] = new CalculateStyleDelegate(CalculateLabelStyle);
         }
 
         /// <summary>
@@ -193,11 +193,12 @@ namespace SharpMap.Rendering.Thematics
 
             try
             {
-                weighting = Convert.ToDouble(row[this._columnName]);
+                weighting = Convert.ToDouble(row[_columnName]);
             }
             catch
             {
-                throw new InvalidOperationException("Invalid attribute type in Gradient Theme. Couldn't parse weighting attribute (must be numeric).");
+                throw new InvalidOperationException(
+                    "Invalid attribute type in Gradient Theme. Couldn't parse weighting attribute (must be numeric).");
             }
 
             if (MinStyle == null)
@@ -223,7 +224,8 @@ namespace SharpMap.Rendering.Thematics
 
             if (styleCalculator == null)
             {
-                throw new ArgumentException("Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle are supported for the gradient theme");
+                throw new ArgumentException(
+                    "Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle are supported for the gradient theme");
             }
 
             return styleCalculator(MinStyle, MaxStyle, weighting);
@@ -233,7 +235,8 @@ namespace SharpMap.Rendering.Thematics
         {
             if (!(min is VectorStyle && max is VectorStyle))
             {
-                throw new ArgumentException("Both min style and max style must be vector styles to compute a gradient vector style");
+                throw new ArgumentException(
+                    "Both min style and max style must be vector styles to compute a gradient vector style");
             }
 
             VectorStyle style = new VectorStyle();
@@ -272,7 +275,8 @@ namespace SharpMap.Rendering.Thematics
             style.MinVisible = InterpolateDouble(min.MinVisible, max.MinVisible, value);
             style.MaxVisible = InterpolateDouble(min.MaxVisible, max.MaxVisible, value);
             style.Symbol = (dFrac > 0.5 ? vectorMin.Symbol : vectorMax.Symbol);
-            style.HighlightSymbol = (dFrac > 0.5 ? vectorMin.HighlightSymbol : vectorMax.HighlightSymbol); //We don't interpolate the offset but let it follow the symbol instead
+            style.HighlightSymbol = (dFrac > 0.5 ? vectorMin.HighlightSymbol : vectorMax.HighlightSymbol);
+                //We don't interpolate the offset but let it follow the symbol instead
             style.SelectSymbol = (dFrac > 0.5 ? vectorMin.SelectSymbol : vectorMax.SelectSymbol);
             return style;
         }
@@ -281,7 +285,8 @@ namespace SharpMap.Rendering.Thematics
         {
             if (!(min is LabelStyle && max is LabelStyle))
             {
-                throw new ArgumentException("Both min style and max style must be label styles to compute a gradient label style");
+                throw new ArgumentException(
+                    "Both min style and max style must be label styles to compute a gradient label style");
             }
 
             LabelStyle style = new LabelStyle();
@@ -316,7 +321,7 @@ namespace SharpMap.Rendering.Thematics
             style.MinVisible = InterpolateDouble(labelMin.MinVisible, labelMax.MinVisible, value);
             style.MaxVisible = InterpolateDouble(labelMin.MaxVisible, labelMax.MaxVisible, value);
             style.Offset = new Point2D(InterpolateDouble(labelMin.Offset.X, labelMax.Offset.X, value),
-                InterpolateDouble(labelMin.Offset.Y, labelMax.Offset.Y, value));
+                                       InterpolateDouble(labelMin.Offset.Y, labelMax.Offset.Y, value));
 
             return style;
         }
@@ -325,7 +330,7 @@ namespace SharpMap.Rendering.Thematics
         {
             if (attr < _min) return 0;
             if (attr > _max) return 1;
-            return (attr - _min) / (_max - _min);
+            return (attr - _min)/(_max - _min);
         }
 
         private bool InterpolateBool(bool min, bool max, double attr)
@@ -337,12 +342,12 @@ namespace SharpMap.Rendering.Thematics
 
         private float InterpolateFloat(float min, float max, double attr)
         {
-            return Convert.ToSingle((max - min) * Fraction(attr) + min);
+            return Convert.ToSingle((max - min)*Fraction(attr) + min);
         }
 
         private double InterpolateDouble(double min, double max, double attr)
         {
-            return (max - min) * Fraction(attr) + min;
+            return (max - min)*Fraction(attr) + min;
         }
 
         private StyleBrush InterpolateBrush(StyleBrush min, StyleBrush max, double attr)
@@ -354,8 +359,9 @@ namespace SharpMap.Rendering.Thematics
         {
             double frac = Fraction(attr);
 
-            StylePen pen = new StylePen(StyleColor.Interpolate(min.BackgroundBrush.Color, max.BackgroundBrush.Color, frac),
-                InterpolateFloat(min.Width, max.Width, attr));
+            StylePen pen =
+                new StylePen(StyleColor.Interpolate(min.BackgroundBrush.Color, max.BackgroundBrush.Color, frac),
+                             InterpolateFloat(min.Width, max.Width, attr));
 
             pen.MiterLimit = InterpolateFloat(min.MiterLimit, max.MiterLimit, attr);
             pen.StartCap = (frac > 0.5 ? max.StartCap : min.StartCap);
@@ -381,6 +387,7 @@ namespace SharpMap.Rendering.Thematics
             //pen.CustomEndCap = (frac > 0.5 ? max.CustomEndCap : min.CustomEndCap);  //Throws ArgumentException
             return pen;
         }
+
         #endregion
     }
 }
