@@ -9,12 +9,20 @@ namespace SharpMap.Data.Providers.FeatureProvider
 {
 	public class FeatureProvider : IWritableVectorLayerProvider<Guid>
 	{
-		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>("Oid");
+        internal readonly static string OidColumnName = "Oid";
+		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
 		private ICoordinateTransformation _transform = null;
 
 		public FeatureProvider(params DataColumn[] columns)
 		{
-			_features.Columns.AddRange(columns);
+            foreach (DataColumn column in columns)
+            {
+                string keyColumnName = _features.PrimaryKey[0].ColumnName;
+                if (String.Compare(keyColumnName, column.ColumnName) != 0)
+                {
+                    _features.Columns.Add(column);
+                }
+            }
 		}
 
 		#region IWritableVectorLayerProvider<Guid> Members

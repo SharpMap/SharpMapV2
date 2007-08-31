@@ -71,6 +71,20 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _provider.Geometries[_currentIndex].Clone();
         }
 
+        public object GetOid()
+        {
+            checkState();
+            return _currentIndex;
+        }
+
+        public bool HasOid
+        {
+            get
+            {
+                checkState(); 
+                return true;
+            }
+        }
         #endregion
 
         #region IDataReader Members
@@ -275,13 +289,16 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         public bool IsDBNull(int i)
         {
+            checkState();
+            checkIndex(i);
             return false;
         }
 
         public object this[string name]
         {
-            get 
+            get
             {
+                checkState();
                 int ordinal = GetOrdinal(name);
                 return GetInt32(ordinal);
             }
@@ -289,7 +306,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         public object this[int i]
         {
-            get { return GetValue(i); }
+            get
+            {
+                checkState();
+                checkIndex(i);
+                return GetValue(i);
+            }
         }
 
         #endregion
@@ -298,6 +320,10 @@ namespace SharpMap.Data.Providers.GeometryProvider
         private void checkState()
         {
             if (_isDisposed) throw new ObjectDisposedException(GetType().ToString());
+            if (_currentIndex < 0 || _currentIndex >= _provider.Geometries.Count)
+            {
+                throw new InvalidOperationException("No data available at this index.");
+            }
         }
 
         private static void checkIndex(int i)
@@ -305,5 +331,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
             if (i >= 1) throw new IndexOutOfRangeException("Column index is out of range.");
         }
         #endregion
+
     }
 }

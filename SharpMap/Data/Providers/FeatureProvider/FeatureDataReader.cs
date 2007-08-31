@@ -82,6 +82,20 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			return _table[_currentRow].Geometry.Clone();
 		}
 
+        public object GetOid()
+        {
+            checkState();
+            return _table[_currentRow][FeatureProvider.OidColumnName];
+        }
+
+        public bool HasOid
+        {
+            get
+            {
+                checkState(); 
+                return true;
+            }
+        }
 		#endregion
 
 		#region IDataReader Members
@@ -315,7 +329,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		public object this[int i]
 		{
-			get { checkState(); return _table[_currentRow][i]; }
+			get 
+            {
+                checkState();
+                checkIndex(i);
+                return _table[_currentRow][i]; 
+            }
 		}
 
 		#endregion
@@ -324,13 +343,19 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		private void checkIndex(int i)
 		{
-			if (i < 0 || i >= FieldCount) throw new IndexOutOfRangeException("Column index out of range: " + i);
+            if (i < 0 || i >= FieldCount)
+            {
+                throw new IndexOutOfRangeException("Column index out of range: " + i);
+            }
 		}
 
 		private void checkState()
 		{
 			if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
-			if (_currentRow >= RecordsAffected) throw new InvalidOperationException("Attempt to read beyond end of records.");
+            if (_currentRow < 0 || _currentRow >= RecordsAffected)
+            {
+                throw new InvalidOperationException("Attempt to read beyond end of records.");
+            }
 		}
 		#endregion
 	}

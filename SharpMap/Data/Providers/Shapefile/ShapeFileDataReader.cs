@@ -116,6 +116,21 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+        public object GetOid()
+        {
+            checkState();
+            return _currentRecord;
+        }
+
+        public bool HasOid
+        {
+            get
+            {
+                checkState(); 
+                return true;
+            }
+        }
+
         #endregion
 
         #region IDataReader Members
