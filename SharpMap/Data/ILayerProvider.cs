@@ -17,8 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Data;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
@@ -63,10 +61,10 @@ namespace SharpMap.Data
         /// </summary>
         /// <remarks>
         /// <para>The ConnectionId should be unique to the datasource 
-		/// (for instance the filename or the connectionstring), and is meant 
-		/// to be used for connection pooling.</para>
+        /// (for instance the filename or the connectionstring), and is meant 
+        /// to be used for connection pooling.</para>
         /// <para>If connection pooling doesn't apply to this datasource, 
-		/// the ConnectionId should return String.Empty</para>
+        /// the ConnectionId should return String.Empty</para>
         /// </remarks>
         string ConnectionId { get; }
 

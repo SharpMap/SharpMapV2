@@ -17,24 +17,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-
-using SharpMap.Geometries;
-using SharpMap.Rendering;
-using SharpMap.Styles;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
+using SharpMap.Geometries;
+using SharpMap.Styles;
 
 namespace SharpMap.Layers
 {
-	/// <summary>
-	/// Interface for map layers.
-	/// </summary>
-	public interface ILayer : INotifyPropertyChanged, IDisposable
+    /// <summary>
+    /// Interface for map layers.
+    /// </summary>
+    public interface ILayer : INotifyPropertyChanged, IDisposable
     {
+        /// <summary>
+        /// Gets or sets a value indicating that data is obtained asynchronously.
+        /// </summary>
+        bool AsyncQuery { get; set; }
+
         /// <summary>
         /// The dataum, projection and coordinate system used for this layer.
         /// </summary>
@@ -54,24 +55,27 @@ namespace SharpMap.Layers
         /// Gets or sets a value representing the visibility of the layer.
         /// </summary>
         /// <remarks>
-        /// Should be the same value as <see cref="Style.Enabled"/>.
+        /// Should be the same value as <see cref="Style"/>'s 
+        /// <see cref="IStyle.Enabled"/> value.
         /// </remarks>
         bool Enabled { get; set; }
 
-		/// <summary>
-		/// Gets the boundingbox of the entire layer.
-		/// </summary>
+        /// <summary>
+        /// Gets the boundingbox of the entire layer.
+        /// </summary>
         BoundingBox Envelope { get; }
+
+        event EventHandler LayerDataAvailable;
 
         /// <summary>
         /// Name of layer.
         /// </summary>
         string LayerName { get; set; }
-	
-		/// <summary>
-		/// The spatial reference ID of the layer data source.
-		/// </summary>
-		int? Srid { get; }
+
+        /// <summary>
+        /// The spatial reference ID of the layer data source.
+        /// </summary>
+        int? Srid { get; }
 
         /// <summary>
         /// The style for the layer.
@@ -82,5 +86,5 @@ namespace SharpMap.Layers
         /// Gets or sets the visible region for this layer.
         /// </summary>
         BoundingBox VisibleRegion { get; set; }
-	}
+    }
 }

@@ -134,6 +134,7 @@
     <Compile Include="CoordinateSystems\Transformations\TransformType.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
+    <Compile Include="Data\IRasterLayerProvider.cs" />
     <Compile Include="Data\SharpMapDataException.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
     <Compile Include="Data\IVectorLayerProvider.cs" />
@@ -155,7 +156,7 @@
     <Compile Include="Data\Providers\Shapefile\ShapeFileInvalidOperationException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
-    <Compile Include="Model\DuplicateLayerException.cs" />
+    <Compile Include="Model\Layers\DuplicateLayerException.cs" />
     <Compile Include="Model\Features\FeatureDataRow.cs" />
     <Compile Include="Model\Features\FeatureDataRowChangeEventArgs.cs" />
     <Compile Include="Model\Features\FeatureDataRowChangeEventHandler.cs" />
@@ -224,9 +225,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Model\Features\FeatureTableCollection.cs" />
-    <Compile Include="Model\LayersChangedEventArgs.cs" />
+    <Compile Include="Model\Layers\LayersChangedEventArgs.cs" />
     <Compile Include="Model\Layers\IFeatureLayer.cs" />
     <Compile Include="Model\Layers\ILayer.cs" />
+    <Compile Include="Model\Layers\IRasterLayer.cs" />
     <Compile Include="Model\Layers\LabelLayer.cs">
     </Compile>
     <Compile Include="Model\Layers\Layer.cs">

@@ -17,266 +17,394 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.ComponentModel;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using SharpMap.Geometries;
+using SharpMap.Presentation;
 using SharpMap.Styles;
 using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Layers
 {
-	/// <summary>
-	/// A map layer of vector geometries.
-	/// </summary>
-	/// <example>
-	/// Adding a <see cref="VectorLayer"/> to a map:
-	/// </example>
-	public class VectorLayer : Layer, IFeatureLayer
-	{
-		#region Fields
+    /// <summary>
+    /// A map layer of vector geometries.
+    /// </summary>
+    /// <example>
+    /// Adding a <see cref="VectorLayer"/> to a map:
+    /// </example>
+    public class VectorLayer : Layer, IFeatureLayer
+    {
+        #region Fields
 
-		private readonly object _selectedFeaturesSync = new object();
-		private readonly object _highlightedFeaturesSync = new object();
-		private FeatureDataTable _cachedFeatures = new FeatureDataTable();
-		private FeatureDataView _visibleFeatureView;
-		private FeatureDataView _selectedFeatures;
-		private FeatureDataView _highlightedFeatures;
-		private BoundingBox _fullExtents;
+        private readonly object _selectedFeaturesSync = new object();
+        private readonly object _highlightedFeaturesSync = new object();
+        private readonly FeatureDataTable _cachedFeatures;
+        private readonly FeatureDataView _visibleFeatureView;
+        private FeatureDataView _selectedFeatures;
+        private FeatureDataView _highlightedFeatures;
+        private BoundingBox _fullExtents;
+        private readonly BackgroundWorker _dataQueryWorker = new BackgroundWorker();
+        #endregion
 
-		#endregion
+        #region Object Construction / Disposal
 
-		#region Object Construction / Disposal
+        /// <summary>
+        /// Initializes a new, empty vector layer.
+        /// </summary>
+        public VectorLayer(IVectorLayerProvider dataSource)
+            : this(String.Empty, dataSource)
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new, empty vector layer.
-		/// </summary>
-		public VectorLayer(IVectorLayerProvider dataSource)
-			: this(String.Empty, dataSource)
-		{
-		}
+        /// <summary>
+        /// Initializes a new layer with the given name and datasource.
+        /// </summary>
+        /// <param name="layername">Name of the layer.</param>
+        /// <param name="dataSource">Data source.</param>
+        public VectorLayer(string layername, IVectorLayerProvider dataSource)
+            : this(layername, new VectorStyle(), dataSource)
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new layer with the given name and datasource.
-		/// </summary>
-		/// <param name="layername">Name of the layer.</param>
-		/// <param name="dataSource">Data source.</param>
-		public VectorLayer(string layername, IVectorLayerProvider dataSource)
-			: this(layername, new VectorStyle(), dataSource)
-		{
-		}
+        /// <summary>
+        /// Initializes a new layer with the given name, style and datasource.
+        /// </summary>
+        /// <param name="layername">Name of the layer.</param>
+        /// <param name="style">Style to apply to the layer.</param>
+        /// <param name="dataSource">Data source.</param>
+        public VectorLayer(string layername, VectorStyle style, IVectorLayerProvider dataSource)
+            : base(dataSource)
+        {
+            LayerName = layername;
+            Style = style;
 
-		/// <summary>
-		/// Initializes a new layer with the given name, style and datasource.
-		/// </summary>
-		/// <param name="layername">Name of the layer.</param>
-		/// <param name="style">Style to apply to the layer.</param>
-		/// <param name="dataSource">Data source.</param>
-		public VectorLayer(string layername, VectorStyle style, IVectorLayerProvider dataSource)
-			: base(dataSource)
-		{
-			LayerName = layername;
-			Style = style;
+            _dataQueryWorker.RunWorkerCompleted += _dataQueryWorker_RunWorkerCompleted;
+            _dataQueryWorker.DoWork += _dataQueryWorker_DoWork;
 
-			initFromDataSource();
-		}
+            _cachedFeatures = new FeatureDataTable();
+            _visibleFeatureView = new FeatureDataView(_cachedFeatures);
 
-		#region IDisposable Members
+            init();
+        }
 
-		/// <summary>
-		/// Disposes the object.
-		/// </summary>
-		protected override void Dispose(bool disposing)
-		{
-			if (IsDisposed)
-			{
-				return;
-			}
+        #region IDisposable Members
 
-			if (DataSource != null)
-			{
-				DataSource.Dispose();
-			}
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
 
-			base.Dispose(disposing);
-		}
+            if (DataSource != null)
+            {
+                DataSource.Dispose();
+            }
 
-		#endregion
+            base.Dispose(disposing);
+        }
 
-		#endregion
+        #endregion
 
-		#region IFeatureLayer Members
+        #endregion
 
-		public event EventHandler SelectedFeaturesChanged;
-		public event EventHandler HighlightedFeaturesChanged;
-		public event EventHandler VisibleFeaturesChanged;
+        #region IFeatureLayer Members
 
-		public new IVectorLayerProvider DataSource
-		{
-			get { return base.DataSource as IVectorLayerProvider; }
-		}
+        /// <summary>
+        /// Raised when the features in the 
+        /// <see cref="SelectedFeatures"/> view change.
+        /// </summary>
+        public event EventHandler SelectedFeaturesChanged;
 
-		public FeatureDataView HighlightedFeatures
-		{
-			get
-			{
-				lock (_highlightedFeaturesSync)
-				{
-					return _highlightedFeatures;
-				}
-			}
-			set
-			{
-				lock (_highlightedFeaturesSync)
-				{
-					_highlightedFeatures = value;
-					onHighlightedFeaturesChanged();
-				}
-			}
-		}
+        /// <summary>
+        /// Raised when the features in the 
+        /// <see cref="HighlightedFeatures"/> view change.
+        /// </summary>
+        public event EventHandler HighlightedFeaturesChanged;
 
-		public FeatureDataView SelectedFeatures
-		{
-			get
-			{
-				lock (_selectedFeaturesSync)
-				{
-					return _selectedFeatures;
-				}
-			}
-			set
-			{
-				lock (_selectedFeaturesSync)
-				{
-					_selectedFeatures = value;
-					onSelectedFeaturesChanged();
-				}
-			}
-		}
+        /// <summary>
+        /// Raised when the features in the 
+        /// <see cref="VisibleFeatures"/> view change.
+        /// </summary>
+        public event EventHandler VisibleFeaturesChanged;
 
-		public FeatureDataView VisibleFeatures
-		{
-			get { return _visibleFeatureView; }
-		}
+        /// <summary>
+        /// Gets the data source for this layer as a more 
+        /// strongly-typed IVectorLayerProvider.
+        /// </summary>
+        public new IVectorLayerProvider DataSource
+        {
+            get { return base.DataSource as IVectorLayerProvider; }
+        }
 
-		public FeatureDataTable Features
-		{
-			get { return _cachedFeatures; }
-		}
+        /// <summary>
+        /// Gets or sets a view of highlighted features, which
+        /// an <see cref="IAttributeView"/> or a map view 
+        /// can show as highlighted within the selected features shown.
+        /// </summary>
+        public FeatureDataView HighlightedFeatures
+        {
+            get
+            {
+                lock (_highlightedFeaturesSync)
+                {
+                    return _highlightedFeatures;
+                }
+            }
+            set
+            {
+                lock (_highlightedFeaturesSync)
+                {
+                    _highlightedFeatures = value;
+                    onHighlightedFeaturesChanged();
+                }
+            }
+        }
 
-		#endregion
+        /// <summary>
+        /// Gets or sets a view of selected features, which 
+        /// an <see cref="IAttributeView"/>
+        /// can bind to in order to show selected feature 
+        /// attribute data, or for a map view to show the features
+        /// as selected.
+        /// </summary>
+        public FeatureDataView SelectedFeatures
+        {
+            get
+            {
+                lock (_selectedFeaturesSync)
+                {
+                    return _selectedFeatures;
+                }
+            }
+            set
+            {
+                lock (_selectedFeaturesSync)
+                {
+                    _selectedFeatures = value;
+                    onSelectedFeaturesChanged();
+                }
+            }
+        }
 
-		#region ILayer Members
+        /// <summary>
+        /// Gets a view of the features which are currently at least
+        /// partially visible within the <see cref="Envelope"/>.
+        /// </summary>
+        public FeatureDataView VisibleFeatures
+        {
+            get { return _visibleFeatureView; }
+        }
 
-		/// <summary>
-		/// Returns the full extents of all the features in the layer.
-		/// </summary>
-		/// <returns>
-		/// Bounding box corresponding to the full extent 
-		/// of the features in the layer.
-		/// </returns>
-		public override BoundingBox Envelope
-		{
-			get { return _fullExtents; }
-		}
+        /// <summary>
+        /// Gets the loaded feautres for this layer.
+        /// </summary>
+        public FeatureDataTable Features
+        {
+            get { return _cachedFeatures; }
+        }
 
-		/// <summary>
-		/// Gets the <abbr name="spatial reference ID">SRID</abbr> of this VectorLayer's data source.
-		/// </summary>
-		public override int? Srid
-		{
-			get
-			{
-				if (DataSource == null)
-				{
-					throw new InvalidOperationException("DataSource property is null on layer '" + LayerName + "'");
-				}
+        #endregion
 
-				return DataSource.Srid;
-			}
-		}
+        #region ILayer Members
 
-		#endregion
+        /// <summary>
+        /// Returns the full extents of all the features in the layer.
+        /// </summary>
+        /// <returns>
+        /// Bounding box corresponding to the full extent 
+        /// of the features in the layer.
+        /// </returns>
+        public override BoundingBox Envelope
+        {
+            get
+            {
+                if (CoordinateTransformation != null)
+                {
+                    return GeometryTransform.TransformBox(_fullExtents, CoordinateTransformation.MathTransform);
+                }
+                else
+                {
+                    return _fullExtents;
+                }
+            }
+        }
 
-		public new VectorStyle Style
-		{
-			get { return base.Style as VectorStyle; }
-			set { base.Style = value; }
-		}
+        /// <summary>
+        /// Gets the <abbr name="spatial reference ID">SRID</abbr> 
+        /// of this VectorLayer's data source.
+        /// </summary>
+        public override int? Srid
+        {
+            get
+            {
+                if (DataSource == null)
+                {
+                    throw new InvalidOperationException(
+                        "DataSource property is null on layer '" + LayerName + "'");
+                }
 
-		#region Layer Overrides
+                return DataSource.Srid;
+            }
+        }
 
-		IStyle ILayer.Style
-		{
-			get { return Style; }
-			set
-			{
-				if (!(value is VectorStyle))
-				{
-					throw new ArgumentException("Style value must be of type VectorStyle.", "value");
-				}
+        #endregion
 
-				Style = value as VectorStyle;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the layer style as a VectorStyle.
+        /// </summary>
+        public new VectorStyle Style
+        {
+            get { return base.Style as VectorStyle; }
+            set { base.Style = value; }
+        }
 
-		protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
-		{
-			DataSource.ExecuteIntersectionQuery(value, _cachedFeatures);
-		}
+        #region Layer Overrides
 
-		#endregion
+        IStyle ILayer.Style
+        {
+            get { return Style; }
+            set
+            {
+                if (!(value is VectorStyle))
+                {
+                    throw new ArgumentException("Style value must be of type VectorStyle.", "value");
+                }
 
-		#region ICloneable Members
+                Style = value as VectorStyle;
+            }
+        }
 
-		/// <summary>
-		/// Clones the layer
-		/// </summary>
-		/// <returns>cloned object</returns>
-		public override object Clone()
-		{
-			throw new NotSupportedException();
-		}
+        protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
+        {
+            // Ignore an empty visible region
+            if(value == BoundingBox.Empty)
+            {
+                return;
+            }
 
-		#endregion
+            if(!_cachedFeatures.Envelope.Contains(value))
+            {
+                // Since the visible region changed, and we don't have the data
+                // which covers this new region, we have to query for it.
+                //
+                // We can do it asynchronously, with a BackgroundWorker instance,
+                // or synchronously
+                if(AsyncQuery)
+                {
+                    _dataQueryWorker.RunWorkerAsync();
+                }
+                else
+                {
+                    executeQuery(value);
+                    OnLayerDataAvailable();
+                }
+            }
+        }
 
-		#region Private helper methods
+        protected override void OnVisibleRegionChanged()
+        {
+            // If query was async, the background worker's 
+            // completion event handler will take care of calling
+            // onVisibleFeaturesChanged.
+            if(!AsyncQuery) onVisibleFeaturesChanged();
+        }
 
-		private void initFromDataSource()
-		{
-			DataSource.Open();
+        #endregion
 
-			DataSource.SetTableSchema(_cachedFeatures);
-			_fullExtents = DataSource.GetExtents();
+        #region ICloneable Members
 
-			if (CoordinateTransformation != null)
-			{
-				_fullExtents = GeometryTransform.TransformBox(_fullExtents,
-				                                              CoordinateTransformation.MathTransform);
-			}
+        /// <summary>
+        /// Clones the layer.
+        /// </summary>
+        /// <returns>A copy of the layer.</returns>
+        public override object Clone()
+        {
+            throw new NotSupportedException();
+        }
 
-			DataSource.Close();
-		}
+        #endregion
 
-		private void onSelectedFeaturesChanged()
-		{
-			EventHandler e = SelectedFeaturesChanged;
+        #region Private helper methods
 
-			if (e != null)
-			{
-				e(this, EventArgs.Empty);
-			}
-		}
+        private void init()
+        {
+            // We generally want spatial indexing on the feature table...
+            _cachedFeatures.IsSpatiallyIndexed = true;
 
-		private void onHighlightedFeaturesChanged()
-		{
-			EventHandler e = HighlightedFeaturesChanged;
+            // We need to get the schema of the feature table and the full extents for the
+            // layer, so we can make decisions about visibility.
+            DataSource.Open();
 
-			if (e != null)
-			{
-				e(this, EventArgs.Empty);
-			}
-		}
+            DataSource.SetTableSchema(_cachedFeatures);
+            _fullExtents = DataSource.GetExtents();
 
-		#endregion
-	}
+            DataSource.Close();
+        }
+
+        private void onSelectedFeaturesChanged()
+        {
+            EventHandler e = SelectedFeaturesChanged;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
+
+        private void onHighlightedFeaturesChanged()
+        {
+            EventHandler e = HighlightedFeaturesChanged;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
+
+        private void onVisibleFeaturesChanged()
+        {
+            EventHandler e = VisibleFeaturesChanged;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
+
+        private void _dataQueryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            OnLayerDataAvailable(); 
+            onVisibleFeaturesChanged();
+        }
+
+        private void _dataQueryWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is BoundingBox)
+            {
+                BoundingBox bounds = (BoundingBox)e.Argument;
+                executeQuery(bounds);
+            }
+            else if (e.Argument is Geometry)
+            {
+                Geometry geometry = e.Argument as Geometry;
+                executeQuery(geometry);
+            }
+        }
+
+        private void executeQuery(BoundingBox bounds)
+        {
+            DataSource.ExecuteIntersectionQuery(bounds, _cachedFeatures);
+        }
+
+        private void executeQuery(Geometry geometry)
+        {
+            DataSource.ExecuteIntersectionQuery(geometry, _cachedFeatures);
+        }
+        #endregion
+    }
 }

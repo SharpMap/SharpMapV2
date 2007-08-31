@@ -68,41 +68,6 @@ namespace SharpMap
             }
         }
 
-        protected virtual void MergeFeature(IFeatureDataReader record)
-        {
-            if (record == null) throw new ArgumentNullException("record");
-
-            FeatureDataRow feature;
-
-            if (PrimaryKey.Length == 1)
-            {
-                string keyColumnName = PrimaryKey[0].ColumnName;
-                object key = record[keyColumnName];
-                feature = Find(key);
-
-                if(feature != null)
-                {
-                    foreach (DataColumn column in Columns)
-                    {
-                        if(column != PrimaryKey[0])
-                        {
-                            if (feature[column] != record[column.ColumnName])
-                            {
-                                feature[column] = record[column.ColumnName];
-                            }
-                        }
-                    }
-                }
-            }
-
-            feature = NewRow();
-            object[] values = new object[Columns.Count];
-            record.GetValues(values);
-            feature.ItemArray = values;
-            feature.Geometry = record.GetGeometry();
-            AddRow(feature);
-        }
-
         #endregion
 
         #region Type Fields
@@ -144,6 +109,7 @@ namespace SharpMap
         public FeatureDataTable(string tableName)
             : base(tableName)
         {
+            Constraints.CollectionChanged += OnConstraintsChanged;
         }
 
         /// <summary>
@@ -154,6 +120,8 @@ namespace SharpMap
         public FeatureDataTable(DataTable table)
             : base(table.TableName)
         {
+            Constraints.CollectionChanged += OnConstraintsChanged;
+
             //if (table.DataSet == null)
             //    throw new ArgumentException("Parameter 'table' must belong to a DataSet");
 
@@ -204,21 +172,17 @@ namespace SharpMap
         #endregion
 
         #region Properties
-
         /// <summary>
-        /// Gets the number of feature rows in the feature table.
+        /// Gets the containing FeatureDataSet.
         /// </summary>
-        [Browsable(false)]
-        public int FeatureCount
-        {
-            get { return base.Rows.Count; }
-        }
-
         public new FeatureDataSet DataSet
         {
             get { return (FeatureDataSet)base.DataSet; }
         }
 
+        /// <summary>
+        /// Gets the default FeatureDataView for the table.
+        /// </summary>
         public new FeatureDataView DefaultView
         {
             get
@@ -242,7 +206,7 @@ namespace SharpMap
                     }
 
                     FeatureDataView baseDefaultView = _getDefaultView(this);
-                    defaultView = Interlocked.CompareExchange<FeatureDataView>(ref baseDefaultView, defaultView, null);
+                    defaultView = Interlocked.CompareExchange(ref baseDefaultView, defaultView, null);
 
                     if (defaultView == null)
                     {
@@ -263,6 +227,15 @@ namespace SharpMap
         }
 
         /// <summary>
+        /// Gets the number of feature rows in the feature table.
+        /// </summary>
+        [Browsable(false)]
+        public int FeatureCount
+        {
+            get { return base.Rows.Count; }
+        }
+
+        /// <summary>
         /// Gets the feature data row at the specified index
         /// </summary>
         /// <param name="index">row index</param>
@@ -270,6 +243,26 @@ namespace SharpMap
         public FeatureDataRow this[int index]
         {
             get { return base.Rows[index] as FeatureDataRow; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if the table is spatially indexed.
+        /// </summary>
+        public bool IsSpatiallyIndexed
+        {
+            get { return _rTreeIndex == null; }
+            set
+            {
+                if (value && _rTreeIndex == null)
+                {
+                    initializeSpatialIndex();
+                }
+                else if (!value && _rTreeIndex != null)
+                {
+                    _rTreeIndex.Dispose();
+                    _rTreeIndex = null;
+                }
+            }
         }
 
         /// <summary>
@@ -286,7 +279,7 @@ namespace SharpMap
 
         #endregion
 
-        #region Methods
+        #region Public methods
 
         /// <summary>
         /// Adds a row to the FeatureDataTable
@@ -353,23 +346,6 @@ namespace SharpMap
             AddRow(newRow);
         }
 
-        private void copyRow(FeatureDataRow source, FeatureDataRow target)
-        {
-            if (source.Table.Columns.Count != target.Table.Columns.Count)
-            {
-                throw new InvalidOperationException("Can't import a feature row with a different number of columns.");
-            }
-
-            for (int columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
-            {
-                target[columnIndex] = source[columnIndex];
-            }
-
-            target.Geometry = source.Geometry == null
-                ? null
-                : source.Geometry.Clone();
-        }
-
         public override void Load(IDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
         {
             if (!(reader is IFeatureDataReader))
@@ -423,14 +399,49 @@ namespace SharpMap
 
         protected virtual void OnConstraintsChanged(object sender, CollectionChangeEventArgs args)
         {
-            if(args.Action == CollectionChangeAction.Add && args.Element is UniqueConstraint)
+            if (args.Action == CollectionChangeAction.Add && args.Element is UniqueConstraint)
             {
                 UniqueConstraint constraint = args.Element as UniqueConstraint;
                 if (constraint.IsPrimaryKey && constraint.Columns.Length > 1)
                 {
-                    throw new NotSupportedException("Compound primary keys not supported.");   
+                    throw new NotSupportedException("Compound primary keys not supported.");
                 }
             }
+        }
+
+        protected virtual void MergeFeature(IFeatureDataReader record)
+        {
+            if (record == null) throw new ArgumentNullException("record");
+
+            FeatureDataRow feature;
+
+            if (PrimaryKey.Length == 1)
+            {
+                string keyColumnName = PrimaryKey[0].ColumnName;
+                object key = record[keyColumnName];
+                feature = Find(key);
+
+                if (feature != null)
+                {
+                    foreach (DataColumn column in Columns)
+                    {
+                        if (column != PrimaryKey[0])
+                        {
+                            if (feature[column] != record[column.ColumnName])
+                            {
+                                feature[column] = record[column.ColumnName];
+                            }
+                        }
+                    }
+                }
+            }
+
+            feature = NewRow();
+            object[] values = new object[Columns.Count];
+            record.GetValues(values);
+            feature.ItemArray = values;
+            feature.Geometry = record.GetGeometry();
+            AddRow(feature);
         }
 
         #region Protected Overrides
@@ -491,9 +502,16 @@ namespace SharpMap
                 || e.Action == DataRowAction.Change)
             {
                 FeatureDataRow r = e.Row as FeatureDataRow;
+
+#warning: Does this never work, since r.Geometry isn't populated when rows are loaded?
                 if (r.Geometry != null)
                 {
                     _envelope = _envelope.Join(r.Geometry.GetBoundingBox());
+
+                    if (IsSpatiallyIndexed)
+                    {
+                        _rTreeIndex.Insert(new RTreeIndexEntry<FeatureDataRow>(r, r.Geometry.GetBoundingBox()));
+                    }
                 }
             }
             else if (e.Action == DataRowAction.Delete)
@@ -618,6 +636,23 @@ namespace SharpMap
         #endregion
 
         #region Private helper methods
+
+        private static void copyRow(FeatureDataRow source, FeatureDataRow target)
+        {
+            if (source.Table.Columns.Count != target.Table.Columns.Count)
+            {
+                throw new InvalidOperationException("Can't import a feature row with a different number of columns.");
+            }
+
+            for (int columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
+            {
+                target[columnIndex] = source[columnIndex];
+            }
+
+            target.Geometry = source.Geometry == null
+                ? null
+                : source.Geometry.Clone();
+        }
 
         private void initializeSpatialIndex()
         {

@@ -45,6 +45,7 @@ namespace SharpMap.Layers
 		private bool _disposed;
         private BoundingBox _visibleRegion;
         private readonly ILayerProvider _dataSource;
+	    private bool _asyncQuery = true;
 
         #region Object Creation / Disposal
         protected Layer(ILayerProvider dataSource)
@@ -127,13 +128,19 @@ namespace SharpMap.Layers
 
         #region ILayer Members
 
+        public bool AsyncQuery
+        {
+            get { return _asyncQuery; }
+            set { _asyncQuery = value; }
+        }
+
         /// <summary>
         /// Gets the coordinate system of the layer.
         /// </summary>
         public ICoordinateSystem CoordinateSystem
         {
             get { return _coordinateSystem; }
-            private set { _coordinateSystem = value; }
+            protected set { _coordinateSystem = value; }
         }
 
         /// <summary>
@@ -193,6 +200,8 @@ namespace SharpMap.Layers
         /// extent of the features in the layer.
         /// </returns>
         public abstract BoundingBox Envelope { get; }
+
+        public event EventHandler LayerDataAvailable;
 
         /// <summary>
         /// Gets or sets the name of the layer.
@@ -255,6 +264,16 @@ namespace SharpMap.Layers
         }
 
         protected abstract void OnVisibleRegionChanging(BoundingBox value, ref bool cancel);
+
+        protected virtual void OnLayerDataAvailable()
+        {
+            EventHandler e = LayerDataAvailable;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Members

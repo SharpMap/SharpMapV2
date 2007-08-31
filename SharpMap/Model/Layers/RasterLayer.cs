@@ -27,14 +27,14 @@ namespace SharpMap.Layers
 	/// <example>
 	/// Adding a <see cref="RasterLayer"/> to a map:
 	/// </example>
-	public class RasterLayer : Layer
+	public class RasterLayer : Layer, IRasterLayer
 	{
 		public RasterLayer(ILayerProvider dataSource)
 			: base(dataSource)
 		{
 		}
 
-		public override BoundingBox Envelope
+        public override BoundingBox Envelope
 		{
 			get { throw new NotImplementedException(); }
 		}
@@ -53,5 +53,14 @@ namespace SharpMap.Layers
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        #region IRasterLayer Members
+
+        public new IRasterLayerProvider DataSource
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+    }
 }

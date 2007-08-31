@@ -17,48 +17,48 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Geometries;
-using SharpMap.Rendering;
-using SharpMap.Styles;
+using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
-using System.ComponentModel;
+using SharpMap.Geometries;
+using SharpMap.Styles;
 
 namespace SharpMap.Layers
 {
-	/// <summary>
-	/// Class for holding a group of layers.
-	/// </summary>
-	/// <remarks>
-	/// A <see cref="LayerGroup"/> is useful for grouping a set of layers,
-	/// for instance a set of image tiles, or a feature layer and a label layer, 
+    /// <summary>
+    /// Class for holding a group of layers.
+    /// </summary>
+    /// <remarks>
+    /// A <see cref="LayerGroup"/> is useful for grouping a set of layers,
+    /// for instance a set of image tiles, or a feature layer and a label layer, 
     /// and expose them as a single layer.
-	/// </remarks>
-	public class LayerGroup : ILayer, INotifyPropertyChanged, IDisposable, ICloneable
-	{
+    /// </remarks>
+    public class LayerGroup : ILayer, ICloneable
+    {
         private List<ILayer> _layers = new List<ILayer>();
         private bool _disposed;
 
         #region Object Creation / Disposal
+
         /// <summary>
-		/// Initializes a new group layer.
-		/// </summary>
-		/// <param name="layername">Name of the layer group.</param>
-		public LayerGroup(string layername)
-		{
-			LayerName = layername;
-		}
-        
+        /// Initializes a new group layer.
+        /// </summary>
+        /// <param name="layername">Name of the layer group.</param>
+        public LayerGroup(string layername)
+        {
+            LayerName = layername;
+        }
+
         #region Dispose Pattern
+
         ~LayerGroup()
         {
             Dispose(false);
         }
 
         #region IDisposable Members
+
         /// <summary>
         /// Releases all resources deterministically.
         /// </summary>
@@ -98,11 +98,11 @@ namespace SharpMap.Layers
             {
                 if (layer is IDisposable)
                 {
-                    ((IDisposable)layer).Dispose();
+                    ((IDisposable) layer).Dispose();
                 }
             }
 
-            this.Layers.Clear();
+            Layers.Clear();
         }
 
         /// <summary>
@@ -117,73 +117,54 @@ namespace SharpMap.Layers
         /// Event fired when the layer is disposed.
         /// </summary>
         public event EventHandler Disposed;
-        #endregion
 
         #endregion
 
+        #endregion
 
         /// <summary>
-		/// Sublayers in the group
-		/// </summary>
-		public IList<ILayer> Layers
-		{
-			get { return _layers; }
-			set { _layers = new List<ILayer>(value);  }
-		}
+        /// Sublayers in the group
+        /// </summary>
+        public IList<ILayer> Layers
+        {
+            get { return _layers; }
+            set { _layers = new List<ILayer>(value); }
+        }
 
-		/// <summary>
-		/// Returns a layer by its name
-		/// </summary>
-		/// <param name="name">Name of layer</param>
-		/// <returns>Layer</returns>
-		public ILayer GetLayerByName(string name)
-		{
-            return _layers.Find(delegate(ILayer layer) 
-            { 
-                return String.Compare(layer.LayerName, name, StringComparison.CurrentCultureIgnoreCase) == 0; 
-            });
+        /// <summary>
+        /// Returns a layer by its name
+        /// </summary>
+        /// <param name="name">Name of layer</param>
+        /// <returns>Layer</returns>
+        public ILayer GetLayerByName(string name)
+        {
+            return
+                _layers.Find(
+                    delegate(ILayer layer) { return String.Compare(layer.LayerName, name, StringComparison.CurrentCultureIgnoreCase) == 0; });
         }
 
         #region ILayer Members
 
         public ICoordinateSystem CoordinateSystem
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public ICoordinateTransformation CoordinateTransformation
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public ILayerProvider DataSource
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public bool Enabled
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         /// <summary>
@@ -198,15 +179,12 @@ namespace SharpMap.Layers
             {
                 BoundingBox bbox = BoundingBox.Empty;
 
-                if (this.Layers.Count == 0)
+                if (Layers.Count == 0)
                 {
                     return bbox;
                 }
 
-                _layers.ForEach(delegate(ILayer layer)
-                {
-                    bbox.ExpandToInclude(layer.Envelope);
-                });
+                _layers.ForEach(delegate(ILayer layer) { bbox.ExpandToInclude(layer.Envelope); });
 
                 return bbox;
             }
@@ -214,46 +192,25 @@ namespace SharpMap.Layers
 
         public string LayerName
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public int? Srid
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public IStyle Style
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public BoundingBox VisibleRegion
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         #endregion
@@ -263,22 +220,34 @@ namespace SharpMap.Layers
             throw new NotImplementedException();
         }
 
-		#region ICloneable Members
+        #region ICloneable Members
 
-		/// <summary>
-		/// Clones the layer.
-		/// </summary>
-		/// <returns>A deep-copy of the layer.</returns>
+        /// <summary>
+        /// Clones the layer.
+        /// </summary>
+        /// <returns>A deep-copy of the layer.</returns>
         object ICloneable.Clone()
-		{
+        {
             return Clone();
-		}
+        }
 
-		#endregion
+        #endregion
 
         #region INotifyPropertyChanged Members
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region ILayer Members
+
+        public bool AsyncQuery
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public event EventHandler LayerDataAvailable;
 
         #endregion
     }
