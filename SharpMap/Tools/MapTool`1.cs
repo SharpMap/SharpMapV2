@@ -18,7 +18,6 @@
 using System;
 using NPack;
 using NPack.Interfaces;
-using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Tools
 {

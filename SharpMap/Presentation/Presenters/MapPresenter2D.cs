@@ -370,22 +370,22 @@ namespace SharpMap.Presentation
             return renderer;
         }
 
-        protected Point2D ToView(Point point)
+        protected Point2D ToViewInternal(Point point)
         {
             return worldToView(point);
         }
 
-        protected Point2D ToView(double x, double y)
+        protected Point2D ToViewInternal(double x, double y)
         {
             return ToViewTransformInternal.TransformVector(x, y);
         }
 
-        protected Point ToWorld(Point2D point)
+        protected Point ToWorldInternal(Point2D point)
         {
             return viewToWorld(point);
         }
 
-        protected Point ToWorld(double x, double y)
+        protected Point ToWorldInternal(double x, double y)
         {
             Point2D values = ToWorldTransformInternal.TransformVector(x, y);
             return new GeoPoint(values.X, values.Y);
@@ -415,7 +415,7 @@ namespace SharpMap.Presentation
         protected void ZoomToViewBoundsInternal(Rectangle2D viewBounds)
         {
             BoundingBox worldBounds = new BoundingBox(
-                ToWorld(viewBounds.LowerLeft), ToWorld(viewBounds.UpperRight));
+                ToWorldInternal(viewBounds.LowerLeft), ToWorldInternal(viewBounds.UpperRight));
             setViewEnvelopeInternal(worldBounds);
         }
 
@@ -528,6 +528,7 @@ namespace SharpMap.Presentation
                 case Map.SpatialReferencePropertyName:
                     break;
                 case Map.VisibleRegionPropertyName:
+                    setViewEnvelopeInternal(Map.VisibleRegion);
                     break;
                 default:
                     return;
@@ -538,7 +539,7 @@ namespace SharpMap.Presentation
         #region View events
         private void view_OffsetChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point2D> e)
         {
-            GeoPoint geoOffset = ToWorld(e.RequestedValue);
+            GeoPoint geoOffset = ToWorldInternal(e.RequestedValue);
             GeoPoint newCenter = GeoCenterInternal + geoOffset;
             GeoCenterInternal = newCenter;
         }
@@ -553,22 +554,22 @@ namespace SharpMap.Presentation
 
         private void view_Hover(object sender, MapActionEventArgs<Point2D> e)
         {
-			Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void view_BeginAction(object sender, MapActionEventArgs<Point2D> e)
         {
-			Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void view_MoveTo(object sender, MapActionEventArgs<Point2D> e)
         {
-			Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void view_EndAction(object sender, MapActionEventArgs<Point2D> e)
         {
-			Map.GetActiveTool<IMapView2D, Point2D>().EndAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            Map.GetActiveTool<IMapView2D, Point2D>().EndAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
         }
 
         private void view_BackgroundColorChangeRequested(object sender, MapViewPropertyChangeEventArgs<StyleColor> e)
@@ -694,10 +695,8 @@ namespace SharpMap.Presentation
             {
                 //// Compute how much the scaling shifted the edges from the center, 
                 //// and how much the center shift offsets the origin.
-                //double x = -(newWorldWidth - oldWorldWidth) / 2 + (newCenter.X - oldCenter.X);
-                //double y = -(newWorldHeight - oldWorldHeight) / 2 + (newCenter.Y - oldCenter.Y);
-                _translationTransform.OffsetX = -newCenter.X;
-                _translationTransform.OffsetY = -newCenter.Y;
+                _translationTransform.OffsetX += -(newCenter.X - oldCenter.X);
+                _translationTransform.OffsetY += -(newCenter.Y - oldCenter.Y);
                 viewMatrixChanged = true;
             }
 
@@ -714,6 +713,11 @@ namespace SharpMap.Presentation
             if (viewMatrixChanged)
             {
                 ToWorldTransformInternal = ToViewTransformInternal.Inverse;
+
+                if (Map.VisibleRegion != ViewEnvelopeInternal)
+                {
+                    Map.VisibleRegion = ViewEnvelopeInternal;
+                }
             }
         }
 

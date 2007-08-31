@@ -175,73 +175,90 @@ namespace SharpMap.Tests.Presentation
                 ZoomToWorldWidthInternal(newWorldWidth);
             }
 
-            internal new Point2D ToView(Point point)
+            internal Point2D ToView(Point point)
             {
-                return base.ToView(point);
+                return ToViewInternal(point);
             }
 
-            internal new Point2D ToView(double x, double y)
+            internal Point2D ToView(double x, double y)
             {
-                return base.ToView(x, y);
+                return ToViewInternal(x, y);
             }
 
-            internal new Point ToWorld(Point2D point)
+            internal Point ToWorld(Point2D point)
             {
-                return base.ToWorld(point);
+                return ToWorldInternal(point);
             }
 
-            internal new Point ToWorld(double x, double y)
+            internal Point ToWorld(double x, double y)
             {
-                return base.ToWorld(x, y);
+                return ToWorldInternal(x, y);
             }
 
             #endregion
 
             protected override void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
             {
-                throw new NotImplementedException();
             }
 
             protected override void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint)
             {
-                throw new NotImplementedException();
             }
 
             protected override void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth)
             {
-                throw new NotImplementedException();
             }
 
             protected override void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth)
             {
-                throw new NotImplementedException();
             }
 
             protected override void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope)
             {
-                throw new NotImplementedException();
             }
 
             protected override void SetViewSize(Size2D fromSize, Size2D toSize)
             {
-                throw new NotImplementedException();
             }
 
             protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
             {
-                throw new NotImplementedException();
             }
         }
 
         private class TestView2D : IMapView2D
         {
             private readonly TestPresenter2D _presenter;
-            private Size2D _size;
-            private Rectangle2D _bounds;
+            private Rectangle2D _bounds = new Rectangle2D(0, 0, 1000, 1000);
 
             public TestView2D(Map map)
             {
                 _presenter = new TestPresenter2D(map, this);
+            }
+
+            public TestPresenter2D Presenter
+            {
+                get { return _presenter; }
+            }
+
+            public void RaiseBegin(Point2D point)
+            {
+                OnBeginAction(point);
+            }
+
+            public void RaiseEnd(Point2D point)
+            {
+                OnEndAction(point);
+            }
+
+            public void RaiseHover(Point2D point)
+            {
+                OnHover(point);
+            }
+
+            public void RaiseMoveTo(Point2D point)
+            {
+                OnMoveTo(point);
             }
 
             #region IMapView2D Members
@@ -321,6 +338,26 @@ namespace SharpMap.Tests.Presentation
                 get { return _presenter.ToWorldTransform; }
             }
 
+            public Point2D ToView(Point point)
+            {
+                return _presenter.ToView(point);
+            }
+
+            public Point2D ToView(double x, double y)
+            {
+                return _presenter.ToView(x, y);
+            }
+
+            public Point ToWorld(Point2D point)
+            {
+                return _presenter.ToWorld(point);
+            }
+
+            public Point ToWorld(double x, double y)
+            {
+                return _presenter.ToWorld(x, y);
+            }
+
             public BoundingBox ViewEnvelope
             {
                 get { return _presenter.ViewEnvelope; }
@@ -329,8 +366,8 @@ namespace SharpMap.Tests.Presentation
 
             public Size2D ViewSize
             {
-                get { return _size; }
-                set { _size = value; }
+                get { return _bounds.Size; }
+                set { _bounds = new Rectangle2D(_bounds.Location, value); }
             }
 
             public double WorldAspectRatio
@@ -358,7 +395,9 @@ namespace SharpMap.Tests.Presentation
             #region Methods
             public void Offset(Point2D offsetVector)
             {
-                throw new NotImplementedException();
+                Point2D viewCenter = _bounds.Center;
+                Point offsetGeoCenter = ToWorld(viewCenter + offsetVector);
+                OnRequestGeoCenterChange(GeoCenter, offsetGeoCenter);
             }
 
             public void ShowRenderedObject(Point2D location, object renderedObject)
@@ -368,22 +407,22 @@ namespace SharpMap.Tests.Presentation
 
             public void ZoomToExtents()
             {
-                throw new NotImplementedException();
+                OnRequestZoomToExtents();
             }
 
             public void ZoomToViewBounds(Rectangle2D viewBounds)
             {
-                throw new NotImplementedException();
+                OnRequestZoomToViewBounds(viewBounds);
             }
 
             public void ZoomToWorldBounds(BoundingBox zoomBox)
             {
-                throw new NotImplementedException();
+                OnRequestZoomToWorldBounds(zoomBox);
             }
 
             public void ZoomToWorldWidth(double newWorldWidth)
             {
-                throw new NotImplementedException();
+                OnRequestZoomToWorldWidth(newWorldWidth);
             } 
             #endregion
 
@@ -446,7 +485,7 @@ namespace SharpMap.Tests.Presentation
                 if (@event != null)
                 {
                     MapViewPropertyChangeEventArgs<Size2D> args = new MapViewPropertyChangeEventArgs<Size2D>(
-                        _size, sizeRequested);
+                        _bounds.Size, sizeRequested);
 
                     SizeChangeRequested(this, args);
                 }
@@ -655,22 +694,46 @@ namespace SharpMap.Tests.Presentation
         [Test]
         public void PanTest()
         {
-            MockRepository mocks = new MockRepository();
-
-        	ViewEvents events;
-            TestPresenter2D mapPresenter = createPresenter(mocks, 400, 500, out events);
+        	TestView2D view;
+            TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
 
             Map map = mapPresenter.Map;
             
             map.ActiveTool = StandardMapTools2D.Pan;
-			
-            MapActionEventArgs<Point2D> args = new MapActionEventArgs<Point2D>(new Point2D(200, 250));
-			events.Begin.Raise(events.View, args);
 
-            args = new MapActionEventArgs<Point2D>(new Point2D(250, 250));
-            events.MoveTo.Raise(events.View, args);
+            view.RaiseBegin(new Point2D(200, 250));
+            view.RaiseMoveTo(new Point2D(250, 250));
+            view.RaiseEnd(new Point2D(250, 250));
+        }
 
-            events.End.Raise(events.View, args);
+        [Test]
+        public void ZoomTest()
+        {
+            TestView2D view;
+            TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
+
+            Map map = mapPresenter.Map;
+
+            map.ActiveTool = StandardMapTools2D.ZoomIn;
+
+            view.RaiseBegin(new Point2D(100, 125));
+            view.RaiseMoveTo(new Point2D(300, 375));
+            view.RaiseEnd(new Point2D(300, 375));
+        }
+
+        [Test]
+        public void QueryTest()
+        {
+        }
+
+        [Test]
+        public void AddFeatureTest()
+        {
+        }
+
+        [Test]
+        public void RemoveFeatureTest()
+        {
         }
 
         [Test]
@@ -901,34 +964,17 @@ namespace SharpMap.Tests.Presentation
             return mapPresenter;
         }
 
-        private static TestPresenter2D createPresenter(MockRepository mocks, double width, double height, out ViewEvents events)
+        private static TestPresenter2D createPresenter(double width, double height, out TestView2D view)
         {
             Map map = new Map();
             map.AddLayer(DataSourceHelper.CreateFeatureVectorLayer());
             //map.AddLayer(DataSourceHelper.CreateGeometryVectorLayer());
 
-            IMapView2D mapView = mocks.Stub<IMapView2D>();
-            SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
-            mapView.Offset(Point2D.Empty);
+            view = new TestView2D(map);
 
-            mapView.ViewSize = new Size2D(width, height);
+            view.ViewSize = new Size2D(width, height);
 
-            events = new ViewEvents();
-        	events.View = mapView;
-
-            mapView.Hover += null;
-            events.Hover = LastCall.IgnoreArguments().GetEventRaiser();
-
-            mapView.BeginAction += null;
-            events.Begin = LastCall.IgnoreArguments().GetEventRaiser();
-
-            mapView.MoveTo += null;
-            events.MoveTo = LastCall.IgnoreArguments().GetEventRaiser();
-
-            mapView.EndAction += null;
-            events.End = LastCall.IgnoreArguments().GetEventRaiser();
-
-            TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
+            TestPresenter2D mapPresenter = view.Presenter;
             return mapPresenter;
         }
     }

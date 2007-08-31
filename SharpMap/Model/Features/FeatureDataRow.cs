@@ -23,7 +23,8 @@ using SharpMap.Geometries;
 namespace SharpMap
 {
 	/// <summary>
-	/// Represents a row of data in a <see cref="FeatureDataTable"/>.
+	/// Represents a geographic feature, stored as 
+	/// a row of data in a <see cref="FeatureDataTable"/>.
 	/// </summary>
 #if !DEBUG_STEPINTO
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -33,7 +34,9 @@ namespace SharpMap
 	public class FeatureDataRow : DataRow
 	{
 		//private FeatureDataTable tableFeatureTable;
-		private Geometry _geometry;
+        private Geometry _originalGeometry;
+        private Geometry _currentGeometry;
+        private Geometry _proposedGeometry;
 		private bool _isGeometryModified = false;
 
 		internal FeatureDataRow(DataRowBuilder rb)
@@ -41,6 +44,10 @@ namespace SharpMap
 		{
 		}
 
+        /// <summary>
+        /// Accepts all pending values in the feature and makes them
+        /// the current state.
+        /// </summary>
 		public new void AcceptChanges()
 		{
 			base.AcceptChanges();
@@ -48,24 +55,24 @@ namespace SharpMap
 		}
 
 		/// <summary>
-		/// The geometry of the current feature
+		/// The geometry of the feature.
 		/// </summary>
 		public Geometry Geometry
 		{
-			get { return _geometry; }
+			get { return _currentGeometry; }
 			set
 			{
-				if (ReferenceEquals(_geometry, value))
+				if (ReferenceEquals(_currentGeometry, value))
 				{
 					return;
 				}
 
-				if (_geometry != null && _geometry.Equals(value))
+				if (_currentGeometry != null && _currentGeometry.Equals(value))
 				{
 					return;
 				}
 
-				_geometry = value;
+				_currentGeometry = value;
 
 				if (RowState != DataRowState.Detached)
 				{
@@ -79,11 +86,15 @@ namespace SharpMap
 		/// Returns true of the geometry is null.
 		/// </summary>
 		/// <returns></returns>
-		public bool IsFeatureGeometryNull()
+		public bool IsGeometryNull()
 		{
 			return Geometry == null;
 		}
 
+        /// <summary>
+        /// Gets true if the <see cref="Geometry"/> value for the
+        /// feature has been modified.
+        /// </summary>
 		public bool IsGeometryModified
 		{
 			get { return _isGeometryModified; }

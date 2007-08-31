@@ -118,19 +118,28 @@ namespace SharpMap.Tools
 
 		#region Zoom in
 		private static void QueryZoomIn(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
 		}
 
 		private static void BeginZoomIn(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
 		}
 
 		private static void ContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            // TODO: Create box selection here...
 		}
 
 		private static void EndZoomIn(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+		    IMapView2D view = context.MapView;
+		    Point2D beginPoint = _actionPositions[context.MapView];
+		    Point2D endPoint = context.ActionArgs.ActionPoint;
+		    Size2D zoomSize = new Size2D(endPoint.X - beginPoint.X, endPoint.Y - beginPoint.Y);
+            Rectangle2D viewBounds = new Rectangle2D(beginPoint, zoomSize);
+            view.ZoomToViewBounds(viewBounds);
+            _actionPositions.Remove(context.MapView);
 		} 
 		#endregion
 

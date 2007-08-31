@@ -30,5 +30,8 @@ namespace SharpMap.Data
 		/// </summary>
 		/// <returns>A Geometry instance.</returns>
         Geometry GetGeometry();
+
+        object GetOid();
+        bool HasOid { get; }
     }
 }

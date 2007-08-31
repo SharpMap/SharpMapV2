@@ -580,6 +580,11 @@ namespace SharpMap
 			get { return _envelope; }
 			set
 			{
+                if(_envelope == value)
+                {
+                    return;
+                }
+
 				_envelope = value;
 
 				foreach (ILayer layer in Layers)

@@ -110,6 +110,14 @@ namespace SharpMap.Presentation
 		/// The inverse of the <see cref="ToViewTransform"/> matrix.
 		/// </summary>
 		Matrix2D ToWorldTransform { get; }
+
+	    Point2D ToView(Point point);
+
+	    Point2D ToView(double x, double y);
+
+	    Point ToWorld(Point2D point);
+
+	    Point ToWorld(double x, double y);
 		
 		/// <summary>
 		/// Gets or sets the extents of the current view in world units.

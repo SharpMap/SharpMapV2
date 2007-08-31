@@ -645,7 +645,7 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentException("Vector must have only 2 components.");
             }
 
-            return new Point2D(X - (double)b[0], Y - (double)b[1]);
+            return new Point2D(X + (double)b[0], Y + (double)b[1]);
         }
 
         #endregion

@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
@@ -38,8 +37,8 @@ namespace SharpMap.Presentation.WinForms
 		}
 
 		protected override IRenderer CreateRasterRenderer()
-		{
-			throw new NotImplementedException();
+        {
+            return new GdiRasterRenderer();
 		}
 
 		protected override IRenderer CreateVectorRenderer()
@@ -93,6 +92,26 @@ namespace SharpMap.Presentation.WinForms
 		{
 			get { return ToWorldTransformInternal; }
 		}
+
+        internal Point2D ToView(Point point)
+        {
+            return ToViewInternal(point);
+        }
+
+        internal Point2D ToView(double x, double y)
+        {
+            return ToViewInternal(x, y);
+        }
+
+        internal Point ToWorld(Point2D point)
+        {
+            return ToWorldInternal(point);
+        }
+
+        internal Point ToWorld(double x, double y)
+        {
+            return ToWorldInternal(x, y);
+        }
 
 		internal BoundingBox ViewEnvelope
 		{
