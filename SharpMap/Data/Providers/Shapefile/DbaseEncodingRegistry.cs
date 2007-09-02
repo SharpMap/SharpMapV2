@@ -90,6 +90,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             setupEncodingToDbaseMap();
         }
 
+		// Values from the ArcPad reference guide.
+		// Found here: http://downloads.esri.com/support/documentation/pad_/ArcPad_RefGuide_1105.pdf
         private static void setupDbaseToEncodingMap()
         {
             _dbaseToEncoding[0x01] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), CodePageChoice.Oem); //DOS USA code page 437 
@@ -165,9 +167,16 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             foreach (KeyValuePair<byte, CultureWithEncoding> item in _dbaseToEncoding)
             {
+				if (item.Key == 1 || item.Key == 2 || item.Key == 3 || item.Key == 0x26
+					|| item.Key == 0x6C || item.Key == 0x78 || item.Key == 0x79 || item.Key == 0x7B 
+					|| item.Key == 0x7C || item.Key == 0x86 || item.Key == 0x88)
+				{
+					continue;
+				}
+
                 int lcid = item.Value.CultureInfo.LCID;
-                int codePage = item.Value.Encoding.CodePage;
-                _encodingToDbase.Add(new KeyValuePair<int, int>(lcid, codePage), item.Key);
+				int codePage = item.Value.Encoding.CodePage;
+				_encodingToDbase.Add(new KeyValuePair<int, int>(lcid, codePage), item.Key);	
             }
         }
 

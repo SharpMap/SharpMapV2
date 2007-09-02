@@ -20,7 +20,6 @@
 // Good stuff on DBase format: http://www.clicketyclick.dk/databases/xbase/format/
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using SharpMap.Features;
@@ -319,7 +318,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
             file._header.Columns = DbaseSchema.GetFields(schema, file._header);
-            file.Save();
+        	file._headerIsParsed = true;
+			file.Open();
+			file.Save();
             return file;
         }
 
@@ -517,12 +518,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             // TODO: implement asynchronous access
             if (exclusive)
             {
-                _dbaseFileStream = new FileStream(_filename, FileMode.Open, FileAccess.Read,
+                _dbaseFileStream = new FileStream(_filename, FileMode.Open, FileAccess.ReadWrite,
                                                   FileShare.Read, 4096, FileOptions.None);
             }
             else
             {
-                _dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.Read,
+				_dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite,
                                                   FileShare.ReadWrite, 4096, FileOptions.None);
             }
 
@@ -534,6 +535,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
                 _headerIsParsed = true;
             }
+
+			_writer = new DbaseWriter(this);
+			_reader = new DbaseReader(this);
         }
 
         internal void UpdateRow(UInt32 rowIndex, DataRow row)
