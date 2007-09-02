@@ -22,62 +22,79 @@ using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+	/// <summary>
+	/// A registry used to map CLR cultures and encodings to 
+	/// dBase language driver id (LDID) encoding specifiers.
+	/// </summary>
+	/// <remarks>
+	/// Lookup values are taken from ESRI's 
+	/// <a href="http://downloads.esri.com/support/documentation/pad_/ArcPad_RefGuide_1105.pdf">
+	/// ArcPad Reference Guide</a>
+	/// </remarks>
     internal static class DbaseLocaleRegistry
     {
-        enum CodePageChoice
-        {
-            Custom,
-            Oem,
-            Ansi,
-            Mac
-        }
+		#region Nested types
+		/// <summary>
+		/// Specifies which code page to use in a <see cref="TextInfo"/>
+		/// instance.
+		/// </summary>
+		enum CodePageChoice
+		{
+			Custom,
+			Oem,
+			Ansi,
+			Mac
+		}
 
-        struct CultureWithEncoding
-        {
-            private Encoding _encoding;
-            public CultureInfo CultureInfo;
-            public CodePageChoice CodePageChoice;
+		/// <summary>
+		/// Represents a culture and encoding pair.
+		/// </summary>
+		struct CultureWithEncoding
+		{
+			private readonly Encoding _encoding;
+			public readonly CultureInfo CultureInfo;
+			public readonly CodePageChoice CodePageChoice;
 
-            internal CultureWithEncoding(CultureInfo cultureInfo, CodePageChoice codePageChoice)
-            {
-                CultureInfo = cultureInfo;
-                CodePageChoice = codePageChoice;
-                _encoding = null;
-            }
+			internal CultureWithEncoding(CultureInfo cultureInfo, CodePageChoice codePageChoice)
+			{
+				CultureInfo = cultureInfo;
+				CodePageChoice = codePageChoice;
+				_encoding = null;
+			}
 
-            internal CultureWithEncoding(CultureInfo cultureInfo, Encoding encoding)
-            {
-                CultureInfo = cultureInfo;
-                _encoding = encoding;
-                CodePageChoice = CodePageChoice.Custom;
-            }
+			internal CultureWithEncoding(CultureInfo cultureInfo, Encoding encoding)
+			{
+				CultureInfo = cultureInfo;
+				_encoding = encoding;
+				CodePageChoice = CodePageChoice.Custom;
+			}
 
-            public Encoding Encoding
-            {
-                get
-                {
-                    if (_encoding == null)
-                    {
-                        switch (CodePageChoice)
-                        {
-                            case CodePageChoice.Ansi:
-                                return Encoding.GetEncoding(CultureInfo.TextInfo.ANSICodePage);
-                            case CodePageChoice.Mac:
-                                return Encoding.GetEncoding(CultureInfo.TextInfo.MacCodePage);
-                            case CodePageChoice.Oem:
-                            case CodePageChoice.Custom:
-                            default:
-                                return Encoding.GetEncoding(CultureInfo.TextInfo.OEMCodePage);
-                        }
-                    }
-                    else
-                    {
-                        return _encoding;
-                    }
-                }
-                set { _encoding = value; }
-            }
-        }
+			public Encoding Encoding
+			{
+				get
+				{
+					if (_encoding == null)
+					{
+						switch (CodePageChoice)
+						{
+							case CodePageChoice.Ansi:
+								return Encoding.GetEncoding(CultureInfo.TextInfo.ANSICodePage);
+							case CodePageChoice.Mac:
+								return Encoding.GetEncoding(CultureInfo.TextInfo.MacCodePage);
+							case CodePageChoice.Oem:
+							case CodePageChoice.Custom:
+							default:
+								return Encoding.GetEncoding(CultureInfo.TextInfo.OEMCodePage);
+						}
+					}
+					else
+					{
+						return _encoding;
+					}
+				}
+			}
+		} 
+		#endregion
 
         private static readonly Dictionary<byte, CultureWithEncoding> _dbaseToEncoding
             = new Dictionary<byte, CultureWithEncoding>();
@@ -167,6 +184,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             foreach (KeyValuePair<byte, CultureWithEncoding> item in _dbaseToEncoding)
             {
+				// These encodings are duplicated. When a dBase file is created by
+				// the DbaseFile.Create method, these will not be used in the LDID
+				// since it would result in an ambiguous lookup.
 				if (item.Key == 1 || item.Key == 2 || item.Key == 3 || item.Key == 0x26
 					|| item.Key == 0x6C || item.Key == 0x78 || item.Key == 0x79 || item.Key == 0x7B 
 					|| item.Key == 0x7C || item.Key == 0x86 || item.Key == 0x88)
@@ -180,6 +200,17 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+		/// <summary>
+		/// Gets the <see cref="CultureInfo"/> associated with the 
+		/// given dBase LDID.
+		/// </summary>
+		/// <param name="dBaseEncoding">
+		/// The language driver id (LDID) to get a CultureInfo for.
+		/// </param>
+		/// <returns>
+		/// A <see cref="CultureInfo"/> which uses the encoding represented by 
+		/// <paramref name="dBaseEncoding"/> by default.
+		/// </returns>
         public static CultureInfo GetCulture(byte dBaseEncoding)
         {
             CultureWithEncoding pair;
@@ -194,6 +225,17 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+		/// <summary>
+		/// Gets the <see cref="Encoding"/> which matches the 
+		/// given dBase LDID.
+		/// </summary>
+		/// <param name="dBaseEncoding">
+		/// The language driver id (LDID) to get the <see cref="Encoding"/> for.
+		/// </param>
+		/// <returns>
+		/// An <see cref="Encoding"/> which corresponds to the the
+		/// <paramref name="dBaseEncoding"/> code established by ESRI.
+		/// </returns>
         public static Encoding GetEncoding(byte dBaseEncoding)
         {
             CultureWithEncoding pair;
@@ -208,6 +250,15 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+		/// <summary>
+		/// Gets the language driver id (LDID) for a given pair of <see cref="CultureInfo"/>
+		/// and <see cref="Encoding"/>.
+		/// </summary>
+		/// <param name="info">The CultureInfo used to lookup the LDID.</param>
+		/// <param name="encoding">The Encoding used to lookup the LDID.</param>
+		/// <returns>
+		/// A language driver code used to specify the encoding used to write text in the dBase file.
+		/// </returns>
         public static byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
         {
             Byte driverCode;

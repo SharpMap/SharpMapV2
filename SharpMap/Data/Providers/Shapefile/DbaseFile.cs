@@ -28,6 +28,9 @@ using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+	/// <summary>
+	/// Represents a dBase file used to store attribute data in a Shapefile.
+	/// </summary>
     internal partial class DbaseFile : IDisposable
     {
         #region Nested types

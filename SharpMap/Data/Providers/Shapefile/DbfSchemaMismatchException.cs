@@ -17,16 +17,17 @@
 
 using System;
 using System.Runtime.Serialization;
+using SharpMap.Features;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {    
     /// <summary>
     /// Exception thrown when a <see cref="FeatureDataTable"/> schema doesn't match the
-    /// DBase file schema
+    /// DBase file schema.
     /// </summary>
     public class DbfSchemaMismatchException : ShapeFileException
     {
-        public DbfSchemaMismatchException() : base() { }
+        public DbfSchemaMismatchException() { }
         public DbfSchemaMismatchException(string message) : base(message) { }
         public DbfSchemaMismatchException(string message, Exception inner) : base(message, inner) { }
         public DbfSchemaMismatchException(SerializationInfo info, StreamingContext context)
