@@ -55,13 +55,13 @@
     <Compile Include="Converters\WKT\WktGeometryTests.cs" />
     <Compile Include="CoordinateTransforms\CoordinateTransformTests.cs" />
     <Compile Include="DataSourceHelper.cs" />
-    <Compile Include="FeatureTests\FeatureDataViewTests.cs" />
+    <Compile Include="Features\FeatureDataViewTests.cs" />
     <Compile Include="Indexing\BinaryTreeTests.cs" />
     <Compile Include="Indexing\QuadTreeTests.cs" />
     <Compile Include="Indexing\RTreeTests.cs" />
     <Compile Include="Indexing\SelfOptimizingSpatialIndexTests.cs" />
-    <Compile Include="FeatureTests\FeatureDataSetTests.cs" />
-    <Compile Include="FeatureTests\FeatureDataTableTests.cs" />
+    <Compile Include="Features\FeatureDataSetTests.cs" />
+    <Compile Include="Features\FeatureDataTableTests.cs" />
     <Compile Include="Model\LayersCollectionTests.cs" />
     <Compile Include="Model\LayerTests.cs" />
     <Compile Include="Presentation\AttributePresenterTests.cs" />

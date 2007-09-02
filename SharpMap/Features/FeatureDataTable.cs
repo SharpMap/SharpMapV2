@@ -433,33 +433,38 @@ namespace SharpMap.Features
 
             FeatureDataRow feature;
 
-            if (PrimaryKey.Length == 1)
-            {
-                string keyColumnName = PrimaryKey[0].ColumnName;
-                object key = record[keyColumnName];
-                feature = Find(key);
+			// If the feature as an identifier, then we can merge it
+			if (PrimaryKey.Length == 1)
+			{
+				string keyColumnName = PrimaryKey[0].ColumnName;
+				object key = record[keyColumnName];
+				feature = Find(key);
 
-                if (feature != null)
-                {
-                    foreach (DataColumn column in Columns)
-                    {
-                        if (column != PrimaryKey[0])
-                        {
-                            if (feature[column] != record[column.ColumnName])
-                            {
-                                feature[column] = record[column.ColumnName];
-                            }
-                        }
-                    }
-                }
-            }
+				if (feature != null)
+				{
+					foreach (DataColumn column in Columns)
+					{
+						if (column != PrimaryKey[0])
+						{
+							if (feature[column] != record[column.ColumnName])
+							{
+								feature[column] = record[column.ColumnName];
+							}
+						}
+					}
 
-            feature = NewRow();
-            object[] values = new object[Columns.Count];
-            record.GetValues(values);
-            feature.ItemArray = values;
-            feature.Geometry = record.GetGeometry();
-            AddRow(feature);
+					// A matching feature was found and updated, so we can leave
+					return;
+				}
+			}
+
+			// No match to 'record' was found in this table, add a new one
+			feature = NewRow();
+			object[] values = new object[Columns.Count];
+			record.GetValues(values);
+			feature.ItemArray = values;
+			feature.Geometry = record.GetGeometry();
+			AddRow(feature);
         }
 
         #region Protected Overrides

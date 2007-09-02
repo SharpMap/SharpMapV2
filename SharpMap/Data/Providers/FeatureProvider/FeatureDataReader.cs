@@ -156,8 +156,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
         }
 
         public bool Read()
-        {
-            checkState();
+		{
+			if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
 
             if (_currentRow < _table.FeatureCount - 1)
             {

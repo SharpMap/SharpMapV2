@@ -145,6 +145,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
 		{
 			IFeatureDataReader reader = ExecuteIntersectionQuery(box);
+			
+			if(table.Columns.Count == 0)
+			{
+				SetTableSchema(table);
+			}
+
 			table.Load(reader);
 		}
 
