@@ -307,5 +307,15 @@ namespace SharpMap.Layers
         {
             throw new NotImplementedException();
         }
+
+        #region IFeatureLayer Members
+
+
+        public System.Globalization.CultureInfo Locale
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
     }
 }

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Data;
 using SharpMap.Features;
 using SharpMap.Geometries;
+using System.Globalization;
 
 namespace SharpMap.Data
 {
@@ -28,24 +29,6 @@ namespace SharpMap.Data
     /// </summary>
     public interface IVectorLayerProvider : ILayerProvider
     {
-        /// <summary>
-        /// Gets the features within the specified 
-        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
-        /// </summary>
-        /// <param name="boundingBox">BoundingBox which defines the view.</param>
-        /// <returns>An enumeration of features within the specified 
-        /// <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
-        IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox);
-
-        /// <summary>
-        /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema
-        /// for the configured provider. Provides the same result as 
-        /// <see cref="IDataReader.GetSchemaTable"/>.
-        /// </summary>
-        /// <seealso cref="IDataReader.GetSchemaTable"/>
-        /// <returns>A DataTable that describes the column metadata.</returns>
-        DataTable GetSchemaTable();
-
         /// <summary>
         /// Retrieves the features intersected by <paramref name="geom"/>.
         /// </summary>
@@ -97,6 +80,29 @@ namespace SharpMap.Data
         /// </summary>
         /// <returns>Count of the features in the entire dataset.</returns>
         int GetFeatureCount();
+
+        /// <summary>
+        /// Gets the features within the specified 
+        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// </summary>
+        /// <param name="boundingBox">BoundingBox which defines the view.</param>
+        /// <returns>An enumeration of features within the specified 
+        /// <see cref="SharpMap.Geometries.BoundingBox"/>.</returns>
+        IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox);
+
+        /// <summary>
+        /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema
+        /// for the configured provider. Provides the same result as 
+        /// <see cref="IDataReader.GetSchemaTable"/>.
+        /// </summary>
+        /// <seealso cref="IDataReader.GetSchemaTable"/>
+        /// <returns>A DataTable that describes the column metadata.</returns>
+        DataTable GetSchemaTable();
+
+        /// <summary>
+        /// Gets the locale of the data as a CultureInfo.
+        /// </summary>
+        CultureInfo Locale { get; }
 
         /// <summary>
         /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 

@@ -26,7 +26,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         internal static readonly string OidColumnName = "OID";
 
-        internal static DbaseField[] GetFields(DataTable schema)
+        internal static DbaseField[] GetFields(DataTable schema, DbaseHeader header)
         {
 			if (schema == null)
 			{
@@ -43,11 +43,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 					continue;
 				}
 
-                DbaseField field = new DbaseField();
-                field.ColumnName = row[ProviderSchemaHelper.ColumnNameColumn] as string;
-                field.DataType = (Type)row[ProviderSchemaHelper.DataTypeColumn];
-                field.Length = Convert.ToInt16(row[ProviderSchemaHelper.ColumnSizeColumn]);
-                field.Decimals = Convert.ToByte(row[ProviderSchemaHelper.NumericPrecisionColumn]);
+                string colName = row[ProviderSchemaHelper.ColumnNameColumn] as string;
+                Type dataType = (Type)row[ProviderSchemaHelper.DataTypeColumn];
+                Int16 length = Convert.ToInt16(row[ProviderSchemaHelper.ColumnSizeColumn]);
+                Byte decimals = Convert.ToByte(row[ProviderSchemaHelper.NumericPrecisionColumn]);
+
+                DbaseField field = new DbaseField(header, colName, dataType, length, decimals);
                 fields.Add(field);
             }
 

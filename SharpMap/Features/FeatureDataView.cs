@@ -22,6 +22,7 @@ using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
 using SharpMap.Geometries;
+using System.ComponentModel;
 
 namespace SharpMap.Features
 {
@@ -78,10 +79,49 @@ namespace SharpMap.Features
         internal FeatureDataView(FeatureDataTable table, bool locked)
             : this(table)
         {
+            // The DataView is locked when it is created as a default
+            // view for a table.
             _setLocked(this, locked);
         }
 
         #endregion
+
+        protected override void IndexListChanged(object sender, ListChangedEventArgs e)
+        {
+            base.IndexListChanged(sender, e);
+        }
+
+        protected override void OnListChanged(ListChangedEventArgs e)
+        {
+            base.OnListChanged(e);
+        }
+
+        public override string RowFilter
+        {
+            get
+            {
+                return base.RowFilter;
+            }
+            set
+            {
+                base.RowFilter = value;
+            }
+        }
+
+        public override DataRowView AddNew()
+        {
+            return base.AddNew();
+        }
+
+        protected override void ColumnCollectionChanged(object sender, CollectionChangeEventArgs e)
+        {
+            base.ColumnCollectionChanged(sender, e);
+        }
+
+        protected override void UpdateIndex(bool force)
+        {
+            base.UpdateIndex(force);
+        }
 
         /// <summary>
         /// Gets the DataViewManager which is managing this view's settings.
@@ -121,7 +161,8 @@ namespace SharpMap.Features
             _setDataViewManager(this, featureDataViewManager);
         }
 
-        internal void SetIndex2(string newSort, DataViewRowState dataViewRowState, object dataExpression, bool fireEvent)
+        internal void SetIndex2(string newSort, DataViewRowState dataViewRowState, 
+            object dataExpression, bool fireEvent)
         {
             // Call the delegate we wired up to bypass the normally inaccessible base class method
             _setIndex2(this, newSort, dataViewRowState, dataExpression, fireEvent);

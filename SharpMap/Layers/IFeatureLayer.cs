@@ -18,6 +18,7 @@
 using System;
 using SharpMap.Data;
 using SharpMap.Features;
+using System.Globalization;
 
 namespace SharpMap.Layers
 {
@@ -26,6 +27,7 @@ namespace SharpMap.Layers
 		new IVectorLayerProvider DataSource { get; }
 		FeatureDataTable Features { get; }
 		FeatureDataView HighlightedFeatures { get; set; }
+        CultureInfo Locale { get; }
 		FeatureDataView SelectedFeatures { get; set; }
 		FeatureDataView VisibleFeatures { get; }
 		event EventHandler HighlightedFeaturesChanged;

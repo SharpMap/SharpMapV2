@@ -24,425 +24,284 @@ using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-    internal class DbaseWriter : IDisposable
+    internal partial class DbaseFile : IDisposable
     {
-        private static readonly NumberFormatInfo NumberFormat_enUS = new CultureInfo("en-US", false).NumberFormat;
-		private const string NumberFormatTemplate = "{0,:F}";
-		private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
-		private DbaseHeader _header = new DbaseHeader();
-		private Encoding _encoding;
-        private FileStream _dbaseFileStream;
-        private BinaryReader _dbaseReader;
-        private BinaryWriter _dbaseWriter;
-        private DataTable _schema;
-        private bool _disposed = false;
-
-        #region Object Construction/Destruction
-        public DbaseWriter(string filename)
+        private class DbaseWriter : IDisposable
         {
-            _dbaseFileStream = File.Open(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
-            _dbaseWriter = new BinaryWriter(_dbaseFileStream, Encoding.ASCII);
-            _dbaseReader = new BinaryReader(_dbaseFileStream);
+            private readonly DbaseFile _dbaseFile;
+            private const string NumberFormatTemplate = "{0,:F}";
+            private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
+            private BinaryReader _binaryReader;
+            private BinaryWriter _binaryWriter;
+            private bool _disposed = false;
 
-            if (_dbaseFileStream.Length > 0)
+            #region Object Construction/Destruction
+            public DbaseWriter(DbaseFile file)
             {
-                _header = DbaseHeader.ParseDbfHeader(_dbaseReader);
-                _schema = DbaseSchema.GetFeatureTableForFields(_header.Columns);
-            }
-        }
-
-        public DbaseWriter(string filename, DataTable schema)
-            : this(File.Open(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read), schema)
-        { }
-
-        public DbaseWriter(string filename, DbaseField[] fields)
-            : this(File.Open(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read), fields)
-        { }
-
-        public DbaseWriter(FileStream file, DataTable schema)
-        {
-            _dbaseFileStream = file;
-            _dbaseWriter = new BinaryWriter(_dbaseFileStream, Encoding.ASCII);
-
-            if (file.CanRead)
-            {
-                _dbaseReader = new BinaryReader(_dbaseFileStream);
+                _binaryWriter = new BinaryWriter(file.DataStream, file.Encoding);
+                _binaryReader = new BinaryReader(file.DataStream, file.Encoding);
             }
 
-            _schema = schema;
-            _header.Columns = DbaseSchema.GetFields(schema);
-            writeFullHeader();
-        }
-
-        public DbaseWriter(FileStream file, DbaseField[] fields)
-        {
-            _dbaseFileStream = file;
-            _dbaseWriter = new BinaryWriter(_dbaseFileStream, Encoding.ASCII);
-            
-            if (file.CanRead)
+            ~DbaseWriter()
             {
-                _dbaseReader = new BinaryReader(_dbaseFileStream);
+                dispose(false);
             }
-            
-            _header.Columns = fields;
-            _schema = DbaseSchema.GetFeatureTableForFields(fields);
-            writeFullHeader();
-        }
 
-        ~DbaseWriter()
-        {
-            Dispose(false);
-        }
+            #region Dispose Pattern
+            #region IDisposable Members
 
-        #region Dispose Pattern
-        #region IDisposable Members
-
-        void IDisposable.Dispose()
-        {
-            if (!IsDisposed)
+            public void Dispose()
             {
-                Dispose(true);
+                if (IsDisposed)
+                {
+                    return;
+                }
+
+                dispose(true);
                 IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
-        }
 
-        #endregion
+            #endregion
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing) // Deterministically dispose managed resources
+            private void dispose(bool disposing)
             {
-                if (_dbaseWriter != null)
+                if (disposing) // Deterministically dispose managed resources
                 {
-                    _dbaseWriter.Close();
-                }
+                    if (_binaryWriter != null)
+                    {
+                        _binaryWriter.Close();
+                    }
 
-                if (_dbaseReader != null)
-                {
-                    _dbaseReader.Close();
-                }
-
-                if (_dbaseFileStream != null)
-                {
-                    _dbaseFileStream.Close();
+                    if (_binaryReader != null)
+                    {
+                        _binaryReader.Close();
+                    }
                 }
             }
-        }
 
-        protected internal bool IsDisposed
-        {
-            get { return _disposed; }
-            private set { _disposed = value; }
-        }
-        #endregion
-
-        public void Close()
-        {
-            (this as IDisposable).Dispose();
-        }
-        #endregion
-
-		#region Columns Property
-		public DbaseField[] Columns
-        {
-            get { return _header == null ? null : _header.Columns; }
-            set
+            internal bool IsDisposed
             {
-                if (_header != null)
+                get { return _disposed; }
+                private set { _disposed = value; }
+            }
+            #endregion
+            #endregion
+
+            internal void BeginWrite()
+            {
+            }
+
+            internal void EndWrite()
+            {
+                _binaryWriter.Flush();
+                _binaryWriter.Seek(0, SeekOrigin.End);
+                _binaryWriter.Write(DbaseConstants.FileTerminator);
+            }
+
+            internal void UpdateHeader(DbaseHeader header)
+            {
+                _binaryWriter.Seek(1, SeekOrigin.Begin);
+                byte[] dateBytes = new byte[3] { 
+                    (byte)(header.LastUpdate.Year - DbaseConstants.DbaseEpoch),
+                    (byte)header.LastUpdate.Month, 
+                    (byte)header.LastUpdate.Day };
+                _binaryWriter.Write(dateBytes);
+                _binaryWriter.Write(header.RecordCount);
+            }
+
+            internal void WriteFullHeader(DbaseHeader header)
+            {
+                _binaryWriter.Seek(0, SeekOrigin.Begin);
+                _binaryWriter.Write((byte)DbaseConstants.DbfVersionCode);
+                UpdateHeader(header);
+                _binaryWriter.Write(header.HeaderLength);
+                _binaryWriter.Write(header.RecordLength);
+                _binaryWriter.Write(new byte[DbaseConstants.EncodingOffset - (int)_binaryWriter.BaseStream.Position]);
+                _binaryWriter.Write(header.LanguageDriver);
+                _binaryWriter.Write(new byte[2]);
+
+                foreach (DbaseField field in header.Columns)
                 {
-                    throw new InvalidOperationException("Can't set columns after schema has been defined.");
+                    string colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
+                    byte[] colNameBytes = Encoding.ASCII.GetBytes(colName.Substring(0, DbaseConstants.FieldNameLength));
+                    _binaryWriter.Write(colNameBytes);
+                    char fieldTypeCode = DbaseSchema.GetFieldTypeCode(field.DataType);
+                    _binaryWriter.Write(fieldTypeCode);
+                    _binaryWriter.Write(0); // Address field isn't supported
+
+                    if (fieldTypeCode == 'N' || fieldTypeCode == 'F')
+                    {
+                        _binaryWriter.Write((byte)field.Length);
+                        _binaryWriter.Write(field.Decimals);
+                    }
+                    else
+                    {
+                        _binaryWriter.Write((byte)field.Length);
+                        _binaryWriter.Write((byte)(field.Length >> 8));
+                    }
+
+                    _binaryWriter.Write(new byte[14]);
                 }
 
-                _header = new DbaseHeader();
-                _header.Columns = value;
-            }
-		}
-		#endregion
-
-		/// <summary>
-		/// Gets or sets the <see cref="System.Text.Encoding"/> used for writing strings 
-		/// to the DBase DBF file.
-		/// </summary>
-		/// <remarks>
-		/// If the encoding type isn't set, the dbase driver will try to determine 
-		/// the correct <see cref="System.Text.Encoding"/>.
-		/// </remarks>
-		/// <exception cref="ObjectDisposedException">
-		/// Thrown when the property is 
-		/// fetched and/or set and object has been disposed.
-		/// </exception>
-		public Encoding Encoding
-		{
-			get
-			{
-				if (IsDisposed)
-				{
-					throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-				}
-
-				return _encoding;
-			}
-			set
-			{
-				if (IsDisposed)
-				{
-					throw new ObjectDisposedException("Attempt to access a disposed DbaseReader object");
-				}
-
-				_encoding = value;
-			}
-		}
-
-		public void AddRows(DataTable table)
-        {
-            if (table == null)
-            {
-                throw new ArgumentNullException("table");
+                _binaryWriter.Write(DbaseConstants.HeaderTerminator);
             }
 
-            foreach (DataRow row in table.Rows)
+            internal void WriteRow(DataRow row)
             {
-                AddRow(row);
-            }
-        }
-
-        public void AddRow(DataRow row)
-        {
-            _dbaseWriter.Seek((int)((_header.RecordCount * _header.RecordLength) + _header.HeaderLength), SeekOrigin.Begin);
-
-            writeRow(row);
-            _dbaseWriter.Seek(0, SeekOrigin.End);
-            _dbaseWriter.Write(DbaseConstants.FileTerminator);
-            _header.LastUpdate = DateTime.Now;
-            _header.RecordCount++;
-            updateHeader();
-            _dbaseWriter.Flush();
-        }
-
-        public void DeleteRow(UInt32 rowIndex)
-        {
-            throw new NotImplementedException("Not implemented in this version.");
-        }
-
-        public void UpdateRow(UInt32 rowIndex, DataRow row)
-        {
-            if (rowIndex < 0 || rowIndex >= _header.RecordCount)
-            {
-                throw new ArgumentOutOfRangeException("rowIndex");
-            }
-
-            _dbaseWriter.Seek((int)(rowIndex * _header.RecordLength + _header.HeaderLength), SeekOrigin.Begin);
-            writeRow(row);
-
-            _header.LastUpdate = DateTime.Now;
-            _dbaseWriter.Flush();
-		}
-
-		#region Private helper methods
-		private void writeRow(DataRow row)
-        {
-            if (row == null)
-            {
-                throw new ArgumentNullException("row");
-            }
-
-            if (row.Table == null)
-            {
-                throw new ArgumentException("Row must be associated to a table.");
-            }
-
-            _dbaseWriter.Write(DbaseConstants.NotDeletedIndicator);
-
-			int dbaseColumnIndex = 0;
-
-			for (int dataRowColumnIndex = 0; dbaseColumnIndex < _header.Columns.Length; dataRowColumnIndex++)
-            {
-				if(String.Compare(row.Table.Columns[dataRowColumnIndex].ColumnName, DbaseSchema.OidColumnName, 
-					StringComparison.CurrentCultureIgnoreCase) == 0)
-				{
-					continue;
-				}
-
-                // TODO: reconsider type checking
-                //if ((_header.Columns[rowColumnIndex].DataType != row.Table.Columns[rowColumnIndex].DataType) || (_header.Columns[rowColumnIndex].Length != row.Table.Columns[rowColumnIndex].MaxLength))
-                //    throw new SchemaMismatchException(String.Format("Row doesn't match this DbaseWriter schema at column {0}", i));
-
-				switch (Type.GetTypeCode(_header.Columns[dbaseColumnIndex].DataType))
+                if (row == null)
                 {
-                    case TypeCode.Boolean:
-                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
-                        {
-                            _dbaseWriter.Write(DbaseConstants.BooleanNullChar);
-                        }
-                        else
-                        {
-                            writeBoolean((bool)row[dataRowColumnIndex]);
-                        }
-                        break;
-                    case TypeCode.DateTime:
-                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
-                        {
-                            writeNullDateTime();
-                        }
-                        else
-                        {
-                            writeDateTime((DateTime)row[dataRowColumnIndex]);
-                        }
-                        break;
-                    case TypeCode.Single:
-                    case TypeCode.Double:
-                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
-                        {
-                            writeNullNumber(_header.Columns[dbaseColumnIndex].Length);
-                        }
-                        else
-                        {
-                            writeNumber(Convert.ToDouble(row[dataRowColumnIndex]), _header.Columns[dbaseColumnIndex].Length, _header.Columns[dbaseColumnIndex].Decimals);
-                        }
-                        break;
-                    case TypeCode.Int16:
-                    case TypeCode.Int32:
-                    case TypeCode.Int64:
-                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
-                        {
-                            writeNullNumber(_header.Columns[dbaseColumnIndex].Length);
-                        }
-                        else
-                        {
-                            writeNumber(Convert.ToInt64(row[dataRowColumnIndex]), _header.Columns[dbaseColumnIndex].Length);
-                        }
-                        break;
-                    case TypeCode.String:
-                        if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
-                        {
-                            writeNullString(_header.Columns[dbaseColumnIndex].Length);
-                        }
-                        else
-                        {
-                            writeString((string)row[dataRowColumnIndex], _header.Columns[dbaseColumnIndex].Length);
-                        }
-                        break;
-                    case TypeCode.Char:
-                    case TypeCode.SByte:
-                    case TypeCode.Byte:
-                    case TypeCode.Decimal:
-                    case TypeCode.UInt16:
-                    case TypeCode.UInt32:
-                    case TypeCode.UInt64:
-                    case TypeCode.DBNull:
-                    case TypeCode.Empty:
-                    case TypeCode.Object:
-                    default:
-                        throw new NotSupportedException(String.Format("Type not supported: {0}", _header.Columns[dbaseColumnIndex].DataType));
+                    throw new ArgumentNullException("row");
                 }
 
-				dbaseColumnIndex++;
+                if (row.Table == null)
+                {
+                    throw new ArgumentException("Row must be associated to a table.");
+                }
+
+                _binaryWriter.Write(DbaseConstants.NotDeletedIndicator);
+
+                int dbaseColumnIndex = 0;
+                DbaseHeader header = _dbaseFile._header;
+
+                for (int dataRowColumnIndex = 0; dbaseColumnIndex < header.Columns.Length; dataRowColumnIndex++)
+                {
+                    if (String.Compare(row.Table.Columns[dataRowColumnIndex].ColumnName, DbaseSchema.OidColumnName,
+                        StringComparison.CurrentCultureIgnoreCase) == 0)
+                    {
+                        continue;
+                    }
+
+                    // TODO: reconsider type checking
+                    //if ((header.Columns[rowColumnIndex].DataType != row.Table.Columns[rowColumnIndex].DataType) || (header.Columns[rowColumnIndex].Length != row.Table.Columns[rowColumnIndex].MaxLength))
+                    //    throw new SchemaMismatchException(String.Format("Row doesn't match this DbaseWriter schema at column {0}", i));
+
+                    switch (Type.GetTypeCode(header.Columns[dbaseColumnIndex].DataType))
+                    {
+                        case TypeCode.Boolean:
+                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+                            {
+                                _binaryWriter.Write(DbaseConstants.BooleanNullChar);
+                            }
+                            else
+                            {
+                                writeBoolean((bool)row[dataRowColumnIndex]);
+                            }
+                            break;
+                        case TypeCode.DateTime:
+                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+                            {
+                                writeNullDateTime();
+                            }
+                            else
+                            {
+                                writeDateTime((DateTime)row[dataRowColumnIndex]);
+                            }
+                            break;
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+                            {
+                                writeNullNumber(header.Columns[dbaseColumnIndex].Length);
+                            }
+                            else
+                            {
+                                writeNumber(Convert.ToDouble(row[dataRowColumnIndex]), header.Columns[dbaseColumnIndex].Length, header.Columns[dbaseColumnIndex].Decimals);
+                            }
+                            break;
+                        case TypeCode.Int16:
+                        case TypeCode.Int32:
+                        case TypeCode.Int64:
+                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+                            {
+                                writeNullNumber(header.Columns[dbaseColumnIndex].Length);
+                            }
+                            else
+                            {
+                                writeNumber(Convert.ToInt64(row[dataRowColumnIndex]), header.Columns[dbaseColumnIndex].Length);
+                            }
+                            break;
+                        case TypeCode.String:
+                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+                            {
+                                writeNullString(header.Columns[dbaseColumnIndex].Length);
+                            }
+                            else
+                            {
+                                writeString((string)row[dataRowColumnIndex], header.Columns[dbaseColumnIndex].Length);
+                            }
+                            break;
+                        case TypeCode.Char:
+                        case TypeCode.SByte:
+                        case TypeCode.Byte:
+                        case TypeCode.Decimal:
+                        case TypeCode.UInt16:
+                        case TypeCode.UInt32:
+                        case TypeCode.UInt64:
+                        case TypeCode.DBNull:
+                        case TypeCode.Empty:
+                        case TypeCode.Object:
+                        default:
+                            throw new NotSupportedException(String.Format("Type not supported: {0}", header.Columns[dbaseColumnIndex].DataType));
+                    }
+
+                    dbaseColumnIndex++;
+                }
             }
-        }
 
-        private void writeNullDateTime()
-        {
-            _dbaseWriter.Write(DbaseConstants.NullDateValue);
-        }
-
-        private void writeNullString(int length)
-        {
-			byte[] bytes = Encoding.ASCII.GetBytes(new String('\0', length));
-			_dbaseWriter.Write(bytes);
-        }
-
-        private void writeNullNumber(int length)
-        {
-            _dbaseWriter.Write(new String(DbaseConstants.NumericNullIndicator, length));
-        }
-
-        private void writeNumber(double value, short length, byte decimalPlaces)
-        {
-            // Create number format string
-            _format.Length = 0;
-            _format.Append(NumberFormatTemplate);
-            _format.Insert(5, decimalPlaces).Insert(3, length);
-            string number = String.Format(NumberFormat_enUS, _format.ToString(), value);
-			byte[] bytes = Encoding.ASCII.GetBytes(number);
-			_dbaseWriter.Write(bytes);
-        }
-
-        private void writeNumber(long value, short length)
-        {
-            // Create number format string
-            writeNumber(value, length, 0);
-        }
-
-        private void writeDateTime(DateTime dateTime)
-        {
-			byte[] bytes = Encoding.ASCII.GetBytes(dateTime.ToString("yyyyMMdd"));
-            _dbaseWriter.Write(bytes);
-        }
-
-        private void writeString(string value, int length)
-        {
-            value = (value ?? String.Empty) + new String((char)0x0, length);
-			byte[] chars = (_encoding == null)
-				? _header.FileEncoding.GetBytes(value.Substring(0, length))
-				: _encoding.GetBytes(value.Substring(0, length));
-			_dbaseWriter.Write(chars);
-        }
-
-        private void writeBoolean(bool value)
-        {
-			byte[] bytes = value ? Encoding.ASCII.GetBytes("T") : Encoding.ASCII.GetBytes("F");
-			_dbaseWriter.Write(bytes);
-        }
-
-        private void updateHeader()
-        {
-            _dbaseWriter.Seek(1, SeekOrigin.Begin);
-            _dbaseWriter.Write(new byte[3] { (byte)(_header.LastUpdate.Year - DbaseConstants.DbaseEpoch), (byte)_header.LastUpdate.Month, (byte)_header.LastUpdate.Day });
-            _dbaseWriter.Write(_header.RecordCount);
-        }
-
-        private void writeFullHeader()
-        {
-            _dbaseWriter.Seek(0, SeekOrigin.Begin);
-            _dbaseWriter.Write((byte)DbaseConstants.DbfVersionCode);
-            _dbaseWriter.Write(new byte[3] 
-				{	(byte)(_header.LastUpdate.Year - DbaseConstants.DbaseEpoch), 
-					(byte)_header.LastUpdate.Month, 
-					(byte)_header.LastUpdate.Day 
-				});
-            _dbaseWriter.Write(_header.RecordCount);
-            _dbaseWriter.Write(_header.HeaderLength);
-            _dbaseWriter.Write(_header.RecordLength);
-            _dbaseWriter.Write(new byte[DbaseConstants.EncodingOffset - (int)_dbaseWriter.BaseStream.Position]);
-            _dbaseWriter.Write(_header.LanguageDriver);
-            _dbaseWriter.Write(new byte[2]);
-
-            foreach (DbaseField field in _header.Columns)
+            #region Private helper methods
+            private void writeNullDateTime()
             {
-                string colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
-                byte[] colNameBytes = Encoding.ASCII.GetBytes(colName.Substring(0, DbaseConstants.FieldNameLength));
-                _dbaseWriter.Write(colNameBytes);
-                char fieldTypeCode = DbaseSchema.GetFieldTypeCode(field.DataType);
-                _dbaseWriter.Write(fieldTypeCode);
-                _dbaseWriter.Write(field.Address);
-
-                if (fieldTypeCode == 'N' || fieldTypeCode == 'F')
-                {
-                    _dbaseWriter.Write((byte)field.Length);
-                    _dbaseWriter.Write(field.Decimals);
-                }
-                else
-                {
-                    _dbaseWriter.Write((byte)field.Length);
-                    _dbaseWriter.Write((byte)(field.Length >> 8));
-                }
-
-                _dbaseWriter.Write(new byte[14]);
+                _binaryWriter.Write(DbaseConstants.NullDateValue);
             }
 
-            _dbaseWriter.Write(DbaseConstants.HeaderTerminator);
-		}
-		#endregion
-	}
+            private void writeNullString(int length)
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(new String('\0', length));
+                _binaryWriter.Write(bytes);
+            }
+
+            private void writeNullNumber(int length)
+            {
+                _binaryWriter.Write(new String(DbaseConstants.NumericNullIndicator, length));
+            }
+
+            private void writeNumber(double value, short length, byte decimalPlaces)
+            {
+                // Create number format string
+                _format.Length = 0;
+                _format.Append(NumberFormatTemplate);
+                _format.Insert(5, decimalPlaces).Insert(3, length);
+                string number = String.Format(DbaseConstants.StorageNumberFormat, _format.ToString(), value);
+                byte[] bytes = Encoding.ASCII.GetBytes(number);
+                _binaryWriter.Write(bytes);
+            }
+
+            private void writeNumber(long value, short length)
+            {
+                // Create number format string
+                writeNumber(value, length, 0);
+            }
+
+            private void writeDateTime(DateTime dateTime)
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(dateTime.ToString("yyyyMMdd"));
+                _binaryWriter.Write(bytes);
+            }
+
+            private void writeString(string value, int length)
+            {
+                value = (value ?? String.Empty) + new String((char)0x0, length);
+                byte[] chars = _dbaseFile.Encoding.GetBytes(value.Substring(0, length));
+                _binaryWriter.Write(chars);
+            }
+
+            private void writeBoolean(bool value)
+            {
+                byte[] bytes = value ? Encoding.ASCII.GetBytes("T") : Encoding.ASCII.GetBytes("F");
+                _binaryWriter.Write(bytes);
+            }
+            #endregion
+        }
+    }
 }

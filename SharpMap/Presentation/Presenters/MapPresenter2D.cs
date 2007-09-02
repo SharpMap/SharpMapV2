@@ -514,6 +514,31 @@ namespace SharpMap.Presentation
 
         private void map_LayersChanged(object sender, LayersChangedEventArgs e)
         {
+            switch (e.ChangeType)
+            {
+                case LayersChangeType.Added:
+                    foreach (ILayer layer in e.LayersAffected)
+                    {
+                        layer.LayerDataAvailable += layer_LayerDataAvailable;
+                    }
+                    break;
+                case LayersChangeType.Removed:
+                    foreach (ILayer layer in e.LayersAffected)
+                    {
+                        layer.LayerDataAvailable -= layer_LayerDataAvailable;
+                    }
+                    break;
+                case LayersChangeType.Enabled:
+                    break;
+                case LayersChangeType.Disabled:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void layer_LayerDataAvailable(object sender, EventArgs e)
+        {
             throw new NotImplementedException();
         }
 

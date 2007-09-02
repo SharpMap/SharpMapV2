@@ -31,6 +31,7 @@ using SharpMap.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
+using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -80,8 +81,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FilterMethod _filterDelegate;
         private int? _srid;
         private string _filename;
-        private DbaseReader _dbaseReader;
-        private DbaseWriter _dbaseWriter;
+        private DbaseFile _dbaseFile;
         private FileStream _shapeFileStream;
         private BinaryReader _shapeFileReader;
         private BinaryWriter _shapeFileWriter;
@@ -142,7 +142,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             // Initialize DBF
             if (HasDbf)
             {
-                _dbaseReader = new DbaseReader(DbfFilename);
+                _dbaseFile = new DbaseFile(DbfFilename);
             }
         }
 
@@ -173,16 +173,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (disposing)
             {
-                if (_dbaseReader != null)
+                if (_dbaseFile != null)
                 {
-                    _dbaseReader.Close();
-                    _dbaseReader = null;
-                }
-
-                if (_dbaseWriter != null)
-                {
-                    _dbaseWriter.Close();
-                    _dbaseWriter = null;
+                    _dbaseFile.Close();
+                    _dbaseFile = null;
                 }
 
                 if (_shapeFileReader != null)
@@ -293,7 +287,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Creates a new <see cref="ShapeFile"/> instance and .shp, .shx and, optionally, .dbf file on disk.
+        /// Creates a new <see cref="ShapeFile"/> instance and .shp, .shx and, optionally, 
+        /// .dbf file on disk.
         /// </summary>
         /// <remarks>If <paramref name="model"/> is null, no .dbf file is created.</remarks>
         /// <param name="directory">Directory to create the shapefile in.</param>
@@ -301,10 +296,39 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="type">Type of shape to store in the shapefile.</param>
         /// <param name="model">The schema for the attributes DBase file.</param>
         /// <returns>A ShapeFile instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="layerName"/> is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="layerName"/> has invalid path characters.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="layerName"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <paramref name="layerName"/> has invalid path characters.
+        /// </exception>
+        public static ShapeFile Create(DirectoryInfo directory, string layerName, 
+            ShapeType type, FeatureDataTable model)
+        {
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+            Encoding encoding = Encoding.GetEncoding(culture.TextInfo.OEMCodePage);
+            return Create(directory, layerName, type, model, culture, encoding);
+        }
+
+
+        /// <summary>
+        /// Creates a new <see cref="ShapeFile"/> instance and .shp, .shx and, optionally, 
+        /// .dbf file on disk.
+        /// </summary>
+        /// <remarks>If <paramref name="model"/> is null, no .dbf file is created.</remarks>
+        /// <param name="directory">Directory to create the shapefile in.</param>
+        /// <param name="layerName">Name of the shapefile.</param>
+        /// <param name="type">Type of shape to store in the shapefile.</param>
+        /// <param name="model">The schema for the attributes DBase file.</param>
+        /// <returns>A ShapeFile instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="layerName"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <paramref name="layerName"/> has invalid path characters.
+        /// </exception>
         public static ShapeFile Create(DirectoryInfo directory, string layerName, ShapeType type,
-                                       FeatureDataTable model)
+                                       FeatureDataTable model, CultureInfo culture, Encoding encoding)
         {
             if (String.IsNullOrEmpty(layerName))
             {
@@ -360,11 +384,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (schemaTable != null)
             {
-                using (FileStream dbf = File.Create(Path.Combine(directory.FullName, layerName + ".dbf")))
-                {
-                    DbaseWriter dbaseWriter = new DbaseWriter(dbf, schemaTable);
-                    dbaseWriter.Close();
-                }
+                String filePath = Path.Combine(directory.FullName, layerName + ".dbf");
+                DbaseFile file = DbaseFile.CreateDbaseFile(filePath, schemaTable, culture, encoding);
+                file.Close();
             }
 
             return new ShapeFile(shapeFile);
@@ -498,10 +520,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     _filename = value;
 
-                    if (_dbaseReader != null)
+                    if (_dbaseFile != null)
                     {
-                        _dbaseReader.Close();
-                        _dbaseReader = null;
+                        _dbaseFile.Close();
+                        _dbaseFile = null;
                     }
                 }
             }
@@ -539,6 +561,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+        public CultureInfo Locale
+        {
+            get { return _dbaseFile.CultureInfo; }
+        }
+
         /// <summary>
         /// Gets or sets the encoding used for parsing strings from the DBase DBF file.
         /// </summary>
@@ -560,37 +587,23 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 if (!HasDbf)
                 {
-                    return Encoding.UTF7;
+                    return Encoding.ASCII;
                 }
 
                 enableReading();
-                return _dbaseReader.Encoding;
-            }
-            set
-            {
-                if (!HasDbf)
-                {
-                    throw new ShapeFileIsInvalidException(
-                        "The Encoding property can't be set when there is no "+
-                        "Dbase file (.dbf) associated with this shapefile.");
-                }
-
-                checkOpen();
-                enableReading();
-                _dbaseReader.Encoding = value;
+                return _dbaseFile.Encoding;
             }
         }
 
         /// <summary>
-        /// Opens the shapefile with optional exclusive access for faster write performance during bulk updates.
+        /// Opens the shapefile with optional exclusive access for
+        /// faster write performance during bulk updates.
         /// </summary>
-        /// <param name="exclusive">True if exclusive access is desired, false otherwise</param>
+        /// <param name="exclusive">
+        /// True if exclusive access is desired, false otherwise.
+        /// </param>
         public void Open(bool exclusive)
         {
-            // TODO:
-            // Get a Connector.  The connector returned is guaranteed to be connected and ready to go.
-            // Pooling.Connector connector = Pooling.ConnectorPool.ConnectorPoolManager.RequestConnector(this,true);
-
             if (!_isOpen)
             {
                 _exclusiveMode = exclusive;
@@ -763,7 +776,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             enableReading();
 
             FeatureDataTable<uint> dt = HasDbf
-                                            ? _dbaseReader.NewTable
+                                            ? _dbaseFile.NewTable
                                             : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
             BoundingBox boundingBox = geom.GetBoundingBox();
 
@@ -828,23 +841,20 @@ namespace SharpMap.Data.Providers.ShapeFile
             //Use the spatial index to get a list of features whose boundingbox intersects bbox
             IEnumerable<uint> objects = GetObjectIdsInView(bounds);
             FeatureDataTable<uint> dt = HasDbf
-                                            ? _dbaseReader.NewTable
+                                            ? _dbaseFile.NewTable
                                             : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
 
             foreach (uint oid in objects)
             {
-                FeatureDataRow<uint> fdr = HasDbf ? _dbaseReader.GetFeature(oid, dt) : dt.NewRow(oid);
+                FeatureDataRow<uint> fdr = getFeature(oid, dt);
+                //FeatureDataRow<uint> fdr = HasDbf ? _dbaseFile.GetAttributes(oid, dt) : dt.NewRow(oid);
+                //fdr.Geometry = readGeometry(oid);
 
-                fdr.Geometry = readGeometry(oid);
-
-                if (fdr.Geometry != null)
+                if (fdr != null && fdr.Geometry != null)
                 {
                     if (fdr.Geometry.GetBoundingBox().Intersects(bounds))
                     {
-                        if (FilterDelegate == null || FilterDelegate(fdr))
-                        {
-                            dt.AddRow(fdr);
-                        }
+                        dt.AddRow(fdr);
                     }
                 }
             }
@@ -928,7 +938,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public DataTable GetSchemaTable()
         {
             enableReading();
-            return _dbaseReader.GetSchemaTable();
+            return _dbaseFile.GetSchemaTable();
         }
 
         public void SetTableSchema(FeatureDataTable table)
@@ -1066,7 +1076,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (HasDbf)
             {
-                _dbaseWriter.AddRow(feature);
+                _dbaseFile.AddRow(feature);
             }
 
             writeGeometry(feature.Geometry, id, offset, length);
@@ -1122,7 +1132,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 if (HasDbf)
                 {
-                    _dbaseWriter.AddRow(feature);
+                    _dbaseFile.AddRow(feature);
                 }
             }
 
@@ -1164,7 +1174,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else if (HasDbf)
             {
-                _dbaseWriter.UpdateRow(feature.Id, feature);
+                _dbaseFile.UpdateRow(feature.Id, feature);
             }
 
             feature.AcceptChanges();
@@ -1203,7 +1213,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
                 else if (HasDbf)
                 {
-                    _dbaseWriter.UpdateRow(feature.Id, feature);
+                    _dbaseFile.UpdateRow(feature.Id, feature);
                 }
 
                 feature.AcceptChanges();
@@ -1441,11 +1451,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
                 else
                 {
-                    dt = _dbaseReader.NewTable;
+                    dt = _dbaseFile.NewTable;
                 }
             }
 
-            FeatureDataRow<uint> dr = HasDbf ? _dbaseReader.GetFeature(oid, dt) : dt.NewRow(oid);
+            FeatureDataRow<uint> dr = HasDbf ? _dbaseFile.GetAttributes(oid, dt) : dt.NewRow(oid);
             dr.Geometry = readGeometry(oid);
 
             if (FilterDelegate == null || FilterDelegate(dr))
@@ -1481,24 +1491,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (HasDbf)
             {
-                if (_dbaseReader == null)
+                if (_dbaseFile == null)
                 {
-                    if (!_exclusiveMode)
-                    {
-                        if (_dbaseWriter != null)
-                        {
-                            _dbaseWriter.Close();
-                        }
-
-                        _dbaseWriter = null;
-                    }
-
-                    _dbaseReader = new DbaseReader(DbfFilename);
+                    _dbaseFile = new DbaseFile(DbfFilename);
                 }
 
-                if (!_dbaseReader.IsOpen)
+                if (!_dbaseFile.IsOpen)
                 {
-                    _dbaseReader.Open();
+                    _dbaseFile.Open();
                 }
             }
         }
@@ -1532,38 +1532,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (HasDbf)
             {
-                if (_dbaseWriter == null)
+                if (_dbaseFile == null)
                 {
-                    if (!_exclusiveMode)
-                    {
-                        if (_dbaseReader != null)
-                        {
-                            _dbaseReader.Close();
-                        }
+                    _dbaseFile = new DbaseFile(DbfFilename);
+                }
 
-                        _dbaseReader = null;
-                    }
-
-                    // Workaround for trying to open the file for exclusive writing too quickly after disposing the reader
-                    int numberAttemptsToOpenDbfForWriting = 0;
-
-                    do
-                    {
-                        try
-                        {
-                            _dbaseWriter = new DbaseWriter(DbfFilename);
-                        }
-                        catch (IOException)
-                        {
-                            Thread.Sleep(200);
-                            numberAttemptsToOpenDbfForWriting++;
-                        }
-                    } while (_dbaseWriter == null && numberAttemptsToOpenDbfForWriting <= 3);
-
-                    if (_dbaseWriter == null)
-                    {
-                        throw new ShapeFileException("Can't open Dbase file for writing.");
-                    }
+                if (!_dbaseFile.IsOpen)
+                {
+                    _dbaseFile.Open();
                 }
             }
         }

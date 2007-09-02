@@ -15,97 +15,202 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-    internal static class DbaseEncodingRegistry
+    internal static class DbaseLocaleRegistry
     {
-        private static readonly Dictionary<byte, Encoding> _dbaseToEncoding = new Dictionary<byte, Encoding>();
-
-        static DbaseEncodingRegistry()
+        enum CodePageChoice
         {
-            _dbaseToEncoding[0x01] = Encoding.GetEncoding(437); //DOS USA code page 437 
-            _dbaseToEncoding[0x02] = Encoding.GetEncoding(850); // DOS Multilingual code page 850 
-            _dbaseToEncoding[0x03] = Encoding.GetEncoding(1252); // Windows ANSI code page 1252 
-            _dbaseToEncoding[0x04] = Encoding.GetEncoding(10000); // Standard Macintosh 
-            _dbaseToEncoding[0x08] = Encoding.GetEncoding(865); // Danish OEM
-            _dbaseToEncoding[0x09] = Encoding.GetEncoding(437); // Dutch OEM
-            _dbaseToEncoding[0x0A] = Encoding.GetEncoding(850); // Dutch OEM Secondary codepage
-            _dbaseToEncoding[0x0B] = Encoding.GetEncoding(437); // Finnish OEM
-            _dbaseToEncoding[0x0D] = Encoding.GetEncoding(437); // French OEM
-            _dbaseToEncoding[0x0E] = Encoding.GetEncoding(850); // French OEM Secondary codepage
-            _dbaseToEncoding[0x0F] = Encoding.GetEncoding(437); // German OEM
-            _dbaseToEncoding[0x10] = Encoding.GetEncoding(850); // German OEM Secondary codepage
-            _dbaseToEncoding[0x11] = Encoding.GetEncoding(437); // Italian OEM
-            _dbaseToEncoding[0x12] = Encoding.GetEncoding(850); // Italian OEM Secondary codepage
-            _dbaseToEncoding[0x13] = Encoding.GetEncoding(932); // Japanese Shift-JIS
-            _dbaseToEncoding[0x14] = Encoding.GetEncoding(850); // Spanish OEM secondary codepage
-            _dbaseToEncoding[0x15] = Encoding.GetEncoding(437); // Swedish OEM
-            _dbaseToEncoding[0x16] = Encoding.GetEncoding(850); // Swedish OEM secondary codepage
-            _dbaseToEncoding[0x17] = Encoding.GetEncoding(865); // Norwegian OEM
-            _dbaseToEncoding[0x18] = Encoding.GetEncoding(437); // Spanish OEM
-            _dbaseToEncoding[0x19] = Encoding.GetEncoding(437); // English OEM (Britain)
-            _dbaseToEncoding[0x1A] = Encoding.GetEncoding(850); // English OEM (Britain) secondary codepage
-            _dbaseToEncoding[0x1B] = Encoding.GetEncoding(437); // English OEM (U.S.)
-            _dbaseToEncoding[0x1C] = Encoding.GetEncoding(863); // French OEM (Canada)
-            _dbaseToEncoding[0x1D] = Encoding.GetEncoding(850); // French OEM secondary codepage
-            _dbaseToEncoding[0x1F] = Encoding.GetEncoding(852); // Czech OEM
-            _dbaseToEncoding[0x22] = Encoding.GetEncoding(852); // Hungarian OEM
-            _dbaseToEncoding[0x23] = Encoding.GetEncoding(852); // Polish OEM
-            _dbaseToEncoding[0x24] = Encoding.GetEncoding(860); // Portuguese OEM
-            _dbaseToEncoding[0x25] = Encoding.GetEncoding(850); // Portuguese OEM secondary codepage
-            _dbaseToEncoding[0x26] = Encoding.GetEncoding(866); // Russian OEM
-            _dbaseToEncoding[0x37] = Encoding.GetEncoding(850); // English OEM (U.S.) secondary codepage
-            _dbaseToEncoding[0x40] = Encoding.GetEncoding(852); // Romanian OEM
-            _dbaseToEncoding[0x4D] = Encoding.GetEncoding(936); // Chinese GBK (PRC)
-            _dbaseToEncoding[0x4E] = Encoding.GetEncoding(949); // Korean (ANSI/OEM)
-            _dbaseToEncoding[0x4F] = Encoding.GetEncoding(950); // Chinese Big5 (Taiwan)
-            _dbaseToEncoding[0x50] = Encoding.GetEncoding(874); // Thai (ANSI/OEM)
-            _dbaseToEncoding[0x57] = Encoding.GetEncoding(1252); // ANSI
-            _dbaseToEncoding[0x58] = Encoding.GetEncoding(1252); // Western European ANSI
-            _dbaseToEncoding[0x59] = Encoding.GetEncoding(1252); // Spanish ANSI
-            _dbaseToEncoding[0x64] = Encoding.GetEncoding(852); // Eastern European MS–DOS
-            _dbaseToEncoding[0x65] = Encoding.GetEncoding(866); // Russian MS–DOS
-            _dbaseToEncoding[0x66] = Encoding.GetEncoding(865); // Nordic MS–DOS
-            _dbaseToEncoding[0x67] = Encoding.GetEncoding(861); // Icelandic MS–DOS
-            //_dbaseToEncoding[0x68] = Encoding.GetEncoding(895); // Kamenicky (Czech) MS-DOS 
-            //_dbaseToEncoding[0x69] = Encoding.GetEncoding(620); // Mazovia (Polish) MS-DOS 
-            _dbaseToEncoding[0x6A] = Encoding.GetEncoding(737); // Greek MS–DOS (437G)
-            _dbaseToEncoding[0x6B] = Encoding.GetEncoding(857); // Turkish MS–DOS
-            _dbaseToEncoding[0x6C] = Encoding.GetEncoding(863); // French–Canadian MS–DOS
-            _dbaseToEncoding[0x78] = Encoding.GetEncoding(950); // Taiwan Big 5
-            _dbaseToEncoding[0x79] = Encoding.GetEncoding(949); // Hangul (Wansung)
-            _dbaseToEncoding[0x7A] = Encoding.GetEncoding(936); // PRC GBK
-            _dbaseToEncoding[0x7B] = Encoding.GetEncoding(932); // Japanese Shift-JIS
-            _dbaseToEncoding[0x7C] = Encoding.GetEncoding(874); // Thai Windows/MS–DOS
-            _dbaseToEncoding[0x7D] = Encoding.GetEncoding(1255); // Hebrew Windows 
-            _dbaseToEncoding[0x7E] = Encoding.GetEncoding(1256); // Arabic Windows 
-            _dbaseToEncoding[0x86] = Encoding.GetEncoding(737); // Greek OEM
-            _dbaseToEncoding[0x87] = Encoding.GetEncoding(852); // Slovenian OEM
-            _dbaseToEncoding[0x88] = Encoding.GetEncoding(857); // Turkish OEM
-            _dbaseToEncoding[0x96] = Encoding.GetEncoding(10007); // Russian Macintosh 
-            _dbaseToEncoding[0x97] = Encoding.GetEncoding(10029); // Eastern European Macintosh 
-            _dbaseToEncoding[0x98] = Encoding.GetEncoding(10006); // Greek Macintosh 
-            _dbaseToEncoding[0xC8] = Encoding.GetEncoding(1250); // Eastern European Windows
-            _dbaseToEncoding[0xC9] = Encoding.GetEncoding(1251); // Russian Windows
-            _dbaseToEncoding[0xCA] = Encoding.GetEncoding(1254); // Turkish Windows
-            _dbaseToEncoding[0xCB] = Encoding.GetEncoding(1253); // Greek Windows
-            _dbaseToEncoding[0xCC] = Encoding.GetEncoding(1257); // Baltic Windows
+            Custom,
+            Oem,
+            Ansi,
+            Mac
         }
 
-        public static Encoding GetEncoding(byte dbasecode)
+        struct CultureWithEncoding
         {
-            Encoding encoding;
+            private Encoding _encoding;
+            public CultureInfo CultureInfo;
+            public CodePageChoice CodePageChoice;
 
-            if (_dbaseToEncoding.TryGetValue(dbasecode, out encoding))
+            internal CultureWithEncoding(CultureInfo cultureInfo, CodePageChoice codePageChoice)
             {
-                return encoding;
+                CultureInfo = cultureInfo;
+                CodePageChoice = codePageChoice;
+                _encoding = null;
+            }
+
+            internal CultureWithEncoding(CultureInfo cultureInfo, Encoding encoding)
+            {
+                CultureInfo = cultureInfo;
+                _encoding = encoding;
+                CodePageChoice = CodePageChoice.Custom;
+            }
+
+            public Encoding Encoding
+            {
+                get
+                {
+                    if (_encoding == null)
+                    {
+                        switch (CodePageChoice)
+                        {
+                            case CodePageChoice.Ansi:
+                                return Encoding.GetEncoding(CultureInfo.TextInfo.ANSICodePage);
+                            case CodePageChoice.Mac:
+                                return Encoding.GetEncoding(CultureInfo.TextInfo.MacCodePage);
+                            case CodePageChoice.Oem:
+                            case CodePageChoice.Custom:
+                            default:
+                                return Encoding.GetEncoding(CultureInfo.TextInfo.OEMCodePage);
+                        }
+                    }
+                    else
+                    {
+                        return _encoding;
+                    }
+                }
+                set { _encoding = value; }
+            }
+        }
+
+        private static readonly Dictionary<byte, CultureWithEncoding> _dbaseToEncoding
+            = new Dictionary<byte, CultureWithEncoding>();
+        private static readonly Dictionary<KeyValuePair<int, int>, byte> _encodingToDbase
+            = new Dictionary<KeyValuePair<int, int>, byte>();
+
+        static DbaseLocaleRegistry()
+        {
+            setupDbaseToEncodingMap();
+            setupEncodingToDbaseMap();
+        }
+
+        private static void setupDbaseToEncodingMap()
+        {
+            _dbaseToEncoding[0x01] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), CodePageChoice.Oem); //DOS USA code page 437 
+            _dbaseToEncoding[0x02] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), Encoding.GetEncoding(850)); // DOS Multilingual code page 850 
+            _dbaseToEncoding[0x03] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), CodePageChoice.Ansi); // Windows ANSI code page 1252 
+            _dbaseToEncoding[0x04] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), CodePageChoice.Mac); // Macintosh US English 
+            _dbaseToEncoding[0x08] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1030), Encoding.GetEncoding(865)); // Danish OEM
+            _dbaseToEncoding[0x09] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1043), Encoding.GetEncoding(437)); // Dutch OEM
+            _dbaseToEncoding[0x0A] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1043), CodePageChoice.Oem); // Dutch OEM Secondary codepage
+            _dbaseToEncoding[0x0B] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1035), Encoding.GetEncoding(437)); // Finnish OEM
+            _dbaseToEncoding[0x0D] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1036), Encoding.GetEncoding(437)); // French OEM
+            _dbaseToEncoding[0x0E] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1036), CodePageChoice.Oem); // French OEM Secondary codepage
+            _dbaseToEncoding[0x0F] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1031), Encoding.GetEncoding(437)); // German OEM
+            _dbaseToEncoding[0x10] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1031), CodePageChoice.Oem); // German OEM Secondary codepage
+            _dbaseToEncoding[0x11] = new CultureWithEncoding(CultureInfo.GetCultureInfo(16), Encoding.GetEncoding(437)); // Italian OEM
+            _dbaseToEncoding[0x12] = new CultureWithEncoding(CultureInfo.GetCultureInfo(16), CodePageChoice.Oem); // Italian OEM Secondary codepage
+            _dbaseToEncoding[0x13] = new CultureWithEncoding(CultureInfo.GetCultureInfo(17), CodePageChoice.Oem); // Japanese Shift-JIS
+            _dbaseToEncoding[0x14] = new CultureWithEncoding(CultureInfo.GetCultureInfo(10), CodePageChoice.Oem); // Spanish OEM secondary codepage
+            _dbaseToEncoding[0x15] = new CultureWithEncoding(CultureInfo.GetCultureInfo(29), Encoding.GetEncoding(437)); // Swedish OEM
+            _dbaseToEncoding[0x16] = new CultureWithEncoding(CultureInfo.GetCultureInfo(29), CodePageChoice.Oem); // Swedish OEM secondary codepage
+            _dbaseToEncoding[0x17] = new CultureWithEncoding(CultureInfo.GetCultureInfo(20), Encoding.GetEncoding(865)); // Norwegian OEM
+            _dbaseToEncoding[0x18] = new CultureWithEncoding(CultureInfo.GetCultureInfo(10), Encoding.GetEncoding(437)); // Spanish OEM
+            _dbaseToEncoding[0x19] = new CultureWithEncoding(CultureInfo.GetCultureInfo(2057), Encoding.GetEncoding(437)); // English OEM (Britain)
+            _dbaseToEncoding[0x1A] = new CultureWithEncoding(CultureInfo.GetCultureInfo(2057), CodePageChoice.Oem); // English OEM (Britain) secondary codepage
+            _dbaseToEncoding[0x1B] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), CodePageChoice.Oem); // English OEM (U.S.)
+            _dbaseToEncoding[0x1C] = new CultureWithEncoding(CultureInfo.GetCultureInfo(3084), Encoding.GetEncoding(863)); // French OEM (Canada)
+            _dbaseToEncoding[0x1D] = new CultureWithEncoding(CultureInfo.GetCultureInfo(12), CodePageChoice.Oem); // French OEM secondary codepage
+            _dbaseToEncoding[0x1F] = new CultureWithEncoding(CultureInfo.GetCultureInfo(5), CodePageChoice.Oem); // Czech OEM
+            _dbaseToEncoding[0x22] = new CultureWithEncoding(CultureInfo.GetCultureInfo(14), CodePageChoice.Oem); // Hungarian OEM
+            _dbaseToEncoding[0x23] = new CultureWithEncoding(CultureInfo.GetCultureInfo(21), CodePageChoice.Oem); // Polish OEM
+            _dbaseToEncoding[0x24] = new CultureWithEncoding(CultureInfo.GetCultureInfo(22), Encoding.GetEncoding(860)); // Portuguese OEM
+            _dbaseToEncoding[0x25] = new CultureWithEncoding(CultureInfo.GetCultureInfo(22), CodePageChoice.Oem); // Portuguese OEM secondary codepage
+            _dbaseToEncoding[0x26] = new CultureWithEncoding(CultureInfo.GetCultureInfo(25), CodePageChoice.Oem); // Russian OEM
+            _dbaseToEncoding[0x37] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), Encoding.GetEncoding(850)); // English OEM (U.S.) secondary codepage
+            _dbaseToEncoding[0x40] = new CultureWithEncoding(CultureInfo.GetCultureInfo(24), CodePageChoice.Oem); // Romanian OEM
+            _dbaseToEncoding[0x4D] = new CultureWithEncoding(CultureInfo.GetCultureInfo(4), CodePageChoice.Oem); // Chinese GBK (PRC)
+            _dbaseToEncoding[0x4E] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1042), CodePageChoice.Oem); // Korean (ANSI/OEM)
+            _dbaseToEncoding[0x4F] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1028), CodePageChoice.Oem); // Chinese Big5 (Taiwan)
+            _dbaseToEncoding[0x50] = new CultureWithEncoding(CultureInfo.GetCultureInfo(30), CodePageChoice.Oem); // Thai (ANSI/OEM)
+            _dbaseToEncoding[0x57] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1033), CodePageChoice.Ansi); // ANSI
+            _dbaseToEncoding[0x58] = new CultureWithEncoding(CultureInfo.InvariantCulture, CodePageChoice.Ansi); // Western European ANSI
+            _dbaseToEncoding[0x59] = new CultureWithEncoding(CultureInfo.GetCultureInfo(10), CodePageChoice.Ansi); // Spanish ANSI
+            _dbaseToEncoding[0x64] = new CultureWithEncoding(CultureInfo.InvariantCulture, Encoding.GetEncoding(852)); // Eastern European MS–DOS
+            _dbaseToEncoding[0x65] = new CultureWithEncoding(CultureInfo.GetCultureInfo(25), CodePageChoice.Oem); // Russian MS–DOS
+            _dbaseToEncoding[0x66] = new CultureWithEncoding(CultureInfo.InvariantCulture, Encoding.GetEncoding(865)); // Nordic MS–DOS
+            _dbaseToEncoding[0x67] = new CultureWithEncoding(CultureInfo.InvariantCulture, Encoding.GetEncoding(861)); // Icelandic MS–DOS
+            //_dbaseToEncoding[0x68] = Encoding.GetEncoding(895); // Kamenicky (Czech) MS-DOS 
+            //_dbaseToEncoding[0x69] = Encoding.GetEncoding(620); // Mazovia (Polish) MS-DOS 
+            _dbaseToEncoding[0x6A] = new CultureWithEncoding(CultureInfo.GetCultureInfo(8), CodePageChoice.Oem); // Greek MS–DOS (437G)
+            _dbaseToEncoding[0x6B] = new CultureWithEncoding(CultureInfo.GetCultureInfo(31), CodePageChoice.Oem); // Turkish MS–DOS
+            _dbaseToEncoding[0x6C] = new CultureWithEncoding(CultureInfo.GetCultureInfo(3084), Encoding.GetEncoding(863)); // French–Canadian MS–DOS
+            _dbaseToEncoding[0x78] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1028), CodePageChoice.Oem); // Taiwan Big 5
+            _dbaseToEncoding[0x79] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1042), CodePageChoice.Oem); // Hangul (Wansung)
+            _dbaseToEncoding[0x7A] = new CultureWithEncoding(CultureInfo.GetCultureInfo(2052), CodePageChoice.Oem); // PRC GBK
+            _dbaseToEncoding[0x7B] = new CultureWithEncoding(CultureInfo.GetCultureInfo(17), CodePageChoice.Oem); // Japanese Shift-JIS
+            _dbaseToEncoding[0x7C] = new CultureWithEncoding(CultureInfo.GetCultureInfo(30), CodePageChoice.Oem); // Thai Windows/MS–DOS
+            _dbaseToEncoding[0x7D] = new CultureWithEncoding(CultureInfo.GetCultureInfo(13), CodePageChoice.Ansi); // Hebrew Windows 
+            _dbaseToEncoding[0x7E] = new CultureWithEncoding(CultureInfo.GetCultureInfo(1), CodePageChoice.Ansi); // Arabic Windows 
+            _dbaseToEncoding[0x86] = new CultureWithEncoding(CultureInfo.GetCultureInfo(8), CodePageChoice.Oem); // Greek OEM
+            _dbaseToEncoding[0x87] = new CultureWithEncoding(CultureInfo.GetCultureInfo(27), CodePageChoice.Oem); // Slovenian OEM
+            _dbaseToEncoding[0x88] = new CultureWithEncoding(CultureInfo.GetCultureInfo(31), CodePageChoice.Oem); // Turkish OEM
+            _dbaseToEncoding[0x96] = new CultureWithEncoding(CultureInfo.GetCultureInfo(25), CodePageChoice.Mac); // Russian Macintosh 
+            _dbaseToEncoding[0x97] = new CultureWithEncoding(CultureInfo.InvariantCulture, Encoding.GetEncoding(10029)); // Eastern European Macintosh 
+            _dbaseToEncoding[0x98] = new CultureWithEncoding(CultureInfo.GetCultureInfo(8), CodePageChoice.Mac); // Greek Macintosh 
+            _dbaseToEncoding[0xC8] = new CultureWithEncoding(CultureInfo.InvariantCulture, Encoding.GetEncoding(1250)); // Eastern European Windows
+            _dbaseToEncoding[0xC9] = new CultureWithEncoding(CultureInfo.GetCultureInfo(25), CodePageChoice.Ansi); // Russian Windows
+            _dbaseToEncoding[0xCA] = new CultureWithEncoding(CultureInfo.GetCultureInfo(31), CodePageChoice.Ansi); // Turkish Windows
+            _dbaseToEncoding[0xCB] = new CultureWithEncoding(CultureInfo.GetCultureInfo(8), CodePageChoice.Ansi); // Greek Windows
+            _dbaseToEncoding[0xCC] = new CultureWithEncoding(CultureInfo.InvariantCulture, Encoding.GetEncoding(1257)); // Baltic Windows
+        }
+
+        private static void setupEncodingToDbaseMap()
+        {
+            foreach (KeyValuePair<byte, CultureWithEncoding> item in _dbaseToEncoding)
+            {
+                int lcid = item.Value.CultureInfo.LCID;
+                int codePage = item.Value.Encoding.CodePage;
+                _encodingToDbase.Add(new KeyValuePair<int, int>(lcid, codePage), item.Key);
+            }
+        }
+
+        public static CultureInfo GetCulture(byte dBaseEncoding)
+        {
+            CultureWithEncoding pair;
+
+            if (_dbaseToEncoding.TryGetValue(dBaseEncoding, out pair))
+            {
+                return pair.CultureInfo;
+            }
+            else
+            {
+                return CultureInfo.InvariantCulture;
+            }
+        }
+
+        public static Encoding GetEncoding(byte dBaseEncoding)
+        {
+            CultureWithEncoding pair;
+
+            if (_dbaseToEncoding.TryGetValue(dBaseEncoding, out pair))
+            {
+                return pair.Encoding;
             }
             else
             {
                 return Encoding.ASCII;
+            }
+        }
+
+        public static byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
+        {
+            Byte driverCode;
+            KeyValuePair<int, int> key = new KeyValuePair<int, int>(info.LCID, encoding.CodePage);
+
+            if (_encodingToDbase.TryGetValue(key, out driverCode))
+            {
+                return driverCode;
+            }
+            else
+            {
+                return 0x1;
             }
         }
     }

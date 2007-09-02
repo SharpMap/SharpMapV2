@@ -22,6 +22,7 @@ using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Features;
 using SharpMap.Geometries;
+using System.Globalization;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
@@ -104,7 +105,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		#endregion
 
-		#region IVectorLayerProvider Members
+        #region IVectorLayerProvider Members
+
+        public CultureInfo Locale
+        {
+            get { throw new NotImplementedException(); }
+        }
 
 		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox)
 		{
@@ -218,5 +224,5 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		}
 
 		#endregion
-	}
+    }
 }

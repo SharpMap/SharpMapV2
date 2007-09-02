@@ -22,19 +22,32 @@ using System.Data;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+    /// <summary>
+    /// Represents the header of an xBase file.
+    /// </summary>
     internal class DbaseHeader
     {
         private DateTime _lastUpdate = DateTime.Now;
         private UInt32 _numberOfRecords;
         private Int16 _headerLength;
         private Int16 _recordLength;
-        private byte _languageDriver;
+        private readonly byte _languageDriver;
         private DbaseField[] _dbaseColumns;
 
+        internal DbaseHeader(byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
+        {
+            _languageDriver = languageDriverCode;
+            _lastUpdate = lastUpdate;
+            _numberOfRecords = numberOfRecords;
+        }
+
+        /// <summary>
+        /// Gets a value which indicates which code page text data is 
+        /// stored in.
+        /// </summary>
         internal byte LanguageDriver
         {
             get { return _languageDriver; }
-            set { _languageDriver = value; }
         }
 
         internal DateTime LastUpdate
@@ -55,11 +68,14 @@ namespace SharpMap.Data.Providers.ShapeFile
             set
             {
                 _dbaseColumns = value;
-                HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Length) 
-                    + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
-                RecordLength = 1; //Deleted flag length
 
-                Array.ForEach(_dbaseColumns, delegate(DbaseField field) { RecordLength += field.Length; });
+                HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Length)
+                    + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
+
+                RecordLength = 1; // Deleted flag length
+
+                Array.ForEach(_dbaseColumns,
+                    delegate(DbaseField field) { RecordLength += field.Length; });
             }
         }
 
@@ -77,13 +93,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         internal Encoding FileEncoding
         {
-            get { return DbaseEncodingRegistry.GetEncoding(LanguageDriver); }
+            get { return DbaseLocaleRegistry.GetEncoding(LanguageDriver); }
         }
 
         public override string ToString()
         {
-            return String.Format("[DbaseHeader] Records: {0}; Columns: {1}; Last Update: {2}; "+
-                "Record Length: {3}; Header Length: {4}", RecordCount, Columns.Length, 
+            return String.Format("[DbaseHeader] Records: {0}; Columns: {1}; Last Update: {2}; " +
+                "Record Length: {3}; Header Length: {4}", RecordCount, Columns.Length,
                 LastUpdate, RecordLength, HeaderLength);
         }
 
@@ -127,98 +143,116 @@ namespace SharpMap.Data.Providers.ShapeFile
             return schema;
         }
 
-        internal static DbaseHeader ParseDbfHeader(BinaryReader reader)
+        internal static DbaseHeader ParseDbfHeader(Stream dataStream)
         {
-            DbaseHeader header = new DbaseHeader();
+            DbaseHeader header;
 
-            if (reader.ReadByte() != DbaseConstants.DbfVersionCode)
+            using (BinaryReader reader = new BinaryReader(dataStream))
             {
-                throw new NotSupportedException("Unsupported DBF Type");
-            }
-
-            header.LastUpdate = new DateTime(reader.ReadByte() + DbaseConstants.DbaseEpoch, 
-                reader.ReadByte(), reader.ReadByte()); //Read the last update date
-            header.RecordCount = reader.ReadUInt32(); // read number of records.
-            short storedHeaderLength = reader.ReadInt16(); // read length of header structure.
-            short storedRecordLength = reader.ReadInt16(); // read length of a record
-            reader.BaseStream.Seek(DbaseConstants.EncodingOffset, SeekOrigin.Begin); //Seek to encoding flag
-            header.LanguageDriver = reader.ReadByte(); //Read and parse Language driver
-            reader.BaseStream.Seek(DbaseConstants.ColumnDescriptionOffset, SeekOrigin.Begin); //Move past the reserved bytes
-            int numberOfColumns = (storedHeaderLength - DbaseConstants.ColumnDescriptionOffset) /
-                DbaseConstants.ColumnDescriptionLength;  // calculate the number of DataColumns in the header
-
-            DbaseField[] columns = new DbaseField[numberOfColumns];
-
-            for (int i = 0; i < columns.Length; i++)
-            {
-                columns[i] = new DbaseField();
-                columns[i].ColumnName = header.FileEncoding.GetString(reader.ReadBytes(11)).Replace("\0", "").Trim();
-                char fieldtype = reader.ReadChar();
-                columns[i].Address = reader.ReadInt32();
-                short fieldLength = reader.ReadByte();
-
-                if (fieldtype == 'N' || fieldtype == 'F')
+                if (reader.ReadByte() != DbaseConstants.DbfVersionCode)
                 {
-                    columns[i].Decimals = reader.ReadByte();
-                }
-                else
-                {
-                    fieldLength += (short)(reader.ReadByte() << 8);
+                    throw new NotSupportedException("Unsupported DBF Type");
                 }
 
-                columns[i].Length = fieldLength;
+                DateTime lastUpdate = new DateTime(reader.ReadByte() + DbaseConstants.DbaseEpoch,
+                    reader.ReadByte(), reader.ReadByte()); //Read the last update date
+                UInt32 recordCount = reader.ReadUInt32(); // read number of records.
+                Int16 storedHeaderLength = reader.ReadInt16(); // read length of header structure.
+                Int16 storedRecordLength = reader.ReadInt16(); // read length of a record
+                reader.BaseStream.Seek(DbaseConstants.EncodingOffset, SeekOrigin.Begin); //Seek to encoding flag
+                Byte languageDriver = reader.ReadByte(); //Read and parse Language driver
+                reader.BaseStream.Seek(DbaseConstants.ColumnDescriptionOffset, SeekOrigin.Begin); //Move past the reserved bytes
+                Int32 numberOfColumns = (storedHeaderLength - DbaseConstants.ColumnDescriptionOffset) /
+                    DbaseConstants.ColumnDescriptionLength;  // calculate the number of DataColumns in the header
 
-                switch (fieldtype)
+                header = new DbaseHeader(languageDriver, lastUpdate, recordCount);
+
+                DbaseField[] columns = new DbaseField[numberOfColumns];
+
+                for (Int32 i = 0; i < columns.Length; i++)
                 {
-                    case 'L':
-                        columns[i].DataType = typeof(bool);
-                        break;
-                    case 'C':
-                        columns[i].DataType = typeof(string);
-                        break;
-                    case 'D':
-                        columns[i].DataType = typeof(DateTime);
-                        break;
-                    case 'N':
-                        //If the number doesn't have any decimals, make the type an integer, if possible
-                        if (columns[i].Decimals == 0)
-                        {
-                            if (columns[i].Length <= 4) columns[i].DataType = typeof(Int16);
-                            else if (columns[i].Length <= 9) columns[i].DataType = typeof(Int32);
-                            else if (columns[i].Length <= 18) columns[i].DataType = typeof(Int64);
-                            else columns[i].DataType = typeof(double);
-                        }
-                        else
-                            columns[i].DataType = typeof(double);
-                        break;
-                    case 'F':
-                        columns[i].DataType = typeof(float);
-                        break;
-                    case 'B':
-                        columns[i].DataType = typeof(byte[]);
-                        break;
-                    default:
-                        throw new NotSupportedException("Invalid or unknown DBase field type '" + 
-                            fieldtype + "' in column '" + columns[i].ColumnName + "'");
+                    String colName = header.FileEncoding.GetString(
+                        reader.ReadBytes(11)).Replace("\0", "").Trim();
+
+                    Char fieldtype = reader.ReadChar();
+
+                    // Unused address data...
+                    reader.ReadInt32();
+
+                    Int16 fieldLength = reader.ReadByte();
+                    Byte decimals = 0;
+
+                    if (fieldtype == 'N' || fieldtype == 'F')
+                    {
+                        decimals = reader.ReadByte();
+                    }
+                    else
+                    {
+                        fieldLength += (short)(reader.ReadByte() << 8);
+                    }
+
+                    Type dataType = mapFieldTypeToClrType(fieldtype, decimals, fieldLength);
+
+                    columns[i] = new DbaseField(header, colName, dataType, fieldLength, decimals);
+
+                    // Move stream to next field record
+                    reader.BaseStream.Seek(DbaseConstants.BytesFromEndOfDecimalInFieldRecord, SeekOrigin.Current);
                 }
 
-                // Move stream to next field record
-                reader.BaseStream.Seek(DbaseConstants.BytesFromEndOfDecimalInFieldRecord, SeekOrigin.Current);
-            }
+                header.Columns = columns;
 
-            header.Columns = columns;
+                if (storedHeaderLength != header.HeaderLength)
+                {
+                    throw new InvalidDbaseFileException(
+                        "Recorded header length doesn't equal computed header length.");
+                }
 
-            if (storedHeaderLength != header.HeaderLength)
-            {
-                throw new InvalidDbaseFileException("Recorded header length doesn't equal computed header length.");
-            }
-
-            if (storedRecordLength != header.RecordLength)
-            {
-                throw new InvalidDbaseFileException("Recorded record length doesn't equal computed record length.");
+                if (storedRecordLength != header.RecordLength)
+                {
+                    throw new InvalidDbaseFileException(
+                        "Recorded record length doesn't equal computed record length.");
+                }
             }
 
             return header;
+        }
+
+        private static Type mapFieldTypeToClrType(Char fieldtype, Byte decimals, Int16 length)
+        {
+            Type dataType;
+
+            switch (fieldtype)
+            {
+                case 'L':
+                    return typeof(bool);
+                    break;
+                case 'C':
+                    return typeof(string);
+                    break;
+                case 'D':
+                    return typeof(DateTime);
+                    break;
+                case 'N':
+                    // If the number doesn't have any decimals, 
+                    // make the type an integer, if possible
+                    if (decimals == 0)
+                    {
+                        if (length <= 4) return typeof(Int16);
+                        else if (length <= 9) return typeof(Int32);
+                        else if (length <= 18) return typeof(Int64);
+                        else return typeof(double);
+                    }
+                    else
+                    {
+                        return typeof(double);
+                    }
+                case 'F':
+                    return typeof(float);
+                case 'B':
+                    return typeof(byte[]);
+                default:
+                    return null;
+            }
         }
     }
 }

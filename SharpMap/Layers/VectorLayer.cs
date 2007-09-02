@@ -25,6 +25,7 @@ using SharpMap.Geometries;
 using SharpMap.Presentation;
 using SharpMap.Styles;
 using GeoPoint = SharpMap.Geometries.Point;
+using System.Globalization;
 
 namespace SharpMap.Layers
 {
@@ -164,6 +165,11 @@ namespace SharpMap.Layers
                     onHighlightedFeaturesChanged();
                 }
             }
+        }
+
+        public CultureInfo Locale
+        {
+            get { return DataSource.Locale; }
         }
 
         /// <summary>

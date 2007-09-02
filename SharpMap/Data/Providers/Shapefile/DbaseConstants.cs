@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -37,5 +38,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         internal static readonly byte FileTerminator = 0x1a;
         internal static readonly int DbaseEpoch = 1900;
         internal static readonly int FieldNameLength = 11;
+
+        internal static readonly CultureInfo StorageNumberFormat 
+            = new CultureInfo("en-US", false);
     }
 }

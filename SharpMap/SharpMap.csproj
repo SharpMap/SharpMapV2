@@ -135,6 +135,7 @@
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
     <Compile Include="Data\IRasterLayerProvider.cs" />
+    <Compile Include="Data\Providers\Shapefile\DbaseFile.cs" />
     <Compile Include="Data\SharpMapDataException.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
     <Compile Include="Data\IVectorLayerProvider.cs" />

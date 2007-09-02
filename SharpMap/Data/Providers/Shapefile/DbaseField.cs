@@ -19,50 +19,115 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
+using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-    internal class DbaseField
+    /// <summary>
+    /// Represents a field in a DBase file.
+    /// </summary>
+    internal class DbaseField : IEquatable<DbaseField>
     {
-        private string _columnName;
-        private Type _dataType;
-        private int _address;
-        private short _length;
-        private byte _decimals;
+        private readonly string _columnName;
+        private readonly Type _dataType;
+        private readonly short _length;
+        private readonly byte _decimals;
+        private readonly DbaseHeader _header;
 
+        internal DbaseField(DbaseHeader header, string name, Type type, Int16 length, Byte decimals)
+        {
+            _header = header;
+            _columnName = name;
+            _dataType = type;
+            _length = length;
+            _decimals = decimals;
+        }
+
+        /// <summary>
+        /// Gets the name of the field.
+        /// </summary>
         public string ColumnName
         {
             get { return _columnName; }
-            set { _columnName = value; }
         }
 
+        /// <summary>
+        /// Gets the CLR equivalent type of the field.
+        /// </summary>
         public Type DataType
         {
             get { return _dataType; }
-            set { _dataType = value; }
         }
 
-        public int Address
-        {
-            get { return _address; }
-            set { _address = value; }
-        }
-
+        /// <summary>
+        /// Gets the length in bytes of the field in a record.
+        /// </summary>
         public Int16 Length
         {
             get { return _length; }
-            set { _length = value; }
         }
 
+        /// <summary>
+        /// Gets the number of decimals in a numeric field.
+        /// </summary>
         public byte Decimals
         {
             get { return _decimals; }
-            set { _decimals = value; }
         }
 
+        /// <summary>
+        /// Converts the field instance into a string representation.
+        /// </summary>
+        /// <returns>A string which describes the field.</returns>
         public override string ToString()
         {
-            return String.Format("[DbaseField] Name: {0}; Type: {1}; Length: {2}; Decimals: {3}", ColumnName, DataType, Length, Decimals);
+            return String.Format("[DbaseField] Name: {0}; Type: {1}; Length: {2}; " +
+                "Decimals: {3}", ColumnName, DataType, Length, Decimals);
         }
+
+        public override int GetHashCode()
+        {
+            return (ColumnName ?? "").ToLower().GetHashCode() ^
+                DataType.GetHashCode() ^
+                Length.GetHashCode() ^
+                Decimals.GetHashCode();
+        }
+
+        /// <summary>
+        /// Compares two DbaseField instances to determine if they describe the
+        /// same field.
+        /// </summary>
+        /// <param name="obj">The field to compare to.</param>
+        /// <returns>True if the fields are equal, false otherwise.</returns>
+        public override bool Equals(object obj)
+        {
+            DbaseField other = obj as DbaseField;
+            return Equals(other);
+        }
+
+        #region IEquatable<DbaseField> Members
+
+        /// <summary>
+        /// Compares two DbaseField instances to determine if they describe the
+        /// same field.
+        /// </summary>
+        /// <param name="obj">The field to compare to.</param>
+        /// <returns>True if the fields are equal, false otherwise.</returns>
+        public bool Equals(DbaseField other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            CompareInfo compare = DbaseLocaleRegistry.GetCulture(_header.LanguageDriver).CompareInfo;
+
+            return compare.Compare(other.ColumnName, ColumnName, CompareOptions.IgnoreCase) == 0 &&
+                other.DataType == DataType && 
+                other.Length == Length &&
+                other.Decimals == Decimals;
+        }
+
+        #endregion
     }
 }
