@@ -390,242 +390,128 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             return new ShapeFile(shapeFile);
-        } 
-        #endregion
-
-        /// <summary>
-        /// Forces a rebuild of the spatial index. 
-        /// If the instance of the ShapeFile provider
-        /// uses a file-based index the file is rewritten to disk,
-        /// otherwise it is kept only in memory.
-        /// </summary>
-        /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if method is executed and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public void RebuildSpatialIndex()
-        {
-            checkOpen();
-            enableReading();
-
-            if (_hasFileBasedSpatialIndex)
-            {
-                if (File.Exists(_filename + ".sidx"))
-                {
-                    File.Delete(_filename + ".sidx");
-                }
-
-                _tree = createSpatialIndexFromFile(_filename);
-            }
-            else
-            {
-                _tree = createSpatialIndex();
-            }
         }
+		#endregion
 
-        /// <summary>
-        /// Gets the <see cref="Providers.ShapeFile.ShapeType">
-        /// shape geometry type</see> in this shapefile.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The property isn't set until the first time the datasource has been opened,
-        /// and will throw an exception if this property has been called since initialization. 
-        /// </para>
-        /// <para>
-        /// All the non-<see cref="SharpMap.Data.Providers.ShapeFile.ShapeType.Null"/> 
-        /// shapes in a shapefile are required to be of the same shape type.
-        /// </para>
-        /// </remarks>
-        /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if property is read and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        public ShapeType ShapeType
-        {
-            get
-            {
-                checkOpen();
-                return _header.ShapeType;
-            }
-        }
+		/// <summary>
+		/// Gets the name of the DBase attribute file.
+		/// </summary>
+		public string DbfFilename
+		{
+			get
+			{
+				return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
+									Path.GetFileNameWithoutExtension(_filename) + ".dbf");
+			}
+		}
 
-        /// <summary>
-        /// Gets or sets the filename of the shapefile
-        /// </summary>
-        /// <remarks>If the filename changes, indexes will be rebuilt</remarks>
-        /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if method is executed and the shapefile is open or 
-        /// if set and the specified filename already exists.
-        /// Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        /// <exception cref="FileNotFoundException">
-        /// </exception>
-        /// <exception cref="ShapeFileIsInvalidException">
-        /// Thrown if set and the shapefile cannot be opened after a rename.
-        /// </exception>
-        public string Filename
-        {
-            get { return _filename; }
-            set
-            {
-                if (value != _filename)
-                {
-                    if (IsOpen)
-                    {
-                        throw new ShapeFileInvalidOperationException(
-                            "Cannot change filename while datasource is open.");
-                    }
+		/// <summary>
+		/// Gets or sets the encoding used for parsing strings from the DBase DBF file.
+		/// </summary>
+		/// <remarks>
+		/// The DBase default encoding is <see cref="System.Text.Encoding.UTF8"/>.
+		/// </remarks>
+		/// <exception cref="ShapeFileInvalidOperationException">
+		/// Thrown if property is read or set and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="ShapeFileIsInvalidException">
+		/// Thrown if set and there is no DBase file with this shapefile.
+		/// </exception>
+		public Encoding Encoding
+		{
+			get
+			{
+				checkOpen();
 
-                    if (File.Exists(value))
-                    {
-                        throw new ShapeFileInvalidOperationException(String.Format(
-                                                                         "Can't rename shapefile because a file of with the name {0} already exists.",
-                                                                         value));
-                    }
+				if (!HasDbf)
+				{
+					return Encoding.ASCII;
+				}
 
-                    if (String.Compare(Path.GetExtension(value), ".shp", true) != 0)
-                    {
-                        throw new ShapeFileIsInvalidException(
-                            String.Format("Invalid shapefile filename: {0}.", value));
-                    }
+				//enableReading();
+				return _dbaseFile.Encoding;
+			}
+		}
 
-                    string oldName =
-                        Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
-                    string newName = Path.Combine(Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value));
+		/// <summary>
+		/// Gets or sets the filename of the shapefile
+		/// </summary>
+		/// <remarks>If the filename changes, indexes will be rebuilt</remarks>
+		/// <exception cref="ShapeFileInvalidOperationException">
+		/// Thrown if method is executed and the shapefile is open or 
+		/// if set and the specified filename already exists.
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		/// <exception cref="FileNotFoundException">
+		/// </exception>
+		/// <exception cref="ShapeFileIsInvalidException">
+		/// Thrown if set and the shapefile cannot be opened after a rename.
+		/// </exception>
+		public string Filename
+		{
+			get { return _filename; }
+			set
+			{
+				if (value != _filename)
+				{
+					if (IsOpen)
+					{
+						throw new ShapeFileInvalidOperationException(
+							"Cannot change filename while datasource is open.");
+					}
 
-                    File.Copy(oldName + ".shp", newName + ".shp");
-                    File.Copy(oldName + ".shx", newName + ".shx");
-                    if (File.Exists(oldName + ".dbf")) File.Copy(oldName + ".dbf", newName + ".dbf");
-                    if (File.Exists(oldName + ".sbn")) File.Copy(oldName + ".sbn", newName + ".sbn");
-                    if (File.Exists(oldName + ".sbx")) File.Copy(oldName + ".sbx", newName + ".sbx");
-                    if (File.Exists(oldName + ".prj")) File.Copy(oldName + ".prj", newName + ".prj");
-                    if (File.Exists(oldName + ".fbx")) File.Copy(oldName + ".fbx", newName + ".fbx");
-                    if (File.Exists(oldName + ".fbn")) File.Copy(oldName + ".fbn", newName + ".fbn");
-                    if (File.Exists(oldName + ".ain")) File.Copy(oldName + ".ain", newName + ".ain");
-                    if (File.Exists(oldName + ".aih")) File.Copy(oldName + ".aih", newName + ".aih");
-                    if (File.Exists(oldName + ".atx")) File.Copy(oldName + ".atx", newName + ".atx");
+					if (File.Exists(value))
+					{
+						throw new ShapeFileInvalidOperationException(String.Format(
+																		 "Can't rename shapefile because a file of with the name {0} already exists.",
+																		 value));
+					}
 
-                    File.Delete(oldName + ".shp");
-                    File.Delete(oldName + ".shx");
-                    if (File.Exists(oldName + ".dbf")) File.Delete(oldName + ".dbf");
-                    if (File.Exists(oldName + ".sbn")) File.Delete(oldName + ".sbn");
-                    if (File.Exists(oldName + ".sbx")) File.Delete(oldName + ".sbx");
-                    if (File.Exists(oldName + ".prj")) File.Delete(oldName + ".prj");
-                    if (File.Exists(oldName + ".fbx")) File.Delete(oldName + ".fbx");
-                    if (File.Exists(oldName + ".fbn")) File.Delete(oldName + ".fbn");
-                    if (File.Exists(oldName + ".ain")) File.Delete(oldName + ".ain");
-                    if (File.Exists(oldName + ".aih")) File.Delete(oldName + ".aih");
-                    if (File.Exists(oldName + ".atx")) File.Delete(oldName + ".atx");
+					if (String.Compare(Path.GetExtension(value), ".shp", true) != 0)
+					{
+						throw new ShapeFileIsInvalidException(
+							String.Format("Invalid shapefile filename: {0}.", value));
+					}
 
-                    _filename = value;
+					string oldName =
+						Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
+					string newName = Path.Combine(Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value));
 
-                    if (_dbaseFile != null)
-                    {
-                        _dbaseFile.Close();
-                        _dbaseFile = null;
-                    }
-                }
-            }
-        }
+					File.Copy(oldName + ".shp", newName + ".shp");
+					File.Copy(oldName + ".shx", newName + ".shx");
+					if (File.Exists(oldName + ".dbf")) File.Copy(oldName + ".dbf", newName + ".dbf");
+					if (File.Exists(oldName + ".sbn")) File.Copy(oldName + ".sbn", newName + ".sbn");
+					if (File.Exists(oldName + ".sbx")) File.Copy(oldName + ".sbx", newName + ".sbx");
+					if (File.Exists(oldName + ".prj")) File.Copy(oldName + ".prj", newName + ".prj");
+					if (File.Exists(oldName + ".fbx")) File.Copy(oldName + ".fbx", newName + ".fbx");
+					if (File.Exists(oldName + ".fbn")) File.Copy(oldName + ".fbn", newName + ".fbn");
+					if (File.Exists(oldName + ".ain")) File.Copy(oldName + ".ain", newName + ".ain");
+					if (File.Exists(oldName + ".aih")) File.Copy(oldName + ".aih", newName + ".aih");
+					if (File.Exists(oldName + ".atx")) File.Copy(oldName + ".atx", newName + ".atx");
 
-        /// <summary>
-        /// Gets the name of the DBase attribute file.
-        /// </summary>
-        public string DbfFilename
-        {
-            get
-            {
-                return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
-                                    Path.GetFileNameWithoutExtension(_filename) + ".dbf");
-            }
-        }
+					File.Delete(oldName + ".shp");
+					File.Delete(oldName + ".shx");
+					if (File.Exists(oldName + ".dbf")) File.Delete(oldName + ".dbf");
+					if (File.Exists(oldName + ".sbn")) File.Delete(oldName + ".sbn");
+					if (File.Exists(oldName + ".sbx")) File.Delete(oldName + ".sbx");
+					if (File.Exists(oldName + ".prj")) File.Delete(oldName + ".prj");
+					if (File.Exists(oldName + ".fbx")) File.Delete(oldName + ".fbx");
+					if (File.Exists(oldName + ".fbn")) File.Delete(oldName + ".fbn");
+					if (File.Exists(oldName + ".ain")) File.Delete(oldName + ".ain");
+					if (File.Exists(oldName + ".aih")) File.Delete(oldName + ".aih");
+					if (File.Exists(oldName + ".atx")) File.Delete(oldName + ".atx");
 
-        /// <summary>
-        /// Gets true if the shapefile has an attributes file, false otherwise.
-        /// </summary>
-        public bool HasDbf
-        {
-            get { return File.Exists(DbfFilename); }
-        }
+					_filename = value;
 
-        /// <summary>
-        /// Gets the record index (.shx file) filename for the given shapefile
-        /// </summary>
-        public string IndexFilename
-        {
-            get
-            {
-                return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
-                                    Path.GetFileNameWithoutExtension(_filename) + ".shx");
-            }
-        }
-
-        public CultureInfo Locale
-        {
-            get { return _dbaseFile.CultureInfo; }
-        }
-
-        /// <summary>
-        /// Gets or sets the encoding used for parsing strings from the DBase DBF file.
-        /// </summary>
-        /// <remarks>
-        /// The DBase default encoding is <see cref="System.Text.Encoding.UTF8"/>.
-        /// </remarks>
-        /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if property is read or set and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
-        /// </exception>
-        /// <exception cref="ShapeFileIsInvalidException">
-        /// Thrown if set and there is no DBase file with this shapefile.
-        /// </exception>
-        public Encoding Encoding
-        {
-            get
-            {
-                checkOpen();
-
-                if (!HasDbf)
-                {
-                    return Encoding.ASCII;
-                }
-
-                enableReading();
-                return _dbaseFile.Encoding;
-            }
-        }
-
-        /// <summary>
-        /// Opens the shapefile with optional exclusive access for
-        /// faster write performance during bulk updates.
-        /// </summary>
-        /// <param name="exclusive">
-        /// True if exclusive access is desired, false otherwise.
-        /// </param>
-        public void Open(bool exclusive)
-        {
-            if (!_isOpen)
-            {
-                _exclusiveMode = exclusive;
-
-                try
-                {
-                    enableReading();
-                    _isOpen = true;
-
-                    // Read projection file
-                    parseProjection();
-
-                    // Load spatial (r-tree) index
-                    loadSpatialIndex(_hasFileBasedSpatialIndex);
-                }
-                catch (Exception)
-                {
-                    _isOpen = false;
-                    throw;
-                }
-            }
-        }
+					if (_dbaseFile != null)
+					{
+						_dbaseFile.Close();
+						_dbaseFile = null;
+					}
+				}
+			}
+		}
 
         /// <summary>
         /// Filter Delegate Method for limiting the datasource
@@ -634,21 +520,31 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <example>
         /// Using an anonymous method for filtering all features where the NAME column starts with S:
         /// <code lang="C#">
-        /// myShapeDataSource.FilterDelegate = new SharpMap.Data.Providers.ShapeFile.FilterMethod(delegate(FeatureDataRow row) { return (!row["NAME"].ToString().StartsWith("S")); });
+        /// myShapeDataSource.FilterDelegate = new FilterMethod(delegate(FeatureDataRow row) 
+        ///		{ return (!row["NAME"].ToString().StartsWith("S")); });
         /// </code>
         /// </example>
         /// <example>
         /// Declaring a delegate method for filtering (multi)polygon-features whose area is larger than 5.
-        /// <code>
+		/// <code>
+		/// using SharpMap.Geometries;
+		/// [...]
         /// myShapeDataSource.FilterDelegate = CountryFilter;
         /// [...]
         /// public static bool CountryFilter(FeatureDataRow row)
         /// {
-        ///		if(row.Geometry.GetType()==typeof(SharpMap.Geometries.Polygon))
-        ///			return ((row.Geometry as SharpMap.Geometries.Polygon).Area>5);
-        ///		if (row.Geometry.GetType() == typeof(SharpMap.Geometries.MultiPolygon))
-        ///			return ((row.Geometry as SharpMap.Geometries.MultiPolygon).Area > 5);
-        ///		else return true;
+        ///		if(row.Geometry is Polygon)
+        ///		{
+        ///			return (row.Geometry as Polygon).Area > 5;
+        ///		}
+        ///		if (row.Geometry is MultiPolygon)
+        ///		{
+        ///			return (row.Geometry as MultiPolygon).Area > 5;
+        ///		}
+        ///		else 
+        ///		{
+        ///			return true;
+        ///		}
         /// }
         /// </code>
         /// </example>
@@ -658,41 +554,107 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             get { return _filterDelegate; }
             set { _filterDelegate = value; }
-        }
+		}
 
-        #region ILayerProvider Members
+		/// <summary>
+		/// Gets true if the shapefile has an attributes file, false otherwise.
+		/// </summary>
+		public bool HasDbf
+		{
+			get { return File.Exists(DbfFilename); }
+		}
+
+		/// <summary>
+		/// Gets the record index (.shx file) filename for the given shapefile
+		/// </summary>
+		public string IndexFilename
+		{
+			get
+			{
+				return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_filename)),
+									Path.GetFileNameWithoutExtension(_filename) + ".shx");
+			}
+		}
+
+		public CultureInfo Locale
+		{
+			get { return _dbaseFile.CultureInfo; }
+		}
+
+		/// <summary>
+		/// Forces a rebuild of the spatial index. 
+		/// If the instance of the ShapeFile provider
+		/// uses a file-based index the file is rewritten to disk,
+		/// otherwise it is kept only in memory.
+		/// </summary>
+		/// <exception cref="ShapeFileInvalidOperationException">
+		/// Thrown if method is executed and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		public void RebuildSpatialIndex()
+		{
+			checkOpen();
+			//enableReading();
+
+			if (_hasFileBasedSpatialIndex)
+			{
+				if (File.Exists(_filename + ".sidx"))
+				{
+					File.Delete(_filename + ".sidx");
+				}
+
+				_tree = createSpatialIndexFromFile(_filename);
+			}
+			else
+			{
+				_tree = createSpatialIndex();
+			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="Providers.ShapeFile.ShapeType">
+		/// shape geometry type</see> in this shapefile.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The property isn't set until the first time the datasource has been opened,
+		/// and will throw an exception if this property has been called since initialization. 
+		/// </para>
+		/// <para>
+		/// All the non-<see cref="SharpMap.Data.Providers.ShapeFile.ShapeType.Null"/> 
+		/// shapes in a shapefile are required to be of the same shape type.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ShapeFileInvalidOperationException">
+		/// Thrown if property is read and the shapefile is closed. 
+		/// Check <see cref="IsOpen"/> before calling.
+		/// </exception>
+		public ShapeType ShapeType
+		{
+			get
+			{
+				checkOpen();
+				return _header.ShapeType;
+			}
+		}
+
+		#region ILayerProvider Members
+
+		/// <summary>
+		/// Gets the connection ID of the datasource.
+		/// </summary>
+		/// <remarks>
+		/// The connection ID of a shapefile is its filename.
+		/// </remarks>
+		public string ConnectionId
+		{
+			get { return _filename; }
+		}
 
         public ICoordinateTransformation CoordinateTransformation
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Gets or sets the coordinate system of the ShapeFile. 
-        /// </summary>
-        /// <remarks>
-        /// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
-        /// description of the coordinate system this will automatically be read.
-        /// If this is not the case, the coordinate system will default to null.
-        /// </remarks>
-        /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if property is set and the coordinate system is read from file.
-        /// </exception>
-        public ICoordinateSystem SpatialReference
-        {
-            get { return _coordinateSystem; }
-            set
-            {
-                //checkOpen();
-                if (_coordsysReadFromFile)
-                {
-                    throw new ShapeFileInvalidOperationException(
-                        "Coordinate system is specified in projection file and is read only");
-                }
-
-                _coordinateSystem = value;
-            }
         }
 
         /// <summary>
@@ -709,51 +671,113 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             return _header.Envelope;
-        }
+		}
 
-        /// <summary>
-        /// Gets the connection ID of the datasource.
-        /// </summary>
-        /// <remarks>
-        /// The connection ID of a shapefile is its filename.
-        /// </remarks>
-        public string ConnectionId
-        {
-            get { return _filename; }
-        }
+		/// <summary>
+		/// Returns true if the datasource is currently open
+		/// </summary>		
+		public bool IsOpen
+		{
+			get { return _isOpen; }
+		}
 
-        /// <summary>
-        /// Gets or sets the spatial reference ID.
-        /// </summary>
-        public int? Srid
-        {
-            get { return _srid; }
-            set { _srid = value; }
-        }
+		/// <summary>
+		/// Gets or sets the coordinate system of the ShapeFile. 
+		/// </summary>
+		/// <remarks>
+		/// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
+		/// description of the coordinate system this will automatically be read.
+		/// If this is not the case, the coordinate system will default to null.
+		/// </remarks>
+		/// <exception cref="ShapeFileInvalidOperationException">
+		/// Thrown if property is set and the coordinate system is read from file.
+		/// </exception>
+		public ICoordinateSystem SpatialReference
+		{
+			get { return _coordinateSystem; }
+			set
+			{
+				//checkOpen();
+				if (_coordsysReadFromFile)
+				{
+					throw new ShapeFileInvalidOperationException(
+						"Coordinate system is specified in projection file and is read only");
+				}
 
-        /// <summary>
-        /// Returns true if the datasource is currently open
-        /// </summary>		
-        public bool IsOpen
-        {
-            get { return _isOpen; }
-        }
+				_coordinateSystem = value;
+			}
+		}
 
-        /// <summary>
-        /// Opens the datasource
-        /// </summary>
-        public void Open()
-        {
-            Open(false);
-        }
+		/// <summary>
+		/// Gets or sets the spatial reference ID.
+		/// </summary>
+		public int? Srid
+		{
+			get { return _srid; }
+			set { _srid = value; }
+		}
 
-        /// <summary>
-        /// Closes the datasource
-        /// </summary>
-        public void Close()
-        {
-            (this as IDisposable).Dispose();
-        }
+		#region Methods
+
+		/// <summary>
+		/// Closes the datasource
+		/// </summary>
+		public void Close()
+		{
+			(this as IDisposable).Dispose();
+		}
+
+		/// <summary>
+		/// Opens the datasource
+		/// </summary>
+		public void Open()
+		{
+			Open(false);
+		}
+		#endregion
+
+		/// <summary>
+		/// Opens the shapefile with optional exclusive access for
+		/// faster write performance during bulk updates.
+		/// </summary>
+		/// <param name="exclusive">
+		/// True if exclusive access is desired, false otherwise.
+		/// </param>
+		public void Open(bool exclusive)
+		{
+			if (!_isOpen)
+			{
+				_exclusiveMode = exclusive;
+
+				try
+				{
+					//enableReading();
+					_shapeFileStream = new FileStream(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, 
+						exclusive ? FileShare.None : FileShare.Read, 4096, FileOptions.None);
+
+					_shapeFileReader = new BinaryReader(_shapeFileStream);
+					_shapeFileWriter = new BinaryWriter(_shapeFileStream);
+
+					_isOpen = true;
+
+					// Read projection file
+					parseProjection();
+
+					// Load spatial (r-tree) index
+					loadSpatialIndex(_hasFileBasedSpatialIndex);
+
+					if (HasDbf)
+					{
+						_dbaseFile = new DbaseFile(DbfFilename);
+					}
+				}
+				catch (Exception)
+				{
+					_isOpen = false;
+					throw;
+				}
+			}
+		} 
 
         #endregion
 
@@ -772,8 +796,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet ds)
         {
-            checkOpen();
-            enableReading();
+			checkOpen();
+			//enableReading();
 
             FeatureDataTable<uint> dt = HasDbf
                                             ? _dbaseFile.NewTable
@@ -828,15 +852,15 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// are performed on objects simplifed by their BoundingBox, and using the spatial index.</para>
         /// </remarks>
         /// <param name="bounds"><see cref="BoundingBox"/> which determines the view.</param>
-        /// <param name="ds">The <see cref="SharpMap.FeatureDataSet"/> to fill 
+        /// <param name="ds">The <see cref="FeatureDataSet"/> to fill 
         /// with features within the <paramref name="bounds">view</paramref>.</param>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
         public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet ds)
         {
-            checkOpen();
-            enableReading();
+			checkOpen();
+			//enableReading();
 
             //Use the spatial index to get a list of features whose boundingbox intersects bbox
             IEnumerable<uint> objects = GetObjectIdsInView(bounds);
@@ -877,7 +901,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         "Can't open another ShapeFileDataReader on this ShapeFile, since another reader is already active.");
                 }
 
-                enableReading();
+				//enableReading();
                 _currentReader = new ShapeFileDataReader(this, box);
                 _currentReader.Disposed += readerDisposed;
                 return _currentReader;
@@ -910,8 +934,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public IEnumerable<Geometry> GetGeometriesInView(BoundingBox bounds)
         {
-            checkOpen();
-            enableReading();
+			checkOpen();
+			//enableReading();
 
             foreach (uint oid in GetObjectIdsInView(bounds))
             {
@@ -936,8 +960,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         public DataTable GetSchemaTable()
-        {
-            enableReading();
+		{
+			//enableReading();
             return _dbaseFile.GetSchemaTable();
         }
 
@@ -963,8 +987,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public IEnumerable<uint> GetObjectIdsInView(BoundingBox bbox)
         {
-            checkOpen();
-            enableReading();
+			checkOpen();
+			//enableReading();
 
             foreach (uint id in getKeysFromIndexEntries(_tree.Search(bbox)))
             {
@@ -982,8 +1006,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public Geometry GetGeometryById(uint oid)
         {
-            checkOpen();
-            enableReading();
+			checkOpen();
+			//enableReading();
 
             if (FilterDelegate != null) //Apply filtering
             {
@@ -1054,7 +1078,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             checkOpen();
-            enableWriting();
+            //enableWriting();
 
             uint id = _shapeFileIndex.GetNextId();
             feature[ShapeFileConstants.IdColumnName] = id;
@@ -1102,7 +1126,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             checkOpen();
-            enableWriting();
+            //enableWriting();
 
             BoundingBox featuresEnvelope = BoundingBox.Empty;
 
@@ -1164,8 +1188,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
-            checkOpen();
-            enableWriting();
+			checkOpen();
+			//enableWriting();
 
             if (feature.IsGeometryModified)
             {
@@ -1196,8 +1220,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (features == null) throw new ArgumentNullException("features");
 
-            checkOpen();
-            enableWriting();
+			checkOpen();
+			//enableWriting();
 
             foreach (FeatureDataRow<uint> feature in features)
             {
@@ -1243,8 +1267,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
-            checkOpen();
-            enableWriting();
+			checkOpen();
+			//enableWriting();
 
             feature.Geometry = null;
 
@@ -1272,8 +1296,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ArgumentNullException("features");
             }
 
-            checkOpen();
-            enableWriting();
+			checkOpen();
+			//enableWriting();
 
             foreach (FeatureDataRow<uint> feature in features)
             {
@@ -1440,8 +1464,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         private FeatureDataRow<uint> getFeature(uint oid, FeatureDataTable<uint> dt)
         {
-            checkOpen();
-            enableReading();
+			checkOpen();
+			//enableReading();
 
             if (dt == null)
             {
@@ -1468,81 +1492,81 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private void enableReading()
-        {
-            if (_shapeFileReader == null || !_shapeFileStream.CanRead)
-            {
-                if (_shapeFileStream != null)
-                {
-                    _shapeFileStream.Close();
-                }
+		//private void enableReading()
+		//{
+		//    if (_shapeFileReader == null || !_shapeFileStream.CanRead)
+		//    {
+		//        if (_shapeFileStream != null)
+		//        {
+		//            _shapeFileStream.Close();
+		//        }
 
-                if (_exclusiveMode)
-                {
-                    _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-                }
-                else
-                {
-                    _shapeFileStream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                }
+		//        if (_exclusiveMode)
+		//        {
+		//            _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+		//        }
+		//        else
+		//        {
+		//            _shapeFileStream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+		//        }
 
-                _shapeFileReader = new BinaryReader(_shapeFileStream);
-            }
+		//        _shapeFileReader = new BinaryReader(_shapeFileStream);
+		//    }
 
-            if (HasDbf)
-            {
-                if (_dbaseFile == null)
-                {
-                    _dbaseFile = new DbaseFile(DbfFilename);
-                }
+		//    if (HasDbf)
+		//    {
+		//        if (_dbaseFile == null)
+		//        {
+		//            _dbaseFile = new DbaseFile(DbfFilename);
+		//        }
 
-                if (!_dbaseFile.IsOpen)
-                {
-                    _dbaseFile.Open();
-                }
-            }
-        }
+		//        if (!_dbaseFile.IsOpen)
+		//        {
+		//            _dbaseFile.Open();
+		//        }
+		//    }
+		//}
 
-        private void enableWriting()
-        {
-            if (_currentReader != null)
-            {
-                throw new ShapeFileInvalidOperationException(
-                    "Can't write to shapefile, since a ShapeFileDataReader is actively reading it.");
-            }
+		//private void enableWriting()
+		//{
+		//    if (_currentReader != null)
+		//    {
+		//        throw new ShapeFileInvalidOperationException(
+		//            "Can't write to shapefile, since a ShapeFileDataReader is actively reading it.");
+		//    }
 
-            if (_shapeFileWriter == null || !_shapeFileStream.CanWrite)
-            {
-                if (_shapeFileStream != null)
-                {
-                    _shapeFileStream.Close();
-                }
+		//    if (_shapeFileWriter == null || !_shapeFileStream.CanWrite)
+		//    {
+		//        if (_shapeFileStream != null)
+		//        {
+		//            _shapeFileStream.Close();
+		//        }
 
-                if (_exclusiveMode)
-                {
-                    _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-                }
-                else
-                {
-                    _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
-                }
+		//        if (_exclusiveMode)
+		//        {
+		//            _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+		//        }
+		//        else
+		//        {
+		//            _shapeFileStream = File.Open(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+		//        }
 
-                _shapeFileWriter = new BinaryWriter(_shapeFileStream);
-            }
+		//        _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+		//    }
 
-            if (HasDbf)
-            {
-                if (_dbaseFile == null)
-                {
-                    _dbaseFile = new DbaseFile(DbfFilename);
-                }
+		//    if (HasDbf)
+		//    {
+		//        if (_dbaseFile == null)
+		//        {
+		//            _dbaseFile = new DbaseFile(DbfFilename);
+		//        }
 
-                if (!_dbaseFile.IsOpen)
-                {
-                    _dbaseFile.Open();
-                }
-            }
-        }
+		//        if (!_dbaseFile.IsOpen)
+		//        {
+		//            _dbaseFile.Open();
+		//        }
+		//    }
+		//}
 
         private void readerDisposed(object sender, EventArgs e)
         {
@@ -1708,8 +1732,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <see cref="SharpMap.Geometries.Geometry"/> instance from the ShapeFile corresponding to <paramref name="oid"/>.
         /// </returns>
         private Geometry readGeometry(uint oid)
-        {
-            enableReading();
+		{
+			//enableReading();
             _shapeFileReader.BaseStream.Seek(
                 _shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength,
                 SeekOrigin.Begin);

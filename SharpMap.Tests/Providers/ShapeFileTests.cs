@@ -74,7 +74,7 @@ namespace SharpMap.Tests.Provider
 		}
 
 		[Test]
-		public void CreateWithoutFileBasedSpatialIndexTest()
+		public void NewWithoutFileBasedSpatialIndexTest()
 		{
 			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP");
 			Assert.IsNotNull(shapeFile);
@@ -82,7 +82,7 @@ namespace SharpMap.Tests.Provider
 		}
 
 		[Test]
-		public void CreateWithFileBasedSpatialIndexTest()
+		public void NewWithFileBasedSpatialIndexTest()
 		{
 			ShapeFile shapeFile = new ShapeFile(@"..\TestData\BCROADS.SHP", true);
 			Assert.IsNotNull(shapeFile);

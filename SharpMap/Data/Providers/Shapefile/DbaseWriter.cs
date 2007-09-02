@@ -113,7 +113,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             internal void WriteFullHeader(DbaseHeader header)
             {
                 _binaryWriter.Seek(0, SeekOrigin.Begin);
-                _binaryWriter.Write((byte)DbaseConstants.DbfVersionCode);
+                _binaryWriter.Write(DbaseConstants.DbfVersionCode);
                 UpdateHeader(header);
                 _binaryWriter.Write(header.HeaderLength);
                 _binaryWriter.Write(header.RecordLength);

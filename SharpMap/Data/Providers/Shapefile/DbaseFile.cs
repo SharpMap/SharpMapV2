@@ -516,16 +516,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkState();
 
             // TODO: implement asynchronous access
-            if (exclusive)
-            {
-                _dbaseFileStream = new FileStream(_filename, FileMode.Open, FileAccess.ReadWrite,
-                                                  FileShare.Read, 4096, FileOptions.None);
-            }
-            else
-            {
-				_dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite,
-                                                  FileShare.ReadWrite, 4096, FileOptions.None);
-            }
+			_dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, 
+				exclusive ? FileShare.None : FileShare.Read, 4096, FileOptions.None);
 
             _isOpen = true;
 
