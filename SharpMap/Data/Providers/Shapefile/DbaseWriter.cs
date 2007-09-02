@@ -37,7 +37,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             #region Object Construction/Destruction
             public DbaseWriter(DbaseFile file)
-            {
+			{
+            	_dbaseFile = file;
                 _binaryWriter = new BinaryWriter(file.DataStream, file.Encoding);
                 _binaryReader = new BinaryReader(file.DataStream, file.Encoding);
             }

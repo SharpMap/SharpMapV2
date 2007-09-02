@@ -41,12 +41,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             #region Object Construction/Destruction
 
             /// <summary>
-            /// Creates a new instance of a <see cref="DbaseReader"/> from the 
-            /// <paramref name="filename"> specified path</paramref>.
+            /// Creates a new instance of a <see cref="DbaseReader"/> for the
+			/// <paramref name="file" />.
             /// </summary>
-            /// <param name="filename">The path of the DBF file to read</param>
-            /// <exception cref="FileNotFoundException"><paramref name="filename">The passed 
-            /// filename</paramref> doesn't exist</exception>
+			/// <param name="file">The controlling DbaseFile instance.</param>
             public DbaseReader(DbaseFile file)
             {
                 _dbaseFile = file;

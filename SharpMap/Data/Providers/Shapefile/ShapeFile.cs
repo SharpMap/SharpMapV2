@@ -769,6 +769,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 					if (HasDbf)
 					{
 						_dbaseFile = new DbaseFile(DbfFilename);
+						_dbaseFile.Open(exclusive);
 					}
 				}
 				catch (Exception)

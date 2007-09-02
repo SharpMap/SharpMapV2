@@ -523,7 +523,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (!_headerIsParsed) //Don't read the header if it's already parsed
             {
-                _header = DbaseHeader.ParseDbfHeader(new BufferedStream(DataStream));
+				_header = DbaseHeader.ParseDbfHeader(new BufferingStream(DataStream));
                 _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
                 _headerIsParsed = true;
             }
