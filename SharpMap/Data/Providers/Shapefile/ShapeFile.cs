@@ -161,12 +161,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         void IDisposable.Dispose()
         {
-            if (!IsDisposed)
+            if (IsDisposed)
             {
-                dispose(true);
-                IsDisposed = true;
-                GC.SuppressFinalize(this);
-            }
+				return;
+			}
+
+			dispose(true);
+			IsDisposed = true;
+			GC.SuppressFinalize(this);
         }
 
         private void dispose(bool disposing)

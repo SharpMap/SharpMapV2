@@ -16,23 +16,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Data;
-using System.Globalization;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-    internal partial class DbaseFile : IDisposable
+    internal partial class DbaseFile
     {
         private class DbaseWriter : IDisposable
         {
             private readonly DbaseFile _dbaseFile;
             private const string NumberFormatTemplate = "{0,:F}";
-            private StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
-            private BinaryReader _binaryReader;
-            private BinaryWriter _binaryWriter;
+            private readonly StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
+            private readonly BinaryReader _binaryReader;
+            private readonly BinaryWriter _binaryWriter;
             private bool _disposed = false;
 
             #region Object Construction/Destruction
@@ -207,7 +205,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                writeNumber(Convert.ToDouble(row[dataRowColumnIndex]), header.Columns[dbaseColumnIndex].Length, header.Columns[dbaseColumnIndex].Decimals);
+                                writeNumber(Convert.ToDouble(row[dataRowColumnIndex]), 
+									header.Columns[dbaseColumnIndex].Length, header.Columns[dbaseColumnIndex].Decimals);
                             }
                             break;
                         case TypeCode.Int16:
@@ -219,7 +218,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                writeNumber(Convert.ToInt64(row[dataRowColumnIndex]), header.Columns[dbaseColumnIndex].Length);
+                                writeNumber(Convert.ToInt64(row[dataRowColumnIndex]), 
+									header.Columns[dbaseColumnIndex].Length);
                             }
                             break;
                         case TypeCode.String:
@@ -243,7 +243,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                         case TypeCode.Empty:
                         case TypeCode.Object:
                         default:
-                            throw new NotSupportedException(String.Format("Type not supported: {0}", header.Columns[dbaseColumnIndex].DataType));
+                            throw new NotSupportedException(String.Format(
+								"Type not supported: {0}", header.Columns[dbaseColumnIndex].DataType));
                     }
 
                     dbaseColumnIndex++;

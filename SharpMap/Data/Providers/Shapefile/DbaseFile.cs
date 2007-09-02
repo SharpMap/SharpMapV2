@@ -25,7 +25,6 @@ using System.Data;
 using SharpMap.Features;
 using System.IO;
 using System.Globalization;
-using SharpMap.Indexing.BinaryTree;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -392,7 +391,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ArgumentException("Column " + field.ColumnName + " wasn't found.");
             }
 
-            int offset = 0;
+            int offset = 1;	// Skip deleted flag in row.
 
             for (int i = 0; i < colIndex; i++)
             {

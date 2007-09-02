@@ -17,16 +17,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using SharpMap.Features;
-using SharpMap.Indexing.BinaryTree;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-    internal partial class DbaseFile : IDisposable
+    internal partial class DbaseFile
     {
         private class DbaseReader : IDisposable
         {
@@ -34,7 +31,6 @@ namespace SharpMap.Data.Providers.ShapeFile
             private readonly DbaseFile _dbaseFile;
             private BinaryReader _dbaseReader;
             private bool _isDisposed = false;
-            private bool _isOpen;
 
             #endregion
 
@@ -137,10 +133,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             /// unsupported type.
             /// </exception>
             /// <exception cref="ArgumentOutOfRangeException">
-            /// Thrown if <paramref name="oid"/> is 
-            /// less than 0 or greater than <see cref="RecordCount"/> - 1, 
-            /// or if <paramref name="colId"/> is less than 0 or greater than 
-            /// <see cref="Columns.Length"/> - 1.
+			/// Thrown if <paramref name="row"/> is 
+            /// less than 0 or greater than <see cref="RecordCount"/> - 1.
             /// </exception>
             internal object GetValue(uint row, DbaseField column)
             {
@@ -148,7 +142,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 DbaseHeader header = _dbaseFile._header;
 
-                if (!_isOpen)
+                if (!_dbaseFile.IsOpen)
                 {
                     throw new InvalidDbaseFileOperationException(
                         "An attempt was made to read from a closed DBF file");
