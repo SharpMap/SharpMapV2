@@ -36,6 +36,9 @@ namespace SharpMap.Geometries
 	{
         private static readonly BoundingBox _empty = new BoundingBox();
 
+        /// <summary>
+        /// Gets an empty BoundingBox.
+        /// </summary>
         public static BoundingBox Empty
         {
             get { return _empty; }
@@ -500,30 +503,49 @@ namespace SharpMap.Geometries
 				return Contains(geometry as Point, tolerance);
 			}
 
-			throw new NotImplementedException("Contains: Not implemented on these geometries");
+#warning Bounding box intersection is incorrect here...
+            // TODO: Replace bounding box intersection with actual geometric intersection when NTS implemented
+            if (geometry == null)
+            {
+                return false;
+            }
+
+            return Contains(geometry.GetBoundingBox(), tolerance);
 		}
 		#endregion Contains
 
 		#region Intersects
 		/// <summary>
-		/// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>, 
+		/// Determines whether the <see cref="BoundingBox"/> instance intersects the 
+        /// <paramref name="box">argument</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
-        /// <param name="box"><see cref="BoundingBox"/> to check intersection with.</param>
-		/// <returns>True if the <paramref name="box">argument</paramref> 
-		/// touches this <see cref="BoundingBox"/> instance in any way.</returns>
+        /// <param name="box"><see cref="BoundingBox"/> to check intersection with.
+        /// </param>
+		/// <returns>
+        /// True if the <paramref name="box">argument</paramref> 
+		/// touches this <see cref="BoundingBox"/> instance in any way.
+        /// </returns>
 		public bool Intersects(BoundingBox box)
 		{
 			return Intersects(box, Tolerance.Global);
 		}
 
 		/// <summary>
-		/// Determines whether the <see cref="BoundingBox"/> instance intersects the <paramref name="box">argument</paramref>, 
+		/// Determines whether the <see cref="BoundingBox"/> instance intersects the
+        /// <paramref name="box">argument</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
-        /// <param name="box"><see cref="BoundingBox"/> to check intersection with.</param>
-		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
-		/// <returns>True if the <paramref name="box">argument</paramref> touches this <see cref="BoundingBox"/> instance in any way.</returns>
+        /// <param name="box">
+        /// <see cref="BoundingBox"/> to check intersection with.
+        /// </param>
+		/// <param name="tolerance">
+        /// <see cref="Tolerance"/> to use to compare values.
+        /// </param>
+		/// <returns>
+        /// True if the <paramref name="box">argument</paramref> touches 
+        /// this <see cref="BoundingBox"/> instance in any way.
+        /// </returns>
         public bool Intersects(BoundingBox box, Tolerance tolerance)
 		{
 			if (tolerance == null)
@@ -535,23 +557,37 @@ namespace SharpMap.Geometries
         }
 
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance intersects 
+        /// the <paramref name="geometry">argument</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
-        /// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
-        /// <returns>True if this BoundingBox intersects the <paramref name="geometry">geometry</paramref>.</returns>
+        /// <param name="geometry">
+        /// <see cref="Geometry"/> to check intersection with.
+        /// </param>
+        /// <returns>
+        /// True if this BoundingBox intersects the 
+        /// <paramref name="geometry">geometry</paramref>.
+        /// </returns>
 		public bool Intersects(Geometry geometry)
 		{
 			return Intersects(geometry, Tolerance.Global);
 		}
 
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance intersects the <paramref name="geometry">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance intersects the 
+        /// <paramref name="geometry">argument</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-		/// <param name="geometry"><see cref="Geometry"/> to check intersection with.</param>
-		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
-        /// <returns>True if this BoundingBox intersects the <paramref name="geometry">geometry</paramref>.</returns>
+		/// <param name="geometry">
+        /// <see cref="Geometry"/> to check intersection with.
+        /// </param>
+		/// <param name="tolerance">
+        /// <see cref="Tolerance"/> to use to compare values.
+        /// </param>
+        /// <returns>
+        /// True if this BoundingBox intersects the 
+        /// <paramref name="geometry">geometry</paramref>.
+        /// </returns>
         public bool Intersects(Geometry geometry, Tolerance tolerance)
 		{
 			if (tolerance == null)
@@ -704,30 +740,49 @@ namespace SharpMap.Geometries
 				return Overlaps(geometry as Point, tolerance);
 			}
 
-			throw new NotImplementedException("Overlaps: Not implemented on this geometry type");
+#warning Bounding box intersection is incorrect here...
+            // TODO: Replace bounding box intersection with actual geometric intersection when NTS implemented
+            if (geometry == null)
+            {
+                return false;
+            }
+
+            return Overlaps(geometry.GetBoundingBox(), tolerance);
 		}
 		#endregion Overlaps
 
 		#region Touches
 
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the 
+        /// <paramref name="box">argument</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
-        /// <param name="box"><see cref="BoundingBox"/> to check if this BoundingBox touches.</param>
-		/// <returns>True if <paramref name="box"/> touches.</returns>
+        /// <param name="box">
+        /// <see cref="BoundingBox"/> to check if this BoundingBox touches.
+        /// </param>
+		/// <returns>
+        /// True if <paramref name="box"/> touches.
+        /// </returns>
 		public bool Touches(BoundingBox box)
 		{
 			return Touches(box, Tolerance.Global);
         }
 
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="box">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the 
+        /// <paramref name="box">argument</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
-		/// <param name="box"><see cref="BoundingBox"/> to check if this BoundingBox touches.</param>
-		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
-		/// <returns>True if <paramref name="box"/> touches.</returns>
+		/// <param name="box">
+        /// <see cref="BoundingBox"/> to check if this BoundingBox touches.
+        /// </param>
+		/// <param name="tolerance">
+        /// <see cref="Tolerance"/> to use to compare values.
+        /// </param>
+		/// <returns>
+        /// True if <paramref name="box"/> touches.
+        /// </returns>
         public bool Touches(BoundingBox box, Tolerance tolerance)
 		{
 			if (tolerance == null)
@@ -747,23 +802,35 @@ namespace SharpMap.Geometries
         }
 
         /// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the
+        /// <paramref name="p">argument</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
         /// </summary>
-        /// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
-        /// <returns>True if the <paramref name="p">point</paramref> touches.</returns>
+        /// <param name="p">
+        /// <see cref="Point"/> to check if this BoundingBox instance touches.
+        /// </param>
+        /// <returns>
+        /// True if the <paramref name="p">point</paramref> touches.
+        /// </returns>
         public bool Touches(Point p)
         {
 			return Touches(p, Tolerance.Global);
         }
 
         /// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="p">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the 
+        /// <paramref name="p">argument</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
         /// </summary>
-		/// <param name="p"><see cref="Point"/> to check if this BoundingBox instance touches.</param>
-		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
-        /// <returns>True if the <paramref name="p">point</paramref> touches.</returns>
+		/// <param name="p">
+        /// <see cref="Point"/> to check if this BoundingBox instance touches.
+        /// </param>
+		/// <param name="tolerance">
+        /// <see cref="Tolerance"/> to use to compare values.
+        /// </param>
+        /// <returns>
+        /// True if the <paramref name="p">point</paramref> touches.
+        /// </returns>
         public bool Touches(Point p, Tolerance tolerance)
 		{
 			if (tolerance == null)
@@ -780,23 +847,35 @@ namespace SharpMap.Geometries
         }
 
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the 
+        /// <paramref name="geometry">argument</paramref>, 
 		/// within the <see cref="Tolerance.Global">global tolerance</see>.
 		/// </summary>
-        /// <param name="geometry"><see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.</param>
-		/// <returns>True if the <paramref name="geometry">geometry</paramref> touches.</returns>
+        /// <param name="geometry">
+        /// <see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.
+        /// </param>
+		/// <returns>
+        /// True if the <paramref name="geometry">geometry</paramref> touches.
+        /// </returns>
 		public bool Touches(Geometry geometry)
 		{
 			return Touches(geometry, Tolerance.Global);
         }
 
 		/// <summary>
-		/// Returns true if this <see cref="BoundingBox"/> instance touches the <paramref name="geometry">argument</paramref>, 
+		/// Returns true if this <see cref="BoundingBox"/> instance touches the 
+        /// <paramref name="geometry">argument</paramref>, 
 		/// within the <paramref name="tolerance">given tolerance</paramref>.
 		/// </summary>
-		/// <param name="geometry"><see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.</param>
-		/// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
-		/// <returns>True if the <paramref name="geometry">geometry</paramref> touches.</returns>
+		/// <param name="geometry">
+        /// <see cref="Geometry"/> to test if it touches this <see cref="BoundingBox"/>.
+        /// </param>
+		/// <param name="tolerance">
+        /// <see cref="Tolerance"/> to use to compare values.
+        /// </param>
+		/// <returns>
+        /// True if the <paramref name="geometry">geometry</paramref> touches.
+        /// </returns>
         public bool Touches(Geometry geometry, Tolerance tolerance)
 		{
 			if (tolerance == null)
@@ -809,7 +888,14 @@ namespace SharpMap.Geometries
 				return Touches(geometry as Point, tolerance);
 			}
 
-			throw new NotImplementedException("Touches: Not implemented on this geometry type");
+#warning Bounding box intersection is incorrect here...
+            // TODO: Replace bounding box intersection with actual geometric intersection when NTS implemented
+            if (geometry == null)
+	        {
+                return false;
+	        }
+
+            return Touches(geometry.GetBoundingBox(), tolerance);
 		}
 		#endregion Touches
 
@@ -942,7 +1028,14 @@ namespace SharpMap.Geometries
 				return Contains(geometry as Point, tolerance);
 			}
 
-			throw new NotImplementedException("Contains: Not implemented on these geometries");
+#warning Bounding box intersection is incorrect here...
+            // TODO: Replace bounding box intersection with actual geometric intersection when NTS implemented
+            if (geometry == null)
+            {
+                return false;
+            }
+
+            return Within(geometry.GetBoundingBox(), tolerance);
 		}
 		#endregion Within
 		#endregion
