@@ -157,6 +157,9 @@
     <Compile Include="Data\Providers\Shapefile\ShapeFileInvalidOperationException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
+    <Compile Include="Features\LoadFeaturesAdapter.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Layers\DuplicateLayerException.cs" />
     <Compile Include="Features\FeatureDataRow.cs" />
     <Compile Include="Features\FeatureDataRowChangeEventArgs.cs" />

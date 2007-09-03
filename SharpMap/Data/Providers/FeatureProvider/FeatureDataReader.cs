@@ -97,13 +97,15 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public Geometry GetGeometry()
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             return _table[_currentRow].Geometry.Clone();
         }
 
         public object GetOid()
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             return _table[_currentRow][FeatureProvider.OidColumnName];
         }
 
@@ -111,7 +113,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get
             {
-                checkState();
+                checkDisposed();
                 return true;
             }
         }
@@ -129,13 +131,15 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get
             {
-                checkState();
+                checkDisposed();
                 return 0;
             }
         }
 
         public DataTable GetSchemaTable()
         {
+            checkDisposed();
+
             if (_schemaTable == null)
             {
                 DataTableReader reader = new DataTableReader(_table);
@@ -152,12 +156,13 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public bool NextResult()
         {
+            checkDisposed();
             return false;
         }
 
         public bool Read()
-		{
-			if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+        {
+            checkDisposed();
 
             if (_currentRow < _table.FeatureCount - 1)
             {
@@ -172,7 +177,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public int RecordsAffected
         {
-            get { return _table.FeatureCount; }
+            get
+            {
+                checkDisposed();
+                return _table.FeatureCount;
+            }
         }
 
         #endregion
@@ -183,21 +192,23 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get
             {
-                if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+                checkDisposed();
                 return _table.Columns.Count;
             }
         }
 
         public bool GetBoolean(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToBoolean(_table[_currentRow][i]);
         }
 
         public byte GetByte(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToByte(_table[_currentRow][i]);
         }
@@ -209,7 +220,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public char GetChar(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToChar(_table[_currentRow][i]);
         }
@@ -226,42 +238,48 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public string GetDataTypeName(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return _table.Columns[i].DataType.ToString();
         }
 
         public DateTime GetDateTime(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToDateTime(_table[_currentRow][i]);
         }
 
         public decimal GetDecimal(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToDecimal(_table[_currentRow][i]);
         }
 
         public double GetDouble(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToDouble(_table[_currentRow][i]);
         }
 
         public Type GetFieldType(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return _table.Columns[i].DataType;
         }
 
         public float GetFloat(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToSingle(_table[_currentRow][i]);
         }
@@ -273,55 +291,62 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public short GetInt16(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToInt16(_table[_currentRow][i]);
         }
 
         public int GetInt32(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToInt32(_table[_currentRow][i]);
         }
 
         public long GetInt64(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToInt64(_table[_currentRow][i]);
         }
 
         public string GetName(int i)
         {
-            checkState();
+            checkDisposed();
             checkIndex(i);
             return _table.Columns[i].ColumnName;
         }
 
         public int GetOrdinal(string name)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             return _table.Columns[name].Ordinal;
         }
 
         public string GetString(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return Convert.ToString(_table[_currentRow][i]);
         }
 
         public object GetValue(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return _table[_currentRow][i];
         }
 
         public int GetValues(object[] values)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
 
             if (values == null) throw new ArgumentNullException("values");
 
@@ -337,7 +362,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public bool IsDBNull(int i)
         {
-            checkState();
+            checkDisposed();
+            checkReadState();
             checkIndex(i);
             return _table[_currentRow].IsNull(i);
         }
@@ -346,7 +372,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get
             {
-                checkState();
+                checkDisposed();
+                checkReadState();
                 return _table[_currentRow][name];
             }
         }
@@ -355,7 +382,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get
             {
-                checkState();
+                checkDisposed();
+                checkReadState();
                 checkIndex(i);
                 return _table[_currentRow][i];
             }
@@ -373,15 +401,19 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
         }
 
-        private void checkState()
+        private void checkDisposed()
         {
             if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
-            if (_currentRow < 0 || _currentRow >= RecordsAffected)
-            {
-                throw new InvalidOperationException("Attempt to read beyond end of records.");
-            }
         }
 
+        private void checkReadState()
+        {
+            if (_currentRow < 0 || _currentRow >= RecordsAffected)
+            {
+                throw new InvalidOperationException("Attempt to read when data " +
+                    "isn't available: either Read() wasn't called or it returned 'false'.");
+            }
+        }
         #endregion
     }
 }

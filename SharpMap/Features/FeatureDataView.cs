@@ -74,6 +74,24 @@ namespace SharpMap.Features
         public FeatureDataView(FeatureDataTable table)
             : base(table)
         {
+            // This call rebuilds the index which was just built with 
+            // the call into the base constructor, which may be a performance
+            // hit. A more robust solution would be to just recreate the 
+            // behavior of the base constructor here, so we can create the 
+            // underlying index once.
+            setFilterPredicate();
+        }
+
+        public FeatureDataView(FeatureDataTable table, string rowFilter, string sort,
+            DataViewRowState rowState)
+            : base(table, rowFilter, sort, rowState)
+        {
+            // This call rebuilds the index which was just built with 
+            // the call into the base constructor, which may be a performance
+            // hit. A more robust solution would be to just recreate the 
+            // behavior of the base constructor here, so we can create the 
+            // underlying index once.
+            setFilterPredicate();
         }
 
         internal FeatureDataView(FeatureDataTable table, bool locked)
@@ -82,6 +100,13 @@ namespace SharpMap.Features
             // The DataView is locked when it is created as a default
             // view for a table.
             _setLocked(this, locked);
+
+            // This call rebuilds the index which was just built with 
+            // the call into the base constructor, which may be a performance
+            // hit. A more robust solution would be to just recreate the 
+            // behavior of the base constructor here, so we can create the 
+            // underlying index once.
+            setFilterPredicate();
         }
 
         #endregion
@@ -100,17 +125,19 @@ namespace SharpMap.Features
         {
             get
             {
-                return base.RowFilter;
+                throw new NotSupportedException(
+                    "RowFilter expressions not supported at this time.");
             }
             set
             {
-                base.RowFilter = value;
+                throw new NotSupportedException(
+                    "RowFilter expressions not supported at this time.");
             }
         }
 
         public override DataRowView AddNew()
         {
-            return base.AddNew();
+            throw new NotSupportedException();
         }
 
         protected override void ColumnCollectionChanged(object sender, CollectionChangeEventArgs e)
@@ -137,7 +164,13 @@ namespace SharpMap.Features
         public BoundingBox VisibleRegion
         {
             get { return _visibleRegion; }
-            set { _visibleRegion = value; }
+            set
+            {
+                _visibleRegion = value;
+                // TODO: Perhaps resetting the entire index is a bit drastic... 
+                // Reconsider how to enlist and retire rows incrementally.
+                Reset();
+            }
         }
 
         #region IEnumerable<FeatureDataRow> Members
@@ -157,16 +190,49 @@ namespace SharpMap.Features
 
         internal void SetDataViewManager(FeatureDataViewManager featureDataViewManager)
         {
-            // Call the delegate we wired up to bypass the normally inaccessible base class method
+            // Call the delegate we wired up to bypass the normally inaccessible 
+            // base class method
             _setDataViewManager(this, featureDataViewManager);
         }
 
-        internal void SetIndex2(string newSort, DataViewRowState dataViewRowState, 
+        internal void SetIndex2(string newSort, DataViewRowState dataViewRowState,
             object dataExpression, bool fireEvent)
         {
-            // Call the delegate we wired up to bypass the normally inaccessible base class method
+            // Call the delegate we wired up to bypass the normally inaccessible 
+            // base class method
             _setIndex2(this, newSort, dataViewRowState, dataExpression, fireEvent);
         }
+
+        #region Private instance helper methods
+
+        private void setFilterPredicate()
+        {
+            object iFilter = createRowPredicateFilter(isRowInView);
+            SetIndex2(Sort, RowStateFilter, iFilter, true);
+        }
+
+        private object createRowPredicateFilter(Predicate<DataRow> filter)
+        {
+            Type rowPredicateFilterType = Type.GetType("System.Data.DataView+RowPredicateFilter, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+            object[] args = new object[] { filter };
+            object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
+                BindingFlags.Instance | BindingFlags.NonPublic, null, args, null);
+
+            return rowPredicateFilter;
+        }
+
+        private bool isRowInView(DataRow row)
+        {
+            FeatureDataRow feature = row as FeatureDataRow;
+
+            if (row == null)
+            {
+                return false;
+            }
+
+            return VisibleRegion.Intersects(feature.Geometry);
+        }
+        #endregion
 
         #region Private static helper methods
 
@@ -175,29 +241,29 @@ namespace SharpMap.Features
             // We need to generate a delegate based on the function pointer, 
             // since the SetIndex2 method requires a parameter of type DataExpression,
             // which is internal to System.Data, so we can't do LCG with DynamicMethod
-            MethodInfo setIndex2Info = typeof (DataView).GetMethod(
+            MethodInfo setIndex2Info = typeof(DataView).GetMethod(
                 "SetIndex2", BindingFlags.NonPublic | BindingFlags.Instance);
-            ConstructorInfo setIndexDelegateCtor = typeof (SetIndex2Delegate)
-                .GetConstructor(new Type[] {typeof (object), typeof (IntPtr)});
+            ConstructorInfo setIndexDelegateCtor = typeof(SetIndex2Delegate)
+                .GetConstructor(new Type[] { typeof(object), typeof(IntPtr) });
             IntPtr setIndex2Pointer = setIndex2Info.MethodHandle.GetFunctionPointer();
-            return (SetIndex2Delegate) setIndexDelegateCtor.Invoke(new Object[] {null, setIndex2Pointer});
+            return (SetIndex2Delegate)setIndexDelegateCtor.Invoke(new Object[] { null, setIndex2Pointer });
         }
 
         private static SetLockedDelegate GenerateSetLockedDelegate()
         {
             // Use LCG to create a set accessor to the DataView.locked field
             DynamicMethod setLockedMethod = new DynamicMethod("set_locked_DynamicMethod",
-                                                              null, new Type[] {typeof (DataView), typeof (bool)},
-                                                              typeof (DataView));
+                                                              null, new Type[] { typeof(DataView), typeof(bool) },
+                                                              typeof(DataView));
 
             ILGenerator il = setLockedMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            FieldInfo lockedField = typeof (DataView).GetField("locked", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo lockedField = typeof(DataView).GetField("locked", BindingFlags.Instance | BindingFlags.NonPublic);
             il.Emit(OpCodes.Stfld, lockedField);
             il.Emit(OpCodes.Ret);
 
-            return setLockedMethod.CreateDelegate(typeof (SetLockedDelegate)) as SetLockedDelegate;
+            return setLockedMethod.CreateDelegate(typeof(SetLockedDelegate)) as SetLockedDelegate;
         }
 
         private static SetDataViewManagerDelegate GenerateSetDataViewManagerDelegate()
@@ -209,18 +275,18 @@ namespace SharpMap.Features
                                                                            {
                                                                                typeof (FeatureDataView),
                                                                                typeof (DataViewManager)
-                                                                           }, typeof (DataView));
+                                                                           }, typeof(DataView));
 
             ILGenerator il = setDataViewManagerMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            MethodInfo setDataViewManagerInfo = typeof (DataView).GetMethod("SetDataViewManager",
+            MethodInfo setDataViewManagerInfo = typeof(DataView).GetMethod("SetDataViewManager",
                                                                             BindingFlags.Instance |
                                                                             BindingFlags.NonPublic, null,
-                                                                            new Type[] {typeof (DataViewManager)}, null);
+                                                                            new Type[] { typeof(DataViewManager) }, null);
             il.Emit(OpCodes.Call, setDataViewManagerInfo);
 
-            return setDataViewManagerMethod.CreateDelegate(typeof (SetDataViewManagerDelegate))
+            return setDataViewManagerMethod.CreateDelegate(typeof(SetDataViewManagerDelegate))
                    as SetDataViewManagerDelegate;
         }
 

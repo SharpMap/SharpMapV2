@@ -47,45 +47,6 @@ namespace SharpMap.Features
 
         private delegate FeatureDataView GetDefaultViewDelegate(FeatureDataTable table);
 
-        internal sealed class LoadFeaturesAdapter : DataAdapter
-        {
-            public new int Fill(DataTable[] dataTables, IDataReader dataReader, int startRecord, int maxRecords)
-            {
-                if (dataTables.Length == 0)
-                {
-                    return 0;
-                }
-
-                int tableIndex = 0;
-
-                do
-                {
-                    IFeatureDataReader featureReader = dataReader as IFeatureDataReader;
-
-                    if (featureReader == null)
-                    {
-                        throw new ArgumentException("Parameter 'dataReader' must be a valid IFeatureDataReader instance.");
-                    }
-
-                    FeatureDataTable table = dataTables[tableIndex] as FeatureDataTable;
-
-                    if (table == null)
-                    {
-                        throw new ArgumentException("Components of 'dataTables' must be value FeatureDataTable instances.");
-                    }
-
-                    while (featureReader.Read())
-                    {
-                        table.MergeFeature(featureReader);
-                    }
-
-                    tableIndex++;
-                } while (dataReader.NextResult());
-
-                return dataTables[0].Rows.Count;
-            }
-        }
-
         #endregion
 
         #region Type Fields
@@ -387,7 +348,7 @@ namespace SharpMap.Features
                 adapter.FillError += errorHandler;
             }
 
-            adapter.Fill(new DataTable[] { this }, reader, 0, 0);
+            adapter.Fill(this, reader);
 
             if (!reader.IsClosed && !reader.NextResult())
             {
@@ -427,7 +388,7 @@ namespace SharpMap.Features
             }
         }
 
-        protected virtual void MergeFeature(IFeatureDataReader record)
+        internal void MergeFeature(IFeatureDataReader record)
         {
             if (record == null) throw new ArgumentNullException("record");
 

@@ -53,8 +53,11 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// <example>
     /// Adding a datasource to a layer:
     /// <code lang="C#">
-    /// SharpMap.Layers.VectorLayer myLayer = new SharpMap.Layers.VectorLayer("My layer");
-    /// myLayer.DataSource = new SharpMap.Data.Providers.ShapeFile(@"C:\data\MyShapeData.shp");
+    /// using SharpMap.Layers;
+    /// using SharpMap.Data.Providers.ShapeFile;
+    /// // [...]
+    /// VectorLayer myLayer = new VectorLayer("My layer");
+    /// myLayer.DataSource = new ShapeFile(@"C:\data\MyShapeData.shp");
     /// </code>
     /// </example>
     public class ShapeFile : IWritableVectorLayerProvider<uint>
@@ -465,9 +468,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 					if (File.Exists(value))
 					{
-						throw new ShapeFileInvalidOperationException(String.Format(
-																		 "Can't rename shapefile because a file of with the name {0} already exists.",
-																		 value));
+						throw new ShapeFileInvalidOperationException(
+                            String.Format("Can't rename shapefile because a " +
+                            "file of with the name {0} already exists.", value));
 					}
 
 					if (String.Compare(Path.GetExtension(value), ".shp", true) != 0)
@@ -476,33 +479,60 @@ namespace SharpMap.Data.Providers.ShapeFile
 							String.Format("Invalid shapefile filename: {0}.", value));
 					}
 
-					string oldName =
-						Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
+					string oldName = Path.Combine(Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
 					string newName = Path.Combine(Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value));
 
-					File.Copy(oldName + ".shp", newName + ".shp");
-					File.Copy(oldName + ".shx", newName + ".shx");
-					if (File.Exists(oldName + ".dbf")) File.Copy(oldName + ".dbf", newName + ".dbf");
-					if (File.Exists(oldName + ".sbn")) File.Copy(oldName + ".sbn", newName + ".sbn");
-					if (File.Exists(oldName + ".sbx")) File.Copy(oldName + ".sbx", newName + ".sbx");
-					if (File.Exists(oldName + ".prj")) File.Copy(oldName + ".prj", newName + ".prj");
-					if (File.Exists(oldName + ".fbx")) File.Copy(oldName + ".fbx", newName + ".fbx");
-					if (File.Exists(oldName + ".fbn")) File.Copy(oldName + ".fbn", newName + ".fbn");
-					if (File.Exists(oldName + ".ain")) File.Copy(oldName + ".ain", newName + ".ain");
-					if (File.Exists(oldName + ".aih")) File.Copy(oldName + ".aih", newName + ".aih");
-					if (File.Exists(oldName + ".atx")) File.Copy(oldName + ".atx", newName + ".atx");
+                    // Below is not a complete list, but should suffice a great number
+                    // of scenarios
+                    string[] possibleShapefileFiles = new string[] {
+                        ".shp",     // Geometry file
+                        ".shx",     // Shape index file
+                        ".dbf",     // Attributes file
+                        ".sbn",     // ESRI spatial index
+                        ".sbx",     // ESRI spatial index
+                        ".idx",     // Geocoding index for read-only shapefiles
+                        ".ids",     // Geocoding index for read-write shapefiles
+                        ".prj",     // WKT projection file
+                        ".fbx",     // ArcView spatial index
+                        ".fbn",     // ArcView spatial index
+                        ".ain",     // ESRI optional attribute index
+                        ".aih",     // ESRI optional attribute index
+                        ".atx",     // ArcCatalog attribute index
+                        ".cpg",     // Code page file
+                        ".sidx" };  // SharpMap spatial index 
 
-					File.Delete(oldName + ".shp");
-					File.Delete(oldName + ".shx");
-					if (File.Exists(oldName + ".dbf")) File.Delete(oldName + ".dbf");
-					if (File.Exists(oldName + ".sbn")) File.Delete(oldName + ".sbn");
-					if (File.Exists(oldName + ".sbx")) File.Delete(oldName + ".sbx");
-					if (File.Exists(oldName + ".prj")) File.Delete(oldName + ".prj");
-					if (File.Exists(oldName + ".fbx")) File.Delete(oldName + ".fbx");
-					if (File.Exists(oldName + ".fbn")) File.Delete(oldName + ".fbn");
-					if (File.Exists(oldName + ".ain")) File.Delete(oldName + ".ain");
-					if (File.Exists(oldName + ".aih")) File.Delete(oldName + ".aih");
-					if (File.Exists(oldName + ".atx")) File.Delete(oldName + ".atx");
+                    try
+                    {
+                        foreach (string ext in possibleShapefileFiles)
+                        {
+                            string oldFile = oldName + ext;
+                            string newFile = newName + ext;
+                            if (File.Exists(oldFile)) File.Copy(oldFile, newFile);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        // Rollback by deleting copied files
+                        foreach (string ext in possibleShapefileFiles)
+                        {
+                            try
+                            {
+                                string newFile = newName + ext;
+                                if (File.Exists(newFile)) File.Delete(newFile);
+                            }
+                            catch (IOException)
+                            {
+                                // Ignore and continue...
+                            }
+                        }
+                    }
+
+                    // Delete only after all are copied
+                    foreach (string ext in possibleShapefileFiles)
+                    {
+                        string oldFile = oldName + ext;
+                        if (File.Exists(oldFile)) File.Delete(oldFile);
+                    }
 
 					_filename = value;
 

@@ -146,11 +146,6 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		{
 			IFeatureDataReader reader = ExecuteIntersectionQuery(box);
 			
-			if(table.Columns.Count == 0)
-			{
-				SetTableSchema(table);
-			}
-
 			table.Load(reader);
 		}
 
