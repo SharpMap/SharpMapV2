@@ -63,9 +63,9 @@ namespace SharpMap.Features
 
         #endregion
 
-        #region Object Fields
+        #region Instance fields
 
-        private BoundingBox _visibleRegion;
+        private Geometry _intersectionFilter;
 
         #endregion
 
@@ -82,10 +82,12 @@ namespace SharpMap.Features
             setFilterPredicate();
         }
 
-        public FeatureDataView(FeatureDataTable table, string rowFilter, string sort,
-            DataViewRowState rowState)
-            : base(table, rowFilter, sort, rowState)
+        public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter, 
+            string sort, DataViewRowState rowState)
+            : base(table, "", sort, rowState)
         {
+            GeometryIntersectionFilter = intersectionFilter;
+
             // This call rebuilds the index which was just built with 
             // the call into the base constructor, which may be a performance
             // hit. A more robust solution would be to just recreate the 
@@ -125,8 +127,7 @@ namespace SharpMap.Features
         {
             get
             {
-                throw new NotSupportedException(
-                    "RowFilter expressions not supported at this time.");
+                return "";
             }
             set
             {
@@ -159,14 +160,21 @@ namespace SharpMap.Features
         }
 
         /// <summary>
-        /// Gets or sets the visible region encompassed by this view.
+        /// Gets or sets the <see cref="Geometry"/> instance used
+        /// to filter the table data based on intersection.
         /// </summary>
-        public BoundingBox VisibleRegion
+        public Geometry GeometryIntersectionFilter
         {
-            get { return _visibleRegion; }
+            get { return _intersectionFilter == null ? null : _intersectionFilter.Clone(); }
             set
             {
-                _visibleRegion = value;
+                if (_intersectionFilter == value)
+                {
+                    return;
+                }
+
+                _intersectionFilter = value;
+
                 // TODO: Perhaps resetting the entire index is a bit drastic... 
                 // Reconsider how to enlist and retire rows incrementally.
                 Reset();
@@ -230,7 +238,8 @@ namespace SharpMap.Features
                 return false;
             }
 
-            return VisibleRegion.Intersects(feature.Geometry);
+            return GeometryIntersectionFilter == null ||
+                GeometryIntersectionFilter.Intersects(feature.Geometry);
         }
         #endregion
 

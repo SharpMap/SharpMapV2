@@ -21,14 +21,14 @@ namespace SharpMap.Tests.Features
             FeatureDataView view = new FeatureDataView(table);
         }
 
-    	[Test]
-        [ExpectedException(typeof(NotSupportedException), "RowFilter expressions not supported at this time.")]
-    	public void ChangeViewAttributeFilterReturnsOnlyFilteredRows()
-		{
-			FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
-			FeatureDataTable table = new FeatureDataTable();
-			data.ExecuteIntersectionQuery(data.GetExtents(), table);
-			FeatureDataView view = new FeatureDataView(table);
+        [Test]
+        [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "RowFilter expressions not supported at this time.")]
+        public void ChangeViewAttributeFilterReturnsOnlyFilteredRows()
+        {
+            FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
+            FeatureDataTable table = new FeatureDataTable();
+            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            FeatureDataView view = new FeatureDataView(table);
 
             int expectedRowCount = 0;
 
@@ -40,13 +40,13 @@ namespace SharpMap.Tests.Features
                 }
             }
 
-			view.RowFilter = "FeatureName LIKE 'A m*'";
+            view.RowFilter = "FeatureName LIKE 'A m*'";
             Assert.AreEqual(expectedRowCount, view.Count);
-		}
+        }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException), "RowFilter expressions not supported at this time.")]
-		public void ChangeViewAttributeFilterTriggersNotification()
+        [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "RowFilter expressions not supported at this time.")]
+        public void ChangeViewAttributeFilterTriggersNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
             FeatureDataTable table = new FeatureDataTable();
@@ -68,10 +68,31 @@ namespace SharpMap.Tests.Features
             view.RowFilter = "FeatureName LIKE 'A m*'";
 
             Assert.IsTrue(resetNotificationOccured);
-		}
+        }
 
-		[Test]
-		public void ChangeViewSpatialFilterReturnsOnlyFilteredRows()
+        [Test]
+        public void NullSpatialFilterReturnsAllRows()
+        {
+            FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
+            FeatureDataTable table = new FeatureDataTable();
+            table.Load(data.ExecuteIntersectionQuery(data.GetExtents()));
+            FeatureDataView view = new FeatureDataView(table);
+
+            Assert.AreEqual(table.Rows.Count, view.Count);
+        }
+
+        [Test]
+        public void DefaultViewReturnsAllRows()
+        {
+            FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
+            FeatureDataTable table = new FeatureDataTable();
+            table.Load(data.ExecuteIntersectionQuery(data.GetExtents()));
+
+            Assert.AreEqual(table.Rows.Count, table.DefaultView.Count);
+        }
+
+        [Test]
+        public void ChangeViewSpatialFilterReturnsOnlyFilteredRows()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
             FeatureDataTable table = new FeatureDataTable();
@@ -82,25 +103,44 @@ namespace SharpMap.Tests.Features
 
             foreach (FeatureDataRow row in table)
             {
-				Geometry g = row.Geometry;
-				
+                Geometry g = row.Geometry;
+
                 if (queryExtents.Intersects(g))
                 {
                     expectedRows.Add(row);
                 }
             }
-			
-			FeatureDataView view = new FeatureDataView(table);
-			view.VisibleRegion = queryExtents;
+
+            FeatureDataView view = new FeatureDataView(table);
+            view.GeometryIntersectionFilter = queryExtents.ToGeometry();
 
             Assert.AreEqual(expectedRows.Count, view.Count);
-		}
+        }
 
-		[Test]
-		public void ChangeViewSpatialFilterTriggersNotification()
-		{
+        [Test]
+        public void ChangeViewSpatialFilterTriggersNotification()
+        {
+            FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
+            FeatureDataTable table = new FeatureDataTable();
+            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            FeatureDataView view = new FeatureDataView(table);
 
-		}
+            bool resetNotificationOccured = false;
+
+            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            {
+                if (e.ListChangedType == ListChangedType.Reset)
+                {
+                    resetNotificationOccured = true;
+                }
+            };
+
+            Assert.IsFalse(resetNotificationOccured);
+
+            view.RowFilter = "FeatureName LIKE 'A m*'";
+
+            Assert.IsTrue(resetNotificationOccured);
+        }
 
         [Test]
         public void AddingRowsToTableTriggersViewNotification()
@@ -108,7 +148,7 @@ namespace SharpMap.Tests.Features
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
             FeatureDataTable table = new FeatureDataTable();
             BoundingBox dataExtents = data.GetExtents();
-            BoundingBox halfBounds = new BoundingBox(dataExtents.Left, dataExtents.Bottom, 
+            BoundingBox halfBounds = new BoundingBox(dataExtents.Left, dataExtents.Bottom,
                 dataExtents.Left + dataExtents.Width / 2, dataExtents.Bottom + dataExtents.Height / 2);
 
             data.ExecuteIntersectionQuery(halfBounds, table);
@@ -125,7 +165,7 @@ namespace SharpMap.Tests.Features
             };
 
             BoundingBox otherHalfBounds = new BoundingBox(
-                dataExtents.Left + dataExtents.Width / 2, dataExtents.Bottom + dataExtents.Height / 2, 
+                dataExtents.Left + dataExtents.Width / 2, dataExtents.Bottom + dataExtents.Height / 2,
                 dataExtents.Right, dataExtents.Top);
 
             data.ExecuteIntersectionQuery(otherHalfBounds, table);

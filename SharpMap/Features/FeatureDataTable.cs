@@ -374,6 +374,22 @@ namespace SharpMap.Features
             base.Rows.Remove(row);
         }
 
+        public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
+        {
+            foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
+            {
+                yield return entry.Value;
+            }
+        }
+
+        public IEnumerable<FeatureDataRow> Select(Geometry geometry)
+        {
+            foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
+            {
+                yield return entry.Value;
+            }
+        }
+
         #endregion
 
         protected virtual void OnConstraintsChanged(object sender, CollectionChangeEventArgs args)

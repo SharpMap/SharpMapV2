@@ -62,12 +62,7 @@ namespace SharpMap.Features
 			get { return _currentGeometry; }
 			set
 			{
-				if (ReferenceEquals(_currentGeometry, value))
-				{
-					return;
-				}
-
-				if (_currentGeometry != null && _currentGeometry.Equals(value))
+				if (_currentGeometry == value)
 				{
 					return;
 				}

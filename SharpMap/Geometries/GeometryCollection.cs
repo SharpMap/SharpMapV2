@@ -22,16 +22,24 @@ using System.Collections.Generic;
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// A GeometryCollection is a geometry that is a collection of 1 or more geometries.
+	/// A GeometryCollection is a geometry that is a 
+    /// collection of 1 or more geometries.
 	/// </summary>
 	/// <remarks>
-	/// All the elements in a GeometryCollection must be in the same Spatial Reference. This is also the Spatial
-	/// Reference for the GeometryCollection.<br/>
-	/// GeometryCollection places no other constraints on its elements. Subclasses of GeometryCollection may
-	/// restrict membership based on dimension and may also place other constraints on the degree of spatial overlap
-	/// between elements.
+    /// <para>
+	/// All the elements in a GeometryCollection must be in the same 
+    /// spatial reference system. This is also the spatial
+	/// reference for the GeometryCollection.
+    /// </para>
+    /// <para>
+	/// GeometryCollection places no other constraints on its elements. 
+    /// Subclasses of GeometryCollection may
+	/// restrict membership based on dimension or
+    /// other topological constraints, such as degree of spatial overlap 
+    /// between elements.
+    /// </para>
 	/// </remarks>
-	public class GeometryCollection : Geometry, IGeometryCollection, IEnumerable<Geometry>
+	public class GeometryCollection : Geometry, IGeometryCollection
 	{
 		private readonly List<Geometry> _geometries;
 

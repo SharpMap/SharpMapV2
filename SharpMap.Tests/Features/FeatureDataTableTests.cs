@@ -93,7 +93,7 @@ namespace SharpMap.Tests.Model
             Assert.AreSame(table, view.Table);
             FeatureDataView featureView = view as FeatureDataView;
             Assert.IsNotNull(featureView);
-            Assert.AreEqual(BoundingBox.Empty, featureView.VisibleRegion);
+            Assert.IsNull(featureView.GeometryIntersectionFilter);
             Assert.AreEqual(DataViewRowState.CurrentRows, view.RowStateFilter);
         }
 

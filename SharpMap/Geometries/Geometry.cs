@@ -338,17 +338,21 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Returns 'true' if <paramref name="g1"/> is 'spatially equal' to <paramref name="g2"/>.
+		/// Returns 'true' if <paramref name="g1"/> is 'spatially equal' to 
+        /// <paramref name="g2"/>.
 		/// </summary>
 		/// <param name="g1">First geometry to compare.</param>
 		/// <param name="g2">Second geometry to compare.</param>
-		/// <returns>True if the two <see cref="Geometry"/> instances are equal, false otherwise</returns>
+		/// <returns>
+        /// True if the two <see cref="Geometry"/> instances are equal, 
+        /// false otherwise.
+        /// </returns>
 		public static bool operator ==(Geometry g1, Geometry g2)
 		{
-			if (ReferenceEquals(g1, null) && ReferenceEquals(g2, null))
-			{
-				return true;
-			}
+            if (ReferenceEquals(g1, g2))
+            {
+                return true;
+            }
 
 			if (!ReferenceEquals(g1, null))
 			{
@@ -361,17 +365,21 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Returns 'true' if <paramref name="g1"/> is not 'spatially equal' to <paramref name="g2"/>.
+		/// Returns 'true' if <paramref name="g1"/> is not 'spatially equal' to
+        /// <paramref name="g2"/>.
 		/// </summary>
 		/// <param name="g1">First geometry to compare.</param>
 		/// <param name="g2">Second geometry to compare.</param>
-		/// <returns>True if the two <see cref="Geometry"/> instances are not equal, false otherwise</returns>
+		/// <returns>
+        /// True if the two <see cref="Geometry"/> instances are not equal, 
+        /// false otherwise.
+        /// </returns>
 		public static bool operator !=(Geometry g1, Geometry g2)
-		{
-			if (ReferenceEquals(g1, null) && ReferenceEquals(g2, null))
-			{
-				return false;
-			}
+        {
+            if (ReferenceEquals(g1, g2))
+            {
+                return true;
+            }
 
 			if (!ReferenceEquals(g1, null))
 			{

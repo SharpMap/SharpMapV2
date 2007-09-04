@@ -123,7 +123,19 @@ namespace SharpMap.Geometries
 		/// <returns></returns>
 		public static bool Intersects(Geometry g1, Geometry g2)
 		{
-			throw new NotImplementedException();
+#warning BoundingBox intersection is wrong, wrong, wrong, but it won't be fixed until we use NTS
+
+            if (g1 == null || g2 == null)
+            {
+                return false;
+            }
+
+            if (g1 == g2)
+            {
+                return true;
+            }
+
+            return g1.GetBoundingBox().Intersects(g2.GetBoundingBox());
 		}
 
 		/// <summary>
