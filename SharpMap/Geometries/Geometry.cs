@@ -378,7 +378,7 @@ namespace SharpMap.Geometries
         {
             if (ReferenceEquals(g1, g2))
             {
-                return true;
+                return false;
             }
 
 			if (!ReferenceEquals(g1, null))
