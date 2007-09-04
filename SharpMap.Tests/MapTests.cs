@@ -7,7 +7,7 @@ using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Tools;
 
-namespace SharpMap.Tests.Model
+namespace SharpMap.Tests
 {
 	[TestFixture]
 	public class MapTests
