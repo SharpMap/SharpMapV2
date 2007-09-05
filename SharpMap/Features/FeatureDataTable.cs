@@ -410,38 +410,38 @@ namespace SharpMap.Features
 
             FeatureDataRow feature;
 
-			// If the feature as an identifier, then we can merge it
-			if (PrimaryKey.Length == 1)
-			{
-				string keyColumnName = PrimaryKey[0].ColumnName;
-				object key = record[keyColumnName];
-				feature = Find(key);
+            // If the feature as an identifier, then we can merge it
+            if (PrimaryKey.Length == 1)
+            {
+                string keyColumnName = PrimaryKey[0].ColumnName;
+                object key = record[keyColumnName];
+                feature = Find(key);
 
-				if (feature != null)
-				{
-					foreach (DataColumn column in Columns)
-					{
-						if (column != PrimaryKey[0])
-						{
-							if (feature[column] != record[column.ColumnName])
-							{
-								feature[column] = record[column.ColumnName];
-							}
-						}
-					}
+                if (feature != null)
+                {
+                    foreach (DataColumn column in Columns)
+                    {
+                        if (column != PrimaryKey[0])
+                        {
+                            if (feature[column] != record[column.ColumnName])
+                            {
+                                feature[column] = record[column.ColumnName];
+                            }
+                        }
+                    }
 
-					// A matching feature was found and updated, so we can leave
-					return;
-				}
-			}
+                    // A matching feature was found and updated, so we can leave
+                    return;
+                }
+            }
 
-			// No match to 'record' was found in this table, add a new one
-			feature = NewRow();
-			object[] values = new object[Columns.Count];
-			record.GetValues(values);
-			feature.ItemArray = values;
-			feature.Geometry = record.GetGeometry();
-			AddRow(feature);
+            // No match to 'record' was found in this table, add a new one
+            feature = NewRow();
+            object[] values = new object[Columns.Count];
+            record.GetValues(values);
+            feature.ItemArray = values;
+            feature.Geometry = record.GetGeometry();
+            AddRow(feature);
         }
 
         #region Protected Overrides
@@ -587,6 +587,9 @@ namespace SharpMap.Features
         {
             target.Clear();
             target.Columns.Clear();
+            DataColumn[] targetPrimaryKey = new DataColumn[PrimaryKey.Length];
+            int keyIndex = 0;
+
             foreach (DataColumn column in Columns)
             {
                 DataColumn newColumn = new DataColumn(column.ColumnName, column.DataType);
@@ -611,7 +614,17 @@ namespace SharpMap.Features
                 }
 
                 target.Columns.Add(newColumn);
+
+                // if this column is a key, add it to the target key columns array
+                if (Array.Exists(PrimaryKey, delegate(DataColumn key) { return column == key; }))
+                {
+                    targetPrimaryKey[keyIndex] = newColumn;
+                    keyIndex++;
+                }
             }
+
+            Debug.Assert(keyIndex == PrimaryKey.Length);
+            target.PrimaryKey = targetPrimaryKey;
         }
 
         #endregion

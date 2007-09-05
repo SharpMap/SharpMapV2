@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Features;
@@ -137,7 +136,8 @@ namespace SharpMap.Tests.Features
 
             Assert.IsFalse(resetNotificationOccured);
 
-            view.RowFilter = "FeatureName LIKE 'A m*'";
+            BoundingBox queryExtents = new BoundingBox(0, 0, 10, 10);
+            view.GeometryIntersectionFilter = queryExtents.ToGeometry();
 
             Assert.IsTrue(resetNotificationOccured);
         }

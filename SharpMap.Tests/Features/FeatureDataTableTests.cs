@@ -3,9 +3,8 @@ using System.Data;
 using NUnit.Framework;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Features;
-using SharpMap.Geometries;
 
-namespace SharpMap.Tests.Model
+namespace SharpMap.Tests.Features
 {
     [TestFixture]
     public class FeatureDataTableTests
@@ -98,7 +97,7 @@ namespace SharpMap.Tests.Model
         }
 
         [Test]
-        public void LoadTableFromReader()
+        public void LoadingTableFromReader()
         {
             FeatureDataTable table = new FeatureDataTable();
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();

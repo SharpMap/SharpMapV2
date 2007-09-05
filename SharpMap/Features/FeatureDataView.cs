@@ -82,7 +82,7 @@ namespace SharpMap.Features
             setFilterPredicate();
         }
 
-        public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter, 
+        public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
             string sort, DataViewRowState rowState)
             : base(table, "", sort, rowState)
         {
@@ -113,14 +113,9 @@ namespace SharpMap.Features
 
         #endregion
 
-        protected override void IndexListChanged(object sender, ListChangedEventArgs e)
+        public override DataRowView AddNew()
         {
-            base.IndexListChanged(sender, e);
-        }
-
-        protected override void OnListChanged(ListChangedEventArgs e)
-        {
-            base.OnListChanged(e);
+            throw new NotSupportedException();
         }
 
         public override string RowFilter
@@ -136,9 +131,16 @@ namespace SharpMap.Features
             }
         }
 
-        public override DataRowView AddNew()
+        // UNDONE: Please don't optimize the following apparently useless overrides out, 
+        // I need to figure out what to do with them [ck]
+        protected override void IndexListChanged(object sender, ListChangedEventArgs e)
         {
-            throw new NotSupportedException();
+            base.IndexListChanged(sender, e);
+        }
+
+        protected override void OnListChanged(ListChangedEventArgs e)
+        {
+            base.OnListChanged(e);
         }
 
         protected override void ColumnCollectionChanged(object sender, CollectionChangeEventArgs e)
@@ -181,6 +183,31 @@ namespace SharpMap.Features
             }
         }
 
+        /// <summary>
+        /// Gets or sets the bounds which this view covers as a <see cref="BoundingBox"/>.
+        /// </summary>
+        public BoundingBox ViewBounds
+        {
+            get
+            {
+                if (_intersectionFilter == null)
+                {
+                    return BoundingBox.Empty;
+                }
+
+                return _intersectionFilter.GetBoundingBox();
+            }
+            set
+            {
+                if (value == BoundingBox.Empty)
+                {
+                    GeometryIntersectionFilter = null;
+                }
+
+                GeometryIntersectionFilter = value.ToGeometry();
+            }
+        }
+
         #region IEnumerable<FeatureDataRow> Members
 
         public new IEnumerator<FeatureDataRow> GetEnumerator()
@@ -196,6 +223,7 @@ namespace SharpMap.Features
 
         #endregion
 
+        #region DataView internals access methods
         internal void SetDataViewManager(FeatureDataViewManager featureDataViewManager)
         {
             // Call the delegate we wired up to bypass the normally inaccessible 
@@ -210,6 +238,7 @@ namespace SharpMap.Features
             // base class method
             _setIndex2(this, newSort, dataViewRowState, dataExpression, fireEvent);
         }
+        #endregion
 
         #region Private instance helper methods
 
