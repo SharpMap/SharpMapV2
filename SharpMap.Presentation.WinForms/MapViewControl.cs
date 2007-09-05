@@ -129,6 +129,7 @@ namespace SharpMap.Presentation.WinForms
         #region Properties
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public StyleColor BackgroundColor
         {
             get { return _presenter.BackgroundColor; }
@@ -146,12 +147,14 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double Dpi
         {
             get { return _dpi; }
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GeoPoint GeoCenter
         {
             get { return _presenter.GeoCenter; }
@@ -159,6 +162,7 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double MaximumWorldWidth
         {
             get { return _presenter.MaximumWorldWidth; }
@@ -166,6 +170,7 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double MinimumWorldWidth
         {
             get { return _presenter.MinimumWorldWidth; }
@@ -173,18 +178,21 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double PixelWorldWidth
         {
             get { return _presenter.PixelWorldWidth; }
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double PixelWorldHeight
         {
             get { return _presenter.PixelWorldHeight; }
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ViewSelection2D Selection
         {
             get { return _presenter.Selection; }
@@ -201,6 +209,7 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Matrix2D ToViewTransform
         {
             get { return _presenter.ToViewTransform; }
@@ -217,12 +226,14 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Matrix2D ToWorldTransform
         {
             get { return _presenter.ToWorldTransform; }
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public BoundingBox ViewEnvelope
         {
             get { return _presenter.ViewEnvelope; }
@@ -230,6 +241,7 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Size2D ViewSize
         {
             get { return ViewConverter.Convert(Size); }
@@ -237,6 +249,7 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double WorldAspectRatio
         {
             get { return _presenter.WorldAspectRatio; }
@@ -244,18 +257,21 @@ namespace SharpMap.Presentation.WinForms
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double WorldHeight
         {
             get { return _presenter.WorldHeight; }
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double WorldWidth
         {
             get { return _presenter.WorldWidth; }
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double WorldUnitsPerPixel
         {
             get { return _presenter.WorldUnitsPerPixel; }
