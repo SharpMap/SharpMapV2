@@ -34,7 +34,6 @@ namespace SharpMap.Presentation
         {
             FeatureLayer = layer;
             FeatureLayer.PropertyChanged += new PropertyChangedEventHandler(handleFeatureLayerPropertyChanged);
-            FeatureLayer.SelectedFeaturesChanged += new EventHandler(handleFeatureLayerSelectedFeaturesChanged);
         }
 
         public IFeatureLayer FeatureLayer

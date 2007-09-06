@@ -39,12 +39,10 @@ namespace SharpMap.Layers
     {
         #region Fields
 
-        private readonly object _selectedFeaturesSync = new object();
-        private readonly object _highlightedFeaturesSync = new object();
         private readonly FeatureDataTable _cachedFeatures;
         private readonly FeatureDataView _visibleFeatureView;
-        private FeatureDataView _selectedFeatures;
-        private FeatureDataView _highlightedFeatures;
+        private readonly FeatureDataView _selectedFeatures;
+        private readonly FeatureDataView _highlightedFeatures;
         private BoundingBox _fullExtents;
         private readonly BackgroundWorker _dataQueryWorker = new BackgroundWorker();
         #endregion
@@ -117,24 +115,6 @@ namespace SharpMap.Layers
         #region IFeatureLayer Members
 
         /// <summary>
-        /// Raised when the features in the 
-        /// <see cref="SelectedFeatures"/> view change.
-        /// </summary>
-        public event EventHandler SelectedFeaturesChanged;
-
-        /// <summary>
-        /// Raised when the features in the 
-        /// <see cref="HighlightedFeatures"/> view change.
-        /// </summary>
-        public event EventHandler HighlightedFeaturesChanged;
-
-        /// <summary>
-        /// Raised when the features in the 
-        /// <see cref="VisibleFeatures"/> view change.
-        /// </summary>
-        public event EventHandler VisibleFeaturesChanged;
-
-        /// <summary>
         /// Gets the data source for this layer as a more 
         /// strongly-typed IVectorLayerProvider.
         /// </summary>
@@ -152,18 +132,7 @@ namespace SharpMap.Layers
         {
             get
             {
-                lock (_highlightedFeaturesSync)
-                {
-                    return _highlightedFeatures;
-                }
-            }
-            set
-            {
-                lock (_highlightedFeaturesSync)
-                {
-                    _highlightedFeatures = value;
-                    onHighlightedFeaturesChanged();
-                }
+                return _highlightedFeatures;
             }
         }
 
@@ -183,18 +152,7 @@ namespace SharpMap.Layers
         {
             get
             {
-                lock (_selectedFeaturesSync)
-                {
-                    return _selectedFeatures;
-                }
-            }
-            set
-            {
-                lock (_selectedFeaturesSync)
-                {
-                    _selectedFeatures = value;
-                    onSelectedFeaturesChanged();
-                }
+                return _selectedFeatures;
             }
         }
 
@@ -289,19 +247,19 @@ namespace SharpMap.Layers
         protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
         {
             // Ignore an empty visible region
-            if(value == BoundingBox.Empty)
+            if (value == BoundingBox.Empty)
             {
                 return;
             }
 
-            if(!_cachedFeatures.Envelope.Contains(value))
+            if (!_cachedFeatures.Envelope.Contains(value))
             {
                 // Since the visible region changed, and we don't have the data
                 // which covers this new region, we have to query for it.
                 //
                 // We can do it asynchronously, with a BackgroundWorker instance,
                 // or synchronously
-                if(AsyncQuery)
+                if (AsyncQuery)
                 {
                     _dataQueryWorker.RunWorkerAsync();
                 }
@@ -315,10 +273,6 @@ namespace SharpMap.Layers
 
         protected override void OnVisibleRegionChanged()
         {
-            // If query was async, the background worker's 
-            // completion event handler will take care of calling
-            // onVisibleFeaturesChanged.
-            if(!AsyncQuery) onVisibleFeaturesChanged();
         }
 
         #endregion
@@ -353,40 +307,9 @@ namespace SharpMap.Layers
             DataSource.Close();
         }
 
-        private void onSelectedFeaturesChanged()
-        {
-            EventHandler e = SelectedFeaturesChanged;
-
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
-        }
-
-        private void onHighlightedFeaturesChanged()
-        {
-            EventHandler e = HighlightedFeaturesChanged;
-
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
-        }
-
-        private void onVisibleFeaturesChanged()
-        {
-            EventHandler e = VisibleFeaturesChanged;
-
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
-        }
-
         private void _dataQueryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            OnLayerDataAvailable(); 
-            onVisibleFeaturesChanged();
+            OnLayerDataAvailable();
         }
 
         private void _dataQueryWorker_DoWork(object sender, DoWorkEventArgs e)

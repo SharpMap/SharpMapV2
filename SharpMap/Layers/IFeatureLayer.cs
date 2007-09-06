@@ -26,12 +26,9 @@ namespace SharpMap.Layers
 	{
 		new IVectorLayerProvider DataSource { get; }
 		FeatureDataTable Features { get; }
-		FeatureDataView HighlightedFeatures { get; set; }
+		FeatureDataView HighlightedFeatures { get; }
         CultureInfo Locale { get; }
-		FeatureDataView SelectedFeatures { get; set; }
+		FeatureDataView SelectedFeatures { get; }
 		FeatureDataView VisibleFeatures { get; }
-		event EventHandler HighlightedFeaturesChanged;
-		event EventHandler SelectedFeaturesChanged;
-		event EventHandler VisibleFeaturesChanged;
 	}
 }

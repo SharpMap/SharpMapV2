@@ -51,7 +51,20 @@ namespace SharpMap.Presentation
 
         private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            switch (e.PropertyName)
+            {
+                case Map.ActiveToolPropertyName:
+                    View.SelectedTool = Map.ActiveTool;
+                    break;
+                case Map.SelectedLayersPropertyName:
+                    break;
+                case Map.SpatialReferencePropertyName:
+                    break;
+                case Map.VisibleRegionPropertyName:
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void handleToolChangeRequested(object sender, ToolChangeRequestedEventArgs e)
