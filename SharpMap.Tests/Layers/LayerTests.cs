@@ -46,7 +46,7 @@ namespace SharpMap.Tests.Layers
             featureNames.Add("A multipolygon");
             featureNames.Add("A multilinestring");
 
-            Assert.AreEqual(3, layer.VisibleFeatures.Count, "Expected features in visible region");
+            Assert.AreEqual(featureNames.Count, layer.VisibleFeatures.Count, "Expected features in visible region");
 
             foreach (FeatureDataRow row in ((IEnumerable<FeatureDataRow>)layer.VisibleFeatures))
             {
@@ -56,21 +56,18 @@ namespace SharpMap.Tests.Layers
 
             layer.VisibleRegion = new BoundingBox(35, 25, 45, 35);
             featureNames.Clear();
+#warning The linestring doesn't actually intersect the visible region, but it's bounding box does. This should break when NTS is integrated.
             featureNames.Add("A linestring");
             featureNames.Add("A multilinestring");
-            featureNames.Add("A polygon");
             featureNames.Add("A multipoint");
 
-            Assert.AreEqual(4, layer.VisibleFeatures.Count, "Expected features in visible region");
+            Assert.AreEqual(featureNames.Count, layer.VisibleFeatures.Count, "Expected features in visible region");
 
-            foreach (FeatureDataRow row in layer.VisibleFeatures)
+            foreach (FeatureDataRow row in ((IEnumerable<FeatureDataRow>)layer.VisibleFeatures))
             {
                 Assert.IsTrue(layer.VisibleRegion.Intersects(row.Geometry.GetBoundingBox()));
                 Assert.Contains(row["FeatureName"], featureNames, "Unexpected visible feature");
             }
-
-            // looking at dropping OnVisibleFeaturesChanged in lieu of OnPropertyChanged
-
         }
     }
 }
