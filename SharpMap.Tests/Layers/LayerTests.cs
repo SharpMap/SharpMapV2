@@ -17,23 +17,40 @@ namespace SharpMap.Tests.Layers
         public void VisibleRegionChangedTest()
         {
             VectorLayer layer = DataSourceHelper.CreateFeatureVectorLayer();
-            //map.AddLayer(DataSourceHelper.CreateGeometryVectorLayer());
+            Assert.IsTrue(layer.Features.Rows.Count == 12, "Count tests probably not valid");
+
+            layer.AsyncQuery = false;
             layer.VisibleRegion = new BoundingBox(0, 0, 10, 10);
 
-            BoundingBox actual = BoundingBox.Empty;
+            List<string> featureNames = new List<string>();
+            featureNames.Add("A geometry collection");
+            featureNames.Add("A multipolygon");
+            featureNames.Add("A multilinestring");
+
+            Assert.IsTrue(layer.VisibleFeatures.Count == 3, "Expected features in visible region");
             foreach (FeatureDataRow row in layer.VisibleFeatures)
             {
                 Assert.IsTrue(layer.VisibleRegion.Intersects(row.Geometry.GetBoundingBox()));
-                
+                Assert.Contains(row["FeatureName"], featureNames, "Unexpected visible feature");
             }
-            // also look for features in layer not in visible features collection but do intersect visible region
+
+
+            layer.VisibleRegion = new BoundingBox(35, 25, 45, 35);
+            featureNames.Clear();
+            featureNames.Add("A linestring");
+            featureNames.Add("A multilinestring");
+            featureNames.Add("A polygon");
+            featureNames.Add("A multipoint");
+
+            Assert.IsTrue(layer.VisibleFeatures.Count == 4, "Expected features in visible region");
+            foreach (FeatureDataRow row in layer.VisibleFeatures)
+            {
+                Assert.IsTrue(layer.VisibleRegion.Intersects(row.Geometry.GetBoundingBox()));
+                Assert.Contains(row["FeatureName"], featureNames, "Unexpected visible feature");
+            }
 
             // looking at dropping OnVisibleFeaturesChanged in lieu of OnPropertyChanged
 
-
-
-            //layer.VisibleRegion = new BoundingBox(0, 0, 10, 10 etc.);
-           
         }
 	}
 }
