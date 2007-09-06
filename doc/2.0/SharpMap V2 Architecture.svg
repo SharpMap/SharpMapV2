@@ -13,10 +13,14 @@
    height="1052.3622047"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.45"
    sodipodi:docname="SharpMap V2 Architecture.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:docbase="C:\_dev\Mapping\SharpMapV2\doc\2.0">
+   sodipodi:docbase="C:\_Dev\Mapping\SharpMapV2\doc\2.0"
+   inkscape:export-filename="C:\_Dev\Mapping\SharpMapV2\doc\2.0\SharpMap V2 Architecture.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   sodipodi:modified="true">
   <defs
      id="defs4">
     <linearGradient
@@ -247,14 +251,25 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="376.25"
-     inkscape:cy="559.35364"
+     inkscape:cx="551.64171"
+     inkscape:cy="320.63295"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="1179"
-     inkscape:window-height="780"
-     inkscape:window-x="93"
-     inkscape:window-y="-8" />
+     inkscape:window-width="1267"
+     inkscape:window-height="983"
+     inkscape:window-x="1282"
+     inkscape:window-y="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="horizontal"
+       position="677.4083"
+       id="guide6823" />
+    <sodipodi:guide
+       orientation="horizontal"
+       position="338"
+       id="guide6825" />
+  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -270,6 +285,15 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.54605264"
+       id="rect6873"
+       width="741.04791"
+       height="847.14337"
+       x="2.8284271"
+       y="147.92236"
+       rx="0"
+       ry="0" />
     <g
        id="g7127"
        transform="translate(0,1.0309404)">
@@ -372,7 +396,7 @@
        id="rect8125"
        width="145"
        height="49"
-       x="377.66669"
+       x="379.07983"
        y="745.86218"
        rx="5"
        ry="5" />
@@ -385,60 +409,6 @@
        y="745.86218"
        rx="5"
        ry="5" />
-    <rect
-       style="fill:#a490b4;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
-       id="rect8129"
-       width="711"
-       height="49"
-       x="5.5"
-       y="653.86218"
-       rx="11"
-       ry="11" />
-    <rect
-       style="fill:#988090;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
-       id="rect8131"
-       width="711"
-       height="49"
-       x="5.5"
-       y="572.61218"
-       rx="11"
-       ry="11" />
-    <rect
-       style="fill:#a18377;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
-       id="rect8133"
-       width="502"
-       height="49"
-       x="5.5"
-       y="491.36218"
-       rx="10"
-       ry="10" />
-    <rect
-       style="fill:#b38e66;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
-       id="rect8139"
-       width="594"
-       height="49"
-       x="5.5"
-       y="410.11218"
-       rx="11"
-       ry="11" />
-    <rect
-       style="fill:#c4d8b8;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
-       id="rect8143"
-       width="92"
-       height="49"
-       x="624.5"
-       y="410.11218"
-       rx="8"
-       ry="8" />
-    <rect
-       style="fill:#eabb77;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
-       id="rect8145"
-       width="711"
-       height="49"
-       x="5.5"
-       y="328.86218"
-       rx="12"
-       ry="12" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Verdana"
@@ -587,155 +557,505 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="23.160156"
-       y="774.83093"
-       id="text14114"><tspan
-         sodipodi:role="line"
-         id="tspan14116"
-         x="23.160156"
-         y="774.83093"
-         style="font-size:16px;font-family:Verdana">ILayerProvider</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="206.99348"
-       y="774.83093"
-       id="text14118"><tspan
-         sodipodi:role="line"
-         id="tspan14120"
-         x="206.99348"
-         y="774.83093"
-         style="font-size:16px;font-family:Verdana">ILayerProvider</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="390.82684"
-       y="774.83093"
-       id="text14122"><tspan
-         sodipodi:role="line"
-         id="tspan14124"
-         x="390.82684"
-         y="774.83093"
-         style="font-size:16px;font-family:Verdana">ILayerProvider</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="574.66016"
-       y="774.83093"
+       x="565.46582"
+       y="766.21375"
        id="text14126"><tspan
          sodipodi:role="line"
-         id="tspan14128"
-         x="574.66016"
-         y="774.83093"
-         style="font-size:16px;font-family:Verdana">ILayerProvider</tspan></text>
+         x="565.46582"
+         y="766.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5279">IRasterLayerProvider /</tspan><tspan
+         sodipodi:role="line"
+         x="565.46582"
+         y="781.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5283">IVectorLayerProvider</tspan></text>
+    <rect
+       style="fill:#a490b4;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1"
+       id="rect8129"
+       width="109.95924"
+       height="339.12088"
+       x="624.59711"
+       y="375.2413"
+       rx="11.247139"
+       ry="11.348723" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="191.66016"
-       y="683.83093"
+       x="628.92438"
+       y="502.27606"
        id="text14130"><tspan
          sodipodi:role="line"
          id="tspan14132"
-         x="191.66016"
-         y="683.83093"
+         x="628.92438"
+         y="502.27606"
          style="font-size:16px;font-family:Verdana">Reprojection</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="333"
-       y="688.36218"
+       style="font-size:10px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="679.43756"
+       y="546.91644"
        id="text14134"><tspan
          sodipodi:role="line"
          id="tspan14136"
-         x="333"
-         y="688.36218">ICoorindateSystem / ICoordinateTransform</tspan></text>
+         x="680.82428"
+         y="546.91644">ICoorindateSystem </tspan><tspan
+         sodipodi:role="line"
+         x="679.43756"
+         y="559.41644"
+         id="tspan6827">and</tspan><tspan
+         sodipodi:role="line"
+         x="679.43756"
+         y="571.91644"
+         id="tspan6829">ICoordinateTransform</tspan></text>
+    <g
+       id="g6369"
+       transform="translate(-3.5,-30.401867)">
+      <rect
+         ry="12"
+         rx="12"
+         y="196.86218"
+         x="11.5"
+         height="49"
+         width="711"
+         id="rect8145"
+         style="fill:#eabb77;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text14172"
+         y="218.78796"
+         x="311.30078"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="218.78796"
+           x="311.30078"
+           id="tspan14174"
+           sodipodi:role="line">Display Views</tspan></text>
+      <text
+         id="text14176"
+         y="239.36218"
+         x="141.77734"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="239.36218"
+           x="141.77734"
+           id="tspan14178"
+           sodipodi:role="line">WPF MapControl, WinForms MapControl, WebForms AjaxMapControl, Custom View</tspan></text>
+    </g>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="195.34766"
-       y="603.56531"
-       id="text14142"><tspan
+       x="197.79915"
+       y="766.21375"
+       id="text5285"><tspan
          sodipodi:role="line"
-         id="tspan14144"
-         x="195.34766"
-         y="603.56531"
-         style="font-size:16px;font-family:Verdana">Layers</tspan></text>
+         x="197.79915"
+         y="766.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5287">IRasterLayerProvider /</tspan><tspan
+         sodipodi:role="line"
+         x="197.79915"
+         y="781.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5289">IVectorLayerProvider</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="326"
-       y="596.36218"
-       id="text14146"><tspan
+       x="13.96582"
+       y="766.21375"
+       id="text5291"><tspan
          sodipodi:role="line"
-         id="tspan14148"
-         x="326"
-         y="596.36218">VectorLayer, RasterLayer, LabelLayer</tspan></text>
+         x="13.96582"
+         y="766.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5293">IRasterLayerProvider /</tspan><tspan
+         sodipodi:role="line"
+         x="13.96582"
+         y="781.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5295">IVectorLayerProvider</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="185"
-       y="521.36218"
-       id="text14150"><tspan
+       x="383.04565"
+       y="766.21375"
+       id="text5297"><tspan
          sodipodi:role="line"
-         id="tspan14152"
-         x="185"
-         y="521.36218">FeatureDataSet, FeatureDataTable, FeatureDataView`</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="93.191406"
-       y="523.56921"
-       id="text14154"><tspan
+         x="383.04565"
+         y="766.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5299">IRasterLayerProvider /</tspan><tspan
          sodipodi:role="line"
-         id="tspan14156"
-         x="93.191406"
-         y="523.56921"
-         style="font-size:16px;font-family:Verdana">Features</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="19.800781"
-       y="441.0575"
-       id="text14158"><tspan
-         sodipodi:role="line"
-         id="tspan14160"
-         x="19.800781"
-         y="441.0575"
-         style="font-size:16px;font-family:Verdana">Presentation / Theming / Rendering</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="326"
-       y="438.36218"
-       id="text14162"><tspan
-         sodipodi:role="line"
-         x="326"
-         y="438.36218"
-         id="tspan14166">MapPresenter2D, AttributePresenter , </tspan><tspan
-         sodipodi:role="line"
-         x="326"
-         y="453.36218"
-         id="tspan14170">Theme, BasicGeometryRenderer, LabelRenderer</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="110.53516"
-       y="350.78796"
-       id="text14172"><tspan
-         sodipodi:role="line"
-         id="tspan14174"
-         x="110.53516"
-         y="350.78796"
-         style="font-size:16px;font-family:Verdana">Display Views</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="320"
-       y="344.36218"
-       id="text14176"><tspan
-         sodipodi:role="line"
-         id="tspan14178"
-         x="320"
-         y="344.36218">WinForms MapControl, WebForms AjaxMapControl.</tspan></text>
+         x="383.04565"
+         y="781.21375"
+         style="font-size:12px;font-family:Verdana"
+         id="tspan5301">IVectorLayerProvider</tspan></text>
+    <g
+       id="g6741"
+       transform="translate(-2,109.87842)">
+      <path
+         sodipodi:nodetypes="ccccczcccccczcc"
+         id="rect8139"
+         d="M 28.283498,123.81273 C 18.151481,123.81273 10,130.6257 10,139.09398 L 10,234.50023 C 10,242.96852 18.151481,249.81273 28.283498,249.81273 L 702.41738,249.81273 C 712.5494,249.81273 721,238.68807 721,229.75023 C 721,220.81239 712.49322,210.56273 702.45477,210.56273 L 176.30879,210.56273 C 169.34895,210.56273 163.7459,205.87973 163.7459,200.06273 L 163.7459,172.06273 C 163.7459,166.24573 169.34895,161.56273 176.30879,161.56273 L 702.37999,161.56273 C 712.42645,161.56273 720.99531,151.79688 721,142.84398 C 721.00467,133.89109 712.54939,123.81273 702.41738,123.81273 L 28.283498,123.81273 z "
+         style="fill:#c7a37b;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text5212"
+         y="149.51122"
+         x="315.14453"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="149.51122"
+           x="315.14453"
+           id="tspan5214"
+           sodipodi:role="line">Presentation</tspan></text>
+      <rect
+         ry="6.6464467"
+         rx="6.6464467"
+         y="163.70192"
+         x="169.48785"
+         height="24.5"
+         width="144"
+         id="rect8143"
+         style="fill:#a48562;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text5216"
+         y="180.05739"
+         x="174.8902"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="180.05739"
+           x="174.8902"
+           id="tspan5218"
+           sodipodi:role="line">BasicGeometryRenderer</tspan></text>
+      <rect
+         ry="5.9393396"
+         rx="5.9393396"
+         y="163.70192"
+         x="317.40625"
+         height="24.5"
+         width="107"
+         id="rect5220"
+         style="fill:#a48562;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text5222"
+         y="180.23506"
+         x="330.65234"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="180.23506"
+           x="330.65234"
+           id="tspan5224"
+           sodipodi:role="line">LabelRenderer</tspan></text>
+      <rect
+         ry="7.9244251"
+         rx="7.9244251"
+         y="163.70192"
+         x="537.21875"
+         height="45.120998"
+         width="107"
+         id="rect5226"
+         style="fill:#eabb77;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text5228"
+         y="180.27452"
+         x="547.44434"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="180.27452"
+           x="547.44434"
+           id="tspan5230"
+           sodipodi:role="line">RasterRenderer</tspan></text>
+      <path
+         sodipodi:nodetypes="ccccccccccccc"
+         id="rect5232"
+         d="M 434.71875,163.70192 C 430.84075,163.70192 427.71875,166.82392 427.71875,170.70192 L 427.71875,181.20192 C 427.71875,185.07992 430.84075,188.20192 434.71875,188.20192 L 495.56986,188.3345 C 498.17728,188.3345 499.3125,189.81811 499.3125,192.08044 L 499.3125,204.16623 C 499.3125,206.7431 501.39191,208.82249 503.96875,208.82248 L 530.25,208.82248 C 532.82687,208.82248 534.90625,206.74312 534.90625,204.16623 L 534.71875,170.70192 C 534.71875,166.82392 531.59678,163.70192 527.71875,163.70192 L 434.71875,163.70192 z "
+         style="fill:#f7e0a6;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text5234"
+         y="180.16273"
+         x="432.88397"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="180.16273"
+           x="432.88397"
+           id="tspan5236"
+           sodipodi:role="line">Custom Renderer</tspan></text>
+      <rect
+         ry="5.2857141"
+         rx="5.0312595"
+         y="190.29991"
+         x="169.48785"
+         height="18.5"
+         width="326.25"
+         id="rect5238"
+         style="fill:#eabb77;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text5240"
+         y="203.27452"
+         x="277.15234"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="203.27452"
+           x="277.15234"
+           id="tspan5242"
+           sodipodi:role="line">VectorRenderer</tspan></text>
+      <path
+         sodipodi:nodetypes="ccccccccccccc"
+         id="rect6277"
+         d="M 653.53125,163.68773 C 649.53286,163.68773 646.34375,166.90809 646.34375,170.90648 L 646.34375,201.59398 C 646.34375,205.59237 649.53283,208.81273 653.53125,208.81273 L 677.62148,208.80201 C 681.5483,208.80201 683.9375,205.61273 683.9375,201.62523 L 683.9375,193.46898 C 683.9375,191.85845 685.23321,190.56273 686.84375,190.56273 L 702.16083,190.56999 C 706.343,190.56999 709.5625,189.21893 709.5625,184.84398 L 709.53125,170.90648 C 709.53125,166.90809 706.31091,163.68773 702.3125,163.68773 L 653.53125,163.68773 z "
+         style="fill:#c7a37b;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6281"
+         y="180.05489"
+         x="654.84961"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="180.05489"
+           x="654.84961"
+           id="tspan6283"
+           sodipodi:role="line">Theming</tspan></text>
+      <rect
+         ry="2.722172"
+         rx="2.722172"
+         y="191.79436"
+         x="685.68964"
+         height="17.018387"
+         width="23.841591"
+         id="rect6287"
+         style="fill:#f7e0a6;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6308"
+         y="190.76469"
+         x="711.74402"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:9px"
+           y="190.76469"
+           x="711.74402"
+           id="tspan6310"
+           sodipodi:role="line">Custom</tspan><tspan
+           style="font-size:9px"
+           id="tspan6312"
+           y="202.01469"
+           x="711.74402"
+           sodipodi:role="line">Theme</tspan><tspan
+           style="font-size:9px"
+           id="tspan6314"
+           y="213.26469"
+           x="711.74402"
+           sodipodi:role="line">Delegate</tspan></text>
+      <text
+         id="text6391"
+         y="233.26234"
+         x="194.2973"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="233.26234"
+           x="194.2973"
+           id="tspan6393"
+           sodipodi:role="line">MapPresenter, ToolsPresenter, AttributesPresenter, LayersPresenter</tspan></text>
+    </g>
+    <g
+       id="g6860">
+      <rect
+         ry="14.575125"
+         rx="12.700101"
+         y="588.26587"
+         x="433.55228"
+         height="126"
+         width="177.21001"
+         id="rect6300"
+         style="fill:#988090;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6316"
+         y="657.06665"
+         x="463.95807"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="657.06665"
+           x="463.95807"
+           id="tspan6318"
+           sodipodi:role="line">Raster Stream</tspan></text>
+      <path
+         sodipodi:nodetypes="ccccczcccccczcc"
+         id="path6512"
+         d="M 23.970864,588.09937 C 15.263509,588.09937 8,594.91234 8,603.38062 L 8,698.78687 C 8,707.25516 16.10467,714.09937 23.970864,714.09937 L 412.15361,714.09937 C 418.06751,714.09937 423,702.97471 423,694.03687 C 423,685.09903 419.65973,674.84937 413.80043,674.84937 L 106.69694,674.84937 C 102.63459,674.84937 97.739162,670.16637 97.739162,664.34937 L 97.739162,636.34937 C 97.739162,630.53237 102.63459,625.84937 106.69694,625.84937 L 412.13179,625.84937 C 417.99575,625.84937 422.99726,616.08352 423,607.13062 C 423.00273,598.17773 418.0675,588.09937 412.15361,588.09937 L 23.970864,588.09937 z "
+         style="fill:#988090;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text14154"
+         y="612.36407"
+         x="180.30078"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="612.36407"
+           x="180.30078"
+           id="tspan14156"
+           sodipodi:role="line">Features</tspan></text>
+      <rect
+         ry="9.8214283"
+         rx="9.8214283"
+         y="630.28027"
+         x="101.77226"
+         height="40.5"
+         width="313.6312"
+         id="rect6516"
+         style="fill:#bdaeb8;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6518"
+         y="654.84277"
+         x="218.68942"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="654.84277"
+           x="218.68942"
+           id="tspan6520"
+           sodipodi:role="line">Geometry</tspan></text>
+      <text
+         id="text14150"
+         y="699.98993"
+         x="71.22168"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="699.98993"
+           x="71.22168"
+           id="tspan14152"
+           sodipodi:role="line">FeatureDataSet, FeatureDataTable, FeatureDataView</tspan></text>
+    </g>
+    <g
+       id="g6848">
+      <rect
+         ry="9.7071066"
+         rx="9.7049637"
+         y="519.62085"
+         x="8"
+         height="49"
+         width="415"
+         id="rect6553"
+         style="fill:#a98a82;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <rect
+         ry="7.25"
+         rx="6.3173227"
+         y="518.91376"
+         x="435.16006"
+         height="49"
+         width="177.21005"
+         id="rect6555"
+         style="fill:#a98a82;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6557"
+         y="540.31573"
+         x="155.30078"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="540.31573"
+           x="155.30078"
+           id="tspan6559"
+           sodipodi:role="line">Feature Layers</tspan></text>
+      <text
+         id="text6561"
+         y="559.46741"
+         x="51.874023"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="559.46741"
+           x="51.874023"
+           id="tspan6563"
+           sodipodi:role="line">VectorLayer, LabelLayer, LayerGroup, Custom Feature Layer</tspan></text>
+      <text
+         id="text6565"
+         y="541.81586"
+         x="468.25336"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="541.81586"
+           x="468.25336"
+           id="tspan6567"
+           sodipodi:role="line">Raster Layers</tspan></text>
+      <text
+         id="text6569"
+         y="558.01782"
+         x="449.81097"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="558.01782"
+           x="449.81097"
+           id="tspan6571"
+           sodipodi:role="line">RasterLayer, Custom Layer</tspan></text>
+    </g>
+    <g
+       id="g6835">
+      <path
+         sodipodi:nodetypes="ccccczcccccczcc"
+         id="path6694"
+         d="M 23.628726,375.39002 C 14.967881,375.39002 8,382.20299 8,390.67127 L 8,486.07752 C 8,494.54581 14.967881,501.39002 23.628726,501.39002 L 599.878,501.39002 C 608.53884,501.39002 615.76241,490.26536 615.76241,481.32752 C 615.76241,472.38968 608.49082,462.14002 599.90996,462.14002 L 150.16066,462.14002 C 144.2114,462.14002 139.42191,457.45702 139.42191,451.64002 L 139.42191,423.64002 C 139.42191,417.82302 144.2114,413.14002 150.16066,413.14002 L 599.84604,413.14002 C 608.43374,413.14002 615.7584,403.37417 615.76241,394.42127 C 615.7664,385.46838 608.53883,375.39002 599.878,375.39002 L 23.628726,375.39002 z "
+         style="fill:#a28778;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6646"
+         y="397.59705"
+         x="346.59375"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="397.59705"
+           x="346.59375"
+           id="tspan6648"
+           sodipodi:role="line">Map</tspan></text>
+      <rect
+         ry="8.6572151"
+         rx="9.2145634"
+         y="417.14001"
+         x="144.12627"
+         height="40.5"
+         width="230"
+         id="rect6712"
+         style="fill:#c2b2a9;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <rect
+         ry="10.071428"
+         rx="6.8280864"
+         y="416.07935"
+         x="377.27524"
+         height="40.5"
+         width="230"
+         id="rect6714"
+         style="fill:#ebcbb9;fill-opacity:1;stroke:none;stroke-linejoin:bevel;stroke-opacity:1" />
+      <text
+         id="text6716"
+         y="432.68283"
+         x="192.4928"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="432.68283"
+           x="192.4928"
+           id="tspan6718"
+           sodipodi:role="line">Standard Tools</tspan></text>
+      <text
+         id="text6720"
+         y="448.40448"
+         x="165.11838"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="448.40448"
+           x="165.11838"
+           id="tspan6722"
+           sodipodi:role="line">Zoom, Pan, Query, Edit Features</tspan></text>
+      <text
+         id="text6724"
+         y="441.22574"
+         x="440.17889"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:16px;font-family:Verdana"
+           y="441.22574"
+           x="440.17889"
+           id="tspan6726"
+           sodipodi:role="line">Custom Tools</tspan></text>
+    </g>
   </g>
 </svg>
