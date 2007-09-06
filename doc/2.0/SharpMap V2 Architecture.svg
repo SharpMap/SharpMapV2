@@ -6,6 +6,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="744.09448819"
@@ -13,12 +14,122 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.45"
-   sodipodi:docbase="C:\Documents and Settings\rbp\Desktop"
-   sodipodi:docname="sharpmap v2 architecture.svg"
+   sodipodi:docname="SharpMap V2 Architecture.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="TRUE">
+   sodipodi:docbase="C:\_Dev\Mapping\SharpMapV2\doc\2.0"
+   sodipodi:modified="true">
   <defs
-     id="defs4" />
+     id="defs4">
+    <linearGradient
+       id="linearGradient3163">
+      <stop
+         id="stop3165"
+         offset="0"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop
+         style="stop-color:#eaf4ff;stop-opacity:1;"
+         offset="0.8035714"
+         id="stop3169" />
+      <stop
+         id="stop3167"
+         offset="1"
+         style="stop-color:#d5e9ff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4126">
+      <stop
+         id="stop4128"
+         offset="0"
+         style="stop-color:#e5d054;stop-opacity:1;" />
+      <stop
+         style="stop-color:#f7f0c8;stop-opacity:1;"
+         offset="0.30357143"
+         id="stop4130" />
+      <stop
+         id="stop4132"
+         offset="1"
+         style="stop-color:#e5d054;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3133">
+      <stop
+         style="stop-color:#e5d054;stop-opacity:1;"
+         offset="0"
+         id="stop3135" />
+      <stop
+         id="stop3143"
+         offset="0"
+         style="stop-color:#f7f0c8;stop-opacity:1;" />
+      <stop
+         style="stop-color:#e5d054;stop-opacity:1;"
+         offset="1"
+         id="stop3137" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="radialGradient3141"
+       cx="184.28572"
+       cy="647.36218"
+       fx="184.28572"
+       fy="647.36218"
+       r="71.428574"
+       gradientTransform="matrix(0.5427303,-0.8484319,0.5631435,0.3602352,-280.28952,570.5134)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4126"
+       id="linearGradient4124"
+       x1="112.85714"
+       y1="711.29077"
+       x2="256.42856"
+       y2="711.29077"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9947231,0,0,1,0.5955377,0)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="radialGradient4136"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.4627303,-1.1984319,0.423673,0.5171085,-359.54445,533.45957)"
+       cx="184.28572"
+       cy="647.36218"
+       fx="184.28572"
+       fy="647.36218"
+       r="71.428574" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3133"
+       id="radialGradient4140"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.035911e-7,1.8909836,-1.2415635,-1.1136216e-7,914.49121,339.35242)"
+       cx="168.62598"
+       cy="612.54224"
+       fx="168.62598"
+       fy="612.54224"
+       r="71.428574" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3163"
+       id="linearGradient3161"
+       x1="349.28571"
+       y1="870.2193"
+       x2="266.42856"
+       y2="969.505"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       inkscape:collect="always"
+       x="-0.30444194"
+       width="1.6088839"
+       y="-0.34220816"
+       height="1.6844163"
+       id="filter6297">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="6.1044871"
+         id="feGaussianBlur6299" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -29,15 +140,15 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="-24.400298"
-     inkscape:cy="627.76835"
+     inkscape:zoom="1"
+     inkscape:cx="511.46997"
+     inkscape:cy="341.39328"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="1018"
-     inkscape:window-height="899"
-     inkscape:window-x="149"
-     inkscape:window-y="28" />
+     inkscape:window-width="1108"
+     inkscape:window-height="916"
+     inkscape:window-x="170"
+     inkscape:window-y="14" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -54,136 +165,36 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="g2244"
-       transform="translate(32.324881,137.38075)"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90">
-      <g
-         transform="translate(-47.704855,-84.476448)"
-         id="g2172">
-        <rect
-           style="opacity:1;fill:#908470;fill-opacity:1"
-           id="rect2160"
-           width="465.71429"
-           height="102.85714"
-           x="152.85713"
-           y="732.36218"
-           rx="30" />
-        <rect
-           style="opacity:1;fill:#909c98;fill-opacity:1"
-           id="rect2162"
-           width="465.71429"
-           height="102.85714"
-           x="152.85713"
-           y="601.50507"
-           rx="30" />
-        <rect
-           style="opacity:1;fill:#90acac;fill-opacity:1"
-           id="rect2164"
-           width="465.71429"
-           height="102.85714"
-           x="152.85713"
-           y="470.64789"
-           rx="30" />
-        <rect
-           style="opacity:1;fill:#a8c0b4;fill-opacity:1"
-           id="rect2166"
-           width="465.71429"
-           height="102.85714"
-           x="152.85713"
-           y="339.79077"
-           rx="30" />
-        <rect
-           style="opacity:1;fill:#c0c4a4;fill-opacity:1"
-           id="rect2168"
-           width="465.71429"
-           height="102.85714"
-           x="152.85713"
-           y="208.93361"
-           rx="30" />
-        <rect
-           style="opacity:1;fill:#d4c894;fill-opacity:1"
-           id="rect2170"
-           width="465.71429"
-           height="102.85714"
-           x="152.85713"
-           y="78.076485"
-           rx="30" />
-      </g>
-      <text
-         id="text2184"
-         y="684.66669"
-         x="337.3649"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Consolas"
-         xml:space="preserve"><tspan
-           style="text-align:center;text-anchor:middle"
-           y="684.66669"
-           x="348.38052"
-           id="tspan2186"
-           sodipodi:role="line">GIS Raster and </tspan><tspan
-           style="text-align:center;text-anchor:middle"
-           id="tspan2188"
-           y="734.66669"
-           x="337.3649"
-           sodipodi:role="line">Vector Data</tspan></text>
-      <text
-         id="text2190"
-         y="575.57019"
-         x="135.8063"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Consolas"
-         xml:space="preserve"><tspan
-           style="font-size:32px"
-           y="575.57019"
-           x="135.8063"
-           id="tspan2192"
-           sodipodi:role="line">SharpMap.Data.Providers</tspan></text>
-      <text
-         id="text2212"
-         y="441.21991"
-         x="137.94888"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Consolas"
-         xml:space="preserve"><tspan
-           style="font-size:28px"
-           y="441.21991"
-           x="137.94888"
-           id="tspan2214"
-           sodipodi:role="line">SharpMap.CoordinateSystems</tspan></text>
-      <text
-         id="text2216"
-         y="294.72748"
-         x="337.4313"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Consolas"
-         xml:space="preserve"><tspan
-           style="font-size:32px;text-align:center;text-anchor:middle"
-           y="294.72748"
-           x="337.4313"
-           id="tspan2218"
-           sodipodi:role="line">Layer Management</tspan><tspan
-           style="font-size:32px;text-align:center;text-anchor:middle"
-           id="tspan2220"
-           y="334.72748"
-           x="337.4313"
-           sodipodi:role="line">and Styling</tspan></text>
-      <text
-         id="text2222"
-         y="185.65129"
-         x="171.31998"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Consolas"
-         xml:space="preserve"><tspan
-           y="185.65129"
-           x="171.31998"
-           id="tspan2224"
-           sodipodi:role="line">Layer Rendering</tspan></text>
-      <text
-         id="text2240"
-         y="54.331467"
-         x="130.24576"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Consolas"
-         xml:space="preserve"><tspan
-           y="54.331467"
-           x="130.24576"
-           id="tspan2242"
-           sodipodi:role="line">View / Presentation</tspan></text>
+       id="g2178"
+       transform="translate(-50,187.14286)">
+      <path
+         sodipodi:nodetypes="ccczcc"
+         id="rect3147"
+         d="M 112.85714,648.07648 L 255.67095,648.07648 L 255.67095,774.50505 C 255.67095,774.50505 236.65693,790.66749 184.26405,790.66749 C 131.61873,790.66749 112.85714,774.50505 112.85714,774.50505 L 112.85714,648.07648 z "
+         style="fill:url(#linearGradient4124);fill-opacity:1;stroke:none;stroke-width:7.97300005;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1" />
+      <path
+         d="M 255.71429 647.36218 A 71.428574 17.857143 0 1 1  112.85715,647.36218 A 71.428574 17.857143 0 1 1  255.71429 647.36218 z"
+         sodipodi:ry="17.857143"
+         sodipodi:rx="71.428574"
+         sodipodi:cy="647.36218"
+         sodipodi:cx="184.28572"
+         id="path2160"
+         style="opacity:1;fill:url(#radialGradient3141);fill-opacity:1;stroke:none;stroke-width:7.97300005;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
     </g>
+    <path
+       style="fill:url(#linearGradient3161);fill-opacity:1;stroke:#d5e9ff;stroke-width:1.5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 266.42856,826.64789 L 352.14285,826.64789 L 352.37372,858.5382 L 389.2857,858.43361 L 389.2857,969.50504 L 266.42856,969.50504 L 266.42856,826.64789 z "
+       id="rect2182"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.54605263;filter:url(#filter6297);stroke-miterlimit:4;stroke-dasharray:none;marker-end:none;stroke-dashoffset:0;opacity:0.56111111"
+       d="M 352.03816,828.11466 L 352.03816,858.7917 L 387.14096,858.7917"
+       id="path5118"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#d5e9ff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 352.21367,826.53497 L 389.21051,858.35477 L 352.21367,858.35477 L 352.21367,826.53497 z "
+       id="path4147" />
   </g>
 </svg>
