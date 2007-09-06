@@ -21,11 +21,11 @@ namespace SharpMap.Tests.Layers
             layer.VisibleRegion = layer.Envelope;
 
             // There are only 7 non-empty geometries
-            Assert.AreEqual(7, layer.Features.Rows.Count, "Count tests probably not valid");
+            Assert.AreEqual(7, layer.VisibleFeatures.Count, "Count tests probably not valid");
 
-            layer.VisibleRegion = new BoundingBox(0, 0, 10, 10);
+            layer.VisibleRegion = BoundingBox.Empty;
 
-            Assert.AreEqual(0, layer.Features.Rows.Count);
+            Assert.AreEqual(0, layer.VisibleFeatures.Count);
         }
 
         [Test]
