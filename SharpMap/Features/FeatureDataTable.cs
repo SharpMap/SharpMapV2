@@ -397,6 +397,9 @@ namespace SharpMap.Features
             if (args.Action == CollectionChangeAction.Add && args.Element is UniqueConstraint)
             {
                 UniqueConstraint constraint = args.Element as UniqueConstraint;
+
+                // If more than one column is added to the primary key, throw
+                // an exception - we don't support it for now.
                 if (constraint.IsPrimaryKey && constraint.Columns.Length > 1)
                 {
                     throw new NotSupportedException("Compound primary keys not supported.");
@@ -406,6 +409,11 @@ namespace SharpMap.Features
 
         internal void MergeFeature(IFeatureDataReader record)
         {
+            // TODO: Reevaluate FeatureDataTable.MergeFeature in terms of DataTable.Merge
+            // This function looks as if it duplicates DataTable.Merge
+            // somewhat. However, since it's not a complete overlap, and
+            // it isn't clear how to accomplish the operation with DataTable.Merge,
+            // this method will be used for now...
             if (record == null) throw new ArgumentNullException("record");
 
             FeatureDataRow feature;
