@@ -273,6 +273,7 @@ namespace SharpMap.Layers
 
         protected override void OnVisibleRegionChanged()
         {
+            _visibleFeatureView.GeometryIntersectionFilter = VisibleRegion.ToGeometry();
         }
 
         #endregion

@@ -210,13 +210,13 @@ namespace SharpMap.Features
 
         #region IEnumerable<FeatureDataRow> Members
 
-        public new IEnumerator<FeatureDataRow> GetEnumerator()
+        IEnumerator<FeatureDataRow> IEnumerable<FeatureDataRow>.GetEnumerator()
         {
-            IEnumerator e = base.GetEnumerator();
+            IEnumerator e = GetEnumerator();
 
             while (e.MoveNext())
             {
-                FeatureDataRow feature = e.Current as FeatureDataRow;
+                FeatureDataRow feature = (e.Current as DataRowView).Row as FeatureDataRow;
                 yield return feature;
             }
         }

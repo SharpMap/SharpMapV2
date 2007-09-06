@@ -253,6 +253,7 @@ namespace SharpMap.Layers
 
                 bool cancel = false;
                 OnVisibleRegionChanging(value, ref cancel);
+                // TODO: Need to actually cancel now
                 _visibleRegion = value;
                 OnVisibleRegionChanged();
                 OnPropertyChanged("VisibleRegion");

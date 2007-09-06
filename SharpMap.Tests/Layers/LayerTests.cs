@@ -10,16 +10,35 @@ using SharpMap.Features;
 namespace SharpMap.Tests.Layers
 {
     [TestFixture]
-	public class LayerTests
-	{
+    public class LayerTests
+    {
+        [Test]
+        public void SettingVisibleRegionToEmptyShouldMakeAllFeaturesInvisible()
+        {
+            VectorLayer layer = DataSourceHelper.CreateFeatureVectorLayer();
+
+            layer.AsyncQuery = false;
+            layer.VisibleRegion = layer.Envelope;
+
+            // There are only 7 non-empty geometries
+            Assert.AreEqual(7, layer.Features.Rows.Count, "Count tests probably not valid");
+
+            layer.VisibleRegion = new BoundingBox(0, 0, 10, 10);
+
+            Assert.AreEqual(0, layer.Features.Rows.Count);
+        }
 
         [Test]
         public void VisibleRegionChangedTest()
         {
             VectorLayer layer = DataSourceHelper.CreateFeatureVectorLayer();
-            Assert.IsTrue(layer.Features.Rows.Count == 12, "Count tests probably not valid");
 
             layer.AsyncQuery = false;
+            layer.VisibleRegion = layer.Envelope;
+
+            // There are only 7 non-empty geometries
+            Assert.AreEqual(7, layer.Features.Rows.Count, "Count tests probably not valid");
+
             layer.VisibleRegion = new BoundingBox(0, 0, 10, 10);
 
             List<string> featureNames = new List<string>();
@@ -27,13 +46,13 @@ namespace SharpMap.Tests.Layers
             featureNames.Add("A multipolygon");
             featureNames.Add("A multilinestring");
 
-            Assert.IsTrue(layer.VisibleFeatures.Count == 3, "Expected features in visible region");
-            foreach (FeatureDataRow row in layer.VisibleFeatures)
+            Assert.AreEqual(3, layer.VisibleFeatures.Count, "Expected features in visible region");
+
+            foreach (FeatureDataRow row in ((IEnumerable<FeatureDataRow>)layer.VisibleFeatures))
             {
                 Assert.IsTrue(layer.VisibleRegion.Intersects(row.Geometry.GetBoundingBox()));
                 Assert.Contains(row["FeatureName"], featureNames, "Unexpected visible feature");
             }
-
 
             layer.VisibleRegion = new BoundingBox(35, 25, 45, 35);
             featureNames.Clear();
@@ -42,7 +61,8 @@ namespace SharpMap.Tests.Layers
             featureNames.Add("A polygon");
             featureNames.Add("A multipoint");
 
-            Assert.IsTrue(layer.VisibleFeatures.Count == 4, "Expected features in visible region");
+            Assert.AreEqual(4, layer.VisibleFeatures.Count, "Expected features in visible region");
+
             foreach (FeatureDataRow row in layer.VisibleFeatures)
             {
                 Assert.IsTrue(layer.VisibleRegion.Intersects(row.Geometry.GetBoundingBox()));
@@ -52,5 +72,5 @@ namespace SharpMap.Tests.Layers
             // looking at dropping OnVisibleFeaturesChanged in lieu of OnPropertyChanged
 
         }
-	}
+    }
 }
