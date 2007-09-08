@@ -130,7 +130,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if(!File.Exists(filename))
             {
-                throw new LayerDataNotFoundException(filename);
+                throw new LayerDataLoadException(filename);
             }
 
             using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))

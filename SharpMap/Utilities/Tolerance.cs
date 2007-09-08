@@ -290,7 +290,7 @@ namespace SharpMap.Utilities
 		/// <param name="leftHand">Left hand side of comparison.</param>
 		/// <param name="rightHand">Right hand side of comparison.</param>
 		/// <returns>
-		/// True if <paramref name="leftHand"/> is equal to <see cref="rightHand"/> 
+        /// True if <paramref name="leftHand"/> is equal to <paramref name="rightHand"/> 
 		/// (within the tolerance), false otherwise.
 		/// </returns>
 		public bool Equal(double leftHand, double rightHand)
@@ -305,7 +305,7 @@ namespace SharpMap.Utilities
 		/// <param name="leftHand">Left hand side of comparison.</param>
 		/// <param name="rightHand">Right hand side of comparison.</param>
 		/// <returns>
-		/// True if <paramref name="leftHand"/> is greater than <see cref="rightHand"/> 
+        /// True if <paramref name="leftHand"/> is greater than <paramref name="rightHand"/> 
 		/// (within the tolerance), false otherwise.
 		/// </returns>
 		public bool Greater(double leftHand, double rightHand)
@@ -321,7 +321,7 @@ namespace SharpMap.Utilities
 		/// <param name="rightHand">Right hand side of comparison.</param>
 		/// <returns>
 		/// True if <paramref name="leftHand"/> is greater than or equal to 
-		/// <see cref="rightHand"/> (within the tolerance), false otherwise.
+        /// <paramref name="rightHand"/> (within the tolerance), false otherwise.
 		/// </returns>
 		public bool GreaterOrEqual(double leftHand, double rightHand)
 		{
@@ -336,7 +336,7 @@ namespace SharpMap.Utilities
 		/// <param name="leftHand">Left hand side of comparison.</param>
 		/// <param name="rightHand">Right hand side of comparison.</param>
 		/// <returns>
-		/// True if <paramref name="leftHand"/> is less than <see cref="rightHand"/> 
+        /// True if <paramref name="leftHand"/> is less than <paramref name="rightHand"/> 
 		/// (within the tolerance), false otherwise.
 		/// </returns>
 		public bool Less(double leftHand, double rightHand)
@@ -352,7 +352,7 @@ namespace SharpMap.Utilities
 		/// <param name="rightHand">Right hand side of comparison.</param>
 		/// <returns>
 		/// True if <paramref name="leftHand"/> is less than or equal to 
-		/// <see cref="rightHand"/> (within the tolerance), false otherwise.
+        /// <paramref name="rightHand"/> (within the tolerance), false otherwise.
 		/// </returns>
 		public bool LessOrEqual(double leftHand, double rightHand)
 		{

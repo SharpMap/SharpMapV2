@@ -25,27 +25,27 @@ namespace SharpMap.Data
     /// found or is not accessible.
     /// </summary>
     [Serializable]
-    public class LayerDataNotFoundException : SharpMapDataException
+    public class LayerDataLoadException : SharpMapDataException
     {
         private readonly string _connectionId;
 
-        public LayerDataNotFoundException(string connectionId)
+        public LayerDataLoadException(string connectionId)
             : this(connectionId, null)
         {
         }
 
-        public LayerDataNotFoundException(string connectionId, string message)
+        public LayerDataLoadException(string connectionId, string message)
             : this(connectionId, message, null)
         {
         }
 
-        public LayerDataNotFoundException(string connectionId, string message, Exception inner)
+        public LayerDataLoadException(string connectionId, string message, Exception inner)
             : base(message, inner)
         {
             _connectionId = connectionId;
         }
 
-        public LayerDataNotFoundException(SerializationInfo info, StreamingContext context)
+        public LayerDataLoadException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             _connectionId = info.GetString("_connectionId");

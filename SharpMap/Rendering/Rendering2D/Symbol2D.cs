@@ -174,7 +174,7 @@ namespace SharpMap.Rendering.Rendering2D
         {
             get 
             { 
-                return Math.Asin(_rotationTransform.X2) + _rotationTransform.X1 < 0 ? Math.PI : 0;
+                return Math.Asin(_rotationTransform.M21) + _rotationTransform.M11 < 0 ? Math.PI : 0;
             }
             set { _rotationTransform.Rotate(value); }
         }
@@ -184,7 +184,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double Scale
         {
-            set { _scalingTransform.X1 = _scalingTransform.Y2 = value; }
+            set { _scalingTransform.M11 = _scalingTransform.M22 = value; }
         }
 
         /// <summary>
@@ -192,8 +192,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double ScaleX
         {
-            get { return _scalingTransform.X1; }
-            set { _scalingTransform.X1 = value; }
+            get { return _scalingTransform.M11; }
+            set { _scalingTransform.M11 = value; }
         }
 
         /// <summary>
@@ -201,8 +201,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double ScaleY
         {
-            get { return _scalingTransform.Y2; }
-            set { _scalingTransform.Y2 = value; }
+            get { return _scalingTransform.M22; }
+            set { _scalingTransform.M22 = value; }
         }
 
         #region ICloneable Members

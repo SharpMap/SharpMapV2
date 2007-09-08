@@ -29,16 +29,17 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\build</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DEBUG_STEPINTO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <DocumentationFile>bin\Debug\SharpMap.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\build</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -139,7 +140,7 @@
     <Compile Include="Data\SharpMapDataException.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
     <Compile Include="Data\IVectorLayerProvider.cs" />
-    <Compile Include="Data\LayerDataNotFoundException.cs" />
+    <Compile Include="Data\LayerDataLoadException.cs" />
     <Compile Include="Data\Providers\ColumnPropertyComputationDelegates.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureProvider.cs" />
@@ -258,21 +259,22 @@
     <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />
-    <Compile Include="Rendering\Primitives\ILabel`3.cs" />
+    <Compile Include="Rendering\ILabel`3.cs" />
     <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
     <Compile Include="Rendering\IFeatureRenderer`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
+    <Compile Include="Styles\RasterStyle.cs" />
     <Compile Include="Tools\ActionContext`1.cs" />
     <Compile Include="Map.cs">
     </Compile>
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
     <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />
-    <Compile Include="Rendering\Primitives\ColorMatrix.cs" />
+    <Compile Include="Rendering\ColorMatrix.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
-    <Compile Include="Rendering\Primitives\GraphicsFigure`2.cs" />
+    <Compile Include="Rendering\GraphicsFigure`2.cs" />
     <Compile Include="Rendering\Rendering2D\GraphicsFigure2D.cs" />
     <Compile Include="Rendering\Rendering2D\GraphicsPath2D.cs" />
     <Compile Include="Presentation\IViewSelection.cs" />
@@ -287,7 +289,7 @@
     <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Rendering2D\FeatureRenderer2D`2.cs" />
-    <Compile Include="Rendering\Primitives\GraphicsPath`2.cs" />
+    <Compile Include="Rendering\GraphicsPath`2.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
     <Compile Include="Rendering\Rendering2D\Label2D.cs" />

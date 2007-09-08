@@ -33,10 +33,7 @@ namespace SharpMap.Rendering.Rendering2D
     public class Matrix2D : AffineMatrix<DoubleComponent>
     {
         private readonly static Matrix2D _identity
-            = new Matrix2D(
-                1, 0, 0,
-                0, 1, 0,
-                0, 0, 1);
+            = new Matrix2D(1, 0, 0, 1, 0, 0);
 
         /// <summary>
         /// Gets an identity 2D matrix.
@@ -58,33 +55,28 @@ namespace SharpMap.Rendering.Rendering2D
         /// Creates a new identity Matrix2D.
         /// </summary>
         public Matrix2D()
-            : this(1, 0, 0, 0, 1, 0) { }
+            : this(1, 0, 0, 1, 0, 0) { }
 
         /// <summary>
         /// Creates a new Matrix2D with the given values.
         /// </summary>
-        /// <param name="x1">The first row, first column component.</param>
-        /// <param name="x2">The second row, first column component.</param>
+        /// <param name="m11">The first row, first column component.</param>
+        /// <param name="m21">The second row, first column component.</param>
+        /// <param name="m12">The second row, first column component.</param>
+        /// <param name="m22">The second row, second column component.</param>
         /// <param name="offsetX">The third row, first column component.</param>
-        /// <param name="y1">The second row, first column component.</param>
-        /// <param name="y2">The second row, second column component.</param>
         /// <param name="offsetY">The second row, third column component.</param>
-        public Matrix2D(double x1, double x2, double offsetX,
-            double y1, double y2, double offsetY)
-            : this(x1, x2, offsetX, y1, y2, offsetY, 0, 0, 1)
+        public Matrix2D(double m11, double m21, double m12, double m22, double offsetX, double offsetY)
+            : base(MatrixFormat.RowMajor, 3)
         {
+            M11 = m11; M21 = m21; OffsetX = offsetX;
+            M12 = m12; M22 = m22; OffsetY = offsetY;
         }
 
-        protected Matrix2D(double x1, double x2, double offsetX,
-            double y1, double y2, double offsetY,
-            double w1, double w2, double w3)
-            :base(MatrixFormat.RowMajor, 3)
-        {
-            X1 = x1; X2 = x2; OffsetX = offsetX;
-            Y1 = y1; Y2 = y2; OffsetY = offsetY;
-            W1 = w1; W2 = w2; W3 = w3;
-        }
-
+        /// <summary>
+        /// Creates a new matrix, copying the elements in <paramref name="matrixToCopy"/>.
+        /// </summary>
+        /// <param name="matrixToCopy">The matrix to copy the elements from.</param>
         public Matrix2D(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 3)
         {
@@ -104,8 +96,8 @@ namespace SharpMap.Rendering.Rendering2D
         #region ToString
         public override string ToString()
         {
-            return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, {2:N3}], [{3:N3}, {4:N3}, {5:N3}], [{6:N3}, {7:N3}, {8:N3}] ]",
-                X1, Y1, W1, X2, Y2, W2, OffsetX, OffsetY, W3);
+            return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, 0], [{2:N3}, {3:N3}, 0], [{4:N3}, {5:N3}, 1] ]",
+                M11, M12, M21, M22, OffsetX, OffsetY);
         }
         #endregion
 
@@ -137,7 +129,7 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 return new Matrix2D(base.Inverse);
             }
-		}
+        }
 
         /// <summary>
         /// Appends a scale factor to this matrix.
@@ -147,17 +139,17 @@ namespace SharpMap.Rendering.Rendering2D
         public void Scale(double x, double y)
         {
             base.Scale(new Point2D(x, y));
-		}
+        }
 
         /// <summary>
         /// Prepends a scale factor to this matrix.
         /// </summary>
         /// <param name="x">Scale to apply to the X dimension.</param>
         /// <param name="y">Scale to apply to the Y dimension.</param>
-		public void ScalePrepend(double x, double y)
-		{
-			base.Scale(new Point2D(x, y), MatrixOperationOrder.Prepend);
-		}
+        public void ScalePrepend(double x, double y)
+        {
+            base.Scale(new Point2D(x, y), MatrixOperationOrder.Prepend);
+        }
 
         /// <summary>
         /// Appends a translation vector to this matrix.
@@ -174,10 +166,10 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="x">X component of the translation vector.</param>
         /// <param name="y">Y component of the translation vector.</param>
-		public void TranslatePrepend(double x, double y)
-		{
-			base.Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
-		}
+        public void TranslatePrepend(double x, double y)
+        {
+            base.Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
+        }
 
         /// <summary>
         /// Appends a rotation in radians onto this matrix.
@@ -222,77 +214,74 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        #region IEquatable<ViewMatrix2D> Members
+        #region IEquatable<Matrix2D> Members
 
         public bool Equals(Matrix2D other)
         {
-            return X1 == other.X1 &&
-                X2 == other.X2 &&
-                OffsetX == other.OffsetX && 
-                Y1 == other.Y1 &&
-                Y2 == other.Y2 &&
-                OffsetY == other.OffsetY &&
-                W1 == other.W1 &&
-                W2 == other.W2 &&
-                W3 == other.W3;
+            return M11 == other.M11 &&
+                M21 == other.M21 &&
+                OffsetX == other.OffsetX &&
+                M12 == other.M12 &&
+                M22 == other.M22 &&
+                OffsetY == other.OffsetY;
         }
 
         #endregion
         #endregion
 
         #region Properties
-        public double X1
+        /// <summary>
+        /// The first row, first column component.
+        /// </summary>
+        public double M11
         {
             get { return (double)this[0, 0]; }
             set { this[0, 0] = value; }
         }
 
-        public double X2
+        /// <summary>
+        /// The second row, first column component.
+        /// </summary>
+        public double M21
         {
             get { return (double)this[1, 0]; }
             set { this[1, 0] = value; }
         }
 
+        /// <summary>
+        /// The third row, first column component.
+        /// </summary>
         public double OffsetX
         {
             get { return (double)this[2, 0]; }
             set { this[2, 0] = value; }
         }
 
-        public double Y1
+        /// <summary>
+        /// The second row, first column component.
+        /// </summary>
+        public double M12
         {
             get { return (double)this[0, 1]; }
             set { this[0, 1] = value; }
         }
 
-        public double Y2
+        /// <summary>
+        /// The second row, second column component.
+        /// </summary>
+        public double M22
         {
             get { return (double)this[1, 1]; }
             set { this[1, 1] = value; }
         }
 
+        /// <summary>
+        /// The second row, third column component.
+        /// </summary>
         public double OffsetY
         {
             get { return (double)this[2, 1]; }
             set { this[2, 1] = value; }
-        }
-
-        public double W1
-        {
-            get { return (double)this[0, 2]; }
-            set { this[0, 2] = value; }
-        }
-
-        public double W2
-        {
-            get { return (double)this[1, 2]; }
-            set { this[1, 2] = value; }
-        }
-
-        public double W3
-        {
-            get { return (double)this[2, 2]; }
-            set { this[2, 2] = value; }
         }
         #endregion
     }

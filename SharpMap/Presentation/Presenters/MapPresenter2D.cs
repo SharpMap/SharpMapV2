@@ -101,7 +101,7 @@ namespace SharpMap.Presentation
                 _originNormalizeTransform.OffsetX = -extents.Left;
                 _originNormalizeTransform.OffsetY = -extents.Bottom;
 
-                _scaleTransform.X1 = _scaleTransform.Y2 = 1 / initialScale;
+                _scaleTransform.M11 = _scaleTransform.M22 = 1 / initialScale;
 
                 _translationTransform.OffsetX = -geoCenter.X;
                 _translationTransform.OffsetY = -geoCenter.Y;
@@ -300,7 +300,7 @@ namespace SharpMap.Presentation
         /// </exception>
         protected double WorldAspectRatioInternal
         {
-            get { return 1 / Math.Abs(_scaleTransform.Y2 / _scaleTransform.X1); }
+            get { return 1 / Math.Abs(_scaleTransform.M22 / _scaleTransform.M11); }
             set
             {
                 if (value <= 0)
@@ -314,7 +314,7 @@ namespace SharpMap.Presentation
                 if (currentRatio != value)
                 {
                     double ratioModifier = value / currentRatio;
-                    _scaleTransform.Y2 /= ratioModifier;
+                    _scaleTransform.M22 /= ratioModifier;
                     ToWorldTransformInternal = ToViewTransformInternal.Inverse;
                 }
             }
@@ -339,7 +339,7 @@ namespace SharpMap.Presentation
         /// </summary>
         protected double WorldUnitsPerPixelInternal
         {
-            get { return ToWorldTransformInternal.X1; }
+            get { return ToWorldTransformInternal.M11; }
         }
 
         /// <summary>
@@ -752,8 +752,8 @@ namespace SharpMap.Presentation
             if (newWorldUnitsPerPixel != WorldUnitsPerPixelInternal)
             {
                 double newScale = 1 / newWorldUnitsPerPixel;
-                _scaleTransform.Y2 = newScale / WorldAspectRatioInternal;
-                _scaleTransform.X1 = newScale;
+                _scaleTransform.M22 = newScale / WorldAspectRatioInternal;
+                _scaleTransform.M11 = newScale;
                 viewMatrixChanged = true;
             }
 

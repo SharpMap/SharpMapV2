@@ -22,6 +22,12 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
+    /// <summary>
+    /// Encapsulates a label glyph on a map.
+    /// </summary>
+    /// <typeparam name="TViewPoint">Type of point.</typeparam>
+    /// <typeparam name="TViewRectangle">Type of rectangle.</typeparam>
+    /// <typeparam name="TGraphicsPath">Type of graphics path.</typeparam>
 	public interface ILabel<TViewPoint, TViewRectangle, TGraphicsPath>
 		where TViewPoint : IVectorD
 		where TViewRectangle : IMatrixD, IEquatable<TViewRectangle>

@@ -42,10 +42,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// Initializes a new Label instance.
 		/// </summary>
 		/// <param name="text">Text to write</param>
-		/// <param name="labelpoint">Position of label</param>
+        /// <param name="position">Position of label</param>
 		/// <param name="rotation">Rotation</param>
 		/// <param name="priority">Label priority used for collision detection</param>
-		/// <param name="collisionbox">Box around label for collision detection</param>
+        /// <param name="collisionArea">Box around label for collision detection</param>
 		/// <param name="style">The style of the label</param>
 		public Label2D(string text, Point2D position, float rotation, int priority, Rectangle2D collisionArea, LabelStyle style)
 		{
@@ -57,6 +57,10 @@ namespace SharpMap.Rendering.Rendering2D
 			_style = style;
 		}
 
+        /// <summary>
+        /// Creates a string representation of the label.
+        /// </summary>
+        /// <returns>A string which represents the label instance.</returns>
         public override string ToString()
         {
             return String.Format("[{0}] Text: {1}; LabelPoint: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Box: {6}",
@@ -64,7 +68,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
 		/// <summary>
-		/// The text of the label
+		/// Gets or sets the text of the label.
 		/// </summary>
 		public string Text
 		{
@@ -73,7 +77,7 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Label position
+		/// Gets or sets the label position.
 		/// </summary>
         public Point2D LabelPoint
 		{
@@ -82,7 +86,7 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Label font
+		/// Gets or sets the font to render the label with.
 		/// </summary>
 		public StyleFont Font
 		{
@@ -91,7 +95,7 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Label rotation.
+		/// Gets or sets the rotation the label is rendered with. Represented as radians counter-clockwise.
 		/// </summary>
 		public float Rotation
 		{
@@ -100,7 +104,7 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-        /// Priority in layout.
+        /// Gets or sets the relative priority in layout of the label.
 		/// </summary>
 		public int Priority
 		{
@@ -109,7 +113,7 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		/// <summary>
-		/// Label box.
+		/// Gets or sets the region which collision is computed for.
 		/// </summary>
 		public Rectangle2D CollisionBounds
 		{
@@ -117,6 +121,9 @@ namespace SharpMap.Rendering.Rendering2D
 			set { _collisionBounds = value; }
 		}
 
+        /// <summary>
+        /// Gets or sets the path on which to flow the label.
+        /// </summary>
 		public GraphicsPath2D FlowPath
 		{
 			get { return _labelPath; }

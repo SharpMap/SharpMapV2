@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,16 +15,31 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SharpMap.Rendering;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Styles
 {
-    public interface IViewVector : ICloneable, IEquatable<IViewVector>, IEnumerable<double>
+    public class RasterStyle : Style
     {
-        double[] Elements { get; }
-        double this[int element] { get; }
-        bool IsEmpty { get; }
+        private ColorMatrix _colorTransform;
+
+        public ColorMatrix ColorTransform 
+        {
+            get { return _colorTransform; }
+            set 
+            {
+                if (_colorTransform == value)
+                {
+                    return;
+                }
+
+                if(_colorTransform == null)
+                {
+                    _colorTransform = ColorMatrix.Identity;
+                }
+
+                _colorTransform = value; 
+            }
+        }
     }
 }
