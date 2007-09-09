@@ -155,7 +155,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly string _filename;
         private DbaseHeader _header;
         private FeatureDataTable<uint> _baseTable;
-        private DataTable _schema;
         private bool _headerIsParsed;
         private DbaseReader _reader;
         private DbaseWriter _writer;
@@ -476,6 +475,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkState();
             return _header.GetSchemaTable();
         }
+
+		internal void SetTableSchema(FeatureDataTable target)
+		{
+			_baseTable.CopyTableSchema(target);
+		}
 
         /// <summary>
         /// Returns an empty <see cref="FeatureDataTable"/> 

@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using NUnit.Framework;
-using SharpMap.Indexing.RTree;
-using SharpMap.Geometries;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using NUnit.Framework;
+using SharpMap.Geometries;
+using SharpMap.Indexing.RTree;
 
 namespace SharpMap.Tests.Indexing
 {
@@ -16,8 +13,8 @@ namespace SharpMap.Tests.Indexing
 		[Test]
 		public void CreateRTreeTest()
 		{
-			DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(), 
-				new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
+			DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
+			                                                new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
 
 			rTree.Dispose();
 		}
@@ -25,8 +22,8 @@ namespace SharpMap.Tests.Indexing
 		[Test]
 		public void InsertTest()
 		{
-			DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(), 
-				new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
+			DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
+			                                                new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
 
 			addEntries(rTree);
 
@@ -39,7 +36,7 @@ namespace SharpMap.Tests.Indexing
 		public void SearchTest()
 		{
 			DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
-				new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
+			                                                new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
 
 			addEntries(rTree);
 
@@ -89,7 +86,7 @@ namespace SharpMap.Tests.Indexing
 		public void SaveIndexTest()
 		{
 			DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
-				new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
+			                                                new GuttmanQuadraticSplit<int>(), new DynamicRTreeBalanceHeuristic());
 
 			addRandomEntries(rTree);
 			MemoryStream s = new MemoryStream();
@@ -121,10 +118,10 @@ namespace SharpMap.Tests.Indexing
 
 			for (int i = 10; i < 100000; i++)
 			{
-				double xMin = rnd.NextDouble() * (rnd.Next(0, 1) == 1 ? -1 : 1) * rnd.Next();
-				double xMax = rnd.NextDouble() * (rnd.Next(0, 1) == 1 ? -1 : 1) * rnd.Next();
-				double yMin = rnd.NextDouble() * (rnd.Next(0, 1) == 1 ? -1 : 1) * rnd.Next();
-				double yMax = rnd.NextDouble() * (rnd.Next(0, 1) == 1 ? -1 : 1) * rnd.Next();
+				double xMin = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+				double xMax = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+				double yMin = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+				double yMax = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
 
 				BoundingBox bounds = new BoundingBox(xMin, yMin, xMax, yMax);
 				rTree.Insert(new RTreeIndexEntry<int>(i, bounds));

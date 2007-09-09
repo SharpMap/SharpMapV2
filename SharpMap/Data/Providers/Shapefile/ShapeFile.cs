@@ -91,7 +91,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly bool _hasFileBasedSpatialIndex;
         private bool _isOpen;
         private bool _coordsysReadFromFile = false;
-        private bool _exclusiveMode = false;
         private ICoordinateSystem _coordinateSystem;
         private bool _disposed = false;
         private DynamicRTree<uint> _tree;
@@ -779,8 +778,6 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			if (!_isOpen)
 			{
-				_exclusiveMode = exclusive;
-
 				try
 				{
 					//enableReading();
@@ -998,9 +995,14 @@ namespace SharpMap.Data.Providers.ShapeFile
             return _dbaseFile.GetSchemaTable();
         }
 
-        public void SetTableSchema(FeatureDataTable table)
+		/// <summary>
+		/// Sets the schema of the given table to match the schema of the shapefile's attributes.
+		/// </summary>
+		/// <param name="target">Target table to set the schema of.</param>
+		public void SetTableSchema(FeatureDataTable target)
         {
-            throw new NotImplementedException();
+			checkOpen();
+			_dbaseFile.SetTableSchema(target);
         }
 
         #endregion
@@ -1076,9 +1078,14 @@ namespace SharpMap.Data.Providers.ShapeFile
             return getFeature(oid, null);
         }
 
-        public void SetTableSchema(FeatureDataTable<uint> table)
-        {
-            throw new Exception("The method or operation is not implemented.");
+		/// <summary>
+		/// Sets the schema of the given table to match the schema of the shapefile's attributes.
+		/// </summary>
+		/// <param name="target">Target table to set the schema of.</param>
+		public void SetTableSchema(FeatureDataTable<uint> target)
+		{
+			checkOpen();
+			_dbaseFile.SetTableSchema(target);
         }
 
         #endregion

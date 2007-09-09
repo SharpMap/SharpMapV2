@@ -595,6 +595,7 @@ namespace SharpMap.Features
         internal void CopyTableSchema(FeatureDataTable target)
         {
             target.Clear();
+        	target.PrimaryKey = null;
             target.Columns.Clear();
             DataColumn[] targetPrimaryKey = new DataColumn[PrimaryKey.Length];
             int keyIndex = 0;
