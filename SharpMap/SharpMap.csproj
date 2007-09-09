@@ -161,6 +161,8 @@
     <Compile Include="Features\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
+    <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
     <Compile Include="Layers\DuplicateLayerException.cs" />
     <Compile Include="Features\FeatureDataRow.cs" />
     <Compile Include="Features\FeatureDataRowChangeEventArgs.cs" />

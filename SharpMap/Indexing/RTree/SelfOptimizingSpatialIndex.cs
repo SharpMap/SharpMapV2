@@ -22,52 +22,6 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Indexing.RTree
 {
-	[Flags]
-	public enum RestructureOpportunity
-	{
-		None = 0,
-		OnUserIdle = 2,
-		OnMachineIdle = 4,
-		Periodic = 8
-	}
-
-	/// <summary>
-	/// Encapsulates a heuristic to determine when an index is restructured.
-	/// </summary>
-	public struct RestructuringHuristic
-	{
-		private readonly RestructureOpportunity _whenToRestructure;
-		private readonly double _period;
-		private readonly double _executionPercentage;
-
-		public RestructuringHuristic(RestructureOpportunity whenToRestructure, double executionPercentage)
-			: this(whenToRestructure, executionPercentage, -1)
-		{
-		}
-
-		public RestructuringHuristic(RestructureOpportunity whenToRestructure, double executionPercentage, double period)
-		{
-			_whenToRestructure = whenToRestructure;
-			_executionPercentage = executionPercentage;
-			_period = period;
-		}
-
-		public RestructureOpportunity WhenToRestructure
-		{
-			get { return _whenToRestructure; }
-		}
-
-		public double ExecutionPercentage
-		{
-			get { return _executionPercentage; }
-		}
-
-		public double Period
-		{
-			get { return _period; }
-		}
-	}
-
 	/// <summary>
 	/// A dynamic R-Tree which periodically restructures in order to provide more optimal indexing.
 	/// </summary>
@@ -129,7 +83,38 @@ namespace SharpMap.Indexing.RTree
 
 			if (((int)(restructureHeuristic.WhenToRestructure | idle)) > 0)
 			{
+				if(_idleMonitor == null) 
+				{
+					throw new ArgumentNullException("idleMonitor", 
+						"If the restructuring heuristic has a value of anything but " +
+						"None for WhenToRestructure, the idleMonitor cannot be null.");
+				}
+
+				_idleMonitor.UserIdle += _idleMonitor_UserIdle;
+				_idleMonitor.UserBusy += _idleMonitor_UserBusy;
+				_idleMonitor.MachineIdle += _idleMonitor_MachineIdle;
+				_idleMonitor.MachineBusy += _idleMonitor_MachineBusy;
 			}
+		}
+
+		void _idleMonitor_MachineBusy(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		void _idleMonitor_MachineIdle(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		void _idleMonitor_UserBusy(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		void _idleMonitor_UserIdle(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 		#endregion
 
