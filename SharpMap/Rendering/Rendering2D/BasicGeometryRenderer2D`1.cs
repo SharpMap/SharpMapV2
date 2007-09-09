@@ -68,6 +68,10 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
 		#region Object construction and disposal
+		/// <summary>
+		/// Creates a new BasicGeometryRenderer2D with the given VectorRenderer2D instance.
+		/// </summary>
+		/// <param name="vectorRenderer">A vector renderer.</param>
 		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
             : base(vectorRenderer)
 		{
@@ -88,15 +92,8 @@ namespace SharpMap.Rendering.Rendering2D
 		protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(
             FeatureDataRow feature, VectorStyle style)
         {
-            if (feature == null)
-            {
-                throw new ArgumentNullException("feature");
-            }
-
-            if (style == null)
-            {
-                throw new ArgumentNullException("style");
-            }
+            if (feature == null) throw new ArgumentNullException("feature");
+            if (style == null) throw new ArgumentNullException("style");
 
             if (feature.Geometry == null)
             {
