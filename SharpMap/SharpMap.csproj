@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20706</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -347,6 +347,7 @@
     <Compile Include="Indexing\RTree\RTree.cs" />
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
+    <Compile Include="Utilities\IdleMonitor.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
     <Compile Include="Utilities\Tolerance.cs" />
     <Compile Include="Utilities\SharpMapVersion.cs" />

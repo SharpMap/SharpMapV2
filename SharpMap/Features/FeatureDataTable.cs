@@ -30,6 +30,7 @@ using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
+using SharpMap.Utilities;
 
 namespace SharpMap.Features
 {
@@ -676,15 +677,17 @@ namespace SharpMap.Features
         }
 
         private void initializeSpatialIndex()
-        {
+		{
+			// TODO: implement Post-optimization restructure strategy
             IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
-            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.Default, 4.0);
+            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
             IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>();
-            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
+			INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
+			IdleMonitor idleMonitor = null;
             _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
                                                                                 restructureHeuristic, insertStrategy,
                                                                                 nodeSplitStrategy,
-                                                                                new DynamicRTreeBalanceHeuristic());
+																				new DynamicRTreeBalanceHeuristic(), idleMonitor);
         }
 
         #endregion

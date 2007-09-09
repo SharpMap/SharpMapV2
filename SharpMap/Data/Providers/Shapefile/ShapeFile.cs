@@ -1659,14 +1659,15 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             // TODO: implement Post-optimization restructure strategy
             IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
-            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.Default, 4.0);
+            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
             IEntryInsertStrategy<RTreeIndexEntry<uint>> insertStrategy = new GuttmanQuadraticInsert<uint>();
             INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<uint>();
             DynamicRTreeBalanceHeuristic indexHeuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
+        	IdleMonitor idleMonitor = null;
 
             DynamicRTree<uint> index =
                 new SelfOptimizingDynamicSpatialIndex<uint>(restructureStrategy, restructureHeuristic, insertStrategy,
-                                                            nodeSplitStrategy, indexHeuristic);
+															nodeSplitStrategy, indexHeuristic, idleMonitor);
 
             for (uint i = 0; i < (uint) GetFeatureCount(); i++)
             {
