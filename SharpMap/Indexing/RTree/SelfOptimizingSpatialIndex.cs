@@ -81,7 +81,7 @@ namespace SharpMap.Indexing.RTree
 
 			RestructureOpportunity idle = RestructureOpportunity.OnMachineIdle | RestructureOpportunity.OnUserIdle;
 
-			if (((int)(restructureHeuristic.WhenToRestructure | idle)) > 0)
+			if (((int)(restructureHeuristic.WhenToRestructure & idle)) > 0)
 			{
 				if(_idleMonitor == null) 
 				{
