@@ -26,100 +26,134 @@ using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-    /// <summary>
-    /// The base class for 2D feature renderers.
-    /// </summary>
-    /// <typeparam name="TStyle">The type of style to use.</typeparam>
-    /// <typeparam name="TRenderObject">The type of render object produced.</typeparam>
-    public abstract class FeatureRenderer2D<TStyle, TRenderObject> 
-        : IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>
-        where TStyle : class, IStyle
-    {
-        private Matrix2D _viewMatrix;
-        private StyleRenderingMode _renderMode;
-        private readonly VectorRenderer2D<TRenderObject> _vectorRenderer;
-        private ITheme _theme;
-        private bool _disposed;
+	/// <summary>
+	/// The base class for 2D feature renderers.
+	/// </summary>
+	/// <typeparam name="TStyle">The type of style to use.</typeparam>
+	/// <typeparam name="TRenderObject">The type of render object produced.</typeparam>
+	public abstract class FeatureRenderer2D<TStyle, TRenderObject>
+		: IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>
+		where TStyle : class, IStyle
+	{
+		private Matrix2D _viewMatrix;
+		private StyleRenderingMode _renderMode;
+		private readonly VectorRenderer2D<TRenderObject> _vectorRenderer;
+		private ITheme _theme;
+		private bool _disposed;
+		private TStyle _defaultStyle;
 
-        #region Object construction and disposal
-        protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
-            : this(vectorRenderer, null)
-        {
-        }
+		#region Object construction and disposal
+		protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
+			: this(vectorRenderer, null)
+		{
+		}
 
-        protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, ITheme theme)
-        {
-            _vectorRenderer = vectorRenderer;
-            _theme = theme;
-        }
+		protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, ITheme theme)
+		{
+			_vectorRenderer = vectorRenderer;
+			_theme = theme;
+		}
 
-        ~FeatureRenderer2D()
-        {
-            Dispose(false);
-        }
+		~FeatureRenderer2D()
+		{
+			Dispose(false);
+		}
 
-        #region Dispose Pattern
-        #region IDisposable Members
+		#region Dispose Pattern
+		#region IDisposable Members
 
-        public void Dispose()
-        {
-            if (!Disposed)
-            {
-                Dispose(true);
-                Disposed = true;
-                GC.SuppressFinalize(this);
-            }
-        }
-        #endregion
+		public void Dispose()
+		{
+			if (!Disposed)
+			{
+				Dispose(true);
+				Disposed = true;
+				GC.SuppressFinalize(this);
+			}
+		}
+		#endregion
 
-        protected virtual void Dispose(bool disposing)
-        {
-        }
+		protected virtual void Dispose(bool disposing)
+		{
+		}
 
-        protected bool Disposed
-        {
-            get { return _disposed; }
-            set { _disposed = value; }
-        }
-        #endregion
-        #endregion
+		protected bool Disposed
+		{
+			get { return _disposed; }
+			set { _disposed = value; }
+		}
+		#endregion
+		#endregion
 
-        public VectorRenderer2D<TRenderObject> VectorRenderer
-        {
-            get { return _vectorRenderer; }
-        }
+		/// <summary>
+		/// Gets the VectorRenderer2D which this featurer renderer 
+		/// uses to render graphics.
+		/// </summary>
+		public VectorRenderer2D<TRenderObject> VectorRenderer
+		{
+			get { return _vectorRenderer; }
+		}
 
-        #region Events
+		#region Events
 		/// <summary>
 		/// Event fired when a feature is about to render to the render stream.
 		/// </summary>
 		public event CancelEventHandler FeatureRendering;
 
-        /// <summary>
-        /// Event fired when a feature has been rendered.
-        /// </summary>
-        public event EventHandler FeatureRendered;
-        #endregion
+		/// <summary>
+		/// Event fired when a feature has been rendered.
+		/// </summary>
+		public event EventHandler FeatureRendered;
+		#endregion
 
-        #region IFeatureRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
-        /// <summary>
-        /// Renders a feature into displayable render objects.
-        /// </summary>
-        /// <param name="feature">The feature to render.</param>
-        /// <returns>An enumeration of positioned render objects for display.</returns>
-        public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature)
-        {
-            return RenderFeature(feature, Theme == null ? null : Theme.GetStyle(feature) as TStyle);
-        }
+		#region IRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+		/// <summary>
+		/// Gets or sets a <see cref="StyleRenderingMode"/> 
+		/// value used to render objects.
+		/// </summary>
+		public StyleRenderingMode StyleRenderingMode
+		{
+			get { return _renderMode; }
+			set { _renderMode = value; }
+		}
+		#endregion
 
-        /// <summary>
-        /// Renders a feature into displayable render objects.
-        /// </summary>
-        /// <param name="feature">The feature to render.</param>
-        /// <param name="style">The style to use to render the feature.</param>
-        /// <returns>An enumeration of positioned render objects for display.</returns>
+		#region IFeatureRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+
+		/// <summary>
+		/// Renders a feature into displayable render objects.
+		/// </summary>
+		/// <param name="feature">The feature to render.</param>
+		/// <returns>An enumeration of positioned render objects for display.</returns>
+		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(FeatureDataRow feature)
+		{
+			TStyle style;
+
+			if (Theme == null)
+			{
+				if (DefaultStyle == null)
+				{
+					throw new InvalidOperationException("Cannot render feature without style. Both Theme and DefaultStyle are null.");
+				}
+
+				style = DefaultStyle;
+			}
+			else
+			{
+				style = (TStyle)Theme.GetStyle(feature);
+			}
+
+			return RenderFeature(feature, style);
+		}
+
+		/// <summary>
+		/// Renders a feature into displayable render objects.
+		/// </summary>
+		/// <param name="feature">The feature to render.</param>
+		/// <param name="style">The style to use to render the feature.</param>
+		/// <returns>An enumeration of positioned render objects for display.</returns>
 		public IEnumerable<PositionedRenderObject2D<TRenderObject>> RenderFeature(
-            FeatureDataRow feature, TStyle style)
+			FeatureDataRow feature, TStyle style)
 		{
 			bool cancel = false;
 
@@ -130,128 +164,148 @@ namespace SharpMap.Rendering.Rendering2D
 				yield break;
 			}
 
-			IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects 
-                = DoRenderFeature(feature, style);
+			IEnumerable<PositionedRenderObject2D<TRenderObject>> renderedObjects
+				= DoRenderFeature(feature, style);
 
-            OnFeatureRendered();
+			OnFeatureRendered();
 
 			foreach (PositionedRenderObject2D<TRenderObject> renderObject in renderedObjects)
 			{
 				yield return renderObject;
 			}
-        }
-
-        /// <summary>
-        /// Gets or sets the theme used to generate styles for rendered features.
-        /// </summary>
-		public ITheme Theme
-		{
-            get { return _theme; }
-            set { _theme = value; }
 		}
 
-        /// <summary>
-        /// Render whether smoothing (antialiasing) is applied to lines 
-        /// and curves and the edges of filled areas.
-        /// </summary>
-        public StyleRenderingMode StyleRenderingMode
-        {
-            get { return _renderMode; }
-            set { _renderMode = value; }
-        }
+		/// <summary>
+		/// Gets or sets the theme used to generate styles for rendered features.
+		/// </summary>
+		public ITheme Theme
+		{
+			get { return _theme; }
+			set { _theme = value; }
+		}
+		#endregion
 
-        /// <summary>
-        /// Gets or sets a matrix used to transform world 
-        /// coordinates to graphical display coordinates.
-        /// </summary>
-        public Matrix2D ViewTransform
-        {
-            get { return _viewMatrix; }
-            set { _viewMatrix = value; }
-        }
+		/// <summary>
+		/// Gets or sets the default style if no style or theme information is provided.
+		/// </summary>
+		public TStyle DefaultStyle
+		{
+			get { return _defaultStyle; }
+			set
+			{
+				if (value == null) throw new ArgumentNullException("value");
 
-        /// <summary>
-        /// Template method to perform the actual geometry rendering.
-        /// </summary>
-        /// <param name="feature">Feature to render.</param>
-        /// <param name="style">Style to use in rendering geometry.</param>
-        /// <returns></returns>
+				_defaultStyle = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a matrix used to transform world 
+		/// coordinates to graphical display coordinates.
+		/// </summary>
+		public Matrix2D ViewTransform
+		{
+			get { return _viewMatrix; }
+			set { _viewMatrix = value; }
+		}
+
+		/// <summary>
+		/// Template method to perform the actual geometry rendering.
+		/// </summary>
+		/// <param name="feature">Feature to render.</param>
+		/// <param name="style">Style to use in rendering geometry.</param>
+		/// <returns></returns>
 		protected abstract IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(
-            FeatureDataRow feature, TStyle style);
-        #endregion
+			FeatureDataRow feature, TStyle style);
 
-        #region Private helper methods
-        /// <summary>
-        /// Called when a feature is rendered.
-        /// </summary>
-        private void OnFeatureRendered()
-        {
-            EventHandler @event = FeatureRendered;
-            
-            if (@event != null)
-            {
-                @event(this, EventArgs.Empty); //Fire event
-            }
-        }
+		#region Private helper methods
+		/// <summary>
+		/// Called when a feature is rendered.
+		/// </summary>
+		private void OnFeatureRendered()
+		{
+			EventHandler @event = FeatureRendered;
 
-        /// <summary>
-        /// Called when a feature is rendered.
-        /// </summary>
-        private void OnFeatureRendering(ref bool cancel)
-        {
-            CancelEventHandler @event = FeatureRendering;
+			if (@event != null)
+			{
+				@event(this, EventArgs.Empty); //Fire event
+			}
+		}
 
-            if (@event != null)
-            {
-                CancelEventArgs args = new CancelEventArgs(cancel);
-                @event(this, args); //Fire event
+		/// <summary>
+		/// Called when a feature is rendered.
+		/// </summary>
+		private void OnFeatureRendering(ref bool cancel)
+		{
+			CancelEventHandler @event = FeatureRendering;
 
-                cancel = args.Cancel;
-            }
-        }
-        #endregion
+			if (@event != null)
+			{
+				CancelEventArgs args = new CancelEventArgs(cancel);
+				@event(this, args); //Fire event
 
-        #region Explicit Interface Implementation
-        #region IRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+				cancel = args.Cancel;
+			}
+		}
+		#endregion
 
-        IMatrix2D IRenderer.RenderTransform
-        {
-            get
-            {
-                return ViewTransform;
-            }
-            set
-            {
-                if (!(value is Matrix2D))
-                {
-                    throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
-                }
+		#region Explicit Interface Implementation
+		#region IRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
 
-                ViewTransform = value as Matrix2D;
-            }
-        }
+		IMatrix2D IRenderer.RenderTransform
+		{
+			get
+			{
+				return ViewTransform;
+			}
+			set
+			{
+				if (!(value is Matrix2D))
+				{
+					throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
+				}
 
-        #endregion
+				ViewTransform = value as Matrix2D;
+			}
+		}
 
-        #region IFeatureRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+		#endregion
 
-        IEnumerable<PositionedRenderObject2D<TRenderObject>> 
-            IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.RenderFeature(
-            FeatureDataRow feature, IStyle style)
-        {
-            return RenderFeature(feature, style as TStyle);
-        }
+		#region IFeatureRenderer<Point2D,ViewSize2D,Rectangle2D,PositionedRenderObject2D<TRenderObject>> Members
+		IStyle IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.DefaultStyle
+		{
+			get
+			{
+				return DefaultStyle;
+			}
+			set
+			{
+				if (!(value is TStyle))
+				{
+					throw new ArgumentException("DefaultStyle must be of type " + typeof(TStyle));
+				}
 
-        #endregion
+				DefaultStyle = (TStyle)value;
+			}
+		}
 
-        #region IDisposable Members
+		IEnumerable<PositionedRenderObject2D<TRenderObject>>
+			IFeatureRenderer<PositionedRenderObject2D<TRenderObject>>.RenderFeature(
+			FeatureDataRow feature, IStyle style)
+		{
+			return RenderFeature(feature, style as TStyle);
+		}
 
-        void IDisposable.Dispose()
-        {
-            Dispose(true);
-        }
+		#endregion
 
-        #endregion
-        #endregion
-    }
+		#region IDisposable Members
+
+		void IDisposable.Dispose()
+		{
+			Dispose(true);
+		}
+
+		#endregion
+		#endregion
+	}
 }

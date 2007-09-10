@@ -15,16 +15,12 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System.Data;
-
 namespace SharpMap.Data
 {
-    /// <summary>
-    /// Provides a fast-forward, read-only data stream to geometry data.
-    /// </summary>
-	public interface IFeatureDataReader : IDataReader, IFeatureDataRecord
-    {
-        object GetOid();
-        bool HasOid { get; }
-    }
+	public enum SchemaMergeAction
+	{
+		AddToTarget,
+		AddWithKeyToTarget,
+		ThrowExceptionOnMismatch
+	}
 }

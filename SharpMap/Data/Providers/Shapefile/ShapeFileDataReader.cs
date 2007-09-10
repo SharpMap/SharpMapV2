@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using SharpMap.Features;
 using SharpMap.Geometries;
@@ -25,19 +26,20 @@ namespace SharpMap.Data.Providers.ShapeFile
     public class ShapeFileDataReader : IFeatureDataReader
     {
         private readonly ShapeFile _shapeFile;
-        private readonly BoundingBox _queryRegion;
         private readonly DataTable _schemaTable;
         private FeatureDataRow<uint> _currentFeature;
-        private uint _currentRecord;
         private bool _isDisposed;
+    	private readonly IEnumerator<uint> _objectEnumerator;
 
         #region Object Construction / Disposal
 
         internal ShapeFileDataReader(ShapeFile source, BoundingBox queryRegion)
         {
-            _queryRegion = queryRegion;
             _shapeFile = source;
-            _schemaTable = source.GetSchemaTable();
+			_schemaTable = source.GetSchemaTable();
+
+			// Use the spatial index to get a list of features whose BoundingBox intersects query bounds.
+        	_objectEnumerator = source.GetObjectIdsInView(queryRegion).GetEnumerator();
         }
 
         #region Dispose Pattern
@@ -98,28 +100,33 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #endregion
 
-        #endregion
+		#endregion
 
-        #region IFeatureDataReader Members
+		#region IFeatureDataRecord Members
+		public Geometry Geometry
+		{
+			get
+			{
+				checkState();
 
-        public Geometry GetGeometry()
+				if (_currentFeature.Geometry == null)
+				{
+					return null;
+				}
+				else
+				{
+					return _currentFeature.Geometry.Clone();
+				}
+			}
+		}
+		#endregion
+
+		#region IFeatureDataReader Members
+
+		public object GetOid()
         {
             checkState();
-
-            if (_currentFeature.Geometry == null)
-            {
-                return null;
-            }
-            else
-            {
-                return _currentFeature.Geometry.Clone();
-            }
-        }
-
-        public object GetOid()
-        {
-            checkState();
-            return _currentRecord;
+			return _objectEnumerator.Current;
         }
 
         public bool HasOid
@@ -170,25 +177,19 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             checkState();
 
-            BoundingBox featureBounds = BoundingBox.Empty;
-            int featureCount = _shapeFile.GetFeatureCount();
+        	bool reading = _objectEnumerator.MoveNext();
 
-            do
-            {
-                _currentRecord++;
-                _currentFeature = _shapeFile.GetFeature(_currentRecord);
-                if (_currentFeature != null && _currentFeature.Geometry != null)
-                {
-                    featureBounds = _currentFeature.Geometry.GetBoundingBox();
-                }
-            } while (_currentRecord < featureCount && !_queryRegion.Intersects(featureBounds));
+			if (reading)
+			{
+				_currentFeature = _shapeFile.GetFeature(_objectEnumerator.Current);
+			}
 
-            return _currentRecord < featureCount;
+        	return reading;
         }
 
         public int RecordsAffected
         {
-            get { return _shapeFile.GetFeatureCount(); }
+            get { return -1; }
         }
 
         #endregion

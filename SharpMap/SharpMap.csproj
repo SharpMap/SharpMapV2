@@ -158,6 +158,7 @@
     <Compile Include="Data\Providers\Shapefile\ShapeFileInvalidOperationException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
+    <Compile Include="Data\IFeatureDataRecord.cs" />
     <Compile Include="Features\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>

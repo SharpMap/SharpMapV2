@@ -18,31 +18,66 @@
 
 using System;
 using System.Data;
+using System.Reflection.Emit;
+using SharpMap.Data;
 using SharpMap.Geometries;
+using System.Reflection;
 
 namespace SharpMap.Features
 {
+#if !DEBUG_STEPINTO
+	[System.Diagnostics.DebuggerStepThrough()]
+#endif
 	/// <summary>
 	/// Represents a geographic feature, stored as 
 	/// a row of data in a <see cref="FeatureDataTable"/>.
 	/// </summary>
-#if !DEBUG_STEPINTO
-	[System.Diagnostics.DebuggerStepThrough()]
-#endif
-
 	[Serializable]
-	public class FeatureDataRow : DataRow
+	public class FeatureDataRow : DataRow, IFeatureDataRecord
 	{
-		//private FeatureDataTable tableFeatureTable;
-        private Geometry _originalGeometry;
-        private Geometry _currentGeometry;
-        private Geometry _proposedGeometry;
-		private bool _isGeometryModified = false;
+		#region Nested types
+		private delegate DataColumnCollection GetColumnsDelegate(DataRow row);
+		#endregion
 
+		#region Type fields
+		private static readonly GetColumnsDelegate _getColumns; 
+		#endregion
+
+		#region Static constructor
+		static FeatureDataRow()
+		{
+			DynamicMethod getColumnsMethod = new DynamicMethod("FeatureDataRow_GetColumns",
+				MethodAttributes.Static | MethodAttributes.Public,
+				CallingConventions.Standard,
+				typeof(DataColumnCollection),		// return type
+				new Type[] { typeof(DataRow)},		// one parameter of type DataRow
+				typeof(DataRow),					// owning type
+				false);								// don't skip JIT visibility checks
+
+			ILGenerator il = getColumnsMethod.GetILGenerator();
+			FieldInfo columnsField = typeof(DataRow).GetField("_columns", BindingFlags.NonPublic | BindingFlags.Instance);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldfld, columnsField);
+			il.Emit(OpCodes.Ret);
+
+			_getColumns = (GetColumnsDelegate)getColumnsMethod.CreateDelegate(typeof(GetColumnsDelegate));
+		} 
+		#endregion
+
+		#region Instance fields
+		// TODO: implement original and proposed geometry to match 
+		private Geometry _originalGeometry;
+		private Geometry _currentGeometry;
+		private Geometry _proposedGeometry;
+		private bool _isGeometryModified = false; 
+		#endregion
+
+		#region Object constructor
 		internal FeatureDataRow(DataRowBuilder rb)
 			: base(rb)
 		{
-		}
+		} 
+		#endregion
 
         /// <summary>
         /// Accepts all pending values in the feature and makes them
@@ -110,6 +145,133 @@ namespace SharpMap.Features
 		public void SetFeatureGeometryNull()
 		{
 			Geometry = null;
+		}
+
+		#region IDataRecord Members
+
+		public int FieldCount
+		{
+			get { return InternalColumns.Count; }
+		}
+
+		public bool GetBoolean(int i)
+		{
+			return Convert.ToBoolean(this[i]);
+		}
+
+		public byte GetByte(int i)
+		{
+			return Convert.ToByte(this[i]);
+		}
+
+		public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+		{
+			throw new NotImplementedException();
+		}
+
+		public char GetChar(int i)
+		{
+			return Convert.ToChar(this[i]);
+		}
+
+		public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDataReader GetData(int i)
+		{
+			throw new NotImplementedException();
+		}
+
+		public string GetDataTypeName(int i)
+		{
+			return InternalColumns[i].DataType.ToString();
+		}
+
+		public DateTime GetDateTime(int i)
+		{
+			return Convert.ToDateTime(this[i]);
+		}
+
+		public decimal GetDecimal(int i)
+		{
+			return Convert.ToDecimal(this[i]);
+		}
+
+		public double GetDouble(int i)
+		{
+			return Convert.ToDouble(this[i]);
+		}
+
+		public Type GetFieldType(int i)
+		{
+			return InternalColumns[i].DataType;
+		}
+
+		public float GetFloat(int i)
+		{
+			return Convert.ToSingle(this[i]);
+		}
+
+		public Guid GetGuid(int i)
+		{
+			return (Guid)this[i];
+		}
+
+		public short GetInt16(int i)
+		{
+			return Convert.ToInt16(this[i]);
+		}
+
+		public int GetInt32(int i)
+		{
+			return Convert.ToInt32(this[i]);
+		}
+
+		public long GetInt64(int i)
+		{
+			return Convert.ToInt64(this[i]);
+		}
+
+		public string GetName(int i)
+		{
+			return InternalColumns[i].ColumnName;
+		}
+
+		public int GetOrdinal(string name)
+		{
+			return InternalColumns[name].Ordinal;
+		}
+
+		public string GetString(int i)
+		{
+			return Convert.ToString(this[i]);
+		}
+
+		public object GetValue(int i)
+		{
+			return this[i];
+		}
+
+		public int GetValues(object[] values)
+		{
+			object[] items = ItemArray;
+			int elementsCopied = Math.Max(values.Length, items.Length);
+			Array.Copy(items, values, elementsCopied);
+			return elementsCopied;
+		}
+
+		public bool IsDBNull(int i)
+		{
+			return IsNull(i);
+		}
+
+		#endregion
+
+		protected DataColumnCollection InternalColumns
+		{
+			get { return _getColumns(this); }
 		}
 	}
 }

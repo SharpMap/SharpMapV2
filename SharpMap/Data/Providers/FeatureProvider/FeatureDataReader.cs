@@ -91,16 +91,21 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #endregion
 
-        #endregion
+		#endregion
+
+		#region IFeatureDataRecord Members
+		public Geometry Geometry
+		{
+			get
+			{
+				checkDisposed();
+				checkReadState();
+				return _table[_currentRow].Geometry.Clone();
+			}
+		}
+		#endregion
 
         #region IFeatureDataReader Members
-
-        public Geometry GetGeometry()
-        {
-            checkDisposed();
-            checkReadState();
-            return _table[_currentRow].Geometry.Clone();
-        }
 
         public object GetOid()
         {

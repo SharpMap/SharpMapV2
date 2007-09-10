@@ -62,14 +62,20 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
 
         #endregion
-        #endregion
+		#endregion
+
+		#region IFeatureDataRecord Members
+		public Geometry Geometry
+		{
+			get
+			{
+				checkState();
+				return _provider.Geometries[_currentIndex].Clone();
+			}
+		}
+		#endregion
 
         #region IFeatureDataReader Members
-
-        public Geometry GetGeometry()
-        {
-            return _provider.Geometries[_currentIndex].Clone();
-        }
 
         public object GetOid()
         {

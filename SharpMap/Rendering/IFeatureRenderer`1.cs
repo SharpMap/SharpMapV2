@@ -31,6 +31,11 @@ namespace SharpMap.Rendering
     public interface IFeatureRenderer<TRenderObject> : IRenderer
 	{
 		/// <summary>
+		/// Gets or sets the default style if no style or theme information is provided.
+		/// </summary>
+		IStyle DefaultStyle { get; set; }
+
+		/// <summary>
 		/// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
 		/// </summary>
 		/// <param name="feature">

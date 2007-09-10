@@ -35,9 +35,9 @@ namespace SharpMap.Rendering.Rendering2D
 	public class BasicGeometryRenderer2D<TRenderObject> : FeatureRenderer2D<VectorStyle, TRenderObject>, 
         IGeometryRenderer<Symbol2D,  PositionedRenderObject2D<TRenderObject>>
     {
-        
         #region Type Members
-        private static object _defaultSymbol;
+		private static object _defaultSymbol;
+		private static readonly object _defaultSymbolSync = new object();
 
         /// <summary>
         /// The default basic symbol for rendering point data.
@@ -48,13 +48,14 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 if (Thread.VolatileRead(ref _defaultSymbol) == null)
                 {
-                    lock (_defaultSymbol)
+					lock (_defaultSymbolSync)
                     {
 						if (Thread.VolatileRead(ref _defaultSymbol) == null)
                         {
                             Stream data = Assembly.GetExecutingAssembly()
 								.GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
-                            Thread.VolatileWrite(ref _defaultSymbol, new Symbol2D(data, new Size2D(16, 16)));
+                        	Symbol2D symbol = new Symbol2D(data, new Size2D(16, 16));
+							Thread.VolatileWrite(ref _defaultSymbol, symbol);
                         }
                     }
                 }
@@ -75,6 +76,7 @@ namespace SharpMap.Rendering.Rendering2D
 		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
             : base(vectorRenderer)
 		{
+			DefaultStyle = new VectorStyle();
 		}
 
         ~BasicGeometryRenderer2D()
@@ -239,12 +241,14 @@ namespace SharpMap.Rendering.Rendering2D
             }
             else if (geometry is GeometryCollection)
             {
-                List<TRenderObject> renderObjects = new List<TRenderObject>();
+				List<PositionedRenderObject2D<TRenderObject>> renderObjects = new List<PositionedRenderObject2D<TRenderObject>>();
 
                 foreach (Geometry g in (geometry as GeometryCollection))
                 {
-                    return renderGeometry(g, style);
+                    renderObjects.AddRange(renderGeometry(g, style));
                 }
+
+				return renderObjects;
             }
 
             throw new NotSupportedException(String.Format("Geometry type is not supported: {0}", geometry.GetType()));

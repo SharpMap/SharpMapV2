@@ -476,7 +476,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return _header.GetSchemaTable();
         }
 
-		internal void SetTableSchema(FeatureDataTable target)
+		internal void SetTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
 		{
 			_baseTable.CopyTableSchema(target);
 		}

@@ -408,7 +408,7 @@ namespace SharpMap.Features
             }
         }
 
-        internal void MergeFeature(IFeatureDataReader record)
+        internal void MergeFeature(IFeatureDataRecord record)
         {
             // TODO: Reevaluate FeatureDataTable.MergeFeature in terms of DataTable.Merge
             // This function looks as if it duplicates DataTable.Merge
@@ -449,7 +449,7 @@ namespace SharpMap.Features
             object[] values = new object[Columns.Count];
             record.GetValues(values);
             feature.ItemArray = values;
-            feature.Geometry = record.GetGeometry();
+            feature.Geometry = record.Geometry;
             AddRow(feature);
         }
 
@@ -592,7 +592,7 @@ namespace SharpMap.Features
             row.EndEdit();
         }
 
-        internal void CopyTableSchema(FeatureDataTable target)
+		internal void CopyTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
         {
             target.Clear();
         	target.PrimaryKey = null;
