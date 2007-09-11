@@ -108,6 +108,23 @@ namespace SharpMap.Geometries
 			{
 				return (g1 as MultiPolygon).Equals(g2 as MultiPolygon);
 			}
+			else if (g1 is GeometryCollection)
+			{
+				if ((g1 as GeometryCollection).Collection.Count != (g2 as GeometryCollection).Collection.Count)
+				{
+					return false;
+				}
+
+				for (int i = 0; i < (g1 as GeometryCollection).Collection.Count; i++)
+				{
+					if (!Equals((g1 as GeometryCollection)[i], (g2 as GeometryCollection)[i]))
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
 			else
 			{
 				throw new ArgumentException("The method or operation is not implemented on this geometry type.");
@@ -125,17 +142,17 @@ namespace SharpMap.Geometries
 		{
 #warning BoundingBox intersection is wrong, wrong, wrong, but it won't be fixed until we use NTS
 
-            if (g1 == null || g2 == null)
-            {
-                return false;
-            }
+			if (g1 == null || g2 == null)
+			{
+				return false;
+			}
 
-            if (g1 == g2)
-            {
-                return true;
-            }
+			if (g1 == g2)
+			{
+				return true;
+			}
 
-            return g1.GetBoundingBox().Intersects(g2.GetBoundingBox());
+			return g1.GetBoundingBox().Intersects(g2.GetBoundingBox());
 		}
 
 		/// <summary>
