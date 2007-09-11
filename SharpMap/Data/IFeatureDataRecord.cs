@@ -42,16 +42,6 @@ namespace SharpMap.Data
         object GetOid();
 
         /// <summary>
-        /// Gets the Object ID for the record as a specific type.
-        /// </summary>
-        /// <typeparam name="TOid">The type of the OID.</typeparam>
-        /// <returns>
-        /// The Object ID for the record, or <see langword="null"/> 
-        /// if <see cref="HasOid"/> is <see langword="false"/>.
-        /// </returns>
-        TOid GetOid<TOid>();
-
-        /// <summary>
         /// Gets a value indicating if the feature record
         /// has an Object Identifier (OID).
         /// </summary>

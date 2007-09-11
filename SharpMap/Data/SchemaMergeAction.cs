@@ -26,7 +26,8 @@ namespace SharpMap.Data
 		Add = 1,
         AddWithKey = 5,
         Replace = 2,
-        Key = 4,
+		Key = 4,
+		KeyByType = 32,
         CaseInsensitive = 8,
         ConvertTypes = 16
 	}

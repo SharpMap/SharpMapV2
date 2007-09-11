@@ -24,7 +24,7 @@ namespace SharpMap.Data
     /// Provides a fast-forward, read-only data stream to geometry data.
     /// </summary>
 	public interface IFeatureDataReader 
-        : IDataReader, IFeatureDataRecord, IEnumerator<IFeatureDataRecord>
+        : IDataReader, IFeatureDataRecord, IEnumerable<IFeatureDataRecord>, IEnumerator<IFeatureDataRecord>
     {
     }
 }

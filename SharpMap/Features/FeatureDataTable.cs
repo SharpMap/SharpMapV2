@@ -387,18 +387,44 @@ namespace SharpMap.Features
 
         public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
         {
-            foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
-            {
-                yield return entry.Value;
-            }
+			if (IsSpatiallyIndexed)
+			{
+				foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
+				{
+					yield return entry.Value;
+				}
+			}
+			else
+			{
+				foreach (FeatureDataRow feature in this)
+				{
+					if(bounds.Intersects(feature.Geometry))
+					{
+						yield return feature;
+					}
+				}
+			}
         }
 
         public IEnumerable<FeatureDataRow> Select(Geometry geometry)
         {
-            foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
-            {
-                yield return entry.Value;
-            }
+			if (IsSpatiallyIndexed)
+			{
+				foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
+				{
+					yield return entry.Value;
+				}
+			}
+			else
+			{
+				foreach (FeatureDataRow feature in this)
+				{
+					if (geometry.Intersects(feature.Geometry))
+					{
+						yield return feature;
+					}
+				}
+			}
         }
 
         #endregion
@@ -557,66 +583,38 @@ namespace SharpMap.Features
             row.EndEdit();
         }
 
-        public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
-        {
-            FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
-            merger.MergeSchema(this);
-        }
-
         public void MergeSchema(FeatureDataTable target)
         {
             MergeSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
-            //target.Clear();
-            //target.PrimaryKey = null;
-            //target.Columns.Clear();
-            //DataColumn[] targetPrimaryKey = new DataColumn[PrimaryKey.Length];
-            //int keyIndex = 0;
+		}
 
-            //foreach (DataColumn column in Columns)
-            //{
-            //    DataColumn newColumn = new DataColumn(column.ColumnName, column.DataType);
-            //    newColumn.AllowDBNull = column.AllowDBNull;
-            //    newColumn.AutoIncrement = column.AutoIncrement;
-            //    newColumn.AutoIncrementSeed = column.AutoIncrementSeed;
-            //    newColumn.AutoIncrementStep = column.AutoIncrementStep;
-            //    newColumn.Caption = column.Caption;
-            //    newColumn.ColumnMapping = column.ColumnMapping;
-            //    newColumn.DateTimeMode = column.DateTimeMode;
-            //    newColumn.DefaultValue = column.DefaultValue;
-            //    newColumn.Expression = column.Expression;
-            //    newColumn.MaxLength = column.MaxLength;
-            //    newColumn.Namespace = column.Namespace;
-            //    newColumn.Prefix = column.Prefix;
-            //    newColumn.ReadOnly = column.ReadOnly;
-            //    newColumn.Unique = column.Unique;
-
-            //    foreach (DictionaryEntry entry in column.ExtendedProperties)
-            //    {
-            //        newColumn.ExtendedProperties.Add(entry.Key, entry.Value);
-            //    }
-
-            //    target.Columns.Add(newColumn);
-
-            //    // if this column is a key, add it to the target key columns array
-            //    if (Array.Exists(PrimaryKey, delegate(DataColumn key) { return column == key; }))
-            //    {
-            //        targetPrimaryKey[keyIndex] = newColumn;
-            //        keyIndex++;
-            //    }
-            //}
-
-            //Debug.Assert(keyIndex == PrimaryKey.Length);
-            //target.PrimaryKey = targetPrimaryKey;
-        }
+		public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
+		{
+			FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
+			merger.MergeSchema(this);
+		}
 
         internal void MergeFeature(IFeatureDataRecord record)
         {
-            // TODO: Reevaluate FeatureDataTable.MergeFeature in terms of DataTable.Merge
-            // This function looks as if it duplicates DataTable.Merge
-            // somewhat. However, since it's not a complete overlap, and
-            // it isn't clear how to accomplish the operation with DataTable.Merge,
-            // this method will be used for now...
+        	MergeFeature(record, SchemaMergeAction.AddWithKey);
+		}
+		
+        internal void MergeFeature(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
+        {
+			FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+			merger.MergeFeature(record);
         }
+
+    	internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records)
+		{
+			MergeFeatures(records, SchemaMergeAction.AddWithKey);
+		}
+
+		internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
+		{
+			FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+			merger.MergeFeatures(records);
+		}
 
         internal void SuspendIndexEvents()
         {
@@ -764,5 +762,5 @@ namespace SharpMap.Features
         }
 
         #endregion
-    }
+	}
 }

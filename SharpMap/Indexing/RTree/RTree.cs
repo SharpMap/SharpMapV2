@@ -107,7 +107,7 @@ namespace SharpMap.Indexing.RTree
         /// Searches the tree and looks for intersections with the
         /// given <paramref name="geometry"/>.
         /// </summary>
-        /// <param name="box">Geometry to intersect the index with.</param>
+		/// <param name="geometry">Geometry to intersect the index with.</param>
         public virtual IEnumerable<RTreeIndexEntry<TValue>> Search(Geometry geometry)
         {
             throw new NotImplementedException();

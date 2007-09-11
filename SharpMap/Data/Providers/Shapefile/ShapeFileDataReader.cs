@@ -23,82 +23,82 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-    public class ShapeFileDataReader : IFeatureDataReader
-    {
-        private readonly ShapeFile _shapeFile;
-        private readonly DataTable _schemaTable;
-        private FeatureDataRow<uint> _currentFeature;
-        private bool _isDisposed;
-    	private readonly IEnumerator<uint> _objectEnumerator;
+	public class ShapeFileDataReader : IFeatureDataReader
+	{
+		private readonly ShapeFile _shapeFile;
+		private readonly DataTable _schemaTable;
+		private FeatureDataRow<uint> _currentFeature;
+		private bool _isDisposed;
+		private readonly IEnumerator<uint> _objectEnumerator;
 
-        #region Object Construction / Disposal
+		#region Object Construction / Disposal
 
-        internal ShapeFileDataReader(ShapeFile source, BoundingBox queryRegion)
-        {
-            _shapeFile = source;
+		internal ShapeFileDataReader(ShapeFile source, BoundingBox queryRegion)
+		{
+			_shapeFile = source;
 			_schemaTable = source.GetSchemaTable();
 
 			// Use the spatial index to get a list of features whose BoundingBox intersects query bounds.
-        	_objectEnumerator = source.GetObjectIdsInView(queryRegion).GetEnumerator();
-        }
+			_objectEnumerator = source.GetObjectIdsInView(queryRegion).GetEnumerator();
+		}
 
-        #region Dispose Pattern
+		#region Dispose Pattern
 
-        ~ShapeFileDataReader()
-        {
-            Dispose(false);
-        }
+		~ShapeFileDataReader()
+		{
+			Dispose(false);
+		}
 
-        #region IDisposable Members
+		#region IDisposable Members
 
-        public void Dispose()
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
+		public void Dispose()
+		{
+			if (IsDisposed)
+			{
+				return;
+			}
 
-            Dispose(true);
-            IsDisposed = true;
-            GC.SuppressFinalize(this);
-        }
+			Dispose(true);
+			IsDisposed = true;
+			GC.SuppressFinalize(this);
+		}
 
-        #endregion
+		#endregion
 
-        private void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
+		private void Dispose(bool disposing)
+		{
+			if (IsDisposed)
+			{
+				return;
+			}
 
-            if (disposing)
-            {
-                _shapeFile.Close();
-            }
+			if (disposing)
+			{
+				_shapeFile.Close();
+			}
 
-            OnDisposed();
-        }
+			OnDisposed();
+		}
 
-        public bool IsDisposed
-        {
-            get { return _isDisposed; }
-            private set { _isDisposed = value; }
-        }
+		public bool IsDisposed
+		{
+			get { return _isDisposed; }
+			private set { _isDisposed = value; }
+		}
 
-        private void OnDisposed()
-        {
-            EventHandler e = Disposed;
+		private void OnDisposed()
+		{
+			EventHandler e = Disposed;
 
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
-        }
+			if (e != null)
+			{
+				e(this, EventArgs.Empty);
+			}
+		}
 
-        public event EventHandler Disposed;
+		public event EventHandler Disposed;
 
-        #endregion
+		#endregion
 
 		#endregion
 
@@ -124,351 +124,362 @@ namespace SharpMap.Data.Providers.ShapeFile
 		#region IFeatureDataReader Members
 
 		public object GetOid()
-        {
-            checkState();
+		{
+			checkState();
 			return _objectEnumerator.Current;
-        }
+		}
 
-        public bool HasOid
-        {
-            get
-            {
-                checkState();
-                return true;
-            }
-        }
+		public bool HasOid
+		{
+			get
+			{
+				checkState();
+				return true;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region IDataReader Members
+		#region IDataReader Members
 
-        public void Close()
-        {
-            Dispose();
-        }
+		public void Close()
+		{
+			Dispose();
+		}
 
-        public int Depth
-        {
-            get
-            {
-                checkState();
-                return 0;
-            }
-        }
+		public int Depth
+		{
+			get
+			{
+				checkState();
+				return 0;
+			}
+		}
 
-        public DataTable GetSchemaTable()
-        {
-            checkState();
-            return _schemaTable.Copy();
-        }
+		public DataTable GetSchemaTable()
+		{
+			checkState();
+			return _schemaTable.Copy();
+		}
 
-        public bool IsClosed
-        {
-            get { return IsDisposed; }
-        }
+		public bool IsClosed
+		{
+			get { return IsDisposed; }
+		}
 
-        public bool NextResult()
-        {
-            checkState();
-            return false;
-        }
+		public bool NextResult()
+		{
+			checkState();
+			return false;
+		}
 
-        public bool Read()
-        {
-            checkState();
+		public bool Read()
+		{
+			checkState();
 
-        	bool reading = _objectEnumerator.MoveNext();
+			bool reading = _objectEnumerator.MoveNext();
 
 			if (reading)
 			{
 				_currentFeature = _shapeFile.GetFeature(_objectEnumerator.Current);
 			}
 
-        	return reading;
-        }
-
-        public int RecordsAffected
-        {
-            get { return -1; }
-        }
-
-        #endregion
-
-        #region IDataRecord Members
-
-        public int FieldCount
-        {
-            get
-            {
-                checkState();
-                return _schemaTable.Rows.Count;
-            }
-        }
-
-        public bool GetBoolean(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToBoolean(_currentFeature[i]);
-        }
-
-        public byte GetByte(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToByte(_currentFeature[i]);
-        }
-
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
-        {
-            throw new NotImplementedException();
-        }
-
-        public char GetChar(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToChar(_currentFeature[i]);
-        }
-
-        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDataReader GetData(int i)
-        {
-            throw new NotSupportedException();
-        }
-
-        public string GetDataTypeName(int i)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DateTime GetDateTime(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToDateTime(_currentFeature[i]);
-        }
-
-        public decimal GetDecimal(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToDecimal(_currentFeature[i]);
-        }
-
-        public double GetDouble(int i)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Type GetFieldType(int i)
-        {
-            throw new NotImplementedException();
-        }
-
-        public float GetFloat(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToSingle(_currentFeature[i]);
-        }
-
-        public Guid GetGuid(int i)
-        {
-            throw new NotImplementedException();
-        }
-
-        public short GetInt16(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToInt16(_currentFeature[i]);
-        }
-
-        public int GetInt32(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToInt32(_currentFeature[i]);
-        }
-
-        public long GetInt64(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToInt64(_currentFeature[i]);
-        }
-
-        public string GetName(int i)
-        {
-            checkState();
-            return _schemaTable.Rows[i][0] as string;
-        }
-
-        public int GetOrdinal(string name)
-        {
-            checkState();
-
-            if (name == null) throw new ArgumentNullException("name");
-
-            int fieldCount = FieldCount;
-
-            for (int i = 0; i < fieldCount; i++)
-            {
-                if (name.Equals(GetName(i)))
-                {
-                    return i;
-                }
-            }
-
-            for (int i = 0; i < fieldCount; i++)
-            {
-                if (String.Compare(name, GetName(i), StringComparison.CurrentCultureIgnoreCase) == 0)
-                {
-                    return i;
-                }
-            }
-
-            throw new IndexOutOfRangeException("Column name not found");
-        }
-
-        public string GetString(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return Convert.ToString(_currentFeature[i]);
-        }
-
-        public object GetValue(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return _currentFeature[i];
-        }
-
-        public int GetValues(object[] values)
-        {
-            checkState();
-
-            if (values == null) throw new ArgumentNullException("values");
-
-            int count = values.Length > FieldCount ? FieldCount : values.Length;
-
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = this[i];
-            }
-
-            return count;
-        }
-
-        public bool IsDBNull(int i)
-        {
-            checkState();
-            checkIndex(i);
-
-            return _currentFeature.IsNull(i);
-        }
-
-        public object this[string name]
-        {
-            get
-            {
-                checkState();
-                return _currentFeature[name];
-            }
-        }
-
-        public object this[int i]
-        {
-            get
-            {
-                checkState();
-                checkIndex(i);
-
-                return _currentFeature[i];
-            }
-        }
-
-        #endregion
-
-        #region Private helper methods
-
-        private void checkIndex(int i)
-        {
-            if (i >= FieldCount)
-            {
-                throw new IndexOutOfRangeException("Index must be less than FieldCount.");
-            }
-        }
-
-        private void checkState()
-        {
-            if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
-            if (_currentFeature == null)
-            {
-                throw new InvalidOperationException("The Read method must be called before accessing values.");
-            }
-        }
-
-        #endregion
-
-        #region IFeatureDataRecord Members
-
-
-        public TOid GetOid<TOid>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Type OidType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IEnumerator<IFeatureDataRecord> Members
-
-        public IFeatureDataRecord Current
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IEnumerator Members
-
-        object System.Collections.IEnumerator.Current
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool MoveNext()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reset()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
+			return reading;
+		}
+
+		public int RecordsAffected
+		{
+			get { return -1; }
+		}
+
+		#endregion
+
+		#region IDataRecord Members
+
+		public int FieldCount
+		{
+			get
+			{
+				checkState();
+				return _schemaTable.Rows.Count;
+			}
+		}
+
+		public bool GetBoolean(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToBoolean(_currentFeature[i]);
+		}
+
+		public byte GetByte(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToByte(_currentFeature[i]);
+		}
+
+		public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+		{
+			throw new NotImplementedException();
+		}
+
+		public char GetChar(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToChar(_currentFeature[i]);
+		}
+
+		public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDataReader GetData(int i)
+		{
+			throw new NotSupportedException();
+		}
+
+		public string GetDataTypeName(int i)
+		{
+			throw new NotImplementedException();
+		}
+
+		public DateTime GetDateTime(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToDateTime(_currentFeature[i]);
+		}
+
+		public decimal GetDecimal(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToDecimal(_currentFeature[i]);
+		}
+
+		public double GetDouble(int i)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Type GetFieldType(int i)
+		{
+			throw new NotImplementedException();
+		}
+
+		public float GetFloat(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToSingle(_currentFeature[i]);
+		}
+
+		public Guid GetGuid(int i)
+		{
+			throw new NotImplementedException();
+		}
+
+		public short GetInt16(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToInt16(_currentFeature[i]);
+		}
+
+		public int GetInt32(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToInt32(_currentFeature[i]);
+		}
+
+		public long GetInt64(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToInt64(_currentFeature[i]);
+		}
+
+		public string GetName(int i)
+		{
+			checkState();
+			return _schemaTable.Rows[i][0] as string;
+		}
+
+		public int GetOrdinal(string name)
+		{
+			checkState();
+
+			if (name == null) throw new ArgumentNullException("name");
+
+			int fieldCount = FieldCount;
+
+			for (int i = 0; i < fieldCount; i++)
+			{
+				if (name.Equals(GetName(i)))
+				{
+					return i;
+				}
+			}
+
+			for (int i = 0; i < fieldCount; i++)
+			{
+				if (String.Compare(name, GetName(i), StringComparison.CurrentCultureIgnoreCase) == 0)
+				{
+					return i;
+				}
+			}
+
+			throw new IndexOutOfRangeException("Column name not found");
+		}
+
+		public string GetString(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return Convert.ToString(_currentFeature[i]);
+		}
+
+		public object GetValue(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return _currentFeature[i];
+		}
+
+		public int GetValues(object[] values)
+		{
+			checkState();
+
+			if (values == null) throw new ArgumentNullException("values");
+
+			int count = values.Length > FieldCount ? FieldCount : values.Length;
+
+			for (int i = 0; i < count; i++)
+			{
+				values[i] = this[i];
+			}
+
+			return count;
+		}
+
+		public bool IsDBNull(int i)
+		{
+			checkState();
+			checkIndex(i);
+
+			return _currentFeature.IsNull(i);
+		}
+
+		public object this[string name]
+		{
+			get
+			{
+				checkState();
+				return _currentFeature[name];
+			}
+		}
+
+		public object this[int i]
+		{
+			get
+			{
+				checkState();
+				checkIndex(i);
+
+				return _currentFeature[i];
+			}
+		}
+
+		#endregion
+
+		#region Private helper methods
+
+		private void checkIndex(int i)
+		{
+			if (i >= FieldCount)
+			{
+				throw new IndexOutOfRangeException("Index must be less than FieldCount.");
+			}
+		}
+
+		private void checkState()
+		{
+			if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+			if (_currentFeature == null)
+			{
+				throw new InvalidOperationException("The Read method must be called before accessing values.");
+			}
+		}
+
+		#endregion
+
+		#region IFeatureDataRecord Members
+		public Type OidType
+		{
+			get { return typeof(UInt32); }
+		}
+
+		#endregion
+
+		#region IEnumerator<IFeatureDataRecord> Members
+
+		public IFeatureDataRecord Current
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		#endregion
+
+		#region IEnumerator Members
+
+		object System.Collections.IEnumerator.Current
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public bool MoveNext()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Reset()
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+
+		#region IEnumerable<IFeatureDataRecord> Members
+
+		public IEnumerator<IFeatureDataRecord> GetEnumerator()
+		{
+			return this;
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return this;
+		}
+
+		#endregion
+	}
 }

@@ -67,12 +67,9 @@ namespace SharpMap.Features
                 if (table.Columns.Count == 0)
                 {
                     FillSchema(table, SchemaType.Mapped, featureReader);
-                }
+				}
 
-                while (featureReader.Read())
-                {
-                    table.MergeFeature(featureReader);
-                }
+				table.MergeFeatures(featureReader);
 
                 tableIndex++;
             } while (dataReader.NextResult());

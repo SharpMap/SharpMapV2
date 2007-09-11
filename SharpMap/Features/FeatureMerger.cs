@@ -63,6 +63,21 @@ namespace SharpMap.Features
         #region Object constructor
         internal FeatureMerger(FeatureDataTable target, bool preserveChanges, SchemaMergeAction mergeAction)
         {
+			if ((SchemaMergeAction.ConvertTypes & mergeAction) != SchemaMergeAction.None)
+			{
+				throw new NotImplementedException("SchemaMergeAction.ConvertTypes is currently not supported.");
+			}
+
+			if ((SchemaMergeAction.KeyByType & mergeAction) != SchemaMergeAction.None)
+			{
+				throw new NotImplementedException("SchemaMergeAction.KeyByType is currently not supported.");
+			}
+
+			if ((SchemaMergeAction.CaseInsensitive & mergeAction) != SchemaMergeAction.None)
+			{
+				throw new NotImplementedException("SchemaMergeAction.CaseInsensitive is currently not supported.");
+			}
+
             _target = target;
             _preserveChanges = preserveChanges;
             _mergeAction = mergeAction;

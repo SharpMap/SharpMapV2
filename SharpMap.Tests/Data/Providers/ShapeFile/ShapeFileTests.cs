@@ -9,6 +9,7 @@ using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Features;
 using SharpMap.Geometries;
 using ShapeFileProvider = SharpMap.Data.Providers.ShapeFile.ShapeFile;
+using SharpMap.Data;
 
 namespace SharpMap.Tests.Data.Providers.ShapeFile
 {
@@ -699,12 +700,58 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 		{
 			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
 			shapeFile.Open();
+			FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
+			shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
 
 			FeatureDataTable nonKeyedTable = new FeatureDataTable();
 			shapeFile.SetTableSchema(nonKeyedTable);
+			DataTableHelper.AssertTableStructureIdentical(nonKeyedTable, queryTable);
+
+			FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("OID");
+			shapeFile.SetTableSchema(keyedTable);
+			DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
+		}
+
+		[Test]
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void SetTableSchemaWithDifferentKeyCase()
+		{
+			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
+			shapeFile.Open();
+			FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
+			shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
 
 			FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("oid");
 			shapeFile.SetTableSchema(keyedTable);
+			DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
+		}
+
+		[Test]
+		[ExpectedException(typeof(NotImplementedException))]
+		public void SetTableSchemaWithDifferentKeyCaseAndSchemaMergeAction()
+		{
+			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
+			shapeFile.Open();
+			FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
+			shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
+
+			FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("oid");
+			shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.CaseInsensitive);
+			DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
+		}
+
+		[Test]
+		[ExpectedException(typeof(NotImplementedException))]
+		public void SetTableSchemaWithDifferentKeyNameAndSchemaMergeAction()
+		{
+			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
+			shapeFile.Open();
+			FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
+			shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
+
+			FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("FID");
+			shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.KeyByType);
+			DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
 		}
 	}
 }

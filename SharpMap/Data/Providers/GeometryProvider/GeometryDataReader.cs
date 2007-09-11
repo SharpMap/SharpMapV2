@@ -341,12 +341,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureDataRecord Members
 
-
-        public TOid GetOid<TOid>()
-        {
-            throw new NotImplementedException();
-        }
-
         public Type OidType
         {
             get { throw new NotImplementedException(); }
@@ -381,5 +375,23 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
 
         #endregion
-    }
+
+		#region IEnumerable<IFeatureDataRecord> Members
+
+		public System.Collections.Generic.IEnumerator<IFeatureDataRecord> GetEnumerator()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+	}
 }

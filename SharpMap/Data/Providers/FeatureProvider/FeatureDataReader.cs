@@ -39,12 +39,9 @@ namespace SharpMap.Data.Providers.FeatureProvider
             _table = source.Clone();
             _queryRegion = queryRegion;
 
-            foreach (FeatureDataRow row in source)
-            {
-                if (row.Geometry != null && row.Geometry.GetBoundingBox().Intersects(_queryRegion))
-                {
-                    _table.ImportRow(row);
-                }
+			foreach (FeatureDataRow row in source.Select(_queryRegion))
+			{
+				_table.ImportRow(row);
             }
         }
 
@@ -422,15 +419,9 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region IFeatureDataRecord Members
 
-
-        public TOid GetOid<TOid>()
-        {
-            throw new NotImplementedException();
-        }
-
         public Type OidType
         {
-            get { throw new NotImplementedException(); }
+            get { return typeof(Guid); }
         }
 
         #endregion
@@ -439,7 +430,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public IFeatureDataRecord Current
         {
-            get { throw new NotImplementedException(); }
+			get { return _table[_currentRow]; }
         }
 
         #endregion
@@ -448,19 +439,37 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         object System.Collections.IEnumerator.Current
         {
-            get { throw new NotImplementedException(); }
+			get { return Current; }
         }
 
         public bool MoveNext()
         {
-            throw new NotImplementedException();
+        	return Read();
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+        	_currentRow = -1;
         }
 
         #endregion
-    }
+
+		#region IEnumerable<IFeatureDataRecord> Members
+
+		public System.Collections.Generic.IEnumerator<IFeatureDataRecord> GetEnumerator()
+		{
+			return this;
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return this;
+		}
+
+		#endregion
+	}
 }

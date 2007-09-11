@@ -921,10 +921,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 				if (fdr != null && fdr.Geometry != null)
 				{
-					if (fdr.Geometry.GetBoundingBox().Intersects(bounds))
-					{
-						keyedTable.MergeFeature(fdr);
-					}
+					keyedTable.MergeFeature(fdr);
 				}
 			}
         }
@@ -1092,6 +1089,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <param name="target">Target table to set the schema of.</param>
 		public void SetTableSchema(FeatureDataTable<uint> target)
 		{
+			if (String.CompareOrdinal(target.IdColumn.ColumnName, DbaseSchema.OidColumnName) != 0)
+			{
+				throw new InvalidOperationException(
+					"Object ID column names for this schema and 'target' schema must be identical, including case. " +
+					"For case-insensitive or type-only matching, use SetTableSchema(FeatureDataTable, SchemaMergeAction) " +
+					"with the SchemaMergeAction.CaseInsensitive option and/or SchemaMergeAction.KeyByType option enabled.");
+			}
+
 			SetTableSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
 		}
 
@@ -1099,6 +1104,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Sets the schema of the given table to match the schema of the shapefile's attributes.
 		/// </summary>
 		/// <param name="target">Target table to set the schema of.</param>
+		/// <param name="mergeAction">Action or actions to take when schemas don't match.</param>
 		public void SetTableSchema(FeatureDataTable<uint> target, SchemaMergeAction mergeAction)
 		{
 			checkOpen();
