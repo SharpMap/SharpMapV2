@@ -45,7 +45,7 @@ namespace SharpMap.Layers
 		private bool _disposed;
         private BoundingBox _visibleRegion;
         private readonly ILayerProvider _dataSource;
-	    private bool _asyncQuery = true;
+	    private bool _asyncQuery = false;
 
         #region Object Creation / Disposal
         protected Layer(ILayerProvider dataSource)

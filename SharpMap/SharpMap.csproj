@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -160,6 +160,8 @@
     <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
     <Compile Include="Data\IFeatureDataRecord.cs" />
+    <Compile Include="Features\FeatureDataTableReader.cs" />
+    <Compile Include="Features\FeatureMerger.cs" />
     <Compile Include="Features\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>

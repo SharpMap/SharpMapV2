@@ -101,7 +101,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		public void SetTableSchema(FeatureDataTable<Guid> table)
 		{
 			throw new NotImplementedException();
-		}
+        }
+
+        public void SetTableSchema(FeatureDataTable<Guid> table, SchemaMergeAction schemaMergeAction)
+        {
+            _features.MergeSchema(table, schemaMergeAction);
+        }
 
 		#endregion
 
@@ -162,8 +167,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		public void SetTableSchema(FeatureDataTable table)
 		{
-			_features.CopyTableSchema(table);
-		}
+			_features.MergeSchema(table);
+        }
 
 		#endregion
 

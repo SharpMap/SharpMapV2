@@ -427,5 +427,48 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         #endregion
+
+        #region IFeatureDataRecord Members
+
+
+        public TOid GetOid<TOid>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type OidType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IEnumerator<IFeatureDataRecord> Members
+
+        public IFeatureDataRecord Current
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IEnumerator Members
+
+        object System.Collections.IEnumerator.Current
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool MoveNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

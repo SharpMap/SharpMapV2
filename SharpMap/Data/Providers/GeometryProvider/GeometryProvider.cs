@@ -457,10 +457,15 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 		public void SetTableSchema(FeatureDataTable<uint> table)
 		{
-			if (table == null) throw new ArgumentNullException("table");
+            SetTableSchema(table, SchemaMergeAction.Add | SchemaMergeAction.Key);
+        }
 
-			table.Columns.Clear();
-		}
+        public void SetTableSchema(FeatureDataTable<uint> table, SchemaMergeAction schemaMergeAction)
+        {
+            if (table == null) throw new ArgumentNullException("table");
+
+            table.Columns.Clear();
+        }
 
 		#endregion
 

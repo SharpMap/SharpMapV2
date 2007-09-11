@@ -142,7 +142,7 @@ namespace SharpMap.Features
 		/// <summary>
 		/// Sets the geometry column to null.
 		/// </summary>
-		public void SetFeatureGeometryNull()
+		public void SetGeometryNull()
 		{
 			Geometry = null;
 		}
@@ -273,5 +273,39 @@ namespace SharpMap.Features
 		{
 			get { return _getColumns(this); }
 		}
-	}
+
+        #region IFeatureDataRecord Members
+
+        public virtual object GetOid()
+        {
+            if (Table != null && HasOid)
+            {
+                return this[Table.PrimaryKey[0]];
+            }
+
+            return null;
+        }
+
+        public virtual TOid GetOid<TOid>()
+        {
+            throw new NotSupportedException(
+                "GetOid<TOid> is not supported for weakly typed FeatureDataRow. " +
+                "Use FeatureDataRow<TOid> instead.");
+        }
+
+        public virtual bool HasOid
+        {
+            get 
+            {
+                return Table == null ? false : Table.PrimaryKey.Length == 1;
+            }
+        }
+
+        public virtual Type OidType
+        {
+            get { return HasOid ? Table.PrimaryKey[0].DataType : null; }
+        }
+
+        #endregion
+    }
 }

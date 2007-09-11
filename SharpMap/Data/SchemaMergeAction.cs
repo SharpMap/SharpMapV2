@@ -15,12 +15,19 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Data
 {
+    [Flags]
 	public enum SchemaMergeAction
 	{
-		AddToTarget,
-		AddWithKeyToTarget,
-		ThrowExceptionOnMismatch
+        None = 0,
+		Add = 1,
+        AddWithKey = 5,
+        Replace = 2,
+        Key = 4,
+        CaseInsensitive = 8,
+        ConvertTypes = 16
 	}
 }

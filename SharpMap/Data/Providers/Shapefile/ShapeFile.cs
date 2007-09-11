@@ -1010,7 +1010,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		public void SetTableSchema(FeatureDataTable target)
 		{
 			checkOpen();
-			_dbaseFile.SetTableSchema(target);
+			_dbaseFile.SetTableSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
 		}
 
 		#endregion
@@ -1092,7 +1092,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <param name="target">Target table to set the schema of.</param>
 		public void SetTableSchema(FeatureDataTable<uint> target)
 		{
-			SetTableSchema(target, SchemaMergeAction.AddWithKeyToTarget);
+			SetTableSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
 		}
 
 		/// <summary>

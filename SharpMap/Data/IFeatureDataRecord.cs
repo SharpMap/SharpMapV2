@@ -17,17 +17,55 @@
 
 using System.Data;
 using SharpMap.Geometries;
+using System;
 
 namespace SharpMap.Data
 {
 	/// <summary>
-	/// Provides access to the attribute values for a feature.
+	/// Encapsulates both the <see cref="Geometry"/> and
+    /// attribute values for a feature.
 	/// </summary>
 	public interface IFeatureDataRecord : IDataRecord
 	{
 		/// <summary>
 		/// Gets the geometry for the current position in the reader.
 		/// </summary>
-		Geometry Geometry { get; }
+        Geometry Geometry { get; }
+
+        /// <summary>
+        /// Gets the Object ID for the record.
+        /// </summary>
+        /// <returns>
+        /// The Object ID for the record, or <see langword="null"/> 
+        /// if <see cref="HasOid"/> is <see langword="false"/>.
+        /// </returns>
+        object GetOid();
+
+        /// <summary>
+        /// Gets the Object ID for the record as a specific type.
+        /// </summary>
+        /// <typeparam name="TOid">The type of the OID.</typeparam>
+        /// <returns>
+        /// The Object ID for the record, or <see langword="null"/> 
+        /// if <see cref="HasOid"/> is <see langword="false"/>.
+        /// </returns>
+        TOid GetOid<TOid>();
+
+        /// <summary>
+        /// Gets a value indicating if the feature record
+        /// has an Object Identifier (OID).
+        /// </summary>
+        bool HasOid { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Type"/> of the Object ID.
+        /// </summary>
+        /// <remarks>
+        /// OidType gets a <see cref="Type"/> which can be used
+        /// to call GetOid with generic type parameters in order to avoid 
+        /// boxing. If <see cref="HasOid"/> returns false, <see cref="OidType"/>
+        /// returns <see langword="null"/>.
+        /// </remarks>
+        Type OidType { get; }
 	}
 }

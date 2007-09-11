@@ -34,26 +34,28 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Features
 {
-    /// <summary>
-    /// Represents one feature table of in-memory spatial data. 
-    /// </summary>
 #if !DEBUG_STEPINTO
 	[System.Diagnostics.DebuggerStepThrough()]
 #endif
-
+    /// <summary>
+    /// Represents one feature table of in-memory spatial data. 
+    /// </summary>
     [Serializable]
-    public class FeatureDataTable : DataTable, IEnumerable<FeatureDataRow>
+    public class FeatureDataTable 
+        : DataTable, IEnumerable<FeatureDataRow>, IEnumerable<IFeatureDataRecord>
     {
         #region Nested Types
-
         private delegate FeatureDataView GetDefaultViewDelegate(FeatureDataTable table);
-
+        private delegate DataTable CloneToDelegate(DataTable src, DataTable dst, DataSet dataSet, bool skipExpressions);
+        private delegate void SuspendIndexEventsDelegate(DataTable table);
+        private delegate void RestoreIndexEventsDelegate(DataTable table, bool forcesReset);
         #endregion
 
-        #region Type Fields
-
+        #region Type fields
         private static readonly GetDefaultViewDelegate _getDefaultView;
-
+        private static readonly CloneToDelegate _cloneTo;
+        private static readonly SuspendIndexEventsDelegate _suspendIndexEvents;
+        private static readonly RestoreIndexEventsDelegate _restoreIndexEvents;
         #endregion
 
         #region Static Constructors
@@ -61,6 +63,9 @@ namespace SharpMap.Features
         static FeatureDataTable()
         {
             _getDefaultView = generateGetDefaultViewDelegate();
+            _cloneTo = generateCloneToDelegate();
+            _suspendIndexEvents = generateSuspendIndexEventsDelegate();
+            _restoreIndexEvents = generateRestoreIndexEventsDelegate();
         }
 
         #endregion
@@ -271,13 +276,18 @@ namespace SharpMap.Features
         }
 
         /// <summary>
-        /// Clones the structure of the FeatureDataTable, including all FeatureDataTable schemas and constraints. 
+        /// Clones the structure of the FeatureDataTable, 
+        /// including all FeatureDataTable schemas and constraints. 
         /// </summary>
         /// <returns></returns>
         public new FeatureDataTable Clone()
         {
-            FeatureDataTable cln = ((FeatureDataTable)(base.Clone()));
-            return cln;
+            return base.Clone() as FeatureDataTable;
+        }
+
+        public void CloneTo(FeatureDataTable table)
+        {
+            _cloneTo(this, table, null, false);
         }
 
         public FeatureDataRow Find(object key)
@@ -406,51 +416,6 @@ namespace SharpMap.Features
                     throw new NotSupportedException("Compound primary keys not supported.");
                 }
             }
-        }
-
-        internal void MergeFeature(IFeatureDataRecord record)
-        {
-            // TODO: Reevaluate FeatureDataTable.MergeFeature in terms of DataTable.Merge
-            // This function looks as if it duplicates DataTable.Merge
-            // somewhat. However, since it's not a complete overlap, and
-            // it isn't clear how to accomplish the operation with DataTable.Merge,
-            // this method will be used for now...
-            if (record == null) throw new ArgumentNullException("record");
-
-            FeatureDataRow feature;
-
-            // If the feature as an identifier, then we can merge it
-            if (PrimaryKey.Length == 1)
-            {
-                string keyColumnName = PrimaryKey[0].ColumnName;
-                object key = record[keyColumnName];
-                feature = Find(key);
-
-                if (feature != null)
-                {
-                    foreach (DataColumn column in Columns)
-                    {
-                        if (column != PrimaryKey[0])
-                        {
-                            if (feature[column] != record[column.ColumnName])
-                            {
-                                feature[column] = record[column.ColumnName];
-                            }
-                        }
-                    }
-
-                    // A matching feature was found and updated, so we can leave
-                    return;
-                }
-            }
-
-            // No match to 'record' was found in this table, add a new one
-            feature = NewRow();
-            object[] values = new object[Columns.Count];
-            record.GetValues(values);
-            feature.ItemArray = values;
-            feature.Geometry = record.Geometry;
-            AddRow(feature);
         }
 
         #region Protected Overrides
@@ -592,49 +557,75 @@ namespace SharpMap.Features
             row.EndEdit();
         }
 
-		internal void CopyTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
+        public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
         {
-            target.Clear();
-        	target.PrimaryKey = null;
-            target.Columns.Clear();
-            DataColumn[] targetPrimaryKey = new DataColumn[PrimaryKey.Length];
-            int keyIndex = 0;
+            FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
+            merger.MergeSchema(this);
+        }
 
-            foreach (DataColumn column in Columns)
-            {
-                DataColumn newColumn = new DataColumn(column.ColumnName, column.DataType);
-                newColumn.AllowDBNull = column.AllowDBNull;
-                newColumn.AutoIncrement = column.AutoIncrement;
-                newColumn.AutoIncrementSeed = column.AutoIncrementSeed;
-                newColumn.AutoIncrementStep = column.AutoIncrementStep;
-                newColumn.Caption = column.Caption;
-                newColumn.ColumnMapping = column.ColumnMapping;
-                newColumn.DateTimeMode = column.DateTimeMode;
-                newColumn.DefaultValue = column.DefaultValue;
-                newColumn.Expression = column.Expression;
-                newColumn.MaxLength = column.MaxLength;
-                newColumn.Namespace = column.Namespace;
-                newColumn.Prefix = column.Prefix;
-                newColumn.ReadOnly = column.ReadOnly;
-                newColumn.Unique = column.Unique;
+        public void MergeSchema(FeatureDataTable target)
+        {
+            MergeSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            //target.Clear();
+            //target.PrimaryKey = null;
+            //target.Columns.Clear();
+            //DataColumn[] targetPrimaryKey = new DataColumn[PrimaryKey.Length];
+            //int keyIndex = 0;
 
-                foreach (DictionaryEntry entry in column.ExtendedProperties)
-                {
-                    newColumn.ExtendedProperties.Add(entry.Key, entry.Value);
-                }
+            //foreach (DataColumn column in Columns)
+            //{
+            //    DataColumn newColumn = new DataColumn(column.ColumnName, column.DataType);
+            //    newColumn.AllowDBNull = column.AllowDBNull;
+            //    newColumn.AutoIncrement = column.AutoIncrement;
+            //    newColumn.AutoIncrementSeed = column.AutoIncrementSeed;
+            //    newColumn.AutoIncrementStep = column.AutoIncrementStep;
+            //    newColumn.Caption = column.Caption;
+            //    newColumn.ColumnMapping = column.ColumnMapping;
+            //    newColumn.DateTimeMode = column.DateTimeMode;
+            //    newColumn.DefaultValue = column.DefaultValue;
+            //    newColumn.Expression = column.Expression;
+            //    newColumn.MaxLength = column.MaxLength;
+            //    newColumn.Namespace = column.Namespace;
+            //    newColumn.Prefix = column.Prefix;
+            //    newColumn.ReadOnly = column.ReadOnly;
+            //    newColumn.Unique = column.Unique;
 
-                target.Columns.Add(newColumn);
+            //    foreach (DictionaryEntry entry in column.ExtendedProperties)
+            //    {
+            //        newColumn.ExtendedProperties.Add(entry.Key, entry.Value);
+            //    }
 
-                // if this column is a key, add it to the target key columns array
-                if (Array.Exists(PrimaryKey, delegate(DataColumn key) { return column == key; }))
-                {
-                    targetPrimaryKey[keyIndex] = newColumn;
-                    keyIndex++;
-                }
-            }
+            //    target.Columns.Add(newColumn);
 
-            Debug.Assert(keyIndex == PrimaryKey.Length);
-            target.PrimaryKey = targetPrimaryKey;
+            //    // if this column is a key, add it to the target key columns array
+            //    if (Array.Exists(PrimaryKey, delegate(DataColumn key) { return column == key; }))
+            //    {
+            //        targetPrimaryKey[keyIndex] = newColumn;
+            //        keyIndex++;
+            //    }
+            //}
+
+            //Debug.Assert(keyIndex == PrimaryKey.Length);
+            //target.PrimaryKey = targetPrimaryKey;
+        }
+
+        internal void MergeFeature(IFeatureDataRecord record)
+        {
+            // TODO: Reevaluate FeatureDataTable.MergeFeature in terms of DataTable.Merge
+            // This function looks as if it duplicates DataTable.Merge
+            // somewhat. However, since it's not a complete overlap, and
+            // it isn't clear how to accomplish the operation with DataTable.Merge,
+            // this method will be used for now...
+        }
+
+        internal void SuspendIndexEvents()
+        {
+            _suspendIndexEvents(this);
+        }
+
+        internal void RestoreIndexEvents(bool forceReset)
+        {
+            _restoreIndexEvents(this, forceReset);
         }
 
         #endregion
@@ -656,6 +647,69 @@ namespace SharpMap.Features
                    as GetDefaultViewDelegate;
         }
 
+
+        private static RestoreIndexEventsDelegate generateRestoreIndexEventsDelegate()
+        {
+            DynamicMethod restoreIndexEventsMethod = new DynamicMethod("FeatureDataTable_RestoreIndexEvents",
+                MethodAttributes.Public | MethodAttributes.Static,
+                CallingConventions.Standard,
+                null,
+                new Type[] { typeof(DataTable), typeof(bool) },
+                typeof(DataTable),
+                false);
+
+            ILGenerator il = restoreIndexEventsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            MethodInfo restoreIndexEventsInfo = typeof(DataTable).GetMethod("RestoreIndexEvents",
+                BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
+            il.Emit(OpCodes.Call, restoreIndexEventsInfo);
+            il.Emit(OpCodes.Ret);
+
+            return (RestoreIndexEventsDelegate)restoreIndexEventsMethod.CreateDelegate(typeof(RestoreIndexEventsDelegate));
+        }
+
+        private static SuspendIndexEventsDelegate generateSuspendIndexEventsDelegate()
+        {
+            DynamicMethod suspendIndexEventsMethod = new DynamicMethod("FeatureDataTable_SuspendIndexEvents",
+                MethodAttributes.Public | MethodAttributes.Static,
+                CallingConventions.Standard,
+                null,
+                new Type[] { typeof(DataTable) },
+                typeof(DataTable),
+                false);
+
+            ILGenerator il = suspendIndexEventsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            MethodInfo suspendIndexEventsInfo = typeof(DataTable).GetMethod("SuspendIndexEvents",
+                BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+            il.Emit(OpCodes.Call, suspendIndexEventsInfo);
+            il.Emit(OpCodes.Ret);
+
+            return (SuspendIndexEventsDelegate)suspendIndexEventsMethod.CreateDelegate(typeof(SuspendIndexEventsDelegate));
+        }
+
+        private static CloneToDelegate generateCloneToDelegate()
+        {
+            DynamicMethod cloneToMethod = new DynamicMethod("FeatureDataTable_CloneTo",
+                MethodAttributes.Public | MethodAttributes.Static,
+                CallingConventions.Standard,
+                typeof(DataTable),
+                new Type[] { typeof(DataTable), typeof(DataTable), typeof(DataSet), typeof(bool) },
+                typeof(DataTable),
+                false);
+
+            ILGenerator il = cloneToMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Ldarg_3);
+            MethodInfo cloneToInfo = typeof(DataTable).GetMethod("CloneTo", BindingFlags.NonPublic | BindingFlags.Instance);
+            il.Emit(OpCodes.Call, cloneToInfo);
+            il.Emit(OpCodes.Ret);
+
+            return (CloneToDelegate)cloneToMethod.CreateDelegate(typeof(CloneToDelegate));
+        }
         #endregion
 
         #region Private helper methods
@@ -698,6 +752,15 @@ namespace SharpMap.Features
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable<IFeatureDataRecord> Members
+
+        IEnumerator<IFeatureDataRecord> IEnumerable<IFeatureDataRecord>.GetEnumerator()
+        {
+            return new FeatureDataTableReader(this);
         }
 
         #endregion

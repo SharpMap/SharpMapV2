@@ -16,15 +16,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Data;
+using System.Collections.Generic;
 
 namespace SharpMap.Data
 {
     /// <summary>
     /// Provides a fast-forward, read-only data stream to geometry data.
     /// </summary>
-	public interface IFeatureDataReader : IDataReader, IFeatureDataRecord
+	public interface IFeatureDataReader 
+        : IDataReader, IFeatureDataRecord, IEnumerator<IFeatureDataRecord>
     {
-        object GetOid();
-        bool HasOid { get; }
     }
 }
