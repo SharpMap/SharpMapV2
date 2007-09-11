@@ -16,19 +16,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using SharpMap.Features;
 using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
+    /// <summary>
+    /// Provides a fast-forward, read-only data stream to feature data
+    /// from a <see cref="FeatureProvider"/>.
+    /// </summary>
     public class FeatureDataReader : IFeatureDataReader
     {
+        #region Instance fields
         private readonly FeatureDataTable _table;
         private DataTable _schemaTable;
         private readonly BoundingBox _queryRegion;
         private int _currentRow = -1;
-        private bool _isDisposed;
+        private bool _isDisposed; 
+        #endregion
 
         #region Object Construction / Disposal
 
@@ -426,39 +433,14 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #endregion
 
-        #region IEnumerator<IFeatureDataRecord> Members
-
-        public IFeatureDataRecord Current
-        {
-			get { return _table[_currentRow]; }
-        }
-
-        #endregion
-
-        #region IEnumerator Members
-
-        object System.Collections.IEnumerator.Current
-        {
-			get { return Current; }
-        }
-
-        public bool MoveNext()
-        {
-        	return Read();
-        }
-
-        public void Reset()
-        {
-        	_currentRow = -1;
-        }
-
-        #endregion
-
 		#region IEnumerable<IFeatureDataRecord> Members
 
-		public System.Collections.Generic.IEnumerator<IFeatureDataRecord> GetEnumerator()
-		{
-			return this;
+		public IEnumerator<IFeatureDataRecord> GetEnumerator()
+        {
+            while (Read())
+            {
+                yield return this;
+            }
 		}
 
 		#endregion
@@ -466,8 +448,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		#region IEnumerable Members
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this;
+        {
+            return GetEnumerator();
 		}
 
 		#endregion

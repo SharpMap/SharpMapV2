@@ -28,7 +28,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	internal sealed class ShapeFileIndex : IDictionary<uint, ShapeFileIndex.IndexEntry>
 	{
 		#region Fields
-		private ShapeFile _shapeFile;
+		private ShapeFileProvider _shapeFile;
 		private readonly SortedList<uint, IndexEntry> _shapeIndex = new SortedList<uint, IndexEntry>();
 		private FileInfo _indexFile;
 		private ShapeFileHeader _header;
@@ -37,7 +37,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		#endregion
 
 		#region Object Construction / Disposal
-		public ShapeFileIndex(ShapeFile shapeFile)
+		public ShapeFileIndex(ShapeFileProvider shapeFile)
 			: this(new FileInfo(shapeFile.IndexFilename)) 
 		{
 			_shapeFile = shapeFile;
@@ -82,7 +82,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		public ShapeFile ShapeFile
+		public ShapeFileProvider ShapeFile
 		{
 			get { return _shapeFile; }
 		}
@@ -98,7 +98,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 			_header.Envelope = BoundingBox.Join(_header.Envelope, feature.Geometry.GetBoundingBox());
 
-			int length = ShapeFile.ComputeGeometryLengthInWords(feature.Geometry);
+			int length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
 			int offset = ComputeShapeFileSizeInWords();
 
 			IndexEntry entry = new IndexEntry(length, offset);

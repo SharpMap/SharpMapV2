@@ -758,7 +758,10 @@ namespace SharpMap.Features
 
         IEnumerator<IFeatureDataRecord> IEnumerable<IFeatureDataRecord>.GetEnumerator()
         {
-            return new FeatureDataTableReader(this);
+            foreach (FeatureDataRow row in this)
+            {
+                yield return row;
+            }
         }
 
         #endregion

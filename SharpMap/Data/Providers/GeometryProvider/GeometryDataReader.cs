@@ -16,18 +16,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.GeometryProvider
 {
+    /// <summary>
+    /// Provides a fast-forward, read-only data stream to geometry data
+    /// from a <see cref="GeometryProvider"/>.
+    /// </summary>
     public class GeometryDataReader : IFeatureDataReader
     {
+        #region Instance fields
         private GeometryProvider _provider;
         private readonly BoundingBox _bounds;
         private int _currentIndex = -1;
-        private bool _isDisposed;
+        private bool _isDisposed; 
+        #endregion
 
         #region Object construction and disposal
         internal GeometryDataReader(GeometryProvider provider, BoundingBox bounds)
@@ -35,6 +42,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             _provider = provider;
             _bounds = bounds;
         }
+
         #region Dispose pattern
 
         #region IDisposable Members
@@ -322,6 +330,36 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #endregion
 
+        #region IFeatureDataRecord Members
+
+        public Type OidType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+		#region IEnumerable<IFeatureDataRecord> Members
+
+		public IEnumerator<IFeatureDataRecord> GetEnumerator()
+		{
+            while(Read())
+            {
+                yield return this;
+            }
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+		    return GetEnumerator();
+		}
+
+        #endregion
+
         #region Private helper methods
         private void checkState()
         {
@@ -337,61 +375,5 @@ namespace SharpMap.Data.Providers.GeometryProvider
             if (i >= 1) throw new IndexOutOfRangeException("Column index is out of range.");
         }
         #endregion
-
-
-        #region IFeatureDataRecord Members
-
-        public Type OidType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IEnumerator<IFeatureDataRecord> Members
-
-        public IFeatureDataRecord Current
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IEnumerator Members
-
-        object System.Collections.IEnumerator.Current
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool MoveNext()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reset()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-		#region IEnumerable<IFeatureDataRecord> Members
-
-		public System.Collections.Generic.IEnumerator<IFeatureDataRecord> GetEnumerator()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
-		#endregion
-
-		#region IEnumerable Members
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
-		#endregion
 	}
 }

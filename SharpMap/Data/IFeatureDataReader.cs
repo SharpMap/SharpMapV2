@@ -21,10 +21,10 @@ using System.Collections.Generic;
 namespace SharpMap.Data
 {
     /// <summary>
-    /// Provides a fast-forward, read-only data stream to geometry data.
+    /// Provides a fast-forward, read-only data stream to feature data.
     /// </summary>
 	public interface IFeatureDataReader 
-        : IDataReader, IFeatureDataRecord, IEnumerable<IFeatureDataRecord>, IEnumerator<IFeatureDataRecord>
+        : IDataReader, IFeatureDataRecord, IEnumerable<IFeatureDataRecord>
     {
     }
 }

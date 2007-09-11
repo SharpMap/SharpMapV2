@@ -8,7 +8,7 @@ using SharpMap.CoordinateSystems;
 using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Features;
 using SharpMap.Geometries;
-using ShapeFileProvider = SharpMap.Data.Providers.ShapeFile.ShapeFile;
+using ShapeFileProvider = SharpMap.Data.Providers.ShapeFile.ShapeFileProvider;
 using SharpMap.Data;
 
 namespace SharpMap.Tests.Data.Providers.ShapeFile

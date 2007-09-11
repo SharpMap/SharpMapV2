@@ -23,17 +23,23 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+    /// <summary>
+    /// Provides a fast-forward, read-only data stream to feature data
+    /// from a <see cref="ShapeFile"/>.
+    /// </summary>
 	public class ShapeFileDataReader : IFeatureDataReader
 	{
-		private readonly ShapeFile _shapeFile;
-		private readonly DataTable _schemaTable;
-		private FeatureDataRow<uint> _currentFeature;
-		private bool _isDisposed;
-		private readonly IEnumerator<uint> _objectEnumerator;
+        #region Instance fields
+        private readonly ShapeFileProvider _shapeFile;
+        private readonly DataTable _schemaTable;
+        private FeatureDataRow<uint> _currentFeature;
+        private bool _isDisposed;
+        private readonly IEnumerator<uint> _objectEnumerator; 
+        #endregion
 
 		#region Object Construction / Disposal
 
-		internal ShapeFileDataReader(ShapeFile source, BoundingBox queryRegion)
+		internal ShapeFileDataReader(ShapeFileProvider source, BoundingBox queryRegion)
 		{
 			_shapeFile = source;
 			_schemaTable = source.GetSchemaTable();
@@ -436,39 +442,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region IEnumerator<IFeatureDataRecord> Members
-
-		public IFeatureDataRecord Current
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		#endregion
-
-		#region IEnumerator Members
-
-		object System.Collections.IEnumerator.Current
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool MoveNext()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Reset()
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-
 		#region IEnumerable<IFeatureDataRecord> Members
 
 		public IEnumerator<IFeatureDataRecord> GetEnumerator()
-		{
-			return this;
+        {
+            while (Read())
+            {
+                yield return this;
+            }
 		}
 
 		#endregion
@@ -477,7 +458,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return this;
+			return GetEnumerator();
 		}
 
 		#endregion

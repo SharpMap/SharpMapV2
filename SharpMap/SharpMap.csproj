@@ -186,7 +186,7 @@
     <Compile Include="Data\Providers\Shapefile\DbaseReader.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseSchema.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseWriter.cs" />
-    <Compile Include="Data\Providers\Shapefile\ShapeFile.cs" />
+    <Compile Include="Data\Providers\Shapefile\ShapeFileProvider.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeType.cs" />
     <Compile Include="Geometries\BoundingBox.cs" />
     <Compile Include="Geometries\Curve.cs" />

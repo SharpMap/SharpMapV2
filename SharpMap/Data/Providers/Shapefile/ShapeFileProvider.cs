@@ -60,7 +60,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// myLayer.DataSource = new ShapeFile(@"C:\data\MyShapeData.shp");
 	/// </code>
 	/// </example>
-	public class ShapeFile : IWritableVectorLayerProvider<uint>
+	public class ShapeFileProvider : IWritableVectorLayerProvider<uint>
 	{
 		#region FilterMethod
 
@@ -107,7 +107,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Initializes a ShapeFile data provider without a file-based spatial index.
 		/// </summary>
 		/// <param name="filename">Path to shapefile (.shp file).</param>
-		public ShapeFile(string filename)
+		public ShapeFileProvider(string filename)
 			: this(filename, false)
 		{
 		}
@@ -124,7 +124,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </remarks>
 		/// <param name="filename">Path to shapefile (.shp file).</param>
 		/// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-		public ShapeFile(string filename, bool fileBasedIndex)
+		public ShapeFileProvider(string filename, bool fileBasedIndex)
 		{
 			_filename = filename;
 
@@ -152,7 +152,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Finalizes the object
 		/// </summary>
-		~ShapeFile()
+		~ShapeFileProvider()
 		{
 			dispose(false);
 		}
@@ -247,7 +247,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <param name="layerName">Name of the shapefile.</param>
 		/// <param name="type">Type of shape to store in the shapefile.</param>
 		/// <returns>A ShapeFile instance.</returns>
-		public static ShapeFile Create(string directory, string layerName, ShapeType type)
+		public static ShapeFileProvider Create(string directory, string layerName, ShapeType type)
 		{
 			return Create(directory, layerName, type, null);
 		}
@@ -274,7 +274,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <exception cref="ArgumentException">
 		/// Thrown if <paramref name="layerName"/> has invalid path characters.
 		/// </exception>
-		public static ShapeFile Create(string directory, string layerName, ShapeType type, FeatureDataTable schema)
+		public static ShapeFileProvider Create(string directory, string layerName, ShapeType type, FeatureDataTable schema)
 		{
 			if (type == ShapeType.Null)
 			{
@@ -307,7 +307,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <exception cref="ArgumentException">
 		/// Thrown if <paramref name="layerName"/> has invalid path characters.
 		/// </exception>
-		public static ShapeFile Create(DirectoryInfo directory, string layerName,
+		public static ShapeFileProvider Create(DirectoryInfo directory, string layerName,
 			ShapeType type, FeatureDataTable model)
 		{
 			CultureInfo culture = Thread.CurrentThread.CurrentCulture;
@@ -332,7 +332,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <exception cref="ArgumentException">
 		/// Thrown if <paramref name="layerName"/> has invalid path characters.
 		/// </exception>
-		public static ShapeFile Create(DirectoryInfo directory, string layerName, ShapeType type,
+		public static ShapeFileProvider Create(DirectoryInfo directory, string layerName, ShapeType type,
 									   FeatureDataTable model, CultureInfo culture, Encoding encoding)
 		{
 			if (String.IsNullOrEmpty(layerName))
@@ -394,7 +394,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 				file.Close();
 			}
 
-			return new ShapeFile(shapeFile);
+			return new ShapeFileProvider(shapeFile);
 		}
 		#endregion
 

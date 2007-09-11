@@ -17,13 +17,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using SharpMap.Data;
 using System.Data;
 using SharpMap.Geometries;
 
 namespace SharpMap.Features
 {
+    /// <summary>
+    /// Provides a fast-forward, read-only data stream to feature data
+    /// from a <see cref="FeatureDataTable"/>.
+    /// </summary>
     public class FeatureDataTableReader : IFeatureDataReader
     {
         private readonly FeatureDataTable _table;
@@ -229,34 +232,6 @@ namespace SharpMap.Features
         public Geometry Geometry
         {
             get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IEnumerator<IFeatureDataRecord> Members
-
-        public IFeatureDataRecord Current
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IEnumerator Members
-
-        object System.Collections.IEnumerator.Current
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool MoveNext()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reset()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
