@@ -932,14 +932,14 @@ namespace SharpMap.Tests.Presentation
 
             Map map = mapPresenter.Map;
 
-            VectorLayer vLayer = new VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
+            GeometryLayer vLayer = new GeometryLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
             vLayer.Style.Outline = new StylePen(StyleColor.Red, 2f);
             vLayer.Style.EnableOutline = true;
             vLayer.Style.Line = new StylePen(StyleColor.Green, 2f);
             vLayer.Style.Fill = new SolidStyleBrush(StyleColor.Yellow);
             map.AddLayer(vLayer);
 
-            VectorLayer vLayer2 = new VectorLayer("Geom layer 2", vLayer.DataSource);
+            GeometryLayer vLayer2 = new GeometryLayer("Geom layer 2", vLayer.DataSource);
             Stream data = Assembly.GetAssembly(typeof (Map))
                 .GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
             vLayer2.Style.Symbol = new Symbol2D(data, new Size2D(16, 16));
@@ -948,12 +948,12 @@ namespace SharpMap.Tests.Presentation
             vLayer2.Style.Symbol.Scale = 0.4f;
             map.AddLayer(vLayer2);
 
-            VectorLayer vLayer3 = new VectorLayer("Geom layer 3", vLayer.DataSource);
+            GeometryLayer vLayer3 = new GeometryLayer("Geom layer 3", vLayer.DataSource);
             vLayer3.Style.Symbol.Offset = new Point2D(3, 4);
             vLayer3.Style.Symbol.Rotation = 45;
             map.AddLayer(vLayer3);
 
-            VectorLayer vLayer4 = new VectorLayer("Geom layer 4", vLayer.DataSource);
+            GeometryLayer vLayer4 = new GeometryLayer("Geom layer 4", vLayer.DataSource);
             vLayer4.Style.Symbol.Offset = new Point2D(3, 4);
             vLayer2.Style.Symbol.Scale = 0.4f;
             map.AddLayer(vLayer4);
@@ -966,8 +966,8 @@ namespace SharpMap.Tests.Presentation
         private static TestPresenter2D createPresenter(MockRepository mocks, double width, double height)
         {
             Map map = new Map();
-            map.AddLayer(DataSourceHelper.CreateFeatureVectorLayer());
-            //map.AddLayer(DataSourceHelper.CreateGeometryVectorLayer());
+            map.AddLayer(DataSourceHelper.CreateFeatureFeatureLayer());
+            //map.AddLayer(DataSourceHelper.CreateGeometryFeatureLayer());
 
             IMapView2D mapView = mocks.Stub<IMapView2D>();
             SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
@@ -980,8 +980,8 @@ namespace SharpMap.Tests.Presentation
         private static TestPresenter2D createPresenter(double width, double height, out TestView2D view)
         {
             Map map = new Map();
-            map.AddLayer(DataSourceHelper.CreateFeatureVectorLayer());
-            //map.AddLayer(DataSourceHelper.CreateGeometryVectorLayer());
+            map.AddLayer(DataSourceHelper.CreateFeatureFeatureLayer());
+            //map.AddLayer(DataSourceHelper.CreateGeometryFeatureLayer());
 
             view = new TestView2D(map);
 

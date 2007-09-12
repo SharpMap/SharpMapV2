@@ -90,7 +90,7 @@ namespace SharpMap.Tests.Rendering
 		[Test]
 		public void RenderFeatureTest()
 		{
-			IVectorLayerProvider provider = DataSourceHelper.CreateGeometryDatasource();
+			IFeatureLayerProvider provider = DataSourceHelper.CreateGeometryDatasource();
 			TestVectorRenderer vectorRenderer = new TestVectorRenderer();
 			BasicGeometryRenderer2D<RenderObject> renderer = new BasicGeometryRenderer2D<RenderObject>(vectorRenderer);
 

@@ -24,7 +24,7 @@ namespace SharpMap.Layers
 {
 	public interface IFeatureLayer : ILayer
 	{
-		new IVectorLayerProvider DataSource { get; }
+		new IFeatureLayerProvider DataSource { get; }
 		FeatureDataTable Features { get; }
 		FeatureDataView HighlightedFeatures { get; }
         CultureInfo Locale { get; }

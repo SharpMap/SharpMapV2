@@ -12,7 +12,7 @@ namespace SharpMap.Tests
 {
 	internal static class DataSourceHelper
 	{
-        internal static IVectorLayerProvider CreateGeometryDatasource()
+        internal static IFeatureLayerProvider CreateGeometryDatasource()
 		{
 			Collection<Geometry> geoms = new Collection<Geometry>();
 			geoms.Add(Geometry.FromText("POINT EMPTY"));
@@ -32,15 +32,15 @@ namespace SharpMap.Tests
 			return new GeometryProvider(geoms);
         }
 
-        internal static VectorLayer CreateGeometryVectorLayer()
+        internal static GeometryLayer CreateGeometryFeatureLayer()
         {
-            VectorLayer layer = new VectorLayer("TestGeometries", CreateGeometryDatasource());
+            GeometryLayer layer = new GeometryLayer("TestGeometries", CreateGeometryDatasource());
             return layer;
         }
 
-		internal static VectorLayer CreateFeatureVectorLayer()
+		internal static GeometryLayer CreateFeatureFeatureLayer()
 		{
-			VectorLayer layer = new VectorLayer("TestFeatures", CreateFeatureDatasource());
+			GeometryLayer layer = new GeometryLayer("TestFeatures", CreateFeatureDatasource());
 			return layer;
 		}
 

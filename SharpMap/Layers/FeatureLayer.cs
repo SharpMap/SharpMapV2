@@ -1,58 +1,30 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
-//
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-// 
-// SharpMap is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-
-// You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using SharpMap.CoordinateSystems.Transformations;
+using System.Globalization;
+using System.Text;
 using SharpMap.Data;
 using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Presentation;
 using SharpMap.Styles;
-using GeoPoint = SharpMap.Geometries.Point;
-using System.Globalization;
 
 namespace SharpMap.Layers
 {
-    /// <summary>
-    /// A map layer of vector geometries.
-    /// </summary>
-    /// <example>
-    /// Adding a <see cref="VectorLayer"/> to a map:
-    /// </example>
-    public class VectorLayer : Layer, IFeatureLayer
+    public abstract class FeatureLayer : Layer, IFeatureLayer
     {
-        #region Fields
-
+        #region Instance fields
         private readonly FeatureDataTable _cachedFeatures;
         private readonly FeatureDataView _visibleFeatureView;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
-        private BoundingBox _fullExtents;
         private readonly BackgroundWorker _dataQueryWorker = new BackgroundWorker();
         #endregion
-
-        #region Object Construction / Disposal
 
         /// <summary>
         /// Initializes a new, empty vector layer.
         /// </summary>
-        public VectorLayer(IVectorLayerProvider dataSource)
+        protected FeatureLayer(IFeatureLayerProvider dataSource)
             : this(String.Empty, dataSource)
         {
         }
@@ -62,7 +34,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public VectorLayer(string layername, IVectorLayerProvider dataSource)
+        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource)
             : this(layername, new VectorStyle(), dataSource)
         {
         }
@@ -73,12 +45,9 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public VectorLayer(string layername, VectorStyle style, IVectorLayerProvider dataSource)
-            : base(dataSource)
+        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
+            : base(layername, style, dataSource)
         {
-            LayerName = layername;
-            Style = style;
-
             _dataQueryWorker.RunWorkerCompleted += _dataQueryWorker_RunWorkerCompleted;
             _dataQueryWorker.DoWork += _dataQueryWorker_DoWork;
 
@@ -88,40 +57,17 @@ namespace SharpMap.Layers
             init();
         }
 
-        #region IDisposable Members
-
-        /// <summary>
-        /// Disposes the object.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            if (DataSource != null)
-            {
-                DataSource.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
-
-        #endregion
-
-        #endregion
-
         #region IFeatureLayer Members
 
         /// <summary>
         /// Gets the data source for this layer as a more 
-        /// strongly-typed IVectorLayerProvider.
+        /// strongly-typed IFeatureLayerProvider.
         /// </summary>
-        public new IVectorLayerProvider DataSource
+        public new IFeatureLayerProvider DataSource
         {
-            get { return base.DataSource as IVectorLayerProvider; }
+            get { return base.DataSource as IFeatureLayerProvider; }
         }
+
 
         /// <summary>
         /// Gets or sets a view of highlighted features, which
@@ -172,78 +118,9 @@ namespace SharpMap.Layers
         {
             get { return _cachedFeatures; }
         }
-
         #endregion
 
-        #region ILayer Members
-
-        /// <summary>
-        /// Returns the full extents of all the features in the layer.
-        /// </summary>
-        /// <returns>
-        /// Bounding box corresponding to the full extent 
-        /// of the features in the layer.
-        /// </returns>
-        public override BoundingBox Envelope
-        {
-            get
-            {
-                if (CoordinateTransformation != null)
-                {
-                    return GeometryTransform.TransformBox(_fullExtents, CoordinateTransformation.MathTransform);
-                }
-                else
-                {
-                    return _fullExtents;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the <abbr name="spatial reference ID">SRID</abbr> 
-        /// of this VectorLayer's data source.
-        /// </summary>
-        public override int? Srid
-        {
-            get
-            {
-                if (DataSource == null)
-                {
-                    throw new InvalidOperationException(
-                        "DataSource property is null on layer '" + LayerName + "'");
-                }
-
-                return DataSource.Srid;
-            }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Gets or sets the layer style as a VectorStyle.
-        /// </summary>
-        public new VectorStyle Style
-        {
-            get { return base.Style as VectorStyle; }
-            set { base.Style = value; }
-        }
-
-        #region Layer Overrides
-
-        IStyle ILayer.Style
-        {
-            get { return Style; }
-            set
-            {
-                if (!(value is VectorStyle))
-                {
-                    throw new ArgumentException("Style value must be of type VectorStyle.", "value");
-                }
-
-                Style = value as VectorStyle;
-            }
-        }
-
+        #region Layer overrides
         protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
         {
             // Ignore an empty visible region
@@ -275,35 +152,20 @@ namespace SharpMap.Layers
         {
             _visibleFeatureView.GeometryIntersectionFilter = VisibleRegion.ToGeometry();
         }
-
+        
         #endregion
 
-        #region ICloneable Members
-
-        /// <summary>
-        /// Clones the layer.
-        /// </summary>
-        /// <returns>A copy of the layer.</returns>
-        public override object Clone()
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
+        
         #region Private helper methods
-
         private void init()
         {
             // We generally want spatial indexing on the feature table...
             _cachedFeatures.IsSpatiallyIndexed = true;
 
-            // We need to get the schema of the feature table and the full extents for the
-            // layer, so we can make decisions about visibility.
+            // We need to get the schema of the feature table.
             DataSource.Open();
 
             DataSource.SetTableSchema(_cachedFeatures);
-            _fullExtents = DataSource.GetExtents();
 
             DataSource.Close();
         }

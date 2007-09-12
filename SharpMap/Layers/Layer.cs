@@ -37,7 +37,8 @@ namespace SharpMap.Layers
     /// </remarks>
     [Serializable]
     public abstract class Layer : ILayer, ICloneable
-	{
+    {
+        #region Instance fields
 		private ICoordinateSystem _coordinateSystem;
         private ICoordinateTransformation _coordinateTransform;
         private string _layerName;
@@ -46,13 +47,26 @@ namespace SharpMap.Layers
         private BoundingBox _visibleRegion;
         private readonly ILayerProvider _dataSource;
 	    private bool _asyncQuery = false;
+        #endregion
 
         #region Object Creation / Disposal
-        protected Layer(ILayerProvider dataSource)
+        protected Layer(ILayerProvider dataSource) :
+            this(String.Empty, null, dataSource)
         {
-            _dataSource = dataSource;
         }
 
+        protected Layer(string layerName, ILayerProvider dataSource) :
+            this(layerName, null, dataSource)
+        {
+        }
+
+        protected Layer(string layerName, IStyle style, ILayerProvider dataSource)
+        {
+            LayerName = layerName;
+            _dataSource = dataSource;
+            Style = style;
+        }
+        
         #region Dispose Pattern
         ~Layer()
         {
@@ -193,13 +207,28 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-		/// Gets the full extent of the layer.
+		/// Gets the full extent of the data available to the layer.
 		/// </summary>
 		/// <returns>
-        /// <see cref="BoundingBox"/> corresponding to the 
-        /// extent of the features in the layer.
+        /// A <see cref="BoundingBox"/> defining the extent of 
+        /// all data available to the layer.
         /// </returns>
-        public abstract BoundingBox Envelope { get; }
+        public BoundingBox Envelope 
+        {
+            get
+            {
+                BoundingBox fullExtents = DataSource.GetExtents(); 
+
+                if (CoordinateTransformation != null)
+                {
+                    return GeometryTransform.TransformBox(fullExtents, CoordinateTransformation.MathTransform);
+                }
+                else
+                {
+                    return fullExtents;
+                }
+            }
+        }
 
         public event EventHandler LayerDataAvailable;
 
@@ -218,12 +247,22 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// The spatial reference ID of the layer data source.
+        /// The spatial reference ID of the layer data source, if one is set.
         /// </summary>
         public virtual int? Srid
         {
-            get { return _dataSource.Srid; }
-		}
+            get
+            {
+                if (DataSource == null)
+                {
+                    throw new InvalidOperationException(
+                        "DataSource property is null on layer '" + LayerName + "'");
+                }
+
+                return DataSource.Srid;
+            }
+
+        }
 
         /// <summary>
         /// The style for the layer.

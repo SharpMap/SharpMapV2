@@ -79,10 +79,15 @@ namespace SharpMap.Rendering.Rendering2D
 			DefaultStyle = new VectorStyle();
 		}
 
+        #region Dispose pattern
+        /// <summary>
+        /// Finalizer for BasicGeometryRenderer2D.
+        /// </summary>
         ~BasicGeometryRenderer2D()
         {
             Dispose(false);
-		}
+        }
+        #endregion
 		#endregion
 
 		/// <summary>

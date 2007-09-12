@@ -27,7 +27,7 @@ namespace SharpMap.Data
     /// <summary>
     /// Interface for vector data providers.
     /// </summary>
-    public interface IVectorLayerProvider : ILayerProvider
+    public interface IFeatureLayerProvider : ILayerProvider
     {
         /// <summary>
         /// Retrieves the features intersected by <paramref name="geom"/>.

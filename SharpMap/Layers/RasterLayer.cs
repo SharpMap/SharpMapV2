@@ -34,11 +34,6 @@ namespace SharpMap.Layers
 		{
 		}
 
-        public override BoundingBox Envelope
-		{
-			get { throw new NotImplementedException(); }
-		}
-
 		public override object Clone()
 		{
 			throw new NotImplementedException();

@@ -20,7 +20,7 @@ using SharpMap.Features;
 
 namespace SharpMap.Data
 {
-    public interface IWritableVectorLayerProvider<TOid> : IVectorLayerProvider<TOid>
+    public interface IWritableFeatureLayerProvider<TOid> : IFeatureLayerProvider<TOid>
     {
         void Insert(FeatureDataRow<TOid> feature);
         void Insert(IEnumerable<FeatureDataRow<TOid>> features);

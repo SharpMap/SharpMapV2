@@ -24,7 +24,7 @@ namespace SharpMap.Data
 	/// <summary>
 	/// Interface for data providers with features having ID values.
 	/// </summary>
-    public interface IVectorLayerProvider<TOid> : IVectorLayerProvider
+    public interface IFeatureLayerProvider<TOid> : IFeatureLayerProvider
 	{
 		/// <summary>
 		/// Returns all objects whose <see cref="SharpMap.Geometries.BoundingBox"/> 

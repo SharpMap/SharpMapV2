@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -34,7 +35,7 @@ namespace SharpMap.Layers
     /// //Set up a label layer
     /// </code>
     /// </example>
-    public class LabelLayer<TLabel> : Layer, IFeatureLayer, IDisposable
+    public class LabelLayer<TLabel> : FeatureLayer
     {
         #region Nested Classes
 
@@ -54,7 +55,7 @@ namespace SharpMap.Layers
         private GenerateLabelTextDelegate _getLabelMethod;
         private string _labelColumn;
         private LabelFilterDelegate _labelFilter;
-        private MultipartGeometryLabelingBehaviour _multipartGeometryBehaviour;
+        private MultipartGeometryLabelingBehavior _multipartGeometryBehaviour;
 
         #endregion
 
@@ -63,12 +64,12 @@ namespace SharpMap.Layers
         /// <summary>
         /// Creates a new instance of a LabelLayer with the given name.
         /// </summary>
-        /// <param name="layername">Name of the layer.</param>
-        public LabelLayer(string layerName, ILayerProvider dataSource)
-            : base(dataSource)
+        /// <param name="layerName">Name of the layer.</param>
+        /// <param name="dataSource">Data source provider for the layer.</param>
+        public LabelLayer(string layerName, IFeatureLayerProvider dataSource)
+            : base(layerName, dataSource)
         {
-            LayerName = layerName;
-            _multipartGeometryBehaviour = MultipartGeometryLabelingBehaviour.All;
+            _multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
             _labelFilter = LabelCollisionDetection2D.SimpleCollisionDetection;
         }
 
@@ -100,9 +101,9 @@ namespace SharpMap.Layers
         /// Gets or sets labeling behavior on multipart geometries.
         /// </summary>
         /// <remarks>
-        /// Default value is <see cref="MultipartGeometryBehaviourEnum.All"/>.
+        /// Default value is <see cref="MultipartGeometryLabelingBehavior.All"/>.
         /// </remarks>
-        public MultipartGeometryLabelingBehaviour MultipartGeometryLabelingBehaviour
+        public MultipartGeometryLabelingBehavior MultipartGeometryLabelingBehaviour
         {
             get { return _multipartGeometryBehaviour; }
             set { _multipartGeometryBehaviour = value; }
@@ -126,7 +127,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <remarks>
         /// This property is overriden by the 
-        /// <see cref="LabelStringDelegate"/>.
+        /// <see cref="GenerateLabelTextDelegate"/>.
         /// </remarks>
         public string LabelColumn
         {
@@ -180,104 +181,6 @@ namespace SharpMap.Layers
         {
             get { return _priority; }
             set { _priority = value; }
-        }
-
-        #region IFeatureLayer Members
-
-        public new IVectorLayerProvider DataSource
-        {
-            get { return base.DataSource as IVectorLayerProvider; }
-        }
-
-        public FeatureDataTable Features
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public FeatureDataView VisibleFeatures
-        {
-            get
-            {
-                // Execute query if necessary and return table...
-                throw new NotImplementedException();
-            }
-        }
-
-        public event EventHandler VisibleFeaturesChanged;
-
-        public FeatureDataView HighlightedFeatures
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        public event EventHandler HighlightedFeaturesChanged;
-
-        public event EventHandler SelectedFeaturesChanged;
-
-        public FeatureDataView SelectedFeatures
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        protected override void OnVisibleRegionChanged()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Gets the bounding box of the entire layer.
-        /// </summary>
-        public override BoundingBox Envelope
-        {
-            get
-            {
-                if (DataSource == null)
-                {
-                    throw (new InvalidOperationException("DataSource property not set on layer '" + LayerName + "'"));
-                }
-
-                bool wasOpen = DataSource.IsOpen;
-
-                if (!wasOpen)
-                {
-                    DataSource.Open();
-                }
-
-                BoundingBox box = DataSource.GetExtents();
-
-                if (!wasOpen) //Restore state
-                {
-                    DataSource.Close();
-                }
-
-                return box;
-            }
-        }
-
-        /// <summary>
-        /// Gets the <abbr name="spatial reference ID">SRID</abbr> of this layer's data source.
-        /// </summary>
-        public override int? Srid
-        {
-            get
-            {
-                if (DataSource == null)
-                {
-                    throw new InvalidOperationException(
-                        String.Format("DataSource property not set on layer '{0}'", LayerName));
-                }
-
-                return DataSource.Srid;
-            }
         }
 
         public string GetLabelText(FeatureDataRow feature)

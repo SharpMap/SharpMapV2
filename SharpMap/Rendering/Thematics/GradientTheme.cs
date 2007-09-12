@@ -28,7 +28,8 @@ namespace SharpMap.Rendering.Thematics
     public delegate IStyle CalculateStyleDelegate(IStyle min, IStyle max, double weighting);
 
     /// <summary>
-    /// The GradientTheme class defines a gradient color thematic rendering of features based by a numeric attribute.
+    /// The GradientTheme class defines a gradient color 
+    /// thematic rendering of features based by a numeric attribute.
     /// </summary>
     public class GradientTheme2D : ITheme
     {
@@ -52,7 +53,7 @@ namespace SharpMap.Rendering.Thematics
         /// This is useful for scaling symbols, line widths, line and fill colors from numerical attributes.</para>
         /// <para>Colors are interpolated between two colors, but if you want to interpolate through more colors (fx. a rainbow),
         /// set the <see cref="TextColorBlend"/>, <see cref="LineColorBlend"/> and <see cref="FillColorBlend"/> properties
-        /// to a custom <see cref="ColorBlend"/>.
+        /// to a custom <see cref="StyleColorBlend"/>.
         /// </para>
         /// <para>The following properties are scaled (properties not mentioned here are not interpolated):
         /// <list type="table">
@@ -77,7 +78,7 @@ namespace SharpMap.Rendering.Thematics
         /// SharpMap.Rendering.Thematics.GradientTheme popdens = new SharpMap.Rendering.Thematics.GradientTheme("PopDens", 0, 400, min, max);
         /// //Set the fill-style colors to be a rainbow blend from red to blue.
         /// popdens.FillColorBlend = SharpMap.Rendering.Thematics.ColorBlend.Rainbow5;
-        /// myVectorLayer.Theme = popdens;
+        /// myFeatureLayer.Theme = popdens;
         /// </code>
         /// </example>
         /// </remarks>
@@ -103,8 +104,8 @@ namespace SharpMap.Rendering.Thematics
             _max = maxValue;
             _maxStyle = maxStyle;
             _minStyle = minStyle;
-            _styleTypeFunctionTable[typeof (VectorStyle).TypeHandle] = new CalculateStyleDelegate(CalculateVectorStyle);
-            _styleTypeFunctionTable[typeof (LabelStyle).TypeHandle] = new CalculateStyleDelegate(CalculateLabelStyle);
+            _styleTypeFunctionTable[typeof (VectorStyle).TypeHandle] = CalculateVectorStyle;
+            _styleTypeFunctionTable[typeof (LabelStyle).TypeHandle] = CalculateLabelStyle;
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace SharpMap.Rendering.Thematics
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="SharpMap.Rendering.Thematics.ColorBlend"/> used on labels
+        /// Gets or sets the <see cref="StyleColorBlend"/> used on labels
         /// </summary>
         public StyleColorBlend TextColorBlend
         {
@@ -162,7 +163,7 @@ namespace SharpMap.Rendering.Thematics
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="SharpMap.Rendering.Thematics.ColorBlend"/> used on lines
+        /// Gets or sets the <see cref="StyleColorBlend"/> used on lines
         /// </summary>
         public StyleColorBlend LineColorBlend
         {
@@ -171,7 +172,7 @@ namespace SharpMap.Rendering.Thematics
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="SharpMap.Rendering.Thematics.ColorBlend"/> used as Fill
+        /// Gets or sets the <see cref="StyleColorBlend"/> used as Fill
         /// </summary>
         public StyleColorBlend FillColorBlend
         {
@@ -198,7 +199,8 @@ namespace SharpMap.Rendering.Thematics
             catch
             {
                 throw new InvalidOperationException(
-                    "Invalid attribute type in Gradient Theme. Couldn't parse weighting attribute (must be numeric).");
+                    "Invalid attribute type in gradient theme. "+
+                    "Couldn't parse weighting attribute (must be numeric).");
             }
 
             if (MinStyle == null)
@@ -225,7 +227,8 @@ namespace SharpMap.Rendering.Thematics
             if (styleCalculator == null)
             {
                 throw new ArgumentException(
-                    "Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle are supported for the gradient theme");
+                    "Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle "+
+                    "are supported for the gradient theme");
             }
 
             return styleCalculator(MinStyle, MaxStyle, weighting);

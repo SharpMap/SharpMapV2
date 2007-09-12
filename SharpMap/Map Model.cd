@@ -25,7 +25,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="SharpMap.Layers.VectorLayer">
+  <Class Name="SharpMap.Layers.FeatureLayer">
     <Position X="9.5" Y="6.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Protected" Collapsed="true" />
@@ -33,7 +33,7 @@
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAAgAAIAACAAAoDAQgABAgAACAHggAIABAgAAAAIABA=</HashCode>
-      <FileName>Layers\VectorLayer.cs</FileName>
+      <FileName>Layers\FeatureLayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

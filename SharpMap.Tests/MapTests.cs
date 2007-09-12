@@ -18,11 +18,11 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
 			Map map = new Map();
-            IVectorLayerProvider dataSource = mocks.Stub<IVectorLayerProvider>();
+            IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
 
-            map.AddLayer(new VectorLayer("Layer 1", dataSource));
-            map.AddLayer(new VectorLayer("Layer 3", dataSource));
-            map.AddLayer(new VectorLayer("Layer 2", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 1", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 3", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 2", dataSource));
 
 			ILayer layer = map.GetLayerByName("Layer 2");
 			Assert.IsNotNull(layer);
@@ -34,12 +34,12 @@ namespace SharpMap.Tests
 		public void DuplicateLayerNamesThrowsException()
         {
             Map map = new Map();
-            IVectorLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource();
+            IFeatureLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource();
 
-            map.AddLayer(new VectorLayer("Layer 1", dataSource));
-            map.AddLayer(new VectorLayer("Layer 3", dataSource));
-            map.AddLayer(new VectorLayer("Layer 2", dataSource));
-            map.AddLayer(new VectorLayer("Layer 3", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 1", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 3", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 2", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 3", dataSource));
 		}
 
 		[Test]
@@ -48,12 +48,12 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
             Map map = new Map();
-            IVectorLayerProvider dataSource = mocks.Stub<IVectorLayerProvider>();
+            IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
 
-            map.AddLayer(new VectorLayer("Layer 1", dataSource));
-            map.AddLayer(new VectorLayer("Layer 3a", dataSource));
-            map.AddLayer(new VectorLayer("Layer 2", dataSource));
-            map.AddLayer(new VectorLayer("layer 3b", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 1", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 3a", dataSource));
+            map.AddLayer(new GeometryLayer("Layer 2", dataSource));
+            map.AddLayer(new GeometryLayer("layer 3b", dataSource));
 
 			int count = 0;
 
@@ -83,7 +83,7 @@ namespace SharpMap.Tests
 		{
 			Map map = new Map();
 
-			VectorLayer vLayer = new VectorLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
+			GeometryLayer vLayer = new GeometryLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 
 			map.AddLayer(vLayer);
 			BoundingBox box = map.GetExtents();

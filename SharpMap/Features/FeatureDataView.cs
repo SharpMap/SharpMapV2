@@ -183,6 +183,12 @@ namespace SharpMap.Features
             }
         }
 
+        public IEnumerable<FeatureDataRow> SelectedRows
+        {
+            get { throw new NotImplementedException(); }
+            set { }
+        }
+
         /// <summary>
         /// Gets or sets the bounds which this view covers as a <see cref="BoundingBox"/>.
         /// </summary>

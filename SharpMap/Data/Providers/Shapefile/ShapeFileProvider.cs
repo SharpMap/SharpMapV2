@@ -56,11 +56,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// using SharpMap.Layers;
 	/// using SharpMap.Data.Providers.ShapeFile;
 	/// // [...]
-	/// VectorLayer myLayer = new VectorLayer("My layer");
+	/// FeatureLayer myLayer = new FeatureLayer("My layer");
 	/// myLayer.DataSource = new ShapeFile(@"C:\data\MyShapeData.shp");
 	/// </code>
 	/// </example>
-	public class ShapeFileProvider : IWritableVectorLayerProvider<uint>
+	public class ShapeFileProvider : IWritableFeatureLayerProvider<uint>
 	{
 		#region FilterMethod
 
@@ -812,7 +812,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region IVectorLayerProvider Members
+		#region IFeatureLayerProvider Members
 
 		/// <summary>
 		/// Returns the data associated with all the geometries that are intersected by 'geom'.
@@ -1012,7 +1012,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region IVectorLayerProvider<uint> Members
+		#region IFeatureLayerProvider<uint> Members
 
 		/// <summary>
 		/// Returns geometry Object IDs whose bounding box intersects <paramref name="bounds"/>.
@@ -1113,7 +1113,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region IWritableVectorLayerProvider<uint> Members
+		#region IWritableFeatureLayerProvider<uint> Members
 
 		/// <summary>
 		/// Adds a feature to the end of a shapefile.
@@ -1420,9 +1420,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region IVectorLayerProvider<uint> Explicit Members
+		#region IFeatureLayerProvider<uint> Explicit Members
 
-		IEnumerable<uint> IVectorLayerProvider<uint>.GetObjectIdsInView(BoundingBox boundingBox)
+		IEnumerable<uint> IFeatureLayerProvider<uint>.GetObjectIdsInView(BoundingBox boundingBox)
 		{
 			throw new NotImplementedException();
 		}

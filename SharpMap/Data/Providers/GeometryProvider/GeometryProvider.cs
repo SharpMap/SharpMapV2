@@ -39,7 +39,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 	/// The following example gets data within a BoundingBox of another datasource and adds it to the map.
 	/// <code lang="C#">
 	/// List{Geometry} geometries = myMap.Layers[0].DataSource.GetGeometriesInView(myBox);
-	/// VectorLayer laySelected = new VectorLayer("Selected Features");
+	/// FeatureLayer laySelected = new FeatureLayer("Selected Features");
 	/// laySelected.DataSource = new GeometryProvider(geometries);
 	/// laySelected.Style.Outline = new Pen(Color.Magenta, 3f);
 	/// laySelected.Style.EnableOutline = true;
@@ -53,14 +53,14 @@ namespace SharpMap.Data.Providers.GeometryProvider
 	/// //Add two points
 	/// geometries.Add(new SharpMap.Geometries.Point(23.345,64.325));
 	/// geometries.Add(new SharpMap.Geometries.Point(23.879,64.194));
-	/// SharpMap.Layers.VectorLayer layerVehicles = new SharpMap.Layers.VectorLayer("Vechicles");
+	/// SharpMap.Layers.FeatureLayer layerVehicles = new SharpMap.Layers.FeatureLayer("Vechicles");
 	/// layerVehicles.DataSource = new SharpMap.Data.Providers.GeometryProvider(geometries);
 	/// layerVehicles.Style.Symbol = Bitmap.FromFile(@"C:\data\car.gif");
 	/// myMap.Layers.Add(layerVehicles);
 	/// </code>
 	/// </example>
 	/// </remarks>
-	public class GeometryProvider : IVectorLayerProvider<uint>
+	public class GeometryProvider : IFeatureLayerProvider<uint>
 	{
 		private ICoordinateTransformation _coordinateTransformation;
 		private ICoordinateSystem _coordinateSystem;
@@ -287,7 +287,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 		#endregion
 
-        #region IVectorLayerProvider Members
+        #region IFeatureLayerProvider Members
 
 
         public CultureInfo Locale
@@ -417,7 +417,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 		#endregion
 
-		#region IVectorLayerProvider<uint> Members
+		#region IFeatureLayerProvider<uint> Members
 
 		/// <summary>
 		/// Returns all objects whose boundingbox intersects 'bbox'.
@@ -469,9 +469,9 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 		#endregion
 
-		#region IVectorLayerProvider Explicit Members
+		#region IFeatureLayerProvider Explicit Members
 
-		void IVectorLayerProvider.SetTableSchema(FeatureDataTable table)
+		void IFeatureLayerProvider.SetTableSchema(FeatureDataTable table)
 		{
 			table.Clear();
 		}

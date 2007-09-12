@@ -15,7 +15,7 @@ namespace SharpMap.Tests.Layers
         [Test]
         public void SettingVisibleRegionToEmptyShouldMakeAllFeaturesInvisible()
         {
-            VectorLayer layer = DataSourceHelper.CreateFeatureVectorLayer();
+            GeometryLayer layer = DataSourceHelper.CreateFeatureFeatureLayer();
 
             layer.AsyncQuery = false;
             layer.VisibleRegion = layer.Envelope;
@@ -31,7 +31,7 @@ namespace SharpMap.Tests.Layers
         [Test]
         public void VisibleRegionChangedTest()
         {
-            VectorLayer layer = DataSourceHelper.CreateFeatureVectorLayer();
+            GeometryLayer layer = DataSourceHelper.CreateFeatureFeatureLayer();
 
             layer.AsyncQuery = false;
             layer.VisibleRegion = layer.Envelope;
@@ -75,8 +75,8 @@ namespace SharpMap.Tests.Layers
         [Ignore("Test deferred until caching detection improved")]
         public void LayerCachingTest()
         {
-            VectorLayer layer1 = DataSourceHelper.CreateFeatureVectorLayer();
-            VectorLayer layer2 = DataSourceHelper.CreateFeatureVectorLayer();
+            GeometryLayer layer1 = DataSourceHelper.CreateFeatureFeatureLayer();
+            GeometryLayer layer2 = DataSourceHelper.CreateFeatureFeatureLayer();
 
             BoundingBox box1 = new BoundingBox(0, 0, 10, 10);
             BoundingBox box2 = new BoundingBox(35, 25, 45, 35);

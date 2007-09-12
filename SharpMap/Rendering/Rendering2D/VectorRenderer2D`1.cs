@@ -92,7 +92,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#endregion
 
-		#region IVectorLayerRenderer Members
+		#region IFeatureLayerRenderer Members
 
 		public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline,
 		                                         StylePen selectOutline);

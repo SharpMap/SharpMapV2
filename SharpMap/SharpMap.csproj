@@ -140,7 +140,7 @@
     <Compile Include="Data\Providers\Shapefile\DbaseFile.cs" />
     <Compile Include="Data\SharpMapDataException.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
-    <Compile Include="Data\IVectorLayerProvider.cs" />
+    <Compile Include="Data\IFeatureLayerProvider.cs" />
     <Compile Include="Data\LayerDataLoadException.cs" />
     <Compile Include="Data\Providers\ColumnPropertyComputationDelegates.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
@@ -177,7 +177,7 @@
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
     <Compile Include="Data\ILayerProvider.cs" />
-    <Compile Include="Data\IVectorLayerProvider`1.cs" />
+    <Compile Include="Data\IFeatureLayerProvider`1.cs" />
     <Compile Include="Data\IWritableVectorLayerProvider.cs" />
     <Compile Include="Data\Providers\OgcEnumerations.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseConstants.cs" />
@@ -235,6 +235,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Features\FeatureTableCollection.cs" />
+    <Compile Include="Layers\FeatureLayer.cs" />
     <Compile Include="Layers\LayersChangedEventArgs.cs" />
     <Compile Include="Layers\IFeatureLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />
@@ -248,7 +249,7 @@
     <Compile Include="Layers\MultipartGeometryLabelingBehavor.cs" />
     <Compile Include="Layers\RasterLayer.cs">
     </Compile>
-    <Compile Include="Layers\VectorLayer.cs">
+    <Compile Include="Layers\GeometryLayer.cs">
     </Compile>
     <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\IBindingListView`1.cs" />

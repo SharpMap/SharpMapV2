@@ -26,7 +26,7 @@ using System.Globalization;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
-	public class FeatureProvider : IWritableVectorLayerProvider<Guid>
+	public class FeatureProvider : IWritableFeatureLayerProvider<Guid>
 	{
         internal readonly static string OidColumnName = "Oid";
 		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
@@ -44,7 +44,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
 		}
 
-		#region IWritableVectorLayerProvider<Guid> Members
+		#region IWritableFeatureLayerProvider<Guid> Members
 
 		public void Insert(FeatureDataRow<Guid> feature)
 		{
@@ -81,7 +81,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		#endregion
 
-		#region IVectorLayerProvider<Guid> Members
+		#region IFeatureLayerProvider<Guid> Members
 
 		public IEnumerable<Guid> GetObjectIdsInView(BoundingBox boundingBox)
 		{
@@ -110,7 +110,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		#endregion
 
-        #region IVectorLayerProvider Members
+        #region IFeatureLayerProvider Members
 
         public CultureInfo Locale
         {
