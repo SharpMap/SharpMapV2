@@ -26,7 +26,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         internal static readonly string OidColumnName = "OID";
 
-        internal static DbaseField[] GetFields(DataTable schema, DbaseHeader header)
+        internal static ICollection<DbaseField> GetFields(DataTable schema, DbaseHeader header)
         {
 			if (schema == null)
 			{
@@ -34,28 +34,34 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 
             List<DbaseField> fields = new List<DbaseField>();
+			DataView schemaView = new DataView(schema, "", ProviderSchemaHelper.ColumnOrdinalColumn, DataViewRowState.CurrentRows);
 
-            foreach (DataRow row in schema.Rows)
+        	int offset = 1;
+			foreach (DataRowView rowView in schemaView)
             {
-				if (String.Compare(row[ProviderSchemaHelper.ColumnNameColumn] as string, OidColumnName, 
+				if (String.Compare(rowView[ProviderSchemaHelper.ColumnNameColumn] as string, OidColumnName, 
 					StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
 					continue;
 				}
 
-                string colName = row[ProviderSchemaHelper.ColumnNameColumn] as string;
-                Type dataType = (Type)row[ProviderSchemaHelper.DataTypeColumn];
-                Int16 length = Convert.ToInt16(row[ProviderSchemaHelper.ColumnSizeColumn]);
-                Byte decimals = Convert.ToByte(row[ProviderSchemaHelper.NumericPrecisionColumn]);
+				string colName = rowView[ProviderSchemaHelper.ColumnNameColumn] as string;
+				Type dataType = (Type)rowView[ProviderSchemaHelper.DataTypeColumn];
+				Int16 length = Convert.ToInt16(rowView[ProviderSchemaHelper.ColumnSizeColumn]);
+				Byte decimals = Convert.ToByte(rowView[ProviderSchemaHelper.NumericPrecisionColumn]);
+				int ordinal = Convert.ToInt32(rowView[ProviderSchemaHelper.ColumnOrdinalColumn]);
 
-                DbaseField field = new DbaseField(header, colName, dataType, length, decimals);
+				DbaseField field = new DbaseField(header, colName, dataType, length, decimals, ordinal, offset);
+
                 fields.Add(field);
+
+            	offset += field.Length;
             }
 
-            return fields.ToArray();
+            return fields;
         }
 
-        internal static FeatureDataTable<uint> GetFeatureTableForFields(DbaseField[] _dbaseColumns)
+        internal static FeatureDataTable<uint> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns)
         {
             FeatureDataTable<uint> table = new FeatureDataTable<uint>(OidColumnName);
 

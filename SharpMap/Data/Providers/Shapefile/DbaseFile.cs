@@ -20,6 +20,7 @@
 // Good stuff on DBase format: http://www.clicketyclick.dk/databases/xbase/format/
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using SharpMap.Features;
@@ -238,7 +239,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #region Properties
 
         #region Columns Property
-        public DbaseField[] Columns
+        public ICollection<DbaseField> Columns
         {
             get { return _header == null ? null : _header.Columns; }
             //set
@@ -382,25 +383,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         internal long ComputeByteOffsetToRecord(UInt32 row)
         {
             return _header.HeaderLength + (row * _header.RecordLength);
-        }
-
-        internal int ComputeByteOffsetToFieldInRecord(DbaseField field)
-        {
-            int colIndex = Array.IndexOf(_header.Columns, field);
-
-            if (colIndex < 0)
-            {
-                throw new ArgumentException("Column " + field.ColumnName + " wasn't found.");
-            }
-
-            int offset = 1;	// Skip deleted flag in row.
-
-            for (int i = 0; i < colIndex; i++)
-            {
-                offset += _header.Columns[i].Length;
-            }
-
-            return offset;
         }
 
         internal void DeleteRow(UInt32 rowIndex)

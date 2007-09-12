@@ -160,76 +160,75 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 _binaryWriter.Write(DbaseConstants.NotDeletedIndicator);
 
-                int dbaseColumnIndex = 0;
                 DbaseHeader header = _dbaseFile._header;
 
-                for (int dataRowColumnIndex = 0; dbaseColumnIndex < header.Columns.Length; dataRowColumnIndex++)
+                foreach (DbaseField column in header.Columns)
                 {
-                    if (String.Compare(row.Table.Columns[dataRowColumnIndex].ColumnName, DbaseSchema.OidColumnName,
-                        StringComparison.CurrentCultureIgnoreCase) == 0)
-                    {
-                        continue;
-                    }
+					if(!row.Table.Columns.Contains(column.ColumnName) 
+						|| String.Compare(column.ColumnName, DbaseSchema.OidColumnName,
+							StringComparison.CurrentCultureIgnoreCase) == 0)
+					{
+						continue;
+					}
 
                     // TODO: reconsider type checking
                     //if ((header.Columns[rowColumnIndex].DataType != row.Table.Columns[rowColumnIndex].DataType) || (header.Columns[rowColumnIndex].Length != row.Table.Columns[rowColumnIndex].MaxLength))
                     //    throw new SchemaMismatchException(String.Format("Row doesn't match this DbaseWriter schema at column {0}", i));
 
-                    switch (Type.GetTypeCode(header.Columns[dbaseColumnIndex].DataType))
+                    switch (Type.GetTypeCode(column.DataType))
                     {
                         case TypeCode.Boolean:
-                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 _binaryWriter.Write(DbaseConstants.BooleanNullChar);
                             }
                             else
                             {
-                                writeBoolean((bool)row[dataRowColumnIndex]);
+								writeBoolean((bool)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.DateTime:
-                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 writeNullDateTime();
                             }
                             else
                             {
-                                writeDateTime((DateTime)row[dataRowColumnIndex]);
+								writeDateTime((DateTime)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.Single:
                         case TypeCode.Double:
-                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
-                                writeNullNumber(header.Columns[dbaseColumnIndex].Length);
+                                writeNullNumber(column.Length);
                             }
                             else
                             {
-                                writeNumber(Convert.ToDouble(row[dataRowColumnIndex]), 
-									header.Columns[dbaseColumnIndex].Length, header.Columns[dbaseColumnIndex].Decimals);
+								writeNumber(Convert.ToDouble(row[column.ColumnName]), 
+									column.Length, column.Decimals);
                             }
                             break;
                         case TypeCode.Int16:
                         case TypeCode.Int32:
                         case TypeCode.Int64:
-                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
-                                writeNullNumber(header.Columns[dbaseColumnIndex].Length);
+                                writeNullNumber(column.Length);
                             }
                             else
                             {
-                                writeNumber(Convert.ToInt64(row[dataRowColumnIndex]), 
-									header.Columns[dbaseColumnIndex].Length);
+								writeNumber(Convert.ToInt64(row[column.ColumnName]), column.Length);
                             }
                             break;
                         case TypeCode.String:
-                            if (row[dataRowColumnIndex] == null || row[dataRowColumnIndex] == DBNull.Value)
+							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
-                                writeNullString(header.Columns[dbaseColumnIndex].Length);
+                                writeNullString(column.Length);
                             }
                             else
                             {
-                                writeString((string)row[dataRowColumnIndex], header.Columns[dbaseColumnIndex].Length);
+								writeString((string)row[column.ColumnName], column.Length);
                             }
                             break;
                         case TypeCode.Char:
@@ -244,10 +243,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                         case TypeCode.Object:
                         default:
                             throw new NotSupportedException(String.Format(
-								"Type not supported: {0}", header.Columns[dbaseColumnIndex].DataType));
+								"Type not supported: {0}", column.DataType));
                     }
-
-                    dbaseColumnIndex++;
                 }
             }
 

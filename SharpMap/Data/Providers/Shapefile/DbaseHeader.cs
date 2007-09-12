@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Data;
@@ -32,7 +33,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         private Int16 _headerLength;
         private Int16 _recordLength;
         private readonly byte _languageDriver;
-        private DbaseField[] _dbaseColumns;
+        //private DbaseField[] _dbaseColumns;
+    	private readonly Dictionary<string, DbaseField> _dbaseColumns = new Dictionary<string, DbaseField>();
 
         internal DbaseHeader(byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
         {
@@ -62,20 +64,23 @@ namespace SharpMap.Data.Providers.ShapeFile
             set { _numberOfRecords = value; }
         }
 
-        internal DbaseField[] Columns
+        internal ICollection<DbaseField> Columns
         {
-            get { return _dbaseColumns; }
+            get { return _dbaseColumns.Values; }
             set
             {
-                _dbaseColumns = value;
+				_dbaseColumns.Clear();
 
-                HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Length)
+				RecordLength = 1; // Deleted flag length
+
+            	foreach (DbaseField field in value)
+            	{
+					_dbaseColumns.Add(field.ColumnName, field);
+					RecordLength += field.Length;
+            	}
+
+                HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count)
                     + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
-
-                RecordLength = 1; // Deleted flag length
-
-                Array.ForEach(_dbaseColumns,
-                    delegate(DbaseField field) { RecordLength += field.Length; });
             }
         }
 
@@ -99,7 +104,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public override string ToString()
         {
             return String.Format("[DbaseHeader] Records: {0}; Columns: {1}; Last Update: {2}; " +
-                "Record Length: {3}; Header Length: {4}", RecordCount, Columns.Length,
+                "Record Length: {3}; Header Length: {4}", RecordCount, Columns.Count,
                 LastUpdate, RecordLength, HeaderLength);
         }
 
@@ -111,20 +116,16 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             DataTable schema = ProviderSchemaHelper.CreateSchemaTable();
 
-            foreach (DbaseField dbf in _dbaseColumns)
-            {
-                schema.Columns.Add(dbf.ColumnName, dbf.DataType);
-            }
-
-            for (int i = 0; i < _dbaseColumns.Length; i++)
-            {
+        	foreach (KeyValuePair<string, DbaseField> entry in _dbaseColumns)
+        	{
                 DataRow r = schema.NewRow();
-                r[ProviderSchemaHelper.ColumnNameColumn] = _dbaseColumns[i].ColumnName;
-                r[ProviderSchemaHelper.ColumnSizeColumn] = _dbaseColumns[i].Length;
-                r[ProviderSchemaHelper.ColumnOrdinalColumn] = i;
-                r[ProviderSchemaHelper.NumericPrecisionColumn] = _dbaseColumns[i].Decimals;
+        		DbaseField column = entry.Value;
+				r[ProviderSchemaHelper.ColumnNameColumn] = entry.Key;
+                r[ProviderSchemaHelper.ColumnSizeColumn] = column.Length;
+				r[ProviderSchemaHelper.ColumnOrdinalColumn] = column.Ordinal;
+				r[ProviderSchemaHelper.NumericPrecisionColumn] = column.Decimals;
                 r[ProviderSchemaHelper.NumericScaleColumn] = 0;
-                r[ProviderSchemaHelper.DataTypeColumn] = _dbaseColumns[i].DataType;
+				r[ProviderSchemaHelper.DataTypeColumn] = column.DataType;
                 r[ProviderSchemaHelper.AllowDBNullColumn] = true;
                 r[ProviderSchemaHelper.IsReadOnlyColumn] = true;
                 r[ProviderSchemaHelper.IsUniqueColumn] = false;
@@ -168,6 +169,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 header = new DbaseHeader(languageDriver, lastUpdate, recordCount);
 
                 DbaseField[] columns = new DbaseField[numberOfColumns];
+            	int offset = 1;
 
                 for (Int32 i = 0; i < columns.Length; i++)
                 {
@@ -193,7 +195,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     Type dataType = mapFieldTypeToClrType(fieldtype, decimals, fieldLength);
 
-                    columns[i] = new DbaseField(header, colName, dataType, fieldLength, decimals);
+                    columns[i] = new DbaseField(header, colName, dataType, fieldLength, decimals, i, offset);
+
+                	offset += fieldLength;
 
                     // Move stream to next field record
                     reader.BaseStream.Seek(DbaseConstants.BytesFromEndOfDecimalInFieldRecord, SeekOrigin.Current);

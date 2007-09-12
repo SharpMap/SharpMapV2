@@ -15,20 +15,50 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.Data.Providers.ShapeFile
 {
+	/// <summary>
+	/// Represents invariant shapefile values, offsets and lengths
+	/// derived from the shapefile specification.
+	/// </summary>
 	internal class ShapeFileConstants
 	{
+		/// <summary>
+		/// Size, in bytes, of the shapefile header region.
+		/// </summary>
 		public const int HeaderSizeBytes = 100;
+
+		/// <summary>
+		/// The first value in any shapefile.
+		/// </summary>
 		public const int HeaderStartCode = 9994;
+
+		/// <summary>
+		/// The version of any valid shapefile.
+		/// </summary>
 		public const int VersionCode = 1000;
+
+		/// <summary>
+		/// The number of bytes in a shapefile record header 
+		/// (per-record preamble).
+		/// </summary>
 		public const int ShapeRecordHeaderByteLength = 8;
+
+		/// <summary>
+		/// The number of bytes in a record header (per-record preamble)
+		/// in a shapefile's index file.
+		/// </summary>
 		public const int IndexRecordByteLength = 8;
+
+		/// <summary>
+		/// The number of bytes used to store the BoundingBox, or 
+		/// extents for the shapefile.
+		/// </summary>
 		public const int BoundingBoxFieldByteLength = 32;
+
+		/// <summary>
+		/// The name given to the row identifier in a ShapeFileProvider.
+		/// </summary>
 		public static readonly string IdColumnName = "OID";
 	}
 }

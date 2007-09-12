@@ -79,8 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region Fields
-
+		#region Instance fields
 		private FilterMethod _filterDelegate;
 		private int? _srid;
 		private string _filename;
@@ -98,10 +97,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		private readonly ShapeFileIndex _shapeFileIndex;
 		private ShapeFileDataReader _currentReader;
 		private readonly object _readerSync = new object();
-
+		private readonly bool _hasDbf;
 		#endregion
 
-		#region Object Construction/Destruction
+		#region Object construction and disposal
 
 		/// <summary>
 		/// Initializes a ShapeFile data provider without a file-based spatial index.
@@ -141,6 +140,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 			_shapeFileIndex = new ShapeFileIndex(this);
 
 			_hasFileBasedSpatialIndex = fileBasedIndex;
+
+			_hasDbf = File.Exists(DbfFilename);
 
 			// Initialize DBF
 			if (HasDbf)
@@ -325,6 +326,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <param name="layerName">Name of the shapefile.</param>
 		/// <param name="type">Type of shape to store in the shapefile.</param>
 		/// <param name="model">The schema for the attributes DBase file.</param>
+		/// <param name="culture">
+		/// The culture info to use to determine default encoding and attribute formatting.
+		/// </param>
+		/// <param name="encoding">
+		/// The encoding to use if different from the <paramref name="culture"/>'s default encoding.
+		/// </param>
 		/// <returns>A ShapeFile instance.</returns>
 		/// <exception cref="ArgumentNullException">
 		/// Thrown if <paramref name="layerName"/> is null.
@@ -593,7 +600,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
 		public bool HasDbf
 		{
-			get { return File.Exists(DbfFilename); }
+			get { return _hasDbf; }
+		}
+
+		/// <summary>
+		/// The name given to the row identifier in a ShapeFileProvider.
+		/// </summary>
+		public string IdColumnName
+		{
+			get { return ShapeFileConstants.IdColumnName; }
 		}
 
 		/// <summary>
@@ -915,15 +930,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			
 			IEnumerable<uint> objectsInQuery = GetObjectIdsInView(bounds);
 
-			foreach (uint oid in objectsInQuery)
-			{
-				FeatureDataRow<uint> fdr = getFeature(oid, keyedTable);
-
-				if (fdr != null && fdr.Geometry != null)
-				{
-					keyedTable.MergeFeature(fdr);
-				}
-			}
+			keyedTable.MergeFeatures(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
         }
 
 		public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box)
@@ -1515,6 +1522,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 		}
 
+		private IEnumerable<IFeatureDataRecord> getFeatureRecordsFromIds(IEnumerable<uint> ids, FeatureDataTable<uint> table)
+		{
+			foreach (uint id in ids)
+			{
+				yield return getFeature(id, table);
+			}
+		}
+
 		private FeatureDataTable<uint> getNewTable()
 		{
 			if (HasDbf)
@@ -1528,33 +1543,34 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 
 		/// <summary>
-		/// Gets a datarow from the datasource with the 
-		/// specified object id belonging to the specified datatable.
+		/// Gets a row from the DBase attribute file which has the 
+		/// specified <paramref name="oid">object id</paramref> created from
+		/// <paramref name="table"/>.
 		/// </summary>
 		/// <param name="oid">Object id to lookup.</param>
-		/// <param name="dt">Datatable to feature should belong to.</param>
+		/// <param name="table">DataTable with schema matching the feature to retrieve.</param>
 		/// <returns>Row corresponding to the object id.</returns>
 		/// <exception cref="ShapeFileInvalidOperationException">
 		/// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
 		/// </exception>
-		private FeatureDataRow<uint> getFeature(uint oid, FeatureDataTable<uint> dt)
+		private FeatureDataRow<uint> getFeature(uint oid, FeatureDataTable<uint> table)
 		{
 			checkOpen();
 			//enableReading();
 
-			if (dt == null)
+			if (table == null)
 			{
 				if (!HasDbf)
 				{
-					dt = FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+					table = FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
 				}
 				else
 				{
-					dt = _dbaseFile.NewTable;
+					table = _dbaseFile.NewTable;
 				}
 			}
 
-			FeatureDataRow<uint> dr = HasDbf ? _dbaseFile.GetAttributes(oid, dt) : dt.NewRow(oid);
+			FeatureDataRow<uint> dr = HasDbf ? _dbaseFile.GetAttributes(oid, table) : table.NewRow(oid);
 			dr.Geometry = readGeometry(oid);
 
 			if (FilterDelegate == null || FilterDelegate(dr))

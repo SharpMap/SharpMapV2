@@ -156,7 +156,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 // Compute the position in the file stream for the requested row and column
                 long offset = header.HeaderLength + (row * header.RecordLength);
-                offset += _dbaseFile.ComputeByteOffsetToFieldInRecord(column);
+                offset += column.Offset;
 
                 // Seek to the computed offset
                 _dbaseFile.DataStream.Seek(offset, SeekOrigin.Begin);

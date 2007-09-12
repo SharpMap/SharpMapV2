@@ -30,14 +30,18 @@ namespace SharpMap.Data.Providers.ShapeFile
 		private readonly short _length;
 		private readonly byte _decimals;
 		private readonly DbaseHeader _header;
+		private readonly int _ordinal;
+		private readonly int _offset;
 
-		internal DbaseField(DbaseHeader header, string name, Type type, Int16 length, Byte decimals)
+		internal DbaseField(DbaseHeader header, string name, Type type, Int16 length, Byte decimals, int ordinal, int offset)
 		{
 			_header = header;
 			_columnName = name;
 			_dataType = type;
 			_length = length;
 			_decimals = decimals;
+			_ordinal = ordinal;
+			_offset = offset;
 		}
 
 		/// <summary>
@@ -73,21 +77,39 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 
 		/// <summary>
+		/// Gets the position of the column relative to all columns
+		/// in the dBase schema.
+		/// </summary>
+		public int Ordinal
+		{
+			get { return _ordinal; }
+		}
+
+		/// <summary>
+		/// Gets the number of bytes from the start of the record
+		/// where the field data starts.
+		/// </summary>
+		public int Offset
+		{
+			get { return _offset; }
+		}
+
+		/// <summary>
 		/// Converts the field instance into a string representation.
 		/// </summary>
 		/// <returns>A string which describes the field.</returns>
 		public override string ToString()
 		{
 			return String.Format("[DbaseField] Name: {0}; Type: {1}; Length: {2}; " +
-			                     "Decimals: {3}", ColumnName, DataType, Length, Decimals);
+								 "Decimals: {3}", ColumnName, DataType, Length, Decimals);
 		}
 
 		public override int GetHashCode()
 		{
 			return (ColumnName ?? "").ToLower().GetHashCode() ^
-			       DataType.GetHashCode() ^
-			       Length.GetHashCode() ^
-			       Decimals.GetHashCode();
+				   DataType.GetHashCode() ^
+				   Length.GetHashCode() ^
+				   Decimals.GetHashCode();
 		}
 
 		/// <summary>
@@ -120,9 +142,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 			CompareInfo compare = DbaseLocaleRegistry.GetCulture(_header.LanguageDriver).CompareInfo;
 
 			return compare.Compare(other.ColumnName, ColumnName, CompareOptions.IgnoreCase) == 0 &&
-			       other.DataType == DataType &&
-			       other.Length == Length &&
-			       other.Decimals == Decimals;
+				   other.DataType == DataType &&
+				   other.Length == Length &&
+				   other.Decimals == Decimals;
 		}
 
 		#endregion
