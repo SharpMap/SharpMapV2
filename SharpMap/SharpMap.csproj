@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20706</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -165,6 +165,7 @@
     <Compile Include="Features\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Geometries\GeometryCollection`1.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
     <Compile Include="Layers\DuplicateLayerException.cs" />
@@ -285,7 +286,6 @@
     <Compile Include="Rendering\Rendering2D\GraphicsFigure2D.cs" />
     <Compile Include="Rendering\Rendering2D\GraphicsPath2D.cs" />
     <Compile Include="Presentation\IViewSelection.cs" />
-    <Compile Include="Rendering\Rendering2D\PositionedRenderObject2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\RasterRenderer2D`1.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
     <Compile Include="Rendering\ILabelRenderer`4.cs" />

@@ -44,7 +44,7 @@ namespace SharpMap.Rendering.Gdi
 	/// A <see cref="VectorRenderer2D{TRenderObject}"/> 
 	/// which renders to GDI primatives.
 	/// </summary>
-	public class GdiVectorRenderer : VectorRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
+	public class GdiVectorRenderer : VectorRenderer2D<GdiRenderObject>
 	{
 		#region Instance fields
 		private readonly Dictionary<BrushLookupKey, GdiBrush> _brushCache = new Dictionary<BrushLookupKey, Brush>();
@@ -78,7 +78,7 @@ namespace SharpMap.Rendering.Gdi
 		#endregion
 
 		#region Render overrides
-		public override PositionedRenderObject2D<GdiRenderObject> RenderPath(
+		public override GdiRenderObject RenderPath(
 			GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill,
 			StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
@@ -102,10 +102,10 @@ namespace SharpMap.Rendering.Gdi
 														 getBrush(selectFill), getPen(outline), getPen(highlightOutline),
 														 getPen(selectOutline));
 
-			return new PositionedRenderObject2D<GdiRenderObject>(centerX, centerY, holder);
+            return holder;
 		}
 
-		public override PositionedRenderObject2D<GdiRenderObject> RenderPath(GraphicsPath2D path, StylePen outline,
+		public override GdiRenderObject RenderPath(GraphicsPath2D path, StylePen outline,
 																			 StylePen highlightOutline, StylePen selectOutline)
 		{
 			SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
@@ -113,12 +113,12 @@ namespace SharpMap.Rendering.Gdi
 				transparentBrush, outline, highlightOutline, selectOutline);
 		}
 
-		public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData)
+		public override GdiRenderObject RenderSymbol(Point2D location, Symbol2D symbolData)
 		{
 			return RenderSymbol(location, symbolData, symbolData, symbolData);
 		}
 
-		public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbolData,
+		public override GdiRenderObject RenderSymbol(Point2D location, Symbol2D symbolData,
 																			   StyleColorMatrix highlight,
 																			   StyleColorMatrix select)
 		{
@@ -131,7 +131,7 @@ namespace SharpMap.Rendering.Gdi
 			return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
 		}
 
-		public override PositionedRenderObject2D<GdiRenderObject> RenderSymbol(Point2D location, Symbol2D symbol,
+		public override GdiRenderObject RenderSymbol(Point2D location, Symbol2D symbol,
 																			   Symbol2D highlightSymbol, Symbol2D selectSymbol)
 		{
 			if (highlightSymbol == null)
@@ -148,7 +148,7 @@ namespace SharpMap.Rendering.Gdi
 			GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
 			GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
 			GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
-			return new PositionedRenderObject2D<GdiRenderObject>(location.X, location.Y, holder);
+            return holder;
 
 			//if (symbolRotation != 0 && symbolRotation != float.NaN)
 			//{

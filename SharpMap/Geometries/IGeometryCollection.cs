@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,7 +26,7 @@ namespace SharpMap.Geometries
 	/// Interface for a GeometryCollection.
     /// A GeometryCollection is a collection of 1 or more geometries.
 	/// </summary>
-    public interface IGeometryCollection : IGeometry, IEnumerable<Geometry>
+    public interface IGeometryCollection : IGeometry, IEnumerable
 	{
 		/// <summary>
 		/// Returns the number of geometries in the collection.

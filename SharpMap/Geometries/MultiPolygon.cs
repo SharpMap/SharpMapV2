@@ -24,173 +24,22 @@ namespace SharpMap.Geometries
 	/// A MultiPolygon is a MultiSurface whose elements are Polygons.
 	/// </summary>
 	[Serializable]
-	public class MultiPolygon : MultiSurface
+	public class MultiPolygon : MultiSurface<Polygon>
 	{
-		private List<Polygon> _polygons;
-
 		/// <summary>
 		/// Instantiates a MultiPolygon
 		/// </summary>
-		public MultiPolygon()
-			: this(8)
-		{
-		}
+		public MultiPolygon() { }
 
-		public MultiPolygon(int initialCapacity)
-		{
-			_polygons = new List<Polygon>(initialCapacity);
-		}
+		public MultiPolygon(int initialCapacity) :
+            base(initialCapacity) { }
 
 		/// <summary>
 		/// Collection of polygons in the multipolygon
 		/// </summary>
-		public List<Polygon> Polygons
+		public IList<Polygon> Polygons
 		{
-			get { return _polygons; }
-		}
-
-		/// <summary>
-		/// Returns an indexed geometry in the collection
-		/// </summary>
-		/// <param name="index">Geometry index</param>
-		/// <returns>Geometry at index</returns>
-		public new Polygon this[int index]
-		{
-			get { return _polygons[index]; }
-		}
-
-		/// <summary>
-		/// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
-		/// </summary>
-		/// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-		public override bool IsEmpty()
-		{
-			if (_polygons == null || _polygons.Count == 0)
-			{
-				return true;
-			}
-
-			foreach (Polygon poly in Polygons)
-			{
-				if (!poly.IsEmpty())
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		///  Returns 'true' if this Geometry has no anomalous geometric points, such as self
-		/// intersection or self tangency. The description of each instantiable geometric class will include the specific
-		/// conditions that cause an instance of that class to be classified as not simple.
-		/// </summary>
-		/// <returns>true if the geometry is simple</returns>
-		public override bool IsSimple()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns the closure of the combinatorial boundary of this Geometry. The
-		/// combinatorial boundary is defined as described in section 3.12.3.2 of [1]. Because the result of this function
-		/// is a closure, and hence topologically closed, the resulting boundary can be represented using
-		/// representational geometry primitives
-		/// </summary>
-		/// <returns>Closure of the combinatorial boundary of this Geometry</returns>
-		public override Geometry Boundary()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns the shortest distance between any two points in the two geometries
-		/// as calculated in the spatial reference system of this Geometry.
-		/// </summary>
-		/// <param name="geom">Geometry to calculate distance to</param>
-		/// <returns>Shortest distance between any two points in the two geometries</returns>
-		public override double Distance(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents all points whose distance from this Geometry
-		/// is less than or equal to distance. Calculations are in the Spatial Reference
-		/// System of this Geometry.
-		/// </summary>
-		/// <param name="d">Buffer distance</param>
-		/// <returns>Buffer around geometry</returns>
-		public override Geometry Buffer(double d)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Geometry—Returns a geometry that represents the convex hull of this Geometry.
-		/// </summary>
-		/// <returns>The convex hull</returns>
-		public override Geometry ConvexHull()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set intersection of this Geometry
-		/// with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to intersect with</param>
-		/// <returns>Returns a geometry that represents the point set intersection of this Geometry with anotherGeometry.</returns>
-		public override Geometry Intersection(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set union of this Geometry with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to union with</param>
-		/// <returns>Unioned geometry</returns>
-		public override Geometry Union(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set difference of this Geometry with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to compare to</param>
-		/// <returns>Geometry</returns>
-		public override Geometry Difference(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set symmetric difference of this Geometry with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to compare to</param>
-		/// <returns>Geometry</returns>
-		public override Geometry SymDifference(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns summed area of the Polygons in the MultiPolygon collection
-		/// </summary>
-		public override double Area
-		{
-			get
-			{
-				double result = 0;
-				// Some tests say the ForEach method is faster than foreach (fastest C# loop construct)
-				// Others say there is no difference [codekaizen; 2006-09-05]
-				Polygons.ForEach(delegate(Polygon poly) { result += poly.Area; });
-
-				return result;
-			}
+			get { return Collection; }
 		}
 
 		/// <summary>
@@ -211,45 +60,6 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Returns the number of geometries in the collection.
-		/// </summary>
-		public override int NumGeometries
-		{
-			get { return _polygons.Count; }
-		}
-
-		/// <summary>
-		/// Returns an indexed geometry in the collection
-		/// </summary>
-		/// <param name="N">Geometry index</param>
-		/// <returns>Geometry at index N</returns>
-		public override Geometry Geometry(int N)
-		{
-			return _polygons[N];
-		}
-
-		/// <summary>
-		/// Returns the bounding box of the object
-		/// </summary>
-		/// <returns>bounding box</returns>
-		public override BoundingBox GetBoundingBox()
-		{
-			BoundingBox bbox = BoundingBox.Empty;
-
-			if (Polygons == null || Polygons.Count == 0)
-			{
-				return bbox;
-			}
-
-			foreach (Polygon poly in Polygons)
-			{
-				bbox.ExpandToInclude(poly.GetBoundingBox());
-			}
-
-			return bbox;
-		}
-
-		/// <summary>
 		/// Creates a copy of this geometry.
 		/// </summary>
 		/// <returns>Copy of the MultiPolygon.</returns>
@@ -264,19 +74,5 @@ namespace SharpMap.Geometries
 
 			return multiPolygon;
 		}
-
-		#region IEnumerable<Geometry> Members
-
-		/// <summary>
-		/// Gets an enumerator for enumerating the geometries in the GeometryCollection
-		/// </summary>
-		/// <returns></returns>
-		public override IEnumerator<Geometry> GetEnumerator()
-		{
-			foreach (Polygon p in Polygons)
-				yield return p;
-		}
-
-		#endregion
 	}
 }

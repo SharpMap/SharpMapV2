@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,66 +16,31 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
 
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// A MultiPoint is a 0 dimensional geometric collection. The elements of a MultiPoint are
-	/// restricted to Points. The points are not connected or ordered.
+	/// A MultiPoint is a 0 dimensional geometric collection. 
+	/// The elements of a MultiPoint are restricted to Points. 
+	/// The points are not connected or ordered.
 	/// </summary>
-	public class MultiPoint : GeometryCollection
+	public class MultiPoint : GeometryCollection<Point>
 	{
-		private List<Point> _points;
-
 		/// <summary>
 		/// Initializes a new MultiPoint collection
 		/// </summary>
-		public MultiPoint()
-			: this(16)
-		{
-		}
+		public MultiPoint() { }
 
 		public MultiPoint(int initialCapacity)
-		{
-			_points = new List<Point>(initialCapacity);
-		}
-
-		/// <summary>
-		/// Gets the point at <paramref name="index"/> in the MultiPoint collection.
-		/// </summary>
-		/// <param name="index">Index in collection</param>
-		/// <returns>Point</returns>
-		public new Point this[int index]
-		{
-			get { return _points[index]; }
-		}
+            : base(initialCapacity) { }
 
 		/// <summary>
 		/// Gets or sets the MultiPoint collection
 		/// </summary>
-		public List<Point> Points
+		public IList<Point> Points
 		{
-			get { return _points; }
-		}
-
-		/// <summary>
-		/// Returns the number of geometries in the collection.
-		/// </summary>
-		public override int NumGeometries
-		{
-			get { return _points.Count; }
-		}
-
-		/// <summary>
-		/// Returns an indexed geometry in the collection
-		/// </summary>
-		/// <param name="N">Geometry index</param>
-		/// <returns>Geometry at index N</returns>
-		public new Point Geometry(int N)
-		{
-			return _points[N];
+			get { return Collection; }
 		}
 
 		/// <summary>
@@ -86,126 +52,12 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
-		/// </summary>
-		/// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-		public override bool IsEmpty()
-		{
-			return (_points != null && _points.Count == 0);
-		}
-
-		/// <summary>
-		///  Returns 'true' if this Geometry has no anomalous geometric points, such as self
-		/// intersection or self tangency. The description of each instantiable geometric class will include the specific
-		/// conditions that cause an instance of that class to be classified as not simple.
-		/// </summary>
-		/// <returns>true if the geometry is simple</returns>
-		public override bool IsSimple()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
 		/// The boundary of a MultiPoint is the empty set (null).
 		/// </summary>
 		/// <returns></returns>
 		public override Geometry Boundary()
 		{
 			return null;
-		}
-
-		/// <summary>
-		/// Returns the shortest distance between any two points in the two geometries
-		/// as calculated in the spatial reference system of this Geometry.
-		/// </summary>
-		/// <param name="geom">Geometry to calculate distance to</param>
-		/// <returns>Shortest distance between any two points in the two geometries</returns>
-		public override double Distance(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents all points whose distance from this Geometry
-		/// is less than or equal to distance. Calculations are in the Spatial Reference
-		/// System of this Geometry.
-		/// </summary>
-		/// <param name="d">Buffer distance</param>
-		/// <returns>Buffer around geometry</returns>
-		public override Geometry Buffer(double d)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Geometry—Returns a geometry that represents the convex hull of this Geometry.
-		/// </summary>
-		/// <returns>The convex hull</returns>
-		public override Geometry ConvexHull()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set intersection of this Geometry
-		/// with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to intersect with</param>
-		/// <returns>Returns a geometry that represents the point set intersection of this Geometry with anotherGeometry.</returns>
-		public override Geometry Intersection(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set union of this Geometry with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to union with</param>
-		/// <returns>Unioned geometry</returns>
-		public override Geometry Union(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set difference of this Geometry with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to compare to</param>
-		/// <returns>Geometry</returns>
-		public override Geometry Difference(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Returns a geometry that represents the point set symmetric difference of this Geometry with anotherGeometry.
-		/// </summary>
-		/// <param name="geom">Geometry to compare to</param>
-		/// <returns>Geometry</returns>
-		public override Geometry SymDifference(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// The minimum bounding box for this Geometry.
-		/// </summary>
-		/// <returns></returns>
-		public override BoundingBox GetBoundingBox()
-		{
-			BoundingBox bbox = BoundingBox.Empty;
-			if (_points == null || _points.Count == 0)
-				return bbox;
-			foreach (Point p in Points)
-				bbox.ExpandToInclude(p);
-			//for (int i = 1; i < _Points.Count; i++)
-			//{
-			//    bbox.Min.X = _Points[i].X < bbox.Min.X ? _Points[i].X : bbox.Min.X;
-			//    bbox.Min.Y = _Points[i].Y < bbox.Min.Y ? _Points[i].Y : bbox.Min.Y;
-			//    bbox.Max.X = _Points[i].X > bbox.Max.X ? _Points[i].X : bbox.Max.X;
-			//    bbox.Max.Y = _Points[i].Y > bbox.Max.Y ? _Points[i].Y : bbox.Max.Y;
-			//}
-			return bbox;
 		}
 
 		/// <summary>
@@ -223,19 +75,5 @@ namespace SharpMap.Geometries
 
 			return multiPoint;
 		}
-
-		#region IEnumerable<Geometry> Members
-
-		/// <summary>
-		/// Gets an enumerator for enumerating the geometries in the GeometryCollection
-		/// </summary>
-		/// <returns></returns>
-		public override IEnumerator<Geometry> GetEnumerator()
-		{
-			foreach (Point p in _points)
-				yield return p;
-		}
-
-		#endregion
 	}
 }

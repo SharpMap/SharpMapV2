@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using NUnit.Framework;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace SharpMap.Rendering.Gdi.Tests
 {
@@ -27,26 +25,24 @@ namespace SharpMap.Rendering.Gdi.Tests
         public void RenderPathOutlineTest()
         {
             GdiVectorRenderer renderer = new GdiVectorRenderer();
-            Point2D[] points = new Point2D[] 
-                { new Point2D(1, 0), new Point2D(0, 1), new Point2D(-1, 0), new Point2D(0, -1) };
+            Point2D[] points = new Point2D[]
+                {new Point2D(1, 0), new Point2D(0, 1), new Point2D(-1, 0), new Point2D(0, -1)};
             GraphicsPath2D path = new GraphicsPath2D(points, true);
 
             StylePen outline = new StylePen(new SolidStyleBrush(StyleColor.Blue), 1);
             StylePen highlight = new StylePen(new SolidStyleBrush(StyleColor.Red), 1);
             StylePen selected = new StylePen(new SolidStyleBrush(StyleColor.Green), 1);
 
-            PositionedRenderObject2D<GdiRenderObject> ro = renderer.RenderPath(path, outline, highlight, selected);
+            GdiRenderObject ro = renderer.RenderPath(path, outline, highlight, selected);
 
-            Assert.AreEqual(0, ro.X);
-            Assert.AreEqual(0, ro.Y);
-            Assert.AreEqual(GdiRenderObjectState.Normal, ro.RenderObject.State);
-            Assert.AreEqual(GdiRenderObjectType.Path, ro.RenderObject.Type);
-            Assert.IsInstanceOfType(typeof(SolidBrush), ro.RenderObject.Fill);
-            Assert.IsNotNull(ro.RenderObject.GdiPath);
-            Assert.AreEqual(4, ro.RenderObject.GdiPath.PointCount);
-            Assert.AreEqual(new RectangleF(-1, -1, 2, 2), ro.RenderObject.GdiPath.GetBounds());
+            Assert.AreEqual(GdiRenderObjectState.Normal, ro.State);
+            Assert.AreEqual(GdiRenderObjectType.Path, ro.Type);
+            Assert.IsInstanceOfType(typeof (SolidBrush), ro.Fill);
+            Assert.IsNotNull(ro.GdiPath);
+            Assert.AreEqual(4, ro.GdiPath.PointCount);
+            Assert.AreEqual(new RectangleF(-1, -1, 2, 2), ro.GdiPath.GetBounds());
 
-            PathData data = ro.RenderObject.GdiPath.PathData;
+            PathData data = ro.GdiPath.PathData;
 
             for (int i = 0; i < 4; i++)
             {
@@ -63,9 +59,9 @@ namespace SharpMap.Rendering.Gdi.Tests
             Pen expectedHighlight = new Pen(Brushes.Red, 1.0f);
             Pen expectedSelected = new Pen(Brushes.Green, 1.0f);
 
-            Assert.IsTrue(pensAreEqual(expectedOutline, ro.RenderObject.Outline));
-            Assert.IsTrue(pensAreEqual(expectedHighlight, ro.RenderObject.HightlightOutline));
-            Assert.IsTrue(pensAreEqual(expectedSelected, ro.RenderObject.SelectOutline));
+            Assert.IsTrue(pensAreEqual(expectedOutline, ro.Outline));
+            Assert.IsTrue(pensAreEqual(expectedHighlight, ro.HightlightOutline));
+            Assert.IsTrue(pensAreEqual(expectedSelected, ro.SelectOutline));
 
             expectedOutline.Dispose();
             expectedHighlight.Dispose();

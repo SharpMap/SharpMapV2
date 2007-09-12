@@ -41,23 +41,25 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#region Object construction and disposal
 
-		~VectorRenderer2D()
-		{
-			Dispose(false);
-		}
+        #region Dispose Pattern
 
-		#region Dispose Pattern
+        ~VectorRenderer2D()
+        {
+            Dispose(false);
+        }
 
 		#region IDisposable Members
 
 		public void Dispose()
 		{
-			if (!IsDisposed)
+			if (IsDisposed)
 			{
-				Dispose(true);
-				IsDisposed = true;
-				GC.SuppressFinalize(this);
-			}
+                return;
+            }
+
+            Dispose(true);
+            IsDisposed = true;
+            GC.SuppressFinalize(this);
 		}
 
 		#endregion
@@ -76,14 +78,21 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#endregion
 
-		#region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
-
+        #region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
+        /// <summary>
+        /// Gets or sets a matrix used to transform 
+        /// coordinate values during rendering.
+        /// </summary>
 		public Matrix2D RenderTransform
 		{
 			get { return _viewMatrix; }
 			set { _viewMatrix = value; }
 		}
 
+        /// <summary>
+        /// Gets or sets a <see cref="StyleRenderingMode"/> 
+        /// value used to render objects.
+        /// </summary>
 		public StyleRenderingMode StyleRenderingMode
 		{
 			get { return _renderMode; }

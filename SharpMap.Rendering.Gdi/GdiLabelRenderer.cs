@@ -34,7 +34,7 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Rendering.Gdi
 {
-    public class GdiLabelRenderer : LabelRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
+    public class GdiLabelRenderer : LabelRenderer2D<GdiRenderObject>
     {
         Graphics _currentGraphics;
 
@@ -72,17 +72,17 @@ namespace SharpMap.Rendering.Gdi
             }
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(Label2D label)
+        public override GdiRenderObject RenderLabel(Label2D label)
         {
             return RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor, label.Style.BackColor, label.Style.Halo, label.Rotation);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor)
+        public override GdiRenderObject RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor)
         {
             return RenderLabel(text, location, new Point2D(0, 0), font, foreColor, null, null, 0);
         }
 
-        public override PositionedRenderObject2D<GdiRenderObject> RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
+        public override GdiRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         {
             Graphics g = Graphics;
 

@@ -31,13 +31,33 @@ namespace SharpMap.Geometries
 	/// subclass of MultiSurface is MultiPolygon,
 	/// corresponding to a collection of Polygons.
 	/// </remarks>
-	public abstract class MultiSurface : GeometryCollection
-	{
+	public abstract class MultiSurface<TSurface> : GeometryCollection<TSurface>
+        where TSurface : Surface
+    {
+        protected MultiSurface() { }
+
+        protected MultiSurface(int initialCapacity)
+            : base(initialCapacity) {  }
+
 		/// <summary>
 		/// The area of this Surface, as measured in the 
 		/// spatial reference system of this Surface.
-		/// </summary>
-		public abstract double Area { get; }
+        /// </summary>
+        public virtual double Area
+        {
+            get
+            {
+                double result = 0;
+
+#warning Areal calculation in MultiSurface is incorrect, since it doesn't account for overlap.
+                foreach (TSurface surface in this)
+                {
+                    result += surface.Area;
+                }
+
+                return result;
+            }
+        }
 
 		/// <summary>
 		/// The mathematical centroid for this Surface as a Point.
@@ -51,12 +71,12 @@ namespace SharpMap.Geometries
 		public abstract Point PointOnSurface { get; }
 
 		/// <summary>
-		///  The inherent dimension of this Geometry object, 
+		/// Gets the inherent dimension of this Geometry object, 
 		/// which must be less than or equal to the coordinate dimension.
 		/// </summary>
 		public override int Dimension
 		{
 			get { return 2; }
-		}
+        }
 	}
 }

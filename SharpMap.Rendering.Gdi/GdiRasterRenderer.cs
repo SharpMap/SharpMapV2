@@ -24,14 +24,14 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Gdi
 {
-    public class GdiRasterRenderer : RasterRenderer2D<PositionedRenderObject2D<GdiRenderObject>>
+    public class GdiRasterRenderer : RasterRenderer2D<GdiRenderObject>
     {
-        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
+        public override IEnumerable<GdiRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
         {
             throw new NotImplementedException();
         }
 
-        public override IEnumerable<PositionedRenderObject2D<GdiRenderObject>> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
+        public override IEnumerable<GdiRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
         {
             throw new NotImplementedException();
         }

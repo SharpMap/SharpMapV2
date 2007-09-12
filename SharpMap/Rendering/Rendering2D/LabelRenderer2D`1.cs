@@ -68,7 +68,7 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract TRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
-        protected override IEnumerable<PositionedRenderObject2D<TRenderObject>> DoRenderFeature(
+        protected override IEnumerable<TRenderObject> DoRenderFeature(
 			FeatureDataRow feature, LabelStyle style)
         {
             throw new NotImplementedException();
