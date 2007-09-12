@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Globalization;
 using System.Text;
 using SharpMap.Data;
@@ -52,7 +53,9 @@ namespace SharpMap.Layers
             _dataQueryWorker.DoWork += _dataQueryWorker_DoWork;
 
             _cachedFeatures = new FeatureDataTable();
-            _visibleFeatureView = new FeatureDataView(_cachedFeatures);
+            _visibleFeatureView = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
+            _selectedFeatures = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
+            _highlightedFeatures = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
 
             init();
         }

@@ -118,7 +118,7 @@ namespace SharpMap.Tests.Rendering
 				Geometry g = feature.Geometry;
 				List<RenderObject> renderedObjects = new List<RenderObject>(renderer.RenderFeature(feature));
 
-			    int geometryCount = g is GeometryCollection ? (g as GeometryCollection).Collection.Count : 1;
+                int geometryCount = g is IGeometryCollection ? (g as IGeometryCollection).NumGeometries : 1;
 
                 Assert.AreEqual(geometryCount, renderedObjects.Count);
 
