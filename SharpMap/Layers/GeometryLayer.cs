@@ -24,10 +24,9 @@ using GeoPoint = SharpMap.Geometries.Point;
 namespace SharpMap.Layers
 {
     /// <summary>
-    /// A map layer of vector geometries.
+    /// A map layer of feature geometries.
     /// </summary>
     /// <example>
-    /// Adding a <see cref="GeometryLayer"/> to a map:
     /// </example>
     public class GeometryLayer : FeatureLayer, ILayer
     {
@@ -90,6 +89,7 @@ namespace SharpMap.Layers
 
         #endregion
 
+        #region Properties
         /// <summary>
         /// Gets or sets the layer style as a VectorStyle.
         /// </summary>
@@ -98,6 +98,7 @@ namespace SharpMap.Layers
             get { return base.Style as VectorStyle; }
             set { base.Style = value; }
         }
+        #endregion
 
         #region Layer Overrides
 

@@ -108,7 +108,7 @@ namespace SharpMap.Tests.Rendering
 			IFeatureLayerProvider provider = DataSourceHelper.CreateGeometryDatasource();
 			TestVectorRenderer vectorRenderer = new TestVectorRenderer();
             Matrix2D toView = new Matrix2D(10, 0, 0, 10, 0, 0);
-            BasicGeometryRenderer2D<RenderObject> renderer = new BasicGeometryRenderer2D<RenderObject>(vectorRenderer, toView);
+            BasicGeometryRenderer2D<RenderObject> geometryRenderer = new BasicGeometryRenderer2D<RenderObject>(vectorRenderer, toView);
 
 			FeatureDataTable features = new FeatureDataTable();
 			provider.ExecuteIntersectionQuery(provider.GetExtents(), features);
@@ -116,7 +116,7 @@ namespace SharpMap.Tests.Rendering
 			foreach (FeatureDataRow feature in features)
 			{
 				Geometry g = feature.Geometry;
-				List<RenderObject> renderedObjects = new List<RenderObject>(renderer.RenderFeature(feature));
+				List<RenderObject> renderedObjects = new List<RenderObject>(geometryRenderer.RenderFeature(feature));
 
                 int geometryCount = g is IGeometryCollection ? (g as IGeometryCollection).NumGeometries : 1;
 

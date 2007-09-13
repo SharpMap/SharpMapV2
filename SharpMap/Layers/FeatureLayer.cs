@@ -1,9 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using System.Text;
 using SharpMap.Data;
 using SharpMap.Features;
 using SharpMap.Geometries;
@@ -12,18 +28,23 @@ using SharpMap.Styles;
 
 namespace SharpMap.Layers
 {
+    /// <summary>
+    /// Represents a map layer of features.
+    /// </summary>
     public abstract class FeatureLayer : Layer, IFeatureLayer
     {
         #region Instance fields
+
         private readonly FeatureDataTable _cachedFeatures;
         private readonly FeatureDataView _visibleFeatureView;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
         private readonly BackgroundWorker _dataQueryWorker = new BackgroundWorker();
+
         #endregion
 
         /// <summary>
-        /// Initializes a new, empty vector layer.
+        /// Initializes a new, empty features layer.
         /// </summary>
         protected FeatureLayer(IFeatureLayerProvider dataSource)
             : this(String.Empty, dataSource)
@@ -31,7 +52,7 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Initializes a new layer with the given name and datasource.
+        /// Initializes a new features layer with the given name and datasource.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
@@ -41,7 +62,7 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Initializes a new layer with the given name, style and datasource.
+        /// Initializes a new features layer with the given name, style and datasource.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
@@ -79,10 +100,7 @@ namespace SharpMap.Layers
         /// </summary>
         public FeatureDataView HighlightedFeatures
         {
-            get
-            {
-                return _highlightedFeatures;
-            }
+            get { return _highlightedFeatures; }
         }
 
         public CultureInfo Locale
@@ -99,10 +117,7 @@ namespace SharpMap.Layers
         /// </summary>
         public FeatureDataView SelectedFeatures
         {
-            get
-            {
-                return _selectedFeatures;
-            }
+            get { return _selectedFeatures; }
         }
 
         /// <summary>
@@ -121,9 +136,11 @@ namespace SharpMap.Layers
         {
             get { return _cachedFeatures; }
         }
+
         #endregion
 
         #region Layer overrides
+
         protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
         {
             // Ignore an empty visible region
@@ -155,11 +172,11 @@ namespace SharpMap.Layers
         {
             _visibleFeatureView.GeometryIntersectionFilter = VisibleRegion.ToGeometry();
         }
-        
+
         #endregion
 
-        
         #region Private helper methods
+
         private void init()
         {
             // We generally want spatial indexing on the feature table...
@@ -182,7 +199,7 @@ namespace SharpMap.Layers
         {
             if (e.Argument is BoundingBox)
             {
-                BoundingBox bounds = (BoundingBox)e.Argument;
+                BoundingBox bounds = (BoundingBox) e.Argument;
                 executeQuery(bounds);
             }
             else if (e.Argument is Geometry)
@@ -201,6 +218,7 @@ namespace SharpMap.Layers
         {
             DataSource.ExecuteIntersectionQuery(geometry, _cachedFeatures);
         }
+
         #endregion
     }
 }

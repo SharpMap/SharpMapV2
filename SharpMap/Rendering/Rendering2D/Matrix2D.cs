@@ -32,7 +32,7 @@ namespace SharpMap.Rendering.Rendering2D
     [Serializable]
     public class Matrix2D : AffineMatrix<DoubleComponent>
     {
-        private readonly static Matrix2D _identity
+        private static readonly Matrix2D _identity
             = new Matrix2D(1, 0, 0, 1, 0, 0);
 
         /// <summary>
@@ -51,11 +51,14 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #region Constructors
+
         /// <summary>
         /// Creates a new identity Matrix2D.
         /// </summary>
         public Matrix2D()
-            : this(1, 0, 0, 1, 0, 0) { }
+            : this(1, 0, 0, 1, 0, 0)
+        {
+        }
 
         /// <summary>
         /// Creates a new Matrix2D with the given values.
@@ -69,8 +72,12 @@ namespace SharpMap.Rendering.Rendering2D
         public Matrix2D(double m11, double m21, double m12, double m22, double offsetX, double offsetY)
             : base(MatrixFormat.RowMajor, 3)
         {
-            M11 = m11; M21 = m21; OffsetX = offsetX;
-            M12 = m12; M22 = m22; OffsetY = offsetY;
+            M11 = m11;
+            M21 = m21;
+            OffsetX = offsetX;
+            M12 = m12;
+            M22 = m22;
+            OffsetY = offsetY;
         }
 
         /// <summary>
@@ -94,21 +101,26 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region ToString
+
         public override string ToString()
         {
             return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, 0], [{2:N3}, {3:N3}, 0], [{4:N3}, {5:N3}, 1] ]",
-                M11, M12, M21, M22, OffsetX, OffsetY);
+                                 M11, M12, M21, M22, OffsetX, OffsetY);
         }
+
         #endregion
 
         #region GetHashCode
+
         public override int GetHashCode()
         {
             return unchecked(this[0, 0].GetHashCode() + 24243 ^ this[0, 1].GetHashCode() + 7318674
-                ^ this[0, 2].GetHashCode() + 282 ^ this[1, 0].GetHashCode() + 54645
-                ^ this[1, 1].GetHashCode() + 42 ^ this[1, 2].GetHashCode() + 244892
-                ^ this[2, 0].GetHashCode() + 8464 ^ this[2, 1].GetHashCode() + 36565 ^ this[2, 2].GetHashCode() + 3210186);
+                             ^ this[0, 2].GetHashCode() + 282 ^ this[1, 0].GetHashCode() + 54645
+                             ^ this[1, 1].GetHashCode() + 42 ^ this[1, 2].GetHashCode() + 244892
+                             ^ this[2, 0].GetHashCode() + 8464 ^ this[2, 1].GetHashCode() + 36565 ^
+                             this[2, 2].GetHashCode() + 3210186);
         }
+
         #endregion
 
         /// <summary>
@@ -125,10 +137,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public new Matrix2D Inverse
         {
-            get
-            {
-                return new Matrix2D(base.Inverse);
-            }
+            get { return new Matrix2D(base.Inverse); }
         }
 
         /// <summary>
@@ -138,7 +147,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Scale to apply to the Y dimension.</param>
         public void Scale(double x, double y)
         {
-            base.Scale(new Point2D(x, y));
+            Scale(new Point2D(x, y));
         }
 
         /// <summary>
@@ -158,7 +167,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Y component of the translation vector.</param>
         public void Translate(double x, double y)
         {
-            base.Translate(new Point2D(x, y));
+            Translate(new Point2D(x, y));
         }
 
         /// <summary>
@@ -168,7 +177,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Y component of the translation vector.</param>
         public void TranslatePrepend(double x, double y)
         {
-            base.Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
+            Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
         }
 
         /// <summary>
@@ -180,8 +189,6 @@ namespace SharpMap.Rendering.Rendering2D
             RotateAlong(null, theta);
         }
 
-        private readonly DoubleComponent[] _transferPoints = new DoubleComponent[3];
-
         /// <summary>
         /// Transforms a point by multiplying it with this matrix.
         /// </summary>
@@ -190,11 +197,10 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A Point2D describing the transformed input.</returns>
         public Point2D TransformVector(double x, double y)
         {
-            _transferPoints[0] = x;
-            _transferPoints[1] = y;
-            _transferPoints[2] = 1;
-            MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(_transferPoints, this);
-            return new Point2D((double)_transferPoints[0], (double)_transferPoints[1]);
+            DoubleComponent[] transferPoints = new DoubleComponent[] { x, y, 1 };
+
+            MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(transferPoints, this);
+            return new Point2D((double)transferPoints[0], (double)transferPoints[1]);
         }
 
         #region Equality Computation
@@ -219,17 +225,19 @@ namespace SharpMap.Rendering.Rendering2D
         public bool Equals(Matrix2D other)
         {
             return M11 == other.M11 &&
-                M21 == other.M21 &&
-                OffsetX == other.OffsetX &&
-                M12 == other.M12 &&
-                M22 == other.M22 &&
-                OffsetY == other.OffsetY;
+                   M21 == other.M21 &&
+                   OffsetX == other.OffsetX &&
+                   M12 == other.M12 &&
+                   M22 == other.M22 &&
+                   OffsetY == other.OffsetY;
         }
 
         #endregion
+
         #endregion
 
         #region Properties
+
         /// <summary>
         /// The first row, first column component.
         /// </summary>
@@ -283,6 +291,7 @@ namespace SharpMap.Rendering.Rendering2D
             get { return (double)this[2, 1]; }
             set { this[2, 1] = value; }
         }
+
         #endregion
     }
 }

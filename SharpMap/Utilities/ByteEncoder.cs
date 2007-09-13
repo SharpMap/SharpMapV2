@@ -27,7 +27,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="value">Value to encode</param>
         /// <returns>Big-endian encoded value</returns>
-        public static int GetBigEndian(int value)
+        public static Int32 GetBigEndian(Int32 value)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -78,7 +78,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="value">Value to encode</param>
         /// <returns>Big-endian encoded value</returns>
-        public static double GetBigEndian(double value)
+        public static Double GetBigEndian(Double value)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -95,7 +95,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="value">Value to encode</param>
         /// <returns>Little-endian encoded value</returns>
-        public static int GetLittleEndian(int value)
+        public static Int32 GetLittleEndian(Int32 value)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -146,7 +146,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="value">Value to encode</param>
         /// <returns>Little-endian encoded value</returns>
-        public static double GetLittleEndian(double value)
+        public static Double GetLittleEndian(Double value)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -159,39 +159,42 @@ namespace SharpMap.Utilities
         }
 
         /// <summary>
-        /// Swaps the byte order of an Int32
+        /// Swaps the byte order of an Int32.
         /// </summary>
-        /// <param name="value">Int32 to swap</param>
-        /// <returns>Byte Order swapped Int32</returns>
-        public static int swapByteOrder(int value)
+        /// <param name="value">Int32 to  to swap the bytes of.</param>
+        /// <returns>Byte Order swapped Int32.</returns>
+        private static Int32 swapByteOrder(Int32 value)
         {
-            byte[] buffer = BitConverter.GetBytes(value);
-            Array.Reverse(buffer, 0, buffer.Length);
-            return BitConverter.ToInt32(buffer, 0);
+            Int32 swapped = (Int32)((0x000000FF) & (value >> 24)
+                                     | (0x0000FF00) & (value >> 8)
+                                     | (0x00FF0000) & (value << 8)
+                                     | (0xFF000000) & (value << 24));
+            return swapped;
         }
 
         /// <summary>
-        /// Swaps the byte order of a UInt16
+        /// Swaps the byte order of a UInt16.
         /// </summary>
-        /// <param name="value">UInt16 to swap</param>
-        /// <returns>Byte Order swapped UInt16</returns>
+        /// <param name="value">UInt16 to swap the bytes of.</param>
+        /// <returns>Byte Order swapped UInt16.</returns>
         private static UInt16 swapByteOrder(UInt16 value)
         {
-            byte[] buffer = BitConverter.GetBytes(value);
-            Array.Reverse(buffer, 0, buffer.Length);
-            return BitConverter.ToUInt16(buffer, 0);
+            return (UInt16)((0x00FF & (value >> 8))
+                             | (0xFF00 & (value << 8)));
         }
 
         /// <summary>
-        /// Swaps the byte order of a UInt32
+        /// Swaps the byte order of a UInt32.
         /// </summary>
-        /// <param name="value">UInt32 to swap</param>
-        /// <returns>Byte Order swapped UInt32</returns>
+        /// <param name="value">UInt32 to swap the bytes of.</param>
+        /// <returns>Byte Order swapped UInt32.</returns>
         private static UInt32 swapByteOrder(UInt32 value)
         {
-            byte[] buffer = BitConverter.GetBytes(value);
-            Array.Reverse(buffer, 0, buffer.Length);
-            return BitConverter.ToUInt32(buffer, 0);
+            UInt32 swapped = ((0x000000FF) & (value >> 24)
+                             | (0x0000FF00) & (value >> 8)
+                             | (0x00FF0000) & (value << 8)
+                             | (0xFF000000) & (value << 24));
+            return swapped;
         }
 
         /// <summary>

@@ -19,14 +19,13 @@
 using System;
 using SharpMap.Data;
 using SharpMap.Features;
-using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Layers
 {
     /// <summary>
-    /// A layer to generate labels from feature data.
+    /// A map layer of feature labels.
     /// </summary>
     /// <example>
     /// Creates a new label layer and sets the label text to the 
@@ -35,7 +34,7 @@ namespace SharpMap.Layers
     /// //Set up a label layer
     /// </code>
     /// </example>
-    public class LabelLayer<TLabel> : FeatureLayer
+    public class LabelLayer : FeatureLayer
     {
         #region Nested Classes
 
@@ -183,6 +182,11 @@ namespace SharpMap.Layers
             set { _priority = value; }
         }
 
+        /// <summary>
+        /// Generates the label text for a given feature.
+        /// </summary>
+        /// <param name="feature">The feature to label.</param>
+        /// <returns>The text of the label.</returns>
         public string GetLabelText(FeatureDataRow feature)
         {
             if (_getLabelMethod != null)

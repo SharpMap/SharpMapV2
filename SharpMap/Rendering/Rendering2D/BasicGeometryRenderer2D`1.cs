@@ -162,7 +162,7 @@ namespace SharpMap.Rendering.Rendering2D
             MultiPolygon multipolygon, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, 
             StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
-			return drawPolygons(multipolygon.Polygons, fill, highlightFill, selectFill, 
+			return drawPolygons(multipolygon, fill, highlightFill, selectFill, 
                 outline, highlightOutline, selectOutline);
 		}
 
@@ -204,15 +204,14 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
 		/// <param name="selectSymbol">Symbol to use for point when point is selected.</param>
-		public virtual IEnumerable<TRenderObject> DrawMultiPoint(
-            MultiPoint points, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
+		public virtual IEnumerable<TRenderObject> DrawMultiPoint(MultiPoint points, Symbol2D symbol, 
+            Symbol2D highlightSymbol, Symbol2D selectSymbol)
 		{
 			return drawPoints(points.Points, symbol, highlightSymbol, selectSymbol);
 		}
 
 		#region Private helper methods
-		private IEnumerable<TRenderObject> renderGeometry(
-            IGeometry geometry, VectorStyle style)
+		private IEnumerable<TRenderObject> renderGeometry(IGeometry geometry, VectorStyle style)
         {
             if (geometry == null)
             {
@@ -262,8 +261,8 @@ namespace SharpMap.Rendering.Rendering2D
             throw new NotSupportedException(String.Format("Geometry type is not supported: {0}", geometry.GetType()));
         }
 
-		private IEnumerable<TRenderObject> drawPoints(
-            IEnumerable<Point> points, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
+		private IEnumerable<TRenderObject> drawPoints(IEnumerable<Point> points, Symbol2D symbol, 
+            Symbol2D highlightSymbol, Symbol2D selectSymbol)
 		{
 			foreach (Point point in points)
 			{
@@ -272,12 +271,12 @@ namespace SharpMap.Rendering.Rendering2D
 					continue;
 				}
 
-				if (symbol == null) //We have no point symbol - Use a default symbol
+				if (symbol == null) // We have no point symbol - Use a default symbol
 				{
 					symbol = DefaultSymbol;
 				}
 
-				Point2D pointLocation = ToViewTransform.TransformVector(point.X, point.Y);
+				Point2D pointLocation = new Point2D(point.X, point.Y);
 
 				TRenderObject renderedObject = VectorRenderer.RenderSymbol(
                     pointLocation, symbol, highlightSymbol, selectSymbol);
@@ -286,15 +285,14 @@ namespace SharpMap.Rendering.Rendering2D
 			}
 		}
 
-		private IEnumerable<TRenderObject> drawLineStrings(
-            IEnumerable<LineString> lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+		private IEnumerable<TRenderObject> drawLineStrings(IEnumerable<LineString> lines, StylePen fill, 
+            StylePen highlightFill, StylePen selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
 			GraphicsPath2D gp = new GraphicsPath2D();
 
 			foreach (LineString line in lines)
 			{
-				gp.NewFigure(convertPointsAndTransform(line.Vertices), false);
+				gp.NewFigure(convertPoints(line.Vertices), false);
 			}
 
             TRenderObject renderedObject;
@@ -310,10 +308,11 @@ namespace SharpMap.Rendering.Rendering2D
 		    yield return renderedObject;
 		}
 
-		private IEnumerable<TRenderObject> drawPolygons(
-            IEnumerable<Polygon> polygons, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, 
-            StylePen outline, StylePen highlightOutline, StylePen selectOutline)
-		{
+		private IEnumerable<TRenderObject> drawPolygons(IEnumerable<Polygon> polygons, StyleBrush fill, 
+            StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+        {
+            GraphicsPath2D gp = new GraphicsPath2D();
+
 			foreach (Polygon polygon in polygons)
 			{
 				if (polygon.ExteriorRing == null)
@@ -326,31 +325,27 @@ namespace SharpMap.Rendering.Rendering2D
 					continue;
 				}
 
-				GraphicsPath2D gp = new GraphicsPath2D();
-
 				// Add the exterior polygon
-				gp.NewFigure(convertPointsAndTransform(polygon.ExteriorRing.Vertices), true);
+				gp.NewFigure(convertPoints(polygon.ExteriorRing.Vertices), true);
 
 				// Add the interior polygons (holes)
 				foreach (LinearRing ring in polygon.InteriorRings)
 				{
-					gp.NewFigure(convertPointsAndTransform(ring.Vertices), true);
+					gp.NewFigure(convertPoints(ring.Vertices), true);
 				}
+            }
 
-                TRenderObject renderedObject;
+            TRenderObject renderedObject = VectorRenderer.RenderPath(gp, fill, highlightFill, selectFill,
+                outline, highlightOutline, selectOutline);
 
-                renderedObject = VectorRenderer.RenderPath(gp, fill, highlightFill, selectFill, 
-                    outline, highlightOutline, selectOutline);
-
-			    yield return renderedObject;
-			}
+            yield return renderedObject;
         }
 
-        private IEnumerable<Point2D> convertPointsAndTransform(IEnumerable<Point> points)
+        private static IEnumerable<Point2D> convertPoints(IEnumerable<Point> points)
         {
             foreach (Point geoPoint in points)
             {
-                yield return ToViewTransform.TransformVector(geoPoint.X, geoPoint.Y);
+                yield return new Point2D(geoPoint.X, geoPoint.Y);
             }
 		}
 		#endregion

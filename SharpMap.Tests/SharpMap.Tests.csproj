@@ -96,6 +96,7 @@
     <Compile Include="Rendering\Symbol2DTests.cs" />
     <Compile Include="Rendering\ThematicsTests.cs" />
     <Compile Include="Rendering\VectorRenderer2DTests.cs" />
+    <Compile Include="Utilities\ByteEncoderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">
