@@ -24,15 +24,38 @@ namespace SharpMap.Presentation
     public class FeatureSelectionChangeRequestEventArgs : EventArgs
     {
         private readonly IEnumerable<FeatureDataRow> _selectedFeatures;
+    	private readonly FeatureDataView _featureData;
+		private readonly String _layerName;
 
-        public FeatureSelectionChangeRequestEventArgs(IEnumerable<FeatureDataRow> selectedFeatures)
+        public FeatureSelectionChangeRequestEventArgs(String layerName, FeatureDataView featureData, IEnumerable<FeatureDataRow> selectedFeatures)
         {
+			_layerName = layerName;
+        	_featureData = featureData;
             _selectedFeatures = selectedFeatures;
         }
 
+    	public String LayerName
+    	{
+    		get
+    		{
+    			return _layerName;
+    		}
+    	}
+
+    	public FeatureDataView FeatureDataView
+    	{
+    		get
+    		{
+    			return _featureData;
+    		}
+    	}
+
         public IEnumerable<FeatureDataRow> SelectedFeatures
         {
-            get { return _selectedFeatures; }
+            get
+            {
+            	return _selectedFeatures;
+            }
         }
     }
 }

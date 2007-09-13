@@ -26,45 +26,56 @@ namespace SharpMap.Presentation
 {
     public class AttributePresenter : BasePresenter<IAttributeView>
     {
-        private IFeatureLayer _featureLayer;
-        private readonly string _selectedFeaturesPropertyName;
-
-        public AttributePresenter(SharpMap.Map map, IFeatureLayer layer, IAttributeView view)
+        public AttributePresenter(SharpMap.Map map, IAttributeView view)
             : base(map, view)
         {
-            FeatureLayer = layer;
-            FeatureLayer.PropertyChanged += new PropertyChangedEventHandler(handleFeatureLayerPropertyChanged);
+			Map.LayersChanged += new EventHandler<LayersChangedEventArgs>(Map_LayersChanged);
+
+			// load the initial layers into the view
+			Map_LayersChanged(this, new LayersChangedEventArgs(LayersChangeType.Added, Map.Layers));
+
+			View.FeaturesSelectionChangeRequested += new EventHandler<FeatureSelectionChangeRequestEventArgs>(View_FeatureSelectionChanged);
         }
 
-        public IFeatureLayer FeatureLayer
-        {
-            get { return _featureLayer; }
-            private set { _featureLayer = value; }
-        }
+    	/// <summary>
+		/// When the map layers collection changes, update the tab control to show one page for each
+		/// enabled IFeatureLayer
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Map_LayersChanged(object sender, LayersChangedEventArgs e)
+		{
+			if(e.ChangeType == LayersChangeType.Removed || e.ChangeType == LayersChangeType.Disabled)
+			{
+				foreach(ILayer layer in e.LayersAffected)
+				{
+					View.RemoveLayer(layer.LayerName);
+				}
+			}
+			else if(e.ChangeType == LayersChangeType.Added || e.ChangeType == LayersChangeType.Enabled)
+			{
+				foreach(ILayer layer in e.LayersAffected)
+				{
+					IFeatureLayer flayer = layer as IFeatureLayer;
 
-        void handleFeatureLayerPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "LayerName":
-                    View.Title = FeatureLayer.LayerName;
-                    break;
-                case "Envelope":
-                    break;
-                case "Enabled":
-                    break;
-                case "Srid":
-                case "CoordinateSystem":
-                case "CoordinateTransformation":
-                case "Style":
-                default:
-                    break;
-            }
-        }
+					if(layer.Enabled && flayer != null)
+					{
+						View.AddLayer(layer.LayerName, flayer.SelectedFeatures);
+					}
+				}
+			}
+		}
 
-        void handleFeatureLayerSelectedFeaturesChanged(object sender, EventArgs e)
-        {
-            View.SelectedFeatures = FeatureLayer.SelectedFeatures;
-        }
-    }
+		/// <summary>
+		/// When the user selects features in the view, we need to highlight those features
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void View_FeatureSelectionChanged(object sender, FeatureSelectionChangeRequestEventArgs e)
+		{
+			e.FeatureDataView.SelectedRows = e.SelectedFeatures;
+
+			View.SelectFeatures(e.LayerName, e.SelectedFeatures);
+		}
+	}
 }

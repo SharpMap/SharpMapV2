@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using SharpMap.Features;
 
 namespace SharpMap.Presentation
@@ -25,26 +26,30 @@ namespace SharpMap.Presentation
     /// </summary>
     public interface IAttributeView : IView
     {
-        /// <summary>
-        /// Gets or sets the features to display the attributes for.
-        /// </summary>
-        FeatureDataView Features { get; set; }
+		/// <summary>
+		/// Add a new feature layer to the view
+		/// </summary>
+		/// <param name="layerName">The name of the new feature layer</param>
+		/// <param name="fdv">The FeatureDataView for the new feature layer</param>
+		void AddLayer(String layerName, FeatureDataView fdv);
 
-        /// <summary>
-        /// Gets or sets the features which are selected in the view.
-        /// </summary>
-        FeatureDataView SelectedFeatures { get; set; }
-
-        /// <summary>
-        /// Raises an event to request that the controlling presenter
-        /// change the features shown in this view.
-        /// </summary>
-        event EventHandler<FeatureChangeRequestEventArgs> FeaturesChangeRequested;
+		/// <summary>
+		/// Remove a feature layer from the view
+		/// </summary>
+		/// <param name="layerName">The name of the layer to remove from the view</param>
+		void RemoveLayer(String layerName);
 
         /// <summary>
         /// Raises an event to request that the controlling presenter
-        /// change the selected features shown in this view.
+        /// change the list of selected features shown in this view.
         /// </summary>
         event EventHandler<FeatureSelectionChangeRequestEventArgs> FeaturesSelectionChangeRequested;
+
+		/// <summary>
+		/// Update the view to show the given features on the given layer as selected.
+		/// </summary>
+		/// <param name="layerName"></param>
+		/// <param name="features"></param>
+    	void SelectFeatures(string layerName, IEnumerable<FeatureDataRow> features);
     }
 }
