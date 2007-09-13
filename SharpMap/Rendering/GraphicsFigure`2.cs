@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -23,11 +24,12 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 namespace SharpMap.Rendering
 {
     /// <summary>
-    /// Represents a graphical figure, which is a portion of a <see cref="GraphicsPath{TViewPoint,TViewBounds}"/>.
+    /// Represents a graphical figure, which is a portion of a 
+    /// <see cref="GraphicsPath{TViewPoint,TViewBounds}"/>.
     /// </summary>
     /// <typeparam name="TViewPoint">Type of point to use in the figure.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear shape to bound this figure.</typeparam>
-    public abstract class GraphicsFigure<TViewPoint, TViewBounds> 
+    public abstract class GraphicsFigure<TViewPoint, TViewBounds>
         : ICloneable, IEnumerable<TViewPoint>, IEquatable<GraphicsFigure<TViewPoint, TViewBounds>>
         where TViewPoint : IVectorD
         where TViewBounds : IMatrixD
@@ -37,15 +39,20 @@ namespace SharpMap.Rendering
         private TViewBounds _bounds;
 
         #region Object Construction
+
         /// <summary>
-        /// Creates a new open <see cref="GraphicsFigure"/> from the given points.
+        /// Creates a new open <see cref="GraphicsFigure{TViewPoint, TViewBounds}"/> 
+        /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         public GraphicsFigure(IEnumerable<TViewPoint> points)
-            : this(points, false) { }
+            : this(points, false)
+        {
+        }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsFigure"/> from the given points.
+        /// Creates a new <see cref="GraphicsFigure{TViewPoint, TViewBounds}"/> 
+        /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         /// <param name="isClosed">True to close the path, false to keep it open.</param>
@@ -54,19 +61,25 @@ namespace SharpMap.Rendering
             _points.AddRange(points);
             IsClosed = isClosed;
         }
+
         #endregion
 
         #region ToString
+
         /// <summary>
         /// Returns a string representation of this <see cref="GraphicsFigure"/>.
         /// </summary>
         public override string ToString()
         {
-            return String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count, typeof(TViewPoint).Name, IsClosed);
+            return
+                String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count,
+                              typeof (TViewPoint).Name, IsClosed);
         }
+
         #endregion
 
         #region GetHashCode
+
         /// <summary>
         /// Returns a value to use in hash sets.
         /// </summary>
@@ -75,22 +88,24 @@ namespace SharpMap.Rendering
             unchecked
             {
                 int hash = 86848163;
-				
-				foreach (TViewPoint p in Points)
-				{
-					hash ^= p.GetHashCode();
-				}
+
+                foreach (TViewPoint p in Points)
+                {
+                    hash ^= p.GetHashCode();
+                }
 
                 return hash;
             }
         }
+
         #endregion
 
         #region Equality Computation
+
         public override bool Equals(object obj)
         {
             GraphicsFigure<TViewPoint, TViewBounds> other = obj as GraphicsFigure<TViewPoint, TViewBounds>;
-            return this.Equals(other);
+            return Equals(other);
         }
 
         #region IEquatable<GraphicsPath<TViewPoint>> Members
@@ -124,31 +139,34 @@ namespace SharpMap.Rendering
         }
 
         #endregion
+
         #endregion
 
-		#region Cloning
+        #region Cloning
 
-		/// <summary>
-		/// Creates an exact copy of this figure.
-		/// </summary>
-		/// <returns>A point-by-point copy of this figure.</returns>
-		public GraphicsFigure<TViewPoint, TViewBounds> Clone()
-		{
-			GraphicsFigure<TViewPoint, TViewBounds> figure = CreateFigure(this.Points, IsClosed);
-			return figure;
-		}
+        /// <summary>
+        /// Creates an exact copy of this figure.
+        /// </summary>
+        /// <returns>A point-by-point copy of this figure.</returns>
+        public GraphicsFigure<TViewPoint, TViewBounds> Clone()
+        {
+            GraphicsFigure<TViewPoint, TViewBounds> figure = CreateFigure(Points, IsClosed);
+            return figure;
+        }
 
-		#region ICloneable Members
+        #region ICloneable Members
 
-		object ICloneable.Clone()
-		{
-			return this.Clone();
-		}
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
 
-		#endregion
-		#endregion
+        #endregion
 
-        #region Properties
+        #endregion
+
+        #region Public properties
+
         /// <summary>
         /// Gets the bounds of this figure.
         /// </summary>
@@ -186,14 +204,20 @@ namespace SharpMap.Rendering
         {
             get { return _points.AsReadOnly(); }
         }
+
         #endregion
+
+        #region Public methods
 
         public void Add(TViewPoint point)
         {
             _points.Add(point);
         }
 
+        #endregion
+
         #region Protected Methods
+
         /// <summary>
         /// Computes the minimum bounding rectilinear shape that contains this figure.
         /// </summary>
@@ -209,28 +233,35 @@ namespace SharpMap.Rendering
         /// <param name="points">Points to use in sequence to create the figure.</param>
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new GraphicsFigure instance.</returns>
-        protected abstract GraphicsFigure<TViewPoint, TViewBounds> CreateFigure(IEnumerable<TViewPoint> points, bool isClosed);
+        protected abstract GraphicsFigure<TViewPoint, TViewBounds> CreateFigure(IEnumerable<TViewPoint> points,
+                                                                                bool isClosed);
+
         #endregion
+
+        internal List<TViewPoint> PointsInternal
+        {
+            get { return _points; }
+        }
 
         #region IEnumerable<TViewPoint> Members
 
         public IEnumerator<TViewPoint> GetEnumerator()
         {
-			foreach (TViewPoint p in _points)
-			{
-				yield return p;
-			}
+            foreach (TViewPoint p in _points)
+            {
+                yield return p;
+            }
         }
 
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         #endregion
-	}
+    }
 }

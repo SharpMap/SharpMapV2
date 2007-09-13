@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpMap.Data;
 using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Styles;
@@ -68,8 +69,7 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract TRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
-        protected override IEnumerable<TRenderObject> DoRenderFeature(
-			FeatureDataRow feature, LabelStyle style)
+        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style)
         {
             throw new NotImplementedException();
         }

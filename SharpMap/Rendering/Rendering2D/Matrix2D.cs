@@ -104,7 +104,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public override string ToString()
         {
-            return String.Format("[ViewMatrix2D] [ [{0:N3}, {1:N3}, 0], [{2:N3}, {3:N3}, 0], [{4:N3}, {5:N3}, 1] ]",
+            return String.Format("[Matrix2D] [ [{0:N3}, {1:N3}, 0], [{2:N3}, {3:N3}, 0], [{4:N3}, {5:N3}, 1] ]",
                                  M11, M12, M21, M22, OffsetX, OffsetY);
         }
 

@@ -15,20 +15,31 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.Rendering.Gdi
 {
     /// <summary>
-    /// Enumerates the states of the GDI render object
+    /// Enumerates the visual states of the Gdi render object.
     /// </summary>
     public enum GdiRenderObjectState : byte
     {
+        /// <summary>
+        /// Gdi render object is in an unknown state.
+        /// </summary>
         Unknown = 0,
+
+        /// <summary>
+        /// Gdi render object is in a normal display state.
+        /// </summary>
         Normal,
+
+        /// <summary>
+        /// Gdi render object is in state to indicate hovering over.
+        /// </summary>
         Hover,
+
+        /// <summary>
+        /// Gdi render object is in state to indicate selected.
+        /// </summary>
         Selected
     }
 }

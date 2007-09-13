@@ -15,7 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using SharpMap.Features;
+using SharpMap.Data;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Thematics
@@ -30,6 +30,6 @@ namespace SharpMap.Rendering.Thematics
         /// </summary>
         /// <param name="attribute">Attribute to calculate color from.</param>
         /// <returns>The theme-computed style.</returns>
-        IStyle GetStyle(FeatureDataRow attribute);
+        IStyle GetStyle(IFeatureDataRecord attribute);
     }
 }

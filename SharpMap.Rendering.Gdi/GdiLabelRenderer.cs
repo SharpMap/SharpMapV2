@@ -1,4 +1,5 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,44 +17,37 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
+using SharpMap.Rendering.Rendering2D;
+using SharpMap.Styles;
 using GdiPoint = System.Drawing.Point;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiFont = System.Drawing.Font;
 using GdiBrushes = System.Drawing.Brushes;
 using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
 
-using SharpMap.Data;
-using SharpMap.Styles;
-using SharpMap.Presentation;
-using SharpMap.Rendering;
-using SharpMap.Rendering.Rendering2D;
-using SharpMap.Geometries;
-
 namespace SharpMap.Rendering.Gdi
 {
     public class GdiLabelRenderer : LabelRenderer2D<GdiRenderObject>
     {
-        Graphics _currentGraphics;
+        private Graphics _currentGraphics;
 
         public GdiLabelRenderer(GdiVectorRenderer vectorRenderer)
-			: base(vectorRenderer, StyleTextRenderingHint.SystemDefault)
+            : base(vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
         }
 
         public Graphics Graphics
         {
             get { return _currentGraphics; }
-            set 
+            set
             {
                 if (value == null)
                 {
                     throw new ArgumentNullException("value");
                 }
 
-                _currentGraphics = value; 
+                _currentGraphics = value;
             }
         }
 
@@ -66,7 +60,10 @@ namespace SharpMap.Rendering.Gdi
                 return new Size2D(0, 0);
             }
 
-            using (GdiFont gdiFont = new GdiFont(font.FontFamily.Name, (float)font.Size.Height, ViewConverter.Convert(font.Style), GraphicsUnit.Pixel))
+            using (
+                GdiFont gdiFont =
+                    new GdiFont(font.FontFamily.Name, (float) font.Size.Height, ViewConverter.Convert(font.Style),
+                                GraphicsUnit.Pixel))
             {
                 return ViewConverter.Convert(g.MeasureString(text, gdiFont));
             }
@@ -74,7 +71,9 @@ namespace SharpMap.Rendering.Gdi
 
         public override GdiRenderObject RenderLabel(Label2D label)
         {
-            return RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor, label.Style.BackColor, label.Style.Halo, label.Rotation);
+            return
+                RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor,
+                            label.Style.BackColor, label.Style.Halo, label.Rotation);
         }
 
         public override GdiRenderObject RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor)
@@ -82,28 +81,32 @@ namespace SharpMap.Rendering.Gdi
             return RenderLabel(text, location, new Point2D(0, 0), font, foreColor, null, null, 0);
         }
 
-        public override GdiRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
+        public override GdiRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font,
+                                                    StyleColor foreColor, StyleBrush backColor, StylePen halo,
+                                                    float rotation)
         {
             Graphics g = Graphics;
 
             if (rotation != 0 && rotation != float.NaN)
             {
                 GdiMatrix originalTransform = g.Transform;
-                g.TranslateTransform((float)location.X, (float)location.Y);
+                g.TranslateTransform((float) location.X, (float) location.Y);
                 g.RotateTransform(rotation);
-                g.TranslateTransform((float)-font.Size.Width / 2, (float)-font.Size.Height / 2);
+                g.TranslateTransform((float) -font.Size.Width/2, (float) -font.Size.Height/2);
 
                 using (Brush backBrush = ViewConverter.Convert(backColor))
                 {
                     if (backColor != null && backBrush != GdiBrushes.Transparent)
                     {
-                        g.FillRectangle(backBrush, 0, 0, (float)font.Size.Width * 0.74f + 1f, (float)font.Size.Height * 0.74f);
+                        g.FillRectangle(backBrush, 0, 0, (float) font.Size.Width*0.74f + 1f,
+                                        (float) font.Size.Height*0.74f);
                     }
                 }
 
                 GdiGraphicsPath path = new GdiGraphicsPath();
 
-                path.AddString(text, ViewConverter.Convert(font.FontFamily), (int)font.Style, (float)font.Size.Height, new GdiPoint(0, 0), null);
+                path.AddString(text, ViewConverter.Convert(font.FontFamily), (int) font.Style, (float) font.Size.Height,
+                               new GdiPoint(0, 0), null);
 
                 using (Pen haloPen = ViewConverter.Convert(halo))
                 {
@@ -118,7 +121,7 @@ namespace SharpMap.Rendering.Gdi
                     g.FillPath(foreBrush, path);
                 }
 
-                //g.Transform = ViewConverter.ViewToGdi(ViewTransformer.MapTransform as ViewMatrix2D);
+                //g.Transform = ViewConverter.ViewToGdi(ViewTransformer.MapTransform as Matrix2D);
             }
             else
             {
@@ -126,14 +129,16 @@ namespace SharpMap.Rendering.Gdi
                 {
                     if (backBrush != null && backBrush != GdiBrushes.Transparent)
                     {
-                        g.FillRectangle(backBrush, (float)location.X, (float)location.Y, (float)font.Size.Width * 0.74f + 1, (float)font.Size.Height * 0.74f);
+                        g.FillRectangle(backBrush, (float) location.X, (float) location.Y,
+                                        (float) font.Size.Width*0.74f + 1, (float) font.Size.Height*0.74f);
                     }
                 }
 
                 GdiGraphicsPath path = new GdiGraphicsPath();
 
                 PointF labelPoint = ViewConverter.Convert(location);
-                path.AddString(text, ViewConverter.Convert(font.FontFamily), (int)font.Style, (float)font.Size.Height, labelPoint, null);
+                path.AddString(text, ViewConverter.Convert(font.FontFamily), (int) font.Style, (float) font.Size.Height,
+                               labelPoint, null);
 
                 using (Pen haloPen = ViewConverter.Convert(halo))
                 {

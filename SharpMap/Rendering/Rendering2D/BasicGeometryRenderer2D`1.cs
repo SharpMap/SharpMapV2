@@ -20,9 +20,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using SharpMap.Features;
 using SharpMap.Styles;
 using SharpMap.Geometries;
+using SharpMap.Data;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -54,13 +54,13 @@ namespace SharpMap.Rendering.Rendering2D
 						{
 							Stream data = Assembly.GetExecutingAssembly()
 								.GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
-							Symbol2D symbol = new Symbol2D(data, new Size2D(16, 16));
+                            Symbol2D symbol = new Symbol2D(data, new Size2D(16, 16));
 							Thread.VolatileWrite(ref _defaultSymbol, symbol);
 						}
 					}
 				}
 
-				return _defaultSymbol as Symbol2D;
+				return (_defaultSymbol as Symbol2D).Clone();
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
-		protected override IEnumerable<TRenderObject> DoRenderFeature(FeatureDataRow feature, VectorStyle style)
+		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style)
 		{
 			if (feature == null) throw new ArgumentNullException("feature");
 			if (style == null) throw new ArgumentNullException("style");
@@ -262,21 +262,11 @@ namespace SharpMap.Rendering.Rendering2D
 
 		private IEnumerable<TRenderObject> drawPoints(IEnumerable<Point> points, Symbol2D symbol,
 			Symbol2D highlightSymbol, Symbol2D selectSymbol)
-		{
-			if (symbol == null) // We have no point symbol - Use a default symbol
-			{
-				symbol = DefaultSymbol;
-			}
-
-			if (highlightSymbol == null) // We have no highlight symbol - Use a default symbol
-			{
-				highlightSymbol = DefaultSymbol;
-			}
-
-			if (selectSymbol == null) // We have no select symbol - Use a default symbol
-			{
-				selectSymbol = DefaultSymbol;
-			}
+        {
+            // If we have a null symbol, use the default
+			if (symbol == null)  symbol = DefaultSymbol;
+            if (highlightSymbol == null) highlightSymbol = symbol;
+            if (selectSymbol == null) selectSymbol = symbol;
 
 			return VectorRenderer.RenderSymbols(convertPoints(points), symbol, highlightSymbol, selectSymbol);
 		}
@@ -284,54 +274,73 @@ namespace SharpMap.Rendering.Rendering2D
 		private IEnumerable<TRenderObject> drawLineStrings(IEnumerable<LineString> lines, StylePen fill,
 			StylePen highlightFill, StylePen selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
-			IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(lines);
+            if (fill == null) throw new ArgumentNullException("fill");
+            if (outline == null) throw new ArgumentNullException("outline");
 
-			IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(paths, fill, highlightFill, selectFill);
+		    IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(lines);
 
-			return renderedObjects;
+            if (highlightFill == null) highlightFill = fill;
+            if (selectFill == null) selectFill = fill;
+		    if (highlightOutline == null) highlightOutline = outline;
+            if (selectOutline == null) selectOutline = outline;
+
+            if (outline != null)
+            {
+                foreach (TRenderObject ro in VectorRenderer.RenderPaths(paths, outline, highlightOutline, selectOutline))
+                {
+                    yield return ro;
+                }
+            }
+
+		    foreach (TRenderObject ro in VectorRenderer.RenderPaths(paths, fill, highlightFill, selectFill))
+            {
+                yield return ro;
+            }
 		}
 
 		private IEnumerable<TRenderObject> drawPolygons(IEnumerable<Polygon> polygons, StyleBrush fill, 
             StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
-		{
-			IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(polygons);
+        {
+            if (fill == null) throw new ArgumentNullException("fill");
+            if (outline == null) throw new ArgumentNullException("outline");
 
-			IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(paths, fill, highlightFill, selectFill,
-				outline, highlightOutline, selectOutline);
+            IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(polygons);
+
+            if (highlightFill == null) highlightFill = fill;
+            if (selectFill == null) selectFill = fill;
+            if (highlightOutline == null) highlightOutline = outline;
+            if (selectOutline == null) selectOutline = outline;
+
+			IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(
+                paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
 
 			return renderedObjects;
 		}
 
 		private static IEnumerable<GraphicsPath2D> convertToGraphicsPaths(IEnumerable<LineString> lines)
-		{
+        {
+            GraphicsPath2D gp = new GraphicsPath2D();
+
 			foreach (LineString line in lines)
 			{
-				GraphicsPath2D gp = new GraphicsPath2D();
-
-				if (line.Vertices.Count <= 1)
+                if (line.IsEmpty() || line.Vertices.Count <= 1)
 				{
 					continue;
 				}
 
-				// Add the exterior polygon
-				gp.NewFigure(convertPoints(line.Vertices), true);
+				gp.NewFigure(convertPoints(line.Vertices), false);
+            }
 
-				yield return gp;
-			}
+            yield return gp;
 		}
 
 		private static IEnumerable<GraphicsPath2D> convertToGraphicsPaths(IEnumerable<Polygon> polygons)
-		{
-			foreach (Polygon polygon in polygons)
+        {
+            GraphicsPath2D gp = new GraphicsPath2D();
+			
+            foreach (Polygon polygon in polygons)
 			{
-				GraphicsPath2D gp = new GraphicsPath2D();
-
-				if (polygon.ExteriorRing == null)
-				{
-					continue;
-				}
-
-				if (polygon.ExteriorRing.Vertices.Count <= 1)
+				if (polygon.IsEmpty())
 				{
 					continue;
 				}
@@ -344,9 +353,9 @@ namespace SharpMap.Rendering.Rendering2D
 				{
 					gp.NewFigure(convertPoints(ring.Vertices), true);
 				}
+            }
 
-				yield return gp;
-			}
+            yield return gp;
 		}
 
 		private static IEnumerable<Point2D> convertPoints(IEnumerable<Point> points)

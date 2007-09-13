@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections.Generic;
+using SharpMap.Data;
 using SharpMap.Features;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
@@ -45,7 +46,7 @@ namespace SharpMap.Rendering
 		/// An enumeration of <typeparamref name="TRenderObject"/> instances 
 		/// used to draw the spatial data.
 		/// </returns>
-		IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature);
+		IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature);
 
         /// <summary>
         /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
@@ -61,7 +62,7 @@ namespace SharpMap.Rendering
         /// An enumeration of <typeparamref name="TRenderObject"/> 
         /// instances used to draw the spatial data.
         /// </returns>
-        IEnumerable<TRenderObject> RenderFeature(FeatureDataRow feature, IStyle style);
+        IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, IStyle style);
 
 		/// <summary>
 		/// Gets or sets the theme by which to compute styles 

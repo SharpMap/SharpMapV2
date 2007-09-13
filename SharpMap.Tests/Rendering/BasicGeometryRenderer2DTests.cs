@@ -26,8 +26,8 @@ namespace SharpMap.Tests.Rendering
 
         private class TestVectorRenderer : VectorRenderer2D<RenderObject>
         {
-            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline, StylePen highlightOutline,
-                                                    StylePen selectOutline)
+            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, 
+                StylePen outline, StylePen highlightOutline, StylePen selectOutline)
             {
             	foreach (GraphicsPath2D path in paths)
 				{
@@ -51,9 +51,9 @@ namespace SharpMap.Tests.Rendering
             	}
             }
 
-			public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
-                                                    StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
-                                                    StylePen selectOutline)
+			public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, 
+                StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, 
+                StylePen highlightOutline, StylePen selectOutline)
             {
 				foreach (GraphicsPath2D path in paths)
 				{
@@ -89,8 +89,8 @@ namespace SharpMap.Tests.Rendering
 				}
             }
 
-			public override IEnumerable<RenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, ColorMatrix highlight,
-                                                      ColorMatrix select)
+			public override IEnumerable<RenderObject> RenderSymbols(IEnumerable<Point2D> locations, 
+                Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select)
 			{
 				foreach (Point2D point in locations)
 				{

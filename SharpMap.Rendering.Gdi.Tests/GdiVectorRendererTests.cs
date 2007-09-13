@@ -26,15 +26,18 @@ namespace SharpMap.Rendering.Gdi.Tests
         public void RenderPathOutlineTest()
         {
             GdiVectorRenderer renderer = new GdiVectorRenderer();
+
             Point2D[] points = new Point2D[]
                 {new Point2D(1, 0), new Point2D(0, 1), new Point2D(-1, 0), new Point2D(0, -1)};
+
             GraphicsPath2D path = new GraphicsPath2D(points, true);
 
             StylePen outline = new StylePen(new SolidStyleBrush(StyleColor.Blue), 1);
             StylePen highlight = new StylePen(new SolidStyleBrush(StyleColor.Red), 1);
             StylePen selected = new StylePen(new SolidStyleBrush(StyleColor.Green), 1);
 
-			IEnumerable<GdiRenderObject> renderObjects = renderer.RenderPaths(new GraphicsPath2D[] { path }, outline, highlight, selected);
+			IEnumerable<GdiRenderObject> renderObjects = renderer.RenderPaths(
+                new GraphicsPath2D[] { path }, outline, highlight, selected);
 
 			IEnumerator<GdiRenderObject> enumertor = renderObjects.GetEnumerator();
         	enumertor.MoveNext();

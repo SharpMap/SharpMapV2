@@ -24,8 +24,8 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 namespace SharpMap.Rendering
 {
     /// <summary>
-    /// Represents a series of figures of connected points in an n-dimensional vector space, which is set by
-    /// generic parameters.
+    /// Represents a series of figures of connected points in an 
+    /// n-dimensional vector space, which is set by generic parameters.
     /// </summary>
     /// <typeparam name="TViewPoint">Type of point used in the path.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear used to bound the path.</typeparam>
@@ -49,7 +49,8 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Creates a new, open <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with the given points.
+        /// Creates a new, open <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// with the given points.
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
         protected GraphicsPath(IEnumerable<TViewPoint> points)
@@ -58,10 +59,15 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with the given points, as closed or open.
+        /// Creates a new <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// with the given points, as closed or open.
         /// </summary>
-        /// <param name="points">Points to add to the path in sequence.</param>
-        /// <param name="isClosed">True to create a closed path, false for an open path.</param>
+        /// <param name="points">
+        /// Points to add to the path in sequence.
+        /// </param>
+        /// <param name="isClosed">
+        /// True to create a closed path, false for an open path.
+        /// </param>
         protected GraphicsPath(IEnumerable<TViewPoint> points, bool isClosed)
         {
             GraphicsFigure<TViewPoint, TViewBounds> figure = CreateFigure(points, isClosed);
@@ -101,7 +107,7 @@ namespace SharpMap.Rendering
         public override string ToString()
         {
             return String.Format("[{0}] {1} figure{2} of {3} points; Bounds: {4}",
-                                 GetType(), Figures.Count, (Figures.Count > 1 ? "s" : ""), typeof (TViewPoint).Name,
+                                 GetType(), _figures.Count, (_figures.Count > 1 ? "s" : ""), typeof (TViewPoint).Name,
                                  ComputeBounds());
         }
 
@@ -153,16 +159,16 @@ namespace SharpMap.Rendering
                 return false;
             }
 
-            if (other.Figures.Count != Figures.Count)
+            if (other._figures.Count != _figures.Count)
             {
                 return false;
             }
 
             unchecked
             {
-                for (int figureIndex = 0; figureIndex < other.Figures.Count; figureIndex++)
+                for (int figureIndex = 0; figureIndex < other._figures.Count; figureIndex++)
                 {
-                    if (!Figures[figureIndex].Equals(other.Figures[figureIndex]))
+                    if (!_figures[figureIndex].Equals(other._figures[figureIndex]))
                     {
                         return false;
                     }
@@ -292,7 +298,7 @@ namespace SharpMap.Rendering
         public void NewFigure(IEnumerable<TViewPoint> points, bool closeFigure)
         {
             _figures.Add(CreateFigure(points, closeFigure));
-            _currentFigureIndex = Figures.Count - 1;
+            _currentFigureIndex = _figures.Count - 1;
             _bounds = EmptyBounds;
         }
 

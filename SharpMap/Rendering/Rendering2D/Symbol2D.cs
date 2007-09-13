@@ -17,8 +17,9 @@
 
 using System;
 using System.IO;
-using System.Reflection;
-
+using System.Runtime.Serialization;
+using NPack;
+using NPack.Interfaces;
 using SharpMap.Utilities;
 
 namespace SharpMap.Rendering.Rendering2D
@@ -26,7 +27,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// Represents a 2 dimensional graphic used for point data on a map.
     /// </summary>
-    public sealed class Symbol2D : ICloneable, IDisposable
+    public sealed class Symbol2D : ICloneable, IDisposable, ISerializable
     {
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
         private Matrix2D _rotationTransform = Matrix2D.Identity;
@@ -38,6 +39,7 @@ namespace SharpMap.Rendering.Rendering2D
         private bool _disposed;
 
         #region Object Construction/Destruction
+
         public Symbol2D(Size2D size)
         {
             _symbolData = new MemoryStream(new byte[] { 0x0, 0x0, 0x0, 0x0 });
@@ -52,7 +54,8 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 if (symbolData.Position != 0)
                 {
-                    throw new InvalidOperationException("Symbol data stream isn't at the beginning, and it can't be repositioned");
+                    throw new InvalidOperationException(
+                        "Symbol data stream isn't at the beginning, and it can't be repositioned");
                 }
 
                 MemoryStream copy = new MemoryStream();
@@ -70,29 +73,47 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public Symbol2D(byte[] symbolData, Size2D size)
-            : this(new MemoryStream(symbolData), size) { }
+            : this(new MemoryStream(symbolData), size)
+        {
+        }
+
+        private Symbol2D(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        #region Dispose Pattern
 
         ~Symbol2D()
         {
             dispose(false);
         }
 
-        #region Dispose Pattern
         #region IDisposable Members
+
         public void Dispose()
         {
-            if (!_disposed)
+            if (IsDisposed)
             {
-                dispose(true);
-                _disposed = true;
-                GC.SuppressFinalize(this);
+                return;
             }
+
+            dispose(true);
+            IsDisposed = true;
+            GC.SuppressFinalize(this);
         }
+
         #endregion
+
+        public bool IsDisposed
+        {
+            get { return _disposed; }
+            private set { _disposed = value; }
+        }
 
         private void dispose(bool disposing)
         {
-            if (_disposed)
+            if (IsDisposed)
             {
                 return;
             }
@@ -105,7 +126,9 @@ namespace SharpMap.Rendering.Rendering2D
                 }
             }
         }
+
         #endregion
+
         #endregion
 
         /// <summary>
@@ -114,8 +137,11 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A string representing the value of this <see cref="Symbol2D"/>.</returns>
         public override string ToString()
         {
-            return String.Format("[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; ScaleX: {7:N}; ScaleY: {8:N}",
-                GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, ScaleX, ScaleY);
+            checkDisposed();
+            return
+                String.Format(
+                    "[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; ScaleX: {7:N}; ScaleY: {8:N}",
+                    GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, ScaleX, ScaleY);
         }
 
         /// <summary>
@@ -123,8 +149,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public Size2D Size
         {
-            get { return _symbolBox.Size; }
-            set { _symbolBox = new Rectangle2D(new Point2D(0, 0), value); }
+            get { checkDisposed(); return _symbolBox.Size; }
+            set { checkDisposed(); _symbolBox = new Rectangle2D(new Point2D(0, 0), value); }
         }
 
         /// <summary>
@@ -135,17 +161,23 @@ namespace SharpMap.Rendering.Rendering2D
         /// </remarks>
         public Stream SymbolData
         {
-            get { return _symbolData; }
-            private set { _symbolData = value; }
+            get { checkDisposed(); return _symbolData; }
+            private set { checkDisposed(); _symbolData = value; }
         }
 
         /// <summary>
-        /// Gets or sets a <see cref="ViewMatrix2D"/> object used to transform this <see cref="Symbol2D"/>.
+        /// Gets or sets a <see cref="Matrix2D"/> object used to transform this <see cref="Symbol2D"/>.
         /// </summary>
         public Matrix2D AffineTransform
         {
-            get { return new Matrix2D(_rotationTransform.Multiply(_scalingTransform).Multiply(_translationTransform)); }
-            //TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
+            get
+            {
+                checkDisposed();
+                IMatrix<DoubleComponent> concatenated =
+                    _rotationTransform.Multiply(_scalingTransform).Multiply(_translationTransform);
+                return new Matrix2D(concatenated); 
+            }
+            // TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
             set { throw new NotImplementedException(); }
         }
 
@@ -163,8 +195,13 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public Point2D Offset
         {
-            get { return new Point2D(_translationTransform.OffsetX, _translationTransform.OffsetY); }
-            set { _translationTransform.OffsetX = value.X; _translationTransform.OffsetY = value.Y; }
+            get { checkDisposed(); return new Point2D(_translationTransform.OffsetX, _translationTransform.OffsetY); }
+            set
+            {
+                checkDisposed();
+                _translationTransform.OffsetX = value.X;
+                _translationTransform.OffsetY = value.Y;
+            }
         }
 
         /// <summary>
@@ -172,11 +209,13 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double Rotation
         {
-            get 
-            { 
-                return Math.Asin(_rotationTransform.M21) + _rotationTransform.M11 < 0 ? Math.PI : 0;
+            get
+            {
+                checkDisposed();
+                return Math.Asin(_rotationTransform.M21) 
+                    + _rotationTransform.M11 < 0 ? Math.PI : 0;
             }
-            set { _rotationTransform.Rotate(value); }
+            set { checkDisposed(); _rotationTransform.Rotate(value); }
         }
 
         /// <summary>
@@ -184,7 +223,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double Scale
         {
-            set { _scalingTransform.M11 = _scalingTransform.M22 = value; }
+            set { checkDisposed(); _scalingTransform.M11 = _scalingTransform.M22 = value; }
         }
 
         /// <summary>
@@ -192,8 +231,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double ScaleX
         {
-            get { return _scalingTransform.M11; }
-            set { _scalingTransform.M11 = value; }
+            get { checkDisposed(); return _scalingTransform.M11; }
+            set { checkDisposed(); _scalingTransform.M11 = value; }
         }
 
         /// <summary>
@@ -201,31 +240,50 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double ScaleY
         {
-            get { return _scalingTransform.M22; }
-            set { _scalingTransform.M22 = value; }
+            get { checkDisposed(); return _scalingTransform.M22; }
+            set { checkDisposed(); _scalingTransform.M22 = value; }
         }
+
+        #region Private helper methods
+
+        private void checkDisposed()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(GetType().ToString());
+            }
+        }
+        #endregion
 
         #region ICloneable Members
 
         /// <summary>
         /// Clones this symbol.
         /// </summary>
-        /// <returns>A duplicate of this <see cref="Symbol2D"/>.</returns>
+        /// <returns>
+        /// A duplicate of this <see cref="Symbol2D"/>.
+        /// </returns>
         public Symbol2D Clone()
         {
             Symbol2D clone = new Symbol2D(_symbolBox.Size);
-            
-            MemoryStream copy = new MemoryStream();
+
+            // Record the original position
             long streamPos = _symbolData.Position;
             _symbolData.Seek(0, SeekOrigin.Begin);
-            using(BinaryReader reader = new BinaryReader(_symbolData))
-                copy.Write(reader.ReadBytes((int)_symbolData.Length), 0, (int)_symbolData.Length);
+
+            byte[] buffer = new byte[_symbolData.Length];
+            _symbolData.Read(buffer, 0, buffer.Length);
+            MemoryStream copy = new MemoryStream(buffer);
+
+            // Restore the original position
             _symbolData.Position = streamPos;
 
             clone.SymbolData = copy;
             clone._symbolDataHash = _symbolDataHash;
-            clone.ColorTransform = this.ColorTransform.Clone();
-            clone.AffineTransform = this.AffineTransform.Clone();
+            clone.ColorTransform = ColorTransform.Clone();
+            clone._rotationTransform = _rotationTransform.Clone();
+            clone._translationTransform = _translationTransform.Clone();
+            clone._scalingTransform = _scalingTransform.Clone();
             return clone;
         }
 
@@ -235,8 +293,18 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A duplicate of this <see cref="Symbol2D"/> as an object reference.</returns>
         object ICloneable.Clone()
         {
-            return this.Clone();
+            return Clone();
         }
+
+        #endregion
+
+        #region ISerializable Members
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using SharpMap.Data;
 using SharpMap.Features;
 using SharpMap.Styles;
 
@@ -93,7 +95,7 @@ namespace SharpMap.Rendering.Thematics
         public CustomTheme(GetStyleMethod getStyleMethod)
         {
             _getStyleDelegate = getStyleMethod;
-        } 
+        }
         #endregion
 
         #region Public properties
@@ -144,7 +146,7 @@ namespace SharpMap.Rendering.Thematics
         {
             get { return _getStyleDelegate; }
             set { _getStyleDelegate = value; }
-        } 
+        }
         #endregion
 
         #region ITheme Members
@@ -170,6 +172,20 @@ namespace SharpMap.Rendering.Thematics
             }
         }
 
+        #endregion
+
+        #region Explicit Interface Implementation
+        #region ITheme Members
+        IStyle ITheme.GetStyle(IFeatureDataRecord row)
+        {
+            if (!(row is FeatureDataRow))
+            {
+                throw new ArgumentException("Parameter 'row' must be of type FeatureDataRow");
+            }
+
+            return GetStyle(row as FeatureDataRow);
+        }
+        #endregion
         #endregion
     }
 }

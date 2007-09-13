@@ -132,7 +132,7 @@ namespace SharpMap.Rendering.Rendering2D
 			{
 				if (!(value is Matrix2D))
 				{
-					throw new NotSupportedException("Only a ViewMatrix2D is supported on a FeatureRenderer2D.");
+                    throw new NotSupportedException("Only a Matrix2D is supported on a FeatureRenderer2D.");
 				}
 
 				RenderTransform = value as Matrix2D;

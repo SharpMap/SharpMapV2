@@ -15,19 +15,26 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.Rendering.Gdi
 {
     /// <summary>
-    /// Enumerates the type of GDI render object we have
+    /// Enumerates the type of Gdi render object.
     /// </summary>
     public enum GdiRenderObjectType : byte
     {
+        /// <summary>
+        /// Type of the render object is unknown.
+        /// </summary>
         Unknown = 0,
+
+        /// <summary>
+        /// The <see cref="GdiRenderObject"/> represents a path.
+        /// </summary>
         Path,
+
+        /// <summary>
+        /// The <see cref="GdiRenderObject"/> represents a bitmap symbol.
+        /// </summary>
         Symbol
     }
 }

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20706</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8C6AF1D-5BF0-4A25-A641-68F9EEB61153}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -49,6 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharpMap.Tests\DataSourceHelper.cs">
+      <Link>DataSourceHelper.cs</Link>
+    </Compile>
+    <Compile Include="BasicGeometryRenderer2DWithGdiVectorRenderer.cs" />
     <Compile Include="GdiVectorRendererTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
