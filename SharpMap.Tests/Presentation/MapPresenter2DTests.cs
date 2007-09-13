@@ -11,6 +11,7 @@ using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
+using System.Collections.Generic;
 
 namespace SharpMap.Tests.Presentation
 {
@@ -36,31 +37,31 @@ namespace SharpMap.Tests.Presentation
 
         private class TestVectorRenderer2D : VectorRenderer2D<object>
         {
-            public override object RenderPath(GraphicsPath2D path, StylePen outline,
+            public override IEnumerable<object> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
                                               StylePen highlightOutline, StylePen selectOutline)
             {
                 throw new NotImplementedException();
             }
 
-            public override object RenderPath(GraphicsPath2D path, StyleBrush fill,
+			public override IEnumerable<object> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill,
                                               StyleBrush highlightFill, StyleBrush selectFill, StylePen outline,
                                               StylePen highlightOutline, StylePen selectOutline)
             {
                 throw new NotImplementedException();
             }
 
-            public override object RenderSymbol(Point2D location, Symbol2D symbolData)
+			public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locatiosn, Symbol2D symbolData)
             {
                 throw new NotImplementedException();
             }
 
-            public override object RenderSymbol(Point2D location, Symbol2D symbolData,
+			public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                 ColorMatrix highlight, ColorMatrix select)
             {
                 throw new NotImplementedException();
             }
 
-            public override object RenderSymbol(Point2D location, Symbol2D symbolData,
+			public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                 Symbol2D highlightSymbolData, Symbol2D selectSymbolData)
             {
                 throw new NotImplementedException();

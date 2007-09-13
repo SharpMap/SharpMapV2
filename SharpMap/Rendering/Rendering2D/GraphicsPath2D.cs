@@ -28,8 +28,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Creates a new empty <see cref="GraphicsPath2D"/>.
         /// </summary>
-        public GraphicsPath2D() 
-            :base() { }
+        public GraphicsPath2D() { }
 
         /// <summary>
         /// Creates a new, open <see cref="GraphicsPath2D"/> with the given points.
@@ -50,7 +49,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// Creates a new <see cref="GraphicsPath2D"/> with the given 
 		/// <see cref="GraphicsFigure2D"/> instance.
 		/// </summary>
-		/// <param name="figures">A figure to create the path from.</param>
+		/// <param name="figure">A figure to create the path from.</param>
 		public GraphicsPath2D(GraphicsFigure2D figure)
 			: base(figure) { }
 
@@ -60,7 +59,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="figures">An enumeration of figures to create the path from.</param>
         public GraphicsPath2D(IEnumerable<GraphicsFigure2D> figures)
-            : base(convertToBaseEnum(figures)) { }
+            : base(convertToBase(figures)) { }
 
         /// <summary>
         /// Gets the empty bounds shape: <see cref="Rectangle2D.Empty"/>.
@@ -71,19 +70,20 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Creates a new GraphicsPath with one figure for each of the figures in the give enumeration of 
-        /// <paramref name="figures"/>.
+        /// Creates a new GraphicsPath with one figure for each of the 
+        /// figures in the give enumeration of <paramref name="figures"/>.
         /// </summary>
         /// <param name="figures">Figures to make the GraphicsPath from.</param>
         /// <returns>A GraphicsPath instance with one figure for each of the GraphicsFigure 
         /// instances in the given enumeration.</returns>
         protected override GraphicsPath<Point2D, Rectangle2D> CreatePath(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
         {
-            return new GraphicsPath2D(convertFromBaseEnum(figures));
+            return new GraphicsPath2D(convertFromBase(figures));
         }
 
         /// <summary>
-        /// Creates a new GraphicsFigure from the given <paramref name="points"/>, either open or closed.
+        /// Creates a new GraphicsFigure from the given <paramref name="points"/>, 
+        /// either open or closed.
         /// </summary>
         /// <param name="points">Points to use in the figure.</param>
         /// <param name="closeFigure">True to close the figure, false to leave it open.</param>
@@ -134,7 +134,7 @@ namespace SharpMap.Rendering.Rendering2D
             return new Rectangle2D(minX, minY, maxX, maxY);
         }
 
-        private static IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> convertToBaseEnum(IEnumerable<GraphicsFigure2D> figures)
+        private static IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> convertToBase(IEnumerable<GraphicsFigure2D> figures)
         {
             foreach (GraphicsFigure2D figure in figures)
             {
@@ -142,7 +142,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        private static IEnumerable<GraphicsFigure2D> convertFromBaseEnum(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
+        private static IEnumerable<GraphicsFigure2D> convertFromBase(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
         {
             foreach (GraphicsFigure2D figure in figures)
             {

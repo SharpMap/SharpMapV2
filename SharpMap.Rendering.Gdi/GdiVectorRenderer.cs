@@ -78,47 +78,48 @@ namespace SharpMap.Rendering.Gdi
 		#endregion
 
 		#region Render overrides
-		public override GdiRenderObject RenderPath(
-			GraphicsPath2D viewPath, StyleBrush fill, StyleBrush highlightFill,
+		public override IEnumerable<GdiRenderObject> RenderPaths(
+			IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
 			StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
-			GdiGraphicsPath gdiPath = new GdiGraphicsPath();
-
-			foreach (GraphicsFigure2D figure in viewPath.Figures)
+			foreach (GraphicsPath2D path in paths)
 			{
-				gdiPath.AddLines(ViewConverter.Convert(figure.Points));
+				GdiGraphicsPath gdiPath = new GdiGraphicsPath();
 
-				if (figure.IsClosed)
+				foreach (GraphicsFigure2D figure in path.Figures)
 				{
-					gdiPath.CloseFigure();
+					gdiPath.AddLines(ViewConverter.Convert(figure.Points));
+
+					if (figure.IsClosed)
+					{
+						gdiPath.CloseFigure();
+					}
 				}
+
+				RectangleF bounds = gdiPath.GetBounds();
+
+				GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill),
+															 getBrush(selectFill), getPen(outline), getPen(highlightOutline),
+															 getPen(selectOutline));
+
+				yield return holder;
 			}
-
-			RectangleF bounds = gdiPath.GetBounds();
-			double centerX = bounds.Left + bounds.Width / 2;
-			double centerY = bounds.Top + bounds.Height / 2;
-
-			GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill),
-														 getBrush(selectFill), getPen(outline), getPen(highlightOutline),
-														 getPen(selectOutline));
-
-            return holder;
 		}
 
-		public override GdiRenderObject RenderPath(GraphicsPath2D path, StylePen outline,
+		public override IEnumerable<GdiRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> path, StylePen outline,
 																			 StylePen highlightOutline, StylePen selectOutline)
 		{
 			SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
-			return RenderPath(path, transparentBrush, transparentBrush,
+			return RenderPaths(path, transparentBrush, transparentBrush,
 				transparentBrush, outline, highlightOutline, selectOutline);
 		}
 
-		public override GdiRenderObject RenderSymbol(Point2D location, Symbol2D symbolData)
+		public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData)
 		{
-			return RenderSymbol(location, symbolData, symbolData, symbolData);
+			return RenderSymbols(locations, symbolData, symbolData, symbolData);
 		}
 
-		public override GdiRenderObject RenderSymbol(Point2D location, Symbol2D symbolData,
+		public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
 																			   StyleColorMatrix highlight,
 																			   StyleColorMatrix select)
 		{
@@ -128,10 +129,10 @@ namespace SharpMap.Rendering.Gdi
 			Symbol2D selectSymbol = symbolData.Clone();
 			selectSymbol.ColorTransform = select;
 
-			return RenderSymbol(location, symbolData, highlightSymbol, selectSymbol);
+			return RenderSymbols(locations, symbolData, highlightSymbol, selectSymbol);
 		}
 
-		public override GdiRenderObject RenderSymbol(Point2D location, Symbol2D symbol,
+		public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbol,
 																			   Symbol2D highlightSymbol, Symbol2D selectSymbol)
 		{
 			if (highlightSymbol == null)
@@ -144,11 +145,14 @@ namespace SharpMap.Rendering.Gdi
 				selectSymbol = symbol;
 			}
 
-			Bitmap bitmapSymbol = getSymbol(symbol);
-			GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
-			GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
-			GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
-            return holder;
+			foreach (Point2D location in locations)
+			{
+				Bitmap bitmapSymbol = getSymbol(symbol);
+				GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
+				GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
+				GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
+				yield return holder;
+			}
 
 			//if (symbolRotation != 0 && symbolRotation != float.NaN)
 			//{

@@ -1,25 +1,21 @@
 using System;
-using System.Collections;
-using NPack.Interfaces;
+using System.Collections.Generic;
 using NUnit.Framework;
-using Rhino.Mocks;
-
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.Rendering.Rendering3D;
+using SharpMap.Styles;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponent>;
-using NPack;
-using SharpMap.Styles;
 
 namespace SharpMap.Tests.Rendering
 {
+
 	#region VectorRenderer2D
+
 	[TestFixture]
 	public class VectorRenderer2DTests
 	{
-
 		[Test]
 		public void CreateVectorRenderer2DTest()
 		{
@@ -42,77 +38,99 @@ namespace SharpMap.Tests.Rendering
 			GraphicsPath2D path = new GraphicsPath2D(points, true);
 			StylePen outline = new StylePen(new SolidStyleBrush(StyleColor.WhiteSmoke), 1);
 			TestVector2DRenderer r = new TestVector2DRenderer();
-			string result = r.RenderPath(path, outline, outline, outline);
+			IEnumerable<string> result = r.RenderPaths(new GraphicsPath2D[] { path }, outline, outline, outline);
 		}
 
 		public class TestVector2DRenderer : VectorRenderer2D<string>
 		{
-			public override string RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+			public override IEnumerable<string> RenderPaths(IEnumerable<GraphicsPath2D> path, StylePen outline, StylePen highlightOutline,
+			                                  StylePen selectOutline)
 			{
 				if (path == null) throw new ArgumentNullException("path");
 
-				return path.ToString() +
-					outline == null ? String.Empty : outline.ToString() +
-					highlightOutline == null ? String.Empty : highlightOutline.ToString() +
-					selectOutline == null ? String.Empty : selectOutline.ToString();
+				yield return path.ToString() +
+				       outline == null
+				       	? String.Empty
+				       	: outline.ToString() +
+				       	  highlightOutline == null
+				       	  	? String.Empty
+				       	  	: highlightOutline.ToString() +
+				       	  	  selectOutline == null
+				       	  	  	? String.Empty
+				       	  	  	: selectOutline.ToString();
 			}
 
-			public override string RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+			public override IEnumerable<string> RenderPaths(IEnumerable<GraphicsPath2D> path, StyleBrush fill, StyleBrush highlightFill,
+			                                  StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
+			                                  StylePen selectOutline)
 			{
 				if (path == null) throw new ArgumentNullException("path");
 
-				return path.ToString() +
-					fill == null ? String.Empty : fill.ToString() +
-					selectFill == null ? String.Empty : selectFill.ToString() +
-					highlightFill == null ? String.Empty : highlightFill.ToString() +
-					outline == null ? String.Empty : outline.ToString() +
-					highlightOutline == null ? String.Empty : highlightOutline.ToString() +
-					selectOutline == null ? String.Empty : selectOutline.ToString();
+				yield return path.ToString() +
+				       fill == null
+				       	? String.Empty
+				       	: fill.ToString() +
+				       	  selectFill == null
+				       	  	? String.Empty
+				       	  	: selectFill.ToString() +
+				       	  	  highlightFill == null
+				       	  	  	? String.Empty
+				       	  	  	: highlightFill.ToString() +
+				       	  	  	  outline == null
+				       	  	  	  	? String.Empty
+				       	  	  	  	: outline.ToString() +
+				       	  	  	  	  highlightOutline == null
+				       	  	  	  	  	? String.Empty
+				       	  	  	  	  	: highlightOutline.ToString() +
+				       	  	  	  	  	  selectOutline == null
+				       	  	  	  	  	  	? String.Empty
+				       	  	  	  	  	  	: selectOutline.ToString();
 			}
 
-			public override string RenderSymbol(Point2D location, Symbol2D symbolData)
+			public override IEnumerable<string> RenderSymbols(IEnumerable<Point2D> location, Symbol2D symbolData)
 			{
 				if (symbolData == null) throw new ArgumentNullException("symbolData");
 
-				if (location == Point2D.Empty)
-				{
-					return null;
-				}
-
-				return location.ToString() +
-					symbolData == null ? String.Empty : symbolData.ToString();
+				yield return location.ToString() +
+				       symbolData == null
+				       	? String.Empty
+				       	: symbolData.ToString();
 			}
 
-			public override string RenderSymbol(Point2D location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select)
+			public override IEnumerable<string> RenderSymbols(IEnumerable<Point2D> location, Symbol2D symbolData, ColorMatrix highlight, ColorMatrix select)
 			{
 				if (symbolData == null) throw new ArgumentNullException("symbolData");
 
-				if (location == Point2D.Empty)
-				{
-					return null;
-				}
-
-				return location.ToString() +
-					symbolData == null ? String.Empty : symbolData.ToString() +
-					highlight == null ? String.Empty : highlight.ToString() +
-					select == null ? String.Empty : select.ToString();
+				yield return location.ToString() +
+				       symbolData == null
+				       	? String.Empty
+				       	: symbolData.ToString() +
+				       	  highlight == null
+				       	  	? String.Empty
+				       	  	: highlight.ToString() +
+				       	  	  select == null
+				       	  	  	? String.Empty
+				       	  	  	: select.ToString();
 			}
 
-			public override string RenderSymbol(Point2D location, Symbol2D symbolData, Symbol2D highlightSymbolData, Symbol2D selectSymbolData)
+			public override IEnumerable<string> RenderSymbols(IEnumerable<Point2D> location, Symbol2D symbolData, Symbol2D highlightSymbolData,
+			                                    Symbol2D selectSymbolData)
 			{
 				if (symbolData == null) throw new ArgumentNullException("symbolData");
 
-				if (location == Point2D.Empty)
-				{
-					return null;
-				}
-
-				return location.ToString() +
-					symbolData == null ? String.Empty : symbolData.ToString() +
-					highlightSymbolData == null ? String.Empty : highlightSymbolData.ToString() +
-					selectSymbolData == null ? String.Empty : selectSymbolData.ToString();
+				yield return location.ToString() +
+				       symbolData == null
+				       	? String.Empty
+				       	: symbolData.ToString() +
+				       	  highlightSymbolData == null
+				       	  	? String.Empty
+				       	  	: highlightSymbolData.ToString() +
+				       	  	  selectSymbolData == null
+				       	  	  	? String.Empty
+				       	  	  	: selectSymbolData.ToString();
 			}
 		}
 	}
+
 	#endregion
 }

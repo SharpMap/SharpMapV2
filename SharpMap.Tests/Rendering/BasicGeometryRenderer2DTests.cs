@@ -26,78 +26,93 @@ namespace SharpMap.Tests.Rendering
 
         private class TestVectorRenderer : VectorRenderer2D<RenderObject>
         {
-            public override RenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline,
+            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline, StylePen highlightOutline,
                                                     StylePen selectOutline)
             {
-                RenderObject ro = new RenderObject();
+            	foreach (GraphicsPath2D path in paths)
+				{
+					RenderObject ro = new RenderObject();
 
-                ro.RenderedPaths = new double[path.Figures.Count][];
+					ro.RenderedPaths = new double[path.Figures.Count][];
 
-                for (int figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
-                {
-                    ro.RenderedPaths[figureIndex] = new double[path.Figures[figureIndex].Points.Count * 2];
+					for (int figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
+					{
+						ro.RenderedPaths[figureIndex] = new double[path.Figures[figureIndex].Points.Count * 2];
 
-                    for(int pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
-                    {
-                        Point2D point = path.Figures[figureIndex].Points[pointIndex];
-                        ro.RenderedPaths[figureIndex][pointIndex * 2] = point.X;
-                        ro.RenderedPaths[figureIndex][pointIndex * 2 + 1] = point.Y;
-                    }
-                }
+						for (int pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
+						{
+							Point2D point = path.Figures[figureIndex].Points[pointIndex];
+							ro.RenderedPaths[figureIndex][pointIndex * 2] = point.X;
+							ro.RenderedPaths[figureIndex][pointIndex * 2 + 1] = point.Y;
+						}
+					}
 
-                return ro;
+					yield return ro;
+            	}
             }
 
-            public override RenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill,
+			public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
                                                     StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
                                                     StylePen selectOutline)
             {
-                RenderObject ro = new RenderObject();
+				foreach (GraphicsPath2D path in paths)
+				{
+					RenderObject ro = new RenderObject();
 
-                ro.RenderedPaths = new double[path.Figures.Count][];
+					ro.RenderedPaths = new double[path.Figures.Count][];
 
-                for (int figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
-                {
-                    ro.RenderedPaths[figureIndex] = new double[path.Figures[figureIndex].Points.Count * 2];
+					for (int figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
+					{
+						ro.RenderedPaths[figureIndex] = new double[path.Figures[figureIndex].Points.Count * 2];
 
-                    for (int pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
-                    {
-                        Point2D point = path.Figures[figureIndex].Points[pointIndex];
-                        ro.RenderedPaths[figureIndex][pointIndex * 2] = point.X;
-                        ro.RenderedPaths[figureIndex][pointIndex * 2 + 1] = point.Y;
-                    }
-                }
+						for (int pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
+						{
+							Point2D point = path.Figures[figureIndex].Points[pointIndex];
+							ro.RenderedPaths[figureIndex][pointIndex * 2] = point.X;
+							ro.RenderedPaths[figureIndex][pointIndex * 2 + 1] = point.Y;
+						}
+					}
 
-                return ro;
+					yield return ro;
+				}
             }
 
-            public override RenderObject RenderSymbol(Point2D location, Symbol2D symbolData)
-            {
-                RenderObject ro = new RenderObject();
+			public override IEnumerable<RenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData)
+			{
+				foreach (Point2D point in locations)
+				{
+					RenderObject ro = new RenderObject();
 
-                ro.RenderedPaths = new double[][] { new double[] { location.X, location.Y } };
+					ro.RenderedPaths = new double[][] { new double[] { point.X, point.Y } };
 
-                return ro;
+					yield return ro;
+				}
             }
 
-            public override RenderObject RenderSymbol(Point2D location, Symbol2D symbolData, ColorMatrix highlight,
+			public override IEnumerable<RenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, ColorMatrix highlight,
                                                       ColorMatrix select)
-            {
-                RenderObject ro = new RenderObject();
+			{
+				foreach (Point2D point in locations)
+				{
+					RenderObject ro = new RenderObject();
 
-                ro.RenderedPaths = new double[][] { new double[] { location.X, location.Y } };
+					ro.RenderedPaths = new double[][] { new double[] { point.X, point.Y } };
 
-                return ro;
+					yield return ro;
+				}
             }
 
-            public override RenderObject RenderSymbol(Point2D location, Symbol2D symbolData, Symbol2D highlightSymbolData,
+			public override IEnumerable<RenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, Symbol2D highlightSymbolData,
                                                       Symbol2D selectSymbolData)
             {
-                RenderObject ro = new RenderObject();
+				foreach (Point2D point in locations)
+				{
+					RenderObject ro = new RenderObject();
 
-                ro.RenderedPaths = new double[][] { new double[] { location.X, location.Y } };
+					ro.RenderedPaths = new double[][] { new double[] { point.X, point.Y } };
 
-                return ro;
+					yield return ro;
+				}
             }
         } 
         #endregion
@@ -117,10 +132,6 @@ namespace SharpMap.Tests.Rendering
 			{
 				Geometry g = feature.Geometry;
 				List<RenderObject> renderedObjects = new List<RenderObject>(geometryRenderer.RenderFeature(feature));
-
-                int geometryCount = g is IGeometryCollection ? (g as IGeometryCollection).NumGeometries : 1;
-
-                Assert.AreEqual(geometryCount, renderedObjects.Count);
 
                 for (int i = 0; i < renderedObjects.Count; i++)
                 {

@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -103,19 +104,19 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#region IFeatureLayerRenderer Members
 
-		public abstract TRenderObject RenderPath(GraphicsPath2D path, StylePen outline, StylePen highlightOutline,
+		public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline, StylePen highlightOutline,
 		                                         StylePen selectOutline);
 
-		public abstract TRenderObject RenderPath(GraphicsPath2D path, StyleBrush fill, StyleBrush highlightFill,
+		public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
 		                                         StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
 		                                         StylePen selectOutline);
 
-		public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData);
+		public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData);
 
-		public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, ColorMatrix highlight,
+		public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, ColorMatrix highlight,
 		                                           ColorMatrix select);
 
-		public abstract TRenderObject RenderSymbol(Point2D location, Symbol2D symbolData, Symbol2D highlightSymbolData,
+		public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, Symbol2D highlightSymbolData,
 		                                           Symbol2D selectSymbolData);
 
 		#endregion

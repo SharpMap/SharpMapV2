@@ -123,12 +123,12 @@ namespace SharpMap.Rendering
         #region Equality Computation
 
         /// <summary>
-        /// Returns true if two <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> instances are figure-for-figure, 
-        /// point-for-point identical.
+        /// Returns true if two <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// instances are figure-for-figure, point-for-point identical.
         /// </summary>
         /// <remarks>
-        /// Casts <paramref name="obj"/> to a <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> and calls 
-        /// <see cref="Equals(GraphicsPath{TViewPoint, TViewBounds})"/> with the result.
+        /// Casts <paramref name="obj"/> to a <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// and calls <see cref="Equals(GraphicsPath{TViewPoint, TViewBounds})"/> with the result.
         /// </remarks>
         /// <param name="obj">The value to compare.</param>
         /// <returns>True if the parameter is a path which is figure-for-figure, point-for-point equal.</returns>
@@ -252,10 +252,14 @@ namespace SharpMap.Rendering
             IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>> figures);
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsFigure{TViewPoint, TViewBounds}"/> with the given points, either open or closed.
+        /// Creates a new <see cref="GraphicsFigure{TViewPoint, TViewBounds}"/> 
+        /// with the given points, either open or closed.
         /// </summary>
         /// <param name="points">Points in the figure.</param>
-        /// <param name="isClosed">True if the figure wraps from the last point to the first point, false if it is open.</param>
+        /// <param name="isClosed">
+        /// True if the figure wraps from the last point to the first point, 
+        /// false if it is open.
+        /// </param>
         /// <returns>A new figure with the given points and open or closed condition.</returns>
         protected abstract GraphicsFigure<TViewPoint, TViewBounds> CreateFigure(IEnumerable<TViewPoint> points,
                                                                                 bool isClosed);
@@ -263,8 +267,10 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Computes a minimum bounding box for this path.
         /// </summary>
-        /// <returns>A <typeparamref name="TViewBounds"/> instance which is the minimum bounding 
-        /// n-dimensional rectilinear shape encompassing this path.</returns>
+        /// <returns>
+        /// A <typeparamref name="TViewBounds"/> instance which is the minimum 
+        /// bounding n-dimensional rectilinear shape encompassing this path.
+        /// </returns>
         protected abstract TViewBounds ComputeBounds();
 
         /// <summary>
@@ -273,13 +279,15 @@ namespace SharpMap.Rendering
         protected abstract TViewBounds EmptyBounds { get; }
 
         /// <summary>
-        /// Creates a new GraphicsFigure from the given <paramref name="points"/>, either closed or open, and adds it to 
-        /// this path.
+        /// Creates a new GraphicsFigure from the given <paramref name="points"/>, 
+        /// either closed or open, and adds it to this path.
         /// </summary>
         /// <remarks>
         /// Also sets the <see cref="CurrentFigure"/> to the added figure.
         /// </remarks>
-        /// <param name="points">Points to make the GraphicsFigure from.</param>
+        /// <param name="points">
+        /// Points to make the GraphicsFigure from.
+        /// </param>
         /// <param name="closeFigure">True to close the figure, false to keep it open.</param>
         public void NewFigure(IEnumerable<TViewPoint> points, bool closeFigure)
         {
