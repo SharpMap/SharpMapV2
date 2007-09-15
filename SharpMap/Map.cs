@@ -29,6 +29,7 @@ using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Styles;
 using SharpMap.Tools;
+using SharpMap.Utilities;
 using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap
@@ -44,6 +45,147 @@ namespace SharpMap
         public const string SpatialReferencePropertyName = "SpatialReference";
         public const string VisibleRegionPropertyName = "VisibleRegion";
         public const string SelectedLayersPropertyName = "SelectedLayers";
+
+        public class LayerCollection : BindingList<ILayer>
+        {
+            private readonly object _collectionChangeSync = new object();
+
+            internal LayerCollection()
+            {
+                base.AllowNew = false;
+            }
+
+            public new bool AllowNew
+            {
+                get { return false; }
+                set { throw new NotSupportedException(); }
+            }
+
+            protected override object AddNewCore()
+            {
+                throw new InvalidOperationException();
+            }
+
+            protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
+            {
+                lock (_collectionChangeSync)
+                {
+                    try
+                    {
+                        RaiseListChangedEvents = false;
+
+                        if (prop.Name == "LayerName")
+                        {
+                            QuickSort.Sort(this, delegate(ILayer lhs, ILayer rhs)
+                            {
+                                return String.Compare(lhs.LayerName, rhs.LayerName,
+                                   StringComparison.CurrentCultureIgnoreCase);
+                            });
+                        }
+                    }
+                    finally
+                    {
+                        RaiseListChangedEvents = true;
+                        ResetBindings();
+                    }
+                }
+            }
+
+            protected override void RemoveSortCore()
+            {
+                base.RemoveSortCore();
+            }
+
+            protected override bool SupportsSortingCore
+            {
+                get { return true; }
+            }
+
+            protected override bool IsSortedCore
+            {
+                get
+                {
+                    return base.IsSortedCore;
+                }
+            }
+
+            protected override ListSortDirection SortDirectionCore
+            {
+                get
+                {
+                    return base.SortDirectionCore;
+                }
+            }
+
+            protected override PropertyDescriptor SortPropertyCore
+            {
+                get
+                {
+                    return base.SortPropertyCore;
+                }
+            }
+
+            protected override int FindCore(PropertyDescriptor prop, object key)
+            {
+                return base.FindCore(prop, key);
+            }
+
+            protected override bool SupportsSearchingCore
+            {
+                get
+                {
+                    return base.SupportsSearchingCore;
+                }
+            }
+
+            public override void CancelNew(int itemIndex)
+            {
+                base.CancelNew(itemIndex);
+            }
+
+            protected override void ClearItems()
+            {
+                base.ClearItems();
+            }
+
+            public override void EndNew(int itemIndex)
+            {
+                base.EndNew(itemIndex);
+            }
+
+            protected override void InsertItem(int index, ILayer item)
+            {
+                base.InsertItem(index, item);
+            }
+
+            protected override void OnAddingNew(AddingNewEventArgs e)
+            {
+                base.OnAddingNew(e);
+            }
+
+            protected override void OnListChanged(ListChangedEventArgs e)
+            {
+                base.OnListChanged(e);
+            }
+
+            protected override void RemoveItem(int index)
+            {
+                base.RemoveItem(index);
+            }
+
+            protected override void SetItem(int index, ILayer item)
+            {
+                base.SetItem(index, item);
+            }
+
+            protected override bool SupportsChangeNotificationCore
+            {
+                get
+                {
+                    return base.SupportsChangeNotificationCore;
+                }
+            }
+        }
 
         #region Fields
 

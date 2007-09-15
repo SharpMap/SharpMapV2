@@ -26,9 +26,14 @@ namespace SharpMap.Utilities
     /// </summary>
     public static class Hash
     {
-        private const string Digits = "0123456789ABCDEF";
+        private const string _digits = "0123456789ABCDEF";
         private static readonly SHA1Managed _hash = new SHA1Managed();
 
+        /// <summary>
+        /// Computes a hash value of a stream of data as a string.
+        /// </summary>
+        /// <param name="data">The data to compute the hash for.</param>
+        /// <returns>A string which uniquely identifies the data.</returns>
         public static string AsString(Stream data)
         {
             long streamPos = data.Position;
@@ -46,8 +51,8 @@ namespace SharpMap.Utilities
 
             foreach (byte b in hashValue)
             {
-                builder.Append(Digits[b >> 4]);
-                builder.Append(Digits[b & 0x07]);
+                builder.Append(_digits[b >> 4]);
+                builder.Append(_digits[b & 0x07]);
             }
 
             return builder.ToString();
