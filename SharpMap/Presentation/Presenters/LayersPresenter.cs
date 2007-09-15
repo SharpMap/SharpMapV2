@@ -16,7 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
+using SharpMap.Layers;
 
 namespace SharpMap.Presentation
 {
@@ -29,29 +30,93 @@ namespace SharpMap.Presentation
             : base(map, view)
         {
             _selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
-            _visibleLayersChangeRequestedDelegate = handleVisibileLayersChangeRequested;
+            _visibleLayersChangeRequestedDelegate = handleVisibleLayersChangeRequested;
 
-            Map.PropertyChanged += handleMapPropertyChanged;
             Map.LayersChanged += handleMapLayersCollectionChanged;
 
             View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
             View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
         }
 
+        protected override void OnMapPropertyChanged(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case Map.ActiveToolPropertyName:
+                    break;
+                case Map.SelectedLayersPropertyName:
+                    break;
+                case Map.SpatialReferencePropertyName:
+                    break;
+                case Map.VisibleRegionPropertyName:
+                    // TODO: Make layers appear unavailable if the visible region is outside
+                    // the MinVisible or MaxVisible for the layer
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         #region Helper Functions
 
         private void handleMapLayersCollectionChanged(object sender, LayersChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            switch (e.ChangeType)
+            {
+                case LayersChangeType.Added:
+                    View.AddLayers(getLayerNames(e.LayersAffected));
+                    break;
+                case LayersChangeType.Removed:
+                    View.RemoveLayers(getLayerNames(e.LayersAffected));
+                    break;
+                case LayersChangeType.Enabled:
+                    foreach (string layerName in getLayerNames(e.LayersAffected))
+                    {
+                        View.EnableLayer(layerName);
+                    }
+                    break;
+                case LayersChangeType.Disabled:
+                    foreach (string layerName in getLayerNames(e.LayersAffected))
+                    {
+                        View.DisableLayer(layerName);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
-        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private static IEnumerable<string> getLayerNames(IEnumerable<ILayer> layers)
         {
-            throw new NotImplementedException();
+            foreach (ILayer layer in layers)
+            {
+                yield return layer.LayerName;
+            }
         }
 
-        private void handleVisibileLayersChangeRequested(object sender, LayerActionEventArgs e)
+        private void handleVisibleLayersChangeRequested(object sender, LayerActionEventArgs e)
         {
+            switch (e.LayerAction)
+            {
+                case LayerAction.Enabled:
+                    foreach (string layerName in e.Layers)
+                    {
+                        Map.EnableLayer(layerName);
+                    }
+                    break;
+                case LayerAction.Disabled:
+                    foreach (string layerName in e.Layers)
+                    {
+                        Map.DisableLayer(layerName);
+                    }
+                    break;
+                case LayerAction.Selected:
+                    break;
+                case LayerAction.Deselected:
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)

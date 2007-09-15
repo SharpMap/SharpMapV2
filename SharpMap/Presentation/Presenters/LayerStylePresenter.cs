@@ -15,21 +15,13 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.Presentation
 {
-    public class LayerStylePresenter
+    public class LayerStylePresenter : BasePresenter<ILayerStyleView>
     {
-        private SharpMap.Map _map;
-        private ILayerStyleView _view;
-
-        public LayerStylePresenter(SharpMap.Map map, ILayerStyleView view)
+        public LayerStylePresenter(Map map, ILayerStyleView view)
+            :base(map, view)
         {
-            _map = map;
-            _view = view;
         }
     }
 }

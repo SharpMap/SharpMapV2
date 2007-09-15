@@ -8,8 +8,13 @@ namespace SharpMap
     public class LayersChangedEventArgs : EventArgs
     {
         private readonly LayersChangeType _changeType;
-        private readonly IEnumerable<ILayer> _layersAffected;
-	
+        private readonly object _layersAffected;
+
+        public LayersChangedEventArgs(LayersChangeType changeType, ILayer layerAffected)
+        {
+            _changeType = changeType;
+            _layersAffected = layerAffected;
+        }
         
         public LayersChangedEventArgs(LayersChangeType changeType, IEnumerable<ILayer> layersAffected)
         {
@@ -24,7 +29,21 @@ namespace SharpMap
 
         public IEnumerable<ILayer> LayersAffected
         {
-            get { return _layersAffected; }
+            get 
+            {
+                if (_layersAffected is ILayer)
+                {
+                    yield return _layersAffected as ILayer;
+                }
+                else
+                {
+                    IEnumerable<ILayer> layers = _layersAffected as IEnumerable<ILayer>;
+                    foreach (ILayer layer in layers)
+                    {
+                        yield return layer;
+                    }
+                }
+            }
         }
     }
 
@@ -33,6 +52,8 @@ namespace SharpMap
         Added,
         Removed,
         Enabled,
-        Disabled
+        Disabled,
+        Selected,
+        Deselected
     }
 }

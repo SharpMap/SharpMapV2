@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using SharpMap.Tools;
@@ -35,7 +34,6 @@ namespace SharpMap.Presentation
         public ToolsPresenter(Map map, IToolsView toolsView)
             : base(map, toolsView)
         {
-            Map.PropertyChanged += handleMapPropertyChanged;
             View.ToolChangeRequested += handleToolChangeRequested;
 
             // TODO: tool configuration should come from a config file and / or reflection
@@ -49,9 +47,9 @@ namespace SharpMap.Presentation
             View.Tools = mapTools;
         }
 
-        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override void OnMapPropertyChanged(string propertyName)
         {
-            switch (e.PropertyName)
+            switch (propertyName)
             {
                 case Map.ActiveToolPropertyName:
                     View.SelectedTool = Map.ActiveTool;

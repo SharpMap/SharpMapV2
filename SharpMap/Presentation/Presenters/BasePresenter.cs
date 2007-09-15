@@ -41,7 +41,7 @@ namespace SharpMap.Presentation
 		protected BasePresenter(Map map, TView view)
 		{
 			_map = map;
-			Map.PropertyChanged += Map_PropertyChanged;
+			Map.PropertyChanged += handleMapPropertyChanged;
 
 			_view = view;
 		}
@@ -138,12 +138,12 @@ namespace SharpMap.Presentation
 			}
 		}
 
-		protected virtual void OnMapPropertyChanged(string propertyName)
-		{
-			
-		}
+	    protected virtual void OnMapPropertyChanged(string propertyName)
+	    {
+	        
+	    }
 
-		private void Map_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			OnMapPropertyChanged(e.PropertyName);
 		}

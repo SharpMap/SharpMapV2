@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -254,6 +254,9 @@
     </Compile>
     <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\IBindingListView`1.cs" />
+    <Compile Include="Presentation\LayerActionEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\MapActionEventArgs.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
@@ -303,7 +306,6 @@
     <Compile Include="Rendering\Rendering2D\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\Rendering2D\LabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
-    <Compile Include="Presentation\LayerSelectedEventArgs.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs.cs" />
     <Compile Include="Tools\IMapTool`1.cs" />
     <Compile Include="Tools\MapTool.cs" />

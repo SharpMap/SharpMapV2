@@ -16,8 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 using SharpMap.Rendering;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -51,7 +49,7 @@ namespace SharpMap.Presentation
         /// <summary>
         /// Moves the selection by the given offset.
         /// </summary>
-        /// <param name="location">Point vector to move selection by.</param>
+        /// <param name="offset">Point vector to move selection by.</param>
         void MoveBy(TViewPoint offset);
 
         /// <summary>
