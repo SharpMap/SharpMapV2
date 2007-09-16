@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using SharpMap.Layers;
 
 namespace SharpMap.Presentation
@@ -32,7 +33,7 @@ namespace SharpMap.Presentation
             _selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
             _visibleLayersChangeRequestedDelegate = handleVisibleLayersChangeRequested;
 
-            Map.LayersChanged += handleMapLayersCollectionChanged;
+            Map.Layers.ListChanged += handleMapLayersCollectionChanged;
 
             View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
             View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
@@ -59,28 +60,22 @@ namespace SharpMap.Presentation
 
         #region Helper Functions
 
-        private void handleMapLayersCollectionChanged(object sender, LayersChangedEventArgs e)
+        private void handleMapLayersCollectionChanged(object sender, ListChangedEventArgs e)
         {
-            switch (e.ChangeType)
+            switch (e.ListChangedType)
             {
-                case LayersChangeType.Added:
-                    View.AddLayers(getLayerNames(e.LayersAffected));
-                    break;
-                case LayersChangeType.Removed:
-                    View.RemoveLayers(getLayerNames(e.LayersAffected));
-                    break;
-                case LayersChangeType.Enabled:
-                    foreach (string layerName in getLayerNames(e.LayersAffected))
+                case ListChangedType.ItemChanged:
+                    if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
                     {
-                        View.EnableLayer(layerName);
+                        
                     }
                     break;
-                case LayersChangeType.Disabled:
-                    foreach (string layerName in getLayerNames(e.LayersAffected))
-                    {
-                        View.DisableLayer(layerName);
-                    }
-                    break;
+                case ListChangedType.ItemMoved:
+                    throw new NotImplementedException("Need to implement layer reordering.");
+                
+                // The following are taken care of by data binding:
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
                 default:
                     break;
             }

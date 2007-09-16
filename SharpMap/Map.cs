@@ -31,6 +31,7 @@ using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
 using GeoPoint = SharpMap.Geometries.Point;
+using System.Globalization;
 
 namespace SharpMap
 {
@@ -45,14 +46,58 @@ namespace SharpMap
         public const string SpatialReferencePropertyName = "SpatialReference";
         public const string VisibleRegionPropertyName = "VisibleRegion";
         public const string SelectedLayersPropertyName = "SelectedLayers";
+        public const string NamePropertyName = "Name";
+        #region Nested types
 
+        #region LayerCollection type
+        /// <summary>
+        /// Represents an ordered collection of layers of geospatial features
+        ///  which are composed into a map.
+        /// </summary>
         public class LayerCollection : BindingList<ILayer>
         {
+            private readonly Map _map;
+            private bool? _sortedAscending = null;
             private readonly object _collectionChangeSync = new object();
+            private PropertyDescriptor _sortProperty;
+            internal readonly object LayersChangeSync = new object();
 
-            internal LayerCollection()
+            internal LayerCollection(Map map)
             {
+                _map = map;
                 base.AllowNew = false;
+            }
+
+            internal void AddRange(IEnumerable<ILayer> layers)
+            {
+                RaiseListChangedEvents = false;
+
+                foreach (ILayer layer in layers)
+                {
+                    Add(layer);
+                }
+
+                RaiseListChangedEvents = true;
+                ResetBindings();
+            }
+
+            internal bool Exists(Predicate<ILayer> predicate)
+            {
+                foreach (ILayer layer in this)
+                {
+                    if (predicate(layer))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            #region AddNew support
+            protected override object AddNewCore()
+            {
+                throw new InvalidOperationException();
             }
 
             public new bool AllowNew
@@ -61,11 +106,23 @@ namespace SharpMap
                 set { throw new NotSupportedException(); }
             }
 
-            protected override object AddNewCore()
+            protected override void OnAddingNew(AddingNewEventArgs e)
             {
-                throw new InvalidOperationException();
+                base.OnAddingNew(e);
             }
 
+            public override void CancelNew(int itemIndex)
+            {
+                base.CancelNew(itemIndex);
+            }
+
+            public override void EndNew(int itemIndex)
+            {
+                base.EndNew(itemIndex);
+            }
+            #endregion
+
+            #region Sorting support
             protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
             {
                 lock (_collectionChangeSync)
@@ -76,12 +133,19 @@ namespace SharpMap
 
                         if (prop.Name == "LayerName")
                         {
-                            QuickSort.Sort(this, delegate(ILayer lhs, ILayer rhs)
-                            {
-                                return String.Compare(lhs.LayerName, rhs.LayerName,
-                                   StringComparison.CurrentCultureIgnoreCase);
-                            });
+                            int sortDirValue = (direction == ListSortDirection.Ascending ? 1 : -1);
+                            Comparison<ILayer> comparison = delegate(ILayer lhs, ILayer rhs)
+                                {
+                                    return sortDirValue *
+                                        String.Compare(lhs.LayerName, rhs.LayerName,
+                                            StringComparison.CurrentCultureIgnoreCase);
+                                };
+
+                            QuickSort.Sort(this, comparison);
                         }
+
+                        _sortedAscending = (direction == ListSortDirection.Ascending);
+                        _sortProperty = prop;
                     }
                     finally
                     {
@@ -93,7 +157,7 @@ namespace SharpMap
 
             protected override void RemoveSortCore()
             {
-                base.RemoveSortCore();
+                _sortedAscending = null;
             }
 
             protected override bool SupportsSortingCore
@@ -105,7 +169,7 @@ namespace SharpMap
             {
                 get
                 {
-                    return base.IsSortedCore;
+                    return _sortedAscending.HasValue;
                 }
             }
 
@@ -113,59 +177,66 @@ namespace SharpMap
             {
                 get
                 {
-                    return base.SortDirectionCore;
+                    if (!_sortedAscending.HasValue)
+                    {
+                        throw new InvalidOperationException("List is not sorted.");
+                    }
+
+                    return ((bool)_sortedAscending)
+                               ? ListSortDirection.Ascending
+                               : ListSortDirection.Descending;
                 }
             }
 
             protected override PropertyDescriptor SortPropertyCore
             {
-                get
-                {
-                    return base.SortPropertyCore;
-                }
+                get { return _sortProperty; }
             }
+            #endregion
 
+            #region Searching support
             protected override int FindCore(PropertyDescriptor prop, object key)
             {
-                return base.FindCore(prop, key);
+                if (prop.Name == "LayerName")
+                {
+                    String layerName = key as String;
+
+                    if (String.IsNullOrEmpty(layerName))
+                    {
+                        throw new ArgumentException(
+                            "Layer name must be a non-null, non-empty string.");
+                    }
+
+                    IEnumerable<ILayer> found = _map.FindLayers(layerName);
+
+                    foreach (ILayer layer in found)
+                    {
+                        return IndexOf(layer);
+                    }
+
+                    return -1;
+                }
+                else
+                {
+                    throw new NotSupportedException(
+                        "Only sorting on the layer name is currently supported.");
+                }
             }
 
             protected override bool SupportsSearchingCore
             {
-                get
-                {
-                    return base.SupportsSearchingCore;
-                }
+                get { return true; }
             }
-
-            public override void CancelNew(int itemIndex)
-            {
-                base.CancelNew(itemIndex);
-            }
+            #endregion
 
             protected override void ClearItems()
             {
                 base.ClearItems();
             }
 
-            public override void EndNew(int itemIndex)
-            {
-                base.EndNew(itemIndex);
-            }
-
             protected override void InsertItem(int index, ILayer item)
             {
                 base.InsertItem(index, item);
-            }
-
-            protected override void OnAddingNew(AddingNewEventArgs e)
-            {
-                base.OnAddingNew(e);
-            }
-
-            protected override void OnListChanged(ListChangedEventArgs e)
-            {
-                base.OnListChanged(e);
             }
 
             protected override void RemoveItem(int index)
@@ -178,21 +249,26 @@ namespace SharpMap
                 base.SetItem(index, item);
             }
 
+            protected override void OnListChanged(ListChangedEventArgs e)
+            {
+                base.OnListChanged(e);
+            }
+
             protected override bool SupportsChangeNotificationCore
             {
-                get
-                {
-                    return base.SupportsChangeNotificationCore;
-                }
+                get { return true; }
             }
         }
+        #endregion
+
+        #endregion
 
         #region Fields
 
-        private readonly object _layersChangeSync = new object();
         private readonly object _activeToolSync = new object();
 
-        private readonly List<ILayer> _layers = new List<ILayer>();
+        private readonly LayerCollection _layers;
+        private readonly FeatureDataSet _featureDataSet = new FeatureDataSet();
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
         private BoundingBox _envelope = BoundingBox.Empty;
         private MapTool _activeTool = StandardMapTools2D.None;
@@ -202,6 +278,14 @@ namespace SharpMap
         #endregion
 
         #region Object Creation / Disposal
+
+        /// <summary>
+        /// Creates a new instance of a Map.
+        /// </summary>
+        public Map()
+        {
+            _layers = new LayerCollection(this);
+        }
 
         #region Dispose Pattern
 
@@ -271,10 +355,10 @@ namespace SharpMap
 
         #region Events
 
-        /// <summary>
-        /// Event fired when layers have been added to the map.
-        /// </summary>
-        public event EventHandler<LayersChangedEventArgs> LayersChanged;
+        ///// <summary>
+        ///// Event fired when layers have been added to the map.
+        ///// </summary>
+        //public event EventHandler<LayersChangedEventArgs> LayersChanged;
 
         #region INotifyPropertyChanged Members
 
@@ -285,25 +369,33 @@ namespace SharpMap
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// Adds the given layer to the map, ordering it under all other layers.
+        /// </summary>
+        /// <param name="layer">The layer to add.</param>
         public void AddLayer(ILayer layer)
         {
             if (layer == null) throw new ArgumentNullException("layer");
 
             checkForDuplicateLayerName(layer);
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 _layers.Add(layer);
-                onLayersChanged(new ILayer[] { layer }, LayersChangeType.Added);
             }
         }
 
+        /// <summary>
+        /// Adds the given set of layers to the map, 
+        /// ordering each one in turn under all other layers.
+        /// </summary>
+        /// <param name="layers">The set of layers to add.</param>
         public void AddLayers(IEnumerable<ILayer> layers)
         {
             if (layers == null) throw new ArgumentNullException("layers");
 
             List<String> layerNames = new List<string>(16);
+
             foreach (ILayer layer in layers)
             {
                 if (layer == null) throw new ArgumentException("One of the layers is null.");
@@ -313,97 +405,159 @@ namespace SharpMap
 
             for (int i = 0; i < layerNames.Count; i++)
             {
-                for(int j = i + 1; j < layerNames.Count; j++)
+                for (int j = i + 1; j < layerNames.Count; j++)
                 {
-                    if(String.Compare(layerNames[i], layerNames[j], StringComparison.CurrentCultureIgnoreCase) == 0)
+                    if (String.Compare(layerNames[i], layerNames[j], StringComparison.CurrentCultureIgnoreCase) == 0)
                     {
                         throw new ArgumentException("Layers to be added contain a duplicate name: " + layerNames[i]);
                     }
                 }
             }
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 _layers.AddRange(layers);
-                onLayersChanged(layers, LayersChangeType.Added);
             }
         }
 
+        /// <summary>
+        /// Removes all the layers from the map.
+        /// </summary>
+        public void ClearLayers()
+        {
+            _layers.Clear();
+        }
+
+        /// <summary>
+        /// Disables the given layer so it is not visible and doesn't participate in
+        /// spatial queries.
+        /// </summary>
+        /// <param name="index">The index of the layer to disable.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when <paramref name="index"/> is less than 0 or greater than or equal to 
+        /// Layers.Count.
+        /// </exception>
         public void DisableLayer(int index)
         {
-            if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
+            if (index < 0 || index >= Layers.Count)
+            {
+                throw new ArgumentOutOfRangeException("index");
+            }
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 changeLayerEnabled(Layers[index], false);
             }
         }
 
+        /// <summary>
+        /// Disables the given layer so it is not visible and doesn't participate in
+        /// spatial queries.
+        /// </summary>
+        /// <param name="name">Name of layer to disable.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="name"/> is <see langword="null"/> or empty.
+        /// </exception>
         public void DisableLayer(string name)
         {
             if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 changeLayerEnabled(GetLayerByName(name), false);
             }
         }
 
+        /// <summary>
+        /// Disables the given layer so it is not visible and doesn't participate in
+        /// spatial queries.
+        /// </summary>
+        /// <param name="layer">Layer to disable.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="layer"/> is <see langword="null"/>.
+        /// </exception>
         public void DisableLayer(ILayer layer)
         {
             if (layer == null) throw new ArgumentNullException("layer");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 changeLayerEnabled(layer, false);
             }
         }
 
+        /// <summary>
+        /// Enables the given layer so it is visible and participates in
+        /// spatial queries.
+        /// </summary>
+        /// <param name="index">Index of the layer to enable.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when <paramref name="index"/> is less than 0 or greater than or equal to 
+        /// Layers.Count.
+        /// </exception>
         public void EnableLayer(int index)
         {
             if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 changeLayerEnabled(Layers[index], false);
             }
         }
 
+        /// <summary>
+        /// Enables the given layer so it is visible and participates in
+        /// spatial queries.
+        /// </summary>
+        /// <param name="name">Name of layer to enable.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="name"/> is <see langword="null"/> or empty.
+        /// </exception>
         public void EnableLayer(string name)
         {
             if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 changeLayerEnabled(GetLayerByName(name), true);
             }
         }
 
+        /// <summary>
+        /// Enables the given layer so it is visible and participates in
+        /// spatial queries.
+        /// </summary>
+        /// <param name="layer">Layer to enable.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="layer"/> is <see langword="null"/>.
+        /// </exception>
         public void EnableLayer(ILayer layer)
         {
             if (layer == null) throw new ArgumentNullException("layer");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 changeLayerEnabled(layer, true);
             }
         }
 
         /// <summary>
-        /// Returns an enumerable set of all layers containing the string <paramref name="layerNamePart"/> 
-        /// in the <see cref="ILayer.LayerName"/> property.
+        /// Returns an enumerable set of all layers containing the string 
+        /// <paramref name="layerNamePart"/>  in the <see cref="ILayer.LayerName"/> property.
         /// </summary>
-        /// <param name="layerNamePart">String to search for.</param>
+        /// <param name="layerNamePart">Part of the layer name to search for.</param>
         /// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
         /// containing <paramref name="layerNamePart"/>.</returns>
         public IEnumerable<ILayer> FindLayers(string layerNamePart)
         {
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 layerNamePart = layerNamePart.ToLower();
                 foreach (ILayer layer in Layers)
                 {
-                    if (layer.LayerName.ToLower().Contains(layerNamePart))
+                    String layerName = layer.LayerName.ToLower(CultureInfo.CurrentCulture);
+
+                    if (layerName.Contains(layerNamePart))
                     {
                         yield return layer;
                     }
@@ -411,6 +565,12 @@ namespace SharpMap
             }
         }
 
+        /// <summary>
+        /// Gets the active tool for map interaction.
+        /// </summary>
+        /// <typeparam name="TMapView">Type of Map view in use.</typeparam>
+        /// <typeparam name="TPoint">Type of vertex used to define a point.</typeparam>
+        /// <returns>The currently active MapTool for the map.</returns>
         public MapTool<TMapView, TPoint> GetActiveTool<TMapView, TPoint>()
             where TPoint : IVector<DoubleComponent>
         {
@@ -438,83 +598,120 @@ namespace SharpMap
         /// Returns a layer by its name.
         /// </summary>
         /// <remarks>
-        /// Performs culture-sensitive, case-insensitive search.
+        /// Performs culture-specific, case-insensitive search.
         /// </remarks>
         /// <param name="name">Name of layer.</param>
-        /// <returns>Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.</returns>
+        /// <returns>
+        /// Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.
+        /// </returns>
         public ILayer GetLayerByName(string name)
         {
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
-                return _layers.Find(delegate(ILayer layer)
-                                        {
-                                            return String.Compare(layer.LayerName, name,
-                                                                  StringComparison.CurrentCultureIgnoreCase) == 0;
-                                        });
+                int index = (_layers as IBindingList).Find(Layer.LayerNameProperty, name);
+                return _layers[index];
             }
         }
 
+        /// <summary>
+        /// Removes a layer from the map.
+        /// </summary>
+        /// <param name="layer">The layer to remove.</param>
         public void RemoveLayer(ILayer layer)
         {
             if (layer != null)
             {
-                lock (_layersChangeSync)
+                lock (Layers.LayersChangeSync)
                 {
                     _layers.Remove(layer);
-                    onLayersChanged(new ILayer[] { layer }, LayersChangeType.Removed);
                 }
             }
         }
 
+        /// <summary>
+        /// Removes a layer from the map using the given layer name.
+        /// </summary>
+        /// <param name="name">The name of the layer to remove.</param>
         public void RemoveLayer(string name)
         {
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 ILayer layer = GetLayerByName(name);
                 RemoveLayer(layer);
             }
         }
 
+        /// <summary>
+        /// Selects a layer, using the given index, to be the target of action on the map.
+        /// </summary>
+        /// <param name="index">The index of the layer to select.</param>
         public void SelectLayer(int index)
         {
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 SelectLayers(new int[] { index });
             }
         }
 
+        /// <summary>
+        /// Selects a layer, using the given name, to be the target of action on the map.
+        /// </summary>
+        /// <param name="name">The name of the layer to select.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="name"/> is <see langword="null"/> or empty.
+        /// </exception>
         public void SelectLayer(string name)
         {
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 SelectLayers(new string[] { name });
             }
         }
 
+        /// <summary>
+        /// Selects a layer to be the target of action on the map.
+        /// </summary>
+        /// <param name="layer">The layer to select.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="layer"/> is <see langword="null"/> or empty.
+        /// </exception>
         public void SelectLayer(ILayer layer)
         {
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 SelectLayers(new ILayer[] { layer });
             }
         }
 
+        /// <summary>
+        /// Selects a set of layers, using the given index set, 
+        /// to be the targets of action on the map.
+        /// </summary>
+        /// <param name="indexes">The set of indexes of the layers to select.</param>
         public void SelectLayers(IEnumerable<int> indexes)
         {
             if (indexes == null) throw new ArgumentNullException("indexes");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
                 selectLayersInternal(layerGenerator(indexes));
             }
         }
 
+        /// <summary>
+        /// Selects a set of layers, using the given set of names, 
+        /// to be the targets of action on the map.
+        /// </summary>
+        /// <param name="layerNames">The set of names of layers to select.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="layerNames"/> is <see langword="null"/>.
+        /// </exception>
         public void SelectLayers(IEnumerable<string> layerNames)
         {
             if (layerNames == null) throw new ArgumentNullException("layerNames");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 Converter<IEnumerable<string>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
                 selectLayersInternal(layerGenerator(layerNames));
@@ -525,7 +722,7 @@ namespace SharpMap
         {
             if (layers == null) throw new ArgumentNullException("layers");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 selectLayersInternal(layers);
             }
@@ -533,9 +730,12 @@ namespace SharpMap
 
         public void SetLayerStyle(int index, Style style)
         {
-            if (index < 0 || index >= Layers.Count) throw new ArgumentOutOfRangeException("index");
+            if (index < 0 || index >= Layers.Count)
+            {
+                throw new ArgumentOutOfRangeException("index");
+            }
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 setLayerStyleInternal(Layers[index], style);
             }
@@ -545,7 +745,7 @@ namespace SharpMap
         {
             if (String.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 setLayerStyleInternal(GetLayerByName(name), style);
             }
@@ -555,7 +755,7 @@ namespace SharpMap
         {
             if (layer == null) throw new ArgumentNullException("layer");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 setLayerStyleInternal(layer, style);
             }
@@ -580,9 +780,11 @@ namespace SharpMap
         {
             if (indexes == null) throw new ArgumentNullException("indexes");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
-                Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
+                Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator
+                    = layersGenerator;
+
                 unselectLayersInternal(layerGenerator(indexes));
             }
         }
@@ -591,7 +793,7 @@ namespace SharpMap
         {
             if (layerNames == null) throw new ArgumentNullException("layerNames");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 unselectLayersInternal(layersGenerator(layerNames));
             }
@@ -601,7 +803,7 @@ namespace SharpMap
         {
             if (layers == null) throw new ArgumentNullException("layers");
 
-            lock (_layersChangeSync)
+            lock (Layers.LayersChangeSync)
             {
                 unselectLayersInternal(layers);
             }
@@ -627,6 +829,11 @@ namespace SharpMap
             {
                 if (value == null) throw new ArgumentNullException("value");
 
+                if (value == _activeTool)
+                {
+                    return;
+                }
+
                 lock (_activeToolSync)
                 {
                     _activeTool = value;
@@ -645,22 +852,31 @@ namespace SharpMap
 
         /// <summary>
         /// Gets a collection of layers. 
-        /// The first layer in the list is drawn first, the last one on top.
         /// </summary>
-        public ReadOnlyCollection<ILayer> Layers
+        /// <remarks>
+        /// The first layer in the list is drawn first, the last one on top.
+        /// </remarks>
+        public LayerCollection Layers
         {
-            get
-            {
-                lock (_layersChangeSync)
-                {
-                    return _layers.AsReadOnly();
-                }
-            }
-            private set
-            {
-                _layers.Clear();
+            get { return _layers; }
+        }
 
-                AddLayers(value);
+        /// <summary>
+        /// Gets or sets the name of the map.
+        /// </summary>
+        public String Name
+        {
+            get { return _featureDataSet.DataSetName; }
+            set
+            {
+                if (value == _featureDataSet.DataSetName)
+                {
+                    return;
+                }
+
+                _featureDataSet.DataSetName = value ?? String.Empty;
+
+                onNameChanged();
             }
         }
 
@@ -672,7 +888,7 @@ namespace SharpMap
         {
             get
             {
-                lock (_layersChangeSync)
+                lock (Layers.LayersChangeSync)
                 {
                     return _selectedLayers.AsReadOnly();
                 }
@@ -692,7 +908,7 @@ namespace SharpMap
                     }
                 }
 
-                lock (_layersChangeSync)
+                lock (Layers.LayersChangeSync)
                 {
                     _selectedLayers.Clear();
                     _selectedLayers.AddRange(value);
@@ -755,6 +971,8 @@ namespace SharpMap
 
         #endregion
 
+        #region Private helper methods
+
         #region Event Generators
 
         private void onActiveToolChanged()
@@ -777,39 +995,9 @@ namespace SharpMap
             raisePropertyChanged(SelectedLayersPropertyName);
         }
 
-        private void onLayersChanged(IEnumerable<ILayer> layers, LayersChangeType action)
+        private void onNameChanged()
         {
-            switch (action)
-            {
-                case LayersChangeType.Added:
-                    {
-                        foreach (ILayer layer in layers)
-                        {
-                            if (layer.Enabled)
-                            {
-                                layer.VisibleRegion = VisibleRegion;
-                            }
-                        }
-                    }
-                    break;
-                case LayersChangeType.Removed:
-                    {
-                        recomputeEnvelope();
-                    }
-                    break;
-                case LayersChangeType.Enabled:
-                case LayersChangeType.Disabled:
-                default:
-                    throw new NotSupportedException();
-            }
-
-            EventHandler<LayersChangedEventArgs> e = LayersChanged;
-
-            if(e != null)
-            {
-                LayersChangedEventArgs args = new LayersChangedEventArgs(action, layers);
-                e(this, args);
-            }
+            raisePropertyChanged(NamePropertyName);
         }
 
         private void raisePropertyChanged(string propertyName)
@@ -823,8 +1011,6 @@ namespace SharpMap
         }
 
         #endregion
-
-        #region Private helper methods
 
         private void checkForDuplicateLayerName(ILayer layer)
         {
@@ -877,7 +1063,19 @@ namespace SharpMap
         {
             checkLayersExist();
 
-            _selectedLayers.AddRange(layers);
+            foreach (ILayer layer in layers)
+            {
+                Predicate<ILayer> findDuplicate = delegate(ILayer match)
+                  {
+                      return String.Compare(layer.LayerName, match.LayerName,
+                        StringComparison.CurrentCultureIgnoreCase) == 0;
+                  };
+
+                if (!_selectedLayers.Exists(findDuplicate))
+                {
+                    _selectedLayers.Add(layer);
+                }
+            }
 
             onSelectedLayersChanged();
         }
@@ -890,7 +1088,8 @@ namespace SharpMap
                 ? layers as List<ILayer>
                 : new List<ILayer>(layers);
 
-            _selectedLayers.RemoveAll(delegate(ILayer match) { return removeLayers.Contains(match); });
+            Predicate<ILayer> removeMatch = delegate(ILayer match) { return removeLayers.Contains(match); };
+            _selectedLayers.RemoveAll(removeMatch);
 
             onSelectedLayersChanged();
         }
@@ -902,7 +1101,7 @@ namespace SharpMap
                 if (index < 0 || index >= _layers.Count)
                 {
                     throw new ArgumentOutOfRangeException("layerIndexes", index,
-                                                          String.Format("Layer index must be between 0 and {0}", _layers.Count));
+                        String.Format("Layer index must be between 0 and {0}", _layers.Count));
                 }
 
                 yield return _layers[index];

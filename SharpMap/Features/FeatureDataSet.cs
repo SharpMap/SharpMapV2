@@ -88,7 +88,6 @@ namespace SharpMap.Features
             CollectionChangeEventHandler schemaChangedHandler = schemaChanged;
             //this.Tables.CollectionChanged += schemaChangedHandler;
             Relations.CollectionChanged += schemaChangedHandler;
-            initClass();
         }
 
         /// <summary>
@@ -288,10 +287,10 @@ namespace SharpMap.Features
 
         private void initClass()
         {
+            DataSetName = "";
             _featureTables = new FeatureTableCollection(base.Tables);
-            //this.DataSetName = "FeatureDataSet";
             Prefix = "";
-            Namespace = "http://www.codeplex.com/Wiki/View.aspx?ProjectName=SharpMap/FeatureDataSet.xsd";
+            Namespace = "http://www.codeplex.com/SharpMap/Wiki/View.aspx?title=FeatureDataSet";
             Locale = new CultureInfo("en-US");
             CaseSensitive = false;
             EnforceConstraints = true;

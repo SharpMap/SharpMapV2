@@ -65,7 +65,7 @@ namespace SharpMap.Presentation
             _vectorRenderer = CreateVectorRenderer();
             _rasterRenderer = CreateRasterRenderer();
 
-            Map.LayersChanged += map_LayersChanged;
+            Map.Layers.ListChanged += handleLayersChanged;
             Map.PropertyChanged += map_PropertyChanged;
 
             View.Hover += view_Hover;
@@ -512,26 +512,24 @@ namespace SharpMap.Presentation
         #region Event handlers
         #region Map events
 
-        private void map_LayersChanged(object sender, LayersChangedEventArgs e)
+        private void handleLayersChanged(object sender, ListChangedEventArgs e)
         {
-            switch (e.ChangeType)
+            switch (e.ListChangedType)
             {
-                case LayersChangeType.Added:
-                    foreach (ILayer layer in e.LayersAffected)
-                    {
-                        layer.LayerDataAvailable += layer_LayerDataAvailable;
-                    }
+                case ListChangedType.ItemAdded:
+                    Map.Layers[e.NewIndex].LayerDataAvailable += layer_LayerDataAvailable;
                     break;
-                case LayersChangeType.Removed:
-                    foreach (ILayer layer in e.LayersAffected)
-                    {
-                        layer.LayerDataAvailable -= layer_LayerDataAvailable;
-                    }
+                case ListChangedType.ItemDeleted:
+                    Map.Layers[e.NewIndex].LayerDataAvailable -= layer_LayerDataAvailable;
                     break;
-                case LayersChangeType.Enabled:
-                    break;
-                case LayersChangeType.Disabled:
-                    break;
+                case ListChangedType.ItemMoved:
+                    throw new NotImplementedException("Need to implement layer reordering.");
+                case ListChangedType.ItemChanged:
+                    throw new NotImplementedException();
+                case ListChangedType.PropertyDescriptorChanged:
+                    throw new NotImplementedException();
+                case ListChangedType.Reset:
+                    throw new NotImplementedException();
                 default:
                     break;
             }

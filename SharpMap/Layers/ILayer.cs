@@ -32,6 +32,12 @@ namespace SharpMap.Layers
     public interface ILayer : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
+        /// Event raised when layer data has been completely
+        /// loaded if <see cref="AsyncQuery"/> is true.
+        /// </summary>
+        event EventHandler LayerDataAvailable;
+
+        /// <summary>
         /// Gets or sets a value indicating that data is obtained asynchronously.
         /// </summary>
         bool AsyncQuery { get; set; }
@@ -64,8 +70,6 @@ namespace SharpMap.Layers
         /// Gets the boundingbox of the entire layer.
         /// </summary>
         BoundingBox Envelope { get; }
-
-        event EventHandler LayerDataAvailable;
 
         /// <summary>
         /// Name of layer.

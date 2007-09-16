@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using SharpMap.Layers;
+using System.ComponentModel;
 
 namespace SharpMap.Presentation
 {
@@ -25,26 +26,29 @@ namespace SharpMap.Presentation
         public AttributePresenter(Map map, IAttributeView view)
             : base(map, view)
         {
-			Map.LayersChanged += handleMapLayersChanged;
+			Map.Layers.ListChanged += handleMapLayersChanged;
 			View.FeaturesSelectionChangeRequested += handleViewFeatureSelectionChanged;
         }
 
-		private void handleMapLayersChanged(object sender, LayersChangedEventArgs e)
+		private void handleMapLayersChanged(object sender, ListChangedEventArgs e)
         {
             // When the map layers collection changes, update the attribute view 
             // to show attributes for each enabled IFeatureLayer
 
-			if(e.ChangeType == LayersChangeType.Removed || e.ChangeType == LayersChangeType.Disabled)
+            if (e.ListChangedType == ListChangedType.ItemDeleted)
 			{
-			    IEnumerable<ILayer> layers = e.LayersAffected;
+			    ILayer layer = Map.Layers[e.NewIndex];
 
-			    removeLayersFromView(layers);
+                View.RemoveLayer(layer.LayerName);
 			}
-			else if(e.ChangeType == LayersChangeType.Added || e.ChangeType == LayersChangeType.Enabled)
-			{
-			    IEnumerable<ILayer> layers = e.LayersAffected;
+            else if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
 
-			    addLayersToView(layers);
+                if (layer.Enabled && layer != null)
+                {
+                    View.AddLayer(layer.LayerName, layer.SelectedFeatures);
+                }
 			}
 		}
 
@@ -53,27 +57,6 @@ namespace SharpMap.Presentation
             // When the user selects features in the view, we need to highlight those features
 			e.FeatureDataView.SelectedRows = e.SelectedFeatures;
 			View.SelectFeatures(e.LayerName, e.SelectedFeatures);
-        }
-
-        private void removeLayersFromView(IEnumerable<ILayer> layers)
-        {
-            foreach (ILayer layer in layers)
-            {
-                View.RemoveLayer(layer.LayerName);
-            }
-        }
-
-        private void addLayersToView(IEnumerable<ILayer> layers)
-        {
-            foreach (ILayer layer in layers)
-            {
-                IFeatureLayer featureLayer = layer as IFeatureLayer;
-
-                if (layer.Enabled && featureLayer != null)
-                {
-                    View.AddLayer(layer.LayerName, featureLayer.SelectedFeatures);
-                }
-            }
         }
 	}
 }
