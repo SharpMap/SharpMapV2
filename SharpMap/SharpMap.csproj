@@ -253,7 +253,6 @@
     <Compile Include="Layers\GeometryLayer.cs">
     </Compile>
     <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
-    <Compile Include="Presentation\IBindingListView`1.cs" />
     <Compile Include="Presentation\LayerActionEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>

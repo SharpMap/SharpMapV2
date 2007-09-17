@@ -183,10 +183,18 @@ namespace SharpMap.Features
             }
         }
 
-        public IEnumerable<FeatureDataRow> SelectedRows
+        public IEnumerable<FeatureDataRow> SelectedFeatures
         {
-            get { throw new NotImplementedException(); }
-            set { }
+            // Check for primary key, and use it to select features from base table
+            // If no key, check for unique index, and use it to select
+            // Otherwise, do a field-by-field comparison...
+            // Remember to suspend events and clear the view before adding features...
+            set { throw new NotImplementedException(); }
+        }
+
+        public int IndexOfFeature(FeatureDataRow feature)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

@@ -16,8 +16,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using SharpMap.Features;
 using SharpMap.Layers;
 using System.ComponentModel;
+using System.Data;
 
 namespace SharpMap.Presentation
 {
@@ -26,37 +29,78 @@ namespace SharpMap.Presentation
         public AttributePresenter(Map map, IAttributeView view)
             : base(map, view)
         {
-			Map.Layers.ListChanged += handleMapLayersChanged;
-			View.FeaturesSelectionChangeRequested += handleViewFeatureSelectionChanged;
+            Map.Layers.ListChanged += handleLayersChanged;
+            View.FeaturesHighlightedChangeRequested += handleFeaturesHighlightedChangeRequested;
+            View.Layers = Map.Layers;
         }
 
-		private void handleMapLayersChanged(object sender, ListChangedEventArgs e)
+        private void handleLayersChanged(object sender, ListChangedEventArgs e)
         {
-            // When the map layers collection changes, update the attribute view 
-            // to show attributes for each enabled IFeatureLayer
-
-            if (e.ListChangedType == ListChangedType.ItemDeleted)
-			{
-			    ILayer layer = Map.Layers[e.NewIndex];
-
-                View.RemoveLayer(layer.LayerName);
-			}
-            else if (e.ListChangedType == ListChangedType.ItemAdded)
+            if(e.ListChangedType == ListChangedType.ItemAdded)
             {
-                IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
-
-                if (layer.Enabled && layer != null)
+                if(Map.Layers[e.NewIndex] is IFeatureLayer)
                 {
-                    View.AddLayer(layer.LayerName, layer.SelectedFeatures);
+                    wireupFeatureLayer(Map.Layers[e.NewIndex] as IFeatureLayer);
                 }
-			}
-		}
+            }
 
-		private void handleViewFeatureSelectionChanged(object sender, FeatureSelectionChangeRequestEventArgs e)
+            if(e.ListChangedType == ListChangedType.ItemDeleted)
+            {
+                if (e.NewIndex < 0 && Map.Layers[e.OldIndex] is IFeatureLayer)
+                {
+                    unwireFeatureLayer(Map.Layers[e.OldIndex] as IFeatureLayer);
+                }
+            }
+        }
+        
+        private void handleFeaturesHighlightedChangeRequested(object sender, FeaturesHighlightedChangeRequestEventArgs e)
         {
-            // When the user selects features in the view, we need to highlight those features
-			e.FeatureDataView.SelectedRows = e.SelectedFeatures;
-			View.SelectFeatures(e.LayerName, e.SelectedFeatures);
+            IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer;
+
+            Debug.Assert(layer != null);
+
+            layer.HighlightedFeatures.SelectedFeatures = getFeaturesFromIndexes(layer, e.HighlightedFeatures);
+        }
+
+        private void handleHighlightedFeaturesChanged(object sender, ListChangedEventArgs e)
+        {
+            IFeatureLayer layer = sender as IFeatureLayer;
+
+            Debug.Assert(layer != null);
+
+            // When the user selects features in the view, 
+            // we need to highlight those features
+            IEnumerable<int> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
+                layer.SelectedFeatures, layer.HighlightedFeatures);
+
+            View.SetHighlightedFeatures(layer.LayerName, indexes);
+        }
+
+        private void wireupFeatureLayer(IFeatureLayer layer)
+        {
+            layer.HighlightedFeatures.ListChanged += handleHighlightedFeaturesChanged;
+        }
+
+        private void unwireFeatureLayer(IFeatureLayer layer)
+        {
+            layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesChanged;
+        }
+
+        private static IEnumerable<FeatureDataRow> getFeaturesFromIndexes(IFeatureLayer layer, IEnumerable<int> indexes)
+        {
+            foreach (int index in indexes)
+            {
+                yield return layer.SelectedFeatures[index].Row as FeatureDataRow;
+            }
+        }
+
+        private static IEnumerable<int> getSelectedFeatureIndexesFromHighlighedFeatures(
+            FeatureDataView selectedFeatures, FeatureDataView highlightedFeatures)
+        {
+            foreach (FeatureDataRow feature in highlightedFeatures)
+            {
+                yield return selectedFeatures.IndexOfFeature(feature);
+            }
         }
 	}
 }

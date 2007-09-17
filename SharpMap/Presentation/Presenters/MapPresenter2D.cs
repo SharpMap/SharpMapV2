@@ -66,7 +66,7 @@ namespace SharpMap.Presentation
             _rasterRenderer = CreateRasterRenderer();
 
             Map.Layers.ListChanged += handleLayersChanged;
-            Map.PropertyChanged += map_PropertyChanged;
+            Map.PropertyChanged += handleMapPropertyChanged;
 
             View.Hover += view_Hover;
             View.BeginAction += view_BeginAction;
@@ -517,10 +517,15 @@ namespace SharpMap.Presentation
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
-                    Map.Layers[e.NewIndex].LayerDataAvailable += layer_LayerDataAvailable;
+                    Map.Layers[e.NewIndex].LayerDataAvailable += handleLayerDataAvailable;
                     break;
                 case ListChangedType.ItemDeleted:
-                    Map.Layers[e.NewIndex].LayerDataAvailable -= layer_LayerDataAvailable;
+                    // LayerCollection defines an e.NewIndex as -1 when an item is being 
+                    // deleted and not yet removed from the collection.
+                    if (e.NewIndex < 0) 
+                    {
+                        Map.Layers[e.OldIndex].LayerDataAvailable -= handleLayerDataAvailable;
+                    }
                     break;
                 case ListChangedType.ItemMoved:
                     throw new NotImplementedException("Need to implement layer reordering.");
@@ -529,30 +534,28 @@ namespace SharpMap.Presentation
                 case ListChangedType.PropertyDescriptorChanged:
                     throw new NotImplementedException();
                 case ListChangedType.Reset:
+                    // Should redraw everything
                     throw new NotImplementedException();
                 default:
                     break;
             }
         }
 
-        void layer_LayerDataAvailable(object sender, EventArgs e)
+        void handleLayerDataAvailable(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        private void map_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case Map.ActiveToolPropertyName:
-                    break;
-                case Map.SelectedLayersPropertyName:
-                    break;
-                case Map.SpatialReferencePropertyName:
-                    break;
                 case Map.VisibleRegionPropertyName:
                     setViewEnvelopeInternal(Map.VisibleRegion);
                     break;
+                case Map.SpatialReferencePropertyName:
+                case Map.SelectedLayersPropertyName:
+                case Map.ActiveToolPropertyName:
                 default:
                     return;
             }

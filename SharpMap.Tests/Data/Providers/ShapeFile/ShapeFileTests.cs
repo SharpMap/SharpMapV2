@@ -394,7 +394,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 		{
 			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
 			shapeFile.Open();
-			FeatureDataSet data = new FeatureDataSet();
+			FeatureDataSet data = new FeatureDataSet("ShapeFile test");
 			shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), data);
 			Assert.AreEqual(1, data.Tables.Count);
 			Assert.AreEqual(shapeFile.GetFeatureCount(), data.Tables[0].Rows.Count);
@@ -406,7 +406,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 		public void ExecuteIntersectionQueryByBoundingBoxWhenClosedThrowsExceptionTest()
 		{
 			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-			FeatureDataSet data = new FeatureDataSet();
+            FeatureDataSet data = new FeatureDataSet("ShapeFile test");
 			shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), data);
 		}
 
@@ -531,7 +531,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
 			Assert.AreEqual(1, shapeFile.GetFeatureCount());
 
-			FeatureDataSet dataSet = new FeatureDataSet();
+            FeatureDataSet dataSet = new FeatureDataSet("ShapeFile test");
 
 			shapeFile.ExecuteIntersectionQuery(new BoundingBox(1, 1, 1, 1), dataSet);
 
@@ -613,7 +613,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 			Assert.AreEqual(10000, shapeFile.GetFeatureCount());
 			Assert.AreEqual(computedBounds, shapeFile.GetExtents());
 
-			FeatureDataSet dataSet = new FeatureDataSet();
+            FeatureDataSet dataSet = new FeatureDataSet("ShapeFile test");
 
 			shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), dataSet);
 

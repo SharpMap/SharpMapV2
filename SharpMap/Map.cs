@@ -42,11 +42,33 @@ namespace SharpMap
     [DesignTimeVisible(false)]
     public class Map : INotifyPropertyChanged, IDisposable
     {
+        #region Property name constants
+        /// <summary>
+        /// The name of the ActiveTool property.
+        /// </summary>
         public const string ActiveToolPropertyName = "ActiveTool";
+
+        /// <summary>
+        /// The name of the SpatialReference property.
+        /// </summary>
         public const string SpatialReferencePropertyName = "SpatialReference";
+
+        /// <summary>
+        /// The name of the VisibleRegion property.
+        /// </summary>
         public const string VisibleRegionPropertyName = "VisibleRegion";
+
+        /// <summary>
+        /// The name of the SelectedLayers property.
+        /// </summary>
         public const string SelectedLayersPropertyName = "SelectedLayers";
-        public const string NamePropertyName = "Name";
+
+        /// <summary>
+        /// The name of the <see cref="Map.Title"/> property.
+        /// </summary>
+        public const string TitlePropertyName = "Title"; 
+        #endregion
+
         #region Nested types
 
         #region LayerCollection type
@@ -54,13 +76,24 @@ namespace SharpMap
         /// Represents an ordered collection of layers of geospatial features
         ///  which are composed into a map.
         /// </summary>
-        public class LayerCollection : BindingList<ILayer>
+        public class LayerCollection : BindingList<ILayer>, ITypedList
         {
             private readonly Map _map;
             private bool? _sortedAscending = null;
             private readonly object _collectionChangeSync = new object();
             private PropertyDescriptor _sortProperty;
+            private static readonly PropertyDescriptorCollection _layerProperties;
             internal readonly object LayersChangeSync = new object();
+
+            static LayerCollection()
+            {
+                PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof (ILayer));
+                PropertyDescriptor[] propsArray = new PropertyDescriptor[props.Count];
+                props.CopyTo(propsArray, 0);
+
+                _layerProperties = new PropertyDescriptorCollection(propsArray, true);
+            }
+
 
             internal LayerCollection(Map map)
             {
@@ -92,6 +125,21 @@ namespace SharpMap
                 }
 
                 return false;
+            }
+
+            /// <summary>
+            /// Gets a layer by its name, or <see langword="null"/> if the layer isn't found.
+            /// </summary>
+            /// <remarks>
+            /// Performs culture-specific, case-insensitive search.
+            /// </remarks>
+            /// <param name="layerName">Name of layer.</param>
+            /// <returns>
+            /// Layer with <see cref="ILayer.LayerName"/> of <paramref name="layerName"/>.
+            /// </returns>
+            public ILayer this[string layerName]
+            {
+                get { return _map.GetLayerByName(layerName); }
             }
 
             #region AddNew support
@@ -241,6 +289,15 @@ namespace SharpMap
 
             protected override void RemoveItem(int index)
             {
+                // This defines the missing "OnDeleting" functionality:
+                // having a ListChangedEventArgs.NewIndex == -1 and
+                // the index of the item pending removal to be 
+                // ListChangedEventArgs.OldIndex.
+                ListChangedEventArgs args 
+                    = new ListChangedEventArgs(ListChangedType.ItemDeleted, -1, index);
+
+                OnListChanged(args);
+
                 base.RemoveItem(index);
             }
 
@@ -258,6 +315,38 @@ namespace SharpMap
             {
                 get { return true; }
             }
+
+            #region ITypedList Members
+
+            public PropertyDescriptorCollection GetItemProperties(PropertyDescriptor[] listAccessors)
+            {
+                if(listAccessors != null)
+                {
+                    throw new NotSupportedException(
+                        "Child lists not supported in LayersCollection.");
+                }
+
+                return _layerProperties;
+            }
+
+            /// <summary>
+            /// Returns the name of the list.
+            /// </summary>
+            /// <param name="listAccessors">
+            /// An array of <see cref="PropertyDescriptor"/> objects, 
+            /// for which the list name is returned. This can be <see langword="null"/>.
+            /// </param>
+            /// <returns>The name of the list.</returns>
+            /// <remarks>
+            /// From the MSDN docs: This method is used only in the design-time framework 
+            /// and by the obsolete DataGrid control.
+            /// </remarks>
+            public string GetListName(PropertyDescriptor[] listAccessors)
+            {
+                return "LayerCollection";
+            }
+
+            #endregion
         }
         #endregion
 
@@ -268,23 +357,30 @@ namespace SharpMap
         private readonly object _activeToolSync = new object();
 
         private readonly LayerCollection _layers;
-        private readonly FeatureDataSet _featureDataSet = new FeatureDataSet();
+        private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
         private BoundingBox _envelope = BoundingBox.Empty;
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
         private bool _disposed;
+        private readonly string _defaultName;
 
         #endregion
 
         #region Object Creation / Disposal
+        public Map()
+            : this("Map created " + DateTime.Now.ToShortDateString())
+        {
+            _defaultName = _featureDataSet.DataSetName;
+        }
 
         /// <summary>
-        /// Creates a new instance of a Map.
+        /// Creates a new instance of a Map with the given title.
         /// </summary>
-        public Map()
+        public Map(string title)
         {
             _layers = new LayerCollection(this);
+            _featureDataSet = new FeatureDataSet(title);
         }
 
         #region Dispose Pattern
@@ -595,7 +691,7 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Returns a layer by its name.
+        /// Returns a layer by its name, or <see langword="null"/> if the layer isn't found.
         /// </summary>
         /// <remarks>
         /// Performs culture-specific, case-insensitive search.
@@ -609,6 +705,12 @@ namespace SharpMap
             lock (Layers.LayersChangeSync)
             {
                 int index = (_layers as IBindingList).Find(Layer.LayerNameProperty, name);
+               
+                if(index < 0)
+                {
+                    return null;
+                }
+
                 return _layers[index];
             }
         }
@@ -718,6 +820,13 @@ namespace SharpMap
             }
         }
 
+        /// <summary>
+        /// Selects a set of layers to be the targets of action on the map.
+        /// </summary>
+        /// <param name="layers">The set of layers to select.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="layers"/> is <see langword="null"/>.
+        /// </exception>
         public void SelectLayers(IEnumerable<ILayer> layers)
         {
             if (layers == null) throw new ArgumentNullException("layers");
@@ -761,22 +870,43 @@ namespace SharpMap
             }
         }
 
-        public void UnselectLayer(int index)
+        /// <summary>
+        /// Deselects a layer given by it's index from being 
+        /// the targets of action on the map.
+        /// </summary>
+        /// <param name="index">The index of the layer to deselect.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// If <paramref name="index"/> is less than 0 or greater than or equal
+        /// to Layers.Count.
+        /// </exception>
+        public void DeselectLayer(int index)
         {
-            UnselectLayers(new int[] { index });
+            DeselectLayers(new int[] { index });
         }
 
-        public void UnselectLayer(string name)
+        public void DeselectLayer(string name)
         {
-            UnselectLayers(new string[] { name });
+            DeselectLayers(new string[] { name });
         }
 
-        public void UnselectLayer(ILayer layer)
+        public void DeselectLayer(ILayer layer)
         {
-            UnselectLayers(new ILayer[] { layer });
+            DeselectLayers(new ILayer[] { layer });
         }
 
-        public void UnselectLayers(IEnumerable<int> indexes)
+        /// <summary>
+        /// Deselects a set of layers given by their index 
+        /// from being the targets of action on the map.
+        /// </summary>
+        /// <param name="indexes">A set of indexes of layers to deselect.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="indexes"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// If any item in <paramref name="indexes"/> is less than 0 or greater than or equal
+        /// to Layers.Count.
+        /// </exception>
+        public void DeselectLayers(IEnumerable<int> indexes)
         {
             if (indexes == null) throw new ArgumentNullException("indexes");
 
@@ -789,7 +919,15 @@ namespace SharpMap
             }
         }
 
-        public void UnselectLayers(IEnumerable<string> layerNames)
+        /// <summary>
+        /// Deselects a set of layers given by their names 
+        /// from being the targets of action on the map.
+        /// </summary>
+        /// <param name="layerNames">A set of names of layers to deselect.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="layerNames"/> is <see langword="null"/>.
+        /// </exception>
+        public void DeselectLayers(IEnumerable<string> layerNames)
         {
             if (layerNames == null) throw new ArgumentNullException("layerNames");
 
@@ -799,7 +937,14 @@ namespace SharpMap
             }
         }
 
-        public void UnselectLayers(IEnumerable<ILayer> layers)
+        /// <summary>
+        /// Deselects a set of layers from being the targets of action on the map.
+        /// </summary>
+        /// <param name="layers">The set of layers to deselect.</param>
+        /// <exception cref="ArgumentException">
+        /// If <paramref name="layers"/> is <see langword="null"/>.
+        /// </exception>
+        public void DeselectLayers(IEnumerable<ILayer> layers)
         {
             if (layers == null) throw new ArgumentNullException("layers");
 
@@ -864,7 +1009,7 @@ namespace SharpMap
         /// <summary>
         /// Gets or sets the name of the map.
         /// </summary>
-        public String Name
+        public String Title
         {
             get { return _featureDataSet.DataSetName; }
             set
@@ -874,7 +1019,7 @@ namespace SharpMap
                     return;
                 }
 
-                _featureDataSet.DataSetName = value ?? String.Empty;
+                _featureDataSet.DataSetName = value ?? _defaultName;
 
                 onNameChanged();
             }
@@ -997,7 +1142,7 @@ namespace SharpMap
 
         private void onNameChanged()
         {
-            raisePropertyChanged(NamePropertyName);
+            raisePropertyChanged(TitlePropertyName);
         }
 
         private void raisePropertyChanged(string propertyName)

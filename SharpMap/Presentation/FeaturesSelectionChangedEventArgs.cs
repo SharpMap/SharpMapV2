@@ -17,45 +17,29 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Features;
 
 namespace SharpMap.Presentation
 {
-    public class FeatureSelectionChangeRequestEventArgs : EventArgs
+    public class FeaturesHighlightedChangeRequestEventArgs : EventArgs
     {
-        private readonly IEnumerable<FeatureDataRow> _selectedFeatures;
-    	private readonly FeatureDataView _featureData;
+        private readonly IEnumerable<int> _highlightedFeatures;
 		private readonly String _layerName;
 
-        public FeatureSelectionChangeRequestEventArgs(String layerName, FeatureDataView featureData, IEnumerable<FeatureDataRow> selectedFeatures)
+        public FeaturesHighlightedChangeRequestEventArgs(
+            String layerName, IEnumerable<int> highlightedFeatures)
         {
 			_layerName = layerName;
-        	_featureData = featureData;
-            _selectedFeatures = selectedFeatures;
+            _highlightedFeatures = highlightedFeatures;
         }
 
     	public String LayerName
     	{
-    		get
-    		{
-    			return _layerName;
-    		}
+    		get { return _layerName; }
     	}
 
-    	public FeatureDataView FeatureDataView
-    	{
-    		get
-    		{
-    			return _featureData;
-    		}
-    	}
-
-        public IEnumerable<FeatureDataRow> SelectedFeatures
+        public IEnumerable<int> HighlightedFeatures
         {
-            get
-            {
-            	return _selectedFeatures;
-            }
+            get { return _highlightedFeatures; }
         }
     }
 }

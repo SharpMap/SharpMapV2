@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Features;
+using System.ComponentModel;
 
 namespace SharpMap.Presentation
 {
@@ -26,30 +26,33 @@ namespace SharpMap.Presentation
     /// </summary>
     public interface IAttributeView : IView
     {
-		/// <summary>
-		/// Add a new feature layer to the view
-		/// </summary>
-		/// <param name="layerName">The name of the new feature layer</param>
-		/// <param name="fdv">The FeatureDataView for the new feature layer</param>
-		void AddLayer(String layerName, FeatureDataView fdv);
+        /// <summary>
+        /// Sets the layers to display attributes for.
+        /// </summary>
+        IBindingList Layers { set; }
 
-		/// <summary>
-		/// Remove a feature layer from the view
-		/// </summary>
-		/// <param name="layerName">The name of the layer to remove from the view</param>
-		void RemoveLayer(String layerName);
+        /// <summary>
+        /// Sets a layer's attribute source.
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <param name="attributes"></param>
+        void SetLayerAttributes(String layer, IBindingList attributes);
 
         /// <summary>
         /// Raises an event to request that the controlling presenter
         /// change the list of selected features shown in this view.
         /// </summary>
-        event EventHandler<FeatureSelectionChangeRequestEventArgs> FeaturesSelectionChangeRequested;
+        event EventHandler<FeaturesHighlightedChangeRequestEventArgs> FeaturesHighlightedChangeRequested;
 
 		/// <summary>
 		/// Update the view to show the given features on the given layer as selected.
 		/// </summary>
-		/// <param name="layerName"></param>
-		/// <param name="features"></param>
-    	void SelectFeatures(string layerName, IEnumerable<FeatureDataRow> features);
+		/// <param name="layerName">
+		/// Layer to set selected features on.
+		/// </param>
+        /// <param name="featureIndexes">
+        /// Set of indexes of features to set to be selected.
+        /// </param>
+    	void SetHighlightedFeatures(string layerName, IEnumerable<int> featureIndexes);
     }
 }

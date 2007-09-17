@@ -17,16 +17,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SharpMap.Presentation
 {
     public interface ILayersView : IView
     {
-        void AddLayer(String layer);
-        void AddLayers(IEnumerable<String> layers);
-        void RemoveLayer(String layer);
-        void RemoveLayers(IEnumerable<String> layers);
-        void RemoveAll();
+        /// <summary>
+        /// Sets the layers to display attributes for.
+        /// </summary>
+        IBindingList Layers { set; }
+
         void DisableLayer(String layer);
         void EnableLayer(String layer);
         IList<String> SelectedLayers { get; set; }

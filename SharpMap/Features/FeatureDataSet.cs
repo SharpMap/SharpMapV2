@@ -82,9 +82,9 @@ namespace SharpMap.Features
         /// <summary>
         /// Initializes a new instance of the FeatureDataSet class.
         /// </summary>
-        public FeatureDataSet()
+        public FeatureDataSet(string name)
         {
-            initClass();
+            initClass(name);
             CollectionChangeEventHandler schemaChangedHandler = schemaChanged;
             //this.Tables.CollectionChanged += schemaChangedHandler;
             Relations.CollectionChanged += schemaChangedHandler;
@@ -120,7 +120,7 @@ namespace SharpMap.Features
             }
             else
             {
-                initClass();
+                initClass("Unknown");
             }
 
             GetSerializationData(info, context);
@@ -285,9 +285,9 @@ namespace SharpMap.Features
 
         #region Private helper methods
 
-        private void initClass()
+        private void initClass(string name)
         {
-            DataSetName = "";
+            DataSetName = name;
             _featureTables = new FeatureTableCollection(base.Tables);
             Prefix = "";
             Namespace = "http://www.codeplex.com/SharpMap/Wiki/View.aspx?title=FeatureDataSet";
