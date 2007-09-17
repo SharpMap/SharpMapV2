@@ -49,10 +49,9 @@ namespace SharpMap.Features
         #endregion
 
         #region Type Fields
-
         private static readonly SetDefaultViewManagerDelegate _setDefaultViewManager;
         private static readonly GetDefaultViewManagerDelegate _getDefaultViewManager;
-
+        private static int _nameSeries = -1;
         #endregion
 
         #region Static Constructor
@@ -81,6 +80,12 @@ namespace SharpMap.Features
 
         /// <summary>
         /// Initializes a new instance of the FeatureDataSet class.
+        /// </summary>
+        public FeatureDataSet()
+           : this(generateName()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the FeatureDataSet class with the given name.
         /// </summary>
         public FeatureDataSet(string name)
         {
@@ -242,6 +247,20 @@ namespace SharpMap.Features
         #endregion
 
         #region Private static helper methods
+
+        private static string generateName()
+        {
+            string name = "FeatureDataSet";
+
+            Interlocked.Increment(ref _nameSeries);
+
+            if (_nameSeries > 0)
+            {
+                name += _nameSeries.ToString();
+            }
+
+            return name;
+        }
 
         private static SetDefaultViewManagerDelegate generateSetDefaultViewManagerDelegate()
         {
