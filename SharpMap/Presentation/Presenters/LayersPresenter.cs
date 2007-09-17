@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using SharpMap;
 using SharpMap.Layers;
@@ -53,11 +54,7 @@ namespace SharpMap.Presentation
             switch (propertyName)
             {
                 case Map.SelectedLayersPropertyName:
-                    View.SelectedLayers.Clear();
-                    foreach (ILayer layer in Map.SelectedLayers)
-                    {
-                        View.SelectedLayers.Add(layer.LayerName);
-                    }
+                    View.SelectedLayers = new List<string>(generateLayerNames(Map.SelectedLayers));
                     break;
                 case Map.VisibleRegionPropertyName:
                     // TODO: Make layers appear unavailable if the visible region is outside
@@ -71,6 +68,14 @@ namespace SharpMap.Presentation
         }
 
         #region Private helper functions
+
+        private IEnumerable<string> generateLayerNames(IEnumerable<ILayer> layers)
+        {
+            foreach (ILayer layer in layers)
+            {
+                yield return layer.LayerName;
+            }
+        }
 
         private void handleLayersCollectionChanged(object sender, ListChangedEventArgs e)
         {
