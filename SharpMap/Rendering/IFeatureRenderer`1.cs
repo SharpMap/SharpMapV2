@@ -17,7 +17,6 @@
 
 using System.Collections.Generic;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
@@ -40,7 +39,7 @@ namespace SharpMap.Rendering
 		/// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
 		/// </summary>
 		/// <param name="feature">
-		/// A <see cref="FeatureDataRow"/> instance with spatial data.
+		/// A <see cref="IFeatureDataRecord"/> instance with spatial data.
 		/// </param>
 		/// <returns>
 		/// An enumeration of <typeparamref name="TRenderObject"/> instances 
@@ -52,7 +51,7 @@ namespace SharpMap.Rendering
         /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
         /// </summary>
         /// <param name="feature">
-        /// A <see cref="FeatureDataRow"/> instance with spatial data.
+        /// A <see cref="IFeatureDataRecord"/> instance with spatial data.
         /// </param>
 		/// <param name="style">
 		/// Style used to render the feature, overriding theme. 

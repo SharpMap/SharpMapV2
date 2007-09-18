@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 

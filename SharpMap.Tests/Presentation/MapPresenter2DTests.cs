@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -233,6 +234,16 @@ namespace SharpMap.Tests.Presentation
             protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
             {
             }
+
+            protected override void RenderFeatureLayer(IFeatureLayer layer)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override void RenderRasterLayer(IRasterLayer layer)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         #endregion
@@ -413,7 +424,7 @@ namespace SharpMap.Tests.Presentation
                 OnRequestGeoCenterChange(GeoCenter, offsetGeoCenter);
             }
 
-            public void ShowRenderedObject(Point2D location, object renderedObject)
+            public void ShowRenderedObjects(IEnumerable renderedObjects)
             {
                 throw new NotImplementedException();
             }

@@ -18,6 +18,7 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -284,20 +285,21 @@ namespace SharpMap.Presentation.WinForms
             onRequestOffset(offsetVector);
         }
 
-        public void ShowRenderedObject(Point2D location, object renderedObject)
+        public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
         {
-            PointF point = ViewConverter.Convert(location);
+            if (renderedObjects == null) throw new ArgumentNullException("renderedObjects");
+            throw new NotImplementedException();
+        }
 
-            if (renderedObject is GdiRenderObject)
+	    void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
+        {
+            if(renderedObjects is IEnumerable<GdiRenderObject>)
             {
-                GdiRenderObject ro = (GdiRenderObject)renderedObject;
-                _pathQueue.Enqueue(new KeyValuePair<PointF, GdiRenderObject>(point, ro));
+                ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>);
+                return;
             }
-            else if (renderedObject is Image)
-            {
-                Image tile = renderedObject as Image;
-                _tilesQueue.Enqueue(new KeyValuePair<PointF, Image>(point, tile));
-            }
+
+            throw new ArgumentException("Rendered objects must be an IEnumerable<GdiRenderObject>.");
         }
 
         public void ZoomToExtents()

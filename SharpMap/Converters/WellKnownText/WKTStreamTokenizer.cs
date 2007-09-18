@@ -38,7 +38,6 @@
 #region Using
 using System;
 using System.IO;
-using SharpMap.Converters.WellKnownText.IO;
 using System.Globalization;
 #endregion
 

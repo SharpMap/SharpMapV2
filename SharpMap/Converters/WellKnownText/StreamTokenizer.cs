@@ -49,7 +49,7 @@ using System.Globalization;
 // a C# StringTokenizer
 //  http://sourceforge.net/snippet/detail.php?type=snippet&id=101171
 
-namespace SharpMap.Converters.WellKnownText.IO
+namespace SharpMap.Converters.WellKnownText
 {
 	/// <summary>
     /// Parses input character data into tokens.

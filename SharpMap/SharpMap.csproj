@@ -237,7 +237,6 @@
     </Compile>
     <Compile Include="Features\FeatureTableCollection.cs" />
     <Compile Include="Layers\FeatureLayer.cs" />
-    <Compile Include="Layers\LayersChangedEventArgs.cs" />
     <Compile Include="Layers\IFeatureLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />
     <Compile Include="Layers\IRasterLayer.cs" />

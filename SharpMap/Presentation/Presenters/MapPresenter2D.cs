@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Rendering;
@@ -356,20 +357,6 @@ namespace SharpMap.Presentation
 
         #region Methods
 
-        protected IRenderer GetRendererForLayer(ILayer layer)
-        {
-            if (layer == null)
-            {
-                throw new ArgumentNullException("layer");
-            }
-
-            IRenderer renderer;
-
-            //_layerRendererCatalog.TryGetValue(layer.GetType().TypeHandle, out renderer);
-            renderer = LayerRendererRegistry.Instance.Get<IRenderer>(layer.GetType());
-            return renderer;
-        }
-
         protected Point2D ToViewInternal(Point point)
         {
             return worldToView(point);
@@ -416,6 +403,7 @@ namespace SharpMap.Presentation
         {
             BoundingBox worldBounds = new BoundingBox(
                 ToWorldInternal(viewBounds.LowerLeft), ToWorldInternal(viewBounds.UpperRight));
+
             setViewEnvelopeInternal(worldBounds);
         }
 
@@ -469,16 +457,6 @@ namespace SharpMap.Presentation
 
         #region Protected Methods
 
-        protected void RegisterRenderer<TLayerType>(IRenderer renderer)
-        {
-            if (renderer == null)
-            {
-                throw new ArgumentNullException("renderer");
-            }
-
-            LayerRendererRegistry.Instance.Register(typeof(TLayerType), renderer);
-        }
-
         protected TRenderer GetRenderer<TRenderer>(ILayer layer)
             where TRenderer : class
         {
@@ -487,9 +465,12 @@ namespace SharpMap.Presentation
                 throw new ArgumentNullException("layer");
             }
 
-            Type layerType = layer.GetType();
-            return LayerRendererRegistry.Instance.Get<TRenderer>(layerType);
+            return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
+
+        protected abstract void RenderFeatureLayer(IFeatureLayer layer);
+
+        protected abstract void RenderRasterLayer(IRasterLayer layer);
 
         protected void CreateSelection(Point2D location)
         {
@@ -518,6 +499,7 @@ namespace SharpMap.Presentation
             {
                 case ListChangedType.ItemAdded:
                     Map.Layers[e.NewIndex].LayerDataAvailable += handleLayerDataAvailable;
+                    renderLayer(Map.Layers[e.NewIndex]);
                     break;
                 case ListChangedType.ItemDeleted:
                     // LayerCollection defines an e.NewIndex as -1 when an item is being 
@@ -526,22 +508,54 @@ namespace SharpMap.Presentation
                     {
                         Map.Layers[e.OldIndex].LayerDataAvailable -= handleLayerDataAvailable;
                     }
+                    else
+                    {
+                        renderAllLayers();
+                    }
                     break;
                 case ListChangedType.ItemMoved:
-                    throw new NotImplementedException("Need to implement layer reordering.");
-                case ListChangedType.ItemChanged:
-                    throw new NotImplementedException();
-                case ListChangedType.PropertyDescriptorChanged:
-                    throw new NotImplementedException();
+                    renderAllLayers();
+                    break;
                 case ListChangedType.Reset:
-                    // Should redraw everything
-                    throw new NotImplementedException();
+                    renderAllLayers();
+                    break;
+                case ListChangedType.ItemChanged:
+                    if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
+                    {
+                        renderAllLayers();   
+                    }
+                    break;
                 default:
                     break;
             }
         }
 
-        void handleLayerDataAvailable(object sender, EventArgs e)
+        private void renderAllLayers()
+        {
+            foreach (ILayer layer in Map.Layers)
+            {
+                renderLayer(layer);
+            }
+        }
+
+        private void renderLayer(ILayer layer)
+        {
+            if(!layer.Enabled)
+            {
+                return;
+            }
+
+            if(layer is IFeatureLayer)
+            {
+                RenderFeatureLayer(layer as IFeatureLayer);
+            }
+            else if(layer is IRasterLayer)
+            {
+                RenderRasterLayer(layer as IRasterLayer);
+            }
+        }
+
+        private void handleLayerDataAvailable(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -556,6 +570,7 @@ namespace SharpMap.Presentation
                 case Map.SpatialReferencePropertyName:
                 case Map.SelectedLayersPropertyName:
                 case Map.ActiveToolPropertyName:
+                    throw new NotImplementedException();
                 default:
                     return;
             }

@@ -16,40 +16,37 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 
 namespace SharpMap.Converters.WellKnownText
 {
-	/// <summary>
-	/// Converts spatial reference IDs to a Well-Known Text representation.
-	/// </summary>
-	public class SpatialReference
-	{
-		/// <summary>
-		/// Converts a Spatial Reference ID to a Well-Known Text representation
-		/// </summary>
-		/// <param name="srid">
+    /// <summary>
+    /// Converts spatial reference IDs to a Well-Known Text representation.
+    /// </summary>
+    public class SpatialReference
+    {
+        /// <summary>
+        /// Converts a Spatial Reference ID to a Well-Known Text representation
+        /// </summary>
+        /// <param name="srid">
         /// Spatial Reference ID.
         /// </param>
-		/// <returns>
+        /// <returns>
         /// Well-Known text.
         /// </returns>
-		public static string SridToWkt(int srid)
-		{
-			
-			XmlDocument xmldoc = new XmlDocument();
-			
-			string file = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) 
-                + "\\SpatialRefSys.xml";
+        public static string SridToWkt(int srid)
+        {
+            XmlDocument xmldoc = new XmlDocument();
+
+            string file = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)
+                          + "\\SpatialRefSys.xml";
 
             xmldoc.Load(file);
-			
-            System.Xml.XmlNode node = xmldoc.DocumentElement.SelectSingleNode(
-                "/SpatialReference/ReferenceSystem[SRID='" + srid.ToString() + "']");
+
+            XmlNode node = xmldoc.DocumentElement.SelectSingleNode(
+                "/SpatialReference/ReferenceSystem[SRID='" + srid + "']");
 
             if (node != null)
             {
@@ -59,6 +56,6 @@ namespace SharpMap.Converters.WellKnownText
             {
                 return String.Empty;
             }
-		}
-	}
+        }
+    }
 }

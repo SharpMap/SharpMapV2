@@ -25,10 +25,18 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Interface to a graphical renderer of label data.
     /// </summary>
-    /// <typeparam name="TViewPoint">Type of point vector used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TViewSize">Type of size vector used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TViewRectangle">Type of rectangle matrix used by the graphical display coordinate system.</typeparam>
-    /// <typeparam name="TRenderObject">Type of object used by the graphical display coordinate system to render spatial items.</typeparam>
+    /// <typeparam name="TViewPoint">
+    /// Type of point vector used by the graphical display coordinate system.
+    /// </typeparam>
+    /// <typeparam name="TViewSize">
+    /// Type of size vector used by the graphical display coordinate system.
+    /// </typeparam>
+    /// <typeparam name="TViewRectangle">
+    /// Type of rectangle matrix used by the graphical display coordinate system.
+    /// </typeparam>
+    /// <typeparam name="TRenderObject">
+    /// Type of object used by the graphical display coordinate system to render spatial items.
+    /// </typeparam>
     public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
         where TViewPoint : IVectorD
 		where TViewSize : IVectorD
@@ -68,14 +76,21 @@ namespace SharpMap.Rendering
         /// Renders a label.
         /// </summary>
         /// <param name="text">The label text.</param>
-        /// <param name="location">The location in graphical display coordinates to draw the label at.</param>
-        /// <param name="offset">An offset to apply to the <paramref name="location"/> in graphical display coordinates.</param>
+        /// <param name="location">
+        /// The location in graphical display coordinates to draw the label at.
+        /// </param>
+        /// <param name="offset">
+        /// An offset to apply to the <paramref name="location"/> in graphical display coordinates.
+        /// </param>
         /// <param name="font">The font to use to draw the label.</param>
         /// <param name="foreColor">The color to use to draw the label.</param>
         /// <param name="backColor">The color to use behind the label.</param>
-        /// <param name="halo">A <see cref="StylePen"/> instance to draw an outline around the label with.</param>
+        /// <param name="halo">
+        /// A <see cref="StylePen"/> instance to draw an outline around the label with.
+        /// </param>
         /// <param name="rotation">An amount to rotate the label by.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(string text, TViewPoint location, TViewPoint offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
+        TRenderObject RenderLabel(string text, TViewPoint location, TViewPoint offset, StyleFont font, 
+            StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
     }
 }

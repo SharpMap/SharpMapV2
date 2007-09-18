@@ -15,7 +15,10 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using SharpMap.Features;
 using SharpMap.Geometries;
+using SharpMap.Layers;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
@@ -166,5 +169,20 @@ namespace SharpMap.Presentation.WinForms
             ViewControl.BackColor = ViewConverter.Convert(toColor);
         }
         #endregion
-	}
+
+        protected override void RenderFeatureLayer(IFeatureLayer layer)
+        {
+            IFeatureRenderer<GdiRenderObject> renderer = GetRenderer<IFeatureRenderer<GdiRenderObject>>(layer);
+
+            foreach (FeatureDataRow feature in layer.VisibleFeatures)
+            {
+                View.ShowRenderedObjects(renderer.RenderFeature(feature));
+            }
+        }
+
+        protected override void RenderRasterLayer(IRasterLayer layer)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

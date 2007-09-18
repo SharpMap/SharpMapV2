@@ -24,18 +24,23 @@ namespace SharpMap.Rendering
 {
     public interface IGeometryRenderer<TSymbol, TRenderObject>
     {
-		IEnumerable<TRenderObject> DrawMultiLineString(MultiLineString lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline);
+		IEnumerable<TRenderObject> DrawMultiLineString(MultiLineString lines, StylePen fill, 
+            StylePen highlightFill, StylePen selectFill, StylePen outline, StylePen highlightOutline, 
+            StylePen selectOutline);
 
-		IEnumerable<TRenderObject> DrawLineString(LineString line, StylePen fill, StylePen highlightFill, StylePen selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline);
+		IEnumerable<TRenderObject> DrawLineString(LineString line, StylePen fill, StylePen highlightFill, 
+            StylePen selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
 
-		IEnumerable<TRenderObject> DrawMultiPolygon(MultiPolygon multipolygon, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
+		IEnumerable<TRenderObject> DrawMultiPolygon(MultiPolygon multipolygon, StyleBrush fill, 
+            StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, 
+            StylePen selectOutline);
 
-		IEnumerable<TRenderObject> DrawPolygon(Polygon polygon, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
+		IEnumerable<TRenderObject> DrawPolygon(Polygon polygon, StyleBrush fill, StyleBrush highlightFill, 
+            StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline);
 
 		IEnumerable<TRenderObject> DrawPoint(Point point, TSymbol symbol, TSymbol highlightSymbol, TSymbol selectSymbol);
 
-		IEnumerable<TRenderObject> DrawMultiPoint(MultiPoint points, TSymbol symbol, TSymbol highlightSymbol, TSymbol selectSymbol);
+		IEnumerable<TRenderObject> DrawMultiPoint(MultiPoint points, TSymbol symbol, TSymbol highlightSymbol, 
+            TSymbol selectSymbol);
     }
 }

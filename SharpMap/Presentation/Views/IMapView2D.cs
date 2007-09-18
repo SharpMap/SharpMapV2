@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using SharpMap.Geometries;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -91,11 +92,10 @@ namespace SharpMap.Presentation
 		ViewSelection2D Selection { get; }
 
 		/// <summary>
-		/// Draws a rendered object at the given location.
+		/// Draws the rendered object to the view.
 		/// </summary>
-		/// <param name="location">Location of the upper-left corner of the object.</param>
-		/// <param name="renderedObject">The object to draw.</param>
-		void ShowRenderedObject(Point2D location, object renderedObject);
+		/// <param name="renderedObject">The rendered objects to draw.</param>
+		void ShowRenderedObjects(IEnumerable renderedObject);
 		
 		/// <summary>
 		/// Gets a <see cref="Matrix2D"/> used to project the world

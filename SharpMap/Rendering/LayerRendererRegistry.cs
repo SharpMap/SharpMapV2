@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpMap.Layers;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -56,10 +57,14 @@ namespace SharpMap.Rendering
 			_renderers[layerType.TypeHandle] = renderer;
 		}
 
-		public TRenderer Get<TRenderer>(Type layerType)
+		public TRenderer Get<TRenderer>(ILayer layer)
 			where TRenderer : class 
 		{
-			object renderer;
+		    if (layer == null) throw new ArgumentNullException("layer");
+		    
+            Type layerType = layer.GetType();
+
+		    object renderer;
 			_renderers.TryGetValue(layerType.TypeHandle, out renderer);
 
 			if (!(renderer is TRenderer))
