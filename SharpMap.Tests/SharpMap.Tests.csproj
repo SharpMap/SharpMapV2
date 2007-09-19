@@ -58,6 +58,7 @@
     <Compile Include="CoordinateTransforms\CoordinateTransformTests.cs" />
     <Compile Include="DataSourceHelper.cs" />
     <Compile Include="DataTableHelper.cs" />
+    <Compile Include="Data\Providers\FeatureProvider\FeatureProviderTests.cs" />
     <Compile Include="Features\FeatureDataViewTests.cs" />
     <Compile Include="Indexing\BinaryTreeTests.cs" />
     <Compile Include="Indexing\QuadTreeTests.cs" />
@@ -109,9 +110,6 @@
     <None Include="SRID.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Providers\FeatureProvider\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

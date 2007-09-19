@@ -91,17 +91,17 @@ namespace SharpMap.Tests.Presentation
 
             protected override void RenderFeatureLayer(IFeatureLayer layer)
             {
-                throw new NotImplementedException();
+                // TODO: anything here?
             }
 
             protected override void RenderRasterLayer(IRasterLayer layer)
             {
-                throw new NotImplementedException();
+                // TODO: anything here?
             }
 
             protected override Type GetRenderObjectType()
             {
-                throw new NotImplementedException();
+                return typeof (object);
             }
 
             #region Test accessible members

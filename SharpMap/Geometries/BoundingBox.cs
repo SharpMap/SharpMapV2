@@ -1346,7 +1346,10 @@ namespace SharpMap.Geometries
                 Top = box.Top;
             }
 
-            IsEmpty = false;
+            if (IsEmpty)
+            {
+                IsEmpty = box.IsEmpty;
+            }
         }
 
         /// <summary>

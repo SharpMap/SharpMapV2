@@ -87,7 +87,7 @@ namespace SharpMap.Presentation
             View.ZoomToWorldBoundsRequested += view_ZoomToWorldBoundsRequested;
             View.ZoomToWorldWidthRequested += view_ZoomToWorldWidthRequested;
 
-            BoundingBox extents = map.VisibleRegion;
+            BoundingBox extents = map.GetExtents();
 
             GeoPoint geoCenter = extents.GetCentroid();
 
@@ -632,17 +632,20 @@ namespace SharpMap.Presentation
                 setViewEnvelopeInternal(Map.VisibleRegion);
                 renderAllLayers();
             }
+
             if (e.PropertyName == Map.SpatialReferenceProperty.Name)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
+
             if (e.PropertyName == Map.SelectedLayersProperty.Name)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
+
             if (e.PropertyName == Map.ActiveToolProperty.Name)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
         }
         #endregion

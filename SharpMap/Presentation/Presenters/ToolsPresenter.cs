@@ -39,7 +39,9 @@ namespace SharpMap.Presentation
             List<MapTool> mapTools = new List<MapTool>(
                 new MapTool[]
                     {
-                        StandardMapTools2D.Pan, StandardMapTools2D.Query, StandardMapTools2D.ZoomIn,
+                        StandardMapTools2D.Pan, 
+                        StandardMapTools2D.Query, 
+                        StandardMapTools2D.ZoomIn,
                         StandardMapTools2D.ZoomOut
                     });
 
@@ -61,6 +63,7 @@ namespace SharpMap.Presentation
 
             if (propertyName == Map.ActiveToolProperty.Name)
             {
+                View.SelectedTool = Map.ActiveTool;
             }
 
             if (propertyName == Map.SpatialReferenceProperty.Name)
@@ -70,6 +73,11 @@ namespace SharpMap.Presentation
 
         private void handleToolChangeRequested(object sender, ToolChangeRequestedEventArgs e)
         {
+            if(e.RequestedTool == Map.ActiveTool)
+            {
+                return;
+            }
+
             Map.ActiveTool = e.RequestedTool;
         }
     }
