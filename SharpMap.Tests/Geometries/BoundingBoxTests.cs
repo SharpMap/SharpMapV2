@@ -8,7 +8,8 @@ namespace SharpMap.Tests.Geometries
 	[TestFixture]
 	public class BoundingBoxTests
 	{
-		[Test]
+        [Test]
+        [Ignore("Need to implement test")]
 		public void IntersectionTest()
 		{
 		}
@@ -42,7 +43,20 @@ namespace SharpMap.Tests.Geometries
 			Assert.AreEqual(composite, joined);
 		}
 
+        [Test]
+        public void ExpandingAnEmptyBoundingBoxByAnEmptyBoundingBoxShouldBeEmpty()
+        {
+            BoundingBox b1 = BoundingBox.Empty;
+            BoundingBox b2 = BoundingBox.Empty;
+
+            b1.ExpandToInclude(b2);
+
+            Assert.IsTrue(b1.IsEmpty);
+            Assert.AreEqual(b1, b2);
+        }
+
 		[Test]
+        [Ignore("Need to implement test")]
 		public void OffsetTest()
 		{
 		}
@@ -154,12 +168,14 @@ namespace SharpMap.Tests.Geometries
 			Assert.IsFalse(b1.Equals(b3, new Tolerance(0.9)));
 		}
 
-		[Test]
+        [Test]
+        [Ignore("Need to implement test")]
 		public void SplitTest()
 		{
 		}
 
-		[Test]
+        [Test]
+        [Ignore("Need to implement test")]
 		public void BordersTest()
 		{
 		}
@@ -225,17 +241,20 @@ namespace SharpMap.Tests.Geometries
 			Assert.IsTrue(b2.Intersects(b1), "Bounding box intersect test 5 failed");
 		}
 
-		[Test]
+        [Test]
+        [Ignore("Need to implement test")]
 		public void OverlapsTest()
 		{
 		}
 
-		[Test]
+        [Test]
+        [Ignore("Need to implement test")]
 		public void TouchesTest()
 		{
 		}
 
-		[Test]
+        [Test]
+        [Ignore("Need to implement test")]
 		public void WithinTest()
 		{
 		}
