@@ -16,6 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Layers;
@@ -32,12 +34,31 @@ namespace SharpMap.Presentation.WinForms
 		internal MapPresenter(Map map, MapViewControl mapView)
 			: base(map, mapView)
 		{
+
 		}
 
 		internal MapViewControl ViewControl
 		{
 			get { return View as MapViewControl; }
-		}
+        }
+
+        protected override void RenderFeatureLayer(IFeatureLayer layer)
+        {
+            IFeatureRenderer<GdiRenderObject> renderer
+                = GetRenderer<IFeatureRenderer<GdiRenderObject>>(layer);
+
+            Debug.Assert(renderer != null);
+
+            foreach (FeatureDataRow feature in ((IEnumerable<FeatureDataRow>)layer.VisibleFeatures))
+            {
+                View.ShowRenderedObjects(renderer.RenderFeature(feature));
+            }
+        }
+
+        protected override void RenderRasterLayer(IRasterLayer layer)
+        {
+            throw new NotImplementedException();
+        }
 
 		protected override IRenderer CreateRasterRenderer()
         {
@@ -48,6 +69,11 @@ namespace SharpMap.Presentation.WinForms
 		{
 			return new GdiVectorRenderer();
 		}
+
+        protected override Type GetRenderObjectType()
+        {
+            return typeof (GdiRenderObject);
+        }
 
 		#region MapViewControl accessible members
 
@@ -169,20 +195,5 @@ namespace SharpMap.Presentation.WinForms
             ViewControl.BackColor = ViewConverter.Convert(toColor);
         }
         #endregion
-
-        protected override void RenderFeatureLayer(IFeatureLayer layer)
-        {
-            IFeatureRenderer<GdiRenderObject> renderer = GetRenderer<IFeatureRenderer<GdiRenderObject>>(layer);
-
-            foreach (FeatureDataRow feature in layer.VisibleFeatures)
-            {
-                View.ShowRenderedObjects(renderer.RenderFeature(feature));
-            }
-        }
-
-        protected override void RenderRasterLayer(IRasterLayer layer)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

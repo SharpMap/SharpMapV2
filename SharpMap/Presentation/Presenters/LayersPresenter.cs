@@ -51,19 +51,23 @@ namespace SharpMap.Presentation
 
         protected override void OnMapPropertyChanged(string propertyName)
         {
-            switch (propertyName)
+            if (propertyName == Map.SelectedLayersProperty.Name)
             {
-                case Map.SelectedLayersPropertyName:
-                    View.SelectedLayers = new List<string>(generateLayerNames(Map.SelectedLayers));
-                    break;
-                case Map.VisibleRegionPropertyName:
-                    // TODO: Make layers appear unavailable if the visible region is outside
-                    // the MinVisible or MaxVisible for the layer
-                    break;
-                case Map.ActiveToolPropertyName:
-                case Map.SpatialReferencePropertyName:
-                default:
-                    throw new NotImplementedException();
+                View.SelectedLayers = new List<string>(generateLayerNames(Map.SelectedLayers));
+            }
+
+            if (propertyName == Map.VisibleRegionProperty.Name)
+            {
+                // TODO: Make layers appear unavailable if the visible region is outside
+                // the MinVisible or MaxVisible for the layer
+            }
+
+            if (propertyName == Map.ActiveToolProperty.Name)
+            {
+            }
+
+            if (propertyName == Map.SpatialReferenceProperty.Name)
+            {
             }
         }
 
@@ -82,14 +86,14 @@ namespace SharpMap.Presentation
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                    if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
+                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
                     {
                         ILayer layer = Map.Layers[e.NewIndex];
-                        if(layer.Enabled)
+                        if (layer.Enabled)
                         {
                             View.EnableLayer(layer.LayerName);
                         }
-                        else 
+                        else
                         {
                             View.DisableLayer(layer.LayerName);
                         }

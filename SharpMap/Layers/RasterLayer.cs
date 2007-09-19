@@ -42,12 +42,17 @@ namespace SharpMap.Layers
 		protected override void OnVisibleRegionChanged()
 		{
 			throw new NotImplementedException();
-		}
+        }
 
-		protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
-		{
-			throw new NotImplementedException();
-		}
+        protected override void LoadLayerDataForRegion(BoundingBox region)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void LoadLayerDataForRegion(Polygon region)
+        {
+            throw new NotImplementedException();
+        }
 
         #region IRasterLayer Members
 
@@ -57,5 +62,5 @@ namespace SharpMap.Layers
         }
 
         #endregion
-    }
+	}
 }

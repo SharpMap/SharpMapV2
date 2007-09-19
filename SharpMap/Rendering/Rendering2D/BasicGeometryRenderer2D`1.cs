@@ -69,11 +69,27 @@ namespace SharpMap.Rendering.Rendering2D
 		#endregion
 
 		#region Object construction and disposal
+        /// <summary>
+        /// Creates a new BasicGeometryRenderer2D with the given VectorRenderer2D instance.
+        /// </summary>
+        /// <param name="vectorRenderer">
+        /// A vector renderer.
+        /// </param>
+        public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
+            : this(vectorRenderer, new Matrix2D())
+        {
+            DefaultStyle = new VectorStyle();
+        }
+
 		/// <summary>
 		/// Creates a new BasicGeometryRenderer2D with the given VectorRenderer2D instance.
 		/// </summary>
-		/// <param name="vectorRenderer">A vector renderer.</param>
-		/// <param name="toViewTransform">A transform which maps world coordinates to view coordinates.</param>
+		/// <param name="vectorRenderer">
+		/// A vector renderer.
+		/// </param>
+		/// <param name="toViewTransform">
+		/// A transform which maps world coordinates to view coordinates.
+		/// </param>
 		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, Matrix2D toViewTransform)
 			: base(vectorRenderer)
 		{

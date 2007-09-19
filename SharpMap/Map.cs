@@ -42,31 +42,53 @@ namespace SharpMap
     [DesignTimeVisible(false)]
     public class Map : INotifyPropertyChanged, IDisposable
     {
-        #region Property name constants
+        private static readonly PropertyDescriptorCollection _properties;
+        
+        static Map()
+        {
+            _properties = TypeDescriptor.GetProperties(typeof (Map));
+        }
+
+        #region PropertyDescriptors
         /// <summary>
-        /// The name of the ActiveTool property.
+        /// Gets a PropertyDescriptor for the Map's <see cref="ActiveTool"/> property.
         /// </summary>
-        public const string ActiveToolPropertyName = "ActiveTool";
+        public static PropertyDescriptor ActiveToolProperty
+        {
+            get { return _properties.Find("ActiveTool", false); }
+        }
 
         /// <summary>
-        /// The name of the SpatialReference property.
+        /// Gets a PropertyDescriptor for the Map's <see cref="SpatialReference"/> property.
         /// </summary>
-        public const string SpatialReferencePropertyName = "SpatialReference";
+        public static PropertyDescriptor SpatialReferenceProperty
+        {
+            get { return _properties.Find("SpatialReference", false); }
+        }
 
         /// <summary>
-        /// The name of the VisibleRegion property.
+        /// Gets a PropertyDescriptor for the Map's <see cref="VisibleRegion"/> property.
         /// </summary>
-        public const string VisibleRegionPropertyName = "VisibleRegion";
+        public static PropertyDescriptor VisibleRegionProperty
+        {
+            get { return _properties.Find("VisibleRegion", false); }
+        }
 
         /// <summary>
-        /// The name of the SelectedLayers property.
+        /// Gets a PropertyDescriptor for the Map's <see cref="SelectedLayers"/> property.
         /// </summary>
-        public const string SelectedLayersPropertyName = "SelectedLayers";
+        public static PropertyDescriptor SelectedLayersProperty
+        {
+            get { return _properties.Find("SelectedLayers", false); }
+        }
 
         /// <summary>
-        /// The name of the <see cref="Map.Title"/> property.
+        /// Gets a PropertyDescriptor for the Map's <see cref="Title"/> property.
         /// </summary>
-        public const string TitlePropertyName = "Title"; 
+        public static PropertyDescriptor TitleProperty
+        {
+            get { return _properties.Find("Title", false); }
+        }
         #endregion
 
         #region Nested types
@@ -148,6 +170,11 @@ namespace SharpMap
                 throw new InvalidOperationException();
             }
 
+            /// <summary>
+            /// Adding new layers through LayerCollection is not supported. Always gets
+            /// <see langword="false"/> and throws an exception if set.
+            /// </summary>
+            /// <exception cref="NotSupportedException">Thrown if set.</exception>
             public new bool AllowNew
             {
                 get { return false; }
@@ -368,6 +395,10 @@ namespace SharpMap
         #endregion
 
         #region Object Creation / Disposal
+        /// <summary>
+        /// Creates a new instance of a Map with a title describing 
+        /// when the map was created.
+        /// </summary>
         public Map()
             : this("Map created " + DateTime.Now.ToShortDateString())
         {
@@ -871,8 +902,8 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Deselects a layer given by it's index from being 
-        /// the targets of action on the map.
+        /// Deselects a layer given by its index from being 
+        /// the target of action on the map.
         /// </summary>
         /// <param name="index">The index of the layer to deselect.</param>
         /// <exception cref="ArgumentOutOfRangeException">
@@ -884,11 +915,27 @@ namespace SharpMap
             DeselectLayers(new int[] { index });
         }
 
+        /// <summary>
+        /// Deselects a layer given by its name from being 
+        /// the target of action on the map.
+        /// </summary>
+        /// <param name="name">The name of the layer to deselect.</param>
+        /// <exception cref="ArgumentNullException">
+        /// If <paramref name="name"/> is <see langword="null"/>.
+        /// </exception>
         public void DeselectLayer(string name)
         {
             DeselectLayers(new string[] { name });
         }
 
+        /// <summary>
+        /// Deselects a layer from being 
+        /// the target of action on the map.
+        /// </summary>
+        /// <param name="layer">The layer to deselect.</param>
+        /// <exception cref="ArgumentNullException">
+        /// If <paramref name="layer"/> is <see langword="null"/>.
+        /// </exception>
         public void DeselectLayer(ILayer layer)
         {
             DeselectLayers(new ILayer[] { layer });
@@ -924,7 +971,7 @@ namespace SharpMap
         /// from being the targets of action on the map.
         /// </summary>
         /// <param name="layerNames">A set of names of layers to deselect.</param>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="ArgumentNullException">
         /// If <paramref name="layerNames"/> is <see langword="null"/>.
         /// </exception>
         public void DeselectLayers(IEnumerable<string> layerNames)
@@ -941,7 +988,7 @@ namespace SharpMap
         /// Deselects a set of layers from being the targets of action on the map.
         /// </summary>
         /// <param name="layers">The set of layers to deselect.</param>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="ArgumentNullException">
         /// If <paramref name="layers"/> is <see langword="null"/>.
         /// </exception>
         public void DeselectLayers(IEnumerable<ILayer> layers)
@@ -1122,27 +1169,27 @@ namespace SharpMap
 
         private void onActiveToolChanged()
         {
-            raisePropertyChanged(ActiveToolPropertyName);
+            raisePropertyChanged(ActiveToolProperty.Name);
         }
 
         private void onSpatialReferenceChanged()
         {
-            raisePropertyChanged(SpatialReferencePropertyName);
+            raisePropertyChanged(SpatialReferenceProperty.Name);
         }
 
         private void onVisibleRegionChanged()
         {
-            raisePropertyChanged(VisibleRegionPropertyName);
+            raisePropertyChanged(VisibleRegionProperty.Name);
         }
 
         private void onSelectedLayersChanged()
         {
-            raisePropertyChanged(SelectedLayersPropertyName);
+            raisePropertyChanged(SelectedLayersProperty.Name);
         }
 
         private void onNameChanged()
         {
-            raisePropertyChanged(TitlePropertyName);
+            raisePropertyChanged(TitleProperty.Name);
         }
 
         private void raisePropertyChanged(string propertyName)
@@ -1262,7 +1309,12 @@ namespace SharpMap
                     throw new ArgumentException("Layer name must not be null or empty.", "layerNames");
                 }
 
-                yield return GetLayerByName(name);
+                ILayer layer = GetLayerByName(name);
+
+                if(layer != null)
+                {
+                    yield return layer;
+                }
             }
         }
 

@@ -89,6 +89,21 @@ namespace SharpMap.Tests.Presentation
                 return null;
             }
 
+            protected override void RenderFeatureLayer(IFeatureLayer layer)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override void RenderRasterLayer(IRasterLayer layer)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override Type GetRenderObjectType()
+            {
+                throw new NotImplementedException();
+            }
+
             #region Test accessible members
 
             internal StyleColor BackgroundColor
@@ -233,16 +248,6 @@ namespace SharpMap.Tests.Presentation
 
             protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
             {
-            }
-
-            protected override void RenderFeatureLayer(IFeatureLayer layer)
-            {
-                throw new NotImplementedException();
-            }
-
-            protected override void RenderRasterLayer(IRasterLayer layer)
-            {
-                throw new NotImplementedException();
             }
         }
 

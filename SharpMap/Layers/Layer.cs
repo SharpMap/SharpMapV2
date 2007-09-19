@@ -18,7 +18,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
@@ -45,6 +44,8 @@ namespace SharpMap.Layers
             _properties = TypeDescriptor.GetProperties(typeof (Layer));
         }
 
+        #region PropertyDescriptors
+
         // This pattern reminds me of DependencyProperties in WPF...
 
         /// <summary>
@@ -63,6 +64,15 @@ namespace SharpMap.Layers
             get { return _properties.Find("LayerName", false); }
         }
 
+        /// <summary>
+        /// Gets a PropertyDescriptor for Layer's <see cref="VisibleRegion"/> property.
+        /// </summary>
+        public static PropertyDescriptor VisibleRegionProperty
+        {
+            get { return _properties.Find("VisibleRegion", false); }
+        } 
+        #endregion
+
         #region Instance fields
 
         private ICoordinateTransformation _coordinateTransform;
@@ -72,6 +82,8 @@ namespace SharpMap.Layers
         private BoundingBox _visibleRegion;
         private readonly ILayerProvider _dataSource;
         private bool _asyncQuery = false;
+        private MultiPolygon _loadedRegion;
+        private readonly BackgroundWorker _dataQueryWorker = new BackgroundWorker();
 
         #endregion
 
@@ -126,6 +138,9 @@ namespace SharpMap.Layers
             LayerName = layerName;
             _dataSource = dataSource;
             Style = style;
+
+            _dataQueryWorker.RunWorkerCompleted += _dataQueryWorker_RunWorkerCompleted;
+            _dataQueryWorker.DoWork += _dataQueryWorker_DoWork;
         }
 
         #region Dispose Pattern
@@ -211,11 +226,11 @@ namespace SharpMap.Layers
         #region ILayer Members
 
         #region Events
-        /// <summary>
-        /// Event raised when layer data has been completely
-        /// loaded if <see cref="AsyncQuery"/> is true.
-        /// </summary>
-        public event EventHandler LayerDataAvailable; 
+        ///// <summary>
+        ///// Event raised when layer data has been completely
+        ///// loaded if <see cref="AsyncQuery"/> is true.
+        ///// </summary>
+        //public event EventHandler LayerDataAvailable; 
         #endregion
        
         #region Properties
@@ -375,16 +390,67 @@ namespace SharpMap.Layers
                     return;
                 }
 
-                bool cancel = false;
-                OnVisibleRegionChanging(value, ref cancel);
-                // TODO: Need to actually cancel now
-                _visibleRegion = value;
-                OnVisibleRegionChanged();
-                OnPropertyChanged("VisibleRegion");
+                // TODO: reevaluate how VisibleRegion's BoundingBox.Within interacts 
+                // with LoadedRegion once NTS is integrated
+                if (!value.Within(LoadedRegion))
+                {
+                    // Since the visible region changed, and we don't have the data
+                    // which covers this new region, we have to query for it.
+                    //
+                    // We can do it asynchronously, with a BackgroundWorker instance,
+                    // or synchronously
+                    if (AsyncQuery)
+                    {
+                        _dataQueryWorker.RunWorkerAsync(value);
+                    }
+                    else
+                    {
+                        LoadLayerDataForRegion(value);
+                        SetVisibleRegionInternal(value);
+                    }
+                }
             }
-        } 
-        #endregion
+        }
 
+        #endregion
+        protected virtual MultiPolygon LoadedRegion
+        {
+            get { return _loadedRegion; }
+        }
+
+        protected virtual void LoadLayerDataForRegion(BoundingBox region)
+        {
+            AddLoadedRegion(region.ToGeometry() as Polygon);
+        }
+
+        protected virtual void LoadLayerDataForRegion(Polygon region)
+        {
+            AddLoadedRegion(region);
+        }
+
+        protected void AddLoadedRegion(BoundingBox region)
+        {
+            AddLoadedRegion(region.ToGeometry() as Polygon);
+        }
+
+        protected void AddLoadedRegion(Polygon region)
+        {
+            if (region == null)
+            {
+                return;
+            }
+
+            if (_loadedRegion == null)
+            {
+                _loadedRegion = new MultiPolygon(32);
+                _loadedRegion.Polygons.Add(region);
+            }
+            else
+            {
+                _loadedRegion.Polygons.Add(region);
+                _loadedRegion = simplifyRegion(_loadedRegion);
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Members
@@ -423,19 +489,52 @@ namespace SharpMap.Layers
         #endregion
 
         #region Protected methods
+
+        protected void SetVisibleRegionInternal(BoundingBox value)
+        {
+            _visibleRegion = value;
+            OnVisibleRegionChanged();
+            OnPropertyChanged("VisibleRegion");
+        }
+
         protected virtual void OnVisibleRegionChanged() { }
 
-        protected abstract void OnVisibleRegionChanging(BoundingBox value, ref bool cancel);
+        //protected virtual void OnLayerDataAvailable()
+        //{
+        //    EventHandler e = LayerDataAvailable;
 
-        protected virtual void OnLayerDataAvailable()
-        {
-            EventHandler e = LayerDataAvailable;
-
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
-        }
+        //    if (e != null)
+        //    {
+        //        e(this, EventArgs.Empty);
+        //    }
+        //}
         #endregion
+
+        private void _dataQueryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            SetVisibleRegionInternal((BoundingBox) e.Result);
+        }
+
+        private void _dataQueryWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is BoundingBox)
+            {
+                BoundingBox bounds = (BoundingBox)e.Argument;
+                LoadLayerDataForRegion(bounds);
+            }
+            else if (e.Argument is Polygon)
+            {
+                Polygon geometry = e.Argument as Polygon;
+                LoadLayerDataForRegion(geometry);
+            }
+
+            e.Result = e.Argument;
+        }
+
+        private MultiPolygon simplifyRegion(MultiPolygon region)
+        {
+            // TODO: perform simplification...
+            return region;
+        }
     }
 }

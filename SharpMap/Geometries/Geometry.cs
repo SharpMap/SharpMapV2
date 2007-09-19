@@ -24,14 +24,23 @@ using SharpMap.Utilities;
 namespace SharpMap.Geometries
 {
 	/// <summary>
-	/// <see cref="Geometry"/> is the root class of the Geometry Object Model hierarchy.
+	/// Represents an geometrical entity in a defined Cartesian space.
+	/// The root class of the Geometry Object Model hierarchy.
 	/// <see cref="Geometry"/> is an abstract (non-instantiable) class.
 	/// </summary>
 	/// <remarks>
-	/// <para>The instantiable subclasses of <see cref="Geometry"/> defined in the specification are restricted to 0, 
-	/// 1 and two dimensional geometric objects that exist in two-dimensional coordinate space (R<sup>2</sup>).</para>
-	/// <para>All instantiable geometry classes described in this specification are defined so that valid instances of a
-	/// geometry class are topologically closed (i.e. all defined geometries include their boundary).</para>
+	/// <para>
+	/// The instantiable subclasses of <see cref="Geometry"/> 
+	/// defined in the specification are restricted to 0, 
+	/// 1 and 2 dimensional geometric objects that exist in 
+	/// two-dimensional Cartesian space (R<sup>2</sup>).
+	/// </para>
+	/// <para>
+	/// All instantiable geometry classes described in this 
+	/// specification are defined so that valid instances of a
+	/// geometry class are topologically closed 
+	/// (i.e. all defined geometries include their boundary).
+	/// </para>
 	/// </remarks>
 	[Serializable]
 	public abstract class Geometry : IGeometry, IEquatable<Geometry>
@@ -40,11 +49,13 @@ namespace SharpMap.Geometries
 		private Tolerance _tolerance = null;
 
 		/// <summary>
-		/// Gets or sets the spatial reference system associated with the <see cref="Geometry"/>.
+		/// Gets or sets the spatial reference system associated 
+		/// with the <see cref="Geometry"/>.
 		/// </summary>
 		/// <remarks>
-		/// A <see cref="Geometry"/> may not have had a spatial reference system defined for
-		/// it, in which case SpatialReference will be NULL.
+		/// A <see cref="Geometry"/> may not have had a spatial 
+		/// reference system defined for
+		/// it, in which case SpatialReference will be <see langword="null"/>.
 		/// </remarks>
 		public ICoordinateSystem SpatialReference
 		{
@@ -53,12 +64,16 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Gets or sets the tolerance used in comparisons with a <see cref="Geometry"/> instance.
+		/// Gets or sets the tolerance used in comparisons with a 
+		/// <see cref="Geometry"/> instance.
 		/// </summary>
 		/// <remarks>
-		/// Defaults to <see cref="SharpMap.Utilities.Tolerance.Global"/>. If the value of this property is explicitly set,
-		/// that value is used, on an instance by instance basis, until it is set to null, which will
-		/// allow the Geometry instance to participate in the global setting.
+		/// Defaults to <see cref="SharpMap.Utilities.Tolerance.Global"/>. 
+		/// If the value of this property is explicitly set,
+		/// that value is used, on an instance by instance basis, 
+		/// until it is set to null, which will
+		/// allow the Geometry instance to participate 
+		/// in the global setting.
 		/// </remarks>
 		public Tolerance Tolerance
 		{
@@ -74,8 +89,8 @@ namespace SharpMap.Geometries
 			set { _tolerance = value; }
 		}
 
-		// The following are methods that should be implemented on a geometry object according to
-		// the OpenGIS Simple Features Specification
+		// The following are methods that should be implemented on a
+        // geometry object according to the OpenGIS Simple Features Specification
 
 		#region "Basic Methods on Geometry"
 
@@ -259,14 +274,18 @@ namespace SharpMap.Geometries
 		#region "Methods that support Spatial Analysis"
 
 		/// <summary>
-		/// Returns the shortest distance between any two points in the two geometries
-		/// as calculated in the spatial reference system of this Geometry.
+		/// Returns the shortest distance between any 
+		/// two points in the two geometries
+		/// as calculated in the spatial reference 
+		/// system of this Geometry.
 		/// </summary>
 		public abstract double Distance(Geometry geom);
 
 		/// <summary>
-		/// Returns a geometry that represents all points whose distance from this Geometry
-		/// is less than or equal to distance. Calculations are in the Spatial Reference
+		/// Returns a geometry that represents all points 
+		/// whose distance from this Geometry
+		/// is less than or equal to distance. 
+		/// Calculations are in the Spatial Reference
 		/// System of this Geometry.
 		/// </summary>
 		/// <param name="d">Buffer distance</param>
@@ -274,35 +293,40 @@ namespace SharpMap.Geometries
 
 
 		/// <summary>
-		/// Geometry—Returns a geometry that represents the convex hull of this Geometry.
+		/// Geometry—Returns a geometry that represents 
+		/// the convex hull of this Geometry.
 		/// </summary>
 		public abstract Geometry ConvexHull();
 
 		/// <summary>
-		/// Returns a geometry that represents the point set intersection of this Geometry
+		/// Returns a geometry that represents the point set 
+		/// intersection of this Geometry
 		/// with anotherGeometry.
 		/// </summary>
 		public abstract Geometry Intersection(Geometry geom);
 
 		/// <summary>
-		/// Returns a geometry that represents the point set union of this Geometry with anotherGeometry.
+		/// Returns a geometry that represents the point set union 
+		/// of this Geometry with another Geometry.
 		/// </summary>
 		public abstract Geometry Union(Geometry geom);
 
 		/// <summary>
-		/// Returns a geometry that represents the point set difference of this Geometry with anotherGeometry.
+		/// Returns a geometry that represents the point set 
+		/// difference of this Geometry with another Geometry.
 		/// </summary>
 		public abstract Geometry Difference(Geometry geom);
 
 		/// <summary>
-		/// Returns a geometry that represents the point set symmetric difference of this Geometry with anotherGeometry.
+		/// Returns a geometry that represents the point set 
+		/// symmetric difference of this Geometry with another Geometry.
 		/// </summary>
 		public abstract Geometry SymDifference(Geometry geom);
 
 		#endregion
 
 		/// <summary>
-		/// Creates a deep copy of the geometry.
+		/// Creates a deep copy of the Geometry instance.
 		/// </summary>
 		/// <returns>Copy of Geometry</returns>
 		public abstract Geometry Clone();

@@ -31,6 +31,7 @@ using SharpMap.Tools;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
+using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GeoPoint = SharpMap.Geometries.Point;
 
@@ -46,7 +47,7 @@ namespace SharpMap.Presentation.WinForms
 		private GdiPoint _mouseDownLocation = GdiPoint.Empty;
 		private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
 		private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
-		private Queue<KeyValuePair<PointF, GdiRenderObject>> _pathQueue = new Queue<KeyValuePair<PointF, GdiRenderObject>>();
+        private readonly Queue<GdiRenderObject> _pathQueue = new Queue<GdiRenderObject>();
 		private Queue<KeyValuePair<PointF, Image>> _tilesQueue = new Queue<KeyValuePair<PointF, Image>>();
 		private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
 		private List<MapTool> _tools;
@@ -288,7 +289,14 @@ namespace SharpMap.Presentation.WinForms
         public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
         {
             if (renderedObjects == null) throw new ArgumentNullException("renderedObjects");
-            throw new NotImplementedException();
+
+            foreach (GdiRenderObject ro in renderedObjects)
+            {
+                if (ro.Type == GdiRenderObjectType.Path)
+                {
+                    _pathQueue.Enqueue(ro);
+                }
+            }
         }
 
 	    void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
@@ -390,7 +398,15 @@ namespace SharpMap.Presentation.WinForms
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			Graphics g = e.Graphics;
-			//g.Transform = ViewTransform;
+            g.Transform = getGdiViewTransform();
+            g.Clear(BackColor);
+
+		    foreach (GdiRenderObject ro in _pathQueue)
+		    {
+		        g.DrawPath(Pens.Black, ro.GdiPath);
+		    }
+
+            g.ResetTransform();
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)
@@ -673,6 +689,32 @@ namespace SharpMap.Presentation.WinForms
 		#endregion
 
 		#region Private Helper Methods
+
+	    private GdiMatrix _gdiViewMatrix;
+        private GdiMatrix getGdiViewTransform()
+        {
+            if(_gdiViewMatrix == null)
+            {
+                _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
+                return _gdiViewMatrix;
+            }
+
+            float[] gdiElements = _gdiViewMatrix.Elements;
+            Matrix2D viewMatrix = ToViewTransform;
+
+            if(gdiElements[0] != viewMatrix.M11
+                || gdiElements[1] != viewMatrix.M12
+                || gdiElements[2] != viewMatrix.M21
+                || gdiElements[3] != viewMatrix.M22
+                || gdiElements[4] != viewMatrix.OffsetX
+                || gdiElements[5] != viewMatrix.OffsetY)
+            {
+                _gdiViewMatrix.Dispose();
+                _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
+            }
+
+            return _gdiViewMatrix;
+        }
 
 		private bool withinDragTolerance(GdiPoint point)
 		{

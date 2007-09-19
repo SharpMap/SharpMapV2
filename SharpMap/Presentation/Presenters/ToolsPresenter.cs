@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using SharpMap.Tools;
 
 namespace SharpMap.Presentation
@@ -49,19 +48,23 @@ namespace SharpMap.Presentation
 
         protected override void OnMapPropertyChanged(string propertyName)
         {
-            switch (propertyName)
+            if (propertyName == Map.SelectedLayersProperty.Name)
             {
-                case Map.ActiveToolPropertyName:
-                    View.SelectedTool = Map.ActiveTool;
-                    break;
-                case Map.SelectedLayersPropertyName:
-                    break;
-                case Map.SpatialReferencePropertyName:
-                    break;
-                case Map.VisibleRegionPropertyName:
-                    break;
-                default:
-                    break;
+                View.SelectedTool = Map.ActiveTool;
+            }
+
+            if (propertyName == Map.VisibleRegionProperty.Name)
+            {
+                // TODO: Make layers appear unavailable if the visible region is outside
+                // the MinVisible or MaxVisible for the layer
+            }
+
+            if (propertyName == Map.ActiveToolProperty.Name)
+            {
+            }
+
+            if (propertyName == Map.SpatialReferenceProperty.Name)
+            {
             }
         }
 

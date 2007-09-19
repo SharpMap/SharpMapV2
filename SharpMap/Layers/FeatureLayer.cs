@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Globalization;
 using SharpMap.Data;
@@ -39,7 +38,6 @@ namespace SharpMap.Layers
         private readonly FeatureDataView _visibleFeatureView;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
-        private readonly BackgroundWorker _dataQueryWorker = new BackgroundWorker();
 
         #endregion
 
@@ -70,9 +68,6 @@ namespace SharpMap.Layers
         protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
             : base(layername, style, dataSource)
         {
-            _dataQueryWorker.RunWorkerCompleted += _dataQueryWorker_RunWorkerCompleted;
-            _dataQueryWorker.DoWork += _dataQueryWorker_DoWork;
-
             _cachedFeatures = new FeatureDataTable();
             _visibleFeatureView = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
             _selectedFeatures = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
@@ -141,31 +136,16 @@ namespace SharpMap.Layers
 
         #region Layer overrides
 
-        protected override void OnVisibleRegionChanging(BoundingBox value, ref bool cancel)
+        protected override void LoadLayerDataForRegion(BoundingBox region)
         {
-            // Ignore an empty visible region
-            if (value == BoundingBox.Empty)
-            {
-                return;
-            }
+            DataSource.ExecuteIntersectionQuery(region, _cachedFeatures);
+            base.LoadLayerDataForRegion(region);
+        }
 
-            if (!_cachedFeatures.Envelope.Contains(value))
-            {
-                // Since the visible region changed, and we don't have the data
-                // which covers this new region, we have to query for it.
-                //
-                // We can do it asynchronously, with a BackgroundWorker instance,
-                // or synchronously
-                if (AsyncQuery)
-                {
-                    _dataQueryWorker.RunWorkerAsync();
-                }
-                else
-                {
-                    executeQuery(value);
-                    OnLayerDataAvailable();
-                }
-            }
+        protected override void LoadLayerDataForRegion(Polygon region)
+        {
+            DataSource.ExecuteIntersectionQuery(region, _cachedFeatures);
+            base.LoadLayerDataForRegion(region);
         }
 
         protected override void OnVisibleRegionChanged()
@@ -188,35 +168,6 @@ namespace SharpMap.Layers
             DataSource.SetTableSchema(_cachedFeatures);
 
             DataSource.Close();
-        }
-
-        private void _dataQueryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            OnLayerDataAvailable();
-        }
-
-        private void _dataQueryWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            if (e.Argument is BoundingBox)
-            {
-                BoundingBox bounds = (BoundingBox) e.Argument;
-                executeQuery(bounds);
-            }
-            else if (e.Argument is Geometry)
-            {
-                Geometry geometry = e.Argument as Geometry;
-                executeQuery(geometry);
-            }
-        }
-
-        private void executeQuery(BoundingBox bounds)
-        {
-            DataSource.ExecuteIntersectionQuery(bounds, _cachedFeatures);
-        }
-
-        private void executeQuery(Geometry geometry)
-        {
-            DataSource.ExecuteIntersectionQuery(geometry, _cachedFeatures);
         }
 
         #endregion

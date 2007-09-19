@@ -17,13 +17,52 @@
 
 namespace SharpMap.Styles
 {
+    /// <summary>
+    /// Specifies information which a type renderer uses to help
+    /// determine how to render a font to an output device.
+    /// </summary>
+    /// <remarks>
+    /// For more background on how these hints will influence
+    /// rendered text, read 
+    /// <a href="http://www.microsoft.com/typography/hinting/tutorial.htm">
+    /// Basic hinting philosophies and TrueType instructions.
+    /// </a>
+    /// </remarks>
     public enum StyleTextRenderingHint
     {
-        SystemDefault,
+        /// <summary>
+        /// The system default for rendering characters to a bitmap grid.
+        /// </summary>
+        SystemDefault = 0,
+
+        /// <summary>
+        /// The characters are to be drawn to a glyph bitmap, with 
+        /// typographic hinting to fit curves and stems to the grid.
+        /// </summary>
         SingleBitPerPixelGridFit,
+
+        /// <summary>
+        /// The characters are to be drawn to a glyph bitmap, without
+        /// typographic hinting to help ensure readability of curves and stems. 
+        /// This hint usually results in the fastest rendering.
+        /// </summary>
         SingleBitPerPixel,
+
+        /// <summary>
+        /// The characters are to be drawn to an anti-aliased 
+        /// glyph bitmap, with typographic hinting.
+        /// </summary>
         AntiAliasGridFit,
+
+        /// <summary>
+        /// The characters are to be drawn to an anti-aliased 
+        /// glyph bitmap, without typographic hinting.
+        /// </summary>
         AntiAlias,
+
+        /// <summary>
+        /// Microsoft ClearType is used to render the characters, if available.
+        /// </summary>
         ClearTypeGridFit
     }
 }

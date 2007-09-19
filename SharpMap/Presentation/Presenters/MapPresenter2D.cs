@@ -16,7 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using SharpMap.Features;
+using System.Collections.Generic;
+using System.Threading;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Rendering;
@@ -35,11 +36,13 @@ namespace SharpMap.Presentation
     /// </summary>
     public abstract class MapPresenter2D : BasePresenter<IMapView2D>
     {
+        private static readonly object _rendererInitSync = new object();
+        private static object _vectorRenderer;
+        private static object _rasterRenderer;
+
         #region Private fields
 
         private ViewSelection2D _selection;
-        private Point2D? _beginActionLocation;
-        private Point2D _lastMoveLocation;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth = 0.0;
         private readonly Matrix2D _originNormalizeTransform = new Matrix2D();
@@ -49,8 +52,6 @@ namespace SharpMap.Presentation
         private readonly Matrix2D _toViewCoordinates = new Matrix2D();
         private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
-        private readonly IRenderer _vectorRenderer;
-        private readonly IRenderer _rasterRenderer;
         #endregion
 
         #region Object Construction/Destruction
@@ -63,9 +64,9 @@ namespace SharpMap.Presentation
         protected MapPresenter2D(Map map, IMapView2D mapView)
             : base(map, mapView)
         {
-            _vectorRenderer = CreateVectorRenderer();
-            _rasterRenderer = CreateRasterRenderer();
+            createRenderers();
 
+            //wireupExistingLayers(Map.Layers);
             Map.Layers.ListChanged += handleLayersChanged;
             Map.PropertyChanged += handleMapPropertyChanged;
 
@@ -114,16 +115,32 @@ namespace SharpMap.Presentation
             ToWorldTransformInternal = ToViewTransformInternal.Inverse;
         }
 
+        private void createRenderers()
+        {
+            Type renderObjectType = GetRenderObjectType();
+
+            // TODO: load renderers from configuration...
+            Type basicGeometryRendererType = typeof(BasicGeometryRenderer2D<>);
+            Type constructedGeom = basicGeometryRendererType.MakeGenericType(renderObjectType);
+            IRenderer renderer = Activator.CreateInstance(constructedGeom, VectorRenderer) as IRenderer;
+            LayerRendererRegistry.Instance.Register(typeof(GeometryLayer), renderer);
+
+            // TODO: figure out how to factor label renderer...
+            //Type labelRendererType = typeof (LabelRenderer2D<>);
+            //Type constructedLabel = labelRendererType.MakeGenericType(renderObjectType);
+            //renderer = Activator.CreateInstance(constructedLabel, VectorRenderer) as IRenderer;
+            //LayerRendererRegistry.Instance.Register(typeof(LabelLayer), renderer);
+
+            // TODO: create raster renderer
+        }
+        #endregion
+
+        #region Abstract methods
         protected abstract IRenderer CreateVectorRenderer();
         protected abstract IRenderer CreateRasterRenderer();
-        protected virtual void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor) { }
-        protected virtual void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint) { }
-        protected virtual void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth) { }
-        protected virtual void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth) { }
-        protected virtual void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope) { }
-        protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
-        protected virtual void SetViewWorldAspectRatio(double fromRatio, double toRatio) { }
-
+        protected abstract void RenderFeatureLayer(IFeatureLayer layer);
+        protected abstract void RenderRasterLayer(IRasterLayer layer);
+        protected abstract Type GetRenderObjectType();
         #endregion
 
         #region Properties
@@ -234,6 +251,32 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
+        /// Gets the instance of the concrete
+        /// <see cref="RasterRenderer2D{TRenderObject}"/> used
+        /// for the specific display technology which a base class
+        /// is created to support.
+        /// </summary>
+        protected IRenderer RasterRenderer
+        {
+            get
+            {
+                if (Thread.VolatileRead(ref _rasterRenderer) == null)
+                {
+                    lock (_rendererInitSync)
+                    {
+                        if (Thread.VolatileRead(ref _rasterRenderer) == null)
+                        {
+                            IRenderer rasterRenderer = CreateRasterRenderer();
+                            Thread.VolatileWrite(ref _rasterRenderer, rasterRenderer);
+                        }
+                    }
+                }
+
+                return _rasterRenderer as IRenderer;
+            }
+        }
+
+        /// <summary>
         /// A selection on a view.
         /// </summary>
         protected ViewSelection2D SelectionInternal
@@ -270,6 +313,32 @@ namespace SharpMap.Presentation
         {
             get { return _toWorldTransform; }
             private set { _toWorldTransform = value; }
+        }
+
+        /// <summary>
+        /// Gets the instance of the concrete
+        /// <see cref="VectorRenderer2D{TRenderObject}"/> used
+        /// for the specific display technology which a base class
+        /// is created to support.
+        /// </summary>
+        protected IRenderer VectorRenderer
+        {
+            get
+            {
+                if (Thread.VolatileRead(ref _vectorRenderer) == null)
+                {
+                    lock (_rendererInitSync)
+                    {
+                        if (Thread.VolatileRead(ref _vectorRenderer) == null)
+                        {
+                            IRenderer vectorRenderer = CreateVectorRenderer();
+                            Thread.VolatileWrite(ref _vectorRenderer, vectorRenderer);
+                        }
+                    }
+                }
+
+                return _vectorRenderer as IRenderer;
+            }
         }
 
         /// <summary>
@@ -356,6 +425,13 @@ namespace SharpMap.Presentation
         #endregion
 
         #region Methods
+        protected virtual void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor) { }
+        protected virtual void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint) { }
+        protected virtual void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope) { }
+        protected virtual void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth) { }
+        protected virtual void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth) { }
+        protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
+        protected virtual void SetViewWorldAspectRatio(double fromRatio, double toRatio) { }
 
         protected Point2D ToViewInternal(Point point)
         {
@@ -391,9 +467,11 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <remarks>
         /// Transforms view coordinates into
-        /// world coordinates using <see cref="ToWorldTransformInternal"/> to perform zoom. 
-        /// This means the heuristic to determine the final value of <see cref="ViewEnvelopeInternal"/>
-        /// after the zoom is the same as in <see cref="ZoomToWorldBoundsInternal"/>.
+        /// world coordinates using <see cref="ToWorldTransformInternal"/> 
+        /// to perform zoom. 
+        /// This means the heuristic to determine the final value of 
+        /// <see cref="ViewEnvelopeInternal"/> after the zoom is the same as in 
+        /// <see cref="ZoomToWorldBoundsInternal"/>.
         /// </remarks>
         /// <param name="viewBounds">
         /// The view bounds, translated into world bounds,
@@ -432,7 +510,8 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <remarks>
         /// View modifiers <see cref="MinimumWorldWidthInternal"/>, 
-        /// <see cref="MaximumWorldWidthInternal"/> and <see cref="WorldAspectRatioInternal"/>
+        /// <see cref="MaximumWorldWidthInternal"/> and 
+        /// <see cref="WorldAspectRatioInternal"/>
         /// are taken into account when zooming to this width.
         /// </remarks>
         protected void ZoomToWorldWidthInternal(double newWorldWidth)
@@ -468,10 +547,6 @@ namespace SharpMap.Presentation
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
 
-        protected abstract void RenderFeatureLayer(IFeatureLayer layer);
-
-        protected abstract void RenderRasterLayer(IRasterLayer layer);
-
         protected void CreateSelection(Point2D location)
         {
             _selection = ViewSelection2D.CreateRectangluarSelection(location, Size2D.Zero);
@@ -498,17 +573,12 @@ namespace SharpMap.Presentation
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
-                    Map.Layers[e.NewIndex].LayerDataAvailable += handleLayerDataAvailable;
                     renderLayer(Map.Layers[e.NewIndex]);
                     break;
                 case ListChangedType.ItemDeleted:
                     // LayerCollection defines an e.NewIndex as -1 when an item is being 
                     // deleted and not yet removed from the collection.
-                    if (e.NewIndex < 0) 
-                    {
-                        Map.Layers[e.OldIndex].LayerDataAvailable -= handleLayerDataAvailable;
-                    }
-                    else
+                    if (e.NewIndex >= 0)
                     {
                         renderAllLayers();
                     }
@@ -520,9 +590,9 @@ namespace SharpMap.Presentation
                     renderAllLayers();
                     break;
                 case ListChangedType.ItemChanged:
-                    if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
+                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
                     {
-                        renderAllLayers();   
+                        renderAllLayers();
                     }
                     break;
                 default:
@@ -540,39 +610,39 @@ namespace SharpMap.Presentation
 
         private void renderLayer(ILayer layer)
         {
-            if(!layer.Enabled)
+            if (!layer.Enabled)
             {
                 return;
             }
 
-            if(layer is IFeatureLayer)
+            if (layer is IFeatureLayer)
             {
                 RenderFeatureLayer(layer as IFeatureLayer);
             }
-            else if(layer is IRasterLayer)
+            else if (layer is IRasterLayer)
             {
                 RenderRasterLayer(layer as IRasterLayer);
             }
         }
 
-        private void handleLayerDataAvailable(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
+            if (e.PropertyName == Map.VisibleRegionProperty.Name)
             {
-                case Map.VisibleRegionPropertyName:
-                    setViewEnvelopeInternal(Map.VisibleRegion);
-                    break;
-                case Map.SpatialReferencePropertyName:
-                case Map.SelectedLayersPropertyName:
-                case Map.ActiveToolPropertyName:
-                    throw new NotImplementedException();
-                default:
-                    return;
+                setViewEnvelopeInternal(Map.VisibleRegion);
+                renderAllLayers();
+            }
+            if (e.PropertyName == Map.SpatialReferenceProperty.Name)
+            {
+                throw new NotImplementedException();
+            }
+            if (e.PropertyName == Map.SelectedLayersProperty.Name)
+            {
+                throw new NotImplementedException();
+            }
+            if (e.PropertyName == Map.ActiveToolProperty.Name)
+            {
+                throw new NotImplementedException();
             }
         }
         #endregion

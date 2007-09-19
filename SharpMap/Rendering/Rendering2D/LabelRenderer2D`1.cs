@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Styles;
 
@@ -32,6 +31,10 @@ namespace SharpMap.Rendering.Rendering2D
 		: FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
     {
         private StyleTextRenderingHint _textRenderingHint;
+        
+        protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer) 
+            : this(vectorRenderer, StyleTextRenderingHint.SystemDefault)
+        { }
 
         protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, 
 			StyleTextRenderingHint renderingHint) : base(vectorRenderer)
