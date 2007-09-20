@@ -52,7 +52,8 @@ namespace SharpMap.Geometries
         /// Initializes a bounding box.
         /// </summary>
         /// <remarks>
-        /// In case min values are larger than max values, the parameters will be swapped to ensure correct min/max boundary.
+        /// In case min values are larger than max values, the parameters 
+        /// will be swapped to ensure correct min/max boundary.
         /// </remarks>
         /// <param name="minX">left</param>
         /// <param name="minY">bottom</param>
@@ -76,10 +77,9 @@ namespace SharpMap.Geometries
         public BoundingBox(Point lowerLeft, Point upperRight)
             : this(0, 0, 0, 0)
         {
-            _hasValue = true;
-
             if (lowerLeft == null || lowerLeft.IsEmpty() || upperRight == null || upperRight.IsEmpty())
             {
+                _hasValue = false;
                 return;
             }
 

@@ -57,6 +57,14 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
+        /// Gets a PropertyDescriptor for Layer's <see cref="Envelope"/> property.
+        /// </summary>
+        public static PropertyDescriptor EnvelopeProperty
+        {
+            get { return _properties.Find("Envelope", false); }
+        }
+
+        /// <summary>
         /// Gets a PropertyDescriptor for Layer's <see cref="LayerName"/> property.
         /// </summary>
         public static PropertyDescriptor LayerNameProperty

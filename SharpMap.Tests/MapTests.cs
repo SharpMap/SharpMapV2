@@ -70,7 +70,7 @@ namespace SharpMap.Tests
 		public void EmptyMap_Defaults()
 		{
 			Map map = new Map();
-			Assert.AreEqual(map.GetExtents(), BoundingBox.Empty);
+			Assert.AreEqual(map.Extents, BoundingBox.Empty);
 			Assert.AreEqual(map.Center, Point.Empty);
 			Assert.IsNotNull(map.Layers);
 			Assert.AreEqual(map.Layers.Count, 0);
@@ -86,7 +86,7 @@ namespace SharpMap.Tests
 			GeometryLayer vLayer = new GeometryLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 
 			map.AddLayer(vLayer);
-			BoundingBox box = map.GetExtents();
+            BoundingBox box = map.Extents;
 			Assert.AreEqual(new BoundingBox(0, 0, 100, 100), box);
 		}
 	}

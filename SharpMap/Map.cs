@@ -43,10 +43,10 @@ namespace SharpMap
     public class Map : INotifyPropertyChanged, IDisposable
     {
         private static readonly PropertyDescriptorCollection _properties;
-        
+
         static Map()
         {
-            _properties = TypeDescriptor.GetProperties(typeof (Map));
+            _properties = TypeDescriptor.GetProperties(typeof(Map));
         }
 
         #region PropertyDescriptors
@@ -56,6 +56,14 @@ namespace SharpMap
         public static PropertyDescriptor ActiveToolProperty
         {
             get { return _properties.Find("ActiveTool", false); }
+        }
+
+        /// <summary>
+        /// Gets a PropertyDescriptor for the Map's <see cref="Extents"/> property.
+        /// </summary>
+        public static PropertyDescriptor ExtentsProperty
+        {
+            get { return _properties.Find("Extents", false); }
         }
 
         /// <summary>
@@ -109,7 +117,7 @@ namespace SharpMap
 
             static LayerCollection()
             {
-                PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof (ILayer));
+                PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(ILayer));
                 PropertyDescriptor[] propsArray = new PropertyDescriptor[props.Count];
                 props.CopyTo(propsArray, 0);
 
@@ -320,7 +328,7 @@ namespace SharpMap
                 // having a ListChangedEventArgs.NewIndex == -1 and
                 // the index of the item pending removal to be 
                 // ListChangedEventArgs.OldIndex.
-                ListChangedEventArgs args 
+                ListChangedEventArgs args
                     = new ListChangedEventArgs(ListChangedType.ItemDeleted, -1, index);
 
                 OnListChanged(args);
@@ -347,7 +355,7 @@ namespace SharpMap
 
             public PropertyDescriptorCollection GetItemProperties(PropertyDescriptor[] listAccessors)
             {
-                if(listAccessors != null)
+                if (listAccessors != null)
                 {
                     throw new NotSupportedException(
                         "Child lists not supported in LayersCollection.");
@@ -386,7 +394,8 @@ namespace SharpMap
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
-        private BoundingBox _envelope = BoundingBox.Empty;
+        private BoundingBox _visibleEnvelope = BoundingBox.Empty;
+        private BoundingBox _extents = BoundingBox.Empty;
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
         private bool _disposed;
@@ -411,6 +420,7 @@ namespace SharpMap
         public Map(string title)
         {
             _layers = new LayerCollection(this);
+            _layers.ListChanged += handleLayersChanged;
             _featureDataSet = new FeatureDataSet(title);
         }
 
@@ -709,16 +719,9 @@ namespace SharpMap
         /// in the layers collection.
         /// </summary>
         /// <returns>Full map extents.</returns>
-        public BoundingBox GetExtents()
+        public BoundingBox Extents
         {
-            BoundingBox extents = BoundingBox.Empty;
-
-            foreach (ILayer layer in Layers)
-            {
-                extents.ExpandToInclude(layer.Envelope);
-            }
-
-            return extents;
+            get { return _extents; }
         }
 
         /// <summary>
@@ -736,8 +739,8 @@ namespace SharpMap
             lock (Layers.LayersChangeSync)
             {
                 int index = (_layers as IBindingList).Find(Layer.LayerNameProperty, name);
-               
-                if(index < 0)
+
+                if (index < 0)
                 {
                     return null;
                 }
@@ -1039,7 +1042,7 @@ namespace SharpMap
         /// </summary>
         public GeoPoint Center
         {
-            get { return _envelope.GetCentroid(); }
+            get { return _visibleEnvelope.GetCentroid(); }
         }
 
         /// <summary>
@@ -1142,15 +1145,15 @@ namespace SharpMap
         /// </summary>
         public BoundingBox VisibleRegion
         {
-            get { return _envelope; }
+            get { return _visibleEnvelope; }
             set
             {
-                if (_envelope == value)
+                if (_visibleEnvelope == value)
                 {
                     return;
                 }
 
-                _envelope = value;
+                _visibleEnvelope = value;
 
                 foreach (ILayer layer in Layers)
                 {
@@ -1216,19 +1219,51 @@ namespace SharpMap
             if (_layers.Exists(namesMatch)) throw new DuplicateLayerException(layer.LayerName);
         }
 
-        private void recomputeEnvelope()
+        private void handleLayersChanged(object sender, ListChangedEventArgs args)
         {
-            BoundingBox envelope = BoundingBox.Empty;
+            switch (args.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    {
+                        ILayer layer = _layers[args.NewIndex];
+                        _extents.ExpandToInclude(layer.Envelope);
+                    }
+                    break;
+                case ListChangedType.ItemChanged:
+                    if (args.PropertyDescriptor.Name == Layer.EnvelopeProperty.Name)
+                    {
+                        ILayer layer = _layers[args.NewIndex];
+                        _extents.ExpandToInclude(layer.Envelope);
+                    }
+                    break;
+                case ListChangedType.ItemDeleted:
+                    recomputeExtents();
+                    break;
+                case ListChangedType.Reset:
+                    recomputeExtents();
+                    break;
+                case ListChangedType.ItemMoved:
+                case ListChangedType.PropertyDescriptorAdded:
+                case ListChangedType.PropertyDescriptorChanged:
+                case ListChangedType.PropertyDescriptorDeleted:
+                default:
+                    break;
+            }
+        }
+
+        private void recomputeExtents()
+        {
+            BoundingBox extents = BoundingBox.Empty;
 
             foreach (ILayer layer in Layers)
             {
                 if (layer.Enabled)
                 {
-                    envelope.ExpandToInclude(layer.Envelope);
+                    extents.ExpandToInclude(layer.Envelope);
                 }
             }
 
-            VisibleRegion = envelope;
+            _extents = extents;
         }
 
         private static void changeLayerEnabled(ILayer layer, bool enabled)
@@ -1311,7 +1346,7 @@ namespace SharpMap
 
                 ILayer layer = GetLayerByName(name);
 
-                if(layer != null)
+                if (layer != null)
                 {
                     yield return layer;
                 }

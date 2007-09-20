@@ -20,132 +20,153 @@ using System.ComponentModel;
 
 namespace SharpMap.Presentation
 {
-	/// <summary>
-	/// The base presenter for map views.
-	/// </summary>
-	/// <typeparam name="TView">Type of view to manage.</typeparam>
-	public abstract class BasePresenter<TView> : IDisposable
-		where TView : class
-	{
-		private readonly Map _map;
-		private readonly TView _view;
-		private bool _disposed = false;
+    /// <summary>
+    /// The base presenter for map views.
+    /// </summary>
+    /// <typeparam name="TView">Type of view to manage.</typeparam>
+    public abstract class BasePresenter<TView> : IDisposable
+        where TView : class
+    {
+        private readonly Map _map;
+        private readonly TView _view;
+        private bool _disposed = false;
 
-		#region Object Construction/Destruction
+        #region Object Construction/Destruction
 
-		/// <summary>
-		/// Constructs a new presenter with the given map and view.
-		/// </summary>
-		/// <param name="map">The map model.</param>
-		/// <param name="view">The view to keep synchronized with the model and to accept input from.</param>
-		protected BasePresenter(Map map, TView view)
-		{
-			_map = map;
-			Map.PropertyChanged += handleMapPropertyChanged;
+        /// <summary>
+        /// Constructs a new presenter with the given map and view.
+        /// </summary>
+        /// <param name="map">The map model.</param>
+        /// <param name="view">The view to keep synchronized with the model and to accept input from.</param>
+        protected BasePresenter(Map map, TView view)
+        {
+            _map = map;
+            Map.PropertyChanged += handleMapPropertyChanged;
 
-			_view = view;
-		}
+            _view = view;
+        }
 
-		~BasePresenter()
-		{
-			Dispose(false);
-		}
+        /// <summary>
+        /// Finalizer.
+        /// </summary>
+        ~BasePresenter()
+        {
+            Dispose(false);
+        }
 
-		#region Dispose Pattern
+        #region Dispose Pattern
 
-		#region IDisposable Members
+        #region IDisposable Members
 
-		/// <summary>
-		/// Releases all resources deterministically.
-		/// </summary>
-		public void Dispose()
-		{
-			if (!IsDisposed)
-			{
-				Dispose(true);
-				_disposed = true;
-				GC.SuppressFinalize(this);
-			}
-		}
+        /// <summary>
+        /// Releases all resources deterministically.
+        /// </summary>
+        public void Dispose()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
 
-		#endregion
+            Dispose(true);
+            IsDisposed = true;
+            GC.SuppressFinalize(this);
+        }
 
-		/// <summary>
-		/// Releases all resources, and removes from finalization 
-		/// queue if <paramref name="disposing"/> is true.
-		/// </summary>
-		/// <param name="disposing">
-		/// True if being called deterministically, false if being called from finalizer.
-		/// </param>
-		protected virtual void Dispose(bool disposing)
-		{
-			if (IsDisposed)
-			{
-				return;
-			}
-		}
+        #endregion
 
-		/// <summary>
-		/// Gets whether this presenter is disposed, and no longer accessible.
-		/// </summary>
-		public bool IsDisposed
-		{
-			get { return _disposed; }
-		}
+        /// <summary>
+        /// Releases all resources, and removes from finalization 
+        /// queue if <paramref name="disposing"/> is true.
+        /// </summary>
+        /// <param name="disposing">
+        /// True if being called deterministically, false if being called from finalizer.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+        }
 
-		/// <summary>
-		/// Event fired when the presenter is disposed.
-		/// </summary>
-		public event EventHandler Disposed;
+        /// <summary>
+        /// Gets whether this presenter is disposed, and no longer accessible.
+        /// </summary>
+        public bool IsDisposed
+        {
+            get { return _disposed; }
+            private set
+            {
+                if (_disposed)
+                {
+                    return;
+                }
 
-		#endregion
+                _disposed = true;
 
-		#endregion
+                EventHandler e = Disposed;
 
-		/// <summary>
-		/// The map to present.
-		/// </summary>
-		/// <remarks>
-		/// This is the model which is kept synchronized to the view, 
-		/// and which input on the view modifies through this presenter.
-		/// </remarks>
-		public Map Map
-		{
-			get
-			{
-				if (IsDisposed)
-				{
-					throw new ObjectDisposedException(GetType().ToString());
-				}
+                if (e != null)
+                {
+                    e(this, EventArgs.Empty);
+                }
+            }
+        }
 
-				return _map;
-			}
-		}
+        /// <summary>
+        /// Event fired when the presenter is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
 
-		/// <summary>
-		/// The view used to accept input and keep synchronized with the <see cref="Map">model</see>.
-		/// </summary>
-		public TView View
-		{
-			get
-			{
-				if (IsDisposed)
-				{
-					throw new ObjectDisposedException(GetType().ToString());
-				}
+        #endregion
 
-				return _view;
-			}
-		}
+        #endregion
 
-	    protected virtual void OnMapPropertyChanged(string propertyName)
-	    {
-	        
-	    }
+        /// <summary>
+        /// The map to present.
+        /// </summary>
+        /// <remarks>
+        /// This is the model which is kept synchronized to the view, 
+        /// and which input on the view modifies through this presenter.
+        /// </remarks>
+        public Map Map
+        {
+            get
+            {
+                if (IsDisposed)
+                {
+                    throw new ObjectDisposedException(GetType().ToString());
+                }
 
-		private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			OnMapPropertyChanged(e.PropertyName);
-		}
-	}
+                return _map;
+            }
+        }
+
+        /// <summary>
+        /// The view used to accept input and keep synchronized with the <see cref="Map">model</see>.
+        /// </summary>
+        public TView View
+        {
+            get
+            {
+                if (IsDisposed)
+                {
+                    throw new ObjectDisposedException(GetType().ToString());
+                }
+
+                return _view;
+            }
+        }
+
+        protected virtual void OnMapPropertyChanged(string propertyName)
+        {
+
+        }
+
+        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnMapPropertyChanged(e.PropertyName);
+        }
+    }
 }
