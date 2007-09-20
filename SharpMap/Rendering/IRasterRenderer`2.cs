@@ -22,11 +22,11 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public interface IRasterRenderer<TViewRectangle, TRenderObject> : IRenderer
-        where TViewRectangle : IMatrixD
+    public interface IRasterRenderer<TRectangle, TRenderObject> : IRenderer
+        where TRectangle : IMatrixD
     {
-        IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, TViewRectangle rasterBounds);
-		IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TViewRectangle viewBounds, 
-            TViewRectangle rasterBounds, IMatrixD rasterTransform);
+        IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TRectangle viewBounds, TRectangle rasterBounds);
+		IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TRectangle viewBounds, 
+            TRectangle rasterBounds, IMatrixD rasterTransform);
     }
 }

@@ -60,7 +60,7 @@ namespace SharpMap.Rendering.Rendering2D
 					}
 				}
 
-				return (_defaultSymbol as Symbol2D).Clone();
+                return (Symbol2D)(_defaultSymbol as Symbol2D).Clone();
 			}
 		}
 

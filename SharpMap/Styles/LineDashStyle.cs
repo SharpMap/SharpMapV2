@@ -15,45 +15,41 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.Styles
 {
-	/// <summary>
-	/// An enumeration of the types of dash styles available to a StylePen.
-	/// </summary>
+    /// <summary>
+    /// An enumeration of the types of dash styles available to a StylePen.
+    /// </summary>
     public enum LineDashStyle
     {
-		/// <summary>
-		/// Draws a solid line.
-		/// </summary>
+        /// <summary>
+        /// Draws a solid line.
+        /// </summary>
         Solid,
 
-		/// <summary>
-		/// Draws a dashed line.
-		/// </summary>
+        /// <summary>
+        /// Draws a dashed line.
+        /// </summary>
         Dash,
-        
-		/// <summary>
-		/// Draws a dotted line.
-		/// </summary>
-		Dot,
 
-		/// <summary>
-		/// Draws an alternating dash and dot.
-		/// </summary>
+        /// <summary>
+        /// Draws a dotted line.
+        /// </summary>
+        Dot,
+
+        /// <summary>
+        /// Draws an alternating dash and dot.
+        /// </summary>
         DashDot,
 
-		/// <summary>
-		/// Draws an alternating dash and two dots.
-		/// </summary>
+        /// <summary>
+        /// Draws an alternating dash and two dots.
+        /// </summary>
         DashDotDot,
 
-		/// <summary>
-		/// Uses the <see cref="StylePen.DashPattern"/> values for the dash style.
-		/// </summary>
+        /// <summary>
+        /// Uses the <see cref="StylePen.DashPattern"/> values for the dash style.
+        /// </summary>
         Custom
     }
 }

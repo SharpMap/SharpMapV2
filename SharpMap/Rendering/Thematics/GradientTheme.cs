@@ -67,20 +67,86 @@ namespace SharpMap.Rendering.Thematics
         /// Initializes a new instance of the GradientTheme class
         /// </summary>
         /// <remarks>
-        /// <para>The gradient theme interpolates linearly between two styles based on a numerical attribute in the datasource.
-        /// This is useful for scaling symbols, line widths, line and fill colors from numerical attributes.</para>
-        /// <para>Colors are interpolated between two colors, but if you want to interpolate through more colors (fx. a rainbow),
-        /// set the <see cref="TextColorBlend"/>, <see cref="LineColorBlend"/> and <see cref="FillColorBlend"/> properties
+        /// <para>
+        /// The gradient theme interpolates linearly between two styles based 
+        /// on a numerical attribute in the datasource. This is useful for scaling symbols, 
+        /// line widths, line and fill colors from numerical attributes.
+        /// </para>
+        /// <para>
+        /// Colors are interpolated between two colors, but if you want to interpolate 
+        /// through more colors (fx. a rainbow), set the <see cref="TextColorBlend"/>, 
+        /// <see cref="LineColorBlend"/> and <see cref="FillColorBlend"/> properties
         /// to a custom <see cref="StyleColorBlend"/>.
         /// </para>
-        /// <para>The following properties are scaled (properties not mentioned here are not interpolated):
+        /// <para>
+        /// The following properties are scaled (properties not mentioned here are not 
+        /// interpolated):
         /// <list type="table">
-        ///		<listheader><term>Property</term><description>Remarks</description></listheader>
-        ///		<item><term><see cref="System.Drawing.Color"/></term><description>Red, Green, Blue and Alpha values are linearly interpolated.</description></item>
-        ///		<item><term><see cref="System.Drawing.Pen"/></term><description>The color, width, color of pens are interpolated. MiterLimit,StartCap,EndCap,LineJoin,DashStyle,DashPattern,DashOffset,DashCap,CompoundArray, and Alignment are switched in the middle of the min/max values.</description></item>
-        ///		<item><term><see cref="System.Drawing.SolidBrush"/></term><description>SolidBrush color are interpolated. Other brushes are not supported.</description></item>
-        ///		<item><term><see cref="SharpMap.Styles.VectorStyle"/></term><description>MaxVisible, MinVisible, Line, Outline, Fill and SymbolScale are scaled linearly. Symbol, EnableOutline and Enabled switch in the middle of the min/max values.</description></item>
-        ///		<item><term><see cref="SharpMap.Styles.LabelStyle"/></term><description>FontSize, BackColor, ForeColor, MaxVisible, MinVisible, Offset are scaled linearly. All other properties use min-style.</description></item>
+        ///		<listheader>
+        ///         <term>Property</term>
+        ///         <description>Remarks</description>
+        ///     </listheader>
+        ///		<item>
+        ///         <term>
+        ///             <see cref="StyleColor"/>
+        ///         </term>
+        ///         <description>
+        ///             Red, Green, Blue and Alpha values are linearly interpolated.
+        ///         </description>
+        ///     </item>
+        ///		<item>
+        ///         <term>
+        ///             <see cref="StylePen"/>
+        ///         </term>
+        ///         <description>
+        ///             The color, width, color of pens are interpolated. 
+        ///             <see cref="StylePen.MiterLimit"/>, 
+        ///             <see cref="StylePen.StartCap"/>, 
+        ///             <see cref="StylePen.EndCap"/>, 
+        ///             <see cref="StylePen.LineJoin"/>, 
+        ///             <see cref="StylePen.DashStyle"/>, 
+        ///             <see cref="StylePen.DashPattern"/>, 
+        ///             <see cref="StylePen.DashOffset"/>, 
+        ///             <see cref="StylePen.DashCap"/>, 
+        ///             <see cref="StylePen.CompoundArray"/>, 
+        ///             and <see cref="StylePen.Alignment"/> 
+        ///             are switched in the middle of the min / max values.
+        ///         </description>
+        ///     </item>
+        ///		<item>
+        ///         <term>
+        ///             <see cref="SolidStyleBrush"/>
+        ///         </term>
+        ///         <description>
+        ///             SolidStyleBrush color are interpolated. 
+        ///             Other brushes are not supported.
+        ///         </description>
+        ///     </item>
+        ///		<item>
+        ///         <term>
+        ///             <see cref="VectorStyle"/>
+        ///         </term>
+        ///         <description>
+        ///             <see cref="VectorStyle.MaxVisible"/>, 
+        ///             <see cref="VectorStyle.MinVisible"/>, 
+        ///             <see cref="VectorStyle.Line"/>, 
+        ///             <see cref="VectorStyle.Outline"/>, 
+        ///             <see cref="VectorStyle.Fill"/> and 
+        ///             <see cref="Symbol.SymbolScale"/>
+        ///             are scaled linearly. 
+        ///             Symbol, EnableOutline and Enabled switch in the middle 
+        ///             of the min/max values.
+        ///         </description>
+        ///     </item>
+        ///		<item>  
+        ///         <term>  
+        ///             <see cref="SharpMap.Styles.LabelStyle"/>
+        ///         </term>
+        ///         <description>
+        ///             FontSize, BackColor, ForeColor, MaxVisible, MinVisible, Offset 
+        ///             are scaled linearly. All other properties use min-style.
+        ///         </description>
+        ///     </item>
         /// </list>
         /// </para>
         /// <example>
@@ -90,10 +156,13 @@ namespace SharpMap.Rendering.Thematics
         /// //Create two vector styles to interpolate between
         /// SharpMap.Styles.VectorStyle min = new SharpMap.Styles.VectorStyle();
         /// SharpMap.Styles.VectorStyle max = new SharpMap.Styles.VectorStyle();
+        /// 
         /// min.Outline.Width = 1f; //Outline width of the minimum value
         /// max.Outline.Width = 3f; //Outline width of the maximum value
+        /// 
         /// //Create a theme interpolating population density between 0 and 400
         /// SharpMap.Rendering.Thematics.GradientTheme popdens = new SharpMap.Rendering.Thematics.GradientTheme("PopDens", 0, 400, min, max);
+        /// 
         /// //Set the fill-style colors to be a rainbow blend from red to blue.
         /// popdens.FillColorBlend = SharpMap.Rendering.Thematics.ColorBlend.Rainbow5;
         /// myFeatureLayer.Theme = popdens;
@@ -201,7 +270,7 @@ namespace SharpMap.Rendering.Thematics
         /// <returns><see cref="SharpMap.Styles.IStyle">Style</see> calculated by a linear interpolation between the min/max styles</returns>
         public IStyle GetStyle(FeatureDataRow row)
         {
-            double weighting = 0;
+            double weighting;
 
             try
             {
@@ -210,7 +279,7 @@ namespace SharpMap.Rendering.Thematics
             catch
             {
                 throw new InvalidOperationException(
-                    "Invalid attribute type in gradient theme. "+
+                    "Invalid attribute type in gradient theme. " +
                     "Couldn't parse weighting attribute (must be numeric).");
             }
 
@@ -238,7 +307,7 @@ namespace SharpMap.Rendering.Thematics
             if (styleCalculator == null)
             {
                 throw new ArgumentException(
-                    "Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle "+
+                    "Only SharpMap.Styles.VectorStyle and SharpMap.Styles.LabelStyle " +
                     "are supported for the gradient theme");
             }
 
@@ -246,9 +315,11 @@ namespace SharpMap.Rendering.Thematics
         }
 
         #endregion
-        
-		#region Explicit Interface Implementation
+
+        #region Explicit Interface Implementation
+
         #region ITheme Members
+
         IStyle ITheme.GetStyle(IFeatureDataRecord row)
         {
             if (!(row is FeatureDataRow))
@@ -258,7 +329,9 @@ namespace SharpMap.Rendering.Thematics
 
             return GetStyle(row as FeatureDataRow);
         }
+
         #endregion
+
         #endregion
 
         #region Private helper methods
@@ -362,7 +435,7 @@ namespace SharpMap.Rendering.Thematics
         {
             if (attr < _min) return 0;
             if (attr > _max) return 1;
-            return (attr - _min) / (_max - _min);
+            return (attr - _min)/(_max - _min);
         }
 
         private bool interpolateBool(bool min, bool max, double attr)
@@ -374,12 +447,12 @@ namespace SharpMap.Rendering.Thematics
 
         private float interpolateFloat(float min, float max, double attr)
         {
-            return Convert.ToSingle((max - min) * fraction(attr) + min);
+            return Convert.ToSingle((max - min)*fraction(attr) + min);
         }
 
         private double interpolateDouble(double min, double max, double attr)
         {
-            return (max - min) * fraction(attr) + min;
+            return (max - min)*fraction(attr) + min;
         }
 
         private StyleBrush interpolateBrush(StyleBrush min, StyleBrush max, double attr)
@@ -418,6 +491,7 @@ namespace SharpMap.Rendering.Thematics
             //pen.CustomEndCap = (frac > 0.5 ? max.CustomEndCap : min.CustomEndCap);  //Throws ArgumentException
             return pen;
         }
+
         #endregion
     }
 }

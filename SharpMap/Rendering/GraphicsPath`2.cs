@@ -27,39 +27,39 @@ namespace SharpMap.Rendering
     /// Represents a series of figures of connected points in an 
     /// n-dimensional vector space, which is set by generic parameters.
     /// </summary>
-    /// <typeparam name="TViewPoint">Type of point used in the path.</typeparam>
+    /// <typeparam name="TPoint">Type of point used in the path.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear used to bound the path.</typeparam>
-    public abstract class GraphicsPath<TViewPoint, TViewBounds> : ICloneable,
-                                                                  IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>>,
-                                                                  IEquatable<GraphicsPath<TViewPoint, TViewBounds>>
-        where TViewPoint : IVectorD
+    public abstract class GraphicsPath<TPoint, TViewBounds> : ICloneable,
+                                                                  IEnumerable<GraphicsFigure<TPoint, TViewBounds>>,
+                                                                  IEquatable<GraphicsPath<TPoint, TViewBounds>>
+        where TPoint : IVectorD
         where TViewBounds : IMatrixD, IEquatable<TViewBounds>
     {
-        private readonly List<GraphicsFigure<TViewPoint, TViewBounds>> _figures =
-            new List<GraphicsFigure<TViewPoint, TViewBounds>>();
+        private readonly List<GraphicsFigure<TPoint, TViewBounds>> _figures =
+            new List<GraphicsFigure<TPoint, TViewBounds>>();
 
         private int _currentFigureIndex;
         private TViewBounds _bounds;
 
         /// <summary>
-        /// Creates a new, empty <see cref="GraphicsPath{TViewPoint, TViewBounds}"/>.
+        /// Creates a new, empty <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
         /// </summary>
         protected GraphicsPath()
         {
         }
 
         /// <summary>
-        /// Creates a new, open <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// Creates a new, open <see cref="GraphicsPath{TPoint, TViewBounds}"/> 
         /// with the given points.
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
-        protected GraphicsPath(IEnumerable<TViewPoint> points)
+        protected GraphicsPath(IEnumerable<TPoint> points)
             : this(points, false)
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// Creates a new <see cref="GraphicsPath{TPoint, TViewBounds}"/> 
         /// with the given points, as closed or open.
         /// </summary>
         /// <param name="points">
@@ -68,29 +68,29 @@ namespace SharpMap.Rendering
         /// <param name="isClosed">
         /// True to create a closed path, false for an open path.
         /// </param>
-        protected GraphicsPath(IEnumerable<TViewPoint> points, bool isClosed)
+        protected GraphicsPath(IEnumerable<TPoint> points, bool isClosed)
         {
-            GraphicsFigure<TViewPoint, TViewBounds> figure = CreateFigure(points, isClosed);
+            GraphicsFigure<TPoint, TViewBounds> figure = CreateFigure(points, isClosed);
             _figures.Add(figure);
             _currentFigureIndex = 0;
         }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with the given 
-        /// <see cref="GraphicsFigure{TViewPoint, TViewRectangle}"/> instance.
+        /// Creates a new <see cref="GraphicsPath{TPoint, TViewBounds}"/> with the given 
+        /// <see cref="GraphicsFigure{TPoint, TRectangle}"/> instance.
         /// </summary>
         /// <param name="figure">A figure to create the path from.</param>
-        protected GraphicsPath(GraphicsFigure<TViewPoint, TViewBounds> figure)
-            : this(new GraphicsFigure<TViewPoint, TViewBounds>[] {figure})
+        protected GraphicsPath(GraphicsFigure<TPoint, TViewBounds> figure)
+            : this(new GraphicsFigure<TPoint, TViewBounds>[] {figure})
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with the given 
-        /// <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> instances.
+        /// Creates a new <see cref="GraphicsPath{TPoint, TViewBounds}"/> with the given 
+        /// <see cref="GraphicsPath{TPoint, TViewBounds}"/> instances.
         /// </summary>
         /// <param name="figures">An enumeration of figures to create the path from.</param>
-        protected GraphicsPath(IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>> figures)
+        protected GraphicsPath(IEnumerable<GraphicsFigure<TPoint, TViewBounds>> figures)
         {
             _figures.AddRange(figures);
 
@@ -107,7 +107,7 @@ namespace SharpMap.Rendering
         public override string ToString()
         {
             return String.Format("[{0}] {1} figure{2} of {3} points; Bounds: {4}",
-                                 GetType(), _figures.Count, (_figures.Count > 1 ? "s" : ""), typeof (TViewPoint).Name,
+                                 GetType(), _figures.Count, (_figures.Count > 1 ? "s" : ""), typeof (TPoint).Name,
                                  ComputeBounds());
         }
 
@@ -116,7 +116,7 @@ namespace SharpMap.Rendering
             unchecked
             {
                 int hash = 19638952;
-                foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in _figures)
+                foreach (GraphicsFigure<TPoint, TViewBounds> figure in _figures)
                 {
                     hash ^= figure.GetHashCode();
                     hash ^= figure.IsClosed ? 729487 : 9245;
@@ -129,30 +129,30 @@ namespace SharpMap.Rendering
         #region Equality Computation
 
         /// <summary>
-        /// Returns true if two <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
+        /// Returns true if two <see cref="GraphicsPath{TPoint, TViewBounds}"/> 
         /// instances are figure-for-figure, point-for-point identical.
         /// </summary>
         /// <remarks>
-        /// Casts <paramref name="obj"/> to a <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> 
-        /// and calls <see cref="Equals(GraphicsPath{TViewPoint, TViewBounds})"/> with the result.
+        /// Casts <paramref name="obj"/> to a <see cref="GraphicsPath{TPoint, TViewBounds}"/> 
+        /// and calls <see cref="Equals(GraphicsPath{TPoint, TViewBounds})"/> with the result.
         /// </remarks>
         /// <param name="obj">The value to compare.</param>
         /// <returns>True if the parameter is a path which is figure-for-figure, point-for-point equal.</returns>
         public override bool Equals(object obj)
         {
-            GraphicsPath<TViewPoint, TViewBounds> other = obj as GraphicsPath<TViewPoint, TViewBounds>;
+            GraphicsPath<TPoint, TViewBounds> other = obj as GraphicsPath<TPoint, TViewBounds>;
             return Equals(other);
         }
 
-        #region IEquatable<GraphicsPath<TViewPoint, TViewBounds>> Members
+        #region IEquatable<GraphicsPath<TPoint, TViewBounds>> Members
 
         /// <summary>
-        /// Returns true if two <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> instances are figure-for-figure, 
+        /// Returns true if two <see cref="GraphicsPath{TPoint, TViewBounds}"/> instances are figure-for-figure, 
         /// point-for-point identical.
         /// </summary>
-        /// <param name="other">The <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> to compare.</param>
+        /// <param name="other">The <see cref="GraphicsPath{TPoint, TViewBounds}"/> to compare.</param>
         /// <returns>True if the two paths are figure-for-figure, point-for-point equal.</returns>
-        public bool Equals(GraphicsPath<TViewPoint, TViewBounds> other)
+        public bool Equals(GraphicsPath<TPoint, TViewBounds> other)
         {
             if (other == null)
             {
@@ -183,9 +183,9 @@ namespace SharpMap.Rendering
         #endregion
 
         /// <summary>
-        /// Gets a list of the <see cref="GraphicsFigure{TViewPoint, TViewBounds}"/> in this path.
+        /// Gets a list of the <see cref="GraphicsFigure{TPoint, TViewBounds}"/> in this path.
         /// </summary>
-        public IList<GraphicsFigure<TViewPoint, TViewBounds>> Figures
+        public IList<GraphicsFigure<TPoint, TViewBounds>> Figures
         {
             get { return _figures.AsReadOnly(); }
         }
@@ -193,13 +193,13 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets the points in the <see cref="CurrentFigure"/>.
         /// </summary>
-        public IList<TViewPoint> Points
+        public IList<TPoint> Points
         {
             get
             {
                 if (CurrentFigure == null)
                 {
-                    return new TViewPoint[] {};
+                    return new TPoint[] {};
                 }
 
                 return CurrentFigure.Points;
@@ -209,7 +209,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets the current figure in the path.
         /// </summary>
-        public GraphicsFigure<TViewPoint, TViewBounds> CurrentFigure
+        public GraphicsFigure<TPoint, TViewBounds> CurrentFigure
         {
             get
             {
@@ -250,15 +250,15 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Creates a <see cref="GraphicsPath{TViewPoint, TViewBounds}"/> with the given figures.
+        /// Creates a <see cref="GraphicsPath{TPoint, TViewBounds}"/> with the given figures.
         /// </summary>
         /// <param name="figures">Figures used in creating the path.</param>
         /// <returns>A new path with the given <paramref name="figures"/>.</returns>
-        protected abstract GraphicsPath<TViewPoint, TViewBounds> CreatePath(
-            IEnumerable<GraphicsFigure<TViewPoint, TViewBounds>> figures);
+        protected abstract GraphicsPath<TPoint, TViewBounds> CreatePath(
+            IEnumerable<GraphicsFigure<TPoint, TViewBounds>> figures);
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsFigure{TViewPoint, TViewBounds}"/> 
+        /// Creates a new <see cref="GraphicsFigure{TPoint, TViewBounds}"/> 
         /// with the given points, either open or closed.
         /// </summary>
         /// <param name="points">Points in the figure.</param>
@@ -267,7 +267,7 @@ namespace SharpMap.Rendering
         /// false if it is open.
         /// </param>
         /// <returns>A new figure with the given points and open or closed condition.</returns>
-        protected abstract GraphicsFigure<TViewPoint, TViewBounds> CreateFigure(IEnumerable<TViewPoint> points,
+        protected abstract GraphicsFigure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
                                                                                 bool isClosed);
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace SharpMap.Rendering
         /// Points to make the GraphicsFigure from.
         /// </param>
         /// <param name="closeFigure">True to close the figure, false to keep it open.</param>
-        public void NewFigure(IEnumerable<TViewPoint> points, bool closeFigure)
+        public void NewFigure(IEnumerable<TPoint> points, bool closeFigure)
         {
             _figures.Add(CreateFigure(points, closeFigure));
             _currentFigureIndex = _figures.Count - 1;
@@ -303,32 +303,32 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Clones this <see cref="GraphicsPath{TViewPoint, TViewBounds}"/>.
+        /// Clones this <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
         /// </summary>
         /// <returns>A new GraphicsPath with identical figures.</returns>
-        public GraphicsPath<TViewPoint, TViewBounds> Clone()
+        public GraphicsPath<TPoint, TViewBounds> Clone()
         {
-            List<GraphicsFigure<TViewPoint, TViewBounds>> figuresCopy =
-                new List<GraphicsFigure<TViewPoint, TViewBounds>>(_figures.Count);
+            List<GraphicsFigure<TPoint, TViewBounds>> figuresCopy =
+                new List<GraphicsFigure<TPoint, TViewBounds>>(_figures.Count);
 
-            foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in _figures)
+            foreach (GraphicsFigure<TPoint, TViewBounds> figure in _figures)
             {
                 figuresCopy.Add(figure.Clone());
             }
 
-            GraphicsPath<TViewPoint, TViewBounds> path = CreatePath(figuresCopy);
+            GraphicsPath<TPoint, TViewBounds> path = CreatePath(figuresCopy);
             return path;
         }
 
-        #region IEnumerable<GraphicsFigure<TViewPoint,TViewBounds>> Members
+        #region IEnumerable<GraphicsFigure<TPoint,TViewBounds>> Members
 
         /// <summary>
         /// Enumerates the figures in this path.
         /// </summary>
-        /// <returns>An enumerator over this path's <see cref="GraphicsFigure{TViewPoint, TViewBounds}">figures</see>.</returns>
-        public IEnumerator<GraphicsFigure<TViewPoint, TViewBounds>> GetEnumerator()
+        /// <returns>An enumerator over this path's <see cref="GraphicsFigure{TPoint, TViewBounds}">figures</see>.</returns>
+        public IEnumerator<GraphicsFigure<TPoint, TViewBounds>> GetEnumerator()
         {
-            foreach (GraphicsFigure<TViewPoint, TViewBounds> figure in _figures)
+            foreach (GraphicsFigure<TPoint, TViewBounds> figure in _figures)
             {
                 yield return figure;
             }

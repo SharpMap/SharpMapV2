@@ -1,4 +1,6 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿<?xml version='1.0' encoding='utf-8'?>
+<!--
+// Copyright 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -14,19 +16,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
-
-namespace SharpMap.Styles
-{
-    /// <summary>
-    /// Interface which applies to a feature style and allows the feature
-    /// to be selectable or not, depending on the style.
-    /// </summary>
-    public interface IFeatureLayerStyle
-    {
-        /// <summary>
-        /// Gets or sets a value to determine if features can 
-        /// be selected on this layer.
-        /// </summary>
-        bool AreFeaturesSelectable { get; set; }
-    }
-}
+-->
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings />
+</SettingsFile>

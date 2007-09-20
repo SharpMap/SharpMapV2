@@ -18,212 +18,108 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
-using NPack;
-using NPack.Interfaces;
-using SharpMap.Utilities;
+using IAffineMatrixD = NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
     /// <summary>
-    /// Represents a 2 dimensional graphic used for point data on a map.
+    /// Represents a 2 dimensional graphical symbol used for point data on a map.
     /// </summary>
-    public sealed class Symbol2D : ICloneable, IDisposable, ISerializable
+    public class Symbol2D : Symbol<Point2D, Size2D>
     {
-        private ColorMatrix _colorTransform = ColorMatrix.Identity;
-        private Matrix2D _rotationTransform = Matrix2D.Identity;
-        private Matrix2D _scalingTransform = Matrix2D.Identity;
-        private Matrix2D _translationTransform = Matrix2D.Identity;
-        private Stream _symbolData;
-        private Rectangle2D _symbolBox;
-        private string _symbolDataHash;
-        private bool _disposed;
 
-        #region Object Construction/Destruction
+        #region Object construction / disposal
 
+        /// <summary>
+        /// Creates a new, blank symbol with the given <paramref name="size"/>.
+        /// </summary>
+        /// <param name="size">The base size of the symbol.</param>
         public Symbol2D(Size2D size)
-        {
-            _symbolData = new MemoryStream(new byte[] { 0x0, 0x0, 0x0, 0x0 });
-            _symbolBox = new Rectangle2D(Point2D.Zero, size);
-        }
+            : base(size) { }
 
+        /// <summary>
+        /// Creates a new symbol with the given <paramref name="symbolData">data</paramref>
+        /// and <paramref name="size"/>.
+        /// </summary>
+        /// <param name="symbolData">The data which encodes this symbol.</param>
+        /// <param name="size">The base size of the symbol.</param>
         public Symbol2D(Stream symbolData, Size2D size)
+            : base(symbolData, size)
         {
-            _symbolBox = new Rectangle2D(Point2D.Zero, size);
-
-            if (!symbolData.CanSeek)
-            {
-                if (symbolData.Position != 0)
-                {
-                    throw new InvalidOperationException(
-                        "Symbol data stream isn't at the beginning, and it can't be repositioned");
-                }
-
-                MemoryStream copy = new MemoryStream();
-
-                using (BinaryReader reader = new BinaryReader(symbolData))
-                {
-                    copy.Write(reader.ReadBytes((int)symbolData.Length), 0, (int)symbolData.Length);
-                }
-
-                symbolData = copy;
-            }
-
-            _symbolData = symbolData;
-            _symbolDataHash = Hash.AsString(_symbolData);
         }
 
+        /// <summary>
+        /// Creates a new symbol with the given <paramref name="symbolData">data</paramref>
+        /// and <paramref name="size"/>.
+        /// </summary>
+        /// <param name="symbolData">The data which encodes this symbol.</param>
+        /// <param name="size">The base size of the symbol.</param>
         public Symbol2D(byte[] symbolData, Size2D size)
             : this(new MemoryStream(symbolData), size)
         {
         }
 
-        private Symbol2D(SerializationInfo info, StreamingContext context)
+        protected Symbol2D(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();
         }
-
-        #region Dispose Pattern
-
-        ~Symbol2D()
-        {
-            dispose(false);
-        }
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            dispose(true);
-            IsDisposed = true;
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        public bool IsDisposed
-        {
-            get { return _disposed; }
-            private set { _disposed = value; }
-        }
-
-        private void dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                if (_symbolData != null)
-                {
-                    _symbolData.Dispose();
-                }
-            }
-        }
-
-        #endregion
 
         #endregion
 
         /// <summary>
         /// Returns a string description of this symbol.
         /// </summary>
-        /// <returns>A string representing the value of this <see cref="Symbol2D"/>.</returns>
+        /// <returns>
+        /// A string representing the value of this <see cref="Symbol2D"/>.
+        /// </returns>
         public override string ToString()
         {
-            checkDisposed();
-            return
-                String.Format(
+            CheckDisposed();
+            return String.Format(
                     "[{0}] Size: {1}; Data Hash: {2}; Affine Transform: {3}; Color Transform: {4}; Offset: {5}; Rotation: {6:N}; ScaleX: {7:N}; ScaleY: {8:N}",
-                    GetType(), Size, _symbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, ScaleX, ScaleY);
+                    GetType(), Size, SymbolDataHash, AffineTransform, ColorTransform, Offset, Rotation, ScaleX, ScaleY);
         }
 
         /// <summary>
-        /// Gets or sets the size of this symbol.
+        /// Gets or sets a <see cref="Matrix2D"/> object used 
+        /// to transform this <see cref="Symbol2D"/>.
         /// </summary>
-        public Size2D Size
-        {
-            get { checkDisposed(); return _symbolBox.Size; }
-            set { checkDisposed(); _symbolBox = new Rectangle2D(new Point2D(0, 0), value); }
-        }
-
-        /// <summary>
-        /// Gets a stream containing the <see cref="Symbol2D"/> data.
-        /// </summary>
-        /// <remarks>
-        /// This is often a bitmap or a vector-based image.
-        /// </remarks>
-        public Stream SymbolData
-        {
-            get { checkDisposed(); return _symbolData; }
-            private set { checkDisposed(); _symbolData = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a <see cref="Matrix2D"/> object used to transform this <see cref="Symbol2D"/>.
-        /// </summary>
-        public Matrix2D AffineTransform
+        public new Matrix2D AffineTransform
         {
             get
             {
-                checkDisposed();
-                IMatrix<DoubleComponent> concatenated =
-                    _rotationTransform.Multiply(_scalingTransform).Multiply(_translationTransform);
-                return new Matrix2D(concatenated); 
+                return base.AffineTransform as Matrix2D;
             }
             // TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
             set { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Gets or sets a <see cref="ColorMatrix"/> used to change the color of this symbol.
+        /// Gets or sets the amount of rotation to render this symbol with in radians.
         /// </summary>
-        public ColorMatrix ColorTransform
-        {
-            get { return _colorTransform; }
-            set { _colorTransform = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a vector by which to offset the symbol.
-        /// </summary>
-        public Point2D Offset
-        {
-            get { checkDisposed(); return new Point2D(_translationTransform.OffsetX, _translationTransform.OffsetY); }
-            set
-            {
-                checkDisposed();
-                _translationTransform.OffsetX = value.X;
-                _translationTransform.OffsetY = value.Y;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value by which to rotate this symbol, in radians.
-        /// </summary>
-        public double Rotation
+        public new double Rotation
         {
             get
             {
-                checkDisposed();
-                return Math.Asin(_rotationTransform.M21) 
-                    + _rotationTransform.M11 < 0 ? Math.PI : 0;
+                return Math.Asin((double)base.Rotation[1, 0])
+                    + (double)base.Rotation[0, 0] < 0 ? Math.PI : 0;
             }
-            set { checkDisposed(); _rotationTransform.Rotate(value); }
+            set
+            {
+                Matrix2D matrix = new Matrix2D();
+                matrix.Rotate(value);
+                base.Rotation = matrix;
+            }
         }
 
         /// <summary>
-        /// Sets a value by which to scale this symbol's width and height.
+        /// Scales this symbol's width and height.
         /// </summary>
-        public double Scale
+        public new void Scale(double amount)
         {
-            set { checkDisposed(); _scalingTransform.M11 = _scalingTransform.M22 = value; }
+            Matrix2D scaleMatrix = new Matrix2D();
+            scaleMatrix.M11 = scaleMatrix.M22 = amount;
+            base.Scale = (IAffineMatrixD)base.Scale.Multiply(scaleMatrix);
         }
 
         /// <summary>
@@ -231,8 +127,14 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double ScaleX
         {
-            get { checkDisposed(); return _scalingTransform.M11; }
-            set { checkDisposed(); _scalingTransform.M11 = value; }
+            get
+            {
+                return (double)base.Scale[0, 0];
+            }
+            set
+            {
+                base.Scale[0, 0] = value;
+            }
         }
 
         /// <summary>
@@ -240,71 +142,48 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         public double ScaleY
         {
-            get { checkDisposed(); return _scalingTransform.M22; }
-            set { checkDisposed(); _scalingTransform.M22 = value; }
-        }
-
-        #region Private helper methods
-
-        private void checkDisposed()
-        {
-            if (IsDisposed)
+            get
             {
-                throw new ObjectDisposedException(GetType().ToString());
+                return (double)base.Scale[1, 1];
+            }
+            set
+            {
+                base.Scale[1, 1] = value;
             }
         }
-        #endregion
 
-        #region ICloneable Members
+        #region Symbol`2 implementation
 
-        /// <summary>
-        /// Clones this symbol.
-        /// </summary>
-        /// <returns>
-        /// A duplicate of this <see cref="Symbol2D"/>.
-        /// </returns>
-        public Symbol2D Clone()
+        protected override Symbol<Point2D, Size2D> CreateNew(Size2D size)
         {
-            Symbol2D clone = new Symbol2D(_symbolBox.Size);
-
-            // Record the original position
-            long streamPos = _symbolData.Position;
-            _symbolData.Seek(0, SeekOrigin.Begin);
-
-            byte[] buffer = new byte[_symbolData.Length];
-            _symbolData.Read(buffer, 0, buffer.Length);
-            MemoryStream copy = new MemoryStream(buffer);
-
-            // Restore the original position
-            _symbolData.Position = streamPos;
-
-            clone.SymbolData = copy;
-            clone._symbolDataHash = _symbolDataHash;
-            clone.ColorTransform = ColorTransform.Clone();
-            clone._rotationTransform = _rotationTransform.Clone();
-            clone._translationTransform = _translationTransform.Clone();
-            clone._scalingTransform = _scalingTransform.Clone();
-            return clone;
+            return new Symbol2D(size);
         }
 
-        /// <summary>
-        /// Clones this symbol.
-        /// </summary>
-        /// <returns>A duplicate of this <see cref="Symbol2D"/> as an object reference.</returns>
-        object ICloneable.Clone()
+        protected override IAffineMatrixD CreateIdentityMatrix()
         {
-            return Clone();
+            return new Matrix2D();
         }
 
-        #endregion
-
-        #region ISerializable Members
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        protected override IAffineMatrixD CreateMatrix(IAffineMatrixD matrix)
         {
-            throw new NotImplementedException();
+            return new Matrix2D(matrix);
         }
 
+        protected override Point2D GetOffset(IAffineMatrixD translationMatrix)
+        {
+            if(!(translationMatrix is Matrix2D))
+            {
+                throw new ArgumentException("Parameter 'translationMatrix' must be a Matrix2D.");
+            }
+
+            Matrix2D matrix = translationMatrix as Matrix2D;
+            return new Point2D(matrix.OffsetX, matrix.OffsetY);
+        }
+
+        protected override void SetOffset(Point2D offset)
+        {
+
+        }
         #endregion
     }
 }

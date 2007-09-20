@@ -201,7 +201,7 @@ namespace SharpMap.Rendering.Gdi
                 return null;
             }
 
-            BrushLookupKey key = new BrushLookupKey(styleBrush.GetType().TypeHandle, styleBrush.ToString());
+            BrushLookupKey key = new BrushLookupKey(styleBrush.GetType().TypeHandle, styleBrush.GetHashCode());
             Brush brush;
             _brushCache.TryGetValue(key, out brush);
 
@@ -221,7 +221,7 @@ namespace SharpMap.Rendering.Gdi
                 return null;
             }
 
-            PenLookupKey key = new PenLookupKey(stylePen.GetType().TypeHandle, stylePen.ToString());
+            PenLookupKey key = new PenLookupKey(stylePen.GetType().TypeHandle, stylePen.GetHashCode());
             Pen pen;
             _penCache.TryGetValue(key, out pen);
 
@@ -241,7 +241,7 @@ namespace SharpMap.Rendering.Gdi
                 return null;
             }
 
-            SymbolLookupKey key = new SymbolLookupKey(symbol2D.ToString());
+            SymbolLookupKey key = new SymbolLookupKey(symbol2D.GetHashCode());
             Bitmap symbol;
             _symbolCache.TryGetValue(key, out symbol);
 
@@ -267,12 +267,12 @@ namespace SharpMap.Rendering.Gdi
         private struct BrushLookupKey : IEquatable<BrushLookupKey>
         {
             public readonly RuntimeTypeHandle StyleBrushType;
-            public readonly string StyleBrushValue;
+            public readonly int StyleBrushId;
 
-            public BrushLookupKey(RuntimeTypeHandle type, string styleBrushValue)
+            public BrushLookupKey(RuntimeTypeHandle type, int styleBrushId)
             {
                 StyleBrushType = type;
-                StyleBrushValue = styleBrushValue;
+                StyleBrushId = styleBrushId;
             }
 
             #region IEquatable<BrushLookupKey> Members
@@ -280,7 +280,7 @@ namespace SharpMap.Rendering.Gdi
             public bool Equals(BrushLookupKey other)
             {
                 return other.StyleBrushType.Equals(StyleBrushType)
-                       && other.StyleBrushValue == StyleBrushValue;
+                       && other.StyleBrushId == StyleBrushId;
             }
 
             #endregion
@@ -289,12 +289,12 @@ namespace SharpMap.Rendering.Gdi
         private struct PenLookupKey : IEquatable<PenLookupKey>
         {
             public readonly RuntimeTypeHandle StylePenType;
-            public readonly string StylePenValue;
+            public readonly int StylePenId;
 
-            public PenLookupKey(RuntimeTypeHandle type, string stylePenValue)
+            public PenLookupKey(RuntimeTypeHandle type, int stylePenValue)
             {
                 StylePenType = type;
-                StylePenValue = stylePenValue;
+                StylePenId = stylePenValue;
             }
 
             #region IEquatable<PenLookupKey> Members
@@ -302,7 +302,7 @@ namespace SharpMap.Rendering.Gdi
             public bool Equals(PenLookupKey other)
             {
                 return other.StylePenType.Equals(StylePenType)
-                       && other.StylePenValue == StylePenValue;
+                       && other.StylePenId == StylePenId;
             }
 
             #endregion
@@ -310,18 +310,18 @@ namespace SharpMap.Rendering.Gdi
 
         private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
         {
-            public readonly string SymbolValue;
+            public readonly int SymbolId;
 
-            public SymbolLookupKey(string symbolValue)
+            public SymbolLookupKey(int symbolId)
             {
-                SymbolValue = symbolValue;
+                SymbolId = symbolId;
             }
 
             #region IEquatable<SymbolLookupKey> Members
 
             public bool Equals(SymbolLookupKey other)
             {
-                return other.SymbolValue == SymbolValue;
+                return other.SymbolId == SymbolId;
             }
 
             #endregion

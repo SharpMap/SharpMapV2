@@ -273,6 +273,7 @@
     <Compile Include="Rendering\IFeatureRenderer`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
+    <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Styles\RasterStyle.cs" />
     <Compile Include="Tools\ActionContext`1.cs" />
@@ -332,7 +333,6 @@
     <Compile Include="Styles\StyleFont.cs" />
     <Compile Include="Styles\StyleFontFamily.cs" />
     <Compile Include="Styles\StyleFontStyle.cs" />
-    <Compile Include="Styles\ImageAttributes.cs" />
     <Compile Include="Styles\IStyle.cs" />
     <Compile Include="Styles\LabelStyle.cs" />
     <Compile Include="Styles\StyleLineCap.cs" />

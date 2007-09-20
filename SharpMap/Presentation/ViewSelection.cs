@@ -28,22 +28,22 @@ namespace SharpMap.Presentation
     /// <summary>
     /// Represents a selection on a map view.
     /// </summary>
-    /// <typeparam name="TViewPoint">The type of point in this selection.</typeparam>
-    /// <typeparam name="TViewSize">The type of size structure in this selection.</typeparam>
+    /// <typeparam name="TPoint">The type of point in this selection.</typeparam>
+    /// <typeparam name="TSize">The type of size structure in this selection.</typeparam>
     /// <typeparam name="TViewRegion">The type of region this selection covers.</typeparam>
     /// <remarks>
     /// The type parameters allows this class to be customized for to accomodate structures
     /// which represent points and areas in various dimensions.
     /// </remarks>
-    public abstract class ViewSelection<TViewPoint, TViewSize, TViewRegion> : IViewSelection<TViewPoint, TViewSize, TViewRegion>
-        where TViewPoint : IVectorD, IHasEmpty
-        where TViewSize : IVectorD, IHasEmpty
+    public abstract class ViewSelection<TPoint, TSize, TViewRegion> : IViewSelection<TPoint, TSize, TViewRegion>
+        where TPoint : IVectorD, IHasEmpty
+        where TSize : IVectorD, IHasEmpty
         where TViewRegion : IMatrixD, IEquatable<TViewRegion>, new()
     {
-        private GraphicsPath<TViewPoint, TViewRegion> _path;
+        private GraphicsPath<TPoint, TViewRegion> _path;
         private StylePen _outline;
         private StyleBrush _fill;
-        private TViewPoint _anchorPoint;
+        private TPoint _anchorPoint;
         private TViewRegion _boundingRegion = new TViewRegion();
 
         /// <summary>
@@ -79,10 +79,10 @@ namespace SharpMap.Presentation
         /// Creates a new path for the selection, but doesn't add it to the selection.
         /// </summary>
         /// <returns>A GraphicsPath instance representing a new selection path.</returns>
-        protected abstract GraphicsPath<TViewPoint, TViewRegion> CreatePath();
+        protected abstract GraphicsPath<TPoint, TViewRegion> CreatePath();
 
-        #region IViewSelection<TViewPoint,TViewSize,TViewRegion> Members
-        public void AddPoint(TViewPoint point)
+        #region IViewSelection<TPoint,TSize,TViewRegion> Members
+        public void AddPoint(TPoint point)
         {
             if (Path.Points.Count == 0 && AnchorPoint.IsEmpty)
             {
@@ -93,7 +93,7 @@ namespace SharpMap.Presentation
             recomputeBoundingRegion();
         }
 
-        public void Expand(TViewSize size)
+        public void Expand(TSize size)
         {
             for (int pointIndex = 0; pointIndex < Path.Points.Count; pointIndex++)
             {
@@ -103,22 +103,22 @@ namespace SharpMap.Presentation
             recomputeBoundingRegion();
         }
 
-        public void MoveBy(TViewPoint location)
+        public void MoveBy(TPoint location)
         {
             throw new NotImplementedException("implement this");
         }
 
-        public void RemovePoint(TViewPoint point)
+        public void RemovePoint(TPoint point)
         {
             _path.Points.Remove(point);
         }
 
-        public GraphicsPath<TViewPoint, TViewRegion> Path
+        public GraphicsPath<TPoint, TViewRegion> Path
         {
             get { return _path.Clone(); }
         }
 
-        public TViewPoint AnchorPoint
+        public TPoint AnchorPoint
         {
             get { return _anchorPoint; }
             set { _anchorPoint = value; }
@@ -154,7 +154,7 @@ namespace SharpMap.Presentation
             DoubleComponent[][] boxElements = BoundingRegion.Elements;
             bool recorded = false;
 
-            foreach (TViewPoint point in Path.Points)
+            foreach (TPoint point in Path.Points)
             {
                 DoubleComponent[] components = point.Components;
 

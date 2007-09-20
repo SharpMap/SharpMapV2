@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,18 +15,22 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace SharpMap.Styles
+using SharpMap.Data.Providers.ShapeFile;
+using SharpMap.Layers;
+
+namespace DemoWinForm
 {
-    /// <summary>
-    /// Interface which applies to a feature style and allows the feature
-    /// to be selectable or not, depending on the style.
-    /// </summary>
-    public interface IFeatureLayerStyle
+    public class ShapeFileLayerFactory : ILayerFactory
     {
-        /// <summary>
-        /// Gets or sets a value to determine if features can 
-        /// be selected on this layer.
-        /// </summary>
-        bool AreFeaturesSelectable { get; set; }
+        #region ILayerFactory Members
+
+        public ILayer Create(string layerName, string connectionInfo)
+        {
+            ShapeFileProvider shapeFileData = new ShapeFileProvider(connectionInfo);
+            GeometryLayer shapeFileLayer = new GeometryLayer(layerName, shapeFileData);
+            return shapeFileLayer;
+        }
+
+        #endregion
     }
 }

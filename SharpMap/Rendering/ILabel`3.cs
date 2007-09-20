@@ -25,13 +25,13 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Encapsulates a label glyph on a map.
     /// </summary>
-    /// <typeparam name="TViewPoint">Type of point.</typeparam>
-    /// <typeparam name="TViewRectangle">Type of rectangle.</typeparam>
+    /// <typeparam name="TPoint">Type of point.</typeparam>
+    /// <typeparam name="TRectangle">Type of rectangle.</typeparam>
     /// <typeparam name="TGraphicsPath">Type of graphics path.</typeparam>
-	public interface ILabel<TViewPoint, TViewRectangle, TGraphicsPath>
-		where TViewPoint : IVectorD
-		where TViewRectangle : IMatrixD, IEquatable<TViewRectangle>
-		where TGraphicsPath : GraphicsPath<TViewPoint, TViewRectangle>
+	public interface ILabel<TPoint, TRectangle, TGraphicsPath>
+		where TPoint : IVectorD
+		where TRectangle : IMatrixD, IEquatable<TRectangle>
+		where TGraphicsPath : GraphicsPath<TPoint, TRectangle>
 	{
 		/// <summary>
 		/// The text of the label.
@@ -41,7 +41,7 @@ namespace SharpMap.Rendering
 		/// <summary>
 		/// Label position.
 		/// </summary>
-		TViewPoint LabelPoint { get; set; }
+		TPoint LabelPoint { get; set; }
 
 		/// <summary>
 		/// Label font.
@@ -61,7 +61,7 @@ namespace SharpMap.Rendering
 		/// <summary>
 		/// Label collision bounds.
 		/// </summary>
-		TViewRectangle CollisionBounds { get; set; }
+		TRectangle CollisionBounds { get; set; }
 
 		/// <summary>
 		/// Path along which label runs.

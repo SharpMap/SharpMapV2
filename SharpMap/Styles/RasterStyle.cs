@@ -15,14 +15,22 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using SharpMap.Layers;
 using SharpMap.Rendering;
 
 namespace SharpMap.Styles
 {
+    /// <summary>
+    /// Represents a style for a <see cref="RasterLayer"/>.
+    /// </summary>
     public class RasterStyle : Style
     {
         private ColorMatrix _colorTransform;
 
+        /// <summary>
+        /// Gets or sets a color transform matrix used to recolor the 
+        /// raster data.
+        /// </summary>
         public ColorMatrix ColorTransform 
         {
             get { return _colorTransform; }

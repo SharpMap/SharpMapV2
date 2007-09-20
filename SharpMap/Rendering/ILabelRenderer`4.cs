@@ -25,22 +25,22 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Interface to a graphical renderer of label data.
     /// </summary>
-    /// <typeparam name="TViewPoint">
+    /// <typeparam name="TPoint">
     /// Type of point vector used by the graphical display coordinate system.
     /// </typeparam>
-    /// <typeparam name="TViewSize">
+    /// <typeparam name="TSize">
     /// Type of size vector used by the graphical display coordinate system.
     /// </typeparam>
-    /// <typeparam name="TViewRectangle">
+    /// <typeparam name="TRectangle">
     /// Type of rectangle matrix used by the graphical display coordinate system.
     /// </typeparam>
     /// <typeparam name="TRenderObject">
     /// Type of object used by the graphical display coordinate system to render spatial items.
     /// </typeparam>
-    public interface ILabelRenderer<TViewPoint, TViewSize, TViewRectangle, TRenderObject>
-        where TViewPoint : IVectorD
-		where TViewSize : IVectorD
-        where TViewRectangle : IMatrixD, IEquatable<TViewRectangle>
+    public interface ILabelRenderer<TPoint, TSize, TRectangle, TRenderObject>
+        where TPoint : IVectorD
+		where TSize : IVectorD
+        where TRectangle : IMatrixD, IEquatable<TRectangle>
     {
         /// <summary>
         /// Gets or sets a <see cref="StyleTextRenderingHint"/> to control how rendered text appears.
@@ -48,19 +48,19 @@ namespace SharpMap.Rendering
         StyleTextRenderingHint TextRenderingHint { get; set; }
 
         /// <summary>
-        /// Measures the <typeparamref name="TViewSize"/> of a string in the given <paramref name="font"/>.
+        /// Measures the <typeparamref name="TSize"/> of a string in the given <paramref name="font"/>.
         /// </summary>
         /// <param name="text">The string to measure.</param>
         /// <param name="font">The font to use to draw the string.</param>
         /// <returns>A measurement of the string.</returns>
-        TViewSize MeasureString(string text, StyleFont font);
+        TSize MeasureString(string text, StyleFont font);
 
         /// <summary>
         /// Renders a label.
         /// </summary>
         /// <param name="label">Label to render.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(ILabel<TViewPoint, TViewRectangle, GraphicsPath<TViewPoint, TViewRectangle>> label);
+        TRenderObject RenderLabel(ILabel<TPoint, TRectangle, GraphicsPath<TPoint, TRectangle>> label);
 
         /// <summary>
         /// Renders a label.
@@ -70,7 +70,7 @@ namespace SharpMap.Rendering
         /// <param name="font">The font to use to draw the label.</param>
         /// <param name="foreColor">The color to use to draw the label.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(string text, TViewPoint location, StyleFont font, StyleColor foreColor);
+        TRenderObject RenderLabel(string text, TPoint location, StyleFont font, StyleColor foreColor);
 
         /// <summary>
         /// Renders a label.
@@ -90,7 +90,7 @@ namespace SharpMap.Rendering
         /// </param>
         /// <param name="rotation">An amount to rotate the label by.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(string text, TViewPoint location, TViewPoint offset, StyleFont font, 
+        TRenderObject RenderLabel(string text, TPoint location, TPoint offset, StyleFont font, 
             StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
     }
 }

@@ -64,8 +64,6 @@ namespace SharpMap.Presentation.WinForms
 				_dpi = g.DpiX;
 			}
 
-			Cursor = Cursors.Cross;
-
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -395,59 +393,7 @@ namespace SharpMap.Presentation.WinForms
             BackgroundColor = ViewConverter.Convert(BackColor);
         }
 
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			Graphics g = e.Graphics;
-            g.Transform = getGdiViewTransform();
-            g.Clear(BackColor);
-
-		    foreach (GdiRenderObject ro in _pathQueue)
-		    {
-		        g.DrawPath(Pens.Black, ro.GdiPath);
-		    }
-
-            g.ResetTransform();
-		}
-
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			MapTool currentTool = SelectedTool;
-			SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
-
-			Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
-			onBeginAction(selectBox.Location);
-			Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
-			onMoveTo(endPoint);
-			onEndAction(endPoint);
-
-			SelectedTool = currentTool;
-
-			base.OnMouseWheel(e);
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			if (!_dragging && _mouseDownLocation != GdiPoint.Empty && e.Button == MouseButtons.Left)
-			{
-				_mouseRelativeLocation = new GdiPoint(e.X - _mouseDownLocation.X, e.Y - _mouseDownLocation.Y);
-
-				if (!withinDragTolerance(e.Location))
-				{
-					_dragging = true;
-					_mousePreviousLocation = _mouseDownLocation;
-				}
-			}
-
-			if (_dragging)
-			{
-				onMoveTo(ViewConverter.Convert(e.Location));
-				_mousePreviousLocation = e.Location;
-			}
-
-			base.OnMouseMove(e);
-		}
-
-		protected override void OnMouseDown(MouseEventArgs e)
+	    protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left) //dragging
 			{
@@ -458,7 +404,29 @@ namespace SharpMap.Presentation.WinForms
 			base.OnMouseDown(e);
 		}
 
-		protected override void OnMouseUp(MouseEventArgs e)
+	    protected override void OnMouseMove(MouseEventArgs e)
+	    {
+	        if (!_dragging && _mouseDownLocation != GdiPoint.Empty && e.Button == MouseButtons.Left)
+	        {
+	            _mouseRelativeLocation = new GdiPoint(e.X - _mouseDownLocation.X, e.Y - _mouseDownLocation.Y);
+
+	            if (!withinDragTolerance(e.Location))
+	            {
+	                _dragging = true;
+	                _mousePreviousLocation = _mouseDownLocation;
+	            }
+	        }
+
+	        if (_dragging)
+	        {
+	            onMoveTo(ViewConverter.Convert(e.Location));
+	            _mousePreviousLocation = e.Location;
+	        }
+
+	        base.OnMouseMove(e);
+	    }
+
+	    protected override void OnMouseUp(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
@@ -477,7 +445,37 @@ namespace SharpMap.Presentation.WinForms
 			base.OnMouseUp(e);
 		}
 
-		#endregion
+	    protected override void OnMouseWheel(MouseEventArgs e)
+	    {
+	        MapTool currentTool = SelectedTool;
+	        SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
+
+	        Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
+	        onBeginAction(selectBox.Location);
+	        Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
+	        onMoveTo(endPoint);
+	        onEndAction(endPoint);
+
+	        SelectedTool = currentTool;
+
+	        base.OnMouseWheel(e);
+	    }
+
+	    protected override void OnPaint(PaintEventArgs e)
+	    {
+	        Graphics g = e.Graphics;
+	        g.Transform = getGdiViewTransform();
+	        g.Clear(BackColor);
+
+	        foreach (GdiRenderObject ro in _pathQueue)
+	        {
+	            g.DrawPath(Pens.Black, ro.GdiPath);
+	        }
+
+	        g.ResetTransform();
+	    }
+
+	    #endregion
 
         #region Event Invokers
 
@@ -790,58 +788,6 @@ namespace SharpMap.Presentation.WinForms
 			ActionPoint = actionLocation;
 		}
 	}
-
-	//public class MapMouseEventArgs : MouseEventArgs
-	//{
-	//    private GeoPoint _worldLocation;
-
-	//    internal MapMouseEventArgs(GeoPoint worldLocation, MouseButtons buttons, int clicks, int x, int y, int delta)
-	//        : base(buttons, clicks, x, y, delta)
-	//    {
-	//        _worldLocation = worldLocation;
-	//    }
-
-	//    public GeoPoint WorldLocation
-	//    {
-	//        get { return _worldLocation; }
-	//    }
-
-	//    public GdiPoint ImageLocation
-	//    {
-	//        get { return this.Location; }
-	//    }
-	//}
-
-	//public class MapQueryEventArgs : EventArgs
-	//{
-	//    private IEnumerable<FeatureDataRow> _data;
-
-	//    internal MapQueryEventArgs(IEnumerable<FeatureDataRow> queriedFeatures)
-	//    {
-	//        _data = queriedFeatures;
-	//    }
-
-	//    public IEnumerable<FeatureDataRow> QueriedFeatures
-	//    {
-	//        get { return _data; }
-	//    }
-	//}
-
-	//public class ActiveQueryToolChangedEventArgs : EventArgs
-	//{
-	//    private Tools _tool;
-
-	//    internal ActiveQueryToolChangedEventArgs(Tools tool)
-	//    {
-	//        _tool = tool;
-	//    }
-
-	//    public Tools Tool
-	//    {
-	//        get { return _tool; }
-	//        set { _tool = value; }
-	//    }
-	//}
 
 	#endregion
 }

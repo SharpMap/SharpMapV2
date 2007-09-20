@@ -148,7 +148,7 @@ namespace SharpMap.Styles
 		}
 
 		/// <summary>
-		/// Fillstyle for closed geometries.
+		/// Fill style for closed geometries.
 		/// </summary>
 		public StyleBrush Fill
 		{
@@ -156,12 +156,18 @@ namespace SharpMap.Styles
 			set { _fillStyle = value; }
 		}
 
+        /// <summary>
+        /// Fill style for closed geometries when they are in a selected state.
+        /// </summary>
 		public StyleBrush SelectFill
 		{
 			get { return _selectionFillStyle; }
 			set { _selectionFillStyle = value; }
 		}
 
+        /// <summary>
+        /// Fill style for closed geometries when they are in a highlighted state.
+        /// </summary>
 		public StyleBrush HighlightFill
 		{
 			get { return _highlightFillStyle; }

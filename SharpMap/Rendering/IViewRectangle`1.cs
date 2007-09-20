@@ -20,10 +20,10 @@ using NPack.Interfaces;
 
 namespace SharpMap.Rendering
 {
-    public interface IViewRectangle<TViewPoint> : IAffineTransformMatrix<DoubleComponent>
-        where TViewPoint : IVector<DoubleComponent>
+    public interface IViewRectangle<TPoint> : IAffineTransformMatrix<DoubleComponent>
+        where TPoint : IVector<DoubleComponent>
     {
-		TViewPoint GetLowerBound(IVector<DoubleComponent> axis);
-		TViewPoint GetUpperBound(IVector<DoubleComponent> axis);
+		TPoint GetLowerBound(IVector<DoubleComponent> axis);
+		TPoint GetUpperBound(IVector<DoubleComponent> axis);
     }
 }

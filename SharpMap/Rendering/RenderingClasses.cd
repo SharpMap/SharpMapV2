@@ -85,14 +85,14 @@
       <HashCode>ABIAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAACAI=</HashCode>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="SharpMap.Rendering.ILabelRenderer&lt;TViewPoint, TViewSize, TViewRectangle, TRenderObject&gt;" Collapsed="true">
+  <Interface Name="SharpMap.Rendering.ILabelRenderer&lt;TPoint, TSize, TRectangle, TRenderObject&gt;" Collapsed="true">
     <Position X="12.25" Y="6.25" Width="5" />
     <TypeIdentifier>
       <FileName>Rendering\ILabelRenderer`4.cs</FileName>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAIAAAABAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="SharpMap.Rendering.IRasterRenderer&lt;TViewRectangle, TRenderObject&gt;" Collapsed="true">
+  <Interface Name="SharpMap.Rendering.IRasterRenderer&lt;TRectangle, TRenderObject&gt;" Collapsed="true">
     <Position X="3.25" Y="3.5" Width="3.5" />
     <TypeIdentifier>
       <FileName>Rendering\IRasterRenderer`2.cs</FileName>

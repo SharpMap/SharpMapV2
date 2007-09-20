@@ -18,6 +18,7 @@
 
 
 using System;
+using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
 namespace SharpMap.Styles
@@ -26,7 +27,7 @@ namespace SharpMap.Styles
 	/// Defines arrays of colors and positions used for interpolating color blending 
     /// in a multicolor gradient.
 	/// </summary>
-	/// <seealso cref="SharpMap.Rendering.Thematics.GradientTheme"/>
+    /// <seealso cref="GradientTheme2D"/>
 	public class StyleColorBlend
 	{
         private StyleColor[] _colors;
@@ -38,11 +39,12 @@ namespace SharpMap.Styles
 		/// Gets or sets an array of colors that represents the colors to use at 
         /// corresponding positions along a gradient.
 		/// </summary>
-		/// <value>An array of <see cref="Color"/> structures that 
-        /// represents the colors to use at corresponding positions along a gradient.</value>
+		/// <value>An array of <see cref="StyleColor"/> structures that 
+        /// represents the colors to use at corresponding positions along a gradient.
+        /// </value>
 		/// <remarks>
-		/// This property is an array of <see cref="Color"/> structures that represents 
-        /// the colors to use at corresponding positions along a gradient. 
+        /// This property is an array of <see cref="StyleColor"/> structures 
+        /// that represents the colors to use at corresponding positions along a gradient. 
         /// Along with the Positions property, this property defines a multicolor gradient.
 		/// </remarks>
 		public StyleColor[] Colors

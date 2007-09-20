@@ -16,15 +16,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Styles
 {
+    /// <summary>
+    /// Represents a brush which fills a region with a single, solid color.
+    /// </summary>
     public class SolidStyleBrush : StyleBrush
     {
+        /// <summary>
+        /// Creates an instance of a <see cref="SolidStyleBrush"/> with the given color.
+        /// </summary>
+        /// <param name="color">The color of the brush.</param>
         public SolidStyleBrush(StyleColor color)
-            : base(color) { }
+            : base(color)
+        {
+        }
 
         public override string ToString()
         {
