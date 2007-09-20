@@ -306,6 +306,10 @@ namespace SharpMap.Layers
                 {
                     Style = new Style();
                 }
+                else
+                {
+                    if (Style.Enabled == value) return;
+                }
 
                 Style.Enabled = value;
                 OnPropertyChanged("Enabled");
