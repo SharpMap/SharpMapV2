@@ -130,10 +130,10 @@ namespace SharpMap.Rendering.Gdi
 																			   StyleColorMatrix highlight,
 																			   StyleColorMatrix select)
         {
-            Symbol2D highlightSymbol = symbolData.Clone();
+            Symbol2D highlightSymbol = (Symbol2D)symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
 
-            Symbol2D selectSymbol = symbolData.Clone();
+            Symbol2D selectSymbol = (Symbol2D)symbolData.Clone();
             selectSymbol.ColorTransform = select;
 
             return RenderSymbols(locations, symbolData, highlightSymbol, selectSymbol);

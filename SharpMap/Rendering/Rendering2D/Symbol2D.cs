@@ -18,6 +18,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IAffineMatrixD = NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
@@ -164,7 +165,7 @@ namespace SharpMap.Rendering.Rendering2D
             return new Matrix2D();
         }
 
-        protected override IAffineMatrixD CreateMatrix(IAffineMatrixD matrix)
+        protected override IAffineMatrixD CreateMatrix(IMatrixD matrix)
         {
             return new Matrix2D(matrix);
         }

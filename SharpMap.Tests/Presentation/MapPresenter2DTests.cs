@@ -962,7 +962,7 @@ namespace SharpMap.Tests.Presentation
             vLayer2.Style.Symbol = new Symbol2D(data, new Size2D(16, 16));
             vLayer2.Style.Symbol.Offset = new Point2D(3, 4);
             vLayer2.Style.Symbol.Rotation = 45;
-            vLayer2.Style.Symbol.Scale = 0.4f;
+            vLayer2.Style.Symbol.Scale(0.4f);
             map.AddLayer(vLayer2);
 
             GeometryLayer vLayer3 = new GeometryLayer("Geom layer 3", vLayer.DataSource);
@@ -972,7 +972,7 @@ namespace SharpMap.Tests.Presentation
 
             GeometryLayer vLayer4 = new GeometryLayer("Geom layer 4", vLayer.DataSource);
             vLayer4.Style.Symbol.Offset = new Point2D(3, 4);
-            vLayer2.Style.Symbol.Scale = 0.4f;
+            vLayer2.Style.Symbol.Scale(0.4f);
             map.AddLayer(vLayer4);
 
             mapPresenter.ZoomToExtents();

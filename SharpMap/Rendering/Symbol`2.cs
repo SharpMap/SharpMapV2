@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using SharpMap.Utilities;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IAffineMatrixD = NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -28,6 +29,7 @@ namespace SharpMap.Rendering
         protected Symbol()
         {
             _symbolData = new MemoryStream(new byte[] {0x0, 0x0, 0x0, 0x0});
+            initMatrixes();
         }
 
         protected Symbol(TSize size) : this()
@@ -57,8 +59,8 @@ namespace SharpMap.Rendering
                 symbolData = copy;
             }
 
-            _symbolData = symbolData;
-            _symbolDataHash = Hash.AsString(_symbolData);
+            setSymbolData(symbolData);
+            initMatrixes();
         }
 
         #region Dispose Pattern
@@ -114,6 +116,56 @@ namespace SharpMap.Rendering
 
         #endregion
 
+        #region Public properties
+
+        /// <summary>
+        /// Gets or sets a <see cref="IAffineMatrixD"/> object used 
+        /// to transform this <see cref="IAffineMatrixD"/>.
+        /// </summary>
+        public IAffineMatrixD AffineTransform
+        {
+            get
+            {
+                CheckDisposed();
+
+                IAffineMatrixD concatenated = CreateMatrix(
+                    _rotationTransform
+                    .Multiply(_scalingTransform)
+                    .Multiply(_translationTransform));
+
+                return CreateMatrix(concatenated);
+            }
+            // TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
+            set { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
+        /// Gets or sets a <see cref="ColorMatrix"/> used to change the color 
+        /// of this symbol.
+        /// </summary>
+        public ColorMatrix ColorTransform
+        {
+            get { return _colorTransform; }
+            set { _colorTransform = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a vector by which to offset the symbol.
+        /// </summary>
+        public TPoint Offset
+        {
+            get
+            {
+                CheckDisposed();
+                return GetOffset(_translationTransform);
+            }
+            set
+            {
+                CheckDisposed();
+                SetOffset(value);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the size of this symbol.
         /// </summary>
@@ -148,59 +200,13 @@ namespace SharpMap.Rendering
             private set
             {
                 CheckDisposed();
-                _symbolData = value;
+                if (value == null) throw new ArgumentNullException("value");
+                setSymbolData(value);
             }
-        }
+        } 
+        #endregion
 
-
-        /// <summary>
-        /// Gets or sets a <see cref="IAffineMatrixD"/> object used 
-        /// to transform this <see cref="IAffineMatrixD"/>.
-        /// </summary>
-        public IAffineMatrixD AffineTransform
-        {
-            get
-            {
-                CheckDisposed();
-
-                IAffineMatrixD concatenated =
-                    (IAffineMatrixD)_rotationTransform
-                        .Multiply(_scalingTransform)
-                        .Multiply(_translationTransform);
-
-                return CreateMatrix(concatenated);
-            }
-            // TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
-            set { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Gets or sets a <see cref="ColorMatrix"/> used to change the color 
-        /// of this symbol.
-        /// </summary>
-        public ColorMatrix ColorTransform
-        {
-            get { return _colorTransform; }
-            set { _colorTransform = value; }
-        }
-
-
-        /// <summary>
-        /// Gets or sets a vector by which to offset the symbol.
-        /// </summary>
-        public TPoint Offset
-        {
-            get
-            {
-                CheckDisposed();
-                return GetOffset(_translationTransform);
-            }
-            set
-            {
-                CheckDisposed();
-                SetOffset(value);
-            }
-        }
+        #region Protected properties
 
         /// <summary>
         /// Gets or sets a rotation matrix by which to rotate this symbol.
@@ -253,16 +259,28 @@ namespace SharpMap.Rendering
             }
         }
 
-        protected abstract Symbol<TPoint, TSize> CreateNew(TSize size);
-        protected abstract IAffineMatrixD CreateIdentityMatrix();
-        protected abstract IAffineMatrixD CreateMatrix(IAffineMatrixD matrix);
-        protected abstract TPoint GetOffset(IAffineMatrixD translationMatrix);
-        protected abstract void SetOffset(TPoint offset);
-
         protected string SymbolDataHash
         {
             get { return _symbolDataHash; }
         }
+
+        #endregion
+
+        #region Protected methods
+        protected void CheckDisposed()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(GetType().ToString());
+            }
+        }
+
+        protected abstract Symbol<TPoint, TSize> CreateNew(TSize size);
+        protected abstract IAffineMatrixD CreateIdentityMatrix();
+        protected abstract IAffineMatrixD CreateMatrix(IMatrixD matrix);
+        protected abstract TPoint GetOffset(IAffineMatrixD translationMatrix);
+        protected abstract void SetOffset(TPoint offset); 
+        #endregion
 
         #region ICloneable Members
 
@@ -290,9 +308,9 @@ namespace SharpMap.Rendering
             clone.SymbolData = copy;
             clone._symbolDataHash = _symbolDataHash;
             clone.ColorTransform = ColorTransform.Clone();
-            clone._rotationTransform = (IAffineMatrixD)_rotationTransform.Clone();
-            clone._translationTransform = (IAffineMatrixD)_translationTransform.Clone();
-            clone._scalingTransform = (IAffineMatrixD)_scalingTransform.Clone();
+            clone._rotationTransform = CreateMatrix(_rotationTransform.Clone());
+            clone._translationTransform = CreateMatrix(_translationTransform.Clone());
+            clone._scalingTransform = CreateMatrix(_scalingTransform.Clone());
             return clone;
         }
 
@@ -321,14 +339,19 @@ namespace SharpMap.Rendering
 
         #region Private helper methods
 
-        protected void CheckDisposed()
+        private void initMatrixes()
         {
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(GetType().ToString());
-            }
+            _rotationTransform = CreateIdentityMatrix();
+            _translationTransform = CreateIdentityMatrix();
+            _scalingTransform = CreateIdentityMatrix();
         }
 
+
+        private void setSymbolData(Stream symbolData)
+        {
+            _symbolData = symbolData;
+            _symbolDataHash = Hash.AsString(_symbolData);
+        }
         #endregion
     }
 }
