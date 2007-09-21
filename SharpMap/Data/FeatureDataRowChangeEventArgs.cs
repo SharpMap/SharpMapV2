@@ -20,15 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
+using SharpMap.Data;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
-    /// <summary>
-    /// Occurs after a FeatureDataRow has been changed successfully.
-    /// </summary>
-#if !DEBUG_STEPINTO
-	[System.Diagnostics.DebuggerStepThrough()]
-#endif
     public class FeatureDataRowChangeEventArgs : EventArgs
     {
         private readonly FeatureDataRow eventRow;

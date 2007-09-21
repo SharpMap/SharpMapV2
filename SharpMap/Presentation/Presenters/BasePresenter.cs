@@ -18,7 +18,7 @@
 using System;
 using System.ComponentModel;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
     /// The base presenter for map views.

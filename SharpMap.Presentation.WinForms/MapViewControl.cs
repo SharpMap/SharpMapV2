@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using SharpMap.Geometries;
+using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;

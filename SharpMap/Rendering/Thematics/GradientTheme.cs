@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 

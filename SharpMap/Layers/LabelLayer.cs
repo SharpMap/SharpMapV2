@@ -18,7 +18,6 @@
 
 using System;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;

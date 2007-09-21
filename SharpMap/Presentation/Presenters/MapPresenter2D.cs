@@ -19,6 +19,8 @@ using System;
 using System.Threading;
 using SharpMap.Geometries;
 using SharpMap.Layers;
+using SharpMap.Presentation.Presenters;
+using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -28,7 +30,7 @@ using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 using System.ComponentModel;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
     /// Provides the input-handling and view-updating logic for a 2D map view.
@@ -167,7 +169,7 @@ namespace SharpMap.Presentation
                 if (value <= 0)
                 {
                     throw new ArgumentOutOfRangeException("value",
-                        value, "Maximum world width must greater than 0.");
+                                                          value, "Maximum world width must greater than 0.");
                 }
 
                 if (_maximumWorldWidth != value)
@@ -188,7 +190,7 @@ namespace SharpMap.Presentation
                 if (value < 0)
                 {
                     throw new ArgumentOutOfRangeException("value",
-                        value, "Minimum world width must be 0 or greater.");
+                                                          value, "Minimum world width must be 0 or greater.");
                 }
 
                 if (_minimumWorldWidth != value)
@@ -357,7 +359,7 @@ namespace SharpMap.Presentation
                 if (value <= 0)
                 {
                     throw new ArgumentOutOfRangeException("value",
-                        value, "Invalid pixel aspect ratio.");
+                                                          value, "Invalid pixel aspect ratio.");
                 }
 
                 double currentRatio = WorldAspectRatioInternal;
@@ -398,8 +400,8 @@ namespace SharpMap.Presentation
             get
             {
                 return ToWorldTransformInternal == null
-                    ? 0
-                    : ToWorldTransformInternal.M11;
+                           ? 0
+                           : ToWorldTransformInternal.M11;
             }
         }
 
@@ -842,8 +844,8 @@ namespace SharpMap.Presentation
             double heightZoomRatio = newEnvelope.Height / oldHeight;
 
             double newWorldWidth = widthZoomRatio > heightZoomRatio
-                                    ? newEnvelope.Width
-                                    : newEnvelope.Width * heightZoomRatio / widthZoomRatio;
+                                       ? newEnvelope.Width
+                                       : newEnvelope.Width * heightZoomRatio / widthZoomRatio;
 
             if (newWorldWidth < _minimumWorldWidth)
             {

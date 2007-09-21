@@ -1,8 +1,8 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.Features;
 
 namespace SharpMap.Tests.Features
 {

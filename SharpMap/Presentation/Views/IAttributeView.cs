@@ -18,8 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using SharpMap.Presentation.Views;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Views
 {
     /// <summary>
     /// Defines a view for attribute data.
@@ -44,15 +45,15 @@ namespace SharpMap.Presentation
         /// </summary>
         event EventHandler<FeaturesHighlightedChangeRequestEventArgs> FeaturesHighlightedChangeRequested;
 
-		/// <summary>
-		/// Update the view to show the given features on the given layer as selected.
-		/// </summary>
-		/// <param name="layerName">
-		/// Layer to set selected features on.
-		/// </param>
+        /// <summary>
+        /// Update the view to show the given features on the given layer as selected.
+        /// </summary>
+        /// <param name="layerName">
+        /// Layer to set selected features on.
+        /// </param>
         /// <param name="featureIndexes">
         /// Set of indexes of features to set to be selected.
         /// </param>
-    	void SetHighlightedFeatures(string layerName, IEnumerable<int> featureIndexes);
+        void SetHighlightedFeatures(string layerName, IEnumerable<int> featureIndexes);
     }
 }

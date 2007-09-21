@@ -21,7 +21,7 @@ using SharpMap.Data;
 using System.Data;
 using SharpMap.Geometries;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     /// <summary>
     /// Provides a fast-forward, read-only data stream to feature data
@@ -245,22 +245,22 @@ namespace SharpMap.Features
 
         #endregion
 
-		#region IEnumerable<IFeatureDataRecord> Members
+        #region IEnumerable<IFeatureDataRecord> Members
 
-		public IEnumerator<IFeatureDataRecord> GetEnumerator()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+        public IEnumerator<IFeatureDataRecord> GetEnumerator()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

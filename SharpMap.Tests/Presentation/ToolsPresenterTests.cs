@@ -8,6 +8,8 @@ using SharpMap.Presentation;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using NUnit.Framework;
+using SharpMap.Presentation.Presenters;
+using SharpMap.Presentation.Views;
 
 namespace SharpMap.Tests.Presentation
 {

@@ -16,13 +16,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections.Generic;
-using System.Diagnostics;
-using SharpMap.Features;
-using SharpMap.Layers;
 using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
+using SharpMap.Data;
+using SharpMap.Layers;
+using SharpMap.Presentation.Views;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Presenters
 {
     public class AttributePresenter : BasePresenter<IAttributeView>
     {
@@ -36,15 +36,15 @@ namespace SharpMap.Presentation
 
         private void handleLayersChanged(object sender, ListChangedEventArgs e)
         {
-            if(e.ListChangedType == ListChangedType.ItemAdded)
+            if (e.ListChangedType == ListChangedType.ItemAdded)
             {
-                if(Map.Layers[e.NewIndex] is IFeatureLayer)
+                if (Map.Layers[e.NewIndex] is IFeatureLayer)
                 {
                     wireupFeatureLayer(Map.Layers[e.NewIndex] as IFeatureLayer);
                 }
             }
 
-            if(e.ListChangedType == ListChangedType.ItemDeleted)
+            if (e.ListChangedType == ListChangedType.ItemDeleted)
             {
                 if (e.NewIndex < 0 && Map.Layers[e.OldIndex] is IFeatureLayer)
                 {
@@ -52,7 +52,7 @@ namespace SharpMap.Presentation
                 }
             }
         }
-        
+
         private void handleFeaturesHighlightedChangeRequested(object sender, FeaturesHighlightedChangeRequestEventArgs e)
         {
             IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer;
@@ -102,5 +102,5 @@ namespace SharpMap.Presentation
                 yield return selectedFeatures.IndexOfFeature(feature);
             }
         }
-	}
+    }
 }

@@ -24,7 +24,7 @@ using System.Reflection;
 using SharpMap.Data;
 using System.Collections;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     internal sealed class FeatureMerger
     {
@@ -63,20 +63,20 @@ namespace SharpMap.Features
         #region Object constructor
         internal FeatureMerger(FeatureDataTable target, bool preserveChanges, SchemaMergeAction mergeAction)
         {
-			if ((SchemaMergeAction.ConvertTypes & mergeAction) != SchemaMergeAction.None)
-			{
-				throw new NotImplementedException("SchemaMergeAction.ConvertTypes is currently not supported.");
-			}
+            if ((SchemaMergeAction.ConvertTypes & mergeAction) != SchemaMergeAction.None)
+            {
+                throw new NotImplementedException("SchemaMergeAction.ConvertTypes is currently not supported.");
+            }
 
-			if ((SchemaMergeAction.KeyByType & mergeAction) != SchemaMergeAction.None)
-			{
-				throw new NotImplementedException("SchemaMergeAction.KeyByType is currently not supported.");
-			}
+            if ((SchemaMergeAction.KeyByType & mergeAction) != SchemaMergeAction.None)
+            {
+                throw new NotImplementedException("SchemaMergeAction.KeyByType is currently not supported.");
+            }
 
-			if ((SchemaMergeAction.CaseInsensitive & mergeAction) != SchemaMergeAction.None)
-			{
-				throw new NotImplementedException("SchemaMergeAction.CaseInsensitive is currently not supported.");
-			}
+            if ((SchemaMergeAction.CaseInsensitive & mergeAction) != SchemaMergeAction.None)
+            {
+                throw new NotImplementedException("SchemaMergeAction.CaseInsensitive is currently not supported.");
+            }
 
             _target = target;
             _preserveChanges = preserveChanges;
@@ -182,7 +182,7 @@ namespace SharpMap.Features
             for (int fieldIndex = 0; fieldIndex < srcFeature.FieldCount; fieldIndex++)
             {
                 schemaModel.Columns.Add(srcFeature.GetName(fieldIndex),
-                    srcFeature.GetFieldType(fieldIndex));
+                                        srcFeature.GetFieldType(fieldIndex));
             }
 
             return schemaModel;
@@ -265,12 +265,12 @@ namespace SharpMap.Features
             Type[] ctorParams = new Type[] { typeof(DataTable), typeof(bool), typeof(MissingSchemaAction) };
 
             DynamicMethod createMergerMethod = new DynamicMethod("Merger_Create",
-                MethodAttributes.Public | MethodAttributes.Static,
-                CallingConventions.Standard,
-                typeof(Object),
-                ctorParams,
-                Type.GetTypeFromHandle(_adoMergerTypeHandle),
-                false);
+                                                                 MethodAttributes.Public | MethodAttributes.Static,
+                                                                 CallingConventions.Standard,
+                                                                 typeof(Object),
+                                                                 ctorParams,
+                                                                 Type.GetTypeFromHandle(_adoMergerTypeHandle),
+                                                                 false);
 
             Type adoMergerType = Type.GetTypeFromHandle(_adoMergerTypeHandle);
             ILGenerator il = createMergerMethod.GetILGenerator();
@@ -290,12 +290,12 @@ namespace SharpMap.Features
         private static MergeSchemaDelegate generateMergeSchemaDelegate()
         {
             DynamicMethod mergeSchemaMethod = new DynamicMethod("Merger_MergeSchema",
-                MethodAttributes.Public | MethodAttributes.Static,
-                CallingConventions.Standard,
-                typeof(DataTable),
-                new Type[] { typeof(object), typeof(DataTable) },
-                Type.GetTypeFromHandle(_adoMergerTypeHandle),
-                false);
+                                                                MethodAttributes.Public | MethodAttributes.Static,
+                                                                CallingConventions.Standard,
+                                                                typeof(DataTable),
+                                                                new Type[] { typeof(object), typeof(DataTable) },
+                                                                Type.GetTypeFromHandle(_adoMergerTypeHandle),
+                                                                false);
 
             Type merger = Type.GetTypeFromHandle(_adoMergerTypeHandle);
             ILGenerator il = mergeSchemaMethod.GetILGenerator();
@@ -303,7 +303,7 @@ namespace SharpMap.Features
             il.Emit(OpCodes.Castclass, merger);
             il.Emit(OpCodes.Ldarg_1);
             MethodInfo mergeSchemaInfo = merger.GetMethod("MergeSchema",
-                BindingFlags.Instance | BindingFlags.NonPublic);
+                                                          BindingFlags.Instance | BindingFlags.NonPublic);
             il.Emit(OpCodes.Call, mergeSchemaInfo);
             il.Emit(OpCodes.Ret);
 

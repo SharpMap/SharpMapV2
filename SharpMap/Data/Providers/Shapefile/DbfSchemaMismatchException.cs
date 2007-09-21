@@ -17,7 +17,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using SharpMap.Features;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {    

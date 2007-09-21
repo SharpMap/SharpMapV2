@@ -160,20 +160,20 @@
     <Compile Include="Data\Providers\Shapefile\ShapeFileIsInvalidException.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileUnsupportedGeometryException.cs" />
     <Compile Include="Data\IFeatureDataRecord.cs" />
-    <Compile Include="Features\FeatureDataTableReader.cs" />
-    <Compile Include="Features\FeatureMerger.cs" />
-    <Compile Include="Features\LoadFeaturesAdapter.cs">
+    <Compile Include="Data\FeatureDataTableReader.cs" />
+    <Compile Include="Data\FeatureMerger.cs" />
+    <Compile Include="Data\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Geometries\GeometryCollection`1.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
     <Compile Include="Layers\DuplicateLayerException.cs" />
-    <Compile Include="Features\FeatureDataRow.cs" />
-    <Compile Include="Features\FeatureDataRowChangeEventArgs.cs" />
-    <Compile Include="Features\FeatureDataRowChangeEventHandler.cs" />
-    <Compile Include="Features\FeatureDataRow`1.cs" />
-    <Compile Include="Features\FeatureDataSet.cs">
+    <Compile Include="Data\FeatureDataRow.cs" />
+    <Compile Include="Data\FeatureDataRowChangeEventArgs.cs" />
+    <Compile Include="Data\FeatureDataRowChangeEventHandler.cs" />
+    <Compile Include="Data\FeatureDataRow`1.cs" />
+    <Compile Include="Data\FeatureDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
@@ -223,19 +223,19 @@
     <Compile Include="Indexing\RTree\RTreeIndexEntry.cs" />
     <Compile Include="Indexing\RTree\RTreeLeafNode.cs" />
     <Compile Include="Indexing\RTree\RTreeBranchNode.cs" />
-    <Compile Include="Features\FeatureDataTable.cs">
+    <Compile Include="Data\FeatureDataTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Features\FeatureDataTable`1.cs">
+    <Compile Include="Data\FeatureDataTable`1.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Features\FeatureDataView.cs">
+    <Compile Include="Data\FeatureDataView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Features\FeatureDataViewManager.cs">
+    <Compile Include="Data\FeatureDataViewManager.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Features\FeatureTableCollection.cs" />
+    <Compile Include="Data\FeatureTableCollection.cs" />
     <Compile Include="Layers\FeatureLayer.cs" />
     <Compile Include="Layers\IFeatureLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />

@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Geometries;
-using SharpMap.Presentation;
+using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Tools

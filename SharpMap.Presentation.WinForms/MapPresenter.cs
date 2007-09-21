@@ -18,9 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using SharpMap.Features;
+using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
+using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;

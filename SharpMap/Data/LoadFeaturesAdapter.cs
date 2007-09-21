@@ -21,7 +21,7 @@ using System.Data;
 using System.Data.Common;
 using SharpMap.Data;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     internal sealed class LoadFeaturesAdapter : DataAdapter
     {
@@ -51,7 +51,7 @@ namespace SharpMap.Features
             if (featureReader == null)
             {
                 throw new ArgumentException("Parameter 'dataReader' " +
-                    "must be a IFeatureDataReader instance.");
+                                            "must be a IFeatureDataReader instance.");
             }
 
             do
@@ -61,15 +61,15 @@ namespace SharpMap.Features
                 if (table == null)
                 {
                     throw new ArgumentException("Components of 'dataTables' must be " +
-                        "FeatureDataTable instances.");
+                                                "FeatureDataTable instances.");
                 }
 
                 if (table.Columns.Count == 0)
                 {
                     FillSchema(table, SchemaType.Mapped, featureReader);
-				}
+                }
 
-				table.MergeFeatures(featureReader);
+                table.MergeFeatures(featureReader);
 
                 tableIndex++;
             } while (dataReader.NextResult());

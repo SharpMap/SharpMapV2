@@ -32,11 +32,8 @@ using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
-#if !DEBUG_STEPINTO
-	[System.Diagnostics.DebuggerStepThrough()]
-#endif
     /// <summary>
     /// Represents one feature table of in-memory spatial data. 
     /// </summary>
@@ -387,44 +384,44 @@ namespace SharpMap.Features
 
         public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
         {
-			if (IsSpatiallyIndexed)
-			{
-				foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
-				{
-					yield return entry.Value;
-				}
-			}
-			else
-			{
-				foreach (FeatureDataRow feature in this)
-				{
-					if(bounds.Intersects(feature.Geometry))
-					{
-						yield return feature;
-					}
-				}
-			}
+            if (IsSpatiallyIndexed)
+            {
+                foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
+                {
+                    yield return entry.Value;
+                }
+            }
+            else
+            {
+                foreach (FeatureDataRow feature in this)
+                {
+                    if(bounds.Intersects(feature.Geometry))
+                    {
+                        yield return feature;
+                    }
+                }
+            }
         }
 
         public IEnumerable<FeatureDataRow> Select(Geometry geometry)
         {
-			if (IsSpatiallyIndexed)
-			{
-				foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
-				{
-					yield return entry.Value;
-				}
-			}
-			else
-			{
-				foreach (FeatureDataRow feature in this)
-				{
-					if (geometry.Intersects(feature.Geometry))
-					{
-						yield return feature;
-					}
-				}
-			}
+            if (IsSpatiallyIndexed)
+            {
+                foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
+                {
+                    yield return entry.Value;
+                }
+            }
+            else
+            {
+                foreach (FeatureDataRow feature in this)
+                {
+                    if (geometry.Intersects(feature.Geometry))
+                    {
+                        yield return feature;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -586,35 +583,35 @@ namespace SharpMap.Features
         public void MergeSchema(FeatureDataTable target)
         {
             MergeSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
-		}
+        }
 
-		public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
-		{
-			FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
-			merger.MergeSchema(this);
-		}
+        public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
+        {
+            FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
+            merger.MergeSchema(this);
+        }
 
         internal void MergeFeature(IFeatureDataRecord record)
         {
-        	MergeFeature(record, SchemaMergeAction.AddWithKey);
-		}
+            MergeFeature(record, SchemaMergeAction.AddWithKey);
+        }
 		
         internal void MergeFeature(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
         {
-			FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-			merger.MergeFeature(record);
+            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            merger.MergeFeature(record);
         }
 
-    	internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records)
-		{
-			MergeFeatures(records, SchemaMergeAction.AddWithKey);
-		}
+        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records)
+        {
+            MergeFeatures(records, SchemaMergeAction.AddWithKey);
+        }
 
-		internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
-		{
-			FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-			merger.MergeFeatures(records);
-		}
+        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
+        {
+            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            merger.MergeFeatures(records);
+        }
 
         internal void SuspendIndexEvents()
         {
@@ -649,18 +646,18 @@ namespace SharpMap.Features
         private static RestoreIndexEventsDelegate generateRestoreIndexEventsDelegate()
         {
             DynamicMethod restoreIndexEventsMethod = new DynamicMethod("FeatureDataTable_RestoreIndexEvents",
-                MethodAttributes.Public | MethodAttributes.Static,
-                CallingConventions.Standard,
-                null,
-                new Type[] { typeof(DataTable), typeof(bool) },
-                typeof(DataTable),
-                false);
+                                                                       MethodAttributes.Public | MethodAttributes.Static,
+                                                                       CallingConventions.Standard,
+                                                                       null,
+                                                                       new Type[] { typeof(DataTable), typeof(bool) },
+                                                                       typeof(DataTable),
+                                                                       false);
 
             ILGenerator il = restoreIndexEventsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             MethodInfo restoreIndexEventsInfo = typeof(DataTable).GetMethod("RestoreIndexEvents",
-                BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
+                                                                            BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
             il.Emit(OpCodes.Call, restoreIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
@@ -670,17 +667,17 @@ namespace SharpMap.Features
         private static SuspendIndexEventsDelegate generateSuspendIndexEventsDelegate()
         {
             DynamicMethod suspendIndexEventsMethod = new DynamicMethod("FeatureDataTable_SuspendIndexEvents",
-                MethodAttributes.Public | MethodAttributes.Static,
-                CallingConventions.Standard,
-                null,
-                new Type[] { typeof(DataTable) },
-                typeof(DataTable),
-                false);
+                                                                       MethodAttributes.Public | MethodAttributes.Static,
+                                                                       CallingConventions.Standard,
+                                                                       null,
+                                                                       new Type[] { typeof(DataTable) },
+                                                                       typeof(DataTable),
+                                                                       false);
 
             ILGenerator il = suspendIndexEventsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             MethodInfo suspendIndexEventsInfo = typeof(DataTable).GetMethod("SuspendIndexEvents",
-                BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+                                                                            BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
             il.Emit(OpCodes.Call, suspendIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
@@ -690,12 +687,12 @@ namespace SharpMap.Features
         private static CloneToDelegate generateCloneToDelegate()
         {
             DynamicMethod cloneToMethod = new DynamicMethod("FeatureDataTable_CloneTo",
-                MethodAttributes.Public | MethodAttributes.Static,
-                CallingConventions.Standard,
-                typeof(DataTable),
-                new Type[] { typeof(DataTable), typeof(DataTable), typeof(DataSet), typeof(bool) },
-                typeof(DataTable),
-                false);
+                                                            MethodAttributes.Public | MethodAttributes.Static,
+                                                            CallingConventions.Standard,
+                                                            typeof(DataTable),
+                                                            new Type[] { typeof(DataTable), typeof(DataTable), typeof(DataSet), typeof(bool) },
+                                                            typeof(DataTable),
+                                                            false);
 
             ILGenerator il = cloneToMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
@@ -725,22 +722,22 @@ namespace SharpMap.Features
             }
 
             target.Geometry = source.Geometry == null
-                ? null
-                : source.Geometry.Clone();
+                                  ? null
+                                  : source.Geometry.Clone();
         }
 
         private void initializeSpatialIndex()
-		{
-			// TODO: implement Post-optimization restructure strategy
+        {
+            // TODO: implement Post-optimization restructure strategy
             IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
             IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>();
-			INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
-			IdleMonitor idleMonitor = null;
+            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
+            IdleMonitor idleMonitor = null;
             _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
                                                                                 restructureHeuristic, insertStrategy,
                                                                                 nodeSplitStrategy,
-																				new DynamicRTreeBalanceHeuristic(), idleMonitor);
+                                                                                new DynamicRTreeBalanceHeuristic(), idleMonitor);
         }
 
         #endregion
@@ -765,5 +762,5 @@ namespace SharpMap.Features
         }
 
         #endregion
-	}
+    }
 }

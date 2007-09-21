@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;

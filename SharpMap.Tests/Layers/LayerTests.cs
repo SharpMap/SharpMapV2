@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
+using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Geometries;
-using SharpMap.Features;
 
 namespace SharpMap.Tests.Layers
 {

@@ -20,8 +20,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using SharpMap;
 using SharpMap.Layers;
+using SharpMap.Presentation.Presenters;
+using SharpMap.Presentation.Views;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
     /// Provides a presenter for the layers of a <see cref="Map"/>.
@@ -99,7 +101,7 @@ namespace SharpMap.Presentation
                         }
                     }
                     break;
-                // The following are taken care of by data binding:
+                    // The following are taken care of by data binding:
                 case ListChangedType.ItemMoved:
                 case ListChangedType.ItemAdded:
                 case ListChangedType.ItemDeleted:

@@ -26,7 +26,6 @@ using System.Threading;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;

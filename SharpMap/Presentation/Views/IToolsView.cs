@@ -17,10 +17,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using SharpMap.Tools;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Views
 {
     public interface IToolsView : IView
     {

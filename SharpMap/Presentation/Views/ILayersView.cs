@@ -18,8 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using SharpMap.Presentation.Views;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Views
 {
     public interface ILayersView : IView
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.Features;
 using System.ComponentModel;
 using SharpMap.Geometries;
 

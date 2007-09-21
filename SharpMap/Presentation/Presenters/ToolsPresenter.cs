@@ -16,12 +16,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections.Generic;
+using SharpMap.Presentation.Presenters;
+using SharpMap.Presentation.Views;
 using SharpMap.Tools;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
-    /// The presenter for managing a <see cref="IToolsView">view</see> of <see cref="MapTool"/> instances.
+    /// The presenter for managing a <see cref="MapTool">view</see> of <see cref="IToolsView"/> instances.
     /// </summary>
     public class ToolsPresenter : BasePresenter<IToolsView>
     {

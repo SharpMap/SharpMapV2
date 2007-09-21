@@ -8,6 +8,8 @@ using Rhino.Mocks.Interfaces;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation;
+using SharpMap.Presentation.Presenters;
+using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;

@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using SharpMap.Features;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {

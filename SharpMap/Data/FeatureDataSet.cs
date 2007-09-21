@@ -29,7 +29,7 @@ using System.Xml;
 using System.Xml.Schema;
 using SharpMap.Geometries;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     /// <summary>
     /// Represents an in-memory cache of spatial data. 
@@ -82,7 +82,7 @@ namespace SharpMap.Features
         /// Initializes a new instance of the FeatureDataSet class.
         /// </summary>
         public FeatureDataSet()
-           : this(generateName()) { }
+            : this(generateName()) { }
 
         /// <summary>
         /// Initializes a new instance of the FeatureDataSet class with the given name.

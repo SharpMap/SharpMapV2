@@ -4,7 +4,6 @@ using System.Data;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Data.Providers.GeometryProvider;
-using SharpMap.Features;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 

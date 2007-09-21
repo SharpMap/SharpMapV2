@@ -21,10 +21,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
+using SharpMap.Data;
 using SharpMap.Geometries;
 using System.ComponentModel;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     public class FeatureDataView : DataView, IEnumerable<FeatureDataRow>
     {
@@ -83,7 +84,7 @@ namespace SharpMap.Features
         }
 
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
-            string sort, DataViewRowState rowState)
+                               string sort, DataViewRowState rowState)
             : base(table, "", sort, rowState)
         {
             GeometryIntersectionFilter = intersectionFilter;
@@ -246,7 +247,7 @@ namespace SharpMap.Features
         }
 
         internal void SetIndex2(string newSort, DataViewRowState dataViewRowState,
-            object dataExpression, bool fireEvent)
+                                object dataExpression, bool fireEvent)
         {
             // Call the delegate we wired up to bypass the normally inaccessible 
             // base class method
@@ -267,7 +268,7 @@ namespace SharpMap.Features
             Type rowPredicateFilterType = Type.GetType("System.Data.DataView+RowPredicateFilter, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
             object[] args = new object[] { filter };
             object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
-                BindingFlags.Instance | BindingFlags.NonPublic, null, args, null);
+                                                                 BindingFlags.Instance | BindingFlags.NonPublic, null, args, null);
 
             return rowPredicateFilter;
         }
@@ -282,7 +283,7 @@ namespace SharpMap.Features
             }
 
             return GeometryIntersectionFilter == null ||
-                GeometryIntersectionFilter.Intersects(feature.Geometry);
+                   GeometryIntersectionFilter.Intersects(feature.Geometry);
         }
         #endregion
 
@@ -333,9 +334,9 @@ namespace SharpMap.Features
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             MethodInfo setDataViewManagerInfo = typeof(DataView).GetMethod("SetDataViewManager",
-                                                                            BindingFlags.Instance |
-                                                                            BindingFlags.NonPublic, null,
-                                                                            new Type[] { typeof(DataViewManager) }, null);
+                                                                           BindingFlags.Instance |
+                                                                           BindingFlags.NonPublic, null,
+                                                                           new Type[] { typeof(DataViewManager) }, null);
             il.Emit(OpCodes.Call, setDataViewManagerInfo);
 
             return setDataViewManagerMethod.CreateDelegate(typeof(SetDataViewManagerDelegate))

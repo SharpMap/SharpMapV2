@@ -20,9 +20,8 @@ using System;
 using System.Data;
 using System.Globalization;
 using SharpMap.Data;
-using SharpMap.Features;
 using SharpMap.Geometries;
-using SharpMap.Presentation;
+using SharpMap.Presentation.Views;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers

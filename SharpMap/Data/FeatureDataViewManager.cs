@@ -17,8 +17,9 @@
 
 using System;
 using System.Data;
+using SharpMap.Data;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     public class FeatureDataViewManager : DataViewManager
     {

@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System.Data;
-using SharpMap.Features;
 using SharpMap.Geometries;
 using System.Globalization;
 

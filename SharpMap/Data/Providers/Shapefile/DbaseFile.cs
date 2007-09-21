@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
-using SharpMap.Features;
 using System.IO;
 using System.Globalization;
 

@@ -20,8 +20,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using SharpMap.Data;
 
-namespace SharpMap.Features
+namespace SharpMap.Data
 {
     /// <summary>
     /// Represents one feature table of in-memory spatial data, with an object identifier (OID) type
@@ -150,13 +151,13 @@ namespace SharpMap.Features
         public FeatureDataTable(string idColumnName)
         {
             setIdColumn(idColumnName);
-		}
+        }
 
-		public FeatureDataTable(string tableName, string idColumnName)
-			: base(tableName)
-		{
-			setIdColumn(idColumnName);
-		}
+        public FeatureDataTable(string tableName, string idColumnName)
+            : base(tableName)
+        {
+            setIdColumn(idColumnName);
+        }
 
         public FeatureDataTable(DataTable table, string idColumnName)
             : base(table)
