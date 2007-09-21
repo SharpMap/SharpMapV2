@@ -16,14 +16,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Styles;
 
 namespace SharpMap.Presentation.Views
 {
+    /// <summary>
+    /// Provides the interface for a view to show and accept edit requests for 
+    /// <see cref="Layer"/> <see cref="IStyle">style</see> information.
+    /// </summary>
     public interface ILayerStyleView : IView
     {
         event EventHandler<LayerStyleChangeRequestEventArgs> LayerStyleChangeRequested;
+
+        /// <summary>
+        /// Gets or sets the style to view.
+        /// </summary>
         IStyle Style { get; set; }
     }
 }

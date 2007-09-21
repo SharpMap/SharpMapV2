@@ -17,12 +17,35 @@
 
 namespace SharpMap.Presentation.Views
 {
+    /// <summary>
+    /// Interface for a view of a map.
+    /// </summary>
     public interface IView
     {
+        /// <summary>
+        /// Gets or sets whether the view is visible.
+        /// </summary>
         bool Visible { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether the view is shown as enabled and available,
+        /// or disabled and unavailable.
+        /// </summary>
         bool Enabled { get; set; }
+
+        /// <summary>
+        /// Hides the view, causing <see cref="Visible"/> to become false.
+        /// </summary>
         void Hide();
+
+        /// <summary>
+        /// Shows the view, causeing <see cref="Visible"/> to become true.
+        /// </summary>
         void Show();
+
+        /// <summary>
+        /// Gets or sets the title to display on the view.
+        /// </summary>
         string Title { get; set; }
     }
 }

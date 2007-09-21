@@ -290,11 +290,12 @@ namespace SharpMap
                             "Layer name must be a non-null, non-empty string.");
                     }
 
-                    IEnumerable<ILayer> found = _map.FindLayers(layerName);
-
-                    foreach (ILayer layer in found)
+                    foreach (ILayer layer in this)
                     {
-                        return IndexOf(layer);
+                        if(String.Compare(layerName, layer.LayerName, StringComparison.CurrentCultureIgnoreCase) == 0)
+                        {
+                            return IndexOf(layer);
+                        }
                     }
 
                     return -1;
@@ -679,6 +680,16 @@ namespace SharpMap
         }
 
         /// <summary>
+        /// Gets the extents of the map based on the extents of all the layers 
+        /// in the layers collection.
+        /// </summary>
+        /// <returns>Full map extents.</returns>
+        public BoundingBox Extents
+        {
+            get { return _extents; }
+        }
+
+        /// <summary>
         /// Returns an enumerable set of all layers containing the string 
         /// <paramref name="layerNamePart"/>  in the <see cref="ILayer.LayerName"/> property.
         /// </summary>
@@ -712,16 +723,6 @@ namespace SharpMap
             where TPoint : IVector<DoubleComponent>
         {
             return ActiveTool as MapTool<TMapView, TPoint>;
-        }
-
-        /// <summary>
-        /// Gets the extents of the map based on the extents of all the layers 
-        /// in the layers collection.
-        /// </summary>
-        /// <returns>Full map extents.</returns>
-        public BoundingBox Extents
-        {
-            get { return _extents; }
         }
 
         /// <summary>
