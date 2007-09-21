@@ -1133,9 +1133,10 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Gets the currently visible features in all the enabled layers in the map.
+        /// Gets a FeatureDataSet containing all the loaded 
+        /// features in all the enabled layers in the map.
         /// </summary>
-        public FeatureDataSet VisibleFeatures
+        public FeatureDataSet Features
         {
             get { throw new NotImplementedException(); }
         }
