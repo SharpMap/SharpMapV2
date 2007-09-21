@@ -304,11 +304,12 @@ namespace SharpMap.Layers
             {
                 if (Style == null)
                 {
-                    Style = new Style();
+                    Style = CreateStyle();
                 }
-                else
+
+                if (Enabled == value)
                 {
-                    if (Style.Enabled == value) return;
+                    return;
                 }
 
                 Style.Enabled = value;
@@ -425,6 +426,12 @@ namespace SharpMap.Layers
         }
 
         #endregion
+
+        protected virtual IStyle CreateStyle()
+        {
+            return new Style();
+        }
+
         protected virtual MultiPolygon LoadedRegion
         {
             get { return _loadedRegion; }

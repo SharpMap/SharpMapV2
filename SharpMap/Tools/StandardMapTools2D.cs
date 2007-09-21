@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpMap.Geometries;
 using SharpMap.Presentation;
 using SharpMap.Rendering.Rendering2D;
 
@@ -97,6 +98,11 @@ namespace SharpMap.Tools
 
 		private static void BeginPan(ActionContext<IMapView2D, Point2D> context)
 		{
+            if(context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		    _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
 		}
 
@@ -123,6 +129,11 @@ namespace SharpMap.Tools
 
 		private static void BeginZoomIn(ActionContext<IMapView2D, Point2D> context)
         {
+            if(context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
             _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
 		}
 
@@ -149,7 +160,12 @@ namespace SharpMap.Tools
 		}
 
 		private static void BeginZoomOut(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            if (context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		}
 
 		private static void ContinueZoomOut(ActionContext<IMapView2D, Point2D> context)
@@ -167,7 +183,12 @@ namespace SharpMap.Tools
 		}
 
 		private static void BeginQuery(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            if (context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		}
 
 		private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
@@ -185,7 +206,12 @@ namespace SharpMap.Tools
 		}
 
 		private static void BeginQueryAdd(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            if (context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		}
 
 		private static void ContinueQueryAdd(ActionContext<IMapView2D, Point2D> context)
@@ -203,7 +229,12 @@ namespace SharpMap.Tools
 		}
 
 		private static void BeginQueryRemove(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            if (context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		}
 
 		private static void ContinueQueryRemove(ActionContext<IMapView2D, Point2D> context)
@@ -221,7 +252,12 @@ namespace SharpMap.Tools
 		}
 
 		private static void BeginFeatureAdd(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            if (context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		}
 
 		private static void ContinueFeatureAdd(ActionContext<IMapView2D, Point2D> context)
@@ -239,7 +275,12 @@ namespace SharpMap.Tools
 		}
 
 		private static void BeginFeatureRemove(ActionContext<IMapView2D, Point2D> context)
-		{
+        {
+            if (context.MapView.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
 		}
 
 		private static void ContinueFeatureRemove(ActionContext<IMapView2D, Point2D> context)

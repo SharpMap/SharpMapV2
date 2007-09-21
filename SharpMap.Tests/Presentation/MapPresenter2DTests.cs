@@ -787,18 +787,47 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
-        public void PanTest()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PanWhenNoWorldBoundsThrowsException()
         {
-        	TestView2D view;
+            TestView2D view;
             TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
 
             Map map = mapPresenter.Map;
-            
             map.ActiveTool = StandardMapTools2D.Pan;
 
             view.RaiseBegin(new Point2D(200, 250));
             view.RaiseMoveTo(new Point2D(250, 250));
             view.RaiseEnd(new Point2D(250, 250));
+        }
+
+        [Test]
+        [Ignore]
+        public void PanTest()
+        {
+        	TestView2D view;
+            TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
+
+            mapPresenter.ZoomToExtents();
+
+            Map map = mapPresenter.Map;
+            map.ActiveTool = StandardMapTools2D.Pan;
+
+            /*
+             * 
+             * |
+             * |     1 2
+             * |     * *
+             * |     ->
+             * |____________
+             * 
+             */
+
+            view.RaiseBegin(new Point2D(0, 0));
+            view.RaiseMoveTo(new Point2D(0, 0));
+            view.RaiseEnd(new Point2D(0, 0));
+
+            Assert.AreEqual(new Point(62.5, 50), mapPresenter.GeoCenter);
         }
 
         [Test]
@@ -846,6 +875,19 @@ namespace SharpMap.Tests.Presentation
         [Test]
         public void RemoveFeatureTest()
         {
+        }
+
+        [Test]
+        public void ZoomingToExtentsCentersMap()
+        {
+            MockRepository mocks = new MockRepository();
+
+            TestPresenter2D mapPresenter = createPresenter(mocks, 400, 500);
+            mapPresenter.ZoomToExtents();
+
+            Map map = mapPresenter.Map;
+            
+            Assert.AreEqual(map.Center, mapPresenter.GeoCenter);
         }
 
         [Test]
@@ -969,6 +1011,7 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
             mapPresenter.WorldAspectRatio = 2;
+            mapPresenter.ZoomToExtents();
             mapPresenter.ZoomToViewBounds(new Rectangle2D(100, 50, 300, 150));
             Assert.AreEqual(new Point(50, 50), mapPresenter.GeoCenter);
             Assert.AreEqual(50, mapPresenter.WorldWidth);

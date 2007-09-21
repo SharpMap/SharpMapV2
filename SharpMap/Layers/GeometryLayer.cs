@@ -101,6 +101,10 @@ namespace SharpMap.Layers
         #endregion
 
         #region Layer Overrides
+        protected override IStyle CreateStyle()
+        {
+            return new VectorStyle();
+        }
 
         IStyle ILayer.Style
         {

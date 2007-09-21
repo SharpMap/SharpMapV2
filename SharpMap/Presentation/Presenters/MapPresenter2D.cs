@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using SharpMap.Geometries;
 using SharpMap.Layers;
@@ -45,6 +44,8 @@ namespace SharpMap.Presentation
         private ViewSelection2D _selection;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth = 0.0;
+        // Offsets the origin of the spatial reference system so that the 
+        // center of the view coincides with the center of the extents of the map.
         private readonly Matrix2D _originNormalizeTransform = new Matrix2D();
         private readonly Matrix2D _rotationTransform = new Matrix2D();
         private readonly Matrix2D _translationTransform = new Matrix2D();
@@ -92,14 +93,10 @@ namespace SharpMap.Presentation
             _toViewCoordinates.OffsetX = View.ViewSize.Width / 2;
             _toViewCoordinates.OffsetY = View.ViewSize.Height / 2;
 
-            //BoundingBox extents = map.Extents;
-
-            //GeoPoint geoCenter = extents.GetCentroid();
-
-            //if (geoCenter != GeoPoint.Empty)
-            //{
-            //    setViewMetricsInternal(View.ViewSize, geoCenter, extents.Width);
-            //}
+            if(Map.Extents != BoundingBox.Empty)
+            {
+                normalizeOrigin();
+            }
         }
         #endregion
 
@@ -368,7 +365,9 @@ namespace SharpMap.Presentation
                 if (currentRatio != value)
                 {
                     double ratioModifier = value / currentRatio;
+                    
                     _scaleTransform.M22 /= ratioModifier;
+                    
                     if (ToViewTransformInternal != null)
                     {
                         ToWorldTransformInternal = ToViewTransformInternal.Inverse;
@@ -473,7 +472,7 @@ namespace SharpMap.Presentation
         {
             if (_viewIsEmpty)
             {
-                throw new InvalidOperationException("World bounds have not been set.");
+                throw new InvalidOperationException("No visible region is set for this view.");
             }
 
             BoundingBox worldBounds = new BoundingBox(
@@ -663,11 +662,10 @@ namespace SharpMap.Presentation
 
             if (e.PropertyName == SharpMap.Map.ExtentsProperty.Name)
             {
-                BoundingBox extents = Map.Extents;
-                _originNormalizeTransform.OffsetX = -extents.Left;
-                _originNormalizeTransform.OffsetY = -extents.Bottom;
+                normalizeOrigin();
             }
         }
+
         #endregion
 
         #region View events
@@ -808,6 +806,13 @@ namespace SharpMap.Presentation
             // TODO: create raster renderer
         }
 
+        private void normalizeOrigin()
+        {
+            BoundingBox extents = Map.Extents;
+            _originNormalizeTransform.OffsetX = -extents.Left;
+            _originNormalizeTransform.OffsetY = -extents.Bottom;
+        }
+
         // Performs computations to set the view metrics to the given envelope.
         private void setViewEnvelopeInternal(BoundingBox newEnvelope)
         {
@@ -886,17 +891,9 @@ namespace SharpMap.Presentation
 
             if (newWorldUnitsPerPixel != WorldUnitsPerPixelInternal)
             {
-                if (WorldUnitsPerPixelInternal == 0)
-                {
-                    double initialWorldUnitsPerPixel = newWorldWidth / newViewSize.Width;
-                    _scaleTransform.M11 = _scaleTransform.M22 = 1 / initialWorldUnitsPerPixel;
-                }
-                else
-                {
-                    double newScale = 1 / newWorldUnitsPerPixel;
-                    _scaleTransform.M22 = newScale / WorldAspectRatioInternal;
-                    _scaleTransform.M11 = newScale;
-                }
+                double newScale = 1 / newWorldUnitsPerPixel;
+                _scaleTransform.M22 = newScale / WorldAspectRatioInternal;
+                _scaleTransform.M11 = newScale;
 
                 viewMatrixChanged = true;
             }
