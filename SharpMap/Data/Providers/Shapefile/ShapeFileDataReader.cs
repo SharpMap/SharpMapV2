@@ -30,17 +30,24 @@ namespace SharpMap.Data.Providers.ShapeFile
 	{
         #region Instance fields
         private readonly ShapeFileProvider _shapeFile;
+        private readonly QueryExecutionOptions _options;
         private readonly DataTable _schemaTable;
         private FeatureDataRow<uint> _currentFeature;
         private bool _isDisposed;
-        private readonly IEnumerator<uint> _objectEnumerator; 
+        private readonly IEnumerator<uint> _objectEnumerator;
         #endregion
 
 		#region Object Construction / Disposal
 
-		internal ShapeFileDataReader(ShapeFileProvider source, BoundingBox queryRegion)
+		internal ShapeFileDataReader(ShapeFileProvider source, BoundingBox queryRegion, QueryExecutionOptions options)
 		{
+            if(options != QueryExecutionOptions.All)
+            {
+                throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
+            }
+
 			_shapeFile = source;
+		    _options = options;
 			_schemaTable = source.GetSchemaTable();
 
 			// Use the spatial index to get a list of features whose BoundingBox intersects query bounds.

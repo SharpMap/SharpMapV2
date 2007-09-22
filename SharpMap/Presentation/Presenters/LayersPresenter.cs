@@ -58,12 +58,6 @@ namespace SharpMap.Presentation.Presenters
                 View.SelectedLayers = new List<string>(generateLayerNames(Map.SelectedLayers));
             }
 
-            if (propertyName == Map.VisibleRegionProperty.Name)
-            {
-                // TODO: Make layers appear unavailable if the visible region is outside
-                // the MinVisible or MaxVisible for the layer
-            }
-
             if (propertyName == Map.ActiveToolProperty.Name)
             {
             }

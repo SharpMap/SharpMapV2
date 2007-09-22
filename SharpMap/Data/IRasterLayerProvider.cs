@@ -20,15 +20,18 @@ using System.IO;
 
 namespace SharpMap.Data
 {
+    /// <summary>
+    /// Defines the interface to a provider of raster data.
+    /// </summary>
     public interface IRasterLayerProvider : ILayerProvider
     {
         /// <summary>
         /// Retrieves a <see cref="Stream"/> for the raster data that 
-        /// are intersected by <paramref name="geom"/>.
+        /// are intersected by <paramref name="geometry"/>.
         /// </summary>
-        /// <param name="geom">Geometry to intersect with.</param>
+        /// <param name="geometry">Geometry to intersect with.</param>
         /// <returns>A Stream to access the raster data of the result.</returns>
-        Stream ExecuteIntersectionQuery(Geometry geom);
+        Stream ExecuteIntersectionQuery(Geometry geometry);
 
         /// <summary>
         /// Retrieves a <see cref="Stream"/> for the raster data that 

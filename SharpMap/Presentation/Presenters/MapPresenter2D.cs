@@ -641,12 +641,6 @@ namespace SharpMap.Presentation.Presenters
 
         private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == Map.VisibleRegionProperty.Name)
-            {
-                setViewEnvelopeInternal(Map.VisibleRegion);
-                renderAllLayers();
-            }
-
             if (e.PropertyName == Map.SpatialReferenceProperty.Name)
             {
                 //throw new NotImplementedException();
@@ -917,10 +911,7 @@ namespace SharpMap.Presentation.Presenters
 
                 ToWorldTransformInternal = ToViewTransformInternal.Inverse;
 
-                if (Map.VisibleRegion != ViewEnvelopeInternal)
-                {
-                    Map.VisibleRegion = ViewEnvelopeInternal;
-                }
+                renderAllLayers();
             }
         }
 

@@ -57,12 +57,6 @@ namespace SharpMap.Presentation.Presenters
                 View.SelectedTool = Map.ActiveTool;
             }
 
-            if (propertyName == Map.VisibleRegionProperty.Name)
-            {
-                // TODO: Make layers appear unavailable if the visible region is outside
-                // the MinVisible or MaxVisible for the layer
-            }
-
             if (propertyName == Map.ActiveToolProperty.Name)
             {
                 View.SelectedTool = Map.ActiveTool;

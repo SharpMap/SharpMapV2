@@ -447,7 +447,10 @@ namespace SharpMap.Data
         {
             base.OnTableCleared(e);
 
-            _rTreeIndex.Clear();
+            if (_rTreeIndex != null)
+            {
+                _rTreeIndex.Clear();
+            }
         }
 
         /// <summary>

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Geometries;
@@ -50,7 +51,11 @@ namespace SharpMap.Presentation.WinForms
 
             Debug.Assert(renderer != null);
 
-            foreach (FeatureDataRow feature in ((IEnumerable<FeatureDataRow>)layer.VisibleFeatures))
+            // TODO: measure the performance of this view creation
+            FeatureDataView visibleFeatures = new FeatureDataView(
+                layer.Features, ViewEnvelopeInternal.ToGeometry(), "", DataViewRowState.CurrentRows);
+
+            foreach (FeatureDataRow feature in ((IEnumerable<FeatureDataRow>)visibleFeatures))
             {
                 View.ShowRenderedObjects(renderer.RenderFeature(feature));
             }

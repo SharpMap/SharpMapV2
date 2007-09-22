@@ -111,60 +111,157 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region IFeatureLayerProvider Members
 
-        public CultureInfo Locale
-        {
-            get { throw new NotImplementedException(); }
+        /// <summary>
+        /// Throws an NotSupportedException. 
+        /// </summary>
+        /// <param name="geometry">The geometry used to query with.</param>
+        /// <param name="queryType">Type of spatial query to execute.</param>
+        public IFeatureDataReader ExecuteFeatureQuery(Geometry geometry, SpatialQueryType queryType)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+        /// <summary>
+        /// Throws an NotSupportedException.
+        /// </summary>
+        /// <param name="geometry">The geometry used to query with.</param>
+        /// <param name="dataSet">FeatureDataTable to fill data into.</param>
+        /// <param name="queryType">Type of spatial query to execute.</param>
+        public void ExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType)
+		{
+			throw new NotImplementedException();
+		}
+        
+	    /// <summary>
+		/// Throws an NotSupportedException.
+		/// </summary>
+        /// <param name="geometry">The geometry used to query with.</param>
+		/// <param name="table">FeatureDataTable to fill data into.</param>
+        /// <param name="queryType">Type of spatial query to execute.</param>
+        public void ExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType)
+		{
+			throw new NotImplementedException();
+		}
+
+        /// <summary>
+        /// Gets the geometries intersecting the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <returns>
+        /// An enumeration of features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// </returns>
+        public IEnumerable<Geometry> ExecuteGeometryIntersectionQuery(BoundingBox bounds)
+	    {
+	        throw new NotImplementedException();
         }
 
-		public IEnumerable<Geometry> GetGeometriesInView(BoundingBox boundingBox)
-		{
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
+	    public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds)
+	    {
+            return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.All);
+        }
 
-		public DataTable GetSchemaTable()
-		{
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="options">Options indicating which data to retrieve.</param>
+        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
+        public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds, QueryExecutionOptions options)
+        {
+            FeatureDataReader reader = new FeatureDataReader(_features, bounds, options);
+            return reader;
+        }
 
-		public void ExecuteIntersectionQuery(Geometry geom, FeatureDataSet dataSet)
+        /// <summary>
+        /// Retrieves the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet)
 		{
-			throw new NotImplementedException();
-		}
+            ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.All);
+        }
 
-		public void ExecuteIntersectionQuery(Geometry geom, FeatureDataTable table)
+        /// <summary>
+        /// Retrieves the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        /// <param name="options">Options indicating which data to retrieve.</param>
+        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Retrieves the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table)
 		{
-			throw new NotImplementedException();
-		}
+            ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.All);
+        }
 
-		public IFeatureDataReader ExecuteIntersectionQuery(Geometry geom)
-		{
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Retrieves the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        /// <param name="options">Options indicating which data to retrieve.</param>
+        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options)
+        {
+            IFeatureDataReader reader = ExecuteIntersectionQuery(bounds, options);
 
-		public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataSet dataSet)
-		{
-			throw new NotImplementedException();
-		}
+            table.Load(reader);
+        }
 
-		public void ExecuteIntersectionQuery(BoundingBox box, FeatureDataTable table)
-		{
-			IFeatureDataReader reader = ExecuteIntersectionQuery(box);
-			
-			table.Load(reader);
-		}
-
-		public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox box)
-		{
-			FeatureDataReader reader = new FeatureDataReader(_features, box);
-			return reader;
-		}
-
-		public int GetFeatureCount()
+        /// <summary>
+        /// Returns the number of features in the entire dataset.
+        /// </summary>
+        /// <returns>Count of the features in the entire dataset.</returns>
+	    public int GetFeatureCount()
 		{
 			return _features.FeatureCount;
 		}
 
-		public void SetTableSchema(FeatureDataTable table)
+        /// <summary>
+        /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema
+        /// for the configured provider. Provides the same result as 
+        /// <see cref="IDataReader.GetSchemaTable"/>.
+        /// </summary>
+        /// <seealso cref="IDataReader.GetSchemaTable"/>
+        /// <returns>A DataTable that describes the column metadata.</returns>
+	    public DataTable GetSchemaTable()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+        /// <summary>
+        /// Gets the locale of the data as a CultureInfo.
+        /// </summary>
+	    public CultureInfo Locale
+	    {
+	        get { throw new NotImplementedException(); }
+	    }
+
+        /// <summary>
+        /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 
+        /// present in the IProvider with the given connection.
+        /// </summary>
+        /// <param name="table">The FeatureDataTable to configure the schema of.</param>
+	    public void SetTableSchema(FeatureDataTable table)
 		{
 			_features.MergeSchema(table);
         }

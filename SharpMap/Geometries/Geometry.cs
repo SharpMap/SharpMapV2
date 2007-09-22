@@ -46,7 +46,16 @@ namespace SharpMap.Geometries
 	public abstract class Geometry : IGeometry, IEquatable<Geometry>
 	{
 		private ICoordinateSystem _spatialReference;
-		private Tolerance _tolerance = null;
+        private Tolerance _tolerance = null;
+
+        /// <summary>
+        /// Returns a WellKnownText representation of the <see cref="Geometry"/>
+        /// </summary>
+        /// <returns>Well-known text</returns>
+        public override string ToString()
+        {
+            return AsText();
+        }
 
 		/// <summary>
 		/// Gets or sets the spatial reference system associated 
@@ -123,38 +132,39 @@ namespace SharpMap.Geometries
 		}
 
 
-		/// <summary>
-		/// The minimum bounding box for this <see cref="Geometry"/>, returned as a <see cref="BoundingBox"/>.
-		/// </summary>
-		/// <returns></returns>
-		public abstract BoundingBox GetBoundingBox();
-
-		/// <summary>
-		/// Exports this <see cref="Geometry"/> to a specific well-known text representation of <see cref="Geometry"/>.
+	    /// <summary>
+		/// Exports this <see cref="Geometry"/> to a specific 
+		/// well-known text representation of <see cref="Geometry"/>.
 		/// </summary>
 		public string AsText()
 		{
 			return GeometryToWkt.Write(this);
 		}
 
-		/// <summary>
-		/// Exports this <see cref="Geometry"/> to a specific well-known binary representation of <see cref="Geometry"/>.
+	    /// <summary>
+		/// Exports this <see cref="Geometry"/> to a specific 
+		/// well-known binary representation of <see cref="Geometry"/>.
 		/// </summary>
 		public byte[] AsBinary()
 		{
 			return GeometryToWkb.Write(this);
 		}
 
-		/// <summary>
-		/// Returns a WellKnownText representation of the <see cref="Geometry"/>
-		/// </summary>
-		/// <returns>Well-known text</returns>
-		public override string ToString()
-		{
-			return AsText();
-		}
+	    /// <summary>
+	    /// Returns the closure of the combinatorial boundary of this <see cref="Geometry"/>. The
+	    /// combinatorial boundary is defined as described in section 3.12.3.2 of [1]. Because the result of this function
+	    /// is a closure, and hence topologically closed, the resulting boundary can be represented using
+	    /// representational geometry primitives
+	    /// </summary>
+	    public abstract Geometry Boundary();
 
-		/// <summary>
+	    /// <summary>
+	    /// The minimum bounding box for this <see cref="Geometry"/>, returned as a <see cref="BoundingBox"/>.
+	    /// </summary>
+	    /// <returns></returns>
+	    public abstract BoundingBox GetBoundingBox();
+
+	    /// <summary>
 		/// Creates a <see cref="Geometry"/> based on a Well-Known Text string
 		/// </summary>
 		/// <param name="wkt">Well-Known Text</param>
@@ -164,7 +174,7 @@ namespace SharpMap.Geometries
 			return GeometryFromWkt.Parse(wkt);
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Creates a <see cref="Geometry"/> based on a Well-Known Binary byte array
 		/// </summary>
 		/// <param name="WKB">Well-Known Binary</param>
@@ -174,32 +184,40 @@ namespace SharpMap.Geometries
 			return GeometryFromWkb.Parse(WKB);
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is the empty geometry . If true, then this
 		/// <see cref="Geometry"/> represents the empty point set, Ø, for the coordinate space. 
 		/// </summary>
 		public abstract bool IsEmpty();
 
-		/// <summary>
+	    /// <summary>
 		///  Returns 'true' if this Geometry has no anomalous geometric points, such as self
 		/// intersection or self tangency. The description of each instantiable geometric class will include the specific
 		/// conditions that cause an instance of that class to be classified as not simple.
 		/// </summary>
 		public abstract bool IsSimple();
 
-		/// <summary>
-		/// Returns the closure of the combinatorial boundary of this <see cref="Geometry"/>. The
-		/// combinatorial boundary is defined as described in section 3.12.3.2 of [1]. Because the result of this function
-		/// is a closure, and hence topologically closed, the resulting boundary can be represented using
-		/// representational geometry primitives
-		/// </summary>
-		public abstract Geometry Boundary();
-
-		#endregion
+	    #endregion
 
 		#region "Methods for testing Spatial Relations between geometric objects"
 
-		/// <summary>
+	    /// <summary>
+	    /// Returns 'true' if this <see cref="Geometry"/> ‘spatially contains’ another <see cref="Geometry"/>.
+	    /// </summary>
+	    public virtual bool Contains(Geometry geom)
+	    {
+	        return SpatialRelations.Contains(this, geom);
+	    }
+
+	    /// <summary>
+	    /// Returns 'true' if this <see cref="Geometry"/> ‘spatially crosses’ another <see cref="Geometry"/>.
+	    /// </summary>
+	    public virtual bool Crosses(Geometry geom)
+	    {
+	        return SpatialRelations.Crosses(this, geom);
+	    }
+
+	    /// <summary>
 		/// Returns 'true' if this Geometry is ‘spatially disjoint’ from another <see cref="Geometry"/>.
 		/// </summary>
 		public virtual bool Disjoint(Geometry geom)
@@ -207,7 +225,7 @@ namespace SharpMap.Geometries
 			return SpatialRelations.Disjoint(this, geom);
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> ‘spatially intersects’ another <see cref="Geometry"/>.
 		/// </summary>
 		public virtual bool Intersects(Geometry geom)
@@ -215,7 +233,15 @@ namespace SharpMap.Geometries
 			return SpatialRelations.Intersects(this, geom);
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Returns 'true' if this <see cref="Geometry"/> 'spatially overlaps' another <see cref="Geometry"/>.
+	    /// </summary>
+	    public virtual bool Overlaps(Geometry geom)
+	    {
+	        return SpatialRelations.Overlaps(this, geom);
+	    }
+
+	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> ‘spatially touches’ another <see cref="Geometry"/>.
 		/// </summary>
 		public virtual bool Touches(Geometry geom)
@@ -223,15 +249,7 @@ namespace SharpMap.Geometries
 			return SpatialRelations.Touches(this, geom);
 		}
 
-		/// <summary>
-		/// Returns 'true' if this <see cref="Geometry"/> ‘spatially crosses’ another <see cref="Geometry"/>.
-		/// </summary>
-		public virtual bool Crosses(Geometry geom)
-		{
-			return SpatialRelations.Crosses(this, geom);
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is ‘spatially within’ another <see cref="Geometry"/>.
 		/// </summary>
 		public virtual bool Within(Geometry geom)
@@ -239,25 +257,9 @@ namespace SharpMap.Geometries
 			return SpatialRelations.Within(this, geom);
 		}
 
-		/// <summary>
-		/// Returns 'true' if this <see cref="Geometry"/> ‘spatially contains’ another <see cref="Geometry"/>.
-		/// </summary>
-		public virtual bool Contains(Geometry geom)
-		{
-			return SpatialRelations.Contains(this, geom);
-		}
-
-		/// <summary>
-		/// Returns 'true' if this <see cref="Geometry"/> 'spatially overlaps' another <see cref="Geometry"/>.
-		/// </summary>
-		public virtual bool Overlaps(Geometry geom)
-		{
-			return SpatialRelations.Overlaps(this, geom);
-		}
-
-
-		/// <summary>
-		/// Returns 'true' if this <see cref="Geometry"/> is spatially related to another <see cref="Geometry"/>, by testing
+	    /// <summary>
+		/// Returns 'true' if this <see cref="Geometry"/> is spatially related to 
+		/// another <see cref="Geometry"/>, by testing
 		/// for intersections between the Interior, Boundary and Exterior of the two geometries
 		/// as specified by the values in the intersectionPatternMatrix
 		/// </summary>
@@ -273,7 +275,29 @@ namespace SharpMap.Geometries
 
 		#region "Methods that support Spatial Analysis"
 
-		/// <summary>
+	    /// <summary>
+	    /// Returns a geometry that represents all points 
+	    /// whose distance from this Geometry
+	    /// is less than or equal to distance. 
+	    /// Calculations are in the Spatial Reference
+	    /// System of this Geometry.
+	    /// </summary>
+	    /// <param name="d">Buffer distance</param>
+	    public abstract Geometry Buffer(double d);
+
+	    /// <summary>
+	    /// Geometry—Returns a geometry that represents 
+	    /// the convex hull of this Geometry.
+	    /// </summary>
+	    public abstract Geometry ConvexHull();
+
+	    /// <summary>
+	    /// Returns a geometry that represents the point set 
+	    /// difference of this Geometry with another Geometry.
+	    /// </summary>
+	    public abstract Geometry Difference(Geometry geom);
+
+	    /// <summary>
 		/// Returns the shortest distance between any 
 		/// two points in the two geometries
 		/// as calculated in the spatial reference 
@@ -281,49 +305,26 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public abstract double Distance(Geometry geom);
 
-		/// <summary>
-		/// Returns a geometry that represents all points 
-		/// whose distance from this Geometry
-		/// is less than or equal to distance. 
-		/// Calculations are in the Spatial Reference
-		/// System of this Geometry.
-		/// </summary>
-		/// <param name="d">Buffer distance</param>
-		public abstract Geometry Buffer(double d);
-
-
-		/// <summary>
-		/// Geometry—Returns a geometry that represents 
-		/// the convex hull of this Geometry.
-		/// </summary>
-		public abstract Geometry ConvexHull();
-
-		/// <summary>
+	    /// <summary>
 		/// Returns a geometry that represents the point set 
 		/// intersection of this Geometry
 		/// with anotherGeometry.
 		/// </summary>
 		public abstract Geometry Intersection(Geometry geom);
 
-		/// <summary>
+	    /// <summary>
+	    /// Returns a geometry that represents the point set 
+	    /// symmetric difference of this Geometry with another Geometry.
+	    /// </summary>
+	    public abstract Geometry SymDifference(Geometry geom);
+
+	    /// <summary>
 		/// Returns a geometry that represents the point set union 
 		/// of this Geometry with another Geometry.
 		/// </summary>
 		public abstract Geometry Union(Geometry geom);
 
-		/// <summary>
-		/// Returns a geometry that represents the point set 
-		/// difference of this Geometry with another Geometry.
-		/// </summary>
-		public abstract Geometry Difference(Geometry geom);
-
-		/// <summary>
-		/// Returns a geometry that represents the point set 
-		/// symmetric difference of this Geometry with another Geometry.
-		/// </summary>
-		public abstract Geometry SymDifference(Geometry geom);
-
-		#endregion
+	    #endregion
 
 		/// <summary>
 		/// Creates a deep copy of the Geometry instance.

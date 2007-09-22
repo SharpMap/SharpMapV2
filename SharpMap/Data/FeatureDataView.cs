@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using SharpMap.Data;
@@ -87,7 +88,7 @@ namespace SharpMap.Data
                                string sort, DataViewRowState rowState)
             : base(table, "", sort, rowState)
         {
-            GeometryIntersectionFilter = intersectionFilter;
+            _intersectionFilter = intersectionFilter;
 
             // This call rebuilds the index which was just built with 
             // the call into the base constructor, which may be a performance
@@ -179,7 +180,8 @@ namespace SharpMap.Data
                 _intersectionFilter = value;
 
                 // TODO: Perhaps resetting the entire index is a bit drastic... 
-                // Reconsider how to enlist and retire rows incrementally.
+                // Reconsider how to enlist and retire rows incrementally, 
+                // perhaps doing RTree diffs.
                 Reset();
             }
         }
@@ -259,18 +261,10 @@ namespace SharpMap.Data
 
         private void setFilterPredicate()
         {
+            // TODO: rethink how the view is filtered... perhaps we could bypass SetIndex2 and create
+            // the System.Data.Index directly with rows returned from the SharpMap.Indexing.RTree
             object iFilter = createRowPredicateFilter(isRowInView);
             SetIndex2(Sort, RowStateFilter, iFilter, true);
-        }
-
-        private object createRowPredicateFilter(Predicate<DataRow> filter)
-        {
-            Type rowPredicateFilterType = Type.GetType("System.Data.DataView+RowPredicateFilter, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-            object[] args = new object[] { filter };
-            object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
-                                                                 BindingFlags.Instance | BindingFlags.NonPublic, null, args, null);
-
-            return rowPredicateFilter;
         }
 
         private bool isRowInView(DataRow row)
@@ -291,9 +285,9 @@ namespace SharpMap.Data
 
         private static SetIndex2Delegate GenerateSetIndex2Delegate()
         {
-            // We need to generate a delegate based on the function pointer, 
-            // since the SetIndex2 method requires a parameter of type DataExpression,
-            // which is internal to System.Data, so we can't do LCG with DynamicMethod
+            // TODO: check if this could be redone with a DynamicMethod,
+            // using System.Object in place of the inaccessible System.Data.DataExpression,
+            // relying on delegate covariance.
             MethodInfo setIndex2Info = typeof(DataView).GetMethod(
                 "SetIndex2", BindingFlags.NonPublic | BindingFlags.Instance);
             ConstructorInfo setIndexDelegateCtor = typeof(SetIndex2Delegate)
@@ -343,6 +337,25 @@ namespace SharpMap.Data
                    as SetDataViewManagerDelegate;
         }
 
+        private static object createRowPredicateFilter(Predicate<DataRow> filter)
+        {
+            // HACK: This is the only way we have to take control of what predicate is used to filter the DataView.
+            // Unfortunately, this type is only available in the v2.0 CLR which ships with .Net v3.5 Beta 2 (v2.0.50727.1378)
+            // Currently, the only two choices to provided spatially filtered views are to implement 
+            // System.ComponentModel.IBindingListView or to rely on v3.5.
+            string rowPredicateFilterTypeName =
+                "System.Data.DataView+RowPredicateFilter, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            Type rowPredicateFilterType = Type.GetType(rowPredicateFilterTypeName);
+            Debug.Assert(rowPredicateFilterType != null,
+                "Can't find the type System.Data.DataView+RowPredicateFilter. " +
+                "This is probably because you are not running the v2.0 CLR which ships with .Net v3.5 Beta 2.");
+            object[] args = new object[] { filter };
+            object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
+                                                                 BindingFlags.Instance | BindingFlags.NonPublic,
+                                                                 null, args, null);
+
+            return rowPredicateFilter;
+        }
         #endregion
     }
 }

@@ -75,14 +75,6 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Gets a PropertyDescriptor for the Map's <see cref="VisibleRegion"/> property.
-        /// </summary>
-        public static PropertyDescriptor VisibleRegionProperty
-        {
-            get { return _properties.Find("VisibleRegion", false); }
-        }
-
-        /// <summary>
         /// Gets a PropertyDescriptor for the Map's <see cref="SelectedLayers"/> property.
         /// </summary>
         public static PropertyDescriptor SelectedLayersProperty
@@ -395,7 +387,6 @@ namespace SharpMap
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
-        private BoundingBox _visibleEnvelope = BoundingBox.Empty;
         private BoundingBox _extents = BoundingBox.Empty;
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
@@ -1043,7 +1034,7 @@ namespace SharpMap
         /// </summary>
         public GeoPoint Center
         {
-            get { return _visibleEnvelope.GetCentroid(); }
+            get { return _extents.GetCentroid(); }
         }
 
         /// <summary>
@@ -1142,29 +1133,29 @@ namespace SharpMap
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Gets or sets the current visible envelope of the map.
-        /// </summary>
-        public BoundingBox VisibleRegion
-        {
-            get { return _visibleEnvelope; }
-            set
-            {
-                if (_visibleEnvelope == value)
-                {
-                    return;
-                }
+        ///// <summary>
+        ///// Gets or sets the current visible envelope of the map.
+        ///// </summary>
+        //public BoundingBox VisibleRegion
+        //{
+        //    get { return _visibleEnvelope; }
+        //    set
+        //    {
+        //        if (_visibleEnvelope == value)
+        //        {
+        //            return;
+        //        }
 
-                _visibleEnvelope = value;
+        //        _visibleEnvelope = value;
 
-                foreach (ILayer layer in Layers)
-                {
-                    layer.VisibleRegion = value;
-                }
+        //        foreach (ILayer layer in Layers)
+        //        {
+        //            layer.VisibleRegion = value;
+        //        }
 
-                onVisibleRegionChanged();
-            }
-        }
+        //        onVisibleRegionChanged();
+        //    }
+        //}
 
         #endregion
 
@@ -1180,11 +1171,6 @@ namespace SharpMap
         private void onSpatialReferenceChanged()
         {
             raisePropertyChanged(SpatialReferenceProperty.Name);
-        }
-
-        private void onVisibleRegionChanged()
-        {
-            raisePropertyChanged(VisibleRegionProperty.Name);
         }
 
         private void onSelectedLayersChanged()

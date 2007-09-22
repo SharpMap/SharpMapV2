@@ -77,14 +77,6 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         /// <param name="offsetVector">Amount and direction of the offset.</param>
         void Offset(Point2D offsetVector);
-		
-        /// <summary>
-        /// Gets the width of a pixel in world coordinate units.
-        /// </summary>
-        /// <remarks>
-        /// The value returned is the same as <see cref="WorldUnitsPerPixel"/>.
-        /// </remarks>
-        double PixelWorldWidth { get; }
 
         /// <summary>
         /// Gets the height of a pixel in world coordinate units.
@@ -94,7 +86,15 @@ namespace SharpMap.Presentation.Views
         /// unless <see cref="WorldAspectRatio"/> is different from 1.
         /// </remarks>
         double PixelWorldHeight { get; }
-		
+
+        /// <summary>
+        /// Gets the width of a pixel in world coordinate units.
+        /// </summary>
+        /// <remarks>
+        /// The value returned is the same as <see cref="WorldUnitsPerPixel"/>.
+        /// </remarks>
+        double PixelWorldWidth { get; }
+
         /// <summary>
         /// Gets the selection on a view, if one exists.
         /// </summary>

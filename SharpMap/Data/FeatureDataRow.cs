@@ -62,11 +62,12 @@ namespace SharpMap.Data
         #endregion
 
         #region Instance fields
-        // TODO: implement original and proposed geometry to match 
+        // TODO: implement original and proposed geometry to match DataRow RowState model
         private Geometry _originalGeometry;
         private Geometry _currentGeometry;
         private Geometry _proposedGeometry;
-        private bool _isGeometryModified = false; 
+        private bool _isGeometryModified = false;
+        private BoundingBox _extents = BoundingBox.Empty;
         #endregion
 
         #region Object constructor
@@ -84,6 +85,30 @@ namespace SharpMap.Data
         {
             base.AcceptChanges();
             _isGeometryModified = false;
+        }
+
+        public BoundingBox Extents
+        {
+            get
+            {
+                if (Geometry != null)
+                {
+                    return Geometry.GetBoundingBox();
+                }
+                else
+                {
+                    return _extents;
+                }
+            }
+            set
+            {
+                if(Geometry != null)
+                {
+                    throw new InvalidOperationException("Geometry is not null - cannot set extents.");
+                }
+
+                _extents = value;
+            }
         }
 
         /// <summary>

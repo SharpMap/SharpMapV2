@@ -27,6 +27,5 @@ namespace SharpMap.Layers
 		FeatureDataView HighlightedFeatures { get; }
         CultureInfo Locale { get; }
 		FeatureDataView SelectedFeatures { get; }
-		FeatureDataView VisibleFeatures { get; }
 	}
 }

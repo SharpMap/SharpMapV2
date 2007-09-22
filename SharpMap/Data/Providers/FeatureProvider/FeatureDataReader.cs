@@ -30,6 +30,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
     {
         #region Instance fields
         private readonly FeatureDataTable _table;
+        private readonly QueryExecutionOptions _options;
         private DataTable _schemaTable;
         private readonly BoundingBox _queryRegion;
         private int _currentRow = -1;
@@ -38,10 +39,16 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region Object Construction / Disposal
 
-        internal FeatureDataReader(FeatureDataTable source, BoundingBox queryRegion)
+        internal FeatureDataReader(FeatureDataTable source, BoundingBox queryRegion, QueryExecutionOptions options)
         {
             if (source == null) throw new ArgumentNullException("source");
 
+            if(options != QueryExecutionOptions.All)
+            {
+                throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
+            }
+
+            _options = options;
             _table = source.Clone();
             _queryRegion = queryRegion;
 

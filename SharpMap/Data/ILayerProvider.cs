@@ -60,11 +60,15 @@ namespace SharpMap.Data
         /// Gets the connection ID of the datasource.
         /// </summary>
         /// <remarks>
-        /// <para>The ConnectionId should be unique to the datasource 
+        /// <para>
+        /// The ConnectionId should be unique to the datasource 
         /// (for instance the filename or the connectionstring), and is meant 
-        /// to be used for connection pooling.</para>
-        /// <para>If connection pooling doesn't apply to this datasource, 
-        /// the ConnectionId should return String.Empty</para>
+        /// to be used for connection pooling.
+        /// </para>
+        /// <para>
+        /// If connection pooling doesn't apply to this datasource, 
+        /// the ConnectionId should return String.Empty.
+        /// </para>
         /// </remarks>
         string ConnectionId { get; }
 

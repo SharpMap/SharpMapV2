@@ -72,13 +72,13 @@ namespace SharpMap.Layers
             get { return _properties.Find("LayerName", false); }
         }
 
-        /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="VisibleRegion"/> property.
-        /// </summary>
-        public static PropertyDescriptor VisibleRegionProperty
-        {
-            get { return _properties.Find("VisibleRegion", false); }
-        } 
+        ///// <summary>
+        ///// Gets a PropertyDescriptor for Layer's <see cref="VisibleRegion"/> property.
+        ///// </summary>
+        //public static PropertyDescriptor VisibleRegionProperty
+        //{
+        //    get { return _properties.Find("VisibleRegion", false); }
+        //} 
         #endregion
 
         #region Instance fields
@@ -390,40 +390,40 @@ namespace SharpMap.Layers
             }
         }
 
-        /// <summary>
-        /// Gets or sets the visible region for this layer.
-        /// </summary>
-        public BoundingBox VisibleRegion
-        {
-            get { return _visibleRegion; }
-            set
-            {
-                if (value == VisibleRegion)
-                {
-                    return;
-                }
+        ///// <summary>
+        ///// Gets or sets the visible region for this layer.
+        ///// </summary>
+        //public BoundingBox VisibleRegion
+        //{
+        //    get { return _visibleRegion; }
+        //    set
+        //    {
+        //        if (value == VisibleRegion)
+        //        {
+        //            return;
+        //        }
 
-                // TODO: reevaluate how VisibleRegion's BoundingBox.Within interacts 
-                // with LoadedRegion once NTS is integrated
-                if (!value.Within(LoadedRegion))
-                {
-                    // Since the visible region changed, and we don't have the data
-                    // which covers this new region, we have to query for it.
-                    //
-                    // We can do it asynchronously, with a BackgroundWorker instance,
-                    // or synchronously
-                    if (AsyncQuery)
-                    {
-                        _dataQueryWorker.RunWorkerAsync(value);
-                    }
-                    else
-                    {
-                        LoadLayerDataForRegion(value);
-                        SetVisibleRegionInternal(value);
-                    }
-                }
-            }
-        }
+        //        // TODO: reevaluate how VisibleRegion's BoundingBox.Within interacts 
+        //        // with LoadedRegion once NTS is integrated
+        //        if (!value.Within(LoadedRegion))
+        //        {
+        //            // Since the visible region changed, and we don't have the data
+        //            // which covers this new region, we have to query for it.
+        //            //
+        //            // We can do it asynchronously, with a BackgroundWorker instance,
+        //            // or synchronously
+        //            if (AsyncQuery)
+        //            {
+        //                _dataQueryWorker.RunWorkerAsync(value);
+        //            }
+        //            else
+        //            {
+        //                LoadLayerDataForRegion(value);
+        //                SetVisibleRegionInternal(value);
+        //            }
+        //        }
+        //    }
+        //}
 
         #endregion
 

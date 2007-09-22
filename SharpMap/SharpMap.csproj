@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20706</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -136,6 +136,7 @@
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
     <Compile Include="Data\IRasterLayerProvider.cs" />
+    <Compile Include="Data\QueryExecutionOptions.cs" />
     <Compile Include="Data\SchemaMergeAction.cs" />
     <Compile Include="Data\Providers\Shapefile\DbaseFile.cs" />
     <Compile Include="Data\SharpMapDataException.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Data\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\SpatialQueryType.cs" />
     <Compile Include="Geometries\GeometryCollection`1.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
@@ -195,7 +197,6 @@
     <Compile Include="Geometries\GeometryCollection.cs" />
     <Compile Include="Geometries\IGeometry.cs" />
     <Compile Include="Geometries\IGeometryCollection.cs" />
-    <Compile Include="Geometries\ISpatialReference.cs" />
     <Compile Include="Geometries\LinearRing.cs" />
     <Compile Include="Geometries\LineString.cs" />
     <Compile Include="Geometries\MultiCurve.cs" />

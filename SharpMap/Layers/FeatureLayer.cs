@@ -33,8 +33,7 @@ namespace SharpMap.Layers
     {
         #region Instance fields
 
-        private readonly FeatureDataTable _cachedFeatures;
-        private readonly FeatureDataView _visibleFeatureView;
+        private readonly FeatureDataTable _features;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
 
@@ -67,10 +66,9 @@ namespace SharpMap.Layers
         protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
             : base(layername, style, dataSource)
         {
-            _cachedFeatures = new FeatureDataTable();
-            _visibleFeatureView = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
-            _selectedFeatures = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
-            _highlightedFeatures = new FeatureDataView(_cachedFeatures, Point.Empty, "", DataViewRowState.CurrentRows);
+            _features = new FeatureDataTable();
+            _selectedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows);
+            _highlightedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows);
 
             init();
         }
@@ -115,20 +113,11 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a view of the features which are currently at least
-        /// partially visible within the <see cref="Envelope"/>.
-        /// </summary>
-        public FeatureDataView VisibleFeatures
-        {
-            get { return _visibleFeatureView; }
-        }
-
-        /// <summary>
         /// Gets the loaded feautres for this layer.
         /// </summary>
         public FeatureDataTable Features
         {
-            get { return _cachedFeatures; }
+            get { return _features; }
         }
 
         #endregion
@@ -137,21 +126,15 @@ namespace SharpMap.Layers
 
         protected override void LoadLayerDataForRegion(BoundingBox region)
         {
-            DataSource.ExecuteIntersectionQuery(region, _cachedFeatures);
+            DataSource.ExecuteIntersectionQuery(region, _features);
             base.LoadLayerDataForRegion(region);
         }
 
         protected override void LoadLayerDataForRegion(Polygon region)
         {
-            DataSource.ExecuteIntersectionQuery(region, _cachedFeatures);
+            DataSource.ExecuteFeatureQuery(region, _features, SpatialQueryType.Intersects);
             base.LoadLayerDataForRegion(region);
         }
-
-        protected override void OnVisibleRegionChanged()
-        {
-            _visibleFeatureView.GeometryIntersectionFilter = VisibleRegion.ToGeometry();
-        }
-
         #endregion
 
         #region Private helper methods
@@ -159,12 +142,12 @@ namespace SharpMap.Layers
         private void init()
         {
             // We generally want spatial indexing on the feature table...
-            _cachedFeatures.IsSpatiallyIndexed = true;
+            _features.IsSpatiallyIndexed = true;
 
             // We need to get the schema of the feature table.
             DataSource.Open();
 
-            DataSource.SetTableSchema(_cachedFeatures);
+            DataSource.SetTableSchema(_features);
 
             DataSource.Close();
         }

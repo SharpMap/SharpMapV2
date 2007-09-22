@@ -80,9 +80,9 @@ namespace SharpMap.Layers
         /// </summary>
         IStyle Style { get; set; }
 
-        /// <summary>
-        /// Gets or sets the visible region for this layer.
-        /// </summary>
-        BoundingBox VisibleRegion { get; set; }
+        ///// <summary>
+        ///// Gets or sets the visible region for this layer.
+        ///// </summary>
+        //BoundingBox VisibleRegion { get; set; }
     }
 }

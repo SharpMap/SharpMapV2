@@ -192,81 +192,81 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 			Assert.AreEqual(@"..\..\..\TestData\BCROADSWithoutDbf.SHP", shapeFile.Filename);
 		}
 
-		[Test]
-		public void SetFilenameTest()
-		{
-			if (File.Exists(@"UnitTestData\NewBCROADS.SHP")) File.Delete(@"UnitTestData\NewBCROADS.SHP");
-			if (File.Exists(@"UnitTestData\NewBCROADS.SHX")) File.Delete(@"UnitTestData\NewBCROADS.SHX");
-			if (File.Exists(@"UnitTestData\NewBCROADS.DBF")) File.Delete(@"UnitTestData\NewBCROADS.DBF");
-			if (File.Exists(@"UnitTestData\NewBCROADS.SBN")) File.Delete(@"UnitTestData\NewBCROADS.SBN");
-			if (File.Exists(@"UnitTestData\NewBCROADS.SBX")) File.Delete(@"UnitTestData\NewBCROADS.SBX");
-			if (File.Exists(@"UnitTestData\NewBCROADS.PRJ")) File.Delete(@"UnitTestData\NewBCROADS.PRJ");
+        //[Test]
+        //public void SetFilenameTest()
+        //{
+        //    if (File.Exists(@"UnitTestData\NewBCROADS.SHP")) File.Delete(@"UnitTestData\NewBCROADS.SHP");
+        //    if (File.Exists(@"UnitTestData\NewBCROADS.SHX")) File.Delete(@"UnitTestData\NewBCROADS.SHX");
+        //    if (File.Exists(@"UnitTestData\NewBCROADS.DBF")) File.Delete(@"UnitTestData\NewBCROADS.DBF");
+        //    if (File.Exists(@"UnitTestData\NewBCROADS.SBN")) File.Delete(@"UnitTestData\NewBCROADS.SBN");
+        //    if (File.Exists(@"UnitTestData\NewBCROADS.SBX")) File.Delete(@"UnitTestData\NewBCROADS.SBX");
+        //    if (File.Exists(@"UnitTestData\NewBCROADS.PRJ")) File.Delete(@"UnitTestData\NewBCROADS.PRJ");
 
-			File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.DBF", @"UnitTestData\BCROADSCopy.DBF", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.SBN", @"UnitTestData\BCROADSCopy.SBN", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.SBX", @"UnitTestData\BCROADSCopy.SBX", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.PRJ", @"UnitTestData\BCROADSCopy.PRJ", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.DBF", @"UnitTestData\BCROADSCopy.DBF", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SBN", @"UnitTestData\BCROADSCopy.SBN", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SBX", @"UnitTestData\BCROADSCopy.SBX", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.PRJ", @"UnitTestData\BCROADSCopy.PRJ", true);
 
-			ShapeFileProvider shapeFile = new ShapeFileProvider(@"UnitTestData\BCROADSCopy.SHP");
-			shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
+        //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"UnitTestData\BCROADSCopy.SHP");
+        //    shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
 
-			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SHP"));
-			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SHX"));
-			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.DBF"));
-			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SBN"));
-			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SBX"));
-			Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.PRJ"));
+        //    Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SHP"));
+        //    Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SHX"));
+        //    Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.DBF"));
+        //    Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SBN"));
+        //    Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.SBX"));
+        //    Assert.IsTrue(File.Exists(@"UnitTestData\NewBCROADS.PRJ"));
 
-			shapeFile.Open();
-			Assert.AreEqual(@"UnitTestData\NewBCROADS.SHP", shapeFile.Filename);
-			shapeFile.Close();
+        //    shapeFile.Open();
+        //    Assert.AreEqual(@"UnitTestData\NewBCROADS.SHP", shapeFile.Filename);
+        //    shapeFile.Close();
 
-			File.Delete(@"UnitTestData\BCROADSCopy.SHP");
-			File.Delete(@"UnitTestData\BCROADSCopy.SHX");
-			File.Delete(@"UnitTestData\BCROADSCopy.DBF");
-			File.Delete(@"UnitTestData\BCROADSCopy.SBN");
-			File.Delete(@"UnitTestData\BCROADSCopy.SBX");
-			File.Delete(@"UnitTestData\BCROADSCopy.PRJ");
+        //    File.Delete(@"UnitTestData\BCROADSCopy.SHP");
+        //    File.Delete(@"UnitTestData\BCROADSCopy.SHX");
+        //    File.Delete(@"UnitTestData\BCROADSCopy.DBF");
+        //    File.Delete(@"UnitTestData\BCROADSCopy.SBN");
+        //    File.Delete(@"UnitTestData\BCROADSCopy.SBX");
+        //    File.Delete(@"UnitTestData\BCROADSCopy.PRJ");
 
-			File.Delete(@"UnitTestData\NewBCROADS.SHP");
-			File.Delete(@"UnitTestData\NewBCROADS.SHX");
-			File.Delete(@"UnitTestData\NewBCROADS.DBF");
-			File.Delete(@"UnitTestData\NewBCROADS.SBN");
-			File.Delete(@"UnitTestData\NewBCROADS.SBX");
-			File.Delete(@"UnitTestData\NewBCROADS.PRJ");
-		}
+        //    File.Delete(@"UnitTestData\NewBCROADS.SHP");
+        //    File.Delete(@"UnitTestData\NewBCROADS.SHX");
+        //    File.Delete(@"UnitTestData\NewBCROADS.DBF");
+        //    File.Delete(@"UnitTestData\NewBCROADS.SBN");
+        //    File.Delete(@"UnitTestData\NewBCROADS.SBX");
+        //    File.Delete(@"UnitTestData\NewBCROADS.PRJ");
+        //}
 
-		[Test]
-		[ExpectedException(typeof (ShapeFileInvalidOperationException))]
-		public void SetFilenameWhenOpenThrowsExceptionTest()
-		{
-			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-			shapeFile.Open();
-			shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
-		}
+        //[Test]
+        //[ExpectedException(typeof (ShapeFileInvalidOperationException))]
+        //public void SetFilenameWhenOpenThrowsExceptionTest()
+        //{
+        //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
+        //    shapeFile.Open();
+        //    shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
+        //}
 
-		[Test]
-		[ExpectedException(typeof (ShapeFileInvalidOperationException))]
-		public void SetFilenameWhenFileExistsThrowsExceptionTest()
-		{
-			File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\NewBCROADS.SHP", true);
-			File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\NewBCROADS.SHX", true);
+        //[Test]
+        //[ExpectedException(typeof (ShapeFileInvalidOperationException))]
+        //public void SetFilenameWhenFileExistsThrowsExceptionTest()
+        //{
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\NewBCROADS.SHP", true);
+        //    File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\NewBCROADS.SHX", true);
 
-			ShapeFileProvider shapeFile = new ShapeFileProvider(@"UnitTestData\BCROADSCopy.SHP");
-			shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
-		}
+        //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"UnitTestData\BCROADSCopy.SHP");
+        //    shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
+        //}
 
-		[Test]
-		[ExpectedException(typeof (ShapeFileIsInvalidException))]
-		public void SetFilenameToNonShpExtensionThrowsExceptionTest()
-		{
-			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-			shapeFile.Filename = @"UnitTestData\NewBCROADS.abc";
-		}
+        //[Test]
+        //[ExpectedException(typeof (ShapeFileIsInvalidException))]
+        //public void SetFilenameToNonShpExtensionThrowsExceptionTest()
+        //{
+        //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
+        //    shapeFile.Filename = @"UnitTestData\NewBCROADS.abc";
+        //}
 
 		[Test]
 		public void GetIndexFilenameTest()
@@ -372,11 +372,11 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 			shapeFile.Open();
 			List<Geometry> geometries = new List<Geometry>();
 
-			geometries.AddRange(shapeFile.GetGeometriesInView(shapeFile.GetExtents()));
+			geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(shapeFile.GetExtents()));
 			Assert.AreEqual(shapeFile.GetFeatureCount(), geometries.Count);
 			geometries.Clear();
 
-			geometries.AddRange(shapeFile.GetGeometriesInView(BoundingBox.Empty));
+			geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(BoundingBox.Empty));
 			Assert.AreEqual(0, geometries.Count);
 		}
 
@@ -385,7 +385,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 		public void GetGeometriesInViewWhenClosedThrowsExceptionTest()
 		{
 			ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-			List<Geometry> geometries = new List<Geometry>(shapeFile.GetGeometriesInView(BoundingBox.Empty));
+			List<Geometry> geometries = new List<Geometry>(shapeFile.ExecuteGeometryIntersectionQuery(BoundingBox.Empty));
 		}
 
 		[Test]
