@@ -196,9 +196,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
-            IsDisposed = true;
-            GC.SuppressFinalize(this);
             dispose(true);
+            GC.SuppressFinalize(this);
+            IsDisposed = true;
         }
 
         #endregion
