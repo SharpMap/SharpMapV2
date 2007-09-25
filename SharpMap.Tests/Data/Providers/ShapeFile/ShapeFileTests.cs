@@ -34,9 +34,13 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 		}
 
 		[Test]
-		public void CreatNeweNoAttributesTest()
+		public void CreateNewNoAttributesTest()
 		{
-			ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test1", ShapeType.Polygon);
+            if (File.Exists(@"UnitTestData\Test1.shp")) File.Delete(@"UnitTestData\Test1.shp");
+            if (File.Exists(@"UnitTestData\Test1.shx")) File.Delete(@"UnitTestData\Test1.shx");
+            if (File.Exists(@"UnitTestData\Test1.dbf")) File.Delete(@"UnitTestData\Test1.dbf");
+			
+            ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test1", ShapeType.Polygon);
 			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shp"));
 			Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shx"));
 			Assert.IsFalse(File.Exists(@"UnitTestData\Test1.dbf"));
@@ -47,7 +51,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
 		[Test]
 		[ExpectedException(typeof (ShapeFileInvalidOperationException))]
-		public void CreatNeweNoAttributesNullShapeTypeFailsTest()
+		public void CreateNewNoAttributesNullShapeTypeFailsTest()
 		{
 			ShapeFileProvider.Create("UnitTestData", "Test1", ShapeType.Null);
 		}

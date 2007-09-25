@@ -40,7 +40,7 @@ namespace SharpMap.Geometries
     /// between elements.
     /// </para>
     /// </remarks>
-    public class GeometryCollection<TGeometry> : Geometry, IGeometryCollection, 
+    public class GeometryCollection<TGeometry> : Geometry, IGeometryCollection,
         IEquatable<GeometryCollection<TGeometry>>, IEnumerable<TGeometry>
         where TGeometry : Geometry
     {
@@ -283,11 +283,33 @@ namespace SharpMap.Geometries
         /// Returns a geometry that represents the point set 
         /// union of this Geometry with anotherGeometry.
         /// </summary>
-        /// <param name="geom">Geometry to union with</param>
+        /// <param name="geometry">Geometry to union with</param>
         /// <returns>Unioned geometry</returns>
-        public override Geometry Union(Geometry geom)
+        public override Geometry Union(Geometry geometry)
         {
-            throw new NotImplementedException();
+            // HACK: broken implementation awaiting for replacement with NTS in Beta 2
+            if (IsEmpty())
+            {
+                return geometry;
+            }
+
+            if (geometry.IsEmpty())
+            {
+                return this;
+            }
+
+            if (geometry is TGeometry)
+            {
+                Collection.Add(geometry as TGeometry);
+                return this;
+            }
+            else
+            {
+                GeometryCollection union = new GeometryCollection();
+                union.Collection.Add(this);
+                union.Collection.Add(geometry);
+                return union;
+            }
         }
 
         /// <summary>

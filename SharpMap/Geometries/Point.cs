@@ -379,27 +379,45 @@ namespace SharpMap.Geometries
 
 		/// <summary>
 		/// Returns a geometry that represents the point set intersection of this Geometry
-		/// with anotherGeometry.
+		/// with another Geometry.
 		/// </summary>
-		/// <param name="geom">Geometry to intersect with</param>
-		/// <returns>Returns a geometry that represents the point set intersection of this Geometry with anotherGeometry.</returns>
+		/// <param name="geom">Geometry to intersect with.</param>
+		/// <returns>
+		/// Returns a geometry that represents the point set intersection of 
+		/// this Geometry with another Geometry.
+		/// </returns>
 		public override Geometry Intersection(Geometry geom)
 		{
 			throw new NotImplementedException();
 		}
 
 		/// <summary>
-		/// Returns a geometry that represents the point set union of this Geometry with anotherGeometry.
+		/// Returns a geometry that represents the point set union of this Geometry 
+		/// with another Geometry.
 		/// </summary>
-		/// <param name="geom">Geometry to union with</param>
-		/// <returns>Unioned geometry</returns>
-		public override Geometry Union(Geometry geom)
+        /// <param name="geometry">Geometry to union with.</param>
+		/// <returns>Geometry union.</returns>
+		public override Geometry Union(Geometry geometry)
 		{
-			throw new NotImplementedException();
+            // HACK: broken implementation awaiting for replacement with NTS in Beta 2
+            if (IsEmpty())
+            {
+                return geometry;
+            }
+
+            if (geometry.IsEmpty())
+            {
+                return this;
+            }
+
+		    GeometryCollection union = new GeometryCollection();
+		    union.Collection.Add(this);
+            return union;
 		}
 
 		/// <summary>
-		/// Returns a geometry that represents the point set difference of this Geometry with anotherGeometry.
+		/// Returns a geometry that represents the point set difference of this 
+		/// Geometry with another Geometry.
 		/// </summary>
 		/// <param name="geom">Geometry to compare to</param>
 		/// <returns>Geometry</returns>
@@ -409,7 +427,8 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Returns a geometry that represents the point set symmetric difference of this Geometry with anotherGeometry.
+		/// Returns a geometry that represents the point set symmetric difference 
+		/// of this Geometry with anotherGeometry.
 		/// </summary>
 		/// <param name="geom">Geometry to compare to</param>
 		/// <returns>Geometry</returns>

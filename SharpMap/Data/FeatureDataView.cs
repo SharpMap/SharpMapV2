@@ -342,7 +342,8 @@ namespace SharpMap.Data
 
         private bool inOidFilter(FeatureDataRow feature)
         {
-            return feature.HasOid && _oidFilter.Contains(feature.GetOid());
+            return _oidFilter.Count == 0 ||
+                (feature.HasOid && _oidFilter.Contains(feature.GetOid()));
         }
 
         private bool inAttributeFilter()

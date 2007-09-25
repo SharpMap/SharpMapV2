@@ -179,14 +179,19 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Returns true if the primary geometry is wholly contained within the comparison geometry.
+		/// Returns true if the primary geometry is wholly contained 
+		/// within the comparison geometry.
 		/// </summary>
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
 		public static bool Within(Geometry g1, Geometry g2)
 		{
-			return g1.Contains(g2);
+		    if (g1 == null) throw new ArgumentNullException("g1");
+		    if (g2 == null) throw new ArgumentNullException("g2");
+
+            // HACK: fake spatial relation using BoundingBox instances. Shhh...
+		    return g2.GetBoundingBox().Contains(g2.GetBoundingBox());
 		}
 	}
 }
