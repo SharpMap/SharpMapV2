@@ -173,7 +173,7 @@ namespace SharpMap.Layers
         /// <returns>
         /// Bounding box corresponding to the extent of the features in the layer.
         /// </returns>
-        public BoundingBox Envelope
+        public BoundingBox Extents
         {
             get
             {
@@ -184,7 +184,7 @@ namespace SharpMap.Layers
                     return bbox;
                 }
 
-                _layers.ForEach(delegate(ILayer layer) { bbox.ExpandToInclude(layer.Envelope); });
+                _layers.ForEach(delegate(ILayer layer) { bbox.ExpandToInclude(layer.Extents); });
 
                 return bbox;
             }

@@ -111,7 +111,7 @@ namespace SharpMap.Tests.Features
             }
 
             FeatureDataView view = new FeatureDataView(table);
-            view.GeometryIntersectionFilter = queryExtents.ToGeometry();
+            view.GeometryFilter = queryExtents.ToGeometry();
 
             Assert.AreEqual(expectedRows.Count, view.Count);
         }
@@ -137,7 +137,7 @@ namespace SharpMap.Tests.Features
             Assert.IsFalse(resetNotificationOccured);
 
             BoundingBox queryExtents = new BoundingBox(0, 0, 10, 10);
-            view.GeometryIntersectionFilter = queryExtents.ToGeometry();
+            view.GeometryFilter = queryExtents.ToGeometry();
 
             Assert.IsTrue(resetNotificationOccured);
         }

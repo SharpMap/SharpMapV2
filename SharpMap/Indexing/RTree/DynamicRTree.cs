@@ -17,87 +17,77 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.IO;
-using SharpMap.Geometries;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-
-using SharpMap.Indexing;
-using System.Runtime.InteropServices;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
-{	
-	/// <summary>
+{
+    /// <summary>
     /// An implementation of an updatable R-Tree spatial index.
     /// </summary>
     /// <typeparam name="TValue">
-	/// The type of the value used in the entries.
-	/// </typeparam>
+    /// The type of the value used in the entries.
+    /// </typeparam>
     /// <remarks>
     /// Depending on the strategy implemented and used in the 
-	/// construction of an instance of <see cref="DynamicRTree"/>,
+    /// construction of an instance of <see cref="DynamicRTree{TValue}"/>,
     /// the instance could be one of a number of various R-Tree 
-	/// variants, such as R*Tree or R+Tree.
+    /// variants, such as R*Tree or R+Tree.
     /// </remarks>
-    public class DynamicRTree<TValue> 
-		: RTree<TValue>, IUpdatableSpatialIndex<RTreeIndexEntry<TValue>>, ISerializable
-	{
-		#region Fields
-		private static readonly BinaryFormatter _keyFormatter = new BinaryFormatter();
-        private DynamicRTreeBalanceHeuristic _heuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
-        private INodeSplitStrategy _nodeSplitStrategy;
-        private IEntryInsertStrategy<RTreeIndexEntry<TValue>> _insertStrategy;
-		#endregion
+    public class DynamicRTree<TValue>
+        : RTree<TValue>, IUpdatableSpatialIndex<RTreeIndexEntry<TValue>>, ISerializable
+    {
+        #region Fields
 
-		#region Constructors
-		/// <summary>
+        private static readonly BinaryFormatter _keyFormatter = new BinaryFormatter();
+        private DynamicRTreeBalanceHeuristic _heuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
+        private readonly INodeSplitStrategy _nodeSplitStrategy;
+        private readonly IEntryInsertStrategy<RTreeIndexEntry<TValue>> _insertStrategy;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
         /// Creates a new updatable R-Tree instance
-		/// </summary>
+        /// </summary>
         /// <param name="insertStrategy">
-		/// Strategy used to insert new entries into the index.
-		/// </param>
+        /// Strategy used to insert new entries into the index.
+        /// </param>
         /// <param name="nodeSplitStrategy">
-		/// Strategy used to split nodes when they are full.
-		/// </param>
+        /// Strategy used to split nodes when they are full.
+        /// </param>
         /// <param name="heuristic">
-		/// Heuristics used to build the index and keep it balanced.
-		/// </param>
+        /// Heuristics used to build the index and keep it balanced.
+        /// </param>
         public DynamicRTree(
-			IEntryInsertStrategy<RTreeIndexEntry<TValue>> insertStrategy, 
-			INodeSplitStrategy nodeSplitStrategy, DynamicRTreeBalanceHeuristic heuristic)
-            : base()
-		{
+            IEntryInsertStrategy<RTreeIndexEntry<TValue>> insertStrategy,
+            INodeSplitStrategy nodeSplitStrategy, DynamicRTreeBalanceHeuristic heuristic)
+        {
             _insertStrategy = insertStrategy;
             _nodeSplitStrategy = nodeSplitStrategy;
             _heuristic = heuristic;
-		}
+        }
 
-		/// <summary>
-		/// This constructor is used internally 
-		/// for loading a tree from a stream.
-		/// </summary>
-        protected DynamicRTree()
-		{
-		}
+        /// <summary>
+        /// This constructor is used internally 
+        /// for loading a tree from a stream.
+        /// </summary>
+        protected DynamicRTree() {}
 
-		protected DynamicRTree(SerializationInfo info, StreamingContext context)
+        protected DynamicRTree(SerializationInfo info, StreamingContext context)
         {
-            byte[] data = (byte[])info.GetValue("data", typeof(byte[]));
+            byte[] data = (byte[]) info.GetValue("data", typeof (byte[]));
             MemoryStream buffer = new MemoryStream(data);
             DynamicRTree<TValue> tree = FromStream(buffer);
             Root = tree.Root;
-		}
-		#endregion
-
-        /// <summary>
-        /// Huristic used to create and balance the tree.
-        /// </summary>
-        public IndexBalanceHeuristic Heuristic
-        {
-            get { return _heuristic; }
         }
+
+        #endregion
 
         /// <summary>
         /// The strategy used to insert new entries into the index.
@@ -108,65 +98,101 @@ namespace SharpMap.Indexing.RTree
         }
 
         /// <summary>
-        /// Inserts a node into the tree using <see cref="EntryStrategy"/>.
+        /// Huristic used to create and balance the tree.
         /// </summary>
-        /// <param name="key">Key for the geometry.</param>
-        /// <param name="region">
-		/// Bounding box of the geometry to enter into the index.
-		/// </param>
+        public IndexBalanceHeuristic Heuristic
+        {
+            get { return _heuristic; }
+        }
+
+        /// <summary>
+        /// Inserts a node into the tree using <see cref="EntryInsertStrategy"/>.
+        /// </summary>
+        /// <param name="entry">The entry to insert into the index.</param>
         public virtual void Insert(RTreeIndexEntry<TValue> entry)
         {
             ISpatialIndexNode newSiblingFromSplit;
-            
+
             EntryInsertStrategy.InsertEntry(entry, Root, _nodeSplitStrategy, Heuristic, out newSiblingFromSplit);
 
             // Add the newly split sibling
             if (newSiblingFromSplit is RTreeLeafNode<TValue>)
             {
+                RTreeBranchNode<TValue> node;
+                
                 if (Root is RTreeLeafNode<TValue>)
                 {
                     RTreeLeafNode<TValue> oldRoot = Root as RTreeLeafNode<TValue>;
                     Root = CreateBranchNode();
-                    (Root as RTreeBranchNode<TValue>).Add(oldRoot);
+                    node = Root as RTreeBranchNode<TValue>;
+                    Debug.Assert(node != null);
+                    node.Add(oldRoot);
                 }
 
-                (Root as RTreeBranchNode<TValue>).Add(newSiblingFromSplit);
-                newSiblingFromSplit = null;
+                node = Root as RTreeBranchNode<TValue>;
+                Debug.Assert(node != null);
+                node.Add(newSiblingFromSplit);
             }
             else if (newSiblingFromSplit is RTreeBranchNode<TValue>) // Came from a root split
             {
                 ISpatialIndexNode oldRoot = Root;
                 Root = CreateBranchNode();
-                (Root as RTreeBranchNode<TValue>).Add(oldRoot);
-                (Root as RTreeBranchNode<TValue>).Add(newSiblingFromSplit);
+                RTreeBranchNode<TValue> node = Root as RTreeBranchNode<TValue>;
+                Debug.Assert(node != null);
+                node.Add(oldRoot);
+                node.Add(newSiblingFromSplit);
+            }
+        }
+
+        /// <summary>
+        /// Removes an entry from the index.
+        /// </summary>
+        /// <param name="entry">The entry to remove.</param>
+        public virtual void Remove(RTreeIndexEntry<TValue> entry)
+        {
+            ISpatialIndexNode node = Root;
+
+            if (node is RTreeBranchNode<TValue>)
+            {
+                RTreeBranchNode<TValue> branch = node as RTreeBranchNode<TValue>;
+                branch.Remove(entry);
+            }
+            else if (node is RTreeLeafNode<TValue>)
+            {
+                RTreeLeafNode<TValue> leaf = node as RTreeLeafNode<TValue>;
+                leaf.Remove(entry);
             }
         }
 
         #region Read/Write index to/from a file
-        
-        private static readonly System.Version IndexFileVersion = new System.Version(2, 0, 0, 0);
+
+        private static readonly Version IndexFileVersion = new Version(2, 0, 0, 0);
 
         /// <summary>
-        /// Loads an R-Tree structure from a stream
+        /// Loads an R-Tree structure from a stream.
         /// </summary>
-        /// <param name="filename">Stream which holds the R-Tree spatial index</param>
-        /// <returns>A <see cref="DynamicRTree"/> instance which had been persisted to the <see cref="System.IO.Stream">stream</see>.</returns>
+        /// <param name="data">Stream which holds the R-Tree spatial index.</param>
+        /// <returns>
+        /// A <see cref="DynamicRTree{TValue}"/> instance which had been 
+        /// persisted to the <see cref="System.IO.Stream">stream</see>.
+        /// </returns>
         public static DynamicRTree<TValue> FromStream(Stream data)
         {
             DynamicRTree<TValue> tree = new DynamicRTree<TValue>();
 
-            using (System.IO.BinaryReader br = new System.IO.BinaryReader(data))
+            using (BinaryReader br = new BinaryReader(data))
             {
-                System.Version fileVersion = new System.Version(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32());
+                Version fileVersion = new Version(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32());
 
                 if (fileVersion != IndexFileVersion) //Check fileindex version
                 {
-                    throw new ObsoleteIndexFileFormatException(IndexFileVersion, fileVersion, "Invalid index file version. Please rebuild the spatial index by deleting the index.");
+                    throw new ObsoleteIndexFileFormatException(IndexFileVersion, fileVersion,
+                                                               "Invalid index file version. Please rebuild the spatial index by deleting the index.");
                 }
 
-                uint keyLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(TValue));
+                uint keyLength = (uint) Marshal.SizeOf(typeof (TValue));
 
-                using (MemoryStream keyBuffer = new MemoryStream((int)keyLength))
+                using (MemoryStream keyBuffer = new MemoryStream((int) keyLength))
                 {
                     tree.Root = readNode(tree, br, keyBuffer, keyLength);
                 }
@@ -176,43 +202,50 @@ namespace SharpMap.Indexing.RTree
         }
 
         /// <summary>
-        /// Saves the spatial index to a stream
+        /// Saves the spatial index to a stream.
         /// </summary>
-        /// <param name="filename"></param>
-        public void SaveIndex(Stream buffer)
+        /// <param name="stream">Stream to save index to.</param>
+        public void SaveIndex(Stream stream)
         {
-			BinaryWriter writer = new BinaryWriter(buffer);
+            BinaryWriter writer = new BinaryWriter(stream);
 
-			//Save index version
-			writer.Write(IndexFileVersion.Major);
-			writer.Write(IndexFileVersion.Minor);
-			writer.Write(IndexFileVersion.Build);
-			writer.Write(IndexFileVersion.Revision);
+            //Save index version
+            writer.Write(IndexFileVersion.Major);
+            writer.Write(IndexFileVersion.Minor);
+            writer.Write(IndexFileVersion.Build);
+            writer.Write(IndexFileVersion.Revision);
 
-			uint keyLength = (uint)Marshal.SizeOf(typeof(TValue));
+            uint keyLength = (uint) Marshal.SizeOf(typeof (TValue));
 
-			using (MemoryStream keyBuffer = new MemoryStream((int)keyLength))
-			{
-				saveNode(this.Root, writer, keyBuffer, keyLength);
-			}
+            using (MemoryStream keyBuffer = new MemoryStream((int) keyLength))
+            {
+                saveNode(Root, writer, keyBuffer, keyLength);
+            }
         }
 
         /// <summary>
         /// Reads a node from a stream recursively.
         /// </summary>
         /// <param name="tree">R-Tree instance.</param>
-        /// <param name="br">Binary reader reference.</param>
-        private static ISpatialIndexNode readNode(DynamicRTree<TValue> tree, BinaryReader br, MemoryStream keyBuffer, uint keyLength)
+        /// <param name="reader">Binary reader reference.</param>
+        /// <param name="keyBuffer">Buffer to serialze key data into.</param>
+        /// <param name="keyLength">Data length of serialized key.</param>
+        private static ISpatialIndexNode readNode(DynamicRTree<TValue> tree, BinaryReader reader, 
+            MemoryStream keyBuffer, uint keyLength)
         {
-            if (br.BaseStream.Position == br.BaseStream.Length)
+            if (reader.BaseStream.Position == reader.BaseStream.Length)
             {
                 return null;
             }
 
             ISpatialIndexNode node;
-            bool isLeaf = br.ReadBoolean();
+            bool isLeaf = reader.ReadBoolean();
 
-            BoundingBox bounds = new BoundingBox(br.ReadDouble(), br.ReadDouble(), br.ReadDouble(), br.ReadDouble());
+            BoundingBox bounds = new BoundingBox(
+                                        reader.ReadDouble(), 
+                                        reader.ReadDouble(), 
+                                        reader.ReadDouble(), 
+                                        reader.ReadDouble());
 
             if (isLeaf)
             {
@@ -226,17 +259,23 @@ namespace SharpMap.Indexing.RTree
             if (isLeaf)
             {
                 RTreeLeafNode<TValue> leaf = node as RTreeLeafNode<TValue>;
-                int featureCount = br.ReadInt32();
-             
+                Debug.Assert(leaf != null);
+
+                int featureCount = reader.ReadInt32();
+
                 for (int i = 0; i < featureCount; i++)
                 {
                     RTreeIndexEntry<TValue> entry = new RTreeIndexEntry<TValue>();
-                    
-                    entry.BoundingBox = new BoundingBox(br.ReadDouble(), br.ReadDouble(), br.ReadDouble(), br.ReadDouble());
-                    
+
+                    entry.BoundingBox = new BoundingBox(
+                                                reader.ReadDouble(), 
+                                                reader.ReadDouble(), 
+                                                reader.ReadDouble(), 
+                                                reader.ReadDouble());
+
                     keyBuffer.Position = 0;
-                    keyBuffer.Write(br.ReadBytes((int)keyLength), 0, (int)keyLength);
-                    entry.Value = (TValue)_keyFormatter.Deserialize(keyBuffer);
+                    keyBuffer.Write(reader.ReadBytes((int) keyLength), 0, (int) keyLength);
+                    entry.Value = (TValue) _keyFormatter.Deserialize(keyBuffer);
 
                     leaf.Add(entry);
                 }
@@ -244,11 +283,13 @@ namespace SharpMap.Indexing.RTree
             else
             {
                 RTreeBranchNode<TValue> index = node as RTreeBranchNode<TValue>;
-                uint childNodes = br.ReadUInt32();
+                Debug.Assert(index != null);
+
+                uint childNodes = reader.ReadUInt32();
 
                 for (int c = 0; c < childNodes; c++)
                 {
-                    ISpatialIndexNode child = readNode(tree, br, keyBuffer, keyLength);
+                    ISpatialIndexNode child = readNode(tree, reader, keyBuffer, keyLength);
 
                     if (child != null)
                     {
@@ -264,10 +305,10 @@ namespace SharpMap.Indexing.RTree
         /// Saves a node to a stream recursively.
         /// </summary>
         /// <param name="node">Node to save.</param>
-		/// <param name="writer">BinaryWriter to format values and write to stream.</param>
-		/// <param name="keyBuffer">Buffer used to serialize key value.</param>
-		/// <param name="keyLength">Number of bytes in the key's memory representation.</param>
-        private void saveNode(ISpatialIndexNode node, BinaryWriter writer, MemoryStream keyBuffer, uint keyLength)
+        /// <param name="writer">BinaryWriter to format values and write to stream.</param>
+        /// <param name="keyBuffer">Buffer used to serialize key value.</param>
+        /// <param name="keyLength">Number of bytes in the key's memory representation.</param>
+        private static void saveNode(ISpatialIndexNode node, BinaryWriter writer, MemoryStream keyBuffer, uint keyLength)
         {
             //Write node boundingbox
             writer.Write(node.BoundingBox.Left);
@@ -284,7 +325,7 @@ namespace SharpMap.Indexing.RTree
                 if (keyBuffer.Capacity != keyLength)
                 {
                     keyBuffer.SetLength(keyLength);
-                    keyBuffer.Capacity = (int)keyLength;
+                    keyBuffer.Capacity = (int) keyLength;
                 }
 
                 foreach (RTreeIndexEntry<TValue> entry in leaf.Items) //Write each featurebox
@@ -307,6 +348,7 @@ namespace SharpMap.Indexing.RTree
                 }
             }
         }
+
         #endregion
 
         #region ISerializable Members

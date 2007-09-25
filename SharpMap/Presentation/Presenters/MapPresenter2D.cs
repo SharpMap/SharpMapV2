@@ -16,7 +16,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Threading;
+using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
@@ -37,9 +40,11 @@ namespace SharpMap.Presentation.Presenters
     /// </summary>
     public abstract class MapPresenter2D : BasePresenter<IMapView2D>
     {
+        #region Private static fields
         private static readonly object _rendererInitSync = new object();
         private static object _vectorRenderer;
         private static object _rasterRenderer;
+        #endregion
 
         #region Private fields
 
@@ -56,6 +61,8 @@ namespace SharpMap.Presentation.Presenters
         private bool _viewIsEmpty = true;
         private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
+        private readonly Dictionary<IFeatureLayer, FeatureDataView> _featureLayerDataViews
+            = new Dictionary<IFeatureLayer, FeatureDataView>();
         #endregion
 
         #region Object Construction/Destruction
@@ -587,6 +594,14 @@ namespace SharpMap.Presentation.Presenters
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
+                    if (Map.Layers[e.NewIndex] is IFeatureLayer)
+	                {
+	                    IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
+	                    BoundingBox viewEnvelope = View.ViewEnvelope;
+	                    _featureLayerDataViews[layer] =
+                            new FeatureDataView(layer.Features, viewEnvelope.ToGeometry(),
+                                "", DataViewRowState.CurrentRows);
+	                }
                     renderLayer(Map.Layers[e.NewIndex]);
                     break;
                 case ListChangedType.ItemDeleted:
@@ -595,6 +610,14 @@ namespace SharpMap.Presentation.Presenters
                     if (e.NewIndex >= 0)
                     {
                         renderAllLayers();
+                    }
+                    else
+                    {
+	                    IFeatureLayer layer = Map.Layers[e.OldIndex] as IFeatureLayer;
+                        if (layer != null)
+                        {
+                            _featureLayerDataViews.Remove(layer);
+                        }
                     }
                     break;
                 case ListChangedType.ItemMoved:

@@ -17,8 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using SharpMap.Geometries;
 
 namespace SharpMap.Indexing
@@ -40,12 +38,32 @@ namespace SharpMap.Indexing
     }
 
     /// <summary>
-    /// Interface for a searchable spatial index containing <typeparamref name="TEntry"/> instances.
+    /// Interface for a searchable spatial index containing 
+    /// <typeparamref name="TEntry"/> instances.
     /// </summary>
     /// <typeparam name="TEntry">The type of the index entries.</typeparam>
     public interface ISearchableSpatialIndex<TEntry>
     {
-        IEnumerable<TEntry> Search(BoundingBox box);
+        /// <summary>
+        /// Returns a set of entries which intersect the <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">
+        /// The bounds to search the index for intersection.
+        /// </param>
+        /// <returns>
+        /// A set of entries which intersect the given <paramref name="bounds"/>.
+        /// </returns>
+        IEnumerable<TEntry> Search(BoundingBox bounds);
+
+        /// <summary>
+        /// Returns a set of entries which intersect the <paramref name="geometry"/>.
+        /// </summary>
+        /// <param name="geometry">
+        /// The bounds to search the index for intersection.
+        /// </param>
+        /// <returns>
+        /// A set of entries which intersect the given <paramref name="geometry"/>.
+        /// </returns>
         IEnumerable<TEntry> Search(Geometry geometry);
     }
 
@@ -60,6 +78,12 @@ namespace SharpMap.Indexing
         /// </summary>
         /// <param name="entry">The entry to insert.</param>
         void Insert(TEntry entry);
+
+        /// <summary>
+        /// Removes an entry from the index.
+        /// </summary>
+        /// <param name="entry">The entry to remove.</param>
+        void Remove(TEntry entry);
     }
 
     /// <summary>
@@ -90,7 +114,8 @@ namespace SharpMap.Indexing
         /// <param name="nodeSplitStrategy">An <see cref="INodeSplitStrategy"/> used to split the node if it overflows.</param>
         /// <param name="heuristic">The heuristic used to balance the insert or compute the node split.</param>
         /// <param name="newSiblingFromSplit">A possible new node from a node-split.</param>
-        void InsertEntry(TEntry entry, ISpatialIndexNode node, INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit);
+        void InsertEntry(TEntry entry, ISpatialIndexNode node, INodeSplitStrategy nodeSplitStrategy,
+                         IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit);
     }
 
     /// <summary>

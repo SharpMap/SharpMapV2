@@ -71,6 +71,12 @@ namespace SharpMap.Indexing.QuadTree
 	        }
         }
 
+        public void Remove(TValue entry)
+        {
+            // TODO: Implement quad-tree remove.
+            throw new NotImplementedException("TODO: Implement quad-tree remove");
+        }
+
         #endregion
     }
 }

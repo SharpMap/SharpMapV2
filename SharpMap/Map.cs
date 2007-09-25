@@ -1214,14 +1214,14 @@ namespace SharpMap
                 case ListChangedType.ItemAdded:
                     {
                         ILayer layer = _layers[args.NewIndex];
-                        _extents.ExpandToInclude(layer.Envelope);
+                        _extents.ExpandToInclude(layer.Extents);
                     }
                     break;
                 case ListChangedType.ItemChanged:
-                    if (args.PropertyDescriptor.Name == Layer.EnvelopeProperty.Name)
+                    if (args.PropertyDescriptor.Name == Layer.ExtentsProperty.Name)
                     {
                         ILayer layer = _layers[args.NewIndex];
-                        _extents.ExpandToInclude(layer.Envelope);
+                        _extents.ExpandToInclude(layer.Extents);
                     }
                     break;
                 case ListChangedType.ItemDeleted:
@@ -1247,7 +1247,7 @@ namespace SharpMap
             {
                 if (layer.Enabled)
                 {
-                    extents.ExpandToInclude(layer.Envelope);
+                    extents.ExpandToInclude(layer.Extents);
                 }
             }
 

@@ -39,6 +39,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -49,6 +50,7 @@ namespace SharpMap.Styles
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly")]
     public struct StyleColor : IEquatable<StyleColor>
     {
         #region Private fields
@@ -2243,7 +2245,8 @@ namespace SharpMap.Styles
         #region Color name lookup by value
 
         private static readonly object _colorNameLookupSync = new object();
-        private static readonly Dictionary<StyleColor, string> _colorNameLookup = new Dictionary<StyleColor, string>();
+        private static readonly Dictionary<StyleColor, string> _colorNameLookup 
+            = new Dictionary<StyleColor, string>();
 
         /// <summary>
         /// Gets the name of a color, if one exists.
@@ -2285,8 +2288,8 @@ namespace SharpMap.Styles
         private static readonly Dictionary<string, StyleColor> _predefinedColors = new Dictionary<string, StyleColor>();
 
         /// <summary>
-        /// Gets a <see cref="System.Collections.Generic.Dictionary{String, StyleColor}"/> which indexes
-        /// a StyleColor value by its name.
+        /// Gets a <see cref="System.Collections.Generic.Dictionary{String, StyleColor}"/> 
+        /// which indexes a StyleColor value by its name.
         /// </summary>
         public static Dictionary<string, StyleColor> PredefinedColors
         {

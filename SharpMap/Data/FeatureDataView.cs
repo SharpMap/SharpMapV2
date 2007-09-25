@@ -28,9 +28,14 @@ using System.ComponentModel;
 
 namespace SharpMap.Data
 {
+    /// <summary>
+    /// Provides a data-bindable view of feature data stored in a 
+    /// <see cref="FeatureDataTable"/>
+    /// and can provide sorted, filtered, searchable and editable access to that data.
+    /// </summary>
     public class FeatureDataView : DataView, IEnumerable<FeatureDataRow>
     {
-        #region Nested Types
+        #region Nested types
 
         private delegate void SetDataViewManagerDelegate(FeatureDataView view, DataViewManager dataViewManager);
 
@@ -41,7 +46,7 @@ namespace SharpMap.Data
 
         #endregion
 
-        #region Type Fields
+        #region Type fields
 
         private static readonly SetDataViewManagerDelegate _setDataViewManager;
         private static readonly SetLockedDelegate _setLocked;
@@ -49,7 +54,7 @@ namespace SharpMap.Data
 
         #endregion
 
-        #region Static Constructor
+        #region Static constructor
 
         static FeatureDataView()
         {
@@ -66,12 +71,12 @@ namespace SharpMap.Data
         #endregion
 
         #region Instance fields
-
-        private Geometry _intersectionFilter;
-
+        private Geometry _queryGeometry;
+        private readonly SpatialQueryType _queryType;
+        private readonly ArrayList _oidFilter = new ArrayList();
         #endregion
 
-        #region Object Constructors
+        #region Object constructors
 
         public FeatureDataView(FeatureDataTable table)
             : base(table)
@@ -86,9 +91,23 @@ namespace SharpMap.Data
 
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
                                string sort, DataViewRowState rowState)
+            : this(table, intersectionFilter, SpatialQueryType.Intersects, sort, rowState)
+        {
+        }
+
+        public FeatureDataView(FeatureDataTable table, Geometry query, SpatialQueryType queryType,
+                               string sort, DataViewRowState rowState)
             : base(table, "", sort, rowState)
         {
-            _intersectionFilter = intersectionFilter;
+            // TODO: Support all query types in FeatureDataView
+            if (queryType != SpatialQueryType.Intersects)
+            {
+                throw new NotSupportedException(
+                    "Only query type of SpatialQueryType.Intersects currently supported.");
+            }
+
+            _queryGeometry = query;
+            _queryType = queryType;
 
             // This call rebuilds the index which was just built with 
             // the call into the base constructor, which may be a performance
@@ -115,6 +134,109 @@ namespace SharpMap.Data
 
         #endregion
 
+        /// <summary>
+        /// Gets the DataViewManager which is managing this view's settings.
+        /// </summary>
+        public new FeatureDataViewManager DataViewManager
+        {
+            get { return base.DataViewManager as FeatureDataViewManager; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Geometry"/> instance used
+        /// to filter the table data based on intersection.
+        /// </summary>
+        public Geometry GeometryFilter
+        {
+            get { return _queryGeometry == null ? null : _queryGeometry.Clone(); }
+            set
+            {
+                if (_queryGeometry == value)
+                {
+                    return;
+                }
+
+                _queryGeometry = value;
+
+                if (!Table.CachedRegion.Contains(_queryGeometry))
+                {
+                    onMissingRegion(_queryGeometry.Difference(Table.CachedRegion));
+                }
+
+                // TODO: Perhaps resetting the entire index is a bit drastic... 
+                // Reconsider how to enlist and retire rows incrementally, 
+                // perhaps doing RTree diffs.
+                Reset();
+            }
+        }
+
+        public SpatialQueryType GeometryFilterType
+        {
+            get { return _queryType; }
+        }
+
+        public IEnumerable OidFilter
+        {
+            get { return _oidFilter; }
+            set
+            {
+                _oidFilter.Clear();
+
+                ArrayList missingOids = new ArrayList();
+
+                if (value != null)
+                {
+                    foreach (object oid in value)
+                    {
+                        _oidFilter.Add(oid);
+                        FeatureDataRow feature = Table.Find(oid);
+
+                        if (feature == null || !feature.IsFullyLoaded)
+                        {
+                            missingOids.Add(oid);
+                        }
+                    }
+
+                    if (missingOids.Count > 0)
+                    {
+                        onMissingOids(missingOids);
+                    }
+                }
+            }
+        }
+
+        public new FeatureDataTable Table
+        {
+            get { return base.Table as FeatureDataTable; }
+            set { base.Table = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the bounds which this view covers as a <see cref="BoundingBox"/>.
+        /// </summary>
+        public BoundingBox Extents
+        {
+            get
+            {
+                if (_queryGeometry == null)
+                {
+                    return BoundingBox.Empty;
+                }
+
+                return _queryGeometry.GetBoundingBox();
+            }
+            set
+            {
+                if (value == BoundingBox.Empty)
+                {
+                    GeometryFilter = null;
+                }
+
+                GeometryFilter = value.ToGeometry();
+            }
+        }
+
+        #region DataView overrides
         public override DataRowView AddNew()
         {
             throw new NotSupportedException();
@@ -154,76 +276,7 @@ namespace SharpMap.Data
         {
             base.UpdateIndex(force);
         }
-
-        /// <summary>
-        /// Gets the DataViewManager which is managing this view's settings.
-        /// </summary>
-        public new FeatureDataViewManager DataViewManager
-        {
-            get { return base.DataViewManager as FeatureDataViewManager; }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="Geometry"/> instance used
-        /// to filter the table data based on intersection.
-        /// </summary>
-        public Geometry GeometryIntersectionFilter
-        {
-            get { return _intersectionFilter == null ? null : _intersectionFilter.Clone(); }
-            set
-            {
-                if (_intersectionFilter == value)
-                {
-                    return;
-                }
-
-                _intersectionFilter = value;
-
-                // TODO: Perhaps resetting the entire index is a bit drastic... 
-                // Reconsider how to enlist and retire rows incrementally, 
-                // perhaps doing RTree diffs.
-                Reset();
-            }
-        }
-
-        public IEnumerable<FeatureDataRow> SelectedFeatures
-        {
-            // Check for primary key, and use it to select features from base table
-            // If no key, check for unique index, and use it to select
-            // Otherwise, do a field-by-field comparison...
-            // Remember to suspend events and clear the view before adding features...
-            set { throw new NotImplementedException(); }
-        }
-
-        public int IndexOfFeature(FeatureDataRow feature)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets or sets the bounds which this view covers as a <see cref="BoundingBox"/>.
-        /// </summary>
-        public BoundingBox ViewBounds
-        {
-            get
-            {
-                if (_intersectionFilter == null)
-                {
-                    return BoundingBox.Empty;
-                }
-
-                return _intersectionFilter.GetBoundingBox();
-            }
-            set
-            {
-                if (value == BoundingBox.Empty)
-                {
-                    GeometryIntersectionFilter = null;
-                }
-
-                GeometryIntersectionFilter = value.ToGeometry();
-            }
-        }
+        #endregion
 
         #region IEnumerable<FeatureDataRow> Members
 
@@ -271,13 +324,41 @@ namespace SharpMap.Data
         {
             FeatureDataRow feature = row as FeatureDataRow;
 
-            if (row == null)
+            if (feature == null)
             {
                 return false;
             }
 
-            return GeometryIntersectionFilter == null ||
-                   GeometryIntersectionFilter.Intersects(feature.Geometry);
+            return inGeometryFilter(feature) 
+                && inOidFilter(feature)
+                && inAttributeFilter();
+        }
+
+        private bool inGeometryFilter(FeatureDataRow feature)
+        {
+            return GeometryFilter == null ||
+            GeometryFilter.Intersects(feature.Geometry);
+        }
+
+        private bool inOidFilter(FeatureDataRow feature)
+        {
+            return feature.HasOid && _oidFilter.Contains(feature.GetOid());
+        }
+
+        private bool inAttributeFilter()
+        {
+            // TODO: perhaps this is where we can execute the DataExpression filter
+            return true;
+        }
+
+        private void onMissingRegion(Geometry missingRegion)
+        {
+            Table.RequestFeatures(missingRegion);
+        }
+
+        private void onMissingOids(IEnumerable missingOids)
+        {
+            Table.RequestFeatures(missingOids);
         }
         #endregion
 

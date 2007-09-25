@@ -82,7 +82,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		#region Instance fields
 		private FilterMethod _filterDelegate;
 		private int? _srid;
-		private string _filename;
+		private readonly string _filename;
 		private DbaseFile _dbaseFile;
 		private FileStream _shapeFileStream;
 		private BinaryReader _shapeFileReader;
@@ -92,7 +92,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		private bool _coordsysReadFromFile = false;
 		private ICoordinateSystem _coordinateSystem;
 		private bool _disposed = false;
-		private DynamicRTree<uint> _tree;
+		private DynamicRTree<uint> _spatialIndex;
 		private readonly ShapeFileHeader _header;
 		private readonly ShapeFileIndex _shapeFileIndex;
 		private ShapeFileDataReader _currentReader;
@@ -203,10 +203,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 					_shapeFileStream = null;
 				}
 
-				if (_tree != null)
+				if (_spatialIndex != null)
 				{
-					_tree.Dispose();
-					_tree = null;
+					_spatialIndex.Dispose();
+					_spatialIndex = null;
 				}
 			}
 
@@ -646,11 +646,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 					File.Delete(_filename + ".sidx");
 				}
 
-				_tree = createSpatialIndexFromFile(_filename);
+				_spatialIndex = createSpatialIndexFromFile(_filename);
 			}
 			else
 			{
-				_tree = createSpatialIndex();
+				_spatialIndex = createSpatialIndex();
 			}
 		}
 
@@ -708,9 +708,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </returns>
 		public BoundingBox GetExtents()
 		{
-			if (_tree != null)
+			if (_spatialIndex != null)
 			{
-				return _tree.Root.BoundingBox;
+				return _spatialIndex.Root.BoundingBox;
 			}
 
 			return _header.Envelope;
@@ -823,7 +823,42 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region IFeatureLayerProvider Members
+        #region IFeatureLayerProvider Members
+
+        public IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EndExecuteFeatureQuery(IAsyncResult asyncResult)
+        {
+            throw new NotImplementedException();
+        }
 
 	    /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
@@ -862,7 +897,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	        BoundingBox boundingBox = geometry.GetBoundingBox();
 
 	        //Get candidates by intersecting the spatial index tree
-	        IEnumerable<uint> oidList = getKeysFromIndexEntries(_tree.Search(boundingBox));
+	        IEnumerable<uint> oidList = getKeysFromIndexEntries(_spatialIndex.Search(boundingBox));
 
 	        foreach (uint oid in oidList)
 	        {
@@ -1150,7 +1185,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			checkOpen();
 			//enableReading();
 
-			foreach (uint id in getKeysFromIndexEntries(_tree.Search(bounds)))
+			foreach (uint id in getKeysFromIndexEntries(_spatialIndex.Search(bounds)))
 			{
 				yield return id;
 			}
@@ -1270,9 +1305,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 			BoundingBox featureEnvelope = feature.Geometry.GetBoundingBox();
 
-			if (_tree != null)
+			if (_spatialIndex != null)
 			{
-				_tree.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
+				_spatialIndex.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
 			}
 
 			int offset = _shapeFileIndex[id].Offset;
@@ -1325,9 +1360,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 				_shapeFileIndex.AddFeatureToIndex(feature);
 
-				if (_tree != null)
+				if (_spatialIndex != null)
 				{
-					_tree.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
+					_spatialIndex.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
 				}
 
 				feature[ShapeFileConstants.IdColumnName] = id;
@@ -1669,7 +1704,6 @@ namespace SharpMap.Data.Providers.ShapeFile
 		private FeatureDataRow<uint> getFeature(uint oid, FeatureDataTable<uint> table)
 		{
 			checkOpen();
-			//enableReading();
 
 			if (table == null)
 			{
@@ -1869,15 +1903,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 		private void loadSpatialIndex(bool forceRebuild, bool loadFromFile)
 		{
 			//Only load the tree if we haven't already loaded it, or if we want to force a rebuild
-			if (_tree == null || forceRebuild)
+			if (_spatialIndex == null || forceRebuild)
 			{
 				if (!loadFromFile)
 				{
-					_tree = createSpatialIndex();
+					_spatialIndex = createSpatialIndex();
 				}
 				else
 				{
-					_tree = createSpatialIndexFromFile(_filename);
+					_spatialIndex = createSpatialIndexFromFile(_filename);
 				}
 			}
 		}

@@ -32,18 +32,30 @@ namespace SharpMap.Layers
     public abstract class FeatureLayer : Layer, IFeatureLayer
     {
         #region Instance fields
-
         private readonly FeatureDataTable _features;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
-
         #endregion
 
         /// <summary>
-        /// Initializes a new, empty features layer.
+        /// Initializes a new, empty features layer
+        /// which handles <see cref="FeatureDataTable.FeaturesRequested"/> 
+        /// events from <see cref="Features"/>.
         /// </summary>
         protected FeatureLayer(IFeatureLayerProvider dataSource)
             : this(String.Empty, dataSource)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new features layer with the given name and datasource
+        /// and which handles <see cref="FeatureDataTable.FeaturesRequested"/> 
+        /// events from <see cref="Features"/>.
+        /// </summary>
+        /// <param name="layername">Name of the layer.</param>
+        /// <param name="dataSource">Data source.</param>
+        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource)
+            : this(layername, new VectorStyle(), dataSource, true)
         {
         }
 
@@ -52,10 +64,26 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource)
-            : this(layername, new VectorStyle(), dataSource)
+        /// <param name="handleFeatureDataRequest">
+        /// Value to indicate the layer should handle 
+        /// <see cref="FeatureDataTable.FeaturesRequested"/> events from the <see cref="Features"/>
+        /// table.
+        /// </param>
+        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
+            : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest)
         {
         }
+        
+        /// <summary>
+        /// Initializes a new features layer with the given name, style and datasource
+        /// and which handles <see cref="FeatureDataTable.FeaturesRequested"/> 
+        /// events from <see cref="Features"/>.
+        /// </summary>
+        /// <param name="layername">Name of the layer.</param>
+        /// <param name="style">Style to apply to the layer.</param>
+        /// <param name="dataSource">Data source.</param>
+        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
+            : this(layername, style, dataSource, true) {}
 
         /// <summary>
         /// Initializes a new features layer with the given name, style and datasource.
@@ -63,12 +91,24 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
+        /// <param name="handleFeatureDataRequest">
+        /// Value to indicate the layer should handle 
+        /// <see cref="FeatureDataTable.FeaturesRequested"/> events from the <see cref="Features"/>
+        /// table.
+        /// </param>
+        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
+            ShouldHandleDataCacheMissEvent = handleFeatureDataRequest;
+
             _features = new FeatureDataTable();
             _selectedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows);
             _highlightedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows);
+
+            if (ShouldHandleDataCacheMissEvent)
+            {
+                _features.FeaturesRequested += handleFeaturesRequested;
+            }
 
             init();
         }
@@ -83,7 +123,6 @@ namespace SharpMap.Layers
         {
             get { return base.DataSource as IFeatureLayerProvider; }
         }
-
 
         /// <summary>
         /// Gets or sets a view of highlighted features, which
@@ -126,13 +165,35 @@ namespace SharpMap.Layers
 
         protected override void LoadLayerDataForRegion(BoundingBox region)
         {
-            DataSource.ExecuteIntersectionQuery(region, _features);
+            if (!AsyncQuery)
+            {
+                DataSource.ExecuteIntersectionQuery(region, _features);
+            }
+            else
+            {
+                FeatureDataTable featureCache = new FeatureDataTable();
+                DataSource.SetTableSchema(featureCache);
+                DataSource.BeginExecuteIntersectionQuery(region, featureCache, 
+                    queryCallback, featureCache);
+            }
+
             base.LoadLayerDataForRegion(region);
         }
 
-        protected override void LoadLayerDataForRegion(Polygon region)
+        protected override void LoadLayerDataForRegion(Geometry region)
         {
-            DataSource.ExecuteFeatureQuery(region, _features, SpatialQueryType.Intersects);
+            if (!AsyncQuery)
+            {
+                DataSource.ExecuteFeatureQuery(region, _features, SpatialQueryType.Intersects);
+            }
+            else
+            {
+                FeatureDataTable featureCache = new FeatureDataTable();
+                DataSource.SetTableSchema(featureCache);
+                DataSource.BeginExecuteFeatureQuery(region, featureCache,
+                    SpatialQueryType.Intersects, queryCallback, featureCache);
+            }
+
             base.LoadLayerDataForRegion(region);
         }
         #endregion
@@ -146,12 +207,29 @@ namespace SharpMap.Layers
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-
             DataSource.SetTableSchema(_features);
-
             DataSource.Close();
         }
 
+        private void handleFeaturesRequested(object sender, FeaturesRequestedEventArgs e)
+        {
+            if (e.RequestedRegion != null)
+            {
+                LoadLayerDataForRegion(e.RequestedRegion);
+            }
+        }
+
+        private void queryCallback(IAsyncResult result)
+        {
+            FeatureDataTable features = result.AsyncState as FeatureDataTable;
+
+            if (features != null)
+            {
+                Features.MergeFeatures(features);
+            }
+
+            DataSource.EndExecuteFeatureQuery(result);
+        }
         #endregion
     }
 }

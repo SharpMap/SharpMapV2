@@ -295,7 +295,7 @@ namespace SharpMap.Geometries
 	    /// Returns a geometry that represents the point set 
 	    /// difference of this Geometry with another Geometry.
 	    /// </summary>
-	    public abstract Geometry Difference(Geometry geom);
+        public abstract Geometry Difference(Geometry geometry);
 
 	    /// <summary>
 		/// Returns the shortest distance between any 
@@ -303,26 +303,26 @@ namespace SharpMap.Geometries
 		/// as calculated in the spatial reference 
 		/// system of this Geometry.
 		/// </summary>
-		public abstract double Distance(Geometry geom);
+        public abstract double Distance(Geometry geometry);
 
 	    /// <summary>
 		/// Returns a geometry that represents the point set 
 		/// intersection of this Geometry
 		/// with anotherGeometry.
 		/// </summary>
-		public abstract Geometry Intersection(Geometry geom);
+        public abstract Geometry Intersection(Geometry geometry);
 
 	    /// <summary>
 	    /// Returns a geometry that represents the point set 
 	    /// symmetric difference of this Geometry with another Geometry.
 	    /// </summary>
-	    public abstract Geometry SymDifference(Geometry geom);
+        public abstract Geometry SymDifference(Geometry geometry);
 
 	    /// <summary>
 		/// Returns a geometry that represents the point set union 
 		/// of this Geometry with another Geometry.
 		/// </summary>
-		public abstract Geometry Union(Geometry geom);
+		public abstract Geometry Union(Geometry geometry);
 
 	    #endregion
 

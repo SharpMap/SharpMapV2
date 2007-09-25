@@ -50,15 +50,10 @@ namespace SharpMap.Layers
             throw new NotImplementedException();
         }
 
-	    protected override void LoadLayerDataForRegion(Polygon region)
+	    protected override void LoadLayerDataForRegion(Geometry region)
         {
             throw new NotImplementedException();
         }
-
-	    protected override void OnVisibleRegionChanged()
-	    {
-	        throw new NotImplementedException();
-	    }
 
 	    #region IRasterLayer Members
 

@@ -17,9 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using SharpMap.Geometries;
 using System.Threading;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -28,13 +27,17 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
     public abstract class RTree<TValue> : ISearchableSpatialIndex<RTreeIndexEntry<TValue>>, IDisposable
-        
+
     {
         private ISpatialIndexNode _root;
         private bool _disposed;
         private long _nextNodeId = 0;
 
         #region Object Construction/Destruction
+
+        /// <summary>
+        /// Creates a new instance of an RTree index.
+        /// </summary>
         public RTree()
         {
             initIndex();
@@ -60,19 +63,20 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-        }
+        protected virtual void Dispose(bool disposing) {}
 
         protected bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
         }
+
         #endregion
+
         #endregion
 
         #region Properties
+
         /// <summary>
         /// Root node in the R-Tree
         /// </summary>
@@ -81,9 +85,11 @@ namespace SharpMap.Indexing.RTree
             get { return _root; }
             protected set { _root = value; }
         }
+
         #endregion
 
         #region Public methods
+
         /// <summary>
         /// Clears the index of all entries.
         /// </summary>
@@ -107,14 +113,16 @@ namespace SharpMap.Indexing.RTree
         /// Searches the tree and looks for intersections with the
         /// given <paramref name="geometry"/>.
         /// </summary>
-		/// <param name="geometry">Geometry to intersect the index with.</param>
+        /// <param name="geometry">Geometry to intersect the index with.</param>
         public virtual IEnumerable<RTreeIndexEntry<TValue>> Search(Geometry geometry)
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         #region Protected / Internal methods
+
         /// <summary>
         /// Creates a new index branch node with an empty bounding box.
         /// </summary>
@@ -174,7 +182,8 @@ namespace SharpMap.Indexing.RTree
         /// Thrown if <paramref name="node"/> 
         /// is null or if <paramref name="list"/> is null.
         /// </exception>
-        protected void IntersectTreeRecursive(BoundingBox box, ISpatialIndexNode node, List<RTreeIndexEntry<TValue>> list)
+        protected static void IntersectTreeRecursive(BoundingBox box, ISpatialIndexNode node,
+                                              List<RTreeIndexEntry<TValue>> list)
         {
             if (node == null) throw new ArgumentNullException("node");
             if (list == null) throw new ArgumentNullException("list");
@@ -221,8 +230,9 @@ namespace SharpMap.Indexing.RTree
 
         private uint getNewNodeId()
         {
-            return (uint)Interlocked.Increment(ref _nextNodeId);
+            return (uint) Interlocked.Increment(ref _nextNodeId);
         }
+
         #endregion
     }
 }

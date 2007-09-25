@@ -211,15 +211,17 @@ namespace SharpMap.Data.Providers.ShapeFile
                             return DBNull.Value;
                         }
 #else
-					try 
-					{
-						return date = DateTime.ParseExact ( Encoding.UTF7.GetString((br.ReadBytes(8))), 	
-						"yyyyMMdd", Map.numberFormat_EnUS, DateTimeStyles.None );
-					}
-					catch ( Exception e )
-					{
-						return DBNull.Value;
-					}
+					    try 
+					    {
+						    date = DateTime.ParseExact(Encoding.UTF8.GetString((_dbaseReader.ReadBytes(8))), 	
+						        "yyyyMMdd", DbaseConstants.StorageNumberFormat, DateTimeStyles.None);
+
+					        return date;
+					    }
+					    catch (FormatException)
+					    {
+						    return DBNull.Value;
+					    }
 #endif
                     case TypeCode.Double:
                         string temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();

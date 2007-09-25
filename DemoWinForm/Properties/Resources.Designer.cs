@@ -88,6 +88,20 @@ namespace DemoWinForm.Properties {
             }
         }
         
+        internal static byte[] Family_Names {
+            get {
+                object obj = ResourceManager.GetObject("Family_Names", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] female_names {
+            get {
+                object obj = ResourceManager.GetObject("female_names", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Flag {
             get {
                 object obj = ResourceManager.GetObject("Flag", resourceCulture);
@@ -120,6 +134,13 @@ namespace DemoWinForm.Properties {
             get {
                 object obj = ResourceManager.GetObject("PIE_DIAGRAM", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static byte[] places {
+            get {
+                object obj = ResourceManager.GetObject("places", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

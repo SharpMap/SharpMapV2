@@ -87,9 +87,7 @@ namespace SharpMap.Tools
 			FeatureRemove = new MapTool<IMapView2D, Point2D>("FeatureRemove", QueryFeatureRemove, BeginFeatureRemove, ContinueFeatureRemove, EndFeatureRemove);
 		}
 
-		private static void DoNothing(ActionContext<IMapView2D, Point2D> context)
-		{
-		}
+		private static void DoNothing(ActionContext<IMapView2D, Point2D> context) { }
 
 		#region Panning
 		private static void QueryPan(ActionContext<IMapView2D, Point2D> context)

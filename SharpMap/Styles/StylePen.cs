@@ -41,7 +41,7 @@ namespace SharpMap.Styles
         private StyleLineCap _endCap;
         private StyleLineJoin _lineJoin;
         private Matrix2D _transform = new Matrix2D();
-        private float _width;
+        private double _width;
         private float[] _compoundArray;
         private StylePenAlignment _alignment;
 		#endregion
@@ -53,16 +53,18 @@ namespace SharpMap.Styles
 		/// </summary>
 		/// <param name="color">Color of the pen.</param>
 		/// <param name="width">Width of the pen.</param>
-		public StylePen(StyleColor color, float width)
+        public StylePen(StyleColor color, double width)
             : this(new SolidStyleBrush(color), width) { }
 
 		/// <summary>
 		/// Creates a new pen with the given <see cref="StyleBrush"/>
 		/// and <paramref name="width"/>.
 		/// </summary>
-		/// <param name="backgroundBrush">The StyleBrush which describes the color of the line.</param>
+		/// <param name="backgroundBrush">
+		/// The StyleBrush which describes the color of the line.
+		/// </param>
 		/// <param name="width">The width of the line.</param>
-        public StylePen(StyleBrush backgroundBrush, float width)
+        public StylePen(StyleBrush backgroundBrush, double width)
         {
             _backgroundBrush = backgroundBrush;
             _width = width;
@@ -224,7 +226,7 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Gets or sets the width of the line drawn by this pen.
 		/// </summary>
-        public float Width
+        public double Width
         {
             get { return _width; }
             set { _width = value; }

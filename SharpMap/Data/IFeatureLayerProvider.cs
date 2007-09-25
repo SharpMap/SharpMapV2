@@ -16,6 +16,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using SharpMap.Geometries;
@@ -29,6 +30,106 @@ namespace SharpMap.Data
     public interface IFeatureLayerProvider : ILayerProvider
     {
         /// <summary>
+        /// Begins to retrieve the features related to <paramref name="geometry"/> by 
+        /// <paramref name="queryType"/>.
+        /// </summary>
+        /// <param name="geometry">Geometry to query with.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        /// <param name="queryType">Type of spatial query to execute.</param>
+        /// <param name="callback">
+        /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
+        /// </param>
+        /// <param name="asyncState">
+        /// Custom state to pass to the <paramref name="callback"/>.
+        /// </param>
+        IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, 
+            SpatialQueryType queryType, AsyncCallback callback, object asyncState);
+
+        /// <summary>
+        /// Begins to retrieve the features related to <paramref name="geometry"/> by 
+        /// <paramref name="queryType"/>.
+        /// </summary>
+        /// <param name="geometry">Geometry to query with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        /// <param name="queryType">Type of spatial query to execute.</param>
+        /// <param name="callback">
+        /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
+        /// </param>
+        /// <param name="asyncState">
+        /// Custom state to pass to the <paramref name="callback"/>.
+        /// </param>
+        IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataTable table,
+            SpatialQueryType queryType, AsyncCallback callback, object asyncState);
+
+        /// <summary>
+        /// Begins to retrieve the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        /// <param name="callback">
+        /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
+        /// </param>
+        /// <param name="asyncState">
+        /// Custom state to pass to the <paramref name="callback"/>.
+        /// </param>
+        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, 
+            AsyncCallback callback, object asyncState);
+
+        /// <summary>
+        /// Begins to retrieve the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        /// <param name="options">Options indicating which data to retrieve.</param>
+        /// <param name="callback">
+        /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
+        /// </param>
+        /// <param name="asyncState">
+        /// Custom state to pass to the <paramref name="callback"/>.
+        /// </param>
+        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet,
+            QueryExecutionOptions options, AsyncCallback callback, object asyncState);
+
+        /// <summary>
+        /// Begins to retrieve the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        /// <param name="callback">
+        /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
+        /// </param>
+        /// <param name="asyncState">
+        /// Custom state to pass to the <paramref name="callback"/>.
+        /// </param>
+        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, 
+            AsyncCallback callback, object asyncState);
+
+        /// <summary>
+        /// Begins to retrieve the data associated with all the features that 
+        /// are intersected by <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">BoundingBox to intersect with.</param>
+        /// <param name="table">FeatureDataTable to fill data into.</param>
+        /// <param name="options">Options indicating which data to retrieve.</param>
+        /// <param name="callback">
+        /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
+        /// </param>
+        /// <param name="asyncState">
+        /// Custom state to pass to the <paramref name="callback"/>.
+        /// </param>
+        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table,
+            QueryExecutionOptions options, AsyncCallback callback, object asyncState);
+
+        /// <summary>
+        /// Ends a retrieval of the features, waiting on the 
+        /// <see cref="IAsyncResult.AsyncWaitHandle"/> if the operation is not complete.
+        /// </summary>
+        void EndExecuteFeatureQuery(IAsyncResult asyncResult);
+
+        /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
         /// are related to <paramref name="geometry"/> by <paramref name="queryType"/>.
         /// </summary>
@@ -38,7 +139,8 @@ namespace SharpMap.Data
         IFeatureDataReader ExecuteFeatureQuery(Geometry geometry, SpatialQueryType queryType);
 
         /// <summary>
-        /// Retrieves the features related to <paramref name="geometry"/> by <paramref name="queryType"/>.
+        /// Retrieves the features related to <paramref name="geometry"/> by 
+        /// <paramref name="queryType"/>.
         /// </summary>
         /// <param name="geometry">Geometry to query with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
@@ -46,7 +148,8 @@ namespace SharpMap.Data
         void ExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType);
 
         /// <summary>
-        /// Retrieves the features related to <paramref name="geometry"/> by <paramref name="queryType"/>.
+        /// Retrieves the features related to <paramref name="geometry"/> by 
+        /// <paramref name="queryType"/>.
         /// </summary>
         /// <param name="geometry">Geometry to query with.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>

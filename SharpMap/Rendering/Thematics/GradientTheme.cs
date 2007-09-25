@@ -464,7 +464,7 @@ namespace SharpMap.Rendering.Thematics
             double frac = fraction(attr);
 
             StyleColor color = StyleColor.Interpolate(min.BackgroundBrush.Color, max.BackgroundBrush.Color, frac);
-            StylePen pen = new StylePen(color, interpolateFloat(min.Width, max.Width, attr));
+            StylePen pen = new StylePen(color, interpolateDouble(min.Width, max.Width, attr));
 
             pen.MiterLimit = interpolateFloat(min.MiterLimit, max.MiterLimit, attr);
             pen.StartCap = (frac > 0.5 ? max.StartCap : min.StartCap);

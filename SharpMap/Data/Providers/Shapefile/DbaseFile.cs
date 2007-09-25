@@ -196,6 +196,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
+            IsDisposed = true;
+            GC.SuppressFinalize(this);
             dispose(true);
         }
 
@@ -386,6 +388,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         internal void DeleteRow(UInt32 rowIndex)
         {
+            // TODO: implement DbaseFile.DeleteRow
             throw new NotImplementedException("Not implemented in this version.");
         }
 
@@ -419,7 +422,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (oid < 0 || oid >= RecordCount)
             {
                 throw new ArgumentOutOfRangeException(
-                    "Invalid DataRow requested at index " + oid.ToString());
+                    "Invalid DataRow requested at index " + oid);
             }
 
             if (ReferenceEquals(table, null))

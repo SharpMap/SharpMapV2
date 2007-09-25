@@ -465,6 +465,13 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+
+            if (DesignMode || _presenter == null)
+            {
+                g.Clear(BackColor);
+                return;
+            }
+
             g.Transform = getGdiViewTransform();
             g.Clear(BackColor);
 

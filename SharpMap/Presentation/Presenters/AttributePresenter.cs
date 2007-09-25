@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using SharpMap.Data;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 
@@ -59,7 +60,14 @@ namespace SharpMap.Presentation.Presenters
 
             Debug.Assert(layer != null);
 
-            layer.HighlightedFeatures.SelectedFeatures = getFeaturesFromIndexes(layer, e.HighlightedFeatures);
+            Geometry filterGeometry = layer.HighlightedFeatures.GeometryFilter;
+
+            foreach (FeatureDataRow feature in getFeaturesFromIndexes(layer, e.HighlightedFeatures))
+            {
+                filterGeometry = filterGeometry.Intersection(feature.Geometry);
+            }
+
+            layer.HighlightedFeatures.GeometryFilter = filterGeometry;
         }
 
         private void handleHighlightedFeaturesChanged(object sender, ListChangedEventArgs e)
@@ -99,7 +107,7 @@ namespace SharpMap.Presentation.Presenters
         {
             foreach (FeatureDataRow feature in highlightedFeatures)
             {
-                yield return selectedFeatures.IndexOfFeature(feature);
+                yield return selectedFeatures.Find(feature);
             }
         }
     }

@@ -130,7 +130,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Compares two DbaseField instances to determine if they describe the
 		/// same field.
 		/// </summary>
-		/// <param name="obj">The field to compare to.</param>
+        /// <param name="other">The field to compare to.</param>
 		/// <returns>True if the fields are equal, false otherwise.</returns>
 		public bool Equals(DbaseField other)
 		{

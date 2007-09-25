@@ -68,6 +68,7 @@ namespace SharpMap.Data
         private Geometry _proposedGeometry;
         private bool _isGeometryModified = false;
         private BoundingBox _extents = BoundingBox.Empty;
+        private bool _isFullyLoaded;
         #endregion
 
         #region Object constructor
@@ -87,6 +88,13 @@ namespace SharpMap.Data
             _isGeometryModified = false;
         }
 
+        /// <summary>
+        /// Gets or sets geographic extents for the feature.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if <see cref="Geometry"/> is not null, since Extents
+        /// just reflects the Geometry's extents, if set.
+        /// </exception>
         public BoundingBox Extents
         {
             get
@@ -134,13 +142,10 @@ namespace SharpMap.Data
             }
         }
 
-        /// <summary>
-        /// Returns true of the geometry is null.
-        /// </summary>
-        /// <returns></returns>
-        public bool IsGeometryNull()
+        internal bool IsFullyLoaded
         {
-            return Geometry == null;
+            get { return _isFullyLoaded; }
+            set { _isFullyLoaded = value; }
         }
 
         /// <summary>
@@ -150,6 +155,15 @@ namespace SharpMap.Data
         public bool IsGeometryModified
         {
             get { return _isGeometryModified; }
+        }
+
+        /// <summary>
+        /// Returns true of the geometry is null.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsGeometryNull()
+        {
+            return Geometry == null;
         }
 
         /// <summary>
