@@ -188,7 +188,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 		#endregion
 
-		/// <summary>
+        #region Geometries Collection
+        /// <summary>
 		/// Gets or sets the geometries this datasource contains.
 		/// </summary>
 		public IList<Geometry> Geometries
@@ -199,11 +200,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
 				_geometries.Clear();
 				_geometries.AddRange(value);
 			}
-		}
+        }
+        #endregion
 
-		#region ILayerProvider Members
+        #region ILayerProvider Members
 
-		/// <summary>
+        /// <summary>
 		/// Gets the connection ID of the datasource
 		/// </summary>
 		/// <remarks>
@@ -510,7 +512,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </summary>
 		/// <param name="box"></param>
 		/// <returns></returns>
-		public IEnumerable<uint> GetObjectIdsInView(BoundingBox box)
+        public IEnumerable<uint> GetIntersectingObjectIds(BoundingBox box)
 		{
 			for (uint i = 0; i < _geometries.Count; i++)
 			{
@@ -556,12 +558,17 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		#endregion
 
 		#region IFeatureLayerProvider Explicit Members
-
 		void IFeatureLayerProvider.SetTableSchema(FeatureDataTable table)
 		{
 			table.Clear();
 		}
-
 		#endregion
+
+        #region IFeatureLayerProvider<UInt32> Explicit Members
+        IEnumerable<UInt32> IFeatureLayerProvider<UInt32>.GetObjectIdsInView(BoundingBox bounds)
+        {
+            return GetIntersectingObjectIds(bounds);
+        }
+        #endregion
     }
 }

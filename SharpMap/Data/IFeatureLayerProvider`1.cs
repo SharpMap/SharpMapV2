@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using SharpMap.Geometries;
 
@@ -26,18 +27,33 @@ namespace SharpMap.Data
     public interface IFeatureLayerProvider<TOid> : IFeatureLayerProvider
 	{
 		/// <summary>
-		/// Returns all objects whose <see cref="SharpMap.Geometries.BoundingBox"/> 
+		/// Returns all objects whose <see cref="BoundingBox"/> 
         /// intersects <paramref name="boundingBox"/>.
 		/// </summary>
 		/// <remarks>
 		/// This method is usually much faster than the ExecuteIntersectionQuery method, 
 		/// because intersection tests are performed on objects simplifed by 
-		/// their <see cref="SharpMap.Geometries.BoundingBox"/>, often using
+		/// their <see cref="BoundingBox"/>, often using
 		/// spatial indexing to retrieve the id values.
 		/// </remarks>
 		/// <param name="boundingBox">BoundingBox that objects should intersect.</param>
 		/// <returns>An enumeration of all intersecting objects' ids.</returns>
+		[Obsolete("Will be removed in Beta 2. Use GetIntersectingObjectIds instead.")]
 		IEnumerable<TOid> GetObjectIdsInView(BoundingBox boundingBox);
+
+        /// <summary>
+        /// Returns all objects whose <see cref="BoundingBox"/> 
+        /// intersects <paramref name="boundingBox"/>.
+        /// </summary>
+        /// <remarks>
+        /// This method is usually much faster than the ExecuteIntersectionQuery method, 
+        /// because intersection tests are performed on objects simplifed by 
+        /// their <see cref="BoundingBox"/>, often using
+        /// spatial indexing to retrieve the id values.
+        /// </remarks>
+        /// <param name="boundingBox">BoundingBox that objects should intersect.</param>
+        /// <returns>An enumeration of all intersecting objects' ids.</returns>
+	    IEnumerable<TOid> GetIntersectingObjectIds(BoundingBox boundingBox);
 
 		/// <summary>
 		/// Returns the geometry corresponding to the object ID.

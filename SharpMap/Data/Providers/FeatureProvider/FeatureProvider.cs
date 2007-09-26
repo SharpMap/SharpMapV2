@@ -31,6 +31,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
 		private ICoordinateTransformation _transform = null;
 
+        /// <summary>
+        /// Creates a new FeatureProvider with the given columns as a schema.
+        /// </summary>
+        /// <param name="columns">
+        /// The schema to create the FeatureProvider with.
+        /// </param>
 		public FeatureProvider(params DataColumn[] columns)
 		{
             foreach (DataColumn column in columns)
@@ -82,7 +88,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		#region IFeatureLayerProvider<Guid> Members
 
-		public IEnumerable<Guid> GetObjectIdsInView(BoundingBox boundingBox)
+        public IEnumerable<Guid> GetIntersectingObjectIds(BoundingBox boundingBox)
 		{
 			throw new NotImplementedException();
 		}
@@ -361,5 +367,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		}
 
 		#endregion
+
+        #region IFeatureLayerProvider<UInt32> Explicit Members
+        IEnumerable<Guid> IFeatureLayerProvider<Guid>.GetObjectIdsInView(BoundingBox bounds)
+        {
+            return GetIntersectingObjectIds(bounds);
+        }
+        #endregion
     }
 }

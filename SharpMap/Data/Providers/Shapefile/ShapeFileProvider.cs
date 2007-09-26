@@ -962,7 +962,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	        checkOpen();
 	        //enableReading();
 
-	        foreach (uint oid in GetObjectIdsInView(bounds))
+	        foreach (uint oid in GetIntersectingObjectIds(bounds))
 	        {
 	            Geometry g = GetGeometryById(oid);
 
@@ -1119,8 +1119,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 			FeatureDataTable<uint> keyedTable = table as FeatureDataTable<uint>;
 
 			SetTableSchema(keyedTable);
-			
-			IEnumerable<uint> objectsInQuery = GetObjectIdsInView(bounds);
+
+            IEnumerable<uint> objectsInQuery = GetIntersectingObjectIds(bounds);
 
 			keyedTable.MergeFeatures(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
 	    }
@@ -1180,10 +1180,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <exception cref="ShapeFileInvalidOperationException">
 		/// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
 		/// </exception>
-		public IEnumerable<uint> GetObjectIdsInView(BoundingBox bounds)
+        public IEnumerable<uint> GetIntersectingObjectIds(BoundingBox bounds)
 		{
 			checkOpen();
-			//enableReading();
 
 			foreach (uint id in getKeysFromIndexEntries(_spatialIndex.Search(bounds)))
 			{
@@ -1202,7 +1201,6 @@ namespace SharpMap.Data.Providers.ShapeFile
 		public Geometry GetGeometryById(uint oid)
 		{
 			checkOpen();
-			//enableReading();
 
 			if (FilterDelegate != null) //Apply filtering
 			{

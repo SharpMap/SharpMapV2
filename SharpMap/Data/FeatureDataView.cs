@@ -71,9 +71,10 @@ namespace SharpMap.Data
         #endregion
 
         #region Instance fields
-        private Geometry _queryGeometry;
+        private Geometry _queryGeometry = Point.Empty;
         private readonly SpatialQueryType _queryType;
         private readonly ArrayList _oidFilter = new ArrayList();
+        private readonly bool _filterSet = false;
         #endregion
 
         #region Object constructors
@@ -100,8 +101,9 @@ namespace SharpMap.Data
                     "Only query type of SpatialQueryType.Intersects currently supported.");
             }
 
-            _queryGeometry = query;
+            GeometryFilter = query;
             _queryType = queryType;
+            _filterSet = true;
 
             // This call rebuilds the index which was just built with 
             // the call into the base constructor, which may be a performance
@@ -117,13 +119,6 @@ namespace SharpMap.Data
             // The DataView is locked when it is created as a default
             // view for a table.
             _setLocked(this, locked);
-
-            // This call rebuilds the index which was just built with 
-            // the call into the base constructor, which may be a performance
-            // hit. A more robust solution would be to just recreate the 
-            // behavior of the base constructor here, so we can create the 
-            // underlying index once.
-            setFilterPredicate();
         }
 
         #endregion
@@ -134,9 +129,11 @@ namespace SharpMap.Data
         /// </summary>
         public Geometry GeometryFilter
         {
-            get { return _queryGeometry == null ? null : _queryGeometry.Clone(); }
+            get { return _queryGeometry == Point.Empty ? null : _queryGeometry.Clone(); }
             set
             {
+                value = value ?? Point.Empty;
+
                 if (_queryGeometry == value)
                 {
                     return;
@@ -152,7 +149,10 @@ namespace SharpMap.Data
                 // TODO: Perhaps resetting the entire index is a bit drastic... 
                 // Reconsider how to enlist and retire rows incrementally, 
                 // perhaps doing RTree diffs.
-                Reset();
+                if (_filterSet)
+                {
+                    Reset();
+                }
             }
         }
 
@@ -271,7 +271,14 @@ namespace SharpMap.Data
 
         protected override void UpdateIndex(bool force)
         {
-            base.UpdateIndex(force);
+            if (!_filterSet)
+            {
+                return;
+            }
+            else
+            {
+                base.UpdateIndex(force);
+            }
         }
 
         #endregion

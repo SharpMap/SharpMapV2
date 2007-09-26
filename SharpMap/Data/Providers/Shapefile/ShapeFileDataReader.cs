@@ -51,7 +51,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			_schemaTable = source.GetSchemaTable();
 
 			// Use the spatial index to get a list of features whose BoundingBox intersects query bounds.
-			_objectEnumerator = source.GetObjectIdsInView(queryRegion).GetEnumerator();
+			_objectEnumerator = source.GetIntersectingObjectIds(queryRegion).GetEnumerator();
 		}
 
 		#region Dispose Pattern
