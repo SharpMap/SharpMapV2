@@ -54,6 +54,6 @@ namespace SharpMap.Data
         /// <summary>
         /// Specifies that all feature data should be retrieved.
         /// </summary>
-        All = Keys | BoundingBoxes | Geometries | Attributes,
+        FullFeature = Keys | Geometries | Attributes,
     }
 }

@@ -984,7 +984,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
 	    public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds)
 	    {
-            return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.All);
+            return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.FullFeature);
 	    }
         
         /// <summary>
@@ -998,11 +998,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// Thrown when a value other than <see cref="QueryExecutionOptions.All"/> 
+        /// Thrown when a value other than <see cref="QueryExecutionOptions.FullFeature"/> 
         /// is supplied for <paramref name="options"/>.
         /// </exception>
         /// <remarks>
-        /// Only <see cref="QueryExecutionOptions.All"/> is a supported value for <paramref name="options"/>.
+        /// Only <see cref="QueryExecutionOptions.FullFeature"/> is a supported value for <paramref name="options"/>.
         /// </remarks>
         public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds, QueryExecutionOptions options)
         {
@@ -1041,7 +1041,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
 		public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet)
 		{
-	        ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.All);
+            ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.FullFeature);
 		}
 
         /// <summary>
@@ -1058,7 +1058,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// Thrown when a value other than <see cref="QueryExecutionOptions.All"/> 
+        /// Thrown when a value other than <see cref="QueryExecutionOptions.FullFeature"/> 
         /// is supplied for <paramref name="options"/>.
         /// </exception>
         /// <remarks>
@@ -1087,7 +1087,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="table">FeatureDataTable to fill data into.</param>
 	    public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table)
 		{
-	        ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.All);
+            ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.FullFeature);
         }
         
 
@@ -1099,14 +1099,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="table">FeatureDataTable to fill data into.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
         /// <exception cref="ArgumentException">
-        /// Thrown when a value other than <see cref="QueryExecutionOptions.All"/> 
+        /// Thrown when a value other than <see cref="QueryExecutionOptions.FullFeature"/> 
         /// is supplied for <paramref name="options"/>.
         /// </exception>
         public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options)
 	    {
 			checkOpen();
 
-            if(options != QueryExecutionOptions.All)
+            if (options != QueryExecutionOptions.FullFeature)
             {
                 throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
             }

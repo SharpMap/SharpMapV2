@@ -25,6 +25,9 @@ using System.Globalization;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
+    /// <summary>
+    /// In-memory provider for arbitrary feature data.
+    /// </summary>
 	public class FeatureProvider : IWritableFeatureLayerProvider<Guid>
 	{
         internal readonly static string OidColumnName = "Oid";
@@ -204,7 +207,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
 	    public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds)
 	    {
-            return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.All);
+            return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.FullFeature);
         }
 
         /// <summary>
@@ -228,7 +231,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
         public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet)
 		{
-            ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.All);
+            ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.FullFeature);
         }
 
         /// <summary>
@@ -251,7 +254,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="table">FeatureDataTable to fill data into.</param>
         public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table)
 		{
-            ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.All);
+            ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.FullFeature);
         }
 
         /// <summary>

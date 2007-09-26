@@ -257,11 +257,13 @@ namespace SharpMap.Geometries
         }
 
         /// <summary>
-        /// Returns a geometry that represents the point set union of this Geometry with anotherGeometry.
+        /// Returns a geometry that represents the point set union 
+        /// of this Geometry with another Geometry.
         /// </summary>
-        public override Geometry Union(Geometry geom)
+        public override Geometry Union(Geometry geometry)
         {
-            throw new NotImplementedException();
+#warning fake the union using a GeometryCollection
+            return FakeSpatialOperations.Union(this, geometry);
         }
 
         /// <summary>
@@ -271,7 +273,7 @@ namespace SharpMap.Geometries
         {
             if (geometry == null) throw new ArgumentNullException("geometry");
 
-            // HACK: fake the difference by using bounding boxes. Broken until we go to NTS in Beta 2
+#warning fake the difference by using bounding boxes. Broken until we go to NTS in Beta 2
             if (IsEmpty())
             {
                 return geometry;

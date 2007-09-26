@@ -20,12 +20,38 @@ using System.Globalization;
 
 namespace SharpMap.Layers
 {
+    /// <summary>
+    /// Interface to a layer of features in a <see cref="Map"/>.
+    /// </summary>
 	public interface IFeatureLayer : ILayer
 	{
+        /// <summary>
+        /// Gets the data source for this layer as a more 
+        /// strongly-typed IFeatureLayerProvider.
+        /// </summary>
 		new IFeatureLayerProvider DataSource { get; }
+
+        /// <summary>
+        /// Gets a <see cref="FeatureDataTable"/> of cached features for the layer.
+        /// </summary>
 		FeatureDataTable Features { get; }
+
+        /// <summary>
+        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// highlighted.
+        /// </summary>
 		FeatureDataView HighlightedFeatures { get; }
+
+        /// <summary>
+        /// Gets the <see cref="CultureInfo"/> used to encode text
+        /// and format numbers for this layer.
+        /// </summary>
         CultureInfo Locale { get; }
+
+        /// <summary>
+        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// selected.
+        /// </summary>
 		FeatureDataView SelectedFeatures { get; }
 	}
 }

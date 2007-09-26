@@ -426,7 +426,8 @@ namespace SharpMap.Data
 
         private static object createRowPredicateFilter(Predicate<DataRow> filter)
         {
-            // HACK: This is the only way we have to take control of what predicate is used to filter the DataView.
+#warning Reflection on internal type breaks in CLR versions less than v2.0.50727.1378
+            // This is the only way we have to take control of what predicate is used to filter the DataView.
             // Unfortunately, this type is only available in the v2.0 CLR which ships with .Net v3.5 Beta 2 (v2.0.50727.1378)
             // Currently, the only two choices to provided spatially filtered views are to implement 
             // System.ComponentModel.IBindingListView or to rely on v3.5.

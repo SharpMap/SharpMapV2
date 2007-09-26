@@ -216,9 +216,29 @@ namespace SharpMap.Data
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Adds a feature row to the table.
+        /// </summary>
+        /// <param name="row">The feature row to add.</param>
         public void AddRow(FeatureDataRow<TOid> row)
         {
-            base.Rows.Add(row);
+            Rows.Add(row);
+        }
+
+        /// <summary>
+        /// Clones the structure of the FeatureDataTable, including all FeatureDataTable schemas and constraints. 
+        /// </summary>
+        /// <returns></returns>
+        public new FeatureDataTable<TOid> Clone()
+        {
+            FeatureDataTable<TOid> clone = ((FeatureDataTable<TOid>)(base.Clone()));
+            clone.IdColumn = clone.Columns[IdColumn.ColumnName];
+            return clone;
+        }
+
+        public FeatureDataRow<TOid> Find(TOid key)
+        {
+            return base.Find(key) as FeatureDataRow<TOid>;
         }
 
         /// <summary>
@@ -231,17 +251,6 @@ namespace SharpMap.Data
             {
                 yield return row;
             }
-        }
-
-        /// <summary>
-        /// Clones the structure of the FeatureDataTable, including all FeatureDataTable schemas and constraints. 
-        /// </summary>
-        /// <returns></returns>
-        public new FeatureDataTable<TOid> Clone()
-        {
-            FeatureDataTable<TOid> clone = ((FeatureDataTable<TOid>)(base.Clone()));
-            clone.IdColumn = clone.Columns[IdColumn.ColumnName];
-            return clone;
         }
 
         /// <summary>
@@ -261,16 +270,17 @@ namespace SharpMap.Data
         /// <param name="row">Row to remove</param>
         public void RemoveRow(FeatureDataRow<TOid> row)
         {
-            base.Rows.Remove(row);
+            Rows.Remove(row);
         }
         #endregion
 
         #region Overrides
 
         /// <summary>
-        /// 
+        /// Factory method to create a new instance of <see cref="FeatureDataTable{TOid}"/>
+        /// for parent class use.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A new instance of a <see cref="FeatureDataTable{TOid}"/>.</returns>
         protected override DataTable CreateInstance()
         {
             return new FeatureDataTable<TOid>();
@@ -287,10 +297,13 @@ namespace SharpMap.Data
         }
 
         /// <summary>
-        /// 
+        /// Gets the type of <see cref="DataRow"/> used by the 
+        /// <see cref="FeatureDataTable{TOid}"/>.
         /// </summary>
-        /// <returns></returns>
-        protected override System.Type GetRowType()
+        /// <returns>
+        /// Returns a <see cref="Type"/> object identifying <see cref="FeatureDataRow{TOid}"/>.
+        /// </returns>
+        protected override Type GetRowType()
         {
             return typeof(FeatureDataRow<TOid>);
         }

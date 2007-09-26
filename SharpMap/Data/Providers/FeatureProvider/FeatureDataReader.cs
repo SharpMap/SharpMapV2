@@ -43,7 +43,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             if (source == null) throw new ArgumentNullException("source");
 
-            if(options != QueryExecutionOptions.All)
+            if (options != QueryExecutionOptions.FullFeature)
             {
                 throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
             }

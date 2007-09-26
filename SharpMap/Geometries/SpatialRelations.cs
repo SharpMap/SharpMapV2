@@ -190,7 +190,7 @@ namespace SharpMap.Geometries
 		    if (g1 == null) throw new ArgumentNullException("g1");
 		    if (g2 == null) throw new ArgumentNullException("g2");
 
-            // HACK: fake spatial relation using BoundingBox instances. Shhh...
+#warning fake spatial relation using BoundingBox instances. Shhh...
 		    return g2.GetBoundingBox().Contains(g2.GetBoundingBox());
 		}
 	}

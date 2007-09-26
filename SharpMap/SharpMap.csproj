@@ -135,6 +135,7 @@
     <Compile Include="CoordinateSystems\Transformations\TransformType.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
+    <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
     <Compile Include="Data\IRasterLayerProvider.cs" />
     <Compile Include="Data\QueryExecutionOptions.cs" />
     <Compile Include="Data\RasterBand.cs" />
@@ -171,6 +172,7 @@
     </Compile>
     <Compile Include="Data\SpatialQueryType.cs" />
     <Compile Include="Geometries\BoundingBoxOperations.cs" />
+    <Compile Include="Geometries\FakeSpatialOperations.cs" />
     <Compile Include="Geometries\GeometryCollection`1.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />

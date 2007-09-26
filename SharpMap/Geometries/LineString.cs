@@ -211,7 +211,8 @@ namespace SharpMap.Geometries
 		/// <returns>Unioned geometry</returns>
 		public override Geometry Union(Geometry geom)
 		{
-			throw new NotImplementedException();
+#warning fake the union using a GeometryCollection
+		    return FakeSpatialOperations.Union(this, geom);
 		}
 
 		/// <summary>

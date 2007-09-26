@@ -262,9 +262,9 @@ namespace SharpMap.Data
         #region Public methods
 
         /// <summary>
-        /// Adds a row to the FeatureDataTable
+        /// Adds a feature row to the <see cref="FeatureDataTable"/>.
         /// </summary>
-        /// <param name="row"></param>
+        /// <param name="row">The <see cref="FeatureDataRow"/> to add.</param>
         public void AddRow(FeatureDataRow row)
         {
             base.Rows.Add(row);
@@ -274,22 +274,49 @@ namespace SharpMap.Data
         /// Clones the structure of the FeatureDataTable, 
         /// including all FeatureDataTable schemas and constraints. 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A <see cref="FeatureDataTable"/> with the same
+        /// schema and constraints.
+        /// </returns>
         public new FeatureDataTable Clone()
         {
             return base.Clone() as FeatureDataTable;
         }
 
+        /// <summary>
+        /// Clones the schema of the <see cref="FeatureDataTable"/>
+        /// to another FeatureDataTable instance.
+        /// </summary>
+        /// <param name="table">
+        /// <see cref="FeatureDataTable"/> to copy the schema to.
+        /// </param>
         public void CloneTo(FeatureDataTable table)
         {
             _cloneTo(this, table, null, false);
         }
 
+        /// <summary>
+        /// Finds a feature given its id.
+        /// </summary>
+        /// <param name="key">The feature object id.</param>
+        /// <returns>
+        /// The feature row identified by <paramref name="key"/>, or <see langword="null"/>
+        /// if the feature row is not found.
+        /// </returns>
         public FeatureDataRow Find(object key)
         {
             return Rows.Find(key) as FeatureDataRow;
         }
 
+        /// <summary>
+        /// Gets a copy of the <see cref="FeatureDataTable"/> that contains all 
+        /// changes made to it since it was loaded or <see cref="DataTable.AcceptChanges"/> 
+        /// was last called.
+        /// </summary>
+        /// <returns>
+        /// A copy of the changes from this <see cref="FeatureDataTable"/>, 
+        /// or <see langword="null"/> if no changes are found.
+        /// </returns>
         public new FeatureDataTable GetChanges()
         {
             FeatureDataTable changes = Clone();
@@ -298,6 +325,7 @@ namespace SharpMap.Data
             for (int i = 0; i < Rows.Count; i++)
             {
                 row = Rows[i] as FeatureDataRow;
+                Debug.Assert(row != null);
                 if (row.RowState != DataRowState.Unchanged)
                 {
                     changes.ImportRow(row);
@@ -324,6 +352,10 @@ namespace SharpMap.Data
             }
         }
 
+        /// <summary>
+        /// Imports a <see cref="FeatureDataRow"/> into the FeatureDataTable.
+        /// </summary>
+        /// <param name="featureRow">The feature row to import.</param>
         public void ImportRow(FeatureDataRow featureRow)
         {
             FeatureDataRow newRow = NewRow();
@@ -331,6 +363,21 @@ namespace SharpMap.Data
             AddRow(newRow);
         }
 
+        /// <summary>
+        /// Fills a <see cref="FeatureDataTable"/> with values from a data source 
+        /// using the supplied <see cref="IDataReader"/>. If the DataTable already 
+        /// contains rows, the incoming data from the data source is merged with the 
+        /// existing rows.
+        /// </summary>
+        /// <param name="reader">
+        /// <see cref="IDataReader"/> used as source of row data.
+        /// </param>
+        /// <param name="loadOption">
+        /// A <see cref="LoadOption"/> value to control how rows are imported.
+        /// </param>
+        /// <param name="errorHandler">
+        /// A callback method to get notification of errors in the load.
+        /// </param>
         public override void Load(IDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
         {
             if (!(reader is IFeatureDataReader))
@@ -341,6 +388,21 @@ namespace SharpMap.Data
             Load(reader as IFeatureDataReader, loadOption, errorHandler);
         }
 
+        /// <summary>
+        /// Fills a <see cref="FeatureDataTable"/> with values from a data source 
+        /// using the supplied <see cref="IFeatureDataReader"/>. If the DataTable already 
+        /// contains rows, the incoming data from the data source is merged with the 
+        /// existing rows.
+        /// </summary>
+        /// <param name="reader">
+        /// <see cref="IFeatureDataReader"/> used as source of feature row data.
+        /// </param>
+        /// <param name="loadOption">
+        /// A <see cref="LoadOption"/> value to control how rows are imported.
+        /// </param>
+        /// <param name="errorHandler">
+        /// A callback method to get notification of errors in the load.
+        /// </param>
         public void Load(IFeatureDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
         {
             if (reader == null) throw new ArgumentNullException("reader");
@@ -363,6 +425,33 @@ namespace SharpMap.Data
         }
 
         /// <summary>
+        /// Merges schema from the FeatureDataTable to a target FeatureDataTable,
+        /// adding columns and key information to the target.
+        /// </summary>
+        /// <param name="target">The target of the schema merge.</param>
+        /// <remarks>
+        /// Calls <see cref="MergeSchema(FeatureDataTable, SchemaMergeAction)"/>
+        /// with SchemaMergeAction.Add | SchemaMergeAction.Key.
+        /// </remarks>
+        public void MergeSchema(FeatureDataTable target)
+        {
+            MergeSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
+        }
+
+        /// <summary>
+        /// Merges schema from the FeatureDataTable to a target FeatureDataTable.
+        /// </summary>
+        /// <param name="target">The target of the schema merge.</param>
+        /// <param name="schemaMergeAction">
+        /// Option to specify how to merge the schemas.
+        /// </param>
+        public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
+        {
+            FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
+            merger.MergeSchema(this);
+        }
+
+        /// <summary>
         /// Creates a new FeatureDataRow with the same schema as the table.
         /// </summary>
         /// <returns></returns>
@@ -380,6 +469,17 @@ namespace SharpMap.Data
             base.Rows.Remove(row);
         }
 
+        /// <summary>
+        /// Selects a set of <see cref="FeatureDataRow"/> instances 
+        /// which intersect with the given <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds">
+        /// The <see cref="BoundingBox"/> to perform intersection testing with.
+        /// </param>
+        /// <returns>
+        /// The set of <see cref="FeatureDataRow"/>s which intersect 
+        /// <paramref name="bounds"/>.
+        /// </returns>
         public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
         {
             if (IsSpatiallyIndexed)
@@ -401,13 +501,27 @@ namespace SharpMap.Data
             }
         }
 
+        /// <summary>
+        /// Selects a set of <see cref="FeatureDataRow"/> instances 
+        /// which intersect with the given <paramref name="geometry"/>.
+        /// </summary>
+        /// <param name="geometry">
+        /// The <see cref="Geometry"/> to perform intersection testing with.
+        /// </param>
+        /// <returns>
+        /// The set of <see cref="FeatureDataRow"/>s which intersect 
+        /// <paramref name="geometry"/>.
+        /// </returns>
         public IEnumerable<FeatureDataRow> Select(Geometry geometry)
         {
             if (IsSpatiallyIndexed)
             {
                 foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
                 {
-                    yield return entry.Value;
+                    if (entry.Value.Geometry.Intersects(geometry))
+                    {
+                        yield return entry.Value;
+                    }
                 }
             }
             else
@@ -424,11 +538,14 @@ namespace SharpMap.Data
 
         #endregion
 
+        #region Protected virtual members
         protected virtual void OnConstraintsChanged(object sender, CollectionChangeEventArgs args)
         {
             if (args.Action == CollectionChangeAction.Add && args.Element is UniqueConstraint)
             {
                 UniqueConstraint constraint = args.Element as UniqueConstraint;
+
+                Debug.Assert(constraint != null);
 
                 // If more than one column is added to the primary key, throw
                 // an exception - we don't support it for now.
@@ -437,47 +554,24 @@ namespace SharpMap.Data
                     throw new NotSupportedException("Compound primary keys not supported.");
                 }
             }
-        }
+        } 
+        #endregion
 
-        internal Geometry CachedRegion
-        {
-            get { return _cachedRegion ?? Point.Empty; }
-        }
-
-        internal void RequestFeatures(Geometry missingRegion)
-        {
-            EventHandler<FeaturesRequestedEventArgs> e = FeaturesRequested;
-
-            if (e != null)
-            {
-                FeaturesRequestedEventArgs args = new FeaturesRequestedEventArgs(null, missingRegion);
-
-                e(this, args);
-            }
-        }
-
-        internal void RequestFeatures(IEnumerable missingOids)
-        {
-            EventHandler<FeaturesRequestedEventArgs> e = FeaturesRequested;
-
-            if (e != null)
-            {
-                FeaturesRequestedEventArgs args = new FeaturesRequestedEventArgs(missingOids, null);
-
-                e(this, args);
-            }
-        }
-
-        #region Protected overrides
-
+        #region DataTable overrides
+        /// <summary>
+        /// Clears the spatial index (if one exists) and calls 
+        /// <see cref="DataTable.OnTableCleared"/> to have the 
+        /// <see cref="DataTable.TableCleared"/> event raised.
+        /// </summary>
+        /// <param name="e">Event args identifying table being cleared.</param>
         protected override void OnTableCleared(DataTableClearEventArgs e)
         {
-            base.OnTableCleared(e);
-
             if (_rTreeIndex != null)
             {
                 _rTreeIndex.Clear();
             }
+
+            base.OnTableCleared(e);
         }
 
         /// <summary>
@@ -529,7 +623,7 @@ namespace SharpMap.Data
             switch (e.Action)
             {
                 case DataRowAction.Add:
-#warning: Does this never work, since r.Geometry isn't populated when rows are loaded?
+#warning: Does this ever not work, since r.Geometry isn't populated when rows are loaded?
                     if (r.Geometry != null)
                     {
                         if (_cachedRegion == null)
@@ -636,21 +730,9 @@ namespace SharpMap.Data
             get { return _getDefaultView(this); }
         }
 
-        internal void RowGeometryChanged(FeatureDataRow row)
+        internal Geometry CachedRegion
         {
-            row.BeginEdit();
-            row.EndEdit();
-        }
-
-        public void MergeSchema(FeatureDataTable target)
-        {
-            MergeSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
-        }
-
-        public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
-        {
-            FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
-            merger.MergeSchema(this);
+            get { return _cachedRegion ?? Point.Empty; }
         }
 
         internal void MergeFeature(IFeatureDataRecord record)
@@ -675,14 +757,44 @@ namespace SharpMap.Data
             merger.MergeFeatures(records);
         }
 
-        internal void SuspendIndexEvents()
+        internal void RequestFeatures(IEnumerable missingOids)
         {
-            _suspendIndexEvents(this);
+            EventHandler<FeaturesRequestedEventArgs> e = FeaturesRequested;
+
+            if (e != null)
+            {
+                FeaturesRequestedEventArgs args = new FeaturesRequestedEventArgs(missingOids, null);
+
+                e(this, args);
+            }
+        }
+
+        internal void RequestFeatures(Geometry missingRegion)
+        {
+            EventHandler<FeaturesRequestedEventArgs> e = FeaturesRequested;
+
+            if (e != null)
+            {
+                FeaturesRequestedEventArgs args = new FeaturesRequestedEventArgs(null, missingRegion);
+
+                e(this, args);
+            }
         }
 
         internal void RestoreIndexEvents(bool forceReset)
         {
             _restoreIndexEvents(this, forceReset);
+        }
+
+        internal void RowGeometryChanged(FeatureDataRow row)
+        {
+            row.BeginEdit();
+            row.EndEdit();
+        }
+
+        internal void SuspendIndexEvents()
+        {
+            _suspendIndexEvents(this);
         }
 
         #endregion
@@ -824,34 +936,5 @@ namespace SharpMap.Data
         }
 
         #endregion
-    }
-
-    [Serializable]
-    public class FeaturesRequestedEventArgs : EventArgs
-    {
-        private readonly Geometry _requestedRegion;
-        private readonly IEnumerable _requestedOids;
-        private readonly object _requestedExpression;
-
-        public FeaturesRequestedEventArgs(IEnumerable missingOids, Geometry missingRegion)
-        {
-            _requestedOids = missingOids;
-            _requestedRegion = missingRegion;
-        }
-
-        public IEnumerable RequestedOids
-        {
-            get { return _requestedOids; }
-        }
-
-        public Geometry RequestedRegion
-        {
-            get { return _requestedRegion; }
-        }
-
-        public Object RequestedExpression
-        {
-            get { return _requestedExpression; }
-        }
     }
 }

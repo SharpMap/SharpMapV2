@@ -41,7 +41,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		internal ShapeFileDataReader(ShapeFileProvider source, BoundingBox queryRegion, QueryExecutionOptions options)
 		{
-            if(options != QueryExecutionOptions.All)
+            if (options != QueryExecutionOptions.FullFeature)
             {
                 throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
             }
@@ -152,7 +152,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public bool IsFullyLoaded
         {
-            get { return _options == QueryExecutionOptions.All; }
+            get { return _options == QueryExecutionOptions.FullFeature; }
         }
 
         public Type OidType

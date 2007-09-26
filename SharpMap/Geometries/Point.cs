@@ -399,7 +399,7 @@ namespace SharpMap.Geometries
 		/// <returns>Geometry union.</returns>
 		public override Geometry Union(Geometry geometry)
 		{
-            // HACK: broken implementation awaiting for replacement with NTS in Beta 2
+#warning broken implementation awaiting for replacement with NTS in Beta 2
             if (IsEmpty())
             {
                 return geometry;

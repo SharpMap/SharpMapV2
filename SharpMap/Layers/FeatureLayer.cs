@@ -21,7 +21,6 @@ using System.Data;
 using System.Globalization;
 using SharpMap.Data;
 using SharpMap.Geometries;
-using SharpMap.Presentation.Views;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -125,44 +124,51 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets or sets a view of highlighted features, which
-        /// an <see cref="IAttributeView"/> or a map view 
-        /// can show as highlighted within the selected features shown.
-        /// </summary>
-        public FeatureDataView HighlightedFeatures
-        {
-            get { return _highlightedFeatures; }
-        }
-
-        public CultureInfo Locale
-        {
-            get { return DataSource.Locale; }
-        }
-
-        /// <summary>
-        /// Gets or sets a view of selected features, which 
-        /// an <see cref="IAttributeView"/>
-        /// can bind to in order to show selected feature 
-        /// attribute data, or for a map view to show the features
-        /// as selected.
-        /// </summary>
-        public FeatureDataView SelectedFeatures
-        {
-            get { return _selectedFeatures; }
-        }
-
-        /// <summary>
-        /// Gets the loaded feautres for this layer.
+        /// Gets a <see cref="FeatureDataTable"/> of cached features for the layer.
         /// </summary>
         public FeatureDataTable Features
         {
             get { return _features; }
         }
 
+        /// <summary>
+        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// highlighted.
+        /// </summary>
+        public FeatureDataView HighlightedFeatures
+        {
+            get { return _highlightedFeatures; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="CultureInfo"/> used to encode text
+        /// and format numbers for this layer.
+        /// </summary>
+        public CultureInfo Locale
+        {
+            get { return DataSource.Locale; }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// selected.
+        /// </summary>
+        public FeatureDataView SelectedFeatures
+        {
+            get { return _selectedFeatures; }
+        }
+
         #endregion
 
         #region Layer overrides
 
+        /// <summary>
+        /// Loads data from the <see cref="DataSource"/> which intersect
+        /// with the given <see cref="region"/>.
+        /// </summary>
+        /// <param name="region">
+        /// The bounds used to query the data source for intersecting features.
+        /// </param>
         protected override void LoadLayerDataForRegion(BoundingBox region)
         {
             if (!AsyncQuery)
@@ -180,6 +186,14 @@ namespace SharpMap.Layers
             base.LoadLayerDataForRegion(region);
         }
 
+        /// <summary>
+        /// Loads data from the <see cref="DataSource"/> which intersect
+        /// with the given <see cref="region"/>.
+        /// </summary>
+        /// <param name="region">
+        /// The geometry used to query the data source using 
+        /// <see cref="SpatialQueryType.Intersects"/>.
+        /// </param>
         protected override void LoadLayerDataForRegion(Geometry region)
         {
             if (!AsyncQuery)
