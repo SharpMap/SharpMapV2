@@ -33,35 +33,6 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Data
 {
-    [Serializable]
-    public class FeaturesRequestedEventArgs : EventArgs
-    {
-        private readonly Geometry _requestedRegion;
-        private readonly IEnumerable _requestedOids;
-        private readonly object _requestedExpression;
-
-        public FeaturesRequestedEventArgs(IEnumerable missingOids, Geometry missingRegion)
-        {
-            _requestedOids = missingOids;
-            _requestedRegion = missingRegion;
-        }
-
-        public IEnumerable RequestedOids
-        {
-            get { return _requestedOids; }
-        }
-
-        public Geometry RequestedRegion
-        {
-            get { return _requestedRegion; }
-        }
-
-        public Object RequestedExpression
-        {
-            get { return _requestedExpression; }
-        }
-    }
-
     /// <summary>
     /// Represents one feature table of in-memory spatial data. 
     /// </summary>
@@ -853,5 +824,34 @@ namespace SharpMap.Data
         }
 
         #endregion
+    }
+
+    [Serializable]
+    public class FeaturesRequestedEventArgs : EventArgs
+    {
+        private readonly Geometry _requestedRegion;
+        private readonly IEnumerable _requestedOids;
+        private readonly object _requestedExpression;
+
+        public FeaturesRequestedEventArgs(IEnumerable missingOids, Geometry missingRegion)
+        {
+            _requestedOids = missingOids;
+            _requestedRegion = missingRegion;
+        }
+
+        public IEnumerable RequestedOids
+        {
+            get { return _requestedOids; }
+        }
+
+        public Geometry RequestedRegion
+        {
+            get { return _requestedRegion; }
+        }
+
+        public Object RequestedExpression
+        {
+            get { return _requestedExpression; }
+        }
     }
 }

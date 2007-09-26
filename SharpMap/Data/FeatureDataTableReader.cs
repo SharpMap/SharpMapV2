@@ -36,7 +36,12 @@ namespace SharpMap.Data
             _table = table;
         }
 
-        #region IFeatureDataReader Members
+        #region IFeatureDataRecord Members
+
+        public Geometry Geometry
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         public object GetOid()
         {
@@ -46,6 +51,16 @@ namespace SharpMap.Data
         public bool HasOid
         {
             get { throw new NotImplementedException(); }
+        }
+
+        public Type OidType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsFullyLoaded
+        {
+            get { return true; }
         }
 
         #endregion
@@ -221,24 +236,6 @@ namespace SharpMap.Data
         }
 
         public object this[int i]
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IFeatureDataRecord Members
-
-        public Geometry Geometry
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IFeatureDataRecord Members
-
-        public Type OidType
         {
             get { throw new NotImplementedException(); }
         }

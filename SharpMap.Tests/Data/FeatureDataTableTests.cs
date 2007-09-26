@@ -4,7 +4,7 @@ using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 
-namespace SharpMap.Tests.Features
+namespace SharpMap.Tests.Data
 {
     [TestFixture]
     public class FeatureDataTableTests

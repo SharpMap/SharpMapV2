@@ -92,6 +92,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 			OnDisposed();
 		}
 
+        /// <summary>
+        /// Gets a value indicating whether the ShapeFileDataReader has been disposed or not.
+        /// </summary>
 		public bool IsDisposed
 		{
 			get { return _isDisposed; }
@@ -131,9 +134,6 @@ namespace SharpMap.Data.Providers.ShapeFile
 				}
 			}
 		}
-		#endregion
-
-		#region IFeatureDataReader Members
 
 		public object GetOid()
 		{
@@ -149,6 +149,16 @@ namespace SharpMap.Data.Providers.ShapeFile
 				return true;
 			}
 		}
+
+        public bool IsFullyLoaded
+        {
+            get { return _options == QueryExecutionOptions.All; }
+        }
+
+        public Type OidType
+        {
+            get { return typeof(UInt32); }
+        }
 
 		#endregion
 
@@ -436,14 +446,6 @@ namespace SharpMap.Data.Providers.ShapeFile
 			{
 				throw new InvalidOperationException("The Read method must be called before accessing values.");
 			}
-		}
-
-		#endregion
-
-		#region IFeatureDataRecord Members
-		public Type OidType
-		{
-			get { return typeof(UInt32); }
 		}
 
 		#endregion

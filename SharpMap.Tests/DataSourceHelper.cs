@@ -48,7 +48,7 @@ namespace SharpMap.Tests
 			DataColumn nameColumn = new DataColumn("FeatureName", typeof (string));
 			FeatureProvider provider = new FeatureProvider(nameColumn);
 
-			FeatureDataTable<Guid> features = new FeatureDataTable<Guid>("oid");
+			FeatureDataTable<Guid> features = new FeatureDataTable<Guid>("Oid");
 			features.Columns.Add("FeatureName", typeof (string));
 			FeatureDataRow<Guid> row;
 

@@ -142,10 +142,14 @@ namespace SharpMap.Data
             }
         }
 
-        internal bool IsFullyLoaded
+        /// <summary>
+        /// Gets a value indicating whether this feature record
+        /// has been fully loaded from the data source.
+        /// </summary>
+        public bool IsFullyLoaded
         {
             get { return _isFullyLoaded; }
-            set { _isFullyLoaded = value; }
+            internal set { _isFullyLoaded = value; }
         }
 
         /// <summary>

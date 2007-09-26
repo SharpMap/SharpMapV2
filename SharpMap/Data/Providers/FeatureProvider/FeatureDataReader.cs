@@ -111,10 +111,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 				checkReadState();
 				return _table[_currentRow].Geometry.Clone();
 			}
-		}
-		#endregion
-
-        #region IFeatureDataReader Members
+        }
 
         public object GetOid()
         {
@@ -132,7 +129,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
         }
 
-        #endregion
+        public bool IsFullyLoaded
+        {
+            get { return true; }
+        }
+		#endregion
 
         #region IDataReader Members
 

@@ -79,14 +79,8 @@ namespace SharpMap.Data
         #region Object constructors
 
         public FeatureDataView(FeatureDataTable table)
-            : base(table)
+            : this(table, null, null, DataViewRowState.CurrentRows)
         {
-            // This call rebuilds the index which was just built with 
-            // the call into the base constructor, which may be a performance
-            // hit. A more robust solution would be to just recreate the 
-            // behavior of the base constructor here, so we can create the 
-            // underlying index once.
-            setFilterPredicate();
         }
 
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
@@ -97,7 +91,7 @@ namespace SharpMap.Data
 
         public FeatureDataView(FeatureDataTable table, Geometry query, SpatialQueryType queryType,
                                string sort, DataViewRowState rowState)
-            : base(table, "", sort, rowState)
+            : base(table, "", String.IsNullOrEmpty(sort) ? table.PrimaryKey.Length == 1 ? table.PrimaryKey[0].ColumnName : "" : sort, rowState)
         {
             // TODO: Support all query types in FeatureDataView
             if (queryType != SpatialQueryType.Intersects)
@@ -133,14 +127,6 @@ namespace SharpMap.Data
         }
 
         #endregion
-
-        /// <summary>
-        /// Gets the DataViewManager which is managing this view's settings.
-        /// </summary>
-        public new FeatureDataViewManager DataViewManager
-        {
-            get { return base.DataViewManager as FeatureDataViewManager; }
-        }
 
         /// <summary>
         /// Gets or sets the <see cref="Geometry"/> instance used
@@ -202,17 +188,13 @@ namespace SharpMap.Data
                         onMissingOids(missingOids);
                     }
                 }
+
+                Reset();
             }
         }
 
-        public new FeatureDataTable Table
-        {
-            get { return base.Table as FeatureDataTable; }
-            set { base.Table = value; }
-        }
-
         /// <summary>
-        /// Gets or sets the bounds which this view covers as a <see cref="BoundingBox"/>.
+        /// Gets the bounds which this view covers as a <see cref="BoundingBox"/>.
         /// </summary>
         public BoundingBox Extents
         {
@@ -225,21 +207,29 @@ namespace SharpMap.Data
 
                 return _queryGeometry.GetBoundingBox();
             }
-            set
-            {
-                if (value == BoundingBox.Empty)
-                {
-                    GeometryFilter = null;
-                }
+            //set
+            //{
+            //    if (value == BoundingBox.Empty)
+            //    {
+            //        GeometryFilter = null;
+            //    }
 
-                GeometryFilter = value.ToGeometry();
-            }
+            //    GeometryFilter = value.ToGeometry();
+            //}
         }
 
-        #region DataView overrides
+        #region DataView overrides and shadows
         public override DataRowView AddNew()
         {
             throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Gets the DataViewManager which is managing this view's settings.
+        /// </summary>
+        public new FeatureDataViewManager DataViewManager
+        {
+            get { return base.DataViewManager as FeatureDataViewManager; }
         }
 
         public override string RowFilter
@@ -255,8 +245,20 @@ namespace SharpMap.Data
             }
         }
 
-        // UNDONE: Please don't optimize the following apparently useless overrides out, 
+        public new FeatureDataTable Table
+        {
+            get { return base.Table as FeatureDataTable; }
+            set { base.Table = value; }
+        }
+
+        // TODO: Please don't optimize the following apparently useless overrides out, 
         // I need to figure out what to do with them [ck]
+
+        protected override void ColumnCollectionChanged(object sender, CollectionChangeEventArgs e)
+        {
+            base.ColumnCollectionChanged(sender, e);
+        }
+
         protected override void IndexListChanged(object sender, ListChangedEventArgs e)
         {
             base.IndexListChanged(sender, e);
@@ -267,15 +269,11 @@ namespace SharpMap.Data
             base.OnListChanged(e);
         }
 
-        protected override void ColumnCollectionChanged(object sender, CollectionChangeEventArgs e)
-        {
-            base.ColumnCollectionChanged(sender, e);
-        }
-
         protected override void UpdateIndex(bool force)
         {
             base.UpdateIndex(force);
         }
+
         #endregion
 
         #region IEnumerable<FeatureDataRow> Members

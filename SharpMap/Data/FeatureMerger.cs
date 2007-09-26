@@ -218,10 +218,12 @@ namespace SharpMap.Data
             }
 
             targetFeature.Geometry = srcFeature.Geometry;
+
+            targetFeature.IsFullyLoaded = targetFeature.IsFullyLoaded || srcFeature.IsFullyLoaded;
         }
 
         #region Private helper methods
-        private object createInnerMerger(DataTable target, bool preserveChanges, SchemaMergeAction schemaMergeAction)
+        private static object createInnerMerger(DataTable target, bool preserveChanges, SchemaMergeAction schemaMergeAction)
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 

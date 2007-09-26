@@ -72,18 +72,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         #endregion
 		#endregion
 
-		#region IFeatureDataRecord Members
-		public Geometry Geometry
-		{
-			get
-			{
-				checkState();
-				return _provider.Geometries[_currentIndex].Clone();
-			}
-		}
-		#endregion
-
-        #region IFeatureDataReader Members
+        #region IFeatureDataRecord Members
 
         public object GetOid()
         {
@@ -95,11 +84,25 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             get
             {
-                checkState(); 
+                checkState();
                 return true;
             }
         }
-        #endregion
+		
+        public Geometry Geometry
+		{
+			get
+			{
+				checkState();
+				return _provider.Geometries[_currentIndex].Clone();
+			}
+		}
+
+        public bool IsFullyLoaded
+        {
+            get { return true; }
+        }
+		#endregion
 
         #region IDataReader Members
 
@@ -267,16 +270,16 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             checkState();
             checkIndex(i);
-            return "oid";
+            return "Oid";
         }
 
         public int GetOrdinal(string name)
         {
             checkState();
 
-            if (String.Compare(name, "oid", StringComparison.InvariantCultureIgnoreCase) != 0)
+            if (String.Compare(name, "Oid", StringComparison.InvariantCultureIgnoreCase) != 0)
             {
-                throw new ArgumentException("Column name must be 'oid'; it was: " + name, "name");
+                throw new ArgumentException("Column name must be 'Oid'; it was: " + name, "name");
             }
 
             return 0;
