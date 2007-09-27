@@ -291,7 +291,6 @@ namespace SharpMap.Rendering.Rendering2D
 			StylePen highlightFill, StylePen selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
 		{
             if (fill == null) throw new ArgumentNullException("fill");
-            if (outline == null) throw new ArgumentNullException("outline");
 
 		    IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(lines);
 
@@ -300,15 +299,10 @@ namespace SharpMap.Rendering.Rendering2D
 		    if (highlightOutline == null) highlightOutline = outline;
             if (selectOutline == null) selectOutline = outline;
 
-            if (outline != null)
-            {
-                foreach (TRenderObject ro in VectorRenderer.RenderPaths(paths, outline, highlightOutline, selectOutline))
-                {
-                    yield return ro;
-                }
-            }
+		    IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(paths, 
+                fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
 
-		    foreach (TRenderObject ro in VectorRenderer.RenderPaths(paths, fill, highlightFill, selectFill))
+            foreach (TRenderObject ro in renderedObjects)
             {
                 yield return ro;
             }

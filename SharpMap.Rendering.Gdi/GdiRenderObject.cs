@@ -39,6 +39,15 @@ namespace SharpMap.Rendering.Gdi
         /// <param name="selectFill">
         /// The brush used to fill the path when the state is <see cref="GdiRenderObjectState.Selected"/>.
         /// </param>
+        /// <param name="line">
+        /// The pen used to draw a line when the state is <see cref="GdiRenderObjectState.Normal"/>.
+        /// </param>
+        /// <param name="highlightLine">
+        /// The pen used to draw a line when the state is <see cref="GdiRenderObjectState.Hover"/>.
+        /// </param>
+        /// <param name="selectLine">
+        /// The pen used to draw a line when the state is <see cref="GdiRenderObjectState.Selected"/>.
+        /// </param>
         /// <param name="outline">
         /// The pen used to outline the path when the state is <see cref="GdiRenderObjectState.Normal"/>.
         /// </param>
@@ -48,8 +57,9 @@ namespace SharpMap.Rendering.Gdi
         /// <param name="selectOutline">
         /// The pen used to outline the path when the state is <see cref="GdiRenderObjectState.Selected"/>.
         /// </param>
-        public GdiRenderObject(GraphicsPath path, Brush fill, Brush highlightFill, Brush selectFill, Pen outline,
-                               Pen highlightOutline, Pen selectOutline)
+        public GdiRenderObject(GraphicsPath path, Brush fill, Brush highlightFill, Brush selectFill, 
+            Pen line, Pen highlightLine, Pen selectLine,
+            Pen outline, Pen highlightOutline, Pen selectOutline)
         {
             Type = GdiRenderObjectType.Path;
             _state = GdiRenderObjectState.Normal;
@@ -57,11 +67,15 @@ namespace SharpMap.Rendering.Gdi
             Fill = fill;
             HighlightFill = highlightFill;
             SelectFill = selectFill;
+            Line = line;
+            HightlightLine = highlightLine;
+            SelectLine = selectLine;
             Outline = outline;
             HightlightOutline = highlightOutline;
             SelectOutline = selectOutline;
 
-            Symbol = null;
+            Image = null;
+            ImageBounds = RectangleF.Empty;
             AffineTransform = null;
             ColorTransform = null;
         }
@@ -69,14 +83,16 @@ namespace SharpMap.Rendering.Gdi
         /// <summary>
         /// Creates a new GdiRenderObject instance.
         /// </summary>
-        /// <param name="symbol">The symbol to draw.</param>
+        /// <param name="image">The symbol to draw.</param>
+        /// <param name="imageBounds">The location and size to draw the symbol.</param>
         /// <param name="transform">The affine transform applied to the symbol before drawing.</param>
         /// <param name="colorTransform">The color transform applied to the symbol before drawing.</param>
-        public GdiRenderObject(Bitmap symbol, Matrix transform, GdiColorMatrix colorTransform)
+        public GdiRenderObject(Bitmap image, RectangleF imageBounds, Matrix transform, GdiColorMatrix colorTransform)
         {
             Type = GdiRenderObjectType.Symbol;
             _state = GdiRenderObjectState.Normal;
-            Symbol = symbol;
+            Image = image;
+            ImageBounds = imageBounds;
             AffineTransform = transform;
             ColorTransform = colorTransform;
 
@@ -84,6 +100,9 @@ namespace SharpMap.Rendering.Gdi
             Fill = null;
             HighlightFill = null;
             SelectFill = null;
+            Line = null;
+            HightlightLine = null;
+            SelectLine = null;
             Outline = null;
             HightlightOutline = null;
             SelectOutline = null;
@@ -99,7 +118,12 @@ namespace SharpMap.Rendering.Gdi
         /// <summary>
         /// The symbol to draw when <see cref="Type"/> is <see cref="GdiRenderObjectType.Symbol"/>
         /// </summary>
-        public readonly Bitmap Symbol;
+        public readonly Bitmap Image;
+
+        /// <summary>
+        /// The location and size of the symbol.
+        /// </summary>
+        public readonly RectangleF ImageBounds;
 
         /// <summary>
         /// The affine transform applied to the symbol before drawing.
@@ -133,6 +157,24 @@ namespace SharpMap.Rendering.Gdi
         /// <see cref="GdiRenderObjectState.Selected"/>.
         /// </summary>
         public readonly Brush SelectFill;
+
+        /// <summary>
+        /// The pen used to draw a line when the state is 
+        /// <see cref="GdiRenderObjectState.Normal"/>.
+        /// </summary>
+        public readonly Pen Line;
+
+        /// <summary>
+        /// The pen used to draw a line when the state is 
+        /// <see cref="GdiRenderObjectState.Hover"/>.
+        /// </summary>
+        public readonly Pen HightlightLine;
+
+        /// <summary>
+        /// The pen used to draw a line when the state is 
+        /// <see cref="GdiRenderObjectState.Selected"/>.
+        /// </summary>
+        public readonly Pen SelectLine;
 
         /// <summary>
         /// The pen used to outline the path when the state is 

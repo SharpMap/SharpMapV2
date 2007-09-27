@@ -21,7 +21,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using SharpMap.Geometries;
 using SharpMap.Presentation.Views;
@@ -44,12 +46,8 @@ namespace SharpMap.Presentation.WinForms
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
         private readonly double _dpi = 96;
-        private bool _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
-        private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
-        private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
-        private readonly Queue<GdiRenderObject> _pathQueue = new Queue<GdiRenderObject>();
-        private Queue<KeyValuePair<PointF, Image>> _tilesQueue = new Queue<KeyValuePair<PointF, Image>>();
+        private readonly Queue<GdiRenderObject> _renderObjectQueue = new Queue<GdiRenderObject>();
         private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
         private List<MapTool> _tools;
         private MapPresenter _presenter;
@@ -285,17 +283,33 @@ namespace SharpMap.Presentation.WinForms
             onRequestOffset(offsetVector);
         }
 
+        /// <summary>
+        /// Draws the rendered object to the view.
+        /// </summary>
+        /// <param name="renderedObjects">The rendered objects to draw.</param>
         public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
         {
             if (renderedObjects == null) throw new ArgumentNullException("renderedObjects");
 
+            RectangleF invalidBounds = GdiRectangle.Empty;
+            GdiMatrix transform = getGdiViewTransform();
+
             foreach (GdiRenderObject ro in renderedObjects)
             {
-                if (ro.Type == GdiRenderObjectType.Path)
-                {
-                    _pathQueue.Enqueue(ro);
-                }
+                invalidBounds = invalidBounds.IsEmpty
+                    ? ro.Type == GdiRenderObjectType.Path 
+                        ? ro.GdiPath.GetBounds(transform)
+                        : ro.ImageBounds
+                    : RectangleF.Union(
+                        ro.Type == GdiRenderObjectType.Path 
+                            ? ro.GdiPath.GetBounds(transform)
+                            : ro.ImageBounds, 
+                        invalidBounds);
+
+                _renderObjectQueue.Enqueue(ro);
             }
+
+            Invalidate(GdiRectangle.Ceiling(invalidBounds));
         }
 
         void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
@@ -405,47 +419,6 @@ namespace SharpMap.Presentation.WinForms
             base.OnMouseDown(e);
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (!_dragging && _mouseDownLocation != GdiPoint.Empty && e.Button == MouseButtons.Left)
-            {
-                _mouseRelativeLocation = new GdiPoint(e.X - _mouseDownLocation.X, e.Y - _mouseDownLocation.Y);
-
-                if (!withinDragTolerance(e.Location))
-                {
-                    _dragging = true;
-                    _mousePreviousLocation = _mouseDownLocation;
-                }
-            }
-
-            if (_dragging)
-            {
-                onMoveTo(ViewConverter.Convert(e.Location));
-                _mousePreviousLocation = e.Location;
-            }
-
-            base.OnMouseMove(e);
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                onEndAction(ViewConverter.Convert(e.Location));
-            }
-
-            _mouseDownLocation = GdiPoint.Empty;
-
-            if (_dragging)
-            {
-                _dragging = false;
-                _mouseRelativeLocation = GdiPoint.Empty;
-                _mousePreviousLocation = GdiPoint.Empty;
-            }
-
-            base.OnMouseUp(e);
-        }
-
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             MapTool currentTool = SelectedTool;
@@ -475,12 +448,45 @@ namespace SharpMap.Presentation.WinForms
             g.Transform = getGdiViewTransform();
             g.Clear(BackColor);
 
-            foreach (GdiRenderObject ro in _pathQueue)
+            while(_renderObjectQueue.Count > 0)
             {
-                g.DrawPath(Pens.Black, ro.GdiPath);
+                GdiRenderObject ro = _renderObjectQueue.Dequeue();
+                if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
+                if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                if (ro.Image != null)
+                {
+                    ImageAttributes imageAttributes = null;
+
+                    if(ro.ColorTransform != null)
+                    {
+                        imageAttributes = new ImageAttributes();
+                        imageAttributes.SetColorMatrix(ro.ColorTransform);
+                    }
+
+                    if (imageAttributes != null)
+                    {
+                        g.DrawImage(ro.Image, getPoints(ro.ImageBounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel, imageAttributes);
+                    }
+                }
             }
 
             g.ResetTransform();
+        }
+
+        private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
+
+        private PointF[] getPoints(RectangleF bounds)
+        {
+            PointF location = bounds.Location;
+            _symbolTargetPointsTransfer[0] = location;
+            _symbolTargetPointsTransfer[1] = new PointF(location.X + bounds.Width, location.Y);
+            _symbolTargetPointsTransfer[2] = new PointF(location.X, location.Y + bounds.Height);
+            return _symbolTargetPointsTransfer;
+        }
+
+        private static Rectangle getSourceRegion(Image bitmap)
+        {
+            return new GdiRectangle(new GdiPoint(0, 0), bitmap.Size);
         }
 
         #endregion
@@ -711,23 +717,21 @@ namespace SharpMap.Presentation.WinForms
             Matrix2D viewMatrix = ToViewTransform ?? new Matrix2D();
             float[] gdiElements = _gdiViewMatrix.Elements;
 
-            if (gdiElements[0] != viewMatrix.M11
-                || gdiElements[1] != viewMatrix.M12
-                || gdiElements[2] != viewMatrix.M21
-                || gdiElements[3] != viewMatrix.M22
-                || gdiElements[4] != viewMatrix.OffsetX
-                || gdiElements[5] != viewMatrix.OffsetY)
+            if (gdiElements[0] != (float)viewMatrix.M11
+                || gdiElements[1] != (float)viewMatrix.M12
+                || gdiElements[2] != (float)viewMatrix.M21
+                || gdiElements[3] != (float)viewMatrix.M22
+                || gdiElements[4] != (float)viewMatrix.OffsetX
+                || gdiElements[5] != (float)viewMatrix.OffsetY)
             {
+                Debug.WriteLine(String.Format("Disposing GDI matrix on values: {0} != {1}; {2} != {3}; {4} != {5}; {6} != {7}; {8} != {9}; {10} != {11}",
+                    gdiElements[0], (float)viewMatrix.M11, gdiElements[1], (float)viewMatrix.M12, gdiElements[2], (float)viewMatrix.M21,
+                    gdiElements[3], (float)viewMatrix.M22, gdiElements[4], (float)viewMatrix.OffsetX, gdiElements[5], (float)viewMatrix.OffsetY));
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
             }
 
             return _gdiViewMatrix;
-        }
-
-        private bool withinDragTolerance(GdiPoint point)
-        {
-            return Math.Abs(_mouseDownLocation.X - point.X) <= 3 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
         }
 
         private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)

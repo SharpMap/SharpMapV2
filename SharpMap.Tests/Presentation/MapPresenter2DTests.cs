@@ -69,6 +69,11 @@ namespace SharpMap.Tests.Presentation
             {
                 throw new NotImplementedException();
             }
+
+            public override IEnumerable<object> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
         } 
         #endregion
         
@@ -250,6 +255,11 @@ namespace SharpMap.Tests.Presentation
 
             protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
             {
+            }
+
+            protected override void RenderPath(GraphicsPath2D path)
+            {
+                throw new Exception("The method or operation is not implemented.");
             }
         }
 

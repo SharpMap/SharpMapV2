@@ -57,7 +57,8 @@ namespace SharpMap.Presentation.WinForms
 
             foreach (FeatureDataRow feature in ((IEnumerable<FeatureDataRow>)visibleFeatures))
             {
-                View.ShowRenderedObjects(renderer.RenderFeature(feature));
+                Debug.Assert(layer.Style is VectorStyle);
+                ViewControl.ShowRenderedObjects(renderer.RenderFeature(feature, layer.Style as VectorStyle));
             }
         }
 

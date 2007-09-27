@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Threading;
 using SharpMap.Data;
 using SharpMap.Geometries;
@@ -587,6 +588,7 @@ namespace SharpMap.Presentation.Presenters
                     if (Map.Layers[e.NewIndex] is IFeatureLayer)
 	                {
 	                    IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
+	                    Debug.Assert(layer != null);
 	                    BoundingBox viewEnvelope = View.ViewEnvelope;
 	                    _featureLayerDataViews[layer] =
                             new FeatureDataView(layer.Features, viewEnvelope.ToGeometry(),
@@ -803,12 +805,6 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Private helper methods
-
-        private void modifySelection(double xDelta, double yDelta)
-        {
-            SelectionInternal.Expand(new Size2D(xDelta, yDelta));
-        }
-
         private void createRenderers()
         {
             Type renderObjectType = GetRenderObjectType();

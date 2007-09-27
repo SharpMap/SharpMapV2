@@ -103,8 +103,8 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Draws the rendered object to the view.
         /// </summary>
-        /// <param name="renderedObject">The rendered objects to draw.</param>
-        void ShowRenderedObjects(IEnumerable renderedObject);
+        /// <param name="renderedObjects">The rendered objects to draw.</param>
+        void ShowRenderedObjects(IEnumerable renderedObjects);
 		
         /// <summary>
         /// Gets a <see cref="Matrix2D"/> used to project the world

@@ -23,24 +23,24 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-	/// <summary>
-	/// Provides a base class for generating rendered objects from vector shapes.
-	/// </summary>
-	/// <remarks>
-	/// This class is used to create a new IVectorRender2D for various graphics systems.
-	/// </remarks>
-	/// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
-	public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
-	{
-		#region Instance fields
+    /// <summary>
+    /// Provides a base class for generating rendered objects from vector shapes.
+    /// </summary>
+    /// <remarks>
+    /// This class is used to create a new IVectorRender2D for various graphics systems.
+    /// </remarks>
+    /// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
+    public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
+    {
+        #region Instance fields
 
-		private Matrix2D _viewMatrix = new Matrix2D();
-		private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
-		private bool _isDisposed = false;
+        private Matrix2D _viewMatrix = new Matrix2D();
+        private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
+        private bool _isDisposed = false;
 
-		#endregion
+        #endregion
 
-		#region Object construction and disposal
+        #region Object construction and disposal
 
         #region Dispose Pattern
 
@@ -49,98 +49,110 @@ namespace SharpMap.Rendering.Rendering2D
             Dispose(false);
         }
 
-		#region IDisposable Members
+        #region IDisposable Members
 
-		public void Dispose()
-		{
-			if (IsDisposed)
-			{
+        public void Dispose()
+        {
+            if (IsDisposed)
+            {
                 return;
             }
 
             Dispose(true);
             IsDisposed = true;
             GC.SuppressFinalize(this);
-		}
+        }
 
-		#endregion
+        #endregion
 
-		protected virtual void Dispose(bool disposing)
-		{
-		}
+        protected virtual void Dispose(bool disposing)
+        {
+        }
 
-		protected bool IsDisposed
-		{
-			get { return _isDisposed; }
-			private set { _isDisposed = value; }
-		}
+        protected bool IsDisposed
+        {
+            get { return _isDisposed; }
+            private set { _isDisposed = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
         #region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
+
         /// <summary>
         /// Gets or sets a matrix used to transform 
         /// coordinate values during rendering.
         /// </summary>
-		public Matrix2D RenderTransform
-		{
-			get { return _viewMatrix; }
-			set { _viewMatrix = value; }
-		}
+        public Matrix2D RenderTransform
+        {
+            get { return _viewMatrix; }
+            set { _viewMatrix = value; }
+        }
 
         /// <summary>
         /// Gets or sets a <see cref="StyleRenderingMode"/> 
         /// value used to render objects.
         /// </summary>
-		public StyleRenderingMode StyleRenderingMode
-		{
-			get { return _renderMode; }
-			set { _renderMode = value; }
-		}
+        public StyleRenderingMode StyleRenderingMode
+        {
+            get { return _renderMode; }
+            set { _renderMode = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IFeatureLayerRenderer Members
+        #region IVectorRenderer2D Members
 
-		public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline, StylePen highlightOutline,
-		                                         StylePen selectOutline);
+        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+                                                               StylePen line, StylePen highlightLine,
+                                                               StylePen selectLine,
+                                                               StylePen outline, StylePen highlightOutline,
+                                                               StylePen selectOutline);
 
-		public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
-		                                         StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
-		                                         StylePen selectOutline);
+        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
+                                                               StylePen highlightOutline,
+                                                               StylePen selectOutline);
 
-		public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData);
+        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill,
+                                                               StyleBrush highlightFill,
+                                                               StyleBrush selectFill, StylePen outline,
+                                                               StylePen highlightOutline,
+                                                               StylePen selectOutline);
 
-		public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, ColorMatrix highlight,
-		                                           ColorMatrix select);
+        public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData);
 
-		public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, Symbol2D highlightSymbolData,
-		                                           Symbol2D selectSymbolData);
+        public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                                 ColorMatrix highlight,
+                                                                 ColorMatrix select);
 
-		#endregion
+        public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                                 Symbol2D highlightSymbolData,
+                                                                 Symbol2D selectSymbolData);
 
-		#region Explicit Interface Implementation
+        #endregion
 
-		#region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
+        #region Explicit Interface Implementation
 
-		IMatrixD IRenderer.RenderTransform
-		{
-			get { return RenderTransform; }
-			set
-			{
-				if (!(value is Matrix2D))
-				{
+        #region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
+
+        IMatrixD IRenderer.RenderTransform
+        {
+            get { return RenderTransform; }
+            set
+            {
+                if (!(value is Matrix2D))
+                {
                     throw new NotSupportedException("Only a Matrix2D is supported on a FeatureRenderer2D.");
-				}
+                }
 
-				RenderTransform = value as Matrix2D;
-			}
-		}
+                RenderTransform = value as Matrix2D;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#endregion
-	}
+        #endregion
+    }
 }

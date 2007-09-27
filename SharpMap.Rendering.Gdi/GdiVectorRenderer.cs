@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -43,17 +42,20 @@ namespace SharpMap.Rendering.Gdi
 {
     /// <summary>
     /// A <see cref="VectorRenderer2D{TRenderObject}"/> 
-    /// which renders to GDI primatives.
+    /// which renders to GDI+ (System.Drawing) primatives.
     /// </summary>
     public class GdiVectorRenderer : VectorRenderer2D<GdiRenderObject>
     {
         #region Instance fields
-        private readonly Dictionary<BrushLookupKey, GdiBrush> _brushCache = new Dictionary<BrushLookupKey, Brush>();
+
+        private readonly Dictionary<BrushLookupKey, GdiBrush> _brushCache = new Dictionary<BrushLookupKey, GdiBrush>();
         private readonly Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
         private readonly Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
+
         #endregion
 
         #region Dispose override
+
         protected override void Dispose(bool disposing)
         {
             if (IsDisposed)
@@ -81,44 +83,54 @@ namespace SharpMap.Rendering.Gdi
 
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Render overrides
+
         public override IEnumerable<GdiRenderObject> RenderPaths(
             IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
             StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
         {
             foreach (GraphicsPath2D path in paths)
             {
-                GdiGraphicsPath gdiPath = new GdiGraphicsPath(FillMode.Winding);
-
-                foreach (GraphicsFigure2D figure in path.Figures)
-                {
-                    gdiPath.StartFigure();
-
-                    gdiPath.AddLines(ViewConverter.Convert(figure.Points));
-
-                    if (figure.IsClosed)
-                    {
-                        gdiPath.CloseFigure();
-                    }
-                }
+                GdiGraphicsPath gdiPath = ViewConverter.Convert(path);
 
                 GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill),
-                                                             getBrush(selectFill), getPen(outline), getPen(highlightOutline),
+                                                             getBrush(selectFill), null, null, null,
+                                                             getPen(outline), getPen(highlightOutline),
                                                              getPen(selectOutline));
 
                 yield return holder;
             }
         }
 
+        public override IEnumerable<GdiRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+                                                                 StylePen line, StylePen highlightLine,
+                                                                 StylePen selectLine,
+                                                                 StylePen outline, StylePen highlightOutline,
+                                                                 StylePen selectOutline)
+        {
+            foreach (GraphicsPath2D path in paths)
+            {
+                GdiGraphicsPath gdiPath = ViewConverter.Convert(path);
+
+                GdiRenderObject holder =
+                    new GdiRenderObject(gdiPath, null, null, null, getPen(line), getPen(highlightLine),
+                                        getPen(selectLine), getPen(outline), getPen(highlightOutline),
+                                        getPen(selectOutline));
+
+                yield return holder;
+            }
+        }
+
         public override IEnumerable<GdiRenderObject> RenderPaths(
-            IEnumerable<GraphicsPath2D> path, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            IEnumerable<GraphicsPath2D> paths, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
         {
             SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
 
-            return RenderPaths(path, transparentBrush, transparentBrush,
-                transparentBrush, outline, highlightOutline, selectOutline);
+            return RenderPaths(paths, transparentBrush, transparentBrush,
+                               transparentBrush, outline, highlightOutline, selectOutline);
         }
 
         public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData)
@@ -127,20 +139,20 @@ namespace SharpMap.Rendering.Gdi
         }
 
         public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-																			   StyleColorMatrix highlight,
-																			   StyleColorMatrix select)
+                                                                   StyleColorMatrix highlight,
+                                                                   StyleColorMatrix select)
         {
-            Symbol2D highlightSymbol = (Symbol2D)symbolData.Clone();
+            Symbol2D highlightSymbol = (Symbol2D) symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
 
-            Symbol2D selectSymbol = (Symbol2D)symbolData.Clone();
+            Symbol2D selectSymbol = (Symbol2D) symbolData.Clone();
             selectSymbol.ColorTransform = select;
 
             return RenderSymbols(locations, symbolData, highlightSymbol, selectSymbol);
         }
 
         public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbol,
-																			   Symbol2D highlightSymbol, Symbol2D selectSymbol)
+                                                                   Symbol2D highlightSymbol, Symbol2D selectSymbol)
         {
             if (highlightSymbol == null)
             {
@@ -156,38 +168,12 @@ namespace SharpMap.Rendering.Gdi
             {
                 Bitmap bitmapSymbol = getSymbol(symbol);
                 GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
-                transform.Translate((float)location.X, (float)location.Y);
                 GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
-                GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, transform, colorTransform);
+                //transform.Translate((float)location.X, (float)location.Y);
+                RectangleF bounds = new RectangleF(ViewConverter.Convert(location), bitmapSymbol.Size);
+                GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, bounds, transform, colorTransform);
                 yield return holder;
             }
-
-            //if (symbolRotation != 0 && symbolRotation != float.NaN)
-            //{
-            //    g.TranslateTransform(pointLocation.X, pointLocation.Y);
-            //    g.RotateTransform(symbolRotation);
-            //    g.TranslateTransform(-symbol.Width / 2, -symbol.Height / 2);
-            //    if (symbolScale == 1f)
-            //        g.DrawImageUnscaled(symbol, (int)(pointLocation.X - symbol.Width / 2 + symbolOffset.X), (int)(pointLocation.Y - symbol.Height / 2 + symbolOffset.Y));
-            //    else
-            //    {
-            //        float width = symbol.Width * symbolScale;
-            //        float height = symbol.Height * symbolScale;
-            //        g.DrawImage(symbol, (int)pointLocation.X - width / 2 + symbolOffset.X * symbolScale, (int)pointLocation.Y - height / 2 + symbolOffset.Y * symbolScale, width, height);
-            //    }
-            //    g.Transform = map.MapTransform;
-            //}
-            //else
-            //{
-            //    if (symbolScale == 1f)
-            //        g.DrawImageUnscaled(symbol, (int)(pointLocation.X - symbol.Width / 2 + symbolOffset.X), (int)(pointLocation.Y - symbol.Height / 2 + symbolOffset.Y));
-            //    else
-            //    {
-            //        float width = symbol.Width * symbolScale;
-            //        float height = symbol.Height * symbolScale;
-
-            //    }
-            //}
         }
 
         #endregion
@@ -252,7 +238,7 @@ namespace SharpMap.Rendering.Gdi
 
                 using (BinaryReader reader = new BinaryReader(symbol2D.SymbolData))
                 {
-                    data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
+                    data.Write(reader.ReadBytes((int) symbol2D.SymbolData.Length), 0, (int) symbol2D.SymbolData.Length);
                 }
 
                 symbol = new Bitmap(data);
@@ -261,9 +247,11 @@ namespace SharpMap.Rendering.Gdi
 
             return symbol;
         }
+
         #endregion
 
         #region Nested types
+
         private struct BrushLookupKey : IEquatable<BrushLookupKey>
         {
             public readonly RuntimeTypeHandle StyleBrushType;
@@ -326,6 +314,7 @@ namespace SharpMap.Rendering.Gdi
 
             #endregion
         }
+
         #endregion
     }
 }

@@ -129,7 +129,12 @@ namespace SharpMap.Tests.Rendering
 				       	  	  	? String.Empty
 				       	  	  	: selectSymbolData.ToString();
 			}
-		}
+
+            public override IEnumerable<string> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
 	}
 
 	#endregion

@@ -181,5 +181,24 @@ namespace SharpMap.Rendering.Gdi
 			SizeF gdiSize = new SizeF((float)viewSize.Width, (float)viewSize.Height);
 			return gdiSize;
 		}
+
+        public static GraphicsPath Convert(GraphicsPath2D path)
+        {
+            GdiGraphicsPath gdiPath = new GdiGraphicsPath(FillMode.Winding);
+
+            foreach (GraphicsFigure2D figure in path.Figures)
+            {
+                gdiPath.StartFigure();
+
+                gdiPath.AddLines(Convert(figure.Points));
+
+                if (figure.IsClosed)
+                {
+                    gdiPath.CloseFigure();
+                }
+            }
+
+            return gdiPath;
+        }
 	}
 }
