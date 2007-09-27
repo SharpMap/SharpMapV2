@@ -428,7 +428,7 @@ namespace SharpMap.Tests.Presentation
 
             public void ShowRenderedObjects(IEnumerable renderedObjects)
             {
-                throw new NotImplementedException();
+
             }
 
             public void ZoomToExtents()

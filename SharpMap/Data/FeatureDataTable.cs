@@ -832,9 +832,12 @@ namespace SharpMap.Data
 
         internal void RowGeometryChanged(FeatureDataRow row, Geometry oldGeometry)
         {
-            RTreeIndexEntry<FeatureDataRow> entry = new RTreeIndexEntry<FeatureDataRow>(row, row.Extents);
-            _rTreeIndex.Remove(entry);
-            _rTreeIndex.Insert(entry);
+            if (IsSpatiallyIndexed)
+            {
+                RTreeIndexEntry<FeatureDataRow> entry = new RTreeIndexEntry<FeatureDataRow>(row, row.Extents);
+                _rTreeIndex.Remove(entry);
+                _rTreeIndex.Insert(entry);
+            }
 
             if (_cachedRegion == null)
             {

@@ -3,6 +3,7 @@ using System.Data;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Data
 {
@@ -92,7 +93,7 @@ namespace SharpMap.Tests.Data
             Assert.AreSame(table, view.Table);
             FeatureDataView featureView = view as FeatureDataView;
             Assert.IsNotNull(featureView);
-            Assert.IsNull(featureView.GeometryFilter);
+            Assert.AreEqual(Point.Empty, featureView.GeometryFilter);
             Assert.AreEqual(DataViewRowState.CurrentRows, view.RowStateFilter);
         }
 

@@ -111,7 +111,13 @@ namespace SharpMap.Tests.Rendering
 			Rectangle2D r2 = Rectangle2D.Zero;
 			Rectangle2D r3 = new Rectangle2D(0, 0, 10, 10);
 
-			Assert.AreEqual(0, (r1 as IMatrixD).ColumnCount);
+            // 2007-09-27 - codekaizen - 
+            // The column count of an empty Rectangle2D used to be
+            // 0, indicating that it was empty, but this prevented
+            // operations which wanted to manage the Rectangle2D as 
+            // an array of arrays of points from property sizing them.
+            //Assert.AreEqual(0, (r1 as IMatrixD).ColumnCount);
+            Assert.AreEqual(2, (r1 as IMatrixD).ColumnCount);
 			Assert.AreEqual(2, (r2 as IMatrixD).ColumnCount);
 			Assert.AreEqual(2, (r3 as IMatrixD).ColumnCount);
 

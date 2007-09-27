@@ -152,7 +152,9 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public FeatureDataTable CreateNewTable()
         {
-            throw new NotImplementedException();
+            FeatureDataTable table = new FeatureDataTable();
+            SetTableSchema(table);
+            return table;
         }
 
         public void EndExecuteFeatureQuery(IAsyncResult asyncResult)
@@ -189,7 +191,13 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="queryType">Type of spatial query to execute.</param>
         public void ExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType)
 		{
-			throw new NotImplementedException();
+            if (queryType != SpatialQueryType.Intersects)
+            {
+                throw new NotImplementedException(
+                    "A query type other than SpatialQueryType.Intersects is not supported.");
+            }
+
+	        ExecuteIntersectionQuery(geometry.GetBoundingBox(), table);
 		}
 
         /// <summary>

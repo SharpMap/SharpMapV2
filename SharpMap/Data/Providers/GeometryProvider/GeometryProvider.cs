@@ -326,7 +326,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         public FeatureDataTable CreateNewTable()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public void EndExecuteFeatureQuery(IAsyncResult asyncResult)

@@ -102,7 +102,7 @@ namespace SharpMap.Layers
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-            _features = DataSource.CreateNewTable();
+            _features = DataSource.CreateNewTable() ?? new FeatureDataTable();
             DataSource.Close();
 
             // We generally want spatial indexing on the feature table...
