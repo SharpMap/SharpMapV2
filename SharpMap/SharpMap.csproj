@@ -270,6 +270,8 @@
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
+    <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewMatrix3D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewPoint3D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewRectangle3D.cs" />
@@ -302,7 +304,7 @@
     <Compile Include="Rendering\ILabelRenderer`4.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
-    <Compile Include="Rendering\IRasterRenderer`2.cs" />
+    <Compile Include="Rendering\IRasterRenderer`1.cs" />
     <Compile Include="Presentation\Views\IToolsView.cs" />
     <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -65,9 +66,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        protected virtual void Dispose(bool disposing)
-        {
-        }
+        protected virtual void Dispose(bool disposing) {}
 
         protected bool IsDisposed
         {
@@ -152,6 +151,47 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #endregion
+
+        #endregion
+
+        #region IVectorRenderer2D Explicit Members
+
+        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
+                                                  StylePen highlightOutline, StylePen selectOutline)
+        {
+            return RenderPaths(paths, outline, highlightOutline, selectOutline);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line,
+                                                  StylePen highlightLine, StylePen selectLine, StylePen outline,
+                                                  StylePen highlightOutline, StylePen selectOutline)
+        {
+            return RenderPaths(paths, line, highlightLine, selectLine, outline, highlightOutline, selectOutline);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill,
+                                                  StyleBrush highlightFill, StyleBrush selectFill, StylePen outline,
+                                                  StylePen highlightOutline, StylePen selectOutline)
+        {
+            return RenderPaths(paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData)
+        {
+            return RenderSymbols(locations, symbolData);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                    ColorMatrix highlight, ColorMatrix select)
+        {
+            return RenderSymbols(locations, symbolData, highlight, select);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                    Symbol2D highlightSymbolData, Symbol2D selectSymbolData)
+        {
+            return RenderSymbols(locations, symbolData, highlightSymbolData, selectSymbolData);
+        }
 
         #endregion
     }

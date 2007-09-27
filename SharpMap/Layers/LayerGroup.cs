@@ -206,13 +206,11 @@ namespace SharpMap.Layers
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
         }
-
-        public BoundingBox VisibleRegion
+        
+        public bool IsVisibleWhen(Predicate<ILayer> condition)
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            return condition(this);
         }
-
         #endregion
 
         public ILayer Clone()

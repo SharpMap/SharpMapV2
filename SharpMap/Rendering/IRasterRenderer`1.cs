@@ -15,18 +15,18 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public interface IRasterRenderer<TRectangle, TRenderObject> : IRenderer
+    public interface IRasterRenderer<TRectangle> : IRenderer
         where TRectangle : IMatrixD
     {
-        IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TRectangle viewBounds, TRectangle rasterBounds);
-		IEnumerable<TRenderObject> RenderRaster(Stream rasterData, TRectangle viewBounds, 
+        IEnumerable RenderRaster(Stream rasterData, TRectangle viewBounds, TRectangle rasterBounds);
+		IEnumerable RenderRaster(Stream rasterData, TRectangle viewBounds, 
             TRectangle rasterBounds, IMatrixD rasterTransform);
     }
 }

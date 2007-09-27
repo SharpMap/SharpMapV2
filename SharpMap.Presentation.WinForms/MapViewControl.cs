@@ -419,6 +419,16 @@ namespace SharpMap.Presentation.WinForms
             base.OnMouseDown(e);
         }
 
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (e.Button == MouseButtons.Left)
+            {
+                onEndAction(ViewConverter.Convert(e.Location));
+            }
+        }
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             MapTool currentTool = SelectedTool;

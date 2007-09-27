@@ -16,22 +16,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer<Rectangle2D, TRenderObject>
+    public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer2D<TRenderObject>
     {
         #region IRasterLayerRenderer<Rectangle2D, TRenderObject> Members
 
-        public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds);
+        public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
+                                                                Rectangle2D rasterBounds);
 
-        public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrixD rasterTransform);
+        public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
+                                                                Rectangle2D rasterBounds, IMatrixD rasterTransform);
 
         #endregion
 
@@ -39,32 +41,35 @@ namespace SharpMap.Rendering.Rendering2D
 
         public IMatrixD RenderTransform
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public StyleRenderingMode StyleRenderingMode
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
+
         #endregion
 
         #region IDisposable Members
 
         public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IRasterRenderer<Rectangle2D> Members
+
+        IEnumerable IRasterRenderer<Rectangle2D>.RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable IRasterRenderer<Rectangle2D>.RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrixD rasterTransform)
         {
             throw new NotImplementedException();
         }

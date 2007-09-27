@@ -67,6 +67,7 @@ namespace SharpMap.Data
 		/// </summary>
 		/// <param name="oid">The object id (OID) of the feature.</param>
 		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
+		[Obsolete("Will be replaced in Beta 2 by a method which returns an IFeatureDataRecord.")]
 		FeatureDataRow<TOid> GetFeature(TOid oid);
 
         /// <summary>

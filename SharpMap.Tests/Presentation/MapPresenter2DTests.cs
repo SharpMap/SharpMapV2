@@ -86,24 +86,14 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
-            protected override IRenderer CreateVectorRenderer()
+            protected override IVectorRenderer2D CreateVectorRenderer()
             {
                 return new TestVectorRenderer2D();
             }
 
-            protected override IRenderer CreateRasterRenderer()
+            protected override IRasterRenderer<Rectangle2D> CreateRasterRenderer()
             {
                 return null;
-            }
-
-            //protected override void RenderFeatureLayer(IFeatureLayer layer)
-            //{
-            //    // TODO: anything here?
-            //}
-
-            protected override void RenderRasterLayer(IRasterLayer layer)
-            {
-                // TODO: anything here?
             }
 
             protected override Type GetRenderObjectType()
@@ -255,11 +245,6 @@ namespace SharpMap.Tests.Presentation
 
             protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
             {
-            }
-
-            protected override void RenderSelection(ViewSelection2D selection)
-            {
-                throw new Exception("The method or operation is not implemented.");
             }
         }
 

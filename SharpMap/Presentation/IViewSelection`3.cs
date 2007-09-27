@@ -72,5 +72,12 @@ namespace SharpMap.Presentation
         /// A minimum bounding box for the selection.
         /// </summary>
         TViewRegion BoundingRegion { get; }
+
+        void Close();
+        void Clear();
+        bool IsEmpty { get; }
+        bool IsClosed { get; }
+
+        event EventHandler SelectionChanged;
     }
 }

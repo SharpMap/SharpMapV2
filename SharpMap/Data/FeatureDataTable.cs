@@ -150,51 +150,6 @@ namespace SharpMap.Data
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Gets the containing FeatureDataSet.
-        /// </summary>
-        public new FeatureDataSet DataSet
-        {
-            get { return (FeatureDataSet)base.DataSet; }
-        }
-
-        /// <summary>
-        /// Gets the default FeatureDataView for the table.
-        /// </summary>
-        public new FeatureDataView DefaultView
-        {
-            get
-            {
-                FeatureDataView defaultView = DefaultViewInternal;
-
-                if (defaultView == null)
-                {
-                    if (DataSet != null)
-                    {
-                        defaultView = DataSet.DefaultViewManager.CreateDataView(this);
-                    }
-                    else
-                    {
-                        defaultView = new FeatureDataView(this, true);
-                        // This call to SetIndex2 is actually performed in the DataView..ctor(DataTable)
-                        // constructor, but for some reason is left out of the DataView..ctor(DataTable, bool)
-                        // constructor. Since we call DataView..ctor(DataTable) in 
-                        // FeatureDataView..ctor(FeatureDataTable, bool), we don't need this here.
-                        //defaultView.SetIndex2("", DataViewRowState.CurrentRows, null, true);
-                    }
-
-                    FeatureDataView baseDefaultView = _getDefaultView(this);
-                    defaultView = Interlocked.CompareExchange(ref baseDefaultView, defaultView, null);
-
-                    if (defaultView == null)
-                    {
-                        defaultView = baseDefaultView;
-                    }
-                }
-
-                return defaultView;
-            }
-        }
 
         /// <summary>
         /// Gets the full extents of all features in the feature table.
@@ -243,18 +198,6 @@ namespace SharpMap.Data
                     _rTreeIndex = null;
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the collection of rows that belong to this table.
-        /// </summary>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if this property is set.
-        /// </exception>
-        public new DataRowCollection Rows
-        {
-            get { return base.Rows; }
-            set { throw new NotSupportedException(); }
         }
 
         #endregion
@@ -571,7 +514,72 @@ namespace SharpMap.Data
         } 
         #endregion
 
-        #region DataTable overrides
+        #region DataTable overrides and shadows
+
+        /// <summary>
+        /// Gets the containing FeatureDataSet.
+        /// </summary>
+        public new FeatureDataSet DataSet
+        {
+            get { return (FeatureDataSet)base.DataSet; }
+        }
+
+        /// <summary>
+        /// Gets the default FeatureDataView for the table.
+        /// </summary>
+        public new FeatureDataView DefaultView
+        {
+            get
+            {
+                FeatureDataView defaultView = DefaultViewInternal;
+
+                if (defaultView == null)
+                {
+                    if (DataSet != null)
+                    {
+                        defaultView = DataSet.DefaultViewManager.CreateDataView(this);
+                    }
+                    else
+                    {
+                        defaultView = new FeatureDataView(this, true);
+                        // This call to SetIndex2 is actually performed in the DataView..ctor(DataTable)
+                        // constructor, but for some reason is left out of the DataView..ctor(DataTable, bool)
+                        // constructor. Since we call DataView..ctor(DataTable) in 
+                        // FeatureDataView..ctor(FeatureDataTable, bool), we don't need this here.
+                        //defaultView.SetIndex2("", DataViewRowState.CurrentRows, null, true);
+                    }
+
+                    FeatureDataView baseDefaultView = _getDefaultView(this);
+                    defaultView = Interlocked.CompareExchange(ref baseDefaultView, defaultView, null);
+
+                    if (defaultView == null)
+                    {
+                        defaultView = baseDefaultView;
+                    }
+                }
+
+                return defaultView;
+            }
+        }
+
+        /// <summary>
+        /// Creates and returns a new instance of a FeatureDataTable.
+        /// </summary>
+        /// <returns>An empty FeatureDataTable.</returns>
+        protected override DataTable CreateInstance()
+        {
+            return new FeatureDataTable();
+        }
+
+        /// <summary>
+        /// Returns the FeatureDataRow type.
+        /// </summary>
+        /// <returns>The <see cref="Type"/> <see cref="FeatureDataRow"/>.</returns>
+        protected override Type GetRowType()
+        {
+            return typeof(FeatureDataRow);
+        }
+
         /// <summary>
         /// Clears the spatial index (if one exists) and calls 
         /// <see cref="DataTable.OnTableCleared"/> to have the 
@@ -588,13 +596,32 @@ namespace SharpMap.Data
             base.OnTableCleared(e);
         }
 
-        /// <summary>
-        /// Creates and returns a new instance of a FeatureDataTable.
-        /// </summary>
-        /// <returns>An empty FeatureDataTable.</returns>
-        protected override DataTable CreateInstance()
+        public void Merge(FeatureDataTable features)
         {
-            return new FeatureDataTable();
+            Merge(features, false, MissingSchemaAction.Add);
+        }
+
+        public void Merge(FeatureDataTable features, bool preserveChnages)
+        {
+            Merge(features, preserveChnages, MissingSchemaAction.Add);
+        }
+
+        public void Merge(FeatureDataTable features, bool preserveChnages, MissingSchemaAction missingSchemaAction)
+        {
+            base.Merge(features, preserveChnages, missingSchemaAction);
+
+            foreach (FeatureDataRow row in features)
+            {
+                if (!row.HasOid)
+                {
+                    throw new ArgumentException(
+                        "Features must have a feature id to merge the geometries.");
+                }
+
+                FeatureDataRow target = Find(row.GetOid());
+                Debug.Assert(target != null);
+                target.Geometry = row.Geometry;
+            }
         }
 
         /// <summary>
@@ -612,12 +639,15 @@ namespace SharpMap.Data
         }
 
         /// <summary>
-        /// Returns the FeatureDataRow type.
+        /// Gets the collection of rows that belong to this table.
         /// </summary>
-        /// <returns>The <see cref="Type"/> <see cref="FeatureDataRow"/>.</returns>
-        protected override Type GetRowType()
+        /// <exception cref="NotSupportedException">
+        /// Thrown if this property is set.
+        /// </exception>
+        public new DataRowCollection Rows
         {
-            return typeof(FeatureDataRow);
+            get { return base.Rows; }
+            set { throw new NotSupportedException(); }
         }
 
         #endregion
@@ -800,10 +830,22 @@ namespace SharpMap.Data
             _restoreIndexEvents(this, forceReset);
         }
 
-        internal void RowGeometryChanged(FeatureDataRow row)
+        internal void RowGeometryChanged(FeatureDataRow row, Geometry oldGeometry)
         {
-            row.BeginEdit();
-            row.EndEdit();
+            RTreeIndexEntry<FeatureDataRow> entry = new RTreeIndexEntry<FeatureDataRow>(row, row.Extents);
+            _rTreeIndex.Remove(entry);
+            _rTreeIndex.Insert(entry);
+
+            if (_cachedRegion == null)
+            {
+                _cachedRegion = row.Geometry;
+            }
+            else
+            {
+#warning Must implement FeatureDataTable cached region management when geometry is changed.
+                //_cachedRegion = _cachedRegion.Difference(oldGeometry);
+                _cachedRegion = _cachedRegion.Union(row.Geometry);
+            }
         }
 
         internal void SuspendIndexEvents()

@@ -132,12 +132,13 @@ namespace SharpMap.Data
                     return;
                 }
 
+                Geometry oldGeometry = _currentGeometry;
                 _currentGeometry = value;
 
                 if (RowState != DataRowState.Detached)
                 {
                     _isGeometryModified = true;
-                    Table.RowGeometryChanged(this);
+                    Table.RowGeometryChanged(this, oldGeometry);
                 }
             }
         }

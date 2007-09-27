@@ -435,6 +435,10 @@ namespace SharpMap.Layers
             }
         }
 
+        public bool IsVisibleWhen(Predicate<ILayer> condition)
+        {
+            return condition(this);
+        }
         #endregion
 
         #region Protected members

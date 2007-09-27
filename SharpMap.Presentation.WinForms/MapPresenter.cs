@@ -16,11 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using SharpMap.Data;
 using SharpMap.Geometries;
-using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
@@ -40,32 +36,12 @@ namespace SharpMap.Presentation.WinForms
             get { return View as MapViewControl; }
         }
 
-        protected override void RenderSelection(ViewSelection2D selection)
-        {
-            IVectorRenderer2D<GdiRenderObject> renderer = (VectorRenderer as IVectorRenderer2D<GdiRenderObject>);
-
-            Debug.Assert(renderer != null);
-
-            IEnumerable<GdiRenderObject> renderedSelection =
-                renderer.RenderPaths(
-                    new GraphicsPath2D[] { selection.Path },
-                    selection.FillBrush, null, null,
-                    selection.OutlineStyle, null, null);
-
-            View.ShowRenderedObjects(renderedSelection);
-        }
-
-        protected override void RenderRasterLayer(IRasterLayer layer)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override IRenderer CreateRasterRenderer()
+        protected override IRasterRenderer<Rectangle2D> CreateRasterRenderer()
         {
             return new GdiRasterRenderer();
         }
 
-        protected override IRenderer CreateVectorRenderer()
+        protected override IVectorRenderer2D CreateVectorRenderer()
         {
             return new GdiVectorRenderer();
         }

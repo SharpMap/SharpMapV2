@@ -159,6 +159,18 @@ namespace SharpMap.Presentation
             get { return PathInternal.Bounds; }
         }
 
+
+        public bool IsEmpty
+        {
+            get { return PathInternal.CurrentFigure == null; }
+        }
+
+        public bool IsClosed
+        {
+            get { return !IsEmpty && PathInternal.CurrentFigure.IsClosed; }
+        }
+
+
         #endregion
 
         /// <summary>
