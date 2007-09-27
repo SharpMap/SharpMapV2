@@ -16,10 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Geometries;
 using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Presentation
@@ -32,7 +28,8 @@ namespace SharpMap.Presentation
         private GeoPoint _previousCenter;
         private GeoPoint _currentCenter;
 
-        public MapZoomChangedEventArgs(double previousZoom, double currentZoom, GeoPoint previousCenter, GeoPoint currentCenter)
+        public MapZoomChangedEventArgs(double previousZoom, double currentZoom, GeoPoint previousCenter,
+                                       GeoPoint currentCenter)
         {
             _previousZoom = previousZoom;
             _currentZoom = currentZoom;

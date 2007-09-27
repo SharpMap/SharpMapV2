@@ -23,6 +23,7 @@ using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
 using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using System.Collections;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -271,23 +272,38 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#endregion
 
-		#region IFeatureRenderer<TRenderObject> Members
-		IStyle IFeatureRenderer<TRenderObject>.DefaultStyle
-		{
-			get
-			{
-				return DefaultStyle;
-			}
-			set
-			{
-				if (!(value is TStyle))
-				{
-					throw new ArgumentException("DefaultStyle must be of type " + typeof(TStyle));
-				}
+        #region IFeatureRenderer Members
 
-				DefaultStyle = (TStyle)value;
-			}
-		}
+        IStyle IFeatureRenderer.DefaultStyle
+        {
+            get
+            {
+                return DefaultStyle;
+            }
+            set
+            {
+                if (!(value is TStyle))
+                {
+                    throw new ArgumentException("DefaultStyle must be of type " + typeof(TStyle));
+                }
+
+                DefaultStyle = (TStyle)value;
+            }
+        }
+
+        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature)
+        {
+            return RenderFeature(feature);
+        }
+
+        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, IStyle style)
+        {
+            return RenderFeature(feature, style as TStyle);
+        }
+
+        #endregion
+
+		#region IFeatureRenderer<TRenderObject> Members
 
 		IEnumerable<TRenderObject> IFeatureRenderer<TRenderObject>.RenderFeature(
             IFeatureDataRecord feature, IStyle style)
@@ -306,5 +322,5 @@ namespace SharpMap.Rendering.Rendering2D
 
 		#endregion
 		#endregion
-	}
+    }
 }

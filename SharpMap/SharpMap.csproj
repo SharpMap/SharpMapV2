@@ -263,11 +263,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
-    <Compile Include="Presentation\MapActionEventArgs.cs" />
+    <Compile Include="Presentation\MapActionEventArgs`1.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\AttributePresenter.cs" />
+    <Compile Include="Presentation\StyleTypeDescriptor.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\Rendering3D\ViewMatrix3D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewPoint3D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewRectangle3D.cs" />
@@ -294,7 +296,7 @@
     <Compile Include="Rendering\GraphicsFigure`2.cs" />
     <Compile Include="Rendering\Rendering2D\GraphicsFigure2D.cs" />
     <Compile Include="Rendering\Rendering2D\GraphicsPath2D.cs" />
-    <Compile Include="Presentation\IViewSelection.cs" />
+    <Compile Include="Presentation\IViewSelection`3.cs" />
     <Compile Include="Rendering\Rendering2D\RasterRenderer2D`1.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
     <Compile Include="Rendering\ILabelRenderer`4.cs" />
@@ -312,7 +314,7 @@
     <Compile Include="Rendering\Rendering2D\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\Rendering2D\LabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
-    <Compile Include="Presentation\MapViewPropertyChangeEventArgs.cs" />
+    <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
     <Compile Include="Tools\IMapTool`1.cs" />
     <Compile Include="Tools\MapTool.cs" />
     <Compile Include="Tools\MapTool`1.cs" />
@@ -320,11 +322,11 @@
     <Compile Include="Rendering\Rendering2D\Symbol2D.cs" />
     <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\Matrix2D.cs" />
-    <Compile Include="Presentation\ViewPointHoverEventArgs.cs" />
+    <Compile Include="Presentation\ViewPointHoverEventArgs`1.cs" />
     <Compile Include="Rendering\Rendering2D\Rectangle2D.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
     <Compile Include="Rendering\Rendering2D\Point2D.cs" />
-    <Compile Include="Presentation\ViewSelection.cs" />
+    <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
     <Compile Include="Rendering\Rendering2D\Size2D.cs" />
     <Compile Include="Styles\StyleColorBlend.cs" />

@@ -16,22 +16,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
+using SharpMap.Presentation.Views;
 using SharpMap.Tools;
 
 namespace SharpMap.Presentation
 {
+    /// <summary>
+    /// Encapsulates arguments for the <see cref="IToolsView.ToolChangeRequested"/>
+    /// event.
+    /// </summary>
     public sealed class ToolChangeRequestedEventArgs : EventArgs
     {
         private readonly MapTool _requestedTool;
 
+        /// <summary>
+        /// Creates a new instance of a <see cref="ToolChangeRequestedEventArgs"/>
+        /// with the given <see cref="MapTool"/>.
+        /// </summary>
+        /// <param name="requestedTool">
+        /// The <see cref="MapTool"/> to request change to.
+        /// </param>
         public ToolChangeRequestedEventArgs(MapTool requestedTool)
         {
             _requestedTool = requestedTool;
         }
 
+        /// <summary>
+        /// Gets the <see cref="MapTool"/> which the request is to change
+        /// to.
+        /// </summary>
         public MapTool RequestedTool
         {
             get { return _requestedTool; }

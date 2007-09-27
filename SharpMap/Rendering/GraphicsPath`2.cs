@@ -104,6 +104,11 @@ namespace SharpMap.Rendering
             }
         }
 
+        /// <summary>
+        /// Provides a string representation of the 
+        /// <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
+        /// </summary>
+        /// <returns>A string which describes the <see cref="GraphicsPath{TPoint, TViewBounds}"/></returns>
         public override string ToString()
         {
             return String.Format("[{0}] {1} figure{2} of {3} points; Bounds: {4}",
@@ -111,6 +116,12 @@ namespace SharpMap.Rendering
                                  ComputeBounds());
         }
 
+        /// <summary>
+        /// Returns the hash code for the instance.
+        /// </summary>
+        /// <returns>
+        /// A 32-bit signed integer hash code suitable for use in hash tables.
+        /// </returns>
         public override int GetHashCode()
         {
             unchecked
@@ -320,6 +331,10 @@ namespace SharpMap.Rendering
             return path;
         }
 
+        /// <summary>
+        /// Adds a point to the current figure, creating one if the path has no figures.
+        /// </summary>
+        /// <param name="point">The <typeparamref name="TPoint"/> to add.</param>
         public void AddPoint(TPoint point)
         {
             if (CurrentFigure == null)

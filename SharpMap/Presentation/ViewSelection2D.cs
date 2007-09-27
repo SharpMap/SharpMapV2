@@ -16,9 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 
@@ -29,9 +26,13 @@ namespace SharpMap.Presentation
     /// </summary>
     public class ViewSelection2D : ViewSelection<Point2D, Size2D, Rectangle2D>
     {
+        /// <summary>
+        /// Returns a string description of the <see cref="ViewSelection2D"/>.
+        /// </summary>
+        /// <returns>A string which describes the <see cref="ViewSelection2D"/>.</returns>
         public override string ToString()
         {
-            return String.Format("[ViewSelection2D] Bounds: {0}", this.Path.Bounds);
+            return String.Format("[ViewSelection2D] Bounds: {0}", Path.Bounds);
         }
 
         /// <summary>
@@ -50,8 +51,13 @@ namespace SharpMap.Presentation
             selection.AddPoint(upperLeft);
 
             selection.Expand(size);
-            
+
             return selection;
+        }
+
+        public new GraphicsPath2D Path
+        {
+            get { return base.Path as GraphicsPath2D; }
         }
 
         protected override GraphicsPath<Point2D, Rectangle2D> CreatePath()

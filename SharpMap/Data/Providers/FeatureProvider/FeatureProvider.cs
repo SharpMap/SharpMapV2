@@ -150,6 +150,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
             throw new NotImplementedException();
         }
 
+        public FeatureDataTable CreateNewTable()
+        {
+            throw new NotImplementedException();
+        }
+
         public void EndExecuteFeatureQuery(IAsyncResult asyncResult)
         {
             throw new NotImplementedException();

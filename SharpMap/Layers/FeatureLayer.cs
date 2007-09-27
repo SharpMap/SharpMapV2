@@ -100,16 +100,21 @@ namespace SharpMap.Layers
         {
             ShouldHandleDataCacheMissEvent = handleFeatureDataRequest;
 
-            _features = new FeatureDataTable();
-            _selectedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows);
-            _highlightedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows);
+            // We need to get the schema of the feature table.
+            DataSource.Open();
+            _features = DataSource.CreateNewTable();
+            DataSource.Close();
+
+            // We generally want spatial indexing on the feature table...
+            _features.IsSpatiallyIndexed = true;
+
+            _selectedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows, true);
+            _highlightedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows, true);
 
             if (ShouldHandleDataCacheMissEvent)
             {
                 _features.FeaturesRequested += handleFeaturesRequested;
             }
-
-            init();
         }
 
         #region IFeatureLayer Members
@@ -213,17 +218,6 @@ namespace SharpMap.Layers
         #endregion
 
         #region Private helper methods
-
-        private void init()
-        {
-            // We generally want spatial indexing on the feature table...
-            _features.IsSpatiallyIndexed = true;
-
-            // We need to get the schema of the feature table.
-            DataSource.Open();
-            DataSource.SetTableSchema(_features);
-            DataSource.Close();
-        }
 
         private void handleFeaturesRequested(object sender, FeaturesRequestedEventArgs e)
         {

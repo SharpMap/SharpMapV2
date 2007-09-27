@@ -116,7 +116,12 @@ namespace SharpMap.Indexing.RTree
         /// <param name="geometry">Geometry to intersect the index with.</param>
         public virtual IEnumerable<RTreeIndexEntry<TValue>> Search(Geometry geometry)
         {
-            throw new NotImplementedException();
+            if (geometry == null || geometry.IsEmpty())
+            {
+                return new RTreeIndexEntry<TValue>[0];
+            }
+
+            return Search(geometry.GetBoundingBox());
         }
 
         #endregion

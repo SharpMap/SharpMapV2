@@ -18,21 +18,20 @@
 using System;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
-using SharpMap.Styles;
 
 namespace SharpMap.Presentation.Views
 {
     /// <summary>
     /// Provides the interface for a view to show and accept edit requests for 
-    /// <see cref="Layer"/> <see cref="IStyle">style</see> information.
+    /// <see cref="Layer"/> style information.
     /// </summary>
     public interface ILayerStyleView : IView
     {
         event EventHandler<LayerStyleChangeRequestEventArgs> LayerStyleChangeRequested;
 
         /// <summary>
-        /// Gets or sets the style to view.
+        /// Gets or sets the style to display.
         /// </summary>
-        IStyle Style { get; set; }
+        StyleTypeDescriptor Style { get; set; }
     }
 }

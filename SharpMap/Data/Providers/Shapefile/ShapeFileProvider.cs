@@ -855,6 +855,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             throw new NotImplementedException();
         }
 
+        public FeatureDataTable CreateNewTable()
+        {
+            return getNewTable();
+        }
+
         public void EndExecuteFeatureQuery(IAsyncResult asyncResult)
         {
             throw new NotImplementedException();

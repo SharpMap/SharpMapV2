@@ -18,10 +18,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using SharpMap.Layers;
+using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
 
 namespace SharpMap.Presentation.Views
 {
+    /// <summary>
+    /// Provides the interface for a view to display the 
+    /// <see cref="Map.LayerCollection"/> in a <see cref="Map"/>.
+    /// </summary>
     public interface ILayersView : IView
     {
         /// <summary>
@@ -29,10 +35,33 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         IBindingList Layers { set; }
 
+        /// <summary>
+        /// Disables the layer identified by <paramref name="layer"/>.
+        /// </summary>
+        /// <param name="layer">The name of the <see cref="Layer"/> to disable.</param>
         void DisableLayer(String layer);
+
+        /// <summary>
+        /// Enables the layer identified by <paramref name="layer"/>.
+        /// </summary>
+        /// <param name="layer">The name of the <see cref="Layer"/> to enable.</param>
         void EnableLayer(String layer);
+        
+        /// <summary>
+        /// Gets or sets a list of layers to show as selected.
+        /// </summary>
         IList<String> SelectedLayers { get; set; }
+
+        /// <summary>
+        /// Event triggered when the layers selection is requested to be changed
+        /// by the associated <see cref="LayersPresenter"/>.
+        /// </summary>
         event EventHandler<LayerActionEventArgs> LayersSelectionChangeRequested;
+
+        /// <summary>
+        /// Event triggered when a layer is requested to be enabled or disabled
+        /// by the associated <see cref="LayersPresenter"/>.
+        /// </summary>
         event EventHandler<LayerActionEventArgs> LayersEnabledChangeRequested;
     }
 }

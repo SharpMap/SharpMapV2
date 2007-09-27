@@ -124,6 +124,16 @@ namespace SharpMap.Data
             QueryExecutionOptions options, AsyncCallback callback, object asyncState);
 
         /// <summary>
+        /// Creates a new <see cref="FeatureDataTable"/> from the data source's 
+        /// schema.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="FeatureDataTable"/> which is configured for the 
+        /// data source's schema.
+        /// </returns>
+        FeatureDataTable CreateNewTable();
+
+        /// <summary>
         /// Ends a retrieval of the features, waiting on the 
         /// <see cref="IAsyncResult.AsyncWaitHandle"/> if the operation is not complete.
         /// </summary>

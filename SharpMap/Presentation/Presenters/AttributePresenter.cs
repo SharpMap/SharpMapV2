@@ -15,18 +15,26 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using SharpMap.Data;
-using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 
 namespace SharpMap.Presentation.Presenters
 {
+    /// <summary>
+    /// Manages views of attribute data and coordinates layer attribute interaction.
+    /// </summary>
     public class AttributePresenter : BasePresenter<IAttributeView>
     {
+        /// <summary>
+        /// Creates a new AttributePresenter with the given map and view.
+        /// </summary>
+        /// <param name="map">The map model to observe and control.</param>
+        /// <param name="view">The view to use to display attribute data.</param>
         public AttributePresenter(Map map, IAttributeView view)
             : base(map, view)
         {
@@ -60,14 +68,18 @@ namespace SharpMap.Presentation.Presenters
 
             Debug.Assert(layer != null);
 
-            Geometry filterGeometry = layer.HighlightedFeatures.GeometryFilter;
+            layer.HighlightedFeatures.ReindexingEnabled = false;
 
-            foreach (FeatureDataRow feature in getFeaturesFromIndexes(layer, e.HighlightedFeatures))
+            layer.HighlightedFeatures.OidFilter =
+                getFeatureIdsFromIndexes(layer, e.HighlightedFeatures);
+
+            if (layer.HighlightedFeatures.IsEmptyGeometryFilterExclusive &&
+                layer.HighlightedFeatures.GeometryFilter.IsEmpty())
             {
-                filterGeometry = filterGeometry.Intersection(feature.Geometry);
+                layer.HighlightedFeatures.GeometryFilter = layer.Extents.ToGeometry();
             }
 
-            layer.HighlightedFeatures.GeometryFilter = filterGeometry;
+            layer.HighlightedFeatures.ReindexingEnabled = true;
         }
 
         private void handleHighlightedFeaturesChanged(object sender, ListChangedEventArgs e)
@@ -94,11 +106,21 @@ namespace SharpMap.Presentation.Presenters
             layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesChanged;
         }
 
-        private static IEnumerable<FeatureDataRow> getFeaturesFromIndexes(IFeatureLayer layer, IEnumerable<int> indexes)
+        private static IEnumerable<object> getFeatureIdsFromIndexes(
+            IFeatureLayer layer, IEnumerable<int> indexes)
         {
             foreach (int index in indexes)
             {
-                yield return layer.SelectedFeatures[index].Row as FeatureDataRow;
+                FeatureDataRow feature = layer.SelectedFeatures[index].Row as FeatureDataRow;
+                Debug.Assert(feature != null);
+
+                if (!feature.HasOid)
+                {
+                    throw new InvalidOperationException(
+                        "Feature must have object identifier in order to highlight.");
+                }
+
+                yield return feature.GetOid();
             }
         }
 

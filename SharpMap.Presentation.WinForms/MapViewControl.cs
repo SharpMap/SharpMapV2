@@ -46,11 +46,12 @@ namespace SharpMap.Presentation.WinForms
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
         private readonly double _dpi = 96;
-        private GdiPoint _mouseDownLocation = GdiPoint.Empty;
         private readonly Queue<GdiRenderObject> _renderObjectQueue = new Queue<GdiRenderObject>();
         private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
         private List<MapTool> _tools;
         private MapPresenter _presenter;
+        private GdiMatrix _gdiViewMatrix;
+        private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
         private bool _backgroundBeingSet;
 
         /// <summary>
@@ -412,7 +413,6 @@ namespace SharpMap.Presentation.WinForms
         {
             if (e.Button == MouseButtons.Left) //dragging
             {
-                _mouseDownLocation = e.Location;
                 onBeginAction(ViewConverter.Convert(e.Location));
             }
 
@@ -472,8 +472,6 @@ namespace SharpMap.Presentation.WinForms
 
             g.ResetTransform();
         }
-
-        private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
 
         private PointF[] getPoints(RectangleF bounds)
         {
@@ -702,7 +700,6 @@ namespace SharpMap.Presentation.WinForms
 
         #region Private Helper Methods
 
-        private GdiMatrix _gdiViewMatrix;
         private GdiMatrix getGdiViewTransform()
         {
             if (_gdiViewMatrix == null)
@@ -743,49 +740,6 @@ namespace SharpMap.Presentation.WinForms
             zoomBox.Offset(centerDeltaVector);
             return new Rectangle2D(zoomBox.Left, zoomBox.Top, zoomBox.Right, zoomBox.Bottom);
         }
-
-        //private void createSelectionBox(GdiPoint from, GdiPoint previousTo, GdiPoint to)
-        //{
-        //    //Debug.Write(String.Format("Old- W:{0}, H:{1}\t", _selectionRectangle.Width, _selectionRectangle.Height));
-        //    _selectionRectangle = createRectangleFromPoints(from, to);
-        //    //Debug.Write(String.Format("Now- W:{0}, H:{1}\t", _selectionRectangle.Width, _selectionRectangle.Height));
-
-        //    //Debug.WriteLine(String.Format("P- W:{0}, H:{1}\tC- W:{2}, H:{3}", previousTo.X - from.X, previousTo.Y - from.Y, to.X - from.X, to.Y - from.Y));
-
-        //    Rectangle redrawArea = createRectangleFromPoints(from, previousTo);
-
-        //    if (redrawArea.Width < _selectionRectangle.Width || redrawArea.Height < _selectionRectangle.Height)
-        //        redrawArea = Rectangle.Union(_selectionRectangle, redrawArea);
-
-        //    redrawArea.Inflate(1, 1);
-
-        //    //Debug.WriteLine(String.Format("\tS: ({0,4}, {1,4}) W:{2,4} H:{3,4}; \tC: ({4,4}, {5,4}) W:{6,4} H:{7,4};",
-        //    //    _selectionRectangle.X, _selectionRectangle.Y, _selectionRectangle.Width, _selectionRectangle.Height,
-        //    //    redrawArea.X, redrawArea.Y, redrawArea.Width, redrawArea.Height));
-        //    Invalidate(redrawArea);
-        //}
-
-        //private void drawSelectionBox(Graphics g, Rectangle selectionRectangle)
-        //{
-        //    g.DrawRectangle(Pens.Black, selectionRectangle);
-        //}
-
-        //private void clearSelectionBox(GdiPoint boxCorner1, GdiPoint boxCorner2)
-        //{
-        //    _selectionRectangle = Rectangle.Empty;
-        //    Rectangle box = createRectangleFromPoints(boxCorner1, boxCorner2);
-        //    Invalidate(box);
-        //}
-
-        //private Rectangle createRectangleFromPoints(GdiPoint boxCorner1, GdiPoint boxCorner2)
-        //{
-        //    return Rectangle.FromLTRB(
-        //        Math.Min(boxCorner1.X, boxCorner2.X),
-        //        Math.Min(boxCorner1.Y, boxCorner2.Y),
-        //        Math.Max(boxCorner1.X, boxCorner2.X),
-        //        Math.Max(boxCorner1.Y, boxCorner2.Y));
-        //}
-
         #endregion
     }
 

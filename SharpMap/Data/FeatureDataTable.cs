@@ -482,6 +482,13 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
         {
+            if (!CachedRegion.Contains(bounds.ToGeometry()))
+            {
+                RequestFeatures(bounds.ToGeometry());
+            }
+
+            // TODO: handle async case...
+
             if (IsSpatiallyIndexed)
             {
                 foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
@@ -514,6 +521,13 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(Geometry geometry)
         {
+            if (!CachedRegion.Contains(geometry))
+            {
+                RequestFeatures(geometry);
+            }
+
+            // TODO: handle async case...
+
             if (IsSpatiallyIndexed)
             {
                 foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))

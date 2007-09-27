@@ -16,12 +16,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-
+using NPack;
 using SharpMap.Rendering;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
-using NPack;
 
 namespace SharpMap.Presentation
 {
@@ -44,7 +43,6 @@ namespace SharpMap.Presentation
         private StylePen _outline;
         private StyleBrush _fill;
         private TPoint _anchorPoint;
-        private TViewRegion _boundingRegion = new TViewRegion();
 
         /// <summary>
         /// The default style of the selection outline.
@@ -70,10 +68,13 @@ namespace SharpMap.Presentation
         /// </summary>
         public ViewSelection()
         {
-            _path = CreatePath();
             _outline = DefaultOutline;
             _fill = DefaultFill;
         }
+
+        #region Public Events
+        public event EventHandler SelectionChanged;
+        #endregion
 
         /// <summary>
         /// Creates a new path for the selection, but doesn't add it to the selection.
@@ -82,6 +83,7 @@ namespace SharpMap.Presentation
         protected abstract GraphicsPath<TPoint, TViewRegion> CreatePath();
 
         #region IViewSelection<TPoint,TSize,TViewRegion> Members
+
         public void AddPoint(TPoint point)
         {
             if (Path.Points.Count == 0 && AnchorPoint.IsEmpty)
@@ -89,7 +91,7 @@ namespace SharpMap.Presentation
                 AnchorPoint = point;
             }
 
-            _path.AddPoint(point);
+            PathInternal.AddPoint(point);
             recomputeBoundingRegion();
 
             OnSelectionChanged();
@@ -100,11 +102,9 @@ namespace SharpMap.Presentation
         /// </summary>
         public void Close()
         {
-            _path.CloseFigure();
+            PathInternal.CloseFigure();
 
             OnSelectionChanged();
-
-            
         }
 
         /// <summary>
@@ -112,14 +112,14 @@ namespace SharpMap.Presentation
         /// </summary>
         public void Clear()
         {
-            _path.Clear();
+            PathInternal.Clear();
 
             OnSelectionChanged();
         }
 
         public void Expand(TSize size)
         {
-            for (int pointIndex = 0; pointIndex < Path.Points.Count; pointIndex++)
+            for (int pointIndex = 0; pointIndex < PathInternal.Points.Count; pointIndex++)
             {
                 throw new NotImplementedException("implement this");
             }
@@ -138,14 +138,14 @@ namespace SharpMap.Presentation
 
         public void RemovePoint(TPoint point)
         {
-            _path.Points.Remove(point);
+            PathInternal.Points.Remove(point);
 
             OnSelectionChanged();
         }
 
         public GraphicsPath<TPoint, TViewRegion> Path
         {
-            get { return _path.Clone(); }
+            get { return PathInternal.Clone(); }
         }
 
         public TPoint AnchorPoint
@@ -156,33 +156,68 @@ namespace SharpMap.Presentation
 
         public TViewRegion BoundingRegion
         {
-            get { return _boundingRegion; }
+            get { return PathInternal.Bounds; }
         }
 
         #endregion
 
+        /// <summary>
+        /// Gets or sets the <see cref="StylePen"/> used to display
+        /// the outline of the selection.
+        /// </summary>
         public StylePen OutlineStyle
         {
             get { return _outline; }
             set
             {
                 if (value == null)
+                {
                     value = DefaultOutline;
+                }
 
                 _outline = value;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="StyleBrush"/> used to display
+        /// the inside of the selection.
+        /// </summary>
         public StyleBrush FillBrush
         {
             get { return _fill; }
-            private set { _fill = value; }
+            set { _fill = value; }
         }
+
+        #region Protected members
+        protected void OnSelectionChanged()
+        {
+            EventHandler e = SelectionChanged;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
+
+        protected GraphicsPath<TPoint, TViewRegion> PathInternal
+        {
+            get
+            {
+                if (_path == null)
+                {
+                    _path = CreatePath();
+                }
+
+                return _path;
+            }
+        }
+        #endregion
 
         private void recomputeBoundingRegion()
         {
             DoubleComponent[][] boxElements = BoundingRegion.Elements;
-            
+
             if (boxElements.Length == 0 || boxElements[0].Length == 0)
             {
                 boxElements = new DoubleComponent[BoundingRegion.RowCount][];
@@ -202,16 +237,12 @@ namespace SharpMap.Presentation
                 {
                     for (int rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
                     {
-                        if (components[componentIndex].GreaterThan(boxElements[rowIndex][componentIndex]))
-                        {
-
-                        }
+                        if (components[componentIndex].GreaterThan(boxElements[rowIndex][componentIndex])) { }
                         boxElements[rowIndex][componentIndex] = components[componentIndex];
                     }
 
                     if (!recorded)
                     {
-
                         recorded = true;
                     }
                     else
@@ -231,21 +262,5 @@ namespace SharpMap.Presentation
 
             BoundingRegion.Elements = boxElements;
         }
-
-        #region Event Invokers
-        protected void OnSelectionChanged()
-        {
-            EventHandler e = SelectionChanged;
-
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
-        }
-        #endregion
-
-        #region Public Events
-        public event EventHandler SelectionChanged;
-        #endregion
     }
 }

@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Geometries;
@@ -31,42 +30,29 @@ using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 
 namespace SharpMap.Presentation.WinForms
 {
-	internal class MapPresenter : MapPresenter2D
-	{
-		internal MapPresenter(Map map, MapViewControl mapView)
-			: base(map, mapView)
-		{
+    internal class MapPresenter : MapPresenter2D
+    {
+        internal MapPresenter(Map map, MapViewControl mapView)
+            : base(map, mapView) { }
 
-		}
-
-		internal MapViewControl ViewControl
-		{
-			get { return View as MapViewControl; }
-        }
-
-        protected override void RenderFeatureLayer(IFeatureLayer layer)
+        internal MapViewControl ViewControl
         {
-            IFeatureRenderer<GdiRenderObject> renderer
-                = GetRenderer<IFeatureRenderer<GdiRenderObject>>(layer);
-
-            Debug.Assert(renderer != null);
-
-            // TODO: measure the performance of this view creation
-            FeatureDataView visibleFeatures = new FeatureDataView(
-                layer.Features, ViewEnvelopeInternal.ToGeometry(), "", DataViewRowState.CurrentRows);
-
-            foreach (FeatureDataRow feature in ((IEnumerable<FeatureDataRow>)visibleFeatures))
-            {
-                Debug.Assert(layer.Style is VectorStyle);
-                ViewControl.ShowRenderedObjects(renderer.RenderFeature(feature, layer.Style as VectorStyle));
-            }
+            get { return View as MapViewControl; }
         }
 
-        protected override void RenderPath(GraphicsPath2D path)
+        protected override void RenderSelection(ViewSelection2D selection)
         {
             IVectorRenderer2D<GdiRenderObject> renderer = (VectorRenderer as IVectorRenderer2D<GdiRenderObject>);
 
-            View.ShowRenderedObjects(renderer.RenderPaths(new GraphicsPath2D[] { path }, View.Selection.OutlineStyle, View.Selection.OutlineStyle, View.Selection.OutlineStyle));
+            Debug.Assert(renderer != null);
+
+            IEnumerable<GdiRenderObject> renderedSelection =
+                renderer.RenderPaths(
+                    new GraphicsPath2D[] { selection.Path },
+                    selection.FillBrush, null, null,
+                    selection.OutlineStyle, null, null);
+
+            View.ShowRenderedObjects(renderedSelection);
         }
 
         protected override void RenderRasterLayer(IRasterLayer layer)
@@ -74,67 +60,67 @@ namespace SharpMap.Presentation.WinForms
             throw new NotImplementedException();
         }
 
-		protected override IRenderer CreateRasterRenderer()
+        protected override IRenderer CreateRasterRenderer()
         {
             return new GdiRasterRenderer();
-		}
+        }
 
-		protected override IRenderer CreateVectorRenderer()
-		{
-			return new GdiVectorRenderer();
-		}
+        protected override IRenderer CreateVectorRenderer()
+        {
+            return new GdiVectorRenderer();
+        }
 
         protected override Type GetRenderObjectType()
         {
-            return typeof (GdiRenderObject);
+            return typeof(GdiRenderObject);
         }
 
-		#region MapViewControl accessible members
+        #region MapViewControl accessible members
 
-		internal StyleColor BackgroundColor
-		{
-			get { return BackgroundColorInternal; }
-		}
+        internal StyleColor BackgroundColor
+        {
+            get { return BackgroundColorInternal; }
+        }
 
-		internal Point GeoCenter
-		{
-			get { return GeoCenterInternal; }
-		}
+        internal Point GeoCenter
+        {
+            get { return GeoCenterInternal; }
+        }
 
-		internal double MaximumWorldWidth
-		{
-			get { return MaximumWorldWidthInternal; }
-		}
+        internal double MaximumWorldWidth
+        {
+            get { return MaximumWorldWidthInternal; }
+        }
 
-		internal double MinimumWorldWidth
-		{
-			get { return MinimumWorldWidthInternal; }
-		}
+        internal double MinimumWorldWidth
+        {
+            get { return MinimumWorldWidthInternal; }
+        }
 
-		internal double PixelWorldWidth
-		{
-			get { return PixelWorldWidthInternal; }
-		}
+        internal double PixelWorldWidth
+        {
+            get { return PixelWorldWidthInternal; }
+        }
 
-		internal double PixelWorldHeight
-		{
-			get { return PixelWorldHeightInternal; }
-		}
+        internal double PixelWorldHeight
+        {
+            get { return PixelWorldHeightInternal; }
+        }
 
-		internal ViewSelection2D Selection
-		{
-			get { return SelectionInternal; }
-		}
+        internal ViewSelection2D Selection
+        {
+            get { return SelectionInternal; }
+        }
 
-		internal Matrix2D ToViewTransform
-		{
-			get { return ToViewTransformInternal; }
-		}
+        internal Matrix2D ToViewTransform
+        {
+            get { return ToViewTransformInternal; }
+        }
 
-		internal Matrix2D ToWorldTransform
-		{
-			get { return ToWorldTransformInternal; }
-		}
+        internal Matrix2D ToWorldTransform
+        {
+            get { return ToWorldTransformInternal; }
+        }
 
         internal Point2D ToView(Point point)
         {
@@ -156,58 +142,60 @@ namespace SharpMap.Presentation.WinForms
             return ToWorldInternal(x, y);
         }
 
-		internal BoundingBox ViewEnvelope
-		{
-			get { return ViewEnvelopeInternal; }
-		}
+        internal BoundingBox ViewEnvelope
+        {
+            get { return ViewEnvelopeInternal; }
+        }
 
-		internal double WorldAspectRatio
-		{
-			get { return WorldAspectRatioInternal; }
-		}
+        internal double WorldAspectRatio
+        {
+            get { return WorldAspectRatioInternal; }
+        }
 
-		internal double WorldHeight
-		{
-			get { return WorldHeightInternal; }
-		}
+        internal double WorldHeight
+        {
+            get { return WorldHeightInternal; }
+        }
 
-		internal double WorldWidth
-		{
-			get { return WorldWidthInternal; }
-		}
+        internal double WorldWidth
+        {
+            get { return WorldWidthInternal; }
+        }
 
-		internal double WorldUnitsPerPixel
-		{
-			get { return WorldUnitsPerPixelInternal; }
-		}
+        internal double WorldUnitsPerPixel
+        {
+            get { return WorldUnitsPerPixelInternal; }
+        }
 
-		internal void ZoomToExtents()
-		{
-			ZoomToExtentsInternal();
-		}
+        internal void ZoomToExtents()
+        {
+            ZoomToExtentsInternal();
+        }
 
-		internal void ZoomToViewBounds(Rectangle2D viewBounds)
-		{
-			ZoomToViewBoundsInternal(viewBounds);
-		}
+        internal void ZoomToViewBounds(Rectangle2D viewBounds)
+        {
+            ZoomToViewBoundsInternal(viewBounds);
+        }
 
-		internal void ZoomToWorldBounds(BoundingBox zoomBox)
-		{
-			ZoomToWorldBoundsInternal(zoomBox);
-		}
+        internal void ZoomToWorldBounds(BoundingBox zoomBox)
+        {
+            ZoomToWorldBoundsInternal(zoomBox);
+        }
 
-		internal void ZoomToWorldWidth(double newWorldWidth)
-		{
-			ZoomToWorldWidthInternal(newWorldWidth);
-		}
+        internal void ZoomToWorldWidth(double newWorldWidth)
+        {
+            ZoomToWorldWidthInternal(newWorldWidth);
+        }
 
-		#endregion
+        #endregion
 
         #region View property setters
+
         protected override void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
         {
             ViewControl.BackColor = ViewConverter.Convert(toColor);
         }
+
         #endregion
     }
 }

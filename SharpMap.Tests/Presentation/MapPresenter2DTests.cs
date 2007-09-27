@@ -96,10 +96,10 @@ namespace SharpMap.Tests.Presentation
                 return null;
             }
 
-            protected override void RenderFeatureLayer(IFeatureLayer layer)
-            {
-                // TODO: anything here?
-            }
+            //protected override void RenderFeatureLayer(IFeatureLayer layer)
+            //{
+            //    // TODO: anything here?
+            //}
 
             protected override void RenderRasterLayer(IRasterLayer layer)
             {
@@ -257,7 +257,7 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
-            protected override void RenderPath(GraphicsPath2D path)
+            protected override void RenderSelection(ViewSelection2D selection)
             {
                 throw new Exception("The method or operation is not implemented.");
             }

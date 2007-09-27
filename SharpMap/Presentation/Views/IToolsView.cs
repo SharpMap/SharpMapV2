@@ -17,14 +17,31 @@
 
 using System;
 using System.Collections.Generic;
+using SharpMap.Presentation.Presenters;
 using SharpMap.Tools;
 
 namespace SharpMap.Presentation.Views
 {
+    /// <summary>
+    /// Provides the interface for a view to display the 
+    /// <see cref="MapTool"/> instances available to act on the <see cref="Map"/>.
+    /// </summary>
     public interface IToolsView : IView
     {
-        IList<MapTool> Tools { get; set; }
-        event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
+        /// <summary>
+        /// Gets or sets the currently selected tool.
+        /// </summary>
         MapTool SelectedTool { get; set; }
+
+        /// <summary>
+        /// Gets or sets a list of <see cref="MapTool"/> objects to display.
+        /// </summary>
+        IList<MapTool> Tools { get; set; }
+
+        /// <summary>
+        /// Event which requests the <see cref="ToolsPresenter"/>
+        /// to change the <see cref="Map.ActiveTool"/>.
+        /// </summary>
+        event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
     }
 }

@@ -165,6 +165,10 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 		#endregion
 
+        /// <summary>
+        /// Gets a value indicating whether <see cref="Dispose"/> 
+        /// has been called on the instance.
+        /// </summary>
 		public bool IsDisposed
 		{
 			get { return _isDisposed; }
@@ -316,6 +320,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
 
         public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FeatureDataTable CreateNewTable()
         {
             throw new NotImplementedException();
         }
