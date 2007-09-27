@@ -89,8 +89,32 @@ namespace SharpMap.Presentation
                 AnchorPoint = point;
             }
 
-            Path.CurrentFigure.Add(point);
+            _path.AddPoint(point);
             recomputeBoundingRegion();
+
+            OnSelectionChanged();
+        }
+
+        /// <summary>
+        /// Closes the current <see cref="GraphicsFigure{TPoint, TViewBounds}"/> in <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
+        /// </summary>
+        public void Close()
+        {
+            _path.CloseFigure();
+
+            OnSelectionChanged();
+
+            
+        }
+
+        /// <summary>
+        /// Removes all elements from <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
+        /// </summary>
+        public void Clear()
+        {
+            _path.Clear();
+
+            OnSelectionChanged();
         }
 
         public void Expand(TSize size)
@@ -101,16 +125,22 @@ namespace SharpMap.Presentation
             }
 
             recomputeBoundingRegion();
+
+            OnSelectionChanged();
         }
 
         public void MoveBy(TPoint location)
         {
             throw new NotImplementedException("implement this");
+
+            OnSelectionChanged();
         }
 
         public void RemovePoint(TPoint point)
         {
             _path.Points.Remove(point);
+
+            OnSelectionChanged();
         }
 
         public GraphicsPath<TPoint, TViewRegion> Path
@@ -152,6 +182,16 @@ namespace SharpMap.Presentation
         private void recomputeBoundingRegion()
         {
             DoubleComponent[][] boxElements = BoundingRegion.Elements;
+            
+            if (boxElements.Length == 0 || boxElements[0].Length == 0)
+            {
+                boxElements = new DoubleComponent[BoundingRegion.RowCount][];
+                for (int rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
+                {
+                    boxElements[rowIndex] = new DoubleComponent[BoundingRegion.ColumnCount];
+                }
+            }
+
             bool recorded = false;
 
             foreach (TPoint point in Path.Points)
@@ -191,5 +231,21 @@ namespace SharpMap.Presentation
 
             BoundingRegion.Elements = boxElements;
         }
+
+        #region Event Invokers
+        protected void OnSelectionChanged()
+        {
+            EventHandler e = SelectionChanged;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
+        #endregion
+
+        #region Public Events
+        public event EventHandler SelectionChanged;
+        #endregion
     }
 }

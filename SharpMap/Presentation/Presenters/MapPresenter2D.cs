@@ -48,7 +48,7 @@ namespace SharpMap.Presentation.Presenters
 
         #region Private fields
 
-        private ViewSelection2D _selection;
+        private readonly ViewSelection2D _selection;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth = 0.0;
         // Offsets the origin of the spatial reference system so that the 
@@ -77,6 +77,9 @@ namespace SharpMap.Presentation.Presenters
         {
             createRenderers();
 
+            //_selection = ViewSelection2D.CreateRectangluarSelection(Point2D.Zero, Size2D.Zero);
+            _selection = new ViewSelection2D();
+
             //wireupExistingLayers(Map.Layers);
             Map.Layers.ListChanged += handleLayersChanged;
             Map.PropertyChanged += handleMapPropertyChanged;
@@ -97,6 +100,7 @@ namespace SharpMap.Presentation.Presenters
             View.ZoomToViewBoundsRequested += view_ZoomToViewBoundsRequested;
             View.ZoomToWorldBoundsRequested += view_ZoomToWorldBoundsRequested;
             View.ZoomToWorldWidthRequested += view_ZoomToWorldWidthRequested;
+            _selection.SelectionChanged += Selection_SelectionChanged;
 
             _toViewCoordinates.Scale(1, -1);
             _toViewCoordinates.OffsetX = View.ViewSize.Width / 2;
@@ -107,6 +111,7 @@ namespace SharpMap.Presentation.Presenters
                 normalizeOrigin();
             }
         }
+
         #endregion
 
         #region Abstract methods
@@ -115,6 +120,7 @@ namespace SharpMap.Presentation.Presenters
         protected abstract void RenderFeatureLayer(IFeatureLayer layer);
         protected abstract void RenderRasterLayer(IRasterLayer layer);
         protected abstract Type GetRenderObjectType();
+        protected abstract void RenderPath(GraphicsPath2D path);
         #endregion
 
         #region Properties
@@ -262,7 +268,7 @@ namespace SharpMap.Presentation.Presenters
         protected ViewSelection2D SelectionInternal
         {
             get { return _selection; }
-            private set { _selection = value; }
+            //private set { _selection = value; }
         }
 
         /// <summary>
@@ -483,7 +489,7 @@ namespace SharpMap.Presentation.Presenters
             {
                 throw new InvalidOperationException("No visible region is set for this view.");
             }
-
+            
             BoundingBox worldBounds = new BoundingBox(
                 ToWorldInternal(viewBounds.LowerLeft), ToWorldInternal(viewBounds.UpperRight));
 
@@ -568,27 +574,11 @@ namespace SharpMap.Presentation.Presenters
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
 
-        protected void CreateSelection(Point2D location)
-        {
-            _selection = ViewSelection2D.CreateRectangluarSelection(location, Size2D.Zero);
-        }
-
-        protected void ModifySelection(Point2D location, Size2D size)
-        {
-            _selection.MoveBy(location);
-            _selection.Expand(size);
-        }
-
-        protected void DestroySelection()
-        {
-            _selection = null;
-        }
-
         #endregion
 
         #region Event handlers
         #region Map events
-
+        
         private void handleLayersChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
@@ -796,6 +786,19 @@ namespace SharpMap.Presentation.Presenters
         {
             ZoomToWorldWidthInternal(e.RequestedValue);
         }
+
+        // Handles the selection changes on the view
+        private void Selection_SelectionChanged(object sender, EventArgs e)
+        {
+            
+            if (View.Selection.Path.CurrentFigure == null)
+            {
+                return;
+            }
+
+            RenderPath(View.Selection.Path as GraphicsPath2D);
+        }
+
         #endregion
         #endregion
 

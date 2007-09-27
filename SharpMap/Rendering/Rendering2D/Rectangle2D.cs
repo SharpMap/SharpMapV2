@@ -568,7 +568,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         int IMatrixD.ColumnCount
         {
-            get { return IsEmpty ? 0 : 2; }
+            get { return 2; }
         }
 
         /// <summary>
@@ -660,7 +660,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         int IMatrixD.RowCount
         {
-            get { return IsEmpty ? 0 : 2; }
+            get { return 2; }
         }
 
         /// <summary>

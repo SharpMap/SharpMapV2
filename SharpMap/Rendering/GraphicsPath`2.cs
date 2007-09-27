@@ -320,6 +320,34 @@ namespace SharpMap.Rendering
             return path;
         }
 
+        public void AddPoint(TPoint point)
+        {
+            if (CurrentFigure == null)
+            {
+                NewFigure(new TPoint[] { point }, false);
+            }
+            else
+            {
+                _figures[_currentFigureIndex].Add(point);
+            }
+        }
+
+        /// <summary>
+        /// Removes all elements from <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
+        /// </summary>
+        public void Clear()
+        {
+            _figures.Clear();
+        }
+
+        /// <summary>
+        /// Closes the current <see cref="GraphicsFigure{TPoint, TViewBounds}"/>.
+        /// </summary>
+        public void CloseFigure()
+        {
+            CurrentFigure.Close();
+        }
+
         #region IEnumerable<GraphicsFigure<TPoint,TViewBounds>> Members
 
         /// <summary>

@@ -180,22 +180,59 @@ namespace SharpMap.Tools
 		{
 		}
 
+        /// <summary>
+        /// Clear the view's current selection before starting a new one.
+        /// </summary>
+        /// <param name="context">ActionContext<IMapView2D, Point2D></param>
 		private static void BeginQuery(ActionContext<IMapView2D, Point2D> context)
         {
             if (context.MapView.GeoCenter == Point.Empty)
             {
-                throw new InvalidOperationException("No visible region is set for this view.");
+                //throw new InvalidOperationException("No visible region is set for this view.");
             }
 
-		}
+            IMapView2D view = context.MapView;
 
+            view.Selection.Clear();
+            view.Selection.AddPoint(context.ActionArgs.ActionPoint);
+
+            _actionPositions[view] = context.ActionArgs.ActionPoint;
+        }
+
+        /// <summary>
+        /// Add the current point to the view's selection.
+        /// </summary>
+        /// <param name="context">ActionContext<IMapView2D, Point2D></param>
 		private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
 		{
+            context.MapView.Selection.AddPoint(context.ActionArgs.ActionPoint);
 		}
 
+        /// <summary>
+        /// Close the view's selection and set the map's GeometryFilter.
+        /// </summary>
+        /// <param name="context">ActionContext<IMapView2D, Point2D></param>
 		private static void EndQuery(ActionContext<IMapView2D, Point2D> context)
 		{
-		} 
+            IMapView2D view = context.MapView;
+
+            view.Selection.Close();
+
+            // Create a BoundingBox for the view's selection using the map's world space
+            BoundingBox worldBounds = new BoundingBox(
+                view.ToWorld(view.Selection.Path.Bounds.LowerLeft), view.ToWorld(view.Selection.Path.Bounds.UpperRight));
+
+            // Apply the GeometryFilter derived from the view's selection
+            foreach (Layers.Layer layer in context.Map.Layers)
+            {
+                if (layer.Enabled && layer is Layers.GeometryLayer)
+                {
+                    (layer as Layers.GeometryLayer).SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
+                }
+            }
+
+            _actionPositions.Remove(view);
+        } 
 		#endregion
 
 		#region Query add

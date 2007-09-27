@@ -214,6 +214,14 @@ namespace SharpMap.Rendering
             _points.Add(point);
         }
 
+        /// <summary>
+        /// Marks the figure as closed.
+        /// </summary>
+        public void Close()
+        {           
+            IsClosed = true;
+        }
+
         #endregion
 
         #region Protected Methods

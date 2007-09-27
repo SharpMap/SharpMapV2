@@ -61,6 +61,13 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
+        protected override void RenderPath(GraphicsPath2D path)
+        {
+            IVectorRenderer2D<GdiRenderObject> renderer = (VectorRenderer as IVectorRenderer2D<GdiRenderObject>);
+
+            View.ShowRenderedObjects(renderer.RenderPaths(new GraphicsPath2D[] { path }, View.Selection.OutlineStyle, View.Selection.OutlineStyle, View.Selection.OutlineStyle));
+        }
+
         protected override void RenderRasterLayer(IRasterLayer layer)
         {
             throw new NotImplementedException();
