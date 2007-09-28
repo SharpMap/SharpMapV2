@@ -46,6 +46,10 @@ namespace SharpMap.Presentation.WinForms
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
         private readonly double _dpi = 96;
+        private bool _dragging = false;
+        private GdiPoint _mouseDownLocation = GdiPoint.Empty;
+        private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
+        private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
         private readonly Queue<GdiRenderObject> _renderObjectQueue = new Queue<GdiRenderObject>();
         private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
         private List<MapTool> _tools;
@@ -419,6 +423,28 @@ namespace SharpMap.Presentation.WinForms
             base.OnMouseDown(e);
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (!_dragging && _mouseDownLocation != GdiPoint.Empty && e.Button == MouseButtons.Left)
+            {
+                _mouseRelativeLocation = new GdiPoint(e.X - _mouseDownLocation.X, e.Y - _mouseDownLocation.Y);
+
+                if (!withinDragTolerance(e.Location))
+                {
+                    _dragging = true;
+                    _mousePreviousLocation = _mouseDownLocation;
+                }
+            }
+
+            if (_dragging)
+            {
+                onMoveTo(ViewConverter.Convert(e.Location));
+                _mousePreviousLocation = e.Location;
+            }
+
+            base.OnMouseMove(e);
+        }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
@@ -426,6 +452,15 @@ namespace SharpMap.Presentation.WinForms
             if (e.Button == MouseButtons.Left)
             {
                 onEndAction(ViewConverter.Convert(e.Location));
+            }
+
+            _mouseDownLocation = GdiPoint.Empty;
+
+            if (_dragging)
+            {
+                _dragging = false;
+                _mouseRelativeLocation = GdiPoint.Empty;
+                _mousePreviousLocation = GdiPoint.Empty;
             }
         }
 
@@ -741,6 +776,10 @@ namespace SharpMap.Presentation.WinForms
             return _gdiViewMatrix;
         }
 
+        private bool withinDragTolerance(GdiPoint point)
+        {
+            return Math.Abs(_mouseDownLocation.X - point.X) <= 3 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
+        }
         private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
         {
             float scale = (float)Math.Pow(2, (float)Math.Abs(deltaDegrees) / 360f);
