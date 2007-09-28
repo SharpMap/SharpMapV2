@@ -135,28 +135,27 @@ namespace SharpMap.Tools
 
         private static void BeginZoomIn(ActionContext<IMapView2D, Point2D> context)
         {
-            if (context.MapView.GeoCenter == Point.Empty)
-            {
-                throw new InvalidOperationException("No visible region is set for this view.");
-            }
-
-            _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
+            beginSelection(context);
         }
 
         private static void ContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
         {
-            // TODO: Create box selection here...
+            continueSelection(context);
         }
 
         private static void EndZoomIn(ActionContext<IMapView2D, Point2D> context)
         {
-            IMapView2D view = context.MapView;
-            Point2D beginPoint = _actionPositions[context.MapView];
-            Point2D endPoint = context.ActionArgs.ActionPoint;
-            Size2D zoomSize = new Size2D(endPoint.X - beginPoint.X, endPoint.Y - beginPoint.Y);
-            Rectangle2D viewBounds = new Rectangle2D(beginPoint, zoomSize);
-            view.ZoomToViewBounds(viewBounds);
-            _actionPositions.Remove(context.MapView);
+            Rectangle2D viewBounds = endSelection(context);
+
+            context.MapView.ZoomToViewBounds(viewBounds);
+
+            //IMapView2D view = context.MapView;
+
+            //Point2D beginPoint = _actionPositions[context.MapView];
+            //Point2D endPoint = context.ActionArgs.ActionPoint;
+            //Size2D zoomSize = new Size2D(endPoint.X - beginPoint.X, endPoint.Y - beginPoint.Y);
+            //Rectangle2D viewBounds = new Rectangle2D(beginPoint, zoomSize);
+            //context.MapView.ZoomToViewBounds(viewBounds);
         }
 
         #endregion
@@ -189,17 +188,7 @@ namespace SharpMap.Tools
         /// <param name="context">ActionContext<IMapView2D, Point2D></param>
         private static void BeginQuery(ActionContext<IMapView2D, Point2D> context)
         {
-            if (context.MapView.GeoCenter == Point.Empty)
-            {
-                //throw new InvalidOperationException("No visible region is set for this view.");
-            }
-
-            IMapView2D view = context.MapView;
-
-            view.Selection.Clear();
-            view.Selection.AddPoint(context.ActionArgs.ActionPoint);
-
-            _actionPositions[view] = context.ActionArgs.ActionPoint;
+            beginSelection(context);
         }
 
         /// <summary>
@@ -208,7 +197,7 @@ namespace SharpMap.Tools
         /// <param name="context">ActionContext<IMapView2D, Point2D></param>
         private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
         {
-            context.MapView.Selection.AddPoint(context.ActionArgs.ActionPoint);
+            continueSelection(context);
         }
 
         /// <summary>
@@ -219,11 +208,11 @@ namespace SharpMap.Tools
         {
             IMapView2D view = context.MapView;
 
-            view.Selection.Close();
+            Rectangle2D viewBounds = endSelection(context);
 
             // Create a BoundingBox for the view's selection using the map's world space
             BoundingBox worldBounds = new BoundingBox(
-                view.ToWorld(view.Selection.Path.Bounds.LowerLeft), view.ToWorld(view.Selection.Path.Bounds.UpperRight));
+                view.ToWorld(viewBounds.LowerLeft), view.ToWorld(viewBounds.UpperRight));
 
             // Apply the GeometryFilter derived from the view's selection
             foreach (Layer layer in context.Map.Layers)
@@ -233,8 +222,6 @@ namespace SharpMap.Tools
                     (layer as GeometryLayer).SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
                 }
             }
-
-            _actionPositions.Remove(view);
         }
 
         #endregion
@@ -319,5 +306,40 @@ namespace SharpMap.Tools
                               layer.Style.MinVisible <= scale;
                    };
         }
+
+        #region Private Helper Methods
+        private static void beginSelection(ActionContext<IMapView2D, Point2D> context)
+        {
+            IMapView2D view = context.MapView;
+
+            if (view.GeoCenter == Point.Empty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+
+            view.Selection.Clear();
+            view.Selection.AddPoint(context.ActionArgs.ActionPoint);
+
+            _actionPositions[view] = context.ActionArgs.ActionPoint;
+        }
+
+        private static void continueSelection(ActionContext<IMapView2D, Point2D> context)
+        {
+            context.MapView.Selection.AddPoint(context.ActionArgs.ActionPoint);
+        }
+
+        private static Rectangle2D endSelection(ActionContext<IMapView2D, Point2D> context)
+        {
+            IMapView2D view = context.MapView;
+
+            _actionPositions.Remove(view);
+
+            view.Selection.Close();
+
+            return new Rectangle2D(
+                view.Selection.Path.Bounds.Location, view.Selection.Path.Bounds.Size);
+        }
+
+        #endregion
     }
 }

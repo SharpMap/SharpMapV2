@@ -415,6 +415,8 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            _mouseDownLocation = e.Location;
+
             if (e.Button == MouseButtons.Left) //dragging
             {
                 onBeginAction(ViewConverter.Convert(e.Location));
