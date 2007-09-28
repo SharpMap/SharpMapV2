@@ -379,6 +379,8 @@ namespace SharpMap.Presentation.WinForms
             {
                 if (Map.ActiveTool != value)
                 {
+                    Map.ActiveTool = value;
+
                     onSelectedToolChangeRequest(value);
                 }
             }
@@ -469,17 +471,28 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             MapTool currentTool = SelectedTool;
-            SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
+            
+            SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomOut : StandardMapTools2D.ZoomIn;
 
-            Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
-            onBeginAction(selectBox.Location);
-            Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
-            onMoveTo(endPoint);
-            onEndAction(endPoint);
+            onEndAction(ViewConverter.Convert(e.Location));
 
-            SelectedTool = currentTool;
+            if (currentTool != StandardMapTools2D.None)
+            {
+                SelectedTool = currentTool;
+            }
 
             base.OnMouseWheel(e);
+            
+            //SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
+
+            //Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
+            //onBeginAction(selectBox.Location);
+            //Point2D endPoint = new Point2D(selectBox.Right, selectBox.Bottom);
+            //onMoveTo(endPoint);
+            //onEndAction(endPoint);
+            //SelectedTool = currentTool;
+
+            //base.OnMouseWheel(e);
         }
 
         protected override void OnPaint(PaintEventArgs e)

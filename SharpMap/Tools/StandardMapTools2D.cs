@@ -145,17 +145,17 @@ namespace SharpMap.Tools
 
         private static void EndZoomIn(ActionContext<IMapView2D, Point2D> context)
         {
-            Rectangle2D viewBounds = endSelection(context);
+            if (context.MapView.Selection.Path.Points.Count > 1)
+            {
+                Rectangle2D viewBounds = endSelection(context);
 
-            context.MapView.ZoomToViewBounds(viewBounds);
-
-            //IMapView2D view = context.MapView;
-
-            //Point2D beginPoint = _actionPositions[context.MapView];
-            //Point2D endPoint = context.ActionArgs.ActionPoint;
-            //Size2D zoomSize = new Size2D(endPoint.X - beginPoint.X, endPoint.Y - beginPoint.Y);
-            //Rectangle2D viewBounds = new Rectangle2D(beginPoint, zoomSize);
-            //context.MapView.ZoomToViewBounds(viewBounds);
+                context.MapView.ZoomToViewBounds(viewBounds);
+            }
+            else
+            {
+                // Zoom in
+                zoomByPercentage(context, true);
+            }
         }
 
         #endregion
@@ -174,7 +174,11 @@ namespace SharpMap.Tools
 
         private static void ContinueZoomOut(ActionContext<IMapView2D, Point2D> context) {}
 
-        private static void EndZoomOut(ActionContext<IMapView2D, Point2D> context) {}
+        private static void EndZoomOut(ActionContext<IMapView2D, Point2D> context)
+        {
+            // Zoom out
+            zoomByPercentage(context, false);
+        }
 
         #endregion
 
@@ -338,6 +342,25 @@ namespace SharpMap.Tools
 
             return new Rectangle2D(
                 view.Selection.Path.Bounds.Location, view.Selection.Path.Bounds.Size);
+        }
+
+        private static void zoomByPercentage(ActionContext<IMapView2D, Point2D> context, bool zoomIn)
+        {
+            IMapView2D view = context.MapView;
+
+            // Change the center of the map to the current cursor location
+            view.GeoCenter = view.ToWorld(context.ActionArgs.ActionPoint);
+
+            // Set the zoom in or out by 20%
+            double zoomAmount = view.ViewEnvelope.Height * .80;
+            if (zoomIn)
+            {
+                view.ZoomToWorldBounds(view.ViewEnvelope.Shrink(zoomAmount));
+            }
+            else
+            {
+                view.ZoomToWorldBounds(view.ViewEnvelope.Grow(zoomAmount));
+            }
         }
 
         #endregion
