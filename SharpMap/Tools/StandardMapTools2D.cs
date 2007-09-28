@@ -117,9 +117,13 @@ namespace SharpMap.Tools
             IMapView2D view = context.MapView;
             Point2D previousPoint = _actionPositions[view];
             Point2D currentPoint = context.ActionArgs.ActionPoint;
-            Point2D difference = currentPoint - previousPoint;
+            Point2D difference = previousPoint - currentPoint;
+
             _actionPositions[view] = currentPoint;
-            view.Offset(difference);
+            //view.Offset(difference);
+
+            Rectangle2D viewBounds = new Rectangle2D(difference, view.ViewSize);
+            view.ZoomToViewBounds(viewBounds);
         }
 
         private static void EndPan(ActionContext<IMapView2D, Point2D> context)
@@ -348,19 +352,37 @@ namespace SharpMap.Tools
         {
             IMapView2D view = context.MapView;
 
-            // Change the center of the map to the current cursor location
-            view.GeoCenter = view.ToWorld(context.ActionArgs.ActionPoint);
+            double zoomPercentage;
 
-            // Set the zoom in or out by 20%
-            double zoomAmount = view.ViewEnvelope.Height * .80;
             if (zoomIn)
             {
-                view.ZoomToWorldBounds(view.ViewEnvelope.Shrink(zoomAmount));
+                zoomPercentage = .80;
             }
             else
-            {
-                view.ZoomToWorldBounds(view.ViewEnvelope.Grow(zoomAmount));
-            }
+	        {
+                zoomPercentage = 1.20;
+	        }
+
+            Point2D middleLocation = new Point2D((view.ViewSize.Width / 2), (view.ViewSize.Height / 2));
+            Point2D viewDifference = context.ActionArgs.ActionPoint - middleLocation;
+            Point2D upperLeft = new Point2D(viewDifference.X * zoomPercentage, viewDifference.Y * zoomPercentage);
+
+            //if (view.Selection.Path.Points.Count > 0)
+            //{
+            //    // Center the new view over the cursor
+            //    upperLeft = new Point2D(viewDifference.X * zoomPercentage, viewDifference.Y * zoomPercentage);
+            //}
+            //else
+            //{
+            //    // If there are no points selected then we're zooming via the mouse wheel
+            //    upperLeft = new Point2D(viewDifference.X * zoomPercentage, viewDifference.Y * zoomPercentage);
+            //}
+
+            Rectangle2D viewBounds =
+                new Rectangle2D(upperLeft,
+                    new Size2D(view.ViewSize.Width * zoomPercentage, view.ViewSize.Height * zoomPercentage));
+
+            view.ZoomToViewBounds(viewBounds);
         }
 
         #endregion
