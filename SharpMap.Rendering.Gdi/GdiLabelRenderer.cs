@@ -24,7 +24,7 @@ using GdiPoint = System.Drawing.Point;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiFont = System.Drawing.Font;
 using GdiBrushes = System.Drawing.Brushes;
-using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
+using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 
 namespace SharpMap.Rendering.Gdi
 {
@@ -103,7 +103,7 @@ namespace SharpMap.Rendering.Gdi
                     }
                 }
 
-                GdiGraphicsPath path = new GdiGraphicsPath();
+                GdiPath path = new GdiPath();
 
                 path.AddString(text, ViewConverter.Convert(font.FontFamily), (int) font.Style, (float) font.Size.Height,
                                new GdiPoint(0, 0), null);
@@ -134,7 +134,7 @@ namespace SharpMap.Rendering.Gdi
                     }
                 }
 
-                GdiGraphicsPath path = new GdiGraphicsPath();
+                GdiPath path = new GdiPath();
 
                 PointF labelPoint = ViewConverter.Convert(location);
                 path.AddString(text, ViewConverter.Convert(font.FontFamily), (int) font.Style, (float) font.Size.Height,

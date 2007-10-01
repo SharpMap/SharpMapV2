@@ -22,6 +22,7 @@ using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 using System.Globalization;
+using SharpMap.Query;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
@@ -104,7 +105,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		public FeatureDataRow<Guid> GetFeature(Guid oid)
 		{
 			throw new NotImplementedException();
-		}
+        }
+
+        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<Guid> oids)
+        {
+            throw new NotImplementedException();
+        }
 
 		public void SetTableSchema(FeatureDataTable<Guid> table)
 		{
@@ -120,12 +126,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -150,6 +156,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
             throw new NotImplementedException();
         }
 
+        public IAsyncResult BeginGetFeatures(System.Collections.IEnumerable oids, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
         public FeatureDataTable CreateNewTable()
         {
             FeatureDataTable table = new FeatureDataTable();
@@ -162,42 +173,52 @@ namespace SharpMap.Data.Providers.FeatureProvider
             throw new NotImplementedException();
         }
 
+        public IEnumerable<IFeatureDataRecord> EndGetFeatures(IAsyncResult asyncResult)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
-        /// Throws an NotSupportedException. 
+        /// Throws an NotImplementedException. 
+        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
+        /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">The geometry used to query with.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
-        public IFeatureDataReader ExecuteFeatureQuery(Geometry geometry, SpatialQueryType queryType)
+        /// <param name="query">Spatial query to execute.</param>
+        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
+        /// <exception cref="NotImplementedException">Always throws this exception.</exception>
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query)
 	    {
 	        throw new NotImplementedException();
 	    }
 
         /// <summary>
-        /// Throws an NotSupportedException.
+        /// Throws an NotImplementedException.
+        /// Retrieves features into a <see cref="FeatureDataSet"/> that 
+        /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">The geometry used to query with.</param>
-        /// <param name="dataSet">FeatureDataTable to fill data into.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
-        public void ExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType)
+        /// <param name="query">Spatial query to execute.</param>
+        /// <param name="dataSet">FeatureDataSet to fill data into.</param>
+        /// <exception cref="NotImplementedException">Always throws this exception.</exception>
+        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet)
 		{
 			throw new NotImplementedException();
 		}
         
 	    /// <summary>
-		/// Throws an NotSupportedException.
-		/// </summary>
-        /// <param name="geometry">The geometry used to query with.</param>
+        /// Retrieves features into a <see cref="FeatureDataTable"/> that 
+        /// match the given <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">Spatial query to execute.</param>
 		/// <param name="table">FeatureDataTable to fill data into.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
-        public void ExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType)
+        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table)
 		{
-            if (queryType != SpatialQueryType.Intersects)
+            if (query.QueryType != SpatialQueryType.Intersects)
             {
                 throw new NotImplementedException(
                     "A query type other than SpatialQueryType.Intersects is not supported.");
             }
 
-	        ExecuteIntersectionQuery(geometry.GetBoundingBox(), table);
+            ExecuteIntersectionQuery(query.QueryRegion.GetBoundingBox(), table);
 		}
 
         /// <summary>
@@ -291,7 +312,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 	    public int GetFeatureCount()
 		{
 			return _features.FeatureCount;
-		}
+        }
+
+        public IEnumerable<IFeatureDataRecord> GetFeatures(System.Collections.IEnumerable oids)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema

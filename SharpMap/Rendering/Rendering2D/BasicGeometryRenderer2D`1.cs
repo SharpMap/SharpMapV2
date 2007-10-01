@@ -114,7 +114,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
-		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style)
+		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style, RenderState renderState)
 		{
 			if (feature == null) throw new ArgumentNullException("feature");
 			if (style == null) throw new ArgumentNullException("style");
@@ -124,7 +124,7 @@ namespace SharpMap.Rendering.Rendering2D
 				throw new InvalidOperationException("Feature must have a geometry to be rendered.");
 			}
 
-			return renderGeometry(feature.Geometry, style);
+			return renderGeometry(feature.Geometry, style, renderState);
 		}
 
 		/// <summary>
@@ -139,10 +139,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="selectOutline">Outline pen style used when selected.</param>
 		public virtual IEnumerable<TRenderObject> DrawMultiLineString(
 			MultiLineString lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
 		{
 			return drawLineStrings(lines.LineStrings, fill, highlightFill, selectFill,
-				outline, highlightOutline, selectOutline);
+                outline, highlightOutline, selectOutline, renderState);
 		}
 
 		/// <summary>
@@ -157,10 +157,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="selectOutline">Outline pen style used when selected.</param>
 		public virtual IEnumerable<TRenderObject> DrawLineString(
 			LineString line, StylePen fill, StylePen highlightFill, StylePen selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
 		{
 			return drawLineStrings(new LineString[] { line }, fill, highlightFill, selectFill,
-				outline, highlightOutline, selectOutline);
+                outline, highlightOutline, selectOutline, renderState);
 		}
 
 		/// <summary>
@@ -175,10 +175,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="selectOutline">Outline pen style used when selected.</param>
 		public virtual IEnumerable<TRenderObject> DrawMultiPolygon(
 			MultiPolygon multipolygon, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
 		{
 			return drawPolygons(multipolygon, fill, highlightFill, selectFill,
-				outline, highlightOutline, selectOutline);
+                outline, highlightOutline, selectOutline, renderState);
 		}
 
 		/// <summary>
@@ -193,10 +193,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="selectOutline">Outline pen style used when selected.</param>
 		public virtual IEnumerable<TRenderObject> DrawPolygon(
 			Polygon polygon, StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+			StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
 		{
 			return drawPolygons(new Polygon[] { polygon }, fill, highlightFill, selectFill,
-				outline, highlightOutline, selectOutline);
+                outline, highlightOutline, selectOutline, renderState);
 		}
 
 		/// <summary>
@@ -206,10 +206,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
 		/// <param name="selectSymbol">Symbol to use for point when point is selected.</param>
-		public virtual IEnumerable<TRenderObject> DrawPoint(
-			Point point, Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol)
+		public virtual IEnumerable<TRenderObject> DrawPoint(Point point, Symbol2D symbol, 
+            Symbol2D highlightSymbol, Symbol2D selectSymbol, RenderState renderState)
 		{
-			return drawPoints(new Point[] { point }, symbol, highlightSymbol, selectSymbol);
+            return drawPoints(new Point[] { point }, symbol, highlightSymbol, selectSymbol, renderState);
 		}
 
 		/// <summary>
@@ -219,47 +219,44 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
 		/// <param name="selectSymbol">Symbol to use for point when point is selected.</param>
-		public virtual IEnumerable<TRenderObject> DrawMultiPoint(MultiPoint points, Symbol2D symbol,
-			Symbol2D highlightSymbol, Symbol2D selectSymbol)
+		public virtual IEnumerable<TRenderObject> DrawMultiPoint(MultiPoint points,
+            Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol, RenderState renderState)
 		{
-			return drawPoints(points.Points, symbol, highlightSymbol, selectSymbol);
+			return drawPoints(points.Points, symbol, highlightSymbol, selectSymbol, renderState);
 		}
 
 		#region Private helper methods
-		private IEnumerable<TRenderObject> renderGeometry(IGeometry geometry, VectorStyle style)
+		private IEnumerable<TRenderObject> renderGeometry(IGeometry geometry, VectorStyle style, RenderState renderState)
 		{
-			if (geometry == null)
-			{
-				throw new ArgumentNullException("geometry");
-			}
+			if (geometry == null) throw new ArgumentNullException("geometry");
 
 			if (geometry is Polygon)
 			{
 				return DrawPolygon(geometry as Polygon, style.Fill, style.HighlightFill, style.SelectFill, style.Outline,
-					style.HighlightOutline, style.SelectOutline);
+					style.HighlightOutline, style.SelectOutline, renderState);
 			}
 			else if (geometry is MultiPolygon)
 			{
 				return DrawMultiPolygon(geometry as MultiPolygon, style.Fill, style.HighlightFill, style.SelectFill,
-					style.Outline, style.HighlightOutline, style.SelectOutline);
+                    style.Outline, style.HighlightOutline, style.SelectOutline, renderState);
 			}
 			else if (geometry is LineString)
 			{
 				return DrawLineString(geometry as LineString, style.Line, style.HighlightLine, style.SelectLine,
-					style.Outline, style.HighlightOutline, style.SelectOutline);
+                    style.Outline, style.HighlightOutline, style.SelectOutline, renderState);
 			}
 			else if (geometry is MultiLineString)
 			{
 				return DrawMultiLineString(geometry as MultiLineString, style.Line, style.HighlightLine, style.SelectLine,
-					style.Outline, style.HighlightOutline, style.SelectOutline);
+                    style.Outline, style.HighlightOutline, style.SelectOutline, renderState);
 			}
 			else if (geometry is Point)
 			{
-				return DrawPoint(geometry as Point, style.Symbol, style.HighlightSymbol, style.SelectSymbol);
+                return DrawPoint(geometry as Point, style.Symbol, style.HighlightSymbol, style.SelectSymbol, renderState);
 			}
 			else if (geometry is MultiPoint)
 			{
-				return DrawMultiPoint(geometry as MultiPoint, style.Symbol, style.HighlightSymbol, style.SelectSymbol);
+                return DrawMultiPoint(geometry as MultiPoint, style.Symbol, style.HighlightSymbol, style.SelectSymbol, renderState);
 			}
 			else if (geometry is GeometryCollection)
 			{
@@ -267,7 +264,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 				foreach (Geometry g in (geometry as GeometryCollection))
 				{
-					renderObjects.AddRange(renderGeometry(g, style));
+                    renderObjects.AddRange(renderGeometry(g, style, renderState));
 				}
 
 				return renderObjects;
@@ -277,22 +274,22 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		private IEnumerable<TRenderObject> drawPoints(IEnumerable<Point> points, Symbol2D symbol,
-			Symbol2D highlightSymbol, Symbol2D selectSymbol)
+            Symbol2D highlightSymbol, Symbol2D selectSymbol, RenderState renderState)
         {
             // If we have a null symbol, use the default
 			if (symbol == null)  symbol = DefaultSymbol;
             if (highlightSymbol == null) highlightSymbol = symbol;
             if (selectSymbol == null) selectSymbol = symbol;
 
-			return VectorRenderer.RenderSymbols(convertPoints(points), symbol, highlightSymbol, selectSymbol);
+			return VectorRenderer.RenderSymbols(convertPoints(points), symbol, highlightSymbol, selectSymbol, renderState);
 		}
 
 		private IEnumerable<TRenderObject> drawLineStrings(IEnumerable<LineString> lines, StylePen fill,
-			StylePen highlightFill, StylePen selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            StylePen highlightFill, StylePen selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
 		{
             if (fill == null) throw new ArgumentNullException("fill");
 
-		    IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(lines);
+		    IEnumerable<Path2D> paths = convertToPaths(lines);
 
             if (highlightFill == null) highlightFill = fill;
             if (selectFill == null) selectFill = fill;
@@ -300,7 +297,7 @@ namespace SharpMap.Rendering.Rendering2D
             if (selectOutline == null) selectOutline = outline;
 
 		    IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(paths, 
-                fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
+                fill, highlightFill, selectFill, outline, highlightOutline, selectOutline, renderState);
 
             foreach (TRenderObject ro in renderedObjects)
             {
@@ -309,12 +306,13 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
 		private IEnumerable<TRenderObject> drawPolygons(IEnumerable<Polygon> polygons, StyleBrush fill, 
-            StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            StyleBrush highlightFill, StyleBrush selectFill, StylePen outline, StylePen highlightOutline, 
+            StylePen selectOutline, RenderState renderState)
         {
             if (fill == null) throw new ArgumentNullException("fill");
             if (outline == null) throw new ArgumentNullException("outline");
 
-            IEnumerable<GraphicsPath2D> paths = convertToGraphicsPaths(polygons);
+            IEnumerable<Path2D> paths = convertToPaths(polygons);
 
             if (highlightFill == null) highlightFill = fill;
             if (selectFill == null) selectFill = fill;
@@ -322,14 +320,14 @@ namespace SharpMap.Rendering.Rendering2D
             if (selectOutline == null) selectOutline = outline;
 
 			IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(
-                paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
+                paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline, renderState);
 
 			return renderedObjects;
 		}
 
-		private static IEnumerable<GraphicsPath2D> convertToGraphicsPaths(IEnumerable<LineString> lines)
+		private static IEnumerable<Path2D> convertToPaths(IEnumerable<LineString> lines)
         {
-            GraphicsPath2D gp = new GraphicsPath2D();
+            Path2D gp = new Path2D();
 
 			foreach (LineString line in lines)
 			{
@@ -344,9 +342,9 @@ namespace SharpMap.Rendering.Rendering2D
             yield return gp;
 		}
 
-		private static IEnumerable<GraphicsPath2D> convertToGraphicsPaths(IEnumerable<Polygon> polygons)
+		private static IEnumerable<Path2D> convertToPaths(IEnumerable<Polygon> polygons)
         {
-            GraphicsPath2D gp = new GraphicsPath2D();
+            Path2D gp = new Path2D();
 			
             foreach (Polygon polygon in polygons)
 			{

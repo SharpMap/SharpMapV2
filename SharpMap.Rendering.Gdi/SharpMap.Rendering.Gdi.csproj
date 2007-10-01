@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GdiRenderObjectState.cs" />
     <Compile Include="GdiRenderObjectType.cs" />
     <Compile Include="ViewConverter.cs" />
     <Compile Include="GdiLabelRenderer.cs" />

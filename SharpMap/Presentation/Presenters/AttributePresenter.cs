@@ -20,8 +20,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using SharpMap.Data;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
+using SharpMap.Query;
 
 namespace SharpMap.Presentation.Presenters
 {
@@ -68,32 +70,52 @@ namespace SharpMap.Presentation.Presenters
 
             Debug.Assert(layer != null);
 
-            layer.HighlightedFeatures.ReindexingEnabled = false;
+            FeatureSpatialQuery query;
 
-            layer.HighlightedFeatures.OidFilter =
-                getFeatureIdsFromIndexes(layer, e.HighlightedFeatures);
-
-            if (layer.HighlightedFeatures.IsEmptyGeometryFilterExclusive &&
-                layer.HighlightedFeatures.GeometryFilter.IsEmpty())
+            if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty() &&
+                layer.HighlightedFeatures.ViewDefinition.QueryType == SpatialQueryType.Disjoint)
             {
-                layer.HighlightedFeatures.GeometryFilter = layer.Extents.ToGeometry();
+                query = new FeatureSpatialQuery(layer.Extents.ToGeometry(),
+                                        SpatialQueryType.Intersects,
+                                        getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
+            }
+            else
+            {
+                query = new FeatureSpatialQuery(Point.Empty,
+                                        SpatialQueryType.Intersects,
+                                        getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }
 
-            layer.HighlightedFeatures.ReindexingEnabled = true;
+            layer.HighlightedFeatures.ViewDefinition = query;
         }
 
         private void handleHighlightedFeaturesChanged(object sender, ListChangedEventArgs e)
         {
-            IFeatureLayer layer = sender as IFeatureLayer;
+            IFeatureLayer featureLayer = null;
 
-            Debug.Assert(layer != null);
+            foreach (ILayer layer in Map.Layers)
+            { 
+                featureLayer = layer as IFeatureLayer;
+
+                if (featureLayer == null)
+                {
+                    continue;
+                }
+
+                if (ReferenceEquals(featureLayer.HighlightedFeatures, sender))
+                {
+                    break;
+                }
+            }
+
+            Debug.Assert(featureLayer != null);
 
             // When the user selects features in the view, 
             // we need to highlight those features
             IEnumerable<int> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
-                layer.SelectedFeatures, layer.HighlightedFeatures);
+                featureLayer.SelectedFeatures, featureLayer.HighlightedFeatures);
 
-            View.SetHighlightedFeatures(layer.LayerName, indexes);
+            View.SetHighlightedFeatures(featureLayer.LayerName, indexes);
         }
 
         private void wireupFeatureLayer(IFeatureLayer layer)

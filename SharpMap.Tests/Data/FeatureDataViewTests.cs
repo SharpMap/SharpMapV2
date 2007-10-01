@@ -6,6 +6,7 @@ using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using System.ComponentModel;
 using SharpMap.Geometries;
+using SharpMap.Query;
 
 namespace SharpMap.Tests.Data
 {
@@ -336,7 +337,7 @@ namespace SharpMap.Tests.Data
             FeatureDataTable table = new FeatureDataTable();
 
             bool featuresRequested = false;
-            table.FeaturesRequested += delegate
+            table.FeaturesNotFound += delegate
                                            {
                                                featuresRequested = true;
                                            };

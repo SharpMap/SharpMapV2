@@ -27,11 +27,11 @@ namespace SharpMap.Rendering
     /// </summary>
     /// <typeparam name="TPoint">Type of point.</typeparam>
     /// <typeparam name="TRectangle">Type of rectangle.</typeparam>
-    /// <typeparam name="TGraphicsPath">Type of graphics path.</typeparam>
-	public interface ILabel<TPoint, TRectangle, TGraphicsPath>
+    /// <typeparam name="TPath">Type of graphics path.</typeparam>
+	public interface ILabel<TPoint, TRectangle, TPath>
 		where TPoint : IVectorD
 		where TRectangle : IMatrixD, IEquatable<TRectangle>
-		where TGraphicsPath : GraphicsPath<TPoint, TRectangle>
+		where TPath : Path<TPoint, TRectangle>
 	{
 		/// <summary>
 		/// The text of the label.
@@ -66,7 +66,7 @@ namespace SharpMap.Rendering
 		/// <summary>
 		/// Path along which label runs.
 		/// </summary>
-        TGraphicsPath FlowPath { get; set; }
+        TPath FlowPath { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.

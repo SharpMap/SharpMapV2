@@ -170,7 +170,7 @@
     <Compile Include="Data\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\SpatialQueryType.cs" />
+    <Compile Include="Query\SpatialQueryType.cs" />
     <Compile Include="Geometries\BoundingBoxOperations.cs" />
     <Compile Include="Geometries\FakeSpatialOperations.cs" />
     <Compile Include="Geometries\GeometryCollection`1.cs" />
@@ -269,6 +269,8 @@
     <Compile Include="Presentation\StyleTypeDescriptor.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Query\FeatureSpatialQuery.cs" />
+    <Compile Include="Query\SpatialQuery.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
@@ -284,6 +286,7 @@
     <Compile Include="Rendering\IFeatureRenderer`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
+    <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Styles\RasterStyle.cs" />
@@ -295,9 +298,9 @@
     <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />
     <Compile Include="Rendering\ColorMatrix.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
-    <Compile Include="Rendering\GraphicsFigure`2.cs" />
-    <Compile Include="Rendering\Rendering2D\GraphicsFigure2D.cs" />
-    <Compile Include="Rendering\Rendering2D\GraphicsPath2D.cs" />
+    <Compile Include="Rendering\Figure`2.cs" />
+    <Compile Include="Rendering\Rendering2D\Figure2D.cs" />
+    <Compile Include="Rendering\Rendering2D\Path2D.cs" />
     <Compile Include="Presentation\IViewSelection`3.cs" />
     <Compile Include="Rendering\Rendering2D\RasterRenderer2D`1.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
@@ -309,7 +312,7 @@
     <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Rendering2D\FeatureRenderer2D`2.cs" />
-    <Compile Include="Rendering\GraphicsPath`2.cs" />
+    <Compile Include="Rendering\Path`2.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
     <Compile Include="Rendering\Rendering2D\Label2D.cs" />

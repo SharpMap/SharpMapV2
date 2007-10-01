@@ -17,10 +17,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using SharpMap.Geometries;
 using System.Globalization;
+using SharpMap.Query;
 
 namespace SharpMap.Data
 {
@@ -30,36 +32,34 @@ namespace SharpMap.Data
     public interface IFeatureLayerProvider : ILayerProvider
     {
         /// <summary>
-        /// Begins to retrieve the features related to <paramref name="geometry"/> by 
-        /// <paramref name="queryType"/>.
+        /// Begins to retrieve the features which match the specified 
+        /// <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">Geometry to query with.</param>
+        /// <param name="query">Feature spatial query to execute.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
         /// <param name="callback">
         /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
         /// </param>
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, 
-            SpatialQueryType queryType, AsyncCallback callback, object asyncState);
+        IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, 
+            FeatureDataSet dataSet, AsyncCallback callback, object asyncState);
 
         /// <summary>
-        /// Begins to retrieve the features related to <paramref name="geometry"/> by 
-        /// <paramref name="queryType"/>.
+        /// Begins to retrieve the features which match the specified 
+        /// <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">Geometry to query with.</param>
+        /// <param name="query">Feature spatial query to execute.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
         /// <param name="callback">
         /// <see cref="AsyncCallback"/> delegate to invoke when the operation completes.
         /// </param>
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataTable table,
-            SpatialQueryType queryType, AsyncCallback callback, object asyncState);
+        IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, 
+            FeatureDataTable table, AsyncCallback callback, object asyncState);
 
         /// <summary>
         /// Begins to retrieve the data associated with all the features that 
@@ -73,8 +73,8 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, 
-            AsyncCallback callback, object asyncState);
+        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, 
+            FeatureDataSet dataSet, AsyncCallback callback, object asyncState);
 
         /// <summary>
         /// Begins to retrieve the data associated with all the features that 
@@ -123,6 +123,8 @@ namespace SharpMap.Data
         IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table,
             QueryExecutionOptions options, AsyncCallback callback, object asyncState);
 
+        IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, object asyncState);
+
         /// <summary>
         /// Creates a new <see cref="FeatureDataTable"/> from the data source's 
         /// schema.
@@ -139,39 +141,40 @@ namespace SharpMap.Data
         /// </summary>
         void EndExecuteFeatureQuery(IAsyncResult asyncResult);
 
+        IEnumerable<IFeatureDataRecord> EndGetFeatures(IAsyncResult asyncResult);
+
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        /// are related to <paramref name="geometry"/> by <paramref name="queryType"/>.
+        /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">Geometry to query with.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
+        /// <param name="query">Spatial query to execute.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteFeatureQuery(Geometry geometry, SpatialQueryType queryType);
+        IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query);
 
         /// <summary>
-        /// Retrieves the features related to <paramref name="geometry"/> by 
-        /// <paramref name="queryType"/>.
+        /// Retrieves features into a <see cref="FeatureDataSet"/> that 
+        /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">Geometry to query with.</param>
+        /// <param name="query">Spatial query to execute.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
-        void ExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType);
+        void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet);
 
         /// <summary>
-        /// Retrieves the features related to <paramref name="geometry"/> by 
-        /// <paramref name="queryType"/>.
+        /// Retrieves features into a <see cref="FeatureDataTable"/> that 
+        /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="geometry">Geometry to query with.</param>
+        /// <param name="query">Spatial query to execute.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        /// <param name="queryType">Type of spatial query to execute.</param>
-        void ExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType);
+        void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table);
 
         /// <summary>
-        /// Gets the geometries within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// Gets the geometries within the specified 
+        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <returns>
-        /// An enumeration of features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// An enumeration of features within the specified 
+        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
         /// </returns>
         IEnumerable<Geometry> ExecuteGeometryIntersectionQuery(BoundingBox bounds);
 
@@ -225,6 +228,16 @@ namespace SharpMap.Data
         /// <param name="table">FeatureDataTable to fill data into.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
         void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options);
+
+        /// <summary>
+        /// Returns a <see cref="IFeatureDataReader"/> for obtaining features
+        /// from a set of feature object identifiers (oids).
+        /// </summary>
+        /// <param name="oids">A set of object ids (OIDs) of the features.</param>
+        /// <returns>
+        /// A set of features corresponding one-to-one to the given <paramref name="oids"/>.
+        /// </returns>
+        IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids);
 
         /// <summary>
         /// Returns the number of features in the entire data source.

@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 
 namespace SharpMap.Geometries
@@ -23,15 +24,20 @@ namespace SharpMap.Geometries
     {
         internal static Geometry Difference(BoundingBox lhs, BoundingBox rhs)
         {
+            Point lowerLeft = new Point(Math.Min(lhs.Left, rhs.Left), Math.Min(lhs.Bottom, rhs.Bottom));
+            Point lowerRight = new Point(Math.Max(lhs.Right, rhs.Right), Math.Min(lhs.Bottom, rhs.Bottom));
+            Point upperLeft = new Point(Math.Min(lhs.Left, rhs.Left), Math.Max(lhs.Top, rhs.Top));
+            Point upperRight = new Point(Math.Max(lhs.Right, rhs.Right), Math.Max(lhs.Top, rhs.Top));
+
             List<BoundingBox> components = new List<BoundingBox>();
-            components.AddRange(lhs.Split(rhs.LowerLeft));
-            components.AddRange(lhs.Split(rhs.LowerRight));
-            components.AddRange(lhs.Split(rhs.UpperLeft));
-            components.AddRange(lhs.Split(rhs.UpperRight));
+            components.AddRange(lhs.Split(lowerLeft));
+            components.AddRange(lhs.Split(lowerRight));
+            components.AddRange(lhs.Split(upperLeft));
+            components.AddRange(lhs.Split(upperRight));
 
             for (int i = components.Count - 1; i >= 0; i--)
             {
-                if (components[i].IsEmpty || components[i].Within(rhs))
+                if (components[i].IsEmpty)
                 {
                     components.RemoveAt(i);
                 }

@@ -18,6 +18,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NPack;
+using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -25,12 +27,12 @@ namespace SharpMap.Rendering
 {
     /// <summary>
     /// Represents a graphical figure, which is a portion of a 
-    /// <see cref="GraphicsPath{TPoint,TViewBounds}"/>.
+    /// <see cref="Path{TPoint,TViewBounds}"/>.
     /// </summary>
     /// <typeparam name="TPoint">Type of point to use in the figure.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear shape to bound this figure.</typeparam>
-    public abstract class GraphicsFigure<TPoint, TViewBounds>
-        : ICloneable, IEnumerable<TPoint>, IEquatable<GraphicsFigure<TPoint, TViewBounds>>
+    public abstract class Figure<TPoint, TViewBounds>
+        : ICloneable, IEnumerable<TPoint>, IEquatable<Figure<TPoint, TViewBounds>>
         where TPoint : IVectorD
         where TViewBounds : IMatrixD
     {
@@ -41,22 +43,22 @@ namespace SharpMap.Rendering
         #region Object Construction
 
         /// <summary>
-        /// Creates a new open <see cref="GraphicsFigure{TPoint, TViewBounds}"/> 
+        /// Creates a new open <see cref="Figure{TPoint, TViewBounds}"/> 
         /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
-        public GraphicsFigure(IEnumerable<TPoint> points)
+        public Figure(IEnumerable<TPoint> points)
             : this(points, false)
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsFigure{TPoint, TViewBounds}"/> 
+        /// Creates a new <see cref="Figure{TPoint, TViewBounds}"/> 
         /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         /// <param name="isClosed">True to close the path, false to keep it open.</param>
-        public GraphicsFigure(IEnumerable<TPoint> points, bool isClosed)
+        public Figure(IEnumerable<TPoint> points, bool isClosed)
         {
             _points.AddRange(points);
             IsClosed = isClosed;
@@ -67,7 +69,7 @@ namespace SharpMap.Rendering
         #region ToString
 
         /// <summary>
-        /// Returns a string representation of this <see cref="GraphicsFigure"/>.
+        /// Returns a string representation of this <see cref="Figure"/>.
         /// </summary>
         public override string ToString()
         {
@@ -104,13 +106,13 @@ namespace SharpMap.Rendering
 
         public override bool Equals(object obj)
         {
-            GraphicsFigure<TPoint, TViewBounds> other = obj as GraphicsFigure<TPoint, TViewBounds>;
+            Figure<TPoint, TViewBounds> other = obj as Figure<TPoint, TViewBounds>;
             return Equals(other);
         }
 
-        #region IEquatable<GraphicsPath<TPoint>> Members
+        #region IEquatable<Path<TPoint>> Members
 
-        public bool Equals(GraphicsFigure<TPoint, TViewBounds> other)
+        public bool Equals(Figure<TPoint, TViewBounds> other)
         {
             if (other == null)
             {
@@ -148,9 +150,9 @@ namespace SharpMap.Rendering
         /// Creates an exact copy of this figure.
         /// </summary>
         /// <returns>A point-by-point copy of this figure.</returns>
-        public GraphicsFigure<TPoint, TViewBounds> Clone()
+        public Figure<TPoint, TViewBounds> Clone()
         {
-            GraphicsFigure<TPoint, TViewBounds> figure = CreateFigure(Points, IsClosed);
+            Figure<TPoint, TViewBounds> figure = CreateFigure(Points, IsClosed);
             return figure;
         }
 
@@ -240,8 +242,8 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="points">Points to use in sequence to create the figure.</param>
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
-        /// <returns>A new GraphicsFigure instance.</returns>
-        protected abstract GraphicsFigure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
+        /// <returns>A new Figure instance.</returns>
+        protected abstract Figure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
                                                                                 bool isClosed);
 
         #endregion
@@ -249,6 +251,22 @@ namespace SharpMap.Rendering
         internal List<TPoint> PointsInternal
         {
             get { return _points; }
+        }
+
+        internal void TransformPoints(ITransformMatrix<DoubleComponent> transform)
+        {
+            for (int i = 0; i < _points.Count; i++)
+            {
+                TPoint point = _points[i];
+
+                DoubleComponent[] pointComponents = point.Components;
+                Array.Resize(ref pointComponents, pointComponents.Length + 1);
+                pointComponents[pointComponents.Length - 1] = 1;
+                transform.TransformVector(pointComponents);
+                Array.Resize(ref pointComponents, pointComponents.Length - 1);
+                point.Components = pointComponents;
+                _points[i] = point;
+            }
         }
 
         #region IEnumerable<TPoint> Members

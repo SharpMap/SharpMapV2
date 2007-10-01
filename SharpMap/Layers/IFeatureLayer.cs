@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System.Collections;
 using SharpMap.Data;
 using System.Globalization;
 
@@ -41,6 +42,8 @@ namespace SharpMap.Layers
         /// highlighted.
         /// </summary>
 		FeatureDataView HighlightedFeatures { get; }
+
+        void LoadFeaturesByOids(IEnumerable oids);
 
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text

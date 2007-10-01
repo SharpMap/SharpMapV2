@@ -179,14 +179,20 @@ namespace SharpMap.Converters.WellKnownBinary
         private static LineString createWkbLineString(BinaryReader reader, WkbByteOrder byteOrder)
         {
             LineString l = new LineString();
-            l.Vertices.AddRange(readCoordinates(reader, byteOrder));
+            foreach (Point point in readCoordinates(reader, byteOrder))
+            {
+                l.Vertices.Add(point);
+            }
             return l;
         }
 
         private static LinearRing createWkbLinearRing(BinaryReader reader, WkbByteOrder byteOrder)
         {
             LinearRing l = new LinearRing();
-            l.Vertices.AddRange(readCoordinates(reader, byteOrder));
+            foreach (Point point in readCoordinates(reader, byteOrder))
+            {
+                l.Vertices.Add(point);
+            }
 
             // If polygon isn't closed, add the first point to the end (this shouldn't occur for correct WKB data)
             if (l.Vertices[0].X != l.Vertices[l.Vertices.Count - 1].X ||

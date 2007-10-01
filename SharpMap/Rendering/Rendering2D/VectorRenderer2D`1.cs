@@ -104,31 +104,32 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IVectorRenderer2D Members
 
-        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> paths,
                                                                StylePen line, StylePen highlightLine,
                                                                StylePen selectLine,
                                                                StylePen outline, StylePen highlightOutline,
-                                                               StylePen selectOutline);
+                                                               StylePen selectOutline, RenderState renderState);
 
-        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
+        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
                                                                StylePen highlightOutline,
-                                                               StylePen selectOutline);
+                                                               StylePen selectOutline, RenderState renderState);
 
-        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill,
+        public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
                                                                StyleBrush highlightFill,
                                                                StyleBrush selectFill, StylePen outline,
                                                                StylePen highlightOutline,
-                                                               StylePen selectOutline);
+                                                               StylePen selectOutline, RenderState renderState);
 
-        public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData);
+        public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                                 RenderState renderState);
 
         public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                                  ColorMatrix highlight,
-                                                                 ColorMatrix select);
+                                                                 ColorMatrix select, RenderState renderState);
 
         public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                                  Symbol2D highlightSymbolData,
-                                                                 Symbol2D selectSymbolData);
+                                                                 Symbol2D selectSymbolData, RenderState renderState);
 
         #endregion
 
@@ -156,41 +157,50 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IVectorRenderer2D Explicit Members
 
-        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
-                                                  StylePen highlightOutline, StylePen selectOutline)
+        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
+                                                  StylePen highlightOutline, StylePen selectOutline,
+                                                  RenderState renderState)
         {
-            return RenderPaths(paths, outline, highlightOutline, selectOutline);
+            return RenderPaths(paths, outline, highlightOutline, selectOutline, renderState);
         }
 
-        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line,
+        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<Path2D> paths, StylePen line,
                                                   StylePen highlightLine, StylePen selectLine, StylePen outline,
-                                                  StylePen highlightOutline, StylePen selectOutline)
+                                                  StylePen highlightOutline, StylePen selectOutline,
+                                                  RenderState renderState)
         {
-            return RenderPaths(paths, line, highlightLine, selectLine, outline, highlightOutline, selectOutline);
+            return
+                RenderPaths(paths, line, highlightLine, selectLine, outline, highlightOutline, selectOutline,
+                            renderState);
         }
 
-        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill,
+        IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
                                                   StyleBrush highlightFill, StyleBrush selectFill, StylePen outline,
-                                                  StylePen highlightOutline, StylePen selectOutline)
+                                                  StylePen highlightOutline, StylePen selectOutline,
+                                                  RenderState renderState)
         {
-            return RenderPaths(paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline);
-        }
-
-        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData)
-        {
-            return RenderSymbols(locations, symbolData);
-        }
-
-        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-                                                    ColorMatrix highlight, ColorMatrix select)
-        {
-            return RenderSymbols(locations, symbolData, highlight, select);
+            return
+                RenderPaths(paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline,
+                            renderState);
         }
 
         IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-                                                    Symbol2D highlightSymbolData, Symbol2D selectSymbolData)
+                                                    RenderState renderState)
         {
-            return RenderSymbols(locations, symbolData, highlightSymbolData, selectSymbolData);
+            return RenderSymbols(locations, symbolData, renderState);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                    ColorMatrix highlight, ColorMatrix select, RenderState renderState)
+        {
+            return RenderSymbols(locations, symbolData, highlight, select, renderState);
+        }
+
+        IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                    Symbol2D highlightSymbolData, Symbol2D selectSymbolData,
+                                                    RenderState renderState)
+        {
+            return RenderSymbols(locations, symbolData, highlightSymbolData, selectSymbolData, renderState);
         }
 
         #endregion

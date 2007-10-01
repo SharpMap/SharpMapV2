@@ -27,11 +27,11 @@ namespace SharpMap.Tests.Rendering
 
         private class TestVectorRenderer : VectorRenderer2D<RenderObject>
         {
-            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<Path2D> paths,
                                                                   StylePen outline, StylePen highlightOutline,
                                                                   StylePen selectOutline)
             {
-                foreach (GraphicsPath2D path in paths)
+                foreach (Path2D path in paths)
                 {
                     RenderObject ro = new RenderObject();
 
@@ -53,7 +53,7 @@ namespace SharpMap.Tests.Rendering
                 }
             }
 
-            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line,
+            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<Path2D> paths, StylePen line,
                                                                   StylePen highlightLine, StylePen selectLine,
                                                                   StylePen outline, StylePen highlightOutline,
                                                                   StylePen selectOutline)
@@ -61,7 +61,7 @@ namespace SharpMap.Tests.Rendering
                 return renderPath(paths);
             }
 
-            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+            public override IEnumerable<RenderObject> RenderPaths(IEnumerable<Path2D> paths,
                                                                   StyleBrush fill, StyleBrush highlightFill,
                                                                   StyleBrush selectFill, StylePen outline,
                                                                   StylePen highlightOutline, StylePen selectOutline)
@@ -69,9 +69,9 @@ namespace SharpMap.Tests.Rendering
                 return renderPath(paths);
             }
 
-            private static IEnumerable<RenderObject> renderPath(IEnumerable<GraphicsPath2D> paths)
+            private static IEnumerable<RenderObject> renderPath(IEnumerable<Path2D> paths)
             {
-                foreach (GraphicsPath2D path in paths)
+                foreach (Path2D path in paths)
                 {
                     RenderObject ro = new RenderObject();
 

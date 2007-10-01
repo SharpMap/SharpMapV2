@@ -21,7 +21,12 @@ namespace SharpMap.Tests.Geometries
 			vertices.Add(new Point(54, 23));
 			vertices.Add(new Point(93, 12));
 			vertices.Add(new Point(104, 32));
-			l.Vertices.AddRange(vertices);
+
+            foreach (Point point in vertices)
+            {
+                l.Vertices.Add(point);
+		    }
+
 			Assert.IsFalse(l.IsEmpty());
 			Assert.IsFalse(l.IsClosed);
 			Assert.AreEqual(3, l.NumPoints);

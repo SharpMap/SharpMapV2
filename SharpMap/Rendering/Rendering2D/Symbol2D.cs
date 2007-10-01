@@ -92,7 +92,18 @@ namespace SharpMap.Rendering.Rendering2D
                 return base.AffineTransform as Matrix2D;
             }
             // TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
-            set { throw new NotImplementedException(); }
+            set
+            {
+                if (value != null && value != Matrix2D.Identity)
+                {
+                    throw new NotSupportedException(
+                        "Setting affine transform directly with a value other than " +
+                        "null or Matrix2D.Identity is not supported. " +
+                        "Use ScaleX, ScaleY, SetOffset and Rotation.");
+                }
+
+                base.AffineTransform = value;
+            }
         }
 
         /// <summary>

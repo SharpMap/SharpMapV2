@@ -30,6 +30,8 @@ namespace SharpMap.Layers
 	/// </example>
 	public class RasterLayer : Layer, IRasterLayer
 	{
+	    private Geometry _loadedRegion = Point.Empty;
+
 		public RasterLayer(ILayerProvider dataSource)
 			: base(dataSource)
 		{
@@ -45,14 +47,16 @@ namespace SharpMap.Layers
             return new RasterStyle();
         }
 
-	    protected override void LoadLayerDataForRegion(BoundingBox region)
+        public override Geometry LoadedRegion
         {
-            throw new NotImplementedException();
-        }
-
-	    protected override void LoadLayerDataForRegion(Geometry region)
-        {
-            throw new NotImplementedException();
+            get
+            {
+                return _loadedRegion.Clone();
+            }
+            protected set
+            {
+                _loadedRegion = value ?? Point.Empty;
+            }
         }
 
 	    #region IRasterLayer Members

@@ -13,15 +13,15 @@ using NPack;
 
 namespace SharpMap.Tests.Rendering
 {
-	#region GraphicsFigure2D
+	#region Figure2D
 	[TestFixture]
-	public class GraphicsFigure2DTests
+	public class Figure2DTests
 	{
 		[Test]
 		public void CreateNewTest()
 		{
 			Point2D[] points = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
-			GraphicsFigure2D f1 = new GraphicsFigure2D(points, true);
+			Figure2D f1 = new Figure2D(points, true);
 			Assert.AreEqual(4, f1.Points.Count);
 
 			for (int i = 0; i < 4; i++)
@@ -37,11 +37,11 @@ namespace SharpMap.Tests.Rendering
 			Point2D[] points2 = new Point2D[] { new Point2D(0, 0), new Point2D(2, 0), new Point2D(2, 2), new Point2D(0, 2) };
 			Point2D[] points3 = new Point2D[] { new Point2D(0, 0), new Point2D(2, 0), new Point2D(2, 2), new Point2D(0, 2), new Point2D(0, 2) };
 
-			GraphicsFigure2D f1 = new GraphicsFigure2D(points1, true);
-			GraphicsFigure2D f2 = new GraphicsFigure2D(points1, true);
-			GraphicsFigure2D f3 = new GraphicsFigure2D(points1);
-			GraphicsFigure2D f4 = new GraphicsFigure2D(points2, true);
-			GraphicsFigure2D f5 = new GraphicsFigure2D(points3, true);
+			Figure2D f1 = new Figure2D(points1, true);
+			Figure2D f2 = new Figure2D(points1, true);
+			Figure2D f3 = new Figure2D(points1);
+			Figure2D f4 = new Figure2D(points2, true);
+			Figure2D f5 = new Figure2D(points3, true);
 
 			Assert.AreEqual(f1, f2);
 			Assert.AreNotEqual(f1, f3);
@@ -58,7 +58,7 @@ namespace SharpMap.Tests.Rendering
 		{
 			Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
-			GraphicsFigure2D f1 = new GraphicsFigure2D(points1, false);
+			Figure2D f1 = new Figure2D(points1, false);
 
 			f1.Points.Add(new Point2D(5, 5));
 		}
@@ -67,9 +67,9 @@ namespace SharpMap.Tests.Rendering
 		public void ToStringTest()
 		{
 			Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
-			GraphicsFigure2D f1 = new GraphicsFigure2D(points1);
+			Figure2D f1 = new Figure2D(points1);
 
-			string expected = String.Format("[{0}] Number of {1} points: 4; Closed: False", typeof(GraphicsFigure2D), typeof(Point2D).Name);
+			string expected = String.Format("[{0}] Number of {1} points: 4; Closed: False", typeof(Figure2D), typeof(Point2D).Name);
 			Assert.AreEqual(expected, f1.ToString());
 		}
 
@@ -78,9 +78,9 @@ namespace SharpMap.Tests.Rendering
 		{
 			Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
-			GraphicsFigure2D f1 = new GraphicsFigure2D(points1);
-			GraphicsFigure<Point2D, Rectangle2D> f2 = f1.Clone();
-			GraphicsFigure2D f3 = (f1 as ICloneable).Clone() as GraphicsFigure2D;
+			Figure2D f1 = new Figure2D(points1);
+			Figure<Point2D, Rectangle2D> f2 = f1.Clone();
+			Figure2D f3 = (f1 as ICloneable).Clone() as Figure2D;
 
 			Assert.AreEqual(f1, f2);
 			Assert.AreEqual(f1, f3);
@@ -91,7 +91,7 @@ namespace SharpMap.Tests.Rendering
 		{
 			Point2D[] points1 = new Point2D[] { new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1) };
 
-			GraphicsFigure2D f1 = new GraphicsFigure2D(points1);
+			Figure2D f1 = new Figure2D(points1);
 
 			IEnumerator e1 = (f1 as IEnumerable).GetEnumerator();
 

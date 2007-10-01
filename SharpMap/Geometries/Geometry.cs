@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using SharpMap.Converters.WellKnownBinary;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
@@ -124,9 +125,9 @@ namespace SharpMap.Geometries
 			BoundingBox box = GetBoundingBox();
 			Polygon envelope = new Polygon();
 			envelope.ExteriorRing.Vertices.Add(box.Min); //minx miny
-			envelope.ExteriorRing.Vertices.Add(new Point(box.Max.X, box.Min.Y)); //maxx minu
+			envelope.ExteriorRing.Vertices.Add(new Point(box.Right, box.Bottom)); //maxx minu
 			envelope.ExteriorRing.Vertices.Add(box.Max); //maxx maxy
-			envelope.ExteriorRing.Vertices.Add(new Point(box.Min.X, box.Max.Y)); //minx maxy
+			envelope.ExteriorRing.Vertices.Add(new Point(box.Left, box.Top)); //minx maxy
 			envelope.ExteriorRing.Vertices.Add(envelope.ExteriorRing.StartPoint); //close ring
 			return envelope;
 		}
@@ -330,7 +331,9 @@ namespace SharpMap.Geometries
 		/// Creates a deep copy of the Geometry instance.
 		/// </summary>
 		/// <returns>Copy of Geometry</returns>
-		public abstract Geometry Clone();
+        public abstract Geometry Clone();
+
+	    protected internal abstract IEnumerable<Point> GetPointStream();
 
 		#region IEquatable<Geometry> Members
 
@@ -417,13 +420,21 @@ namespace SharpMap.Geometries
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a particular type. <see cref="GetHashCode"/> is suitable for use 
+		/// Serves as a hash function for a particular type. 
+		/// <see cref="GetHashCode"/> is suitable for use 
 		/// in hashing algorithms and data structures like a hash table.
 		/// </summary>
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
 		public override int GetHashCode()
 		{
-			return AsBinary().GetHashCode();
+		    int hashCode = GetType().GetHashCode();
+
+		    foreach (Point point in GetPointStream())
+		    {
+		        hashCode ^= point.X.GetHashCode() ^ point.Y.GetHashCode();
+		    }
+
+            return hashCode;
 		}
 
 		#endregion

@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using SharpMap.Geometries;
+using SharpMap.Query;
 
 namespace SharpMap.Data
 {
@@ -70,11 +71,10 @@ namespace SharpMap.Data
         #endregion
 
         #region Instance fields
-        private Geometry _queryGeometry = Point.Empty;
-        private readonly SpatialQueryType _queryType;
-        private readonly ArrayList _oidFilter = new ArrayList();
-        private readonly bool _filterSet = false;
-        private bool _emptyGeometryFilterIsExclusive = false;
+        //private Geometry _geometryFilter = Point.Empty;
+        //private readonly SpatialQueryType _queryType;
+        //private readonly ArrayList _oidFilter = new ArrayList();
+        private FeatureSpatialQuery _viewDefinition;
         private bool _reindexingEnabled = true;
         private bool _shouldReindex = false;
         #endregion
@@ -87,7 +87,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="table">Table to create view on.</param>
         public FeatureDataView(FeatureDataTable table)
-            : this(table, null, null, DataViewRowState.CurrentRows) {}
+            : this(table, null, null, DataViewRowState.CurrentRows) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -102,7 +102,7 @@ namespace SharpMap.Data
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
                                string sort, DataViewRowState rowState)
-            : this(table, intersectionFilter, SpatialQueryType.Intersects, sort, rowState) {}
+            : this(table, intersectionFilter, SpatialQueryType.Intersects, sort, rowState) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -121,7 +121,7 @@ namespace SharpMap.Data
         /// </param>
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
                                string sort, DataViewRowState rowState, bool emptyGeometryFilterIsExclusive)
-            : this(table, intersectionFilter, SpatialQueryType.Intersects, sort, rowState, emptyGeometryFilterIsExclusive) {}
+            : this(table, intersectionFilter, SpatialQueryType.Intersects, sort, rowState, emptyGeometryFilterIsExclusive) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -139,7 +139,13 @@ namespace SharpMap.Data
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry query, SpatialQueryType queryType,
                                string sort, DataViewRowState rowState)
-            : this(table, query, queryType, sort, rowState, false) {}
+            : this(table, query, queryType, sort, rowState, false) { }
+
+
+        public FeatureDataView(FeatureDataTable table, Geometry query, SpatialQueryType queryType,
+                               string sort, DataViewRowState rowState, bool emptyGeometryFilterIsExclusive)
+            : this(table, new FeatureSpatialQuery(query, queryType, null), sort, rowState, emptyGeometryFilterIsExclusive)
+        { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -159,24 +165,25 @@ namespace SharpMap.Data
         /// Value indicating that an empty <see cref="GeometryFilter"/> excludes rows 
         /// (<see langword="true"/>) or includes them (<see langword="false"/>).
         /// </param>
-        public FeatureDataView(FeatureDataTable table, Geometry query, SpatialQueryType queryType,
+        public FeatureDataView(FeatureDataTable table, FeatureSpatialQuery definition,
                                string sort, DataViewRowState rowState, bool emptyGeometryFilterIsExclusive)
             : base(
                 table, "",
                 String.IsNullOrEmpty(sort) ? table.PrimaryKey.Length == 1 ? table.PrimaryKey[0].ColumnName : "" : sort,
                 rowState)
         {
+            if (definition == null) throw new ArgumentNullException("definition");
+
             // TODO: Support all query types in FeatureDataView
-            if (queryType != SpatialQueryType.Intersects)
+            if (definition.QueryType != SpatialQueryType.Intersects &&
+                definition.QueryType != SpatialQueryType.Disjoint)
             {
                 throw new NotSupportedException(
-                    "Only query type of SpatialQueryType.Intersects currently supported.");
+                    "Only query types of SpatialQueryType.Intersects and " +
+                    "SpatialQueryType.Disjoint are currently supported.");
             }
 
-            GeometryFilter = query;
-            _queryType = queryType;
-            _filterSet = true;
-            _emptyGeometryFilterIsExclusive = emptyGeometryFilterIsExclusive;
+            _viewDefinition = definition;
 
             // This call rebuilds the index which was just built with 
             // the call into the base constructor, which may be a performance
@@ -197,72 +204,28 @@ namespace SharpMap.Data
         #endregion
 
         /// <summary>
-        /// Gets or sets a value indicating that an empty <see cref="GeometryFilter"/> 
-        /// excludes rows (<see langword="true"/>) or includes them (<see langword="false"/>).
-        /// </summary>
-        public bool IsEmptyGeometryFilterExclusive
-        {
-            get { return _emptyGeometryFilterIsExclusive; }
-            set
-            {
-                if (_emptyGeometryFilterIsExclusive == value)
-                {
-                    return;
-                }
-
-                _emptyGeometryFilterIsExclusive = value;
-
-                if (GeometryFilter.IsEmpty())
-                {
-                    if (ReindexingEnabled)
-                    {
-                        Reset();
-                    }
-                    else
-                    {
-                        _shouldReindex = true;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the <see cref="Geometry"/> instance used
         /// to filter the table data based on intersection.
         /// </summary>
         public Geometry GeometryFilter
         {
-            get { return _queryGeometry.Clone(); }
+            get
+            {
+                return _viewDefinition.QueryRegion == null
+                  ? Point.Empty
+                  : _viewDefinition.QueryRegion.Clone();
+            }
             set
             {
                 value = value ?? Point.Empty;
 
-                if (_queryGeometry == value)
+                if (_viewDefinition.QueryRegion == value)
                 {
                     return;
                 }
 
-                _queryGeometry = value;
-
-                if (!Table.CachedRegion.Contains(_queryGeometry))
-                {
-                    onMissingRegion(_queryGeometry.Difference(Table.CachedRegion));
-                }
-
-                // TODO: Perhaps resetting the entire index is a bit drastic... 
-                // Reconsider how to enlist and retire rows incrementally, 
-                // perhaps doing RTree diffs.
-                if (_filterSet)
-                {
-                    if (ReindexingEnabled)
-                    {
-                        Reset();
-                    }
-                    else
-                    {
-                        _shouldReindex = true;
-                    }
-                }
+                ViewDefinition = new FeatureSpatialQuery(value,
+                    GeometryFilterType, _viewDefinition.Oids);
             }
         }
 
@@ -272,7 +235,7 @@ namespace SharpMap.Data
         /// </summary>
         public SpatialQueryType GeometryFilterType
         {
-            get { return _queryType; }
+            get { return _viewDefinition.QueryType; }
         }
 
         /// <summary>
@@ -285,40 +248,19 @@ namespace SharpMap.Data
         /// </remarks>
         public IEnumerable OidFilter
         {
-            get { return _oidFilter; }
+            get
+            {
+                return _viewDefinition.Oids;
+            }
             set
             {
-                _oidFilter.Clear();
-
-                ArrayList missingOids = new ArrayList();
-
-                if (value != null)
+                if (_viewDefinition.Oids == value)
                 {
-                    foreach (object oid in value)
-                    {
-                        _oidFilter.Add(oid);
-                        FeatureDataRow feature = Table.Find(oid);
-
-                        if (feature == null || !feature.IsFullyLoaded)
-                        {
-                            missingOids.Add(oid);
-                        }
-                    }
-
-                    if (missingOids.Count > 0)
-                    {
-                        onMissingOids(missingOids);
-                    }
+                    return;
                 }
 
-                if (ReindexingEnabled)
-                {
-                    Reset();
-                }
-                else
-                {
-                    _shouldReindex = true;
-                }
+                ViewDefinition = new FeatureSpatialQuery(_viewDefinition.QueryRegion,
+                                                          _viewDefinition.QueryType, value);
             }
         }
 
@@ -329,12 +271,12 @@ namespace SharpMap.Data
         {
             get
             {
-                if (_queryGeometry == null)
+                if (_viewDefinition.QueryRegion == null)
                 {
                     return BoundingBox.Empty;
                 }
 
-                return _queryGeometry.GetBoundingBox();
+                return _viewDefinition.QueryRegion.GetBoundingBox();
             }
             //set
             //{
@@ -344,6 +286,45 @@ namespace SharpMap.Data
             //    }
             //    GeometryFilter = value.ToGeometry();
             //}
+        }
+
+        public FeatureSpatialQuery ViewDefinition
+        {
+            get { return _viewDefinition.Clone(); }
+            set
+            {
+                if (_viewDefinition == value)
+                {
+                    return;
+                }
+
+                _viewDefinition = value;
+
+                Geometry missingGeometry = null;
+                ArrayList missingOids = new ArrayList();
+
+                if (!_viewDefinition.QueryRegion.IsEmpty() 
+                    && !Table.Envelope.Contains(_viewDefinition.QueryRegion))
+                {
+                    missingGeometry = Table.Envelope.Difference(_viewDefinition.QueryRegion);
+                }
+
+                if (value.Oids != null)
+                {
+                    foreach (object oid in value.Oids)
+                    {
+                        FeatureDataRow feature = Table.Find(oid);
+
+                        if (feature == null || !feature.IsFullyLoaded)
+                        {
+                            missingOids.Add(oid);
+                        }
+                    }
+                }
+
+                Table.NotifyFeaturesNotFound(missingGeometry, missingOids);
+                resetInternal();
+            }
         }
 
         #region DataView overrides and shadows
@@ -364,7 +345,7 @@ namespace SharpMap.Data
         public bool ReindexingEnabled
         {
             get { return _reindexingEnabled; }
-            set 
+            set
             {
                 if (_reindexingEnabled == value)
                 {
@@ -420,7 +401,7 @@ namespace SharpMap.Data
 
         protected override void UpdateIndex(bool force)
         {
-            if (!_filterSet || !ReindexingEnabled)
+            if (!ReindexingEnabled)
             {
                 return;
             }
@@ -494,14 +475,34 @@ namespace SharpMap.Data
 
         private bool inGeometryFilter(FeatureDataRow feature)
         {
-            return (GeometryFilter == Point.Empty && !_emptyGeometryFilterIsExclusive) ||
-                   GeometryFilter.Intersects(feature.Geometry);
+            return (_viewDefinition.QueryRegion == Point.Empty &&
+                _viewDefinition.QueryType == SpatialQueryType.Disjoint) ||
+                _viewDefinition.QueryRegion.Intersects(feature.Geometry);
         }
 
         private bool inOidFilter(FeatureDataRow feature)
         {
-            return _oidFilter.Count == 0 ||
-                   (feature.HasOid && _oidFilter.Contains(feature.GetOid()));
+            if (!feature.HasOid)
+            {
+                return false;
+            }
+
+            if (_viewDefinition.Oids == null)
+            {
+                return true;
+            }
+
+            object featureOid = feature.GetOid();
+
+            foreach (object oid in _viewDefinition.Oids)
+            {
+                if (featureOid == oid)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool inAttributeFilter()
@@ -510,16 +511,20 @@ namespace SharpMap.Data
             return true;
         }
 
-        private void onMissingRegion(Geometry missingRegion)
+        private void resetInternal()
         {
-            Table.RequestFeatures(missingRegion);
+            // TODO: Perhaps resetting the entire index is a bit drastic... 
+            // Reconsider how to enlist and retire rows incrementally, 
+            // perhaps doing RTree diffs.
+            if (ReindexingEnabled)
+            {
+                Reset();
+            }
+            else
+            {
+                _shouldReindex = true;
+            }
         }
-
-        private void onMissingOids(IEnumerable missingOids)
-        {
-            Table.RequestFeatures(missingOids);
-        }
-
         #endregion
 
         #region Private static helper methods
@@ -529,29 +534,29 @@ namespace SharpMap.Data
             // TODO: check if this could be redone with a DynamicMethod,
             // using System.Object in place of the inaccessible System.Data.DataExpression,
             // relying on delegate covariance.
-            MethodInfo setIndex2Info = typeof (DataView).GetMethod(
+            MethodInfo setIndex2Info = typeof(DataView).GetMethod(
                 "SetIndex2", BindingFlags.NonPublic | BindingFlags.Instance);
-            ConstructorInfo setIndexDelegateCtor = typeof (SetIndex2Delegate)
-                .GetConstructor(new Type[] {typeof (object), typeof (IntPtr)});
+            ConstructorInfo setIndexDelegateCtor = typeof(SetIndex2Delegate)
+                .GetConstructor(new Type[] { typeof(object), typeof(IntPtr) });
             IntPtr setIndex2Pointer = setIndex2Info.MethodHandle.GetFunctionPointer();
-            return (SetIndex2Delegate) setIndexDelegateCtor.Invoke(new Object[] {null, setIndex2Pointer});
+            return (SetIndex2Delegate)setIndexDelegateCtor.Invoke(new Object[] { null, setIndex2Pointer });
         }
 
         private static SetLockedDelegate GenerateSetLockedDelegate()
         {
             // Use LCG to create a set accessor to the DataView.locked field
             DynamicMethod setLockedMethod = new DynamicMethod("set_locked_DynamicMethod",
-                                                              null, new Type[] {typeof (DataView), typeof (bool)},
-                                                              typeof (DataView));
+                                                              null, new Type[] { typeof(DataView), typeof(bool) },
+                                                              typeof(DataView));
 
             ILGenerator il = setLockedMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            FieldInfo lockedField = typeof (DataView).GetField("locked", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo lockedField = typeof(DataView).GetField("locked", BindingFlags.Instance | BindingFlags.NonPublic);
             il.Emit(OpCodes.Stfld, lockedField);
             il.Emit(OpCodes.Ret);
 
-            return setLockedMethod.CreateDelegate(typeof (SetLockedDelegate)) as SetLockedDelegate;
+            return setLockedMethod.CreateDelegate(typeof(SetLockedDelegate)) as SetLockedDelegate;
         }
 
         private static SetDataViewManagerDelegate GenerateSetDataViewManagerDelegate()
@@ -563,18 +568,18 @@ namespace SharpMap.Data
                                                                            {
                                                                                typeof (FeatureDataView),
                                                                                typeof (DataViewManager)
-                                                                           }, typeof (DataView));
+                                                                           }, typeof(DataView));
 
             ILGenerator il = setDataViewManagerMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            MethodInfo setDataViewManagerInfo = typeof (DataView).GetMethod("SetDataViewManager",
+            MethodInfo setDataViewManagerInfo = typeof(DataView).GetMethod("SetDataViewManager",
                                                                             BindingFlags.Instance |
                                                                             BindingFlags.NonPublic, null,
-                                                                            new Type[] {typeof (DataViewManager)}, null);
+                                                                            new Type[] { typeof(DataViewManager) }, null);
             il.Emit(OpCodes.Call, setDataViewManagerInfo);
 
-            return setDataViewManagerMethod.CreateDelegate(typeof (SetDataViewManagerDelegate))
+            return setDataViewManagerMethod.CreateDelegate(typeof(SetDataViewManagerDelegate))
                    as SetDataViewManagerDelegate;
         }
 
@@ -591,7 +596,7 @@ namespace SharpMap.Data
             Debug.Assert(rowPredicateFilterType != null,
                          "Can't find the type System.Data.DataView+RowPredicateFilter. " +
                          "This is probably because you are not running the v2.0 CLR which ships with .Net v3.5 Beta 2.");
-            object[] args = new object[] {filter};
+            object[] args = new object[] { filter };
             object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
                                                                  BindingFlags.Instance | BindingFlags.NonPublic,
                                                                  null, args, null);

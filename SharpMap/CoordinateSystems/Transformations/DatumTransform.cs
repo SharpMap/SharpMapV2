@@ -103,14 +103,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 			}
 		}
 
-		public override List<Point> TransformList(List<Point> points)
+        public override IEnumerable<Point> TransformList(IEnumerable<Point> points)
 		{
-			List<Point> pnts = new List<Point>(points.Count);
-			foreach (Point p in points)
-			{
-				pnts.Add(Transform(p));
-			}
-			return pnts;
+            foreach (Point point in points)
+            {
+                yield return Transform(point);
+            }
 		}
 
 		public override void Invert()

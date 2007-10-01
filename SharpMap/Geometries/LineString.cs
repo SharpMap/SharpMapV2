@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SharpMap.Geometries
 {
@@ -27,7 +28,8 @@ namespace SharpMap.Geometries
 	[Serializable]
 	public class LineString : Curve
 	{
-		private readonly List<Point> _vertices = new List<Point>();
+        private readonly BindingList<Point> _vertices = new BindingList<Point>();
+	    private BoundingBox _bounds = BoundingBox.Empty;
 
 		/// <summary>
 		/// Initializes an instance of a LineString from a set of vertices.
@@ -35,6 +37,8 @@ namespace SharpMap.Geometries
 		/// <param name="vertices"></param>
 		public LineString(IEnumerable<Point> vertices)
 		{
+            _vertices.ListChanged += handleVertexesChanged;
+
 			foreach (Point p in vertices)
 			{
 				_vertices.Add(p.Clone() as Point);
@@ -44,14 +48,14 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Initializes an instance of a LineString.
 		/// </summary>
-		public LineString() : this(new List<Point>())
+		public LineString() : this(new Point[0])
 		{
 		}
 
 		/// <summary>
 		/// Gets or sets the collection of vertices in this Geometry.
 		/// </summary>
-		public virtual List<Point> Vertices
+		public virtual IList<Point> Vertices
 		{
 			get { return _vertices; }
 		}
@@ -334,6 +338,14 @@ namespace SharpMap.Geometries
 			return bbox;
 		}
 
+        protected internal override IEnumerable<Point> GetPointStream()
+        {
+            foreach (Point point in _vertices)
+            {
+                yield return point;
+            }
+        }
+
 		#region ICloneable Members
 
 		/// <summary>
@@ -353,5 +365,30 @@ namespace SharpMap.Geometries
 		}
 
 		#endregion
+
+        private void handleVertexesChanged(object sender, ListChangedEventArgs args)
+        {
+            switch (args.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    _bounds.ExpandToInclude(_vertices[args.NewIndex]);
+                    break;
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    _bounds = BoundingBox.Empty;
+                    foreach (Point point in _vertices)
+                    {
+                        _bounds.ExpandToInclude(point);
+                    }
+                    break;
+                case ListChangedType.ItemChanged:
+                case ListChangedType.ItemMoved:
+                case ListChangedType.PropertyDescriptorAdded:
+                case ListChangedType.PropertyDescriptorChanged:
+                case ListChangedType.PropertyDescriptorDeleted:
+                default:
+                    break;
+            }
+        }
 	}
 }

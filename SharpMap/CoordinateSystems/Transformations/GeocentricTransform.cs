@@ -235,16 +235,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 			}
 		}
 
-		public override List<Point> TransformList(List<Point> points)
+        public override IEnumerable<Point> TransformList(IEnumerable<Point> points)
 		{
-			List<Point> result = new List<Point>(points.Count);
-			for (int i = 0; i < points.Count; i++)
-			{
-				Point point = points[i];
-				result.Add(Transform(point));
+            foreach (Point point in points)
+            {
+				yield return Transform(point);
 			}
-
-			return result;
 		}
 
 		/// <summary>

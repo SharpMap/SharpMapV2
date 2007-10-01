@@ -27,7 +27,7 @@ namespace SharpMap.Rendering.Rendering2D
 	/// <summary>
 	/// Class for storing a label instance.
 	/// </summary>
-	public class Label2D : ILabel<Point2D, Rectangle2D, GraphicsPath2D>, IComparable<Label2D>, IComparer<Label2D>
+	public class Label2D : ILabel<Point2D, Rectangle2D, Path2D>, IComparable<Label2D>, IComparer<Label2D>
     {
         private string _text;
         private Point2D _labelPoint;
@@ -35,7 +35,7 @@ namespace SharpMap.Rendering.Rendering2D
         private int _priority;
         private float _rotation;
         private LabelStyle _style;
-        private GraphicsPath2D _labelPath;
+        private Path2D _labelPath;
 		private Rectangle2D _collisionBounds;
 
 		/// <summary>
@@ -124,7 +124,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets the path on which to flow the label.
         /// </summary>
-		public GraphicsPath2D FlowPath
+		public Path2D FlowPath
 		{
 			get { return _labelPath; }
 			set { _labelPath = value; }

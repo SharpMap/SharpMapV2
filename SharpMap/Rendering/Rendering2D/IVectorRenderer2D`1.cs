@@ -28,18 +28,18 @@ namespace SharpMap.Rendering.Rendering2D
     public interface IVectorRenderer2D<TRenderObject> : IVectorRenderer2D
     {
         /// <summary>
-        /// Renders a set of <see cref="GraphicsPath2D"/> instances into a set of rendered objects.
+        /// Renders a set of <see cref="Path2D"/> instances into a set of rendered objects.
         /// </summary>
         /// <param name="paths">The paths to render.</param>
         /// <param name="outline">Style of the path outline.</param>
         /// <param name="highlightOutline">Style of the path outline when highlighted.</param>
         /// <param name="selectOutline">Style of the path outline when selected.</param>
         /// <returns>A rendered object suitable for direct display.</returns>
-        new IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
-                                               StylePen highlightOutline, StylePen selectOutline);
+        new IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
+                                               StylePen highlightOutline, StylePen selectOutline, RenderState renderState);
 
         /// <summary>
-        /// Renders a set of <see cref="GraphicsPath2D"/> instances into a set of rendered objects.
+        /// Renders a set of <see cref="Path2D"/> instances into a set of rendered objects.
         /// </summary>
         /// <param name="paths">The paths to render.</param>
         /// <param name="line">The style of the path line.</param>
@@ -49,14 +49,14 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="highlightOutline">Style of the path line outline when highlighted.</param>
         /// <param name="selectOutline">Style of the path line outline when selected.</param>
         /// <returns>A rendered object suitable for direct display.</returns>
-        new IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+        new IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> paths,
                                                StylePen line, StylePen highlightLine,
                                                StylePen selectLine,
                                                StylePen outline, StylePen highlightOutline,
-                                               StylePen selectOutline);
+                                               StylePen selectOutline, RenderState renderState);
 
         /// <summary>
-        /// Renders a set of <see cref="GraphicsPath2D"/> instances into a set of rendered objects.
+        /// Renders a set of <see cref="Path2D"/> instances into a set of rendered objects.
         /// </summary>
         /// <param name="path">The paths to render.</param>
         /// <param name="fill">The style of the path fill.</param>
@@ -66,10 +66,10 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="highlightOutline">Style of the path outline when highlighted.</param>
         /// <param name="selectOutline">Style of the path outline when selected.</param>
         /// <returns>A rendered object suitable for direct display.</returns>
-        new IEnumerable<TRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> path, StyleBrush fill,
+        new IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> path, StyleBrush fill,
                                                StyleBrush highlightFill,
                                                StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
-                                               StylePen selectOutline);
+                                               StylePen selectOutline, RenderState renderState);
 
         /// <summary>
         /// Renders a set of <see cref="Point2D">points</see> into a set of rendered objects.
@@ -77,7 +77,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="locations">The point to render.</param>
         /// <param name="symbolData">The symbol to use for the point.</param>
         /// <returns>A rendered object suitable for direct display.</returns>
-        new IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData);
+        new IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, RenderState renderState);
 
         /// <summary>
         /// Renders a set of <see cref="Point2D">point</see> into a set of rendered objects.
@@ -88,7 +88,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="select">A color matrix used to recolor the symbol during selection.</param>
         /// <returns>A rendered object suitable for direct display.</returns>
         new IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-                                                 ColorMatrix highlight, ColorMatrix select);
+                                                 ColorMatrix highlight, ColorMatrix select, RenderState renderState);
 
         /// <summary>
         /// Renders a set of <see cref="Point2D">point</see> into a set of rendered objects.
@@ -99,6 +99,6 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="selectSymbolData">The symbol to use for the point when selected.</param>
         /// <returns>A rendered object suitable for direct display.</returns>
         new IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-                                                 Symbol2D highlightSymbolData, Symbol2D selectSymbolData);
+                                                 Symbol2D highlightSymbolData, Symbol2D selectSymbolData, RenderState renderState);
     }
 }

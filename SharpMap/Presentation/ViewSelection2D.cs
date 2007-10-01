@@ -55,14 +55,14 @@ namespace SharpMap.Presentation
             return selection;
         }
 
-        public new GraphicsPath2D Path
+        public new Path2D Path
         {
-            get { return base.Path as GraphicsPath2D; }
+            get { return base.Path as Path2D; }
         }
 
-        protected override GraphicsPath<Point2D, Rectangle2D> CreatePath()
+        protected override Path<Point2D, Rectangle2D> CreatePath()
         {
-            return new GraphicsPath2D(new Point2D[0]);
+            return new Path2D(new Point2D[0]);
         }
     }
 }

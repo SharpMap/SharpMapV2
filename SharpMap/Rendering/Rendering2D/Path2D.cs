@@ -23,42 +23,42 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// Represents a series of figures of connected points in 2D space.
     /// </summary>
-    public class GraphicsPath2D : GraphicsPath<Point2D, Rectangle2D>
+    public class Path2D : Path<Point2D, Rectangle2D>
     {
         /// <summary>
-        /// Creates a new empty <see cref="GraphicsPath2D"/>.
+        /// Creates a new empty <see cref="Path2D"/>.
         /// </summary>
-        public GraphicsPath2D() { }
+        public Path2D() { }
 
         /// <summary>
-        /// Creates a new, open <see cref="GraphicsPath2D"/> with the given points.
+        /// Creates a new, open <see cref="Path2D"/> with the given points.
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
-        public GraphicsPath2D(IEnumerable<Point2D> points)
+        public Path2D(IEnumerable<Point2D> points)
             : base(points) { }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsPath2D"/> with the given points, as closed or open.
+        /// Creates a new <see cref="Path2D"/> with the given points, as closed or open.
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
         /// <param name="closeFigure">True to create a closed path, false for an open path.</param>
-        public GraphicsPath2D(IEnumerable<Point2D> points, bool closeFigure)
+        public Path2D(IEnumerable<Point2D> points, bool closeFigure)
 			: base(points, closeFigure) { }
 
 		/// <summary>
-		/// Creates a new <see cref="GraphicsPath2D"/> with the given 
-		/// <see cref="GraphicsFigure2D"/> instance.
+		/// Creates a new <see cref="Path2D"/> with the given 
+		/// <see cref="Figure2D"/> instance.
 		/// </summary>
 		/// <param name="figure">A figure to create the path from.</param>
-		public GraphicsPath2D(GraphicsFigure2D figure)
+		public Path2D(Figure2D figure)
 			: base(figure) { }
 
         /// <summary>
-        /// Creates a new <see cref="GraphicsPath2D"/> with the given 
-        /// <see cref="GraphicsFigure2D"/> instances.
+        /// Creates a new <see cref="Path2D"/> with the given 
+        /// <see cref="Figure2D"/> instances.
         /// </summary>
         /// <param name="figures">An enumeration of figures to create the path from.</param>
-        public GraphicsPath2D(IEnumerable<GraphicsFigure2D> figures)
+        public Path2D(IEnumerable<Figure2D> figures)
             : base(convertToBase(figures)) { }
 
         /// <summary>
@@ -70,31 +70,31 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Creates a new GraphicsPath with one figure for each of the 
+        /// Creates a new Path with one figure for each of the 
         /// figures in the give enumeration of <paramref name="figures"/>.
         /// </summary>
-        /// <param name="figures">Figures to make the GraphicsPath from.</param>
-        /// <returns>A GraphicsPath instance with one figure for each of the GraphicsFigure 
+        /// <param name="figures">Figures to make the Path from.</param>
+        /// <returns>A Path instance with one figure for each of the Figure 
         /// instances in the given enumeration.</returns>
-        protected override GraphicsPath<Point2D, Rectangle2D> CreatePath(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
+        protected override Path<Point2D, Rectangle2D> CreatePath(IEnumerable<Figure<Point2D, Rectangle2D>> figures)
         {
-            return new GraphicsPath2D(convertFromBase(figures));
+            return new Path2D(convertFromBase(figures));
         }
 
         /// <summary>
-        /// Creates a new GraphicsFigure from the given <paramref name="points"/>, 
+        /// Creates a new Figure from the given <paramref name="points"/>, 
         /// either open or closed.
         /// </summary>
         /// <param name="points">Points to use in the figure.</param>
         /// <param name="closeFigure">True to close the figure, false to leave it open.</param>
-        /// <returns>A GraphicsFigure instance made from the given points.</returns>
-        protected override GraphicsFigure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool closeFigure)
+        /// <returns>A Figure instance made from the given points.</returns>
+        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool closeFigure)
         {
-            return new GraphicsFigure2D(points, closeFigure);
+            return new Figure2D(points, closeFigure);
         }
 
         /// <summary>
-        /// Computes the <see cref="GraphicsFigure2D.Bounds"/> for this <see cref="GraphicsPath2D"/>.
+        /// Computes the <see cref="Figure2D.Bounds"/> for this <see cref="Path2D"/>.
         /// </summary>
         /// <returns>A <see cref="Rectangle2D"/> which describes the minimum bounding rectangle for this path.</returns>
         protected override Rectangle2D ComputeBounds()
@@ -106,7 +106,7 @@ namespace SharpMap.Rendering.Rendering2D
 
             double minX = Double.MaxValue, maxX = Double.MinValue, minY = Double.MaxValue, maxY = Double.MinValue;
 
-            foreach (GraphicsFigure2D figure in Figures)
+            foreach (Figure2D figure in Figures)
             {
                 Rectangle2D figureBounds = figure.Bounds;
 
@@ -134,17 +134,17 @@ namespace SharpMap.Rendering.Rendering2D
             return new Rectangle2D(minX, minY, maxX, maxY);
         }
 
-        private static IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> convertToBase(IEnumerable<GraphicsFigure2D> figures)
+        private static IEnumerable<Figure<Point2D, Rectangle2D>> convertToBase(IEnumerable<Figure2D> figures)
         {
-            foreach (GraphicsFigure2D figure in figures)
+            foreach (Figure2D figure in figures)
             {
                 yield return figure;
             }
         }
 
-        private static IEnumerable<GraphicsFigure2D> convertFromBase(IEnumerable<GraphicsFigure<Point2D, Rectangle2D>> figures)
+        private static IEnumerable<Figure2D> convertFromBase(IEnumerable<Figure<Point2D, Rectangle2D>> figures)
         {
-            foreach (GraphicsFigure2D figure in figures)
+            foreach (Figure2D figure in figures)
             {
                 yield return figure;
             }

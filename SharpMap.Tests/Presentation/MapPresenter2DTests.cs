@@ -40,13 +40,13 @@ namespace SharpMap.Tests.Presentation
 
         private class TestVectorRenderer2D : VectorRenderer2D<object>
         {
-            public override IEnumerable<object> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen outline,
+            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
                                               StylePen highlightOutline, StylePen selectOutline)
             {
                 throw new NotImplementedException();
             }
 
-			public override IEnumerable<object> RenderPaths(IEnumerable<GraphicsPath2D> paths, StyleBrush fill,
+			public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
                                               StyleBrush highlightFill, StyleBrush selectFill, StylePen outline,
                                               StylePen highlightOutline, StylePen selectOutline)
             {
@@ -70,7 +70,7 @@ namespace SharpMap.Tests.Presentation
                 throw new NotImplementedException();
             }
 
-            public override IEnumerable<object> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
             {
                 throw new Exception("The method or operation is not implemented.");
             }

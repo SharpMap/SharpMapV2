@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 
 namespace SharpMap.Geometries
 {
@@ -423,10 +424,17 @@ namespace SharpMap.Geometries
 		/// <returns>Geometry</returns>
 		public override Geometry Difference(Geometry geom)
 		{
-			throw new NotImplementedException();
+		    if (geom == null) throw new ArgumentNullException("geom");
+
+		    if (Equals(geom))
+            {
+                return Empty;
+            }
+
+		    return geom;
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Returns a geometry that represents the point set symmetric difference 
 		/// of this Geometry with anotherGeometry.
 		/// </summary>
@@ -510,6 +518,11 @@ namespace SharpMap.Geometries
 
 			return new Point(X, Y);
 		}
+
+        protected internal override IEnumerable<Point> GetPointStream()
+        {
+            yield return this;
+        }
 
 		#region IComparable<Point> Members
 

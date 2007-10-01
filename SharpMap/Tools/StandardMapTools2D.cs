@@ -223,11 +223,18 @@ namespace SharpMap.Tools
                 view.ToWorld(viewBounds.LowerLeft), view.ToWorld(viewBounds.UpperRight));
 
             // Apply the GeometryFilter derived from the view's selection
-            foreach (Layer layer in context.Map.Layers)
+            for (int i = context.Map.Layers.Count - 1; i >= 0; i--)
             {
-                if (layer.Enabled && layer.IsVisibleWhen(isInView(view.WorldWidth)) && layer is GeometryLayer)
+                GeometryLayer layer = context.Map.Layers[i] as GeometryLayer;
+
+                if (layer == null)
                 {
-                    (layer as GeometryLayer).SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
+                    continue;
+                }
+
+                if (layer.Enabled && layer.IsVisibleWhen(isInView(view.WorldWidth)))
+                {
+                    layer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
                 }
             }
         }

@@ -286,7 +286,7 @@ namespace SharpMap.Rendering.Rendering2D
                     throw new ArgumentNullException("value");
                 }
 
-                checkIndex(value.Length);
+                checkIndex(value.Length - 1);
 
                 _x = value[0];
                 _y = value[1];

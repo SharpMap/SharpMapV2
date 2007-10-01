@@ -18,11 +18,13 @@
 
 
 using System;
+using System.Collections;
 using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using SharpMap.Geometries;
+using SharpMap.Query;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -113,8 +115,7 @@ namespace SharpMap.Layers
         private bool _disposed;
         private readonly ILayerProvider _dataSource;
         private bool _asyncQuery = false;
-        private Geometry _loadedRegion;
-        private bool _handleDataCacheMissEvent = true;
+        private bool _handleFeaturesNotFoundEvent = true;
         #endregion
 
         #region Object Creation / Disposal
@@ -259,8 +260,17 @@ namespace SharpMap.Layers
             get { return _asyncQuery; }
             set
             {
+                if (_asyncQuery == value)
+                {
+                    return;
+                }
+
+#if !EXPERIMENTAL
+                throw new NotImplementedException("AsyncQuery not implemented in this release.");
+#else
                 _asyncQuery = value;
                 OnAsyncQueryChanged();
+#endif
             }
         }
 
@@ -361,17 +371,17 @@ namespace SharpMap.Layers
         /// an event from a data store indicating that the data is not cached
         /// and must be read from <see cref="DataSource"/>.
         /// </summary>
-        public bool ShouldHandleDataCacheMissEvent
+        public bool ShouldHandleFeaturesNotFoundEvent
         {
-            get { return _handleDataCacheMissEvent; }
+            get { return _handleFeaturesNotFoundEvent; }
             set
             {
-                if (_handleDataCacheMissEvent == value)
+                if (_handleFeaturesNotFoundEvent == value)
                 {
                     return;
                 }
 
-                _handleDataCacheMissEvent = value;
+                _handleFeaturesNotFoundEvent = value;
 
                 OnShouldHandleDataCacheMissEventChanged();
             }
@@ -455,14 +465,14 @@ namespace SharpMap.Layers
                 return;
             }
 
-            if (_loadedRegion == null)
+            if (LoadedRegion == null)
             {
-                _loadedRegion = region;
+                LoadedRegion = region;
             }
             else
             {
-                _loadedRegion = _loadedRegion.Union(region);
-                _loadedRegion = simplifyRegion(_loadedRegion);
+                LoadedRegion = LoadedRegion.Union(region);
+                LoadedRegion = FakeSpatialOperations.SimplifyRegion(LoadedRegion);
             }
         }
 
@@ -471,19 +481,23 @@ namespace SharpMap.Layers
             return new Style();
         }
 
-        protected virtual Geometry LoadedRegion
+        public abstract Geometry LoadedRegion { get; protected set; }
+
+        public virtual void LoadIntersectingLayerData(BoundingBox region)
         {
-            get { return _loadedRegion; }
+            SpatialQuery query = new SpatialQuery(region.ToGeometry(), SpatialQueryType.Intersects);
+            LoadLayerData(query);
         }
 
-        protected virtual void LoadLayerDataForRegion(BoundingBox region)
+        public virtual void LoadIntersectingLayerData(Geometry region)
         {
-            AddLoadedRegion(region.ToGeometry());
+            SpatialQuery query = new SpatialQuery(region, SpatialQueryType.Intersects);
+            LoadLayerData(query);
         }
 
-        protected virtual void LoadLayerDataForRegion(Geometry region)
+        public virtual void LoadLayerData(SpatialQuery query)
         {
-            AddLoadedRegion(region);
+            AddLoadedRegion(query.QueryRegion);
         }
 
         protected virtual void OnAsyncQueryChanged()
@@ -551,11 +565,5 @@ namespace SharpMap.Layers
         }
 
         #endregion
-
-        private static Geometry simplifyRegion(Geometry region)
-        {
-            // TODO: perform simplification...
-            return region;
-        }
     }
 }

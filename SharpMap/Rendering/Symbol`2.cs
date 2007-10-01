@@ -136,7 +136,18 @@ namespace SharpMap.Rendering
                 return CreateMatrix(concatenated);
             }
             // TODO: need to compute a decomposition to get _rotationTransform, _scaleTransform and _translationTransform
-            set { throw new NotImplementedException(); }
+            set
+            {
+                if (value != null && value != value.One)
+                {
+                    throw new NotSupportedException(
+                        "Setting affine transform directly with a value other than " +
+                        "null or an identity matrix is not supported. " +
+                        "Use ScaleX, ScaleY, SetOffset and Rotation.");
+                }
+
+                _rotationTransform = _scalingTransform = _translationTransform = CreateIdentityMatrix();
+            }
         }
 
         /// <summary>

@@ -24,6 +24,8 @@ using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 using System.Globalization;
+using System.Collections;
+using SharpMap.Query;
 
 namespace SharpMap.Data.Providers.GeometryProvider
 {
@@ -294,12 +296,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -324,6 +326,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
             throw new NotImplementedException();
         }
 
+        public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, object asyncState)
+        {
+            throw new NotImplementedException();
+        }
+
         public FeatureDataTable CreateNewTable()
         {
             return null;
@@ -334,12 +341,17 @@ namespace SharpMap.Data.Providers.GeometryProvider
             throw new NotImplementedException();
         }
 
+        public IEnumerable<IFeatureDataRecord> EndGetFeatures(IAsyncResult asyncResult)
+        {
+            throw new NotImplementedException();
+        }
+
 	    /// <summary>
 		/// Throws an NotSupportedException. 
 		/// </summary>
         /// <param name="geometry">The geometry used to query with.</param>
         /// <param name="queryType">Type of spatial query to execute.</param>
-        public IFeatureDataReader ExecuteFeatureQuery(Geometry geometry, SpatialQueryType queryType)
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query)
 		{
 			throw new NotSupportedException();
 		}
@@ -350,7 +362,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// <param name="geometry">The geometry used to query with.</param>
 		/// <param name="table">FeatureDataTable to fill data into.</param>
         /// <param name="queryType">Type of spatial query to execute.</param>
-		public void ExecuteFeatureQuery(Geometry geometry, FeatureDataTable table, SpatialQueryType queryType)
+        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table)
 		{
 			throw new NotSupportedException();
 		}
@@ -361,7 +373,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <param name="geometry">The geometry used to query with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
         /// <param name="queryType">Type of spatial query to execute.</param>
-		public void ExecuteFeatureQuery(Geometry geometry, FeatureDataSet dataSet, SpatialQueryType queryType)
+        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet)
 		{
 			throw new NotSupportedException();
 		}
@@ -493,6 +505,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
 	        return list.AsReadOnly();
 	    }
 
+        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids)
+        {
+            throw new NotImplementedException();
+        }
+
 	    /// <summary>
 		/// Retrieves the number of features accessible with this provider.
 		/// </summary>
@@ -578,6 +595,16 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             return GetIntersectingObjectIds(bounds);
         }
+        #endregion
+
+        #region IFeatureLayerProvider<uint> Members
+
+
+        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<uint> oids)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

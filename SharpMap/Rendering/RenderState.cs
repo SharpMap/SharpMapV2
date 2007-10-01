@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,31 +15,13 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace SharpMap.Rendering.Gdi
+namespace SharpMap.Rendering
 {
-    /// <summary>
-    /// Enumerates the visual states of the Gdi render object.
-    /// </summary>
-    public enum GdiRenderObjectState : byte
+    public enum RenderState
     {
-        /// <summary>
-        /// Gdi render object is in an unknown state.
-        /// </summary>
-        Unknown = 0,
-
-        /// <summary>
-        /// Gdi render object is in a normal display state.
-        /// </summary>
+        Unknown,
         Normal,
-
-        /// <summary>
-        /// Gdi render object is in state to indicate hovering over.
-        /// </summary>
-        Hover,
-
-        /// <summary>
-        /// Gdi render object is in state to indicate selected.
-        /// </summary>
-        Selected
+        Selected,
+        Highlighted
     }
 }

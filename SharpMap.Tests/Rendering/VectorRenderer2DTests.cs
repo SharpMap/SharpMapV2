@@ -35,15 +35,15 @@ namespace SharpMap.Tests.Rendering
 			points[6] = new Point2D(0, 5);
 			points[7] = new Point2D(0, 10);
 
-			GraphicsPath2D path = new GraphicsPath2D(points, true);
+			Path2D path = new Path2D(points, true);
 			StylePen outline = new StylePen(new SolidStyleBrush(StyleColor.WhiteSmoke), 1);
 			TestVector2DRenderer r = new TestVector2DRenderer();
-			IEnumerable<string> result = r.RenderPaths(new GraphicsPath2D[] { path }, outline, outline, outline);
+			IEnumerable<string> result = r.RenderPaths(new Path2D[] { path }, outline, outline, outline);
 		}
 
 		public class TestVector2DRenderer : VectorRenderer2D<string>
 		{
-			public override IEnumerable<string> RenderPaths(IEnumerable<GraphicsPath2D> path, StylePen outline, StylePen highlightOutline,
+			public override IEnumerable<string> RenderPaths(IEnumerable<Path2D> path, StylePen outline, StylePen highlightOutline,
 			                                  StylePen selectOutline)
 			{
 				if (path == null) throw new ArgumentNullException("path");
@@ -60,7 +60,7 @@ namespace SharpMap.Tests.Rendering
 				       	  	  	: selectOutline.ToString();
 			}
 
-			public override IEnumerable<string> RenderPaths(IEnumerable<GraphicsPath2D> path, StyleBrush fill, StyleBrush highlightFill,
+			public override IEnumerable<string> RenderPaths(IEnumerable<Path2D> path, StyleBrush fill, StyleBrush highlightFill,
 			                                  StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
 			                                  StylePen selectOutline)
 			{
@@ -130,7 +130,7 @@ namespace SharpMap.Tests.Rendering
 				       	  	  	: selectSymbolData.ToString();
 			}
 
-            public override IEnumerable<string> RenderPaths(IEnumerable<GraphicsPath2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            public override IEnumerable<string> RenderPaths(IEnumerable<Path2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
             {
                 throw new Exception("The method or operation is not implemented.");
             }

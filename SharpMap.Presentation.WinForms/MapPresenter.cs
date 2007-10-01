@@ -28,8 +28,12 @@ namespace SharpMap.Presentation.WinForms
 {
     internal class MapPresenter : MapPresenter2D
     {
+        private bool _isRendering = false;
+
         internal MapPresenter(Map map, MapViewControl mapView)
-            : base(map, mapView) { }
+            : base(map, mapView)
+        {
+        }
 
         internal MapViewControl ViewControl
         {
@@ -49,6 +53,27 @@ namespace SharpMap.Presentation.WinForms
         protected override Type GetRenderObjectType()
         {
             return typeof(GdiRenderObject);
+        }
+
+        protected override void OnRenderedAllLayers()
+        {
+            base.OnRenderedAllLayers();
+            if (!_isRendering)
+            {
+                ViewControl.Refresh();
+            }
+        }
+
+        protected override void OnRenderingSelection()
+        {
+            _isRendering = true;
+            RenderAllLayers();
+            _isRendering = false;
+        }
+
+        protected override void OnRenderedSelection()
+        {
+            ViewControl.Refresh();
         }
 
         #region MapViewControl accessible members
@@ -116,6 +141,11 @@ namespace SharpMap.Presentation.WinForms
         internal Point ToWorld(double x, double y)
         {
             return ToWorldInternal(x, y);
+        }
+
+        internal BoundingBox ToWorld(Rectangle2D bounds)
+        {
+            return ToWorldInternal(bounds);
         }
 
         internal BoundingBox ViewEnvelope

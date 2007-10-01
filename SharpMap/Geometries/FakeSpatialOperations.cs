@@ -15,12 +15,23 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Geometries
 {
     internal static class FakeSpatialOperations
     {
+        internal static Geometry SimplifyRegion(Geometry region)
+        {
+            // TODO: perform simplification...
+            return region;
+        }
+
         internal static Geometry Union(Geometry lhs, Geometry rhs)
         {
+            if (lhs == null) throw new ArgumentNullException("lhs");
+            if (rhs == null) throw new ArgumentNullException("rhs");
+
             if (lhs.IsEmpty())
             {
                 return rhs;
@@ -31,10 +42,17 @@ namespace SharpMap.Geometries
                 return lhs;
             }
 
-            GeometryCollection union = new GeometryCollection();
-            union.Collection.Add(lhs);
-            union.Collection.Add(rhs);
-            return union;
+            if (lhs.Contains(rhs))
+            {
+                return lhs;
+            }
+
+            if (rhs.Contains(lhs))
+            {
+                return rhs;
+            }
+
+            return new BoundingBox(lhs.GetBoundingBox(), rhs.GetBoundingBox()).ToGeometry();
         }
     }
 }

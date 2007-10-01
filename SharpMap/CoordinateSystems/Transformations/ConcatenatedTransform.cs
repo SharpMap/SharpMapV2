@@ -23,103 +23,106 @@ using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {
-	internal class ConcatenatedTransform : MathTransform
-	{
-		protected IMathTransform _inverse;
-		private List<ICoordinateTransformation> _coordinateTransformationList;
+    internal class ConcatenatedTransform : MathTransform
+    {
+        protected IMathTransform _inverse;
+        private List<ICoordinateTransformation> _coordinateTransformationList;
 
-		public ConcatenatedTransform()
-			: this(new List<ICoordinateTransformation>())
-		{
-		}
+        public ConcatenatedTransform()
+            : this(new List<ICoordinateTransformation>())
+        {
+        }
 
-		public ConcatenatedTransform(List<ICoordinateTransformation> transformlist)
-		{
-			_coordinateTransformationList = transformlist;
-		}
+        public ConcatenatedTransform(List<ICoordinateTransformation> transformlist)
+        {
+            _coordinateTransformationList = transformlist;
+        }
 
-		public List<ICoordinateTransformation> CoordinateTransformationList
-		{
-			get { return _coordinateTransformationList; }
-			set
-			{
-				_coordinateTransformationList = value;
-				_inverse = null;
-			}
-		}
+        public List<ICoordinateTransformation> CoordinateTransformationList
+        {
+            get { return _coordinateTransformationList; }
+            set
+            {
+                _coordinateTransformationList = value;
+                _inverse = null;
+            }
+        }
 
-		public override Point Transform(Point point)
-		{
-			if (point is Point3D)
-			{
-				Point pnt = (point as Point3D).Clone();
+        public override Point Transform(Point point)
+        {
+            if (point is Point3D)
+            {
+                Point pnt = (point as Point3D).Clone();
 
-				foreach (ICoordinateTransformation ct in _coordinateTransformationList)
-				{
-					pnt = ct.MathTransform.Transform(pnt);
-				}
+                foreach (ICoordinateTransformation ct in _coordinateTransformationList)
+                {
+                    pnt = ct.MathTransform.Transform(pnt);
+                }
 
-				return pnt;
-			}
-			else
-			{
-				Point pnt = point.Clone() as Point;
+                return pnt;
+            }
+            else
+            {
+                Point pnt = point.Clone() as Point;
 
-				foreach (ICoordinateTransformation ct in _coordinateTransformationList)
-				{
-					pnt = ct.MathTransform.Transform(pnt);
-				}
+                foreach (ICoordinateTransformation ct in _coordinateTransformationList)
+                {
+                    pnt = ct.MathTransform.Transform(pnt);
+                }
 
-				return pnt;
-			}
-		}
+                return pnt;
+            }
+        }
 
-		public override List<Point> TransformList(List<Point> points)
-		{
-			List<Point> pnts = new List<Point>(points.Count);
+        public override IEnumerable<Point> TransformList(IEnumerable<Point> points)
+        {
+            foreach (Point point in points)
+            {
+                Point intermediate = point;
 
-			foreach (ICoordinateTransformation ct in _coordinateTransformationList)
-			{
-				pnts = ct.MathTransform.TransformList(pnts);
-			}
+                foreach (ICoordinateTransformation ct in _coordinateTransformationList)
+                {
+                    intermediate = ct.MathTransform.Transform(intermediate);
+                }
 
-			return pnts;
-		}
+                yield return intermediate;
+            }
+        }
 
-		/// <summary>
-		/// Returns the inverse of this conversion.
-		/// </summary>
-		/// <returns>IMathTransform that is the reverse of the current conversion.</returns>
-		public override IMathTransform Inverse()
-		{
-			if (_inverse == null)
-			{
-				_inverse = new ConcatenatedTransform(_coordinateTransformationList);
-				_inverse.Invert();
-			}
-			return _inverse;
-		}
+        /// <summary>
+        /// Returns the inverse of this conversion.
+        /// </summary>
+        /// <returns>IMathTransform that is the reverse of the current conversion.</returns>
+        public override IMathTransform Inverse()
+        {
+            if (_inverse == null)
+            {
+                _inverse = new ConcatenatedTransform(_coordinateTransformationList);
+                _inverse.Invert();
+            }
+            return _inverse;
+        }
 
-		/// <summary>
-		/// Reverses the transformation
-		/// </summary>
-		public override void Invert()
-		{
-			_coordinateTransformationList.Reverse();
-			foreach (ICoordinateTransformation ic in _coordinateTransformationList)
-			{
-				ic.MathTransform.Invert();
-			}
-		}
+        /// <summary>
+        /// Reverses the transformation
+        /// </summary>
+        public override void Invert()
+        {
+            _coordinateTransformationList.Reverse();
+            foreach (ICoordinateTransformation ic in _coordinateTransformationList)
+            {
+                ic.MathTransform.Invert();
+            }
+        }
 
-		public override string Wkt
-		{
-			get { throw new NotImplementedException(); }
-		}
+        public override string Wkt
+        {
+            get { throw new NotImplementedException(); }
+        }
 
-		public override string Xml
-		{
-			get { throw new NotImplementedException(); }
-		}
-	}
+        public override string Xml
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
 }

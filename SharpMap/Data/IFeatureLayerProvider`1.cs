@@ -68,7 +68,17 @@ namespace SharpMap.Data
 		/// <param name="oid">The object id (OID) of the feature.</param>
 		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
 		[Obsolete("Will be replaced in Beta 2 by a method which returns an IFeatureDataRecord.")]
-		FeatureDataRow<TOid> GetFeature(TOid oid);
+        FeatureDataRow<TOid> GetFeature(TOid oid);
+
+        /// <summary>
+        /// Returns a <see cref="IFeatureDataReader"/> for obtaining features
+        /// from a set of feature object identifiers (oids).
+        /// </summary>
+        /// <param name="oids">A set of object ids (OIDs) of the features.</param>
+        /// <returns>
+        /// A set of features corresponding one-to-one to the given <paramref name="oids"/>.
+        /// </returns>
+        IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<TOid> oids);
 
         /// <summary>
         /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 

@@ -31,7 +31,7 @@ using GdiFont = System.Drawing.Font;
 using GdiFontFamily = System.Drawing.FontFamily;
 using GdiFontStyle = System.Drawing.FontStyle;
 using GdiColor = System.Drawing.Color;
-using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
+using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
@@ -89,58 +89,62 @@ namespace SharpMap.Rendering.Gdi
         #region Render overrides
 
         public override IEnumerable<GdiRenderObject> RenderPaths(
-            IEnumerable<GraphicsPath2D> paths, StyleBrush fill, StyleBrush highlightFill,
-            StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            IEnumerable<Path2D> paths, StyleBrush fill, StyleBrush highlightFill,
+            StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
         {
-            foreach (GraphicsPath2D path in paths)
+            foreach (Path2D path in paths)
             {
-                GdiGraphicsPath gdiPath = ViewConverter.Convert(path);
+                GdiPath gdiPath = ViewConverter.Convert(path);
 
                 GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill),
                                                              getBrush(selectFill), null, null, null,
                                                              getPen(outline), getPen(highlightOutline),
                                                              getPen(selectOutline));
+															 
+				holder.State = renderState;
 
                 yield return holder;
             }
         }
 
-        public override IEnumerable<GdiRenderObject> RenderPaths(IEnumerable<GraphicsPath2D> paths,
+        public override IEnumerable<GdiRenderObject> RenderPaths(IEnumerable<Path2D> paths,
                                                                  StylePen line, StylePen highlightLine,
                                                                  StylePen selectLine,
                                                                  StylePen outline, StylePen highlightOutline,
-                                                                 StylePen selectOutline)
+                                                                 StylePen selectOutline, RenderState renderState)
         {
-            foreach (GraphicsPath2D path in paths)
+            foreach (Path2D path in paths)
             {
-                GdiGraphicsPath gdiPath = ViewConverter.Convert(path);
+                GdiPath gdiPath = ViewConverter.Convert(path);
 
                 GdiRenderObject holder =
                     new GdiRenderObject(gdiPath, null, null, null, getPen(line), getPen(highlightLine),
                                         getPen(selectLine), getPen(outline), getPen(highlightOutline),
                                         getPen(selectOutline));
+															 
+				holder.State = renderState;
 
                 yield return holder;
             }
         }
 
         public override IEnumerable<GdiRenderObject> RenderPaths(
-            IEnumerable<GraphicsPath2D> paths, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            IEnumerable<Path2D> paths, StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
         {
             SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
 
             return RenderPaths(paths, transparentBrush, transparentBrush,
-                               transparentBrush, outline, highlightOutline, selectOutline);
+                               transparentBrush, outline, highlightOutline, selectOutline, renderState);
         }
 
-        public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData)
+        public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, RenderState renderState)
         {
-            return RenderSymbols(locations, symbolData, symbolData, symbolData);
+            return RenderSymbols(locations, symbolData, symbolData, symbolData, renderState);
         }
 
         public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                                    StyleColorMatrix highlight,
-                                                                   StyleColorMatrix select)
+                                                                   StyleColorMatrix select, RenderState renderState)
         {
             Symbol2D highlightSymbol = (Symbol2D) symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
@@ -148,11 +152,11 @@ namespace SharpMap.Rendering.Gdi
             Symbol2D selectSymbol = (Symbol2D) symbolData.Clone();
             selectSymbol.ColorTransform = select;
 
-            return RenderSymbols(locations, symbolData, highlightSymbol, selectSymbol);
+            return RenderSymbols(locations, symbolData, highlightSymbol, selectSymbol, renderState);
         }
 
         public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbol,
-                                                                   Symbol2D highlightSymbol, Symbol2D selectSymbol)
+                                                                   Symbol2D highlightSymbol, Symbol2D selectSymbol, RenderState renderState)
         {
             if (highlightSymbol == null)
             {
@@ -172,6 +176,7 @@ namespace SharpMap.Rendering.Gdi
                 //transform.Translate((float)location.X, (float)location.Y);
                 RectangleF bounds = new RectangleF(ViewConverter.Convert(location), bitmapSymbol.Size);
                 GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, bounds, transform, colorTransform);
+				holder.State = renderState;
                 yield return holder;
             }
         }

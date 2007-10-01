@@ -30,7 +30,7 @@ using GdiFont = System.Drawing.Font;
 using GdiFontFamily = System.Drawing.FontFamily;
 using GdiFontStyle = System.Drawing.FontStyle;
 using GdiColor = System.Drawing.Color;
-using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
+using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
@@ -182,11 +182,11 @@ namespace SharpMap.Rendering.Gdi
 			return gdiSize;
 		}
 
-        public static GraphicsPath Convert(GraphicsPath2D path)
+        public static GraphicsPath Convert(Path2D path)
         {
-            GdiGraphicsPath gdiPath = new GdiGraphicsPath(FillMode.Winding);
+            GdiPath gdiPath = new GdiPath(FillMode.Winding);
 
-            foreach (GraphicsFigure2D figure in path.Figures)
+            foreach (Figure2D figure in path.Figures)
             {
                 gdiPath.StartFigure();
 

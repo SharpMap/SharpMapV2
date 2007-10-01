@@ -39,7 +39,7 @@ namespace SharpMap.Presentation
         where TSize : IVectorD, IHasEmpty
         where TViewRegion : IMatrixD, IEquatable<TViewRegion>, new()
     {
-        private GraphicsPath<TPoint, TViewRegion> _path;
+        private Path<TPoint, TViewRegion> _path;
         private StylePen _outline;
         private StyleBrush _fill;
         private TPoint _anchorPoint;
@@ -79,8 +79,8 @@ namespace SharpMap.Presentation
         /// <summary>
         /// Creates a new path for the selection, but doesn't add it to the selection.
         /// </summary>
-        /// <returns>A GraphicsPath instance representing a new selection path.</returns>
-        protected abstract GraphicsPath<TPoint, TViewRegion> CreatePath();
+        /// <returns>A Path instance representing a new selection path.</returns>
+        protected abstract Path<TPoint, TViewRegion> CreatePath();
 
         #region IViewSelection<TPoint,TSize,TViewRegion> Members
 
@@ -98,7 +98,7 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Closes the current <see cref="GraphicsFigure{TPoint, TViewBounds}"/> in <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
+        /// Closes the current <see cref="Figure{TPoint, TViewBounds}"/> in <see cref="Path{TPoint, TViewBounds}"/>.
         /// </summary>
         public void Close()
         {
@@ -108,7 +108,7 @@ namespace SharpMap.Presentation
         }
 
         /// <summary>
-        /// Removes all elements from <see cref="GraphicsPath{TPoint, TViewBounds}"/>.
+        /// Removes all elements from <see cref="Path{TPoint, TViewBounds}"/>.
         /// </summary>
         public void Clear()
         {
@@ -143,7 +143,7 @@ namespace SharpMap.Presentation
             OnSelectionChanged();
         }
 
-        public GraphicsPath<TPoint, TViewRegion> Path
+        public Path<TPoint, TViewRegion> Path
         {
             get { return PathInternal.Clone(); }
         }
@@ -212,7 +212,7 @@ namespace SharpMap.Presentation
             }
         }
 
-        protected GraphicsPath<TPoint, TViewRegion> PathInternal
+        protected Path<TPoint, TViewRegion> PathInternal
         {
             get
             {

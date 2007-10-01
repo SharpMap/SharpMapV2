@@ -60,7 +60,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="label">Label to render.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(ILabel<TPoint, TRectangle, GraphicsPath<TPoint, TRectangle>> label);
+        TRenderObject RenderLabel(ILabel<TPoint, TRectangle, Path<TPoint, TRectangle>> label);
 
         /// <summary>
         /// Renders a label.

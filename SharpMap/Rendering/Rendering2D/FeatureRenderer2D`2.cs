@@ -144,7 +144,7 @@ namespace SharpMap.Rendering.Rendering2D
 				style = (TStyle)Theme.GetStyle(feature);
 			}
 
-			return RenderFeature(feature, style);
+			return RenderFeature(feature, style, RenderState.Normal);
 		}
 
 		/// <summary>
@@ -153,7 +153,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects for display.</returns>
-        public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, TStyle style)
+        public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, TStyle style, RenderState renderState)
 		{
 			bool cancel = false;
 
@@ -164,7 +164,7 @@ namespace SharpMap.Rendering.Rendering2D
 				yield break;
 			}
 
-			IEnumerable<TRenderObject> renderedObjects = DoRenderFeature(feature, style);
+			IEnumerable<TRenderObject> renderedObjects = DoRenderFeature(feature, style, renderState);
 
 			OnFeatureRendered();
 
@@ -213,8 +213,11 @@ namespace SharpMap.Rendering.Rendering2D
 		/// </summary>
 		/// <param name="feature">Feature to render.</param>
 		/// <param name="style">Style to use in rendering geometry.</param>
+		/// <param name="state">
+		/// A <see cref="RenderState"/> value to indicate how to render the feature.
+		/// </param>
 		/// <returns></returns>
-        protected abstract IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, TStyle style);
+        protected abstract IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, TStyle style, RenderState state);
 
 		#region Protected virtual methods
 		/// <summary>
@@ -296,9 +299,9 @@ namespace SharpMap.Rendering.Rendering2D
             return RenderFeature(feature);
         }
 
-        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, IStyle style)
+        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState)
         {
-            return RenderFeature(feature, style as TStyle);
+            return RenderFeature(feature, style as TStyle, renderState);
         }
 
         #endregion
@@ -306,9 +309,9 @@ namespace SharpMap.Rendering.Rendering2D
 		#region IFeatureRenderer<TRenderObject> Members
 
 		IEnumerable<TRenderObject> IFeatureRenderer<TRenderObject>.RenderFeature(
-            IFeatureDataRecord feature, IStyle style)
+            IFeatureDataRecord feature, IStyle style, RenderState renderState)
 		{
-			return RenderFeature(feature, style as TStyle);
+			return RenderFeature(feature, style as TStyle, renderState);
 		}
 
 		#endregion

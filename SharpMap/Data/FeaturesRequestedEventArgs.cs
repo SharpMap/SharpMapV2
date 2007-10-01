@@ -16,37 +16,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
-using SharpMap.Geometries;
+using SharpMap.Query;
 
 namespace SharpMap.Data
 {
     [Serializable]
-    public class FeaturesRequestedEventArgs : EventArgs
+    public class FeaturesNotFoundEventArgs : EventArgs
     {
-        private readonly Geometry _requestedRegion;
-        private readonly IEnumerable _requestedOids;
-        private readonly object _requestedExpression;
+        private readonly FeatureSpatialQuery _missingForQuery;
 
-        public FeaturesRequestedEventArgs(IEnumerable missingOids, Geometry missingRegion)
+        public FeaturesNotFoundEventArgs(FeatureSpatialQuery missingForQuery)
         {
-            _requestedOids = missingOids;
-            _requestedRegion = missingRegion;
+            _missingForQuery = missingForQuery;
         }
 
-        public IEnumerable RequestedOids
+        public FeatureSpatialQuery MissingForQuery
         {
-            get { return _requestedOids; }
-        }
-
-        public Geometry RequestedRegion
-        {
-            get { return _requestedRegion; }
-        }
-
-        public Object RequestedExpression
-        {
-            get { return _requestedExpression; }
+            get { return _missingForQuery; }
         }
     }
 }

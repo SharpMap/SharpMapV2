@@ -56,7 +56,7 @@ namespace SharpMap.Rendering
         /// <returns>
         /// An enumeration of rendered objects used to draw the spatial data.
         /// </returns>
-        IEnumerable RenderFeature(IFeatureDataRecord feature, IStyle style);
+        IEnumerable RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState);
 
         /// <summary>
         /// Gets or sets the theme by which to compute styles 

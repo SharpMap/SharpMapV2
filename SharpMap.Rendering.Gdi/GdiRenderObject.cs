@@ -26,43 +26,45 @@ namespace SharpMap.Rendering.Gdi
     /// </summary>
     public struct GdiRenderObject
     {
+        private RenderState _state;
+
         /// <summary>
         /// Creates a new GdiRenderObject instance.
         /// </summary>
-        /// <param name="path">A GraphicsPath to draw.</param>
+        /// <param name="path">A Path to draw.</param>
         /// <param name="fill">
-        /// The brush used to fill the path when the state is <see cref="GdiRenderObjectState.Normal"/>.
+        /// The brush used to fill the path when the state is <see cref="RenderState.Normal"/>.
         /// </param>
         /// <param name="highlightFill">
-        /// The brush used to fill the path when the state is <see cref="GdiRenderObjectState.Hover"/>.
+        /// The brush used to fill the path when the state is <see cref="RenderState.Highlighted"/>.
         /// </param>
         /// <param name="selectFill">
-        /// The brush used to fill the path when the state is <see cref="GdiRenderObjectState.Selected"/>.
+        /// The brush used to fill the path when the state is <see cref="RenderState.Selected"/>.
         /// </param>
         /// <param name="line">
-        /// The pen used to draw a line when the state is <see cref="GdiRenderObjectState.Normal"/>.
+        /// The pen used to draw a line when the state is <see cref="RenderState.Normal"/>.
         /// </param>
         /// <param name="highlightLine">
-        /// The pen used to draw a line when the state is <see cref="GdiRenderObjectState.Hover"/>.
+        /// The pen used to draw a line when the state is <see cref="RenderState.Highlighted"/>.
         /// </param>
         /// <param name="selectLine">
-        /// The pen used to draw a line when the state is <see cref="GdiRenderObjectState.Selected"/>.
+        /// The pen used to draw a line when the state is <see cref="RenderState.Selected"/>.
         /// </param>
         /// <param name="outline">
-        /// The pen used to outline the path when the state is <see cref="GdiRenderObjectState.Normal"/>.
+        /// The pen used to outline the path when the state is <see cref="RenderState.Normal"/>.
         /// </param>
         /// <param name="highlightOutline">
-        /// The pen used to outline the path when the state is <see cref="GdiRenderObjectState.Hover"/>.
+        /// The pen used to outline the path when the state is <see cref="RenderState.Highlighted"/>.
         /// </param>
         /// <param name="selectOutline">
-        /// The pen used to outline the path when the state is <see cref="GdiRenderObjectState.Selected"/>.
+        /// The pen used to outline the path when the state is <see cref="RenderState.Selected"/>.
         /// </param>
         public GdiRenderObject(GraphicsPath path, Brush fill, Brush highlightFill, Brush selectFill, 
             Pen line, Pen highlightLine, Pen selectLine,
             Pen outline, Pen highlightOutline, Pen selectOutline)
         {
             Type = GdiRenderObjectType.Path;
-            _state = GdiRenderObjectState.Normal;
+            _state = RenderState.Normal;
             GdiPath = path;
             Fill = fill;
             HighlightFill = highlightFill;
@@ -90,7 +92,7 @@ namespace SharpMap.Rendering.Gdi
         public GdiRenderObject(Bitmap image, RectangleF imageBounds, Matrix transform, GdiColorMatrix colorTransform)
         {
             Type = GdiRenderObjectType.Symbol;
-            _state = GdiRenderObjectState.Normal;
+            _state = RenderState.Normal;
             Image = image;
             ImageBounds = imageBounds;
             AffineTransform = transform;
@@ -107,8 +109,6 @@ namespace SharpMap.Rendering.Gdi
             HightlightOutline = null;
             SelectOutline = null;
         }
-
-        private GdiRenderObjectState _state;
 
         /// <summary>
         /// The type of the render object: either a path or a symbol.
@@ -142,62 +142,62 @@ namespace SharpMap.Rendering.Gdi
 
         /// <summary>
         /// The brush used to fill the path when the state is 
-        /// <see cref="GdiRenderObjectState.Normal"/>.
+        /// <see cref="RenderState.Normal"/>.
         /// </summary>
         public readonly Brush Fill;
 
         /// <summary>
         /// The brush used to fill the path when the state is 
-        /// <see cref="GdiRenderObjectState.Hover"/>.
+        /// <see cref="RenderState.Highlighted"/>.
         /// </summary>
         public readonly Brush HighlightFill;
 
         /// <summary>
         /// The brush used to fill the path when the state is 
-        /// <see cref="GdiRenderObjectState.Selected"/>.
+        /// <see cref="RenderState.Selected"/>.
         /// </summary>
         public readonly Brush SelectFill;
 
         /// <summary>
         /// The pen used to draw a line when the state is 
-        /// <see cref="GdiRenderObjectState.Normal"/>.
+        /// <see cref="RenderState.Normal"/>.
         /// </summary>
         public readonly Pen Line;
 
         /// <summary>
         /// The pen used to draw a line when the state is 
-        /// <see cref="GdiRenderObjectState.Hover"/>.
+        /// <see cref="RenderState.Highlighted"/>.
         /// </summary>
         public readonly Pen HightlightLine;
 
         /// <summary>
         /// The pen used to draw a line when the state is 
-        /// <see cref="GdiRenderObjectState.Selected"/>.
+        /// <see cref="RenderState.Selected"/>.
         /// </summary>
         public readonly Pen SelectLine;
 
         /// <summary>
         /// The pen used to outline the path when the state is 
-        /// <see cref="GdiRenderObjectState.Normal"/>.
+        /// <see cref="RenderState.Normal"/>.
         /// </summary>
         public readonly Pen Outline;
 
         /// <summary>
         /// The pen used to outline the path when the state is 
-        /// <see cref="GdiRenderObjectState.Hover"/>.
+        /// <see cref="RenderState.Highlighted"/>.
         /// </summary>
         public readonly Pen HightlightOutline;
 
         /// <summary>
         /// The pen used to outline the path when the state is 
-        /// <see cref="GdiRenderObjectState.Selected"/>.
+        /// <see cref="RenderState.Selected"/>.
         /// </summary>
         public readonly Pen SelectOutline;
 
         /// <summary>
         /// Gets or sets the render object state of visual appearance.
         /// </summary>
-        public GdiRenderObjectState State
+        public RenderState State
         {
             get { return _state; }
             set { _state = value; }

@@ -17,11 +17,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Data;
 using System.Globalization;
 using SharpMap.Data;
 using SharpMap.Geometries;
+using SharpMap.Query;
 using SharpMap.Styles;
+using System.Collections.Generic;
 
 namespace SharpMap.Layers
 {
@@ -98,7 +101,7 @@ namespace SharpMap.Layers
         protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
-            ShouldHandleDataCacheMissEvent = handleFeatureDataRequest;
+            ShouldHandleFeaturesNotFoundEvent = handleFeatureDataRequest;
 
             // We need to get the schema of the feature table.
             DataSource.Open();
@@ -111,9 +114,9 @@ namespace SharpMap.Layers
             _selectedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows, true);
             _highlightedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows, true);
 
-            if (ShouldHandleDataCacheMissEvent)
+            if (ShouldHandleFeaturesNotFoundEvent)
             {
-                _features.FeaturesRequested += handleFeaturesRequested;
+                _features.FeaturesNotFound += handleFeaturesRequested;
             }
         }
 
@@ -145,6 +148,19 @@ namespace SharpMap.Layers
             get { return _highlightedFeatures; }
         }
 
+        public void LoadFeaturesByOids(IEnumerable oids)
+        {
+            if (!AsyncQuery)
+            {
+                IEnumerable<IFeatureDataRecord> features = DataSource.GetFeatures(oids);
+                MergeFeatures(features);
+            }
+            else
+            {
+                DataSource.BeginGetFeatures(oids, getFeaturesCallback, null);
+            }
+        }
+
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text
         /// and format numbers for this layer.
@@ -167,64 +183,60 @@ namespace SharpMap.Layers
 
         #region Layer overrides
 
-        /// <summary>
-        /// Loads data from the <see cref="DataSource"/> which intersect
-        /// with the given <see cref="region"/>.
-        /// </summary>
-        /// <param name="region">
-        /// The bounds used to query the data source for intersecting features.
-        /// </param>
-        protected override void LoadLayerDataForRegion(BoundingBox region)
+        public override Geometry LoadedRegion
         {
+            get
+            {
+                return _features.Envelope;
+            }
+            protected set
+            {
+                // Nothing to set since the FeatureDataTable.CachedRegion
+                // is computed by the features added to the table
+            }
+        }
+
+        /// <summary>
+        /// Loads data from the <see cref="DataSource"/> which satisfy
+        /// the given <see cref="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// The query used to match data on the data source.
+        /// </param>
+        public override void LoadLayerData(SpatialQuery query)
+        {
+            if (query == null) throw new ArgumentNullException("query");
+
+            FeatureSpatialQuery featureQuery =
+                query as FeatureSpatialQuery
+                ?? new FeatureSpatialQuery(query.QueryRegion, query.QueryType, null);
+
             if (!AsyncQuery)
             {
-                DataSource.ExecuteIntersectionQuery(region, _features);
+                DataSource.ExecuteFeatureQuery(featureQuery, _features);
             }
             else
             {
                 FeatureDataTable featureCache = new FeatureDataTable();
                 DataSource.SetTableSchema(featureCache);
-                DataSource.BeginExecuteIntersectionQuery(region, featureCache, 
+                DataSource.BeginExecuteFeatureQuery(featureQuery, featureCache,
                     queryCallback, featureCache);
             }
 
-            base.LoadLayerDataForRegion(region);
-        }
-
-        /// <summary>
-        /// Loads data from the <see cref="DataSource"/> which intersect
-        /// with the given <see cref="region"/>.
-        /// </summary>
-        /// <param name="region">
-        /// The geometry used to query the data source using 
-        /// <see cref="SpatialQueryType.Intersects"/>.
-        /// </param>
-        protected override void LoadLayerDataForRegion(Geometry region)
-        {
-            if (!AsyncQuery)
-            {
-                DataSource.ExecuteFeatureQuery(region, _features, SpatialQueryType.Intersects);
-            }
-            else
-            {
-                FeatureDataTable featureCache = new FeatureDataTable();
-                DataSource.SetTableSchema(featureCache);
-                DataSource.BeginExecuteFeatureQuery(region, featureCache,
-                    SpatialQueryType.Intersects, queryCallback, featureCache);
-            }
-
-            base.LoadLayerDataForRegion(region);
+            base.LoadLayerData(query);
         }
         #endregion
 
+        protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
+        {
+            _features.MergeFeatures(features);
+        }
+
         #region Private helper methods
 
-        private void handleFeaturesRequested(object sender, FeaturesRequestedEventArgs e)
+        private void handleFeaturesRequested(object sender, FeaturesNotFoundEventArgs e)
         {
-            if (e.RequestedRegion != null)
-            {
-                LoadLayerDataForRegion(e.RequestedRegion);
-            }
+            LoadLayerData(e.MissingForQuery);
         }
 
         private void queryCallback(IAsyncResult result)
@@ -238,6 +250,13 @@ namespace SharpMap.Layers
 
             DataSource.EndExecuteFeatureQuery(result);
         }
+
+        private void getFeaturesCallback(IAsyncResult result)
+        {
+            IEnumerable<IFeatureDataRecord> features = DataSource.EndGetFeatures(result);
+            MergeFeatures(features);
+        }
+
         #endregion
     }
 }

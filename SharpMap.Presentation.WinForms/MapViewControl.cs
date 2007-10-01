@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using SharpMap.Geometries;
 using SharpMap.Presentation.Views;
+using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -34,7 +35,8 @@ using SharpMap.Tools;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
-using GdiGraphicsPath = System.Drawing.Drawing2D.GraphicsPath;
+using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
+using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GeoPoint = SharpMap.Geometries.Point;
 
@@ -71,7 +73,7 @@ namespace SharpMap.Presentation.WinForms
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.Opaque, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.ResizeRedraw, false);
+            SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.Selectable, true);
             SetStyle(ControlStyles.SupportsTransparentBackColor, false);
             SetStyle(ControlStyles.UserMouse, true);
@@ -286,6 +288,7 @@ namespace SharpMap.Presentation.WinForms
         public void Offset(Point2D offsetVector)
         {
             onRequestOffset(offsetVector);
+            Refresh();
         }
 
         /// <summary>
@@ -296,25 +299,10 @@ namespace SharpMap.Presentation.WinForms
         {
             if (renderedObjects == null) throw new ArgumentNullException("renderedObjects");
 
-            RectangleF invalidBounds = GdiRectangle.Empty;
-            GdiMatrix transform = getGdiViewTransform();
-
             foreach (GdiRenderObject ro in renderedObjects)
             {
-                invalidBounds = invalidBounds.IsEmpty
-                    ? ro.Type == GdiRenderObjectType.Path 
-                        ? ro.GdiPath.GetBounds(transform)
-                        : ro.ImageBounds
-                    : RectangleF.Union(
-                        ro.Type == GdiRenderObjectType.Path 
-                            ? ro.GdiPath.GetBounds(transform)
-                            : ro.ImageBounds, 
-                        invalidBounds);
-
                 _renderObjectQueue.Enqueue(ro);
             }
-
-            Invalidate(GdiRectangle.Ceiling(invalidBounds));
         }
 
         void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
@@ -511,13 +499,39 @@ namespace SharpMap.Presentation.WinForms
             while(_renderObjectQueue.Count > 0)
             {
                 GdiRenderObject ro = _renderObjectQueue.Dequeue();
-                if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
-                if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+
+                if (ro.State == RenderState.Unknown)
+                {
+                    continue;
+                }
+
+                switch (ro.State)
+                {
+                    case RenderState.Normal:
+                        if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
+                        if (ro.Line != null) g.DrawPath(ro.Line, ro.GdiPath);
+                        if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                        break;
+                    case RenderState.Highlighted:
+                        if (ro.HighlightFill != null) g.FillPath(ro.HighlightFill, ro.GdiPath);
+                        if (ro.HightlightLine != null) g.DrawPath(ro.HightlightLine, ro.GdiPath);
+                        if (ro.HightlightOutline != null) g.DrawPath(ro.HightlightOutline, ro.GdiPath);
+                        break;
+                    case RenderState.Selected:
+                        if (ro.SelectFill != null) g.FillPath(ro.SelectFill, ro.GdiPath);
+                        if (ro.SelectLine != null) g.DrawPath(ro.SelectLine, ro.GdiPath);
+                        if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                        break;
+                    case RenderState.Unknown:
+                    default:
+                        break;
+                }
+
                 if (ro.Image != null)
                 {
                     ImageAttributes imageAttributes = null;
 
-                    if(ro.ColorTransform != null)
+                    if(ro.ColorTransform != null && ro.State != RenderState.Normal)
                     {
                         imageAttributes = new ImageAttributes();
                         imageAttributes.SetColorMatrix(ro.ColorTransform);
@@ -527,26 +541,25 @@ namespace SharpMap.Presentation.WinForms
                     {
                         g.DrawImage(ro.Image, getPoints(ro.ImageBounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel, imageAttributes);
                     }
+                    else
+                    {
+                        g.DrawImage(ro.Image, getPoints(ro.ImageBounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel);
+                    }
                 }
             }
 
             g.ResetTransform();
         }
 
-        private PointF[] getPoints(RectangleF bounds)
+        protected override void OnInvalidated(InvalidateEventArgs e)
         {
-            PointF location = bounds.Location;
-            _symbolTargetPointsTransfer[0] = location;
-            _symbolTargetPointsTransfer[1] = new PointF(location.X + bounds.Width, location.Y);
-            _symbolTargetPointsTransfer[2] = new PointF(location.X, location.Y + bounds.Height);
-            return _symbolTargetPointsTransfer;
+            base.OnInvalidated(e);
         }
 
-        private static Rectangle getSourceRegion(Image bitmap)
+        protected override void OnSizeChanged(EventArgs e)
         {
-            return new GdiRectangle(new GdiPoint(0, 0), bitmap.Size);
+            onViewSizeChangeRequested(Size);
         }
-
         #endregion
 
         #region Event Invokers
@@ -759,6 +772,23 @@ namespace SharpMap.Presentation.WinForms
         #endregion
 
         #region Private Helper Methods
+
+        private PointF[] getPoints(RectangleF bounds)
+        {
+            // NOTE: This flips the image along the x-axis at the image's center
+            // in order to compensate for the Transform which is in effect 
+            // on the Graphics object during OnPaint
+            PointF location = bounds.Location;
+            _symbolTargetPointsTransfer[0] = new PointF(location.X, location.Y + bounds.Height);
+            _symbolTargetPointsTransfer[1] = new PointF(location.X + bounds.Width, location.Y + bounds.Height);
+            _symbolTargetPointsTransfer[2] = location;
+            return _symbolTargetPointsTransfer;
+        }
+
+        private static Rectangle getSourceRegion(Image bitmap)
+        {
+            return new GdiRectangle(new GdiPoint(0, 0), bitmap.Size);
+        }
 
         private GdiMatrix getGdiViewTransform()
         {

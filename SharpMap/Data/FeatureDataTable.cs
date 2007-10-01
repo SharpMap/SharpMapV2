@@ -29,6 +29,7 @@ using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
+using SharpMap.Query;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data
@@ -66,9 +67,9 @@ namespace SharpMap.Data
 
         #endregion
 
-        #region Object fields
+        #region Instance fields
         private SelfOptimizingDynamicSpatialIndex<FeatureDataRow> _rTreeIndex;
-        private Geometry _cachedRegion;
+        private Geometry _envelope;
         #endregion
 
         #region Object constructors
@@ -125,7 +126,7 @@ namespace SharpMap.Data
 
         #region Events
 
-        public event EventHandler<FeaturesRequestedEventArgs> FeaturesRequested;
+        public event EventHandler<FeaturesNotFoundEventArgs> FeaturesNotFound;
 
         /// <summary>
         /// Occurs after a FeatureDataRow has been changed successfully. 
@@ -150,13 +151,17 @@ namespace SharpMap.Data
         #endregion
 
         #region Properties
+        public Geometry Envelope
+        {
+            get { return _envelope ?? Point.Empty; }
+        }
 
         /// <summary>
         /// Gets the full extents of all features in the feature table.
         /// </summary>
         public BoundingBox Extents
         {
-            get { return _cachedRegion.GetBoundingBox(); }
+            get { return _envelope.GetBoundingBox(); }
         }
 
         /// <summary>
@@ -331,6 +336,7 @@ namespace SharpMap.Data
             Load(reader as IFeatureDataReader, loadOption, errorHandler);
         }
 
+        // TODO: FeatureDataTable.Load would be more convenient if 'reader' parameter were IEnumerable<IFeatureDataRow>
         /// <summary>
         /// Fills a <see cref="FeatureDataTable"/> with values from a data source 
         /// using the supplied <see cref="IFeatureDataReader"/>. If the DataTable already 
@@ -364,6 +370,48 @@ namespace SharpMap.Data
             if (!reader.IsClosed && !reader.NextResult())
             {
                 reader.Close();
+            }
+        }
+
+        public void Merge(FeatureDataTable features)
+        {
+            Merge(features, false, MissingSchemaAction.Add);
+        }
+
+        public void Merge(FeatureDataTable features, bool preserveChanges)
+        {
+            Merge(features, preserveChanges, MissingSchemaAction.Add);
+        }
+
+        public void Merge(FeatureDataTable features, bool preserveChanges, MissingSchemaAction missingSchemaAction)
+        {
+            base.Merge(features, preserveChanges, missingSchemaAction);
+
+            // Since the above merge doesn't handle the Geometry property
+            // we have to take care of it with a separate loop.
+            foreach (FeatureDataRow row in features)
+            {
+                if (!row.HasOid)
+                {
+                    throw new ArgumentException(
+                        "Features must have a feature id to merge the geometries.");
+                }
+
+                // Find the target row in this table to set geometry on
+                FeatureDataRow target = Find(row.GetOid());
+
+                Debug.Assert(target != null);
+
+                // If we are adding the geometry to the row or if the geometry changed
+                // then we set it here. Note that GetHashCode comparison could be a problem, 
+                // since it is not guaranteed to be unique.
+#warning GetHashCode comparison not unique, but faster. Replace when coordinate storage improved in Beta 2.
+                if (target.Geometry == null
+                    || target.Geometry.GetHashCode() != row.Geometry.GetHashCode())
+                {
+                    target.Geometry = row.Geometry;
+                    _envelope = _envelope.Union(row.Geometry);
+                }
             }
         }
 
@@ -425,9 +473,11 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
         {
-            if (!CachedRegion.Contains(bounds.ToGeometry()))
+            Geometry boundsGeometry = bounds.ToGeometry();
+
+            if (!Envelope.Contains(boundsGeometry))
             {
-                RequestFeatures(bounds.ToGeometry());
+                NotifyFeaturesNotFound(Envelope.Difference(boundsGeometry), null);
             }
 
             // TODO: handle async case...
@@ -464,9 +514,9 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(Geometry geometry)
         {
-            if (!CachedRegion.Contains(geometry))
+            if (!Envelope.Contains(geometry))
             {
-                RequestFeatures(geometry);
+                NotifyFeaturesNotFound(geometry.Difference(Envelope), null);
             }
 
             // TODO: handle async case...
@@ -596,34 +646,6 @@ namespace SharpMap.Data
             base.OnTableCleared(e);
         }
 
-        public void Merge(FeatureDataTable features)
-        {
-            Merge(features, false, MissingSchemaAction.Add);
-        }
-
-        public void Merge(FeatureDataTable features, bool preserveChnages)
-        {
-            Merge(features, preserveChnages, MissingSchemaAction.Add);
-        }
-
-        public void Merge(FeatureDataTable features, bool preserveChnages, MissingSchemaAction missingSchemaAction)
-        {
-            base.Merge(features, preserveChnages, missingSchemaAction);
-
-            foreach (FeatureDataRow row in features)
-            {
-                if (!row.HasOid)
-                {
-                    throw new ArgumentException(
-                        "Features must have a feature id to merge the geometries.");
-                }
-
-                FeatureDataRow target = Find(row.GetOid());
-                Debug.Assert(target != null);
-                target.Geometry = row.Geometry;
-            }
-        }
-
         /// <summary>
         /// Creates a new FeatureDataRow with the same schema as the table, 
         /// based on a datarow builder.
@@ -667,16 +689,15 @@ namespace SharpMap.Data
             switch (e.Action)
             {
                 case DataRowAction.Add:
-#warning: Does this ever not work, since r.Geometry isn't populated when rows are loaded?
                     if (r.Geometry != null)
                     {
-                        if (_cachedRegion == null)
+                        if (_envelope == null)
                         {
-                            _cachedRegion = r.Geometry;
+                            _envelope = r.Geometry.Envelope();
                         }
                         else
                         {
-                            _cachedRegion = _cachedRegion.Union(r.Geometry);
+                            _envelope = _envelope.Union(r.Geometry).Envelope();
                         }
 
                         if (IsSpatiallyIndexed)
@@ -688,18 +709,14 @@ namespace SharpMap.Data
                     }
                     break;
                 case DataRowAction.Change:
-                    throw new NotImplementedException(
-                        "Need to implement FeatureDataTable cached region update on changed row.");
                 case DataRowAction.ChangeCurrentAndOriginal:
-                    throw new NotImplementedException(
-                        "Need to implement FeatureDataTable cached region update on changed row.");
+                    break;
                 case DataRowAction.ChangeOriginal:
-                    throw new NotImplementedException(
-                        "Need to implement FeatureDataTable cached region update on changed row.");
+                    throw new NotImplementedException("Geometry versioning not implemented.");
                 case DataRowAction.Delete:
                     if (r.Geometry != null)
                     {
-                        _cachedRegion = _cachedRegion.Difference(r.Geometry);
+                        _envelope = _envelope.Difference(r.Geometry).Envelope();
 
                         if (IsSpatiallyIndexed)
                         {
@@ -774,11 +791,6 @@ namespace SharpMap.Data
             get { return _getDefaultView(this); }
         }
 
-        internal Geometry CachedRegion
-        {
-            get { return _cachedRegion ?? Point.Empty; }
-        }
-
         internal void MergeFeature(IFeatureDataRecord record)
         {
             MergeFeature(record, SchemaMergeAction.AddWithKey);
@@ -801,25 +813,16 @@ namespace SharpMap.Data
             merger.MergeFeatures(records);
         }
 
-        internal void RequestFeatures(IEnumerable missingOids)
+        internal void NotifyFeaturesNotFound(Geometry region, IEnumerable oids)
         {
-            EventHandler<FeaturesRequestedEventArgs> e = FeaturesRequested;
+            EventHandler<FeaturesNotFoundEventArgs> e = FeaturesNotFound;
 
             if (e != null)
             {
-                FeaturesRequestedEventArgs args = new FeaturesRequestedEventArgs(missingOids, null);
+                FeatureSpatialQuery query = new FeatureSpatialQuery(
+                    region, SpatialQueryType.Intersects, oids);
 
-                e(this, args);
-            }
-        }
-
-        internal void RequestFeatures(Geometry missingRegion)
-        {
-            EventHandler<FeaturesRequestedEventArgs> e = FeaturesRequested;
-
-            if (e != null)
-            {
-                FeaturesRequestedEventArgs args = new FeaturesRequestedEventArgs(null, missingRegion);
+                FeaturesNotFoundEventArgs args = new FeaturesNotFoundEventArgs(query);
 
                 e(this, args);
             }
@@ -839,15 +842,15 @@ namespace SharpMap.Data
                 _rTreeIndex.Insert(entry);
             }
 
-            if (_cachedRegion == null)
+            if (_envelope == null)
             {
-                _cachedRegion = row.Geometry;
+                _envelope = row.Geometry.Envelope();
             }
             else
             {
 #warning Must implement FeatureDataTable cached region management when geometry is changed.
                 //_cachedRegion = _cachedRegion.Difference(oldGeometry);
-                _cachedRegion = _cachedRegion.Union(row.Geometry);
+                _envelope = _envelope.Union(row.Geometry).Envelope();
             }
         }
 

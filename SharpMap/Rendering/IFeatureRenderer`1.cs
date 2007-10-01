@@ -56,6 +56,6 @@ namespace SharpMap.Rendering
         /// An enumeration of <typeparamref name="TRenderObject"/> instances 
         /// used to draw the spatial data.
         /// </returns>
-        new IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, IStyle style);
+        new IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState);
     }
 }

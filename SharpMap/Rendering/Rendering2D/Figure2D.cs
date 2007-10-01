@@ -21,14 +21,14 @@ using System.Collections.Generic;
 namespace SharpMap.Rendering.Rendering2D
 {
     /// <summary>
-    /// A graphical figure in 2 dimensions.
+    /// A path-based figure in 2 dimensions.
     /// </summary>
-    public class GraphicsFigure2D : GraphicsFigure<Point2D, Rectangle2D>
+    public class Figure2D : Figure<Point2D, Rectangle2D>
 	{
-		public GraphicsFigure2D(IEnumerable<Point2D> points)
+		public Figure2D(IEnumerable<Point2D> points)
 			: base(points) { }
 
-        public GraphicsFigure2D(IEnumerable<Point2D> points, bool isClosed)
+        public Figure2D(IEnumerable<Point2D> points, bool isClosed)
             : base(points, isClosed) { }
 
         protected override Rectangle2D ComputeBounds()
@@ -61,9 +61,9 @@ namespace SharpMap.Rendering.Rendering2D
             return new Rectangle2D(left, top, right, bottom);
         }
 
-        protected override GraphicsFigure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool isClosed)
+        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool isClosed)
         {
-            return new GraphicsFigure2D(points, isClosed);
+            return new Figure2D(points, isClosed);
         }
 
         protected override Rectangle2D EmptyBounds

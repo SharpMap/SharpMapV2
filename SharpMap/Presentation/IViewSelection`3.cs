@@ -61,7 +61,7 @@ namespace SharpMap.Presentation
         /// <summary>
         /// Path which represents the outline of the selection on the view surface.
         /// </summary>
-        GraphicsPath<TPoint, TViewRegion> Path { get; }
+        Path<TPoint, TViewRegion> Path { get; }
 
         /// <summary>
         /// Point around which selection is transformed.

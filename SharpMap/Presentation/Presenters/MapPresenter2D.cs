@@ -42,36 +42,89 @@ namespace SharpMap.Presentation.Presenters
     /// </summary>
     public abstract class MapPresenter2D : BasePresenter<IMapView2D>
     {
-        #region Private static fields
+        //#region Nested types
+        //private struct RenderedObjectCacheKey : IEquatable<RenderedObjectCacheKey>
+        //{
+        //    private static readonly object _nullKey = new object();
 
+        //    internal string LayerName;
+        //    internal object Oid;
+
+        //    public override string ToString()
+        //    {
+        //        return String.Format("[RenderedObjectCacheKey] LayerName: {0}; Oid: {1}",
+        //            LayerName, Oid);
+        //    }
+
+        //    public override bool Equals(object obj)
+        //    {
+        //        if (!(obj is RenderedObjectCacheKey))
+        //        {
+        //            return false;
+        //        }
+
+        //        return Equals((RenderedObjectCacheKey)obj);
+        //    }
+
+        //    public override int GetHashCode()
+        //    {
+        //        return (Oid ?? _nullKey).GetHashCode() ^ (LayerName ?? "").GetHashCode();
+        //    }
+
+        //    #region IEquatable<RenderedObjectCacheKey> Members
+
+        //    public bool Equals(RenderedObjectCacheKey other)
+        //    {
+        //        if (other.LayerName != LayerName)
+        //        {
+        //            return false;
+        //        }
+
+        //        if (other.Oid == null && Oid == null)
+        //        {
+        //            return true;
+        //        }
+
+        //        if (other.Oid == null || Oid == null)
+        //        {
+        //            return false;
+        //        }
+
+        //        return other.Oid.Equals(Oid);
+        //    }
+
+        //    #endregion
+        //} 
+        //#endregion
+
+        #region Private static fields
         private static readonly object _rendererInitSync = new object();
         private static object _vectorRenderer;
         private static object _rasterRenderer;
-
         #endregion
 
-        #region Private fields
-
+        #region Private instance fields
         private readonly ViewSelection2D _selection;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth = 0.0;
         // Offsets the origin of the spatial reference system so that the 
         // center of the view coincides with the center of the extents of the map.
+        private bool _viewIsEmpty = true;
         private readonly Matrix2D _originNormalizeTransform = new Matrix2D();
         private readonly Matrix2D _rotationTransform = new Matrix2D();
         private readonly Matrix2D _translationTransform = new Matrix2D();
         private readonly Matrix2D _scaleTransform = new Matrix2D();
         private readonly Matrix2D _toViewCoordinates = new Matrix2D();
-        private bool _viewIsEmpty = true;
+        private Matrix2D _toViewTransform;
         private Matrix2D _toWorldTransform;
         private StyleColor _backgroundColor;
+        private readonly List<IFeatureLayer> _wiredLayers = new List<IFeatureLayer>();
 
-        private readonly Dictionary<IFeatureLayer, FeatureDataView> _featureLayerDataViews
-            = new Dictionary<IFeatureLayer, FeatureDataView>();
-
+        //private readonly Dictionary<RenderedObjectCacheKey, IEnumerable> _renderObjectsCache
+        //    = new Dictionary<RenderedObjectCacheKey, IEnumerable>();
         #endregion
 
-        #region Object Construction/Destruction
+        #region Object construction / disposal
 
         /// <summary>
         /// Creates a new MapPresenter2D.
@@ -86,7 +139,7 @@ namespace SharpMap.Presentation.Presenters
             //_selection = ViewSelection2D.CreateRectangluarSelection(Point2D.Zero, Size2D.Zero);
             _selection = new ViewSelection2D();
 
-            //wireupExistingLayers(Map.Layers);
+            wireupExistingLayers(Map.Layers);
             Map.Layers.ListChanged += handleLayersChanged;
             Map.PropertyChanged += handleMapPropertyChanged;
 
@@ -118,6 +171,23 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
+        private void wireupExistingLayers(IEnumerable<ILayer> layerCollection)
+        {
+            foreach (ILayer layer in layerCollection)
+            {
+                if (layer is IFeatureLayer)
+                {
+                    IFeatureLayer featureLayer = layer as IFeatureLayer;
+                    Debug.Assert(featureLayer != null);
+                    if (!_wiredLayers.Contains(featureLayer))
+                    {
+                        _wiredLayers.Add(featureLayer);
+                        featureLayer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Abstract methods
@@ -130,18 +200,25 @@ namespace SharpMap.Presentation.Presenters
 
         protected void RenderSelection(ViewSelection2D selection)
         {
+            OnRenderingSelection();
+
             IVectorRenderer2D renderer = VectorRenderer;
 
             Debug.Assert(renderer != null);
 
-            IEnumerable<GraphicsPath2D> paths = new GraphicsPath2D[] { selection.Path };
+            Path2D path = selection.Path.Clone() as Path2D;
+            Debug.Assert(path != null);
+            path.TransformPoints(ToWorldTransformInternal);
+            IEnumerable<Path2D> paths = new Path2D[] { path };
 
             IEnumerable renderedSelection =
                 renderer.RenderPaths(paths,
                     selection.FillBrush, null, null,
-                    selection.OutlineStyle, null, null);
+                    selection.OutlineStyle, null, null, RenderState.Normal);
 
             View.ShowRenderedObjects(renderedSelection);
+
+            OnRenderedSelection();
         }
 
         protected virtual void RenderFeatureLayer(IFeatureLayer layer)
@@ -153,11 +230,20 @@ namespace SharpMap.Presentation.Presenters
             IEnumerable<FeatureDataRow> features
                 = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
 
+            Debug.Assert(layer.Style is VectorStyle);
+            VectorStyle style = layer.Style as VectorStyle;
+
             foreach (FeatureDataRow feature in features)
             {
-                Debug.Assert(layer.Style is VectorStyle);
-                VectorStyle style = layer.Style as VectorStyle;
-                IEnumerable renderedFeature = renderer.RenderFeature(feature, style);
+                IEnumerable renderedFeature;
+
+                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal);
+                View.ShowRenderedObjects(renderedFeature);
+            }
+
+            foreach (FeatureDataRow selectedFeature in (IEnumerable<FeatureDataRow>)layer.SelectedFeatures)
+            {
+                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected);
                 View.ShowRenderedObjects(renderedFeature);
             }
         }
@@ -329,13 +415,11 @@ namespace SharpMap.Presentation.Presenters
                     return null;
                 }
 
-                IMatrixD combined = _originNormalizeTransform
-                    .Multiply(_rotationTransform)
-                    .Multiply(_translationTransform)
-                    .Multiply(_scaleTransform)
-                    .Multiply(_toViewCoordinates);
-
-                return new Matrix2D(combined);
+                return _toViewTransform;
+            }
+            private set
+            {
+                _toViewTransform = value;
             }
         }
 
@@ -429,6 +513,7 @@ namespace SharpMap.Presentation.Presenters
 
                     if (ToViewTransformInternal != null)
                     {
+                        ToViewTransformInternal = concatenateViewMatrix();
                         ToWorldTransformInternal = ToViewTransformInternal.Inverse;
                     }
                 }
@@ -503,6 +588,18 @@ namespace SharpMap.Presentation.Presenters
         {
             Point2D values = ToWorldTransformInternal.TransformVector(x, y);
             return new GeoPoint(values.X, values.Y);
+        }
+
+        protected BoundingBox ToWorldInternal(Rectangle2D bounds)
+        {
+            if(ToWorldTransformInternal == null)
+            {
+                return BoundingBox.Empty;
+            }
+
+            Point2D lowerRight = ToWorldTransformInternal.TransformVector(bounds.Left, bounds.Bottom);
+            Point2D upperLeft = ToWorldTransformInternal.TransformVector(bounds.Right, bounds.Top);
+            return new BoundingBox(lowerRight.X, lowerRight.Y, upperLeft.X, upperLeft.Y);
         }
 
         /// <summary>
@@ -606,7 +703,7 @@ namespace SharpMap.Presentation.Presenters
 
         #endregion
 
-        #region Protected Methods
+        #region Protected methods
 
         protected TRenderer GetRenderer<TRenderer>(ILayer layer)
             where TRenderer : class
@@ -618,6 +715,18 @@ namespace SharpMap.Presentation.Presenters
 
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
+
+        protected virtual void OnRenderingAllLayers() { }
+
+        protected virtual void OnRenderedAllLayers() { }
+
+        protected virtual void OnRenderingLayer(ILayer layer) { }
+
+        protected virtual void OnRenderedLayer(ILayer layer) { }
+
+        protected virtual void OnRenderingSelection() { }
+
+        protected virtual void OnRenderedSelection() { }
 
         #endregion
 
@@ -635,38 +744,40 @@ namespace SharpMap.Presentation.Presenters
                         IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
                         Debug.Assert(layer != null);
                         BoundingBox viewEnvelope = View.ViewEnvelope;
-                        _featureLayerDataViews[layer] =
-                            new FeatureDataView(layer.Features, viewEnvelope.ToGeometry(),
-                                                "", DataViewRowState.CurrentRows);
+                        _wiredLayers.Add(layer);
+                        layer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
                     }
-                    renderLayer(Map.Layers[e.NewIndex]);
+                    RenderLayer(Map.Layers[e.NewIndex]);
                     break;
                 case ListChangedType.ItemDeleted:
                     // LayerCollection defines an e.NewIndex as -1 when an item is being 
                     // deleted and not yet removed from the collection.
                     if (e.NewIndex >= 0)
                     {
-                        renderAllLayers();
+                        RenderAllLayers();
                     }
                     else
                     {
                         IFeatureLayer layer = Map.Layers[e.OldIndex] as IFeatureLayer;
+
                         if (layer != null)
                         {
-                            _featureLayerDataViews.Remove(layer);
+                            _wiredLayers.Remove(layer);
+                            layer.SelectedFeatures.ListChanged -= handleSelectedFeaturesListChanged;
                         }
                     }
                     break;
                 case ListChangedType.ItemMoved:
-                    renderAllLayers();
+                    RenderAllLayers();
                     break;
                 case ListChangedType.Reset:
-                    renderAllLayers();
+                    wireupExistingLayers(Map.Layers);
+                    RenderAllLayers();
                     break;
                 case ListChangedType.ItemChanged:
                     if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
                     {
-                        renderAllLayers();
+                        RenderAllLayers();
                     }
                     break;
                 default:
@@ -674,19 +785,25 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void renderAllLayers()
+        protected void RenderAllLayers()
         {
-            foreach (ILayer layer in Map.Layers)
+            OnRenderingAllLayers();
+
+            for (int i = Map.Layers.Count - 1; i >= 0; i--)
             {
-                renderLayer(layer);
+                RenderLayer(Map.Layers[i]);
             }
+
+            OnRenderedAllLayers();
         }
 
-        private void renderLayer(ILayer layer)
+        protected void RenderLayer(ILayer layer)
         {
+            OnRenderingLayer(layer);
+
             if (!layer.Enabled ||
-                layer.Style.MinVisible > ViewEnvelopeInternal.Width ||
-                layer.Style.MaxVisible < ViewEnvelopeInternal.Width)
+                layer.Style.MinVisible > WorldWidthInternal ||
+                layer.Style.MaxVisible < WorldWidthInternal)
             {
                 return;
             }
@@ -699,6 +816,8 @@ namespace SharpMap.Presentation.Presenters
             {
                 RenderRasterLayer(layer as IRasterLayer);
             }
+
+            OnRenderedLayer(layer);
         }
 
         private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -741,6 +860,7 @@ namespace SharpMap.Presentation.Presenters
         {
             setViewMetricsInternal(e.RequestedValue, GeoCenterInternal, WorldWidthInternal);
             SetViewSize(e.CurrentValue, e.RequestedValue);
+            RenderAllLayers();
         }
 
         // Handles the hover request from the view
@@ -983,10 +1103,22 @@ namespace SharpMap.Presentation.Presenters
             {
                 _viewIsEmpty = false;
 
+                ToViewTransformInternal = concatenateViewMatrix();
                 ToWorldTransformInternal = ToViewTransformInternal.Inverse;
 
-                renderAllLayers();
+                RenderAllLayers();
             }
+        }
+
+        private Matrix2D concatenateViewMatrix()
+        {
+            IMatrixD combined = _originNormalizeTransform
+                .Multiply(_rotationTransform)
+                .Multiply(_translationTransform)
+                .Multiply(_scaleTransform)
+                .Multiply(_toViewCoordinates);
+
+            return new Matrix2D(combined);
         }
 
         // Computes the view space coordinates of a point in world space
@@ -1016,6 +1148,48 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
+        private void handleSelectedFeaturesListChanged(object sender, ListChangedEventArgs e)
+        {
+            IFeatureLayer featureLayer = null;
+
+            foreach (ILayer layer in Map.Layers)
+            {
+                if (layer is IFeatureLayer)
+                {
+                    if (ReferenceEquals((layer as IFeatureLayer).SelectedFeatures, sender))
+                    {
+                        featureLayer = layer as IFeatureLayer;
+                        break;
+                    }
+                }
+            }
+
+            if (featureLayer == null)
+            {
+                return;
+            }
+
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    RenderFeatureLayer(featureLayer);
+                    break;
+                case ListChangedType.Reset:
+                    if (featureLayer.SelectedFeatures.Count > 0)
+                    {
+                        RenderFeatureLayer(featureLayer);
+                    }
+                    break;
+                case ListChangedType.ItemChanged:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.ItemMoved:
+                case ListChangedType.PropertyDescriptorAdded:
+                case ListChangedType.PropertyDescriptorChanged:
+                case ListChangedType.PropertyDescriptorDeleted:
+                default:
+                    break;
+            }
+        }
         #endregion
     }
 }

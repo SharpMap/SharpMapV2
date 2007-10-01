@@ -334,6 +334,17 @@ namespace SharpMap.Geometries
             throw new NotImplementedException();
         }
 
+        protected internal override IEnumerable<Point> GetPointStream()
+        {
+            foreach (TGeometry geometry in _geometries)
+            {
+                foreach (Point point in geometry.GetPointStream())
+                {
+                    yield return point;
+                }
+            }
+        }
+
         #region ICloneable Members
 
         /// <summary>

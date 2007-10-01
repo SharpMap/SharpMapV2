@@ -348,19 +348,30 @@ namespace SharpMap.Geometries
         /// <returns>bounding box</returns>
         public override BoundingBox GetBoundingBox()
         {
-            BoundingBox bounds = BoundingBox.Empty;
-
-            if (_exteriorRing == null || _exteriorRing.Vertices.Count == 0)
+            if (_exteriorRing == null || _exteriorRing.IsEmpty())
             {
-                return bounds;
+                return BoundingBox.Empty;
+            }
+            else
+            {
+                return _exteriorRing.GetBoundingBox();
+            }
+        }
+
+        protected internal override IEnumerable<Point> GetPointStream()
+        {
+            foreach (Point point in ExteriorRing.GetPointStream())
+            {
+                yield return point;
             }
 
-            foreach (Point p in ExteriorRing.Vertices)
+            foreach (LinearRing ring in _interiorRings)
             {
-                bounds.ExpandToInclude(p);
+                foreach (Point point in ring.GetPointStream())
+                {
+                    yield return point;
+                }
             }
-
-            return bounds;
         }
 
         #region ICloneable Members

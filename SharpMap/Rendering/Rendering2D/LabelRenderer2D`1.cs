@@ -72,7 +72,7 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract TRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
-        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style)
+        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style, RenderState renderState)
         {
             throw new NotImplementedException();
         }
@@ -340,7 +340,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
-        TRenderObject ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, GraphicsPath<Point2D, Rectangle2D>> label)
+        TRenderObject ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
         {
             return RenderLabel(label as Label2D);
         }
