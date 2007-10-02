@@ -46,12 +46,12 @@ namespace DemoWinForm
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.MainStatusStrip = new System.Windows.Forms.StatusStrip();
@@ -69,10 +69,11 @@ namespace DemoWinForm
             this.AddLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
             this.FeaturesDataGridView = new System.Windows.Forms.DataGridView();
             this.MainToolStrip = new System.Windows.Forms.ToolStrip();
             this.NewToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.AddNewRandomGeometryLayer = new System.Windows.Forms.ToolStripButton();
+            this.AddNewRandomFeatureLayer = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.OpenToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.SaveToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -88,12 +89,11 @@ namespace DemoWinForm
             this.ZoomToExtentsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ZoomOutModeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ZoomInModeToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.PanToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.PanModeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.QueryModeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.AddLayerDialog = new System.Windows.Forms.OpenFileDialog();
-            this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -172,14 +172,14 @@ namespace DemoWinForm
             // 
             this.LayersDataGridView.AllowUserToAddRows = false;
             this.LayersDataGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.LayersDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.LayersDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.LayersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.LayersDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EnabledColumn,
@@ -187,28 +187,28 @@ namespace DemoWinForm
             this.LayerNameColumn,
             this.LayerPropertiesColumn});
             this.LayersDataGridView.ContextMenuStrip = this.LayerContextMenu;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.LayersDataGridView.DefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.LayersDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.LayersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayersDataGridView.GridColor = System.Drawing.SystemColors.ControlLightLight;
             this.LayersDataGridView.Location = new System.Drawing.Point(0, 0);
             this.LayersDataGridView.MultiSelect = false;
             this.LayersDataGridView.Name = "LayersDataGridView";
             this.LayersDataGridView.ReadOnly = true;
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.LayersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.LayersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.LayersDataGridView.RowHeadersVisible = false;
             this.LayersDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LayersDataGridView.Size = new System.Drawing.Size(187, 452);
@@ -315,38 +315,48 @@ namespace DemoWinForm
             this.splitContainer2.SplitterDistance = 277;
             this.splitContainer2.TabIndex = 0;
             // 
+            // mapViewControl1
+            // 
+            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
+            this.mapViewControl1.Name = "mapViewControl1";
+            this.mapViewControl1.Size = new System.Drawing.Size(495, 277);
+            this.mapViewControl1.TabIndex = 0;
+            this.mapViewControl1.Text = "mapViewControl1";
+            this.mapViewControl1.Title = "mapViewControl1";
+            // 
             // FeaturesDataGridView
             // 
             this.FeaturesDataGridView.AllowUserToAddRows = false;
             this.FeaturesDataGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.FeaturesDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.FeaturesDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.FeaturesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.FeaturesDataGridView.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.FeaturesDataGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.FeaturesDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FeaturesDataGridView.Location = new System.Drawing.Point(0, 0);
             this.FeaturesDataGridView.Name = "FeaturesDataGridView";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.FeaturesDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.FeaturesDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.FeaturesDataGridView.Size = new System.Drawing.Size(495, 171);
             this.FeaturesDataGridView.TabIndex = 0;
             // 
@@ -355,7 +365,7 @@ namespace DemoWinForm
             this.MainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.MainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewToolStripButton,
-            this.AddNewRandomGeometryLayer,
+            this.AddNewRandomFeatureLayer,
             this.toolStripSeparator4,
             this.OpenToolStripButton,
             this.SaveToolStripButton,
@@ -371,12 +381,12 @@ namespace DemoWinForm
             this.ZoomToExtentsToolStripButton,
             this.ZoomOutModeToolStripButton,
             this.ZoomInModeToolStripButton,
-            this.PanToolStripButton,
+            this.PanModeToolStripButton,
             this.QueryModeToolStripButton,
             this.toolStripSeparator2});
             this.MainToolStrip.Location = new System.Drawing.Point(3, 0);
             this.MainToolStrip.Name = "MainToolStrip";
-            this.MainToolStrip.Size = new System.Drawing.Size(387, 25);
+            this.MainToolStrip.Size = new System.Drawing.Size(418, 25);
             this.MainToolStrip.TabIndex = 0;
             // 
             // NewToolStripButton
@@ -388,15 +398,15 @@ namespace DemoWinForm
             this.NewToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.NewToolStripButton.Text = "&New";
             // 
-            // AddNewRandomGeometryLayer
+            // AddNewRandomFeatureLayer
             // 
-            this.AddNewRandomGeometryLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.AddNewRandomGeometryLayer.Image = global::DemoWinForm.Properties.Resources.NewRandomGeometry;
-            this.AddNewRandomGeometryLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.AddNewRandomGeometryLayer.Name = "AddNewRandomGeometryLayer";
-            this.AddNewRandomGeometryLayer.Size = new System.Drawing.Size(23, 22);
-            this.AddNewRandomGeometryLayer.Text = "toolStripButton1";
-            this.AddNewRandomGeometryLayer.Click += new System.EventHandler(this.AddNewRandomGeometryLayer_Click);
+            this.AddNewRandomFeatureLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AddNewRandomFeatureLayer.Image = global::DemoWinForm.Properties.Resources.NewRandomGeometry;
+            this.AddNewRandomFeatureLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.AddNewRandomFeatureLayer.Name = "AddNewRandomFeatureLayer";
+            this.AddNewRandomFeatureLayer.Size = new System.Drawing.Size(23, 22);
+            this.AddNewRandomFeatureLayer.Text = "Create New Random Feature Layer";
+            this.AddNewRandomFeatureLayer.Click += new System.EventHandler(this.AddNewRandomGeometryLayer_Click);
             // 
             // toolStripSeparator4
             // 
@@ -522,15 +532,15 @@ namespace DemoWinForm
             this.ZoomInModeToolStripButton.Text = "Zoom In";
             this.ZoomInModeToolStripButton.Click += new System.EventHandler(this.ZoomInModeToolStripButton_Click);
             // 
-            // PanToolStripButton
+            // PanModeToolStripButton
             // 
-            this.PanToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.PanToolStripButton.Image = global::DemoWinForm.Properties.Resources.pan;
-            this.PanToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.PanToolStripButton.Name = "PanToolStripButton";
-            this.PanToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.PanToolStripButton.Text = "Pan";
-            this.PanToolStripButton.Click += new System.EventHandler(this.PanToolStripButton_Click);
+            this.PanModeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PanModeToolStripButton.Image = global::DemoWinForm.Properties.Resources.pan;
+            this.PanModeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PanModeToolStripButton.Name = "PanModeToolStripButton";
+            this.PanModeToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.PanModeToolStripButton.Text = "Pan";
+            this.PanModeToolStripButton.Click += new System.EventHandler(this.PanToolStripButton_Click);
             // 
             // QueryModeToolStripButton
             // 
@@ -564,16 +574,6 @@ namespace DemoWinForm
             this.AddLayerDialog.Multiselect = true;
             this.AddLayerDialog.RestoreDirectory = true;
             this.AddLayerDialog.Title = "Choose Layer Data";
-            // 
-            // mapViewControl1
-            // 
-            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
-            this.mapViewControl1.Name = "mapViewControl1";
-            this.mapViewControl1.Size = new System.Drawing.Size(495, 277);
-            this.mapViewControl1.TabIndex = 0;
-            this.mapViewControl1.Text = "mapViewControl1";
-            this.mapViewControl1.Title = "mapViewControl1";
             // 
             // MainForm
             // 
@@ -647,8 +647,8 @@ namespace DemoWinForm
 		private System.Windows.Forms.ToolStripMenuItem RemoveLayerToolStripMenuItem;
 		private System.Windows.Forms.OpenFileDialog AddLayerDialog;
 		private System.Windows.Forms.ToolStripButton ZoomOutModeToolStripButton;
-		private System.Windows.Forms.ToolStripButton PanToolStripButton;
-		private System.Windows.Forms.ToolStripButton AddNewRandomGeometryLayer;
+		private System.Windows.Forms.ToolStripButton PanModeToolStripButton;
+		private System.Windows.Forms.ToolStripButton AddNewRandomFeatureLayer;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private SharpMap.Presentation.WinForms.MapViewControl mapViewControl1;
 	}

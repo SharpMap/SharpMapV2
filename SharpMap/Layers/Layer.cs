@@ -485,17 +485,17 @@ namespace SharpMap.Layers
 
         public virtual void LoadIntersectingLayerData(BoundingBox region)
         {
-            SpatialQuery query = new SpatialQuery(region.ToGeometry(), SpatialQueryType.Intersects);
+            SpatialExpression query = new SpatialExpression(region.ToGeometry(), SpatialExpressionType.Intersects);
             LoadLayerData(query);
         }
 
         public virtual void LoadIntersectingLayerData(Geometry region)
         {
-            SpatialQuery query = new SpatialQuery(region, SpatialQueryType.Intersects);
+            SpatialExpression query = new SpatialExpression(region, SpatialExpressionType.Intersects);
             LoadLayerData(query);
         }
 
-        public virtual void LoadLayerData(SpatialQuery query)
+        public virtual void LoadLayerData(SpatialExpression query)
         {
             AddLoadedRegion(query.QueryRegion);
         }

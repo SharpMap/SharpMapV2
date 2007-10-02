@@ -21,19 +21,19 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Query
 {
-    public class FeatureSpatialQuery : SpatialQuery, IEquatable<FeatureSpatialQuery>
+    public class FeatureSpatialExpression : SpatialExpression, IEquatable<FeatureSpatialExpression>
     {
         private readonly IEnumerable _oids;
         private readonly bool _hasOidFilter;
 
-        public FeatureSpatialQuery(IEnumerable oids)
-            : this(null, SpatialQueryType.None, oids) { }
+        public FeatureSpatialExpression(IEnumerable oids)
+            : this(null, SpatialExpressionType.None, oids) { }
 
-        public FeatureSpatialQuery(Geometry queryRegion, SpatialQueryType type, IEnumerable oids)
+        public FeatureSpatialExpression(Geometry queryRegion, SpatialExpressionType type, IEnumerable oids)
             : base(queryRegion, type)
         {
             _oids = oids;
-            _hasOidFilter = oids == null;
+            _hasOidFilter = oids != null;
         }
 
         public IEnumerable Oids
@@ -51,12 +51,12 @@ namespace SharpMap.Query
             }
         }
 
-        public static bool operator !=(FeatureSpatialQuery lhs, FeatureSpatialQuery rhs)
+        public static bool operator !=(FeatureSpatialExpression lhs, FeatureSpatialExpression rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static bool operator ==(FeatureSpatialQuery lhs, FeatureSpatialQuery rhs)
+        public static bool operator ==(FeatureSpatialExpression lhs, FeatureSpatialExpression rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -73,7 +73,7 @@ namespace SharpMap.Query
             }
         }
 
-        public bool Equals(FeatureSpatialQuery other)
+        public bool Equals(FeatureSpatialExpression other)
         {
             if (ReferenceEquals(other, null))
             {
@@ -107,7 +107,7 @@ namespace SharpMap.Query
                 return true;
             }
 
-            return Equals(obj as FeatureSpatialQuery);
+            return Equals(obj as FeatureSpatialExpression);
         }
 
         public override int GetHashCode()
@@ -119,9 +119,9 @@ namespace SharpMap.Query
             }
         }
 
-        public FeatureSpatialQuery Clone()
+        public FeatureSpatialExpression Clone()
         {
-            FeatureSpatialQuery clone = new FeatureSpatialQuery(
+            FeatureSpatialExpression clone = new FeatureSpatialExpression(
                 QueryRegion == null ? null : QueryRegion.Clone(), QueryType, Oids);
 
             return clone;

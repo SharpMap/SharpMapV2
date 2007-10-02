@@ -28,6 +28,9 @@ namespace DemoWinForm
 {
     public partial class MainForm : Form
     {
+        private const string RandomLayerTypeKey = "random";
+        private const string ShapeFileLayerTypeKey = ".shp";
+
         private readonly Dictionary<string, ILayerFactory> _layerFactoryCatalog
             = new Dictionary<string, ILayerFactory>();
         private readonly Map _map = new Map();
@@ -42,8 +45,8 @@ namespace DemoWinForm
         private void registerLayerFactories()
         {
             //ConfigurationManager.GetSection("LayerFactories");
-            _layerFactoryCatalog[".shp"] = new ShapeFileLayerFactory();
-            _layerFactoryCatalog["random"] = new RandomFeatureLayerFactory();
+            _layerFactoryCatalog[ShapeFileLayerTypeKey] = new ShapeFileLayerFactory();
+            _layerFactoryCatalog[RandomLayerTypeKey] = new RandomFeatureLayerFactory();
         }
 
         private void addLayer(ILayer layer)
@@ -107,7 +110,7 @@ namespace DemoWinForm
 
             ZoomInModeToolStripButton.Checked = (tool == StandardMapTools2D.ZoomIn);
             ZoomOutModeToolStripButton.Checked = (tool == StandardMapTools2D.ZoomOut);
-            PanToolStripButton.Checked = (tool == StandardMapTools2D.Pan);
+            PanModeToolStripButton.Checked = (tool == StandardMapTools2D.Pan);
             QueryModeToolStripButton.Checked = (tool == StandardMapTools2D.Query);
         }
 
@@ -279,14 +282,10 @@ namespace DemoWinForm
 
         private void AddNewRandomGeometryLayer_Click(object sender, EventArgs e)
         {
-            // TODO: implement random layer generation
-            //BeginInvoke((MethodInvoker)delegate()
-            //{
-            //    string layerName;
-            //    string connectionInfo;
-            //    RandomFeatureLayerFactory.GetLayerNameAndInfo(out layerName, out connectionInfo);
-            //    addLayer(_layerFactoryCatalog["random"].Create(layerName, connectionInfo));
-            //});
+            string layerName;
+            string connectionInfo;
+            RandomFeatureLayerFactory.GetLayerNameAndInfo(out layerName, out connectionInfo);
+            addLayer(_layerFactoryCatalog[RandomLayerTypeKey].Create(layerName, connectionInfo));
         }
 
         private void zoomToExtents()

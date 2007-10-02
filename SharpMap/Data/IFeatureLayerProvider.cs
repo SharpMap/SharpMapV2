@@ -43,7 +43,7 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, 
+        IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, 
             FeatureDataSet dataSet, AsyncCallback callback, object asyncState);
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, 
+        IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, 
             FeatureDataTable table, AsyncCallback callback, object asyncState);
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query);
+        IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query);
 
         /// <summary>
         /// Retrieves features into a <see cref="FeatureDataSet"/> that 
@@ -157,7 +157,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
-        void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet);
+        void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet);
 
         /// <summary>
         /// Retrieves features into a <see cref="FeatureDataTable"/> that 
@@ -165,7 +165,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table);
+        void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table);
 
         /// <summary>
         /// Gets the geometries within the specified 

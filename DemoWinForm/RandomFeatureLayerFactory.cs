@@ -19,20 +19,41 @@ namespace DemoWinForm
 {
     class RandomFeatureLayerFactory : ILayerFactory
     {
-        private readonly Random _rnd = new Random();
-        private readonly Dictionary<string, Symbol2D> _symbolTable
-            = new Dictionary<string, Symbol2D>();
-        private readonly Dictionary<string, StyleColor> _colorTable
+        private class LayerResources
+        {
+            public String LayerName;
+            public VectorStyle Style;
+            public Dictionary<DataColumn, StreamReader> AttributeCache;
+        }
+
+        private static readonly string[] _availableLayers = new string[]
+            {
+                "Marshland", "Robot Tracks", "Roads", "Fires",
+                "Treasures", "Nice Views", "Fault Lines", "Contamination",
+                "Notices", "Radioactive Fuel Rods", "Bases", "Houses", 
+                "Measures", "Contacts", "Prospects"
+            };
+
+        private static Dictionary<string, LayerResources> _configuredLayers
+            = new Dictionary<string, LayerResources>();
+
+        private static List<DataColumn> _attributePool = new List<DataColumn>();
+        private static readonly Dictionary<string, StyleColor> _colorTable
             = StyleColor.PredefinedColors;
-        private readonly List<DataColumn> _attributePool = new List<DataColumn>();
+
+        private static readonly Random _rnd = new Random();
+
         private readonly StreamReader _givenNamesFemale;
         private readonly StreamReader _familyNames;
         private readonly StreamReader _placeNames;
 
+        static RandomFeatureLayerFactory()
+        {
+            initialize();
+        }
+
         public RandomFeatureLayerFactory()
         {
-            initializeAttributePool();
-            registerSymbols();
         }
 
         #region ILayerFactory Members
@@ -51,7 +72,7 @@ namespace DemoWinForm
             return stream;
         }
 
-        private void initializeAttributePool()
+        private static void initialize()
         {
             _attributePool.AddRange(new DataColumn[]
                                         {
@@ -59,7 +80,116 @@ namespace DemoWinForm
                                             new DataColumn("Rank", typeof (int)),
                                             new DataColumn("YearsKnown", typeof (float)),
                                             new DataColumn("LastVisited", typeof (DateTime)),
+                                            new DataColumn("Criticality", typeof(double)),
+                                            new DataColumn("Health", typeof(double)),
+                                            new DataColumn("Risk", typeof(double)),
+                                            new DataColumn("Urgency", typeof(double)),
+                                            new DataColumn("Strength", typeof(int)),
+                                            new DataColumn("Priority", typeof(int)),
+                                            new DataColumn("Available", typeof(bool)),
+                                            new DataColumn("Price", typeof(Decimal)),
+                                            new DataColumn("Square Meterage", typeof(double)),
+                                            new DataColumn("Expiration Data", typeof(DateTime)),
+                                            new DataColumn("Description", typeof(string))
                                         });
+
+            foreach (string layer in _availableLayers)
+            {
+                LayerResources resources = new LayerResources();
+                resources.LayerName = layer;
+                resources.Style = generateStyle(layer);
+                resources.AttributeCache = generateAttributes(layer);
+            }
+        }
+
+        private static Dictionary<DataColumn, StreamReader> generateAttributes(string layer)
+        {
+            Dictionary<DataColumn, StreamReader> attributes = new Dictionary<DataColumn, StreamReader>();
+
+            // Assign some attribute columns
+            switch (layer)
+            {
+                case "Marshland":
+                    if (_rnd.NextDouble() > 0.5) attributes.Add(clone(_attributePool[0]), );
+                case "Robot Tracks":
+                case "Roads":
+                case "Fires":
+                case "Treasures":
+                case "Nice Views":
+                case "Fault Lines":
+                case "Contamination":
+                case "Notices":
+                case "Radioactive Fuel Rods":
+                case "Bases":
+                case "Houses":
+                case "Measures":
+                case "Contacts":
+                case "Prospects":
+                default:
+                    break;
+            }
+        }
+
+        private static VectorStyle generateStyle(string layer)
+        {
+            VectorStyle style = new VectorStyle();
+            style.Enabled = true;
+
+            switch (layer)
+            {
+                case "Marshland":
+                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    break;
+                case "Robot Tracks":
+                case "Roads":
+                case "Fires":
+                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    break;
+                case "Treasures":
+                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    break;
+                case "Nice Views":
+                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    break;
+                case "Fault Lines":
+                case "Contamination":
+                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    break;
+                case "Notices":
+                case "Radioactive Fuel Rods":
+                case "Bases":
+                case "Houses":
+                case "Measures":
+                case "Contacts":
+                case "Prospects":
+                default:
+                    break;
+            }
         }
 
 
@@ -170,7 +300,7 @@ namespace DemoWinForm
             throw new InvalidOperationException();
         }
 
-        private KeyValuePair<string, StyleColor> getColorEntry(int index)
+        private static KeyValuePair<string, StyleColor> getColorEntry(int index)
         {
             foreach (KeyValuePair<string, StyleColor> entry in _colorTable)
             {
@@ -225,7 +355,10 @@ namespace DemoWinForm
                     lastPoint = nextPoint;
                 }
 
-                line.Vertices.AddRange(vertexes);
+                foreach (GeoPoint point in vertexes)
+                {
+                    line.Vertices.Add(point);
+                }
 
                 geometry.Add(line);
             }

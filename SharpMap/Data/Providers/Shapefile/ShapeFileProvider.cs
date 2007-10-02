@@ -749,13 +749,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet,
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet,
                                                      AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table,
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table,
                                                      AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
@@ -807,7 +807,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             throw new NotImplementedException();
         }
 
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query)
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query)
         {
             throw new NotImplementedException();
         }
@@ -827,7 +827,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// and thus only <see cref="BoundingBox"/> querying is performed. The results are NOT
         /// guaranteed to lie within <paramref name="query"/>'s <see cref="FeatureSpatialQuery.QueryRegion"/>.
         /// </remarks>
-        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet)
+        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
         {
             FeatureDataTable<uint> dt = HasDbf
                                             ? _dbaseFile.NewTable
@@ -846,7 +846,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table)
+        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table)
         {
             checkOpen();
 

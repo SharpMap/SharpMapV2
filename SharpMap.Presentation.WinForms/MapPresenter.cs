@@ -17,6 +17,7 @@
 
 using System;
 using SharpMap.Geometries;
+using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
@@ -28,7 +29,8 @@ namespace SharpMap.Presentation.WinForms
 {
     internal class MapPresenter : MapPresenter2D
     {
-        private bool _isRendering = false;
+        private bool _isRenderingSelection = false;
+        private bool _isRenderingAll = false;
 
         internal MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)
@@ -55,25 +57,46 @@ namespace SharpMap.Presentation.WinForms
             return typeof(GdiRenderObject);
         }
 
+        protected override void OnRenderingAllLayers()
+        {
+            _isRenderingAll = true;
+            base.OnRenderingAllLayers();
+        }
+
         protected override void OnRenderedAllLayers()
         {
             base.OnRenderedAllLayers();
-            if (!_isRendering)
+
+            if (!_isRenderingSelection)
             {
                 ViewControl.Refresh();
             }
+
+            _isRenderingAll = false;
         }
 
         protected override void OnRenderingSelection()
         {
-            _isRendering = true;
+            _isRenderingSelection = true;
             RenderAllLayers();
-            _isRendering = false;
+            _isRenderingSelection = false;
         }
 
         protected override void OnRenderedSelection()
         {
             ViewControl.Refresh();
+        }
+
+        protected override void RenderFeatureLayer(IFeatureLayer layer)
+        {
+            if (_isRenderingAll)
+            {
+                base.RenderFeatureLayer(layer);
+            }
+            else
+            {
+                RenderAllLayers();
+            }
         }
 
         #region MapViewControl accessible members

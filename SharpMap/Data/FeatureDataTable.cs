@@ -161,7 +161,7 @@ namespace SharpMap.Data
         /// </summary>
         public BoundingBox Extents
         {
-            get { return _envelope.GetBoundingBox(); }
+            get { return Envelope.GetBoundingBox(); }
         }
 
         /// <summary>
@@ -475,10 +475,7 @@ namespace SharpMap.Data
         {
             Geometry boundsGeometry = bounds.ToGeometry();
 
-            if (!Envelope.Contains(boundsGeometry))
-            {
-                NotifyFeaturesNotFound(Envelope.Difference(boundsGeometry), null);
-            }
+            notifyIfEnvelopeDoesNotContain(boundsGeometry);
 
             // TODO: handle async case...
 
@@ -514,10 +511,7 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(Geometry geometry)
         {
-            if (!Envelope.Contains(geometry))
-            {
-                NotifyFeaturesNotFound(geometry.Difference(Envelope), null);
-            }
+            notifyIfEnvelopeDoesNotContain(geometry);
 
             // TODO: handle async case...
 
@@ -813,17 +807,13 @@ namespace SharpMap.Data
             merger.MergeFeatures(records);
         }
 
-        internal void NotifyFeaturesNotFound(Geometry region, IEnumerable oids)
+        internal void NotifyFeaturesNotFound(FeatureSpatialExpression notFoundExpression)
         {
             EventHandler<FeaturesNotFoundEventArgs> e = FeaturesNotFound;
 
             if (e != null)
             {
-                FeatureSpatialQuery query = new FeatureSpatialQuery(
-                    region, SpatialQueryType.Intersects, oids);
-
-                FeaturesNotFoundEventArgs args = new FeaturesNotFoundEventArgs(query);
-
+                FeaturesNotFoundEventArgs args = new FeaturesNotFoundEventArgs(notFoundExpression);
                 e(this, args);
             }
         }
@@ -944,6 +934,16 @@ namespace SharpMap.Data
         #endregion
 
         #region Private helper methods
+
+        private void notifyIfEnvelopeDoesNotContain(Geometry geometry)
+        {
+            if (!Envelope.Contains(geometry))
+            {
+                FeatureSpatialExpression notFound = new FeatureSpatialExpression(
+                    geometry.Difference(Envelope), SpatialExpressionType.Intersects, null);
+                NotifyFeaturesNotFound(notFound);
+            }
+        }
 
         private static void copyRow(FeatureDataRow source, FeatureDataRow target)
         {

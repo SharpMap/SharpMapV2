@@ -19,7 +19,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Threading;
 using SharpMap.Data;
@@ -42,61 +41,6 @@ namespace SharpMap.Presentation.Presenters
     /// </summary>
     public abstract class MapPresenter2D : BasePresenter<IMapView2D>
     {
-        //#region Nested types
-        //private struct RenderedObjectCacheKey : IEquatable<RenderedObjectCacheKey>
-        //{
-        //    private static readonly object _nullKey = new object();
-
-        //    internal string LayerName;
-        //    internal object Oid;
-
-        //    public override string ToString()
-        //    {
-        //        return String.Format("[RenderedObjectCacheKey] LayerName: {0}; Oid: {1}",
-        //            LayerName, Oid);
-        //    }
-
-        //    public override bool Equals(object obj)
-        //    {
-        //        if (!(obj is RenderedObjectCacheKey))
-        //        {
-        //            return false;
-        //        }
-
-        //        return Equals((RenderedObjectCacheKey)obj);
-        //    }
-
-        //    public override int GetHashCode()
-        //    {
-        //        return (Oid ?? _nullKey).GetHashCode() ^ (LayerName ?? "").GetHashCode();
-        //    }
-
-        //    #region IEquatable<RenderedObjectCacheKey> Members
-
-        //    public bool Equals(RenderedObjectCacheKey other)
-        //    {
-        //        if (other.LayerName != LayerName)
-        //        {
-        //            return false;
-        //        }
-
-        //        if (other.Oid == null && Oid == null)
-        //        {
-        //            return true;
-        //        }
-
-        //        if (other.Oid == null || Oid == null)
-        //        {
-        //            return false;
-        //        }
-
-        //        return other.Oid.Equals(Oid);
-        //    }
-
-        //    #endregion
-        //} 
-        //#endregion
-
         #region Private static fields
         private static readonly object _rendererInitSync = new object();
         private static object _vectorRenderer;
@@ -170,24 +114,6 @@ namespace SharpMap.Presentation.Presenters
                 normalizeOrigin();
             }
         }
-
-        private void wireupExistingLayers(IEnumerable<ILayer> layerCollection)
-        {
-            foreach (ILayer layer in layerCollection)
-            {
-                if (layer is IFeatureLayer)
-                {
-                    IFeatureLayer featureLayer = layer as IFeatureLayer;
-                    Debug.Assert(featureLayer != null);
-                    if (!_wiredLayers.Contains(featureLayer))
-                    {
-                        _wiredLayers.Add(featureLayer);
-                        featureLayer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
-                    }
-                }
-            }
-        }
-
         #endregion
 
         #region Abstract methods
@@ -197,61 +123,6 @@ namespace SharpMap.Presentation.Presenters
         protected abstract Type GetRenderObjectType();
 
         #endregion
-
-        protected void RenderSelection(ViewSelection2D selection)
-        {
-            OnRenderingSelection();
-
-            IVectorRenderer2D renderer = VectorRenderer;
-
-            Debug.Assert(renderer != null);
-
-            Path2D path = selection.Path.Clone() as Path2D;
-            Debug.Assert(path != null);
-            path.TransformPoints(ToWorldTransformInternal);
-            IEnumerable<Path2D> paths = new Path2D[] { path };
-
-            IEnumerable renderedSelection =
-                renderer.RenderPaths(paths,
-                    selection.FillBrush, null, null,
-                    selection.OutlineStyle, null, null, RenderState.Normal);
-
-            View.ShowRenderedObjects(renderedSelection);
-
-            OnRenderedSelection();
-        }
-
-        protected virtual void RenderFeatureLayer(IFeatureLayer layer)
-        {
-            IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
-
-            Debug.Assert(renderer != null);
-
-            IEnumerable<FeatureDataRow> features
-                = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
-
-            Debug.Assert(layer.Style is VectorStyle);
-            VectorStyle style = layer.Style as VectorStyle;
-
-            foreach (FeatureDataRow feature in features)
-            {
-                IEnumerable renderedFeature;
-
-                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal);
-                View.ShowRenderedObjects(renderedFeature);
-            }
-
-            foreach (FeatureDataRow selectedFeature in (IEnumerable<FeatureDataRow>)layer.SelectedFeatures)
-            {
-                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected);
-                View.ShowRenderedObjects(renderedFeature);
-            }
-        }
-
-        protected void RenderRasterLayer(IRasterLayer layer)
-        {
-            throw new NotImplementedException();
-        }
 
         #region Properties
 
@@ -704,8 +575,7 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Protected methods
-
-        protected TRenderer GetRenderer<TRenderer>(ILayer layer)
+        protected static TRenderer GetRenderer<TRenderer>(ILayer layer)
             where TRenderer : class
         {
             if (layer == null)
@@ -714,6 +584,71 @@ namespace SharpMap.Presentation.Presenters
             }
 
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
+        }
+
+        protected void RenderSelection(ViewSelection2D selection)
+        {
+            OnRenderingSelection();
+
+            IVectorRenderer2D renderer = VectorRenderer;
+
+            Debug.Assert(renderer != null);
+
+            Path2D path = selection.Path.Clone() as Path2D;
+            Debug.Assert(path != null);
+            path.TransformPoints(ToWorldTransformInternal);
+            IEnumerable<Path2D> paths = new Path2D[] { path };
+
+            IEnumerable renderedSelection =
+                renderer.RenderPaths(paths,
+                    selection.FillBrush, null, null,
+                    selection.OutlineStyle, null, null, RenderState.Normal);
+
+            View.ShowRenderedObjects(renderedSelection);
+
+            OnRenderedSelection();
+        }
+
+        protected virtual void RenderFeatureLayer(IFeatureLayer layer)
+        {
+            IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
+
+            Debug.Assert(renderer != null);
+
+            IEnumerable<FeatureDataRow> features
+                = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
+
+            Debug.Assert(layer.Style is VectorStyle);
+            VectorStyle style = layer.Style as VectorStyle;
+
+            foreach (FeatureDataRow feature in features)
+            {
+                IEnumerable renderedFeature;
+
+                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal);
+                View.ShowRenderedObjects(renderedFeature);
+            }
+
+            IEnumerable<FeatureDataRow> selectedRows = layer.SelectedFeatures;
+
+            foreach (FeatureDataRow selectedFeature in selectedRows)
+            {
+                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected);
+                View.ShowRenderedObjects(renderedFeature);
+            }
+
+            IEnumerable<FeatureDataRow> highlightedRows = layer.HighlightedFeatures;
+
+            foreach (FeatureDataRow highlightedFeature in highlightedRows)
+            {
+                IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature, style, RenderState.Highlighted);
+                View.ShowRenderedObjects(renderedFeature);
+            }
+        }
+
+        protected virtual void RenderRasterLayer(IRasterLayer layer)
+        {
+            throw new NotImplementedException();
         }
 
         protected virtual void OnRenderingAllLayers() { }
@@ -727,13 +662,11 @@ namespace SharpMap.Presentation.Presenters
         protected virtual void OnRenderingSelection() { }
 
         protected virtual void OnRenderedSelection() { }
-
         #endregion
 
         #region Event handlers
 
         #region Map events
-
         private void handleLayersChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
@@ -743,9 +676,7 @@ namespace SharpMap.Presentation.Presenters
                     {
                         IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
                         Debug.Assert(layer != null);
-                        BoundingBox viewEnvelope = View.ViewEnvelope;
-                        _wiredLayers.Add(layer);
-                        layer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
+                        wireupLayer(layer);
                     }
                     RenderLayer(Map.Layers[e.NewIndex]);
                     break;
@@ -762,8 +693,7 @@ namespace SharpMap.Presentation.Presenters
 
                         if (layer != null)
                         {
-                            _wiredLayers.Remove(layer);
-                            layer.SelectedFeatures.ListChanged -= handleSelectedFeaturesListChanged;
+                            unwireLayer(layer);
                         }
                     }
                     break;
@@ -973,6 +903,38 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Private helper methods
+        private void wireupExistingLayers(IEnumerable<ILayer> layerCollection)
+        {
+            foreach (ILayer layer in layerCollection)
+            {
+                if (layer is IFeatureLayer)
+                {
+                    IFeatureLayer featureLayer = layer as IFeatureLayer;
+                    Debug.Assert(featureLayer != null);
+                    wireupLayer(featureLayer);
+                }
+            }
+        }
+
+        private void wireupLayer(IFeatureLayer layer)
+        {
+            if (!_wiredLayers.Contains(layer))
+            {
+                _wiredLayers.Add(layer);
+                layer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
+                layer.HighlightedFeatures.ListChanged += handleHighlightedFeaturesListChanged;
+            }
+        }
+
+        private void unwireLayer(IFeatureLayer layer)
+        {
+            if (_wiredLayers.Contains(layer))
+            {
+                _wiredLayers.Remove(layer);
+                layer.SelectedFeatures.ListChanged -= handleSelectedFeaturesListChanged;
+                layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesListChanged;
+            }
+        }
 
         private void createRenderers()
         {
@@ -1150,19 +1112,7 @@ namespace SharpMap.Presentation.Presenters
 
         private void handleSelectedFeaturesListChanged(object sender, ListChangedEventArgs e)
         {
-            IFeatureLayer featureLayer = null;
-
-            foreach (ILayer layer in Map.Layers)
-            {
-                if (layer is IFeatureLayer)
-                {
-                    if (ReferenceEquals((layer as IFeatureLayer).SelectedFeatures, sender))
-                    {
-                        featureLayer = layer as IFeatureLayer;
-                        break;
-                    }
-                }
-            }
+            IFeatureLayer featureLayer = getLayerFromSelectedView(sender);
 
             if (featureLayer == null)
             {
@@ -1180,15 +1130,64 @@ namespace SharpMap.Presentation.Presenters
                         RenderFeatureLayer(featureLayer);
                     }
                     break;
-                case ListChangedType.ItemChanged:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.ItemMoved:
-                case ListChangedType.PropertyDescriptorAdded:
-                case ListChangedType.PropertyDescriptorChanged:
-                case ListChangedType.PropertyDescriptorDeleted:
                 default:
                     break;
             }
+        }
+
+        private void handleHighlightedFeaturesListChanged(object sender, ListChangedEventArgs e)
+        {
+            IFeatureLayer featureLayer = getLayerFromHighlightView(sender);
+
+            if (featureLayer == null)
+            {
+                return;
+            }
+
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    RenderFeatureLayer(featureLayer);
+                    break;
+                case ListChangedType.Reset:
+                    if (featureLayer.HighlightedFeatures.Count > 0)
+                    {
+                        RenderFeatureLayer(featureLayer);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private IFeatureLayer getLayerFromSelectedView(object view)
+        {
+            return getLayerFromFeatureDataView(view, true);
+        }
+
+        private IFeatureLayer getLayerFromHighlightView(object view)
+        {
+            return getLayerFromFeatureDataView(view, false);
+        }
+
+        private IFeatureLayer getLayerFromFeatureDataView(object view, bool getSelectedView)
+        {
+            foreach (ILayer layer in Map.Layers)
+            {
+                if (layer is IFeatureLayer)
+                {
+                    FeatureDataView compareView = getSelectedView
+                                                      ? (layer as IFeatureLayer).SelectedFeatures
+                                                      : (layer as IFeatureLayer).HighlightedFeatures;
+
+                    if (ReferenceEquals(compareView, view))
+                    {
+                        return layer as IFeatureLayer;
+                    }
+                }
+            }
+
+            return null;  
         }
         #endregion
     }

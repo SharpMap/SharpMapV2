@@ -41,7 +41,7 @@ namespace SharpMap.Layers
 
         /// <summary>
         /// Initializes a new, empty features layer
-        /// which handles <see cref="FeatureDataTable.FeaturesRequested"/> 
+        /// which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
         protected FeatureLayer(IFeatureLayerProvider dataSource)
@@ -51,7 +51,7 @@ namespace SharpMap.Layers
 
         /// <summary>
         /// Initializes a new features layer with the given name and datasource
-        /// and which handles <see cref="FeatureDataTable.FeaturesRequested"/> 
+        /// and which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
@@ -68,7 +68,7 @@ namespace SharpMap.Layers
         /// <param name="dataSource">Data source.</param>
         /// <param name="handleFeatureDataRequest">
         /// Value to indicate the layer should handle 
-        /// <see cref="FeatureDataTable.FeaturesRequested"/> events from the <see cref="Features"/>
+        /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
         protected FeatureLayer(string layername, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
@@ -78,7 +78,7 @@ namespace SharpMap.Layers
         
         /// <summary>
         /// Initializes a new features layer with the given name, style and datasource
-        /// and which handles <see cref="FeatureDataTable.FeaturesRequested"/> 
+        /// and which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
@@ -95,7 +95,7 @@ namespace SharpMap.Layers
         /// <param name="dataSource">Data source.</param>
         /// <param name="handleFeatureDataRequest">
         /// Value to indicate the layer should handle 
-        /// <see cref="FeatureDataTable.FeaturesRequested"/> events from the <see cref="Features"/>
+        /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
         protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
@@ -203,13 +203,13 @@ namespace SharpMap.Layers
         /// <param name="query">
         /// The query used to match data on the data source.
         /// </param>
-        public override void LoadLayerData(SpatialQuery query)
+        public override void LoadLayerData(SpatialExpression query)
         {
             if (query == null) throw new ArgumentNullException("query");
 
-            FeatureSpatialQuery featureQuery =
-                query as FeatureSpatialQuery
-                ?? new FeatureSpatialQuery(query.QueryRegion, query.QueryType, null);
+            FeatureSpatialExpression featureQuery =
+                query as FeatureSpatialExpression
+                ?? new FeatureSpatialExpression(query.QueryRegion, query.QueryType, null);
 
             if (!AsyncQuery)
             {

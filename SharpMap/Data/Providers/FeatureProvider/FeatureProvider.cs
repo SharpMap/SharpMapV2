@@ -126,12 +126,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -186,7 +186,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="query">Spatial query to execute.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
         /// <exception cref="NotImplementedException">Always throws this exception.</exception>
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query)
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query)
 	    {
 	        throw new NotImplementedException();
 	    }
@@ -199,7 +199,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="query">Spatial query to execute.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
         /// <exception cref="NotImplementedException">Always throws this exception.</exception>
-        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet)
+        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
 		{
 			throw new NotImplementedException();
 		}
@@ -210,9 +210,9 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
 		/// <param name="table">FeatureDataTable to fill data into.</param>
-        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table)
+        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table)
 		{
-            if (query.QueryType != SpatialQueryType.Intersects)
+            if (query.QueryType != SpatialExpressionType.Intersects)
             {
                 throw new NotImplementedException(
                     "A query type other than SpatialQueryType.Intersects is not supported.");

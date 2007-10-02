@@ -494,6 +494,7 @@ namespace SharpMap.Presentation.WinForms
             }
 
             g.Transform = getGdiViewTransform();
+
             g.Clear(BackColor);
 
             while(_renderObjectQueue.Count > 0)

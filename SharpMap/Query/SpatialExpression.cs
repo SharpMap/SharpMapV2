@@ -20,12 +20,12 @@ using SharpMap.Geometries;
 
 namespace SharpMap.Query
 {
-    public class SpatialQuery : IEquatable<SpatialQuery>
+    public class SpatialExpression : IEquatable<SpatialExpression>
     {
         private readonly Geometry _queryRegion;
-        private readonly SpatialQueryType _queryType;
+        private readonly SpatialExpressionType _queryType;
 
-        public SpatialQuery(Geometry queryRegion, SpatialQueryType queryType)
+        public SpatialExpression(Geometry queryRegion, SpatialExpressionType queryType)
         {
             _queryRegion = queryRegion;
             _queryType = queryType;
@@ -36,17 +36,17 @@ namespace SharpMap.Query
             get { return _queryRegion ?? Point.Empty; }
         }
 
-        public SpatialQueryType QueryType
+        public SpatialExpressionType QueryType
         {
             get { return _queryType; }
         }
 
-        public static bool operator !=(SpatialQuery lhs, SpatialQuery rhs)
+        public static bool operator !=(SpatialExpression lhs, SpatialExpression rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static bool operator ==(SpatialQuery lhs, SpatialQuery rhs)
+        public static bool operator ==(SpatialExpression lhs, SpatialExpression rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -63,7 +63,7 @@ namespace SharpMap.Query
             }
         }
 
-        public bool Equals(SpatialQuery other)
+        public bool Equals(SpatialExpression other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -81,7 +81,7 @@ namespace SharpMap.Query
                 return true;
             }
 
-            return Equals(obj as SpatialQuery);
+            return Equals(obj as SpatialExpression);
         }
 
         public override int GetHashCode()
@@ -93,9 +93,9 @@ namespace SharpMap.Query
             }
         }
 
-        public SpatialQuery Clone()
+        public SpatialExpression Clone()
         {
-            SpatialQuery clone = new SpatialQuery(
+            SpatialExpression clone = new SpatialExpression(
                 _queryRegion == null ? null : _queryRegion.Clone(), QueryType);
 
             return clone;

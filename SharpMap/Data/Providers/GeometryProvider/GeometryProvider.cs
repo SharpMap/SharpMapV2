@@ -296,12 +296,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -351,7 +351,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </summary>
         /// <param name="geometry">The geometry used to query with.</param>
         /// <param name="queryType">Type of spatial query to execute.</param>
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialQuery query)
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query)
 		{
 			throw new NotSupportedException();
 		}
@@ -362,7 +362,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// <param name="geometry">The geometry used to query with.</param>
 		/// <param name="table">FeatureDataTable to fill data into.</param>
         /// <param name="queryType">Type of spatial query to execute.</param>
-        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataTable table)
+        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table)
 		{
 			throw new NotSupportedException();
 		}
@@ -373,7 +373,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <param name="geometry">The geometry used to query with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
         /// <param name="queryType">Type of spatial query to execute.</param>
-        public void ExecuteFeatureQuery(FeatureSpatialQuery query, FeatureDataSet dataSet)
+        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
 		{
 			throw new NotSupportedException();
 		}

@@ -20,13 +20,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using SharpMap.Data;
 
 namespace SharpMap.Data
 {
     /// <summary>
-    /// Represents one feature table of in-memory spatial data, with an object identifier (OID) type
-    /// of <typeparamref name="TOid"/>
+    /// Represents one feature table of in-memory spatial data, 
+    /// with an object identifier (OID) type of <typeparamref name="TOid"/>.
     /// </summary>
     /// <typeparam name="TOid">Type of the object id.</typeparam>
     public class FeatureDataTable<TOid> : FeatureDataTable, IEnumerable<FeatureDataRow<TOid>>
@@ -131,6 +132,7 @@ namespace SharpMap.Data
             foreach (DataRow row in tableCopy)
             {
                 FeatureDataRow<TOid> newRow = tableWithId.NewRow() as FeatureDataRow<TOid>;
+                Debug.Assert(newRow != null);
                 int itemCount = newRow.ItemArray.Length;
                 newRow.ItemArray = new object[itemCount];
                 //Array.Copy(row.ItemArray, newRow.ItemArray, itemCount);
@@ -144,9 +146,7 @@ namespace SharpMap.Data
 
         #region Constructors
 
-        private FeatureDataTable()
-        {
-        }
+        private FeatureDataTable() { }
 
         public FeatureDataTable(string idColumnName)
         {
@@ -159,6 +159,13 @@ namespace SharpMap.Data
             setIdColumn(idColumnName);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="FeatureDataTable{TOid}"/> from the given
+        /// DataTable and with the <see cref="IdColumn"/> chosen the name
+        /// given with <paramref name="idColumnName"/>.
+        /// </summary>
+        /// <param name="table">The table to copy.</param>
+        /// <param name="idColumnName">The name of the OID column.</param>
         public FeatureDataTable(DataTable table, string idColumnName)
             : base(table)
         {
@@ -168,7 +175,8 @@ namespace SharpMap.Data
 
         #region Properties
         /// <summary>
-        /// Gets the <see cref="DataColumn"/> which represents the id column for the feature table.
+        /// Gets the <see cref="DataColumn"/> which represents the id column 
+        /// for the feature table.
         /// </summary>
         public DataColumn IdColumn
         {
@@ -180,6 +188,20 @@ namespace SharpMap.Data
             }
         }
 
+        /// <summary>
+        /// Gets or set an array of columns that serve as primary keys 
+        /// for the feature data table.
+        /// </summary>
+        /// <exception cref="NotSupportedException">
+        /// Thrown when key array length is greater than 1.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the key array length is zero.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the column in the key array is not 
+        /// equal to <see cref="IdColumn"/>.
+        /// </exception>
         public new DataColumn[] PrimaryKey
         {
             get { return base.PrimaryKey; }
@@ -187,17 +209,20 @@ namespace SharpMap.Data
             {
                 if (value.Length > 1)
                 {
-                    throw new NotSupportedException("Compound key not supported on FeatureDataTable.");
+                    throw new NotSupportedException(
+                        "Compound key not supported on FeatureDataTable.");
                 }
 
                 if (value.Length == 0)
                 {
-                    throw new InvalidOperationException("FeatureDataTable`1 must have an id column.");
+                    throw new InvalidOperationException(
+                        "FeatureDataTable`1 must have an id column.");
                 }
 
                 if (value[0] != IdColumn)
                 {
-                    throw new InvalidOperationException("The primary key must be the same as the IdColumn.");
+                    throw new InvalidOperationException(
+                        "The primary key must be the same as the IdColumn.");
                 }
 
                 base.PrimaryKey = value;
@@ -226,7 +251,8 @@ namespace SharpMap.Data
         }
 
         /// <summary>
-        /// Clones the structure of the FeatureDataTable, including all FeatureDataTable schemas and constraints. 
+        /// Clones the structure of the FeatureDataTable, including all 
+        /// <see cref="FeatureDataTable"/> schemas and constraints. 
         /// </summary>
         /// <returns></returns>
         public new FeatureDataTable<TOid> Clone()
@@ -236,13 +262,24 @@ namespace SharpMap.Data
             return clone;
         }
 
+        /// <summary>
+        /// Finds a feature given the feature's <abbr title="object identifier">OID</abbr>.
+        /// </summary>
+        /// <param name="key">
+        /// The unique key value (the OID) to use to find the feature.
+        /// </param>
+        /// <returns>
+        /// The feature row with the given <paramref name="key"/>, or <see langword="null"/>
+        /// if a feature with the key wasn't found.
+        /// </returns>
         public FeatureDataRow<TOid> Find(TOid key)
         {
             return base.Find(key) as FeatureDataRow<TOid>;
         }
 
         /// <summary>
-        /// Returns an enumerator for enumering the rows of the <see cref="FeatureDataTable{TOid}">table</see> instance.
+        /// Returns an enumerator for enumering the rows of the 
+        /// <see cref="FeatureDataTable{TOid}">table</see> instance.
         /// </summary>
         /// <returns></returns>
         public new IEnumerator<FeatureDataRow<TOid>> GetEnumerator()
@@ -260,14 +297,15 @@ namespace SharpMap.Data
         public FeatureDataRow<TOid> NewRow(TOid id)
         {
             FeatureDataRow<TOid> row = NewRow() as FeatureDataRow<TOid>;
+            Debug.Assert(row != null);
             row[IdColumn] = id;
             return row;
         }
 
         /// <summary>
-        /// Removes the row from the table
+        /// Removes the feature row from the table.
         /// </summary>
-        /// <param name="row">Row to remove</param>
+        /// <param name="row">Row to remove.</param>
         public void RemoveRow(FeatureDataRow<TOid> row)
         {
             Rows.Remove(row);
@@ -287,10 +325,11 @@ namespace SharpMap.Data
         }
 
         /// <summary>
-        /// Creates a new FeatureDataRow with the same schema as the table, based on a datarow builder
+        /// Creates a new FeatureDataRow with the same schema as the table, 
+        /// based on a datarow builder.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
+        /// <param name="builder">A DataRowBuilder instance to create the record with.</param>
+        /// <returns>A new DataRow with the same schema as the table.</returns>
         protected override DataRow NewRowFromBuilder(DataRowBuilder builder)
         {
             return new FeatureDataRow<TOid>(builder);
