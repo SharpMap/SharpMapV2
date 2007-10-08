@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using SharpMap.Layers;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -25,9 +26,52 @@ namespace SharpMap.Rendering
 {
 	internal class LayerRendererRegistry
 	{
-		private static readonly object _initSync = new object();
-		private static volatile LayerRendererRegistry _instance;
-		readonly Dictionary<RuntimeTypeHandle, object> _renderers = new Dictionary<RuntimeTypeHandle, object>();
+        #region Nested types
+        private struct LayerRendererRegistryKey : IEquatable<LayerRendererRegistryKey>
+        {
+            internal LayerRendererRegistryKey(Type type, String name)
+            {
+                Type = type == null ? new RuntimeTypeHandle() : type.TypeHandle;
+                Name = name;
+            }
+
+            internal RuntimeTypeHandle Type;
+            internal String Name;
+
+            #region IEquatable<LayerRendererRegistryKey> Members
+
+            public bool Equals(LayerRendererRegistryKey other)
+            {
+                return other.Type.Equals(Type) &&
+                    String.Compare(Name, other.Name, StringComparison.CurrentCultureIgnoreCase) == 0;
+            }
+
+            #endregion
+
+            public override int GetHashCode()
+            {
+                return Type.GetHashCode() ^
+                    ((Name == null) ? 1247510379 : Name.GetHashCode());
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is LayerRendererRegistryKey)
+                {
+                    return Equals((LayerRendererRegistryKey)obj);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        #endregion		
+        
+        private static readonly object _initSync = new object();
+		private static object _instance;
+        readonly Dictionary<LayerRendererRegistryKey, IRenderer> _renderers
+            = new Dictionary<LayerRendererRegistryKey, IRenderer>();
 
 		private LayerRendererRegistry()
 		{
@@ -37,42 +81,81 @@ namespace SharpMap.Rendering
 		{
 			get
 			{
-				if (_instance == null)
+				if (Thread.VolatileRead(ref _instance) == null)
 				{
 					lock (_initSync)
 					{
-						if (_instance == null)
+                        if (Thread.VolatileRead(ref _instance) == null)
 						{
-							_instance = new LayerRendererRegistry();
+						    Thread.VolatileWrite(ref _instance, new LayerRendererRegistry());
 						}
 					}
 				}
 
-				return _instance;
+                return _instance as LayerRendererRegistry;
 			}
 		}
 
 		public void Register(Type layerType, IRenderer renderer)
-		{
-			_renderers[layerType.TypeHandle] = renderer;
-		}
+        {
+            LayerRendererRegistryKey key = new LayerRendererRegistryKey(layerType, null);
+            _renderers[key] = renderer;
+        }
 
-		public TRenderer Get<TRenderer>(ILayer layer)
-			where TRenderer : class 
-		{
-		    if (layer == null) throw new ArgumentNullException("layer");
-		    
-            Type layerType = layer.GetType();
+        public void Register(String layerName, IRenderer renderer)
+        {
+            LayerRendererRegistryKey key = new LayerRendererRegistryKey(null, layerName);
+            _renderers[key] = renderer;
+        }
 
-		    object renderer;
-			_renderers.TryGetValue(layerType.TypeHandle, out renderer);
+        public TRenderer Get<TRenderer, TLayer>()
+            where TRenderer : class, IRenderer
+        {
+            Type layerType = typeof(TLayer);
+            LayerRendererRegistryKey key = new LayerRendererRegistryKey(layerType, null);
+            IRenderer renderer;
 
-			if (!(renderer is TRenderer))
-			{
-				return null;
-			}
+            if (!_renderers.TryGetValue(key, out renderer))
+            {
+                return null;
+            }
 
-			return renderer as TRenderer;
-		}
+            return renderer as TRenderer;
+        }
+
+        public TRenderer Get<TRenderer>(String name)
+            where TRenderer : class, IRenderer
+        {
+            LayerRendererRegistryKey key = new LayerRendererRegistryKey(null, name);
+            IRenderer renderer;
+
+            if (!_renderers.TryGetValue(key, out renderer))
+            {
+                return null;
+            }
+
+            return renderer as TRenderer;
+        }
+
+	    public TRenderer Get<TRenderer>(ILayer layer)
+            where TRenderer : class, IRenderer
+        {
+	        if (layer == null) throw new ArgumentNullException("layer");
+
+	        LayerRendererRegistryKey key = new LayerRendererRegistryKey(null, layer.LayerName);
+            IRenderer renderer;
+
+            if (!_renderers.TryGetValue(key, out renderer))
+            {
+                key = new LayerRendererRegistryKey(layer.GetType(), null);
+
+                if (!_renderers.TryGetValue(key, out renderer))
+                {
+                    return null;
+                }
+            }
+
+            return renderer as TRenderer;
+        }
 	}
 }

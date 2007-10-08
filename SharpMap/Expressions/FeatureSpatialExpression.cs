@@ -19,7 +19,7 @@ using System;
 using System.Collections;
 using SharpMap.Geometries;
 
-namespace SharpMap.Query
+namespace SharpMap.Expressions
 {
     public class FeatureSpatialExpression : SpatialExpression, IEquatable<FeatureSpatialExpression>
     {

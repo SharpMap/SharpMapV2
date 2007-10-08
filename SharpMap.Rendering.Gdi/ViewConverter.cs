@@ -83,6 +83,14 @@ namespace SharpMap.Rendering.Gdi
 									(int)rectangle.Width, (int)rectangle.Height);
 		}
 
+        public static GdiFont Convert(StyleFont styleFont)
+        {
+            GdiFont font = new Font(styleFont.FontFamily.Name, 
+                (float)styleFont.Size.Width, Convert(styleFont.Style));
+
+            return font;
+        }
+
 		public static GdiFontStyle Convert(StyleFontStyle fontStyle)
 		{
 			return (GdiFontStyle)(int)(fontStyle);

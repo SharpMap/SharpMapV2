@@ -16,6 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
@@ -31,6 +33,7 @@ namespace SharpMap.Presentation.WinForms
     {
         private bool _isRenderingSelection = false;
         private bool _isRenderingAll = false;
+        private Label2D _viewInfo;
 
         internal MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)
@@ -42,7 +45,12 @@ namespace SharpMap.Presentation.WinForms
             get { return View as MapViewControl; }
         }
 
-        protected override IRasterRenderer<Rectangle2D> CreateRasterRenderer()
+        protected override IRenderer CreateLabelRenderer()
+        {
+            return new GdiLabelRenderer(VectorRenderer as GdiVectorRenderer);
+        }
+
+        protected override IRasterRenderer2D CreateRasterRenderer()
         {
             return new GdiRasterRenderer();
         }
@@ -57,6 +65,13 @@ namespace SharpMap.Presentation.WinForms
             return typeof(GdiRenderObject);
         }
 
+        protected override void OnViewMatrixInitialized()
+        {
+            initializeInfoLabel();
+
+            base.OnViewMatrixInitialized();
+        }
+
         protected override void OnRenderingAllLayers()
         {
             _isRenderingAll = true;
@@ -66,6 +81,13 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnRenderedAllLayers()
         {
             base.OnRenderedAllLayers();
+
+            GdiLabelRenderer renderer = GetRenderer<GdiLabelRenderer, LabelLayer>();
+            
+            Debug.Assert(renderer != null);
+            
+            IEnumerable<GdiRenderObject> renderedText = renderer.RenderLabel(_viewInfo);
+            View.ShowRenderedObjects(renderedText);
 
             if (!_isRenderingSelection)
             {
@@ -97,6 +119,12 @@ namespace SharpMap.Presentation.WinForms
             {
                 RenderAllLayers();
             }
+        }
+
+        protected override void SetViewLocationInformation(string text)
+        {
+            _viewInfo.Text = text;
+            RenderAllLayers();
         }
 
         #region MapViewControl accessible members
@@ -226,5 +254,14 @@ namespace SharpMap.Presentation.WinForms
         }
 
         #endregion
+
+        private void initializeInfoLabel()
+        {
+            Point2D infoLocation = new Point2D(0, ViewControl.Height - 12);
+            Point worldPoint = ToWorld(infoLocation);
+            LabelStyle style = new LabelStyle();
+            style.Font = new StyleFont(new StyleFontFamily("Arial"), new Size2D(12, 12), StyleFontStyle.Regular);
+            _viewInfo = new Label2D(String.Empty, new Point2D(worldPoint.X, worldPoint.Y), 0, 0, Rectangle2D.Empty, style);
+        }
     }
 }

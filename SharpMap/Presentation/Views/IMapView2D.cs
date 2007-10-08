@@ -38,6 +38,7 @@ namespace SharpMap.Presentation.Views
         event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
@@ -61,12 +62,14 @@ namespace SharpMap.Presentation.Views
         /// Gets or sets center of map in world coordinates.
         /// </summary>
         Point GeoCenter { get; set; }
-		
+
+        void IdentifyLocation(Point worldPoint);
+
         /// <summary>
         /// Gets or sets the minimum width in world units of the view.
         /// </summary>
         double MaximumWorldWidth { get; set; }
-		
+
         /// <summary>
         /// Gets or sets the minimum width in world units of the view.
         /// </summary>
@@ -105,14 +108,14 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         /// <param name="renderedObjects">The rendered objects to draw.</param>
         void ShowRenderedObjects(IEnumerable renderedObjects);
-		
+
         /// <summary>
         /// Gets a <see cref="Matrix2D"/> used to project the world
         /// coordinate system into the view coordinate system. 
         /// The inverse of the <see cref="ToWorldTransform"/> matrix.
         /// </summary>
         Matrix2D ToViewTransform { get; }
-		
+
         /// <summary>
         /// Gets a <see cref="Matrix2D"/> used to reverse the view projection
         /// transform to get world coordinates.
@@ -167,7 +170,7 @@ namespace SharpMap.Presentation.Views
         /// pair in view space.
         /// </returns>
         Point ToWorld(double x, double y);
-		
+
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
         /// </summary>
@@ -192,7 +195,7 @@ namespace SharpMap.Presentation.Views
         /// Throws an exception when value is 0 or less.
         /// </exception>
         double WorldAspectRatio { get; set; }
-		
+
         /// <summary>
         /// Gets the height of view in world units.
         /// </summary>
@@ -213,7 +216,7 @@ namespace SharpMap.Presentation.Views
         /// * <see cref="WorldUnitsPerPixel"/>).
         /// </returns>
         double WorldWidth { get; }
-		
+
         /// <summary>
         /// Gets the width of a pixel in world coordinate units.
         /// </summary>

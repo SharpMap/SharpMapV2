@@ -122,6 +122,7 @@ namespace SharpMap.Presentation.WinForms
         public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
@@ -285,10 +286,16 @@ namespace SharpMap.Presentation.WinForms
         #endregion
 
         #region Methods
+        public void IdentifyLocation(GeoPoint location)
+        {
+            onRequestIdentifyLocation(location);
+            Invalidate();
+        }
+
         public void Offset(Point2D offsetVector)
         {
             onRequestOffset(offsetVector);
-            Refresh();
+            Invalidate();
         }
 
         /// <summary>
@@ -432,6 +439,10 @@ namespace SharpMap.Presentation.WinForms
             {
                 onMoveTo(ViewConverter.Convert(e.Location));
                 _mousePreviousLocation = e.Location;
+            }
+            else
+            {
+                onHover(ViewConverter.Convert(e.Location));
             }
 
             base.OnMouseMove(e);
@@ -658,6 +669,17 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
+        private void onRequestIdentifyLocation(GeoPoint location)
+        {
+            EventHandler<LocationEventArgs> e = IdentifyLocationRequested;
+
+            if (e != null)
+            {
+                LocationEventArgs args = new LocationEventArgs(location);
+                e(this, args);
+            }
+        }
+
         private void onRequestOffset(Point2D offset)
         {
             EventHandler<MapViewPropertyChangeEventArgs<Point2D>> e = OffsetChangeRequested;
@@ -812,9 +834,10 @@ namespace SharpMap.Presentation.WinForms
                 || gdiElements[4] != (float)viewMatrix.OffsetX
                 || gdiElements[5] != (float)viewMatrix.OffsetY)
             {
-                Debug.WriteLine(String.Format("Disposing GDI matrix on values: {0} != {1}; {2} != {3}; {4} != {5}; {6} != {7}; {8} != {9}; {10} != {11}",
+                Debug.WriteLine(String.Format("Disposing GDI matrix on values: {0} : {1}; {2} : {3}; {4} : {5}; {6} : {7}; {8} : {9}; {10} : {11}",
                     gdiElements[0], (float)viewMatrix.M11, gdiElements[1], (float)viewMatrix.M12, gdiElements[2], (float)viewMatrix.M21,
                     gdiElements[3], (float)viewMatrix.M22, gdiElements[4], (float)viewMatrix.OffsetX, gdiElements[5], (float)viewMatrix.OffsetY));
+                
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
             }
@@ -824,8 +847,10 @@ namespace SharpMap.Presentation.WinForms
 
         private bool withinDragTolerance(GdiPoint point)
         {
-            return Math.Abs(_mouseDownLocation.X - point.X) <= 3 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
+            return Math.Abs(_mouseDownLocation.X - point.X) <= 3 
+                && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
         }
+
         private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
         {
             float scale = (float)Math.Pow(2, (float)Math.Abs(deltaDegrees) / 360f);

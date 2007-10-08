@@ -23,7 +23,7 @@ using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
-using SharpMap.Query;
+using SharpMap.Expressions;
 
 namespace SharpMap.Presentation.Presenters
 {
@@ -72,16 +72,15 @@ namespace SharpMap.Presentation.Presenters
 
             FeatureSpatialExpression query;
 
-            if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty() &&
-                layer.HighlightedFeatures.ViewDefinition.QueryType == SpatialExpressionType.Disjoint)
+            if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty())
             {
-                query = new FeatureSpatialExpression(layer.Extents.ToGeometry(),
-                                        SpatialExpressionType.Intersects,
+                query = new FeatureSpatialExpression(Point.Empty,
+                                        SpatialExpressionType.Disjoint,
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }
             else
             {
-                query = new FeatureSpatialExpression(Point.Empty,
+                query = new FeatureSpatialExpression(layer.HighlightedFeatures.ViewDefinition.QueryRegion,
                                         SpatialExpressionType.Intersects,
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }

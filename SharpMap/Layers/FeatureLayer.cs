@@ -22,7 +22,7 @@ using System.Data;
 using System.Globalization;
 using SharpMap.Data;
 using SharpMap.Geometries;
-using SharpMap.Query;
+using SharpMap.Expressions;
 using SharpMap.Styles;
 using System.Collections.Generic;
 
@@ -191,8 +191,7 @@ namespace SharpMap.Layers
             }
             protected set
             {
-                // Nothing to set since the FeatureDataTable.CachedRegion
-                // is computed by the features added to the table
+                _features.Envelope = value;
             }
         }
 
@@ -211,8 +210,11 @@ namespace SharpMap.Layers
                 query as FeatureSpatialExpression
                 ?? new FeatureSpatialExpression(query.QueryRegion, query.QueryType, null);
 
+            _features.SuspendIndexEvents();
+
             if (!AsyncQuery)
             {
+                handlerCallCount++;
                 DataSource.ExecuteFeatureQuery(featureQuery, _features);
             }
             else
@@ -224,6 +226,8 @@ namespace SharpMap.Layers
             }
 
             base.LoadLayerData(query);
+            _features.RestoreIndexEvents(true);
+            handlerCallCount--;
         }
         #endregion
 
@@ -234,9 +238,12 @@ namespace SharpMap.Layers
 
         #region Private helper methods
 
+        private int handlerCallCount = 0;
         private void handleFeaturesRequested(object sender, FeaturesNotFoundEventArgs e)
         {
+            //handlerCallCount++;
             LoadLayerData(e.MissingForQuery);
+            //handlerCallCount--;
         }
 
         private void queryCallback(IAsyncResult result)

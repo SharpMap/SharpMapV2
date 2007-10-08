@@ -75,5 +75,19 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #endregion
+
+        #region IRasterRenderer2D Members
+
+        IEnumerable IRasterRenderer2D.RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        IEnumerable IRasterRenderer2D.RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, NPack.Interfaces.IMatrix<NPack.DoubleComponent> rasterTransform)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
     }
 }

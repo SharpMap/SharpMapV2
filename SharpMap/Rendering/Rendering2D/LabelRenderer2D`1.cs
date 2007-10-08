@@ -67,9 +67,9 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         public abstract Size2D MeasureString(string text, StyleFont font);
-        public abstract TRenderObject RenderLabel(Label2D label);
-        public abstract TRenderObject RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor);
-        public abstract TRenderObject RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
+        public abstract IEnumerable<TRenderObject> RenderLabel(Label2D label);
+        public abstract IEnumerable<TRenderObject> RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor);
+        public abstract IEnumerable<TRenderObject> RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
         #endregion
 
         protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style, RenderState renderState)
@@ -340,7 +340,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
-        TRenderObject ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
+        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
         {
             return RenderLabel(label as Label2D);
         }

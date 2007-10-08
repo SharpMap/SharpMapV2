@@ -131,6 +131,8 @@ namespace SharpMap.Rendering.Rendering2D
                                                                  Symbol2D highlightSymbolData,
                                                                  Symbol2D selectSymbolData, RenderState renderState);
 
+        public abstract TRenderObject RenderText(string text, StyleFont font, Rectangle2D layoutRectangle);
+
         #endregion
 
         #region Explicit Interface Implementation
@@ -169,9 +171,8 @@ namespace SharpMap.Rendering.Rendering2D
                                                   StylePen highlightOutline, StylePen selectOutline,
                                                   RenderState renderState)
         {
-            return
-                RenderPaths(paths, line, highlightLine, selectLine, outline, highlightOutline, selectOutline,
-                            renderState);
+            return RenderPaths(paths, line, highlightLine, selectLine, 
+                outline, highlightOutline, selectOutline, renderState);
         }
 
         IEnumerable IVectorRenderer2D.RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
@@ -179,9 +180,8 @@ namespace SharpMap.Rendering.Rendering2D
                                                   StylePen highlightOutline, StylePen selectOutline,
                                                   RenderState renderState)
         {
-            return
-                RenderPaths(paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline,
-                            renderState);
+            return RenderPaths(paths, fill, highlightFill, selectFill, 
+                outline, highlightOutline, selectOutline, renderState);
         }
 
         IEnumerable IVectorRenderer2D.RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
@@ -203,6 +203,10 @@ namespace SharpMap.Rendering.Rendering2D
             return RenderSymbols(locations, symbolData, highlightSymbolData, selectSymbolData, renderState);
         }
 
+        object IVectorRenderer2D.RenderText(string text, StyleFont font, Rectangle2D layoutRectangle)
+        {
+            return RenderText(text, font, layoutRectangle);
+        }
         #endregion
     }
 }

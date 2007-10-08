@@ -65,5 +65,11 @@ namespace SharpMap.Data
         /// returns <see langword="null"/>.
         /// </remarks>
         Type OidType { get; }
+
+        ///// <summary>
+        ///// Gets an array of columns describing the schema of the 
+        ///// feature.
+        ///// </summary>
+        //DataColumn[] Schema { get; }
 	}
 }

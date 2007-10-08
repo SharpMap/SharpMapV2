@@ -25,11 +25,10 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
-using SharpMap.Query;
+using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data
@@ -42,34 +41,89 @@ namespace SharpMap.Data
         : DataTable, IEnumerable<FeatureDataRow>, IEnumerable<IFeatureDataRecord>
     {
         #region Nested types
+
+        private delegate DataRow MergeRowDelegate(FeatureDataTable table, FeatureDataRow sourceRow,
+                                                  FeatureDataRow targetRow, bool preserveChanges, object index);
+
+        private delegate bool GetEnforceConstraintsDelegate(FeatureDataTable table);
+
+        private delegate void SetEnforceConstraintsDelegate(FeatureDataTable table, bool value);
+
+        private delegate void EvaluateExpressionsDelegate(FeatureDataTable table);
+
+        private delegate void EnableConstraintsDelegate(FeatureDataTable table);
+
+        private delegate bool GetSuspendEnforceConstraintsDelegate(FeatureDataTable table);
+
+        private delegate void SetSuspendEnforceConstraintsDelegate(FeatureDataTable table, bool value);
+
+        private delegate UniqueConstraint GetPrimaryKeyConstraintDelegate(FeatureDataTable table);
+
+        private delegate bool GetMergingDataDelegate(FeatureDataTable table);
+
+        private delegate void SetMergingDataDelegate(FeatureDataTable table, bool isMerging);
+
         private delegate FeatureDataView GetDefaultViewDelegate(FeatureDataTable table);
+
         private delegate DataTable CloneToDelegate(DataTable src, DataTable dst, DataSet dataSet, bool skipExpressions);
+
         private delegate void SuspendIndexEventsDelegate(DataTable table);
+
         private delegate void RestoreIndexEventsDelegate(DataTable table, bool forcesReset);
+
+        private delegate FeatureDataRow FindMergeTargetDelegate(
+            FeatureDataTable table, FeatureDataRow sourceRow, object dataKey, object index);
+
         #endregion
 
         #region Type fields
+
+        private static readonly MergeRowDelegate _mergeRow;
+        private static readonly GetEnforceConstraintsDelegate _getEnforceConstraints;
+        private static readonly SetEnforceConstraintsDelegate _setEnforceConstraints;
+        private static readonly EvaluateExpressionsDelegate _evaluateExpression;
+        private static readonly GetSuspendEnforceConstraintsDelegate _getSuspendEnforceConstraints;
+        private static readonly SetSuspendEnforceConstraintsDelegate _setSuspendEnforceConstraints;
+        private static readonly EnableConstraintsDelegate _enableConstraints;
+        private static readonly GetPrimaryKeyConstraintDelegate _getPrimaryKeyConstraint;
+        private static readonly GetMergingDataDelegate _getMergingData;
+        private static readonly SetMergingDataDelegate _setMergingData;
         private static readonly GetDefaultViewDelegate _getDefaultView;
         private static readonly CloneToDelegate _cloneTo;
         private static readonly SuspendIndexEventsDelegate _suspendIndexEvents;
         private static readonly RestoreIndexEventsDelegate _restoreIndexEvents;
+        private static readonly FindMergeTargetDelegate _findMergeTarget;
+
         #endregion
 
         #region Static constructors
 
         static FeatureDataTable()
         {
+            _getPrimaryKeyConstraint = generatePrimaryKeyConstraintDelegate();
+            _getMergingData = generateGetMergingDataDelegate();
+            _setMergingData = generateSetMergingDataDelegate();
             _getDefaultView = generateGetDefaultViewDelegate();
             _cloneTo = generateCloneToDelegate();
             _suspendIndexEvents = generateSuspendIndexEventsDelegate();
             _restoreIndexEvents = generateRestoreIndexEventsDelegate();
+            _findMergeTarget = generateFindMergeTargetDelgate();
+            _getEnforceConstraints = generateGetEnforceConstraintsDelegate();
+            _setEnforceConstraints = generateSetEnforceConstraintsDelegate();
+            _evaluateExpression = generateEvaluateExpressionsDelegate();
+            _getSuspendEnforceConstraints = generateGetSuspendEnforceConstraintsDelegate();
+            _setSuspendEnforceConstraints = generateSetSuspendEnforceConstraintsDelegate();
+            _enableConstraints = generateEnableConstraintsDelegate();
+            _mergeRow = generateMergeRowDelegate();
         }
 
         #endregion
 
         #region Instance fields
+
         private SelfOptimizingDynamicSpatialIndex<FeatureDataRow> _rTreeIndex;
         private Geometry _envelope;
+
         #endregion
 
         #region Object constructors
@@ -151,9 +205,14 @@ namespace SharpMap.Data
         #endregion
 
         #region Properties
+
         public Geometry Envelope
         {
             get { return _envelope ?? Point.Empty; }
+            internal set
+            {
+                _envelope = value;
+            }
         }
 
         /// <summary>
@@ -354,7 +413,10 @@ namespace SharpMap.Data
         /// </param>
         public void Load(IFeatureDataReader reader, LoadOption loadOption, FillErrorEventHandler errorHandler)
         {
-            if (reader == null) throw new ArgumentNullException("reader");
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
 
             LoadFeaturesAdapter adapter = new LoadFeaturesAdapter();
             adapter.FillLoadOption = loadOption;
@@ -380,39 +442,13 @@ namespace SharpMap.Data
 
         public void Merge(FeatureDataTable features, bool preserveChanges)
         {
-            Merge(features, preserveChanges, MissingSchemaAction.Add);
+            Merge(features, preserveChanges, SchemaMergeAction.Add);
         }
 
-        public void Merge(FeatureDataTable features, bool preserveChanges, MissingSchemaAction missingSchemaAction)
+        public void Merge(FeatureDataTable features, bool preserveChanges, SchemaMergeAction schemaMergeAction)
         {
-            base.Merge(features, preserveChanges, missingSchemaAction);
-
-            // Since the above merge doesn't handle the Geometry property
-            // we have to take care of it with a separate loop.
-            foreach (FeatureDataRow row in features)
-            {
-                if (!row.HasOid)
-                {
-                    throw new ArgumentException(
-                        "Features must have a feature id to merge the geometries.");
-                }
-
-                // Find the target row in this table to set geometry on
-                FeatureDataRow target = Find(row.GetOid());
-
-                Debug.Assert(target != null);
-
-                // If we are adding the geometry to the row or if the geometry changed
-                // then we set it here. Note that GetHashCode comparison could be a problem, 
-                // since it is not guaranteed to be unique.
-#warning GetHashCode comparison not unique, but faster. Replace when coordinate storage improved in Beta 2.
-                if (target.Geometry == null
-                    || target.Geometry.GetHashCode() != row.Geometry.GetHashCode())
-                {
-                    target.Geometry = row.Geometry;
-                    _envelope = _envelope.Union(row.Geometry);
-                }
-            }
+            FeatureMerger merger = new FeatureMerger(this, preserveChanges, schemaMergeAction);
+            merger.MergeFeatures(features);
         }
 
         /// <summary>
@@ -445,10 +481,30 @@ namespace SharpMap.Data
         /// <summary>
         /// Creates a new FeatureDataRow with the same schema as the table.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A new <see cref="FeatureDataRow"/> with the same schema as the table.
+        /// </returns>
         public new FeatureDataRow NewRow()
         {
             return base.NewRow() as FeatureDataRow;
+        }
+
+        /// <summary>
+        /// Creates a new FeatureDataRow with the same schema as the table,
+        /// and a value indicating whether it is fully loaded.
+        /// </summary>
+        /// <param name="isFullyLoaded">
+        /// A value indicating whether the row is fully loaded from the data source
+        /// or not (lazy-loaded).
+        /// </param>
+        /// <returns>
+        /// A new <see cref="FeatureDataRow"/> with the same schema as the table.
+        /// </returns>
+        public FeatureDataRow NewRow(bool isFullyLoaded)
+        {
+            FeatureDataRow row = NewRow();
+            row.IsFullyLoaded = isFullyLoaded;
+            return row;
         }
 
         /// <summary>
@@ -540,6 +596,7 @@ namespace SharpMap.Data
         #endregion
 
         #region Protected virtual members
+
         protected virtual void OnConstraintsChanged(object sender, CollectionChangeEventArgs args)
         {
             if (args.Action == CollectionChangeAction.Add && args.Element is UniqueConstraint)
@@ -555,7 +612,8 @@ namespace SharpMap.Data
                     throw new NotSupportedException("Compound primary keys not supported.");
                 }
             }
-        } 
+        }
+
         #endregion
 
         #region DataTable overrides and shadows
@@ -778,11 +836,32 @@ namespace SharpMap.Data
 
         #endregion
 
-        #region Internal helper methods
+        #region Internal helper methods and properties
 
         internal FeatureDataView DefaultViewInternal
         {
             get { return _getDefaultView(this); }
+        }
+
+        internal FeatureDataRow FindMergeTarget(FeatureDataRow sourceRow, object dataKey, object index)
+        {
+            return _findMergeTarget(this, sourceRow, dataKey, index);
+        }
+
+        internal void EnableConstraints()
+        {
+            _enableConstraints(this);
+        }
+
+        internal bool EnforceConstraints
+        {
+            get { return _getEnforceConstraints(this); }
+            set { _setEnforceConstraints(this, value); }
+        }
+
+        internal void EvaluateExpressions()
+        {
+            _evaluateExpression(this);
         }
 
         internal void MergeFeature(IFeatureDataRecord record)
@@ -805,6 +884,12 @@ namespace SharpMap.Data
         {
             FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
             merger.MergeFeatures(records);
+        }
+
+        internal bool MergingData
+        {
+            get { return _getMergingData(this); }
+            set { _setMergingData(this, value); }
         }
 
         internal void NotifyFeaturesNotFound(FeatureSpatialExpression notFoundExpression)
@@ -844,79 +929,283 @@ namespace SharpMap.Data
             }
         }
 
+        internal bool SuspendEnforceConstraints
+        {
+            get { return _getSuspendEnforceConstraints(this); }
+            set { _setSuspendEnforceConstraints(this, value); }
+        }
+
         internal void SuspendIndexEvents()
         {
             _suspendIndexEvents(this);
+        }
+
+        internal UniqueConstraint PrimaryKeyConstraint
+        {
+            get { return _getPrimaryKeyConstraint(this); }
+        }
+
+        internal FeatureDataRow MergeRowInternal(FeatureDataRow sourceRow, FeatureDataRow targetRow, bool preserveChanges,
+                                       object index)
+        {
+            FeatureDataRow mergedRow = _mergeRow(this, sourceRow, targetRow, preserveChanges, index) as FeatureDataRow;
+            return mergedRow;
         }
 
         #endregion
 
         #region Private static helper methods
 
+        private static GetEnforceConstraintsDelegate generateGetEnforceConstraintsDelegate()
+        {
+            DynamicMethod get_EnforceConstraintsMethod = new DynamicMethod("get_EnforceConstraints_DynamicMethod",
+                                                                           typeof(bool),
+                                                                           new Type[] { typeof(FeatureDataTable) },
+                                                                           typeof(DataTable));
+
+            ILGenerator il = get_EnforceConstraintsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            PropertyInfo enforceConstraintsProperty =
+                typeof(DataTable).GetProperty("EnforceConstraints", flags);
+            MethodInfo getMethod = enforceConstraintsProperty.GetGetMethod(true);
+            il.Emit(OpCodes.Call, getMethod);
+            il.Emit(OpCodes.Ret);
+
+            return get_EnforceConstraintsMethod.CreateDelegate(typeof(GetEnforceConstraintsDelegate))
+                   as GetEnforceConstraintsDelegate;
+        }
+
+        private static SetEnforceConstraintsDelegate generateSetEnforceConstraintsDelegate()
+        {
+            DynamicMethod set_EnforceConstraintsMethod = new DynamicMethod("set_EnforceConstraints_DynamicMethod",
+                                                                           null,
+                                                                           new Type[]
+                                                                               {
+                                                                                   typeof (FeatureDataTable), typeof (bool)
+                                                                               },
+                                                                           typeof(DataTable));
+
+            ILGenerator il = set_EnforceConstraintsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            PropertyInfo enforceConstraintsProperty =
+                typeof(DataTable).GetProperty("EnforceConstraints", flags);
+            MethodInfo setMethod = enforceConstraintsProperty.GetSetMethod(true);
+            il.Emit(OpCodes.Call, setMethod);
+            il.Emit(OpCodes.Ret);
+
+            return set_EnforceConstraintsMethod.CreateDelegate(typeof(SetEnforceConstraintsDelegate))
+                   as SetEnforceConstraintsDelegate;
+        }
+
+        private static EvaluateExpressionsDelegate generateEvaluateExpressionsDelegate()
+        {
+            DynamicMethod evaluateExpressionsMethod =
+                new DynamicMethod("FeatureDataTable_EvaluateExpressionsMethod_DynamicMethod",
+                                  MethodAttributes.Public | MethodAttributes.Static,
+                                  CallingConventions.Standard,
+                                  null,
+                                  new Type[] { typeof(DataTable) },
+                                  typeof(DataTable),
+                                  false);
+
+            ILGenerator il = evaluateExpressionsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+            MethodInfo evaluateExpressionsInfo = typeof(DataTable).GetMethod("EvaluateExpressions",
+                                                                              flags, null,
+                                                                              Type.EmptyTypes,
+                                                                              null);
+            il.Emit(OpCodes.Call, evaluateExpressionsInfo);
+            il.Emit(OpCodes.Ret);
+
+            return evaluateExpressionsMethod.CreateDelegate(typeof(EvaluateExpressionsDelegate))
+                   as EvaluateExpressionsDelegate;
+        }
+
+        private static GetSuspendEnforceConstraintsDelegate generateGetSuspendEnforceConstraintsDelegate()
+        {
+            DynamicMethod get_SuspendEnforceConstraintsMethod =
+                new DynamicMethod("get_SuspendEnforceConstraints_DynamicMethod",
+                                  typeof(bool),
+                                  new Type[] { typeof(FeatureDataTable) },
+                                  typeof(DataTable));
+
+            ILGenerator il = get_SuspendEnforceConstraintsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            PropertyInfo suspendConstraintsProperty =
+                typeof(DataTable).GetProperty("SuspendEnforceConstraints", flags);
+            MethodInfo getMethod = suspendConstraintsProperty.GetGetMethod(true);
+            il.Emit(OpCodes.Call, getMethod);
+            il.Emit(OpCodes.Ret);
+
+            return get_SuspendEnforceConstraintsMethod.CreateDelegate(typeof(GetSuspendEnforceConstraintsDelegate))
+                   as GetSuspendEnforceConstraintsDelegate;
+        }
+
+        private static SetSuspendEnforceConstraintsDelegate generateSetSuspendEnforceConstraintsDelegate()
+        {
+            DynamicMethod set_SuspendEnforceConstraintsMethod =
+                new DynamicMethod("set_SuspendEnforceConstraints_DynamicMethod",
+                                  null,
+                                  new Type[] { typeof(FeatureDataTable), typeof(bool) },
+                                  typeof(DataTable));
+
+            ILGenerator il = set_SuspendEnforceConstraintsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            PropertyInfo suspendConstraintsProperty =
+                typeof(DataTable).GetProperty("SuspendEnforceConstraints", flags);
+            MethodInfo setMethod = suspendConstraintsProperty.GetSetMethod(true);
+            il.Emit(OpCodes.Call, setMethod);
+            il.Emit(OpCodes.Ret);
+
+            return set_SuspendEnforceConstraintsMethod.CreateDelegate(typeof(SetSuspendEnforceConstraintsDelegate))
+                   as SetSuspendEnforceConstraintsDelegate;
+        }
+
+        private static EnableConstraintsDelegate generateEnableConstraintsDelegate()
+        {
+            DynamicMethod enableConstraintsMethod =
+                new DynamicMethod("FeatureDataTable_EnableConstraints_DynamicMethod",
+                                  MethodAttributes.Public | MethodAttributes.Static,
+                                  CallingConventions.Standard,
+                                  null,
+                                  new Type[] { typeof(DataTable) },
+                                  typeof(DataTable),
+                                  false);
+
+            ILGenerator il = enableConstraintsMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+            MethodInfo enableConstraintsInfo = typeof(DataTable).GetMethod("EnableConstraints",
+                                                                            flags, null,
+                                                                            Type.EmptyTypes,
+                                                                            null);
+            il.Emit(OpCodes.Call, enableConstraintsInfo);
+            il.Emit(OpCodes.Ret);
+
+            return enableConstraintsMethod.CreateDelegate(typeof(EnableConstraintsDelegate))
+                   as EnableConstraintsDelegate;
+        }
+
+        private static GetMergingDataDelegate generateGetMergingDataDelegate()
+        {
+            DynamicMethod get_MergingDataMethod = new DynamicMethod("FeatureDataTable_get_mergingData_DynamicMethod",
+                                                                    typeof(bool),
+                                                                    new Type[] { typeof(FeatureDataTable) },
+                                                                    typeof(DataTable));
+
+            ILGenerator il = get_MergingDataMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld,
+                    typeof(DataTable).GetField("mergingData", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ret);
+
+            return get_MergingDataMethod.CreateDelegate(typeof(GetMergingDataDelegate))
+                   as GetMergingDataDelegate;
+        }
+
+        private static SetMergingDataDelegate generateSetMergingDataDelegate()
+        {
+            DynamicMethod set_MergingDataMethod = new DynamicMethod("FeatureDataTable_set_mergingData_DynamicMethod",
+                                                                    null,
+                                                                    new Type[] { typeof(FeatureDataTable), typeof(bool) },
+                                                                    typeof(DataTable));
+
+            ILGenerator il = set_MergingDataMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Stfld,
+                    typeof(DataTable).GetField("mergingData", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ret);
+
+            return set_MergingDataMethod.CreateDelegate(typeof(SetMergingDataDelegate))
+                   as SetMergingDataDelegate;
+        }
+
         private static GetDefaultViewDelegate generateGetDefaultViewDelegate()
         {
-            DynamicMethod get_DefaultViewMethod = new DynamicMethod("get_DefaultView_DynamicMethod",
+            DynamicMethod get_DefaultViewMethod = new DynamicMethod("FeatureDataTable_get_defaultView_DynamicMethod",
                                                                     typeof(FeatureDataView),
-                                                                    new Type[] { typeof(FeatureDataTable) }, typeof(DataTable));
+                                                                    new Type[] { typeof(FeatureDataTable) },
+                                                                    typeof(DataTable));
 
             ILGenerator il = get_DefaultViewMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, typeof(DataTable).GetField("defaultView", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ldfld,
+                    typeof(DataTable).GetField("defaultView", BindingFlags.Instance | BindingFlags.NonPublic));
             il.Emit(OpCodes.Ret);
 
             return get_DefaultViewMethod.CreateDelegate(typeof(GetDefaultViewDelegate))
                    as GetDefaultViewDelegate;
         }
 
-
         private static RestoreIndexEventsDelegate generateRestoreIndexEventsDelegate()
         {
-            DynamicMethod restoreIndexEventsMethod = new DynamicMethod("FeatureDataTable_RestoreIndexEvents",
-                                                                       MethodAttributes.Public | MethodAttributes.Static,
-                                                                       CallingConventions.Standard,
-                                                                       null,
-                                                                       new Type[] { typeof(DataTable), typeof(bool) },
-                                                                       typeof(DataTable),
-                                                                       false);
+            DynamicMethod restoreIndexEventsMethod =
+                new DynamicMethod("FeatureDataTable_RestoreIndexEvents_DynamicMethod",
+                                  MethodAttributes.Public | MethodAttributes.Static,
+                                  CallingConventions.Standard,
+                                  null,
+                                  new Type[] { typeof(DataTable), typeof(bool) },
+                                  typeof(DataTable),
+                                  false);
 
             ILGenerator il = restoreIndexEventsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             MethodInfo restoreIndexEventsInfo = typeof(DataTable).GetMethod("RestoreIndexEvents",
-                                                                            BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(bool) }, null);
+                                                                             BindingFlags.NonPublic |
+                                                                             BindingFlags.Instance, null,
+                                                                             new Type[] { typeof(bool) }, null);
             il.Emit(OpCodes.Call, restoreIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
-            return (RestoreIndexEventsDelegate)restoreIndexEventsMethod.CreateDelegate(typeof(RestoreIndexEventsDelegate));
+            return
+                (RestoreIndexEventsDelegate)
+                restoreIndexEventsMethod.CreateDelegate(typeof(RestoreIndexEventsDelegate));
         }
 
         private static SuspendIndexEventsDelegate generateSuspendIndexEventsDelegate()
         {
-            DynamicMethod suspendIndexEventsMethod = new DynamicMethod("FeatureDataTable_SuspendIndexEvents",
-                                                                       MethodAttributes.Public | MethodAttributes.Static,
-                                                                       CallingConventions.Standard,
-                                                                       null,
-                                                                       new Type[] { typeof(DataTable) },
-                                                                       typeof(DataTable),
-                                                                       false);
+            DynamicMethod suspendIndexEventsMethod =
+                new DynamicMethod("FeatureDataTable_SuspendIndexEvents_DynamicMethod",
+                                  MethodAttributes.Public | MethodAttributes.Static,
+                                  CallingConventions.Standard,
+                                  null,
+                                  new Type[] { typeof(DataTable) },
+                                  typeof(DataTable),
+                                  false);
 
             ILGenerator il = suspendIndexEventsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             MethodInfo suspendIndexEventsInfo = typeof(DataTable).GetMethod("SuspendIndexEvents",
-                                                                            BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+                                                                             BindingFlags.NonPublic |
+                                                                             BindingFlags.Instance, null,
+                                                                             Type.EmptyTypes, null);
             il.Emit(OpCodes.Call, suspendIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
-            return (SuspendIndexEventsDelegate)suspendIndexEventsMethod.CreateDelegate(typeof(SuspendIndexEventsDelegate));
+            return suspendIndexEventsMethod.CreateDelegate(typeof(SuspendIndexEventsDelegate))
+                   as SuspendIndexEventsDelegate;
         }
 
         private static CloneToDelegate generateCloneToDelegate()
         {
-            DynamicMethod cloneToMethod = new DynamicMethod("FeatureDataTable_CloneTo",
+            DynamicMethod cloneToMethod = new DynamicMethod("FeatureDataTable_CloneTo_DynamicMethod",
                                                             MethodAttributes.Public | MethodAttributes.Static,
                                                             CallingConventions.Standard,
                                                             typeof(DataTable),
-                                                            new Type[] { typeof(DataTable), typeof(DataTable), typeof(DataSet), typeof(bool) },
+                                                            new Type[]
+                                                                {
+                                                                    typeof (DataTable), typeof (DataTable),
+                                                                    typeof (DataSet), typeof (bool)
+                                                                },
                                                             typeof(DataTable),
                                                             false);
 
@@ -925,19 +1214,103 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Ldarg_3);
-            MethodInfo cloneToInfo = typeof(DataTable).GetMethod("CloneTo", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo cloneToInfo =
+                typeof(DataTable).GetMethod("CloneTo", BindingFlags.NonPublic | BindingFlags.Instance);
             il.Emit(OpCodes.Call, cloneToInfo);
             il.Emit(OpCodes.Ret);
 
             return (CloneToDelegate)cloneToMethod.CreateDelegate(typeof(CloneToDelegate));
         }
+
+        private static FindMergeTargetDelegate generateFindMergeTargetDelgate()
+        {
+            DynamicMethod findMergeTargetMethod =
+                new DynamicMethod("FeatureDataTable_FindMergeTargetDelegate_DynamicMethod",
+                                  typeof(FeatureDataRow),
+                                  new Type[] { typeof(DataTable), typeof(DataRow), typeof(Object), typeof(Object) },
+                                  typeof(DataTable));
+
+            // No error or null checking here, since it's only internal code which calls
+            // this method
+            ILGenerator il = findMergeTargetMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
+            il.Emit(OpCodes.Ldarg_3);
+            il.Emit(OpCodes.Castclass, AdoNetInternalTypes.IndexType);
+            MethodInfo findMergeTargetInfo =
+                typeof(DataTable).GetMethod("FindMergeTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+            il.Emit(OpCodes.Call, findMergeTargetInfo);
+            il.Emit(OpCodes.Ret);
+
+            return findMergeTargetMethod.CreateDelegate(typeof(FindMergeTargetDelegate))
+                   as FindMergeTargetDelegate;
+        }
+
+        private static GetPrimaryKeyConstraintDelegate generatePrimaryKeyConstraintDelegate()
+        {
+            DynamicMethod get_PrimaryKeyConstraintMethod =
+                new DynamicMethod("FeatureDataTable_get_primaryKey_DynamicMethod",
+                                  typeof(UniqueConstraint),
+                                  new Type[] { typeof(FeatureDataTable) },
+                                  typeof(DataTable));
+
+            ILGenerator il = get_PrimaryKeyConstraintMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld,
+                    typeof(DataTable).GetField("primaryKey", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ret);
+
+            return get_PrimaryKeyConstraintMethod.CreateDelegate(typeof(GetPrimaryKeyConstraintDelegate))
+                   as GetPrimaryKeyConstraintDelegate;
+        }
+
+        private static MergeRowDelegate generateMergeRowDelegate()
+        {
+            DynamicMethod mergeRowMethod = new DynamicMethod("FeatureDataTable_MergeRow_DynamicMethod",
+                                                             typeof(DataRow),
+                                                             new Type[]
+                                                                 {
+                                                                     typeof (FeatureDataTable),
+                                                                     typeof (FeatureDataRow),
+                                                                     typeof (FeatureDataRow),
+                                                                     typeof (bool),
+                                                                     typeof (object)
+                                                                 },
+                                                             typeof(DataTable));
+
+            ILGenerator il = mergeRowMethod.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Ldarg_3);
+            il.Emit(OpCodes.Ldarg_S, 4);
+            il.Emit(OpCodes.Castclass, AdoNetInternalTypes.IndexType);
+            MethodInfo mergeRowInfo = typeof(DataTable).GetMethod(
+                "MergeRow",
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null,
+                new Type[]
+                    {
+                        typeof (FeatureDataRow), typeof (FeatureDataRow),
+                        typeof (bool), AdoNetInternalTypes.IndexType
+                    },
+                null);
+            il.Emit(OpCodes.Call, mergeRowInfo);
+            il.Emit(OpCodes.Ret);
+
+            return mergeRowMethod.CreateDelegate(typeof(MergeRowDelegate))
+                   as MergeRowDelegate;
+        }
+
         #endregion
 
         #region Private helper methods
 
         private void notifyIfEnvelopeDoesNotContain(Geometry geometry)
         {
-            if (!Envelope.Contains(geometry))
+            if (!geometry.IsEmpty() && !Envelope.Contains(geometry))
             {
                 FeatureSpatialExpression notFound = new FeatureSpatialExpression(
                     geometry.Difference(Envelope), SpatialExpressionType.Intersects, null);
@@ -967,13 +1340,15 @@ namespace SharpMap.Data
             // TODO: implement Post-optimization restructure strategy
             IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>();
+            IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy =
+                new GuttmanQuadraticInsert<FeatureDataRow>();
             INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
             IdleMonitor idleMonitor = null;
             _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
                                                                                 restructureHeuristic, insertStrategy,
                                                                                 nodeSplitStrategy,
-                                                                                new DynamicRTreeBalanceHeuristic(), idleMonitor);
+                                                                                new DynamicRTreeBalanceHeuristic(),
+                                                                                idleMonitor);
         }
 
         #endregion

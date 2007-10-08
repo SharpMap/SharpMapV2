@@ -19,6 +19,7 @@ using System;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+using System.Collections.Generic;
 
 namespace SharpMap.Rendering
 {
@@ -60,7 +61,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="label">Label to render.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(ILabel<TPoint, TRectangle, Path<TPoint, TRectangle>> label);
+        IEnumerable<TRenderObject> RenderLabel(ILabel<TPoint, TRectangle, Path<TPoint, TRectangle>> label);
 
         /// <summary>
         /// Renders a label.
@@ -70,7 +71,7 @@ namespace SharpMap.Rendering
         /// <param name="font">The font to use to draw the label.</param>
         /// <param name="foreColor">The color to use to draw the label.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(string text, TPoint location, StyleFont font, StyleColor foreColor);
+        IEnumerable<TRenderObject> RenderLabel(string text, TPoint location, StyleFont font, StyleColor foreColor);
 
         /// <summary>
         /// Renders a label.
@@ -90,7 +91,7 @@ namespace SharpMap.Rendering
         /// </param>
         /// <param name="rotation">An amount to rotate the label by.</param>
         /// <returns>A <typeparamref name="TRenderObject"/> used to draw the label.</returns>
-        TRenderObject RenderLabel(string text, TPoint location, TPoint offset, StyleFont font, 
+        IEnumerable<TRenderObject> RenderLabel(string text, TPoint location, TPoint offset, StyleFont font, 
             StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
     }
 }

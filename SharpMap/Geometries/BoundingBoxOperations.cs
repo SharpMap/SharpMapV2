@@ -24,27 +24,32 @@ namespace SharpMap.Geometries
     {
         internal static Geometry Difference(BoundingBox lhs, BoundingBox rhs)
         {
-            Point lowerLeft = new Point(Math.Min(lhs.Left, rhs.Left), Math.Min(lhs.Bottom, rhs.Bottom));
-            Point lowerRight = new Point(Math.Max(lhs.Right, rhs.Right), Math.Min(lhs.Bottom, rhs.Bottom));
-            Point upperLeft = new Point(Math.Min(lhs.Left, rhs.Left), Math.Max(lhs.Top, rhs.Top));
-            Point upperRight = new Point(Math.Max(lhs.Right, rhs.Right), Math.Max(lhs.Top, rhs.Top));
+            BoundingBox union = new BoundingBox(lhs, rhs);
 
             List<BoundingBox> components = new List<BoundingBox>();
-            components.AddRange(lhs.Split(lowerLeft));
-            components.AddRange(lhs.Split(lowerRight));
-            components.AddRange(lhs.Split(upperLeft));
-            components.AddRange(lhs.Split(upperRight));
+            components.AddRange(union.Split(rhs.LowerLeft));
+            components.AddRange(union.Split(rhs.LowerRight));
+            components.AddRange(union.Split(rhs.UpperLeft));
+            components.AddRange(union.Split(rhs.UpperRight));
 
             for (int i = components.Count - 1; i >= 0; i--)
             {
-                if (components[i].IsEmpty)
+                if (components[i].IsEmpty || rhs.Overlaps(components[i]))
                 {
                     components.RemoveAt(i);
                 }
             }
 
             BoundingBox diff = BoundingBox.Join(components.ToArray());
-            return diff.ToGeometry();
+
+            if (diff.Contains(rhs))
+            {
+                return lhs.ToGeometry();
+            }
+            else
+            {
+                return diff.ToGeometry();
+            }
         }
     }
 }

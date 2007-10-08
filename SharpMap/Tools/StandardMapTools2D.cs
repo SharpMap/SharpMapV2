@@ -24,6 +24,9 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Tools
 {
+    /// <summary>
+    /// Provides a set of standard tools to use on a map.
+    /// </summary>
     public static class StandardMapTools2D
     {
         private static readonly Dictionary<IMapView2D, Point2D> _actionPositions
@@ -120,7 +123,6 @@ namespace SharpMap.Tools
             Point2D difference = previousPoint - currentPoint;
 
             _actionPositions[view] = currentPoint;
-            //view.Offset(difference);
 
             Rectangle2D viewBounds = new Rectangle2D(difference, view.ViewSize);
             view.ZoomToViewBounds(viewBounds);
@@ -188,12 +190,20 @@ namespace SharpMap.Tools
 
         #region Query
 
-        private static void QueryQuery(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryQuery(ActionContext<IMapView2D, Point2D> context)
+        {
+            Point2D point = context.ActionArgs.ActionPoint;
+            Point worldPoint = context.MapView.ToWorld(point);
+            context.MapView.IdentifyLocation(worldPoint);
+        }
 
         /// <summary>
         /// Clear the view's current selection before starting a new one.
         /// </summary>
-        /// <param name="context">ActionContext<IMapView2D, Point2D></param>
+        /// <param name="context">
+        /// An <see cref="ActionContext{IMapView2D, Point2D}"/> which provides 
+        /// information about where, and on which view, the action occurred.
+        /// </param>
         private static void BeginQuery(ActionContext<IMapView2D, Point2D> context)
         {
             beginSelection(context);
@@ -202,7 +212,10 @@ namespace SharpMap.Tools
         /// <summary>
         /// Add the current point to the view's selection.
         /// </summary>
-        /// <param name="context">ActionContext<IMapView2D, Point2D></param>
+        /// <param name="context">
+        /// An <see cref="ActionContext{IMapView2D, Point2D}"/> which provides 
+        /// information about where, and on which view, the action occurred.
+        /// </param>
         private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
         {
             continueSelection(context);
@@ -211,7 +224,10 @@ namespace SharpMap.Tools
         /// <summary>
         /// Close the view's selection and set the map's GeometryFilter.
         /// </summary>
-        /// <param name="context">ActionContext<IMapView2D, Point2D></param>
+        /// <param name="context">
+        /// An <see cref="ActionContext{IMapView2D, Point2D}"/> which provides 
+        /// information about where, and on which view, the action occurred.
+        /// </param>
         private static void EndQuery(ActionContext<IMapView2D, Point2D> context)
         {
             IMapView2D view = context.MapView;

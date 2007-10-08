@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using SharpMap.Geometries;
-using SharpMap.Query;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {
@@ -77,6 +77,7 @@ namespace SharpMap.Data
         private FeatureSpatialExpression _viewDefinition;
         private bool _reindexingEnabled = true;
         private bool _shouldReindex = false;
+        private BoundingBox _extents = BoundingBox.Empty;
         #endregion
 
         #region Object constructors
@@ -271,12 +272,7 @@ namespace SharpMap.Data
         {
             get
             {
-                if (_viewDefinition.QueryRegion == null)
-                {
-                    return BoundingBox.Empty;
-                }
-
-                return _viewDefinition.QueryRegion.GetBoundingBox();
+                return _extents;
             }
             //set
             //{
@@ -303,10 +299,10 @@ namespace SharpMap.Data
                 Geometry missingGeometry = Point.Empty;
                 ArrayList missingOids = new ArrayList();
 
-                if (!_viewDefinition.QueryRegion.IsEmpty() 
+                if (!_viewDefinition.QueryRegion.IsEmpty()
                     && !Table.Envelope.Contains(_viewDefinition.QueryRegion))
                 {
-                    missingGeometry = Table.Envelope.Difference(_viewDefinition.QueryRegion);
+                    missingGeometry = _viewDefinition.QueryRegion.Difference(Table.Envelope);
                 }
 
                 if (value.Oids != null)
@@ -325,7 +321,7 @@ namespace SharpMap.Data
                 if (!missingGeometry.IsEmpty() || missingOids.Count > 0)
                 {
                     FeatureSpatialExpression notFound = new FeatureSpatialExpression(
-                        missingGeometry, SpatialExpressionType.Intersects, missingOids);
+                        missingGeometry, value.QueryType, missingOids);
                     Table.NotifyFeaturesNotFound(notFound);
                 }
 
@@ -397,6 +393,22 @@ namespace SharpMap.Data
 
         protected override void IndexListChanged(object sender, ListChangedEventArgs e)
         {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    FeatureDataRow feature = this[e.NewIndex].Row as FeatureDataRow;
+                    Debug.Assert(feature != null);
+                    _extents.ExpandToInclude(feature.Extents);
+                    break;
+                case ListChangedType.Reset:
+                case ListChangedType.ItemChanged:
+                case ListChangedType.ItemDeleted:
+                    recomputeExtents();
+                    break;
+                default:
+                    break;
+            }
+
             base.IndexListChanged(sender, e);
         }
 
@@ -500,9 +512,11 @@ namespace SharpMap.Data
 
             object featureOid = feature.GetOid();
 
+            Debug.Assert(featureOid != null);
+
             foreach (object oid in _viewDefinition.Oids)
             {
-                if (featureOid == oid)
+                if (featureOid.Equals(oid))
                 {
                     return true;
                 }
@@ -529,6 +543,18 @@ namespace SharpMap.Data
             else
             {
                 _shouldReindex = true;
+            }
+        }
+
+        private void recomputeExtents()
+        {
+            IEnumerable<FeatureDataRow> features = this;
+
+            _extents = BoundingBox.Empty;
+
+            foreach (FeatureDataRow feature in features)
+            {
+                _extents.ExpandToInclude(feature.Extents);
             }
         }
         #endregion

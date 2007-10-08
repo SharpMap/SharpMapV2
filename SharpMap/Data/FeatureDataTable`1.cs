@@ -293,12 +293,35 @@ namespace SharpMap.Data
         /// <summary>
         /// Creates a new FeatureDataRow with the same schema as the table.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="id">The feature id for the feature row.</param>
+        /// <returns>
+        /// A new <see cref="FeatureDataRow"/> with the same schema as the table,
+        /// with the given <paramref name="id"/>.
+        /// </returns>
         public FeatureDataRow<TOid> NewRow(TOid id)
         {
             FeatureDataRow<TOid> row = NewRow() as FeatureDataRow<TOid>;
             Debug.Assert(row != null);
             row[IdColumn] = id;
+            return row;
+        }
+
+        /// <summary>
+        /// Creates a new FeatureDataRow with the same schema as the table.
+        /// </summary>
+        /// <param name="id">The feature id for the feature row.</param>
+        /// <param name="isFullyLoaded">
+        /// A value indicating whether the row is fully loaded from the data source
+        /// or not (lazy-loaded).
+        /// </param>
+        /// <returns>
+        /// A new <see cref="FeatureDataRow"/> with the same schema as the table,
+        /// with the given <paramref name="id"/>.
+        /// </returns>
+        public FeatureDataRow NewRow(TOid id, bool isFullyLoaded)
+        {
+            FeatureDataRow<TOid> row = NewRow(id);
+            row.IsFullyLoaded = isFullyLoaded;
             return row;
         }
 

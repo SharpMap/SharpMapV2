@@ -15,17 +15,16 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System.Collections.Generic;
-using System.IO;
-using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
-using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+using System;
 
-namespace SharpMap.Rendering.Rendering2D
+namespace SharpMap.Data
 {
-    public interface IRasterRenderer2D<TRenderObject> : IRasterRenderer2D
+    internal static class AdoNetInternalTypes
     {
-        new IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds);
-        new IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
-            Rectangle2D rasterBounds, IMatrixD rasterTransform);
+        private static readonly string _adoAssemblyName =
+            "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+        internal static readonly Type DataKeyType = Type.GetType("System.Data.DataKey, " + _adoAssemblyName);
+        internal static readonly Type IndexType = Type.GetType("System.Data.Index, " + _adoAssemblyName);
+        internal static readonly Type MergerType = Type.GetType("System.Data.Merger, " + _adoAssemblyName);
     }
 }

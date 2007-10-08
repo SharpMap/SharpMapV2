@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20706</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C83777FC-AABB-47D9-911F-D76255D4D541}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -135,7 +135,9 @@
     <Compile Include="CoordinateSystems\Transformations\TransformType.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="CoordinateSystems\WGS84ConversionInfo.cs" />
+    <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
+    <Compile Include="Data\FeatureUniqueConstraint.cs" />
     <Compile Include="Data\IRasterLayerProvider.cs" />
     <Compile Include="Data\QueryExecutionOptions.cs" />
     <Compile Include="Data\RasterBand.cs" />
@@ -265,6 +267,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation\LayerStyleChangeRequestEventArgs.cs" />
+    <Compile Include="Presentation\LocationEventArgs.cs" />
     <Compile Include="Presentation\MapActionEventArgs`1.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\AttributePresenter.cs" />
@@ -272,6 +275,7 @@
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewMatrix3D.cs" />
@@ -323,11 +327,9 @@
     <Compile Include="Tools\IMapTool`1.cs" />
     <Compile Include="Tools\MapTool.cs" />
     <Compile Include="Tools\MapTool`1.cs" />
-    <Compile Include="Presentation\MapZoomChangedEventArgs.cs" />
     <Compile Include="Rendering\Rendering2D\Symbol2D.cs" />
     <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\Matrix2D.cs" />
-    <Compile Include="Presentation\ViewPointHoverEventArgs`1.cs" />
     <Compile Include="Rendering\Rendering2D\Rectangle2D.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
     <Compile Include="Rendering\Rendering2D\Point2D.cs" />

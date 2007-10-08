@@ -100,5 +100,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A rendered object suitable for direct display.</returns>
         IEnumerable RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                  Symbol2D highlightSymbolData, Symbol2D selectSymbolData, RenderState renderState);
+
+        object RenderText(string text, StyleFont font, Rectangle2D layoutRectangle);
     }
 }

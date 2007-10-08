@@ -18,7 +18,7 @@
 using System;
 using SharpMap.Geometries;
 
-namespace SharpMap.Query
+namespace SharpMap.Expressions
 {
     public class SpatialExpression : IEquatable<SpatialExpression>
     {
@@ -39,6 +39,33 @@ namespace SharpMap.Query
         public SpatialExpressionType QueryType
         {
             get { return _queryType; }
+        }
+
+        public bool HasIntersection(Geometry geometry)
+        {
+            switch (QueryType)
+            {
+                case SpatialExpressionType.None:
+                    return false;
+                case SpatialExpressionType.Contains:
+                    return QueryRegion.Contains(geometry);
+                case SpatialExpressionType.Crosses:
+                    return QueryRegion.Crosses(geometry);
+                case SpatialExpressionType.Disjoint:
+                    return QueryRegion.Disjoint(geometry);
+                case SpatialExpressionType.Equals:
+                    return QueryRegion.Equals(geometry);
+                case SpatialExpressionType.Intersects:
+                    return QueryRegion.Intersects(geometry);
+                case SpatialExpressionType.Overlaps:
+                    return QueryRegion.Overlaps(geometry);
+                case SpatialExpressionType.Touches:
+                    return QueryRegion.Touches(geometry);
+                case SpatialExpressionType.Within:
+                    return QueryRegion.Within(geometry);
+                default:
+                    return false;
+            }
         }
 
         public static bool operator !=(SpatialExpression lhs, SpatialExpression rhs)

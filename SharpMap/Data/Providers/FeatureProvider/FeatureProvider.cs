@@ -22,7 +22,7 @@ using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 using System.Globalization;
-using SharpMap.Query;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {

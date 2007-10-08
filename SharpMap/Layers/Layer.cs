@@ -24,7 +24,7 @@ using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using SharpMap.Geometries;
-using SharpMap.Query;
+using SharpMap.Expressions;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers

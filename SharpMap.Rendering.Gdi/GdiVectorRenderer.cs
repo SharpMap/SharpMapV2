@@ -51,7 +51,6 @@ namespace SharpMap.Rendering.Gdi
         private readonly Dictionary<BrushLookupKey, GdiBrush> _brushCache = new Dictionary<BrushLookupKey, GdiBrush>();
         private readonly Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
         private readonly Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
-
         #endregion
 
         #region Dispose override
@@ -181,9 +180,24 @@ namespace SharpMap.Rendering.Gdi
             }
         }
 
+        public override GdiRenderObject RenderText(string text, StyleFont font, Rectangle2D layoutRectangle)
+        {
+            GdiPath path = new GdiPath();
+            path.AddString(text, ViewConverter.Convert(font.FontFamily), 
+                (int)ViewConverter.Convert(font.Style), (float)font.Size.Width, 
+                ViewConverter.Convert(layoutRectangle), StringFormat.GenericDefault);
+            GdiRenderObject renderObject = new GdiRenderObject(
+                path, null, null, null, null, null, null, null, null, null);
+            return renderObject;
+        }
+
         #endregion
 
         #region Private helper methods
+        private Font getFont(StyleFont styleFont)
+        {
+            throw new NotImplementedException();
+        }
 
         private Brush getBrush(StyleBrush styleBrush)
         {

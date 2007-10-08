@@ -31,7 +31,7 @@ using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
-using SharpMap.Query;
+using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile

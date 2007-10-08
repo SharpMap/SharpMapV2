@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using SharpMap.Geometries;
 using System.Globalization;
-using SharpMap.Query;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {

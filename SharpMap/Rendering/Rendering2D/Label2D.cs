@@ -36,7 +36,21 @@ namespace SharpMap.Rendering.Rendering2D
         private float _rotation;
         private LabelStyle _style;
         private Path2D _labelPath;
-		private Rectangle2D _collisionBounds;
+        private Rectangle2D _collisionBounds;
+
+        /// <summary>
+        /// Initializes a new Label instance.
+        /// </summary>
+        /// <param name="text">Text to write.</param>
+        /// <param name="position">Position of label.</param>
+        /// <param name="style">The style to use in rendering the label.</param>
+        public Label2D(string text, Point2D position, LabelStyle style)
+            : this(text, position, 0, 0, Rectangle2D.Empty, style)
+        {
+            _text = text;
+            _labelPoint = position;
+            _style = style;
+        }
 
 		/// <summary>
 		/// Initializes a new Label instance.
@@ -44,9 +58,9 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="text">Text to write</param>
         /// <param name="position">Position of label</param>
 		/// <param name="rotation">Rotation</param>
-		/// <param name="priority">Label priority used for collision detection</param>
-        /// <param name="collisionArea">Box around label for collision detection</param>
-		/// <param name="style">The style of the label</param>
+		/// <param name="priority">Label priority used for collision detection.</param>
+        /// <param name="collisionArea">Box around label for collision detection.</param>
+        /// <param name="style">The style to use in rendering the label.</param>
 		public Label2D(string text, Point2D position, float rotation, int priority, Rectangle2D collisionArea, LabelStyle style)
 		{
 			_text = text;
