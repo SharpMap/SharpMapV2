@@ -46,20 +46,54 @@ namespace SharpMap.Rendering.Gdi
         public override IEnumerable<GdiRenderObject> RenderLabel(Label2D label)
         {
             return
-                RenderLabel(label.Text, label.LabelPoint, label.Style.Offset, label.Font, label.Style.ForeColor,
-                            label.Style.BackColor, label.Style.Halo, label.Rotation);
+                RenderLabel(label.Text, label.Font, label.Location, label.CollisionBuffer, label.FlowPath,
+                label.Style.Foreground, label.Style.Background, label.Style.Halo, createTransformFromLabel(label));
         }
 
-        public override IEnumerable<GdiRenderObject> RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor)
+        public override IEnumerable<GdiRenderObject> RenderLabel(string text, StyleFont font, Point2D location, StyleBrush foreground)
         {
-            return RenderLabel(text, location, new Point2D(0, 0), font, foreColor, null, null, 0);
+            return RenderLabel(text, font, location, Size2D.Empty, null, foreground, null, null, null);
         }
 
-        public override IEnumerable<GdiRenderObject> RenderLabel(string text, Point2D location, Point2D offset, StyleFont font,
-                                                    StyleColor foreColor, StyleBrush backColor, StylePen halo,
-                                                    float rotation)
+        public override IEnumerable<GdiRenderObject> RenderLabel(string text, StyleFont font, Point2D location, Size2D collisionBuffer, Path2D flowPath,
+                                                    StyleBrush foreground, StyleBrush background, StylePen halo, Matrix2D transform)
         {
-            yield return VectorRenderer.RenderText(text, font, Rectangle2D.Empty);
+            Rectangle2D layoutRectangle = computeLayoutRectangle(location, collisionBuffer, text, font);
+
+            if (halo != null)
+            {
+                IEnumerable<GdiRenderObject> haloPath = VectorRenderer.RenderPaths(
+                    generateHaloPath(layoutRectangle), background, background, background,
+                    halo, halo, halo, RenderState.Normal);
+
+                foreach (GdiRenderObject ro in haloPath)
+                {
+                    yield return ro;
+                }
+            }
+
+            GdiRenderObject fontPath = VectorRenderer.RenderText(text, font, layoutRectangle);
+            yield return new GdiRenderObject(fontPath.GdiPath, ViewConverter.Convert(foreground), 
+                null, null, null, null, null, ViewConverter.Convert(halo), null, null);
+        }
+
+        private static Matrix2D createTransformFromLabel(Label2D label)
+        {
+            Matrix2D transform = new Matrix2D();
+            transform.Rotate(label.Rotation);
+            transform.Translate(label.Offset);
+            return transform;
+        }
+
+        private static Rectangle2D computeLayoutRectangle(Point2D location, Size2D collisionBuffer, string text, StyleFont font)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static IEnumerable<Path2D> generateHaloPath(Rectangle2D layoutRectangle)
+        {
+            Path2D path = new Path2D(layoutRectangle.GetVertices(), true);
+            yield return path;
         }
 
 

@@ -25,8 +25,8 @@ namespace SharpMap.Styles
     /// </summary>
     public class LabelStyle : Style
     {
-        private HorizontalAlignmentEnum _horisontalAlignment;
-        private VerticalAlignmentEnum _verticalAlignment;
+        private HorizontalAlignment _horisontalAlignment;
+        private VerticalAlignment _verticalAlignment;
         private StyleTextRenderingHint _textRenderingHint;
         private StyleRenderingMode _smoothingMode;
         private Size2D _collisionBuffer;
@@ -34,26 +34,39 @@ namespace SharpMap.Styles
         private Point2D _offset;
         private StylePen _halo;
         private StyleFont _font;
-        private StyleColor _foreColor;
-        private StyleBrush _backColor;
+        private StyleBrush _foreground;
+        private StyleBrush _background;
 
         /// <summary>
-        /// Initializes a new LabelStyle
+        /// Initializes a new <see cref="LabelStyle"/>.
         /// </summary>
         public LabelStyle()
+            : this(new StyleFont("Arial", new Size2D(12, 12)), new SolidStyleBrush(StyleColor.Black))
         {
-            _font = new StyleFont("Times New Roman", new Size2D(12, 12));
-            _offset = new Point2D(0, 0);
-            _collisionDetection = false;
-            _collisionBuffer = new Size2D(0, 0);
-            _foreColor = StyleColor.Black;
-            _horisontalAlignment = HorizontalAlignmentEnum.Center;
-            _verticalAlignment = VerticalAlignmentEnum.Middle;
+        }
+
+        public LabelStyle(StyleFont font, StyleBrush foreground)
+            : this(font, foreground, new SolidStyleBrush(StyleColor.Transparent), 
+                Point2D.Empty, Size2D.Empty, HorizontalAlignment.Left, VerticalAlignment.Middle)
+        {
+        }
+
+        public LabelStyle(StyleFont font, StyleBrush foreground, StyleBrush background, Point2D offset, Size2D collisionBuffer, 
+            HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+        {
+            _font = font;
+            _foreground = foreground;
+            _background = background;
+            _collisionBuffer = collisionBuffer;
+            _collisionDetection = !_collisionBuffer.IsEmpty;
+            _offset = offset;
+            _horisontalAlignment = horizontalAlignment;
+            _verticalAlignment = verticalAlignment;
         }
 
         /// <summary>
-        /// Render whether smoothing (antialiasing) is applied to lines 
-        /// and curves and the edges of filled areas
+        /// Render whether smoothing (anti-aliasing) is applied to lines 
+        /// and curves and the edges of filled areas.
         /// </summary>
         public StyleRenderingMode SmoothingMode
         {
@@ -62,7 +75,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Specifies the quality of text rendering
+        /// Specifies the quality of text rendering.
         /// </summary>
         public StyleTextRenderingHint TextRenderingHint
         {
@@ -71,7 +84,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Label Font
+        /// Font used to draw the label.
         /// </summary>
         public StyleFont Font
         {
@@ -80,25 +93,28 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Font color
+        /// Brush used to fill the font for the label.
         /// </summary>
-        public StyleColor ForeColor
+        public StyleBrush Foreground
         {
-            get { return _foreColor; }
-            set { _foreColor = value; }
+            get { return _foreground; }
+            set { _foreground = value; }
         }
 
         /// <summary>
-        /// The background color of the label. Set to transparent brush or null if background isn't needed
+        /// The background brush of the label. 
         /// </summary>
-        public StyleBrush BackColor
+        /// <remarks>
+        /// Set to transparent brush or null if background isn't needed.
+        /// </remarks>
+        public StyleBrush Background
         {
-            get { return _backColor; }
-            set { _backColor = value; }
+            get { return _background; }
+            set { _background = value; }
         }
 
         /// <summary>
-        /// Creates a halo around the text
+        /// Creates a halo around the text.
         /// </summary>
         public StylePen Halo
         {
@@ -107,7 +123,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Specifies relative position of labels with respect to objects label point
+        /// Specifies relative position of labels with respect to object's label
+        /// <see cref="SharpMap.Rendering.ILabel{TPoint, TSize, TRectangle, TPath}.Location"/>.
         /// </summary>
         public Point2D Offset
         {
@@ -116,8 +133,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Gets or sets whether Collision Detection is enabled for the labels.
-        /// If set to true, label collision will be tested.
+        /// Gets or sets whether collision detection is enabled for the labels.
+        /// If set to true, label collision will be applied.
         /// </summary>
         public bool CollisionDetection
         {
@@ -126,7 +143,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Distance around label where collision buffer is active
+        /// Distance around label where collision buffer is active.
         /// </summary>
         public Size2D CollisionBuffer
         {
@@ -135,59 +152,23 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// The horisontal alignment of the text in relation to the labelpoint
+        /// The horizontal alignment of the text in relation to the label 
+        /// <see cref="SharpMap.Rendering.ILabel{TPoint, TSize, TRectangle, TPath}.Location"/>.
         /// </summary>
-        public HorizontalAlignmentEnum HorizontalAlignment
+        public HorizontalAlignment HorizontalAlignment
         {
             get { return _horisontalAlignment; }
             set { _horisontalAlignment = value; }
         }
 
         /// <summary>
-        /// The horisontal alignment of the text in relation to the labelpoint
+        /// The vertical alignment of the text in relation to the label
+        /// <see cref="SharpMap.Rendering.ILabel{TPoint, TSize, TRectangle, TPath}.Location"/>.
         /// </summary>
-        public VerticalAlignmentEnum VerticalAlignment
+        public VerticalAlignment VerticalAlignment
         {
             get { return _verticalAlignment; }
             set { _verticalAlignment = value; }
-        }
-
-        /// <summary>
-        /// Label text alignment
-        /// </summary>
-        public enum HorizontalAlignmentEnum : short
-        {
-            /// <summary>
-            /// Left oriented
-            /// </summary>
-            Left = 0,
-            /// <summary>
-            /// Right oriented
-            /// </summary>
-            Right = 2,
-            /// <summary>
-            /// Centered
-            /// </summary>
-            Center = 1
-        }
-
-        /// <summary>
-        /// Label text alignment
-        /// </summary>
-        public enum VerticalAlignmentEnum : short
-        {
-            /// <summary>
-            /// Left oriented
-            /// </summary>
-            Bottom = 0,
-            /// <summary>
-            /// Right oriented
-            /// </summary>
-            Top = 2,
-            /// <summary>
-            /// Centered
-            /// </summary>
-            Middle = 1
         }
     }
 }

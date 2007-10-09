@@ -57,7 +57,6 @@ namespace SharpMap.Rendering.Thematics
         private readonly IStyle _maxStyle;
         private StyleColorBlend _fillColorBlend;
         private StyleColorBlend _lineColorBlend;
-        private StyleColorBlend _textColorBlend;
 
         private readonly Dictionary<RuntimeTypeHandle, CalculateStyleDelegate> _styleTypeFunctionTable =
             new Dictionary<RuntimeTypeHandle, CalculateStyleDelegate>();
@@ -233,15 +232,6 @@ namespace SharpMap.Rendering.Thematics
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="StyleColorBlend"/> used on labels.
-        /// </summary>
-        public StyleColorBlend TextColorBlend
-        {
-            get { return _textColorBlend; }
-            set { _textColorBlend = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the <see cref="StyleColorBlend"/> used on lines.
         /// </summary>
         public StyleColorBlend LineColorBlend
@@ -403,19 +393,12 @@ namespace SharpMap.Rendering.Thematics
             double fontSize = interpolateDouble(labelMin.Font.Size.Width, labelMax.Font.Size.Width, value);
             style.Font = new StyleFont(labelMin.Font.FontFamily, new Size2D(fontSize, fontSize), labelMin.Font.Style);
 
-            if (labelMin.BackColor != null && labelMax.BackColor != null)
+            if (labelMin.Background != null && labelMax.Background != null)
             {
-                style.BackColor = interpolateBrush(labelMin.BackColor, labelMax.BackColor, value);
+                style.Background = interpolateBrush(labelMin.Background, labelMax.Background, value);
             }
 
-            if (_textColorBlend != null)
-            {
-                style.ForeColor = _lineColorBlend.GetColor(Convert.ToSingle(fraction(value)));
-            }
-            else
-            {
-                style.ForeColor = StyleColor.Interpolate(labelMin.ForeColor, labelMax.ForeColor, value);
-            }
+            style.Foreground = interpolateBrush(labelMin.Foreground, labelMax.Foreground, value);
 
             if (labelMin.Halo != null && labelMax.Halo != null)
             {

@@ -285,15 +285,17 @@
     <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />
-    <Compile Include="Rendering\ILabel`3.cs" />
+    <Compile Include="Rendering\ILabel`4.cs" />
     <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
     <Compile Include="Rendering\IFeatureRenderer`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
+    <Compile Include="Styles\HorizontalAlignment.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Styles\RasterStyle.cs" />
+    <Compile Include="Styles\VerticalAlignment.cs" />
     <Compile Include="Tools\ActionContext`1.cs" />
     <Compile Include="Map.cs">
     </Compile>
@@ -371,6 +373,7 @@
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
+    <Compile Include="Utilities\IVertexStream.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
     <Compile Include="Utilities\Tolerance.cs" />

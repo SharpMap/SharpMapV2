@@ -261,7 +261,7 @@ namespace SharpMap.Presentation.WinForms
             Point worldPoint = ToWorld(infoLocation);
             LabelStyle style = new LabelStyle();
             style.Font = new StyleFont(new StyleFontFamily("Arial"), new Size2D(12, 12), StyleFontStyle.Regular);
-            _viewInfo = new Label2D(String.Empty, new Point2D(worldPoint.X, worldPoint.Y), 0, 0, Rectangle2D.Empty, style);
+            _viewInfo = new Label2D(String.Empty, new Point2D(worldPoint.X, worldPoint.Y), 0, 0, Size2D.Empty, style);
         }
     }
 }

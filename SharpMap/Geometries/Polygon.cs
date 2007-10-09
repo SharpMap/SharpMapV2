@@ -358,16 +358,16 @@ namespace SharpMap.Geometries
             }
         }
 
-        protected internal override IEnumerable<Point> GetPointStream()
+        public override IEnumerable<Point> GetVertices()
         {
-            foreach (Point point in ExteriorRing.GetPointStream())
+            foreach (Point point in ExteriorRing.GetVertices())
             {
                 yield return point;
             }
 
             foreach (LinearRing ring in _interiorRings)
             {
-                foreach (Point point in ring.GetPointStream())
+                foreach (Point point in ring.GetVertices())
                 {
                     yield return point;
                 }

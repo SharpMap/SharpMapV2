@@ -19,24 +19,24 @@
 
 using System;
 using System.Collections.Generic;
-
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-	/// <summary>
-	/// Class for storing a label instance.
-	/// </summary>
-	public class Label2D : ILabel<Point2D, Rectangle2D, Path2D>, IComparable<Label2D>, IComparer<Label2D>
+    /// <summary>
+    /// Encapsulates a label glyph on a map.
+    /// </summary>
+    public class Label2D : ILabel<Point2D, Size2D, Rectangle2D, Path2D>, IComparable<Label2D>, IComparer<Label2D>
     {
         private string _text;
-        private Point2D _labelPoint;
+        private Point2D _location;
+        private Point2D _offset;
         private StyleFont _font;
         private int _priority;
         private float _rotation;
         private LabelStyle _style;
         private Path2D _labelPath;
-        private Rectangle2D _collisionBounds;
+        private Size2D _collisionBuffer;
 
         /// <summary>
         /// Initializes a new Label instance.
@@ -45,31 +45,32 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="position">Position of label.</param>
         /// <param name="style">The style to use in rendering the label.</param>
         public Label2D(string text, Point2D position, LabelStyle style)
-            : this(text, position, 0, 0, Rectangle2D.Empty, style)
+            : this(text, position, 0, 0, Size2D.Empty, style)
         {
             _text = text;
-            _labelPoint = position;
+            _location = position;
             _style = style;
         }
 
-		/// <summary>
-		/// Initializes a new Label instance.
-		/// </summary>
-		/// <param name="text">Text to write</param>
+        /// <summary>
+        /// Initializes a new Label instance.
+        /// </summary>
+        /// <param name="text">Text to write</param>
         /// <param name="position">Position of label</param>
-		/// <param name="rotation">Rotation</param>
-		/// <param name="priority">Label priority used for collision detection.</param>
-        /// <param name="collisionArea">Box around label for collision detection.</param>
+        /// <param name="rotation">Rotation</param>
+        /// <param name="priority">Label priority used for collision detection.</param>
+        /// <param name="collisionArea">Area around label for collision detection.</param>
         /// <param name="style">The style to use in rendering the label.</param>
-		public Label2D(string text, Point2D position, float rotation, int priority, Rectangle2D collisionArea, LabelStyle style)
-		{
-			_text = text;
-			_labelPoint = position;
-			_rotation = rotation;
-			_priority = priority;
-            _collisionBounds = collisionArea;
-			_style = style;
-		}
+        public Label2D(string text, Point2D position, float rotation, int priority, Size2D collisionArea,
+                       LabelStyle style)
+        {
+            _text = text;
+            _location = position;
+            _rotation = rotation;
+            _priority = priority;
+            _collisionBuffer = collisionArea;
+            _style = style ?? new LabelStyle();
+        }
 
         /// <summary>
         /// Creates a string representation of the label.
@@ -77,124 +78,131 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A string which represents the label instance.</returns>
         public override string ToString()
         {
-            return String.Format("[{0}] Text: {1}; LabelPoint: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Box: {6}",
-                GetType(), Text, LabelPoint, Font, Rotation, Priority, CollisionBounds);
+            return
+                String.Format("[{0}] Text: {1}; LabelPoint: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Box: {6}",
+                              GetType(), Text, Location, Font, Rotation, Priority, CollisionBuffer);
         }
 
-		/// <summary>
-		/// Gets or sets the text of the label.
-		/// </summary>
-		public string Text
-		{
-			get { return _text; }
-			set { _text = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the label position.
-		/// </summary>
-        public Point2D LabelPoint
-		{
-			get { return _labelPoint; }
-			set { _labelPoint = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the font to render the label with.
-		/// </summary>
-		public StyleFont Font
-		{
-			get { return _font; }
-			set { _font = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the rotation the label is rendered with. Represented as radians counter-clockwise.
-		/// </summary>
-		public float Rotation
-		{
-			get { return _rotation; }
-			set { _rotation = value; }
-		}
-
-		/// <summary>
-        /// Gets or sets the relative priority in layout of the label.
-		/// </summary>
-		public int Priority
-		{
-			get { return _priority; }
-			set { _priority = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the region which collision is computed for.
-		/// </summary>
-		public Rectangle2D CollisionBounds
-		{
-			get { return _collisionBounds; }
-			set { _collisionBounds = value; }
-		}
+        /// <summary>
+        /// Gets or sets the region which collision is computed for.
+        /// </summary>
+        public Size2D CollisionBuffer
+        {
+            get { return _collisionBuffer.IsEmpty ? _style.CollisionBuffer : _collisionBuffer; }
+            set { _collisionBuffer = value; }
+        }
 
         /// <summary>
         /// Gets or sets the path on which to flow the label.
         /// </summary>
-		public Path2D FlowPath
-		{
-			get { return _labelPath; }
-			set { _labelPath = value; }
-		}
+        public Path2D FlowPath
+        {
+            get { return _labelPath; }
+            set { _labelPath = value; }
+        }
 
-		/// <summary>
-		/// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.
-		/// </summary>
-		public LabelStyle Style
-		{
-			get { return _style; }
-			set { _style = value; }
-		}
+        /// <summary>
+        /// Gets or sets the font to render the label with.
+        /// </summary>
+        public StyleFont Font
+        {
+            get { return _font ?? Style.Font; }
+            set { _font = value; }
+        }
 
-		#region IComparable<Label> Members
+        /// <summary>
+        /// Gets or sets the label position.
+        /// </summary>
+        public Point2D Location
+        {
+            get { return _location; }
+            set { _location = value; }
+        }
 
-		/// <summary>
-		/// Tests if two label boxes intersects
-		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
-		public int CompareTo(Label2D other)
-		{
-			if (this == other)
-			{
-				return 0;
-			}
-			else if (_collisionBounds == Rectangle2D.Empty)
-			{
-				return -1;
-			}
-            else if (other.CollisionBounds == Rectangle2D.Empty)
-			{
-				return 1;
-			}
-			else
-			{
-				return _collisionBounds.CompareTo(other.CollisionBounds);
-			}
-		}
+        public Point2D Offset
+        {
+            get { return _offset.IsEmpty ? _style.Offset : _offset; }
+            set { _offset = value; }
+        }
 
-		#endregion
+        /// <summary>
+        /// Gets or sets the relative priority in layout of the label.
+        /// </summary>
+        public int Priority
+        {
+            get { return _priority; }
+            set { _priority = value; }
+        }
 
-		#region IComparer<Label> Members
+        /// <summary>
+        /// Gets or sets the rotation the label is rendered with. Represented as radians counter-clockwise.
+        /// </summary>
+        public float Rotation
+        {
+            get { return _rotation; }
+            set { _rotation = value; }
+        }
 
-		/// <summary>
-		/// Checks if two labels intersect
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		public int Compare(Label2D x, Label2D y)
-		{
-			return x.CompareTo(y);
-		}
+        /// <summary>
+        /// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.
+        /// </summary>
+        public LabelStyle Style
+        {
+            get { return _style; }
+            set { _style = value; }
+        }
 
-		#endregion
-	}
+        /// <summary>
+        /// Gets or sets the text of the label.
+        /// </summary>
+        public string Text
+        {
+            get { return _text; }
+            set { _text = value; }
+        }
+
+        #region IComparable<Label> Members
+
+        /// <summary>
+        /// Tests if two label boxes intersects
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public int CompareTo(Label2D other)
+        {
+            if (this == other)
+            {
+                return 0;
+            }
+            else if (_collisionBuffer == Size2D.Empty)
+            {
+                return -1;
+            }
+            else if (other.CollisionBuffer == Size2D.Empty)
+            {
+                return 1;
+            }
+            else
+            {
+                return _collisionBuffer.CompareTo(other.CollisionBuffer);
+            }
+        }
+
+        #endregion
+
+        #region IComparer<Label> Members
+
+        /// <summary>
+        /// Checks if two labels intersect
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int Compare(Label2D x, Label2D y)
+        {
+            return x.CompareTo(y);
+        }
+
+        #endregion
+    }
 }

@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -21,6 +22,8 @@ using SharpMap.Converters.WellKnownBinary;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using SharpMap.Utilities;
+using NPack.Interfaces;
+using NPack;
 
 namespace SharpMap.Geometries
 {
@@ -44,7 +47,7 @@ namespace SharpMap.Geometries
 	/// </para>
 	/// </remarks>
 	[Serializable]
-	public abstract class Geometry : IGeometry, IEquatable<Geometry>
+	public abstract class Geometry : IGeometry, IEquatable<Geometry>, IVertexStream<Point, DoubleComponent>
 	{
 		private ICoordinateSystem _spatialReference;
         private Tolerance _tolerance = null;
@@ -333,7 +336,7 @@ namespace SharpMap.Geometries
 		/// <returns>Copy of Geometry</returns>
         public abstract Geometry Clone();
 
-	    protected internal abstract IEnumerable<Point> GetPointStream();
+	    public abstract IEnumerable<Point> GetVertices();
 
 		#region IEquatable<Geometry> Members
 
@@ -429,7 +432,7 @@ namespace SharpMap.Geometries
 		{
 		    int hashCode = GetType().GetHashCode();
 
-		    foreach (Point point in GetPointStream())
+		    foreach (Point point in GetVertices())
 		    {
 		        hashCode ^= point.X.GetHashCode() ^ point.Y.GetHashCode();
 		    }

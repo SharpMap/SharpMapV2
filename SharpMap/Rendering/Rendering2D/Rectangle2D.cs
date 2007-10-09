@@ -34,7 +34,7 @@ namespace SharpMap.Rendering.Rendering2D
 	/// </remarks>
     [Serializable]
     public struct Rectangle2D 
-        : IViewRectangle<Point2D>, IEquatable<Rectangle2D>, IComparable<Rectangle2D>, IHasEmpty
+        : IViewRectangle<Point2D>, IEquatable<Rectangle2D>, IComparable<Rectangle2D>, IHasEmpty, IVertexStream<Point2D, DoubleComponent>
     {
 		/// <summary>
 		/// An empty Rectangle2D, having no value.
@@ -1052,6 +1052,18 @@ namespace SharpMap.Rendering.Rendering2D
         {
             throw new NotSupportedException();
         }
+        #endregion
+
+        #region IVertexStream<Point2D,DoubleComponent> Members
+
+        public IEnumerable<Point2D> GetVertices()
+        {
+            yield return LowerLeft;
+            yield return UpperLeft;
+            yield return UpperRight;
+            yield return LowerLeft;
+        }
+
         #endregion
     }
 }

@@ -28,7 +28,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// A 2 dimensional measure of size.
     /// </summary>
     [Serializable]
-    public struct Size2D : IVectorD, IHasEmpty
+    public struct Size2D : IVectorD, IHasEmpty, IComparable<Size2D>
     {
         private DoubleComponent _width, _height;
         private bool _hasValue;
@@ -626,6 +626,25 @@ namespace SharpMap.Rendering.Rendering2D
         public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
         {
             throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IComparable<Size2D> Members
+
+        public int CompareTo(Size2D other)
+        {
+            if (other.Equals(this))
+            {
+                return 0;
+            }
+
+            if(other.Width < Width || other.Height < Height)
+            {
+                return -1;
+            }
+
+            return 1;
         }
 
         #endregion

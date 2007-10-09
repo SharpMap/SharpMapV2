@@ -1480,7 +1480,7 @@ namespace SharpMap.Geometries
         #region ToGeometry
 
         /// <summary>
-        /// Computes a <see cref="Geometry"/> with the same verticies
+        /// Computes a <see cref="Geometry"/> with the same vertices
         /// as the BoundingBox instance.
         /// </summary>
         /// <returns>
@@ -1495,8 +1495,8 @@ namespace SharpMap.Geometries
                 return Point.Empty;
             }
 
-            Point[] verticies = new Point[] { LowerLeft, UpperLeft, UpperRight, LowerRight, LowerLeft };
-            return new Polygon(new LinearRing(verticies));
+            Point[] vertices = new Point[] { LowerLeft, UpperLeft, UpperRight, LowerRight, LowerLeft };
+            return new Polygon(new LinearRing(vertices));
         }
 
         #endregion

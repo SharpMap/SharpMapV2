@@ -334,11 +334,11 @@ namespace SharpMap.Geometries
             throw new NotImplementedException();
         }
 
-        protected internal override IEnumerable<Point> GetPointStream()
+        public override IEnumerable<Point> GetVertices()
         {
             foreach (TGeometry geometry in _geometries)
             {
-                foreach (Point point in geometry.GetPointStream())
+                foreach (Point point in geometry.GetVertices())
                 {
                     yield return point;
                 }

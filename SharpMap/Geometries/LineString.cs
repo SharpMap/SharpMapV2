@@ -338,7 +338,7 @@ namespace SharpMap.Geometries
 			return bbox;
 		}
 
-        protected internal override IEnumerable<Point> GetPointStream()
+        public override IEnumerable<Point> GetVertices()
         {
             foreach (Point point in _vertices)
             {

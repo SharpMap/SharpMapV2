@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections.Generic;
+using NPack;
+using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Styles;
@@ -68,8 +70,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         public abstract Size2D MeasureString(string text, StyleFont font);
         public abstract IEnumerable<TRenderObject> RenderLabel(Label2D label);
-        public abstract IEnumerable<TRenderObject> RenderLabel(string text, Point2D location, StyleFont font, StyleColor foreColor);
-        public abstract IEnumerable<TRenderObject> RenderLabel(string text, Point2D location, Point2D offset, StyleFont font, StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation);
+        public abstract IEnumerable<TRenderObject> RenderLabel(string text, StyleFont font, Point2D location, StyleBrush foreground);
+        public abstract IEnumerable<TRenderObject> RenderLabel(string text, StyleFont font, Point2D location, Size2D collisionBuffer, Path2D flowPath,
+                                                    StyleBrush foreground, StyleBrush background, StylePen halo, Matrix2D transform);
         #endregion
 
         protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style, RenderState renderState)
@@ -89,11 +92,11 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        /// <summary>
-        /// Renders the layer to the <paramref name="view"/>.
-        /// </summary>
-        /// <param name="view"><see cref="IMapView2D"/> to render layer on.</param>
-        /// <param name="region">Area of the map to render.</param>
+        ///// <summary>
+        ///// Renders the layer to the <paramref name="view"/>.
+        ///// </summary>
+        ///// <param name="view"><see cref="IMapView2D"/> to render layer on.</param>
+        ///// <param name="region">Area of the map to render.</param>
         //protected void Render(BoundingBox region)
         //{
         //    LabelLayer layer = null;
@@ -230,17 +233,17 @@ namespace SharpMap.Rendering.Rendering2D
         //    //base.Render(view, region);
         //}
 
-        /// <summary>
-        /// Renders a label to the <paramref name="view"/>.
-        /// </summary>
-        /// <param name="text">Text to render.</param>
-        /// <param name="location">Location of the upper left corner of the label.</param>
-        /// <param name="offset">Offset of label in view coordinates from the <paramref name="location"/>.</param>
-        /// <param name="font">Font used for rendering.</param>
-        /// <param name="foreColor">Font color.</param>
-        /// <param name="backColor">Background color.</param>
-        /// <param name="halo">Halo to be drawn around the label text.</param>
-        /// <param name="rotation">Text rotation in degrees.</param>
+        ///// <summary>
+        ///// Renders a label to the <paramref name="view"/>.
+        ///// </summary>
+        ///// <param name="text">Text to render.</param>
+        ///// <param name="location">Location of the upper left corner of the label.</param>
+        ///// <param name="offset">Offset of label in view coordinates from the <paramref name="location"/>.</param>
+        ///// <param name="font">Font used for rendering.</param>
+        ///// <param name="foreColor">Font color.</param>
+        ///// <param name="backColor">Background color.</param>
+        ///// <param name="halo">Halo to be drawn around the label text.</param>
+        ///// <param name="rotation">Text rotation in degrees.</param>
         //public void DrawLabel(string text, Point2D location, Point2D offset, StyleFont font,
         //    StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         //{
@@ -340,9 +343,20 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
-        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(ILabel<Point2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
+        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(
+            ILabel<Point2D, Size2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
         {
             return RenderLabel(label as Label2D);
+        }
+
+
+        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(
+            string text, StyleFont font, Point2D location, Size2D collisionBuffer, 
+            Path<Point2D, Rectangle2D> flowPath, StyleBrush foreground, StyleBrush background, 
+            StylePen halo, IMatrix<DoubleComponent> transform)
+        {
+            return RenderLabel(text, font, location, collisionBuffer, 
+                flowPath as Path2D, foreground, background, halo, transform as Matrix2D);
         }
 
         #endregion

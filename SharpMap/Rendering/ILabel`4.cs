@@ -26,51 +26,58 @@ namespace SharpMap.Rendering
     /// Encapsulates a label glyph on a map.
     /// </summary>
     /// <typeparam name="TPoint">Type of point.</typeparam>
+    /// <typeparam name="TSize">Type of size.</typeparam>
     /// <typeparam name="TRectangle">Type of rectangle.</typeparam>
     /// <typeparam name="TPath">Type of graphics path.</typeparam>
-	public interface ILabel<TPoint, TRectangle, TPath>
-		where TPoint : IVectorD
+    public interface ILabel<TPoint, TSize, TRectangle, TPath>
+        where TPoint : IVectorD
+        where TSize : IVectorD
 		where TRectangle : IMatrixD, IEquatable<TRectangle>
 		where TPath : Path<TPoint, TRectangle>
 	{
-		/// <summary>
-		/// The text of the label.
-		/// </summary>
-		string Text { get; set; }
+        /// <summary>
+        /// Gets or sets the label collision buffer.
+        /// </summary>
+        TSize CollisionBuffer { get; set; }
 
-		/// <summary>
-		/// Label position.
-		/// </summary>
-		TPoint LabelPoint { get; set; }
+        /// <summary>
+        /// Gets or sets a path along which label runs.
+        /// </summary>
+        TPath FlowPath { get; set; }
 
-		/// <summary>
-		/// Label font.
-		/// </summary>
-		StyleFont Font { get; set; }
+        /// <summary>
+        /// Gets or sets the label font.
+        /// </summary>
+        StyleFont Font { get; set; }
 
-		/// <summary>
-		/// Label rotation.
+        /// <summary>
+        /// Gets or sets the label's world location.
+		/// </summary>
+        TPoint Location { get; set; }
+
+        /// <summary>
+        /// Gets or sets the label's offset within the <see cref="CollisionBounds"/>.
+        /// </summary>
+        TPoint Offset { get; set; }
+
+        /// <summary>
+        /// Gets or sets a priority value used in label layout.
+        /// </summary>
+        int Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the label's rotation.
 		/// </summary>
 		float Rotation { get; set; }
 
-		/// <summary>
-        /// Priority in layout.
-		/// </summary>
-		int Priority { get; set; }
+        /// <summary>
+        /// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.
+        /// </summary>
+        LabelStyle Style { get; set; }
 
-		/// <summary>
-		/// Label collision bounds.
-		/// </summary>
-		TRectangle CollisionBounds { get; set; }
-
-		/// <summary>
-		/// Path along which label runs.
-		/// </summary>
-        TPath FlowPath { get; set; }
-
-		/// <summary>
-		/// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.
-		/// </summary>
-		LabelStyle Style { get; set; }
+        /// <summary>
+        /// Gets or sets the text of the label.
+        /// </summary>
+        string Text { get; set; }
 	}
 }
