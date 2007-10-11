@@ -16,17 +16,14 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Rendering
 {
-	/// <summary>
-	/// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
-	/// </summary>
-	/// <param name="labels">The labels to filter.</param>
-	/// <returns>An enumeration over the filtered labels only.</returns>
-	public delegate IEnumerable LabelFilterDelegate(IList labels);
+    /// <summary>
+    /// Delegate method for filtering labels. Useful for performing custom collision detection on labels.
+    /// </summary>
+    /// <param name="labels">The labels to filter.</param>
+    /// <returns>An enumeration over the filtered labels only.</returns>
+    public delegate IEnumerable LabelFilterDelegate(IList labels);
 }

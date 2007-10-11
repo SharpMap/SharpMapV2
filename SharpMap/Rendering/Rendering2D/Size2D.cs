@@ -107,6 +107,46 @@ namespace SharpMap.Rendering.Rendering2D
                 _height = value[1];
             }
         }
+
+        public Size2D Add(Size2D size)
+        {
+            if(IsEmpty)
+            {
+                return size;
+            }
+
+            if(size.IsEmpty)
+            {
+                return this;
+            }
+
+            return new Size2D(Width + size.Width, Height + size.Height);
+        }
+
+        public Size2D Subtract(Size2D size)
+        {
+            return Add(size.Negative());
+        }
+
+        public static Size2D operator + (Size2D lhs, Size2D rhs)
+        {
+            return lhs.Add(rhs);
+        }
+
+        public static Size2D operator -(Size2D lhs, Size2D rhs)
+        {
+            return lhs.Subtract(rhs);
+        }
+
+        public static Size2D operator *(Size2D factor, double multiplier)
+        {
+            if(factor.IsEmpty)
+            {
+                return factor;
+            }
+
+            return new Size2D(factor.Width * multiplier, factor.Height * multiplier);
+        }
         #endregion
 
         #region Equality Testing
@@ -217,8 +257,32 @@ namespace SharpMap.Rendering.Rendering2D
 
         public Size2D Negative()
         {
-            return new Size2D((double)_width.Negative(), (double)_height.Negative());
+            return new Size2D(-((double)_width), -((double)_height));
         }
+
+        #region Private Helper Methods
+
+        private static void checkIndex(int index)
+        {
+            if (index != 0 && index != 1)
+            {
+                throw new ArgumentOutOfRangeException("index", index, "The element index must be either 0 or 1 for a 2D point.");
+            }
+        }
+
+        private static void checkIndexes(int row, int column)
+        {
+            if (row != 0)
+            {
+                throw new ArgumentOutOfRangeException("row", row, "A Point2D has only 1 row.");
+            }
+
+            if (column < 0 || column > 1)
+            {
+                throw new ArgumentOutOfRangeException("column", row, "A Point2D has only 2 columns.");
+            }
+        }
+        #endregion
 
         #region IEnumerable<double> Members
 
@@ -290,7 +354,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The sum.</returns>
-        public IMatrixD Add(IMatrixD b)
+        IMatrixD IAddable<IMatrix<DoubleComponent>>.Add(IMatrixD b)
         {
             return MatrixProcessor<DoubleComponent>.Instance.Operations.Add(this, b);
         }
@@ -305,7 +369,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The difference.</returns>
-        public IMatrixD Subtract(IMatrixD b)
+        IMatrixD ISubtractable<IMatrix<DoubleComponent>>.Subtract(IMatrixD b)
         {
             return MatrixProcessor<DoubleComponent>.Instance.Operations.Subtract(this, b);
         }
@@ -346,7 +410,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The product.</returns>
-        public IMatrixD Multiply(IMatrixD b)
+        IMatrixD IMultipliable<IMatrix<DoubleComponent>>.Multiply(IMatrixD b)
         {
             return MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(this, b);
         }
@@ -361,7 +425,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The quotient.</returns>
-        public IMatrixD Divide(IMatrixD b)
+        IMatrixD IDivisible<IMatrix<DoubleComponent>>.Divide(IMatrixD b)
         {
             throw new NotSupportedException();
         }
@@ -529,30 +593,6 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region Private Helper Methods
-
-        private static void checkIndex(int index)
-        {
-            if (index != 0 && index != 1)
-            {
-                throw new ArgumentOutOfRangeException("index", index, "The element index must be either 0 or 1 for a 2D point.");
-            }
-        }
-
-        private static void checkIndexes(int row, int column)
-        {
-            if (row != 0)
-            {
-                throw new ArgumentOutOfRangeException("row", row, "A Point2D has only 1 row.");
-            }
-
-            if (column < 0 || column > 1)
-            {
-                throw new ArgumentOutOfRangeException("column", row, "A Point2D has only 2 columns.");
-            }
-        }
-        #endregion
-
         #region INegatable<IVector<DoubleComponent>> Members
 
         IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
@@ -589,7 +629,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IAddable<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
+        IVector<DoubleComponent> IAddable<IVector<DoubleComponent>>.Add(IVector<DoubleComponent> b)
         {
             if (b == null) throw new ArgumentNullException("b");
 
@@ -623,7 +663,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IMultipliable<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
+        IVector<DoubleComponent> IMultipliable<IVector<DoubleComponent>>.Multiply(IVector<DoubleComponent> b)
         {
             throw new NotSupportedException();
         }

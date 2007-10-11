@@ -44,6 +44,7 @@ namespace SharpMap.Presentation.Presenters
         private static readonly object _rendererInitSync = new object();
         private static object _vectorRenderer;
         private static object _rasterRenderer;
+        private static object _textRenderer;
         #endregion
 
         #region Private instance fields
@@ -147,10 +148,10 @@ namespace SharpMap.Presentation.Presenters
 
         #region Abstract methods
 
-        protected abstract IVectorRenderer2D CreateVectorRenderer();
         protected abstract IRasterRenderer2D CreateRasterRenderer();
+        protected abstract ITextRenderer2D CreateTextRenderer();
+        protected abstract IVectorRenderer2D CreateVectorRenderer();
         protected abstract Type GetRenderObjectType();
-        protected abstract IRenderer CreateLabelRenderer();
 
         #endregion
 
@@ -384,6 +385,26 @@ namespace SharpMap.Presentation.Presenters
                 }
 
                 return _vectorRenderer as IVectorRenderer2D;
+            }
+        }
+
+        protected ITextRenderer2D TextRenderer
+        {
+            get
+            {
+                if(Thread.VolatileRead(ref _textRenderer) == null)
+                {
+                    lock(_rendererInitSync)
+                    {
+                        if(Thread.VolatileRead(ref _textRenderer) == null)
+                        {
+                            IRenderer textRenderer = CreateTextRenderer();
+                            Thread.VolatileWrite(ref _textRenderer, textRenderer);
+                        }
+                    }
+                }
+
+                return _textRenderer as ITextRenderer2D;
             }
         }
 
@@ -634,12 +655,29 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void CreateGeometryRenderer(Type renderObjectType)
         {
-            IRenderer renderer;
             Type basicGeometryRendererType = typeof(BasicGeometryRenderer2D<>);
-            Type constructedGeom = basicGeometryRendererType.MakeGenericType(renderObjectType);
-            renderer = Activator.CreateInstance(constructedGeom, VectorRenderer) as IRenderer;
+            IRenderer primitive = TextRenderer;
+            Type layerType = typeof (GeometryLayer);
+
+            CreateRendererForLayerType(basicGeometryRendererType, renderObjectType, primitive, layerType);
+        }
+
+        private void CreateLabelRenderer(Type renderObjectType)
+        {
+            Type basicLabelRendererType = typeof(BasicLabelRenderer2D<>);
+            IRenderer primitive = VectorRenderer;
+            Type layerType = typeof (LabelLayer);
+
+            CreateRendererForLayerType(basicLabelRendererType, renderObjectType, primitive, layerType);
+        }
+
+        protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, IRenderer primitiveRenderer, Type layerType)
+        {
+            IRenderer renderer;
+            Type constructed = rendererType.MakeGenericType(renderObjectType);
+            renderer = Activator.CreateInstance(constructed, primitiveRenderer) as IRenderer;
             Debug.Assert(renderer != null);
-            RegisterRendererForLayerType(typeof(GeometryLayer), renderer);
+            RegisterRendererForLayerType(layerType, renderer);
         }
 
         protected static TRenderer GetRenderer<TRenderer, TLayer>()
@@ -1035,15 +1073,13 @@ namespace SharpMap.Presentation.Presenters
 
         private void createRenderers()
         {
-            IRenderer renderer;
+            Type renderObjectType = GetRenderObjectType();
 
             // Create renderer for geometry layers
-            Type renderObjectType = GetRenderObjectType();
             CreateGeometryRenderer(renderObjectType);
 
             // Create renderer for label layers
-            renderer = CreateLabelRenderer();
-            RegisterRendererForLayerType(typeof(LabelLayer), renderer);
+            CreateLabelRenderer(renderObjectType);
 
             // TODO: create raster renderer
         }

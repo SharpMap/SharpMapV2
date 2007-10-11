@@ -16,10 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
@@ -28,21 +24,27 @@ namespace SharpMap.Styles
     public class StyleFont
     {
         private Size2D _size;
-        private StyleFontFamily _fontFamily;
+        private readonly StyleFontFamily _fontFamily;
         private StyleFontStyle _style = StyleFontStyle.Regular;
-        private string _fontName;
-
-        public StyleFont(string fontName, Size2D emSize)
-        {
-            _fontName = fontName;
-            _size = emSize;
-        }
 
         public StyleFont(StyleFontFamily family, Size2D emSize, StyleFontStyle style)
         {
+            if (family == null) throw new ArgumentNullException("family");
+
             _fontFamily = family;
             _size = emSize;
             _style = style;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("[{0}] Font Family: {1}; Size: {2}; Font Style: {3}",
+                                 GetType(), FontFamily, Size, Style);
+        }
+
+        public override int GetHashCode()
+        {
+            return Size.GetHashCode() ^ FontFamily.GetHashCode() ^ Style.GetHashCode();
         }
 
         public Size2D Size
@@ -54,7 +56,6 @@ namespace SharpMap.Styles
         public StyleFontFamily FontFamily
         {
             get { return _fontFamily; }
-            set { _fontFamily = value; }
         }
 
         public StyleFontStyle Style
@@ -62,6 +63,5 @@ namespace SharpMap.Styles
             get { return _style; }
             set { _style = value; }
         }
-
     }
 }

@@ -17,6 +17,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SharpMap.Presentation.Presenters
 {
@@ -132,6 +133,7 @@ namespace SharpMap.Presentation.Presenters
         /// </remarks>
         public Map Map
         {
+            [DebuggerStepThrough]
             get
             {
                 if (IsDisposed)
@@ -148,6 +150,7 @@ namespace SharpMap.Presentation.Presenters
         /// </summary>
         public TView View
         {
+            [DebuggerStepThrough]
             get
             {
                 if (IsDisposed)
@@ -164,6 +167,7 @@ namespace SharpMap.Presentation.Presenters
 
         }
 
+        [DebuggerStepThrough]
         private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             OnMapPropertyChanged(e.PropertyName);

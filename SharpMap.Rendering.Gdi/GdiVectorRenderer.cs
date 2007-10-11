@@ -48,9 +48,8 @@ namespace SharpMap.Rendering.Gdi
     {
         #region Instance fields
 
-        private readonly Dictionary<BrushLookupKey, GdiBrush> _brushCache = new Dictionary<BrushLookupKey, GdiBrush>();
-        private readonly Dictionary<PenLookupKey, Pen> _penCache = new Dictionary<PenLookupKey, Pen>();
         private readonly Dictionary<SymbolLookupKey, Bitmap> _symbolCache = new Dictionary<SymbolLookupKey, Bitmap>();
+
         #endregion
 
         #region Dispose override
@@ -64,16 +63,6 @@ namespace SharpMap.Rendering.Gdi
 
             if (disposing)
             {
-                foreach (Brush brush in _brushCache.Values)
-                {
-                    brush.Dispose();
-                }
-
-                foreach (Pen pen in _penCache.Values)
-                {
-                    pen.Dispose();
-                }
-
                 foreach (Bitmap bitmap in _symbolCache.Values)
                 {
                     bitmap.Dispose();
@@ -89,18 +78,22 @@ namespace SharpMap.Rendering.Gdi
 
         public override IEnumerable<GdiRenderObject> RenderPaths(
             IEnumerable<Path2D> paths, StyleBrush fill, StyleBrush highlightFill,
-            StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
+            StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline,
+            RenderState renderState)
         {
             foreach (Path2D path in paths)
             {
                 GdiPath gdiPath = ViewConverter.Convert(path);
 
-                GdiRenderObject holder = new GdiRenderObject(gdiPath, getBrush(fill), getBrush(highlightFill),
-                                                             getBrush(selectFill), null, null, null,
-                                                             getPen(outline), getPen(highlightOutline),
-                                                             getPen(selectOutline));
-															 
-				holder.State = renderState;
+                GdiRenderObject holder = new GdiRenderObject(gdiPath, ViewConverter.Convert(fill),
+                                                             ViewConverter.Convert(highlightFill),
+                                                             ViewConverter.Convert(selectFill),
+                                                             null, null, null,
+                                                             ViewConverter.Convert(outline),
+                                                             ViewConverter.Convert(highlightOutline),
+                                                             ViewConverter.Convert(selectOutline));
+
+                holder.State = renderState;
 
                 yield return holder;
             }
@@ -117,18 +110,20 @@ namespace SharpMap.Rendering.Gdi
                 GdiPath gdiPath = ViewConverter.Convert(path);
 
                 GdiRenderObject holder =
-                    new GdiRenderObject(gdiPath, null, null, null, getPen(line), getPen(highlightLine),
-                                        getPen(selectLine), getPen(outline), getPen(highlightOutline),
-                                        getPen(selectOutline));
-															 
-				holder.State = renderState;
+                    new GdiRenderObject(gdiPath, null, null, null, ViewConverter.Convert(line),
+                                        ViewConverter.Convert(highlightLine), ViewConverter.Convert(selectLine),
+                                        ViewConverter.Convert(outline), ViewConverter.Convert(highlightOutline),
+                                        ViewConverter.Convert(selectOutline));
+
+                holder.State = renderState;
 
                 yield return holder;
             }
         }
 
         public override IEnumerable<GdiRenderObject> RenderPaths(
-            IEnumerable<Path2D> paths, StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
+            IEnumerable<Path2D> paths, StylePen outline, StylePen highlightOutline, StylePen selectOutline,
+            RenderState renderState)
         {
             SolidStyleBrush transparentBrush = new SolidStyleBrush(StyleColor.Transparent);
 
@@ -136,7 +131,8 @@ namespace SharpMap.Rendering.Gdi
                                transparentBrush, outline, highlightOutline, selectOutline, renderState);
         }
 
-        public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData, RenderState renderState)
+        public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                                   RenderState renderState)
         {
             return RenderSymbols(locations, symbolData, symbolData, symbolData, renderState);
         }
@@ -155,7 +151,8 @@ namespace SharpMap.Rendering.Gdi
         }
 
         public override IEnumerable<GdiRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbol,
-                                                                   Symbol2D highlightSymbol, Symbol2D selectSymbol, RenderState renderState)
+                                                                   Symbol2D highlightSymbol, Symbol2D selectSymbol,
+                                                                   RenderState renderState)
         {
             if (highlightSymbol == null)
             {
@@ -175,69 +172,13 @@ namespace SharpMap.Rendering.Gdi
                 //transform.Translate((float)location.X, (float)location.Y);
                 RectangleF bounds = new RectangleF(ViewConverter.Convert(location), bitmapSymbol.Size);
                 GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, bounds, transform, colorTransform);
-				holder.State = renderState;
+                holder.State = renderState;
                 yield return holder;
             }
         }
-
-        public override GdiRenderObject RenderText(string text, StyleFont font, Rectangle2D layoutRectangle)
-        {
-            GdiPath path = new GdiPath();
-            path.AddString(text, ViewConverter.Convert(font.FontFamily), 
-                (int)ViewConverter.Convert(font.Style), (float)font.Size.Width, 
-                ViewConverter.Convert(layoutRectangle), StringFormat.GenericDefault);
-            GdiRenderObject renderObject = new GdiRenderObject(
-                path, null, null, null, null, null, null, null, null, null);
-            return renderObject;
-        }
-
         #endregion
 
         #region Private helper methods
-        private Font getFont(StyleFont styleFont)
-        {
-            throw new NotImplementedException();
-        }
-
-        private Brush getBrush(StyleBrush styleBrush)
-        {
-            if (styleBrush == null)
-            {
-                return null;
-            }
-
-            BrushLookupKey key = new BrushLookupKey(styleBrush.GetType().TypeHandle, styleBrush.GetHashCode());
-            Brush brush;
-            _brushCache.TryGetValue(key, out brush);
-
-            if (brush == null)
-            {
-                brush = ViewConverter.Convert(styleBrush);
-                _brushCache[key] = brush;
-            }
-
-            return brush;
-        }
-
-        private Pen getPen(StylePen stylePen)
-        {
-            if (stylePen == null)
-            {
-                return null;
-            }
-
-            PenLookupKey key = new PenLookupKey(stylePen.GetType().TypeHandle, stylePen.GetHashCode());
-            Pen pen;
-            _penCache.TryGetValue(key, out pen);
-
-            if (pen == null)
-            {
-                pen = ViewConverter.Convert(stylePen);
-                _penCache[key] = pen;
-            }
-
-            return pen;
-        }
 
         private Bitmap getSymbol(Symbol2D symbol2D)
         {
@@ -270,50 +211,6 @@ namespace SharpMap.Rendering.Gdi
         #endregion
 
         #region Nested types
-
-        private struct BrushLookupKey : IEquatable<BrushLookupKey>
-        {
-            public readonly RuntimeTypeHandle StyleBrushType;
-            public readonly int StyleBrushId;
-
-            public BrushLookupKey(RuntimeTypeHandle type, int styleBrushId)
-            {
-                StyleBrushType = type;
-                StyleBrushId = styleBrushId;
-            }
-
-            #region IEquatable<BrushLookupKey> Members
-
-            public bool Equals(BrushLookupKey other)
-            {
-                return other.StyleBrushType.Equals(StyleBrushType)
-                       && other.StyleBrushId == StyleBrushId;
-            }
-
-            #endregion
-        }
-
-        private struct PenLookupKey : IEquatable<PenLookupKey>
-        {
-            public readonly RuntimeTypeHandle StylePenType;
-            public readonly int StylePenId;
-
-            public PenLookupKey(RuntimeTypeHandle type, int stylePenValue)
-            {
-                StylePenType = type;
-                StylePenId = stylePenValue;
-            }
-
-            #region IEquatable<PenLookupKey> Members
-
-            public bool Equals(PenLookupKey other)
-            {
-                return other.StylePenType.Equals(StylePenType)
-                       && other.StylePenId == StylePenId;
-            }
-
-            #endregion
-        }
 
         private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
         {

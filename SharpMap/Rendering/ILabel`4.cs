@@ -56,7 +56,7 @@ namespace SharpMap.Rendering
         TPoint Location { get; set; }
 
         /// <summary>
-        /// Gets or sets the label's offset within the <see cref="CollisionBounds"/>.
+        /// Gets or sets the label's offset within the <see cref="CollisionBuffer"/>.
         /// </summary>
         TPoint Offset { get; set; }
 
@@ -79,5 +79,7 @@ namespace SharpMap.Rendering
         /// Gets or sets the text of the label.
         /// </summary>
         string Text { get; set; }
+
+        IMatrixD Transform { get; set; }
 	}
 }

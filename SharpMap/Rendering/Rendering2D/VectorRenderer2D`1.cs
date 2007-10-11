@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using SharpMap.Styles;
@@ -31,77 +30,8 @@ namespace SharpMap.Rendering.Rendering2D
     /// This class is used to create a new IVectorRender2D for various graphics systems.
     /// </remarks>
     /// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
-    public abstract class VectorRenderer2D<TRenderObject> : IVectorRenderer2D<TRenderObject>
+    public abstract class VectorRenderer2D<TRenderObject> : Renderer2D, IVectorRenderer2D<TRenderObject>
     {
-        #region Instance fields
-
-        private Matrix2D _viewMatrix = new Matrix2D();
-        private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
-        private bool _isDisposed = false;
-
-        #endregion
-
-        #region Object construction and disposal
-
-        #region Dispose Pattern
-
-        ~VectorRenderer2D()
-        {
-            Dispose(false);
-        }
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            Dispose(true);
-            IsDisposed = true;
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        protected virtual void Dispose(bool disposing) {}
-
-        protected bool IsDisposed
-        {
-            get { return _isDisposed; }
-            private set { _isDisposed = value; }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
-
-        /// <summary>
-        /// Gets or sets a matrix used to transform 
-        /// coordinate values during rendering.
-        /// </summary>
-        public Matrix2D RenderTransform
-        {
-            get { return _viewMatrix; }
-            set { _viewMatrix = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a <see cref="StyleRenderingMode"/> 
-        /// value used to render objects.
-        /// </summary>
-        public StyleRenderingMode StyleRenderingMode
-        {
-            get { return _renderMode; }
-            set { _renderMode = value; }
-        }
-
-        #endregion
-
         #region IVectorRenderer2D Members
 
         public abstract IEnumerable<TRenderObject> RenderPaths(IEnumerable<Path2D> paths,
@@ -130,30 +60,6 @@ namespace SharpMap.Rendering.Rendering2D
         public abstract IEnumerable<TRenderObject> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                                  Symbol2D highlightSymbolData,
                                                                  Symbol2D selectSymbolData, RenderState renderState);
-
-        public abstract TRenderObject RenderText(string text, StyleFont font, Rectangle2D layoutRectangle);
-
-        #endregion
-
-        #region Explicit Interface Implementation
-
-        #region IRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
-
-        IMatrixD IRenderer.RenderTransform
-        {
-            get { return RenderTransform; }
-            set
-            {
-                if (!(value is Matrix2D))
-                {
-                    throw new NotSupportedException("Only a Matrix2D is supported on a FeatureRenderer2D.");
-                }
-
-                RenderTransform = value as Matrix2D;
-            }
-        }
-
-        #endregion
 
         #endregion
 
@@ -201,11 +107,6 @@ namespace SharpMap.Rendering.Rendering2D
                                                     RenderState renderState)
         {
             return RenderSymbols(locations, symbolData, highlightSymbolData, selectSymbolData, renderState);
-        }
-
-        object IVectorRenderer2D.RenderText(string text, StyleFont font, Rectangle2D layoutRectangle)
-        {
-            return RenderText(text, font, layoutRectangle);
         }
         #endregion
     }

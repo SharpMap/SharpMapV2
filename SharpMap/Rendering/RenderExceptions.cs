@@ -22,6 +22,7 @@ namespace SharpMap.Rendering
 	/// <summary>
 	/// Exception thrown when rendering fails.
 	/// </summary>
+	[Serializable]
 	public class RenderException : Exception
 	{
 		/// <summary>

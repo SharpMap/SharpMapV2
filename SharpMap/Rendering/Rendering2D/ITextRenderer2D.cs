@@ -15,30 +15,9 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
-namespace SharpMap.Styles
+namespace SharpMap.Rendering.Rendering2D
 {
-    [Serializable]
-    public sealed class StyleFontFamily
+    public interface ITextRenderer2D : ITextRenderer<Point2D, Size2D, Rectangle2D>
     {
-        private readonly string _familyName;
-
-        public StyleFontFamily(string name)
-        {
-            if (name == null) throw new ArgumentNullException("name");
-
-            _familyName = name;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public string Name
-        {
-            get { return _familyName; }
-        }
     }
 }

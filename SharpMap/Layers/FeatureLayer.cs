@@ -214,7 +214,6 @@ namespace SharpMap.Layers
 
             if (!AsyncQuery)
             {
-                handlerCallCount++;
                 DataSource.ExecuteFeatureQuery(featureQuery, _features);
             }
             else
@@ -227,7 +226,6 @@ namespace SharpMap.Layers
 
             base.LoadLayerData(query);
             _features.RestoreIndexEvents(true);
-            handlerCallCount--;
         }
         #endregion
 
@@ -238,12 +236,17 @@ namespace SharpMap.Layers
 
         #region Private helper methods
 
-        private int handlerCallCount = 0;
         private void handleFeaturesRequested(object sender, FeaturesNotFoundEventArgs e)
         {
-            //handlerCallCount++;
-            LoadLayerData(e.MissingForQuery);
-            //handlerCallCount--;
+            Geometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
+
+            bool hasIntersectionWithLayerData = !(available.IsEmpty() || Features.Envelope.Contains(available)) &&
+                                                e.MissingForQuery.QueryType != SpatialExpressionType.Disjoint;
+
+            if(hasIntersectionWithLayerData || e.MissingForQuery.Oids != null)
+            {
+                LoadLayerData(e.MissingForQuery);   
+            }
         }
 
         private void queryCallback(IAsyncResult result)

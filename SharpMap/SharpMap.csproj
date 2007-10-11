@@ -275,9 +275,14 @@
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\ITextRenderer`3.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
+    <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
+    <Compile Include="Rendering\Rendering2D\ITextRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
+    <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
+    <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering3D\ViewMatrix3D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewPoint3D.cs" />
     <Compile Include="Rendering\Rendering3D\ViewRectangle3D.cs" />
@@ -323,7 +328,7 @@
     <Compile Include="Presentation\Views\IMapView2D.cs" />
     <Compile Include="Rendering\Rendering2D\Label2D.cs" />
     <Compile Include="Rendering\Rendering2D\LabelCollisionDetection2D.cs" />
-    <Compile Include="Rendering\Rendering2D\LabelRenderer2D`1.cs" />
+    <Compile Include="Rendering\Rendering2D\BasicLabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
     <Compile Include="Tools\IMapTool`1.cs" />

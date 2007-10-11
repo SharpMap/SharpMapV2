@@ -47,7 +47,7 @@ namespace SharpMap.Presentation.WinForms
     /// </summary>
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
-        private readonly double _dpi = 96;
+        private readonly double _dpi;
         private bool _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
         private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
@@ -57,6 +57,7 @@ namespace SharpMap.Presentation.WinForms
         private List<MapTool> _tools;
         private MapPresenter _presenter;
         private GdiMatrix _gdiViewMatrix;
+        private readonly StringFormat _format;
         private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
         private bool _backgroundBeingSet;
 
@@ -69,6 +70,10 @@ namespace SharpMap.Presentation.WinForms
             {
                 _dpi = g.DpiX;
             }
+
+            _format = new StringFormat(StringFormat.GenericTypographic);
+            _format.Alignment = StringAlignment.Near;
+            _format.LineAlignment = StringAlignment.Center;
 
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.Opaque, true);
@@ -470,7 +475,7 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             MapTool currentTool = SelectedTool;
-            
+
             SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomOut : StandardMapTools2D.ZoomIn;
 
             onEndAction(ViewConverter.Convert(e.Location));
@@ -481,7 +486,7 @@ namespace SharpMap.Presentation.WinForms
             }
 
             base.OnMouseWheel(e);
-            
+
             //SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
 
             //Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);
@@ -508,7 +513,7 @@ namespace SharpMap.Presentation.WinForms
 
             g.Clear(BackColor);
 
-            while(_renderObjectQueue.Count > 0)
+            while (_renderObjectQueue.Count > 0)
             {
                 GdiRenderObject ro = _renderObjectQueue.Dequeue();
 
@@ -520,19 +525,45 @@ namespace SharpMap.Presentation.WinForms
                 switch (ro.State)
                 {
                     case RenderState.Normal:
-                        if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
-                        if (ro.Line != null) g.DrawPath(ro.Line, ro.GdiPath);
-                        if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                        if (ro.GdiPath != null)
+                        {
+                            if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
+                            if (ro.Line != null) g.DrawPath(ro.Line, ro.GdiPath);
+                            if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                        }
+
+                        if (ro.Text != null)
+                        {
+                            g.DrawString(ro.Text, ro.Font, ro.Fill, ro.Bounds);
+                        }
+
                         break;
                     case RenderState.Highlighted:
-                        if (ro.HighlightFill != null) g.FillPath(ro.HighlightFill, ro.GdiPath);
-                        if (ro.HightlightLine != null) g.DrawPath(ro.HightlightLine, ro.GdiPath);
-                        if (ro.HightlightOutline != null) g.DrawPath(ro.HightlightOutline, ro.GdiPath);
+                        if (ro.GdiPath != null)
+                        {
+                            if (ro.HighlightFill != null) g.FillPath(ro.HighlightFill, ro.GdiPath);
+                            if (ro.HightlightLine != null) g.DrawPath(ro.HightlightLine, ro.GdiPath);
+                            if (ro.HightlightOutline != null) g.DrawPath(ro.HightlightOutline, ro.GdiPath);
+                        }
+
+                        if (ro.Text != null)
+                        {
+                            g.DrawString(ro.Text, ro.Font, ro.HighlightFill, ro.Bounds);
+                        }
+
                         break;
                     case RenderState.Selected:
-                        if (ro.SelectFill != null) g.FillPath(ro.SelectFill, ro.GdiPath);
-                        if (ro.SelectLine != null) g.DrawPath(ro.SelectLine, ro.GdiPath);
-                        if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                        if (ro.GdiPath != null)
+                        {
+                            if (ro.SelectFill != null) g.FillPath(ro.SelectFill, ro.GdiPath);
+                            if (ro.SelectLine != null) g.DrawPath(ro.SelectLine, ro.GdiPath);
+                            if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                        }
+
+                        if (ro.Text != null) 
+                        {
+                            g.DrawString(ro.Text, ro.Font, ro.SelectFill, ro.Bounds);
+                        }
                         break;
                     case RenderState.Unknown:
                     default:
@@ -543,7 +574,7 @@ namespace SharpMap.Presentation.WinForms
                 {
                     ImageAttributes imageAttributes = null;
 
-                    if(ro.ColorTransform != null && ro.State != RenderState.Normal)
+                    if (ro.ColorTransform != null)
                     {
                         imageAttributes = new ImageAttributes();
                         imageAttributes.SetColorMatrix(ro.ColorTransform);
@@ -551,11 +582,11 @@ namespace SharpMap.Presentation.WinForms
 
                     if (imageAttributes != null)
                     {
-                        g.DrawImage(ro.Image, getPoints(ro.ImageBounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel, imageAttributes);
+                        g.DrawImage(ro.Image, getPoints(ro.Bounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel, imageAttributes);
                     }
                     else
                     {
-                        g.DrawImage(ro.Image, getPoints(ro.ImageBounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel);
+                        g.DrawImage(ro.Image, getPoints(ro.Bounds), getSourceRegion(ro.Image), GraphicsUnit.Pixel);
                     }
                 }
             }
@@ -837,7 +868,7 @@ namespace SharpMap.Presentation.WinForms
                 Debug.WriteLine(String.Format("Disposing GDI matrix on values: {0} : {1}; {2} : {3}; {4} : {5}; {6} : {7}; {8} : {9}; {10} : {11}",
                     gdiElements[0], (float)viewMatrix.M11, gdiElements[1], (float)viewMatrix.M12, gdiElements[2], (float)viewMatrix.M21,
                     gdiElements[3], (float)viewMatrix.M22, gdiElements[4], (float)viewMatrix.OffsetX, gdiElements[5], (float)viewMatrix.OffsetY));
-                
+
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
             }
@@ -847,7 +878,7 @@ namespace SharpMap.Presentation.WinForms
 
         private bool withinDragTolerance(GdiPoint point)
         {
-            return Math.Abs(_mouseDownLocation.X - point.X) <= 3 
+            return Math.Abs(_mouseDownLocation.X - point.X) <= 3
                 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
         }
 

@@ -41,7 +41,7 @@ namespace SharpMap.Styles
         /// Initializes a new <see cref="LabelStyle"/>.
         /// </summary>
         public LabelStyle()
-            : this(new StyleFont("Arial", new Size2D(12, 12)), new SolidStyleBrush(StyleColor.Black))
+            : this(new StyleFont(new StyleFontFamily("Arial"), new Size2D(12, 12), StyleFontStyle.Regular), new SolidStyleBrush(StyleColor.Black))
         {
         }
 

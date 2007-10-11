@@ -54,5 +54,10 @@ namespace SharpMap.Geometries
 
             return new BoundingBox(lhs.GetBoundingBox(), rhs.GetBoundingBox()).ToGeometry();
         }
+
+        internal static Geometry Intersection(Geometry lhs, Geometry rhs)
+        {
+            return BoundingBoxOperations.Intersection(lhs.GetBoundingBox(), rhs.GetBoundingBox());
+        }
     }
 }

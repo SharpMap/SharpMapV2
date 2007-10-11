@@ -76,9 +76,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// A vector renderer.
         /// </param>
         public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
-            : this(vectorRenderer, new Matrix2D())
+            : this(vectorRenderer, new VectorStyle())
         {
-            DefaultStyle = new VectorStyle();
         }
 
 		/// <summary>
@@ -87,14 +86,13 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="vectorRenderer">
 		/// A vector renderer.
 		/// </param>
-		/// <param name="toViewTransform">
-		/// A transform which maps world coordinates to view coordinates.
+		/// <param name="defaultStyle"> 
+		/// The default style to apply to a feature's geometry.
 		/// </param>
-		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, Matrix2D toViewTransform)
+		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, VectorStyle defaultStyle)
 			: base(vectorRenderer)
 		{
-			DefaultStyle = new VectorStyle();
-			ToViewTransform = toViewTransform;
+            DefaultStyle = defaultStyle;
 		}
 
 		#region Dispose pattern
@@ -281,7 +279,7 @@ namespace SharpMap.Rendering.Rendering2D
             if (highlightSymbol == null) highlightSymbol = symbol;
             if (selectSymbol == null) selectSymbol = symbol;
 
-			return VectorRenderer.RenderSymbols(convertPoints(points), symbol, highlightSymbol, selectSymbol, renderState);
+            return VectorRenderer.RenderSymbols(convertPoints(points), symbol, highlightSymbol, selectSymbol, renderState);
 		}
 
 		private IEnumerable<TRenderObject> drawLineStrings(IEnumerable<LineString> lines, StylePen fill,
@@ -296,7 +294,7 @@ namespace SharpMap.Rendering.Rendering2D
 		    if (highlightOutline == null) highlightOutline = outline;
             if (selectOutline == null) selectOutline = outline;
 
-		    IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(paths, 
+            IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(paths, 
                 fill, highlightFill, selectFill, outline, highlightOutline, selectOutline, renderState);
 
             foreach (TRenderObject ro in renderedObjects)
@@ -319,7 +317,7 @@ namespace SharpMap.Rendering.Rendering2D
             if (highlightOutline == null) highlightOutline = outline;
             if (selectOutline == null) selectOutline = outline;
 
-			IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(
+            IEnumerable<TRenderObject> renderedObjects = VectorRenderer.RenderPaths(
                 paths, fill, highlightFill, selectFill, outline, highlightOutline, selectOutline, renderState);
 
 			return renderedObjects;

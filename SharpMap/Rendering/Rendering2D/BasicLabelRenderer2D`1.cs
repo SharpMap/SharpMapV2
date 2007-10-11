@@ -17,8 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using NPack;
-using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Styles;
@@ -29,67 +27,84 @@ namespace SharpMap.Rendering.Rendering2D
     /// The base class for 2D feature renderers which produce labels.
     /// </summary>
     /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
-    public abstract class LabelRenderer2D<TRenderObject> 
-		: FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
+    public class BasicLabelRenderer2D<TRenderObject>
+        : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
     {
-        private StyleTextRenderingHint _textRenderingHint;
-        
-        protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer) 
-            : this(vectorRenderer, StyleTextRenderingHint.SystemDefault)
-        { }
+        private TextRenderer2D<TRenderObject> _textRenderer;
 
-        protected LabelRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, 
-			StyleTextRenderingHint renderingHint) : base(vectorRenderer)
+        #region Object construction and disposal
+        protected BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
+            VectorRenderer2D<TRenderObject> vectorRenderer)
+            : this(textRenderer, vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
-            _textRenderingHint = renderingHint;
         }
 
-        ~LabelRenderer2D()
+        protected BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
+            VectorRenderer2D<TRenderObject> vectorRenderer, StyleTextRenderingHint renderingHint)
+            : base(vectorRenderer)
+        {
+            if (textRenderer == null) throw new ArgumentNullException("textRenderer");
+
+            TextRenderer = textRenderer;
+            TextRenderer.TextRenderingHint = renderingHint;
+        }
+
+        ~BasicLabelRenderer2D()
         {
             Dispose(false);
+        }
+        #endregion
+
+        public TextRenderer2D<TRenderObject> TextRenderer
+        {
+            get { return _textRenderer; }
+            private  set { _textRenderer = value; }
         }
 
         #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
 
-        public StyleTextRenderingHint TextRenderingHint
+        public virtual IEnumerable<TRenderObject> RenderLabel(Label2D label)
         {
-            get 
-            { 
-                return _textRenderingHint; 
-            }
-            set
+            Rectangle2D layoutRectangle =
+                new Rectangle2D(label.Location, TextRenderer.MeasureString(label.Text, label.Font));
+
+            if (label.Style.Halo != null)
             {
-                if (_textRenderingHint != value)
+                StylePen halo = label.Style.Halo;
+                StyleBrush background = label.Style.Background;
+
+                IEnumerable<TRenderObject> haloPath = VectorRenderer.RenderPaths(
+                    generateHaloPath(layoutRectangle), background, background, background,
+                    halo, halo, halo, RenderState.Normal);
+
+                foreach (TRenderObject ro in haloPath)
                 {
-                    StyleTextRenderingHint oldValue = _textRenderingHint;
-                    _textRenderingHint = value;
-                    OnTextRenderingHintChanged();
+                    yield return ro;
                 }
+            }
+
+            IEnumerable<TRenderObject> renderedText = TextRenderer.RenderText(
+                label.Text, label.Font, layoutRectangle, label.FlowPath, label.Style.Foreground, label.Transform);
+
+            foreach (TRenderObject ro in renderedText)
+            {
+                yield return ro;
             }
         }
 
-        public abstract Size2D MeasureString(string text, StyleFont font);
-        public abstract IEnumerable<TRenderObject> RenderLabel(Label2D label);
-        public abstract IEnumerable<TRenderObject> RenderLabel(string text, StyleFont font, Point2D location, StyleBrush foreground);
-        public abstract IEnumerable<TRenderObject> RenderLabel(string text, StyleFont font, Point2D location, Size2D collisionBuffer, Path2D flowPath,
-                                                    StyleBrush foreground, StyleBrush background, StylePen halo, Matrix2D transform);
         #endregion
 
-        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style, RenderState renderState)
+        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style,
+                                                                      RenderState renderState)
         {
+            // TODO: create label from feature and call RenderLabel(Label2D)
             throw new NotImplementedException();
         }
 
-        public event EventHandler TextRenderingHintChanged;
-
-        protected virtual void OnTextRenderingHintChanged()
+        private static IEnumerable<Path2D> generateHaloPath(Rectangle2D layoutRectangle)
         {
-            EventHandler @event = TextRenderingHintChanged;
-
-            if (@event != null)
-            {
-                @event(this, EventArgs.Empty);
-            }
+            Path2D path = new Path2D(layoutRectangle.GetVertices(), true);
+            yield return path;
         }
 
         ///// <summary>
@@ -294,14 +309,14 @@ namespace SharpMap.Rendering.Rendering2D
         //    return label;
         //}
 
-        private void CalculateLabelOnLineString(LineString line, ref Label2D label)
+        private void calculateLabelOnLineString(LineString line, ref Label2D label)
         {
             double dx, dy;
             double tmpx, tmpy;
             double angle = 0.0;
 
             // first find the middle segment of the line
-            int midPoint = (line.Vertices.Count - 1) / 2;
+            int midPoint = (line.Vertices.Count - 1)/2;
 
             if (line.Vertices.Count > 2)
             {
@@ -326,40 +341,31 @@ namespace SharpMap.Rendering.Rendering2D
             else
             {
                 // calculate angle of line					
-                angle = -Math.Atan(dy / dx) + Math.PI * 0.5;
-                angle *= (180d / Math.PI); // convert radians to degrees
-                label.Rotation = (float)angle - 90; // -90 text orientation
+                angle = -Math.Atan(dy/dx) + Math.PI*0.5;
+                angle *= (180d/Math.PI); // convert radians to degrees
+                label.Rotation = (float) angle - 90; // -90 text orientation
             }
 
-            tmpx = line.Vertices[midPoint].X + (dx * 0.5);
-            tmpy = line.Vertices[midPoint].Y + (dy * 0.5);
+            tmpx = line.Vertices[midPoint].X + (dx*0.5);
+            tmpy = line.Vertices[midPoint].Y + (dy*0.5);
 
 #warning figure out label positioning
             throw new NotImplementedException();
             //label.LabelPoint = map.WorldToImage(new SharpMap.Geometries.Point(tmpx, tmpy));
         }
 
-        #region Explicit Interface Implementation
+        #region ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject> Members
 
-        #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
-
-        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(
-            ILabel<Point2D, Size2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
+        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(ILabel<Point2D, Size2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
         {
+            if(!(label is Label2D))
+            {
+                throw new ArgumentException("Parameter must be an instance of type Label2D.", "label");
+            }
+
             return RenderLabel(label as Label2D);
         }
 
-
-        IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(
-            string text, StyleFont font, Point2D location, Size2D collisionBuffer, 
-            Path<Point2D, Rectangle2D> flowPath, StyleBrush foreground, StyleBrush background, 
-            StylePen halo, IMatrix<DoubleComponent> transform)
-        {
-            return RenderLabel(text, font, location, collisionBuffer, 
-                flowPath as Path2D, foreground, background, halo, transform as Matrix2D);
-        }
-
-        #endregion
         #endregion
     }
 }

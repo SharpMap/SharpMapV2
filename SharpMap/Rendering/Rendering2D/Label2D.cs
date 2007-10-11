@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Styles;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -56,19 +57,19 @@ namespace SharpMap.Rendering.Rendering2D
         /// Initializes a new Label instance.
         /// </summary>
         /// <param name="text">Text to write</param>
-        /// <param name="position">Position of label</param>
+        /// <param name="location">Position of label</param>
         /// <param name="rotation">Rotation</param>
         /// <param name="priority">Label priority used for collision detection.</param>
-        /// <param name="collisionArea">Area around label for collision detection.</param>
+        /// <param name="collisionBuffer">Area around label for collision detection.</param>
         /// <param name="style">The style to use in rendering the label.</param>
-        public Label2D(string text, Point2D position, float rotation, int priority, Size2D collisionArea,
+        public Label2D(string text, Point2D location, float rotation, int priority, Size2D collisionBuffer,
                        LabelStyle style)
         {
             _text = text;
-            _location = position;
+            _location = location;
             _rotation = rotation;
             _priority = priority;
-            _collisionBuffer = collisionArea;
+            _collisionBuffer = collisionBuffer;
             _style = style ?? new LabelStyle();
         }
 
@@ -78,9 +79,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A string which represents the label instance.</returns>
         public override string ToString()
         {
-            return
-                String.Format("[{0}] Text: {1}; LabelPoint: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Box: {6}",
-                              GetType(), Text, Location, Font, Rotation, Priority, CollisionBuffer);
+            return String.Format(
+                "[{0}] Text: \"{1}\"; Location: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Collision Buffer: {6}",
+                GetType(), Text, Location, Font, Rotation, Priority, CollisionBuffer);
         }
 
         /// <summary>
@@ -161,6 +162,11 @@ namespace SharpMap.Rendering.Rendering2D
             set { _text = value; }
         }
 
+        public Matrix2D Transform
+        {
+            get { return createTransformFromLabel(this); }
+        }
+
         #region IComparable<Label> Members
 
         /// <summary>
@@ -204,5 +210,34 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #endregion
+
+        IMatrixD ILabel<Point2D, Size2D, Rectangle2D, Path2D>.Transform
+        {
+            get { return Transform; }
+            set { throw new NotSupportedException(); }
+        }
+
+        public Label2D Clone()
+        {
+            Label2D clone = new Label2D(Text, Location, Rotation, Priority, CollisionBuffer, Style);
+            return clone;
+        }
+
+        private static Matrix2D createTransformFromLabel(Label2D label)
+        {
+            Matrix2D transform = new Matrix2D();
+
+            if (label.Rotation != 0)
+            {
+                transform.Rotate(label.Rotation);
+            }
+
+            if (!label.Offset.IsEmpty)
+            {
+                transform.Translate(label.Offset);
+            }
+
+            return transform;
+        }
     }
 }

@@ -19,13 +19,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering2D
 {
-    public abstract class RasterRenderer2D<TRenderObject> : IRasterRenderer2D<TRenderObject>
+    public abstract class RasterRenderer2D<TRenderObject> : Renderer2D, IRasterRenderer2D<TRenderObject>
     {
         #region IRasterLayerRenderer<Rectangle2D, TRenderObject> Members
 
@@ -34,31 +33,6 @@ namespace SharpMap.Rendering.Rendering2D
 
         public abstract IEnumerable<TRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
                                                                 Rectangle2D rasterBounds, IMatrixD rasterTransform);
-
-        #endregion
-
-        #region IRenderer Members
-
-        public IMatrixD RenderTransform
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        public StyleRenderingMode StyleRenderingMode
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 
@@ -80,12 +54,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         IEnumerable IRasterRenderer2D.RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         IEnumerable IRasterRenderer2D.RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, NPack.Interfaces.IMatrix<NPack.DoubleComponent> rasterTransform)
         {
-            throw new Exception("The method or operation is not implemented.");
+            throw new NotImplementedException();
         }
 
         #endregion

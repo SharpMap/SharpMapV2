@@ -253,7 +253,7 @@ namespace SharpMap.Geometries
         /// </summary>
         public override Geometry Intersection(Geometry geom)
         {
-            throw new NotImplementedException();
+            return FakeSpatialOperations.Intersection(this, geom);
         }
 
         /// <summary>
