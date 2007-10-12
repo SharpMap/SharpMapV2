@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
@@ -120,7 +121,8 @@ namespace SharpMap.Tools
             IMapView2D view = context.MapView;
             Point2D previousPoint = _actionPositions[view];
             Point2D currentPoint = context.ActionArgs.ActionPoint;
-            Point2D difference = currentPoint - previousPoint;
+            Point2D difference = previousPoint - currentPoint;
+            _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
             view.Offset(difference);
         }
 

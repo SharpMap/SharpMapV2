@@ -1150,9 +1150,8 @@ namespace SharpMap.Presentation.Presenters
             if (!oldCenter.Equals(newCenter))
             {
                 Point mapCenter = Map.Center;
-                _translationTransform.OffsetX = (newCenter.X - mapCenter.X);
-                _translationTransform.OffsetY = -(newCenter.Y - mapCenter.Y);
-
+                _translationTransform.OffsetX = (mapCenter.X - newCenter.X);
+                _translationTransform.OffsetY = -(mapCenter.Y - newCenter.Y);
                 viewMatrixChanged = true;
             }
 
