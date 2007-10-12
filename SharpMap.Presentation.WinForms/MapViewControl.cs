@@ -60,6 +60,7 @@ namespace SharpMap.Presentation.WinForms
         private readonly StringFormat _format;
         private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
         private bool _backgroundBeingSet;
+        private readonly Label _infoLabel = new Label();
 
         /// <summary>
         /// Initializes a new WinForms map view control.
@@ -83,6 +84,11 @@ namespace SharpMap.Presentation.WinForms
             SetStyle(ControlStyles.SupportsTransparentBackColor, false);
             SetStyle(ControlStyles.UserMouse, true);
             SetStyle(ControlStyles.UserPaint, true);
+
+            _infoLabel.Dock = DockStyle.Bottom;
+            _infoLabel.Height = 12;
+            _infoLabel.BackColor = Color.Transparent;
+            Controls.Add(_infoLabel);
         }
 
         /// <summary>
@@ -104,6 +110,12 @@ namespace SharpMap.Presentation.WinForms
         {
             get { return _backgroundBeingSet; }
             set { _backgroundBeingSet = value; }
+        }
+
+        internal string Information
+        {
+            get { return _infoLabel.Text; }
+            set { _infoLabel.Text = value; }
         }
 
         #region IView Members
@@ -294,13 +306,11 @@ namespace SharpMap.Presentation.WinForms
         public void IdentifyLocation(GeoPoint location)
         {
             onRequestIdentifyLocation(location);
-            Invalidate();
         }
 
         public void Offset(Point2D offsetVector)
         {
             onRequestOffset(offsetVector);
-            Invalidate();
         }
 
         /// <summary>
@@ -592,11 +602,6 @@ namespace SharpMap.Presentation.WinForms
             }
 
             g.ResetTransform();
-        }
-
-        protected override void OnInvalidated(InvalidateEventArgs e)
-        {
-            base.OnInvalidated(e);
         }
 
         protected override void OnSizeChanged(EventArgs e)

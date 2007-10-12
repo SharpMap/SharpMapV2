@@ -16,12 +16,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
-using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -33,7 +30,6 @@ namespace SharpMap.Presentation.WinForms
     {
         private bool _isRenderingSelection = false;
         private bool _isRenderingAll = false;
-        private Label2D _viewInfo;
 
         internal MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)
@@ -62,14 +58,7 @@ namespace SharpMap.Presentation.WinForms
 
         protected override Type GetRenderObjectType()
         {
-            return typeof(GdiRenderObject);
-        }
-
-        protected override void OnViewMatrixInitialized()
-        {
-            initializeInfoLabel();
-
-            base.OnViewMatrixInitialized();
+            return typeof (GdiRenderObject);
         }
 
         protected override void OnRenderingAllLayers()
@@ -82,28 +71,9 @@ namespace SharpMap.Presentation.WinForms
         {
             base.OnRenderedAllLayers();
 
-            //GdiLabelRenderer renderer = GetRenderer<GdiLabelRenderer, LabelLayer>();
-            
-            //Debug.Assert(renderer != null);
-
-            //Size2D labelSize = renderer.MeasureString(_viewInfo.Text, _viewInfo.Font);
-            //BoundingBox worldLabelArea = ToWorld(new Rectangle2D(_viewInfo.Location, labelSize));
-            //Rectangle2D layoutRectangle =
-            //    new Rectangle2D(worldLabelArea.Left, worldLabelArea.Top, worldLabelArea.Right, worldLabelArea.Bottom);
-            //StyleFont font = _viewInfo.Font;
-            //Point fontSize = ToWorld(font.Size.Width, font.Size.Height);
-            //font.Size = new Size2D(fontSize.X, fontSize.Y);
-
-            //IEnumerable<GdiRenderObject> renderedText = renderer.RenderLabel(
-            //    _viewInfo.Text, font, layoutRectangle, null, 
-            //    _viewInfo.Style.Foreground, _viewInfo.Style.Background, _viewInfo.Style.Halo, 
-            //    _viewInfo.Transform);
-
-            //ViewControl.ShowRenderedObjects(renderedText);
-
             if (!_isRenderingSelection)
             {
-                ViewControl.Invalidate();
+                ViewControl.Refresh();
             }
 
             _isRenderingAll = false;
@@ -118,7 +88,7 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void OnRenderedSelection()
         {
-            ViewControl.Invalidate();
+            ViewControl.Refresh();
         }
 
         protected override void RenderFeatureLayer(IFeatureLayer layer)
@@ -135,8 +105,7 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void SetViewLocationInformation(string text)
         {
-            _viewInfo.Text = text;
-            RenderAllLayers();
+            ViewControl.Information = text;
         }
 
         #region MapViewControl accessible members
@@ -266,13 +235,5 @@ namespace SharpMap.Presentation.WinForms
         }
 
         #endregion
-
-        private void initializeInfoLabel()
-        {
-            Point2D infoLocation = new Point2D(0, ViewControl.Height - 12);
-            LabelStyle style = new LabelStyle();
-            style.Font = new StyleFont(new StyleFontFamily("Arial"), new Size2D(12, 12), StyleFontStyle.Regular);
-            _viewInfo = new Label2D(String.Empty, infoLocation, 0, 0, Size2D.Empty, style);
-        }
     }
 }

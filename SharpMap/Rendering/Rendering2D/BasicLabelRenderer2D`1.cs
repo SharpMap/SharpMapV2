@@ -33,13 +33,13 @@ namespace SharpMap.Rendering.Rendering2D
         private TextRenderer2D<TRenderObject> _textRenderer;
 
         #region Object construction and disposal
-        protected BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
+        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
             VectorRenderer2D<TRenderObject> vectorRenderer)
             : this(textRenderer, vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
         }
 
-        protected BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
+        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
             VectorRenderer2D<TRenderObject> vectorRenderer, StyleTextRenderingHint renderingHint)
             : base(vectorRenderer)
         {

@@ -99,11 +99,11 @@ namespace SharpMap.Tools
                                                  ContinueFeatureRemove, EndFeatureRemove);
         }
 
-        private static void DoNothing(ActionContext<IMapView2D, Point2D> context) {}
+        private static void DoNothing(ActionContext<IMapView2D, Point2D> context) { }
 
         #region Panning
 
-        private static void QueryPan(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryPan(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginPan(ActionContext<IMapView2D, Point2D> context)
         {
@@ -120,12 +120,8 @@ namespace SharpMap.Tools
             IMapView2D view = context.MapView;
             Point2D previousPoint = _actionPositions[view];
             Point2D currentPoint = context.ActionArgs.ActionPoint;
-            Point2D difference = previousPoint - currentPoint;
-
-            _actionPositions[view] = currentPoint;
-
-            Rectangle2D viewBounds = new Rectangle2D(difference, view.ViewSize);
-            view.ZoomToViewBounds(viewBounds);
+            Point2D difference = currentPoint - previousPoint;
+            view.Offset(difference);
         }
 
         private static void EndPan(ActionContext<IMapView2D, Point2D> context)
@@ -137,7 +133,7 @@ namespace SharpMap.Tools
 
         #region Zoom in
 
-        private static void QueryZoomIn(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryZoomIn(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginZoomIn(ActionContext<IMapView2D, Point2D> context)
         {
@@ -168,7 +164,7 @@ namespace SharpMap.Tools
 
         #region Zoom out
 
-        private static void QueryZoomOut(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryZoomOut(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginZoomOut(ActionContext<IMapView2D, Point2D> context)
         {
@@ -178,7 +174,7 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueZoomOut(ActionContext<IMapView2D, Point2D> context) {}
+        private static void ContinueZoomOut(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void EndZoomOut(ActionContext<IMapView2D, Point2D> context)
         {
@@ -259,7 +255,7 @@ namespace SharpMap.Tools
 
         #region Query add
 
-        private static void QueryQueryAdd(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryQueryAdd(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginQueryAdd(ActionContext<IMapView2D, Point2D> context)
         {
@@ -269,15 +265,15 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueQueryAdd(ActionContext<IMapView2D, Point2D> context) {}
+        private static void ContinueQueryAdd(ActionContext<IMapView2D, Point2D> context) { }
 
-        private static void EndQueryAdd(ActionContext<IMapView2D, Point2D> context) {}
+        private static void EndQueryAdd(ActionContext<IMapView2D, Point2D> context) { }
 
         #endregion
 
         #region Query remove
 
-        private static void QueryQueryRemove(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryQueryRemove(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginQueryRemove(ActionContext<IMapView2D, Point2D> context)
         {
@@ -287,15 +283,15 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueQueryRemove(ActionContext<IMapView2D, Point2D> context) {}
+        private static void ContinueQueryRemove(ActionContext<IMapView2D, Point2D> context) { }
 
-        private static void EndQueryRemove(ActionContext<IMapView2D, Point2D> context) {}
+        private static void EndQueryRemove(ActionContext<IMapView2D, Point2D> context) { }
 
         #endregion
 
         #region Feature add
 
-        private static void QueryFeatureAdd(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryFeatureAdd(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginFeatureAdd(ActionContext<IMapView2D, Point2D> context)
         {
@@ -305,15 +301,15 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueFeatureAdd(ActionContext<IMapView2D, Point2D> context) {}
+        private static void ContinueFeatureAdd(ActionContext<IMapView2D, Point2D> context) { }
 
-        private static void EndFeatureAdd(ActionContext<IMapView2D, Point2D> context) {}
+        private static void EndFeatureAdd(ActionContext<IMapView2D, Point2D> context) { }
 
         #endregion
 
         #region Feature remove
 
-        private static void QueryFeatureRemove(ActionContext<IMapView2D, Point2D> context) {}
+        private static void QueryFeatureRemove(ActionContext<IMapView2D, Point2D> context) { }
 
         private static void BeginFeatureRemove(ActionContext<IMapView2D, Point2D> context)
         {
@@ -323,9 +319,9 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueFeatureRemove(ActionContext<IMapView2D, Point2D> context) {}
+        private static void ContinueFeatureRemove(ActionContext<IMapView2D, Point2D> context) { }
 
-        private static void EndFeatureRemove(ActionContext<IMapView2D, Point2D> context) {}
+        private static void EndFeatureRemove(ActionContext<IMapView2D, Point2D> context) { }
 
         #endregion
 
@@ -382,9 +378,9 @@ namespace SharpMap.Tools
                 zoomPercentage = .80;
             }
             else
-	        {
+            {
                 zoomPercentage = 1.20;
-	        }
+            }
 
             Point2D middleLocation = new Point2D((view.ViewSize.Width / 2), (view.ViewSize.Height / 2));
             Point2D viewDifference = context.ActionArgs.ActionPoint - middleLocation;

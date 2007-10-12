@@ -96,7 +96,9 @@ namespace SharpMap.Presentation.Presenters
         /// </summary>
         public bool IsDisposed
         {
+            [DebuggerStepThrough]
             get { return _disposed; }
+            [DebuggerStepThrough]
             private set
             {
                 if (_disposed)
@@ -104,7 +106,7 @@ namespace SharpMap.Presentation.Presenters
                     return;
                 }
 
-                _disposed = true;
+                _disposed = value;
 
                 EventHandler e = Disposed;
 
@@ -162,6 +164,7 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
+        [DebuggerStepThrough]
         protected virtual void OnMapPropertyChanged(string propertyName)
         {
 

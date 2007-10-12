@@ -70,12 +70,14 @@ namespace SharpMap.Presentation.Presenters
         // The translation matrix pans the world coordinates relative to view coordinates
         private readonly Matrix2D _translationTransform = new Matrix2D();
 
+        // The extents center matrix helps translate the map extents to the center of the view.
+        private readonly Matrix2D _extentsCenterTransform = new Matrix2D();
+
         // The scale matrix zooms the world coordinates relative to view coordinates
         private readonly Matrix2D _scaleTransform = new Matrix2D();
 
-        // The geo center matrix translates the center coordinates of the map extents
-        // to the center coordinates of the view
-        private readonly Matrix2D _geoCenterTransform = new Matrix2D();
+        // The view center matrix helps translate the map extents to the center of the view.
+        private readonly Matrix2D _viewCenterTransform = new Matrix2D();
 
         // The to view coordinates matrix shifts world coordinates down by the height 
         // of the view so that the coordinate system normalization started with the 
@@ -134,14 +136,18 @@ namespace SharpMap.Presentation.Presenters
 
             _originProjectionTransform.Scale(1, -1);
 
-            if (Map.Extents != BoundingBox.Empty)
+            BoundingBox extents = Map.Extents;
+
+            if (extents != BoundingBox.Empty)
             {
-                projectOrigin();
+                projectOrigin(extents);
+                setExtentsCenter(extents);
             }
 
             if (!View.ViewSize.IsEmpty)
             {
                 _toViewCoordinates.OffsetY = View.ViewSize.Height;
+                setViewCenter(View.ViewSize);
             }
         }
         #endregion
@@ -182,15 +188,9 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                if (ToWorldTransformInternal == null)
-                {
-                    return Point.Empty;
-                }
-
-                Point2D values = ToWorldTransformInternal.TransformVector(
-                    View.ViewSize.Width / 2, View.ViewSize.Height / 2);
-
-                return new GeoPoint(values.X, values.Y);
+                GeoPoint mapCenter = Map.Center;
+                return new GeoPoint(mapCenter.X - _translationTransform.OffsetX, 
+                    mapCenter.Y + _translationTransform.OffsetY);
             }
             set
             {
@@ -221,8 +221,8 @@ namespace SharpMap.Presentation.Presenters
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("value",
-                                                          value, "Maximum world width must greater than 0.");
+                    throw new ArgumentOutOfRangeException(
+                        "value", value, "Maximum world width must be greater than 0.");
                 }
 
                 if (_maximumWorldWidth != value)
@@ -250,8 +250,8 @@ namespace SharpMap.Presentation.Presenters
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("value",
-                                                          value, "Minimum world width must be 0 or greater.");
+                    throw new ArgumentOutOfRangeException(
+                        "value", value, "Minimum world width must be greater than 0.");
                 }
 
                 if (_minimumWorldWidth != value)
@@ -392,11 +392,11 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                if(Thread.VolatileRead(ref _textRenderer) == null)
+                if (Thread.VolatileRead(ref _textRenderer) == null)
                 {
-                    lock(_rendererInitSync)
+                    lock (_rendererInitSync)
                     {
-                        if(Thread.VolatileRead(ref _textRenderer) == null)
+                        if (Thread.VolatileRead(ref _textRenderer) == null)
                         {
                             IRenderer textRenderer = CreateTextRenderer();
                             Thread.VolatileWrite(ref _textRenderer, textRenderer);
@@ -656,26 +656,24 @@ namespace SharpMap.Presentation.Presenters
         protected virtual void CreateGeometryRenderer(Type renderObjectType)
         {
             Type basicGeometryRendererType = typeof(BasicGeometryRenderer2D<>);
-            IRenderer primitive = TextRenderer;
-            Type layerType = typeof (GeometryLayer);
+            Type layerType = typeof(GeometryLayer);
 
-            CreateRendererForLayerType(basicGeometryRendererType, renderObjectType, primitive, layerType);
+            CreateRendererForLayerType(basicGeometryRendererType, renderObjectType, layerType, VectorRenderer);
         }
 
         private void CreateLabelRenderer(Type renderObjectType)
         {
             Type basicLabelRendererType = typeof(BasicLabelRenderer2D<>);
-            IRenderer primitive = VectorRenderer;
-            Type layerType = typeof (LabelLayer);
+            Type layerType = typeof(LabelLayer);
 
-            CreateRendererForLayerType(basicLabelRendererType, renderObjectType, primitive, layerType);
+            CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
         }
 
-        protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, IRenderer primitiveRenderer, Type layerType)
+        protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, Type layerType, params object[] constructorParams)
         {
             IRenderer renderer;
-            Type constructed = rendererType.MakeGenericType(renderObjectType);
-            renderer = Activator.CreateInstance(constructed, primitiveRenderer) as IRenderer;
+            Type constructedType = rendererType.MakeGenericType(renderObjectType);
+            renderer = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
             Debug.Assert(renderer != null);
             RegisterRendererForLayerType(layerType, renderer);
         }
@@ -895,8 +893,9 @@ namespace SharpMap.Presentation.Presenters
 
             if (e.PropertyName == Map.ExtentsProperty.Name)
             {
-                projectOrigin();
-                computeGeoCenter(View.ViewSize);
+                BoundingBox extents = Map.Extents;
+                projectOrigin(extents);
+                setExtentsCenter(extents);
             }
         }
 
@@ -906,15 +905,16 @@ namespace SharpMap.Presentation.Presenters
         private void handleIdentifyLocationRequested(object sender, LocationEventArgs e)
         {
             // TODO: if map units are in latitude / longitude, terms easting and northing aren't used... are they?
-            SetViewLocationInformation(String.Format("Easting: {0}; Northing: {1}",
+            SetViewLocationInformation(String.Format("Easting: {0:N4}; Northing: {1:N4}",
                 e.Point.X, e.Point.Y));
         }
 
         // Handles the offset request from the view
         private void handleViewOffsetChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point2D> e)
         {
-            GeoPoint geoOffset = ToWorldInternal(e.RequestedValue);
-            GeoPoint newCenter = GeoCenterInternal + geoOffset;
+            Size2D viewSize = View.ViewSize;
+            Point2D newViewCenter = new Point2D(viewSize.Width / 2, viewSize.Height / 2) + e.RequestedValue;
+            GeoPoint newCenter = ToWorldInternal(newViewCenter);
             GeoCenterInternal = newCenter;
         }
 
@@ -1149,17 +1149,9 @@ namespace SharpMap.Presentation.Presenters
             // Change geographic center of the view by translating pan matrix
             if (!oldCenter.Equals(newCenter))
             {
-                if (oldCenter.IsEmpty())
-                {
-                    Point mapCenter = Map.Center;
-                    _translationTransform.OffsetX = (newCenter.X - mapCenter.X);
-                    _translationTransform.OffsetY = -(newCenter.Y - mapCenter.Y);
-                }
-                else
-                {
-                    _translationTransform.OffsetX -= (newCenter.X - oldCenter.X);
-                    _translationTransform.OffsetY -= -(newCenter.Y - oldCenter.Y);
-                }
+                Point mapCenter = Map.Center;
+                _translationTransform.OffsetX = (newCenter.X - mapCenter.X);
+                _translationTransform.OffsetY = -(newCenter.Y - mapCenter.Y);
 
                 viewMatrixChanged = true;
             }
@@ -1173,7 +1165,6 @@ namespace SharpMap.Presentation.Presenters
                 double newScale = 1 / newWorldUnitsPerPixel;
                 _scaleTransform.M22 = newScale / WorldAspectRatioInternal;
                 _scaleTransform.M11 = newScale;
-                computeGeoCenter(View.ViewSize);
                 viewMatrixChanged = true;
             }
 
@@ -1182,7 +1173,7 @@ namespace SharpMap.Presentation.Presenters
             {
                 _toViewCoordinates.OffsetY = newViewSize.Height;
                 View.ViewSize = newViewSize;
-                computeGeoCenter(View.ViewSize);
+                setViewCenter(newViewSize);
                 viewMatrixChanged = true;
             }
 
@@ -1191,14 +1182,12 @@ namespace SharpMap.Presentation.Presenters
             if (viewMatrixChanged)
             {
                 bool didInitialize = false;
-                
+
                 if (_viewIsEmpty)
                 {
                     _viewIsEmpty = false;
                     didInitialize = true;
                 }
-
-                OnViewMatrixChanged();
 
                 // Test values... ignore
                 // [ 0.02, 0.00, 0.00 ]  [ 0.00, -0.02, 0.00 ]  [ -15,344.58, 103,765.90, 1.00 ]
@@ -1207,6 +1196,8 @@ namespace SharpMap.Presentation.Presenters
                 // Test values... ignore
                 // [ 41.49, 0.00, 0.00 ]  [ 0.00, -41.49, 0.00 ]  [ 636,704.56, 4,305,639.00, 1.00 ]
                 ToWorldTransformInternal = ToViewTransformInternal.Inverse;
+
+                OnViewMatrixChanged();
 
                 if (didInitialize)
                 {
@@ -1217,10 +1208,8 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void projectOrigin()
+        private void projectOrigin(BoundingBox extents)
         {
-            BoundingBox extents = Map.Extents;
-
             if (!extents.IsEmpty)
             {
                 _originProjectionTransform.OffsetX = -extents.Left;
@@ -1228,13 +1217,16 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void computeGeoCenter(Size2D newViewSize) 
+        private void setViewCenter(Size2D size)
         {
-            _geoCenterTransform.OffsetX
-                = newViewSize.Width / 2 - _scaleTransform.M11 * Map.Extents.Width / 2;
+            _viewCenterTransform.OffsetX = size.Width / 2;
+            _viewCenterTransform.OffsetY = -size.Height / 2;
+        }
 
-            _geoCenterTransform.OffsetY
-                = -(newViewSize.Height / 2 - _scaleTransform.M22 * Map.Extents.Height / 2);
+        private void setExtentsCenter(BoundingBox extents)
+        {
+            _extentsCenterTransform.OffsetX = -extents.Width / 2;
+            _extentsCenterTransform.OffsetY = extents.Height / 2;
         }
 
         private Matrix2D concatenateViewMatrix()
@@ -1244,8 +1236,9 @@ namespace SharpMap.Presentation.Presenters
             IMatrixD combined = _originProjectionTransform
                 .Multiply(_rotationTransform)
                 .Multiply(_translationTransform)
+                .Multiply(_extentsCenterTransform)
                 .Multiply(_scaleTransform)
-                .Multiply(_geoCenterTransform)
+                .Multiply(_viewCenterTransform)
                 .Multiply(_toViewCoordinates);
 
             return new Matrix2D(combined);
