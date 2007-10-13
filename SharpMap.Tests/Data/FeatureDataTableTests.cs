@@ -85,7 +85,7 @@ namespace SharpMap.Tests.Data
             FeatureDataTable table = new FeatureDataTable();
             DataView view = table.DefaultView;
             Assert.IsNotNull(view);
-            Assert.IsInstanceOfType(typeof(FeatureDataView), view);
+            Assert.IsInstanceOfType(typeof (FeatureDataView), view);
             Assert.IsNull(view.DataViewManager);
             Assert.AreEqual(String.Empty, view.Sort);
             Assert.AreEqual(String.Empty, view.RowFilter);
@@ -114,7 +114,7 @@ namespace SharpMap.Tests.Data
 
             FeatureDataTable clone = new FeatureDataTable();
             table.CloneTo(clone);
-			DataTableHelper.AssertTableStructureIdentical(table, clone);
+            DataTableHelper.AssertTableStructureIdentical(table, clone);
 
             Assert.AreEqual(0, clone.Rows.Count);
         }
@@ -129,7 +129,7 @@ namespace SharpMap.Tests.Data
             FeatureDataTable target = new FeatureDataTable();
             table.MergeSchema(target);
 
-			DataTableHelper.AssertTableStructureIdentical(table, target);
+            DataTableHelper.AssertTableStructureIdentical(table, target);
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace SharpMap.Tests.Data
 
             table.MergeSchema(target);
 
-			DataTableHelper.AssertTableStructureIdentical(table, target);
+            DataTableHelper.AssertTableStructureIdentical(table, target);
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace SharpMap.Tests.Data
 
             table.MergeSchema(target);
 
-			DataTableHelper.AssertTableStructureIdentical(table, target);
+            DataTableHelper.AssertTableStructureIdentical(table, target);
         }
 
         [Test]
@@ -174,6 +174,6 @@ namespace SharpMap.Tests.Data
             table.MergeSchema(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
-		}
+        }
     }
 }

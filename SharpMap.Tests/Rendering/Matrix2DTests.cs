@@ -14,8 +14,6 @@ namespace SharpMap.Tests.Rendering
     [TestFixture]
     public class Matrix2DTests
     {
-        private static readonly double _e = 0.0005;
-
         [Test]
         public void IdentityTest()
         {
@@ -37,8 +35,8 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void InvertTest()
         {
-			Matrix2D m1 = new Matrix2D(1, 2, 3, 4, 0, 0);
-			Matrix2D expected = new Matrix2D(-2, 1, 1.5, -0.5, 0, 0);
+            Matrix2D m1 = new Matrix2D(1, 2, 3, 4, 0, 0);
+            Matrix2D expected = new Matrix2D(-2, 1, 1.5, -0.5, 0, 0);
 
             IMatrixD m1Inverse = m1.Inverse;
 
@@ -46,7 +44,7 @@ namespace SharpMap.Tests.Rendering
             {
                 for (int j = 0; j < m1.ColumnCount; j++)
                 {
-                    Assert.AreEqual((double) expected[i, j], (double) m1Inverse[i, j], _e);
+                    Assert.AreEqual((double)expected[i, j], (double)m1Inverse[i, j], TestConstants.Epsilon);
                 }
             }
         }
@@ -54,8 +52,8 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IsInvertableTest()
         {
-			Matrix2D m1 = new Matrix2D(1, 1, 1, 1, 0, 0);
-			Matrix2D m2 = new Matrix2D(1, 2, 3, 4, 0, 0);
+            Matrix2D m1 = new Matrix2D(1, 1, 1, 1, 0, 0);
+            Matrix2D m2 = new Matrix2D(1, 2, 3, 4, 0, 0);
             Assert.IsFalse(m1.IsInvertible);
             Assert.IsTrue(m2.IsInvertible);
         }
@@ -65,7 +63,7 @@ namespace SharpMap.Tests.Rendering
         {
             Matrix2D m1 = Matrix2D.Identity;
             Matrix2D m2 = new Matrix2D(0, 0, 0, 0, 0, 0);
-			Matrix2D m3 = new Matrix2D(1, 2, 4, 5, 3, 6);
+            Matrix2D m3 = new Matrix2D(1, 2, 4, 5, 3, 6);
 
             Assert.AreEqual(3, m1.RowCount);
             Assert.AreEqual(3, m2.ColumnCount);

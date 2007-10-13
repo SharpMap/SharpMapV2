@@ -36,15 +36,14 @@ namespace SharpMap.Rendering.Gdi.Tests
             StylePen highlight = new StylePen(new SolidStyleBrush(StyleColor.Red), 1);
             StylePen selected = new StylePen(new SolidStyleBrush(StyleColor.Green), 1);
 
-			IEnumerable<GdiRenderObject> renderObjects = renderer.RenderPaths(
-                new Path2D[] { path }, outline, highlight, selected);
+            IEnumerable<GdiRenderObject> renderObjects = renderer.RenderPaths(
+                new Path2D[] {path}, outline, highlight, selected, RenderState.Normal);
 
-			IEnumerator<GdiRenderObject> enumertor = renderObjects.GetEnumerator();
-        	enumertor.MoveNext();
-			GdiRenderObject ro = enumertor.Current;
+            IEnumerator<GdiRenderObject> enumertor = renderObjects.GetEnumerator();
+            enumertor.MoveNext();
+            GdiRenderObject ro = enumertor.Current;
 
-            Assert.AreEqual(GdiRenderObjectState.Normal, ro.State);
-            Assert.AreEqual(GdiRenderObjectType.Path, ro.Type);
+            Assert.AreEqual(RenderState.Normal, ro.State);
             Assert.IsInstanceOfType(typeof (SolidBrush), ro.Fill);
             Assert.IsNotNull(ro.GdiPath);
             Assert.AreEqual(4, ro.GdiPath.PointCount);

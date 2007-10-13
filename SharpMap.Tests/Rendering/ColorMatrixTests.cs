@@ -2,12 +2,13 @@ using System;
 using NPack;
 using NPack.Interfaces;
 using NUnit.Framework;
-
 using SharpMap.Rendering;
 
 namespace SharpMap.Tests.Rendering
 {
+
     #region ColorMatrix
+
     [TestFixture]
     public class ColorMatrixTests
     {
@@ -27,14 +28,15 @@ namespace SharpMap.Tests.Rendering
         public void InvertTest()
         {
             ColorMatrix m1 = new ColorMatrix(0.5, 0.5, 0.5, 0.5, 10, 20, 30);
-            IMatrix<DoubleComponent> expected = new Matrix<DoubleComponent>(MatrixFormat.RowMajor, new DoubleComponent[][]
-                {
-                   new DoubleComponent[] {2, 0, 0, 0, 0}, 
-                   new DoubleComponent[] {0, 2, 0, 0, 0}, 
-                   new DoubleComponent[] {0, 0, 2, 0, 0}, 
-                   new DoubleComponent[] {0, 0, 0, 2, 0}, 
-                   new DoubleComponent[] {-20, -40, -60, 0, 1}
-                });
+            IMatrix<DoubleComponent> expected =
+                new Matrix<DoubleComponent>(MatrixFormat.RowMajor, new DoubleComponent[][]
+                                                                       {
+                                                                           new DoubleComponent[] {2, 0, 0, 0, 0},
+                                                                           new DoubleComponent[] {0, 2, 0, 0, 0},
+                                                                           new DoubleComponent[] {0, 0, 2, 0, 0},
+                                                                           new DoubleComponent[] {0, 0, 0, 2, 0},
+                                                                           new DoubleComponent[] {-20, -40, -60, 0, 1}
+                                                                       });
 
             IMatrix<DoubleComponent> m1Inverse = m1.Inverse;
 
@@ -42,7 +44,7 @@ namespace SharpMap.Tests.Rendering
             {
                 for (int j = 0; j < m1.ColumnCount; j++)
                 {
-                    Assert.AreEqual((double)expected[i, j], (double)m1Inverse[i, j], _e);
+                    Assert.AreEqual((double) expected[i, j], (double) m1Inverse[i, j], _e);
                 }
             }
         }
@@ -63,13 +65,13 @@ namespace SharpMap.Tests.Rendering
             Assert.AreEqual(5, m1.RowCount);
             Assert.AreEqual(5, m2.ColumnCount);
 
-            DoubleComponent[][] expected = new DoubleComponent[][] 
-                { 
-                    new DoubleComponent[] { 0.5, 0, 0, 0, 0 }, 
-                    new DoubleComponent[] { 0, 0.5, 0, 0, 0 }, 
-                    new DoubleComponent[] { 0, 0, 0.5, 0, 0 }, 
-                    new DoubleComponent[] { 0, 0, 0, 1, 0 }, 
-                    new DoubleComponent[] { 0, 0, 0, 0, 1 } 
+            DoubleComponent[][] expected = new DoubleComponent[][]
+                {
+                    new DoubleComponent[] {0.5, 0, 0, 0, 0},
+                    new DoubleComponent[] {0, 0.5, 0, 0, 0},
+                    new DoubleComponent[] {0, 0, 0.5, 0, 0},
+                    new DoubleComponent[] {0, 0, 0, 1, 0},
+                    new DoubleComponent[] {0, 0, 0, 0, 1}
                 };
 
             DoubleComponent[][] actual = m2.Elements;
@@ -90,7 +92,7 @@ namespace SharpMap.Tests.Rendering
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof (ArgumentNullException))]
         public void ElementsTest2()
         {
             ColorMatrix m1 = ColorMatrix.Identity;
@@ -98,14 +100,14 @@ namespace SharpMap.Tests.Rendering
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof (ArgumentException))]
         public void ElementsTest3()
         {
             ColorMatrix m1 = ColorMatrix.Identity;
             m1.Elements = new DoubleComponent[][]
                 {
-                    new DoubleComponent[] { 1, 2, 3 }, 
-                    new DoubleComponent[] { 2, 3, 4 }
+                    new DoubleComponent[] {1, 2, 3},
+                    new DoubleComponent[] {2, 3, 4}
                 };
         }
 
@@ -163,5 +165,6 @@ namespace SharpMap.Tests.Rendering
             // Scale by a vector for which multiplicatio isn't defined...
         }
     }
+
     #endregion
 }

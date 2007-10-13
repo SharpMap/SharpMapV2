@@ -1,4 +1,3 @@
-
 using System;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -9,29 +8,29 @@ using SharpMap.Tools;
 
 namespace SharpMap.Tests
 {
-	[TestFixture]
-	public class MapTests
-	{
-		[Test]
-		public void GetLayerByNameReturnsCorrectLayer()
-		{
+    [TestFixture]
+    public class MapTests
+    {
+        [Test]
+        public void GetLayerByNameReturnsCorrectLayer()
+        {
             MockRepository mocks = new MockRepository();
 
-			Map map = new Map();
+            Map map = new Map();
             IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
             map.AddLayer(new GeometryLayer("Layer 2", dataSource));
 
-			ILayer layer = map.GetLayerByName("Layer 2");
-			Assert.IsNotNull(layer);
-			Assert.AreEqual("Layer 2", layer.LayerName);
-		}
+            ILayer layer = map.GetLayerByName("Layer 2");
+            Assert.IsNotNull(layer);
+            Assert.AreEqual("Layer 2", layer.LayerName);
+        }
 
-		[Test]
-        [ExpectedException(typeof(DuplicateLayerException))]
-		public void DuplicateLayerNamesThrowsException()
+        [Test]
+        [ExpectedException(typeof (DuplicateLayerException))]
+        public void DuplicateLayerNamesThrowsException()
         {
             Map map = new Map();
             IFeatureLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource();
@@ -40,10 +39,10 @@ namespace SharpMap.Tests
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
             map.AddLayer(new GeometryLayer("Layer 2", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
-		}
+        }
 
-		[Test]
-		public void FindLayerByPredicateReturnsMatchingLayers()
+        [Test]
+        public void FindLayerByPredicateReturnsMatchingLayers()
         {
             MockRepository mocks = new MockRepository();
 
@@ -55,39 +54,39 @@ namespace SharpMap.Tests
             map.AddLayer(new GeometryLayer("Layer 2", dataSource));
             map.AddLayer(new GeometryLayer("layer 3b", dataSource));
 
-			int count = 0;
+            int count = 0;
 
             foreach (ILayer layer in map.FindLayers("Layer 3"))
-			{
+            {
                 Assert.IsTrue(layer.LayerName.StartsWith("Layer 3", StringComparison.CurrentCultureIgnoreCase));
-				count++;
-			}
+                count++;
+            }
 
-			Assert.AreEqual(2, count);
-		}
+            Assert.AreEqual(2, count);
+        }
 
-		[Test]
-		public void EmptyMap_Defaults()
-		{
-			Map map = new Map();
-			Assert.AreEqual(map.Extents, BoundingBox.Empty);
-			Assert.AreEqual(map.Center, Point.Empty);
-			Assert.IsNotNull(map.Layers);
-			Assert.AreEqual(map.Layers.Count, 0);
-			Assert.AreEqual(map.ActiveTool, StandardMapTools2D.None);
-			Assert.IsNotNull(map.SelectedLayers);
-		}
+        [Test]
+        public void EmptyMap_Defaults()
+        {
+            Map map = new Map();
+            Assert.AreEqual(map.Extents, BoundingBox.Empty);
+            Assert.AreEqual(map.Center, Point.Empty);
+            Assert.IsNotNull(map.Layers);
+            Assert.AreEqual(map.Layers.Count, 0);
+            Assert.AreEqual(map.ActiveTool, StandardMapTools2D.None);
+            Assert.IsNotNull(map.SelectedLayers);
+        }
 
-		[Test]
-		public void GetExtents_ValidDatasource()
-		{
-			Map map = new Map();
+        [Test]
+        public void GetExtents_ValidDatasource()
+        {
+            Map map = new Map();
 
-			GeometryLayer vLayer = new GeometryLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
+            GeometryLayer vLayer = new GeometryLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource());
 
-			map.AddLayer(vLayer);
+            map.AddLayer(vLayer);
             BoundingBox box = map.Extents;
-			Assert.AreEqual(new BoundingBox(0, 0, 100, 100), box);
-		}
-	}
+            Assert.AreEqual(new BoundingBox(0, 0, 100, 100), box);
+        }
+    }
 }

@@ -88,7 +88,8 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="table">Table to create view on.</param>
         public FeatureDataView(FeatureDataTable table)
-            : this(table, null, null, DataViewRowState.CurrentRows) { }
+            : this(table, new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null), 
+                "", DataViewRowState.CurrentRows) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -111,25 +112,6 @@ namespace SharpMap.Data
         /// sort order and row state filter.
         /// </summary>
         /// <param name="table">Table to create view on.</param>
-        /// <param name="intersectionFilter">
-        /// Geometry used in intersection test to filter feature table rows.
-        /// </param>
-        /// <param name="sort">Sort expression to order view by.</param>
-        /// <param name="rowState">Filter on the state of the rows to view.</param>
-        /// <param name="emptyGeometryFilterIsExclusive">
-        /// Value indicating that an empty <see cref="GeometryFilter"/> excludes rows 
-        /// (<see langword="true"/>) or includes them (<see langword="false"/>).
-        /// </param>
-        public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
-                               string sort, DataViewRowState rowState, bool emptyGeometryFilterIsExclusive)
-            : this(table, intersectionFilter, SpatialExpressionType.Intersects, sort, rowState, emptyGeometryFilterIsExclusive) { }
-
-        /// <summary>
-        /// Creates a new <see cref="FeatureDataView"/> on the given
-        /// <see cref="FeatureDataTable"/> having the specified geometry filter, 
-        /// sort order and row state filter.
-        /// </summary>
-        /// <param name="table">Table to create view on.</param>
         /// <param name="query">
         /// Geometry used in building view to filter feature table rows.
         /// </param>
@@ -140,13 +122,7 @@ namespace SharpMap.Data
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry query, SpatialExpressionType queryType,
                                string sort, DataViewRowState rowState)
-            : this(table, query, queryType, sort, rowState, false) { }
-
-
-        public FeatureDataView(FeatureDataTable table, Geometry query, SpatialExpressionType queryType,
-                               string sort, DataViewRowState rowState, bool emptyGeometryFilterIsExclusive)
-            : this(table, new FeatureSpatialExpression(query, queryType, null), sort, rowState, emptyGeometryFilterIsExclusive)
-        { }
+            : this(table, new FeatureSpatialExpression(query, queryType, null), sort, rowState) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -154,20 +130,13 @@ namespace SharpMap.Data
         /// sort order and row state filter.
         /// </summary>
         /// <param name="table">Table to create view on.</param>
-        /// <param name="query">
-        /// Geometry used in building view to filter feature table rows.
-        /// </param>
-        /// <param name="queryType">
-        /// Type of spatial relation which <paramref name="query"/> has to features.
+        /// <param name="definition">
+        /// Spatial expression used in building view to filter feature table rows.
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        /// <param name="emptyGeometryFilterIsExclusive">
-        /// Value indicating that an empty <see cref="GeometryFilter"/> excludes rows 
-        /// (<see langword="true"/>) or includes them (<see langword="false"/>).
-        /// </param>
         public FeatureDataView(FeatureDataTable table, FeatureSpatialExpression definition,
-                               string sort, DataViewRowState rowState, bool emptyGeometryFilterIsExclusive)
+                               string sort, DataViewRowState rowState)
             : base(
                 table, "",
                 String.IsNullOrEmpty(sort) ? table.PrimaryKey.Length == 1 ? table.PrimaryKey[0].ColumnName : "" : sort,

@@ -111,8 +111,13 @@ namespace SharpMap.Layers
             // We generally want spatial indexing on the feature table...
             _features.IsSpatiallyIndexed = true;
 
-            _selectedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows, true);
-            _highlightedFeatures = new FeatureDataView(_features, Point.Empty, "", DataViewRowState.CurrentRows, true);
+            _selectedFeatures = new FeatureDataView(_features,
+                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null),
+                "", DataViewRowState.CurrentRows);
+
+            _highlightedFeatures = new FeatureDataView(_features, 
+                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null), 
+                "", DataViewRowState.CurrentRows);
 
             if (ShouldHandleFeaturesNotFoundEvent)
             {

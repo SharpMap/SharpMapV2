@@ -189,6 +189,12 @@ namespace SharpMap.Presentation.Presenters
             get
             {
                 GeoPoint mapCenter = Map.Center;
+                
+                if(mapCenter.IsEmpty())
+                {
+                    return GeoPoint.Empty;
+                }
+
                 return new GeoPoint(mapCenter.X - _translationTransform.OffsetX, 
                     mapCenter.Y + _translationTransform.OffsetY);
             }
@@ -1030,7 +1036,10 @@ namespace SharpMap.Presentation.Presenters
                 return;
             }
 
-            RenderSelection(SelectionInternal);
+            if (ToWorldTransformInternal != null)
+            {
+                RenderSelection(SelectionInternal);
+            }
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using SharpMap.Utilities;
@@ -19,12 +18,11 @@ namespace SharpMap.Tests.Utilities
                 list.Add(rnd.NextDouble());
             }
 
-            QuickSort.Sort(list, delegate(double lhs, double rhs)
-                { return lhs < rhs ? -1 : lhs > rhs ? 1 : 0; });
+            QuickSort.Sort(list, delegate(double lhs, double rhs) { return lhs < rhs ? -1 : lhs > rhs ? 1 : 0; });
 
-            for(int i = 1; i< list.Count; i++)
+            for (int i = 1; i < list.Count; i++)
             {
-                Assert.GreaterOrEqual(list[i], list[i-1]);
+                Assert.GreaterOrEqual(list[i], list[i - 1]);
             }
         }
 
@@ -38,8 +36,7 @@ namespace SharpMap.Tests.Utilities
                 list.Add(rnd.NextDouble());
             }
 
-            QuickSort.Sort(list, delegate(double lhs, double rhs)
-            { return lhs < rhs ? -1 : lhs > rhs ? 1 : 0; });
+            QuickSort.Sort(list, delegate(double lhs, double rhs) { return lhs < rhs ? -1 : lhs > rhs ? 1 : 0; });
 
             for (int i = 1; i < list.Count; i++)
             {

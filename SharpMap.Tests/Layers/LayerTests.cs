@@ -38,11 +38,11 @@ namespace SharpMap.Tests.Layers
                 return false;
             }
 
-            foreach (FeatureDataRow row1 in ((IEnumerable<FeatureDataRow>)view1))
+            foreach (FeatureDataRow row1 in ((IEnumerable<FeatureDataRow>) view1))
             {
                 bool notFound = true;
 
-                foreach (FeatureDataRow row2 in ((IEnumerable<FeatureDataRow>)view2))
+                foreach (FeatureDataRow row2 in ((IEnumerable<FeatureDataRow>) view2))
                 {
                     if (row1["FeatureName"] == row2["FeatureName"])
                     {

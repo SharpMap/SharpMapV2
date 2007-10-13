@@ -7,7 +7,7 @@ using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Geometries;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Tests;
-using Point = SharpMap.Geometries.Point;
+using Point=SharpMap.Geometries.Point;
 
 namespace SharpMap.Rendering.Gdi.Tests
 {
@@ -21,9 +21,8 @@ namespace SharpMap.Rendering.Gdi.Tests
         {
             using (GdiVectorRenderer vectorRenderer = new GdiVectorRenderer())
             {
-                Matrix2D toViewMatrix = new Matrix2D();
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
-                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer, toViewMatrix);
+                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
             }
         }
 
@@ -32,9 +31,8 @@ namespace SharpMap.Rendering.Gdi.Tests
         {
             using (GdiVectorRenderer vectorRenderer = new GdiVectorRenderer())
             {
-                Matrix2D toViewMatrix = new Matrix2D();
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
-                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer, toViewMatrix);
+                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
 
                 FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();
 
@@ -99,7 +97,9 @@ namespace SharpMap.Rendering.Gdi.Tests
                                     Assert.IsTrue(isClosed);
                                     Assert.AreEqual(p.ExteriorRing.Vertices.Count, end - start + 1);
 
-                                    for (int vertexIndex = 0; vertexIndex < p.ExteriorRing.Vertices.Count; vertexIndex++)
+                                    for (int vertexIndex = 0;
+                                         vertexIndex < p.ExteriorRing.Vertices.Count;
+                                         vertexIndex++)
                                     {
                                         Point v = p.ExteriorRing.Vertices[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
@@ -136,9 +136,8 @@ namespace SharpMap.Rendering.Gdi.Tests
         {
             using (GdiVectorRenderer vectorRenderer = new GdiVectorRenderer())
             {
-                Matrix2D toViewMatrix = new Matrix2D();
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
-                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer, toViewMatrix);
+                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
 
                 FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();
 
@@ -199,9 +198,8 @@ namespace SharpMap.Rendering.Gdi.Tests
         {
             using (GdiVectorRenderer vectorRenderer = new GdiVectorRenderer())
             {
-                Matrix2D toViewMatrix = new Matrix2D();
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
-                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer, toViewMatrix);
+                    = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
 
                 FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();
 
@@ -217,15 +215,15 @@ namespace SharpMap.Rendering.Gdi.Tests
                         if (g is MultiPoint)
                         {
                             MultiPoint mp = g as MultiPoint;
-                            Assert.AreEqual(mp[geoIndex].X, ro.AffineTransform.OffsetX, _e);
-                            Assert.AreEqual(mp[geoIndex].Y, ro.AffineTransform.OffsetY, _e);
+                            Assert.AreEqual(mp[geoIndex].X, ro.Bounds.Location.X, _e);
+                            Assert.AreEqual(mp[geoIndex].Y, ro.Bounds.Location.Y, _e);
                             geoIndex++;
                         }
                         else if (g is Point)
                         {
                             Point p = g as Point;
-                            Assert.AreEqual(p.X, ro.AffineTransform.OffsetX, _e);
-                            Assert.AreEqual(p.Y, ro.AffineTransform.OffsetY, _e);
+                            Assert.AreEqual(p.X, ro.Bounds.Location.X, _e);
+                            Assert.AreEqual(p.Y, ro.Bounds.Location.Y, _e);
                         }
                     }
                 }

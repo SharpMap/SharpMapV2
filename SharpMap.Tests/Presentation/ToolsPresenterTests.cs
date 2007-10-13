@@ -1,13 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-
-using SharpMap.Presentation;
-
+using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
-using NUnit.Framework;
+using SharpMap.Presentation;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
 
@@ -29,7 +25,7 @@ namespace SharpMap.Tests.Presentation
             ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
             Assert.IsNotNull(view.Tools);
-            Assert.IsNotEmpty((ICollection)view.Tools);
+            Assert.IsNotEmpty((ICollection) view.Tools);
         }
 
         [Test]

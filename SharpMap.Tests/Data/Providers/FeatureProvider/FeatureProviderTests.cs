@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using NUnit.Framework;
 using FeatProvider = SharpMap.Data.Providers.FeatureProvider.FeatureProvider;
 
@@ -25,9 +23,9 @@ namespace SharpMap.Tests.Data.Providers.FeatureProvider
         {
             DataColumn[] columns = new DataColumn[]
                 {
-                    new DataColumn("Column1", typeof(int)), 
-                    new DataColumn("Column2", typeof(string)),
-                    new DataColumn("Column3", typeof(DateTime)),
+                    new DataColumn("Column1", typeof (int)),
+                    new DataColumn("Column2", typeof (string)),
+                    new DataColumn("Column3", typeof (DateTime)),
                 };
             FeatProvider provider = new FeatProvider(columns);
             DataTable schema = provider.GetSchemaTable();

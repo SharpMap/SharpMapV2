@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -14,18 +15,16 @@ using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
-using System.Collections.Generic;
 
 namespace SharpMap.Tests.Presentation
 {
     [TestFixture]
     public class MapPresenter2DTests
     {
-        private static readonly double _e = 0.0005;
-
         #region Manual fakes
 
         #region ViewEvents
+
         private class ViewEvents
         {
             public IMapView2D View;
@@ -33,7 +32,23 @@ namespace SharpMap.Tests.Presentation
             public IEventRaiser Begin;
             public IEventRaiser MoveTo;
             public IEventRaiser End;
-        } 
+        }
+
+        #endregion
+
+        #region TestTextRenderer2D
+        private class TestTextRenderer2D : TextRenderer2D<object>
+        {
+            public override IEnumerable<object> RenderText(string text, StyleFont font, Rectangle2D layoutRectangle, Path2D flowPath, StyleBrush fontBrush, Matrix2D transform)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+
+            public override Size2D MeasureString(string text, StyleFont font)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
         #endregion
 
         #region TestVectorRenderer2D
@@ -41,42 +56,52 @@ namespace SharpMap.Tests.Presentation
         private class TestVectorRenderer2D : VectorRenderer2D<object>
         {
             public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
-                                              StylePen highlightOutline, StylePen selectOutline)
+                                                            StylePen highlightOutline, StylePen selectOutline,
+                                                            RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-			public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
-                                              StyleBrush highlightFill, StyleBrush selectFill, StylePen outline,
-                                              StylePen highlightOutline, StylePen selectOutline)
+            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
+                                                            StyleBrush highlightFill, StyleBrush selectFill,
+                                                            StylePen outline,
+                                                            StylePen highlightOutline, StylePen selectOutline,
+                                                            RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-			public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locatiosn, Symbol2D symbolData)
+            public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locatiosn, Symbol2D symbolData,
+                                                              RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-			public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-                                                ColorMatrix highlight, ColorMatrix select)
+            public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                              ColorMatrix highlight, ColorMatrix select,
+                                                              RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-			public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
-                                                Symbol2D highlightSymbolData, Symbol2D selectSymbolData)
+            public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+                                                              Symbol2D highlightSymbolData, Symbol2D selectSymbolData,
+                                                              RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen line, StylePen highlightLine, StylePen selectLine, StylePen outline, StylePen highlightOutline, StylePen selectOutline)
+            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen line,
+                                                            StylePen highlightLine, StylePen selectLine,
+                                                            StylePen outline, StylePen highlightOutline,
+                                                            StylePen selectOutline, RenderState renderState)
             {
                 throw new Exception("The method or operation is not implemented.");
             }
-        } 
+        }
+
         #endregion
-        
+
         #region TestPresenter2D
 
         private class TestPresenter2D : MapPresenter2D
@@ -91,14 +116,19 @@ namespace SharpMap.Tests.Presentation
                 return new TestVectorRenderer2D();
             }
 
-            protected override IRasterRenderer<Rectangle2D> CreateRasterRenderer()
+            protected override IRasterRenderer2D CreateRasterRenderer()
             {
                 return null;
             }
 
+            protected override ITextRenderer2D CreateTextRenderer()
+            {
+                return new TestTextRenderer2D();
+            }
+
             protected override Type GetRenderObjectType()
             {
-                return typeof (object);
+                return typeof(object);
             }
 
             #region Test accessible members
@@ -290,12 +320,14 @@ namespace SharpMap.Tests.Presentation
             #region IMapView2D Members
 
             #region Events
+
             public event EventHandler<MapActionEventArgs<Point2D>> Hover;
             public event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
             public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
             public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
             public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
+            public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
@@ -306,6 +338,7 @@ namespace SharpMap.Tests.Presentation
             public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
+
             #endregion
 
             #region Properties
@@ -387,7 +420,11 @@ namespace SharpMap.Tests.Presentation
             public BoundingBox ViewEnvelope
             {
                 get { return _presenter.ViewEnvelope; }
-                set { OnRequestViewEnvelopeChange(ViewEnvelope, value); ; }
+                set
+                {
+                    OnRequestViewEnvelopeChange(ViewEnvelope, value);
+                    ;
+                }
             }
 
             public Size2D ViewSize
@@ -416,9 +453,16 @@ namespace SharpMap.Tests.Presentation
             {
                 get { return _presenter.WorldUnitsPerPixel; }
             }
+
             #endregion
 
             #region Methods
+
+            public void IdentifyLocation(Point worldPoint)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+
             public void Offset(Point2D offsetVector)
             {
                 Point2D viewCenter = _bounds.Center;
@@ -428,7 +472,6 @@ namespace SharpMap.Tests.Presentation
 
             public void ShowRenderedObjects(IEnumerable renderedObjects)
             {
-
             }
 
             public void ZoomToExtents()
@@ -450,6 +493,7 @@ namespace SharpMap.Tests.Presentation
             {
                 OnRequestZoomToWorldWidth(newWorldWidth);
             }
+
             #endregion
 
             #endregion
@@ -458,26 +502,14 @@ namespace SharpMap.Tests.Presentation
 
             public bool Visible
             {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
             }
 
             public bool Enabled
             {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
             }
 
             public void Hide()
@@ -492,14 +524,8 @@ namespace SharpMap.Tests.Presentation
 
             public string Title
             {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
+                get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
             }
 
             #endregion
@@ -697,7 +723,8 @@ namespace SharpMap.Tests.Presentation
                     e(this, args);
                 }
             }
-        } 
+        }
+
         #endregion
 
         #endregion
@@ -746,7 +773,7 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
 
-            Assert.AreEqual(Point.Empty, mapPresenter.GeoCenter);
+            Assert.AreEqual(map.Center, mapPresenter.GeoCenter);
             Assert.AreEqual(0, mapPresenter.WorldWidth);
             Assert.AreEqual(0, mapPresenter.WorldHeight);
             Assert.AreEqual(0, mapPresenter.WorldUnitsPerPixel);
@@ -775,10 +802,7 @@ namespace SharpMap.Tests.Presentation
             TestView2D view;
             TestPresenter2D mapPresenter = createPresenter(1000, 1000, out view);
             bool disposedCalled = false;
-            mapPresenter.Disposed += delegate
-                                     {
-                                         disposedCalled = true;
-                                     };
+            mapPresenter.Disposed += delegate { disposedCalled = true; };
             mapPresenter.Dispose();
             Assert.AreEqual(true, disposedCalled);
         }
@@ -802,7 +826,7 @@ namespace SharpMap.Tests.Presentation
         [Ignore]
         public void PanTest()
         {
-        	TestView2D view;
+            TestView2D view;
             TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
 
             mapPresenter.ZoomToExtents();
@@ -883,7 +907,7 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
 
             Map map = mapPresenter.Map;
-            
+
             Assert.AreEqual(map.Center, mapPresenter.GeoCenter);
         }
 
@@ -895,7 +919,7 @@ namespace SharpMap.Tests.Presentation
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 500);
 
             mapPresenter.ZoomToWorldWidth(3500);
-            Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel, _e);
+            Assert.AreEqual(8.75, mapPresenter.WorldUnitsPerPixel, TestConstants.Epsilon);
         }
 
         [Test]
@@ -910,7 +934,7 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SetMinimumZoom_NegativeValue_ThrowException()
         {
             MockRepository mocks = new MockRepository();
@@ -921,7 +945,7 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
-        [ExpectedException(typeof (ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SetMaximumZoom_NegativeValue_ThrowException()
         {
             MockRepository mocks = new MockRepository();
@@ -1090,7 +1114,7 @@ namespace SharpMap.Tests.Presentation
             map.AddLayer(vLayer);
 
             GeometryLayer vLayer2 = new GeometryLayer("Geom layer 2", vLayer.DataSource);
-            Stream data = Assembly.GetAssembly(typeof (Map))
+            Stream data = Assembly.GetAssembly(typeof(Map))
                 .GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
             vLayer2.Style.Symbol = new Symbol2D(data, new Size2D(16, 16));
             vLayer2.Style.Symbol.Offset = new Point2D(3, 4);
