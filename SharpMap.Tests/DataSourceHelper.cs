@@ -24,7 +24,7 @@ namespace SharpMap.Tests
                           "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 29 21, 29 " +
                           "29, 21 29, 21 21), (23 23, 23 27, 27 27, 27 23, 23 23))"));
             geoms.Add(Geometry.FromText("POINT (58.813841159 84.7561198972)"));
-            geoms.Add(Geometry.FromText("MULTIPOINT (20 100, 45 32, 100 54)"));
+            geoms.Add(Geometry.FromText("MULTIPOINT (20 100, 45 32, 120 54)"));
             geoms.Add(Geometry.FromText("MULTIPOLYGON EMPTY"));
             geoms.Add(Geometry.FromText("MULTILINESTRING EMPTY"));
             geoms.Add(Geometry.FromText("MULTIPOINT EMPTY"));
@@ -95,7 +95,7 @@ namespace SharpMap.Tests
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multipoint";
-            row.Geometry = Geometry.FromText("MULTIPOINT (20 100, 45 32, 100 54)");
+            row.Geometry = Geometry.FromText("MULTIPOINT (20 100, 45 32, 120 54)");
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());

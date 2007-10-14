@@ -68,7 +68,7 @@ namespace SharpMap.Tests.Presentation
                                                             StylePen highlightOutline, StylePen selectOutline,
                                                             RenderState renderState)
             {
-                throw new NotImplementedException();
+                yield break;
             }
 
             public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locatiosn, Symbol2D symbolData,
@@ -927,10 +927,11 @@ namespace SharpMap.Tests.Presentation
         {
             MockRepository mocks = new MockRepository();
 
+            // create a presenter with a view having Width = 400 and Height = 200
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
 
             mapPresenter.ZoomToWorldWidth(3500);
-            Assert.AreEqual(1750, mapPresenter.WorldHeight);
+            Assert.AreEqual(1750, mapPresenter.WorldHeight, TestConstants.Epsilon);
         }
 
         [Test]
@@ -1020,9 +1021,9 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
 
             mapPresenter.ZoomToViewBounds(new Rectangle2D(300, 300, 900, 900));
-            Assert.AreEqual(new Point(60, 40), mapPresenter.GeoCenter);
-            Assert.AreEqual(60, mapPresenter.WorldWidth);
-            Assert.AreEqual(60, mapPresenter.WorldHeight);
+            Assert.AreEqual(new Point(72, 38), mapPresenter.GeoCenter);
+            Assert.AreEqual(72, mapPresenter.WorldWidth);
+            Assert.AreEqual(72, mapPresenter.WorldHeight);
         }
 
         [Test]
@@ -1031,12 +1032,18 @@ namespace SharpMap.Tests.Presentation
             MockRepository mocks = new MockRepository();
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
+            // Set the aspect ratio, which is the number of height units per width unit
+            // to 2 height units to 1 width unit
             mapPresenter.WorldAspectRatio = 2;
+            // Zooming to extents should 
             mapPresenter.ZoomToExtents();
+            Assert.AreEqual(120, mapPresenter.WorldWidth);
+            Assert.AreEqual(120, mapPresenter.WorldHeight);
+            // Zoom to a 200x100 rectangle in view coordinates
             mapPresenter.ZoomToViewBounds(new Rectangle2D(100, 50, 300, 150));
-            Assert.AreEqual(new Point(50, 50), mapPresenter.GeoCenter);
-            Assert.AreEqual(50, mapPresenter.WorldWidth);
-            Assert.AreEqual(50, mapPresenter.WorldHeight);
+            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(60, mapPresenter.WorldWidth);
+            Assert.AreEqual(60, mapPresenter.WorldHeight);
         }
 
         [Test]

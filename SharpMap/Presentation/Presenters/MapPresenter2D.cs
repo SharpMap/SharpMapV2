@@ -623,36 +623,7 @@ namespace SharpMap.Presentation.Presenters
         /// </remarks>
         protected void ZoomToWorldWidthInternal(double newWorldWidth)
         {
-            double newHeight;
-
-            if (WorldWidthInternal == 0)
-            {
-                newHeight = newWorldWidth * (Map.Extents.Height / Map.Extents.Height);
-            }
-            else
-            {
-                newHeight = newWorldWidth * (WorldHeightInternal / WorldWidthInternal);
-            }
-
-            double halfWidth = newWorldWidth * 0.5;
-            double halfHeight = newHeight * 0.5;
-
-            GeoPoint center = GeoCenterInternal;
-
-            if (center.IsEmpty())
-            {
-                center = Map.Extents.GetCentroid();
-            }
-
-            double centerX = center.X, centerY = center.Y;
-
-            BoundingBox widthWorldBounds = new BoundingBox(
-                centerX - halfWidth,
-                centerY - halfHeight,
-                centerX + halfWidth,
-                centerY + halfHeight);
-
-            ZoomToWorldBoundsInternal(widthWorldBounds);
+            setViewMetricsInternal(View.ViewSize, GeoCenterInternal, newWorldWidth);
         }
 
         #endregion
@@ -1113,7 +1084,7 @@ namespace SharpMap.Presentation.Presenters
             if (oldEnvelope.IsEmpty)
             {
                 oldWidth = 1;
-                oldHeight = View.ViewSize.Height / View.ViewSize.Width;
+                oldHeight = View.ViewSize.Height / View.ViewSize.Width * WorldAspectRatioInternal;
             }
             else
             {
@@ -1131,16 +1102,6 @@ namespace SharpMap.Presentation.Presenters
             double newWorldWidth = widthZoomRatio > heightZoomRatio
                                        ? normalizedWidth
                                        : normalizedWidth * heightZoomRatio / widthZoomRatio;
-
-            if (newWorldWidth < _minimumWorldWidth)
-            {
-                newWorldWidth = _minimumWorldWidth;
-            }
-
-            if (newWorldWidth > _maximumWorldWidth)
-            {
-                newWorldWidth = _maximumWorldWidth;
-            }
 
             setViewMetricsInternal(View.ViewSize, newEnvelope.GetCentroid(), newWorldWidth);
         }
@@ -1162,6 +1123,16 @@ namespace SharpMap.Presentation.Presenters
                 _translationTransform.OffsetX = (mapCenter.X - newCenter.X);
                 _translationTransform.OffsetY = -(mapCenter.Y - newCenter.Y);
                 viewMatrixChanged = true;
+            }
+
+            if (newWorldWidth < MinimumWorldWidthInternal)
+            {
+                newWorldWidth = MinimumWorldWidthInternal;
+            }
+
+            if (newWorldWidth > MaximumWorldWidthInternal)
+            {
+                newWorldWidth = MaximumWorldWidthInternal;
             }
 
             // Compute new world units per pixel based on view size and desired 
