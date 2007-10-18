@@ -111,6 +111,11 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
+            internal TestView2D TestView
+            {
+                get { return View as TestView2D; }
+            }
+
             protected override IVectorRenderer2D CreateVectorRenderer()
             {
                 return new TestVectorRenderer2D();
@@ -269,10 +274,6 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
-            protected override void SetViewSize(Size2D fromSize, Size2D toSize)
-            {
-            }
-
             protected override void SetViewWorldAspectRatio(double fromRatio, double toRatio)
             {
             }
@@ -285,7 +286,7 @@ namespace SharpMap.Tests.Presentation
         private class TestView2D : IMapView2D
         {
             private readonly TestPresenter2D _presenter;
-            private Rectangle2D _bounds = new Rectangle2D(0, 0, 1000, 1000);
+            internal Rectangle2D _bounds = new Rectangle2D(0, 0, 1000, 1000);
 
             public TestView2D(Map map)
             {
@@ -331,7 +332,7 @@ namespace SharpMap.Tests.Presentation
             public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
-            public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
+            public event EventHandler SizeChanged;
             public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
             public event EventHandler ZoomToExtentsRequested;
@@ -423,14 +424,17 @@ namespace SharpMap.Tests.Presentation
                 set
                 {
                     OnRequestViewEnvelopeChange(ViewEnvelope, value);
-                    ;
                 }
             }
 
             public Size2D ViewSize
             {
                 get { return _bounds.Size; }
-                set { _bounds = new Rectangle2D(_bounds.Location, value); }
+                set
+                {
+                    _bounds = new Rectangle2D(_bounds.Location, value);
+                    OnViewSizeChanged(value);
+                }
             }
 
             public double WorldAspectRatio
@@ -530,16 +534,13 @@ namespace SharpMap.Tests.Presentation
 
             #endregion
 
-            protected virtual void OnViewSizeChangeRequested(Size2D sizeRequested)
+            protected virtual void OnViewSizeChanged(Size2D sizeRequested)
             {
-                EventHandler<MapViewPropertyChangeEventArgs<Size2D>> @event = SizeChangeRequested;
+                EventHandler e = SizeChanged;
 
-                if (@event != null)
+                if (e != null)
                 {
-                    MapViewPropertyChangeEventArgs<Size2D> args = new MapViewPropertyChangeEventArgs<Size2D>(
-                        _bounds.Size, sizeRequested);
-
-                    SizeChangeRequested(this, args);
+                    e(this, EventArgs.Empty);
                 }
             }
 
@@ -808,6 +809,22 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
+        public void ViewEnvelopeMeasuresCorrectly()
+        {
+            TestView2D view;
+            TestPresenter2D mapPresenter = createPresenter(120, 100, out view);
+
+            mapPresenter.ZoomToExtents();
+            
+            BoundingBox expected = new BoundingBox(0, 0, 120, 100);
+            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(1, mapPresenter.WorldUnitsPerPixel);
+            Assert.AreEqual(120, mapPresenter.WorldWidth);
+            Assert.AreEqual(100, mapPresenter.WorldHeight);
+            Assert.AreEqual(expected, mapPresenter.ViewEnvelope);
+        }
+
+        [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void PanWhenNoWorldBoundsThrowsException()
         {
@@ -921,6 +938,7 @@ namespace SharpMap.Tests.Presentation
             TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
 
             mapPresenter.ZoomToExtents();
+
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(150, mapPresenter.WorldHeight);
             Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);

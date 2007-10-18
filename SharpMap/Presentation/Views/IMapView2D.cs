@@ -40,7 +40,7 @@ namespace SharpMap.Presentation.Views
         event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
         event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
+        event EventHandler SizeChanged;
         event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
         event EventHandler ZoomToExtentsRequested;

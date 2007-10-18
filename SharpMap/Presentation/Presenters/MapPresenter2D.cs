@@ -51,7 +51,7 @@ namespace SharpMap.Presentation.Presenters
         private readonly ViewSelection2D _selection;
         private StyleColor _backgroundColor;
         private readonly List<IFeatureLayer> _wiredLayers = new List<IFeatureLayer>();
-
+        private Size2D _oldViewSize = Size2D.Empty;
         private double _maximumWorldWidth = Double.PositiveInfinity;
         private double _minimumWorldWidth;
 
@@ -125,7 +125,7 @@ namespace SharpMap.Presentation.Presenters
             View.MinimumWorldWidthChangeRequested += handleViewMinimumWorldWidthChangeRequested;
             View.IdentifyLocationRequested += handleIdentifyLocationRequested;
             View.OffsetChangeRequested += handleViewOffsetChangeRequested;
-            View.SizeChangeRequested += handleViewSizeChangeRequested;
+            View.SizeChanged += handleViewSizeChanged;
             View.ViewEnvelopeChangeRequested += handleViewViewEnvelopeChangeRequested;
             View.WorldAspectRatioChangeRequested += handleViewWorldAspectRatioChangeRequested;
             View.ZoomToExtentsRequested += handleViewZoomToExtentsRequested;
@@ -520,7 +520,7 @@ namespace SharpMap.Presentation.Presenters
         protected virtual void SetViewLocationInformation(string text) { }
         protected virtual void SetViewMaximumWorldWidth(double fromMaxWidth, double toMaxWidth) { }
         protected virtual void SetViewMinimumWorldWidth(double fromMinWidth, double toMinWidth) { }
-        protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
+        //protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
         protected virtual void SetViewWorldAspectRatio(double fromRatio, double toRatio) { }
 
         protected Point2D ToViewInternal(Point point)
@@ -896,13 +896,9 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the size-change request from the view
-        private void handleViewSizeChangeRequested(object sender, MapViewPropertyChangeEventArgs<Size2D> e)
+        private void handleViewSizeChanged(object sender, EventArgs e)
         {
-            if (e.RequestedValue != View.ViewSize)
-            {
-                SetViewSize(e.CurrentValue, e.RequestedValue);
-                setViewMetricsInternal(e.RequestedValue, GeoCenterInternal, WorldWidthInternal);
-            }
+            setViewMetricsInternal(View.ViewSize, GeoCenterInternal, WorldWidthInternal);
         }
 
         private Point2D _previousActionPoint = Point2D.Empty;
@@ -1162,11 +1158,12 @@ namespace SharpMap.Presentation.Presenters
             }
 
             // Change view size
-            if (newViewSize != View.ViewSize)
+            if (newViewSize != _oldViewSize)
             {
                 _toViewCoordinates.OffsetY = newViewSize.Height;
-                View.ViewSize = newViewSize;
+                //View.ViewSize = newViewSize;
                 setViewCenter(newViewSize);
+                _oldViewSize = newViewSize;
                 viewMatrixChanged = true;
             }
 

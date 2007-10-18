@@ -79,7 +79,7 @@ namespace SharpMap.Presentation.WinForms
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.Opaque, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.ResizeRedraw, false);
             SetStyle(ControlStyles.Selectable, true);
             SetStyle(ControlStyles.SupportsTransparentBackColor, false);
             SetStyle(ControlStyles.UserMouse, true);
@@ -141,7 +141,7 @@ namespace SharpMap.Presentation.WinForms
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
         public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
+        public event EventHandler SizeChanged;
         public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
         public event EventHandler ZoomToExtentsRequested;
@@ -604,9 +604,14 @@ namespace SharpMap.Presentation.WinForms
             g.ResetTransform();
         }
 
-        protected override void OnSizeChanged(EventArgs e)
+        protected override void OnSizeChanged(EventArgs args)
         {
-            onViewSizeChangeRequested(Size);
+            EventHandler e = SizeChanged;
+
+            if (e != null)
+            {
+                e(this, args);
+            }
         }
         #endregion
 
@@ -614,45 +619,45 @@ namespace SharpMap.Presentation.WinForms
 
         private void onBeginAction(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> @event = BeginAction;
+            EventHandler<MapActionEventArgs<Point2D>> e = BeginAction;
 
-            if (@event != null)
+            if (e != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                @event(this, _globalActionArgs);
+                e(this, _globalActionArgs);
             }
         }
 
         private void onHover(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
+            EventHandler<MapActionEventArgs<Point2D>> e = Hover;
 
-            if (@event != null)
+            if (e != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                @event(this, _globalActionArgs);
+                e(this, _globalActionArgs);
             }
         }
 
         private void onEndAction(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> @event = EndAction;
+            EventHandler<MapActionEventArgs<Point2D>> e = EndAction;
 
-            if (@event != null)
+            if (e != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                @event(this, _globalActionArgs);
+                e(this, _globalActionArgs);
             }
         }
 
         private void onMoveTo(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> @event = MoveTo;
+            EventHandler<MapActionEventArgs<Point2D>> e = MoveTo;
 
-            if (@event != null)
+            if (e != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                @event(this, _globalActionArgs);
+                e(this, _globalActionArgs);
             }
         }
 
@@ -806,26 +811,13 @@ namespace SharpMap.Presentation.WinForms
 
         private void onSelectedToolChangeRequest(MapTool requestedTool)
         {
-            EventHandler<ToolChangeRequestedEventArgs> @event = ToolChangeRequested;
+            EventHandler<ToolChangeRequestedEventArgs> e = ToolChangeRequested;
 
             ToolChangeRequestedEventArgs args = new ToolChangeRequestedEventArgs(requestedTool);
 
-            if (@event != null)
+            if (e != null)
             {
-                @event(this, args);
-            }
-        }
-
-        private void onViewSizeChangeRequested(GdiSize sizeRequested)
-        {
-            EventHandler<MapViewPropertyChangeEventArgs<Size2D>> @event = SizeChangeRequested;
-
-            if (@event != null)
-            {
-                MapViewPropertyChangeEventArgs<Size2D> args = new MapViewPropertyChangeEventArgs<Size2D>(
-                    ViewConverter.Convert(Size), ViewConverter.Convert(sizeRequested));
-
-                SizeChangeRequested(this, args);
+                e(this, args);
             }
         }
         #endregion
