@@ -32,7 +32,7 @@ namespace SharpMap.Presentation
         /// <returns>A string which describes the <see cref="ViewSelection2D"/>.</returns>
         public override string ToString()
         {
-            return String.Format("[ViewSelection2D] Bounds: {0}", Path.Bounds);
+            return String.Format("[ViewSelection2D] Path: {0}", Path);
         }
 
         /// <summary>
@@ -40,19 +40,20 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <param name="upperLeft">The upper left point of the rectangle.</param>
         /// <param name="size">The size of the rectangle.</param>
-        /// <returns>A ViewSelection2D rectangular selection with upper left corner at <paramref name="upperLeft"/> and
-        /// the given <paramref name="size"/>.</returns>
-        public static ViewSelection2D CreateRectangluarSelection(Point2D upperLeft, Size2D size)
+        /// <returns>
+        /// A ViewSelection2D rectangular selection with upper left corner at 
+        /// <paramref name="upperLeft"/> and the given <paramref name="size"/>.
+        /// </returns>
+        public void SelectRectangle(Point2D upperLeft, Size2D size)
         {
-            ViewSelection2D selection = new ViewSelection2D();
-            selection.AddPoint(upperLeft);
-            selection.AddPoint(upperLeft);
-            selection.AddPoint(upperLeft);
-            selection.AddPoint(upperLeft);
+            Clear();
 
-            selection.Expand(size);
+            AddPoint(upperLeft);
+            AddPoint(upperLeft);
+            AddPoint(upperLeft);
+            AddPoint(upperLeft);
 
-            return selection;
+            Expand(size);
         }
 
         public new Path2D Path

@@ -91,6 +91,11 @@ namespace SharpMap.Presentation
                 AnchorPoint = point;
             }
 
+            if (PathInternal.Points.Count > 0 && PathInternal.Points[PathInternal.Points.Count - 1].Equals(point))
+            {
+                return;
+            }
+
             PathInternal.AddPoint(point);
             recomputeBoundingRegion();
 

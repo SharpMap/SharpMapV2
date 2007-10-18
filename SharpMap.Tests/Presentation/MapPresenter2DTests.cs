@@ -787,7 +787,7 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
-        public void DisposingPresenterMakeItDisposed()
+        public void DisposingPresenterMakesItDisposed()
         {
             TestView2D view;
             TestPresenter2D mapPresenter = createPresenter(1000, 1000, out view);
@@ -823,13 +823,13 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
-        [Ignore]
         public void PanTest()
         {
             TestView2D view;
-            TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
+            TestPresenter2D mapPresenter = createPresenter(400, 800, out view);
 
             mapPresenter.ZoomToExtents();
+
 
             Map map = mapPresenter.Map;
             map.ActiveTool = StandardMapTools2D.Pan;
@@ -867,20 +867,89 @@ namespace SharpMap.Tests.Presentation
             view.RaiseEnd(new Point2D(300, 375));
         }
 
+        private void nullAction(ActionContext<IMapView2D, Point2D> context) { }
+
+        private void testBeginZoomIn(ActionContext<IMapView2D, Point2D> context)
+        {
+            IMapView2D view = context.MapView;
+            view.Selection.Clear();
+            view.Selection.AddPoint(context.CurrentPoint);
+        }
+
+        private void testContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
+        {
+            context.MapView.Selection.AddPoint(context.CurrentPoint);
+        }
+
+        private void testEndZoomIn(ActionContext<IMapView2D, Point2D> context)
+        {
+            IMapView2D view = context.MapView;
+
+            if (view.Selection.Path.Points.Count == 1)
+            {
+                zoomByFactor(context, 1.2);
+            }
+            else
+            {
+                view.Selection.Close();
+                context.MapView.ZoomToViewBounds(view.Selection.Path.Bounds);
+            }
+        }
+
+        private static void zoomByFactor(ActionContext<IMapView2D, Point2D> context, double zoomFactor)
+        {
+            IMapView2D view = context.MapView;
+            zoomFactor = 1 / zoomFactor;
+
+            Size2D viewSize = view.ViewSize;
+            Point2D viewCenter = new Point2D((viewSize.Width / 2), (viewSize.Height / 2));
+            Point2D viewDifference = context.CurrentPoint - viewCenter;
+
+            Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor, viewDifference.Y * zoomFactor);
+            Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
+            Rectangle2D zoomViewBounds = new Rectangle2D(zoomUpperLeft, zoomBoundsSize);
+
+            view.ZoomToViewBounds(zoomViewBounds);
+        }
+
         [Test]
-        public void ZoomTest()
+        public void ZoomingInFromViewCalculatesCorrectViewMetrics()
         {
             TestView2D view;
             TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
+
             mapPresenter.ZoomToExtents();
+            Assert.AreEqual(120, mapPresenter.WorldWidth);
+            Assert.AreEqual(150, mapPresenter.WorldHeight);
+            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
 
             Map map = mapPresenter.Map;
 
-            map.ActiveTool = StandardMapTools2D.ZoomIn;
+            map.ActiveTool = new MapTool<IMapView2D, Point2D>("TestZoomIn", nullAction, testBeginZoomIn, testContinueZoomIn, testEndZoomIn);
 
+            // Zoom using click
+            view.RaiseBegin(new Point2D(200, 250));
+            view.RaiseMoveTo(new Point2D(200, 250));
+            view.RaiseEnd(new Point2D(200, 250));
+
+            Assert.AreEqual(100, mapPresenter.WorldWidth);
+            Assert.AreEqual(125, mapPresenter.WorldHeight);
+            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+
+            mapPresenter.ZoomToExtents();
+
+            Assert.AreEqual(120, mapPresenter.WorldWidth);
+            Assert.AreEqual(150, mapPresenter.WorldHeight);
+            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+
+            // Zoom using selection
             view.RaiseBegin(new Point2D(100, 125));
             view.RaiseMoveTo(new Point2D(300, 375));
             view.RaiseEnd(new Point2D(300, 375));
+
+            Assert.AreEqual(60, mapPresenter.WorldWidth);
+            Assert.AreEqual(75, mapPresenter.WorldHeight);
+            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
         }
 
         [Test]

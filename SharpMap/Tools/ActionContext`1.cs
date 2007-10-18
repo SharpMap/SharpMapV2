@@ -17,7 +17,6 @@
 
 using NPack;
 using NPack.Interfaces;
-using SharpMap.Presentation;
 
 namespace SharpMap.Tools
 {
@@ -25,14 +24,16 @@ namespace SharpMap.Tools
 		where TPoint : IVector<DoubleComponent>
 	{
 		private readonly Map _map;
-		private readonly TMapView _view;
-		private readonly MapActionEventArgs<TPoint> _args;
+        private readonly TMapView _view;
+        private readonly TPoint _previousPoint;
+	    private readonly TPoint _currentPoint;
 
-		public ActionContext(Map map, TMapView view, MapActionEventArgs<TPoint> args)
+		public ActionContext(Map map, TMapView view, TPoint previousPoint, TPoint currentPoint)
 		{
 			_map = map;
 			_view = view;
-			_args = args;
+		    _previousPoint = previousPoint;
+		    _currentPoint = currentPoint;
 		}
 
 		public Map Map
@@ -45,9 +46,14 @@ namespace SharpMap.Tools
 			get { return _view; }
 		}
 
-		public MapActionEventArgs<TPoint> ActionArgs
-		{
-			get { return _args; }
-		}
+	    public TPoint PreviousPoint
+	    {
+	        get { return _previousPoint; }
+	    }
+
+	    public TPoint CurrentPoint
+	    {
+	        get { return _currentPoint; }
+	    }
 	}
 }

@@ -905,28 +905,42 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
+        private Point2D _previousActionPoint = Point2D.Empty;
+
         // Handles the hover request from the view
         private void handleViewHover(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            ActionContext<IMapView2D, Point2D> context 
+                = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
+            Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(context);
+            _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the begin action request from the view
         private void handleViewBeginAction(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            ActionContext<IMapView2D, Point2D> context
+                = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
+            Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(context);
+            _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the move-to request from the view
         private void handleViewMoveTo(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            ActionContext<IMapView2D, Point2D> context
+                = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
+            Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(context);
+            _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the end action request from the view
         private void handleViewEndAction(object sender, MapActionEventArgs<Point2D> e)
         {
-            Map.GetActiveTool<IMapView2D, Point2D>().EndAction(new ActionContext<IMapView2D, Point2D>(Map, View, e));
+            ActionContext<IMapView2D, Point2D> context
+                = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
+            Map.GetActiveTool<IMapView2D, Point2D>().EndAction(context);
+            _previousActionPoint = Point2D.Empty;
         }
 
         // Handles the background color change request from the view
