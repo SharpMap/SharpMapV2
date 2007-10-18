@@ -887,7 +887,7 @@ namespace SharpMap.Tests.Presentation
 
             if (view.Selection.Path.Points.Count == 1)
             {
-                zoomByFactor(context, 1.2);
+				zoomByFactor(view, context.CurrentPoint, 1.2);	// 0.83333333333333337
             }
             else
             {
@@ -896,17 +896,19 @@ namespace SharpMap.Tests.Presentation
             }
         }
 
-        private static void zoomByFactor(ActionContext<IMapView2D, Point2D> context, double zoomFactor)
+		private static void zoomByFactor(IMapView2D view, Point2D zoomCenter, double zoomFactor)
         {
-            IMapView2D view = context.MapView;
             zoomFactor = 1 / zoomFactor;
 
             Size2D viewSize = view.ViewSize;
             Point2D viewCenter = new Point2D((viewSize.Width / 2), (viewSize.Height / 2));
-            Point2D viewDifference = context.CurrentPoint - viewCenter;
+            Point2D viewDifference = zoomCenter - viewCenter;
 
-            Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor, viewDifference.Y * zoomFactor);
-            Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
+			Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
+			double widthDifference = zoomBoundsSize.Width - viewSize.Width;
+			double heightDifference = zoomBoundsSize.Height - viewSize.Height;
+			Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor - widthDifference / 2, 
+				viewDifference.Y * zoomFactor - heightDifference / 2);
             Rectangle2D zoomViewBounds = new Rectangle2D(zoomUpperLeft, zoomBoundsSize);
 
             view.ZoomToViewBounds(zoomViewBounds);
