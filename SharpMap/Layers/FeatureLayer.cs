@@ -112,11 +112,11 @@ namespace SharpMap.Layers
             _features.IsSpatiallyIndexed = true;
 
             _selectedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null),
+                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Intersects, null),
                 "", DataViewRowState.CurrentRows);
 
-            _highlightedFeatures = new FeatureDataView(_features, 
-                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null), 
+            _highlightedFeatures = new FeatureDataView(_features,
+                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Intersects, null), 
                 "", DataViewRowState.CurrentRows);
 
             if (ShouldHandleFeaturesNotFoundEvent)
