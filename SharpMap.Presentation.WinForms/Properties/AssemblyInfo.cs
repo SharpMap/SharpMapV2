@@ -21,12 +21,16 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("SharpMap Windows Forms Presentation Components")]
 [assembly: AssemblyDescription("SharpMap v2.0 Beta 1")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap")]
 [assembly: AssemblyCopyright("Copyright © 2005-2007 Morten Nielsen, Ricardo Stuven, Christian Gräfe, Rory Plaire")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 
 [assembly: Guid("72afe641-8834-45b6-86c0-d50995e1004f")]
 [assembly: ComVisible(false)]

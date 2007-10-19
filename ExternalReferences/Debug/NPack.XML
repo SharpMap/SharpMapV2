@@ -8,6 +8,11 @@
             <summary>
             A matrix component value modeled by a single-precision floating point.
             </summary>
+            <remarks>
+            Use this structure as the type parameter for <see cref="T:NPack.Matrix`1"/> when you want
+            a matrix of single values, since it implements <see cref="T:NPack.Interfaces.IComputable`1"/>, which 
+            allows numerical operations on value types.
+            </remarks>
         </member>
         <member name="T:NPack.Interfaces.IComputable`1">
             <summary>
