@@ -864,23 +864,23 @@ namespace SharpMap.Data
             _evaluateExpression(this);
         }
 
-        internal void MergeFeature(IFeatureDataRecord record)
+		public void MergeFeature(IFeatureDataRecord record)
         {
             MergeFeature(record, SchemaMergeAction.AddWithKey);
         }
 
-        internal void MergeFeature(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
+		public void MergeFeature(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
         {
             FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
             merger.MergeFeature(record);
         }
 
-        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records)
+		public void MergeFeatures(IEnumerable<IFeatureDataRecord> records)
         {
             MergeFeatures(records, SchemaMergeAction.AddWithKey);
         }
 
-        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
+		public void MergeFeatures(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
         {
             FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
             merger.MergeFeatures(records);
