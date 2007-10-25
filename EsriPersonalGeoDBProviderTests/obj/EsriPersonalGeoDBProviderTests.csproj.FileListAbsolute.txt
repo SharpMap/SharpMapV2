@@ -1,0 +1,6 @@
+C:\_Dev\Maps\EsriPersonalGeoDatabaseProvider\EsriPersonalGeoDBProviderTests\obj\Debug\ResolveAssemblyReference.cache
+C:\_Dev\Maps\build\EsriPersonalGeoDBProviderTests.dll.config
+C:\_Dev\Maps\build\EsriPersonalGeoDBProviderTests.dll
+C:\_Dev\Maps\build\EsriPersonalGeoDBProviderTests.pdb
+C:\_Dev\Maps\EsriPersonalGeoDatabaseProvider\EsriPersonalGeoDBProviderTests\obj\Debug\EsriPersonalGeoDBProviderTests.dll
+C:\_Dev\Maps\EsriPersonalGeoDatabaseProvider\EsriPersonalGeoDBProviderTests\obj\Debug\EsriPersonalGeoDBProviderTests.pdb

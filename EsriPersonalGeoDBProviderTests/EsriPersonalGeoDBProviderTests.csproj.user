@@ -1,0 +1,9 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Tools\nunit-gui.exe</StartProgram>
+    <StartWorkingDirectory>C:\_Dev\Maps\build\</StartWorkingDirectory>
+    <StartArguments>EsriPersonalGeoDBProviderTests.dll</StartArguments>
+    <RemoteDebugEnabled>false</RemoteDebugEnabled>
+  </PropertyGroup>
+</Project>
