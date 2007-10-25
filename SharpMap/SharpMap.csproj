@@ -380,6 +380,7 @@
     <Compile Include="Utilities\IdleMonitor.cs" />
     <Compile Include="Utilities\IVertexStream.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
+    <Compile Include="Utilities\NondisposingStream.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
     <Compile Include="Utilities\Tolerance.cs" />
     <Compile Include="Utilities\SharpMapVersion.cs" />

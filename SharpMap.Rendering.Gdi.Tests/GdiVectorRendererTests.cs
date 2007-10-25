@@ -67,7 +67,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             Pen expectedSelected = new Pen(Brushes.Green, 1.0f);
 
             Assert.IsTrue(pensAreEqual(expectedOutline, ro.Outline));
-            Assert.IsTrue(pensAreEqual(expectedHighlight, ro.HightlightOutline));
+            Assert.IsTrue(pensAreEqual(expectedHighlight, ro.HighlightOutline));
             Assert.IsTrue(pensAreEqual(expectedSelected, ro.SelectOutline));
 
             expectedOutline.Dispose();

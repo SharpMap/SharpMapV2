@@ -25,6 +25,7 @@ using System.Text;
 using System.Data;
 using System.IO;
 using System.Globalization;
+using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -33,123 +34,6 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// </summary>
     internal partial class DbaseFile : IDisposable
     {
-        #region Nested types
-        internal class BufferingStream : Stream
-        {
-            private Stream _baseStream;
-            private bool _isDisposed;
-
-            internal BufferingStream(Stream baseStream)
-            {
-                _baseStream = baseStream;
-            }
-
-            public override bool CanRead
-            {
-                get
-                {
-                    checkState();
-                    return _baseStream.CanRead;
-                }
-            }
-
-            public override bool CanSeek
-            {
-                get
-                {
-                    checkState();
-                    return _baseStream.CanSeek;
-                }
-            }
-
-            public override bool CanWrite
-            {
-                get
-                {
-                    checkState();
-                    return _baseStream.CanWrite;
-                }
-            }
-
-            public override void Flush()
-            {
-                checkState();
-                _baseStream.Flush();
-            }
-
-            public override long Length
-            {
-                get
-                {
-                    checkState();
-                    return _baseStream.Length;
-                }
-            }
-
-            public override long Position
-            {
-                get
-                {
-                    checkState();
-                    return _baseStream.Position;
-                }
-                set
-                {
-                    checkState();
-                    _baseStream.Position = value;
-                }
-            }
-
-            public override int Read(byte[] buffer, int offset, int count)
-            {
-                checkState();
-                return _baseStream.Read(buffer, offset, count);
-            }
-
-            public override long Seek(long offset, SeekOrigin origin)
-            {
-                checkState();
-                return _baseStream.Seek(offset, origin);
-            }
-
-            public override void SetLength(long value)
-            {
-                checkState();
-                _baseStream.SetLength(value);
-            }
-
-            public override void Write(byte[] buffer, int offset, int count)
-            {
-                checkState();
-                _baseStream.Write(buffer, offset, count);
-            }
-
-            public override void Close()
-            {
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                IsDisposed = true;
-                _baseStream = null;
-            }
-
-            public bool IsDisposed
-            {
-                get { return _isDisposed; }
-                private set { _isDisposed = value; }
-            }
-
-            private void checkState()
-            {
-                if (IsDisposed)
-                {
-                    throw new ObjectDisposedException(GetType().ToString());
-                }
-            }
-        } 
-        #endregion
-
         #region Instance fields
 
         private readonly string _filename;
@@ -513,7 +397,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (!_headerIsParsed) //Don't read the header if it's already parsed
             {
-				_header = DbaseHeader.ParseDbfHeader(new BufferingStream(DataStream));
+				_header = DbaseHeader.ParseDbfHeader(new NondisposingStream(DataStream));
                 _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
                 _headerIsParsed = true;
             }

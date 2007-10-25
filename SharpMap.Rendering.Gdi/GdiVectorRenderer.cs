@@ -21,6 +21,7 @@ using System.Drawing;
 using System.IO;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
+using SharpMap.Utilities;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
@@ -141,10 +142,10 @@ namespace SharpMap.Rendering.Gdi
                                                                    StyleColorMatrix highlight,
                                                                    StyleColorMatrix select, RenderState renderState)
         {
-            Symbol2D highlightSymbol = (Symbol2D) symbolData.Clone();
+            Symbol2D highlightSymbol = (Symbol2D)symbolData.Clone();
             highlightSymbol.ColorTransform = highlight;
 
-            Symbol2D selectSymbol = (Symbol2D) symbolData.Clone();
+            Symbol2D selectSymbol = (Symbol2D)symbolData.Clone();
             selectSymbol.ColorTransform = select;
 
             return RenderSymbols(locations, symbolData, highlightSymbol, selectSymbol, renderState);
@@ -154,22 +155,14 @@ namespace SharpMap.Rendering.Gdi
                                                                    Symbol2D highlightSymbol, Symbol2D selectSymbol,
                                                                    RenderState renderState)
         {
-            if (highlightSymbol == null)
-            {
-                highlightSymbol = symbol;
-            }
-
-            if (selectSymbol == null)
-            {
-                selectSymbol = symbol;
-            }
+            if (renderState == RenderState.Selected) symbol = selectSymbol;
+            if (renderState == RenderState.Highlighted) symbol = highlightSymbol;
 
             foreach (Point2D location in locations)
             {
                 Bitmap bitmapSymbol = getSymbol(symbol);
                 GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
                 GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
-                //transform.Translate((float)location.X, (float)location.Y);
                 RectangleF bounds = new RectangleF(ViewConverter.Convert(location), bitmapSymbol.Size);
                 GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, bounds, transform, colorTransform);
                 holder.State = renderState;
@@ -196,9 +189,9 @@ namespace SharpMap.Rendering.Gdi
                 MemoryStream data = new MemoryStream();
                 symbol2D.SymbolData.Position = 0;
 
-                using (BinaryReader reader = new BinaryReader(symbol2D.SymbolData))
+                using (BinaryReader reader = new BinaryReader(new NondisposingStream(symbol2D.SymbolData)))
                 {
-                    data.Write(reader.ReadBytes((int) symbol2D.SymbolData.Length), 0, (int) symbol2D.SymbolData.Length);
+                    data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
                 }
 
                 symbol = new Bitmap(data);

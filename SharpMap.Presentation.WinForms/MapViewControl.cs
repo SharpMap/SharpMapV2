@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using SharpMap.Geometries;
@@ -513,6 +514,8 @@ namespace SharpMap.Presentation.WinForms
         {
             Graphics g = e.Graphics;
 
+            g.CompositingQuality = CompositingQuality.HighQuality;
+
             if (DesignMode || _presenter == null)
             {
                 g.Clear(BackColor);
@@ -537,9 +540,18 @@ namespace SharpMap.Presentation.WinForms
                     case RenderState.Normal:
                         if (ro.GdiPath != null)
                         {
-                            if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
-                            if (ro.Line != null) g.DrawPath(ro.Line, ro.GdiPath);
-                            if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                            if(ro.Line != null)
+                            {
+                                if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                                
+                                g.DrawPath(ro.Line, ro.GdiPath);
+                            }
+                            else if (ro.Fill != null)
+                            {
+                                g.FillPath(ro.Fill, ro.GdiPath);
+                                
+                                if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
+                            }
                         }
 
                         if (ro.Text != null)
@@ -551,9 +563,18 @@ namespace SharpMap.Presentation.WinForms
                     case RenderState.Highlighted:
                         if (ro.GdiPath != null)
                         {
-                            if (ro.HighlightFill != null) g.FillPath(ro.HighlightFill, ro.GdiPath);
-                            if (ro.HightlightLine != null) g.DrawPath(ro.HightlightLine, ro.GdiPath);
-                            if (ro.HightlightOutline != null) g.DrawPath(ro.HightlightOutline, ro.GdiPath);
+                            if (ro.HighlightLine != null)
+                            {
+                                if (ro.HighlightOutline != null) g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+
+                                g.DrawPath(ro.HighlightLine, ro.GdiPath);
+                            }
+                            else if (ro.HighlightFill != null)
+                            {
+                                g.FillPath(ro.HighlightFill, ro.GdiPath);
+
+                                if (ro.HighlightOutline != null) g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+                            }
                         }
 
                         if (ro.Text != null)
@@ -565,9 +586,18 @@ namespace SharpMap.Presentation.WinForms
                     case RenderState.Selected:
                         if (ro.GdiPath != null)
                         {
-                            if (ro.SelectFill != null) g.FillPath(ro.SelectFill, ro.GdiPath);
-                            if (ro.SelectLine != null) g.DrawPath(ro.SelectLine, ro.GdiPath);
-                            if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                            if (ro.SelectLine != null)
+                            {
+                                if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
+
+                                g.DrawPath(ro.SelectLine, ro.GdiPath);
+                            }
+                            else if (ro.SelectFill != null)
+                            {
+                                g.FillPath(ro.SelectFill, ro.GdiPath);
+
+                                if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                            }
                         }
 
                         if (ro.Text != null) 
