@@ -228,7 +228,12 @@ namespace SharpMap.Rendering.Gdi
 		}
 
 		public static GdiMatrix Convert(Matrix2D viewMatrix)
-		{
+        {
+            if (viewMatrix == null)
+            {
+                return null;
+            }
+
 			GdiMatrix gdiMatrix = new GdiMatrix(
 				(float)viewMatrix[0, 0],
 				(float)viewMatrix[0, 1],
@@ -242,6 +247,11 @@ namespace SharpMap.Rendering.Gdi
 
 		public static GdiColorMatrix Convert(ColorMatrix colorMatrix)
 		{
+            if(colorMatrix == null)
+            {
+                return null;
+            }
+
 			GdiColorMatrix gdiColorMatrix = new GdiColorMatrix();
 			gdiColorMatrix.Matrix00 = (float)colorMatrix.R;
 			gdiColorMatrix.Matrix11 = (float)colorMatrix.G;
