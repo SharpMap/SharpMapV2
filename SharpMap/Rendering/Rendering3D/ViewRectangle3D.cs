@@ -32,7 +32,7 @@ namespace SharpMap.Rendering.Rendering3D
         private DoubleComponent _yMax;
         private DoubleComponent _zMin;
         private DoubleComponent _zMax;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         public static readonly ViewRectangle3D Empty = new ViewRectangle3D();
         public static readonly ViewRectangle3D Zero = new ViewRectangle3D(0, 0, 0, 0, 0, 0);
@@ -134,7 +134,7 @@ namespace SharpMap.Rendering.Rendering3D
             get { return Math.Abs((Double)_zMax.Subtract(_zMin)); }
         }
 
-        public static bool operator ==(ViewRectangle3D rect1, ViewRectangle3D rect2)
+        public static Boolean operator ==(ViewRectangle3D rect1, ViewRectangle3D rect2)
         {
             return rect1.Left.Equals(rect2.Left) &&
                 rect1.Right.Equals(rect2.Right) &&
@@ -144,12 +144,12 @@ namespace SharpMap.Rendering.Rendering3D
                 rect1.Front.Equals(rect2.Front);
         }
 
-        public static bool operator !=(ViewRectangle3D rect1, ViewRectangle3D rect2)
+        public static Boolean operator !=(ViewRectangle3D rect1, ViewRectangle3D rect2)
         {
             return !(rect1 == rect2);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (!(obj is ViewRectangle3D))
             {
@@ -177,7 +177,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// </summary>
         /// <param name="rectangle"><see cref="ViewRectangle3D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
-        public bool Intersects(ViewRectangle3D rectangle)
+        public Boolean Intersects(ViewRectangle3D rectangle)
         {
             return !(rectangle.Left.GreaterThan(Right) ||
                      rectangle.Right.LessThan(Left) ||
@@ -229,12 +229,12 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotSupportedException();
         }
 
-        public bool IsInvertible
+        public Boolean IsInvertible
         {
             get { return false; }
         }
 
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return _hasValue; }
         }
@@ -278,7 +278,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        bool IMatrixD.IsSingular
+        Boolean IMatrixD.IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -286,7 +286,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertible
+        Boolean IMatrixD.IsInvertible
         {
             get { throw new NotImplementedException(); }
         }
@@ -302,7 +302,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        bool IMatrixD.IsSquare
+        Boolean IMatrixD.IsSquare
         {
             get { throw new NotImplementedException(); }
         }
@@ -310,7 +310,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        bool IMatrixD.IsSymmetrical
+        Boolean IMatrixD.IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
@@ -545,7 +545,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IViewMatrix> Members
 
-        public bool Equals(IMatrixD other)
+        public Boolean Equals(IMatrixD other)
         {
             throw new NotImplementedException();
         }

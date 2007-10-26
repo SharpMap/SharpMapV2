@@ -55,7 +55,7 @@ namespace SharpMap.Rendering.Gdi
 
         #region Dispose override
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -216,7 +216,7 @@ namespace SharpMap.Rendering.Gdi
 
             #region IEquatable<SymbolLookupKey> Members
 
-            public bool Equals(SymbolLookupKey other)
+            public Boolean Equals(SymbolLookupKey other)
             {
                 return other.SymbolId == SymbolId;
             }

@@ -32,9 +32,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly ShapeFileProvider _shapeFile;
         private readonly QueryExecutionOptions _options;
         private readonly DataTable _schemaTable;
-        private FeatureDataRow<uint> _currentFeature;
-        private bool _isDisposed;
-        private readonly IEnumerator<uint> _objectEnumerator;
+        private FeatureDataRow<UInt32> _currentFeature;
+        private Boolean _isDisposed;
+        private readonly IEnumerator<UInt32> _objectEnumerator;
         #endregion
 
 		#region Object Construction / Disposal
@@ -77,7 +77,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		private void Dispose(bool disposing)
+		private void Dispose(Boolean disposing)
 		{
 			if (IsDisposed)
 			{
@@ -95,7 +95,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// Gets a value indicating whether the ShapeFileDataReader has been disposed or not.
         /// </summary>
-		public bool IsDisposed
+		public Boolean IsDisposed
 		{
 			get { return _isDisposed; }
 			private set { _isDisposed = value; }
@@ -141,7 +141,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return _objectEnumerator.Current;
 		}
 
-		public bool HasOid
+		public Boolean HasOid
 		{
 			get
 			{
@@ -150,7 +150,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 		}
 
-        public bool IsFullyLoaded
+        public Boolean IsFullyLoaded
         {
             get { return _options == QueryExecutionOptions.FullFeature; }
         }
@@ -184,22 +184,22 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return _schemaTable.Copy();
 		}
 
-		public bool IsClosed
+		public Boolean IsClosed
 		{
 			get { return IsDisposed; }
 		}
 
-		public bool NextResult()
+		public Boolean NextResult()
 		{
 			checkState();
 			return false;
 		}
 
-		public bool Read()
+		public Boolean Read()
 		{
 			checkState();
 
-			bool reading = _objectEnumerator.MoveNext();
+			Boolean reading = _objectEnumerator.MoveNext();
 
 			if (reading)
 			{
@@ -227,7 +227,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 		}
 
-		public bool GetBoolean(Int32 i)
+		public Boolean GetBoolean(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -235,7 +235,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToBoolean(_currentFeature[i]);
 		}
 
-		public byte GetByte(Int32 i)
+		public Byte GetByte(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -243,12 +243,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToByte(_currentFeature[i]);
 		}
 
-		public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
+		public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
 		{
 			throw new NotImplementedException();
 		}
 
-		public char GetChar(Int32 i)
+		public Char GetChar(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -256,7 +256,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToChar(_currentFeature[i]);
 		}
 
-		public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
+		public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
 		{
 			throw new NotImplementedException();
 		}
@@ -297,7 +297,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			throw new NotImplementedException();
 		}
 
-		public float GetFloat(Int32 i)
+		public Single GetFloat(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -310,7 +310,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			throw new NotImplementedException();
 		}
 
-		public short GetInt16(Int32 i)
+		public Int16 GetInt16(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -326,7 +326,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToInt32(_currentFeature[i]);
 		}
 
-		public long GetInt64(Int32 i)
+		public Int64 GetInt64(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -399,7 +399,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return count;
 		}
 
-		public bool IsDBNull(Int32 i)
+		public Boolean IsDBNull(Int32 i)
 		{
 			checkState();
 			checkIndex(i);

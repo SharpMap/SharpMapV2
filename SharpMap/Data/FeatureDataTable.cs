@@ -43,33 +43,33 @@ namespace SharpMap.Data
         #region Nested types
 
         private delegate DataRow MergeRowDelegate(FeatureDataTable table, FeatureDataRow sourceRow,
-                                                  FeatureDataRow targetRow, bool preserveChanges, object index);
+                                                  FeatureDataRow targetRow, Boolean preserveChanges, object index);
 
-        private delegate bool GetEnforceConstraintsDelegate(FeatureDataTable table);
+        private delegate Boolean GetEnforceConstraintsDelegate(FeatureDataTable table);
 
-        private delegate void SetEnforceConstraintsDelegate(FeatureDataTable table, bool value);
+        private delegate void SetEnforceConstraintsDelegate(FeatureDataTable table, Boolean value);
 
         private delegate void EvaluateExpressionsDelegate(FeatureDataTable table);
 
         private delegate void EnableConstraintsDelegate(FeatureDataTable table);
 
-        private delegate bool GetSuspendEnforceConstraintsDelegate(FeatureDataTable table);
+        private delegate Boolean GetSuspendEnforceConstraintsDelegate(FeatureDataTable table);
 
-        private delegate void SetSuspendEnforceConstraintsDelegate(FeatureDataTable table, bool value);
+        private delegate void SetSuspendEnforceConstraintsDelegate(FeatureDataTable table, Boolean value);
 
         private delegate UniqueConstraint GetPrimaryKeyConstraintDelegate(FeatureDataTable table);
 
-        private delegate bool GetMergingDataDelegate(FeatureDataTable table);
+        private delegate Boolean GetMergingDataDelegate(FeatureDataTable table);
 
-        private delegate void SetMergingDataDelegate(FeatureDataTable table, bool isMerging);
+        private delegate void SetMergingDataDelegate(FeatureDataTable table, Boolean isMerging);
 
         private delegate FeatureDataView GetDefaultViewDelegate(FeatureDataTable table);
 
-        private delegate DataTable CloneToDelegate(DataTable src, DataTable dst, DataSet dataSet, bool skipExpressions);
+        private delegate DataTable CloneToDelegate(DataTable src, DataTable dst, DataSet dataSet, Boolean skipExpressions);
 
         private delegate void SuspendIndexEventsDelegate(DataTable table);
 
-        private delegate void RestoreIndexEventsDelegate(DataTable table, bool forcesReset);
+        private delegate void RestoreIndexEventsDelegate(DataTable table, Boolean forcesReset);
 
         private delegate FeatureDataRow FindMergeTargetDelegate(
             FeatureDataTable table, FeatureDataRow sourceRow, object dataKey, object index);
@@ -247,7 +247,7 @@ namespace SharpMap.Data
         /// <summary>
         /// Gets or sets a value indicating if the table is spatially indexed.
         /// </summary>
-        public bool IsSpatiallyIndexed
+        public Boolean IsSpatiallyIndexed
         {
             get { return _rTreeIndex != null; }
             set
@@ -440,12 +440,12 @@ namespace SharpMap.Data
             Merge(features, false, MissingSchemaAction.Add);
         }
 
-        public void Merge(FeatureDataTable features, bool preserveChanges)
+        public void Merge(FeatureDataTable features, Boolean preserveChanges)
         {
             Merge(features, preserveChanges, SchemaMergeAction.Add);
         }
 
-        public void Merge(FeatureDataTable features, bool preserveChanges, SchemaMergeAction schemaMergeAction)
+        public void Merge(FeatureDataTable features, Boolean preserveChanges, SchemaMergeAction schemaMergeAction)
         {
             FeatureMerger merger = new FeatureMerger(this, preserveChanges, schemaMergeAction);
             merger.MergeFeatures(features);
@@ -500,7 +500,7 @@ namespace SharpMap.Data
         /// <returns>
         /// A new <see cref="FeatureDataRow"/> with the same schema as the table.
         /// </returns>
-        public FeatureDataRow NewRow(bool isFullyLoaded)
+        public FeatureDataRow NewRow(Boolean isFullyLoaded)
         {
             FeatureDataRow row = NewRow();
             row.IsFullyLoaded = isFullyLoaded;
@@ -645,9 +645,9 @@ namespace SharpMap.Data
                     {
                         defaultView = new FeatureDataView(this, true);
                         // This call to SetIndex2 is actually performed in the DataView..ctor(DataTable)
-                        // constructor, but for some reason is left out of the DataView..ctor(DataTable, bool)
+                        // constructor, but for some reason is left out of the DataView..ctor(DataTable, Boolean)
                         // constructor. Since we call DataView..ctor(DataTable) in 
-                        // FeatureDataView..ctor(FeatureDataTable, bool), we don't need this here.
+                        // FeatureDataView..ctor(FeatureDataTable, Boolean), we don't need this here.
                         //defaultView.SetIndex2("", DataViewRowState.CurrentRows, null, true);
                     }
 
@@ -853,7 +853,7 @@ namespace SharpMap.Data
             _enableConstraints(this);
         }
 
-        internal bool EnforceConstraints
+        internal Boolean EnforceConstraints
         {
             get { return _getEnforceConstraints(this); }
             set { _setEnforceConstraints(this, value); }
@@ -886,7 +886,7 @@ namespace SharpMap.Data
             merger.MergeFeatures(records);
         }
 
-        internal bool MergingData
+        internal Boolean MergingData
         {
             get { return _getMergingData(this); }
             set { _setMergingData(this, value); }
@@ -903,7 +903,7 @@ namespace SharpMap.Data
             }
         }
 
-        internal void RestoreIndexEvents(bool forceReset)
+        internal void RestoreIndexEvents(Boolean forceReset)
         {
             _restoreIndexEvents(this, forceReset);
         }
@@ -929,7 +929,7 @@ namespace SharpMap.Data
             }
         }
 
-        internal bool SuspendEnforceConstraints
+        internal Boolean SuspendEnforceConstraints
         {
             get { return _getSuspendEnforceConstraints(this); }
             set { _setSuspendEnforceConstraints(this, value); }
@@ -945,7 +945,7 @@ namespace SharpMap.Data
             get { return _getPrimaryKeyConstraint(this); }
         }
 
-        internal FeatureDataRow MergeRowInternal(FeatureDataRow sourceRow, FeatureDataRow targetRow, bool preserveChanges,
+        internal FeatureDataRow MergeRowInternal(FeatureDataRow sourceRow, FeatureDataRow targetRow, Boolean preserveChanges,
                                        object index)
         {
             FeatureDataRow mergedRow = _mergeRow(this, sourceRow, targetRow, preserveChanges, index) as FeatureDataRow;
@@ -959,7 +959,7 @@ namespace SharpMap.Data
         private static GetEnforceConstraintsDelegate generateGetEnforceConstraintsDelegate()
         {
             DynamicMethod get_EnforceConstraintsMethod = new DynamicMethod("get_EnforceConstraints_DynamicMethod",
-                                                                           typeof(bool),
+                                                                           typeof(Boolean),
                                                                            new Type[] { typeof(FeatureDataTable) },
                                                                            typeof(DataTable));
 
@@ -982,7 +982,7 @@ namespace SharpMap.Data
                                                                            null,
                                                                            new Type[]
                                                                                {
-                                                                                   typeof (FeatureDataTable), typeof (bool)
+                                                                                   typeof (FeatureDataTable), typeof (Boolean)
                                                                                },
                                                                            typeof(DataTable));
 
@@ -1029,7 +1029,7 @@ namespace SharpMap.Data
         {
             DynamicMethod get_SuspendEnforceConstraintsMethod =
                 new DynamicMethod("get_SuspendEnforceConstraints_DynamicMethod",
-                                  typeof(bool),
+                                  typeof(Boolean),
                                   new Type[] { typeof(FeatureDataTable) },
                                   typeof(DataTable));
 
@@ -1051,7 +1051,7 @@ namespace SharpMap.Data
             DynamicMethod set_SuspendEnforceConstraintsMethod =
                 new DynamicMethod("set_SuspendEnforceConstraints_DynamicMethod",
                                   null,
-                                  new Type[] { typeof(FeatureDataTable), typeof(bool) },
+                                  new Type[] { typeof(FeatureDataTable), typeof(Boolean) },
                                   typeof(DataTable));
 
             ILGenerator il = set_SuspendEnforceConstraintsMethod.GetILGenerator();
@@ -1096,7 +1096,7 @@ namespace SharpMap.Data
         private static GetMergingDataDelegate generateGetMergingDataDelegate()
         {
             DynamicMethod get_MergingDataMethod = new DynamicMethod("FeatureDataTable_get_mergingData_DynamicMethod",
-                                                                    typeof(bool),
+                                                                    typeof(Boolean),
                                                                     new Type[] { typeof(FeatureDataTable) },
                                                                     typeof(DataTable));
 
@@ -1114,7 +1114,7 @@ namespace SharpMap.Data
         {
             DynamicMethod set_MergingDataMethod = new DynamicMethod("FeatureDataTable_set_mergingData_DynamicMethod",
                                                                     null,
-                                                                    new Type[] { typeof(FeatureDataTable), typeof(bool) },
+                                                                    new Type[] { typeof(FeatureDataTable), typeof(Boolean) },
                                                                     typeof(DataTable));
 
             ILGenerator il = set_MergingDataMethod.GetILGenerator();
@@ -1152,7 +1152,7 @@ namespace SharpMap.Data
                                   MethodAttributes.Public | MethodAttributes.Static,
                                   CallingConventions.Standard,
                                   null,
-                                  new Type[] { typeof(DataTable), typeof(bool) },
+                                  new Type[] { typeof(DataTable), typeof(Boolean) },
                                   typeof(DataTable),
                                   false);
 
@@ -1162,7 +1162,7 @@ namespace SharpMap.Data
             MethodInfo restoreIndexEventsInfo = typeof(DataTable).GetMethod("RestoreIndexEvents",
                                                                              BindingFlags.NonPublic |
                                                                              BindingFlags.Instance, null,
-                                                                             new Type[] { typeof(bool) }, null);
+                                                                             new Type[] { typeof(Boolean) }, null);
             il.Emit(OpCodes.Call, restoreIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
@@ -1204,7 +1204,7 @@ namespace SharpMap.Data
                                                             new Type[]
                                                                 {
                                                                     typeof (DataTable), typeof (DataTable),
-                                                                    typeof (DataSet), typeof (bool)
+                                                                    typeof (DataSet), typeof (Boolean)
                                                                 },
                                                             typeof(DataTable),
                                                             false);
@@ -1275,7 +1275,7 @@ namespace SharpMap.Data
                                                                      typeof (FeatureDataTable),
                                                                      typeof (FeatureDataRow),
                                                                      typeof (FeatureDataRow),
-                                                                     typeof (bool),
+                                                                     typeof (Boolean),
                                                                      typeof (object)
                                                                  },
                                                              typeof(DataTable));
@@ -1294,7 +1294,7 @@ namespace SharpMap.Data
                 new Type[]
                     {
                         typeof (FeatureDataRow), typeof (FeatureDataRow),
-                        typeof (bool), AdoNetInternalTypes.IndexType
+                        typeof (Boolean), AdoNetInternalTypes.IndexType
                     },
                 null);
             il.Emit(OpCodes.Call, mergeRowInfo);

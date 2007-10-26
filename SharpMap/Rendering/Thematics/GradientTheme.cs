@@ -338,7 +338,7 @@ namespace SharpMap.Rendering.Thematics
             VectorStyle vectorMax = max as VectorStyle;
 
             Double dFrac = fraction(value);
-            float fFrac = Convert.ToSingle(dFrac);
+            Single fFrac = Convert.ToSingle(dFrac);
             style.Enabled = (dFrac > 0.5 ? min.Enabled : max.Enabled);
             style.EnableOutline = (dFrac > 0.5 ? vectorMin.EnableOutline : vectorMax.EnableOutline);
 
@@ -420,14 +420,14 @@ namespace SharpMap.Rendering.Thematics
             return (attr - _min)/(_max - _min);
         }
 
-        private bool interpolateBool(bool min, bool max, Double attr)
+        private Boolean interpolateBool(Boolean min, Boolean max, Double attr)
         {
             Double frac = fraction(attr);
             if (frac > 0.5) return max;
             else return min;
         }
 
-        private float interpolateFloat(float min, float max, Double attr)
+        private Single interpolateFloat(Single min, Single max, Double attr)
         {
             return Convert.ToSingle((max - min)*fraction(attr) + min);
         }

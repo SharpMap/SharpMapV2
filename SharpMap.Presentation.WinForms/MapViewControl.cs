@@ -49,7 +49,7 @@ namespace SharpMap.Presentation.WinForms
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
         private readonly Double _dpi;
-        private bool _dragging = false;
+        private Boolean _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
         private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
         private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
@@ -60,7 +60,7 @@ namespace SharpMap.Presentation.WinForms
         private GdiMatrix _gdiViewMatrix;
         private readonly StringFormat _format;
         private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
-        private bool _backgroundBeingSet;
+        private Boolean _backgroundBeingSet;
         private readonly Label _infoLabel = new Label();
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        internal bool BackgroundBeingSet
+        internal Boolean BackgroundBeingSet
         {
             get { return _backgroundBeingSet; }
             set { _backgroundBeingSet = value; }
@@ -883,18 +883,18 @@ namespace SharpMap.Presentation.WinForms
             }
 
             Matrix2D viewMatrix = ToViewTransform ?? new Matrix2D();
-            float[] gdiElements = _gdiViewMatrix.Elements;
+            Single[] gdiElements = _gdiViewMatrix.Elements;
 
-            if (gdiElements[0] != (float)viewMatrix.M11
-                || gdiElements[1] != (float)viewMatrix.M12
-                || gdiElements[2] != (float)viewMatrix.M21
-                || gdiElements[3] != (float)viewMatrix.M22
-                || gdiElements[4] != (float)viewMatrix.OffsetX
-                || gdiElements[5] != (float)viewMatrix.OffsetY)
+            if (gdiElements[0] != (Single)viewMatrix.M11
+                || gdiElements[1] != (Single)viewMatrix.M12
+                || gdiElements[2] != (Single)viewMatrix.M21
+                || gdiElements[3] != (Single)viewMatrix.M22
+                || gdiElements[4] != (Single)viewMatrix.OffsetX
+                || gdiElements[5] != (Single)viewMatrix.OffsetY)
             {
                 Debug.WriteLine(String.Format("Disposing GDI matrix on values: {0} : {1}; {2} : {3}; {4} : {5}; {6} : {7}; {8} : {9}; {10} : {11}",
-                    gdiElements[0], (float)viewMatrix.M11, gdiElements[1], (float)viewMatrix.M12, gdiElements[2], (float)viewMatrix.M21,
-                    gdiElements[3], (float)viewMatrix.M22, gdiElements[4], (float)viewMatrix.OffsetX, gdiElements[5], (float)viewMatrix.OffsetY));
+                    gdiElements[0], (Single)viewMatrix.M11, gdiElements[1], (Single)viewMatrix.M12, gdiElements[2], (Single)viewMatrix.M21,
+                    gdiElements[3], (Single)viewMatrix.M22, gdiElements[4], (Single)viewMatrix.OffsetX, gdiElements[5], (Single)viewMatrix.OffsetY));
 
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
@@ -903,7 +903,7 @@ namespace SharpMap.Presentation.WinForms
             return _gdiViewMatrix;
         }
 
-        private bool withinDragTolerance(GdiPoint point)
+        private Boolean withinDragTolerance(GdiPoint point)
         {
             return Math.Abs(_mouseDownLocation.X - point.X) <= 3
                 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
@@ -911,7 +911,7 @@ namespace SharpMap.Presentation.WinForms
 
         private Rectangle2D computeBoxFromWheelDelta(PointF location, Int32 deltaDegrees)
         {
-            float scale = (float)Math.Pow(2, (float)Math.Abs(deltaDegrees) / 360f);
+            Single scale = (Single)Math.Pow(2, (Single)Math.Abs(deltaDegrees) / 360f);
             RectangleF zoomBox = ClientRectangle;
             PointF center = new PointF((zoomBox.Width + zoomBox.Left) / 2, (zoomBox.Height + zoomBox.Top) / 2);
             PointF centerDeltaVector = new PointF(location.X - center.X, location.Y - center.Y);

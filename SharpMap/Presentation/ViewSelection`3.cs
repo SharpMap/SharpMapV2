@@ -59,7 +59,7 @@ namespace SharpMap.Presentation
             DefaultOutline = new StylePen(StyleColor.Black, 1.0f);
             DefaultOutline.DashStyle = LineDashStyle.Dash;
             DefaultOutline.DashBrushes = new StyleBrush[] { new SolidStyleBrush(StyleColor.White) };
-            DefaultOutline.DashPattern = new float[] { 4, 4 };
+            DefaultOutline.DashPattern = new Single[] { 4, 4 };
         }
 
         /// <summary>
@@ -165,12 +165,12 @@ namespace SharpMap.Presentation
         }
 
 
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return PathInternal.CurrentFigure == null; }
         }
 
-        public bool IsClosed
+        public Boolean IsClosed
         {
             get { return !IsEmpty && PathInternal.CurrentFigure.IsClosed; }
         }
@@ -244,7 +244,7 @@ namespace SharpMap.Presentation
                 }
             }
 
-            bool recorded = false;
+            Boolean recorded = false;
 
             foreach (TPoint point in Path.Points)
             {

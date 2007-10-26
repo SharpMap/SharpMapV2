@@ -75,7 +75,7 @@ namespace SharpMap.Rendering
 
         #region Equality Computation
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj is ColorMatrix)
             {
@@ -92,7 +92,7 @@ namespace SharpMap.Rendering
 
         #region IEquatable<ColorMatrix> Members
 
-        public bool Equals(ColorMatrix other)
+        public Boolean Equals(ColorMatrix other)
         {
             return R == other.R &&
                 G == other.G &&

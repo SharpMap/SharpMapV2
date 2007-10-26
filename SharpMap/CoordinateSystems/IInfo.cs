@@ -48,7 +48,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the authority specific identification code of the object
 		/// </summary>
-		long AuthorityCode { get; }
+		Int64 AuthorityCode { get; }
 
 		/// <summary>
 		/// Gets or sets the alias of the object.
@@ -83,6 +83,6 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		bool EqualParams(object obj);
+		Boolean EqualParams(object obj);
 	}
 }

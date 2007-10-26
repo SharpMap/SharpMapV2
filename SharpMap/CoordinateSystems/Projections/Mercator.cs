@@ -140,7 +140,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </item>
         /// </list>
         /// </remarks>
-        public Mercator(List<ProjectionParameter> parameters, bool isInverse)
+        public Mercator(List<ProjectionParameter> parameters, Boolean isInverse)
             : base(parameters, isInverse)
         {
             this.Authority = "EPSG";

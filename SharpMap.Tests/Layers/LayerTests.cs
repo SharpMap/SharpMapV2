@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using SharpMap.Data;
@@ -31,7 +32,7 @@ namespace SharpMap.Tests.Layers
             // Do query
         }
 
-        private static bool dataViewEquivalent(FeatureDataView view1, FeatureDataView view2)
+        private static Boolean dataViewEquivalent(FeatureDataView view1, FeatureDataView view2)
         {
             if (view1.Count != view2.Count)
             {
@@ -40,7 +41,7 @@ namespace SharpMap.Tests.Layers
 
             foreach (FeatureDataRow row1 in ((IEnumerable<FeatureDataRow>) view1))
             {
-                bool notFound = true;
+                Boolean notFound = true;
 
                 foreach (FeatureDataRow row2 in ((IEnumerable<FeatureDataRow>) view2))
                 {

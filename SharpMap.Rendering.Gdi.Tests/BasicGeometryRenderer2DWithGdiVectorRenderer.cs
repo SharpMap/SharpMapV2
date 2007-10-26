@@ -15,7 +15,7 @@ namespace SharpMap.Rendering.Gdi.Tests
     [TestFixture]
     public class BasicGeometryRenderer2DWithGdiVectorRenderer
     {
-        private static readonly float _e = 0.0001f;
+        private static readonly Single _e = 0.0001f;
 
         [Test]
         public void CreatingBasicGeometryRenderer2DWithGdiVectorRendererSucceeds()
@@ -51,7 +51,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                             using (GraphicsPathIterator iter = new GraphicsPathIterator(ro.GdiPath))
                             {
                                 Int32 start, end;
-                                bool isClosed;
+                                Boolean isClosed;
                                 iter.NextSubpath(out start, out end, out isClosed);
 
                                 Assert.IsTrue(isClosed);
@@ -92,7 +92,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                                 foreach (Polygon p in mp)
                                 {
                                     Int32 start, end;
-                                    bool isClosed;
+                                    Boolean isClosed;
                                     iter.NextSubpath(out start, out end, out isClosed);
 
                                     Assert.IsTrue(isClosed);
@@ -154,7 +154,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                         using (GraphicsPathIterator iter = new GraphicsPathIterator(ro.GdiPath))
                         {
                             Int32 start, end;
-                            bool isClosed;
+                            Boolean isClosed;
                             iter.NextSubpath(out start, out end, out isClosed);
 
                             if (g is LineString)

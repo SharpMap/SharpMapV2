@@ -42,7 +42,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
         /// <param name="closeFigure">True to create a closed path, false for an open path.</param>
-        public Path2D(IEnumerable<Point2D> points, bool closeFigure)
+        public Path2D(IEnumerable<Point2D> points, Boolean closeFigure)
 			: base(points, closeFigure) { }
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="points">Points to use in the figure.</param>
         /// <param name="closeFigure">True to close the figure, false to leave it open.</param>
         /// <returns>A Figure instance made from the given points.</returns>
-        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool closeFigure)
+        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, Boolean closeFigure)
         {
             return new Figure2D(points, closeFigure);
         }

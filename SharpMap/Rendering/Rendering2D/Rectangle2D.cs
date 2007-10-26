@@ -50,7 +50,7 @@ namespace SharpMap.Rendering.Rendering2D
         private DoubleComponent _left;
         private DoubleComponent _right;
         private DoubleComponent _top;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         #region Constructors
 		/// <summary>
@@ -106,7 +106,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Testing
 
-        public bool Equals(IMatrixD other)
+        public Boolean Equals(IMatrixD other)
         {
             if (other is Rectangle2D)
             {
@@ -158,17 +158,17 @@ namespace SharpMap.Rendering.Rendering2D
             return true;
         }
 
-        public static bool operator ==(Rectangle2D lhs, Rectangle2D rhs)
+        public static Boolean operator ==(Rectangle2D lhs, Rectangle2D rhs)
         {
             return (lhs.Equals(rhs));
         }
 
-        public static bool operator !=(Rectangle2D lhs, Rectangle2D rhs)
+        public static Boolean operator !=(Rectangle2D lhs, Rectangle2D rhs)
         {
             return !(lhs.Equals(rhs));
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj is Rectangle2D)
             {
@@ -183,7 +183,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public bool Equals(Rectangle2D rectangle)
+        public Boolean Equals(Rectangle2D rectangle)
         {
             return IsEmpty == rectangle.IsEmpty &&
                    Left == rectangle.Left &&
@@ -262,7 +262,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="rectangle"><see cref="Rectangle2D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
-        public bool Intersects(Rectangle2D rectangle)
+        public Boolean Intersects(Rectangle2D rectangle)
         {
             if (IsEmpty || rectangle.IsEmpty)
             {
@@ -393,7 +393,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Gets true if the Rectangle2D has no set value.
 		/// </summary>
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return !_hasValue; }
         }
@@ -618,7 +618,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        bool IMatrixD.IsSingular
+        Boolean IMatrixD.IsSingular
         {
             get { throw new NotSupportedException(); }
         }
@@ -626,7 +626,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertible
+        Boolean IMatrixD.IsInvertible
         {
             get { throw new NotSupportedException(); }
         }
@@ -642,7 +642,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        bool IMatrixD.IsSquare
+        Boolean IMatrixD.IsSquare
         {
             get { return true; }
         }
@@ -650,7 +650,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        bool IMatrixD.IsSymmetrical
+        Boolean IMatrixD.IsSymmetrical
         {
             get { throw new NotSupportedException(); }
         }

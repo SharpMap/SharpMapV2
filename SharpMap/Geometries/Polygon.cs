@@ -144,7 +144,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="p">Polygon to compare with</param>
         /// <returns></returns>
-        public bool Equals(Polygon p)
+        public Boolean Equals(Polygon p)
         {
             if (ReferenceEquals(p, null))
             {
@@ -194,7 +194,7 @@ namespace SharpMap.Geometries
         /// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
         /// </summary>
         /// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-        public override bool IsEmpty()
+        public override Boolean IsEmpty()
         {
             return (ExteriorRing == null) || (ExteriorRing.Vertices.Count == 0);
         }
@@ -204,7 +204,7 @@ namespace SharpMap.Geometries
         /// intersection or self tangency. The description of each instantiable geometric class will include the specific
         /// conditions that cause an instance of that class to be classified as not simple.
         /// </summary>
-        public override bool IsSimple()
+        public override Boolean IsSimple()
         {
             throw new NotImplementedException();
         }
@@ -306,7 +306,7 @@ namespace SharpMap.Geometries
             {
                 Double area = 0.0;
                 area += _exteriorRing.Area;
-                bool extIsClockwise = _exteriorRing.IsCcw();
+                Boolean extIsClockwise = _exteriorRing.IsCcw();
 
                 for (Int32 i = 0; i < _interiorRings.Count; i++)
                 {

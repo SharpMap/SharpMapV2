@@ -37,7 +37,7 @@ namespace SharpMap.Rendering
         where TViewBounds : IMatrixD
     {
         private readonly List<TPoint> _points = new List<TPoint>();
-        private bool _isClosed;
+        private Boolean _isClosed;
         private TViewBounds _bounds;
 
         #region Object Construction
@@ -58,7 +58,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         /// <param name="isClosed">True to close the path, false to keep it open.</param>
-        public Figure(IEnumerable<TPoint> points, bool isClosed)
+        public Figure(IEnumerable<TPoint> points, Boolean isClosed)
         {
             _points.AddRange(points);
             IsClosed = isClosed;
@@ -104,7 +104,7 @@ namespace SharpMap.Rendering
 
         #region Equality Computation
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             Figure<TPoint, TViewBounds> other = obj as Figure<TPoint, TViewBounds>;
             return Equals(other);
@@ -112,7 +112,7 @@ namespace SharpMap.Rendering
 
         #region IEquatable<Path<TPoint>> Members
 
-        public bool Equals(Figure<TPoint, TViewBounds> other)
+        public Boolean Equals(Figure<TPoint, TViewBounds> other)
         {
             if (other == null)
             {
@@ -193,7 +193,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets true if the figure is closed, false if open.
         /// </summary>
-        public bool IsClosed
+        public Boolean IsClosed
         {
             get { return _isClosed; }
             protected set { _isClosed = value; }
@@ -244,7 +244,7 @@ namespace SharpMap.Rendering
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new Figure instance.</returns>
         protected abstract Figure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
-                                                                                bool isClosed);
+                                                                                Boolean isClosed);
 
         #endregion
 

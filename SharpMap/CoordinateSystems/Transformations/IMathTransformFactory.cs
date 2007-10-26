@@ -87,12 +87,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		/// <param name="parameterName"></param>
 		/// <returns></returns>
-		bool IsParameterAngular(String parameterName);
+		Boolean IsParameterAngular(String parameterName);
 		/// <summary>
 		/// Tests whether parameter is linear. Clients must ensure that all linear parameter values are in meters.
 		/// </summary>
 		/// <param name="parameterName"></param>
 		/// <returns></returns>
-		bool IsParameterLinear(String parameterName);
+		Boolean IsParameterLinear(String parameterName);
 	}
 }

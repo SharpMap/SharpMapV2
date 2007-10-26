@@ -63,7 +63,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			writer.Seek(0, SeekOrigin.Begin);
 			writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderStartCode));
-			writer.Write(new byte[20]);
+			writer.Write(new Byte[20]);
 			writer.Write(ByteEncoder.GetBigEndian(FileLengthInWords));
 			writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
 			writer.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType));
@@ -71,7 +71,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Bottom));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Right));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Top));
-			writer.Write(new byte[32]); // Z-values and M-values
+			writer.Write(new Byte[32]); // Z-values and M-values
 		}
 
 		#region File parsing helpers
@@ -149,7 +149,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			Int32 length = ShapeFileConstants.HeaderSizeBytes / 2;
 
-			foreach (KeyValuePair<uint, ShapeFileIndex.IndexEntry> kvp in index)
+			foreach (KeyValuePair<UInt32, ShapeFileIndex.IndexEntry> kvp in index)
 			{
 				length += kvp.Value.Length + ShapeFileConstants.ShapeRecordHeaderByteLength / 2;
 			}

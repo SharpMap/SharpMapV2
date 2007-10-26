@@ -190,13 +190,13 @@ namespace SharpMap.Data.Providers
             schemaTable.Columns.Add(NumericPrecisionColumn, typeof(Int16));
             schemaTable.Columns.Add(NumericScaleColumn, typeof(Int16));
             schemaTable.Columns.Add(DataTypeColumn, typeof(Type));
-            schemaTable.Columns.Add(AllowDBNullColumn, typeof(bool));
-            schemaTable.Columns.Add(IsReadOnlyColumn, typeof(bool));
-            schemaTable.Columns.Add(IsUniqueColumn, typeof(bool));
-            schemaTable.Columns.Add(IsRowVersionColumn, typeof(bool));
-            schemaTable.Columns.Add(IsKeyColumn, typeof(bool));
-            schemaTable.Columns.Add(IsAutoIncrementColumn, typeof(bool));
-            schemaTable.Columns.Add(IsLongColumn, typeof(bool));
+            schemaTable.Columns.Add(AllowDBNullColumn, typeof(Boolean));
+            schemaTable.Columns.Add(IsReadOnlyColumn, typeof(Boolean));
+            schemaTable.Columns.Add(IsUniqueColumn, typeof(Boolean));
+            schemaTable.Columns.Add(IsRowVersionColumn, typeof(Boolean));
+            schemaTable.Columns.Add(IsKeyColumn, typeof(Boolean));
+            schemaTable.Columns.Add(IsAutoIncrementColumn, typeof(Boolean));
+            schemaTable.Columns.Add(IsLongColumn, typeof(Boolean));
 
             return schemaTable;
         }
@@ -216,13 +216,13 @@ namespace SharpMap.Data.Providers
                     ? Convert.ToInt32(column.ExtendedProperties[LengthExtendedProperty])
                     : (lengthComputationDelegate == null) ? 0 : lengthComputationDelegate(column);
 
-                short precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty)
+                Int16 precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty)
                     ? Convert.ToInt16(column.ExtendedProperties[NumericPrecisionExtendedProperty])
-                    : (precisionComputationDelegate == null) ? (short)0 : precisionComputationDelegate(column);
+                    : (precisionComputationDelegate == null) ? (Int16)0 : precisionComputationDelegate(column);
 
-                short scale = column.ExtendedProperties.ContainsKey(NumericScaleExtendedProperty)
+                Int16 scale = column.ExtendedProperties.ContainsKey(NumericScaleExtendedProperty)
                     ? Convert.ToInt16(column.ExtendedProperties[NumericScaleExtendedProperty])
-                    : (scaleComputationDelegate == null) ? (short)0 : scaleComputationDelegate(column);
+                    : (scaleComputationDelegate == null) ? (Int16)0 : scaleComputationDelegate(column);
 
                 schema.Rows.Add(
                     column.ColumnName,

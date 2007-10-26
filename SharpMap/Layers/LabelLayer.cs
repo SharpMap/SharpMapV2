@@ -77,7 +77,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Disposes the object.
         /// </summary>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(Boolean disposing)
         {
             if (IsDisposed)
             {

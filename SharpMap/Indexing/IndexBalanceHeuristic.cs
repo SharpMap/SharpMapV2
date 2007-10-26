@@ -28,9 +28,9 @@ namespace SharpMap.Indexing
     {
         private Int32 _nodeItemMin;
         private Int32 _nodeItemMax;
-        private uint _maxTreeDepth;
+        private UInt32 _maxTreeDepth;
 
-        protected IndexBalanceHeuristic(Int32 nodeItemMinimumCount, Int32 nodeItemMaximumCount, uint maxTreeDepth)
+        protected IndexBalanceHeuristic(Int32 nodeItemMinimumCount, Int32 nodeItemMaximumCount, UInt32 maxTreeDepth)
         {
             _nodeItemMin = nodeItemMinimumCount;
             _nodeItemMax = nodeItemMaximumCount;
@@ -58,7 +58,7 @@ namespace SharpMap.Indexing
         /// <summary>
         /// The maximum depth of the tree including the root.
         /// </summary>
-        public virtual uint MaxTreeDepth
+        public virtual UInt32 MaxTreeDepth
         {
             get { return _maxTreeDepth; }
         }

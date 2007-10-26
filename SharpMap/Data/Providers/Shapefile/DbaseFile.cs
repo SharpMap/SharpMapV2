@@ -38,13 +38,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private readonly String _filename;
         private DbaseHeader _header;
-        private FeatureDataTable<uint> _baseTable;
-        private bool _headerIsParsed;
+        private FeatureDataTable<UInt32> _baseTable;
+        private Boolean _headerIsParsed;
         private DbaseReader _reader;
         private DbaseWriter _writer;
         private FileStream _dbaseFileStream;
-        private bool _isDisposed = false;
-        private bool _isOpen;
+        private Boolean _isDisposed = false;
+        private Boolean _isOpen;
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
         }
 
-        private DbaseFile(String fileName, bool checkExists)
+        private DbaseFile(String fileName, Boolean checkExists)
         {
             if (checkExists && !File.Exists(fileName))
             {
@@ -92,13 +92,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <see langword="true"/> if it is, <see langword="false"/> otherwise
         /// </summary>
         /// <seealso cref="Dispose"/>
-        internal bool IsDisposed
+        internal Boolean IsDisposed
         {
             get { return _isDisposed; }
             private set { _isDisposed = value; }
         }
 
-        private void dispose(bool disposing)
+        private void dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -179,7 +179,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Gets a value which indicates if the reader is open: 
         /// true if it is, false otherwise.
         /// </summary>
-        internal bool IsOpen
+        internal Boolean IsOpen
         {
             get { return _isOpen; }
         }
@@ -202,7 +202,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         internal static DbaseFile CreateDbaseFile(String fileName, DataTable schema, CultureInfo culture, Encoding encoding)
         {
             DbaseFile file = new DbaseFile(fileName, false);
-            byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
+            Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
             file._header.Columns = DbaseSchema.GetFields(schema, file._header);
         	file._headerIsParsed = true;
@@ -265,7 +265,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             (this as IDisposable).Dispose();
         }
 
-        internal long ComputeByteOffsetToRecord(UInt32 row)
+        internal Int64 ComputeByteOffsetToRecord(UInt32 row)
         {
             return _header.HeaderLength + (row * _header.RecordLength);
         }
@@ -293,7 +293,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// null</exception>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
         /// object has been disposed</exception>
-        internal FeatureDataRow<uint> GetAttributes(uint oid, FeatureDataTable<uint> table)
+        internal FeatureDataRow<UInt32> GetAttributes(UInt32 oid, FeatureDataTable<UInt32> table)
         {
             checkState();
 
@@ -320,7 +320,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return null;
             }
 
-            FeatureDataRow<uint> dr = table.NewRow(oid);
+            FeatureDataRow<UInt32> dr = table.NewRow(oid);
 
             foreach (DbaseField field in _header.Columns)
             {
@@ -353,7 +353,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Returns an empty <see cref="FeatureDataTable"/> 
         /// with the same schema as this DBase file.
         /// </summary>
-        internal FeatureDataTable<uint> NewTable
+        internal FeatureDataTable<UInt32> NewTable
         {
             get
             {
@@ -385,7 +385,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown when the method is called 
         /// and object has been disposed.
         /// </exception>
-        internal void Open(bool exclusive)
+        internal void Open(Boolean exclusive)
         {
             checkState();
 
@@ -457,9 +457,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 //                BinaryTree<UInt32, TValue> tree = new BinaryTree<UInt32, TValue>();
 
-//                for (uint i = 0; i < _header.RecordCount; i++)
+//                for (UInt32 i = 0; i < _header.RecordCount; i++)
 //                {
-//                    tree.Add(new BinaryTree<uint, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
+//                    tree.Add(new BinaryTree<UInt32, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
 //                }
 
 //                return tree;
@@ -480,7 +480,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //        System.IO.Directory.CreateDirectory(dir);
         //    Lucene.Net.Index.IndexWriter iw = new Lucene.Net.Index.IndexWriter(dir,new Lucene.Net.Analysis.Standard.StandardAnalyzer(),true);
 
-        //    for (uint i = 0; i < this._NumberOfRecords; i++)
+        //    for (UInt32 i = 0; i < this._NumberOfRecords; i++)
         //    {
         //        FeatureDataRow dr = GetFeature(i,this.NewTable);
         //        Lucene.Net.Documents.Document doc = new Lucene.Net.Documents.Document();

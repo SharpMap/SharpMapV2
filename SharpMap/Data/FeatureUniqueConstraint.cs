@@ -29,18 +29,18 @@ namespace SharpMap.Data
             : base(columns) {}
 
         public FeatureUniqueConstraint(DataColumn column) : base(column) {}
-        public FeatureUniqueConstraint(DataColumn column, bool isPrimaryKey) : base(column, isPrimaryKey) {}
+        public FeatureUniqueConstraint(DataColumn column, Boolean isPrimaryKey) : base(column, isPrimaryKey) {}
         public FeatureUniqueConstraint(String name, DataColumn[] columns) : base(name, columns) {}
-        public FeatureUniqueConstraint(DataColumn[] columns, bool isPrimaryKey) : base(columns, isPrimaryKey) {}
+        public FeatureUniqueConstraint(DataColumn[] columns, Boolean isPrimaryKey) : base(columns, isPrimaryKey) {}
         public FeatureUniqueConstraint(String name, DataColumn column) : base(name, column) {}
 
-        public FeatureUniqueConstraint(String name, DataColumn column, bool isPrimaryKey)
+        public FeatureUniqueConstraint(String name, DataColumn column, Boolean isPrimaryKey)
             : base(name, column, isPrimaryKey) {}
 
-        public FeatureUniqueConstraint(String name, DataColumn[] columns, bool isPrimaryKey)
+        public FeatureUniqueConstraint(String name, DataColumn[] columns, Boolean isPrimaryKey)
             : base(name, columns, isPrimaryKey) {}
 
-        public FeatureUniqueConstraint(String name, String[] columnNames, bool isPrimaryKey)
+        public FeatureUniqueConstraint(String name, String[] columnNames, Boolean isPrimaryKey)
             : base(name, columnNames, isPrimaryKey) {}
     }
 }

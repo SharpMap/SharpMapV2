@@ -23,7 +23,7 @@ namespace SharpMap.Data
 {
     public class FeatureDataViewManager : DataViewManager
     {
-        public FeatureDataViewManager(FeatureDataSet dataSet, bool locked)
+        public FeatureDataViewManager(FeatureDataSet dataSet, Boolean locked)
         {
             throw new NotImplementedException();
         }

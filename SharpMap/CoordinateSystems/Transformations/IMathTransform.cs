@@ -46,7 +46,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// Tests whether this transform does not move any points.
         /// </summary>
         /// <returns></returns>
-        bool Identity();
+        Boolean Identity();
 
         /// <summary>
         /// Gets a Well-Known text representation of this object.

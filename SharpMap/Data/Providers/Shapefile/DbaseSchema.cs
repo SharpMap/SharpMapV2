@@ -60,9 +60,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             return fields;
         }
 
-        internal static FeatureDataTable<uint> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns)
+        internal static FeatureDataTable<UInt32> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns)
         {
-            FeatureDataTable<uint> table = new FeatureDataTable<uint>(OidColumnName);
+            FeatureDataTable<UInt32> table = new FeatureDataTable<UInt32>(OidColumnName);
 
             foreach (DbaseField dbf in _dbaseColumns)
             {
@@ -86,7 +86,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return table;
         }
 
-        internal static char GetFieldTypeCode(Type type)
+        internal static Char GetFieldTypeCode(Type type)
         {
             switch (Type.GetTypeCode(type))
             {

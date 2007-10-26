@@ -109,7 +109,7 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// </remarks>
 		/// <param name="parameters">List of parameters to initialize the projection.</param>
 		/// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-		public AlbersProjection(List<ProjectionParameter> parameters, bool isInverse)
+		public AlbersProjection(List<ProjectionParameter> parameters, Boolean isInverse)
 			: base(parameters, isInverse)
 		{
 			this.Name = "Albers_Conic_Equal_Area";			

@@ -90,7 +90,7 @@ namespace SharpMap.CoordinateSystems
 		internal Info(
 						String name,
 						String authority,
-						long code,
+						Int64 code,
 						String alias,
 						String abbreviation,
 						String remarks)
@@ -107,7 +107,7 @@ namespace SharpMap.CoordinateSystems
 
 		private String _name;
 		private String _authority;
-		private long _code;
+		private Int64 _code;
 		private String _remarks;
 		private String _abbreviation;
 		private String _alias;
@@ -135,7 +135,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the authority specific identification code of the object
 		/// </summary>
-		public long AuthorityCode
+		public Int64 AuthorityCode
 		{
 			get { return _code; }
 			set { _code = value; }
@@ -230,7 +230,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-        public abstract bool EqualParams(object obj);
+        public abstract Boolean EqualParams(object obj);
 
 		#endregion
 	}

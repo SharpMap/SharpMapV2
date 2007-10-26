@@ -37,7 +37,7 @@ namespace SharpMap.Layers
     public class LayerGroup : ILayer, ICloneable
     {
         private List<ILayer> _layers = new List<ILayer>();
-        private bool _disposed;
+        private Boolean _disposed;
 
         #region Object Creation / Disposal
 
@@ -87,7 +87,7 @@ namespace SharpMap.Layers
         /// <param name="disposing">
         /// True if being called deterministically, false if being called from finalizer.
         /// </param>
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -108,7 +108,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets whether this layer is disposed, and no longer accessible.
         /// </summary>
-        public bool IsDisposed
+        public Boolean IsDisposed
         {
             get { return _disposed; }
         }
@@ -161,7 +161,7 @@ namespace SharpMap.Layers
             get { throw new NotImplementedException(); }
         }
 
-        public bool Enabled
+        public Boolean Enabled
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -207,7 +207,7 @@ namespace SharpMap.Layers
             set { throw new NotImplementedException(); }
         }
         
-        public bool IsVisibleWhen(Predicate<ILayer> condition)
+        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
         {
             return condition(this);
         }
@@ -239,7 +239,7 @@ namespace SharpMap.Layers
 
         #region ILayer Members
 
-        public bool AsyncQuery
+        public Boolean AsyncQuery
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }

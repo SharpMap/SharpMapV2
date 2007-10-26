@@ -24,7 +24,7 @@ namespace SharpMap.Expressions
     public class FeatureSpatialExpression : SpatialExpression, IEquatable<FeatureSpatialExpression>
     {
         private readonly IEnumerable _oids;
-        private readonly bool _hasOidFilter;
+        private readonly Boolean _hasOidFilter;
 
         public FeatureSpatialExpression(IEnumerable oids)
             : this(null, SpatialExpressionType.None, oids) { }
@@ -51,12 +51,12 @@ namespace SharpMap.Expressions
             }
         }
 
-        public static bool operator !=(FeatureSpatialExpression lhs, FeatureSpatialExpression rhs)
+        public static Boolean operator !=(FeatureSpatialExpression lhs, FeatureSpatialExpression rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static bool operator ==(FeatureSpatialExpression lhs, FeatureSpatialExpression rhs)
+        public static Boolean operator ==(FeatureSpatialExpression lhs, FeatureSpatialExpression rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -73,7 +73,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        public bool Equals(FeatureSpatialExpression other)
+        public Boolean Equals(FeatureSpatialExpression other)
         {
             if (ReferenceEquals(other, null))
             {
@@ -100,7 +100,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
             {

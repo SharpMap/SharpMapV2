@@ -43,7 +43,7 @@ namespace SharpMap.Rendering.Gdi
             _internalGraphics = Graphics.FromImage(bitmap);   
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(Boolean disposing)
         {
             if(IsDisposed)
             {

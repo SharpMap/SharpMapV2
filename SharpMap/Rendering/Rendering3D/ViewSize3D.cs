@@ -30,7 +30,7 @@ namespace SharpMap.Rendering.Rendering3D
 	public struct ViewSize3D : IVectorD
     {
         private DoubleComponent _width, _height, _depth;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         public static readonly ViewSize3D Empty = new ViewSize3D();
         public static readonly ViewSize3D Zero = new ViewSize3D(0, 0, 0);
@@ -74,7 +74,7 @@ namespace SharpMap.Rendering.Rendering3D
             get { return _depth; }
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (!(obj is ViewSize3D))
             {
@@ -84,7 +84,7 @@ namespace SharpMap.Rendering.Rendering3D
             return Equals((ViewSize3D)obj);
         }
 
-        public bool Equals(ViewSize3D size)
+        public Boolean Equals(ViewSize3D size)
         {
             return _hasValue == size._hasValue
                 && Width.Equals(size.Width)
@@ -117,7 +117,7 @@ namespace SharpMap.Rendering.Rendering3D
             }
         }
 
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return _hasValue; }
         }
@@ -135,7 +135,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IViewVector> Members
 
-        public bool Equals(IVectorD other)
+        public Boolean Equals(IVectorD other)
         {
             throw new NotImplementedException();
         }
@@ -160,12 +160,12 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        public static bool operator !=(ViewSize3D size1, ViewSize3D size2)
+        public static Boolean operator !=(ViewSize3D size1, ViewSize3D size2)
         {
             return ! (size1 == size2);
         }
 
-        public static bool operator ==(ViewSize3D size1, ViewSize3D size2)
+        public static Boolean operator ==(ViewSize3D size1, ViewSize3D size2)
         {
             return size1.Equals(size2);
         }
@@ -247,7 +247,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        bool IMatrixD.IsSingular
+        Boolean IMatrixD.IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -255,7 +255,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertible
+        Boolean IMatrixD.IsInvertible
         {
             get { throw new NotImplementedException(); }
         }
@@ -271,7 +271,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        bool IMatrixD.IsSquare
+        Boolean IMatrixD.IsSquare
         {
             get { throw new NotImplementedException(); }
         }
@@ -279,7 +279,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        bool IMatrixD.IsSymmetrical
+        Boolean IMatrixD.IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
@@ -458,7 +458,7 @@ namespace SharpMap.Rendering.Rendering3D
         ///</returns>
         ///
         ///<param name="other">An object to compare with this object.</param>
-        bool IEquatable<IMatrixD>.Equals(IMatrixD other)
+        Boolean IEquatable<IMatrixD>.Equals(IMatrixD other)
         {
             throw new NotImplementedException();
         }

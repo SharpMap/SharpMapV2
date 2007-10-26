@@ -37,7 +37,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal PrimeMeridian(Double longitude, IAngularUnit angularUnit, String name,
-		                       String authority, long authorityCode, String alias, String abbreviation, String remarks)
+		                       String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
 			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_Longitude = longitude;
@@ -288,7 +288,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			PrimeMeridian other = obj as PrimeMeridian;
 

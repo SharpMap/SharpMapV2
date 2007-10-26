@@ -145,10 +145,10 @@ namespace SharpMap.Rendering.Rendering2D
         //            else
         //                style = this.Style;
 
-        //            float rotation = 0;
+        //            Single rotation = 0;
 
         //            if (layer.RotationColumn != null && layer.RotationColumn != "")
-        //                float.TryParse(feature[layer.RotationColumn].ToString(), NumberStyles.Any, Map.NumberFormat_EnUS, out rotation);
+        //                Single.TryParse(feature[layer.RotationColumn].ToString(), NumberStyles.Any, Map.NumberFormat_EnUS, out rotation);
 
         //            String text = layer.GetLabelText(feature);
 
@@ -260,19 +260,19 @@ namespace SharpMap.Rendering.Rendering2D
         ///// <param name="halo">Halo to be drawn around the label text.</param>
         ///// <param name="rotation">Text rotation in degrees.</param>
         //public void DrawLabel(String text, Point2D location, Point2D offset, StyleFont font,
-        //    StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
+        //    StyleColor foreColor, StyleBrush backColor, StylePen halo, Single rotation)
         //{
         //    DrawLabel(text, location, offset, font, foreColor, backColor, halo, rotation);
         //}
 
-        //private Label CreateLabel(Geometry feature, String text, float rotation, LabelStyle style)
+        //private Label CreateLabel(Geometry feature, String text, Single rotation, LabelStyle style)
         //{
         //    LabelLayer layer = null;
         //    ViewSize2D size = MeasureString(text, style.Font);
 
         //    Point2D position = ViewTransformer.WorldToView(feature.GetBoundingBox().GetCentroid());
-        //    Double x = position.X - size.Width * (short)style.HorizontalAlignment * 0.5f;
-        //    Double y = position.Y - size.Height * (short)style.VerticalAlignment * 0.5f;
+        //    Double x = position.X - size.Width * (Int16)style.HorizontalAlignment * 0.5f;
+        //    Double y = position.Y - size.Height * (Int16)style.VerticalAlignment * 0.5f;
 
         //    position = new Point2D(x, y);
 
@@ -300,7 +300,7 @@ namespace SharpMap.Rendering.Rendering2D
         //    {
         //        LineString line = feature as LineString;
 
-        //        if (line.Length / ViewTransformer.PixelSize > size.Width) //Only label feature if it is long enough
+        //        if (line.Length / ViewTransformer.PixelSize > size.Width) //Only label feature if it is Int64 enough
         //            CalculateLabelOnLineString(line, ref label);
         //        else
         //            return null;
@@ -343,7 +343,7 @@ namespace SharpMap.Rendering.Rendering2D
                 // calculate angle of line					
                 angle = -Math.Atan(dy/dx) + Math.PI*0.5;
                 angle *= (180d/Math.PI); // convert radians to degrees
-                label.Rotation = (float) angle - 90; // -90 text orientation
+                label.Rotation = (Single) angle - 90; // -90 text orientation
             }
 
             tmpx = line.Vertices[midPoint].X + (dx*0.5);

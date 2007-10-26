@@ -40,7 +40,7 @@ namespace SharpMap.Rendering
 
             #region IEquatable<LayerRendererRegistryKey> Members
 
-            public bool Equals(LayerRendererRegistryKey other)
+            public Boolean Equals(LayerRendererRegistryKey other)
             {
                 return other.Type.Equals(Type) &&
                     String.Compare(Name, other.Name, StringComparison.CurrentCultureIgnoreCase) == 0;
@@ -54,7 +54,7 @@ namespace SharpMap.Rendering
                     ((Name == null) ? 1247510379 : Name.GetHashCode());
             }
 
-            public override bool Equals(object obj)
+            public override Boolean Equals(object obj)
             {
                 if (obj is LayerRendererRegistryKey)
                 {

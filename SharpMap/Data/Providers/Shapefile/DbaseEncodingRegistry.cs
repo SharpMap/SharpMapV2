@@ -96,10 +96,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		} 
 		#endregion
 
-        private static readonly Dictionary<byte, CultureWithEncoding> _dbaseToEncoding
-            = new Dictionary<byte, CultureWithEncoding>();
-        private static readonly Dictionary<KeyValuePair<Int32, Int32>, byte> _encodingToDbase
-            = new Dictionary<KeyValuePair<Int32, Int32>, byte>();
+        private static readonly Dictionary<Byte, CultureWithEncoding> _dbaseToEncoding
+            = new Dictionary<Byte, CultureWithEncoding>();
+        private static readonly Dictionary<KeyValuePair<Int32, Int32>, Byte> _encodingToDbase
+            = new Dictionary<KeyValuePair<Int32, Int32>, Byte>();
 
         static DbaseLocaleRegistry()
         {
@@ -182,7 +182,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private static void setupEncodingToDbaseMap()
         {
-            foreach (KeyValuePair<byte, CultureWithEncoding> item in _dbaseToEncoding)
+            foreach (KeyValuePair<Byte, CultureWithEncoding> item in _dbaseToEncoding)
             {
 				// These encodings are duplicated. When a dBase file is created by
 				// the DbaseFile.Create method, these will not be used in the LDID
@@ -211,7 +211,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// A <see cref="CultureInfo"/> which uses the encoding represented by 
 		/// <paramref name="dBaseEncoding"/> by default.
 		/// </returns>
-        public static CultureInfo GetCulture(byte dBaseEncoding)
+        public static CultureInfo GetCulture(Byte dBaseEncoding)
         {
             CultureWithEncoding pair;
 
@@ -236,7 +236,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// An <see cref="Encoding"/> which corresponds to the the
 		/// <paramref name="dBaseEncoding"/> code established by ESRI.
 		/// </returns>
-        public static Encoding GetEncoding(byte dBaseEncoding)
+        public static Encoding GetEncoding(Byte dBaseEncoding)
         {
             CultureWithEncoding pair;
 
@@ -259,7 +259,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <returns>
 		/// A language driver code used to specify the encoding used to write text in the dBase file.
 		/// </returns>
-        public static byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
+        public static Byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
         {
             Byte driverCode;
             KeyValuePair<Int32, Int32> key = new KeyValuePair<Int32, Int32>(info.LCID, encoding.CodePage);

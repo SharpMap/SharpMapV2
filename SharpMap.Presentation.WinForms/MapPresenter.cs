@@ -28,8 +28,8 @@ namespace SharpMap.Presentation.WinForms
 {
     internal class MapPresenter : MapPresenter2D
     {
-        private bool _isRenderingSelection = false;
-        private bool _isRenderingAll = false;
+        private Boolean _isRenderingSelection = false;
+        private Boolean _isRenderingAll = false;
 
         internal MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)

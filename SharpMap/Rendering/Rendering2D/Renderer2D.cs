@@ -27,7 +27,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         private Matrix2D _renderTransform = new Matrix2D();
         private StyleRenderingMode _renderMode = StyleRenderingMode.Default;
-        private bool _isDisposed = false;
+        private Boolean _isDisposed = false;
 
         #endregion
 
@@ -56,9 +56,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        protected virtual void Dispose(bool disposing) {}
+        protected virtual void Dispose(Boolean disposing) {}
 
-        protected bool IsDisposed
+        protected Boolean IsDisposed
         {
             get { return _isDisposed; }
             private set { _isDisposed = value; }

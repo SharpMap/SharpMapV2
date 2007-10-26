@@ -84,18 +84,18 @@ namespace SharpMap.Data
             _tables.Clear();
         }
 
-        public bool Contains(FeatureDataTable item)
+        public Boolean Contains(FeatureDataTable item)
         {
             if (item == null) throw new ArgumentNullException("item");
             return _tables.Contains(item.TableName);
         }
 
-        public bool Contains(String name)
+        public Boolean Contains(String name)
         {
             return _tables.Contains(name);
         }
 
-        public bool Contains(String name, String tableNamespace)
+        public Boolean Contains(String name, String tableNamespace)
         {
             return _tables.Contains(name, tableNamespace);
         }
@@ -110,14 +110,14 @@ namespace SharpMap.Data
             get { return _tables.Count; }
         }
 
-        public bool IsReadOnly
+        public Boolean IsReadOnly
         {
             get { return _tables.IsReadOnly; }
         }
 
-        public bool Remove(FeatureDataTable item)
+        public Boolean Remove(FeatureDataTable item)
         {
-            bool contained = _tables.Contains(item.TableName);
+            Boolean contained = _tables.Contains(item.TableName);
             _tables.Remove(item);
             return contained;
         }

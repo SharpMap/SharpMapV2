@@ -41,7 +41,7 @@ namespace SharpMap.Expressions
             get { return _queryType; }
         }
 
-        public bool HasIntersection(Geometry geometry)
+        public Boolean HasIntersection(Geometry geometry)
         {
             switch (QueryType)
             {
@@ -68,12 +68,12 @@ namespace SharpMap.Expressions
             }
         }
 
-        public static bool operator !=(SpatialExpression lhs, SpatialExpression rhs)
+        public static Boolean operator !=(SpatialExpression lhs, SpatialExpression rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static bool operator ==(SpatialExpression lhs, SpatialExpression rhs)
+        public static Boolean operator ==(SpatialExpression lhs, SpatialExpression rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -90,7 +90,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        public bool Equals(SpatialExpression other)
+        public Boolean Equals(SpatialExpression other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -101,7 +101,7 @@ namespace SharpMap.Expressions
                 && _queryType == other._queryType;
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
             {

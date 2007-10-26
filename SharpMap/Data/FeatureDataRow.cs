@@ -66,9 +66,9 @@ namespace SharpMap.Data
         private Geometry _originalGeometry;
         private Geometry _currentGeometry;
         private Geometry _proposedGeometry;
-        private bool _isGeometryModified = false;
+        private Boolean _isGeometryModified = false;
         private BoundingBox _extents = BoundingBox.Empty;
-        private bool _isFullyLoaded;
+        private Boolean _isFullyLoaded;
         #endregion
 
         #region Object constructor
@@ -147,7 +147,7 @@ namespace SharpMap.Data
         /// Gets a value indicating whether this feature record
         /// has been fully loaded from the data source.
         /// </summary>
-        public bool IsFullyLoaded
+        public Boolean IsFullyLoaded
         {
             get { return _isFullyLoaded; }
             internal set { _isFullyLoaded = value; }
@@ -157,7 +157,7 @@ namespace SharpMap.Data
         /// Gets true if the <see cref="Geometry"/> value for the
         /// feature has been modified.
         /// </summary>
-        public bool IsGeometryModified
+        public Boolean IsGeometryModified
         {
             get { return _isGeometryModified; }
         }
@@ -166,7 +166,7 @@ namespace SharpMap.Data
         /// Returns true of the geometry is null.
         /// </summary>
         /// <returns></returns>
-        public bool IsGeometryNull()
+        public Boolean IsGeometryNull()
         {
             return Geometry == null;
         }
@@ -195,27 +195,27 @@ namespace SharpMap.Data
             get { return InternalColumns.Count; }
         }
 
-        public bool GetBoolean(Int32 i)
+        public Boolean GetBoolean(Int32 i)
         {
             return Convert.ToBoolean(this[i]);
         }
 
-        public byte GetByte(Int32 i)
+        public Byte GetByte(Int32 i)
         {
             return Convert.ToByte(this[i]);
         }
 
-        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public char GetChar(Int32 i)
+        public Char GetChar(Int32 i)
         {
             return Convert.ToChar(this[i]);
         }
 
-        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
@@ -250,7 +250,7 @@ namespace SharpMap.Data
             return InternalColumns[i].DataType;
         }
 
-        public float GetFloat(Int32 i)
+        public Single GetFloat(Int32 i)
         {
             return Convert.ToSingle(this[i]);
         }
@@ -260,7 +260,7 @@ namespace SharpMap.Data
             return (Guid)this[i];
         }
 
-        public short GetInt16(Int32 i)
+        public Int16 GetInt16(Int32 i)
         {
             return Convert.ToInt16(this[i]);
         }
@@ -270,7 +270,7 @@ namespace SharpMap.Data
             return Convert.ToInt32(this[i]);
         }
 
-        public long GetInt64(Int32 i)
+        public Int64 GetInt64(Int32 i)
         {
             return Convert.ToInt64(this[i]);
         }
@@ -303,7 +303,7 @@ namespace SharpMap.Data
             return elementsCopied;
         }
 
-        public bool IsDBNull(Int32 i)
+        public Boolean IsDBNull(Int32 i)
         {
             return IsNull(i);
         }
@@ -334,7 +334,7 @@ namespace SharpMap.Data
                 "Use FeatureDataRow<TOid> instead.");
         }
 
-        public virtual bool HasOid
+        public virtual Boolean HasOid
         {
             get 
             {

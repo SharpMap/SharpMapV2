@@ -43,7 +43,7 @@ namespace SharpMap.Data
         /// <summary>
         /// Returns true if the datasource is currently open.
         /// </summary>
-        bool IsOpen { get; }
+        Boolean IsOpen { get; }
 
         /// <summary>
         /// The spatial reference ID for the provider.

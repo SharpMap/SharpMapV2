@@ -28,7 +28,7 @@ namespace SharpMap.Rendering.Rendering3D
     public struct ViewPoint3D : IVectorD
     {
         private DoubleComponent _x, _y, _z;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         public static readonly ViewPoint3D Empty = new ViewPoint3D();
         public static readonly ViewPoint3D Zero = new ViewPoint3D(0, 0, 0);
@@ -124,7 +124,7 @@ namespace SharpMap.Rendering.Rendering3D
             }
         }
 
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return _hasValue; }
         }
@@ -133,7 +133,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region Equality Computation
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if(obj is ViewPoint3D)
             {
@@ -153,7 +153,7 @@ namespace SharpMap.Rendering.Rendering3D
             return false;
         }
 
-        public bool Equals(ViewPoint3D point)
+        public Boolean Equals(ViewPoint3D point)
         {
             return point._hasValue == _hasValue &&
                    point._x.Equals(_x) &&
@@ -163,7 +163,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IMatrix<DoubleComponent>> Members
 
-        public bool Equals(IMatrix<DoubleComponent> other)
+        public Boolean Equals(IMatrix<DoubleComponent> other)
         {
             if (other == null)
             {
@@ -188,12 +188,12 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        public static bool operator ==(ViewPoint3D vector1, IVectorD vector2)
+        public static Boolean operator ==(ViewPoint3D vector1, IVectorD vector2)
         {
             return vector1.Equals(vector2);
         }
 
-        public static bool operator !=(ViewPoint3D vector1, IVectorD vector2)
+        public static Boolean operator !=(ViewPoint3D vector1, IVectorD vector2)
         {
             return !(vector1 == vector2);
         }
@@ -230,7 +230,7 @@ namespace SharpMap.Rendering.Rendering3D
             get { throw new NotImplementedException(); }
         }
 
-        public bool IsSingular
+        public Boolean IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -240,12 +240,12 @@ namespace SharpMap.Rendering.Rendering3D
             get { throw new NotImplementedException(); }
         }
 
-        public bool IsSquare
+        public Boolean IsSquare
         {
             get { throw new NotImplementedException(); }
         }
 
-        public bool IsSymmetrical
+        public Boolean IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
@@ -468,7 +468,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        bool IMatrixD.IsSingular
+        Boolean IMatrixD.IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -476,7 +476,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertible
+        Boolean IMatrixD.IsInvertible
         {
             get { throw new NotImplementedException(); }
         }
@@ -492,7 +492,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        bool IMatrixD.IsSquare
+        Boolean IMatrixD.IsSquare
         {
             get { throw new NotImplementedException(); }
         }
@@ -500,7 +500,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        bool IMatrixD.IsSymmetrical
+        Boolean IMatrixD.IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
@@ -594,7 +594,7 @@ namespace SharpMap.Rendering.Rendering3D
         ///</returns>
         ///
         ///<param name="other">An object to compare with this object.</param>
-        bool IEquatable<IMatrixD>.Equals(IMatrixD other)
+        Boolean IEquatable<IMatrixD>.Equals(IMatrixD other)
         {
             throw new NotImplementedException();
         }

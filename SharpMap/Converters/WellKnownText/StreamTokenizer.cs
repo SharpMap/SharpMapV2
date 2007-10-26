@@ -73,7 +73,7 @@ namespace SharpMap.Converters.WellKnownText
 		TokenType _currentTokenType;
 		TextReader _reader;
 		String _currentToken;
-		bool _ignoreWhitespace = false;
+		Boolean _ignoreWhitespace = false;
 		Int32 _lineNumber=1;
 		Int32 _colNumber=1;
 			
@@ -85,7 +85,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="reader">A TextReader with some text to read.</param>
 		/// <param name="ignoreWhitespace">Flag indicating whether whitespace should be ignored.</param>
-		public StreamTokenizer(TextReader reader, bool ignoreWhitespace)
+		public StreamTokenizer(TextReader reader, Boolean ignoreWhitespace)
 		{
 			if (reader==null)
 			{
@@ -163,7 +163,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="ignoreWhitespace">Determines is whitespace is ignored. True if whitespace is to be ignored.</param>
 		/// <returns>The TokenType of the next token.</returns>
-		public TokenType NextToken(bool ignoreWhitespace)
+		public TokenType NextToken(Boolean ignoreWhitespace)
 		{
 			TokenType nextTokenType;
 			if (ignoreWhitespace)
@@ -188,22 +188,22 @@ namespace SharpMap.Converters.WellKnownText
 		private TokenType NextTokenAny()
 		{
 			TokenType nextTokenType = TokenType.Eof;
-			char[] chars = new char[1];
+			Char[] chars = new Char[1];
 			_currentToken="";
 			_currentTokenType = TokenType.Eof;
 			Int32 finished = _reader.Read(chars,0,1);
 
-			bool isNumber=false;
-			bool isWord=false;
-			byte[] ba=null;
+			Boolean isNumber=false;
+			Boolean isWord=false;
+			Byte[] ba=null;
 			ASCIIEncoding AE = new ASCIIEncoding();
-			char[] ascii=null;
+			Char[] ascii=null;
 			Char currentCharacter;
 			Char nextCharacter;
 			while (finished != 0 )
 			{
-				// convert Int32 to char
-				ba = new Byte[]{(byte)_reader.Peek()};
+				// convert Int32 to Char
+				ba = new Byte[]{(Byte)_reader.Peek()};
 				
 				 ascii = AE.GetChars(ba);
 
@@ -293,7 +293,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="character">The character to determine.</param>
 		/// <returns>The TokenType the character is.</returns>
-		private TokenType GetType(char character)
+		private TokenType GetType(Char character)
 		{
 			if (Char.IsDigit(character))
 			{

@@ -32,11 +32,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         private UInt32 _numberOfRecords;
         private Int16 _headerLength;
         private Int16 _recordLength;
-        private readonly byte _languageDriver;
+        private readonly Byte _languageDriver;
         //private DbaseField[] _dbaseColumns;
     	private readonly Dictionary<String, DbaseField> _dbaseColumns = new Dictionary<String, DbaseField>();
 
-        internal DbaseHeader(byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
+        internal DbaseHeader(Byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
         {
             _languageDriver = languageDriverCode;
             _lastUpdate = lastUpdate;
@@ -47,7 +47,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Gets a value which indicates which code page text data is 
         /// stored in.
         /// </summary>
-        internal byte LanguageDriver
+        internal Byte LanguageDriver
         {
             get { return _languageDriver; }
         }
@@ -79,7 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 					RecordLength += field.Length;
             	}
 
-                HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count)
+                HeaderLength = (Int16)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count)
                     + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
             }
         }
@@ -190,7 +190,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     }
                     else
                     {
-                        fieldLength += (short)(reader.ReadByte() << 8);
+                        fieldLength += (Int16)(reader.ReadByte() << 8);
                     }
 
                     Type dataType = mapFieldTypeToClrType(fieldtype, decimals, fieldLength);
@@ -228,7 +228,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             switch (fieldtype)
             {
                 case 'L':
-                    return typeof(bool);
+                    return typeof(Boolean);
                     break;
                 case 'C':
                     return typeof(String);
@@ -251,9 +251,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                         return typeof(Double);
                     }
                 case 'F':
-                    return typeof(float);
+                    return typeof(Single);
                 case 'B':
-                    return typeof(byte[]);
+                    return typeof(Byte[]);
                 default:
                     return null;
             }

@@ -44,7 +44,7 @@ namespace SharpMap.Geometries
         }
 
         private Double _xMin, _yMin, _xMax, _yMax;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         #region Constructors
 
@@ -261,7 +261,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Returns true if BoundingBox is empty, false otherwise.
         /// </summary>
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return !_hasValue; }
             private set
@@ -366,7 +366,7 @@ namespace SharpMap.Geometries
         /// True if <paramref name="box"/> shares a commons border, false if not, 
         /// or if either or both are empty.
         /// </returns>
-        public bool Borders(BoundingBox box)
+        public Boolean Borders(BoundingBox box)
         {
             return Borders(box, Tolerance.Global);
         }
@@ -379,7 +379,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if <paramref name="box"/> shares a commons border, false if not, or if either or both are empty.
         /// </returns>
-        public bool Borders(BoundingBox box, Tolerance tolerance)
+        public Boolean Borders(BoundingBox box, Tolerance tolerance)
         {
             return Left == box.Left || Bottom == box.Bottom || Right == box.Right || Top == box.Top;
         }
@@ -397,7 +397,7 @@ namespace SharpMap.Geometries
         /// True this <see cref="BoundingBox"/> contains the 
         /// <paramref name="box">argument</paramref>.
         /// </returns>
-        public bool Contains(BoundingBox box)
+        public Boolean Contains(BoundingBox box)
         {
             return Contains(box, Tolerance.Global);
         }
@@ -414,7 +414,7 @@ namespace SharpMap.Geometries
         /// True this <see cref="BoundingBox"/> contains the 
         /// <paramref name="box">argument</paramref>.
         /// </returns>
-        public bool Contains(BoundingBox box, Tolerance tolerance)
+        public Boolean Contains(BoundingBox box, Tolerance tolerance)
         {
             if (IsEmpty || box.IsEmpty)
             {
@@ -441,7 +441,7 @@ namespace SharpMap.Geometries
         /// True if <paramref name="p">the point</paramref> borders or is 
         /// within this <see cref="BoundingBox"/>.
         /// </returns>
-        public bool Contains(Point p)
+        public Boolean Contains(Point p)
         {
             return Contains(p, Tolerance.Global);
         }
@@ -457,7 +457,7 @@ namespace SharpMap.Geometries
         /// True if <paramref name="p">the point</paramref> 
         /// borders or is within this <see cref="BoundingBox"/>.
         /// </returns>
-        public bool Contains(Point p, Tolerance tolerance)
+        public Boolean Contains(Point p, Tolerance tolerance)
         {
             if (p == null || IsEmpty || p.IsEmpty())
             {
@@ -500,7 +500,7 @@ namespace SharpMap.Geometries
         /// True if this <see cref="BoundingBox"/> contains the 
         /// <paramref name="geometry">geometry</paramref>.
         /// </returns>
-        public bool Contains(Geometry geometry)
+        public Boolean Contains(Geometry geometry)
         {
             return Contains(geometry, Tolerance.Global);
         }
@@ -513,7 +513,7 @@ namespace SharpMap.Geometries
         /// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True if this <see cref="BoundingBox"/> contains the 
         /// <paramref name="geometry">geometry</paramref>.</returns>
-        public bool Contains(Geometry geometry, Tolerance tolerance)
+        public Boolean Contains(Geometry geometry, Tolerance tolerance)
         {
             if (geometry == null)
             {
@@ -555,7 +555,7 @@ namespace SharpMap.Geometries
         /// True if the <paramref name="box">argument</paramref> 
         /// touches this <see cref="BoundingBox"/> instance in any way.
         /// </returns>
-        public bool Intersects(BoundingBox box)
+        public Boolean Intersects(BoundingBox box)
         {
             return Intersects(box, Tolerance.Global);
         }
@@ -575,7 +575,7 @@ namespace SharpMap.Geometries
         /// True if the <paramref name="box">argument</paramref> touches 
         /// this <see cref="BoundingBox"/> instance in any way.
         /// </returns>
-        public bool Intersects(BoundingBox box, Tolerance tolerance)
+        public Boolean Intersects(BoundingBox box, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -597,7 +597,7 @@ namespace SharpMap.Geometries
         /// True if this BoundingBox intersects the 
         /// <paramref name="geometry">geometry</paramref>.
         /// </returns>
-        public bool Intersects(Geometry geometry)
+        public Boolean Intersects(Geometry geometry)
         {
             return Intersects(geometry, Tolerance.Global);
         }
@@ -617,7 +617,7 @@ namespace SharpMap.Geometries
         /// True if this BoundingBox intersects the 
         /// <paramref name="geometry">geometry</paramref>.
         /// </returns>
-        public bool Intersects(Geometry geometry, Tolerance tolerance)
+        public Boolean Intersects(Geometry geometry, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -649,7 +649,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="b">bounding box</paramref> overlaps.
         /// </returns>
-        public bool Overlaps(BoundingBox b)
+        public Boolean Overlaps(BoundingBox b)
         {
             return Overlaps(b, Tolerance.Global);
         }
@@ -675,7 +675,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="b">bounding box</paramref> overlaps.
         /// </returns>
-        public bool Overlaps(BoundingBox b, Tolerance tolerance)
+        public Boolean Overlaps(BoundingBox b, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -714,7 +714,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="p">point</paramref> overlaps.
         /// </returns>
-        public bool Overlaps(Point p)
+        public Boolean Overlaps(Point p)
         {
             return Overlaps(p, Tolerance.Global);
         }
@@ -742,7 +742,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="p">point</paramref> overlaps.
         /// </returns>
-        public bool Overlaps(Point p, Tolerance tolerance)
+        public Boolean Overlaps(Point p, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -777,7 +777,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="geometry">geometry</paramref> overlaps.
         /// </returns>
-        public bool Overlaps(Geometry geometry)
+        public Boolean Overlaps(Geometry geometry)
         {
             return Overlaps(geometry, Tolerance.Global);
         }
@@ -805,7 +805,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="geometry">geometry</paramref> overlaps.
         /// </returns>
-        public bool Overlaps(Geometry geometry, Tolerance tolerance)
+        public Boolean Overlaps(Geometry geometry, Tolerance tolerance)
         {
             if (geometry == null)
             {
@@ -843,7 +843,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if <paramref name="box"/> touches.
         /// </returns>
-        public bool Touches(BoundingBox box)
+        public Boolean Touches(BoundingBox box)
         {
             return Touches(box, Tolerance.Global);
         }
@@ -862,7 +862,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if <paramref name="box"/> touches.
         /// </returns>
-        public bool Touches(BoundingBox box, Tolerance tolerance)
+        public Boolean Touches(BoundingBox box, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -891,7 +891,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="p">point</paramref> touches.
         /// </returns>
-        public bool Touches(Point p)
+        public Boolean Touches(Point p)
         {
             return Touches(p, Tolerance.Global);
         }
@@ -910,7 +910,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="p">point</paramref> touches.
         /// </returns>
-        public bool Touches(Point p, Tolerance tolerance)
+        public Boolean Touches(Point p, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -936,7 +936,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="geometry">geometry</paramref> touches.
         /// </returns>
-        public bool Touches(Geometry geometry)
+        public Boolean Touches(Geometry geometry)
         {
             return Touches(geometry, Tolerance.Global);
         }
@@ -955,7 +955,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// True if the <paramref name="geometry">geometry</paramref> touches.
         /// </returns>
-        public bool Touches(Geometry geometry, Tolerance tolerance)
+        public Boolean Touches(Geometry geometry, Tolerance tolerance)
         {
             if (tolerance == null)
             {
@@ -988,7 +988,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="box"><see cref="BoundingBox"/></param>
         /// <returns>True if the BoundingBox contains <paramref name="box"/>.</returns>
-        public bool Within(BoundingBox box)
+        public Boolean Within(BoundingBox box)
         {
             return Within(box, Tolerance.Global);
         }
@@ -1003,7 +1003,7 @@ namespace SharpMap.Geometries
         /// <see cref="Tolerance"/> to use to compare values.
         /// </param>
         /// <returns>True if the BoundingBox contains <paramref name="box"/>.</returns>
-        public bool Within(BoundingBox box, Tolerance tolerance)
+        public Boolean Within(BoundingBox box, Tolerance tolerance)
         {
             if (IsEmpty || box.IsEmpty)
             {
@@ -1034,7 +1034,7 @@ namespace SharpMap.Geometries
         /// True if this <see cref="BoundingBox"/> is 
         /// within the <paramref name="p">point</paramref>.
         /// </returns>
-        public bool Within(Point p)
+        public Boolean Within(Point p)
         {
             return Within(p, Tolerance.Global);
         }
@@ -1056,7 +1056,7 @@ namespace SharpMap.Geometries
         /// True if this <see cref="BoundingBox"/> is within the 
         /// <paramref name="p">point</paramref>.
         /// </returns>
-        public bool Within(Point p, Tolerance tolerance)
+        public Boolean Within(Point p, Tolerance tolerance)
         {
             if (p == null || IsEmpty || p.IsEmpty())
             {
@@ -1096,7 +1096,7 @@ namespace SharpMap.Geometries
         /// <param name="geometry">Geometry to test if it is within this <see cref="BoundingBox"/> instance.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the 
         /// <paramref name="geometry">geometry</paramref>.</returns>
-        public bool Within(Geometry geometry)
+        public Boolean Within(Geometry geometry)
         {
             return Within(geometry, Tolerance.Global);
         }
@@ -1110,7 +1110,7 @@ namespace SharpMap.Geometries
         /// <param name="tolerance"><see cref="Tolerance"/> to use to compare values.</param>
         /// <returns>True if this <see cref="BoundingBox"/> is within the 
         /// <paramref name="geometry">geometry</paramref>.</returns>
-        public bool Within(Geometry geometry, Tolerance tolerance)
+        public Boolean Within(Geometry geometry, Tolerance tolerance)
         {
             if (geometry == null)
             {
@@ -1155,7 +1155,7 @@ namespace SharpMap.Geometries
         /// <returns>Area</returns>
         public Double GetIntersectingArea(BoundingBox r)
         {
-            //uint cIndex;
+            //UInt32 cIndex;
             //for (cIndex = 0; cIndex < 2; cIndex++)
             //    if (Min[cIndex] > r.Max[cIndex] || Max[cIndex] < r.Min[cIndex]) return 0.0;
 
@@ -1439,7 +1439,7 @@ namespace SharpMap.Geometries
             ret += box.Right < Left ? Math.Pow(Left - box.Right, 2) : Math.Pow(box.Left - Right, 2);
             ret += box.Top < Bottom ? Math.Pow(Bottom - box.Top, 2) : Math.Pow(box.Bottom - Top, 2);
 
-            //for (uint cIndex = 0; cIndex < 2; cIndex++)
+            //for (UInt32 cIndex = 0; cIndex < 2; cIndex++)
             //{
             //    if (p[cIndex] < Min[cIndex]) ret += Math.Pow(Min[cIndex] - p[cIndex], 2.0);
             //    else if (p[cIndex] > Max[cIndex]) ret += Math.Pow(p[cIndex] - Max[cIndex], 2.0);
@@ -1509,7 +1509,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
         /// <returns>True if equal within <see cref="Tolerance.Global"/>.</returns>
-        public bool Equals(BoundingBox other)
+        public Boolean Equals(BoundingBox other)
         {
             return Equals(other, Tolerance.Global);
         }
@@ -1521,7 +1521,7 @@ namespace SharpMap.Geometries
         /// <param name="other"><see cref="BoundingBox"/> to compare to.</param>
         /// <param name="tolerance">The <see cref="Tolerance"/> to use to compare.</param>
         /// <returns>True if equal within <paramref name="tolerance"/>.</returns>
-        public bool Equals(BoundingBox other, Tolerance tolerance)
+        public Boolean Equals(BoundingBox other, Tolerance tolerance)
         {
             // Check empty
             if (IsEmpty == true && other.IsEmpty == true)
@@ -1554,7 +1554,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj == null)
             {
@@ -1600,12 +1600,12 @@ namespace SharpMap.Geometries
 
         #region Value Operators
 
-        public static bool operator ==(BoundingBox box1, BoundingBox box2)
+        public static Boolean operator ==(BoundingBox box1, BoundingBox box2)
         {
             return box1.Equals(box2);
         }
 
-        public static bool operator !=(BoundingBox box1, BoundingBox box2)
+        public static Boolean operator !=(BoundingBox box1, BoundingBox box2)
         {
             return !box1.Equals(box2);
         }

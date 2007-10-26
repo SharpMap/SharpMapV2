@@ -103,7 +103,7 @@ namespace SharpMap.CoordinateSystems
 		ICoordinateSystem CreateFromWkt(String wkt);
 
 		/// <summary>
-		/// Creates a <see cref="IGeographicCoordinateSystem"/>, which could be Lat/Lon or Lon/Lat.
+		/// Creates a <see cref="IGeographicCoordinateSystem"/>, which could be Lat / Lon or Lon / Lat.
 		/// </summary>
 		/// <param name="name">Name of geographical coordinate system</param>
 		/// <param name="angularUnit">Angular units</param>

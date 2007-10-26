@@ -31,7 +31,7 @@ namespace SharpMap.Rendering.Rendering2D
     public struct Size2D : IVectorD, IHasEmpty, IComparable<Size2D>
     {
         private DoubleComponent _width, _height;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         public static readonly Size2D Empty = new Size2D();
         public static readonly Size2D Zero = new Size2D(0, 0);
@@ -81,7 +81,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return !_hasValue; }
         }
@@ -150,27 +150,27 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Equality Testing
-        public static bool operator ==(Size2D lhs, Size2D rhs)
+        public static Boolean operator ==(Size2D lhs, Size2D rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Size2D lhs, Size2D rhs)
+        public static Boolean operator !=(Size2D lhs, Size2D rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public static bool operator ==(Size2D lhs, IVectorD rhs)
+        public static Boolean operator ==(Size2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Size2D lhs, IVectorD rhs)
+        public static Boolean operator !=(Size2D lhs, IVectorD rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj is Size2D)
             {
@@ -185,7 +185,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public bool Equals(Size2D size)
+        public Boolean Equals(Size2D size)
         {
             return _width.Equals(size._width) &&
                 _height.Equals(size._height) &&
@@ -194,7 +194,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<IViewVector> Members
 
-        public bool Equals(IVectorD other)
+        public Boolean Equals(IVectorD other)
         {
             if (other == null)
             {
@@ -227,7 +227,7 @@ namespace SharpMap.Rendering.Rendering2D
         ///</returns>
         ///
         ///<param name="other">An object to compare with this object.</param>
-        public bool Equals(IMatrixD other)
+        public Boolean Equals(IMatrixD other)
         {
             if (other == null)
             {
@@ -492,7 +492,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        bool IMatrixD.IsSingular
+        Boolean IMatrixD.IsSingular
         {
             get { return true; }
         }
@@ -500,7 +500,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        bool IMatrixD.IsInvertible
+        Boolean IMatrixD.IsInvertible
         {
             get { return false; }
         }
@@ -516,7 +516,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        bool IMatrixD.IsSquare
+        Boolean IMatrixD.IsSquare
         {
             get { return false; }
         }
@@ -524,7 +524,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        bool IMatrixD.IsSymmetrical
+        Boolean IMatrixD.IsSymmetrical
         {
             get { return false; }
         }

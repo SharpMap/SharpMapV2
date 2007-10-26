@@ -42,7 +42,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal ProjectedCoordinateSystem(IHorizontalDatum datum, IGeographicCoordinateSystem geographicCoordinateSystem,
 			ILinearUnit linearUnit, IProjection projection, List<AxisInfo> axisInfo,
-			String name, String authority, long code, String alias,
+			String name, String authority, Int64 code, String alias,
 			String remarks, String abbreviation)
 			: base(datum, axisInfo, name, authority, code, alias, abbreviation, remarks)
 		{
@@ -59,7 +59,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="Zone">UTM zone</param>
 		/// <param name="ZoneIsNorth">true of Northern hemisphere, false if southern</param>
 		/// <returns>UTM/WGS84 coordsys</returns>
-		public static ProjectedCoordinateSystem WGS84_UTM(Int32 Zone, bool ZoneIsNorth)
+		public static ProjectedCoordinateSystem WGS84_UTM(Int32 Zone, Boolean ZoneIsNorth)
 		{
 			ParameterInfo pInfo = new ParameterInfo();
 			pInfo.Add("latitude_of_origin", 0);
@@ -197,7 +197,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			ProjectedCoordinateSystem other = obj as ProjectedCoordinateSystem;
 			

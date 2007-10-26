@@ -51,7 +51,7 @@ namespace SharpMap.Rendering.Rendering2D
             _theme = theme;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(Boolean disposing)
         {
             if(IsDisposed)
             {
@@ -129,7 +129,7 @@ namespace SharpMap.Rendering.Rendering2D
         public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, TStyle style,
                                                         RenderState renderState)
         {
-            bool cancel = false;
+            Boolean cancel = false;
 
             OnFeatureRendering(ref cancel);
 
@@ -206,7 +206,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="cancel">
         /// Value which can be set to indicate that the feature shouldn't be rendered.
         /// </param>
-        protected virtual void OnFeatureRendering(ref bool cancel)
+        protected virtual void OnFeatureRendering(ref Boolean cancel)
         {
             CancelEventHandler @event = FeatureRendering;
 

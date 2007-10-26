@@ -121,7 +121,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </item>
         /// </list>
         /// </remarks>
-        public TransverseMercator(List<ProjectionParameter> parameters, bool inverse)
+        public TransverseMercator(List<ProjectionParameter> parameters, Boolean inverse)
             : base(parameters, inverse)
         {
             this.Name = "Transverse_Mercator";
@@ -215,10 +215,10 @@ namespace SharpMap.CoordinateSystems.Projections
         {
             Double con, phi;		/* temporary angles				*/
             Double delta_phi;	/* difference between longitudes		*/
-            long i;			/* counter variable				*/
+            Int64 i;			/* counter variable				*/
             Double sin_phi, cos_phi, tan_phi;	/* sin cos and tangent values	*/
             Double c, cs, t, ts, n, r, d, ds;	/* temporary variables		*/
-            long max_iter = 6;			/* maximun number of iterations	*/
+            Int64 max_iter = 6;			/* maximun number of iterations	*/
 
 
             Double x = p.X - false_easting;

@@ -27,8 +27,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 	{
 		private readonly String _columnName;
 		private readonly Type _dataType;
-		private readonly short _length;
-		private readonly byte _decimals;
+		private readonly Int16 _length;
+		private readonly Byte _decimals;
 		private readonly DbaseHeader _header;
 		private readonly Int32 _ordinal;
 		private readonly Int32 _offset;
@@ -71,7 +71,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Gets the number of decimals in a numeric field.
 		/// </summary>
-		public byte Decimals
+		public Byte Decimals
 		{
 			get { return _decimals; }
 		}
@@ -118,7 +118,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
 		/// <param name="obj">The field to compare to.</param>
 		/// <returns>True if the fields are equal, false otherwise.</returns>
-		public override bool Equals(object obj)
+		public override Boolean Equals(object obj)
 		{
 			DbaseField other = obj as DbaseField;
 			return Equals(other);
@@ -132,7 +132,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
         /// <param name="other">The field to compare to.</param>
 		/// <returns>True if the fields are equal, false otherwise.</returns>
-		public bool Equals(DbaseField other)
+		public Boolean Equals(DbaseField other)
 		{
 			if (ReferenceEquals(other, null))
 			{

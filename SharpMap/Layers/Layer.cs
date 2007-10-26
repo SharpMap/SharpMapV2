@@ -112,10 +112,10 @@ namespace SharpMap.Layers
         private ICoordinateTransformation _coordinateTransform;
         private String _layerName;
         private IStyle _style;
-        private bool _disposed;
+        private Boolean _disposed;
         private readonly ILayerProvider _dataSource;
-        private bool _asyncQuery = false;
-        private bool _handleFeaturesNotFoundEvent = true;
+        private Boolean _asyncQuery = false;
+        private Boolean _handleFeaturesNotFoundEvent = true;
         #endregion
 
         #region Object Creation / Disposal
@@ -210,7 +210,7 @@ namespace SharpMap.Layers
         /// <param name="disposing">
         /// True if being called deterministically, false if being called from finalizer.
         /// </param>
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (disposing)
             {
@@ -224,7 +224,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets whether this layer is disposed, and no longer accessible.
         /// </summary>
-        public bool IsDisposed
+        public Boolean IsDisposed
         {
             get { return _disposed; }
         }
@@ -255,7 +255,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets a value indicating that data is obtained asynchronously.
         /// </summary>
-        public bool AsyncQuery
+        public Boolean AsyncQuery
         {
             get { return _asyncQuery; }
             set
@@ -321,7 +321,7 @@ namespace SharpMap.Layers
         /// object is created and assigned to the Style property, 
         /// and then the Style.Enabled property is set.
         /// </remarks>
-        public bool Enabled
+        public Boolean Enabled
         {
             get { return Style.Enabled; }
             set
@@ -371,7 +371,7 @@ namespace SharpMap.Layers
         /// an event from a data store indicating that the data is not cached
         /// and must be read from <see cref="DataSource"/>.
         /// </summary>
-        public bool ShouldHandleFeaturesNotFoundEvent
+        public Boolean ShouldHandleFeaturesNotFoundEvent
         {
             get { return _handleFeaturesNotFoundEvent; }
             set
@@ -445,7 +445,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public bool IsVisibleWhen(Predicate<ILayer> condition)
+        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
         {
             return condition(this);
         }

@@ -105,7 +105,7 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// </remarks>
 		/// <param name="parameters">List of parameters to initialize the projection.</param>
 		/// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-		public LambertConformalConic2SP(List<ProjectionParameter> parameters, bool isInverse)
+		public LambertConformalConic2SP(List<ProjectionParameter> parameters, Boolean isInverse)
 			: base(parameters, isInverse)
 		{
 			this.Name = "Lambert_Conformal_Conic_2SP";
@@ -237,7 +237,7 @@ namespace SharpMap.CoordinateSystems.Projections
 			Double con;			/* sign variable		*/
 			Double ts;			/* small t			*/
 			Double theta;			/* angle			*/
-			long   flag;			/* error flag			*/
+			Int64   flag;			/* error flag			*/
 
 			flag = 0;
 			Double dX = p.X - this._falseEasting;

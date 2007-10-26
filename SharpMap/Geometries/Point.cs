@@ -36,7 +36,7 @@ namespace SharpMap.Geometries
 
         private Double _x = 0.0;
         private Double _y = 0.0;
-        private bool _hasValue = false;
+        private Boolean _hasValue = false;
 
         /// <summary>
         /// Initializes a new Point
@@ -162,7 +162,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public virtual Double this[uint index]
+        public virtual Double this[UInt32 index]
         {
             get
             {
@@ -264,7 +264,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="p">Point to compare to</param>
         /// <returns>True if the points are either both empty or have the same coordinates, false otherwise.</returns>
-        public virtual bool Equals(Point p)
+        public virtual Boolean Equals(Point p)
         {
             if (ReferenceEquals(p, null))
             {
@@ -306,7 +306,7 @@ namespace SharpMap.Geometries
         /// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
         /// </summary>
         /// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-        public override bool IsEmpty()
+        public override Boolean IsEmpty()
         {
             return !_hasValue;
         }
@@ -317,7 +317,7 @@ namespace SharpMap.Geometries
         /// conditions that cause an instance of that class to be classified as not simple.
         /// </summary>
         /// <returns>true if the geometry is simple</returns>
-        public override bool IsSimple()
+        public override Boolean IsSimple()
         {
             return true;
         }
@@ -465,7 +465,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="box">box</param>
         /// <returns>true if they touch</returns>
-        public bool Touches(BoundingBox box)
+        public Boolean Touches(BoundingBox box)
         {
             return box.Touches(this);
         }
@@ -475,7 +475,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="geom">Geometry</param>
         /// <returns>true if they touch</returns>
-        public override bool Touches(Geometry geom)
+        public override Boolean Touches(Geometry geom)
         {
             if (geom is Point && Equals(geom))
             {
@@ -490,7 +490,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="box">Box</param>
         /// <returns>True if they intersect</returns>
-        public bool Intersects(BoundingBox box)
+        public Boolean Intersects(BoundingBox box)
         {
             return box.Contains(this);
         }
@@ -500,7 +500,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="geom">Geometry</param>
         /// <returns>True if geom is contained by this instance</returns>
-        public override bool Contains(Geometry geom)
+        public override Boolean Contains(Geometry geom)
         {
             return false;
         }
@@ -619,11 +619,11 @@ namespace SharpMap.Geometries
         {
             get
             {
-                return this[(uint)index];
+                return this[(UInt32)index];
             }
             set
             {
-                this[(uint) index] = (Double)value;
+                this[(UInt32) index] = (Double)value;
             }
         }
 
@@ -673,22 +673,22 @@ namespace SharpMap.Geometries
             get { throw new NotSupportedException(); }
         }
 
-        public bool IsInvertible
+        public Boolean IsInvertible
         {
             get { return false; }
         }
 
-        public bool IsSingular
+        public Boolean IsSingular
         {
             get { throw new NotSupportedException(); }
         }
 
-        public bool IsSquare
+        public Boolean IsSquare
         {
             get { return false; }
         }
 
-        public bool IsSymmetrical
+        public Boolean IsSymmetrical
         {
             get { return false; }
         }
@@ -782,7 +782,7 @@ namespace SharpMap.Geometries
 
         #region IEquatable<IMatrix<DoubleComponent>> Members
 
-        public bool Equals(IMatrix<DoubleComponent> other)
+        public Boolean Equals(IMatrix<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }

@@ -28,7 +28,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Version of the dBase file specification Shapefiles use: 3.
 		/// </summary>
-		internal static readonly byte DbfVersionCode = 0x03;
+		internal static readonly Byte DbfVersionCode = 0x03;
 
 		/// <summary>
 		/// Offset of the language driver code in the dBase header.
@@ -46,29 +46,29 @@ namespace SharpMap.Data.Providers.ShapeFile
 		internal static readonly Int32 ColumnDescriptionLength = 32;
 
 		/// <summary>
-		/// Number of bytes to the end of a column entry from the end of the decimal byte.
+		/// Number of bytes to the end of a column entry from the end of the decimal Byte.
 		/// </summary>
 		internal static readonly Int32 BytesFromEndOfDecimalInFieldRecord = 14;
 
 		/// <summary>
 		/// Character used to specify a null value for numbers.
 		/// </summary>
-		internal static readonly char NumericNullIndicator = '*';
+		internal static readonly Char NumericNullIndicator = '*';
 
 		/// <summary>
 		/// Character used to specify a deleted row.
 		/// </summary>
-		internal static readonly char DeletedIndicator = '*';
+		internal static readonly Char DeletedIndicator = '*';
 
 		/// <summary>
 		/// Character used to specify a non-deleted row.
 		/// </summary>
-		internal static readonly char NotDeletedIndicator = ' ';
+		internal static readonly Char NotDeletedIndicator = ' ';
 
 		/// <summary>
 		/// Character used to specify a null value for boolean values.
 		/// </summary>
-		internal static readonly char BooleanNullChar = '?';
+		internal static readonly Char BooleanNullChar = '?';
 
 		/// <summary>
 		/// Character used to specify a null value for date-time values.
@@ -78,12 +78,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Character used to indicate the end of the dBase header in the file.
 		/// </summary>
-		internal static readonly byte HeaderTerminator = 0x0d;
+		internal static readonly Byte HeaderTerminator = 0x0d;
 
 		/// <summary>
 		/// Character used to indicate the end of the dBase file.
 		/// </summary>
-		internal static readonly byte FileTerminator = 0x1a;
+		internal static readonly Byte FileTerminator = 0x1a;
 
 		/// <summary>
 		/// The last updated value in the header is measured from this year.

@@ -56,16 +56,16 @@ namespace SharpMap.Styles
         #region Private fields
 
         [FieldOffset(0)]
-        private byte _b;
+        private Byte _b;
         [FieldOffset(1)]
-        private byte _g;
+        private Byte _g;
         [FieldOffset(2)]
-        private byte _r;
+        private Byte _r;
         [FieldOffset(3)]
-        private byte _a;
+        private Byte _a;
 
         [FieldOffset(0)]
-        private uint _bgra;
+        private UInt32 _bgra;
 
         #endregion
 
@@ -73,14 +73,14 @@ namespace SharpMap.Styles
 
         /// <summary>
         /// Creates a new <see cref="StyleColor"/> from a <see cref="UInt32"/>
-        /// value where the highest order byte is the blue, the next highest is green,
-        /// the next is red and the lowest order byte is the alpha value.
+        /// value where the highest order Byte is the blue, the next highest is green,
+        /// the next is red and the lowest order Byte is the alpha value.
         /// </summary>
         /// <param name="bgra">
         /// The blue, green, red, alpha encoded <see cref="UInt32"/> value to create
         /// the <see cref="StyleColor"/> from.
         /// </param>
-        public StyleColor(uint bgra)
+        public StyleColor(UInt32 bgra)
         {
             _b = _g = _r = _a = 0;
             _bgra = bgra;
@@ -116,8 +116,8 @@ namespace SharpMap.Styles
 
         /// <summary>
         /// Generates a new <see cref="StyleColor"/> from a <see cref="UInt32"/>
-        /// value where the highest order byte is the blue, the next highest is green,
-        /// the next is red and the lowest order byte is the alpha value.
+        /// value where the highest order Byte is the blue, the next highest is green,
+        /// the next is red and the lowest order Byte is the alpha value.
         /// </summary>
         /// <param name="bgra">
         /// The blue, green, red, alpha encoded <see cref="UInt32"/> value to create
@@ -126,7 +126,7 @@ namespace SharpMap.Styles
         /// <returns>
         /// A <see cref="StyleColor"/> with the same value as <paramref name="bgra"/>.
         /// </returns>
-        public static StyleColor FromBgra(uint bgra)
+        public static StyleColor FromBgra(UInt32 bgra)
         {
             return new StyleColor(bgra);
         }
@@ -459,7 +459,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
         /// </summary>
-        public bool Equals(StyleColor other)
+        public Boolean Equals(StyleColor other)
         {
             return this == other;
         }
@@ -469,7 +469,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
         /// </summary>
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj != null && obj is StyleColor && ((StyleColor)obj).Bgra == Bgra)
             {
@@ -484,7 +484,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Returns true if two <see cref="StyleColor"/> instances are equal, false if they are not equal.
         /// </summary>
-        public static bool operator ==(StyleColor color1, StyleColor color2)
+        public static Boolean operator ==(StyleColor color1, StyleColor color2)
         {
             return color1.Bgra == color2.Bgra;
         }
@@ -492,7 +492,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Returns true if two <see cref="StyleColor"/> instances are not equal, false if they are equal.
         /// </summary>
-        public static bool operator !=(StyleColor color1, StyleColor color2)
+        public static Boolean operator !=(StyleColor color1, StyleColor color2)
         {
             return color1.Bgra != color2.Bgra;
         }
@@ -2324,9 +2324,9 @@ namespace SharpMap.Styles
 
         #region Private helper methods
 
-        private static byte clampToByte(Int32 value)
+        private static Byte clampToByte(Int32 value)
         {
-            return value > 255 ? (byte)255 : value < 0 ? (byte)0 : (byte)value;
+            return value > 255 ? (Byte)255 : value < 0 ? (Byte)0 : (Byte)value;
         }
 
         private void setByHsb(Double h, Double s, Double v)
@@ -2392,9 +2392,9 @@ namespace SharpMap.Styles
                 b = clr[2];
             }
 
-            _b = (byte)(255 * b);
-            _g = (byte)(255 * g);
-            _r = (byte)(255 * r);
+            _b = (Byte)(255 * b);
+            _g = (Byte)(255 * g);
+            _r = (Byte)(255 * r);
         }
 
         #endregion

@@ -18,7 +18,7 @@
 namespace SharpMap.Converters.WellKnownBinary
 {
 	/// <summary>
-	/// Specifies the specific binary encoding (NDR or XDR) used for a geometry byte stream
+	/// Specifies the specific binary encoding (NDR or XDR) used for a geometry Byte stream
 	/// </summary>
 	public enum WkbByteOrder : byte
 	{
@@ -28,11 +28,11 @@ namespace SharpMap.Converters.WellKnownBinary
 		/// <remarks>
 		/// <para>
 		/// The XDR representation of an Unsigned Integer is 
-		/// Big Endian (most significant byte first).
+		/// Big Endian (most significant Byte first).
 		/// </para>
 		/// <para>
 		/// The XDR representation of a Double is 
-		/// Big Endian (sign bit is first byte).
+		/// Big Endian (sign bit is first Byte).
 		/// </para>
 		/// </remarks>
 		Xdr = 0,
@@ -43,11 +43,11 @@ namespace SharpMap.Converters.WellKnownBinary
 		/// <remarks>
 		/// <para>
 		/// The NDR representation of an Unsigned Integer is 
-		/// Little Endian (least significant byte first).
+		/// Little Endian (least significant Byte first).
 		/// </para>
 		/// <para>
 		/// The NDR representation of a Double is 
-		/// Little Endian (sign bit is last byte).
+		/// Little Endian (sign bit is last Byte).
 		/// </para>
 		/// </remarks>
 		Ndr = 1

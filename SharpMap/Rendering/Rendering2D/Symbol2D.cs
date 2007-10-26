@@ -55,7 +55,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="symbolData">The data which encodes this symbol.</param>
         /// <param name="size">The base size of the symbol.</param>
-        public Symbol2D(byte[] symbolData, Size2D size)
+        public Symbol2D(Byte[] symbolData, Size2D size)
             : this(new MemoryStream(symbolData), size)
         {
         }

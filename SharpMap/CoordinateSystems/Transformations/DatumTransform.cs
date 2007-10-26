@@ -30,14 +30,14 @@ namespace SharpMap.CoordinateSystems.Transformations
 		protected IMathTransform _inverse;
 		private readonly Wgs84ConversionInfo _ToWgs94;
 		private readonly Double[] v;
-		private bool _isInverse = false;
+		private Boolean _isInverse = false;
 
 		public DatumTransform(Wgs84ConversionInfo towgs84)
 			: this(towgs84, false)
 		{
 		}
 
-		private DatumTransform(Wgs84ConversionInfo towgs84, bool isInverse)
+		private DatumTransform(Wgs84ConversionInfo towgs84, Boolean isInverse)
 		{
 			_ToWgs94 = towgs84;
 			v = _ToWgs94.GetAffineTransform();

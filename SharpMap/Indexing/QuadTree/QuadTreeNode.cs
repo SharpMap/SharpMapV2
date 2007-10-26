@@ -33,7 +33,7 @@ namespace SharpMap.Indexing.QuadTree
             set { _value = value; }
         }
 
-        public bool IsLeaf
+        public Boolean IsLeaf
         {
             get { return Items.Count == 0; }
         }

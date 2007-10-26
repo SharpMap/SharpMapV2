@@ -53,7 +53,7 @@ namespace SharpMap.CoordinateSystems
 			return String.Format("[ProjectionParameter] {0} = {1}", Name, Value);
 		}
 
-		public override bool Equals(object obj)
+		public override Boolean Equals(object obj)
 		{
 			Parameter other = obj as Parameter;
 

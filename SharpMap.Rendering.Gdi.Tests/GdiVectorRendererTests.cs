@@ -76,7 +76,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             renderer.Dispose();
         }
 
-        private static bool pensAreEqual(Pen p1, Pen p2)
+        private static Boolean pensAreEqual(Pen p1, Pen p2)
         {
             if (ReferenceEquals(p1, p2))
             {
@@ -109,7 +109,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             return true;
         }
 
-        private static bool elementsAreEqual(float[] lhs, float[] rhs)
+        private static Boolean elementsAreEqual(Single[] lhs, Single[] rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -137,7 +137,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             return true;
         }
 
-        private static bool brushesAreEqual(Brush b1, Brush b2)
+        private static Boolean brushesAreEqual(Brush b1, Brush b2)
         {
             if (ReferenceEquals(b1, b2))
             {
@@ -169,7 +169,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             return false;
         }
 
-        private static bool solidBrushesAreEqual(SolidBrush b1, SolidBrush b2)
+        private static Boolean solidBrushesAreEqual(SolidBrush b1, SolidBrush b2)
         {
             return b1.Color == b2.Color;
         }

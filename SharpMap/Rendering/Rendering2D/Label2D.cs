@@ -34,7 +34,7 @@ namespace SharpMap.Rendering.Rendering2D
         private Point2D _offset;
         private StyleFont _font;
         private Int32 _priority;
-        private float _rotation;
+        private Single _rotation;
         private LabelStyle _style;
         private Path2D _labelPath;
         private Size2D _collisionBuffer;
@@ -62,7 +62,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="priority">Label priority used for collision detection.</param>
         /// <param name="collisionBuffer">Area around label for collision detection.</param>
         /// <param name="style">The style to use in rendering the label.</param>
-        public Label2D(String text, Point2D location, float rotation, Int32 priority, Size2D collisionBuffer,
+        public Label2D(String text, Point2D location, Single rotation, Int32 priority, Size2D collisionBuffer,
                        LabelStyle style)
         {
             _text = text;
@@ -138,7 +138,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets the rotation the label is rendered with. Represented as radians counter-clockwise.
         /// </summary>
-        public float Rotation
+        public Single Rotation
         {
             get { return _rotation; }
             set { _rotation = value; }

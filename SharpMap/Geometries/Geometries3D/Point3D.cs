@@ -86,7 +86,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public override Double this[uint index]
+		public override Double this[UInt32 index]
 		{
 			get
 			{
@@ -165,7 +165,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// </summary>
 		/// <param name="p">Point to compare to</param>
 		/// <returns></returns>
-		public bool Equals(Point3D p)
+		public Boolean Equals(Point3D p)
 		{
 			return base.Equals(p) && p.Z == _z;
 		}
@@ -216,7 +216,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// <param name="p1">Point 1</param>
 		/// <param name="p2">Point 2</param>
 		/// <returns>true if the points a spatially equal</returns>
-		public bool Equals(Point3D p1, Point3D p2)
+		public Boolean Equals(Point3D p1, Point3D p2)
 		{
 			return (p1.X == p2.X && p1.Y == p2.Y && p1.Z == p2.Z);
 		}

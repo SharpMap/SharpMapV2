@@ -198,7 +198,7 @@ namespace SharpMap.Data
         /// Gets a value indicating whether Tables property should be persisted.
         /// </summary>
         /// <returns></returns>
-        protected override bool ShouldSerializeTables()
+        protected override Boolean ShouldSerializeTables()
         {
             // TODO: no clue what to do here...
             return false;
@@ -208,7 +208,7 @@ namespace SharpMap.Data
         /// Gets a value indicating whether Relations property should be persisted.
         /// </summary>
         /// <returns></returns>
-        protected override bool ShouldSerializeRelations()
+        protected override Boolean ShouldSerializeRelations()
         {
             // TODO: no clue what to do here...
             return false;
@@ -318,7 +318,7 @@ namespace SharpMap.Data
             EnforceConstraints = true;
         }
 
-        private bool shouldSerializeFeatureTable()
+        private Boolean shouldSerializeFeatureTable()
         {
             return false;
         }

@@ -41,7 +41,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <param name="areaOfUse">Area of use</param>
 		/// <param name="remarks">Remarks</param>
 		internal CoordinateTransformation(ICoordinateSystem sourceCS, ICoordinateSystem targetCS, TransformType transformType, IMathTransform mathTransform, 
-										String name, String authority, long authorityCode, String areaOfUse, String remarks)
+										String name, String authority, Int64 authorityCode, String areaOfUse, String remarks)
 			: base()
 		{
 			_TargetCS = targetCS;
@@ -73,19 +73,19 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// Authority which defined transformation and parameter values.
 		/// </summary>
 		/// <remarks>
-		/// An Authority is an organization that maintains definitions of Authority Codes. For example the European Petroleum Survey Group (EPSG) maintains a database of coordinate systems, and other spatial referencing objects, where each object has a code number ID. For example, the EPSG code for a WGS84 Lat/Lon coordinate system is ‘4326’
+		/// An Authority is an organization that maintains definitions of Authority Codes. For example the European Petroleum Survey Group (EPSG) maintains a database of coordinate systems, and other spatial referencing objects, where each object has a code number ID. For example, the EPSG code for a WGS84 Lat / Lon coordinate system is ‘4326’
 		/// </remarks>
 		public String Authority
 		{
 			get { return _Authority; }
 		}
 
-		private long _AuthorityCode;
+		private Int64 _AuthorityCode;
 		/// <summary>
 		/// Code used by authority to identify transformation. An empty String is used for no code.
 		/// </summary>
-		/// <remarks>The AuthorityCode is a compact String defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
-		public long AuthorityCode
+		/// <remarks>The AuthorityCode is a compact String defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat / Lon is ‘4326’.</remarks>
+		public Int64 AuthorityCode
 		{
 			get { return _AuthorityCode; }
 		}

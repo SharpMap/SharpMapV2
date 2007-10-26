@@ -37,6 +37,6 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets whether objects in this style is rendered or not.
         /// </summary>
-        bool Enabled { get; set; }
+        Boolean Enabled { get; set; }
     }
 }

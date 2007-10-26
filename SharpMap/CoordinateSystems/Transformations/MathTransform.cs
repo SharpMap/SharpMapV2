@@ -54,7 +54,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// Tests whether this transform does not move any points.
         /// </summary>
         /// <returns></returns>
-        public virtual bool Identity()
+        public virtual Boolean Identity()
         {
             throw new NotImplementedException();
         }

@@ -58,7 +58,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Returns true if this Curve is closed (StartPoint = EndPoint).
         /// </summary>
-        public bool IsClosed
+        public Boolean IsClosed
         {
             get { return (StartPoint.Equals(EndPoint)); }
         }
@@ -67,6 +67,6 @@ namespace SharpMap.Geometries
         /// true if this Curve is closed (StartPoint = EndPoint) and
         /// this Curve is simple (does not pass through the same point more than once).
         /// </summary>
-        public abstract bool IsRing { get; }
+        public abstract Boolean IsRing { get; }
     }
 }

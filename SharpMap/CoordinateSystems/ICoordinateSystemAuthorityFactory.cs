@@ -38,68 +38,68 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The projected coordinate system object with the given code.</returns>
-		IProjectedCoordinateSystem CreateProjectedCoordinateSystem(long code);
+		IProjectedCoordinateSystem CreateProjectedCoordinateSystem(Int64 code);
 		/// <summary>
 		/// Returns a geographic coordinate system object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The geographic coordinate system object with the given code.</returns>
-		IGeographicCoordinateSystem CreateGeographicCoordinateSystem(long code);
+		IGeographicCoordinateSystem CreateGeographicCoordinateSystem(Int64 code);
 		/// <summary>
 		/// Returns a horizontal datum object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The horizontal datum object with the given code.</returns>
-		IHorizontalDatum CreateHorizontalDatum(long code);
+		IHorizontalDatum CreateHorizontalDatum(Int64 code);
 		/// <summary>
 		/// Returns an ellipsoid object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The ellipsoid object with the given code.</returns>
-		IEllipsoid CreateEllipsoid(long code);
+		IEllipsoid CreateEllipsoid(Int64 code);
 		/// <summary>
 		/// Returns a prime meridian object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The prime meridian object with the given code.</returns>
-		IPrimeMeridian CreatePrimeMeridian(long code);
+		IPrimeMeridian CreatePrimeMeridian(Int64 code);
 		/// <summary>
 		/// Returns a linear unit object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The linear unit object with the given code.</returns>
-		ILinearUnit CreateLinearUnit(long code);
+		ILinearUnit CreateLinearUnit(Int64 code);
 		/// <summary>
 		/// Returns an <see cref="IAngularUnit">angular unit</see> object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The angular unit object for the given code.</returns>
-		IAngularUnit CreateAngularUnit(long code);
+		IAngularUnit CreateAngularUnit(Int64 code);
 		/// <summary>
 		/// Creates a <see cref="IVerticalDatum"/> from a code.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns>Vertical datum for the given code</returns>
-		IVerticalDatum CreateVerticalDatum(long code);
+		IVerticalDatum CreateVerticalDatum(Int64 code);
 		/// <summary>
 		/// Create a <see cref="IVerticalCoordinateSystem">vertical coordinate system</see> from a code.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns></returns>
-		IVerticalCoordinateSystem CreateVerticalCoordinateSystem(long code);
+		IVerticalCoordinateSystem CreateVerticalCoordinateSystem(Int64 code);
 		/// <summary>
 		/// Creates a 3D coordinate system from a code.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns>Compound coordinate system for the given code</returns>
-		ICompoundCoordinateSystem CreateCompoundCoordinateSystem(long code);
+		ICompoundCoordinateSystem CreateCompoundCoordinateSystem(Int64 code);
 		/// <summary>
 		/// Creates a <see cref="IHorizontalCoordinateSystem">horizontal co-ordinate system</see> from a code.
 		/// The horizontal coordinate system could be geographic or projected.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns>Horizontal coordinate system for the given code</returns>
-		IHorizontalCoordinateSystem CreateHorizontalCoordinateSystem(long code);
+		IHorizontalCoordinateSystem CreateHorizontalCoordinateSystem(Int64 code);
 		/// <summary>
 		/// Gets a description of the object corresponding to a code.
 		/// </summary>

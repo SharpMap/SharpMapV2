@@ -39,7 +39,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal Unit(Double conversionFactor, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
+		internal Unit(Double conversionFactor, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
 			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_conversionFactor = conversionFactor;
@@ -104,7 +104,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			Unit other = obj as Unit;
 

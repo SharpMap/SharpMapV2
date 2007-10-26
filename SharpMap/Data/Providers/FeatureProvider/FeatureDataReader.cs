@@ -34,7 +34,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         private DataTable _schemaTable;
         private readonly BoundingBox _queryRegion;
         private Int32 _currentRow = -1;
-        private bool _isDisposed; 
+        private Boolean _isDisposed; 
         #endregion
 
         #region Object Construction / Disposal
@@ -74,7 +74,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        private void Dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -92,7 +92,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #endregion
 
-        private bool IsDisposed
+        private Boolean IsDisposed
         {
             get { return _isDisposed; }
             set { _isDisposed = value; }
@@ -120,7 +120,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return _table[_currentRow][FeatureProvider.OidColumnName];
         }
 
-        public bool HasOid
+        public Boolean HasOid
         {
             get
             {
@@ -129,7 +129,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
         }
 
-        public bool IsFullyLoaded
+        public Boolean IsFullyLoaded
         {
             get { return true; }
         }
@@ -164,18 +164,18 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return _schemaTable;
         }
 
-        public bool IsClosed
+        public Boolean IsClosed
         {
             get { return IsDisposed; }
         }
 
-        public bool NextResult()
+        public Boolean NextResult()
         {
             checkDisposed();
             return false;
         }
 
-        public bool Read()
+        public Boolean Read()
         {
             checkDisposed();
 
@@ -212,7 +212,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
         }
 
-        public bool GetBoolean(Int32 i)
+        public Boolean GetBoolean(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -220,7 +220,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return Convert.ToBoolean(_table[_currentRow][i]);
         }
 
-        public byte GetByte(Int32 i)
+        public Byte GetByte(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -228,12 +228,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return Convert.ToByte(_table[_currentRow][i]);
         }
 
-        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public char GetChar(Int32 i)
+        public Char GetChar(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -241,7 +241,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return Convert.ToChar(_table[_currentRow][i]);
         }
 
-        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
@@ -291,7 +291,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return _table.Columns[i].DataType;
         }
 
-        public float GetFloat(Int32 i)
+        public Single GetFloat(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -304,7 +304,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             throw new NotImplementedException();
         }
 
-        public short GetInt16(Int32 i)
+        public Int16 GetInt16(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -320,7 +320,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return Convert.ToInt32(_table[_currentRow][i]);
         }
 
-        public long GetInt64(Int32 i)
+        public Int64 GetInt64(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -375,7 +375,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return count;
         }
 
-        public bool IsDBNull(Int32 i)
+        public Boolean IsDBNull(Int32 i)
         {
             checkDisposed();
             checkReadState();

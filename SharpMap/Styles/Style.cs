@@ -27,7 +27,7 @@ namespace SharpMap.Styles
 	{
 		private Double _minVisible;
 		private Double _maxVisible;
-		private bool _visible;
+		private Boolean _visible;
 
 		/// <summary>
 		/// Initializes a style as sets Min = 0, Max = Double.PositiveInfinity and Visible = true
@@ -60,7 +60,7 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Specified whether style is rendered or not
 		/// </summary>
-		public bool Enabled
+		public Boolean Enabled
 		{
 			get { return _visible; }
 			set { _visible = value; }

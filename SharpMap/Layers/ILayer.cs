@@ -34,7 +34,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets a value indicating that data is obtained asynchronously.
         /// </summary>
-        bool AsyncQuery { get; set; }
+        Boolean AsyncQuery { get; set; }
 
         /// <summary>
         /// The dataum, projection and coordinate system used for this layer.
@@ -58,7 +58,7 @@ namespace SharpMap.Layers
         /// Should be the same value as <see cref="Style"/>'s 
         /// <see cref="IStyle.Enabled"/> value.
         /// </remarks>
-        bool Enabled { get; set; }
+        Boolean Enabled { get; set; }
 
         /// <summary>
         /// Gets the boundingbox of the entire layer.
@@ -80,6 +80,6 @@ namespace SharpMap.Layers
         /// </summary>
         IStyle Style { get; set; }
 
-        bool IsVisibleWhen(Predicate<ILayer> condition);
+        Boolean IsVisibleWhen(Predicate<ILayer> condition);
     }
 }

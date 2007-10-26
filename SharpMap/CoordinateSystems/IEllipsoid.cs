@@ -48,6 +48,6 @@ namespace SharpMap.CoordinateSystems
 		/// ellipsoids use the polar radius to calculate the IVF whenever asked. This
 		/// distinction can be important to avoid floating-point rounding errors.
 		/// </summary>
-		bool IsIvfDefinitive { get; set; }
+		Boolean IsIvfDefinitive { get; set; }
 	}
 }

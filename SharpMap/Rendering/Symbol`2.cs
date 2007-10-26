@@ -35,7 +35,7 @@ namespace SharpMap.Rendering
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
         private Stream _symbolData;
         private String _symbolDataHash;
-        private bool _disposed;
+        private Boolean _disposed;
         private IAffineMatrixD _rotationTransform;
         private IAffineMatrixD _scalingTransform;
         private IAffineMatrixD _translationTransform;
@@ -45,7 +45,7 @@ namespace SharpMap.Rendering
 
         protected Symbol()
         {
-            _symbolData = new MemoryStream(new byte[] {0x0, 0x0, 0x0, 0x0});
+            _symbolData = new MemoryStream(new Byte[] {0x0, 0x0, 0x0, 0x0});
             initMatrixes();
         }
 
@@ -107,13 +107,13 @@ namespace SharpMap.Rendering
         /// Gets a value indicating if the <see cref="Symbol{TPoint,TSize}"/>
         /// is disposed.
         /// </summary>
-        public bool IsDisposed
+        public Boolean IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
         }
 
-        protected void Dispose(bool disposing)
+        protected void Dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -323,10 +323,10 @@ namespace SharpMap.Rendering
             Symbol<TPoint, TSize> clone = CreateNew(Size);
 
             // Record the original position
-            long streamPos = _symbolData.Position;
+            Int64 streamPos = _symbolData.Position;
             _symbolData.Seek(0, SeekOrigin.Begin);
 
-            byte[] buffer = new byte[_symbolData.Length];
+            Byte[] buffer = new Byte[_symbolData.Length];
             _symbolData.Read(buffer, 0, buffer.Length);
             MemoryStream copy = new MemoryStream(buffer);
 

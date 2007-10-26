@@ -48,8 +48,8 @@ namespace SharpMap.CoordinateSystems.Projections
     /// </summary>
     internal abstract class MapProjection : MathTransform, IProjection
     {
-        protected bool _isInverse = false;
-        protected bool _isSpherical = false;
+        protected Boolean _isInverse = false;
+        protected Boolean _isSpherical = false;
         protected Double _e;
         protected Double _es;
         protected Double _semiMajor;
@@ -58,7 +58,7 @@ namespace SharpMap.CoordinateSystems.Projections
         protected List<ProjectionParameter> _Parameters;
         protected MathTransform _inverse;
 
-        protected MapProjection(List<ProjectionParameter> parameters, bool isInverse)
+        protected MapProjection(List<ProjectionParameter> parameters, Boolean isInverse)
             : this(parameters)
         {
             _isInverse = isInverse;
@@ -151,12 +151,12 @@ namespace SharpMap.CoordinateSystems.Projections
             set { _Authority = value; }
         }
 
-        private long _Code;
+        private Int64 _Code;
 
         /// <summary>
         /// Gets or sets the authority specific identification code of the object
         /// </summary>
-        public long AuthorityCode
+        public Int64 AuthorityCode
         {
             get { return _Code; }
             set { _Code = value; }
@@ -268,7 +268,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// Most map projections define forward projection as "from geographic to projection", and backwards
         /// as "from projection to geographic". If this projection is inverted, this will be the other way around.
         /// </summary>
-        internal bool IsInverse
+        internal Boolean IsInverse
         {
             get { return _isInverse; }
         }
@@ -300,7 +300,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>True if equal</returns>
-        public bool EqualParams(object obj)
+        public Boolean EqualParams(object obj)
         {
             if (!(obj is MapProjection))
             {
@@ -450,28 +450,28 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <returns></returns>
         protected static Double adjust_lon(Double x)
         {
-            long count = 0;
+            Int64 count = 0;
             for (;;)
             {
                 if (Math.Abs(x) <= PI)
                 {
                     break;
                 }
-                else if (((long) Math.Abs(x/Math.PI)) < 2)
+                else if (((Int64) Math.Abs(x/Math.PI)) < 2)
                 {
                     x = x - (sign(x)*TWO_PI);
                 }
-                else if (((long) Math.Abs(x/TWO_PI)) < prjMAXLONG)
+                else if (((Int64) Math.Abs(x/TWO_PI)) < prjMAXLONG)
                 {
-                    x = x - (((long) (x/TWO_PI))*TWO_PI);
+                    x = x - (((Int64) (x/TWO_PI))*TWO_PI);
                 }
-                else if (((long) Math.Abs(x/(prjMAXLONG*TWO_PI))) < prjMAXLONG)
+                else if (((Int64) Math.Abs(x/(prjMAXLONG*TWO_PI))) < prjMAXLONG)
                 {
-                    x = x - (((long) (x/(prjMAXLONG*TWO_PI)))*(TWO_PI*prjMAXLONG));
+                    x = x - (((Int64) (x/(prjMAXLONG*TWO_PI)))*(TWO_PI*prjMAXLONG));
                 }
-                else if (((long) Math.Abs(x/(DBLLONG*TWO_PI))) < prjMAXLONG)
+                else if (((Int64) Math.Abs(x/(DBLLONG*TWO_PI))) < prjMAXLONG)
                 {
-                    x = x - (((long) (x/(DBLLONG*TWO_PI)))*(TWO_PI*DBLLONG));
+                    x = x - (((Int64) (x/(DBLLONG*TWO_PI)))*(TWO_PI*DBLLONG));
                 }
                 else
                 {
@@ -558,7 +558,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="qs"></param>
         /// <param name="flag"></param>
         /// <returns></returns>
-        protected static Double phi1z(Double eccent, Double qs, out long flag)
+        protected static Double phi1z(Double eccent, Double qs, out Int64 flag)
         {
             Double eccnts;
             Double dphi;
@@ -569,7 +569,7 @@ namespace SharpMap.CoordinateSystems.Projections
             Double phi;
             flag = 0;
             //Double asinz();
-            long i;
+            Int64 i;
 
             phi = asinz(.5*qs);
             if (eccent < EPSLN)
@@ -618,7 +618,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <summary>Function to compute the latitude angle, phi2, for the inverse of the
         ///   Lambert Conformal Conic and Polar Stereographic projections.
         ///   </summary>
-        protected static Double phi2z(Double eccent, Double ts, out long flag)
+        protected static Double phi2z(Double eccent, Double ts, out Int64 flag)
             /* Spheroid eccentricity		*/
             /* Constant value t			*/
             /* Error flag number			*/
@@ -627,7 +627,7 @@ namespace SharpMap.CoordinateSystems.Projections
             Double con;
             Double dphi;
             Double sinpi;
-            long i;
+            Int64 i;
 
             flag = 0;
             Double eccnth = .5*eccent;
@@ -714,9 +714,9 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <summary>
         /// Function to calculate UTM zone number--NOTE Longitude entered in DEGREES!!!
         /// </summary>
-        protected static long calc_utm_zone(Double lon)
+        protected static Int64 calc_utm_zone(Double lon)
         {
-            return ((long) (((lon + 180.0)/6.0) + 1.0));
+            return ((Int64) (((lon + 180.0)/6.0) + 1.0));
         }
 
         #endregion
@@ -729,7 +729,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="x">The value in degrees to convert to radians.</param>
         /// <param name="edge">If true, -180 and +180 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static Double LongitudeToRadians(Double x, bool edge)
+        protected static Double LongitudeToRadians(Double x, Boolean edge)
         {
             if (edge ? (x >= -180 && x <= 180) : (x > -180 && x < 180))
             {
@@ -745,7 +745,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="y">The value in degrees to to radians.</param>
         /// <param name="edge">If true, -90 and +90 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static Double LatitudeToRadians(Double y, bool edge)
+        protected static Double LatitudeToRadians(Double y, Boolean edge)
         {
             if (edge ? (y >= -90 && y <= 90) : (y > -90 && y < 90))
             {

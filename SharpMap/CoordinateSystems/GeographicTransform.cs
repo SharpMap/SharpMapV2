@@ -28,7 +28,7 @@ namespace SharpMap.CoordinateSystems
 	public class GeographicTransform : Info, IGeographicTransform
 	{
 		internal GeographicTransform(
-			String name, String authority, long code, String alias, String remarks, String abbreviation,
+			String name, String authority, Int64 code, String alias, String remarks, String abbreviation,
 			IGeographicCoordinateSystem sourceGCS, IGeographicCoordinateSystem targetGCS)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
@@ -128,7 +128,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			GeographicTransform other = obj as GeographicTransform;
 

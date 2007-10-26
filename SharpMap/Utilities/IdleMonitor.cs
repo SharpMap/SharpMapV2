@@ -30,10 +30,10 @@ namespace SharpMap.Utilities
         private Int32 _checkIdleFrequencyInSeconds = 1;
         private Thread _pollIdleThread;
         private EventWaitHandle _terminateEvent;
-        private bool _isDisposed;
+        private Boolean _isDisposed;
         private Int32 _terminating = 0;
-        private bool _wasUserIdle = false;
-        private bool _wasMachineIdle = false;
+        private Boolean _wasUserIdle = false;
+        private Boolean _wasMachineIdle = false;
 
         public IdleMonitor(Int32 userIdleThresholdInSeconds, Int32 machineIdleThresholdInSeconds)
         {
@@ -50,7 +50,7 @@ namespace SharpMap.Utilities
             dispose(false);
         }
 
-        public bool IsDisposed
+        public Boolean IsDisposed
         {
             get { return _isDisposed; }
             private set { _isDisposed = value; }
@@ -72,7 +72,7 @@ namespace SharpMap.Utilities
 
         #endregion
 
-        private void dispose(bool disposing)
+        private void dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -150,7 +150,7 @@ namespace SharpMap.Utilities
             }
         }
 
-        public static bool IsUserIdle(Int32 userIdleThresholdInSeconds)
+        public static Boolean IsUserIdle(Int32 userIdleThresholdInSeconds)
         {
             LastInputInfo info = LastInputInfo.Create();
 
@@ -175,7 +175,7 @@ namespace SharpMap.Utilities
             return false;
         }
 
-        public bool IsMachineIdle(Int32 machineIdleThresholdInSeconds, Int32 machineUtilizationConsideredIdle)
+        public Boolean IsMachineIdle(Int32 machineIdleThresholdInSeconds, Int32 machineUtilizationConsideredIdle)
         {
             // TODO: Implement machine idle detection
             throw new NotImplementedException();
@@ -282,7 +282,7 @@ namespace SharpMap.Utilities
         }
 
         [DllImport("user32.dll")]
-        private static extern bool GetLastInputInfo(ref LastInputInfo lastInput);
+        private static extern Boolean GetLastInputInfo(ref LastInputInfo lastInput);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct LastInputInfo

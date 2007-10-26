@@ -28,7 +28,7 @@ namespace SharpMap.Rendering.Rendering2D
 		public Figure2D(IEnumerable<Point2D> points)
 			: base(points) { }
 
-        public Figure2D(IEnumerable<Point2D> points, bool isClosed)
+        public Figure2D(IEnumerable<Point2D> points, Boolean isClosed)
             : base(points, isClosed) { }
 
         protected override Rectangle2D ComputeBounds()
@@ -61,7 +61,7 @@ namespace SharpMap.Rendering.Rendering2D
             return new Rectangle2D(left, top, right, bottom);
         }
 
-        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool isClosed)
+        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, Boolean isClosed)
         {
             return new Figure2D(points, isClosed);
         }

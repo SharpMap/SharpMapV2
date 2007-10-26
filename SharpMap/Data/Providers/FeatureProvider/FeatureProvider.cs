@@ -364,7 +364,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			get { return GeographicCoordinateSystem.WGS84;  }
 		}
 
-		public bool IsOpen
+		public Boolean IsOpen
 		{
 			get { return true; }
 		}

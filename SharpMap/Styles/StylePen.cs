@@ -30,19 +30,19 @@ namespace SharpMap.Styles
         #region Fields
         // This default (10.0f) is the same in both GDI+ and WPF 
         // for the MiterLimit value on the respective Pen objects.
-        private float _miterLimit = 10.0f;
+        private Single _miterLimit = 10.0f;
         private StyleBrush _backgroundBrush;
-        private float _dashOffset;
+        private Single _dashOffset;
         private LineDashCap _dashCap;
         private LineDashStyle _dashStyle;
-        private float[] _dashPattern;
+        private Single[] _dashPattern;
         private StyleBrush[] _dashBrushes;
         private StyleLineCap _startCap;
         private StyleLineCap _endCap;
         private StyleLineJoin _lineJoin;
         private Matrix2D _transform = new Matrix2D();
         private Double _width;
-        private float[] _compoundArray;
+        private Single[] _compoundArray;
         private StylePenAlignment _alignment;
         private Int32? _hashCode = null;
         #endregion
@@ -111,7 +111,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets an array of widths used to create a compound line.
         /// </summary>
-        public float[] CompoundArray
+        public Single[] CompoundArray
         {
             get { return _compoundArray; }
             set
@@ -127,7 +127,7 @@ namespace SharpMap.Styles
         /// <remarks>
         /// If the value is set to less than 1.0f, the value is clamped to 1.0f.
         /// </remarks>
-        public float MiterLimit
+        public Single MiterLimit
         {
             get { return _miterLimit; }
             set
@@ -158,7 +158,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the offset of the start of the dash pattern.
         /// </summary>
-        public float DashOffset
+        public Single DashOffset
         {
             get { return _dashOffset; }
             set
@@ -171,7 +171,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets an array of values used as widths in a dash pattern.
         /// </summary>
-        public float[] DashPattern
+        public Single[] DashPattern
         {
             get { return _dashPattern; }
             set
@@ -335,14 +335,14 @@ namespace SharpMap.Styles
             return buffer.ToString();
         }
 
-        private static String printFloatArray(float[] values)
+        private static String printFloatArray(Single[] values)
         {
             if (values == null || values.Length == 0)
                 return String.Empty;
 
             StringBuilder buffer = new StringBuilder();
 
-            foreach (float value in values)
+            foreach (Single value in values)
             {
                 buffer.AppendFormat("{0:N3}", value);
                 buffer.Append(", ");
@@ -367,13 +367,13 @@ namespace SharpMap.Styles
             return hashCode;
         }
 
-        private static Int32 getSingleArrayHashCode(float[] values)
+        private static Int32 getSingleArrayHashCode(Single[] values)
         {
             Int32 hashCode = 737226580;
 
             if (values != null)
             {
-                foreach (float value in values)
+                foreach (Single value in values)
                 {
                     hashCode ^= value.GetHashCode();
                 }

@@ -33,7 +33,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         private GeometryProvider _provider;
         private readonly BoundingBox _bounds;
         private Int32 _currentIndex = -1;
-        private bool _isDisposed; 
+        private Boolean _isDisposed; 
         #endregion
 
         #region Object construction and disposal
@@ -56,7 +56,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #endregion
 
-        private void Dispose(bool disposing)
+        private void Dispose(Boolean disposing)
         {
             if (_isDisposed)
             {
@@ -80,7 +80,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _currentIndex;
         }
 
-        public bool HasOid
+        public Boolean HasOid
         {
             get
             {
@@ -98,7 +98,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 			}
 		}
 
-        public bool IsFullyLoaded
+        public Boolean IsFullyLoaded
         {
             get { return true; }
         }
@@ -121,17 +121,17 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _provider.GetSchemaTable();
         }
 
-        public bool IsClosed
+        public Boolean IsClosed
         {
             get { return _isDisposed; }
         }
 
-        public bool NextResult()
+        public Boolean NextResult()
         {
             return false;
         }
 
-        public bool Read()
+        public Boolean Read()
         {
             do
             {
@@ -166,31 +166,31 @@ namespace SharpMap.Data.Providers.GeometryProvider
             get { return 1; }
         }
 
-        public bool GetBoolean(Int32 i)
+        public Boolean GetBoolean(Int32 i)
         {
             throw new NotSupportedException();
         }
 
-        public byte GetByte(Int32 i)
+        public Byte GetByte(Int32 i)
         {
             checkState();
             checkIndex(i);
-            return (byte)_currentIndex;
+            return (Byte)_currentIndex;
         }
 
-        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotSupportedException();
         }
 
-        public char GetChar(Int32 i)
+        public Char GetChar(Int32 i)
         {
             checkState();
             checkIndex(i);
-            return (char)_currentIndex;
+            return (Char)_currentIndex;
         }
 
-        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotSupportedException();
         }
@@ -233,7 +233,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return typeof(Int32);
         }
 
-        public float GetFloat(Int32 i)
+        public Single GetFloat(Int32 i)
         {
             checkState();
             checkIndex(i);
@@ -245,11 +245,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
             throw new NotSupportedException();
         }
 
-        public short GetInt16(Int32 i)
+        public Int16 GetInt16(Int32 i)
         {
             checkState();
             checkIndex(i);
-            return (short)_currentIndex;
+            return (Int16)_currentIndex;
         }
 
         public Int32 GetInt32(Int32 i)
@@ -259,7 +259,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _currentIndex;
         }
 
-        public long GetInt64(Int32 i)
+        public Int64 GetInt64(Int32 i)
         {
             checkState();
             checkIndex(i);
@@ -304,7 +304,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             throw new NotSupportedException();
         }
 
-        public bool IsDBNull(Int32 i)
+        public Boolean IsDBNull(Int32 i)
         {
             checkState();
             checkIndex(i);

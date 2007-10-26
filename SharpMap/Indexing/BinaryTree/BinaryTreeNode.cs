@@ -38,13 +38,13 @@ namespace SharpMap.Indexing.BinaryTree
             Item.Value = item;
         }
 
-        public static bool operator >(BinaryTreeNode<TKey, TValue> lhs, BinaryTreeNode<TKey, TValue> rhs)
+        public static Boolean operator >(BinaryTreeNode<TKey, TValue> lhs, BinaryTreeNode<TKey, TValue> rhs)
         {
             Int32 res = lhs.Item.Value.CompareTo(rhs.Item.Value);
             return res > 0;
         }
 
-        public static bool operator <(BinaryTreeNode<TKey, TValue> lhs, BinaryTreeNode<TKey, TValue> rhs)
+        public static Boolean operator <(BinaryTreeNode<TKey, TValue> lhs, BinaryTreeNode<TKey, TValue> rhs)
         {
             Int32 res = lhs.Item.Value.CompareTo(rhs.Item.Value);
             return res < 0;

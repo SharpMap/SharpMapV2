@@ -252,7 +252,7 @@ namespace SharpMap.Converters.WellKnownText
         /// <param name="writer">The output writer to Append to.</param>
         private static void appendCoordinate(Point coordinate, StringWriter writer)
         {
-            for (uint i = 0; i < coordinate.NumOrdinates; i++)
+            for (UInt32 i = 0; i < coordinate.NumOrdinates; i++)
             {
                 writer.Write(writeNumber(coordinate[i]) + (i < coordinate.NumOrdinates - 1 ? " " : ""));
             }

@@ -75,18 +75,18 @@ namespace SharpMap.Data
         private readonly FeatureDataTable _targetDataTable;
         private readonly Object _innerMerger;
         private readonly SchemaMergeAction _mergeAction;
-        private readonly bool _preserveChanges;
-        private readonly bool _isTableStandalone;
-        private bool _ignoreNamespaceForTableLookup;
+        private readonly Boolean _preserveChanges;
+        private readonly Boolean _isTableStandalone;
+        private Boolean _ignoreNamespaceForTableLookup;
         #endregion
 
         #region Object constructor
-        internal FeatureMerger(FeatureDataSet target, bool preserveChanges, SchemaMergeAction mergeAction)
+        internal FeatureMerger(FeatureDataSet target, Boolean preserveChanges, SchemaMergeAction mergeAction)
         {
             throw new NotImplementedException();
         }
 
-        internal FeatureMerger(FeatureDataTable target, bool preserveChanges, SchemaMergeAction mergeAction)
+        internal FeatureMerger(FeatureDataTable target, Boolean preserveChanges, SchemaMergeAction mergeAction)
         {
             if ((SchemaMergeAction.ConvertTypes & mergeAction) != SchemaMergeAction.None)
             {
@@ -115,7 +115,7 @@ namespace SharpMap.Data
         {
             if (record == null) throw new ArgumentNullException("record");
 
-            bool checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
+            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
 
             mergeSchemaIfNeeded(record);
 
@@ -131,7 +131,7 @@ namespace SharpMap.Data
 
         internal void MergeFeatures(FeatureDataTable source)
         {
-            bool enforceConstraints = false;
+            Boolean enforceConstraints = false;
 
             if (!_isTableStandalone)
             {
@@ -227,8 +227,8 @@ namespace SharpMap.Data
 
             _targetDataTable.SuspendIndexEvents();
 
-            bool checkedSchema = false;
-            bool checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
+            Boolean checkedSchema = false;
+            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
 
             try
             {
@@ -262,7 +262,7 @@ namespace SharpMap.Data
             _mergeSchema(_innerMerger, source);
         }
 
-        internal bool PreserveChanges
+        internal Boolean PreserveChanges
         {
             get { return _preserveChanges; }
         }
@@ -311,7 +311,7 @@ namespace SharpMap.Data
 
         private void mergeFeatureTables(FeatureDataTable source, FeatureDataTable target)
         {
-            bool isTargetEmpty = target.Rows.Count == 0;
+            Boolean isTargetEmpty = target.Rows.Count == 0;
 
             if (source.Rows.Count > 0)
             {
@@ -373,7 +373,7 @@ namespace SharpMap.Data
             return _dataKeyGetSortIndex(rowLookupKey, rowStateFilter);
         }
 
-        private bool getDataKeyHasValue(object srcKey)
+        private Boolean getDataKeyHasValue(object srcKey)
         {
             return _getDataKeyHasValue(srcKey);
         }
@@ -410,7 +410,7 @@ namespace SharpMap.Data
             return _getDataKeyColumnReference(dataKey);
         }
 
-        private static object createDataKey(DataColumn[] columns, bool copyColumns)
+        private static object createDataKey(DataColumn[] columns, Boolean copyColumns)
         {
             return _createDataKey(columns, copyColumns);
         }
@@ -453,7 +453,7 @@ namespace SharpMap.Data
             return schemaModel;
         }
 
-        private static void mergeFeature(FeatureDataTable target, IFeatureDataRecord srcFeature, FeatureDataRow targetFeature, bool preserveChanges)
+        private static void mergeFeature(FeatureDataTable target, IFeatureDataRecord srcFeature, FeatureDataRow targetFeature, Boolean preserveChanges)
         {
             if (targetFeature == null)
             {
@@ -487,7 +487,7 @@ namespace SharpMap.Data
             targetFeature.IsFullyLoaded = targetFeature.IsFullyLoaded || srcFeature.IsFullyLoaded;
         }
 
-        private static object createInnerMerger(DataTable target, bool preserveChanges, SchemaMergeAction schemaMergeAction)
+        private static object createInnerMerger(DataTable target, Boolean preserveChanges, SchemaMergeAction schemaMergeAction)
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
@@ -511,7 +511,7 @@ namespace SharpMap.Data
 
         private static CreateMergerDelegate generateCreateMergerDelegate()
         {
-            Type[] ctorParams = new Type[] { typeof(DataTable), typeof(bool), typeof(MissingSchemaAction) };
+            Type[] ctorParams = new Type[] { typeof(DataTable), typeof(Boolean), typeof(MissingSchemaAction) };
 
             DynamicMethod createMergerMethod = new DynamicMethod("Merger_Create",
                                                                  MethodAttributes.Public | MethodAttributes.Static,

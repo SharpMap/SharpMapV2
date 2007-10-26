@@ -61,7 +61,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// myLayer.DataSource = new ShapeFile(@"C:\data\MyShapeData.shp");
     /// </code>
     /// </example>
-    public class ShapeFileProvider : IWritableFeatureLayerProvider<uint>
+    public class ShapeFileProvider : IWritableFeatureLayerProvider<UInt32>
     {
         #region FilterMethod
 
@@ -76,7 +76,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <seealso cref="FilterDelegate"/>
         /// <param name="dr"><see cref="FeatureDataRow"/> to test on</param>
         /// <returns>true if this feature should be included, false if it should be filtered</returns>
-        public delegate bool FilterMethod(FeatureDataRow dr);
+        public delegate Boolean FilterMethod(FeatureDataRow dr);
 
         #endregion
 
@@ -88,18 +88,18 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FileStream _shapeFileStream;
         private BinaryReader _shapeFileReader;
         private BinaryWriter _shapeFileWriter;
-        private readonly bool _hasFileBasedSpatialIndex;
-        private bool _isOpen;
-        private bool _isIndexed = true;
-        private bool _coordsysReadFromFile = false;
+        private readonly Boolean _hasFileBasedSpatialIndex;
+        private Boolean _isOpen;
+        private Boolean _isIndexed = true;
+        private Boolean _coordsysReadFromFile = false;
         private ICoordinateSystem _coordinateSystem;
-        private bool _disposed = false;
-        private DynamicRTree<uint> _spatialIndex;
+        private Boolean _disposed = false;
+        private DynamicRTree<UInt32> _spatialIndex;
         private readonly ShapeFileHeader _header;
         private readonly ShapeFileIndex _shapeFileIndex;
         private ShapeFileDataReader _currentReader;
         private readonly object _readerSync = new object();
-        private readonly bool _hasDbf;
+        private readonly Boolean _hasDbf;
         #endregion
 
         #region Object construction and disposal
@@ -123,7 +123,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <param name="filename">Path to shapefile (.shp file).</param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-        public ShapeFileProvider(String filename, bool fileBasedIndex)
+        public ShapeFileProvider(String filename, Boolean fileBasedIndex)
         {
             _filename = filename;
 
@@ -175,7 +175,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             GC.SuppressFinalize(this);
         }
 
-        private void dispose(bool disposing)
+        private void dispose(Boolean disposing)
         {
             if (disposing)
             {
@@ -213,7 +213,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             _isOpen = false;
         }
 
-        protected internal bool IsDisposed
+        protected internal Boolean IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
@@ -373,7 +373,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 {
                     writer.Seek(0, SeekOrigin.Begin);
                     writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderStartCode));
-                    writer.Write(new byte[20]);
+                    writer.Write(new Byte[20]);
                     writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderSizeBytes/2));
                     writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
                     writer.Write(ByteEncoder.GetLittleEndian((Int32) type));
@@ -381,9 +381,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                     writer.Write(ByteEncoder.GetLittleEndian(0.0));
                     writer.Write(ByteEncoder.GetLittleEndian(0.0));
                     writer.Write(ByteEncoder.GetLittleEndian(0.0));
-                    writer.Write(new byte[32]); // Z-values and M-values
+                    writer.Write(new Byte[32]); // Z-values and M-values
 
-                    byte[] header = buffer.ToArray();
+                    Byte[] header = buffer.ToArray();
 
                     using (FileStream shape = File.Create(shapeFile))
                     {
@@ -487,7 +487,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// [...]
         /// myShapeDataSource.FilterDelegate = CountryFilter;
         /// [...]
-        /// public static bool CountryFilter(FeatureDataRow row)
+        /// public static Boolean CountryFilter(FeatureDataRow row)
         /// {
         ///		if(row.Geometry is Polygon)
         ///		{
@@ -515,7 +515,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// Gets true if the shapefile has an attributes file, false otherwise.
         /// </summary>
-        public bool HasDbf
+        public Boolean HasDbf
         {
             get { return _hasDbf; }
         }
@@ -540,7 +540,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        public bool IsSpatiallyIndexed
+        public Boolean IsSpatiallyIndexed
         {
             get { return _isIndexed; }
             set { throw new NotImplementedException("Allow shapefile provider to be created without an index. [workitem:13025]"); }
@@ -641,7 +641,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// Returns true if the datasource is currently open
         /// </summary>		
-        public bool IsOpen
+        public Boolean IsOpen
         {
             get { return _isOpen; }
         }
@@ -709,7 +709,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="exclusive">
         /// True if exclusive access is desired, false otherwise.
         /// </param>
-        public void Open(bool exclusive)
+        public void Open(Boolean exclusive)
         {
             if (!_isOpen)
             {
@@ -829,9 +829,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
         {
-            FeatureDataTable<uint> dt = HasDbf
+            FeatureDataTable<UInt32> dt = HasDbf
                                             ? _dbaseFile.NewTable
-                                            : FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                                            : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName);
 
             dt.TableName = Path.GetFileNameWithoutExtension(Filename);
 
@@ -852,7 +852,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             BoundingBox boundingBox = query.QueryRegion.GetBoundingBox();
 
-            IEnumerable<uint> oidList;
+            IEnumerable<UInt32> oidList;
 
             // Get candidates by intersecting the spatial index tree 
             // or enumerating all rows
@@ -865,11 +865,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new NotImplementedException("Allow shapefile provider to be created without an index. [workitem:13025]");
             }
 
-            FeatureDataTable<uint> result = getNewTable();
+            FeatureDataTable<UInt32> result = getNewTable();
 
-            foreach (uint oid in oidList)
+            foreach (UInt32 oid in oidList)
             {
-                FeatureDataRow<uint> fdr = getFeature(oid, result);
+                FeatureDataRow<UInt32> fdr = getFeature(oid, result);
 
                 if (fdr.Geometry != null)
                 {
@@ -916,7 +916,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
             //enableReading();
 
-            foreach (uint oid in GetIntersectingObjectIds(bounds))
+            foreach (UInt32 oid in GetIntersectingObjectIds(bounds))
             {
                 Geometry g = GetGeometryById(oid);
 
@@ -1026,7 +1026,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
 
             // TODO: search the dataset for the table and merge results.
-            FeatureDataTable<uint> dt = getNewTable();
+            FeatureDataTable<UInt32> dt = getNewTable();
 
             ExecuteIntersectionQuery(bounds, dt, options);
 
@@ -1064,16 +1064,16 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
             }
 
-            if (!(table is FeatureDataTable<uint>))
+            if (!(table is FeatureDataTable<UInt32>))
             {
-                throw new ArgumentException("Parameter 'table' must be of type FeatureDataTable<uint>.");
+                throw new ArgumentException("Parameter 'table' must be of type FeatureDataTable<UInt32>.");
             }
 
-            FeatureDataTable<uint> keyedTable = table as FeatureDataTable<uint>;
+            FeatureDataTable<UInt32> keyedTable = table as FeatureDataTable<UInt32>;
 
             SetTableSchema(keyedTable);
 
-            IEnumerable<uint> objectsInQuery = GetIntersectingObjectIds(bounds);
+            IEnumerable<UInt32> objectsInQuery = GetIntersectingObjectIds(bounds);
 
             keyedTable.MergeFeatures(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
         }
@@ -1125,7 +1125,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #endregion
 
-        #region IFeatureLayerProvider<uint> Members
+        #region IFeatureLayerProvider<UInt32> Members
 
         /// <summary>
         /// Gets a feature row from the datasource with the specified id.
@@ -1137,18 +1137,18 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public FeatureDataRow<uint> GetFeature(uint oid)
+        public FeatureDataRow<UInt32> GetFeature(UInt32 oid)
         {
             return getFeature(oid, null);
         }
 
-        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<uint> oids)
+        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<UInt32> oids)
         {
-            FeatureDataTable<uint> table = CreateNewTable() as FeatureDataTable<uint>;
+            FeatureDataTable<UInt32> table = CreateNewTable() as FeatureDataTable<UInt32>;
             Debug.Assert(table != null);
             table.IsSpatiallyIndexed = false;
 
-            foreach (uint oid in oids)
+            foreach (UInt32 oid in oids)
             {
                 table.AddRow(getFeature(oid, table));
             }
@@ -1164,7 +1164,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public Geometry GetGeometryById(uint oid)
+        public Geometry GetGeometryById(UInt32 oid)
         {
             checkOpen();
 
@@ -1198,11 +1198,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public IEnumerable<uint> GetIntersectingObjectIds(BoundingBox bounds)
+        public IEnumerable<UInt32> GetIntersectingObjectIds(BoundingBox bounds)
         {
             checkOpen();
 
-            foreach (uint id in getKeysFromIndexEntries(_spatialIndex.Search(bounds)))
+            foreach (UInt32 id in getKeysFromIndexEntries(_spatialIndex.Search(bounds)))
             {
                 yield return id;
             }
@@ -1212,7 +1212,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Sets the schema of the given table to match the schema of the shapefile's attributes.
         /// </summary>
         /// <param name="target">Target table to set the schema of.</param>
-        public void SetTableSchema(FeatureDataTable<uint> target)
+        public void SetTableSchema(FeatureDataTable<UInt32> target)
         {
             if (String.CompareOrdinal(target.IdColumn.ColumnName, DbaseSchema.OidColumnName) != 0)
             {
@@ -1230,7 +1230,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="target">Target table to set the schema of.</param>
         /// <param name="mergeAction">Action or actions to take when schemas don't match.</param>
-        public void SetTableSchema(FeatureDataTable<uint> target, SchemaMergeAction mergeAction)
+        public void SetTableSchema(FeatureDataTable<UInt32> target, SchemaMergeAction mergeAction)
         {
             checkOpen();
             _dbaseFile.SetTableSchema(target, mergeAction);
@@ -1238,7 +1238,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #endregion
 
-        #region IWritableFeatureLayerProvider<uint> Members
+        #region IWritableFeatureLayerProvider<UInt32> Members
 
         /// <summary>
         /// Adds a feature to the end of a shapefile.
@@ -1253,7 +1253,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="InvalidOperationException">
         /// Thrown if <paramref name="feature.Geometry"/> is null.
         /// </exception>
-        public void Insert(FeatureDataRow<uint> feature)
+        public void Insert(FeatureDataRow<UInt32> feature)
         {
             if (feature == null)
             {
@@ -1268,7 +1268,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
             //enableWriting();
 
-            uint id = _shapeFileIndex.GetNextId();
+            UInt32 id = _shapeFileIndex.GetNextId();
             feature[ShapeFileConstants.IdColumnName] = id;
 
             _shapeFileIndex.AddFeatureToIndex(feature);
@@ -1277,7 +1277,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (_spatialIndex != null)
             {
-                _spatialIndex.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
+                _spatialIndex.Insert(new RTreeIndexEntry<UInt32>(id, featureEnvelope));
             }
 
             Int32 offset = _shapeFileIndex[id].Offset;
@@ -1306,7 +1306,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="features"/> is null.
         /// </exception>
-        public void Insert(IEnumerable<FeatureDataRow<uint>> features)
+        public void Insert(IEnumerable<FeatureDataRow<UInt32>> features)
         {
             if (features == null)
             {
@@ -1318,7 +1318,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             BoundingBox featuresEnvelope = BoundingBox.Empty;
 
-            foreach (FeatureDataRow<uint> feature in features)
+            foreach (FeatureDataRow<UInt32> feature in features)
             {
                 BoundingBox featureEnvelope = feature.Geometry == null
                                                   ? BoundingBox.Empty
@@ -1326,13 +1326,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 featuresEnvelope.ExpandToInclude(featureEnvelope);
 
-                uint id = _shapeFileIndex.GetNextId();
+                UInt32 id = _shapeFileIndex.GetNextId();
 
                 _shapeFileIndex.AddFeatureToIndex(feature);
 
                 if (_spatialIndex != null)
                 {
-                    _spatialIndex.Insert(new RTreeIndexEntry<uint>(id, featureEnvelope));
+                    _spatialIndex.Insert(new RTreeIndexEntry<UInt32>(id, featureEnvelope));
                 }
 
                 feature[ShapeFileConstants.IdColumnName] = id;
@@ -1367,7 +1367,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="feature"/> is null.
         /// </exception>
-        public void Update(FeatureDataRow<uint> feature)
+        public void Update(FeatureDataRow<UInt32> feature)
         {
             if (feature == null)
             {
@@ -1407,7 +1407,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="features"/> is null.
         /// </exception>
-        public void Update(IEnumerable<FeatureDataRow<uint>> features)
+        public void Update(IEnumerable<FeatureDataRow<UInt32>> features)
         {
             if (features == null)
             {
@@ -1417,7 +1417,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
             //enableWriting();
 
-            foreach (FeatureDataRow<uint> feature in features)
+            foreach (FeatureDataRow<UInt32> feature in features)
             {
                 if (feature.RowState != DataRowState.Modified)
                 {
@@ -1449,7 +1449,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="feature"/> is null.
         /// </exception>
-        public void Delete(FeatureDataRow<uint> feature)
+        public void Delete(FeatureDataRow<UInt32> feature)
         {
             if (feature == null)
             {
@@ -1466,7 +1466,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             feature.Geometry = null;
 
-            uint id = feature.Id;
+            UInt32 id = feature.Id;
             Int32 length = _shapeFileIndex[id].Length;
             Int32 offset = _shapeFileIndex[id].Offset;
             writeGeometry(null, feature.Id, offset, length);
@@ -1483,7 +1483,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="features"/> is null.
         /// </exception>
-        public void Delete(IEnumerable<FeatureDataRow<uint>> features)
+        public void Delete(IEnumerable<FeatureDataRow<UInt32>> features)
         {
             if (features == null)
             {
@@ -1493,7 +1493,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
             //enableWriting();
 
-            foreach (FeatureDataRow<uint> feature in features)
+            foreach (FeatureDataRow<UInt32> feature in features)
             {
                 if (!_shapeFileIndex.ContainsKey(feature.Id))
                 {
@@ -1502,7 +1502,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 feature.Geometry = null;
 
-                uint id = feature.Id;
+                UInt32 id = feature.Id;
                 Int32 length = _shapeFileIndex[id].Length;
                 Int32 offset = _shapeFileIndex[id].Offset;
                 writeGeometry(null, feature.Id, offset, length);
@@ -1518,7 +1518,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         ///// <exception cref="ShapeFileInvalidOperationException">
         ///// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         ///// </exception>
-        //public void Save(FeatureDataTable<uint> table)
+        //public void Save(FeatureDataTable<UInt32> table)
         //{
         //    if (table == null)
         //    {
@@ -1531,13 +1531,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    _shapeFileStream.Position = ShapeFileConstants.HeaderSizeBytes;
         //    foreach (FeatureDataRow row in table.Rows)
         //    {
-        //        if (row is FeatureDataRow<uint>)
+        //        if (row is FeatureDataRow<UInt32>)
         //        {
-        //            _tree.Insert(new RTreeIndexEntry<uint>((row as FeatureDataRow<uint>).Id, row.Geometry.GetBoundingBox()));
+        //            _tree.Insert(new RTreeIndexEntry<UInt32>((row as FeatureDataRow<UInt32>).Id, row.Geometry.GetBoundingBox()));
         //        }
         //        else
         //        {
-        //            _tree.Insert(new RTreeIndexEntry<uint>(getNextId(), row.Geometry.GetBoundingBox()));
+        //            _tree.Insert(new RTreeIndexEntry<UInt32>(getNextId(), row.Geometry.GetBoundingBox()));
         //        }
 
         //        writeFeatureRow(row);
@@ -1551,9 +1551,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #endregion
 
-        #region IFeatureLayerProvider<uint> Explicit Members
+        #region IFeatureLayerProvider<UInt32> Explicit Members
 
-        IEnumerable<uint> IFeatureLayerProvider<uint>.GetObjectIdsInView(BoundingBox boundingBox)
+        IEnumerable<UInt32> IFeatureLayerProvider<UInt32>.GetObjectIdsInView(BoundingBox boundingBox)
         {
             throw new NotImplementedException();
         }
@@ -1586,7 +1586,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 byteCount = 4 /* ShapeType Integer */
                             + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4
                             /* NumPoints and NumParts integers */
-                            + 4 /* Parts Array 1 integer long */
+                            + 4 /* Parts Array 1 integer Int64 */
                             + 16*(geometry as LineString).Vertices.Count;
             }
             else if (geometry is MultiLineString)
@@ -1638,9 +1638,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private static IEnumerable<uint> getKeysFromIndexEntries(IEnumerable<RTreeIndexEntry<uint>> entries)
+        private static IEnumerable<UInt32> getKeysFromIndexEntries(IEnumerable<RTreeIndexEntry<UInt32>> entries)
         {
-            foreach (RTreeIndexEntry<uint> entry in entries)
+            foreach (RTreeIndexEntry<UInt32> entry in entries)
             {
                 yield return entry.Value;
             }
@@ -1650,20 +1650,20 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             foreach (object oid in oids)
             {
-                yield return (uint) oid;
+                yield return (UInt32) oid;
             }
         }
 
-        private IEnumerable<IFeatureDataRecord> getFeatureRecordsFromIds(IEnumerable<uint> ids,
-                                                                         FeatureDataTable<uint> table)
+        private IEnumerable<IFeatureDataRecord> getFeatureRecordsFromIds(IEnumerable<UInt32> ids,
+                                                                         FeatureDataTable<UInt32> table)
         {
-            foreach (uint id in ids)
+            foreach (UInt32 id in ids)
             {
                 yield return getFeature(id, table);
             }
         }
 
-        private FeatureDataTable<uint> getNewTable()
+        private FeatureDataTable<UInt32> getNewTable()
         {
             if (HasDbf)
             {
@@ -1671,7 +1671,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else
             {
-                return FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                return FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName);
             }
         }
 
@@ -1686,7 +1686,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        private FeatureDataRow<uint> getFeature(uint oid, FeatureDataTable<uint> table)
+        private FeatureDataRow<UInt32> getFeature(UInt32 oid, FeatureDataTable<UInt32> table)
         {
             checkOpen();
 
@@ -1694,7 +1694,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (!HasDbf)
                 {
-                    table = FeatureDataTable<uint>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                    table = FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName);
                 }
                 else
                 {
@@ -1702,7 +1702,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
             }
 
-            FeatureDataRow<uint> dr = HasDbf ? _dbaseFile.GetAttributes(oid, table) : table.NewRow(oid);
+            FeatureDataRow<UInt32> dr = HasDbf ? _dbaseFile.GetAttributes(oid, table) : table.NewRow(oid);
             dr.Geometry = readGeometry(oid);
 
             if (FilterDelegate == null || FilterDelegate(dr))
@@ -1808,7 +1808,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="filename"></param>
         /// <returns>QuadTree index</returns>
-        private DynamicRTree<uint> createSpatialIndexFromFile(String filename)
+        private DynamicRTree<UInt32> createSpatialIndexFromFile(String filename)
         {
             if (File.Exists(filename + ".sidx"))
             {
@@ -1816,12 +1816,12 @@ namespace SharpMap.Data.Providers.ShapeFile
                     FileStream indexStream =
                         new FileStream(filename + ".sidx", FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    return DynamicRTree<uint>.FromStream(indexStream);
+                    return DynamicRTree<UInt32>.FromStream(indexStream);
                 }
             }
             else
             {
-                DynamicRTree<uint> tree = createSpatialIndex();
+                DynamicRTree<UInt32> tree = createSpatialIndex();
 
                 using (
                     FileStream indexStream =
@@ -1837,21 +1837,21 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// Generates a spatial index for a specified shape file.
         /// </summary>
-        private DynamicRTree<uint> createSpatialIndex()
+        private DynamicRTree<UInt32> createSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
             IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IEntryInsertStrategy<RTreeIndexEntry<uint>> insertStrategy = new GuttmanQuadraticInsert<uint>();
-            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<uint>();
+            IEntryInsertStrategy<RTreeIndexEntry<UInt32>> insertStrategy = new GuttmanQuadraticInsert<UInt32>();
+            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<UInt32>();
             DynamicRTreeBalanceHeuristic indexHeuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
             IdleMonitor idleMonitor = null;
 
-            DynamicRTree<uint> index =
-                new SelfOptimizingDynamicSpatialIndex<uint>(restructureStrategy, restructureHeuristic, insertStrategy,
+            DynamicRTree<UInt32> index =
+                new SelfOptimizingDynamicSpatialIndex<UInt32>(restructureStrategy, restructureHeuristic, insertStrategy,
                                                             nodeSplitStrategy, indexHeuristic, idleMonitor);
 
-            for (uint i = 0; i < (uint) GetFeatureCount(); i++)
+            for (UInt32 i = 0; i < (UInt32) GetFeatureCount(); i++)
             {
                 Geometry geom = readGeometry(i);
 
@@ -1865,19 +1865,19 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (!Double.IsNaN(box.Left) && !Double.IsNaN(box.Right) && !Double.IsNaN(box.Bottom) &&
                     !Double.IsNaN(box.Top))
                 {
-                    index.Insert(new RTreeIndexEntry<uint>(i, box));
+                    index.Insert(new RTreeIndexEntry<UInt32>(i, box));
                 }
             }
 
             return index;
         }
 
-        private void loadSpatialIndex(bool loadFromFile)
+        private void loadSpatialIndex(Boolean loadFromFile)
         {
             loadSpatialIndex(false, loadFromFile);
         }
 
-        private void loadSpatialIndex(bool forceRebuild, bool loadFromFile)
+        private void loadSpatialIndex(Boolean forceRebuild, Boolean loadFromFile)
         {
             //Only load the tree if we haven't already loaded it, or if we want to force a rebuild
             if (_spatialIndex == null || forceRebuild)
@@ -1908,7 +1908,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             enableReading();
             List<BoundingBox> boxes = new List<BoundingBox>();
 
-            foreach (KeyValuePair<uint, ShapeFileIndex.IndexEntry> kvp in _shapeFileIndex)
+            foreach (KeyValuePair<UInt32, ShapeFileIndex.IndexEntry> kvp in _shapeFileIndex)
             {
                 _shapeFileStream.Seek(kvp.Value.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength,
                                       SeekOrigin.Begin);
@@ -1948,7 +1948,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <returns>
         /// <see cref="SharpMap.Geometries.Geometry"/> instance from the ShapeFile corresponding to <paramref name="oid"/>.
         /// </returns>
-        private Geometry readGeometry(uint oid)
+        private Geometry readGeometry(UInt32 oid)
         {
             //enableReading();
             _shapeFileReader.BaseStream.Seek(
@@ -2173,7 +2173,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 rings.Add(ring);
             }
 
-            bool[] isCounterClockWise = new bool[rings.Count];
+            Boolean[] isCounterClockWise = new Boolean[rings.Count];
             Int32 polygonCount = 0;
 
             for (Int32 i = 0; i < rings.Count; i++)
@@ -2262,7 +2262,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         //private void writeFeatureRow(FeatureDataRow feature)
         //{
-        //    uint recordNumber = addIndexEntry(feature);
+        //    UInt32 recordNumber = addIndexEntry(feature);
 
         //    if (HasDbf)
         //    {
@@ -2273,7 +2273,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //}
 
 
-        private void writeGeometry(Geometry g, uint recordNumber, Int32 recordOffsetInWords, Int32 recordLengthInWords)
+        private void writeGeometry(Geometry g, UInt32 recordNumber, Int32 recordOffsetInWords, Int32 recordLengthInWords)
         {
             _shapeFileStream.Position = recordOffsetInWords*2;
 

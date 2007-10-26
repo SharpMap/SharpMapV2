@@ -125,7 +125,7 @@ namespace SharpMap.Indexing.RTree
 			Dispose(false);
 		}
 
-		protected override void Dispose(bool disposing)
+		protected override void Dispose(Boolean disposing)
 		{
 			if (disposing)
 			{
@@ -163,13 +163,13 @@ namespace SharpMap.Indexing.RTree
 
 		#region Private helper methods
 
-		private bool restructureOnUserIdle()
+		private Boolean restructureOnUserIdle()
 		{
 			return (_restructuringHeuristic.WhenToRestructure & RestructureOpportunity.OnUserIdle) 
 				!= RestructureOpportunity.None;
 		}
 
-		private bool restructureOnMachineIdle()
+		private Boolean restructureOnMachineIdle()
 		{
 			return (_restructuringHeuristic.WhenToRestructure & RestructureOpportunity.OnMachineIdle) 
 				!= RestructureOpportunity.None;

@@ -68,7 +68,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets the label's rotation.
 		/// </summary>
-		float Rotation { get; set; }
+		Single Rotation { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.

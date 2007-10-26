@@ -61,27 +61,27 @@ namespace SharpMap.Converters.WellKnownBinary
     /// instance as a sequence of numeric types drawn from the set {Unsigned Integer, Double} and
     /// then serializing each numeric type as a sequence of bytes using one of two well defined,
     /// standard, binary representations for numeric types (NDR, XDR). The specific binary encoding
-    /// (NDR or XDR) used for a geometry byte stream is described by a one byte tag that precedes
+    /// (NDR or XDR) used for a geometry Byte stream is described by a one Byte tag that precedes
     /// the serialized bytes. The only difference between the two encodings of geometry is one of
-    /// byte order, the XDR encoding is Big Endian, the NDR encoding is Little Endian.
+    /// Byte order, the XDR encoding is Big Endian, the NDR encoding is Little Endian.
     /// </para>
     /// </remarks> 
     public class GeometryFromWkb
     {
         /// <summary>
-        /// Creates a <see cref="Geometry"/> from the supplied byte[] 
+        /// Creates a <see cref="Geometry"/> from the supplied Byte[] 
         /// containing the Well-Known Binary representation.
         /// </summary>
         /// <param name="bytes">
-        /// A byte[] containing the Well-Known Binary representation.
+        /// A Byte[] containing the Well-Known Binary representation.
         /// </param>
         /// <returns>
         /// A <see cref="Geometry"/> created from on supplied 
         /// Well-Known Binary representation.
         /// </returns>
-        public static Geometry Parse(byte[] bytes)
+        public static Geometry Parse(Byte[] bytes)
         {
-            // Create a memory stream using the suppiled byte array.
+            // Create a memory stream using the suppiled Byte array.
             using (MemoryStream ms = new MemoryStream(bytes))
             {
                 // Create a new binary reader using the newly created memorystream.
@@ -107,9 +107,9 @@ namespace SharpMap.Converters.WellKnownBinary
         /// </returns>
         public static Geometry Parse(BinaryReader reader)
         {
-            // Get the first byte in the array.  This specifies if the WKB is in
+            // Get the first Byte in the array.  This specifies if the WKB is in
             // XDR (big-endian) format of NDR (little-endian) format.
-            byte byteOrder = reader.ReadByte();
+            Byte byteOrder = reader.ReadByte();
 
             if (!Enum.IsDefined(typeof(WkbByteOrder), byteOrder))
             {
@@ -117,7 +117,7 @@ namespace SharpMap.Converters.WellKnownBinary
             }
 
             // Get the type of this geometry.
-            uint type = readUInt32(reader, (WkbByteOrder)byteOrder);
+            UInt32 type = readUInt32(reader, (WkbByteOrder)byteOrder);
 
             if (!Enum.IsDefined(typeof(WkbGeometryType), type))
             {
@@ -296,7 +296,7 @@ namespace SharpMap.Converters.WellKnownBinary
 
         private static Geometry createWkbGeometryCollection(BinaryReader reader, WkbByteOrder byteOrder)
         {
-            // The next byte in the array tells the number of geometries in this collection.
+            // The next Byte in the array tells the number of geometries in this collection.
             Int32 numGeometries = (Int32)readUInt32(reader, byteOrder);
 
             // Create a new array for the geometries.
@@ -313,7 +313,7 @@ namespace SharpMap.Converters.WellKnownBinary
             return geometries;
         }
 
-        private static uint readUInt32(BinaryReader reader, WkbByteOrder byteOrder)
+        private static UInt32 readUInt32(BinaryReader reader, WkbByteOrder byteOrder)
         {
             if (byteOrder == WkbByteOrder.Xdr)
             {

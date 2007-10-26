@@ -30,8 +30,8 @@ namespace SharpMap.Indexing.RTree
 
     {
         private ISpatialIndexNode _root;
-        private bool _disposed;
-        private long _nextNodeId = 0;
+        private Boolean _disposed;
+        private Int64 _nextNodeId = 0;
 
         #region Object Construction/Destruction
 
@@ -63,9 +63,9 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        protected virtual void Dispose(bool disposing) {}
+        protected virtual void Dispose(Boolean disposing) {}
 
-        protected bool IsDisposed
+        protected Boolean IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
@@ -233,9 +233,9 @@ namespace SharpMap.Indexing.RTree
             Root = CreateLeafNode();
         }
 
-        private uint getNewNodeId()
+        private UInt32 getNewNodeId()
         {
-            return (uint) Interlocked.Increment(ref _nextNodeId);
+            return (UInt32) Interlocked.Increment(ref _nextNodeId);
         }
 
         #endregion

@@ -45,7 +45,7 @@ namespace SharpMap.Data
         /// Gets a value indicating if the feature record
         /// has an Object Identifier (OID).
         /// </summary>
-        bool HasOid { get; }
+        Boolean HasOid { get; }
 
 	    /// <summary>
 	    /// Gets a value indicating whether this feature record
@@ -53,7 +53,7 @@ namespace SharpMap.Data
 	    /// </summary>
         // TODO: Reevaluate the IsFullyLoaded flag, since consecutive loads may 
         // eventually fully load a record, yet this won't be able to record it.
-	    bool IsFullyLoaded { get; }
+	    Boolean IsFullyLoaded { get; }
 
 	    /// <summary>
         /// Gets the <see cref="Type"/> of the Object ID.

@@ -61,7 +61,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Exports this <see cref="Geometry"/> to a specific well-known binary representation of <see cref="Geometry"/>.
 		/// </summary>
-		byte[] AsBinary();
+		Byte[] AsBinary();
 
 		/// <summary>
 		/// Returns a WellKnownText representation of the <see cref="Geometry"/>
@@ -73,7 +73,7 @@ namespace SharpMap.Geometries
 		/// If true, then this <see cref="Geometry"/> represents the empty point set, Ø, for the coordinate space. 
 		/// </summary>
 		/// <returns>Returns 'true' if this <see cref="Geometry"/> is the empty geometry</returns>
-		bool IsEmpty();
+		Boolean IsEmpty();
 
 		/// <summary>
 		///  Returns 'true' if this <see cref="Geometry"/> has no anomalous geometric points, such as self
@@ -81,7 +81,7 @@ namespace SharpMap.Geometries
 		/// conditions that cause an instance of that class to be classified as not simple.
 		/// </summary>
 		/// <returns>true if the <see cref="Geometry"/> is simple</returns>
-		bool IsSimple();
+		Boolean IsSimple();
 
         /// <summary>
 		/// Returns the closure of the combinatorial boundary of this <see cref="Geometry"/>. The
@@ -100,7 +100,7 @@ namespace SharpMap.Geometries
 		/// <param name="other"><see cref="Geometry"/> to relate to</param>
 		/// <param name="intersectionPattern">Intersection Pattern</param>
 		/// <returns>True if spatially related</returns>
-		bool Relate(Geometry other, String intersectionPattern);
+		Boolean Relate(Geometry other, String intersectionPattern);
 
 
         #endregion
@@ -110,42 +110,42 @@ namespace SharpMap.Geometries
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is 'spatially equal' to another <see cref="Geometry"/>
         /// </summary>
-		bool Equals(Geometry geom);
+		Boolean Equals(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is 'spatially disjoint' from another <see cref="Geometry"/>
         /// </summary>
-		bool Disjoint(Geometry geom);
+		Boolean Disjoint(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially intersects' another <see cref="Geometry"/>
         /// </summary>
-		bool Intersects(Geometry geom);
+		Boolean Intersects(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially touches' another <see cref="Geometry"/>.
         /// </summary>
-		bool Touches(Geometry geom);
+		Boolean Touches(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially crosses' another <see cref="Geometry"/>.
         /// </summary>
-		bool Crosses(Geometry geom);
+		Boolean Crosses(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is 'spatially within' another <see cref="Geometry"/>.
         /// </summary>
-		bool Within(Geometry geom);
+		Boolean Within(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially contains' another <see cref="Geometry"/>.
         /// </summary>
-		bool Contains(Geometry geom);
+		Boolean Contains(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially overlaps' another <see cref="Geometry"/>.
         /// </summary>
-		bool Overlaps(Geometry geom);
+		Boolean Overlaps(Geometry geom);
 
 
         #endregion

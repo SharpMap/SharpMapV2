@@ -34,7 +34,7 @@ namespace SharpMap.CoordinateSystems
 	/// (e.g. the area of interest in the containing geographic coordinate system).</para>
 	/// <para>Sometimes, only the first three or six parameters are defined. In this case the remaining
 	/// parameters must be zero. If only three parameters are defined, then they can still be plugged into the
-	/// Bursa Wolf formulas, or you can take a short cut. The Bursa Wolf transformation works on geocentric
+    /// Bursa Wolf formulas, or you can take a short cut. The Bursa Wolf transformation works on geocentric
 	/// coordinates, so you cannot apply it onto geographic coordinates directly. If there are only three
 	/// parameters then you can use the Molodenski or abridged Molodenski formulas.</para>
 	/// <para>If a datums ToWgs84Parameters parameter values are zero, then the receiving
@@ -210,7 +210,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns true of all 7 parameter values are 0.0
 		/// </summary>
 		/// <returns></returns>
-		public bool HasZeroValuesOnly
+		public Boolean HasZeroValuesOnly
 		{
 			get {
 				return !(Dx != 0 || Dy != 0 || Dz != 0 || Ex != 0 || Ey != 0 || Ez != 0 || Ppm != 0);
@@ -224,7 +224,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
-		public override bool Equals(object obj)
+		public override Boolean Equals(object obj)
 		{
 			return Equals(obj as Wgs84ConversionInfo);
 		}
@@ -247,7 +247,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public bool Equals(Wgs84ConversionInfo obj)
+		public Boolean Equals(Wgs84ConversionInfo obj)
 		{
 			if (obj == null)
 				return false;

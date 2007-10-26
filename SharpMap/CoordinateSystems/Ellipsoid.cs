@@ -47,8 +47,8 @@ namespace SharpMap.CoordinateSystems
 			Double semiMajorAxis, 
 			Double semiMinorAxis, 
 			Double inverseFlattening,
-			bool isIvfDefinitive,
-			ILinearUnit axisUnit, String name, String authority, long code, String alias, 
+			Boolean isIvfDefinitive,
+			ILinearUnit axisUnit, String name, String authority, Int64 code, String alias, 
 			String abbreviation, String remarks)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
@@ -221,7 +221,7 @@ namespace SharpMap.CoordinateSystems
 			set { _AxisUnit = value; }
 		}
 
-		private bool _IsIvfDefinitive;
+		private Boolean _IsIvfDefinitive;
 
 		/// <summary>
 		/// Tells if the Inverse Flattening is definitive for this ellipsoid. Some ellipsoids use 
@@ -229,7 +229,7 @@ namespace SharpMap.CoordinateSystems
 		/// ellipsoids use the polar radius to calculate the IVF whenever asked. This 
 		/// distinction can be important to avoid floating-point rounding errors.
 		/// </summary>
-		public bool IsIvfDefinitive
+		public Boolean IsIvfDefinitive
 		{
 			get { return _IsIvfDefinitive; }
 			set { _IsIvfDefinitive = value; }
@@ -279,7 +279,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj">Object to determine equality with.</param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			Ellipsoid e = obj as Ellipsoid;
 			

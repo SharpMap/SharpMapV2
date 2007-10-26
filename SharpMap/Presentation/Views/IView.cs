@@ -27,13 +27,13 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets whether the view is visible.
         /// </summary>
-        bool Visible { get; set; }
+        Boolean Visible { get; set; }
 
         /// <summary>
         /// Gets or sets whether the view is shown as enabled and available,
         /// or disabled and unavailable.
         /// </summary>
-        bool Enabled { get; set; }
+        Boolean Enabled { get; set; }
 
         /// <summary>
         /// Hides the view, causing <see cref="Visible"/> to become false.

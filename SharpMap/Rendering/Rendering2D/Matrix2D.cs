@@ -205,7 +205,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Computation
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj is Matrix2D)
             {
@@ -222,7 +222,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<Matrix2D> Members
 
-        public bool Equals(Matrix2D other)
+        public Boolean Equals(Matrix2D other)
         {
             return M11 == other.M11 &&
                    M21 == other.M21 &&

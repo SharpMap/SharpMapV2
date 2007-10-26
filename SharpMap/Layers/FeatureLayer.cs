@@ -71,7 +71,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
+        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, Boolean handleFeatureDataRequest)
             : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest)
         {
         }
@@ -98,7 +98,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
+        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource, Boolean handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
             ShouldHandleFeaturesNotFoundEvent = handleFeatureDataRequest;
@@ -245,7 +245,7 @@ namespace SharpMap.Layers
         {
             Geometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
 
-            bool hasIntersectionWithLayerData = !(available.IsEmpty() || Features.Envelope.Contains(available)) &&
+            Boolean hasIntersectionWithLayerData = !(available.IsEmpty() || Features.Envelope.Contains(available)) &&
                                                 e.MissingForQuery.QueryType != SpatialExpressionType.Disjoint;
 
             if(hasIntersectionWithLayerData || e.MissingForQuery.Oids != null)

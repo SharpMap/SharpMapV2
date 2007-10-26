@@ -104,7 +104,7 @@ namespace SharpMap
         public class LayerCollection : BindingList<ILayer>, ITypedList
         {
             private readonly Map _map;
-            private bool? _sortedAscending = null;
+            private Boolean? _sortedAscending = null;
             private readonly object _collectionChangeSync = new object();
             private PropertyDescriptor _sortProperty;
             private static readonly PropertyDescriptorCollection _layerProperties;
@@ -139,7 +139,7 @@ namespace SharpMap
                 ResetBindings();
             }
 
-            internal bool Exists(Predicate<ILayer> predicate)
+            internal Boolean Exists(Predicate<ILayer> predicate)
             {
                 foreach (ILayer layer in this)
                 {
@@ -179,7 +179,7 @@ namespace SharpMap
             /// <see langword="false"/> and throws an exception if set.
             /// </summary>
             /// <exception cref="NotSupportedException">Thrown if set.</exception>
-            public new bool AllowNew
+            public new Boolean AllowNew
             {
                 get { return false; }
                 set { throw new NotSupportedException(); }
@@ -242,12 +242,12 @@ namespace SharpMap
                 _sortedAscending = null;
             }
 
-            protected override bool SupportsSortingCore
+            protected override Boolean SupportsSortingCore
             {
                 get { return true; }
             }
 
-            protected override bool IsSortedCore
+            protected override Boolean IsSortedCore
             {
                 get { return _sortedAscending.HasValue; }
             }
@@ -261,7 +261,7 @@ namespace SharpMap
                         throw new InvalidOperationException("List is not sorted.");
                     }
 
-                    return ((bool) _sortedAscending)
+                    return ((Boolean) _sortedAscending)
                                ? ListSortDirection.Ascending
                                : ListSortDirection.Descending;
                 }
@@ -305,7 +305,7 @@ namespace SharpMap
                 }
             }
 
-            protected override bool SupportsSearchingCore
+            protected override Boolean SupportsSearchingCore
             {
                 get { return true; }
             }
@@ -346,7 +346,7 @@ namespace SharpMap
                 base.OnListChanged(e);
             }
 
-            protected override bool SupportsChangeNotificationCore
+            protected override Boolean SupportsChangeNotificationCore
             {
                 get { return true; }
             }
@@ -398,7 +398,7 @@ namespace SharpMap
         private BoundingBox _extents = BoundingBox.Empty;
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
-        private bool _disposed;
+        private Boolean _disposed;
         private readonly String _defaultName;
 
         #endregion
@@ -458,7 +458,7 @@ namespace SharpMap
         /// <summary>
         /// Disposes the map object and all layers.
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (disposing)
             {
@@ -477,7 +477,7 @@ namespace SharpMap
         /// <summary>
         /// Gets whether this layer is disposed, and no longer accessible.
         /// </summary>
-        public bool IsDisposed
+        public Boolean IsDisposed
         {
             get { return _disposed; }
         }
@@ -1325,7 +1325,7 @@ namespace SharpMap
             _extents = extents;
         }
 
-        private static void changeLayerEnabled(ILayer layer, bool enabled)
+        private static void changeLayerEnabled(ILayer layer, Boolean enabled)
         {
             layer.Style.Enabled = enabled;
         }

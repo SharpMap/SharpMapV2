@@ -39,10 +39,10 @@ namespace SharpMap.Data
 
         private delegate void SetDataViewManagerDelegate(FeatureDataView view, DataViewManager dataViewManager);
 
-        private delegate void SetLockedDelegate(DataView view, bool locked);
+        private delegate void SetLockedDelegate(DataView view, Boolean locked);
 
         private delegate void SetIndex2Delegate(
-            FeatureDataView view, String newSort, DataViewRowState dataViewRowState, object expression, bool fireEvent);
+            FeatureDataView view, String newSort, DataViewRowState dataViewRowState, object expression, Boolean fireEvent);
 
         #endregion
 
@@ -75,8 +75,8 @@ namespace SharpMap.Data
         //private readonly SpatialQueryType _queryType;
         //private readonly ArrayList _oidFilter = new ArrayList();
         private FeatureSpatialExpression _viewDefinition;
-        private bool _reindexingEnabled = true;
-        private bool _shouldReindex = false;
+        private Boolean _reindexingEnabled = true;
+        private Boolean _shouldReindex = false;
         private BoundingBox _extents = BoundingBox.Empty;
         #endregion
 
@@ -163,7 +163,7 @@ namespace SharpMap.Data
             setFilterPredicate();
         }
 
-        internal FeatureDataView(FeatureDataTable table, bool locked)
+        internal FeatureDataView(FeatureDataTable table, Boolean locked)
             : this(table)
         {
             // The DataView is locked when it is created as a default
@@ -313,7 +313,7 @@ namespace SharpMap.Data
             get { return base.DataViewManager as FeatureDataViewManager; }
         }
 
-        public bool ReindexingEnabled
+        public Boolean ReindexingEnabled
         {
             get { return _reindexingEnabled; }
             set
@@ -386,7 +386,7 @@ namespace SharpMap.Data
             base.OnListChanged(e);
         }
 
-        protected override void UpdateIndex(bool force)
+        protected override void UpdateIndex(Boolean force)
         {
             if (!ReindexingEnabled)
             {
@@ -427,7 +427,7 @@ namespace SharpMap.Data
         }
 
         internal void SetIndex2(String newSort, DataViewRowState dataViewRowState,
-                                object dataExpression, bool fireEvent)
+                                object dataExpression, Boolean fireEvent)
         {
             // Call the delegate we wired up to bypass the normally inaccessible 
             // base class method
@@ -446,7 +446,7 @@ namespace SharpMap.Data
             SetIndex2(Sort, RowStateFilter, iFilter, true);
         }
 
-        private bool isRowInView(DataRow row)
+        private Boolean isRowInView(DataRow row)
         {
             FeatureDataRow feature = row as FeatureDataRow;
 
@@ -460,14 +460,14 @@ namespace SharpMap.Data
                    && inAttributeFilter();
         }
 
-        private bool inGeometryFilter(FeatureDataRow feature)
+        private Boolean inGeometryFilter(FeatureDataRow feature)
         {
             return (_viewDefinition.QueryRegion == Point.Empty &&
                 _viewDefinition.QueryType == SpatialExpressionType.Disjoint) ||
                 _viewDefinition.QueryRegion.Intersects(feature.Geometry);
         }
 
-        private bool inOidFilter(FeatureDataRow feature)
+        private Boolean inOidFilter(FeatureDataRow feature)
         {
             if (!feature.HasOid)
             {
@@ -494,7 +494,7 @@ namespace SharpMap.Data
             return false;
         }
 
-        private bool inAttributeFilter()
+        private Boolean inAttributeFilter()
         {
             // TODO: perhaps this is where we can execute the DataExpression filter
             return true;
@@ -547,7 +547,7 @@ namespace SharpMap.Data
         {
             // Use LCG to create a set accessor to the DataView.locked field
             DynamicMethod setLockedMethod = new DynamicMethod("set_locked_DynamicMethod",
-                                                              null, new Type[] { typeof(DataView), typeof(bool) },
+                                                              null, new Type[] { typeof(DataView), typeof(Boolean) },
                                                               typeof(DataView));
 
             ILGenerator il = setLockedMethod.GetILGenerator();

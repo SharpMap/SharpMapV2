@@ -20,7 +20,7 @@ namespace SharpMap.Styles
     /// <summary>
     /// Label text alignment
     /// </summary>
-    public enum HorizontalAlignment : short
+    public enum HorizontalAlignment : short 
     {
         /// <summary>
         /// Left oriented

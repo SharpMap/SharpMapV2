@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Styles
 {
     /// <summary>
@@ -27,6 +29,6 @@ namespace SharpMap.Styles
         /// Gets or sets a value to determine if features can 
         /// be selected on this layer.
         /// </summary>
-        bool AreFeaturesSelectable { get; set; }
+        Boolean AreFeaturesSelectable { get; set; }
     }
 }

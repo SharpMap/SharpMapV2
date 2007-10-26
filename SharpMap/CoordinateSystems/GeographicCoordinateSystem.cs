@@ -25,7 +25,7 @@ namespace SharpMap.CoordinateSystems
 	/// A coordinate system based on latitude and longitude. 
 	/// </summary>
 	/// <remarks>
-	/// Some geographic coordinate systems are Lat/Lon, and some are Lon/Lat. 
+	/// Some geographic coordinate systems are Lat / Lon, and some are Lon / Lat. 
 	/// You can find out which this is by examining the axes. You should also 
 	/// check the angular units, since not all geographic coordinate systems 
 	/// use degrees.
@@ -46,7 +46,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal GeographicCoordinateSystem(IAngularUnit angularUnit, IHorizontalDatum horizontalDatum, IPrimeMeridian primeMeridian, List<AxisInfo> axisInfo, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
+		internal GeographicCoordinateSystem(IAngularUnit angularUnit, IHorizontalDatum horizontalDatum, IPrimeMeridian primeMeridian, List<AxisInfo> axisInfo, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
 			:
 			base(horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -195,7 +195,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			GeographicCoordinateSystem other = obj as GeographicCoordinateSystem;
 

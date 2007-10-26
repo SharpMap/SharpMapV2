@@ -37,9 +37,9 @@ namespace SharpMap.Utilities
         /// <returns>A String which uniquely identifies the data.</returns>
         public static String AsString(Stream data)
         {
-            long streamPos = data.Position;
+            Int64 streamPos = data.Position;
             data.Seek(0, SeekOrigin.Begin);
-            byte[] hashValue;
+            Byte[] hashValue;
 
             lock (_hash)
             {
@@ -50,7 +50,7 @@ namespace SharpMap.Utilities
 
             StringBuilder builder = new StringBuilder();
 
-            foreach (byte b in hashValue)
+            foreach (Byte b in hashValue)
             {
                 builder.Append(_digits[b >> 4]);
                 builder.Append(_digits[b & 0x07]);

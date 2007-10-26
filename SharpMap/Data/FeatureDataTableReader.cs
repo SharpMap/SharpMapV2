@@ -48,7 +48,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public bool HasOid
+        public Boolean HasOid
         {
             get { throw new NotImplementedException(); }
         }
@@ -58,7 +58,7 @@ namespace SharpMap.Data
             get { throw new NotImplementedException(); }
         }
 
-        public bool IsFullyLoaded
+        public Boolean IsFullyLoaded
         {
             get { return true; }
         }
@@ -82,17 +82,17 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public bool IsClosed
+        public Boolean IsClosed
         {
             get { throw new NotImplementedException(); }
         }
 
-        public bool NextResult()
+        public Boolean NextResult()
         {
             throw new NotImplementedException();
         }
 
-        public bool Read()
+        public Boolean Read()
         {
             throw new NotImplementedException();
         }
@@ -120,27 +120,27 @@ namespace SharpMap.Data
             get { throw new NotImplementedException(); }
         }
 
-        public bool GetBoolean(Int32 i)
+        public Boolean GetBoolean(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public byte GetByte(Int32 i)
+        public Byte GetByte(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public char GetChar(Int32 i)
+        public Char GetChar(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
+        public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
@@ -175,7 +175,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public float GetFloat(Int32 i)
+        public Single GetFloat(Int32 i)
         {
             throw new NotImplementedException();
         }
@@ -185,7 +185,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public short GetInt16(Int32 i)
+        public Int16 GetInt16(Int32 i)
         {
             throw new NotImplementedException();
         }
@@ -195,7 +195,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public long GetInt64(Int32 i)
+        public Int64 GetInt64(Int32 i)
         {
             throw new NotImplementedException();
         }
@@ -225,7 +225,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public bool IsDBNull(Int32 i)
+        public Boolean IsDBNull(Int32 i)
         {
             throw new NotImplementedException();
         }

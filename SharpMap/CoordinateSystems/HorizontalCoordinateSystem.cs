@@ -38,7 +38,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal HorizontalCoordinateSystem(IHorizontalDatum datum, List<AxisInfo> axisInfo, 
-			String name, String authority, long code, String alias,
+			String name, String authority, Int64 code, String alias,
 			String remarks, String abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{

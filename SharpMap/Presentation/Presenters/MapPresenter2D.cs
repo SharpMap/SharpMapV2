@@ -57,7 +57,7 @@ namespace SharpMap.Presentation.Presenters
 
         // Offsets the origin of the spatial reference system so that the 
         // center of the view coincides with the center of the extents of the map.
-        private bool _viewIsEmpty = true;
+        private Boolean _viewIsEmpty = true;
 
         // The origin projection matrix reflects the coordinate system along
         // the x-axis, and translates the lower left corner of Map.Extents
@@ -673,7 +673,7 @@ namespace SharpMap.Presentation.Presenters
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
 
-        protected bool IsViewMatrixInitialized
+        protected Boolean IsViewMatrixInitialized
         {
             get { return !_viewIsEmpty; }
         }
@@ -1124,7 +1124,7 @@ namespace SharpMap.Presentation.Presenters
             GeoPoint oldCenter = GeoCenterInternal;
 
             // Flag to indicate world matrix needs to be recomputed
-            bool viewMatrixChanged = false;
+            Boolean viewMatrixChanged = false;
 
             // Change geographic center of the view by translating pan matrix
             if (!oldCenter.Equals(newCenter))
@@ -1171,7 +1171,7 @@ namespace SharpMap.Presentation.Presenters
             // and set the visible region of the map
             if (viewMatrixChanged)
             {
-                bool didInitialize = false;
+                Boolean didInitialize = false;
 
                 if (_viewIsEmpty)
                 {
@@ -1321,7 +1321,7 @@ namespace SharpMap.Presentation.Presenters
             return getLayerFromFeatureDataView(view, false);
         }
 
-        private IFeatureLayer getLayerFromFeatureDataView(object view, bool getSelectedView)
+        private IFeatureLayer getLayerFromFeatureDataView(object view, Boolean getSelectedView)
         {
             foreach (ILayer layer in Map.Layers)
             {

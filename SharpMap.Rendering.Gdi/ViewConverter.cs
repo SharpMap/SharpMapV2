@@ -113,7 +113,7 @@ namespace SharpMap.Rendering.Gdi
 
             #region IEquatable<BrushLookupKey> Members
 
-            public bool Equals(BrushLookupKey other)
+            public Boolean Equals(BrushLookupKey other)
             {
                 return other.StyleBrushType.Equals(StyleBrushType)
                        && other.StyleBrushId == StyleBrushId;
@@ -135,7 +135,7 @@ namespace SharpMap.Rendering.Gdi
 
             #region IEquatable<PenLookupKey> Members
 
-            public bool Equals(PenLookupKey other)
+            public Boolean Equals(PenLookupKey other)
             {
                 return other.StylePenType.Equals(StylePenType)
                        && other.StylePenId == StylePenId;
@@ -155,7 +155,7 @@ namespace SharpMap.Rendering.Gdi
 
             #region IEquatable<FontLookupKey> Members
 
-            public bool Equals(FontLookupKey other)
+            public Boolean Equals(FontLookupKey other)
             {
                 return other.FontId == FontId;
             }
@@ -214,7 +214,7 @@ namespace SharpMap.Rendering.Gdi
             if (font == null)
             {
                 font = new Font(styleFont.FontFamily.Name,
-                         (float) styleFont.Size.Width, Convert(styleFont.Style));
+                         (Single) styleFont.Size.Width, Convert(styleFont.Style));
 
                 saveFont(styleFont, font);
             }
@@ -235,12 +235,12 @@ namespace SharpMap.Rendering.Gdi
             }
 
 			GdiMatrix gdiMatrix = new GdiMatrix(
-				(float)viewMatrix[0, 0],
-				(float)viewMatrix[0, 1],
-				(float)viewMatrix[1, 0],
-				(float)viewMatrix[1, 1],
-				(float)viewMatrix[2, 0],
-				(float)viewMatrix[2, 1]);
+				(Single)viewMatrix[0, 0],
+				(Single)viewMatrix[0, 1],
+				(Single)viewMatrix[1, 0],
+				(Single)viewMatrix[1, 1],
+				(Single)viewMatrix[2, 0],
+				(Single)viewMatrix[2, 1]);
 
 			return gdiMatrix;
 		}
@@ -253,13 +253,13 @@ namespace SharpMap.Rendering.Gdi
             }
 
 			GdiColorMatrix gdiColorMatrix = new GdiColorMatrix();
-			gdiColorMatrix.Matrix00 = (float)colorMatrix.R;
-			gdiColorMatrix.Matrix11 = (float)colorMatrix.G;
-			gdiColorMatrix.Matrix22 = (float)colorMatrix.B;
-			gdiColorMatrix.Matrix33 = (float)colorMatrix.A;
-			gdiColorMatrix.Matrix40 = (float)colorMatrix.RedShift;
-			gdiColorMatrix.Matrix41 = (float)colorMatrix.GreenShift;
-			gdiColorMatrix.Matrix42 = (float)colorMatrix.BlueShift;
+			gdiColorMatrix.Matrix00 = (Single)colorMatrix.R;
+			gdiColorMatrix.Matrix11 = (Single)colorMatrix.G;
+			gdiColorMatrix.Matrix22 = (Single)colorMatrix.B;
+			gdiColorMatrix.Matrix33 = (Single)colorMatrix.A;
+			gdiColorMatrix.Matrix40 = (Single)colorMatrix.RedShift;
+			gdiColorMatrix.Matrix41 = (Single)colorMatrix.GreenShift;
+			gdiColorMatrix.Matrix42 = (Single)colorMatrix.BlueShift;
 			gdiColorMatrix.Matrix44 = 1;
 			return gdiColorMatrix;
 		}
@@ -293,7 +293,7 @@ namespace SharpMap.Rendering.Gdi
             if (gdiPen == null)
             {
                 Brush brush = Convert(pen.BackgroundBrush);
-                gdiPen = new Pen(brush, (float) pen.Width);
+                gdiPen = new Pen(brush, (Single) pen.Width);
 
                 gdiPen.Alignment = (PenAlignment) (Int32) pen.Alignment;
                 if (pen.CompoundArray != null) gdiPen.CompoundArray = pen.CompoundArray;
@@ -339,13 +339,13 @@ namespace SharpMap.Rendering.Gdi
 
 		public static PointF Convert(Point2D viewPoint)
 		{
-			PointF gdiPoint = new PointF((float)viewPoint.X, (float)viewPoint.Y);
+			PointF gdiPoint = new PointF((Single)viewPoint.X, (Single)viewPoint.Y);
 			return gdiPoint;
 		}
 
 		public static SizeF Convert(Size2D viewSize)
 		{
-			SizeF gdiSize = new SizeF((float)viewSize.Width, (float)viewSize.Height);
+			SizeF gdiSize = new SizeF((Single)viewSize.Width, (Single)viewSize.Height);
 			return gdiSize;
 		}
 

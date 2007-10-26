@@ -98,7 +98,7 @@ namespace SharpMap.Geometries
         /// <see langword="true"/> if the GeometryCollection is 
         /// empty or contains only null or empty geometries.
         /// </returns>
-        public override bool IsEmpty()
+        public override Boolean IsEmpty()
         {
             if (_geometries == null)
             {
@@ -181,7 +181,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// <see langword="true"/> if the GeometryCollections are equal.
         /// </returns>
-        public bool Equals(GeometryCollection<TGeometry> other)
+        public Boolean Equals(GeometryCollection<TGeometry> other)
         {
             if (ReferenceEquals(other, null))
             {
@@ -216,7 +216,7 @@ namespace SharpMap.Geometries
         /// conditions that cause an instance of that class to be classified as not simple.
         /// </summary>
         /// <returns>true if the geometry is simple</returns>
-        public override bool IsSimple()
+        public override Boolean IsSimple()
         {
             throw new NotImplementedException();
         }

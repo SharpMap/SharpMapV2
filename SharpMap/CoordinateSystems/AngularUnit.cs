@@ -47,7 +47,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal AngularUnit(Double radiansPerUnit, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
+		internal AngularUnit(Double radiansPerUnit, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -142,7 +142,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj">Object to compare.</param>
 		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(object obj)
 		{
 			AngularUnit other = obj as AngularUnit;
 

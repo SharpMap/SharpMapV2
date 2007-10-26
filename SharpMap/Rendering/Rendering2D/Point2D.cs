@@ -36,7 +36,7 @@ namespace SharpMap.Rendering.Rendering2D
         public static readonly Point2D One = new Point2D(1, 1);
 
         private DoubleComponent _x, _y;
-        private bool _hasValue;
+        private Boolean _hasValue;
 
         #region Constructors
         public Point2D(Double x, Double y)
@@ -91,27 +91,27 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Equality Testing
 
-        public static bool operator ==(Point2D lhs, Point2D rhs)
+        public static Boolean operator ==(Point2D lhs, Point2D rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Point2D lhs, Point2D rhs)
+        public static Boolean operator !=(Point2D lhs, Point2D rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public static bool operator ==(Point2D lhs, IVectorD rhs)
+        public static Boolean operator ==(Point2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Point2D lhs, IVectorD rhs)
+        public static Boolean operator !=(Point2D lhs, IVectorD rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(object obj)
         {
             if (obj is Point2D)
             {
@@ -126,7 +126,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public bool Equals(Point2D point)
+        public Boolean Equals(Point2D point)
         {
             return _x.Equals(point._x) &&
                 _y.Equals(point._y) &&
@@ -135,7 +135,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<IViewVector> Members
 
-        public bool Equals(IVectorD other)
+        public Boolean Equals(IVectorD other)
         {
             if (other == null)
             {
@@ -168,7 +168,7 @@ namespace SharpMap.Rendering.Rendering2D
         ///</returns>
         ///
         ///<param name="other">An object to compare with this object.</param>
-        public bool Equals(IMatrixD other)
+        public Boolean Equals(IMatrixD other)
         {
             if (other == null)
             {
@@ -212,7 +212,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        public bool IsEmpty
+        public Boolean IsEmpty
         {
             get { return !_hasValue; }
         }
@@ -465,7 +465,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        bool IMatrixD.IsSingular
+        Boolean IMatrixD.IsSingular
         {
             get { return true; }
         }
@@ -473,7 +473,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singluar).
         /// </summary>
-        bool IMatrixD.IsInvertible
+        Boolean IMatrixD.IsInvertible
         {
             get { return false; }
         }
@@ -489,7 +489,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        bool IMatrixD.IsSquare
+        Boolean IMatrixD.IsSquare
         {
             get { return false; }
         }
@@ -497,7 +497,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        bool IMatrixD.IsSymmetrical
+        Boolean IMatrixD.IsSymmetrical
         {
             get { return false; }
         }

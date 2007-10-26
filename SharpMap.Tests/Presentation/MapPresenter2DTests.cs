@@ -504,13 +504,13 @@ namespace SharpMap.Tests.Presentation
 
             #region IView Members
 
-            public bool Visible
+            public Boolean Visible
             {
                 get { throw new NotImplementedException(); }
                 set { throw new NotImplementedException(); }
             }
 
-            public bool Enabled
+            public Boolean Enabled
             {
                 get { throw new NotImplementedException(); }
                 set { throw new NotImplementedException(); }
@@ -802,7 +802,7 @@ namespace SharpMap.Tests.Presentation
         {
             TestView2D view;
             TestPresenter2D mapPresenter = createPresenter(1000, 1000, out view);
-            bool disposedCalled = false;
+            Boolean disposedCalled = false;
             mapPresenter.Disposed += delegate { disposedCalled = true; };
             mapPresenter.Dispose();
             Assert.AreEqual(true, disposedCalled);

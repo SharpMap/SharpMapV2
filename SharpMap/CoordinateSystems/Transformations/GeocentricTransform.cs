@@ -46,7 +46,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		private const Double AD_C = 1.0026000; /* Toms region 1 constant */
 
 
-		protected bool _isInverse = false;
+		protected Boolean _isInverse = false;
 
 		/// <summary>
 		/// Eccentricity squared : (a^2 - b^2)/a^2
@@ -71,7 +71,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		/// <param name="parameters">List of parameters to initialize the projection.</param>
 		/// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-		public GeocentricTransform(List<ProjectionParameter> parameters, bool isInverse)
+		public GeocentricTransform(List<ProjectionParameter> parameters, Boolean isInverse)
 			: this(parameters)
 		{
 			_isInverse = isInverse;
@@ -146,7 +146,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 
 			//The following method is based on Proj.4
 
-			bool At_Pole = false; // indicates whether location is in polar region */
+			Boolean At_Pole = false; // indicates whether location is in polar region */
 			Double Z = (pnt as Point3D).Z;
 
 			Double lon = 0;

@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace SharpMap.Utilities
 {
 	/// <summary>
-	/// Represents a tolerance used in comparing <see cref="float"/> 
+	/// Represents a tolerance used in comparing <see cref="Single"/> 
 	/// and <see cref="Double"/> floating point values.
 	/// </summary>
 	[Serializable]
@@ -110,7 +110,7 @@ namespace SharpMap.Utilities
 		/// True if the values are equal within the tolerance registered for <typeparamref name="TValue"/>
 		/// or the <see cref="Global"/> tolerance if the type isn't registered; false otherwise.
 		/// </returns>
-		public static bool Equal<TValue>(Double leftHand, Double rightHand)
+		public static Boolean Equal<TValue>(Double leftHand, Double rightHand)
 		{
 			Tolerance t;
 			if (_toleranceRegistry.TryGetValue(typeof (TValue).TypeHandle, out t))
@@ -136,7 +136,7 @@ namespace SharpMap.Utilities
 		/// within the tolerance registered for <typeparamref name="TValue"/>
 		/// or the <see cref="Global"/> tolerance if the type isn't registered; false otherwise.
 		/// </returns>
-		public static bool Greater<TValue>(Double leftHand, Double rightHand)
+		public static Boolean Greater<TValue>(Double leftHand, Double rightHand)
 		{
 			Tolerance t;
 			if (_toleranceRegistry.TryGetValue(typeof (TValue).TypeHandle, out t))
@@ -162,7 +162,7 @@ namespace SharpMap.Utilities
 		/// within the tolerance registered for <typeparamref name="TValue"/>
 		/// or the <see cref="Global"/> tolerance if the type isn't registered; false otherwise.
 		/// </returns>
-		public static bool GreaterOrEqual<TValue>(Double leftHand, Double rightHand)
+		public static Boolean GreaterOrEqual<TValue>(Double leftHand, Double rightHand)
 		{
 			Tolerance t;
 			if (_toleranceRegistry.TryGetValue(typeof (TValue).TypeHandle, out t))
@@ -188,7 +188,7 @@ namespace SharpMap.Utilities
 		/// within the tolerance registered for <typeparamref name="TValue"/>
 		/// or the <see cref="Global"/> tolerance if the type isn't registered; false otherwise.
 		/// </returns>
-		public static bool Less<TValue>(Double leftHand, Double rightHand)
+		public static Boolean Less<TValue>(Double leftHand, Double rightHand)
 		{
 			Tolerance t;
 			if (_toleranceRegistry.TryGetValue(typeof (TValue).TypeHandle, out t))
@@ -214,7 +214,7 @@ namespace SharpMap.Utilities
 		/// within the tolerance registered for <typeparamref name="TValue"/>
 		/// or the <see cref="Global"/> tolerance if the type isn't registered; false otherwise.
 		/// </returns>
-		public static bool LessOrEqual<TValue>(Double leftHand, Double rightHand)
+		public static Boolean LessOrEqual<TValue>(Double leftHand, Double rightHand)
 		{
 			Tolerance t;
 			if (_toleranceRegistry.TryGetValue(typeof (TValue).TypeHandle, out t))
@@ -293,7 +293,7 @@ namespace SharpMap.Utilities
         /// True if <paramref name="leftHand"/> is equal to <paramref name="rightHand"/> 
 		/// (within the tolerance), false otherwise.
 		/// </returns>
-		public bool Equal(Double leftHand, Double rightHand)
+		public Boolean Equal(Double leftHand, Double rightHand)
 		{
 			return Compare(leftHand, rightHand) == 0;
 		}
@@ -308,7 +308,7 @@ namespace SharpMap.Utilities
         /// True if <paramref name="leftHand"/> is greater than <paramref name="rightHand"/> 
 		/// (within the tolerance), false otherwise.
 		/// </returns>
-		public bool Greater(Double leftHand, Double rightHand)
+		public Boolean Greater(Double leftHand, Double rightHand)
 		{
 			return Compare(leftHand, rightHand) == 1;
 		}
@@ -323,7 +323,7 @@ namespace SharpMap.Utilities
 		/// True if <paramref name="leftHand"/> is greater than or equal to 
         /// <paramref name="rightHand"/> (within the tolerance), false otherwise.
 		/// </returns>
-		public bool GreaterOrEqual(Double leftHand, Double rightHand)
+		public Boolean GreaterOrEqual(Double leftHand, Double rightHand)
 		{
 			Int32 comparison = Compare(leftHand, rightHand);
 			return comparison == 0 || comparison == 1;
@@ -339,7 +339,7 @@ namespace SharpMap.Utilities
         /// True if <paramref name="leftHand"/> is less than <paramref name="rightHand"/> 
 		/// (within the tolerance), false otherwise.
 		/// </returns>
-		public bool Less(Double leftHand, Double rightHand)
+		public Boolean Less(Double leftHand, Double rightHand)
 		{
 			return Compare(leftHand, rightHand) == -1;
 		}
@@ -354,7 +354,7 @@ namespace SharpMap.Utilities
 		/// True if <paramref name="leftHand"/> is less than or equal to 
         /// <paramref name="rightHand"/> (within the tolerance), false otherwise.
 		/// </returns>
-		public bool LessOrEqual(Double leftHand, Double rightHand)
+		public Boolean LessOrEqual(Double leftHand, Double rightHand)
 		{
 			Int32 comparison = Compare(leftHand, rightHand);
 			return comparison == 0 || comparison == -1;

@@ -91,7 +91,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <param name="l">LineString to compare to</param>
 		/// <returns>true of the objects are spatially equal</returns>
-		public bool Equals(LineString l)
+		public Boolean Equals(LineString l)
 		{
 			if (ReferenceEquals(l, null))
 			{
@@ -133,7 +133,7 @@ namespace SharpMap.Geometries
 		/// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
 		/// </summary>
 		/// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-		public override bool IsEmpty()
+		public override Boolean IsEmpty()
 		{
 			return _vertices == null || _vertices.Count == 0;
 		}
@@ -144,7 +144,7 @@ namespace SharpMap.Geometries
 		/// conditions that cause an instance of that class to be classified as not simple.
 		/// </summary>
 		/// <returns>true if the geometry is simple</returns>
-		public override bool IsSimple()
+		public override Boolean IsSimple()
 		{
 			List<Point> verts = new List<Point>(_vertices.Count);
 			for (Int32 i = 0; i < _vertices.Count; i++)
@@ -278,7 +278,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns true if this <see cref="LineString"/> is closed and simple.
 		/// </summary>
-		public override bool IsRing
+		public override Boolean IsRing
 		{
 			get { return (IsClosed && IsSimple()); }
 		}

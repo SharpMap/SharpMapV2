@@ -51,7 +51,7 @@ namespace SharpMap.Geometries
         /// <see cref="Curve.StartPoint"/>.Equals(<see cref="Curve.EndPoint"/>) 
         /// is true for each curve in the collection.
 		/// </remarks>
-		public bool IsClosed
+		public Boolean IsClosed
         {
             get
             {
