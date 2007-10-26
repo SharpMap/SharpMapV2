@@ -68,12 +68,12 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         /// <summary>
-        /// Returns a string description of this symbol.
+        /// Returns a String description of this symbol.
         /// </summary>
         /// <returns>
-        /// A string representing the value of this <see cref="Symbol2D"/>.
+        /// A String representing the value of this <see cref="Symbol2D"/>.
         /// </returns>
-        public override string ToString()
+        public override String ToString()
         {
             CheckDisposed();
             return String.Format(
@@ -109,12 +109,12 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets the amount of rotation to render this symbol with in radians.
         /// </summary>
-        public new double Rotation
+        public new Double Rotation
         {
             get
             {
-                return Math.Asin((double)base.Rotation[1, 0])
-                    + (double)base.Rotation[0, 0] < 0 ? Math.PI : 0;
+                return Math.Asin((Double)base.Rotation[1, 0])
+                    + (Double)base.Rotation[0, 0] < 0 ? Math.PI : 0;
             }
             set
             {
@@ -127,7 +127,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Scales this symbol's width and height.
         /// </summary>
-        public new void Scale(double amount)
+        public new void Scale(Double amount)
         {
             Matrix2D scaleMatrix = new Matrix2D();
             scaleMatrix.M11 = scaleMatrix.M22 = amount;
@@ -137,11 +137,11 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets a value by which to scale this symbol's width.
         /// </summary>
-        public double ScaleX
+        public Double ScaleX
         {
             get
             {
-                return (double)base.Scale[0, 0];
+                return (Double)base.Scale[0, 0];
             }
             set
             {
@@ -152,11 +152,11 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets a value by which to scale this symbol's height.
         /// </summary>
-        public double ScaleY
+        public Double ScaleY
         {
             get
             {
-                return (double)base.Scale[1, 1];
+                return (Double)base.Scale[1, 1];
             }
             set
             {

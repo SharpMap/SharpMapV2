@@ -68,12 +68,12 @@ namespace SharpMap.Layers
         /// <summary>
         /// Name of layer.
         /// </summary>
-        string LayerName { get; set; }
+        String LayerName { get; set; }
 
         /// <summary>
         /// The spatial reference ID of the layer data source.
         /// </summary>
-        int? Srid { get; }
+        Int32? Srid { get; }
 
         /// <summary>
         /// The style for the layer.

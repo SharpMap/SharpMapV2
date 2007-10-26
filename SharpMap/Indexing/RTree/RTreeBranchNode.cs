@@ -78,7 +78,7 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[{0}] NodeId: {1}; BoundingBox: {2}; Children Count: {3}", 
                 GetType(), NodeId, BoundingBox, Items.Count);

@@ -28,7 +28,7 @@ namespace SharpMap.Layers
     [Serializable]
     public class DuplicateLayerException : InvalidOperationException
     {
-        private readonly string _duplicateLayerName;
+        private readonly String _duplicateLayerName;
 
         /// <summary>
         /// Creates a new instance of DuplicateLayerException, indicating
@@ -37,7 +37,7 @@ namespace SharpMap.Layers
         /// <param name="duplicateLayerName">
         /// The existing layer name which was duplicated.
         /// </param>
-        public DuplicateLayerException(string duplicateLayerName)
+        public DuplicateLayerException(String duplicateLayerName)
             : this(duplicateLayerName, null) { }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace SharpMap.Layers
         /// The existing layer name which was duplicated.
         /// </param>
         /// <param name="message">Additional information about the exception.</param>
-        public DuplicateLayerException(string duplicateLayerName, string message)
+        public DuplicateLayerException(String duplicateLayerName, String message)
             : this(duplicateLayerName, message, null) { }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace SharpMap.Layers
         /// <param name="inner">
         /// An exception which caused this exception, if any.
         /// </param>
-        public DuplicateLayerException(string duplicateLayerName, string message, Exception inner)
+        public DuplicateLayerException(String duplicateLayerName, String message, Exception inner)
             : base(message, inner)
         {
             _duplicateLayerName = duplicateLayerName;
@@ -87,7 +87,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the existing layer name which was duplicated.
         /// </summary>
-        public string DuplicateLayerName
+        public String DuplicateLayerName
         {
             get { return _duplicateLayerName; }
         }

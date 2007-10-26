@@ -34,7 +34,7 @@ namespace SharpMap.Rendering
     {
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
         private Stream _symbolData;
-        private string _symbolDataHash;
+        private String _symbolDataHash;
         private bool _disposed;
         private IAffineMatrixD _rotationTransform;
         private IAffineMatrixD _scalingTransform;
@@ -70,7 +70,7 @@ namespace SharpMap.Rendering
 
                 using (BinaryReader reader = new BinaryReader(symbolData))
                 {
-                    copy.Write(reader.ReadBytes((int) symbolData.Length), 0, (int) symbolData.Length);
+                    copy.Write(reader.ReadBytes((Int32) symbolData.Length), 0, (Int32) symbolData.Length);
                 }
 
                 symbolData = copy;
@@ -287,7 +287,7 @@ namespace SharpMap.Rendering
             }
         }
 
-        protected string SymbolDataHash
+        protected String SymbolDataHash
         {
             get { return _symbolDataHash; }
         }

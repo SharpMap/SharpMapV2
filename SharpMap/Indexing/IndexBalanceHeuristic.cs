@@ -26,11 +26,11 @@ namespace SharpMap.Indexing
     /// </summary>
     public abstract class IndexBalanceHeuristic
     {
-        private int _nodeItemMin;
-        private int _nodeItemMax;
+        private Int32 _nodeItemMin;
+        private Int32 _nodeItemMax;
         private uint _maxTreeDepth;
 
-        protected IndexBalanceHeuristic(int nodeItemMinimumCount, int nodeItemMaximumCount, uint maxTreeDepth)
+        protected IndexBalanceHeuristic(Int32 nodeItemMinimumCount, Int32 nodeItemMaximumCount, uint maxTreeDepth)
         {
             _nodeItemMin = nodeItemMinimumCount;
             _nodeItemMax = nodeItemMaximumCount;
@@ -41,7 +41,7 @@ namespace SharpMap.Indexing
         /// Minimum number of index entries in a node before it is a candiate for splitting
         /// the node.
         /// </summary>
-        public virtual int NodeItemMinimumCount
+        public virtual Int32 NodeItemMinimumCount
         {
             get { return _nodeItemMin; }
         }
@@ -50,7 +50,7 @@ namespace SharpMap.Indexing
         /// Number of index entries in a node to target. More than this will cause a split
         /// if <see cref="MaxTreeDepth"/> is not reached.
         /// </summary>
-        public virtual int NodeItemMaximumCount
+        public virtual Int32 NodeItemMaximumCount
         {
             get { return _nodeItemMax; }
         }
@@ -66,6 +66,6 @@ namespace SharpMap.Indexing
         /// <summary>
         /// The target number of nodes for a split node.
         /// </summary>
-        public abstract int TargetNodeCount { get; }
+        public abstract Int32 TargetNodeCount { get; }
     }
 }

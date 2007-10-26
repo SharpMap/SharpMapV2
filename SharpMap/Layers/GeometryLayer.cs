@@ -49,7 +49,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public GeometryLayer(string layername, IFeatureLayerProvider dataSource)
+        public GeometryLayer(String layername, IFeatureLayerProvider dataSource)
             : this(layername, new VectorStyle(), dataSource)
         {
         }
@@ -60,7 +60,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public GeometryLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
+        public GeometryLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource)
             : base(layername, style, dataSource)
         {
         }

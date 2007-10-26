@@ -51,11 +51,11 @@ namespace SharpMap.Presentation.Presenters
             View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
         }
 
-        protected override void OnMapPropertyChanged(string propertyName)
+        protected override void OnMapPropertyChanged(String propertyName)
         {
             if (propertyName == Map.SelectedLayersProperty.Name)
             {
-                View.SelectedLayers = new List<string>(generateLayerNames(Map.SelectedLayers));
+                View.SelectedLayers = new List<String>(generateLayerNames(Map.SelectedLayers));
             }
 
             if (propertyName == Map.ActiveToolProperty.Name)
@@ -69,7 +69,7 @@ namespace SharpMap.Presentation.Presenters
 
         #region Private helper functions
 
-        private IEnumerable<string> generateLayerNames(IEnumerable<ILayer> layers)
+        private IEnumerable<String> generateLayerNames(IEnumerable<ILayer> layers)
         {
             foreach (ILayer layer in layers)
             {
@@ -109,13 +109,13 @@ namespace SharpMap.Presentation.Presenters
             switch (e.LayerAction)
             {
                 case LayerAction.Enabled:
-                    foreach (string layerName in e.Layers)
+                    foreach (String layerName in e.Layers)
                     {
                         Map.EnableLayer(layerName);
                     }
                     break;
                 case LayerAction.Disabled:
-                    foreach (string layerName in e.Layers)
+                    foreach (String layerName in e.Layers)
                     {
                         Map.DisableLayer(layerName);
                     }

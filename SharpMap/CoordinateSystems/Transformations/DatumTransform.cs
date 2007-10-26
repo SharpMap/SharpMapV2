@@ -29,7 +29,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 	{
 		protected IMathTransform _inverse;
 		private readonly Wgs84ConversionInfo _ToWgs94;
-		private readonly double[] v;
+		private readonly Double[] v;
 		private bool _isInverse = false;
 
 		public DatumTransform(Wgs84ConversionInfo towgs84)
@@ -44,12 +44,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 			_isInverse = isInverse;
 		}
 
-		public override string Wkt
+		public override String Wkt
 		{
 			get { throw new NotImplementedException(); }
 		}
 
-		public override string Xml
+		public override String Xml
 		{
 			get { throw new NotImplementedException(); }
 		}
@@ -67,7 +67,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 				v[0]*p.X - v[3]*p.Y + v[2]*p.Z + v[4],
 				v[3]*p.X + v[0]*p.Y - v[1]*p.Z + v[5],
 				-v[2]*p.X + v[1]*p.Y + v[0]*p.Z + v[6]);
-			//double[,] v = GetAffineTransform();
+			//Double[,] v = GetAffineTransform();
 			//return new SharpMap.Geometries.Point3D(
 			//    v[0, 0] * p.X + v[0, 1] * p.Y + v[0, 2] * p.Z + v[0, 3],
 			//    v[1, 0] * p.X + v[1, 1] * p.Y + v[1, 2] * p.Z + v[1, 3],
@@ -80,7 +80,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 				v[0]*p.X + v[3]*p.Y - v[2]*p.Z - v[4],
 				-v[3]*p.X + v[0]*p.Y + v[1]*p.Z - v[5],
 				v[2]*p.X - v[1]*p.Y + v[0]*p.Z - v[6]);
-			//double[,] v = GetAffineTransform();
+			//Double[,] v = GetAffineTransform();
 			//return new SharpMap.Geometries.Point3D(
 			//    v[0, 0] * p.X + v[0, 1] * p.Y + v[0, 2] * p.Z + v[0, 3],
 			//    v[1, 0] * p.X + v[1, 1] * p.Y + v[1, 2] * p.Z + v[1, 3],

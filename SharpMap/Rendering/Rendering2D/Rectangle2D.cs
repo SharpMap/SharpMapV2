@@ -60,7 +60,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="top">The Y value of the top side.</param>
 		/// <param name="right">The X value of the right side.</param>
 		/// <param name="bottom">The Y value of the bottom side.</param>
-        public Rectangle2D(double left, double top, double right, double bottom)
+        public Rectangle2D(Double left, Double top, Double right, Double bottom)
         {
             _left = left;
             _right = right;
@@ -88,7 +88,7 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region ToString
-        public override string ToString()
+        public override String ToString()
         {
             return
                 String.Format(
@@ -98,9 +98,9 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region GetHashCode
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
-            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom);
+            return unchecked((Int32)Left ^ (Int32)Right ^ (Int32)Top ^ (Int32)Bottom);
         }
         #endregion
 
@@ -143,9 +143,9 @@ namespace SharpMap.Rendering.Rendering2D
 
             unchecked
             {
-                for (int row = 0; row < thisMatrix.RowCount; row++)
+                for (Int32 row = 0; row < thisMatrix.RowCount; row++)
                 {
-                    for (int col = 0; col < thisMatrix.ColumnCount; col++)
+                    for (Int32 col = 0; col < thisMatrix.ColumnCount; col++)
                     {
                         if (!lhs[row][col].Equals(rhs[row][col]))
                         {
@@ -229,7 +229,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// 1 if this rectangle is located to the right or downward from the <paramref name="other"/>
         /// rectangle, and -1 if this rectangle is located to the left or upward from the other.
         /// </returns>
-        public int CompareTo(Rectangle2D other)
+        public Int32 CompareTo(Rectangle2D other)
         {
             if (other.IsEmpty && IsEmpty)
             {
@@ -251,7 +251,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        internal static Rectangle2D FromLTRB(double left, double top, double right, double bottom)
+        internal static Rectangle2D FromLTRB(Double left, Double top, Double right, Double bottom)
         {
             return new Rectangle2D(left, top, right, bottom);
         }
@@ -283,9 +283,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
-        public double X
+        public Double X
         {
-            get { return (double)_left; }
+            get { return (Double)_left; }
         }
 
         /// <summary>
@@ -293,9 +293,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
-        public double Y
+        public Double Y
         {
-            get { return (double)_top; }
+            get { return (Double)_top; }
         }
 
         /// <summary>
@@ -304,9 +304,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
-        public double Left
+        public Double Left
         {
-            get { return (double)_left; }
+            get { return (Double)_left; }
         }
 
         /// <summary>
@@ -315,9 +315,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
         /// <seealso cref="Left"/>
-        public double Top
+        public Double Top
         {
-            get { return (double)_top; }
+            get { return (Double)_top; }
         }
 
         /// <summary>
@@ -326,9 +326,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Top"/>
         /// <seealso cref="Left"/>
-        public double Right
+        public Double Right
         {
-            get { return (double)_right; }
+            get { return (Double)_right; }
         }
 
         /// <summary>
@@ -337,9 +337,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
         /// <seealso cref="Left"/>
-        public double Bottom
+        public Double Bottom
         {
-            get { return (double)_bottom; }
+            get { return (Double)_bottom; }
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Center"/>
         public Point2D Location
         {
-            get { return new Point2D((double)_left, (double)_top); }
+            get { return new Point2D((Double)_left, (Double)_top); }
         }
 
         /// <summary>
@@ -376,18 +376,18 @@ namespace SharpMap.Rendering.Rendering2D
         /// Gets the width of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Size"/>
-        public double Width
+        public Double Width
         {
-            get { return (double)_right.Subtract(_left); }
+            get { return (Double)_right.Subtract(_left); }
         }
 
         /// <summary>
         /// Gets the height of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Size"/>
-        public double Height
+        public Double Height
         {
-            get { return (double)_bottom.Subtract(_top); }
+            get { return (Double)_bottom.Subtract(_top); }
         }
 
 		/// <summary>
@@ -558,7 +558,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        double IMatrixD.Determinant
+        Double IMatrixD.Determinant
         {
             get { throw new NotSupportedException(); }
         }
@@ -566,7 +566,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        int IMatrixD.ColumnCount
+        Int32 IMatrixD.ColumnCount
         {
             get { return 2; }
         }
@@ -658,7 +658,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        int IMatrixD.RowCount
+        Int32 IMatrixD.RowCount
         {
             get { return 2; }
         }
@@ -670,7 +670,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="j0">The starting column to include.</param>
         /// <param name="j1">The ending column to include.</param>
         /// <returns></returns>
-        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
+        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotSupportedException();
         }
@@ -681,7 +681,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns></returns>
-        DoubleComponent IMatrixD.this[int row, int column]
+        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
         {
             get
             {
@@ -839,7 +839,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Private Helper Methods
 
-        private static void checkIndexes(int row, int column)
+        private static void checkIndexes(Int32 row, Int32 column)
         {
             if (row < 0 || row > 1)
             {
@@ -896,7 +896,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// The axis to rotate around. May be an addition of the basis vectors.
         /// </param>
         /// <param name="radians">Angle to rotate through.</param>
-        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, double radians)
+        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, Double radians)
         {
             throw new NotSupportedException();
         }
@@ -909,7 +909,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </param>
         /// <param name="radians">Angle to rotate through.</param>
         /// <param name="order">Order in which to apply the operation.</param>
-        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, double radians,
+        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, Double radians,
                                                                 MatrixOperationOrder order)
         {
             throw new NotSupportedException();
@@ -922,7 +922,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="point">Point at which to compute the rotation.</param>
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="radians">Angle to rotate through.</param>
-        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, double radians)
+        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, Double radians)
         {
             throw new NotSupportedException();
         }
@@ -935,7 +935,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="radians">Angle to rotate through.</param>
         /// <param name="order">Order in which to apply the operation.</param>
-        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, double radians,
+        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, Double radians,
                                                              MatrixOperationOrder order)
         {
             throw new NotSupportedException();

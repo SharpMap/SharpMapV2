@@ -36,11 +36,11 @@ namespace SharpMap.Converters.WellKnownText
         /// <returns>
         /// Well-Known text.
         /// </returns>
-        public static string SridToWkt(int srid)
+        public static String SridToWkt(Int32 srid)
         {
             XmlDocument xmldoc = new XmlDocument();
 
-            string file = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)
+            String file = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)
                           + "\\SpatialRefSys.xml";
 
             xmldoc.Load(file);

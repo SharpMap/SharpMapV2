@@ -54,6 +54,6 @@ namespace SharpMap.Presentation.Views
         /// <param name="featureIndexes">
         /// Set of indexes of features to set to be selected.
         /// </param>
-        void SetHighlightedFeatures(string layerName, IEnumerable<int> featureIndexes);
+        void SetHighlightedFeatures(String layerName, IEnumerable<Int32> featureIndexes);
     }
 }

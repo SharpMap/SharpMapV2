@@ -27,7 +27,7 @@ namespace SharpMap.CoordinateSystems
 	/// ellipsoidal heights (h) by the use of the given geoid undulation model (N) through
 	/// the equation: H=h-N.
 	/// </summary>
-	public enum DatumType : int
+	public enum DatumType
 	{
 		/// <summary>
 		/// Lowest possible value for horizontal datum types

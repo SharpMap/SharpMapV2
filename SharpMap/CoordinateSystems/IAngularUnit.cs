@@ -29,6 +29,6 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the number of radians per angular unit.
 		/// </summary>
-		double RadiansPerUnit { get; set; }
+		Double RadiansPerUnit { get; set; }
 	}
 }

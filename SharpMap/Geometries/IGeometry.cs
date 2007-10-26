@@ -38,7 +38,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		///  The inherent dimension of this <see cref="Geometry"/> object, which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		int Dimension { get; }
+		Int32 Dimension { get; }
 
         /// <summary>
 		/// The minimum bounding box for this Geometry, returned as a <see cref="Geometry"/>. The
@@ -56,7 +56,7 @@ namespace SharpMap.Geometries
         /// <summary>
 		/// Exports this <see cref="Geometry"/> to a specific well-known text representation of <see cref="Geometry"/>.
         /// </summary>
-		string AsText();
+		String AsText();
 
 		/// <summary>
 		/// Exports this <see cref="Geometry"/> to a specific well-known binary representation of <see cref="Geometry"/>.
@@ -67,7 +67,7 @@ namespace SharpMap.Geometries
 		/// Returns a WellKnownText representation of the <see cref="Geometry"/>
 		/// </summary>
 		/// <returns>Well-known text</returns>
-		string ToString();
+		String ToString();
 
 		/// <summary>
 		/// If true, then this <see cref="Geometry"/> represents the empty point set, Ø, for the coordinate space. 
@@ -100,7 +100,7 @@ namespace SharpMap.Geometries
 		/// <param name="other"><see cref="Geometry"/> to relate to</param>
 		/// <param name="intersectionPattern">Intersection Pattern</param>
 		/// <returns>True if spatially related</returns>
-		bool Relate(Geometry other, string intersectionPattern);
+		bool Relate(Geometry other, String intersectionPattern);
 
 
         #endregion
@@ -158,7 +158,7 @@ namespace SharpMap.Geometries
         /// </summary>
 		/// <param name="geom"><see cref="Geometry"/> to calculate distance to</param>
 		/// <returns>Shortest distance between any two points in the two geometries</returns>
-		double Distance(Geometry geom);
+		Double Distance(Geometry geom);
 
         /// <summary>
 		/// Returns a <see cref="Geometry"/> that represents all points whose distance from this <see cref="Geometry"/>
@@ -167,7 +167,7 @@ namespace SharpMap.Geometries
         /// </summary>
 		/// <param name="d">Buffer distance</param>
 		/// <returns>Buffer around <see cref="Geometry"/></returns>
-		Geometry Buffer(double d);
+		Geometry Buffer(Double d);
 
 
         /// <summary>

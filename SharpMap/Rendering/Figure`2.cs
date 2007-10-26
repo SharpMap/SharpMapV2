@@ -69,9 +69,9 @@ namespace SharpMap.Rendering
         #region ToString
 
         /// <summary>
-        /// Returns a string representation of this <see cref="Figure"/>.
+        /// Returns a String representation of this <see cref="Figure"/>.
         /// </summary>
-        public override string ToString()
+        public override String ToString()
         {
             return
                 String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count,
@@ -85,11 +85,11 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Returns a value to use in hash sets.
         /// </summary>
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             unchecked
             {
-                int hash = 86848163;
+                Int32 hash = 86848163;
 
                 foreach (TPoint p in Points)
                 {
@@ -129,7 +129,7 @@ namespace SharpMap.Rendering
                 return false;
             }
 
-            for (int pointIndex = 0; pointIndex < other.Points.Count; pointIndex++)
+            for (Int32 pointIndex = 0; pointIndex < other.Points.Count; pointIndex++)
             {
                 if (!Points[pointIndex].Equals(other.Points[pointIndex]))
                 {
@@ -255,7 +255,7 @@ namespace SharpMap.Rendering
 
         internal void TransformPoints(ITransformMatrix<DoubleComponent> transform)
         {
-            for (int i = 0; i < _points.Count; i++)
+            for (Int32 i = 0; i < _points.Count; i++)
             {
                 TPoint point = _points[i];
 

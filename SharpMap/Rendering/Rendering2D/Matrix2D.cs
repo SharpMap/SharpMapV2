@@ -69,7 +69,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="m22">The second row, second column component.</param>
         /// <param name="offsetX">The third row, first column component.</param>
         /// <param name="offsetY">The second row, third column component.</param>
-        public Matrix2D(double m11, double m21, double m12, double m22, double offsetX, double offsetY)
+        public Matrix2D(Double m11, Double m21, Double m12, Double m22, Double offsetX, Double offsetY)
             : base(MatrixFormat.RowMajor, 3)
         {
             M11 = m11;
@@ -89,9 +89,9 @@ namespace SharpMap.Rendering.Rendering2D
         {
             if (matrixToCopy == null) throw new ArgumentNullException("matrixToCopy");
 
-            for (int i = 0; i < 3; i++)
+            for (Int32 i = 0; i < 3; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (Int32 j = 0; j < 3; j++)
                 {
                     this[i, j] = matrixToCopy[i, j];
                 }
@@ -102,7 +102,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region ToString
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[Matrix2D] [ [{0:N3}, {1:N3}, 0], [{2:N3}, {3:N3}, 0], [{4:N3}, {5:N3}, 1] ]",
                                  M11, M12, M21, M22, OffsetX, OffsetY);
@@ -112,7 +112,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region GetHashCode
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return unchecked(this[0, 0].GetHashCode() + 24243 ^ this[0, 1].GetHashCode() + 7318674
                              ^ this[0, 2].GetHashCode() + 282 ^ this[1, 0].GetHashCode() + 54645
@@ -145,7 +145,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="x">Scale to apply to the X dimension.</param>
         /// <param name="y">Scale to apply to the Y dimension.</param>
-        public void Scale(double x, double y)
+        public void Scale(Double x, Double y)
         {
             Scale(new Point2D(x, y));
         }
@@ -155,7 +155,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="x">Scale to apply to the X dimension.</param>
         /// <param name="y">Scale to apply to the Y dimension.</param>
-        public void ScalePrepend(double x, double y)
+        public void ScalePrepend(Double x, Double y)
         {
             base.Scale(new Point2D(x, y), MatrixOperationOrder.Prepend);
         }
@@ -165,7 +165,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="x">X component of the translation vector.</param>
         /// <param name="y">Y component of the translation vector.</param>
-        public void Translate(double x, double y)
+        public void Translate(Double x, Double y)
         {
             Translate(new Point2D(x, y));
         }
@@ -175,7 +175,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="x">X component of the translation vector.</param>
         /// <param name="y">Y component of the translation vector.</param>
-        public void TranslatePrepend(double x, double y)
+        public void TranslatePrepend(Double x, Double y)
         {
             Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
         }
@@ -184,7 +184,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// Appends a rotation in radians onto this matrix.
         /// </summary>
         /// <param name="theta">Amount to rotate, in radians.</param>
-        public void Rotate(double theta)
+        public void Rotate(Double theta)
         {
             RotateAlong(null, theta);
         }
@@ -195,12 +195,12 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="x">X component of the point.</param>
         /// <param name="y">Y component of the point.</param>
         /// <returns>A Point2D describing the transformed input.</returns>
-        public Point2D TransformVector(double x, double y)
+        public Point2D TransformVector(Double x, Double y)
         {
             DoubleComponent[] transferPoints = new DoubleComponent[] { x, y, 1 };
 
             MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(transferPoints, this);
-            return new Point2D((double)transferPoints[0], (double)transferPoints[1]);
+            return new Point2D((Double)transferPoints[0], (Double)transferPoints[1]);
         }
 
         #region Equality Computation
@@ -241,54 +241,54 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// The first row, first column component.
         /// </summary>
-        public double M11
+        public Double M11
         {
-            get { return (double)this[0, 0]; }
+            get { return (Double)this[0, 0]; }
             set { this[0, 0] = value; }
         }
 
         /// <summary>
         /// The second row, first column component.
         /// </summary>
-        public double M21
+        public Double M21
         {
-            get { return (double)this[1, 0]; }
+            get { return (Double)this[1, 0]; }
             set { this[1, 0] = value; }
         }
 
         /// <summary>
         /// The third row, first column component.
         /// </summary>
-        public double OffsetX
+        public Double OffsetX
         {
-            get { return (double)this[2, 0]; }
+            get { return (Double)this[2, 0]; }
             set { this[2, 0] = value; }
         }
 
         /// <summary>
         /// The second row, first column component.
         /// </summary>
-        public double M12
+        public Double M12
         {
-            get { return (double)this[0, 1]; }
+            get { return (Double)this[0, 1]; }
             set { this[0, 1] = value; }
         }
 
         /// <summary>
         /// The second row, second column component.
         /// </summary>
-        public double M22
+        public Double M22
         {
-            get { return (double)this[1, 1]; }
+            get { return (Double)this[1, 1]; }
             set { this[1, 1] = value; }
         }
 
         /// <summary>
         /// The second row, third column component.
         /// </summary>
-        public double OffsetY
+        public Double OffsetY
         {
-            get { return (double)this[2, 1]; }
+            get { return (Double)this[2, 1]; }
             set { this[2, 1] = value; }
         }
 

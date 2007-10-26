@@ -54,7 +54,7 @@ namespace SharpMap.Indexing.RTree
             protected internal set { base.BoundingBox = value; }
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("Leaf NodeId: {0}; BoundingBox: {1}; Entries: {2}", NodeId, BoundingBox, Items.Count);
         }

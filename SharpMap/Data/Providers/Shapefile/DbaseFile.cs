@@ -36,7 +36,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         #region Instance fields
 
-        private readonly string _filename;
+        private readonly String _filename;
         private DbaseHeader _header;
         private FeatureDataTable<uint> _baseTable;
         private bool _headerIsParsed;
@@ -48,12 +48,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #endregion
 
-        internal DbaseFile(string fileName)
+        internal DbaseFile(String fileName)
             : this(fileName, true)
         {
         }
 
-        private DbaseFile(string fileName, bool checkExists)
+        private DbaseFile(String fileName, bool checkExists)
         {
             if (checkExists && !File.Exists(fileName))
             {
@@ -199,7 +199,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region Methods
 
-        internal static DbaseFile CreateDbaseFile(string fileName, DataTable schema, CultureInfo culture, Encoding encoding)
+        internal static DbaseFile CreateDbaseFile(String fileName, DataTable schema, CultureInfo culture, Encoding encoding)
         {
             DbaseFile file = new DbaseFile(fileName, false);
             byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
@@ -222,7 +222,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            DataStream.Seek((int)ComputeByteOffsetToRecord(_header.RecordCount), 
+            DataStream.Seek((Int32)ComputeByteOffsetToRecord(_header.RecordCount), 
                 SeekOrigin.Begin);
 
             _writer.BeginWrite();
@@ -447,7 +447,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 //            /// structure indexing values in a column to a row index</returns>
 //            /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
 //            /// object has been disposed</exception>
-//            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(int columnId) where TValue : IComparable<TValue>
+//            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(Int32 columnId) where TValue : IComparable<TValue>
 //            {
 //                if (_isDisposed)
 //                {
@@ -473,9 +473,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         ///// Creates an index on the columns for faster searching [EXPERIMENTAL - Requires Lucene dependencies]
         ///// </summary>
         ///// <returns></returns>
-        //private string createLuceneIndex()
+        //private String createLuceneIndex()
         //{
-        //    string dir = this._filename + ".idx";
+        //    String dir = this._filename + ".idx";
         //    if (!System.IO.Directory.Exists(dir))
         //        System.IO.Directory.CreateDirectory(dir);
         //    Lucene.Net.Index.IndexWriter iw = new Lucene.Net.Index.IndexWriter(dir,new Lucene.Net.Analysis.Standard.StandardAnalyzer(),true);
@@ -491,9 +491,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         //        foreach(System.Data.DataColumn col in dr.Table.Columns) //Add and index values from DBF
         //        {
-        //            if(col.DataType.Equals(typeof(string)))
+        //            if(col.DataType.Equals(typeof(String)))
         //                // Add the contents as a valued Text field so it will get tokenized and indexed.
-        //                doc.Add(Lucene.Net.Documents.Field.UnStored(col.ColumnName,(string)dr[col]));
+        //                doc.Add(Lucene.Net.Documents.Field.UnStored(col.ColumnName,(String)dr[col]));
         //            else
         //                doc.Add(Lucene.Net.Documents.Field.UnStored(col.ColumnName, dr[col].ToString()));
         //        }

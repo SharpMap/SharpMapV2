@@ -98,8 +98,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private static readonly Dictionary<byte, CultureWithEncoding> _dbaseToEncoding
             = new Dictionary<byte, CultureWithEncoding>();
-        private static readonly Dictionary<KeyValuePair<int, int>, byte> _encodingToDbase
-            = new Dictionary<KeyValuePair<int, int>, byte>();
+        private static readonly Dictionary<KeyValuePair<Int32, Int32>, byte> _encodingToDbase
+            = new Dictionary<KeyValuePair<Int32, Int32>, byte>();
 
         static DbaseLocaleRegistry()
         {
@@ -194,9 +194,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 					continue;
 				}
 
-                int lcid = item.Value.CultureInfo.LCID;
-				int codePage = item.Value.Encoding.CodePage;
-				_encodingToDbase.Add(new KeyValuePair<int, int>(lcid, codePage), item.Key);	
+                Int32 lcid = item.Value.CultureInfo.LCID;
+				Int32 codePage = item.Value.Encoding.CodePage;
+				_encodingToDbase.Add(new KeyValuePair<Int32, Int32>(lcid, codePage), item.Key);	
             }
         }
 
@@ -262,7 +262,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public static byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
         {
             Byte driverCode;
-            KeyValuePair<int, int> key = new KeyValuePair<int, int>(info.LCID, encoding.CodePage);
+            KeyValuePair<Int32, Int32> key = new KeyValuePair<Int32, Int32>(info.LCID, encoding.CodePage);
 
             if (_encodingToDbase.TryGetValue(key, out driverCode))
             {

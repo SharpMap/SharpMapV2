@@ -27,7 +27,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private class DbaseWriter : IDisposable
         {
             private readonly DbaseFile _dbaseFile;
-            private const string NumberFormatTemplate = "{0,:F}";
+            private const String NumberFormatTemplate = "{0,:F}";
             private readonly StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
             private readonly BinaryReader _binaryReader;
             private readonly BinaryWriter _binaryWriter;
@@ -116,13 +116,13 @@ namespace SharpMap.Data.Providers.ShapeFile
                 UpdateHeader(header);
                 _binaryWriter.Write(header.HeaderLength);
                 _binaryWriter.Write(header.RecordLength);
-                _binaryWriter.Write(new byte[DbaseConstants.EncodingOffset - (int)_binaryWriter.BaseStream.Position]);
+                _binaryWriter.Write(new byte[DbaseConstants.EncodingOffset - (Int32)_binaryWriter.BaseStream.Position]);
                 _binaryWriter.Write(header.LanguageDriver);
                 _binaryWriter.Write(new byte[2]);
 
                 foreach (DbaseField field in header.Columns)
                 {
-                    string colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
+                    String colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
                     byte[] colNameBytes = Encoding.ASCII.GetBytes(colName.Substring(0, DbaseConstants.FieldNameLength));
                     _binaryWriter.Write(colNameBytes);
                     char fieldTypeCode = DbaseSchema.GetFieldTypeCode(field.DataType);
@@ -228,7 +228,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-								writeString((string)row[column.ColumnName], column.Length);
+								writeString((String)row[column.ColumnName], column.Length);
                             }
                             break;
                         case TypeCode.Char:
@@ -254,31 +254,31 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _binaryWriter.Write(DbaseConstants.NullDateValue);
             }
 
-            private void writeNullString(int length)
+            private void writeNullString(Int32 length)
             {
                 byte[] bytes = Encoding.ASCII.GetBytes(new String('\0', length));
                 _binaryWriter.Write(bytes);
             }
 
-            private void writeNullNumber(int length)
+            private void writeNullNumber(Int32 length)
             {
                 _binaryWriter.Write(new String(DbaseConstants.NumericNullIndicator, length));
             }
 
-            private void writeNumber(double value, short length, byte decimalPlaces)
+            private void writeNumber(Double value, short length, byte decimalPlaces)
             {
-                // Create number format string
+                // Create number format String
                 _format.Length = 0;
                 _format.Append(NumberFormatTemplate);
                 _format.Insert(5, decimalPlaces).Insert(3, length);
-                string number = String.Format(DbaseConstants.StorageNumberFormat, _format.ToString(), value);
+                String number = String.Format(DbaseConstants.StorageNumberFormat, _format.ToString(), value);
                 byte[] bytes = Encoding.ASCII.GetBytes(number);
                 _binaryWriter.Write(bytes);
             }
 
             private void writeNumber(long value, short length)
             {
-                // Create number format string
+                // Create number format String
                 writeNumber(value, length, 0);
             }
 
@@ -288,7 +288,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _binaryWriter.Write(bytes);
             }
 
-            private void writeString(string value, int length)
+            private void writeString(String value, Int32 length)
             {
                 value = (value ?? String.Empty) + new String((char)0x0, length);
                 byte[] chars = _dbaseFile.Encoding.GetBytes(value.Substring(0, length));

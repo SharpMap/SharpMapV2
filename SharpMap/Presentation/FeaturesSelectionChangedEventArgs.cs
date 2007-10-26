@@ -22,11 +22,11 @@ namespace SharpMap.Presentation
 {
     public class FeaturesHighlightedChangedEventArgs : EventArgs
     {
-        private readonly IEnumerable<int> _highlightedFeatures;
+        private readonly IEnumerable<Int32> _highlightedFeatures;
 		private readonly String _layerName;
 
         public FeaturesHighlightedChangedEventArgs(
-            String layerName, IEnumerable<int> highlightedFeatures)
+            String layerName, IEnumerable<Int32> highlightedFeatures)
         {
 			_layerName = layerName;
             _highlightedFeatures = highlightedFeatures;
@@ -37,7 +37,7 @@ namespace SharpMap.Presentation
     		get { return _layerName; }
     	}
 
-        public IEnumerable<int> HighlightedFeatures
+        public IEnumerable<Int32> HighlightedFeatures
         {
             get { return _highlightedFeatures; }
         }

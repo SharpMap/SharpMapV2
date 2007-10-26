@@ -36,7 +36,7 @@ namespace SharpMap.Rendering
 		/// Creates a new RenderException instance with the given message.
 		/// </summary>
 		/// <param name="message">The message to include in the exception.</param>
-		public RenderException(string message) : base(message)
+		public RenderException(String message) : base(message)
 		{
 		}
 
@@ -45,7 +45,7 @@ namespace SharpMap.Rendering
 		/// </summary>
 		/// <param name="message">The message to include in the exception.</param>
 		/// <param name="inner">A related, usually causing, exception.</param>
-		public RenderException(string message, Exception inner) : base(message,inner)
+		public RenderException(String message, Exception inner) : base(message,inner)
 		{
 		}
 	}

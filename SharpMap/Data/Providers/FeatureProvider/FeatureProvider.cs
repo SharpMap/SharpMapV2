@@ -31,7 +31,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
     /// </summary>
 	public class FeatureProvider : IWritableFeatureLayerProvider<Guid>
 	{
-        internal readonly static string OidColumnName = "Oid";
+        internal readonly static String OidColumnName = "Oid";
 		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
 		private ICoordinateTransformation _transform = null;
 
@@ -45,7 +45,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		{
             foreach (DataColumn column in columns)
             {
-                string keyColumnName = _features.PrimaryKey[0].ColumnName;
+                String keyColumnName = _features.PrimaryKey[0].ColumnName;
                 if (String.Compare(keyColumnName, column.ColumnName) != 0)
                 {
                     _features.Columns.Add(column);
@@ -309,7 +309,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// Returns the number of features in the entire dataset.
         /// </summary>
         /// <returns>Count of the features in the entire dataset.</returns>
-	    public int GetFeatureCount()
+	    public Int32 GetFeatureCount()
 		{
 			return _features.FeatureCount;
         }
@@ -369,7 +369,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			get { return true; }
 		}
 
-		public int? Srid
+		public Int32? Srid
 		{
 			get { return null; }
 			set {  }
@@ -380,7 +380,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			return _features.Extents;
 		}
 
-		public string ConnectionId
+		public String ConnectionId
 		{
 			get { return String.Empty; }
 		}

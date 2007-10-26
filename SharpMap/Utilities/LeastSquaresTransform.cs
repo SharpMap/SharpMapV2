@@ -53,7 +53,7 @@ namespace SharpMap.Utilities
         /// Removes input and output value pair at the specified index
         /// </summary>
         /// <param name="i"></param>
-        public void RemoveInputOutputPointAt(int i)
+        public void RemoveInputOutputPointAt(Int32 i)
         {
             inputs.RemoveAt(i);
             outputs.RemoveAt(i);
@@ -64,7 +64,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="i">index</param>
         /// <returns>Input point value a index 'i'</returns>
-        public Point GetInputPoint(int i)
+        public Point GetInputPoint(Int32 i)
         {
             return inputs[i];
         }
@@ -74,7 +74,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="p">Point value</param>
         /// <param name="i">index</param>
-        public void SetInputPointAt(Point p, int i)
+        public void SetInputPointAt(Point p, Int32 i)
         {
             inputs[i] = p;
         }
@@ -84,7 +84,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="i">index</param>
         /// <returns>Output point value a index 'i'</returns>
-        public Point GetOutputPoint(int i)
+        public Point GetOutputPoint(Int32 i)
         {
             return outputs[i];
         }
@@ -94,7 +94,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="p">Point value</param>
         /// <param name="i">index</param>
-        public void SetOutputPointAt(Point p, int i)
+        public void SetOutputPointAt(Point p, Int32 i)
         {
             outputs[i] = p;
         }
@@ -117,19 +117,19 @@ namespace SharpMap.Utilities
         /// <returns>
         /// Array with the six transformation parameters and sum of squared residuals:  a, b, c, d, e, f, s0
         /// </returns>
-        public double[] GetAffineTransformation()
+        public Double[] GetAffineTransformation()
         {
             if (inputs.Count < 3)
                 throw new InvalidOperationException(
                     "At least 3 measurements required to calculate affine transformation");
 
-            // double precision isn't always enough when transforming large numbers.
+            // Double precision isn't always enough when transforming large numbers.
             // Lets subtract some mean values and add them later again:
             // Find approximate center values:
             Point meanInput = new Point(0, 0);
             Point meanOutput = new Point(0, 0);
 
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 meanInput.X += inputs[i].X;
                 meanInput.Y += inputs[i].Y;
@@ -142,11 +142,11 @@ namespace SharpMap.Utilities
             meanOutput.X = Math.Round(meanOutput.X/inputs.Count);
             meanOutput.Y = Math.Round(meanOutput.Y/inputs.Count);
 
-            double[][] N = CreateMatrix(3, 3);
+            Double[][] N = CreateMatrix(3, 3);
 
             // Create normal equation: transpose(B)*B
             // B: matrix of calibrated values. Example of row in B: [x , y , -1]
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 //Subtract mean values
                 inputs[i].X -= meanInput.X;
@@ -164,10 +164,10 @@ namespace SharpMap.Utilities
 
             N[2][2] = inputs.Count;
 
-            double[] t1 = new double[3];
-            double[] t2 = new double[3];
+            Double[] t1 = new Double[3];
+            Double[] t2 = new Double[3];
 
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 t1[0] += inputs[i].X*outputs[i].X;
                 t1[1] += inputs[i].Y*outputs[i].X;
@@ -177,10 +177,10 @@ namespace SharpMap.Utilities
                 t2[1] += inputs[i].Y*outputs[i].Y;
                 t2[2] += -outputs[i].Y;
             }
-            double[] trans = new double[7];
+            Double[] trans = new Double[7];
 
             // Solve equation N = transpose(B)*t1
-            double frac = 1/
+            Double frac = 1/
                           (-N[0][0]*N[1][1]*N[2][2] + N[0][0]*Math.Pow(N[1][2], 2) + Math.Pow(N[0][1], 2)*N[2][2] -
                            2*N[1][2]*N[0][1]*N[0][2] + N[1][1]*Math.Pow(N[0][2], 2));
             trans[0] = (-N[0][1]*N[1][2]*t1[2] + N[0][1]*t1[1]*N[2][2] - N[0][2]*N[1][2]*t1[1] + N[0][2]*N[1][1]*t1[2] -
@@ -203,7 +203,7 @@ namespace SharpMap.Utilities
             trans[5] += - meanOutput.Y + meanInput.Y;
 
             //Restore values
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 inputs[i].X += meanInput.X;
                 inputs[i].Y += meanInput.Y;
@@ -212,12 +212,12 @@ namespace SharpMap.Utilities
             }
 
             //Calculate s0
-            double s0 = 0;
+            Double s0 = 0;
 
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
-                double x = inputs[i].X*trans[0] + inputs[i].Y*trans[1] + trans[2];
-                double y = inputs[i].X*trans[3] + inputs[i].Y*trans[4] + trans[5];
+                Double x = inputs[i].X*trans[0] + inputs[i].Y*trans[1] + trans[2];
+                Double y = inputs[i].X*trans[3] + inputs[i].Y*trans[4] + trans[5];
                 s0 += Math.Pow(x - outputs[i].X, 2) + Math.Pow(y - outputs[i].Y, 2);
             }
 
@@ -246,18 +246,18 @@ namespace SharpMap.Utilities
         /// <returns>
         /// Array with the four transformation parameters, and sum of squared residuals: a, b, c, d, s0
         /// </returns>
-        public double[] GetHelmertTransformation()
+        public Double[] GetHelmertTransformation()
         {
             if (inputs.Count < 2)
                 throw new InvalidOperationException(
                     "At least 2 measurements required to calculate helmert transformation");
 
-            //double precision isn't always enough. Lets subtract some mean values and add them later again:
+            //Double precision isn't always enough. Lets subtract some mean values and add them later again:
             //Find approximate center values:
             Point meanInput = new Point(0, 0);
             Point meanOutput = new Point(0, 0);
 
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 meanInput.X += inputs[i].X;
                 meanInput.Y += inputs[i].Y;
@@ -270,12 +270,12 @@ namespace SharpMap.Utilities
             meanOutput.X = Math.Round(meanOutput.X/inputs.Count);
             meanOutput.Y = Math.Round(meanOutput.Y/inputs.Count);
 
-            double b00 = 0;
-            double b02 = 0;
-            double b03 = 0;
-            double[] t = new double[4];
+            Double b00 = 0;
+            Double b02 = 0;
+            Double b03 = 0;
+            Double[] t = new Double[4];
 
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 //Subtract mean values
                 inputs[i].X -= meanInput.X;
@@ -293,15 +293,15 @@ namespace SharpMap.Utilities
                 t[3] += outputs[i].Y;
             }
 
-            double frac = 1/(-inputs.Count*b00 + Math.Pow(b02, 2) + Math.Pow(b03, 2));
-            double[] result = new double[5];
+            Double frac = 1/(-inputs.Count*b00 + Math.Pow(b02, 2) + Math.Pow(b03, 2));
+            Double[] result = new Double[5];
             result[0] = (-inputs.Count*t[0] + b02*t[2] + b03*t[3])*frac;
             result[1] = (-inputs.Count*t[1] + b03*t[2] - b02*t[3])*frac;
             result[2] = (b02*t[0] + b03*t[1] - t[2]*b00)*frac + meanOutput.X;
             result[3] = (b03*t[0] - b02*t[1] - t[3]*b00)*frac + meanOutput.Y;
 
             //Restore values
-            for (int i = 0; i < inputs.Count; i++)
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
                 inputs[i].X += meanInput.X;
                 inputs[i].Y += meanInput.Y;
@@ -310,11 +310,11 @@ namespace SharpMap.Utilities
             }
 
             //Calculate s0
-            double s0 = 0;
-            for (int i = 0; i < inputs.Count; i++)
+            Double s0 = 0;
+            for (Int32 i = 0; i < inputs.Count; i++)
             {
-                double x = inputs[i].X*result[0] + inputs[i].Y*result[1] + result[2];
-                double y = -inputs[i].X*result[1] + inputs[i].Y*result[0] + result[3];
+                Double x = inputs[i].X*result[0] + inputs[i].Y*result[1] + result[2];
+                Double y = -inputs[i].X*result[1] + inputs[i].Y*result[0] + result[3];
                 s0 += Math.Pow(x - outputs[i].X, 2) + Math.Pow(y - outputs[i].Y, 2);
             }
 
@@ -329,12 +329,12 @@ namespace SharpMap.Utilities
         /// <param name="n">width of matrix</param>
         /// <param name="m">height of matrix</param>
         /// <returns>n*m matrix</returns>
-        private double[][] CreateMatrix(int n, int m)
+        private Double[][] CreateMatrix(Int32 n, Int32 m)
         {
-            double[][] N = new double[n][];
+            Double[][] N = new Double[n][];
 
-            for (int i = 0; i < n; i++)
-                N[i] = new double[m];
+            for (Int32 i = 0; i < n; i++)
+                N[i] = new Double[m];
 
             return N;
         }

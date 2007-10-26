@@ -45,7 +45,7 @@ namespace SharpMap.CoordinateSystems
         /// <param name="remarks">Provider-supplied remarks</param>
         internal HorizontalDatum(
             IEllipsoid ellipsoid, Wgs84ConversionInfo toWgs84, DatumType type,
-            string name, string authority, long code, string alias, string remarks, string abbreviation)
+            String name, String authority, long code, String alias, String remarks, String abbreviation)
             : base(type, name, authority, code, alias, remarks, abbreviation)
         {
             _ellipsoid = ellipsoid;
@@ -241,7 +241,7 @@ namespace SharpMap.CoordinateSystems
         /// Returns the Well-known text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -266,13 +266,13 @@ namespace SharpMap.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
                 return String.Format(Info.NumberFormat,
                     "<CS_HorizontalDatum DatumType=\"{0}\">{1}{2}{3}</CS_HorizontalDatum>",
-                    (int)DatumType, InfoXml, Ellipsoid.Xml, (Wgs84Parameters == null ? String.Empty : Wgs84Parameters.XML));
+                    (Int32)DatumType, InfoXml, Ellipsoid.Xml, (Wgs84Parameters == null ? String.Empty : Wgs84Parameters.XML));
             }
         }
 

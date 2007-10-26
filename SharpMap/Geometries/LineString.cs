@@ -68,7 +68,7 @@ namespace SharpMap.Geometries
 		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
 		/// <param name="N"></param>
 		/// <returns></returns>
-		public Point Point(int N)
+		public Point Point(Int32 N)
 		{
 			return _vertices[N];
 		}
@@ -77,7 +77,7 @@ namespace SharpMap.Geometries
 		/// The number of points in this LineString.
 		/// </summary>
 		/// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
-		public virtual int NumPoints
+		public virtual Int32 NumPoints
 		{
 			get { return _vertices.Count; }
 		}
@@ -101,7 +101,7 @@ namespace SharpMap.Geometries
 			{
 				return false;
 			}
-			for (int i = 0; i < l.Vertices.Count; i++)
+			for (Int32 i = 0; i < l.Vertices.Count; i++)
 			{
 				if (!l.Vertices[i].Equals(Vertices[i]))
 				{
@@ -117,11 +117,11 @@ namespace SharpMap.Geometries
 		/// in hashing algorithms and data structures like a hash table.
 		/// </summary>
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
-			int hash = 0;
+			Int32 hash = 0;
 
-			for (int i = 0; i < Vertices.Count; i++)
+			for (Int32 i = 0; i < Vertices.Count; i++)
 			{
 				hash = hash ^ Vertices[i].GetHashCode();
 			}
@@ -147,7 +147,7 @@ namespace SharpMap.Geometries
 		public override bool IsSimple()
 		{
 			List<Point> verts = new List<Point>(_vertices.Count);
-			for (int i = 0; i < _vertices.Count; i++)
+			for (Int32 i = 0; i < _vertices.Count; i++)
 				if (!verts.Exists(delegate(Point p) { return p.Equals(_vertices[i]); }))
 					verts.Add(_vertices[i]);
 			return (verts.Count == _vertices.Count - (IsClosed ? 1 : 0));
@@ -171,7 +171,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <param name="geom">Geometry to calculate distance to</param>
 		/// <returns>Shortest distance between any two points in the two geometries</returns>
-		public override double Distance(Geometry geom)
+		public override Double Distance(Geometry geom)
 		{
 			throw new NotImplementedException();
 		}
@@ -183,7 +183,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <param name="d">Buffer distance</param>
 		/// <returns>Buffer around geometry</returns>
-		public override Geometry Buffer(double d)
+		public override Geometry Buffer(Double d)
 		{
 			throw new NotImplementedException();
 		}
@@ -287,7 +287,7 @@ namespace SharpMap.Geometries
 		/// The length of this <see cref="LineString"/>, as measured in the spatial reference 
 		/// system of this LineString.
 		/// </summary>
-		public override double Length
+		public override Double Length
 		{
 			get
 			{
@@ -296,9 +296,9 @@ namespace SharpMap.Geometries
 					return 0;
 				}
 
-				double sum = 0;
+				Double sum = 0;
 
-				for (int i = 1; i < Vertices.Count; i++)
+				for (Int32 i = 1; i < Vertices.Count; i++)
 				{
 					sum += Vertices[i].Distance(Vertices[i - 1]);
 				}
@@ -312,7 +312,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <param name="t">Distance down the line.</param>
 		/// <returns>Point at line at distance t from <see cref="StartPoint"/></returns>
-		public override Point Value(double t)
+		public override Point Value(Double t)
 		{
 			throw new NotImplementedException();
 		}
@@ -356,7 +356,7 @@ namespace SharpMap.Geometries
 		{
 			LineString l = new LineString();
 
-			for (int i = 0; i < _vertices.Count; i++)
+			for (Int32 i = 0; i < _vertices.Count; i++)
 			{
 				l.Vertices.Add(_vertices[i].Clone() as Point);
 			}

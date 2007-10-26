@@ -26,8 +26,8 @@ namespace SharpMap.Data.Providers.ShapeFile
     public class ShapeFileUnsupportedGeometryException : ShapeFileException
     {
         public ShapeFileUnsupportedGeometryException() : base() { }
-        public ShapeFileUnsupportedGeometryException(string message) : base(message) { }
-        public ShapeFileUnsupportedGeometryException(string message, Exception inner) : base(message, inner) { }
+        public ShapeFileUnsupportedGeometryException(String message) : base(message) { }
+        public ShapeFileUnsupportedGeometryException(String message, Exception inner) : base(message, inner) { }
         public ShapeFileUnsupportedGeometryException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }

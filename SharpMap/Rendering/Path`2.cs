@@ -40,7 +40,7 @@ namespace SharpMap.Rendering
         private readonly List<Figure<TPoint, TViewBounds>> _figures =
             new List<Figure<TPoint, TViewBounds>>();
 
-        private int _currentFigureIndex;
+        private Int32 _currentFigureIndex;
         private TViewBounds _bounds;
 
         /// <summary>
@@ -101,11 +101,11 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Provides a string representation of the 
+        /// Provides a String representation of the 
         /// <see cref="Path{TPoint, TViewBounds}"/>.
         /// </summary>
-        /// <returns>A string which describes the <see cref="Path{TPoint, TViewBounds}"/></returns>
-        public override string ToString()
+        /// <returns>A String which describes the <see cref="Path{TPoint, TViewBounds}"/></returns>
+        public override String ToString()
         {
             return String.Format("[{0}] {1} figure{2} of {3} points; Bounds: {4}",
                                  GetType(), _figures.Count, (_figures.Count > 1 ? "s" : ""), typeof (TPoint).Name,
@@ -118,11 +118,11 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A 32-bit signed integer hash code suitable for use in hash tables.
         /// </returns>
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             unchecked
             {
-                int hash = 19638952;
+                Int32 hash = 19638952;
                 foreach (Figure<TPoint, TViewBounds> figure in _figures)
                 {
                     hash ^= figure.GetHashCode();
@@ -173,7 +173,7 @@ namespace SharpMap.Rendering
 
             unchecked
             {
-                for (int figureIndex = 0; figureIndex < other._figures.Count; figureIndex++)
+                for (Int32 figureIndex = 0; figureIndex < other._figures.Count; figureIndex++)
                 {
                     if (!_figures[figureIndex].Equals(other._figures[figureIndex]))
                     {
@@ -229,7 +229,7 @@ namespace SharpMap.Rendering
             }
             set
             {
-                int index = _figures.IndexOf(value);
+                Int32 index = _figures.IndexOf(value);
 
                 if (index < 0)
                 {

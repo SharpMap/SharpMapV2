@@ -37,7 +37,7 @@ namespace SharpMap.Rendering.Rendering3D
         public static readonly ViewRectangle3D Empty = new ViewRectangle3D();
         public static readonly ViewRectangle3D Zero = new ViewRectangle3D(0, 0, 0, 0, 0, 0);
 
-        public ViewRectangle3D(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
+        public ViewRectangle3D(Double xMin, Double xMax, Double yMin, Double yMax, Double zMin, Double zMax)
         {
             _xMin = xMin;
             _xMax = xMax;
@@ -119,19 +119,19 @@ namespace SharpMap.Rendering.Rendering3D
             get { return new ViewPoint3D(Width, Height, Depth); }
         }
 
-        public double Width
+        public Double Width
         {
-            get { return Math.Abs((double)_xMax.Subtract(_xMin)); }
+            get { return Math.Abs((Double)_xMax.Subtract(_xMin)); }
         }
 
-        public double Height
+        public Double Height
         {
-            get { return Math.Abs((double)_yMax.Subtract(_yMin)); }
+            get { return Math.Abs((Double)_yMax.Subtract(_yMin)); }
         }
 
-        public double Depth
+        public Double Depth
         {
-            get { return Math.Abs((double)_zMax.Subtract(_zMin)); }
+            get { return Math.Abs((Double)_zMax.Subtract(_zMin)); }
         }
 
         public static bool operator ==(ViewRectangle3D rect1, ViewRectangle3D rect2)
@@ -161,12 +161,12 @@ namespace SharpMap.Rendering.Rendering3D
             return other == this;
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
-            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom ^ (int)Back ^ (int)Front);
+            return unchecked((Int32)Left ^ (Int32)Right ^ (Int32)Top ^ (Int32)Bottom ^ (Int32)Back ^ (Int32)Front);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("ViewRectangle - Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; Back: {4:N3}; Front: {5:N3}",
                 Left, Top, Right, Top, Bottom, Back, Front);
@@ -200,7 +200,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// 1 if this Rectangle is located to the right or down from the <paramref name="other"/>
         /// Rectange, and -1 if this Rectangle is located to the left or up from the other.
         /// </returns>
-        public int CompareTo(ViewRectangle3D other)
+        public Int32 CompareTo(ViewRectangle3D other)
         {
             if (Intersects(other))
             {
@@ -239,7 +239,7 @@ namespace SharpMap.Rendering.Rendering3D
             get { return _hasValue; }
         }
 
-        public double[,] Elements
+        public Double[,] Elements
         {
             get
             {
@@ -254,7 +254,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        double IMatrixD.Determinant
+        Double IMatrixD.Determinant
         {
             get { throw new NotImplementedException(); }
         }
@@ -262,7 +262,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        int IMatrixD.ColumnCount
+        Int32 IMatrixD.ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -318,7 +318,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        int IMatrixD.RowCount
+        Int32 IMatrixD.RowCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -338,7 +338,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns>The value of the element at the specified row and column.</returns>
-        DoubleComponent IMatrixD.this[int row, int column]
+        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -361,7 +361,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="j1">The ending column to include.</param>
         /// <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
         /// through <paramref name="j1"/>.</returns>
-        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
+        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotImplementedException();
         }
@@ -478,17 +478,17 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        public void Rotate(double degreesTheta)
+        public void Rotate(Double degreesTheta)
         {
             throw new NotSupportedException();
         }
 
-        public void RotateAt(double degreesTheta, IVectorD center)
+        public void RotateAt(Double degreesTheta, IVectorD center)
         {
             throw new NotSupportedException();
         }
 
-        public double GetOffset(int dimension)
+        public Double GetOffset(Int32 dimension)
         {
             throw new NotSupportedException();
         }
@@ -503,7 +503,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotSupportedException();
         }
 
-        public void Scale(double scaleAmount)
+        public void Scale(Double scaleAmount)
         {
             throw new NotImplementedException();
         }
@@ -513,7 +513,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        public void Translate(double translationAmount)
+        public void Translate(Double translationAmount)
         {
             throw new NotImplementedException();
         }
@@ -528,7 +528,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        public double[] Transform(params double[] vector)
+        public Double[] Transform(params Double[] vector)
         {
             throw new NotImplementedException();
         }

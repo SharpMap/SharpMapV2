@@ -48,18 +48,18 @@ namespace SharpMap.Converters.WellKnownText
 	public class CoordinateSystemWktReader
 	{
 		/// <summary>
-		/// Reads and parses a WKT-formatted projection string.
+		/// Reads and parses a WKT-formatted projection String.
 		/// </summary>
 		/// <param name="wkt">String containing WKT.</param>
 		/// <returns>Object representation of the WKT.</returns>
 		/// <exception cref="System.ArgumentException">If a token is not recognised.</exception>
-		public static IInfo Parse(string wkt)
+		public static IInfo Parse(String wkt)
 		{
 			IInfo returnObject = null;
 			StringReader reader = new StringReader(wkt);
 			WktStreamTokenizer tokenizer = new WktStreamTokenizer(reader);
 			tokenizer.NextToken();
-			string objectName = tokenizer.GetStringValue();
+			String objectName = tokenizer.GetStringValue();
 			switch (objectName)
 			{
 				case "UNIT":
@@ -103,11 +103,11 @@ namespace SharpMap.Converters.WellKnownText
 		private static IUnit ReadUnit(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.ReadToken("[");
-			string unitName = tokenizer.ReadDoubleQuotedWord();
+			String unitName = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			double unitsPerUnit = tokenizer.GetNumericValue();
-			string authority = String.Empty;
+			Double unitsPerUnit = tokenizer.GetNumericValue();
+			String authority = String.Empty;
 			long authorityCode = -1;
 			tokenizer.NextToken();
 			if (tokenizer.GetStringValue() == ",")
@@ -125,11 +125,11 @@ namespace SharpMap.Converters.WellKnownText
 		private static ILinearUnit ReadLinearUnit(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.ReadToken("[");
-			string unitName = tokenizer.ReadDoubleQuotedWord();
+			String unitName = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			double unitsPerUnit = tokenizer.GetNumericValue();
-			string authority = String.Empty;
+			Double unitsPerUnit = tokenizer.GetNumericValue();
+			String authority = String.Empty;
 			long authorityCode = -1;
 			tokenizer.NextToken();
 			if (tokenizer.GetStringValue() == ",")
@@ -147,11 +147,11 @@ namespace SharpMap.Converters.WellKnownText
 		private static IAngularUnit ReadAngularUnit(WktStreamTokenizer tokenizer)
 		{
 			tokenizer.ReadToken("[");
-			string unitName = tokenizer.ReadDoubleQuotedWord();
+			String unitName = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			double unitsPerUnit = tokenizer.GetNumericValue();
-			string authority = String.Empty;
+			Double unitsPerUnit = tokenizer.GetNumericValue();
+			String authority = String.Empty;
 			long authorityCode = -1;
 			tokenizer.NextToken();
 			if (tokenizer.GetStringValue() == ",")
@@ -172,10 +172,10 @@ namespace SharpMap.Converters.WellKnownText
 			if (tokenizer.GetStringValue() != "AXIS")
 				tokenizer.ReadToken("AXIS");
 			tokenizer.ReadToken("[");
-			string axisName = tokenizer.ReadDoubleQuotedWord();
+			String axisName = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			string unitname = tokenizer.GetStringValue();
+			String unitname = tokenizer.GetStringValue();
 			tokenizer.ReadToken("]");
 			switch (unitname.ToUpper())
 			{
@@ -198,7 +198,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// <param name="coordinateSystem"></param>
 		/// <param name="tokenizer"></param>
 		/// <returns></returns>
-		private static ICoordinateSystem ReadCoordinateSystem(string coordinateSystem, WktStreamTokenizer tokenizer)
+		private static ICoordinateSystem ReadCoordinateSystem(String coordinateSystem, WktStreamTokenizer tokenizer)
 		{
 			switch (tokenizer.GetStringValue())
 			{
@@ -287,18 +287,18 @@ namespace SharpMap.Converters.WellKnownText
 			//]
 
 			tokenizer.ReadToken("[");
-			string name=tokenizer.ReadDoubleQuotedWord();
+			String name=tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			string headCSCode =  tokenizer.GetStringValue();
+			String headCSCode =  tokenizer.GetStringValue();
 			ICoordinateSystem headCS = ReadCoordinateSystem(headCSCode,tokenizer);
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			string tailCSCode =  tokenizer.GetStringValue();
+			String tailCSCode =  tokenizer.GetStringValue();
 			ICoordinateSystem tailCS = ReadCoordinateSystem(tailCSCode,tokenizer);
 			tokenizer.ReadToken(",");
-			string authority=String.Empty;
-			string authorityCode=String.Empty; 
+			String authority=String.Empty;
+			String authorityCode=String.Empty; 
 			tokenizer.ReadAuthority(ref authority, ref authorityCode);
 			tokenizer.ReadToken("]");
 			ICompoundCoordinateSystem compoundCS = new CompoundCoordinateSystem(headCS,tailCS,String.Empty,authority,authorityCode,name,String.Empty,String.Empty); 
@@ -315,25 +315,25 @@ namespace SharpMap.Converters.WellKnownText
 		{
 			//SPHEROID["Airy 1830",6377563.396,299.3249646,AUTHORITY["EPSG","7001"]]
 			tokenizer.ReadToken("[");
-			string name = tokenizer.ReadDoubleQuotedWord();
+			String name = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			double majorAxis = tokenizer.GetNumericValue();
+			Double majorAxis = tokenizer.GetNumericValue();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			double e = tokenizer.GetNumericValue();
+			Double e = tokenizer.GetNumericValue();
 			//
 
 			//tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			string authority = String.Empty;
+			String authority = String.Empty;
 			long authorityCode = -1;
 			if (tokenizer.GetStringValue() == ",") //Read authority
 			{
 				tokenizer.ReadAuthority(ref authority, ref authorityCode);
 				tokenizer.ReadToken("]");
 			}
-			IEllipsoid ellipsoid = new Ellipsoid(majorAxis, 0.0, e, true, LinearUnit.Metre, name, authority, authorityCode, String.Empty, string.Empty, string.Empty);
+			IEllipsoid ellipsoid = new Ellipsoid(majorAxis, 0.0, e, true, LinearUnit.Metre, name, authority, authorityCode, String.Empty, String.Empty, String.Empty);
 			return ellipsoid;
 		}
 
@@ -347,7 +347,7 @@ namespace SharpMap.Converters.WellKnownText
 			//tokenizer.NextToken();// PROJECTION
 			tokenizer.ReadToken("PROJECTION");
 			tokenizer.ReadToken("[");//[
-			string projectionName = tokenizer.ReadDoubleQuotedWord();
+			String projectionName = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken("]");//]
 			tokenizer.ReadToken(",");//,
 			tokenizer.ReadToken("PARAMETER");
@@ -355,18 +355,18 @@ namespace SharpMap.Converters.WellKnownText
 			while (tokenizer.GetStringValue() == "PARAMETER")
 			{
 				tokenizer.ReadToken("[");
-				string paramName = tokenizer.ReadDoubleQuotedWord();
+				String paramName = tokenizer.ReadDoubleQuotedWord();
 				tokenizer.ReadToken(",");
 				tokenizer.NextToken();
-				double paramValue = tokenizer.GetNumericValue();
+				Double paramValue = tokenizer.GetNumericValue();
 				tokenizer.ReadToken("]");
 				tokenizer.ReadToken(",");
 				paramList.Add(new ProjectionParameter(paramName, paramValue));
 				tokenizer.NextToken();
 			}
-			string authority = String.Empty;
+			String authority = String.Empty;
 			long authorityCode = -1;
-			IProjection projection = new Projection(projectionName, paramList, projectionName, authority, authorityCode, String.Empty, String.Empty, string.Empty);
+			IProjection projection = new Projection(projectionName, paramList, projectionName, authority, authorityCode, String.Empty, String.Empty, String.Empty);
 			return projection;
 		}
 
@@ -399,7 +399,7 @@ namespace SharpMap.Converters.WellKnownText
 			]
 			*/
 			tokenizer.ReadToken("[");
-			string name = tokenizer.ReadDoubleQuotedWord();
+			String name = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.ReadToken("GEOGCS");
 			IGeographicCoordinateSystem geographicCS = ReadGeographicCoordinateSystem(tokenizer);
@@ -407,7 +407,7 @@ namespace SharpMap.Converters.WellKnownText
 			IProjection projection = ReadProjection(tokenizer);
 			IUnit unit = ReadLinearUnit(tokenizer);
 
-			string authority = String.Empty;
+			String authority = String.Empty;
 			long authorityCode = -1;
 			tokenizer.NextToken();
 			List<AxisInfo> axes = new List<AxisInfo>(2);
@@ -452,7 +452,7 @@ namespace SharpMap.Converters.WellKnownText
 			]
 			*/
 			tokenizer.ReadToken("[");
-			string name = tokenizer.ReadDoubleQuotedWord();
+			String name = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.ReadToken("DATUM");
 			IHorizontalDatum horizontalDatum = ReadHorizontalDatum(tokenizer);
@@ -463,7 +463,7 @@ namespace SharpMap.Converters.WellKnownText
 			tokenizer.ReadToken("UNIT");
 			IAngularUnit angularUnit = ReadAngularUnit(tokenizer);
 
-			string authority = String.Empty;
+			String authority = String.Empty;
 			long authorityCode = -1;
 			tokenizer.NextToken();
 			List<AxisInfo> info = new List<AxisInfo>(2);
@@ -501,11 +501,11 @@ namespace SharpMap.Converters.WellKnownText
 		{
 			//DATUM["OSGB 1936",SPHEROID["Airy 1830",6377563.396,299.3249646,AUTHORITY["EPSG","7001"]]TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6277"]]
 			Wgs84ConversionInfo wgsInfo = null;
-			string authority = String.Empty;
+			String authority = String.Empty;
 			long authorityCode = -1;
 
 			tokenizer.ReadToken("[");
-			string name = tokenizer.ReadDoubleQuotedWord();
+			String name = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.ReadToken("SPHEROID");
 			IEllipsoid ellipsoid = ReadEllipsoid(tokenizer);
@@ -539,13 +539,13 @@ namespace SharpMap.Converters.WellKnownText
 		{
 			//PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]]
 			tokenizer.ReadToken("[");
-			string name = tokenizer.ReadDoubleQuotedWord();
+			String name = tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			double longitude = tokenizer.GetNumericValue();
+			Double longitude = tokenizer.GetNumericValue();
 
 			tokenizer.NextToken();
-			string authority = String.Empty;
+			String authority = String.Empty;
 			long authorityCode = -1;
 			if (tokenizer.GetStringValue() == ",")
 			{
@@ -571,14 +571,14 @@ namespace SharpMap.Converters.WellKnownText
 			//AUTHORITY["EPSG","5701"]
 			
 			tokenizer.ReadToken("[");
-			string name=tokenizer.ReadDoubleQuotedWord();
+			String name=tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.ReadToken("VERT_DATUM");
 			IVerticalDatum verticalDatum = ReadVerticalDatum(tokenizer);
 			tokenizer.ReadToken("UNIT");
 			IUnit unit = ReadUnit(tokenizer);
-			string authority=String.Empty;
-			string authorityCode=String.Empty; 
+			String authority=String.Empty;
+			String authorityCode=String.Empty; 
 			tokenizer.ReadAuthority(ref authority, ref authorityCode);
 			tokenizer.ReadToken("]");
 
@@ -596,13 +596,13 @@ namespace SharpMap.Converters.WellKnownText
 		{
 			//VERT_DATUM["Ordnance Datum Newlyn",2005,AUTHORITY["5101","EPSG"]]
 			tokenizer.ReadToken("[");
-			string datumName=tokenizer.ReadDoubleQuotedWord();
+			String datumName=tokenizer.ReadDoubleQuotedWord();
 			tokenizer.ReadToken(",");
 			tokenizer.NextToken();
-			string datumTypeNumber = tokenizer.GetStringValue();
+			String datumTypeNumber = tokenizer.GetStringValue();
 			tokenizer.ReadToken(",");
-			string authority=String.Empty;
-			string authorityCode=String.Empty; 
+			String authority=String.Empty;
+			String authorityCode=String.Empty; 
 			tokenizer.ReadAuthority(ref authority, ref authorityCode);
 			DatumType datumType = (DatumType)Enum.Parse(typeof(DatumType),datumTypeNumber);
 			IVerticalDatum verticalDatum = new VerticalDatum(datumType,String.Empty,authorityCode,authority,datumName,String.Empty,String.Empty);

@@ -224,10 +224,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 					    }
 #endif
                     case TypeCode.Double:
-                        string temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
-                        double dbl;
+                        String temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
+                        Double dbl;
 
-                        if (double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl))
+                        if (Double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl))
                         {
                             return dbl;
                         }
@@ -237,7 +237,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Int16:
-                        string temp16 =
+                        String temp16 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int16 i16;
 
@@ -251,7 +251,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Int32:
-                        string temp32 =
+                        String temp32 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int32 i32;
 
@@ -265,7 +265,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Int64:
-                        string temp64 =
+                        String temp64 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int64 i64 = 0;
 
@@ -279,7 +279,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Single:
-                        string temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
+                        String temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
                         float f = 0;
 
                         if (float.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f))
@@ -294,7 +294,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     case TypeCode.String:
                         {
                             byte[] chars = _dbaseReader.ReadBytes(dbf.Length);
-                            string value = _dbaseFile.Encoding.GetString(chars);
+                            String value = _dbaseFile.Encoding.GetString(chars);
                             return value.Replace("\0", "").Trim();
                         }
 

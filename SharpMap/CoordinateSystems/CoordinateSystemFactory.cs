@@ -42,11 +42,11 @@ namespace SharpMap.CoordinateSystems
 		#region ICoordinateSystemFactory Members
 
 		/// <summary>
-		/// Creates a coordinate system object from an XML string.
+		/// Creates a coordinate system object from an XML String.
 		/// </summary>
 		/// <param name="xml">XML representation for the spatial reference</param>
 		/// <returns>The resulting spatial reference object</returns>
-		public ICoordinateSystem CreateFromXml(string xml)
+		public ICoordinateSystem CreateFromXml(String xml)
 		{
 			throw new NotImplementedException();
 		}
@@ -58,7 +58,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="wkt">The Well-known text representation for the spatial reference</param>
 		/// <returns>The resulting spatial reference object</returns>
-		public ICoordinateSystem CreateFromWkt(string wkt)
+		public ICoordinateSystem CreateFromWkt(String wkt)
 		{
 			return SharpMap.Converters.WellKnownText.CoordinateSystemWktReader.Parse(wkt) as ICoordinateSystem;
 		}
@@ -70,7 +70,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="head">Head coordinate system</param>
 		/// <param name="tail">Tail coordinate system</param>
 		/// <returns>Compound coordinate system</returns>
-		public ICompoundCoordinateSystem CreateCompoundCoordinateSystem(string name, ICoordinateSystem head, ICoordinateSystem tail)
+		public ICompoundCoordinateSystem CreateCompoundCoordinateSystem(String name, ICoordinateSystem head, ICoordinateSystem tail)
 		{
 			throw new NotImplementedException();
 		}
@@ -89,7 +89,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="toBaseWkt"></param>
 		/// <param name="arAxes"></param>
 		/// <returns>Fitted coordinate system</returns>
-		public IFittedCoordinateSystem CreateFittedCoordinateSystem(string name, ICoordinateSystem baseCoordinateSystem, string toBaseWkt, IList<AxisInfo> axes)
+		public IFittedCoordinateSystem CreateFittedCoordinateSystem(String name, ICoordinateSystem baseCoordinateSystem, String toBaseWkt, IList<AxisInfo> axes)
 		{
 			throw new NotImplementedException();
 		}
@@ -108,7 +108,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="unit">Units</param>
 		/// <param name="axes">Axis info</param>
 		/// <returns>Local coordinate system</returns>
-		public ILocalCoordinateSystem CreateLocalCoordinateSystem(string name, ILocalDatum datum, IUnit unit, IList<AxisInfo> axes)
+		public ILocalCoordinateSystem CreateLocalCoordinateSystem(String name, ILocalDatum datum, IUnit unit, IList<AxisInfo> axes)
 		{
 			throw new NotImplementedException();
 		}
@@ -122,9 +122,9 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="semiMinorAxis"></param>
 		/// <param name="linearUnit"></param>
 		/// <returns>Ellipsoid</returns>
-		public IEllipsoid CreateEllipsoid(string name, double semiMajorAxis, double semiMinorAxis, ILinearUnit linearUnit)
+		public IEllipsoid CreateEllipsoid(String name, Double semiMajorAxis, Double semiMinorAxis, ILinearUnit linearUnit)
 		{
-			return new Ellipsoid(semiMajorAxis, semiMinorAxis, 1.0, false, linearUnit, name, String.Empty, -1, String.Empty, string.Empty, string.Empty);
+			return new Ellipsoid(semiMajorAxis, semiMinorAxis, 1.0, false, linearUnit, name, String.Empty, -1, String.Empty, String.Empty, String.Empty);
 		}
 
 		/// <summary>
@@ -136,7 +136,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="inverseFlattening">Inverse flattening</param>
 		/// <param name="linearUnit">Linear unit</param>
 		/// <returns>Ellipsoid</returns>
-		public IEllipsoid CreateFlattenedSphere(string name, double semiMajorAxis, double inverseFlattening, ILinearUnit linearUnit)
+		public IEllipsoid CreateFlattenedSphere(String name, Double semiMajorAxis, Double inverseFlattening, ILinearUnit linearUnit)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -156,7 +156,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="axis0">Primary axis</param>
 		/// <param name="axis1">Secondary axis</param>
 		/// <returns>Projected coordinate system</returns>
-		public IProjectedCoordinateSystem CreateProjectedCoordinateSystem(string name, IGeographicCoordinateSystem gcs, IProjection projection, ILinearUnit linearUnit, AxisInfo axis0, AxisInfo axis1)
+		public IProjectedCoordinateSystem CreateProjectedCoordinateSystem(String name, IGeographicCoordinateSystem gcs, IProjection projection, ILinearUnit linearUnit, AxisInfo axis0, AxisInfo axis1)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -191,7 +191,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="wktProjectionClass">Projection class</param>
 		/// <param name="parameters">Projection parameters</param>
 		/// <returns>Projection</returns>
-		public IProjection CreateProjection(string name, string wktProjectionClass, IList<ProjectionParameter> parameters)
+		public IProjection CreateProjection(String name, String wktProjectionClass, IList<ProjectionParameter> parameters)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -225,7 +225,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="ellipsoid">Ellipsoid</param>
 		/// <param name="toWgs84">Wgs84 conversion parameters</param>
 		/// <returns>Horizontal datum</returns>
-		public IHorizontalDatum CreateHorizontalDatum(string name, DatumType datumType, IEllipsoid ellipsoid, Wgs84ConversionInfo toWgs84)
+		public IHorizontalDatum CreateHorizontalDatum(String name, DatumType datumType, IEllipsoid ellipsoid, Wgs84ConversionInfo toWgs84)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -247,7 +247,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="angularUnit">Angular unit</param>
 		/// <param name="longitude">Longitude</param>
 		/// <returns>Prime meridian</returns>
-		public IPrimeMeridian CreatePrimeMeridian(string name, IAngularUnit angularUnit, double longitude)
+		public IPrimeMeridian CreatePrimeMeridian(String name, IAngularUnit angularUnit, Double longitude)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -267,7 +267,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="axis0">First axis</param>
 		/// <param name="axis1">Second axis</param>
 		/// <returns>Geographic coordinate system</returns>
-		public IGeographicCoordinateSystem CreateGeographicCoordinateSystem(string name, IAngularUnit angularUnit, IHorizontalDatum datum, IPrimeMeridian primeMeridian, AxisInfo axis0, AxisInfo axis1)
+		public IGeographicCoordinateSystem CreateGeographicCoordinateSystem(String name, IAngularUnit angularUnit, IHorizontalDatum datum, IPrimeMeridian primeMeridian, AxisInfo axis0, AxisInfo axis1)
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -286,7 +286,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="name">Name of datum</param>
 		/// <param name="datumType">Datum type</param>
 		/// <returns></returns>
-		public ILocalDatum CreateLocalDatum(string name, DatumType datumType)
+		public ILocalDatum CreateLocalDatum(String name, DatumType datumType)
 		{
 			throw new NotImplementedException();
 		}
@@ -297,7 +297,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="name">Name of datum</param>
 		/// <param name="datumType">Type of datum</param>
 		/// <returns>Vertical datum</returns>	
-		public IVerticalDatum CreateVerticalDatum(string name, DatumType datumType)
+		public IVerticalDatum CreateVerticalDatum(String name, DatumType datumType)
 		{
 			throw new NotImplementedException();
 		}
@@ -310,7 +310,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="verticalUnit">Unit</param>
 		/// <param name="axis">Axis info</param>
 		/// <returns>Vertical coordinate system</returns>
-		public IVerticalCoordinateSystem CreateVerticalCoordinateSystem(string name, IVerticalDatum datum, ILinearUnit verticalUnit, AxisInfo axis)
+		public IVerticalCoordinateSystem CreateVerticalCoordinateSystem(String name, IVerticalDatum datum, ILinearUnit verticalUnit, AxisInfo axis)
 		{
 			throw new NotImplementedException();
 		}
@@ -325,7 +325,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="linearUnit">Linear unit</param>
 		/// <param name="primeMeridian">Prime meridian</param>
 		/// <returns>Geocentric Coordinate System</returns>
-		public IGeocentricCoordinateSystem CreateGeocentricCoordinateSystem(string name, IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian)
+		public IGeocentricCoordinateSystem CreateGeocentricCoordinateSystem(String name, IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian)
 		{
 			if (String.IsNullOrEmpty(name))
 			{

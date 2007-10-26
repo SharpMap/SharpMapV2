@@ -56,7 +56,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource)
+        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource)
             : this(layername, new VectorStyle(), dataSource, true)
         {
         }
@@ -71,7 +71,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
+        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
             : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest)
         {
         }
@@ -84,7 +84,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
+        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource)
             : this(layername, style, dataSource, true) {}
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
+        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
             ShouldHandleFeaturesNotFoundEvent = handleFeatureDataRequest;

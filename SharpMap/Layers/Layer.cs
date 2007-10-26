@@ -110,7 +110,7 @@ namespace SharpMap.Layers
 
         #region Instance fields
         private ICoordinateTransformation _coordinateTransform;
-        private string _layerName;
+        private String _layerName;
         private IStyle _style;
         private bool _disposed;
         private readonly ILayerProvider _dataSource;
@@ -143,7 +143,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(string layerName, ILayerProvider dataSource) :
+        protected Layer(String layerName, ILayerProvider dataSource) :
             this(layerName, null, dataSource)
         {
         }
@@ -164,7 +164,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(string layerName, IStyle style, ILayerProvider dataSource)
+        protected Layer(String layerName, IStyle style, ILayerProvider dataSource)
         {
             LayerName = layerName;
             _dataSource = dataSource;
@@ -244,7 +244,7 @@ namespace SharpMap.Layers
         /// Returns the name of the layer.
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override String ToString()
         {
             return LayerName;
         }
@@ -390,7 +390,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets the name of the layer.
         /// </summary>
-        public string LayerName
+        public String LayerName
         {
             get { return _layerName; }
             set
@@ -413,7 +413,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the spatial reference ID of the layer data source, if one is set.
         /// </summary>
-        public virtual int? Srid
+        public virtual Int32? Srid
         {
             get
             {
@@ -553,7 +553,7 @@ namespace SharpMap.Layers
         /// Raises the <see cref="PropertyChanged"/> event.
         /// </summary>
         /// <param name="propertyName">Name of the property changed.</param>
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(String propertyName)
         {
             PropertyChangedEventHandler e = PropertyChanged;
 

@@ -97,7 +97,7 @@ namespace SharpMap.Tests.Geometries
         public void GetHashCodeTest()
         {
             BoundingBox b1 = new BoundingBox(20, 30, 40, 55);
-            Assert.AreEqual(b1.GetHashCode(), (int) (b1.Left + b1.Bottom + b1.Right + b1.Top));
+            Assert.AreEqual(b1.GetHashCode(), (Int32) (b1.Left + b1.Bottom + b1.Right + b1.Top));
         }
 
         [Test]

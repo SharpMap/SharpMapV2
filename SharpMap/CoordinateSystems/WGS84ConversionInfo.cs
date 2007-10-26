@@ -43,7 +43,7 @@ namespace SharpMap.CoordinateSystems
 	/// </remarks>
 	public class Wgs84ConversionInfo : IEquatable<Wgs84ConversionInfo>
 	{
-		private const double SEC_TO_RAD = 4.84813681109535993589914102357e-6;
+		private const Double SEC_TO_RAD = 4.84813681109535993589914102357e-6;
 		/// <summary>
 		/// Initializes an instance of Wgs84ConversionInfo with default parameters (all values = 0)
 		/// </summary>
@@ -60,7 +60,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="ey">Bursa Wolf rotation in arc seconds.</param>
 		/// <param name="ez">Bursa Wolf rotation in arc seconds.</param>
 		/// <param name="ppm">Bursa Wolf scaling in parts per million.</param>
-		public Wgs84ConversionInfo(double dx, double dy, double dz, double ex, double ey, double ez, double ppm)
+		public Wgs84ConversionInfo(Double dx, Double dy, Double dz, Double ex, Double ey, Double ez, Double ppm)
 			:
 			this(dx, dy, dz, ex, ey, ez, ppm, String.Empty)
 		{
@@ -76,7 +76,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="ez">Bursa Wolf rotation in arc seconds.</param>
 		/// <param name="ppm">Bursa Wolf scaling in parts per million.</param>
 		/// <param name="areaOfUse">Area of use for this transformation</param>
-		public Wgs84ConversionInfo(double dx, double dy, double dz, double ex, double ey, double ez, double ppm, string areaOfUse)
+		public Wgs84ConversionInfo(Double dx, Double dy, Double dz, Double ex, Double ey, Double ez, Double ppm, String areaOfUse)
 		{
 			Dx = dx; Dy = dy; Dz = dz;
 			Ex = ex; Ey = ey; Ez = ez;
@@ -87,35 +87,35 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Bursa Wolf shift in meters.
 		/// </summary>
-		public double Dx;
+		public Double Dx;
 		/// <summary>
 		/// Bursa Wolf shift in meters.
 		/// </summary>
-		public double Dy;
+		public Double Dy;
 		/// <summary>
 		/// Bursa Wolf shift in meters.
 		/// </summary>
-		public double Dz;
+		public Double Dz;
 		/// <summary>
 		/// Bursa Wolf rotation in arc seconds.
 		/// </summary>
-		public double Ex;
+		public Double Ex;
 		/// <summary>
 		/// Bursa Wolf rotation in arc seconds.
 		/// </summary>
-		public double Ey;
+		public Double Ey;
 		/// <summary>
 		/// Bursa Wolf rotation in arc seconds.
 		/// </summary>
-		public double Ez;
+		public Double Ez;
 		/// <summary>
 		/// Bursa Wolf scaling in parts per million.
 		/// </summary>
-		public double Ppm;
+		public Double Ppm;
 		/// <summary>
 		/// Human readable text describing intended region of transformation.
 		/// </summary>
-		public string AreaOfUse;
+		public String AreaOfUse;
 
 		/// <summary>
 		/// Affine Bursa-Wolf matrix transformation
@@ -159,11 +159,11 @@ namespace SharpMap.CoordinateSystems
 		/// <para><see href="http://www.posc.org/Epicentre.2_2/DataModel/ExamplesofUsage/eu_cs35.html"/> for an explanation of the Bursa-Wolf transformation</para>
 		/// </remarks>
 		/// <returns></returns>
-		internal double[] GetAffineTransform()
+		internal Double[] GetAffineTransform()
 		{
-			double RS = 1 + Ppm * 0.000001;
-			return new double[7] { RS, Ex * SEC_TO_RAD * RS, Ey * SEC_TO_RAD * RS, Ez * SEC_TO_RAD * RS, Dx, Dy, Dz };
-			/*return new double[3,4] {
+			Double RS = 1 + Ppm * 0.000001;
+			return new Double[7] { RS, Ex * SEC_TO_RAD * RS, Ey * SEC_TO_RAD * RS, Ez * SEC_TO_RAD * RS, Dx, Dy, Dz };
+			/*return new Double[3,4] {
 				{ RS,				-Ez*SEC_TO_RAD*RS,	+Ey*SEC_TO_RAD*RS,	Dx} ,
 				{ Ez*SEC_TO_RAD*RS,	RS,					-Ex*SEC_TO_RAD*RS,	Dy} ,
 				{ -Ey*SEC_TO_RAD*RS,Ex*SEC_TO_RAD*RS,	RS,					Dz}
@@ -177,7 +177,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <remarks>The WKT format of this object is: <code>TOWGS84[dx, dy, dz, ex, ey, ez, ppm]</code></remarks>
 		/// <returns>WKT representaion</returns>
-		public string WKT
+		public String WKT
 		{
 			get
 			{
@@ -188,7 +188,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public string XML
+		public String XML
 		{
 			get
 			{
@@ -201,7 +201,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <remarks>The WKT format of this object is: <code>TOWGS84[dx, dy, dz, ex, ey, ez, ppm]</code></remarks>
 		/// <returns>WKT representaion</returns>
-		public override string ToString()
+		public override String ToString()
 		{
 			return WKT;
 		}
@@ -233,7 +233,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns a hash code for the specified object
 		/// </summary>
 		/// <returns>A hash code for the specified object</returns>
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
 			return Dx.GetHashCode() ^ Dy.GetHashCode() ^ Dz.GetHashCode() ^
 				Ex.GetHashCode() ^ Ey.GetHashCode() ^ Ez.GetHashCode() ^

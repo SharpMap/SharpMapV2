@@ -23,19 +23,19 @@ namespace SharpMap.Utilities
 {
     public class IdleMonitor : IDisposable
     {
-        public static readonly int MachineUtilizationConsideredIdle = 3;
+        public static readonly Int32 MachineUtilizationConsideredIdle = 3;
 
-        private int _userIdleThresholdSeconds;
-        private int _machineIdleThresholdSeconds;
-        private int _checkIdleFrequencyInSeconds = 1;
+        private Int32 _userIdleThresholdSeconds;
+        private Int32 _machineIdleThresholdSeconds;
+        private Int32 _checkIdleFrequencyInSeconds = 1;
         private Thread _pollIdleThread;
         private EventWaitHandle _terminateEvent;
         private bool _isDisposed;
-        private int _terminating = 0;
+        private Int32 _terminating = 0;
         private bool _wasUserIdle = false;
         private bool _wasMachineIdle = false;
 
-        public IdleMonitor(int userIdleThresholdInSeconds, int machineIdleThresholdInSeconds)
+        public IdleMonitor(Int32 userIdleThresholdInSeconds, Int32 machineIdleThresholdInSeconds)
         {
             _userIdleThresholdSeconds = userIdleThresholdInSeconds;
             _machineIdleThresholdSeconds = machineIdleThresholdInSeconds;
@@ -105,7 +105,7 @@ namespace SharpMap.Utilities
             _terminateEvent.Set();
         }
 
-        public int CheckIdleFrequencyInSeconds
+        public Int32 CheckIdleFrequencyInSeconds
         {
             get { return _checkIdleFrequencyInSeconds; }
             set { Interlocked.Exchange(ref _checkIdleFrequencyInSeconds, value); }
@@ -115,7 +115,7 @@ namespace SharpMap.Utilities
         /// Gets or sets the amount of time in seconds during which no 
         /// user activity is detected before a user is considered idle.
         /// </summary>
-        public int UserIdleThresholdInSeconds
+        public Int32 UserIdleThresholdInSeconds
         {
             get { return _userIdleThresholdSeconds; }
             set
@@ -135,7 +135,7 @@ namespace SharpMap.Utilities
         /// machine activity is less than or equal to <see cref="MachineUtilizationConsideredIdle"/> 
         /// before a machine is considered idle.
         /// </summary>
-        public int MachineIdleThresholdInSeconds
+        public Int32 MachineIdleThresholdInSeconds
         {
             get { return _machineIdleThresholdSeconds; }
             set
@@ -150,18 +150,18 @@ namespace SharpMap.Utilities
             }
         }
 
-        public static bool IsUserIdle(int userIdleThresholdInSeconds)
+        public static bool IsUserIdle(Int32 userIdleThresholdInSeconds)
         {
             LastInputInfo info = LastInputInfo.Create();
 
             if (GetLastInputInfo(ref info))
             {
-                int idleTicks = 0;
-                int tickCount = Environment.TickCount;
+                Int32 idleTicks = 0;
+                Int32 tickCount = Environment.TickCount;
 
                 if (tickCount - info.dwTime < 0)
                 {
-                    int tickCountWrapDifference = Int32.MaxValue - info.dwTime;
+                    Int32 tickCountWrapDifference = Int32.MaxValue - info.dwTime;
                     idleTicks = tickCountWrapDifference + tickCount;
                 }
                 else
@@ -175,7 +175,7 @@ namespace SharpMap.Utilities
             return false;
         }
 
-        public bool IsMachineIdle(int machineIdleThresholdInSeconds, int machineUtilizationConsideredIdle)
+        public bool IsMachineIdle(Int32 machineIdleThresholdInSeconds, Int32 machineUtilizationConsideredIdle)
         {
             // TODO: Implement machine idle detection
             throw new NotImplementedException();
@@ -185,7 +185,7 @@ namespace SharpMap.Utilities
         {
             while (Thread.VolatileRead(ref _terminating) == 0)
             {
-                int userIdleThreshold = Thread.VolatileRead(ref _userIdleThresholdSeconds);
+                Int32 userIdleThreshold = Thread.VolatileRead(ref _userIdleThresholdSeconds);
 
                 if (IsUserIdle(userIdleThreshold))
                 {
@@ -196,7 +196,7 @@ namespace SharpMap.Utilities
                     onUserBusy();
                 }
 
-                int machineIdleThreshold = Thread.VolatileRead(ref _machineIdleThresholdSeconds);
+                Int32 machineIdleThreshold = Thread.VolatileRead(ref _machineIdleThresholdSeconds);
 
                 if (IsMachineIdle(machineIdleThreshold, MachineUtilizationConsideredIdle))
                 {
@@ -207,7 +207,7 @@ namespace SharpMap.Utilities
                     onMachineBusy();
                 }
 
-                int sleepTime = Thread.VolatileRead(ref _checkIdleFrequencyInSeconds);
+                Int32 sleepTime = Thread.VolatileRead(ref _checkIdleFrequencyInSeconds);
                 Thread.Sleep(sleepTime*1000);
             }
         }
@@ -287,8 +287,8 @@ namespace SharpMap.Utilities
         [StructLayout(LayoutKind.Sequential)]
         private struct LastInputInfo
         {
-            [MarshalAs(UnmanagedType.U4)] public int cbSize;
-            [MarshalAs(UnmanagedType.U4)] public int dwTime;
+            [MarshalAs(UnmanagedType.U4)] public Int32 cbSize;
+            [MarshalAs(UnmanagedType.U4)] public Int32 dwTime;
 
             public static LastInputInfo Create()
             {

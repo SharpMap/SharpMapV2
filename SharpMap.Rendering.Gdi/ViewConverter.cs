@@ -103,9 +103,9 @@ namespace SharpMap.Rendering.Gdi
         private struct BrushLookupKey : IEquatable<BrushLookupKey>
         {
             public readonly RuntimeTypeHandle StyleBrushType;
-            public readonly int StyleBrushId;
+            public readonly Int32 StyleBrushId;
 
-            public BrushLookupKey(RuntimeTypeHandle type, int styleBrushId)
+            public BrushLookupKey(RuntimeTypeHandle type, Int32 styleBrushId)
             {
                 StyleBrushType = type;
                 StyleBrushId = styleBrushId;
@@ -125,9 +125,9 @@ namespace SharpMap.Rendering.Gdi
         private struct PenLookupKey : IEquatable<PenLookupKey>
         {
             public readonly RuntimeTypeHandle StylePenType;
-            public readonly int StylePenId;
+            public readonly Int32 StylePenId;
 
-            public PenLookupKey(RuntimeTypeHandle type, int stylePenValue)
+            public PenLookupKey(RuntimeTypeHandle type, Int32 stylePenValue)
             {
                 StylePenType = type;
                 StylePenId = stylePenValue;
@@ -146,9 +146,9 @@ namespace SharpMap.Rendering.Gdi
 
         private struct FontLookupKey : IEquatable<FontLookupKey>
         {
-            public readonly int FontId;
+            public readonly Int32 FontId;
 
-            public FontLookupKey(int fontId)
+            public FontLookupKey(Int32 fontId)
             {
                 FontId = fontId;
             }
@@ -203,8 +203,8 @@ namespace SharpMap.Rendering.Gdi
 
 		public static GdiRectangle Convert(Rectangle2D rectangle)
 		{
-			return new GdiRectangle((int)rectangle.X, (int)rectangle.Y,
-									(int)rectangle.Width, (int)rectangle.Height);
+			return new GdiRectangle((Int32)rectangle.X, (Int32)rectangle.Y,
+									(Int32)rectangle.Width, (Int32)rectangle.Height);
 		}
 
         public static GdiFont Convert(StyleFont styleFont)
@@ -224,7 +224,7 @@ namespace SharpMap.Rendering.Gdi
 
 	    public static GdiFontStyle Convert(StyleFontStyle fontStyle)
 		{
-			return (GdiFontStyle)(int)(fontStyle);
+			return (GdiFontStyle)(Int32)(fontStyle);
 		}
 
 		public static GdiMatrix Convert(Matrix2D viewMatrix)
@@ -295,19 +295,19 @@ namespace SharpMap.Rendering.Gdi
                 Brush brush = Convert(pen.BackgroundBrush);
                 gdiPen = new Pen(brush, (float) pen.Width);
 
-                gdiPen.Alignment = (PenAlignment) (int) pen.Alignment;
+                gdiPen.Alignment = (PenAlignment) (Int32) pen.Alignment;
                 if (pen.CompoundArray != null) gdiPen.CompoundArray = pen.CompoundArray;
                 //gdiPen.CustomEndCap = new System.Drawing.Drawing2D.CustomLineCap();
                 //gdiPen.CustomStartCap = new System.Drawing.Drawing2D.CustomLineCap();
-                gdiPen.DashCap = (DashCap) (int) pen.DashCap;
+                gdiPen.DashCap = (DashCap) (Int32) pen.DashCap;
                 gdiPen.DashOffset = pen.DashOffset;
                 if (pen.DashPattern != null) gdiPen.DashPattern = pen.DashPattern;
-                gdiPen.DashStyle = (DashStyle) (int) pen.DashStyle;
-                gdiPen.EndCap = (LineCap) (int) pen.EndCap;
-                gdiPen.LineJoin = (LineJoin) (int) pen.LineJoin;
+                gdiPen.DashStyle = (DashStyle) (Int32) pen.DashStyle;
+                gdiPen.EndCap = (LineCap) (Int32) pen.EndCap;
+                gdiPen.LineJoin = (LineJoin) (Int32) pen.LineJoin;
                 gdiPen.MiterLimit = pen.MiterLimit;
                 //gdiPen.PenType = System.Drawing.Drawing2D.PenType...
-                gdiPen.StartCap = (LineCap) (int) pen.StartCap;
+                gdiPen.StartCap = (LineCap) (Int32) pen.StartCap;
                 gdiPen.Transform = Convert(pen.Transform);
                 savePen(pen, gdiPen);
             }

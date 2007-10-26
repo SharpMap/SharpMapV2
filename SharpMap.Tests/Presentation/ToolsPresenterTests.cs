@@ -44,7 +44,7 @@ namespace SharpMap.Tests.Presentation
             ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
             Random rnd = new Random();
-            int toolIndex = rnd.Next(0, view.Tools.Count - 1);
+            Int32 toolIndex = rnd.Next(0, view.Tools.Count - 1);
 
             ToolChangeRequestedEventArgs requestArgs = new ToolChangeRequestedEventArgs(view.Tools[toolIndex]);
             toolChangeRequest.Raise(view, requestArgs);

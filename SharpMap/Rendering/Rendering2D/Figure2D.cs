@@ -33,10 +33,10 @@ namespace SharpMap.Rendering.Rendering2D
 
         protected override Rectangle2D ComputeBounds()
         {
-            double left = Double.MaxValue;
-            double top = Double.MaxValue;
-            double right = Double.MinValue;
-            double bottom = Double.MinValue;
+            Double left = Double.MaxValue;
+            Double top = Double.MaxValue;
+            Double right = Double.MinValue;
+            Double bottom = Double.MinValue;
 
             foreach (Point2D point in Points)
             {

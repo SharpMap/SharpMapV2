@@ -32,7 +32,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A point.
         /// </summary>
         /// <remarks>
-        /// A point consists of a double-precision coordinate in 2D space.
+        /// A point consists of a Double-precision coordinate in 2D space.
         /// SharpMap interprets this as <see cref="SharpMap.Geometries.Point"/>.
         /// </remarks>
         Point = 1,
@@ -118,10 +118,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         MultiPointZ = 18,
 
         /// <summary>
-        /// A <see cref="ShapeType.Point"/> plus a measure value as a double-precision floating point.
+        /// A <see cref="ShapeType.Point"/> plus a measure value as a Double-precision floating point.
         /// </summary>
         /// <remarks>
-        /// A PointM consists of a double-precision coordinate in the order 'X', 'Y', and a measure 'M'.
+        /// A PointM consists of a Double-precision coordinate in the order 'X', 'Y', and a measure 'M'.
         /// SharpMap interprets this as <see cref="SharpMap.Geometries.Point"/>.
         /// </remarks>
         PointM = 21,

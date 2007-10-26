@@ -50,10 +50,10 @@ namespace SharpMap.CoordinateSystems.Projections
     {
         protected bool _isInverse = false;
         protected bool _isSpherical = false;
-        protected double _e;
-        protected double _es;
-        protected double _semiMajor;
-        protected double _semiMinor;
+        protected Double _e;
+        protected Double _es;
+        protected Double _semiMajor;
+        protected Double _semiMinor;
 
         protected List<ProjectionParameter> _Parameters;
         protected MathTransform _inverse;
@@ -88,7 +88,7 @@ namespace SharpMap.CoordinateSystems.Projections
 
         #region Implementation of IProjection
 
-        public ProjectionParameter GetParameter(int Index)
+        public ProjectionParameter GetParameter(Int32 Index)
         {
             return _Parameters[Index];
         }
@@ -99,53 +99,53 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <remarks>The parameter name is case insensitive</remarks>
         /// <param name="name">Name of parameter</param>
         /// <returns>parameter or null if not found</returns>
-        public ProjectionParameter GetParameter(string name)
+        public ProjectionParameter GetParameter(String name)
         {
             return
                 _Parameters.Find(
                     delegate(ProjectionParameter par) { return par.Name.Equals(name, StringComparison.OrdinalIgnoreCase); });
         }
 
-        public int NumParameters
+        public Int32 NumParameters
         {
             get { return _Parameters.Count; }
         }
 
-        public string ClassName
+        public String ClassName
         {
             get { return ClassName; }
         }
 
-        private string _Abbreviation;
+        private String _Abbreviation;
 
         /// <summary>
         /// Gets or sets the abbreviation of the object.
         /// </summary>
-        public string Abbreviation
+        public String Abbreviation
         {
             get { return _Abbreviation; }
             set { _Abbreviation = value; }
         }
 
-        private string _Alias;
+        private String _Alias;
 
         /// <summary>
         /// Gets or sets the alias of the object.
         /// </summary>
-        public string Alias
+        public String Alias
         {
             get { return _Alias; }
             set { _Alias = value; }
         }
 
-        private string _Authority;
+        private String _Authority;
 
         /// <summary>
         /// Gets or sets the authority name for this object, e.g., "EPSG",
         /// is this is a standard object with an authority specific
         /// identity code. Returns "CUSTOM" if this is a custom object.
         /// </summary>
-        public string Authority
+        public String Authority
         {
             get { return _Authority; }
             set { _Authority = value; }
@@ -162,23 +162,23 @@ namespace SharpMap.CoordinateSystems.Projections
             set { _Code = value; }
         }
 
-        private string _Name;
+        private String _Name;
 
         /// <summary>
         /// Gets or sets the name of the object.
         /// </summary>
-        public string Name
+        public String Name
         {
             get { return _Name; }
             set { _Name = value; }
         }
 
-        private string _Remarks;
+        private String _Remarks;
 
         /// <summary>
         /// Gets or sets the provider-supplied remarks for the object.
         /// </summary>
-        public string Remarks
+        public String Remarks
         {
             get { return _Remarks; }
             set { _Remarks = value; }
@@ -189,7 +189,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// Returns the Well-known text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -199,7 +199,7 @@ namespace SharpMap.CoordinateSystems.Projections
                     sb.Append("INVERSE_MT[");
                 }
                 sb.AppendFormat("PARAM_MT[\"{0}\"", Name);
-                for (int i = 0; i < NumParameters; i++)
+                for (Int32 i = 0; i < NumParameters; i++)
                 {
                     sb.AppendFormat(", {0}", GetParameter(i).WKT);
                 }
@@ -217,7 +217,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
@@ -231,7 +231,7 @@ namespace SharpMap.CoordinateSystems.Projections
                 {
                     sb.AppendFormat("<CT_ParameterizedMathTransform Name=\"{0}\">", ClassName);
                 }
-                for (int i = 0; i < NumParameters; i++)
+                for (Int32 i = 0; i < NumParameters; i++)
                 {
                     sb.AppendFormat(GetParameter(i).XML);
                 }
@@ -311,7 +311,7 @@ namespace SharpMap.CoordinateSystems.Projections
             {
                 return false;
             }
-            for (int i = 0; i < _Parameters.Count; i++)
+            for (Int32 i = 0; i < _Parameters.Count; i++)
             {
                 ProjectionParameter param =
                     _Parameters.Find(
@@ -340,48 +340,48 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <summary>
         /// PI
         /// </summary>
-        protected const double PI = Math.PI;
+        protected const Double PI = Math.PI;
 
         /// <summary>
         /// Half of PI
         /// </summary>
-        protected const double HALF_PI = (PI*0.5);
+        protected const Double HALF_PI = (PI*0.5);
 
         /// <summary>
         /// PI * 2
         /// </summary>
-        protected const double TWO_PI = (PI*2.0);
+        protected const Double TWO_PI = (PI*2.0);
 
         /// <summary>
         /// EPSLN
         /// </summary>
-        protected const double EPSLN = 1.0e-10;
+        protected const Double EPSLN = 1.0e-10;
 
         /// <summary>
         /// S2R
         /// </summary>
-        protected const double S2R = 4.848136811095359e-6;
+        protected const Double S2R = 4.848136811095359e-6;
 
         /// <summary>
         /// MAX_VAL
         /// </summary>
-        protected const double MAX_VAL = 4;
+        protected const Double MAX_VAL = 4;
 
         /// <summary>
         /// prjMAXLONG
         /// </summary>
-        protected const double prjMAXLONG = 2147483647;
+        protected const Double prjMAXLONG = 2147483647;
 
         /// <summary>
         /// DBLLONG
         /// </summary>
-        protected const double DBLLONG = 4.61168601e18;
+        protected const Double DBLLONG = 4.61168601e18;
 
         /// <summary>
         /// Returns the cube of a number.
         /// </summary>
         /// <param name="x"> </param>
-        protected static double CUBE(double x)
+        protected static Double CUBE(Double x)
         {
             return Math.Pow(x, 3); /* x^3 */
         }
@@ -390,7 +390,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// Returns the quad of a number.
         /// </summary>
         /// <param name="x"> </param>
-        protected static double QUAD(double x)
+        protected static Double QUAD(Double x)
         {
             return Math.Pow(x, 4); /* x^4 */
         }
@@ -401,7 +401,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="A"></param>
         /// <param name="B"></param>
         /// <returns></returns>
-        protected static double GMAX(ref double A, ref double B)
+        protected static Double GMAX(ref Double A, ref Double B)
         {
             return Math.Max(A, B); /* assign maximum of a and b */
         }
@@ -412,7 +412,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="A"></param>
         /// <param name="B"></param>
         /// <returns></returns>
-        protected static double GMIN(ref double A, ref double B)
+        protected static Double GMIN(ref Double A, ref Double B)
         {
             return ((A) < (B) ? (A) : (B)); /* assign minimum of a and b */
         }
@@ -423,7 +423,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="A"></param>
         /// <param name="B"></param>
         /// <returns></returns>
-        protected static double IMOD(double A, double B)
+        protected static Double IMOD(Double A, Double B)
         {
             return (A) - (((A)/(B))*(B)); /* Integer mod function */
         }
@@ -431,7 +431,7 @@ namespace SharpMap.CoordinateSystems.Projections
         ///<summary>
         ///Function to return the sign of an argument
         ///</summary>
-        protected static double sign(double x)
+        protected static Double sign(Double x)
         {
             if (x < 0.0)
             {
@@ -448,7 +448,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        protected static double adjust_lon(double x)
+        protected static Double adjust_lon(Double x)
         {
             long count = 0;
             for (;;)
@@ -490,9 +490,9 @@ namespace SharpMap.CoordinateSystems.Projections
         /// Function to compute the constant small m which is the radius of
         /// a parallel of latitude, phi, divided by the semimajor axis.
         /// </summary>
-        protected static double msfnz(double eccent, double sinphi, double cosphi)
+        protected static Double msfnz(Double eccent, Double sinphi, Double cosphi)
         {
-            double con;
+            Double con;
 
             con = eccent*sinphi;
             return ((cosphi/(Math.Sqrt(1.0 - con*con))));
@@ -502,9 +502,9 @@ namespace SharpMap.CoordinateSystems.Projections
         /// Function to compute constant small q which is the radius of a 
         /// parallel of latitude, phi, divided by the semimajor axis. 
         /// </summary>
-        protected static double qsfnz(double eccent, double sinphi, double cosphi)
+        protected static Double qsfnz(Double eccent, Double sinphi, Double cosphi)
         {
-            double con;
+            Double con;
 
             if (eccent > 1.0e-7)
             {
@@ -524,7 +524,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// than calling each function separately.  It is provided here for those
         /// computer systems which don`t implement this function
         /// </summary>
-        protected static void sincos(double val, out double sin_val, out double cos_val)
+        protected static void sincos(Double val, out Double sin_val, out Double cos_val)
 
         {
             sin_val = Math.Sin(val);
@@ -536,13 +536,13 @@ namespace SharpMap.CoordinateSystems.Projections
         /// computations in the Lambert Conformal Conic and the Polar
         /// Stereographic projections.
         /// </summary>
-        protected static double tsfnz(double eccent,
-                                      double phi,
-                                      double sinphi
+        protected static Double tsfnz(Double eccent,
+                                      Double phi,
+                                      Double sinphi
             )
         {
-            double con;
-            double com;
+            Double con;
+            Double com;
 
             con = eccent*sinphi;
             com = .5*eccent;
@@ -558,17 +558,17 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="qs"></param>
         /// <param name="flag"></param>
         /// <returns></returns>
-        protected static double phi1z(double eccent, double qs, out long flag)
+        protected static Double phi1z(Double eccent, Double qs, out long flag)
         {
-            double eccnts;
-            double dphi;
-            double con;
-            double com;
-            double sinpi;
-            double cospi;
-            double phi;
+            Double eccnts;
+            Double dphi;
+            Double con;
+            Double com;
+            Double sinpi;
+            Double cospi;
+            Double phi;
             flag = 0;
-            //double asinz();
+            //Double asinz();
             long i;
 
             phi = asinz(.5*qs);
@@ -598,7 +598,7 @@ namespace SharpMap.CoordinateSystems.Projections
         ///<summary>
         ///Function to eliminate roundoff errors in asin
         ///</summary>
-        protected static double asinz(double con)
+        protected static Double asinz(Double con)
         {
             if (Math.Abs(con) > 1.0)
             {
@@ -618,20 +618,20 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <summary>Function to compute the latitude angle, phi2, for the inverse of the
         ///   Lambert Conformal Conic and Polar Stereographic projections.
         ///   </summary>
-        protected static double phi2z(double eccent, double ts, out long flag)
+        protected static Double phi2z(Double eccent, Double ts, out long flag)
             /* Spheroid eccentricity		*/
             /* Constant value t			*/
             /* Error flag number			*/
 
         {
-            double con;
-            double dphi;
-            double sinpi;
+            Double con;
+            Double dphi;
+            Double sinpi;
             long i;
 
             flag = 0;
-            double eccnth = .5*eccent;
-            double chi = HALF_PI - 2*Math.Atan(ts);
+            Double eccnth = .5*eccent;
+            Double chi = HALF_PI - 2*Math.Atan(ts);
             for (i = 0; i <= 15; i++)
             {
                 sinpi = Math.Sin(chi);
@@ -652,7 +652,7 @@ namespace SharpMap.CoordinateSystems.Projections
         ///in a series for calculating the distance along a meridian.  The
         ///input x represents the eccentricity squared.
         ///</summary>
-        protected static double e0fn(double x)
+        protected static Double e0fn(Double x)
         {
             return (1.0 - 0.25*x*(1.0 + x/16.0*(3.0 + 1.25*x)));
         }
@@ -662,7 +662,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        protected static double e1fn(double x)
+        protected static Double e1fn(Double x)
         {
             return (0.375*x*(1.0 + 0.25*x*(1.0 + 0.46875*x)));
         }
@@ -672,7 +672,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        protected static double e2fn(double x)
+        protected static Double e2fn(Double x)
         {
             return (0.05859375*x*x*(1.0 + 0.75*x));
         }
@@ -682,7 +682,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        protected static double e3fn(double x)
+        protected static Double e3fn(Double x)
         {
             return (x*x*x*(35.0/3072.0));
         }
@@ -692,11 +692,11 @@ namespace SharpMap.CoordinateSystems.Projections
         /// of the spheroid, x.  This constant is used in the Polar Stereographic
         /// projection.
         /// </summary>
-        protected static double e4fn(double x)
+        protected static Double e4fn(Double x)
 
         {
-            double con;
-            double com;
+            Double con;
+            Double com;
             con = 1.0 + x;
             com = 1.0 - x;
             return (Math.Sqrt((Math.Pow(con, con))*(Math.Pow(com, com))));
@@ -706,7 +706,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// Function computes the value of M which is the distance along a meridian
         /// from the Equator to latitude phi.
         /// </summary>
-        protected static double mlfn(double e0, double e1, double e2, double e3, double phi)
+        protected static Double mlfn(Double e0, Double e1, Double e2, Double e3, Double phi)
         {
             return (e0*phi - e1*Math.Sin(2.0*phi) + e2*Math.Sin(4.0*phi) - e3*Math.Sin(6.0*phi));
         }
@@ -714,7 +714,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <summary>
         /// Function to calculate UTM zone number--NOTE Longitude entered in DEGREES!!!
         /// </summary>
-        protected static long calc_utm_zone(double lon)
+        protected static long calc_utm_zone(Double lon)
         {
             return ((long) (((lon + 180.0)/6.0) + 1.0));
         }
@@ -729,7 +729,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="x">The value in degrees to convert to radians.</param>
         /// <param name="edge">If true, -180 and +180 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static double LongitudeToRadians(double x, bool edge)
+        protected static Double LongitudeToRadians(Double x, bool edge)
         {
             if (edge ? (x >= -180 && x <= 180) : (x > -180 && x < 180))
             {
@@ -745,7 +745,7 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <param name="y">The value in degrees to to radians.</param>
         /// <param name="edge">If true, -90 and +90 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static double LatitudeToRadians(double y, bool edge)
+        protected static Double LatitudeToRadians(Double y, bool edge)
         {
             if (edge ? (y >= -90 && y <= 90) : (y > -90 && y < 90))
             {

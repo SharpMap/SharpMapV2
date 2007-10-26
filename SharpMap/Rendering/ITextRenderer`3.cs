@@ -34,15 +34,15 @@ namespace SharpMap.Rendering
         StyleTextRenderingHint TextRenderingHint { get; set; }
 
         /// <summary>
-        /// Measures the <typeparamref name="TSize"/> of a string in the given <paramref name="font"/>.
+        /// Measures the <typeparamref name="TSize"/> of a String in the given <paramref name="font"/>.
         /// </summary>
-        /// <param name="text">The string to measure.</param>
-        /// <param name="font">The font to use to draw the string.</param>
-        /// <returns>A measurement of the string.</returns>
-        TSize MeasureString(string text, StyleFont font);
+        /// <param name="text">The String to measure.</param>
+        /// <param name="font">The font to use to draw the String.</param>
+        /// <returns>A measurement of the String.</returns>
+        TSize MeasureString(String text, StyleFont font);
 
         /// <summary>
-        /// Renders a text string.
+        /// Renders a text String.
         /// </summary>
         /// <param name="text">The text to render.</param>
         /// <param name="font">The font to use to draw the text.</param>
@@ -51,10 +51,10 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        IEnumerable RenderText(string text, StyleFont font, TPoint location, StyleBrush fontBrush);
+        IEnumerable RenderText(String text, StyleFont font, TPoint location, StyleBrush fontBrush);
 
         /// <summary>
-        /// Renders a text string.
+        /// Renders a text String.
         /// </summary>
         /// <param name="text">The text to render.</param>
         /// <param name="font">The font to use to draw the text.</param>
@@ -73,7 +73,7 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        IEnumerable RenderText(string text, StyleFont font, TRectangle layoutRectangle,
+        IEnumerable RenderText(String text, StyleFont font, TRectangle layoutRectangle,
                                               Path<TPoint, TRectangle> flowPath, StyleBrush fontBrush, 
                                               IMatrixD transform);
     }

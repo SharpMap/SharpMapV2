@@ -6,6 +6,6 @@ namespace SharpMap.Tests
 {
     public static class TestConstants
     {
-        public static readonly double Epsilon = 0.0005;
+        public static readonly Double Epsilon = 0.0005;
     }
 }

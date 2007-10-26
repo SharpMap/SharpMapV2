@@ -25,12 +25,12 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// </summary>
     public class InvalidDbaseFileException : Exception
     {
-        private readonly string _filename;
+        private readonly String _filename;
 
-        public InvalidDbaseFileException(string filename) : this(filename, null) { }
-        public InvalidDbaseFileException(string filename, string message) : this(filename, message, null) { }
+        public InvalidDbaseFileException(String filename) : this(filename, null) { }
+        public InvalidDbaseFileException(String filename, String message) : this(filename, message, null) { }
         
-        public InvalidDbaseFileException(string filename, string message, Exception inner) : base(message, inner)
+        public InvalidDbaseFileException(String filename, String message, Exception inner) : base(message, inner)
         {
             _filename = filename;
         }
@@ -41,7 +41,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             _filename = info.GetString("_filename");
         }
 
-        public string Filename
+        public String Filename
         {
             get { return _filename; }   
         }

@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Presentation.Views
 {
     /// <summary>
@@ -46,6 +48,6 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets the title to display on the view.
         /// </summary>
-        string Title { get; set; }
+        String Title { get; set; }
     }
 }

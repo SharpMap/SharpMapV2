@@ -46,7 +46,7 @@ namespace SharpMap.Converters.WellKnownBinary
 {
     /// <summary>
     /// Converts a <see cref="SharpMap.Geometries.Geometry"/> instance 
-    /// to a Well-Known Binary string representation.
+    /// to a Well-Known Binary String representation.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -249,7 +249,7 @@ namespace SharpMap.Converters.WellKnownBinary
         private static void writePolygon(Polygon poly, BinaryWriter writer, WkbByteOrder byteOrder)
         {
             //Get the number of rings in this polygon.
-            int numRings = poly.InteriorRings.Count + 1;
+            Int32 numRings = poly.InteriorRings.Count + 1;
 
             //Write the number of rings to the stream (add one for the shell)
             writeUInt32((uint)numRings, writer, byteOrder);
@@ -341,13 +341,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static void writeGeometryCollection(GeometryCollection gc, BinaryWriter writer, WkbByteOrder byteOrder)
         {
             //Get the number of geometries in this geometrycollection.
-            int numGeometries = gc.NumGeometries;
+            Int32 numGeometries = gc.NumGeometries;
 
             //Write the number of geometries.
             writeUInt32((uint)numGeometries, writer, byteOrder);
 
             //Loop on the number of geometries.
-            for (int i = 0; i < numGeometries; i++)
+            for (Int32 i = 0; i < numGeometries; i++)
             {
                 //Write the byte-order format of the following geometry.
                 writer.Write((byte)byteOrder);
@@ -377,12 +377,12 @@ namespace SharpMap.Converters.WellKnownBinary
         }
 
         /// <summary>
-        /// Writes a double floating point value to the BinaryWriter using the specified byte encoding.
+        /// Writes a Double floating point value to the BinaryWriter using the specified byte encoding.
         /// </summary>
         /// <param name="value">Value to write.</param>
         /// <param name="writer">Writer to persist WKB values to.</param>
         /// <param name="byteOrder">Byte order to encode values in.</param>
-        private static void writeDouble(double value, BinaryWriter writer, WkbByteOrder byteOrder)
+        private static void writeDouble(Double value, BinaryWriter writer, WkbByteOrder byteOrder)
         {
             if (byteOrder == WkbByteOrder.Xdr)
             {

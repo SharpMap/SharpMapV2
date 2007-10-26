@@ -36,13 +36,13 @@ namespace SharpMap.Styles
             _style = style;
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[{0}] Font Family: {1}; Size: {2}; Font Style: {3}",
                                  GetType(), FontFamily, Size, Style);
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return Size.GetHashCode() ^ FontFamily.GetHashCode() ^ Style.GetHashCode();
         }

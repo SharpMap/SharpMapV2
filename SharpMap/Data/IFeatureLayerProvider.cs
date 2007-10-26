@@ -243,7 +243,7 @@ namespace SharpMap.Data
         /// Returns the number of features in the entire data source.
         /// </summary>
         /// <returns>Count of the features in the entire data source.</returns>
-        int GetFeatureCount();
+        Int32 GetFeatureCount();
 
         /// <summary>
         /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema

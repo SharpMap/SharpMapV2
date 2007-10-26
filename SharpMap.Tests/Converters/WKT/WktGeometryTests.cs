@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using SharpMap.Geometries;
 
@@ -9,7 +10,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParseGeometryCollection()
         {
-            string geomCollection = "GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))";
+            String geomCollection = "GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))";
             GeometryCollection geom = Geometry.FromText(geomCollection) as GeometryCollection;
             Assert.IsNotNull(geom);
             Assert.AreEqual(3, geom.NumGeometries);
@@ -32,7 +33,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParseMultipolygon()
         {
-            string multipolygon = "MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))";
+            String multipolygon = "MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))";
             MultiPolygon geom = Geometry.FromText(multipolygon) as MultiPolygon;
             Assert.IsNotNull(geom);
             Assert.AreEqual(2, geom.NumGeometries);
@@ -55,7 +56,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParseLineString()
         {
-            string linestring = "LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)";
+            String linestring = "LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)";
             LineString geom = Geometry.FromText(linestring) as LineString;
             Assert.IsNotNull(geom);
             Assert.AreEqual(40, geom.Length);
@@ -68,7 +69,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParseMultiLineString()
         {
-            string multiLinestring = "MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))";
+            String multiLinestring = "MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))";
             MultiLineString geom = Geometry.FromText(multiLinestring) as MultiLineString;
             Assert.IsNotNull(geom);
             Assert.AreEqual(3, geom.NumGeometries);
@@ -96,7 +97,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParsePolygon()
         {
-            string polygon = "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20))";
+            String polygon = "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20))";
             Polygon geom = Geometry.FromText(polygon) as Polygon;
             Assert.IsNotNull(geom);
             Assert.AreEqual(40, geom.ExteriorRing.Length);
@@ -120,7 +121,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParsePoint()
         {
-            string point = "POINT (20.564 346.3493254)";
+            String point = "POINT (20.564 346.3493254)";
             Point geom = Geometry.FromText(point) as Point;
             Assert.IsNotNull(geom);
             Assert.AreEqual(20.564, geom.X);
@@ -133,7 +134,7 @@ namespace SharpMap.Tests.Converters.Wkt
         [Test]
         public void ParseMultiPoint()
         {
-            string multipoint = "MULTIPOINT (20.564 346.3493254, 45 32, 23 54)";
+            String multipoint = "MULTIPOINT (20.564 346.3493254, 45 32, 23 54)";
             MultiPoint geom = Geometry.FromText(multipoint) as MultiPoint;
             Assert.IsNotNull(geom);
             Assert.AreEqual(20.564, geom[0].X);

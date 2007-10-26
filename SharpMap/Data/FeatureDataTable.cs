@@ -140,7 +140,7 @@ namespace SharpMap.Data
         /// Initializes a new instance of the FeatureDataTable class with the given
         /// table name.
         /// </summary>
-        public FeatureDataTable(string tableName)
+        public FeatureDataTable(String tableName)
             : base(tableName)
         {
             Constraints.CollectionChanged += OnConstraintsChanged;
@@ -227,7 +227,7 @@ namespace SharpMap.Data
         /// Gets the number of feature rows in the feature table.
         /// </summary>
         [Browsable(false)]
-        public int FeatureCount
+        public Int32 FeatureCount
         {
             get { return base.Rows.Count; }
         }
@@ -239,7 +239,7 @@ namespace SharpMap.Data
         /// <returns>
         /// The FeatureDataRow at the given <paramref name="index"/>.
         /// </returns>
-        public FeatureDataRow this[int index]
+        public FeatureDataRow this[Int32 index]
         {
             get { return base.Rows[index] as FeatureDataRow; }
         }
@@ -329,7 +329,7 @@ namespace SharpMap.Data
             FeatureDataTable changes = Clone();
             FeatureDataRow row;
 
-            for (int i = 0; i < Rows.Count; i++)
+            for (Int32 i = 0; i < Rows.Count; i++)
             {
                 row = Rows[i] as FeatureDataRow;
                 Debug.Assert(row != null);
@@ -1325,7 +1325,7 @@ namespace SharpMap.Data
                 throw new InvalidOperationException("Can't import a feature row with a different number of columns.");
             }
 
-            for (int columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
+            for (Int32 columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
             {
                 target[columnIndex] = source[columnIndex];
             }

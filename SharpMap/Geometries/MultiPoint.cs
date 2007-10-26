@@ -16,6 +16,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 
 namespace SharpMap.Geometries
@@ -32,7 +33,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public MultiPoint() { }
 
-		public MultiPoint(int initialCapacity)
+		public MultiPoint(Int32 initialCapacity)
             : base(initialCapacity) { }
 
 		/// <summary>
@@ -46,7 +47,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		///  The inherent dimension of this Geometry object, which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		public override int Dimension
+		public override Int32 Dimension
 		{
 			get { return 0; }
 		}

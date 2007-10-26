@@ -65,13 +65,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 				indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
 
-				int featureCount = (int)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes) 
+				Int32 featureCount = (Int32)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes) 
 					/ ShapeFileConstants.IndexRecordByteLength);
 
-				for (int id = 0; id < featureCount; id++)
+				for (Int32 id = 0; id < featureCount; id++)
 				{
-					int offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
-					int length = ByteEncoder.GetBigEndian(reader.ReadInt32());
+					Int32 offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
+					Int32 length = ByteEncoder.GetBigEndian(reader.ReadInt32());
 
 					IndexEntry entry = new IndexEntry(length, offset);
 					_shapeIndex.Add((uint)id, entry);
@@ -97,14 +97,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 			_header.Envelope = BoundingBox.Join(_header.Envelope, feature.Geometry.GetBoundingBox());
 
-			int length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
-			int offset = ComputeShapeFileSizeInWords();
+			Int32 length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
+			Int32 offset = ComputeShapeFileSizeInWords();
 
 			IndexEntry entry = new IndexEntry(length, offset);
 			_shapeIndex[id] = entry;
 		}
 
-		public int ComputeShapeFileSizeInWords()
+		public Int32 ComputeShapeFileSizeInWords()
 		{
 			if (_shapeIndex.Count == 0)
 			{
@@ -202,12 +202,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return (_shapeIndex as ICollection<KeyValuePair<uint, IndexEntry>>).Contains(item);
 		}
 
-		void ICollection<KeyValuePair<uint, IndexEntry>>.CopyTo(KeyValuePair<uint, IndexEntry>[] array, int arrayIndex)
+		void ICollection<KeyValuePair<uint, IndexEntry>>.CopyTo(KeyValuePair<uint, IndexEntry>[] array, Int32 arrayIndex)
 		{
 			(_shapeIndex as ICollection<KeyValuePair<uint, IndexEntry>>).CopyTo(array, arrayIndex);
 		}
 
-		public int Count
+		public Int32 Count
 		{
 			get { return _shapeIndex.Count; }
 		}
@@ -246,7 +246,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		#endregion
 
 		#region Private helper methods
-		private int computeIndexLengthInWords()
+		private Int32 computeIndexLengthInWords()
 		{
 			return ((_shapeIndex.Count * ShapeFileConstants.IndexRecordByteLength) 
 				+ ShapeFileConstants.HeaderSizeBytes) / 2;
@@ -280,8 +280,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 				uint recordNumber = 0;
 				while (indexStream.Position < indexStream.Length)
 				{
-					int offset = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
-					int length = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
+					Int32 offset = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
+					Int32 length = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
 					IndexEntry entry = new IndexEntry(length, offset);
 					_shapeIndex[recordNumber++] = entry;
 				}
@@ -297,10 +297,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
 		public struct IndexEntry
 		{
-			private readonly int _offset;
-			private readonly int _length;
+			private readonly Int32 _offset;
+			private readonly Int32 _length;
 
-			public IndexEntry(int length, int offset)
+			public IndexEntry(Int32 length, Int32 offset)
 			{
 				_length = length;
 				_offset = offset;
@@ -309,7 +309,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// <summary>
 			/// Number of 16-bit words taken up by the record.
 			/// </summary>
-			public int Length
+			public Int32 Length
 			{
 				get { return _length; }
 			}
@@ -318,7 +318,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// Offset of the record in 16-bit words from the 
 			/// beginning of the shapefile.
 			/// </summary>
-			public int Offset
+			public Int32 Offset
 			{
 				get { return _offset; }
 			}
@@ -326,7 +326,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// <summary>
 			/// Number of bytes in the shapefile record.
 			/// </summary>
-			public int ByteLength
+			public Int32 ByteLength
 			{
 				get { return _length * 2; }
 			}
@@ -334,12 +334,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// <summary>
 			/// Record offest in bytes from the beginning of the shapefile.
 			/// </summary>
-			public int AbsoluteByteOffset
+			public Int32 AbsoluteByteOffset
 			{
 				get { return _offset * 2; }
 			}
 
-			public override string ToString()
+			public override String ToString()
 			{
 				return String.Format("[IndexEntry] Offset: {0}; Length: {1}; Stream Position: {2}", 
 					Offset, Length, AbsoluteByteOffset);

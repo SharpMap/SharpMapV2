@@ -34,7 +34,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private Int16 _recordLength;
         private readonly byte _languageDriver;
         //private DbaseField[] _dbaseColumns;
-    	private readonly Dictionary<string, DbaseField> _dbaseColumns = new Dictionary<string, DbaseField>();
+    	private readonly Dictionary<String, DbaseField> _dbaseColumns = new Dictionary<String, DbaseField>();
 
         internal DbaseHeader(byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
         {
@@ -101,7 +101,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get { return DbaseLocaleRegistry.GetEncoding(LanguageDriver); }
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[DbaseHeader] Records: {0}; Columns: {1}; Last Update: {2}; " +
                 "Record Length: {3}; Header Length: {4}", RecordCount, Columns.Count,
@@ -116,7 +116,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             DataTable schema = ProviderSchemaHelper.CreateSchemaTable();
 
-        	foreach (KeyValuePair<string, DbaseField> entry in _dbaseColumns)
+        	foreach (KeyValuePair<String, DbaseField> entry in _dbaseColumns)
         	{
                 DataRow r = schema.NewRow();
         		DbaseField column = entry.Value;
@@ -169,7 +169,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 header = new DbaseHeader(languageDriver, lastUpdate, recordCount);
 
                 DbaseField[] columns = new DbaseField[numberOfColumns];
-            	int offset = 1;
+            	Int32 offset = 1;
 
                 for (Int32 i = 0; i < columns.Length; i++)
                 {
@@ -231,7 +231,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     return typeof(bool);
                     break;
                 case 'C':
-                    return typeof(string);
+                    return typeof(String);
                     break;
                 case 'D':
                     return typeof(DateTime);
@@ -244,11 +244,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                         if (length <= 4) return typeof(Int16);
                         else if (length <= 9) return typeof(Int32);
                         else if (length <= 18) return typeof(Int64);
-                        else return typeof(double);
+                        else return typeof(Double);
                     }
                     else
                     {
-                        return typeof(double);
+                        return typeof(Double);
                     }
                 case 'F':
                     return typeof(float);

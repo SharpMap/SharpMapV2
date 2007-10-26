@@ -52,12 +52,12 @@ namespace SharpMap.Presentation
             return AttributeCollection.Empty;
         }
 
-        public string GetClassName()
+        public String GetClassName()
         {
             return typeof (VectorStyle).Name;
         }
 
-        public string GetComponentName()
+        public String GetComponentName()
         {
             return null;
         }

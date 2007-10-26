@@ -58,7 +58,7 @@ namespace SharpMap.Indexing.RTree
             internal set { _boundingBox = value; }
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[{0}] Value: {1}; BoundingBox: {2}", 
                 GetType(), Value, BoundingBox);

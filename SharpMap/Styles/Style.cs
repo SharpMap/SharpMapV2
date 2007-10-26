@@ -25,8 +25,8 @@ namespace SharpMap.Styles
 	[Serializable]
 	public class Style : IStyle
 	{
-		private double _minVisible;
-		private double _maxVisible;
+		private Double _minVisible;
+		private Double _maxVisible;
 		private bool _visible;
 
 		/// <summary>
@@ -35,14 +35,14 @@ namespace SharpMap.Styles
 		public Style()
 		{
 			_minVisible = 0;
-			_maxVisible = double.PositiveInfinity;
+			_maxVisible = Double.PositiveInfinity;
 			_visible = true;
 		}
 
 		/// <summary>
 		/// Gets or sets the minimum zoom value where the style is applied
 		/// </summary>
-		public double MinVisible
+		public Double MinVisible
 		{
 			get { return _minVisible; }
 			set { _minVisible = value; }
@@ -51,7 +51,7 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Gets or sets the maximum zoom value where the style is applied
 		/// </summary>
-		public double MaxVisible
+		public Double MaxVisible
 		{
 			get { return _maxVisible; }
 			set { _maxVisible = value; }

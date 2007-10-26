@@ -104,7 +104,7 @@ namespace SharpMap.Rendering.Rendering2D
                 return Rectangle2D.Empty;
             }
 
-            double minX = Double.MaxValue, maxX = Double.MinValue, minY = Double.MaxValue, maxY = Double.MinValue;
+            Double minX = Double.MaxValue, maxX = Double.MinValue, minY = Double.MaxValue, maxY = Double.MinValue;
 
             foreach (Figure2D figure in Figures)
             {

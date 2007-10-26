@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Indexing.RTree
 {
 	/// <summary>
@@ -23,8 +25,8 @@ namespace SharpMap.Indexing.RTree
 	public struct RestructuringHuristic
 	{
 		private readonly RestructureOpportunity _whenToRestructure;
-		private readonly double _period;
-		private readonly double _executionPercentage;
+		private readonly Double _period;
+		private readonly Double _executionPercentage;
 
 		/// <summary>
 		/// Creates a new restructuring heuristic with no period.
@@ -34,7 +36,7 @@ namespace SharpMap.Indexing.RTree
 		/// A percentage value (0 to 100) which specifies the percent 
 		/// of the time that a restructure could run that it actually is run.
 		/// </param>
-		public RestructuringHuristic(RestructureOpportunity whenToRestructure, double executionPercentage)
+		public RestructuringHuristic(RestructureOpportunity whenToRestructure, Double executionPercentage)
 			: this(whenToRestructure, executionPercentage, -1)
 		{
 		}
@@ -48,7 +50,7 @@ namespace SharpMap.Indexing.RTree
 		/// of the time that a restructure could run that it actually is run.
 		/// </param>
 		/// <param name="period">A value in milliseconds after which a restructure is triggered.</param>
-		public RestructuringHuristic(RestructureOpportunity whenToRestructure, double executionPercentage, double period)
+		public RestructuringHuristic(RestructureOpportunity whenToRestructure, Double executionPercentage, Double period)
 		{
 			_whenToRestructure = whenToRestructure;
 			_executionPercentage = executionPercentage;
@@ -67,7 +69,7 @@ namespace SharpMap.Indexing.RTree
 		/// Gets a percentage value (0 to 100) which specifies the percent 
 		/// of the time that a restructure could run that it actually is run.
 		/// </summary>
-		public double ExecutionPercentage
+		public Double ExecutionPercentage
 		{
 			get { return _executionPercentage; }
 		}
@@ -75,7 +77,7 @@ namespace SharpMap.Indexing.RTree
 		/// <summary>
 		/// Gets the period in milliseconds after which a restructure is triggered.
 		/// </summary>
-		public double Period
+		public Double Period
 		{
 			get { return _period; }
 		}

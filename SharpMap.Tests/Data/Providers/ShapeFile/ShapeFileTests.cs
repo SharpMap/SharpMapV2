@@ -63,7 +63,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                                         {
                                             new DataColumn("Name", typeof (String)),
                                             new DataColumn("Date_Created", typeof (DateTime)),
-                                            new DataColumn("Visits", typeof (int)),
+                                            new DataColumn("Visits", typeof (Int32)),
                                             new DataColumn("Weight", typeof (float))
                                         });
             ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test1", ShapeType.Point, schema);
@@ -159,7 +159,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP");
             shapeFile.Open();
-            string wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
+            String wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
             IProjectedCoordinateSystem cs = CoordinateSystemWktReader.Parse(wkt) as IProjectedCoordinateSystem;
             shapeFile.SpatialReference = cs;
             Assert.IsNotNull(shapeFile.SpatialReference);
@@ -456,8 +456,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         public void GetFeatureCountTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-            int expected = 7291;
-            int actual = shapeFile.GetFeatureCount();
+            Int32 expected = 7291;
+            Int32 actual = shapeFile.GetFeatureCount();
             Assert.AreEqual(expected, actual);
         }
 
@@ -512,7 +512,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                                         {
                                             new DataColumn("Name", typeof (String)),
                                             new DataColumn("DateCreated", typeof (DateTime)),
-                                            new DataColumn("Visits", typeof (int)),
+                                            new DataColumn("Visits", typeof (Int32)),
                                             new DataColumn("Weight", typeof (float))
                                         });
 
@@ -563,7 +563,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                                             new DataColumn("Name", typeof (String)),
                                             new DataColumn("DateCreated", typeof (DateTime)),
                                             new DataColumn("Visits", typeof (Int64)),
-                                            new DataColumn("Weight", typeof (double))
+                                            new DataColumn("Weight", typeof (Double))
                                         });
 
             ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test3", ShapeType.PolyLine, schema);
@@ -574,13 +574,13 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
             List<FeatureDataRow<uint>> rows = new List<FeatureDataRow<uint>>();
 
-            for (int i = 0; i < 10000; i++)
+            for (Int32 i = 0; i < 10000; i++)
             {
                 DateTime dateCreated = new DateTime(rnd.Next(1900, 2155), rnd.Next(1, 12), rnd.Next(1, 28));
                 FeatureDataRow<uint> feature = schema.NewRow((uint) i);
 
                 char[] chars = new char[rnd.Next(0, 254)];
-                for (int charIndex = 0; charIndex < chars.Length; charIndex++)
+                for (Int32 charIndex = 0; charIndex < chars.Length; charIndex++)
                 {
                     chars[charIndex] = (char) (byte) rnd.Next(32, 126);
                 }
@@ -592,8 +592,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
                 LineString line = new LineString();
 
-                int pointCount = rnd.Next(1, 100);
-                for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
+                Int32 pointCount = rnd.Next(1, 100);
+                for (Int32 pointIndex = 0; pointIndex < pointCount; pointIndex++)
                 {
                     Point p = new Point(rnd.NextDouble()*rnd.Next(200000, 700000),
                                         (rnd.NextDouble()*rnd.Next(1000000)) + 50000000);

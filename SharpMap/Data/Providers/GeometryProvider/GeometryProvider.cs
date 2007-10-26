@@ -66,7 +66,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		private ICoordinateTransformation _coordinateTransformation;
 		private ICoordinateSystem _coordinateSystem;
 		private readonly List<Geometry> _geometries = new List<Geometry>();
-		private int? _srid = null;
+		private Int32? _srid = null;
 		private bool _isDisposed;
 
 		#region Object Construction / Disposal
@@ -141,7 +141,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <see cref="SharpMap.Geometries.Geometry"/> as Well-Known Text 
 		/// to add to this datasource.
 		/// </param>
-		public GeometryProvider(string wellKnownTextGeometry)
+		public GeometryProvider(String wellKnownTextGeometry)
 			: this(GeometryFromWkt.Parse(wellKnownTextGeometry))
 		{
 		}
@@ -218,7 +218,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// The ConnectionID is meant for Connection Pooling which doesn't apply to this datasource. Instead
 		/// <c>String.Empty</c> is returned.
 		/// </remarks>
-		public string ConnectionId
+		public String ConnectionId
 		{
 			get { return String.Empty; }
 		}
@@ -246,7 +246,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <summary>
 		/// The spatial reference ID.
 		/// </summary>
-		public int? Srid
+		public Int32? Srid
 		{
 			get { return _srid; }
 			set { _srid = value; }
@@ -514,7 +514,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// Retrieves the number of features accessible with this provider.
 		/// </summary>
 		/// <returns>The number of features this provider can access.</returns>
-		public int GetFeatureCount()
+		public Int32 GetFeatureCount()
 		{
 			return _geometries.Count;
         }
@@ -542,7 +542,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		{
 			for (uint i = 0; i < _geometries.Count; i++)
 			{
-				if (_geometries[(int)i].GetBoundingBox().Intersects(box))
+				if (_geometries[(Int32)i].GetBoundingBox().Intersects(box))
 				{
 					yield return i;
 				}
@@ -566,7 +566,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <returns>geometry</returns>
 		public Geometry GetGeometryById(uint oid)
 		{
-			return _geometries[(int)oid];
+			return _geometries[(Int32)oid];
 		}
 
 		public void SetTableSchema(FeatureDataTable<uint> table)

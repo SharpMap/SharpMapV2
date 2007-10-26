@@ -23,7 +23,7 @@ namespace SharpMap.Tests.Rendering
             Figure2D f1 = new Figure2D(points, true);
             Assert.AreEqual(4, f1.Points.Count);
 
-            for (int i = 0; i < 4; i++)
+            for (Int32 i = 0; i < 4; i++)
             {
                 Assert.AreEqual(points[i], f1.Points[i]);
             }
@@ -74,7 +74,7 @@ namespace SharpMap.Tests.Rendering
                 new Point2D[] {new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1)};
             Figure2D f1 = new Figure2D(points1);
 
-            string expected =
+            String expected =
                 String.Format("[{0}] Number of {1} points: 4; Closed: False", typeof (Figure2D), typeof (Point2D).Name);
             Assert.AreEqual(expected, f1.ToString());
         }

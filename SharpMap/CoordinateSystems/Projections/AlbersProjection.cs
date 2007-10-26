@@ -60,14 +60,14 @@ namespace SharpMap.CoordinateSystems.Projections
 	/// </remarks>
 	internal class AlbersProjection : MapProjection
 	{
-		double _falseEasting;
-		double _falseNorthing;
-		double C;				//constant c 
-		double e;				//eccentricity
-		double e_sq = 0;
-		double ro0;
-		double n;
-		double lon_center;		//center longitude   
+		Double _falseEasting;
+		Double _falseNorthing;
+		Double C;				//constant c 
+		Double e;				//eccentricity
+		Double e_sq = 0;
+		Double ro0;
+		Double n;
+		Double lon_center;		//center longitude   
 		
 		#region Constructors
 
@@ -136,43 +136,43 @@ namespace SharpMap.CoordinateSystems.Projections
 				throw new ArgumentException("Missing projection parameter 'false_northing'");
 
 			lon_center = Degrees2Radians(central_meridian.Value);
-			double lat0 = Degrees2Radians(latitude_of_origin.Value);
-			double lat1 = Degrees2Radians(standard_parallel_1.Value);
-			double lat2 = Degrees2Radians(standard_parallel_2.Value);
+			Double lat0 = Degrees2Radians(latitude_of_origin.Value);
+			Double lat1 = Degrees2Radians(standard_parallel_1.Value);
+			Double lat2 = Degrees2Radians(standard_parallel_2.Value);
 			this._falseEasting = Degrees2Radians(false_easting.Value);
 			this._falseNorthing = Degrees2Radians(false_northing.Value);
 
-			if (Math.Abs(lat1 + lat2) < double.Epsilon)
+			if (Math.Abs(lat1 + lat2) < Double.Epsilon)
                 throw new ProjectionComputationException("Equal latitudes for standard parallels on opposite sides of Equator.");
 
 			e_sq = 1.0 - Math.Pow(this._semiMinor / this._semiMajor, 2);
 			e = Math.Sqrt(e_sq); //Eccentricity
 
-			double alpha1 = alpha(lat1);
-			double alpha2 = alpha(lat2);
+			Double alpha1 = alpha(lat1);
+			Double alpha2 = alpha(lat2);
 
-			double m1 = Math.Cos(lat1) / Math.Sqrt(1 - e_sq * Math.Pow(Math.Sin(lat1), 2));
-			double m2 = Math.Cos(lat2) / Math.Sqrt(1 - e_sq * Math.Pow(Math.Sin(lat2), 2));
+			Double m1 = Math.Cos(lat1) / Math.Sqrt(1 - e_sq * Math.Pow(Math.Sin(lat1), 2));
+			Double m2 = Math.Cos(lat2) / Math.Sqrt(1 - e_sq * Math.Pow(Math.Sin(lat2), 2));
 
 			n = (Math.Pow(m1, 2) - Math.Pow(m2, 2)) / (alpha2 - alpha1);
 			C = Math.Pow(m1, 2) + (n * alpha1);
 
 			ro0 = Ro(alpha(lat0));
 			/*
-			double sin_p0 = Math.Sin(lat0);
-			double cos_p0 = Math.Cos(lat0);
-			double q0 = qsfnz(e, sin_p0, cos_p0);
+			Double sin_p0 = Math.Sin(lat0);
+			Double cos_p0 = Math.Cos(lat0);
+			Double q0 = qsfnz(e, sin_p0, cos_p0);
 
-			double sin_p1 = Math.Sin(lat1);
-			double cos_p1 = Math.Cos(lat1);
-			double m1 = msfnz(e,sin_p1,cos_p1);
-			double q1 = qsfnz(e,sin_p1,cos_p1);
+			Double sin_p1 = Math.Sin(lat1);
+			Double cos_p1 = Math.Cos(lat1);
+			Double m1 = msfnz(e,sin_p1,cos_p1);
+			Double q1 = qsfnz(e,sin_p1,cos_p1);
 
 
-			double sin_p2 = Math.Sin(lat2);
-			double cos_p2 = Math.Cos(lat2);
-			double m2 = msfnz(e,sin_p2,cos_p2);
-			double q2 = qsfnz(e,sin_p2,cos_p2);
+			Double sin_p2 = Math.Sin(lat2);
+			Double cos_p2 = Math.Cos(lat2);
+			Double m2 = msfnz(e,sin_p2,cos_p2);
+			Double q2 = qsfnz(e,sin_p2,cos_p2);
 
 			if (Math.Abs(lat1 - lat2) > EPSLN)
 				ns0 = (m1 * m1 - m2 * m2)/ (q2 - q1);
@@ -192,20 +192,20 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// <returns>Point in projected meters</returns>
 		public override SharpMap.Geometries.Point DegreesToMeters(SharpMap.Geometries.Point lonlat)
 		{
-			double dLongitude = Degrees2Radians(lonlat.X);
-			double dLatitude = Degrees2Radians(lonlat.Y);
+			Double dLongitude = Degrees2Radians(lonlat.X);
+			Double dLatitude = Degrees2Radians(lonlat.Y);
 
-			double a = alpha(dLatitude);
-			double ro = Ro(a);
-			double theta = n * (dLongitude - lon_center);
+			Double a = alpha(dLatitude);
+			Double ro = Ro(a);
+			Double theta = n * (dLongitude - lon_center);
 			return new Point(
 				_falseEasting + ro * Math.Sin(theta),
 				_falseNorthing + ro0 - (ro * Math.Cos(theta)));
 			/*
-			double sin_phi,cos_phi;		// sine and cos values
-			double qs;					// small q
-			double theta;				// angle
-			double rh1;					// height above ellipsoid
+			Double sin_phi,cos_phi;		// sine and cos values
+			Double qs;					// small q
+			Double theta;				// angle
+			Double rh1;					// height above ellipsoid
 			sincos(dLatitude,out sin_phi,out cos_phi);
 			qs = qsfnz(e,sin_phi,cos_phi);
 			rh1 = this._semiMajor * Math.Sqrt(C - ns0 * qs)/ns0;
@@ -223,25 +223,25 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// <returns>Transformed point in decimal degrees</returns>
 		public override SharpMap.Geometries.Point MetersToDegrees(SharpMap.Geometries.Point p) 
 		{
-			double theta = Math.Atan((p.X - _falseEasting) / (ro0 - (p.Y - _falseNorthing)));
-			double ro = Math.Sqrt(Math.Pow(p.X - _falseEasting, 2) + Math.Pow(ro0 - (p.Y - _falseNorthing), 2));
-			double q = (C - Math.Pow(ro, 2) * Math.Pow(n, 2) / Math.Pow(this._semiMajor, 2)) / n;
-			double b = Math.Sin(q / (1 - ((1 - e_sq) / (2 * e)) * Math.Log((1 - e) / (1 + e))));
+			Double theta = Math.Atan((p.X - _falseEasting) / (ro0 - (p.Y - _falseNorthing)));
+			Double ro = Math.Sqrt(Math.Pow(p.X - _falseEasting, 2) + Math.Pow(ro0 - (p.Y - _falseNorthing), 2));
+			Double q = (C - Math.Pow(ro, 2) * Math.Pow(n, 2) / Math.Pow(this._semiMajor, 2)) / n;
+			Double b = Math.Sin(q / (1 - ((1 - e_sq) / (2 * e)) * Math.Log((1 - e) / (1 + e))));
 
-			double lat = Math.Asin(q * 0.5);
-			double preLat = double.MaxValue;
-			int iterationCounter = 0;
+			Double lat = Math.Asin(q * 0.5);
+			Double preLat = Double.MaxValue;
+			Int32 iterationCounter = 0;
 			while (Math.Abs(lat - preLat) > 0.000001)
 			{
 				preLat = lat;
-				double sin = Math.Sin(lat);
-				double e2sin2 = e_sq * Math.Pow(sin, 2);
+				Double sin = Math.Sin(lat);
+				Double e2sin2 = e_sq * Math.Pow(sin, 2);
 				lat += (Math.Pow(1 - e2sin2, 2) / (2 * Math.Cos(lat))) * ((q / (1 - e_sq)) - sin / (1 - e2sin2) + 1 / (2 * e) * Math.Log((1 - e * sin) / (1 + e * sin)));
 				iterationCounter++;
 				if (iterationCounter > 25)
                     throw new ProjectionComputationException("Transformation failed to converge in Albers backwards transformation");
 			}
-			double lon = lon_center + (theta / n);
+			Double lon = lon_center + (theta / n);
 			return new SharpMap.Geometries.Point(Radians2Degrees(lon), Radians2Degrees(lat));
 		}
 		/// <summary>
@@ -262,24 +262,24 @@ namespace SharpMap.CoordinateSystems.Projections
 
 		#region Math helper functions
 
-		//private double ToAuthalic(double lat)
+		//private Double ToAuthalic(Double lat)
 		//{
 		//    return Math.Atan(Q(lat) / Q(Math.PI * 0.5));
 		//}
-		//private double Q(double angle)
+		//private Double Q(Double angle)
 		//{
-		//    double sin = Math.Sin(angle);
-		//    double esin = e * sin;
+		//    Double sin = Math.Sin(angle);
+		//    Double esin = e * sin;
 		//    return Math.Abs(sin / (1 - Math.Pow(esin, 2)) - 0.5 * e) * Math.Log((1 - esin) / (1 + esin)));
 		//}
-		private double alpha(double lat)
+		private Double alpha(Double lat)
 		{
-			double sin = Math.Sin(lat);
-			double sinsq = Math.Pow(sin,2);
+			Double sin = Math.Sin(lat);
+			Double sinsq = Math.Pow(sin,2);
 			return (1 - e_sq) * (((sin / (1 - e_sq * sinsq)) - 1/(2 * e) * Math.Log((1 - e * sin) / (1 + e * sin))));
 		}
 
-		private double Ro(double a)
+		private Double Ro(Double a)
 		{
 			return this._semiMajor * Math.Sqrt((C - n * a)) / n;
 		}

@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using SharpMap.Styles;
 
@@ -23,7 +24,7 @@ namespace SharpMap.Rendering.Rendering2D
     public interface ITextRenderer2D<TRenderObject> : ITextRenderer2D
     {
         /// <summary>
-        /// Renders a text string.
+        /// Renders a text String.
         /// </summary>
         /// <param name="text">The text to render.</param>
         /// <param name="font">The font to use to draw the text.</param>
@@ -32,10 +33,10 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        new IEnumerable<TRenderObject> RenderText(string text, StyleFont font, Point2D location, StyleBrush fontBrush);
+        new IEnumerable<TRenderObject> RenderText(String text, StyleFont font, Point2D location, StyleBrush fontBrush);
 
         /// <summary>
-        /// Renders a text string.
+        /// Renders a text String.
         /// </summary>
         /// <param name="text">The text to render.</param>
         /// <param name="font">The font to use to draw the text.</param>
@@ -54,7 +55,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>
         /// A set of <typeparamref name="TRenderObject"/> instances representing the rendered text.
         /// </returns>
-        IEnumerable<TRenderObject> RenderText(string text, StyleFont font, Rectangle2D layoutRectangle,
+        IEnumerable<TRenderObject> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle,
                                               Path2D flowPath, StyleBrush fontBrush, Matrix2D transform);
     }
 }

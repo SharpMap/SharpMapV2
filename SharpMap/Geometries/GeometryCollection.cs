@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Geometries
 {
 	/// <summary>
@@ -45,7 +47,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Initializes a new GeometryCollection with the given initial capacity.
 		/// </summary>
-		public GeometryCollection(int initialCapacity)
+		public GeometryCollection(Int32 initialCapacity)
             : base(initialCapacity) { }
 	}
 }

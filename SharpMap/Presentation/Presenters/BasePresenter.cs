@@ -165,7 +165,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         [DebuggerStepThrough]
-        protected virtual void OnMapPropertyChanged(string propertyName)
+        protected virtual void OnMapPropertyChanged(String propertyName)
         {
 
         }

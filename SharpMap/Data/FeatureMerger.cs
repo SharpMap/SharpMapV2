@@ -395,7 +395,7 @@ namespace SharpMap.Data
             DataColumn[] columnsReference = getDataKeyColumnReference(dataKey);
             DataColumn[] columns = new DataColumn[columnsReference.Length];
 
-            for (int i = 0; i < columnsReference.Length; i++)
+            for (Int32 i = 0; i < columnsReference.Length; i++)
             {
                 // What about matching type? Does an exception get thrown previously if no match?
                 // TODO: This will probably need to be changed to handle the SchemaMergeAction.KeyByType option
@@ -444,7 +444,7 @@ namespace SharpMap.Data
         private static FeatureDataTable createModelFromFeature(IFeatureDataRecord srcFeature)
         {
             FeatureDataTable schemaModel = new FeatureDataTable();
-            for (int fieldIndex = 0; fieldIndex < srcFeature.FieldCount; fieldIndex++)
+            for (Int32 fieldIndex = 0; fieldIndex < srcFeature.FieldCount; fieldIndex++)
             {
                 schemaModel.Columns.Add(srcFeature.GetName(fieldIndex),
                                         srcFeature.GetFieldType(fieldIndex));
@@ -476,9 +476,9 @@ namespace SharpMap.Data
 
         private static void setFeatureRowFromIFeatureDataRecord(IFeatureDataRecord srcFeature, FeatureDataRow targetFeature)
         {
-            for (int i = 0; i < srcFeature.FieldCount; i++)
+            for (Int32 i = 0; i < srcFeature.FieldCount; i++)
             {
-                string colName = srcFeature.GetName(i);
+                String colName = srcFeature.GetName(i);
                 targetFeature[colName] = srcFeature.GetValue(i);
             }
 
@@ -491,12 +491,12 @@ namespace SharpMap.Data
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
-            if ((int)(schemaMergeAction & SchemaMergeAction.Add) != 0)
+            if ((Int32)(schemaMergeAction & SchemaMergeAction.Add) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.Add;
             }
 
-            if ((int)(schemaMergeAction & SchemaMergeAction.Key) != 0)
+            if ((Int32)(schemaMergeAction & SchemaMergeAction.Key) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.AddWithKey;
             }

@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using SharpMap.Geometries;
@@ -25,7 +26,7 @@ namespace SharpMap.Data
     /// NOTE: this class is just an experimental attempt to express a view on 
     /// raster data. It _will_ change.
     /// </summary>
-    public class RasterDataView : Stream, IEnumerable<byte>
+    public class RasterDataView : Stream, IEnumerable<Byte>
     {
         public RasterDataView(RasterBand band)
         {
@@ -37,7 +38,7 @@ namespace SharpMap.Data
 
         }
 
-        public RasterDataView(RasterDataSet dataSet, Geometry intersectionFilter, double scale)
+        public RasterDataView(RasterDataSet dataSet, Geometry intersectionFilter, Double scale)
         {
 
         }
@@ -54,7 +55,7 @@ namespace SharpMap.Data
         /// <filterpriority>2</filterpriority>
         public override void Flush()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -150,7 +151,7 @@ namespace SharpMap.Data
         /// <paramref name="offset"/> or <paramref name="count"/> is negative.
         /// </exception>
         /// <filterpriority>1</filterpriority>
-        public override int Read(byte[] buffer, int offset, int count)
+        public override Int32 Read(byte[] buffer, Int32 offset, Int32 count)
         {
             throw new System.NotImplementedException();
         }
@@ -191,7 +192,7 @@ namespace SharpMap.Data
         /// <paramref name="offset"/> or <paramref name="count"/> is negative. 
         /// </exception>
         /// <filterpriority>1</filterpriority>
-        public override void Write(byte[] buffer, int offset, int count)
+        public override void Write(byte[] buffer, Int32 offset, Int32 count)
         {
             throw new System.NotImplementedException();
         }

@@ -48,7 +48,7 @@ namespace SharpMap.Data
         /// <summary>
         /// The spatial reference ID for the provider.
         /// </summary>
-        int? Srid { get; set; }
+        Int32? Srid { get; set; }
 
         /// <summary>
         /// Geometric extent of the entire dataset.
@@ -70,7 +70,7 @@ namespace SharpMap.Data
         /// the ConnectionId should return String.Empty.
         /// </para>
         /// </remarks>
-        string ConnectionId { get; }
+        String ConnectionId { get; }
 
         /// <summary>
         /// Opens the datasource.

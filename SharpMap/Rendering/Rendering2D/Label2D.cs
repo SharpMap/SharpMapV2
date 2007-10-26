@@ -29,11 +29,11 @@ namespace SharpMap.Rendering.Rendering2D
     /// </summary>
     public class Label2D : ILabel<Point2D, Size2D, Rectangle2D, Path2D>, IComparable<Label2D>, IComparer<Label2D>
     {
-        private string _text;
+        private String _text;
         private Point2D _location;
         private Point2D _offset;
         private StyleFont _font;
-        private int _priority;
+        private Int32 _priority;
         private float _rotation;
         private LabelStyle _style;
         private Path2D _labelPath;
@@ -45,7 +45,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="text">Text to write.</param>
         /// <param name="position">Position of label.</param>
         /// <param name="style">The style to use in rendering the label.</param>
-        public Label2D(string text, Point2D position, LabelStyle style)
+        public Label2D(String text, Point2D position, LabelStyle style)
             : this(text, position, 0, 0, Size2D.Empty, style)
         {
             _text = text;
@@ -62,7 +62,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="priority">Label priority used for collision detection.</param>
         /// <param name="collisionBuffer">Area around label for collision detection.</param>
         /// <param name="style">The style to use in rendering the label.</param>
-        public Label2D(string text, Point2D location, float rotation, int priority, Size2D collisionBuffer,
+        public Label2D(String text, Point2D location, float rotation, Int32 priority, Size2D collisionBuffer,
                        LabelStyle style)
         {
             _text = text;
@@ -74,10 +74,10 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Creates a string representation of the label.
+        /// Creates a String representation of the label.
         /// </summary>
-        /// <returns>A string which represents the label instance.</returns>
-        public override string ToString()
+        /// <returns>A String which represents the label instance.</returns>
+        public override String ToString()
         {
             return String.Format(
                 "[{0}] Text: \"{1}\"; Location: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Collision Buffer: {6}",
@@ -129,7 +129,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets the relative priority in layout of the label.
         /// </summary>
-        public int Priority
+        public Int32 Priority
         {
             get { return _priority; }
             set { _priority = value; }
@@ -156,7 +156,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets or sets the text of the label.
         /// </summary>
-        public string Text
+        public String Text
         {
             get { return _text; }
             set { _text = value; }
@@ -174,7 +174,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public int CompareTo(Label2D other)
+        public Int32 CompareTo(Label2D other)
         {
             if (this == other)
             {
@@ -204,7 +204,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int Compare(Label2D x, Label2D y)
+        public Int32 Compare(Label2D x, Label2D y)
         {
             return x.CompareTo(y);
         }

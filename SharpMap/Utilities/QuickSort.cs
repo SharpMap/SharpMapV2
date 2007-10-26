@@ -42,21 +42,21 @@ namespace SharpMap.Utilities
                 return;
             }
 
-            int middle = (list.Count - 1) / 2;
-            int partitionIndex = partition(list, comparison, 0, list.Count - 1, middle);
+            Int32 middle = (list.Count - 1) / 2;
+            Int32 partitionIndex = partition(list, comparison, 0, list.Count - 1, middle);
             sortRange(list, comparison, 0, partitionIndex);
             sortRange(list, comparison, partitionIndex + 1, list.Count - 1);
         }
 
-        private static int partition<T>(IList<T> list, Comparison<T> comparison,
-            int minIndex, int maxIndex, int pivotIndex)
+        private static Int32 partition<T>(IList<T> list, Comparison<T> comparison,
+            Int32 minIndex, Int32 maxIndex, Int32 pivotIndex)
         {
             T pivotItem = list[pivotIndex];
             swap(list, pivotIndex, maxIndex);
 
-            int minCompareIndex = minIndex - 1;
+            Int32 minCompareIndex = minIndex - 1;
 
-            for (int i = minIndex; i <= maxIndex - 1; i++)
+            for (Int32 i = minIndex; i <= maxIndex - 1; i++)
             {
                 if (comparison(list[i], pivotItem) < 0)
                 {
@@ -71,20 +71,20 @@ namespace SharpMap.Utilities
             return minCompareIndex;
         }
 
-        private static void sortRange<T>(IList<T> list, Comparison<T> comparison, int minIndex, int maxIndex)
+        private static void sortRange<T>(IList<T> list, Comparison<T> comparison, Int32 minIndex, Int32 maxIndex)
         {
             if (minIndex >= maxIndex)
             {
                 return;
             }
 
-            int middle = (maxIndex - minIndex) / 2 + minIndex;
-            int partitionIndex = partition(list, comparison, minIndex, maxIndex, middle);
+            Int32 middle = (maxIndex - minIndex) / 2 + minIndex;
+            Int32 partitionIndex = partition(list, comparison, minIndex, maxIndex, middle);
             sortRange(list, comparison, minIndex, partitionIndex);
             sortRange(list, comparison, partitionIndex + 1, maxIndex);
         }
 
-        private static void swap<T>(IList<T> list, int minIndex, int maxIndex)
+        private static void swap<T>(IList<T> list, Int32 minIndex, Int32 maxIndex)
         {
             T item = list[minIndex];
             list[minIndex] = list[maxIndex];

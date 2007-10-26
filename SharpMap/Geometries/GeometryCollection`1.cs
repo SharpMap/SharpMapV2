@@ -57,7 +57,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Initializes a new GeometryCollection
         /// </summary>
-        public GeometryCollection(int initialCapacity)
+        public GeometryCollection(Int32 initialCapacity)
         {
             _geometries = new List<TGeometry>(initialCapacity);
         }
@@ -65,7 +65,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Gets the number of geometries in the collection.
         /// </summary>
-        public virtual int NumGeometries
+        public virtual Int32 NumGeometries
         {
             get { return _geometries.Count; }
         }
@@ -75,7 +75,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="index">Geometry index.</param>
         /// <returns>Geometry at given index.</returns>
-        public virtual Geometry Geometry(int index)
+        public virtual Geometry Geometry(Int32 index)
         {
             return _geometries[index];
         }
@@ -85,7 +85,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="index">Geometry index.</param>
         /// <returns>Geometry</returns>
-        public virtual TGeometry this[int index]
+        public virtual TGeometry this[Int32 index]
         {
             get { return _geometries[index]; }
         }
@@ -129,11 +129,11 @@ namespace SharpMap.Geometries
         /// which must be less than or equal
         /// to the coordinate dimension.
         /// </summary>
-        public override int Dimension
+        public override Int32 Dimension
         {
             get
             {
-                int dim = 0;
+                Int32 dim = 0;
                 _geometries.ForEach(delegate(TGeometry g) { dim = Math.Max(dim, g.Dimension); });
                 return dim;
             }
@@ -162,9 +162,9 @@ namespace SharpMap.Geometries
         /// is suitable for use in hashing algorithms and data structures like a hash table.
         /// </summary>
         /// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
-            int hash = 0;
+            Int32 hash = 0;
             _geometries.ForEach(delegate(TGeometry g) { hash ^= g.GetHashCode(); });
             return hash;
         }
@@ -195,7 +195,7 @@ namespace SharpMap.Geometries
 
             unchecked
             {
-                for (int i = 0; i < other.Collection.Count; i++)
+                for (Int32 i = 0; i < other.Collection.Count; i++)
                 {
                     if (!other.Collection[i].Equals(Collection[i]))
                     {
@@ -239,7 +239,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="geom">Geometry to calculate distance to</param>
         /// <returns>Shortest distance between any two points in the two geometries</returns>
-        public override double Distance(Geometry geom)
+        public override Double Distance(Geometry geom)
         {
             throw new NotImplementedException();
         }
@@ -251,7 +251,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="d">Buffer distance</param>
         /// <returns>Buffer around geometry</returns>
-        public override Geometry Buffer(double d)
+        public override Geometry Buffer(Double d)
         {
             throw new NotImplementedException();
         }

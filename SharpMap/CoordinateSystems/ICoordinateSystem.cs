@@ -43,18 +43,18 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Dimension of the coordinate system.
 		/// </summary>
-		int Dimension { get; }
+		Int32 Dimension { get; }
 
 		/// <summary>
 		/// Gets axis details for dimension within coordinate system.
 		/// </summary>
 		/// <param name="dimension">Dimension</param>
 		/// <returns>Axis info</returns>
-		AxisInfo GetAxis(int dimension);
+		AxisInfo GetAxis(Int32 dimension);
 		/// <summary>
 		/// Gets units for dimension within coordinate system.
 		/// </summary>
-		IUnit GetUnits(int dimension);
+		IUnit GetUnits(Int32 dimension);
 		/// <summary>
 		/// Gets default envelope of coordinate system.
 		/// </summary>

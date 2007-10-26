@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections;
 
 namespace SharpMap.Rendering.Rendering2D
@@ -36,7 +37,7 @@ namespace SharpMap.Rendering.Rendering2D
 			labelList.Sort(); // sort labels by intersection tests of the label's collision box
 
 			//remove labels that intersect other labels
-			for (int i = labelList.Count - 1; i > 0; i--)
+			for (Int32 i = labelList.Count - 1; i > 0; i--)
 			{
                 Label2D label1 = labelList[i] as Label2D;
                 Label2D label2 = labelList[i - 1] as Label2D;
@@ -74,9 +75,9 @@ namespace SharpMap.Rendering.Rendering2D
             labelList.Sort(); // sort labels by intersectiontests of labelbox
 
 			//remove labels that intersect other labels
-            for (int i = labelList.Count - 1; i > 0; i--)
+            for (Int32 i = labelList.Count - 1; i > 0; i--)
 			{
-				for (int j = i - 1; j > 0; j--)
+				for (Int32 j = i - 1; j > 0; j--)
                 {
                     Label2D label1 = labelList[i] as Label2D;
                     Label2D label2 = labelList[j] as Label2D;

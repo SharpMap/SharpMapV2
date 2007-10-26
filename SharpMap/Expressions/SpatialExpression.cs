@@ -111,7 +111,7 @@ namespace SharpMap.Expressions
             return Equals(obj as SpatialExpression);
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             unchecked
             {

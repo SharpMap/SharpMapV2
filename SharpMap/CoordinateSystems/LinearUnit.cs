@@ -37,7 +37,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		public LinearUnit(double metersPerUnit, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
+		public LinearUnit(Double metersPerUnit, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -90,12 +90,12 @@ namespace SharpMap.CoordinateSystems
 
 		#region ILinearUnit Members
 
-		private double _MetersPerUnit;
+		private Double _MetersPerUnit;
 
 		/// <summary>
 		/// Gets or sets the number of meters per <see cref="LinearUnit"/>.
 		/// </summary>
-		public double MetersPerUnit
+		public Double MetersPerUnit
 		{
 			get { return _MetersPerUnit; }
 			set { _MetersPerUnit = value; }
@@ -105,7 +105,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get
 			{

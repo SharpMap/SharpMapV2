@@ -41,7 +41,7 @@ namespace SharpMap.Rendering.Rendering3D
             _hasValue = true;
         }
 
-        public ViewPoint3D(double[] elements)
+        public ViewPoint3D(Double[] elements)
         {
             if (elements == null)
             {
@@ -59,12 +59,12 @@ namespace SharpMap.Rendering.Rendering3D
             _hasValue = true;
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
-            return unchecked((int)_x ^ (int)_y ^ (int)_z);
+            return unchecked((Int32)_x ^ (Int32)_y ^ (Int32)_z);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[ViewPoint3D] ({0:N3}, {1:N3}, {2:N3})", _x, _y, _z);
         }
@@ -91,12 +91,12 @@ namespace SharpMap.Rendering.Rendering3D
             get { return new DoubleComponent[][] { new DoubleComponent[] { _x, _y, _z } }; }
         }
 
-        public int ComponentCount
+        public Int32 ComponentCount
         {
             get { return 3; }
         }
 
-        public DoubleComponent this[int element]
+        public DoubleComponent this[Int32 element]
         {
             get
             {
@@ -175,7 +175,7 @@ namespace SharpMap.Rendering.Rendering3D
                 return false;
             }
 
-            for (int elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
+            for (Int32 elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
             {
                 if (!this[elementIndex].Equals(other[0, elementIndex]))
                 {
@@ -215,17 +215,17 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="j1">The ending column to include.</param>
         /// <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
         /// through <paramref name="j1"/>.</returns>
-        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
+        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotImplementedException();
         }
 
-        public double Determinant
+        public Double Determinant
         {
             get { throw new NotImplementedException(); }
         }
 
-        public int ColumnCount
+        public Int32 ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -250,17 +250,17 @@ namespace SharpMap.Rendering.Rendering3D
             get { throw new NotImplementedException(); }
         }
 
-        public int RowCount
+        public Int32 RowCount
         {
             get { throw new NotImplementedException(); }
         }
 
-        public IMatrix<DoubleComponent> GetMatrix(int[] rowIndexes, int j0, int j1)
+        public IMatrix<DoubleComponent> GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotImplementedException();
         }
 
-        public DoubleComponent this[int row, int column]
+        public DoubleComponent this[Int32 row, Int32 column]
         {
             get
             {
@@ -407,7 +407,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of components in the vector.
         /// </summary>
-        int IVectorD.ComponentCount
+        Int32 IVectorD.ComponentCount
         {
             get { return IsEmpty ? 0 : 3; }
         }
@@ -435,7 +435,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// </summary>
         /// <param name="index">The index of the component.</param>
         /// <returns>The value of the component at the given <paramref name="index"/>.</returns>
-        DoubleComponent IVectorD.this[int index]
+        DoubleComponent IVectorD.this[Int32 index]
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -444,7 +444,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        double IMatrixD.Determinant
+        Double IMatrixD.Determinant
         {
             get { throw new NotImplementedException(); }
         }
@@ -452,7 +452,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        int IMatrixD.ColumnCount
+        Int32 IMatrixD.ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -508,7 +508,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        int IMatrixD.RowCount
+        Int32 IMatrixD.RowCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -528,7 +528,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns>The value of the element at the specified row and column.</returns>
-        DoubleComponent IMatrixD.this[int row, int column]
+        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }

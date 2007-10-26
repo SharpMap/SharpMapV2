@@ -46,11 +46,11 @@ namespace SharpMap.Tests
 
         internal static FeatureProvider CreateFeatureDatasource()
         {
-            DataColumn nameColumn = new DataColumn("FeatureName", typeof (string));
+            DataColumn nameColumn = new DataColumn("FeatureName", typeof (String));
             FeatureProvider provider = new FeatureProvider(nameColumn);
 
             FeatureDataTable<Guid> features = new FeatureDataTable<Guid>("Oid");
-            features.Columns.Add("FeatureName", typeof (string));
+            features.Columns.Add("FeatureName", typeof (String));
             FeatureDataRow<Guid> row;
 
             row = features.NewRow(Guid.NewGuid());

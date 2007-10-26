@@ -26,7 +26,7 @@ namespace SharpMap.CoordinateSystems
 	/// </summary>
 	public class AxisInfo
     {
-        private string _Name;
+        private String _Name;
         private AxisOrientationEnum _Orientation;
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="name">Name of axis</param>
 		/// <param name="orientation">Axis orientation</param>
-		public AxisInfo(string name, AxisOrientationEnum orientation)
+		public AxisInfo(String name, AxisOrientationEnum orientation)
 		{
 			_Name = name;
 			_Orientation = orientation;
@@ -42,9 +42,9 @@ namespace SharpMap.CoordinateSystems
 
 		/// <summary>
 		/// Human readable name for axis. Possible values are X, Y, 
-        /// Long, Lat or any other short string.
+        /// Long, Lat or any other short String.
 		/// </summary>
-		public string Name
+		public String Name
 		{
 			get { return _Name; }
 			set { _Name = value; }
@@ -63,7 +63,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public string WKT
+		public String WKT
 		{
 			get
 			{
@@ -74,7 +74,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public string XML
+		public String XML
 		{
 			get
 			{

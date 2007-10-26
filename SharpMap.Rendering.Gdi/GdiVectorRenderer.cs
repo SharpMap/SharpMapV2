@@ -191,7 +191,7 @@ namespace SharpMap.Rendering.Gdi
 
                 using (BinaryReader reader = new BinaryReader(new NondisposingStream(symbol2D.SymbolData)))
                 {
-                    data.Write(reader.ReadBytes((int)symbol2D.SymbolData.Length), 0, (int)symbol2D.SymbolData.Length);
+                    data.Write(reader.ReadBytes((Int32)symbol2D.SymbolData.Length), 0, (Int32)symbol2D.SymbolData.Length);
                 }
 
                 symbol = new Bitmap(data);
@@ -207,9 +207,9 @@ namespace SharpMap.Rendering.Gdi
 
         private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
         {
-            public readonly int SymbolId;
+            public readonly Int32 SymbolId;
 
-            public SymbolLookupKey(int symbolId)
+            public SymbolLookupKey(Int32 symbolId)
             {
                 SymbolId = symbolId;
             }

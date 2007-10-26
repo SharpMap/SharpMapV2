@@ -36,14 +36,14 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the name of the object.
 		/// </summary>
-		string Name { get; }
+		String Name { get; }
 
 		/// <summary>
 		/// Gets or sets the authority name for this object, e.g., “POSC”,
 		/// is this is a standard object with an authority specific
 		/// identity code. Returns “CUSTOM” if this is a custom object.
 		/// </summary>
-		string Authority { get; }
+		String Authority { get; }
 
 		/// <summary>
 		/// Gets or sets the authority specific identification code of the object
@@ -53,28 +53,28 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the alias of the object.
 		/// </summary>
-		string Alias { get; }
+		String Alias { get; }
 
 		/// <summary>
 		/// Gets or sets the abbreviation of the object.
 		/// </summary>
-		string Abbreviation { get; }
+		String Abbreviation { get; }
 
 		/// <summary>
 		/// Gets or sets the provider-supplied remarks for the object.
 		/// </summary>
-		string Remarks { get; }
+		String Remarks { get; }
 
 		/// <summary>
 		/// Returns the Well-known text for this spatial reference object
 		/// as defined in the simple features specification.
 		/// </summary>
-		string Wkt { get; }
+		String Wkt { get; }
 
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		string Xml { get; }
+		String Xml { get; }
 
 		/// <summary>
 		/// Checks whether the values of this instance is equal to the values of another instance.

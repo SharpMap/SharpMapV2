@@ -32,7 +32,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         #region Instance fields
         private GeometryProvider _provider;
         private readonly BoundingBox _bounds;
-        private int _currentIndex = -1;
+        private Int32 _currentIndex = -1;
         private bool _isDisposed; 
         #endregion
 
@@ -111,7 +111,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             Dispose();
         }
 
-        public int Depth
+        public Int32 Depth
         {
             get { return 0; }
         }
@@ -142,11 +142,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _currentIndex < _provider.Geometries.Count;
         }
 
-        public int RecordsAffected
+        public Int32 RecordsAffected
         {
             get
             {
-                int count = 0;
+                Int32 count = 0;
 
                 foreach (Geometry geometry in _provider.Geometries)
                 {
@@ -161,119 +161,119 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IDataRecord Members
 
-        public int FieldCount
+        public Int32 FieldCount
         {
             get { return 1; }
         }
 
-        public bool GetBoolean(int i)
+        public bool GetBoolean(Int32 i)
         {
             throw new NotSupportedException();
         }
 
-        public byte GetByte(int i)
+        public byte GetByte(Int32 i)
         {
             checkState();
             checkIndex(i);
             return (byte)_currentIndex;
         }
 
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotSupportedException();
         }
 
-        public char GetChar(int i)
+        public char GetChar(Int32 i)
         {
             checkState();
             checkIndex(i);
             return (char)_currentIndex;
         }
 
-        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotSupportedException();
         }
 
-        public IDataReader GetData(int i)
+        public IDataReader GetData(Int32 i)
         {
             throw new NotSupportedException();
         }
 
-        public string GetDataTypeName(int i)
+        public String GetDataTypeName(Int32 i)
         {
             checkState();
             checkIndex(i);
             return typeof(Int32).ToString();
         }
 
-        public DateTime GetDateTime(int i)
+        public DateTime GetDateTime(Int32 i)
         {
             throw new NotSupportedException();
         }
 
-        public decimal GetDecimal(int i)
+        public decimal GetDecimal(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public double GetDouble(int i)
+        public Double GetDouble(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Type GetFieldType(int i)
+        public Type GetFieldType(Int32 i)
         {
             checkState();
             checkIndex(i);
             return typeof(Int32);
         }
 
-        public float GetFloat(int i)
+        public float GetFloat(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Guid GetGuid(int i)
+        public Guid GetGuid(Int32 i)
         {
             throw new NotSupportedException();
         }
 
-        public short GetInt16(int i)
+        public short GetInt16(Int32 i)
         {
             checkState();
             checkIndex(i);
             return (short)_currentIndex;
         }
 
-        public int GetInt32(int i)
+        public Int32 GetInt32(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public long GetInt64(int i)
+        public long GetInt64(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public string GetName(int i)
+        public String GetName(Int32 i)
         {
             checkState();
             checkIndex(i);
             return "Oid";
         }
 
-        public int GetOrdinal(string name)
+        public Int32 GetOrdinal(String name)
         {
             checkState();
 
@@ -285,43 +285,43 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return 0;
         }
 
-        public string GetString(int i)
+        public String GetString(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex.ToString();
         }
 
-        public object GetValue(int i)
+        public object GetValue(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public int GetValues(object[] values)
+        public Int32 GetValues(object[] values)
         {
             throw new NotSupportedException();
         }
 
-        public bool IsDBNull(int i)
+        public bool IsDBNull(Int32 i)
         {
             checkState();
             checkIndex(i);
             return false;
         }
 
-        public object this[string name]
+        public object this[String name]
         {
             get
             {
                 checkState();
-                int ordinal = GetOrdinal(name);
+                Int32 ordinal = GetOrdinal(name);
                 return GetInt32(ordinal);
             }
         }
 
-        public object this[int i]
+        public object this[Int32 i]
         {
             get
             {
@@ -373,7 +373,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
         }
 
-        private static void checkIndex(int i)
+        private static void checkIndex(Int32 i)
         {
             if (i >= 1) throw new IndexOutOfRangeException("Column index is out of range.");
         }

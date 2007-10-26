@@ -23,8 +23,8 @@ namespace SharpMap.Tests.Data.Providers.FeatureProvider
         {
             DataColumn[] columns = new DataColumn[]
                 {
-                    new DataColumn("Column1", typeof (int)),
-                    new DataColumn("Column2", typeof (string)),
+                    new DataColumn("Column1", typeof (Int32)),
+                    new DataColumn("Column2", typeof (String)),
                     new DataColumn("Column3", typeof (DateTime)),
                 };
             FeatProvider provider = new FeatProvider(columns);

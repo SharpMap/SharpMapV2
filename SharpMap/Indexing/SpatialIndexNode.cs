@@ -182,7 +182,7 @@ namespace SharpMap.Indexing
             OnCleared();
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("Node Id: {0}; BoundingBox: {1}", _nodeId, _boundingBox);
         }

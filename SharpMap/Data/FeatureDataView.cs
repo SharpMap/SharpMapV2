@@ -42,7 +42,7 @@ namespace SharpMap.Data
         private delegate void SetLockedDelegate(DataView view, bool locked);
 
         private delegate void SetIndex2Delegate(
-            FeatureDataView view, string newSort, DataViewRowState dataViewRowState, object expression, bool fireEvent);
+            FeatureDataView view, String newSort, DataViewRowState dataViewRowState, object expression, bool fireEvent);
 
         #endregion
 
@@ -103,7 +103,7 @@ namespace SharpMap.Data
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
-                               string sort, DataViewRowState rowState)
+                               String sort, DataViewRowState rowState)
             : this(table, intersectionFilter, SpatialExpressionType.Intersects, sort, rowState) { }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace SharpMap.Data
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry query, SpatialExpressionType queryType,
-                               string sort, DataViewRowState rowState)
+                               String sort, DataViewRowState rowState)
             : this(table, new FeatureSpatialExpression(query, queryType, null), sort, rowState) { }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace SharpMap.Data
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, FeatureSpatialExpression definition,
-                               string sort, DataViewRowState rowState)
+                               String sort, DataViewRowState rowState)
             : base(
                 table, "",
                 String.IsNullOrEmpty(sort) ? table.PrimaryKey.Length == 1 ? table.PrimaryKey[0].ColumnName : "" : sort,
@@ -333,7 +333,7 @@ namespace SharpMap.Data
             }
         }
 
-        public override string RowFilter
+        public override String RowFilter
         {
             get { return ""; }
             set
@@ -426,7 +426,7 @@ namespace SharpMap.Data
             _setDataViewManager(this, featureDataViewManager);
         }
 
-        internal void SetIndex2(string newSort, DataViewRowState dataViewRowState,
+        internal void SetIndex2(String newSort, DataViewRowState dataViewRowState,
                                 object dataExpression, bool fireEvent)
         {
             // Call the delegate we wired up to bypass the normally inaccessible 
@@ -591,7 +591,7 @@ namespace SharpMap.Data
             // Unfortunately, this type is only available in the v2.0 CLR which ships with .Net v3.5 Beta 2 (v2.0.50727.1378)
             // Currently, the only two choices to provided spatially filtered views are to implement 
             // System.ComponentModel.IBindingListView or to rely on v3.5.
-            string rowPredicateFilterTypeName =
+            String rowPredicateFilterTypeName =
                 "System.Data.DataView+RowPredicateFilter, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
             Type rowPredicateFilterType = Type.GetType(rowPredicateFilterTypeName);
             Debug.Assert(rowPredicateFilterType != null,

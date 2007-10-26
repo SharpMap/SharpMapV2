@@ -21,7 +21,7 @@ namespace SharpMap.Data
 {
     internal static class AdoNetInternalTypes
     {
-        private static readonly string _adoAssemblyName =
+        private static readonly String _adoAssemblyName =
             "System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
         internal static readonly Type DataKeyType = Type.GetType("System.Data.DataKey, " + _adoAssemblyName);
         internal static readonly Type IndexType = Type.GetType("System.Data.Index, " + _adoAssemblyName);

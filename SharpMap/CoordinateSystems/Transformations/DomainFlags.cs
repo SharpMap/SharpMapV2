@@ -15,10 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SharpMap.CoordinateSystems.Transformations
 {
 	/// <summary>
@@ -30,7 +26,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 	/// which means that some parts of the convex hull are inside the 
 	/// domain, and some parts of the convex hull are outside the domain.
 	/// </remarks>
-	public enum DomainFlags : int
+	public enum DomainFlags
 	{
 		/// <summary>
 		/// At least one point in a convex hull is inside the transform's domain.

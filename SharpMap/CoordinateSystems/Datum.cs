@@ -47,8 +47,8 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Datum(DatumType type,
-			string name, string authority, long code, string alias,
-			string remarks, string abbreviation)
+			String name, String authority, long code, String alias,
+			String remarks, String abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_DatumType = DatumType;

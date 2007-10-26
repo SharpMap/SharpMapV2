@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using SharpMap.Geometries;
 
@@ -6,13 +7,13 @@ namespace SharpMap.Tests.Converters.Wkb
     [TestFixture]
     public class WKBTests
     {
-        private string multiLinestring =
+        private String multiLinestring =
             "MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))";
 
-        private string linestring = "LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)";
-        private string polygon = "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 21 29, 29 29, 29 21, 21 21))";
-        private string point = "POINT (20.564 346.3493254)";
-        private string multipoint = "MULTIPOINT (20.564 346.3493254, 45 32, 23 54)";
+        private String linestring = "LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)";
+        private String polygon = "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 21 29, 29 29, 29 21, 21 21))";
+        private String point = "POINT (20.564 346.3493254)";
+        private String multipoint = "MULTIPOINT (20.564 346.3493254, 45 32, 23 54)";
 
         [Test]
         public void Convert()

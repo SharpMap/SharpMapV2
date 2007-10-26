@@ -72,10 +72,10 @@ namespace SharpMap.Converters.WellKnownText
 
 		TokenType _currentTokenType;
 		TextReader _reader;
-		string _currentToken;
+		String _currentToken;
 		bool _ignoreWhitespace = false;
-		int _lineNumber=1;
-		int _colNumber=1;
+		Int32 _lineNumber=1;
+		Int32 _colNumber=1;
 			
 		#region Constructors
 	
@@ -100,7 +100,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// <summary>
 		/// The current line number of the stream being read.
 		/// </summary>
-		public int LineNumber
+		public Int32 LineNumber
 		{
 			get
 			{
@@ -110,7 +110,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// <summary>
 		/// The current column number of the stream being read.
 		/// </summary>
-		public int Column
+		public Int32 Column
 		{
 			get
 			{
@@ -129,22 +129,22 @@ namespace SharpMap.Converters.WellKnownText
 		/// If the current token is a number, this field contains the value of that number. The current token is a number when the value of the ttype field is TT_NUMBER.
 		/// </remarks>
 		/// <exception cref="FormatException">Current token is not a number in a valid format.</exception>
-		public double GetNumericValue()
+		public Double GetNumericValue()
 		{
-			string number = this.GetStringValue();
+			String number = this.GetStringValue();
 
 			if (GetTokenType() == TokenType.Number)
 			{
-				return double.Parse(number, NumberFormat_EnUS);
+				return Double.Parse(number, NumberFormat_EnUS);
 			}
 
             throw new Exception(String.Format(NumberFormat_EnUS, "The token '{0}' is not a number at line {1} column {2}.", number, this.LineNumber, this.Column)); ;
 
 		}
 		/// <summary>
-		/// If the current token is a word token, this field contains a string giving the characters of the word token. 
+		/// If the current token is a word token, this field contains a String giving the characters of the word token. 
 		/// </summary>
-		public string GetStringValue()
+		public String GetStringValue()
 		{
 			return _currentToken;
 		}
@@ -191,7 +191,7 @@ namespace SharpMap.Converters.WellKnownText
 			char[] chars = new char[1];
 			_currentToken="";
 			_currentTokenType = TokenType.Eof;
-			int finished = _reader.Read(chars,0,1);
+			Int32 finished = _reader.Read(chars,0,1);
 
 			bool isNumber=false;
 			bool isWord=false;
@@ -202,7 +202,7 @@ namespace SharpMap.Converters.WellKnownText
 			Char nextCharacter;
 			while (finished != 0 )
 			{
-				// convert int to char
+				// convert Int32 to char
 				ba = new Byte[]{(byte)_reader.Peek()};
 				
 				 ascii = AE.GetChars(ba);

@@ -125,7 +125,7 @@ namespace SharpMap.Presentation.Presenters
 
             // When the user selects features in the view, 
             // we need to highlight those features
-            IEnumerable<int> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
+            IEnumerable<Int32> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
                 featureLayer.SelectedFeatures, featureLayer.HighlightedFeatures);
 
             _highlightUpdating = true;
@@ -144,9 +144,9 @@ namespace SharpMap.Presentation.Presenters
         }
 
         private static IEnumerable<object> getFeatureIdsFromIndexes(
-            IFeatureLayer layer, IEnumerable<int> indexes)
+            IFeatureLayer layer, IEnumerable<Int32> indexes)
         {
-            foreach (int index in indexes)
+            foreach (Int32 index in indexes)
             {
                 FeatureDataRow feature = layer.SelectedFeatures[index].Row as FeatureDataRow;
                 Debug.Assert(feature != null);
@@ -161,7 +161,7 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private static IEnumerable<int> getSelectedFeatureIndexesFromHighlighedFeatures(
+        private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
             FeatureDataView selectedFeatures, FeatureDataView highlightedFeatures)
         {
             foreach (FeatureDataRow feature in highlightedFeatures)

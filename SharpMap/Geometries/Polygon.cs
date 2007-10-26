@@ -95,7 +95,7 @@ namespace SharpMap.Geometries
         /// </remarks>
         /// <param name="N"></param>
         /// <returns></returns>
-        public LinearRing InteriorRing(int N)
+        public LinearRing InteriorRing(Int32 N)
         {
             return _interiorRings[N];
         }
@@ -107,7 +107,7 @@ namespace SharpMap.Geometries
         /// This method is supplied as part of the OpenGIS Simple Features Specification.
         /// </remarks>
         /// <returns></returns>
-        public int NumInteriorRing
+        public Int32 NumInteriorRing
         {
             get { return _interiorRings.Count; }
         }
@@ -120,17 +120,17 @@ namespace SharpMap.Geometries
         //public RenderPoint[] TransformToView(SharpMap.Map map)
         //{
 
-        //    int vertices = _ExteriorRing.Vertices.Count;
-        //    for (int i = 0; i < _InteriorRings.Count;i++)
+        //    Int32 vertices = _ExteriorRing.Vertices.Count;
+        //    for (Int32 i = 0; i < _InteriorRings.Count;i++)
         //        vertices += _InteriorRings[i].Vertices.Count;
 
         //    System.Drawing.PointF[] v = new System.Drawing.PointF[vertices];
-        //    for (int i = 0; i < _ExteriorRing.Vertices.Count; i++)
+        //    for (Int32 i = 0; i < _ExteriorRing.Vertices.Count; i++)
         //        v[i] = SharpMap.Utilities.Transform.WorldToMap(_ExteriorRing.Vertices[i], map);
-        //    int j = _ExteriorRing.Vertices.Count;
-        //    for (int k = 0; k < _InteriorRings.Count;k++)
+        //    Int32 j = _ExteriorRing.Vertices.Count;
+        //    for (Int32 k = 0; k < _InteriorRings.Count;k++)
         //    {
-        //        for (int i = 0; i < _InteriorRings[k].Vertices.Count; i++)
+        //        for (Int32 i = 0; i < _InteriorRings[k].Vertices.Count; i++)
         //            v[j + i] = SharpMap.Utilities.Transform.WorldToMap(_InteriorRings[k].Vertices[i], map);
         //        j += _InteriorRings[k].Vertices.Count;
         //    }
@@ -161,7 +161,7 @@ namespace SharpMap.Geometries
                 return false;
             }
 
-            for (int i = 0; i < p.InteriorRings.Count; i++)
+            for (Int32 i = 0; i < p.InteriorRings.Count; i++)
             {
                 if (!p.InteriorRings[i].Equals(InteriorRings[i]))
                 {
@@ -177,12 +177,12 @@ namespace SharpMap.Geometries
         /// in hashing algorithms and data structures like a hash table.
         /// </summary>
         /// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
-            int hash = ExteriorRing.GetHashCode();
+            Int32 hash = ExteriorRing.GetHashCode();
             ;
 
-            for (int i = 0; i < InteriorRings.Count; i++)
+            for (Int32 i = 0; i < InteriorRings.Count; i++)
             {
                 hash = hash ^ InteriorRings[i].GetHashCode();
             }
@@ -224,7 +224,7 @@ namespace SharpMap.Geometries
         /// Returns the shortest distance between any two points in the two geometries
         /// as calculated in the spatial reference system of this Geometry.
         /// </summary>
-        public override double Distance(Geometry geom)
+        public override Double Distance(Geometry geom)
         {
             throw new NotImplementedException();
         }
@@ -234,7 +234,7 @@ namespace SharpMap.Geometries
         /// is less than or equal to distance. Calculations are in the Spatial Reference
         /// System of this Geometry.
         /// </summary>
-        public override Geometry Buffer(double d)
+        public override Geometry Buffer(Double d)
         {
             throw new NotImplementedException();
         }
@@ -300,15 +300,15 @@ namespace SharpMap.Geometries
         /// <summary>
         /// The area of this Surface, as measured in the spatial reference system of this Surface.
         /// </summary>
-        public override double Area
+        public override Double Area
         {
             get
             {
-                double area = 0.0;
+                Double area = 0.0;
                 area += _exteriorRing.Area;
                 bool extIsClockwise = _exteriorRing.IsCcw();
 
-                for (int i = 0; i < _interiorRings.Count; i++)
+                for (Int32 i = 0; i < _interiorRings.Count; i++)
                 {
                     //opposite direction of exterior subtracts area
                     if (_interiorRings[i].IsCcw() != extIsClockwise)

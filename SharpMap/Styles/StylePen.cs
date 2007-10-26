@@ -41,10 +41,10 @@ namespace SharpMap.Styles
         private StyleLineCap _endCap;
         private StyleLineJoin _lineJoin;
         private Matrix2D _transform = new Matrix2D();
-        private double _width;
+        private Double _width;
         private float[] _compoundArray;
         private StylePenAlignment _alignment;
-        private int? _hashCode = null;
+        private Int32? _hashCode = null;
         #endregion
 
         #region Object Constructors
@@ -54,7 +54,7 @@ namespace SharpMap.Styles
         /// </summary>
         /// <param name="color">Color of the pen.</param>
         /// <param name="width">Width of the pen.</param>
-        public StylePen(StyleColor color, double width)
+        public StylePen(StyleColor color, Double width)
             : this(new SolidStyleBrush(color), width) { }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace SharpMap.Styles
         /// The StyleBrush which describes the color of the line.
         /// </param>
         /// <param name="width">The width of the line.</param>
-        public StylePen(StyleBrush backgroundBrush, double width)
+        public StylePen(StyleBrush backgroundBrush, Double width)
         {
             _backgroundBrush = backgroundBrush;
             _width = width;
@@ -73,7 +73,7 @@ namespace SharpMap.Styles
         #endregion
 
         #region ToString
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format(
                 "[StylePen] Width: {0}; Alignment: {2}; CompoundArray: {3}; MiterLimit: {4}; DashOffset: {5}; DashPattern: {6}; DashBrushes: {7}; DashStyle: {8}; StartCap: {9}; EndCap: {10}; DashCap: {11}; LineJoin: {12}; Transform: {13}; Background: {1};",
@@ -82,14 +82,14 @@ namespace SharpMap.Styles
         #endregion
 
         #region GetHashCode
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             if (!_hashCode.HasValue)
             {
                 _hashCode = computeHashCode();
             }
 
-            return (int)_hashCode;
+            return (Int32)_hashCode;
         }
 
         #endregion
@@ -286,7 +286,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the width of the line drawn by this pen.
         /// </summary>
-        public double Width
+        public Double Width
         {
             get { return _width; }
             set
@@ -299,7 +299,7 @@ namespace SharpMap.Styles
 
         #region Private helper methods
 
-        private int computeHashCode()
+        private Int32 computeHashCode()
         {
             return Alignment.GetHashCode() ^
                    getSingleArrayHashCode(CompoundArray) ^
@@ -318,7 +318,7 @@ namespace SharpMap.Styles
                    -18133844;
         }
 
-        private static string printBrushes(StyleBrush[] brushes)
+        private static String printBrushes(StyleBrush[] brushes)
         {
             if (brushes == null || brushes.Length == 0)
                 return String.Empty;
@@ -335,7 +335,7 @@ namespace SharpMap.Styles
             return buffer.ToString();
         }
 
-        private static string printFloatArray(float[] values)
+        private static String printFloatArray(float[] values)
         {
             if (values == null || values.Length == 0)
                 return String.Empty;
@@ -352,9 +352,9 @@ namespace SharpMap.Styles
             return buffer.ToString();
         }
 
-        private static int getStyleBrushesArrayHashCode(StyleBrush[] brushes)
+        private static Int32 getStyleBrushesArrayHashCode(StyleBrush[] brushes)
         {
-            int hashCode = -1720831040;
+            Int32 hashCode = -1720831040;
 
             if (brushes != null)
             {
@@ -367,9 +367,9 @@ namespace SharpMap.Styles
             return hashCode;
         }
 
-        private static int getSingleArrayHashCode(float[] values)
+        private static Int32 getSingleArrayHashCode(float[] values)
         {
-            int hashCode = 737226580;
+            Int32 hashCode = 737226580;
 
             if (values != null)
             {

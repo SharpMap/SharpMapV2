@@ -23,7 +23,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 {
     internal static class DbaseSchema
     {
-        internal static readonly string OidColumnName = "OID";
+        internal static readonly String OidColumnName = "OID";
 
         internal static ICollection<DbaseField> GetFields(DataTable schema, DbaseHeader header)
         {
@@ -35,20 +35,20 @@ namespace SharpMap.Data.Providers.ShapeFile
             List<DbaseField> fields = new List<DbaseField>();
 			DataView schemaView = new DataView(schema, "", ProviderSchemaHelper.ColumnOrdinalColumn, DataViewRowState.CurrentRows);
 
-        	int offset = 1;
+        	Int32 offset = 1;
 			foreach (DataRowView rowView in schemaView)
             {
-				if (String.Compare(rowView[ProviderSchemaHelper.ColumnNameColumn] as string, OidColumnName, 
+				if (String.Compare(rowView[ProviderSchemaHelper.ColumnNameColumn] as String, OidColumnName, 
 					StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
 					continue;
 				}
 
-				string colName = rowView[ProviderSchemaHelper.ColumnNameColumn] as string;
+				String colName = rowView[ProviderSchemaHelper.ColumnNameColumn] as String;
 				Type dataType = (Type)rowView[ProviderSchemaHelper.DataTypeColumn];
 				Int16 length = Convert.ToInt16(rowView[ProviderSchemaHelper.ColumnSizeColumn]);
 				Byte decimals = Convert.ToByte(rowView[ProviderSchemaHelper.NumericPrecisionColumn]);
-				int ordinal = Convert.ToInt32(rowView[ProviderSchemaHelper.ColumnOrdinalColumn]);
+				Int32 ordinal = Convert.ToInt32(rowView[ProviderSchemaHelper.ColumnOrdinalColumn]);
 
 				DbaseField field = new DbaseField(header, colName, dataType, length, decimals, ordinal, offset);
 
@@ -68,7 +68,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 DataColumn col = table.Columns.Add(dbf.ColumnName, dbf.DataType);
 
-				if (dbf.DataType == typeof(string))
+				if (dbf.DataType == typeof(String))
 				{
 					col.MaxLength = dbf.Length;
 				}
@@ -115,7 +115,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-		private static int getLengthByHeuristic(DataColumn column)
+		private static Int32 getLengthByHeuristic(DataColumn column)
 		{
 			switch (Type.GetTypeCode(column.DataType))
 			{

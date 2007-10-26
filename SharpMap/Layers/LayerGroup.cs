@@ -45,7 +45,7 @@ namespace SharpMap.Layers
         /// Initializes a new group layer.
         /// </summary>
         /// <param name="layername">Name of the layer group.</param>
-        public LayerGroup(string layername)
+        public LayerGroup(String layername)
         {
             LayerName = layername;
         }
@@ -136,7 +136,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="name">Name of layer</param>
         /// <returns>Layer</returns>
-        public ILayer GetLayerByName(string name)
+        public ILayer GetLayerByName(String name)
         {
             return
                 _layers.Find(
@@ -190,13 +190,13 @@ namespace SharpMap.Layers
             }
         }
 
-        public string LayerName
+        public String LayerName
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
         }
 
-        public int? Srid
+        public Int32? Srid
         {
             get { throw new NotImplementedException(); }
         }

@@ -29,7 +29,7 @@ namespace SharpMap.Geometries.Geometries3D
 	public class Point3D : Point
 	{
 		private static readonly Point3D _empty = new Point3D();
-		private double _z;
+		private Double _z;
 
 		/// <summary>
 		/// Initializes a new Point
@@ -37,7 +37,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// <param name="x">X coordinate</param>
 		/// <param name="y">Y coordinate</param>
 		/// <param name="z">Z coordinate</param>
-		public Point3D(double x, double y, double z)
+		public Point3D(Double x, Double y, Double z)
 			: base(x, y)
 		{
 			_z = z;
@@ -48,7 +48,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// </summary>
 		/// <param name="p">2D Point</param>
 		/// <param name="z">Z coordinate</param>
-		public Point3D(Point p, double z)
+		public Point3D(Point p, Double z)
 			: base(p.X, p.Y)
 		{
 			_z = z;
@@ -65,7 +65,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// <summary>
 		/// Gets or sets the Z coordinate of the point
 		/// </summary>
-		public double Z
+		public Double Z
 		{
 			get
 			{
@@ -86,7 +86,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public override double this[uint index]
+		public override Double this[uint index]
 		{
 			get
 			{
@@ -115,7 +115,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// <summary>
 		/// Returns the number of ordinates for this point
 		/// </summary>
-		public override int NumOrdinates
+		public override Int32 NumOrdinates
 		{
 			get { return 3; }
 		}
@@ -149,9 +149,9 @@ namespace SharpMap.Geometries.Geometries3D
 		/// Vector * Scalar
 		/// </summary>
 		/// <param name="m">Vector</param>
-		/// <param name="d">Scalar (double)</param>
+		/// <param name="d">Scalar (Double)</param>
 		/// <returns></returns>
-		public static Point3D operator *(Point3D m, double d)
+		public static Point3D operator *(Point3D m, Double d)
 		{
 			return new Point3D(m.X*d, m.Y*d, m.Z*d);
 		}
@@ -175,7 +175,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// in hashing algorithms and data structures like a hash table.
 		/// </summary>
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
 			return base.GetHashCode() ^ _z.GetHashCode();
 		}
@@ -186,7 +186,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// </summary>
 		/// <param name="geom"></param>
 		/// <returns></returns>
-		public override double Distance(Geometry geom)
+		public override Double Distance(Geometry geom)
 		{
 			if (geom.GetType() == typeof (Point3D))
 			{
@@ -230,7 +230,7 @@ namespace SharpMap.Geometries.Geometries3D
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public virtual int CompareTo(Point3D other)
+		public virtual Int32 CompareTo(Point3D other)
 		{
 			if (X < other.X || X == other.X && Y < other.Y || X == other.X && Y == other.Y && Z < other.Z)
 				return -1;

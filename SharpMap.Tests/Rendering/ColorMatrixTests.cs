@@ -12,7 +12,7 @@ namespace SharpMap.Tests.Rendering
     [TestFixture]
     public class ColorMatrixTests
     {
-        private static readonly double _e = 0.0005;
+        private static readonly Double _e = 0.0005;
 
         [Test]
         public void ResetTest()
@@ -40,11 +40,11 @@ namespace SharpMap.Tests.Rendering
 
             IMatrix<DoubleComponent> m1Inverse = m1.Inverse;
 
-            for (int i = 0; i < m1.RowCount; i++)
+            for (Int32 i = 0; i < m1.RowCount; i++)
             {
-                for (int j = 0; j < m1.ColumnCount; j++)
+                for (Int32 j = 0; j < m1.ColumnCount; j++)
                 {
-                    Assert.AreEqual((double) expected[i, j], (double) m1Inverse[i, j], _e);
+                    Assert.AreEqual((Double) expected[i, j], (Double) m1Inverse[i, j], _e);
                 }
             }
         }

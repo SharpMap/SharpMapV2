@@ -44,7 +44,7 @@ using System.Globalization;
 namespace SharpMap.Converters.WellKnownText
 {
 	/// <summary>
-	/// Reads a stream of Well Known Text (wkt) string and returns a stream of tokens.
+	/// Reads a stream of Well Known Text (wkt) String and returns a stream of tokens.
 	/// </summary>
 	internal class WktStreamTokenizer : StreamTokenizer
 	{
@@ -72,7 +72,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// Reads a token and checks it is what is expected.
 		/// </summary>
 		/// <param name="expectedToken">The expected token.</param>
-		internal void ReadToken(string expectedToken)
+		internal void ReadToken(String expectedToken)
 		{
 			NextToken();
 
@@ -85,15 +85,15 @@ namespace SharpMap.Converters.WellKnownText
 		}
 		
 		/// <summary>
-		/// Reads a string inside double quotes.
+		/// Reads a String inside Double quotes.
 		/// </summary>
 		/// <remarks>
 		/// White space inside quotes is preserved.
 		/// </remarks>
-		/// <returns>The string inside the double quotes.</returns>
-		public string ReadDoubleQuotedWord()
+		/// <returns>The String inside the Double quotes.</returns>
+		public String ReadDoubleQuotedWord()
 		{
-			string word = String.Empty;
+			String word = String.Empty;
 			ReadToken("\"");
 			NextToken(false);
 
@@ -111,7 +111,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="authority">String to place the authority in.</param>
 		/// <param name="authorityCode">String to place the authority code in.</param>
-		public void ReadAuthority(ref string authority, ref long authorityCode)
+		public void ReadAuthority(ref String authority, ref long authorityCode)
 		{
 			// AUTHORITY["EPGS","9102"]]
             if (GetStringValue() != "AUTHORITY")

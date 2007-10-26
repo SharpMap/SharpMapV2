@@ -115,12 +115,12 @@ namespace SharpMap.CoordinateSystems.Transformations
             }
         }
 
-        public override string Wkt
+        public override String Wkt
         {
             get { throw new NotImplementedException(); }
         }
 
-        public override string Xml
+        public override String Xml
         {
             get { throw new NotImplementedException(); }
         }

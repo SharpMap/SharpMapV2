@@ -141,11 +141,11 @@ namespace SharpMap.Indexing.BinaryTree
         }
 
         /// <summary>
-        /// Enumerates the objects whose string-representation starts with 'str'
+        /// Enumerates the objects whose String-representation starts with 'str'
         /// </summary>
         /// <param name="str"></param>
         /// <returns>Enumerator</returns>
-        public IEnumerable<ItemValue> StartsWith(string str)
+        public IEnumerable<ItemValue> StartsWith(String str)
         {
             return scanString(str, root.RightNode);
         }
@@ -206,7 +206,7 @@ namespace SharpMap.Indexing.BinaryTree
             }
         }
 
-        private IEnumerable<ItemValue> scanString(string val, BinaryTreeNode<TKey, TValue> root)
+        private IEnumerable<ItemValue> scanString(String val, BinaryTreeNode<TKey, TValue> root)
         {
             if (String.Compare(root.Item.Value.ToString().Substring(0, val.Length), val, StringComparison.CurrentCultureIgnoreCase) > 0)
             {

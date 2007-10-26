@@ -29,15 +29,15 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the value of the semi-major axis.
 		/// </summary>
-		double SemiMajorAxis { get; set; }
+		Double SemiMajorAxis { get; set; }
 		/// <summary>
 		/// Gets or sets the value of the semi-minor axis.
 		/// </summary>
-		double SemiMinorAxis { get; set; }
+		Double SemiMinorAxis { get; set; }
 		/// <summary>
 		/// Gets or sets the value of the inverse of the flattening constant of the ellipsoid.
 		/// </summary>
-		double InverseFlattening { get; set; }
+		Double InverseFlattening { get; set; }
 		/// <summary>
 		/// Gets or sets the value of the axis unit.
 		/// </summary>

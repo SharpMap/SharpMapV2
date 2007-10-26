@@ -56,14 +56,14 @@ namespace SharpMap.Indexing.RTree
             {
                 RTreeBranchNode<TValue> branch = node as RTreeBranchNode<TValue>;
 
-                double leastExpandedArea = Double.PositiveInfinity;
+                Double leastExpandedArea = Double.PositiveInfinity;
 
                 ISpatialIndexNode leastExpandedChild = null;
 
                 foreach (ISpatialIndexNode child in branch.Items)
                 {
                     BoundingBox candidateRegion = BoundingBox.Join(child.BoundingBox, entry.BoundingBox);
-                    double expandedArea = candidateRegion.GetArea() - child.BoundingBox.GetArea();
+                    Double expandedArea = candidateRegion.GetArea() - child.BoundingBox.GetArea();
 
                     if (expandedArea < leastExpandedArea)
                     {

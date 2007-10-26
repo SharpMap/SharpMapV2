@@ -72,7 +72,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public int Depth
+        public Int32 Depth
         {
             get { throw new NotImplementedException(); }
         }
@@ -97,7 +97,7 @@ namespace SharpMap.Data
             throw new NotImplementedException();
         }
 
-        public int RecordsAffected
+        public Int32 RecordsAffected
         {
             get { throw new NotImplementedException(); }
         }
@@ -115,127 +115,127 @@ namespace SharpMap.Data
 
         #region IDataRecord Members
 
-        public int FieldCount
+        public Int32 FieldCount
         {
             get { throw new NotImplementedException(); }
         }
 
-        public bool GetBoolean(int i)
+        public bool GetBoolean(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public byte GetByte(int i)
+        public byte GetByte(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public char GetChar(int i)
+        public char GetChar(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public System.Data.IDataReader GetData(int i)
+        public System.Data.IDataReader GetData(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public string GetDataTypeName(int i)
+        public String GetDataTypeName(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public DateTime GetDateTime(int i)
+        public DateTime GetDateTime(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public decimal GetDecimal(int i)
+        public decimal GetDecimal(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public double GetDouble(int i)
+        public Double GetDouble(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public Type GetFieldType(int i)
+        public Type GetFieldType(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public float GetFloat(int i)
+        public float GetFloat(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public Guid GetGuid(int i)
+        public Guid GetGuid(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public short GetInt16(int i)
+        public short GetInt16(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public int GetInt32(int i)
+        public Int32 GetInt32(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public long GetInt64(int i)
+        public long GetInt64(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public string GetName(int i)
+        public String GetName(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public int GetOrdinal(string name)
+        public Int32 GetOrdinal(String name)
         {
             throw new NotImplementedException();
         }
 
-        public string GetString(int i)
+        public String GetString(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public object GetValue(int i)
+        public object GetValue(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public int GetValues(object[] values)
+        public Int32 GetValues(object[] values)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsDBNull(int i)
+        public bool IsDBNull(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public object this[string name]
+        public object this[String name]
         {
             get { throw new NotImplementedException(); }
         }
 
-        public object this[int i]
+        public object this[Int32 i]
         {
             get { throw new NotImplementedException(); }
         }

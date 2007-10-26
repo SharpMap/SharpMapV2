@@ -61,12 +61,12 @@ namespace SharpMap.CoordinateSystems.Projections
     /// </remarks>
     internal class Mercator : MapProjection
     {
-        double _falseEasting;
-        double _falseNorthing;
-        double lon_center;		//Center longitude (projection center)
-        double lat_origin;		//center latitude
-        double e, e2;			//eccentricity constants
-        double k0;				//small value m
+        Double _falseEasting;
+        Double _falseNorthing;
+        Double lon_center;		//Center longitude (projection center)
+        Double lat_origin;		//center latitude
+        Double e, e2;			//eccentricity constants
+        Double k0;				//small value m
 
         /// <summary>
         /// Initializes the MercatorProjection object with the specified parameters to project points. 
@@ -165,7 +165,7 @@ namespace SharpMap.CoordinateSystems.Projections
             _falseEasting = false_easting.Value;
             _falseNorthing = false_northing.Value;
 
-            double temp = this._semiMinor / this._semiMajor;
+            Double temp = this._semiMinor / this._semiMajor;
             e2 = 1 - temp * temp;
             e = Math.Sqrt(e2);
 
@@ -245,10 +245,10 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override SharpMap.Geometries.Point DegreesToMeters(SharpMap.Geometries.Point lonlat)
         {
-            if (double.IsNaN(lonlat.X) || double.IsNaN(lonlat.Y))
+            if (Double.IsNaN(lonlat.X) || Double.IsNaN(lonlat.Y))
                 return null;
-            double dLongitude = Degrees2Radians(lonlat.X);
-            double dLatitude = Degrees2Radians(lonlat.Y);
+            Double dLongitude = Degrees2Radians(lonlat.X);
+            Double dLatitude = Degrees2Radians(lonlat.Y);
 
             /* Forward equations */
             if (Math.Abs(Math.Abs(dLatitude) - HALF_PI) <= EPSLN)
@@ -257,9 +257,9 @@ namespace SharpMap.CoordinateSystems.Projections
             }
             else
             {
-                double esinphi = e * Math.Sin(dLatitude);
-                double x = _falseEasting + this._semiMajor * k0 * (dLongitude - lon_center);
-                double y = _falseNorthing + this._semiMajor * k0 * Math.Log(Math.Tan(PI * 0.25 + dLatitude * 0.5) * Math.Pow((1 - esinphi) / (1 + esinphi), e * 0.5));
+                Double esinphi = e * Math.Sin(dLatitude);
+                Double x = _falseEasting + this._semiMajor * k0 * (dLongitude - lon_center);
+                Double y = _falseNorthing + this._semiMajor * k0 * Math.Log(Math.Tan(PI * 0.25 + dLatitude * 0.5) * Math.Pow((1 - esinphi) / (1 + esinphi), e * 0.5));
                 return new SharpMap.Geometries.Point(x, y);
             }
         }
@@ -271,19 +271,19 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override SharpMap.Geometries.Point MetersToDegrees(SharpMap.Geometries.Point p)
         {
-            double dLongitude = Double.NaN;
-            double dLatitude = Double.NaN;
+            Double dLongitude = Double.NaN;
+            Double dLatitude = Double.NaN;
 
             /* Inverse equations
               -----------------*/
-            double dX = p.X - this._falseEasting;
-            double dY = p.Y - this._falseNorthing;
-            double ts = Math.Exp(-dY / (this._semiMajor * k0)); //t
+            Double dX = p.X - this._falseEasting;
+            Double dY = p.Y - this._falseNorthing;
+            Double ts = Math.Exp(-dY / (this._semiMajor * k0)); //t
 
-            double chi = HALF_PI - 2 * Math.Atan(ts);
-            double e4 = Math.Pow(e, 4);
-            double e6 = Math.Pow(e, 6);
-            double e8 = Math.Pow(e, 8);
+            Double chi = HALF_PI - 2 * Math.Atan(ts);
+            Double e4 = Math.Pow(e, 4);
+            Double e6 = Math.Pow(e, 6);
+            Double e8 = Math.Pow(e, 8);
 
             dLatitude = chi + (e2 * 0.5 + 5 * e4 / 24 + e6 / 12 + 13 * e8 / 360) * Math.Sin(2 * chi)
             + (7 * e4 / 48 + 29 * e6 / 240 + 811 * e8 / 11520) * Math.Sin(4 * chi) +

@@ -11,7 +11,7 @@ namespace SharpMap.Rendering.Gdi.Tests
     [TestFixture]
     public class GdiVectorRendererTests
     {
-        private const double _e = 0.0005;
+        private const Double _e = 0.0005;
 
         [Test]
         public void CreateGdiVectorRendererTest()
@@ -51,7 +51,7 @@ namespace SharpMap.Rendering.Gdi.Tests
 
             PathData data = ro.GdiPath.PathData;
 
-            for (int i = 0; i < 4; i++)
+            for (Int32 i = 0; i < 4; i++)
             {
                 Assert.AreEqual(points[i].X, data.Points[i].X, _e);
                 Assert.AreEqual(points[i].Y, data.Points[i].Y, _e);
@@ -126,7 +126,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                 return false;
             }
 
-            for (int i = 0; i < lhs.Length; i++)
+            for (Int32 i = 0; i < lhs.Length; i++)
             {
                 if (lhs[i] != rhs[i])
                 {

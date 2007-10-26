@@ -34,21 +34,21 @@ namespace SharpMap.CoordinateSystems
 	/// </remarks>
 	public class ProjectionParameter
     {
-        private string _name;
-        private double _value;
+        private String _name;
+        private Double _value;
 
 		/// <summary>
 		/// Initializes an instance of a ProjectionParameter
 		/// </summary>
 		/// <param name="name">Name of parameter</param>
 		/// <param name="value">Parameter value</param>
-		public ProjectionParameter(string name, double value)
+		public ProjectionParameter(String name, Double value)
 		{
 			_name = name;
 			_value = value;
 		}
 
-		public override string ToString()
+		public override String ToString()
 		{
 			return String.Format("[ProjectionParameter] {0} = {1}", Name, Value);
 		}
@@ -66,7 +66,7 @@ namespace SharpMap.CoordinateSystems
                 && Tolerance.Equal<Parameter>(Value, other.Value);
 		}
 
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
 			return Name.GetHashCode() ^ Value.GetHashCode();
 		}
@@ -74,7 +74,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Parameter name.
 		/// </summary>
-		public string Name
+		public String Name
 		{
 			get { return _name; }
 			set { _name = value; }
@@ -87,7 +87,7 @@ namespace SharpMap.CoordinateSystems
 		/// angular units of the geographic coordinate system that the projected coordinate 
 		/// system is based on.
 		/// </summary>
-		public double Value
+		public Double Value
 		{
 			get { return _value; }
 			set { _value = value; }
@@ -98,7 +98,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public string WKT
+		public String WKT
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public string XML
+		public String XML
 		{
 			get
 			{

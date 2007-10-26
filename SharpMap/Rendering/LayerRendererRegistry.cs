@@ -48,7 +48,7 @@ namespace SharpMap.Rendering
 
             #endregion
 
-            public override int GetHashCode()
+            public override Int32 GetHashCode()
             {
                 return Type.GetHashCode() ^
                     ((Name == null) ? 1247510379 : Name.GetHashCode());

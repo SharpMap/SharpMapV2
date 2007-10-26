@@ -61,7 +61,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification. [NOT IMPLEMENTED].
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get { throw new NotImplementedException(); }
 		}
@@ -69,7 +69,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets an XML representation of this object [NOT IMPLEMENTED].
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get { throw new NotImplementedException(); }
 		}

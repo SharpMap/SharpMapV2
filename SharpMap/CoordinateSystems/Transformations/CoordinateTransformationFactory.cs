@@ -192,7 +192,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		private static IMathTransform CreateCoordinateOperation(IProjection projection, IEllipsoid ellipsoid)
 		{
 			List<ProjectionParameter> parameterList = new List<ProjectionParameter>(projection.NumParameters);
-			for (int i = 0; i < projection.NumParameters; i++)
+			for (Int32 i = 0; i < projection.NumParameters; i++)
 				parameterList.Add(projection.GetParameter(i));
 
 			parameterList.Add(new ProjectionParameter("semi_major", ellipsoid.SemiMajorAxis));

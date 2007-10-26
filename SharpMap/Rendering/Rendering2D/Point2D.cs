@@ -39,14 +39,14 @@ namespace SharpMap.Rendering.Rendering2D
         private bool _hasValue;
 
         #region Constructors
-        public Point2D(double x, double y)
+        public Point2D(Double x, Double y)
         {
             _x = x;
             _y = y;
             _hasValue = true;
         }
 
-        public Point2D(double[] elements)
+        public Point2D(Double[] elements)
         {
             if (elements == null) throw new ArgumentNullException("elements");
 
@@ -76,16 +76,16 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region ToString
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[Point2D] ({0:N3}, {1:N3})", _x, _y);
         }
         #endregion
 
         #region GetHashCode
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
-            return unchecked((int)_x ^ (int)_y);
+            return unchecked((Int32)_x ^ (Int32)_y);
         }
         #endregion
 
@@ -192,23 +192,23 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Properties
-        public double X
+        public Double X
         {
-            get { return (double)_x; }
+            get { return (Double)_x; }
         }
 
-        public double Y
+        public Double Y
         {
-            get { return (double)_y; }
+            get { return (Double)_y; }
         }
 
-        public double this[int element]
+        public Double this[Int32 element]
         {
             get
             {
                 checkIndex(element);
 
-                return element == 0 ? (double)_x : (double)_y;
+                return element == 0 ? (Double)_x : (Double)_y;
             }
         }
 
@@ -221,23 +221,23 @@ namespace SharpMap.Rendering.Rendering2D
         #region Clone
         public Point2D Clone()
         {
-            return new Point2D((double)_x, (double)_y);
+            return new Point2D((Double)_x, (Double)_y);
         }
         #endregion
 
         #region Negative
         public Point2D Negative()
         {
-            return new Point2D((double)_x.Negative(), (double)_y.Negative());
+            return new Point2D((Double)_x.Negative(), (Double)_y.Negative());
         }
         #endregion
 
-        #region IEnumerable<double> Members
+        #region IEnumerable<Double> Members
 
-        public IEnumerator<double> GetEnumerator()
+        public IEnumerator<Double> GetEnumerator()
         {
-            yield return (double)_x;
-            yield return (double)_y;
+            yield return (Double)_x;
+            yield return (Double)_y;
         }
 
         #endregion
@@ -268,7 +268,7 @@ namespace SharpMap.Rendering.Rendering2D
             return Negative();
         }
 
-        int IVectorD.ComponentCount
+        Int32 IVectorD.ComponentCount
         {
             get { return IsEmpty ? 0 : 2; }
         }
@@ -293,7 +293,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        DoubleComponent IVectorD.this[int index]
+        DoubleComponent IVectorD.this[Int32 index]
         {
             get
             {
@@ -449,7 +449,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        double IMatrixD.Determinant
+        Double IMatrixD.Determinant
         {
             get { throw new NotSupportedException(); }
         }
@@ -457,7 +457,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        int IMatrixD.ColumnCount
+        Int32 IMatrixD.ColumnCount
         {
             get { return 2; }
         }
@@ -505,7 +505,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        int IMatrixD.RowCount
+        Int32 IMatrixD.RowCount
         {
             get { return 1; }
         }
@@ -526,7 +526,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="j0">The starting column to include.</param>
         /// <param name="j1">The ending column to include.</param>
         /// <returns></returns>
-        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
+        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotSupportedException();
         }
@@ -537,7 +537,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns>The value of the element at the given index.</returns>
-        DoubleComponent IMatrixD.this[int row, int column]
+        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
         {
             get
             {
@@ -568,7 +568,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Private Helper Methods
 
-        private static void checkIndex(int index)
+        private static void checkIndex(Int32 index)
         {
             if (index != 0 && index != 1)
             {
@@ -576,7 +576,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        private static void checkIndexes(int row, int column)
+        private static void checkIndexes(Int32 row, Int32 column)
         {
             if (row != 0)
             {
@@ -620,7 +620,7 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentException("Vector must have only 2 components.");
             }
 
-            return new Point2D(X - (double)b[0], Y - (double)b[1]);
+            return new Point2D(X - (Double)b[0], Y - (Double)b[1]);
         }
 
         #endregion
@@ -645,7 +645,7 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentException("Vector must have only 2 components.");
             }
 
-            return new Point2D(X + (double)b[0], Y + (double)b[1]);
+            return new Point2D(X + (Double)b[0], Y + (Double)b[1]);
         }
 
         #endregion

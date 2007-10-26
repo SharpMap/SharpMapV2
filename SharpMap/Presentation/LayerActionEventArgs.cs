@@ -44,9 +44,9 @@ namespace SharpMap.Presentation
         {
             get 
             { 
-                if(_layers is string)
+                if(_layers is String)
                 {
-                    yield return _layers as string;
+                    yield return _layers as String;
                 }
                 else
                 {

@@ -150,7 +150,7 @@ namespace SharpMap.Rendering.Rendering2D
         //            if (layer.RotationColumn != null && layer.RotationColumn != "")
         //                float.TryParse(feature[layer.RotationColumn].ToString(), NumberStyles.Any, Map.NumberFormat_EnUS, out rotation);
 
-        //            string text = layer.GetLabelText(feature);
+        //            String text = layer.GetLabelText(feature);
 
         //            if (!String.IsNullOrEmpty(text))
         //            {
@@ -188,10 +188,10 @@ namespace SharpMap.Rendering.Rendering2D
         //                        GeometryCollection coll = (feature.Geometry as GeometryCollection);
         //                        if (coll.NumGeometries > 0)
         //                        {
-        //                            double largestVal = 0;
-        //                            int idxOfLargest = 0;
+        //                            Double largestVal = 0;
+        //                            Int32 idxOfLargest = 0;
 
-        //                            for (int j = 0; j < coll.NumGeometries; j++)
+        //                            for (Int32 j = 0; j < coll.NumGeometries; j++)
         //                            {
         //                                Geometry geom = coll.Geometry(j);
 
@@ -259,20 +259,20 @@ namespace SharpMap.Rendering.Rendering2D
         ///// <param name="backColor">Background color.</param>
         ///// <param name="halo">Halo to be drawn around the label text.</param>
         ///// <param name="rotation">Text rotation in degrees.</param>
-        //public void DrawLabel(string text, Point2D location, Point2D offset, StyleFont font,
+        //public void DrawLabel(String text, Point2D location, Point2D offset, StyleFont font,
         //    StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         //{
         //    DrawLabel(text, location, offset, font, foreColor, backColor, halo, rotation);
         //}
 
-        //private Label CreateLabel(Geometry feature, string text, float rotation, LabelStyle style)
+        //private Label CreateLabel(Geometry feature, String text, float rotation, LabelStyle style)
         //{
         //    LabelLayer layer = null;
         //    ViewSize2D size = MeasureString(text, style.Font);
 
         //    Point2D position = ViewTransformer.WorldToView(feature.GetBoundingBox().GetCentroid());
-        //    double x = position.X - size.Width * (short)style.HorizontalAlignment * 0.5f;
-        //    double y = position.Y - size.Height * (short)style.VerticalAlignment * 0.5f;
+        //    Double x = position.X - size.Width * (short)style.HorizontalAlignment * 0.5f;
+        //    Double y = position.Y - size.Height * (short)style.VerticalAlignment * 0.5f;
 
         //    position = new Point2D(x, y);
 
@@ -290,7 +290,7 @@ namespace SharpMap.Rendering.Rendering2D
         //    }
         //    else
         //    {
-        //        //Collision detection is enabled so we need to measure the size of the string
+        //        //Collision detection is enabled so we need to measure the size of the String
         //        label = new Label(text, position, rotation, layer.Priority,
         //            new Rectangle2D(position.X - size.Width * 0.5f - style.CollisionBuffer.Width, position.Y + size.Height * 0.5f + style.CollisionBuffer.Height,
         //            size.Width + 2f * style.CollisionBuffer.Width, size.Height + style.CollisionBuffer.Height * 2f), style);
@@ -311,12 +311,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         private void calculateLabelOnLineString(LineString line, ref Label2D label)
         {
-            double dx, dy;
-            double tmpx, tmpy;
-            double angle = 0.0;
+            Double dx, dy;
+            Double tmpx, tmpy;
+            Double angle = 0.0;
 
             // first find the middle segment of the line
-            int midPoint = (line.Vertices.Count - 1)/2;
+            Int32 midPoint = (line.Vertices.Count - 1)/2;
 
             if (line.Vertices.Count > 2)
             {

@@ -40,6 +40,6 @@ namespace SharpMap.CoordinateSystems
 		/// must be at least as big as the dimension of this coordinate system.
 		/// </summary>
 		/// <returns></returns>
-		string ToBase();
+		String ToBase();
 	}
 }

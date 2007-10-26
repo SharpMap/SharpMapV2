@@ -198,11 +198,11 @@ namespace SharpMap.Utilities
         }
 
         /// <summary>
-        /// Swaps the byte order of a Double (double precision IEEE 754)
+        /// Swaps the byte order of a Double (Double precision IEEE 754)
         /// </summary>
         /// <param name="value">Double to swap</param>
         /// <returns>Byte Order swapped Double</returns>
-        private static double swapByteOrder(double value)
+        private static Double swapByteOrder(Double value)
         {
             byte[] buffer = BitConverter.GetBytes(value);
             Array.Reverse(buffer, 0, buffer.Length);

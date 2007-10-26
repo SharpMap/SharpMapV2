@@ -17,10 +17,10 @@ namespace SharpMap.Indexing.RTree
         public DynamicRTreeBalanceHeuristic()
             : base(4, 10, UInt16.MaxValue) { }
 
-        public DynamicRTreeBalanceHeuristic(int nodeItemMinimumCount, int nodeItemMaximumCount, uint maxTreeDepth)
+        public DynamicRTreeBalanceHeuristic(Int32 nodeItemMinimumCount, Int32 nodeItemMaximumCount, uint maxTreeDepth)
             : base(nodeItemMinimumCount, nodeItemMaximumCount, maxTreeDepth) { }
 
-        public override int TargetNodeCount
+        public override Int32 TargetNodeCount
         {
             get { return NodeItemMaximumCount - NodeItemMinimumCount + 1; }
         }

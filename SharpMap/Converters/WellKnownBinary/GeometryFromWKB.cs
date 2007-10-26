@@ -161,13 +161,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static Point[] readCoordinates(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of points in this linestring.
-            int numPoints = (int)readUInt32(reader, byteOrder);
+            Int32 numPoints = (Int32)readUInt32(reader, byteOrder);
 
             // Create a new array of coordinates.
             Point[] coords = new Point[numPoints];
 
             // Loop on the number of points in the ring.
-            for (int i = 0; i < numPoints; i++)
+            for (Int32 i = 0; i < numPoints; i++)
             {
                 // Add the coordinate.
                 coords[i] = new Point(readDouble(reader, byteOrder), readDouble(reader, byteOrder));
@@ -207,14 +207,14 @@ namespace SharpMap.Converters.WellKnownBinary
         private static Polygon createWkbPolygon(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the Number of rings in this Polygon.
-            int numRings = (int)readUInt32(reader, byteOrder);
+            Int32 numRings = (Int32)readUInt32(reader, byteOrder);
 
             Debug.Assert(numRings >= 1, "Number of rings in polygon must be 1 or more.");
 
             Polygon shell = new Polygon(createWkbLinearRing(reader, byteOrder));
 
             // Create a new array of linearrings for the interior rings.
-            for (int i = 0; i < (numRings - 1); i++)
+            for (Int32 i = 0; i < (numRings - 1); i++)
             {
                 shell.InteriorRings.Add(createWkbLinearRing(reader, byteOrder));
             }
@@ -226,13 +226,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static MultiPoint createWkbMultiPoint(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of points in this multipoint.
-            int numPoints = (int)readUInt32(reader, byteOrder);
+            Int32 numPoints = (Int32)readUInt32(reader, byteOrder);
 
             // Create a new array for the points.
             MultiPoint points = new MultiPoint();
 
             // Loop on the number of points.
-            for (int i = 0; i < numPoints; i++)
+            for (Int32 i = 0; i < numPoints; i++)
             {
                 // Read point header
                 reader.ReadByte();
@@ -249,13 +249,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static MultiLineString createWkbMultiLineString(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of linestrings in this multilinestring.
-            int numLineStrings = (int)readUInt32(reader, byteOrder);
+            Int32 numLineStrings = (Int32)readUInt32(reader, byteOrder);
 
             // Create a new array for the linestrings .
             MultiLineString mline = new MultiLineString();
 
             // Loop on the number of linestrings.
-            for (int i = 0; i < numLineStrings; i++)
+            for (Int32 i = 0; i < numLineStrings; i++)
             {
                 // Read linestring header
                 reader.ReadByte();
@@ -272,13 +272,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static MultiPolygon createWkbMultiPolygon(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of Polygons.
-            int numPolygons = (int)readUInt32(reader, byteOrder);
+            Int32 numPolygons = (Int32)readUInt32(reader, byteOrder);
 
             // Create a new array for the Polygons.
             MultiPolygon polygons = new MultiPolygon();
 
             // Loop on the number of polygons.
-            for (int i = 0; i < numPolygons; i++)
+            for (Int32 i = 0; i < numPolygons; i++)
             {
                 // read polygon header
                 reader.ReadByte();
@@ -297,13 +297,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static Geometry createWkbGeometryCollection(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // The next byte in the array tells the number of geometries in this collection.
-            int numGeometries = (int)readUInt32(reader, byteOrder);
+            Int32 numGeometries = (Int32)readUInt32(reader, byteOrder);
 
             // Create a new array for the geometries.
             GeometryCollection geometries = new GeometryCollection();
 
             // Loop on the number of geometries.
-            for (int i = 0; i < numGeometries; i++)
+            for (Int32 i = 0; i < numGeometries; i++)
             {
                 // Call the main create function with the next geometry.
                 geometries.Collection.Add(Parse(reader));
@@ -325,7 +325,7 @@ namespace SharpMap.Converters.WellKnownBinary
             }
         }
 
-        private static double readDouble(BinaryReader reader, WkbByteOrder byteOrder)
+        private static Double readDouble(BinaryReader reader, WkbByteOrder byteOrder)
         {
             if (byteOrder == WkbByteOrder.Xdr)
             {

@@ -25,15 +25,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// </summary>
 	internal class DbaseField : IEquatable<DbaseField>
 	{
-		private readonly string _columnName;
+		private readonly String _columnName;
 		private readonly Type _dataType;
 		private readonly short _length;
 		private readonly byte _decimals;
 		private readonly DbaseHeader _header;
-		private readonly int _ordinal;
-		private readonly int _offset;
+		private readonly Int32 _ordinal;
+		private readonly Int32 _offset;
 
-		internal DbaseField(DbaseHeader header, string name, Type type, Int16 length, Byte decimals, int ordinal, int offset)
+		internal DbaseField(DbaseHeader header, String name, Type type, Int16 length, Byte decimals, Int32 ordinal, Int32 offset)
 		{
 			_header = header;
 			_columnName = name;
@@ -47,7 +47,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Gets the name of the field.
 		/// </summary>
-		public string ColumnName
+		public String ColumnName
 		{
 			get { return _columnName; }
 		}
@@ -80,7 +80,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Gets the position of the column relative to all columns
 		/// in the dBase schema.
 		/// </summary>
-		public int Ordinal
+		public Int32 Ordinal
 		{
 			get { return _ordinal; }
 		}
@@ -89,22 +89,22 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Gets the number of bytes from the start of the record
 		/// where the field data starts.
 		/// </summary>
-		public int Offset
+		public Int32 Offset
 		{
 			get { return _offset; }
 		}
 
 		/// <summary>
-		/// Converts the field instance into a string representation.
+		/// Converts the field instance into a String representation.
 		/// </summary>
-		/// <returns>A string which describes the field.</returns>
-		public override string ToString()
+		/// <returns>A String which describes the field.</returns>
+		public override String ToString()
 		{
 			return String.Format("[DbaseField] Name: {0}; Type: {1}; Length: {2}; " +
 								 "Decimals: {3}", ColumnName, DataType, Length, Decimals);
 		}
 
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
 			return (ColumnName ?? "").ToLower().GetHashCode() ^
 				   DataType.GetHashCode() ^

@@ -190,120 +190,120 @@ namespace SharpMap.Data
 
         #region IDataRecord Members
 
-        public int FieldCount
+        public Int32 FieldCount
         {
             get { return InternalColumns.Count; }
         }
 
-        public bool GetBoolean(int i)
+        public bool GetBoolean(Int32 i)
         {
             return Convert.ToBoolean(this[i]);
         }
 
-        public byte GetByte(int i)
+        public byte GetByte(Int32 i)
         {
             return Convert.ToByte(this[i]);
         }
 
-        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+        public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public char GetChar(int i)
+        public char GetChar(Int32 i)
         {
             return Convert.ToChar(this[i]);
         }
 
-        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+        public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
         {
             throw new NotImplementedException();
         }
 
-        public IDataReader GetData(int i)
+        public IDataReader GetData(Int32 i)
         {
             throw new NotImplementedException();
         }
 
-        public string GetDataTypeName(int i)
+        public String GetDataTypeName(Int32 i)
         {
             return InternalColumns[i].DataType.ToString();
         }
 
-        public DateTime GetDateTime(int i)
+        public DateTime GetDateTime(Int32 i)
         {
             return Convert.ToDateTime(this[i]);
         }
 
-        public decimal GetDecimal(int i)
+        public decimal GetDecimal(Int32 i)
         {
             return Convert.ToDecimal(this[i]);
         }
 
-        public double GetDouble(int i)
+        public Double GetDouble(Int32 i)
         {
             return Convert.ToDouble(this[i]);
         }
 
-        public Type GetFieldType(int i)
+        public Type GetFieldType(Int32 i)
         {
             return InternalColumns[i].DataType;
         }
 
-        public float GetFloat(int i)
+        public float GetFloat(Int32 i)
         {
             return Convert.ToSingle(this[i]);
         }
 
-        public Guid GetGuid(int i)
+        public Guid GetGuid(Int32 i)
         {
             return (Guid)this[i];
         }
 
-        public short GetInt16(int i)
+        public short GetInt16(Int32 i)
         {
             return Convert.ToInt16(this[i]);
         }
 
-        public int GetInt32(int i)
+        public Int32 GetInt32(Int32 i)
         {
             return Convert.ToInt32(this[i]);
         }
 
-        public long GetInt64(int i)
+        public long GetInt64(Int32 i)
         {
             return Convert.ToInt64(this[i]);
         }
 
-        public string GetName(int i)
+        public String GetName(Int32 i)
         {
             return InternalColumns[i].ColumnName;
         }
 
-        public int GetOrdinal(string name)
+        public Int32 GetOrdinal(String name)
         {
             return InternalColumns[name].Ordinal;
         }
 
-        public string GetString(int i)
+        public String GetString(Int32 i)
         {
             return Convert.ToString(this[i]);
         }
 
-        public object GetValue(int i)
+        public object GetValue(Int32 i)
         {
             return this[i];
         }
 
-        public int GetValues(object[] values)
+        public Int32 GetValues(object[] values)
         {
             object[] items = ItemArray;
-            int elementsCopied = Math.Max(values.Length, items.Length);
+            Int32 elementsCopied = Math.Max(values.Length, items.Length);
             Array.Copy(items, values, elementsCopied);
             return elementsCopied;
         }
 
-        public bool IsDBNull(int i)
+        public bool IsDBNull(Int32 i)
         {
             return IsNull(i);
         }

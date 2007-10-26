@@ -40,7 +40,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="idColumnName">The name of the id column in the feature table.</param>
         /// <returns>A new, empty FeatureDataTable{TOid} with a single column for the id.</returns>
-        public static FeatureDataTable<TOid> CreateEmpty(string idColumnName)
+        public static FeatureDataTable<TOid> CreateEmpty(String idColumnName)
         {
             return CreateTableWithId(new FeatureDataTable(), idColumnName);
         }
@@ -53,7 +53,7 @@ namespace SharpMap.Data
         /// <param name="columnName">The name of the id column.</param>
         /// <returns>A FeatureDataTable{TOid} instance which is a copy of <paramref name="table"/> 
         /// and with id column <paramref name="columnName"/>.</returns>
-        public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, string columnName)
+        public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, String columnName)
         {
             if (table == null)
             {
@@ -133,7 +133,7 @@ namespace SharpMap.Data
             {
                 FeatureDataRow<TOid> newRow = tableWithId.NewRow() as FeatureDataRow<TOid>;
                 Debug.Assert(newRow != null);
-                int itemCount = newRow.ItemArray.Length;
+                Int32 itemCount = newRow.ItemArray.Length;
                 newRow.ItemArray = new object[itemCount];
                 //Array.Copy(row.ItemArray, newRow.ItemArray, itemCount);
                 newRow.ItemArray = row.ItemArray;
@@ -148,12 +148,12 @@ namespace SharpMap.Data
 
         private FeatureDataTable() { }
 
-        public FeatureDataTable(string idColumnName)
+        public FeatureDataTable(String idColumnName)
         {
             setIdColumn(idColumnName);
         }
 
-        public FeatureDataTable(string tableName, string idColumnName)
+        public FeatureDataTable(String tableName, String idColumnName)
             : base(tableName)
         {
             setIdColumn(idColumnName);
@@ -166,7 +166,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="table">The table to copy.</param>
         /// <param name="idColumnName">The name of the OID column.</param>
-        public FeatureDataTable(DataTable table, string idColumnName)
+        public FeatureDataTable(DataTable table, String idColumnName)
             : base(table)
         {
             setIdColumn(idColumnName);
@@ -234,7 +234,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="index">row index</param>
         /// <returns>FeatureDataRow</returns>
-        public new FeatureDataRow<TOid> this[int index]
+        public new FeatureDataRow<TOid> this[Int32 index]
         {
             get { return (FeatureDataRow<TOid>)base.Rows[index]; }
         }
@@ -373,7 +373,7 @@ namespace SharpMap.Data
         #endregion
 
         #region Private Helper Methods
-        private void setIdColumn(string idColumnName)
+        private void setIdColumn(String idColumnName)
         {
             if (String.IsNullOrEmpty(idColumnName))
             {

@@ -35,8 +35,8 @@ namespace SharpMap.Rendering
         public ColorMatrix()
             : this(Identity) { }
 
-        public ColorMatrix(double redLevel, double greenLevel, double blueLevel, double alphaLevel,
-            double redShift, double greenShift, double blueShift)
+        public ColorMatrix(Double redLevel, Double greenLevel, Double blueLevel, Double alphaLevel,
+            Double redShift, Double greenShift, Double blueShift)
             : base(MatrixFormat.RowMajor, 5)
         {
             this[0, 0] = redLevel;
@@ -52,21 +52,21 @@ namespace SharpMap.Rendering
         public ColorMatrix(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 5)
         {
-            for (int i = 0; i < 5; i++)
+            for (Int32 i = 0; i < 5; i++)
             {
-                for (int j = 0; j < 5; j++)
+                for (Int32 j = 0; j < 5; j++)
                 {
                     this[i, j] = matrixToCopy[i, j];
                 }
             }
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}; dxR: {5}; dxG: {6}; dxB: {7}", GetType(), R, G, B, A, RedShift, GreenShift, BlueShift);
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return unchecked(R.GetHashCode() + 2352 ^ G.GetHashCode() + 235509 ^ B.GetHashCode() + 753 
                 ^ A.GetHashCode() + 89 ^ RedShift.GetHashCode() + 897210 ^ GreenShift.GetHashCode() + 78595 
@@ -105,45 +105,45 @@ namespace SharpMap.Rendering
         #endregion
         #endregion
 
-        public double R
+        public Double R
         {
-            get { return (double)this[0, 0]; }
+            get { return (Double)this[0, 0]; }
             set { this[0, 0] = value; }
         }
 
-        public double G
+        public Double G
         {
-            get { return (double)this[1, 1]; }
+            get { return (Double)this[1, 1]; }
             set { this[1, 1] = value; }
         }
 
-        public double B
+        public Double B
         {
-            get { return (double)this[2, 2]; }
+            get { return (Double)this[2, 2]; }
             set { this[2, 2] = value; }
         }
 
-        public double A
+        public Double A
         {
-            get { return (double)this[3, 3]; }
+            get { return (Double)this[3, 3]; }
             set { this[3, 3] = value; }
         }
 
-        public double RedShift
+        public Double RedShift
         {
-            get { return (double)this[0, 4]; }
+            get { return (Double)this[0, 4]; }
             set { this[0, 4] = value; }
         }
 
-        public double GreenShift
+        public Double GreenShift
         {
-            get { return (double)this[1, 4]; }
+            get { return (Double)this[1, 4]; }
             set { this[1, 4] = value; }
         }
 
-        public double BlueShift
+        public Double BlueShift
         {
-            get { return (double)this[2, 4]; }
+            get { return (Double)this[2, 4]; }
             set { this[2, 4] = value; }
         }
 

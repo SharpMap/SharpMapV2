@@ -119,16 +119,16 @@ namespace SharpMap.Styles
                 pos -= (float)Math.Floor(pos);
             }
 
-			int i = 1;
+			Int32 i = 1;
 
 			while (i < _positions.Length && _positions[i] < pos)
 				i++;
 
 			float frac = (pos - _positions[i - 1]) / (_positions[i] - _positions[i - 1]);
-			int r = (int)Math.Round((_colors[i - 1].R * (1 - frac) + _colors[i].R * frac));
-			int g = (int)Math.Round((_colors[i - 1].G * (1 - frac) + _colors[i].G * frac));
-			int b = (int)Math.Round((_colors[i - 1].B * (1 - frac) + _colors[i].B * frac));
-			int a = (int)Math.Round((_colors[i - 1].A * (1 - frac) + _colors[i].A * frac));
+			Int32 r = (Int32)Math.Round((_colors[i - 1].R * (1 - frac) + _colors[i].R * frac));
+			Int32 g = (Int32)Math.Round((_colors[i - 1].G * (1 - frac) + _colors[i].G * frac));
+			Int32 b = (Int32)Math.Round((_colors[i - 1].B * (1 - frac) + _colors[i].B * frac));
+			Int32 a = (Int32)Math.Round((_colors[i - 1].A * (1 - frac) + _colors[i].A * frac));
 
 			return StyleColor.FromBgra(b, g, r, a);
 		}
@@ -164,7 +164,7 @@ namespace SharpMap.Styles
 			{
 				StyleColorBlend cb = new StyleColorBlend();
 				cb._positions = new float[7];
-				for (int i = 1; i < 7; i++)
+				for (Int32 i = 1; i < 7; i++)
 					cb.Positions[i] = i / 6f;
 				cb.Colors = new StyleColor[] { StyleColor.Red, StyleColor.Orange, StyleColor.Yellow, StyleColor.Green, StyleColor.Blue, StyleColor.Indigo, StyleColor.Violet };
 				return cb;

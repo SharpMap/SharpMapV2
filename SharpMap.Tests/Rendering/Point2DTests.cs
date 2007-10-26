@@ -52,8 +52,8 @@ namespace SharpMap.Tests.Rendering
 
             Assert.AreEqual(0, p1.ComponentCount);
             Assert.AreEqual(2, p2.ComponentCount);
-            Assert.AreEqual(9, (double) p3[0], TestConstants.Epsilon);
-            Assert.AreEqual(10, (double) p3[1], TestConstants.Epsilon);
+            Assert.AreEqual(9, (Double) p3[0], TestConstants.Epsilon);
+            Assert.AreEqual(10, (Double) p3[1], TestConstants.Epsilon);
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace SharpMap.Tests.Rendering
         {
             Point2D p1 = new Point2D(9, 10);
 
-            Assert.AreEqual(10, (double) p1[2], TestConstants.Epsilon);
+            Assert.AreEqual(10, (Double) p1[2], TestConstants.Epsilon);
         }
 
         [Test]
@@ -80,8 +80,8 @@ namespace SharpMap.Tests.Rendering
         {
             Point2D p1 = new Point2D(1.1, 2.2);
 
-            int index = 0;
-            foreach (double component in p1)
+            Int32 index = 0;
+            foreach (Double component in p1)
             {
                 Assert.AreEqual(p1[index++], component);
             }

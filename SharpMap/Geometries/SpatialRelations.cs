@@ -115,7 +115,7 @@ namespace SharpMap.Geometries
 					return false;
 				}
 
-				for (int i = 0; i < (g1 as GeometryCollection).Collection.Count; i++)
+				for (Int32 i = 0; i < (g1 as GeometryCollection).Collection.Count; i++)
 				{
 					if (!Equals((g1 as GeometryCollection)[i], (g2 as GeometryCollection)[i]))
 					{

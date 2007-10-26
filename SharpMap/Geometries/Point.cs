@@ -34,8 +34,8 @@ namespace SharpMap.Geometries
         private static readonly Point _empty = new Point();
         private static readonly Point _zero = new Point(0, 0);
 
-        private double _x = 0.0;
-        private double _y = 0.0;
+        private Double _x = 0.0;
+        private Double _y = 0.0;
         private bool _hasValue = false;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
-        public Point(double x, double y)
+        public Point(Double x, Double y)
         {
             _x = x;
             _y = y;
@@ -66,11 +66,11 @@ namespace SharpMap.Geometries
         /// <param name="latMinutes">Latitude minutes</param>
         /// <param name="latSeconds">Latitude seconds</param>
         /// <returns>Point</returns>
-        public static Point FromDMS(double longDegrees, double longMinutes, double longSeconds,
-            double latDegrees, double latMinutes, double latSeconds)
+        public static Point FromDMS(Double longDegrees, Double longMinutes, Double longSeconds,
+            Double latDegrees, Double latMinutes, Double latSeconds)
         {
-            double x = longDegrees + longMinutes / 60 + longSeconds / 3600;
-            double y = latDegrees + latMinutes / 60 + latSeconds / 3600;
+            Double x = longDegrees + longMinutes / 60 + longSeconds / 3600;
+            Double y = latDegrees + latMinutes / 60 + latSeconds / 3600;
             return new Point(x, y);
         }
 
@@ -114,7 +114,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Gets or sets the X coordinate of the point
         /// </summary>
-        public double X
+        public Double X
         {
             get
             {
@@ -137,7 +137,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Gets or sets the Y coordinate of the point
         /// </summary>
-        public double Y
+        public Double Y
         {
             get
             {
@@ -162,7 +162,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public virtual double this[uint index]
+        public virtual Double this[uint index]
         {
             get
             {
@@ -205,7 +205,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Returns the number of ordinates for this point
         /// </summary>
-        public virtual int NumOrdinates
+        public virtual Int32 NumOrdinates
         {
             get { return 2; }
         }
@@ -248,9 +248,9 @@ namespace SharpMap.Geometries
         /// Vector * Scalar
         /// </summary>
         /// <param name="m">Vector</param>
-        /// <param name="d">Scalar (double)</param>
+        /// <param name="d">Scalar (Double)</param>
         /// <returns></returns>
-        public static Point operator *(Point m, double d)
+        public static Point operator *(Point m, Double d)
         {
             return new Point(m.X * d, m.Y * d);
         }
@@ -289,7 +289,7 @@ namespace SharpMap.Geometries
         /// in hashing algorithms and data structures like a hash table.
         /// </summary>
         /// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return _x.GetHashCode() ^ _y.GetHashCode() ^ IsEmpty().GetHashCode();
         }
@@ -297,7 +297,7 @@ namespace SharpMap.Geometries
         /// <summary>
         ///  The inherent dimension of this Geometry object, which must be less than or equal to the coordinate dimension.
         /// </summary>
-        public override int Dimension
+        public override Int32 Dimension
         {
             get { return 0; }
         }
@@ -337,7 +337,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="geom"></param>
         /// <returns></returns>
-        public override double Distance(Geometry geom)
+        public override Double Distance(Geometry geom)
         {
             if (geom is Point)
             {
@@ -354,7 +354,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="box"></param>
         /// <returns></returns>
-        public double Distance(BoundingBox box)
+        public Double Distance(BoundingBox box)
         {
             return box.Distance(this);
         }
@@ -366,7 +366,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="d">Buffer distance</param>
         /// <returns>Buffer around geometry</returns>
-        public override Geometry Buffer(double d)
+        public override Geometry Buffer(Double d)
         {
             throw new NotImplementedException();
         }
@@ -539,7 +539,7 @@ namespace SharpMap.Geometries
         /// and a greater <see cref="Y"/> value.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="other"/> is null.</exception>
-        public virtual int CompareTo(Point other)
+        public virtual Int32 CompareTo(Point other)
         {
             if (other == null)
             {
@@ -590,7 +590,7 @@ namespace SharpMap.Geometries
             throw new NotImplementedException();
         }
 
-        public virtual int ComponentCount
+        public virtual Int32 ComponentCount
         {
             get { return 2; }
         }
@@ -615,7 +615,7 @@ namespace SharpMap.Geometries
             return new Point(-_x, -_y);
         }
 
-        public DoubleComponent this[int index]
+        public DoubleComponent this[Int32 index]
         {
             get
             {
@@ -623,7 +623,7 @@ namespace SharpMap.Geometries
             }
             set
             {
-                this[(uint) index] = (double)value;
+                this[(uint) index] = (Double)value;
             }
         }
 
@@ -636,12 +636,12 @@ namespace SharpMap.Geometries
             throw new NotImplementedException();
         }
 
-        public int ColumnCount
+        public Int32 ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
 
-        public double Determinant
+        public Double Determinant
         {
             get { throw new NotImplementedException(); }
         }
@@ -663,7 +663,7 @@ namespace SharpMap.Geometries
             get { throw new NotImplementedException(); }
         }
 
-        public IMatrix<DoubleComponent> GetMatrix(int[] rowIndexes, int j0, int j1)
+        public IMatrix<DoubleComponent> GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotImplementedException();
         }
@@ -693,7 +693,7 @@ namespace SharpMap.Geometries
             get { return false; }
         }
 
-        public int RowCount
+        public Int32 RowCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -703,7 +703,7 @@ namespace SharpMap.Geometries
             throw new NotSupportedException();
         }
 
-        public DoubleComponent this[int row, int column]
+        public DoubleComponent this[Int32 row, Int32 column]
         {
             get
             {

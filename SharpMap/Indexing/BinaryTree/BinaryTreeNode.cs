@@ -40,13 +40,13 @@ namespace SharpMap.Indexing.BinaryTree
 
         public static bool operator >(BinaryTreeNode<TKey, TValue> lhs, BinaryTreeNode<TKey, TValue> rhs)
         {
-            int res = lhs.Item.Value.CompareTo(rhs.Item.Value);
+            Int32 res = lhs.Item.Value.CompareTo(rhs.Item.Value);
             return res > 0;
         }
 
         public static bool operator <(BinaryTreeNode<TKey, TValue> lhs, BinaryTreeNode<TKey, TValue> rhs)
         {
-            int res = lhs.Item.Value.CompareTo(rhs.Item.Value);
+            Int32 res = lhs.Item.Value.CompareTo(rhs.Item.Value);
             return res < 0;
         }
     }

@@ -29,6 +29,6 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the number of meters per <see cref="ILinearUnit"/>.
 		/// </summary>
-		double MetersPerUnit { get; set; }
+		Double MetersPerUnit { get; set; }
 	}
 }

@@ -36,8 +36,8 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal PrimeMeridian(double longitude, IAngularUnit angularUnit, string name,
-		                       string authority, long authorityCode, string alias, string abbreviation, string remarks)
+		internal PrimeMeridian(Double longitude, IAngularUnit angularUnit, String name,
+		                       String authority, long authorityCode, String alias, String abbreviation, String remarks)
 			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_Longitude = longitude;
@@ -225,12 +225,12 @@ namespace SharpMap.CoordinateSystems
 
 		#region IPrimeMeridian Members
 
-		private double _Longitude;
+		private Double _Longitude;
 
 		/// <summary>
 		/// Gets or sets the longitude of the prime meridian (relative to the Greenwich prime meridian).
 		/// </summary>
-		public double Longitude
+		public Double Longitude
 		{
 			get { return _Longitude; }
 			set { _Longitude = value; }
@@ -251,7 +251,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get
 			{
@@ -271,7 +271,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get
 			{

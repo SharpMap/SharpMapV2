@@ -124,7 +124,7 @@ namespace SharpMap.Presentation
 
         public void Expand(TSize size)
         {
-            for (int pointIndex = 0; pointIndex < PathInternal.Points.Count; pointIndex++)
+            for (Int32 pointIndex = 0; pointIndex < PathInternal.Points.Count; pointIndex++)
             {
                 throw new NotImplementedException("implement this");
             }
@@ -238,7 +238,7 @@ namespace SharpMap.Presentation
             if (boxElements.Length == 0 || boxElements[0].Length == 0)
             {
                 boxElements = new DoubleComponent[BoundingRegion.RowCount][];
-                for (int rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
+                for (Int32 rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
                 {
                     boxElements[rowIndex] = new DoubleComponent[BoundingRegion.ColumnCount];
                 }
@@ -250,9 +250,9 @@ namespace SharpMap.Presentation
             {
                 DoubleComponent[] components = point.Components;
 
-                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+                for (Int32 componentIndex = 0; componentIndex < components.Length; componentIndex++)
                 {
-                    for (int rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
+                    for (Int32 rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
                     {
                         if (components[componentIndex].GreaterThan(boxElements[rowIndex][componentIndex])) { }
                         boxElements[rowIndex][componentIndex] = components[componentIndex];

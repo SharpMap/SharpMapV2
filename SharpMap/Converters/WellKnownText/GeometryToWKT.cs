@@ -73,9 +73,9 @@ namespace SharpMap.Converters.WellKnownText
         /// Converts a Geometry to its Well-Known Text representation.
         /// </summary>
         /// <param name="geometry">A Geometry to write.</param>
-        /// <returns>A &lt;Geometry Tagged Text&gt; string (see the OpenGIS Simple
+        /// <returns>A &lt;Geometry Tagged Text&gt; String (see the OpenGIS Simple
         ///  Features Specification)</returns>
-        public static string Write(IGeometry geometry)
+        public static String Write(IGeometry geometry)
         {
             StringWriter sw = new StringWriter();
             Write(geometry, sw);
@@ -88,7 +88,7 @@ namespace SharpMap.Converters.WellKnownText
         /// <param name="geometry">A geometry to process.</param>
         /// <param name="writer">Stream to write out the geometry's text representation.</param>
         /// <remarks>
-        /// Geometry is written to the output stream as &lt;Gemoetry Tagged Text&gt; string (see the OpenGIS
+        /// Geometry is written to the output stream as &lt;Gemoetry Tagged Text&gt; String (see the OpenGIS
         /// Simple Features Specification).
         /// </remarks>
         public static void Write(IGeometry geometry, StringWriter writer)
@@ -259,11 +259,11 @@ namespace SharpMap.Converters.WellKnownText
         }
 
         /// <summary>
-        /// Converts a double to a string, not in scientific notation.
+        /// Converts a Double to a String, not in scientific notation.
         /// </summary>
-        /// <param name="d">The double to convert.</param>
-        /// <returns>The double as a string, not in scientific notation.</returns>
-        private static string writeNumber(double d)
+        /// <param name="d">The Double to convert.</param>
+        /// <returns>The Double as a String, not in scientific notation.</returns>
+        private static String writeNumber(Double d)
         {
             return d.ToString(WktStreamTokenizer.NumberFormat_enUS);
         }
@@ -284,7 +284,7 @@ namespace SharpMap.Converters.WellKnownText
             {
                 writer.Write("(");
 
-                for (int i = 0; i < lineString.NumPoints; i++)
+                for (Int32 i = 0; i < lineString.NumPoints; i++)
                 {
                     if (i > 0)
                     {
@@ -315,7 +315,7 @@ namespace SharpMap.Converters.WellKnownText
                 writer.Write("(");
                 appendLineStringText(polygon.ExteriorRing, writer);
 
-                for (int i = 0; i < polygon.InteriorRings.Count; i++)
+                for (Int32 i = 0; i < polygon.InteriorRings.Count; i++)
                 {
                     writer.Write(", ");
                     appendLineStringText(polygon.InteriorRings[i], writer);
@@ -341,7 +341,7 @@ namespace SharpMap.Converters.WellKnownText
             {
                 writer.Write("(");
 
-                for (int i = 0; i < multiPoint.Points.Count; i++)
+                for (Int32 i = 0; i < multiPoint.Points.Count; i++)
                 {
                     if (i > 0)
                     {
@@ -370,7 +370,7 @@ namespace SharpMap.Converters.WellKnownText
             {
                 writer.Write("(");
 
-                for (int i = 0; i < multiLineString.LineStrings.Count; i++)
+                for (Int32 i = 0; i < multiLineString.LineStrings.Count; i++)
                 {
                     if (i > 0)
                     {
@@ -398,7 +398,7 @@ namespace SharpMap.Converters.WellKnownText
             {
                 writer.Write("(");
 
-                for (int i = 0; i < multiPolygon.Polygons.Count; i++)
+                for (Int32 i = 0; i < multiPolygon.Polygons.Count; i++)
                 {
                     if (i > 0)
                     {
@@ -426,7 +426,7 @@ namespace SharpMap.Converters.WellKnownText
             {
                 writer.Write("(");
 
-                for (int i = 0; i < geometryCollection.Collection.Count; i++)
+                for (Int32 i = 0; i < geometryCollection.Collection.Count; i++)
                 {
                     if (i > 0)
                     {

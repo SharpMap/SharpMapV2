@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -64,10 +65,10 @@ namespace SharpMap.Presentation.WinForms
             // one child node which intersects the search bounds. If so, then that must 
             // be the best resolution tiles to satisfy the search request, as the bitmaps can 
             // be resampled upward. If there is only one child, recurse downward on that child.
-            int[] intersectNodes = new int[4];
-            int intersectNodeIndex = -1;
+            Int32[] intersectNodes = new Int32[4];
+            Int32 intersectNodeIndex = -1;
 
-            for (int nodeIndex = 0; nodeIndex < node.Items.Count; nodeIndex++)
+            for (Int32 nodeIndex = 0; nodeIndex < node.Items.Count; nodeIndex++)
             {
                 QuadTreeNode<Bitmap> testNode = Items[nodeIndex];
 
@@ -84,7 +85,7 @@ namespace SharpMap.Presentation.WinForms
             // Otherwise, keep searching down the index.
             if (intersectNodeIndex > 0)
             {
-                foreach (int nodeIndex in intersectNodes)
+                foreach (Int32 nodeIndex in intersectNodes)
                 {
                     yield return node.Items[nodeIndex].Value;
                 }

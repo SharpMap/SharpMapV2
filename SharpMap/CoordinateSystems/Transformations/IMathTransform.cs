@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using SharpMap.Geometries;
 
@@ -34,12 +35,12 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// Gets the dimension of input points.
         /// </summary>
-        int DimSource { get; }
+        Int32 DimSource { get; }
 
         /// <summary>
         /// Gets the dimension of output points.
         /// </summary>
-        int DimTarget { get; }
+        Int32 DimTarget { get; }
 
         /// <summary>
         /// Tests whether this transform does not move any points.
@@ -50,12 +51,12 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// Gets a Well-Known text representation of this object.
         /// </summary>
-        string Wkt { get; }
+        String Wkt { get; }
 
         /// <summary>
         /// Gets an XML representation of this object.
         /// </summary>
-        string Xml { get; }
+        String Xml { get; }
 
         /// <summary>
         /// Gets the derivative of this transform at a point. If the transform does 
@@ -71,7 +72,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        double[,] Derivative(Point point);
+        Double[,] Derivative(Point point);
 
         /// <summary>
         /// Gets transformed convex hull.
@@ -94,7 +95,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </remarks>
         /// <param name="points"></param>
         /// <returns></returns>
-        List<double> GetCodomainConvexHull(List<double> points);
+        List<Double> GetCodomainConvexHull(List<Double> points);
 
         /// <summary>
         /// Gets flags classifying domain points within a convex hull.
@@ -109,7 +110,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </remarks>
         /// <param name="points"></param>
         /// <returns></returns>
-        DomainFlags GetDomainFlags(List<double> points);
+        DomainFlags GetDomainFlags(List<Double> points);
 
         /// <summary>
         /// Creates the inverse transform of this object.

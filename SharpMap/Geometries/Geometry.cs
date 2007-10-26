@@ -56,7 +56,7 @@ namespace SharpMap.Geometries
         /// Returns a WellKnownText representation of the <see cref="Geometry"/>
         /// </summary>
         /// <returns>Well-known text</returns>
-        public override string ToString()
+        public override String ToString()
         {
             return AsText();
         }
@@ -112,7 +112,7 @@ namespace SharpMap.Geometries
 		///  to the coordinate dimension.
 		/// </summary>
 		/// <remarks>This specification is restricted to geometries in two-dimensional coordinate space.</remarks>
-		public abstract int Dimension { get; }
+		public abstract Int32 Dimension { get; }
 
 		/// <summary>
 		/// The minimum bounding box for this <see cref="Geometry"/>, returned as a <see cref="Geometry"/>.
@@ -140,7 +140,7 @@ namespace SharpMap.Geometries
 		/// Exports this <see cref="Geometry"/> to a specific 
 		/// well-known text representation of <see cref="Geometry"/>.
 		/// </summary>
-		public string AsText()
+		public String AsText()
 		{
 			return GeometryToWkt.Write(this);
 		}
@@ -169,11 +169,11 @@ namespace SharpMap.Geometries
 	    public abstract BoundingBox GetBoundingBox();
 
 	    /// <summary>
-		/// Creates a <see cref="Geometry"/> based on a Well-Known Text string
+		/// Creates a <see cref="Geometry"/> based on a Well-Known Text String
 		/// </summary>
 		/// <param name="wkt">Well-Known Text</param>
 		/// <returns></returns>
-		public static Geometry FromText(string wkt)
+		public static Geometry FromText(String wkt)
 		{
 			return GeometryFromWkt.Parse(wkt);
 		}
@@ -270,7 +270,7 @@ namespace SharpMap.Geometries
 		/// <param name="other"><see cref="Geometry"/> to relate to</param>
 		/// <param name="intersectionPattern">Intersection Pattern</param>
 		/// <returns>True if spatially related</returns>
-		public bool Relate(Geometry other, string intersectionPattern)
+		public bool Relate(Geometry other, String intersectionPattern)
 		{
 			throw new NotImplementedException();
 		}
@@ -287,7 +287,7 @@ namespace SharpMap.Geometries
 	    /// System of this Geometry.
 	    /// </summary>
 	    /// <param name="d">Buffer distance</param>
-	    public abstract Geometry Buffer(double d);
+	    public abstract Geometry Buffer(Double d);
 
 	    /// <summary>
 	    /// Geometry—Returns a geometry that represents 
@@ -307,7 +307,7 @@ namespace SharpMap.Geometries
 		/// as calculated in the spatial reference 
 		/// system of this Geometry.
 		/// </summary>
-        public abstract double Distance(Geometry geometry);
+        public abstract Double Distance(Geometry geometry);
 
 	    /// <summary>
 		/// Returns a geometry that represents the point set 
@@ -428,9 +428,9 @@ namespace SharpMap.Geometries
 		/// in hashing algorithms and data structures like a hash table.
 		/// </summary>
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
-		    int hashCode = GetType().GetHashCode();
+		    Int32 hashCode = GetType().GetHashCode();
 
 		    foreach (Point point in GetVertices())
 		    {

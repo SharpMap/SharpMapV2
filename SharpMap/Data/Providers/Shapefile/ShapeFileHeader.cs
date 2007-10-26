@@ -28,14 +28,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 	{
 		private ShapeType _shapeType;
 		private BoundingBox _envelope;
-		private int _fileLengthInWords;
+		private Int32 _fileLengthInWords;
 
 		public ShapeFileHeader(BinaryReader reader)
 		{
 			parseHeader(reader);
 		}
 
-		public override string ToString()
+		public override String ToString()
 		{
 			return String.Format("[ShapeFileHeader] ShapeType: {0}; Envelope: {1}; FileLengthInWords: {2}", 
 				ShapeType, Envelope, FileLengthInWords);
@@ -53,7 +53,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			set { _envelope = value; }
 		}
 
-		public int FileLengthInWords
+		public Int32 FileLengthInWords
 		{
 			get { return _fileLengthInWords; }
 			set { _fileLengthInWords = value; }
@@ -66,7 +66,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			writer.Write(new byte[20]);
 			writer.Write(ByteEncoder.GetBigEndian(FileLengthInWords));
 			writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
-			writer.Write(ByteEncoder.GetLittleEndian((int)ShapeType));
+			writer.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Left));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Bottom));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Right));
@@ -145,9 +145,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 		#endregion
 		
-		private int computeMainFileLengthInWords(ShapeFileIndex index)
+		private Int32 computeMainFileLengthInWords(ShapeFileIndex index)
 		{
-			int length = ShapeFileConstants.HeaderSizeBytes / 2;
+			Int32 length = ShapeFileConstants.HeaderSizeBytes / 2;
 
 			foreach (KeyValuePair<uint, ShapeFileIndex.IndexEntry> kvp in index)
 			{
@@ -157,9 +157,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return length;
 		}
 
-		private int computeIndexFileLengthInWords(ShapeFileIndex index)
+		private Int32 computeIndexFileLengthInWords(ShapeFileIndex index)
 		{
-			int length = ShapeFileConstants.HeaderSizeBytes / 2;
+			Int32 length = ShapeFileConstants.HeaderSizeBytes / 2;
 
 			length += index.Count * ShapeFileConstants.IndexRecordByteLength / 2;
 

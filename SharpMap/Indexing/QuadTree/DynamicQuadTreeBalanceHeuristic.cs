@@ -26,7 +26,7 @@ namespace SharpMap.Indexing.QuadTree
         public DynamicQuadTreeBalanceHeuristic()
             : base(4, 4, UInt16.MaxValue) { }
 
-        public override int TargetNodeCount
+        public override Int32 TargetNodeCount
         {
             get { return 4; }
         }

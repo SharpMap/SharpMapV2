@@ -64,17 +64,17 @@ namespace SharpMap.CoordinateSystems.Projections
 
         /* Variables common to all subroutines in this code file
   -----------------------------------------------------*/
-        private double r_major;		/* major axis 				*/
-        private double r_minor;		/* minor axis 				*/
-        private double scale_factor;	/* scale factor				*/
-        private double central_meridian;	/* Center longitude (projection center) */
-        private double lat_origin;	/* center latitude			*/
-        private double e0, e1, e2, e3;	/* eccentricity constants		*/
-        private double e, es, esp;		/* eccentricity constants		*/
-        private double ml0;		/* small value m			*/
-        private double false_northing;	/* y offset in meters			*/
-        private double false_easting;	/* x offset in meters			*/
-        //static double ind;		/* spherical flag			*/
+        private Double r_major;		/* major axis 				*/
+        private Double r_minor;		/* minor axis 				*/
+        private Double scale_factor;	/* scale factor				*/
+        private Double central_meridian;	/* Center longitude (projection center) */
+        private Double lat_origin;	/* center latitude			*/
+        private Double e0, e1, e2, e3;	/* eccentricity constants		*/
+        private Double e, es, esp;		/* eccentricity constants		*/
+        private Double ml0;		/* small value m			*/
+        private Double false_northing;	/* y offset in meters			*/
+        private Double false_easting;	/* x offset in meters			*/
+        //static Double ind;		/* spherical flag			*/
 
         /// <summary>
         /// Creates an instance of an TransverseMercatorProjection projection object.
@@ -176,14 +176,14 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override SharpMap.Geometries.Point DegreesToMeters(SharpMap.Geometries.Point lonlat)
         {
-            double lon = Degrees2Radians(lonlat.X);
-            double lat = Degrees2Radians(lonlat.Y);
+            Double lon = Degrees2Radians(lonlat.X);
+            Double lat = Degrees2Radians(lonlat.Y);
 
-            double delta_lon = 0.0;	/* Delta longitude (Given longitude - center 	*/
-            double sin_phi, cos_phi;/* sin and cos value				*/
-            double al, als;		/* temporary values				*/
-            double c, t, tq;	/* temporary values				*/
-            double con, n, ml;	/* cone constant, small m			*/
+            Double delta_lon = 0.0;	/* Delta longitude (Given longitude - center 	*/
+            Double sin_phi, cos_phi;/* sin and cos value				*/
+            Double al, als;		/* temporary values				*/
+            Double c, t, tq;	/* temporary values				*/
+            Double con, n, ml;	/* cone constant, small m			*/
 
             delta_lon = adjust_lon(lon - central_meridian);
             sincos(lat, out sin_phi, out cos_phi);
@@ -213,16 +213,16 @@ namespace SharpMap.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override SharpMap.Geometries.Point MetersToDegrees(SharpMap.Geometries.Point p)
         {
-            double con, phi;		/* temporary angles				*/
-            double delta_phi;	/* difference between longitudes		*/
+            Double con, phi;		/* temporary angles				*/
+            Double delta_phi;	/* difference between longitudes		*/
             long i;			/* counter variable				*/
-            double sin_phi, cos_phi, tan_phi;	/* sin cos and tangent values	*/
-            double c, cs, t, ts, n, r, d, ds;	/* temporary variables		*/
+            Double sin_phi, cos_phi, tan_phi;	/* sin cos and tangent values	*/
+            Double c, cs, t, ts, n, r, d, ds;	/* temporary variables		*/
             long max_iter = 6;			/* maximun number of iterations	*/
 
 
-            double x = p.X - false_easting;
-            double y = p.Y - false_northing;
+            Double x = p.X - false_easting;
+            Double y = p.Y - false_northing;
 
             con = (ml0 + y / scale_factor) / r_major;
             phi = con;
@@ -249,10 +249,10 @@ namespace SharpMap.CoordinateSystems.Projections
                 d = x / (n * scale_factor);
                 ds = Math.Pow(d, 2);
 
-                double lat = phi - (n * tan_phi * ds / r) * (0.5 - ds / 24.0 * (5.0 + 3.0 * t +
+                Double lat = phi - (n * tan_phi * ds / r) * (0.5 - ds / 24.0 * (5.0 + 3.0 * t +
                     10.0 * c - 4.0 * cs - 9.0 * esp - ds / 30.0 * (61.0 + 90.0 * t +
                     298.0 * c + 45.0 * ts - 252.0 * esp - 3.0 * cs)));
-                double lon = adjust_lon(central_meridian + (d * (1.0 - ds / 6.0 * (1.0 + 2.0 * t +
+                Double lon = adjust_lon(central_meridian + (d * (1.0 - ds / 6.0 * (1.0 + 2.0 * t +
                     c - ds / 20.0 * (5.0 - 2.0 * c + 28.0 * t - 3.0 * cs + 8.0 * esp +
                     24.0 * ts))) / cos_phi));
                 return new SharpMap.Geometries.Point(Radians2Degrees(lon), Radians2Degrees(lat));

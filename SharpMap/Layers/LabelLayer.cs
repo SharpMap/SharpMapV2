@@ -42,17 +42,17 @@ namespace SharpMap.Layers
         /// Delegate method for creating advanced label text.
         /// </summary>
         /// <param name="feature">The feature to label.</param>
-        /// <returns>A string to display as the label for the feature.</returns>
-        public delegate string GenerateLabelTextDelegate(FeatureDataRow feature);
+        /// <returns>A String to display as the label for the feature.</returns>
+        public delegate String GenerateLabelTextDelegate(FeatureDataRow feature);
 
         #endregion
 
         #region Fields
 
-        private int _priority;
-        private string _rotationColumn;
+        private Int32 _priority;
+        private String _rotationColumn;
         private GenerateLabelTextDelegate _getLabelMethod;
-        private string _labelColumn;
+        private String _labelColumn;
         private LabelFilterDelegate _labelFilter;
         private MultipartGeometryLabelingBehavior _multipartGeometryBehaviour;
 
@@ -65,7 +65,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layerName">Name of the layer.</param>
         /// <param name="dataSource">Data source provider for the layer.</param>
-        public LabelLayer(string layerName, IFeatureLayerProvider dataSource)
+        public LabelLayer(String layerName, IFeatureLayerProvider dataSource)
             : base(layerName, dataSource)
         {
             _multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
@@ -128,14 +128,14 @@ namespace SharpMap.Layers
         /// This property is overriden by the 
         /// <see cref="GenerateLabelTextDelegate"/>.
         /// </remarks>
-        public string LabelColumn
+        public String LabelColumn
         {
             get { return _labelColumn; }
             set { _labelColumn = value; }
         }
 
         /// <summary>
-        /// Gets or sets the method for creating a custom label string 
+        /// Gets or sets the method for creating a custom label String 
         /// based on a feature.
         /// </summary>
         /// <remarks>
@@ -145,11 +145,11 @@ namespace SharpMap.Layers
         /// </para>
         /// <para>
         /// The label delegate must take a <see cref="FeatureDataRow"/> 
-        /// and return a string.
+        /// and return a String.
         /// </para>
         /// <example>
         /// Creating a label-text by combining attributes "ROADNAME" 
-        /// and "STATE" into one string, using an anonymous delegate:
+        /// and "STATE" into one String, using an anonymous delegate:
         /// <code lang="C#">
         /// myLabelLayer.LabelStringDelegate = delegate(FeatureDataRow fdr)
         ///				{ return fdr["ROADNAME"].ToString() + ", " + fdr["STATE"].ToString(); };
@@ -167,7 +167,7 @@ namespace SharpMap.Layers
         /// If this is empty, rotation will be zero, or aligned to a linestring.
         /// Rotation are in degrees (positive = clockwise).
         /// </summary>
-        public string RotationColumn
+        public String RotationColumn
         {
             get { return _rotationColumn; }
             set { _rotationColumn = value; }
@@ -176,7 +176,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// A value indication the priority of the label in cases of label-collision detection.
         /// </summary>
-        public int Priority
+        public Int32 Priority
         {
             get { return _priority; }
             set { _priority = value; }
@@ -187,7 +187,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="feature">The feature to label.</param>
         /// <returns>The text of the label.</returns>
-        public string GetLabelText(FeatureDataRow feature)
+        public String GetLabelText(FeatureDataRow feature)
         {
             if (_getLabelMethod != null)
             {

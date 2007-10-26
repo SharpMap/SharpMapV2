@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Geometries
 {
     /// <summary>
@@ -26,7 +28,7 @@ namespace SharpMap.Geometries
         /// <summary>
         ///  The inherent dimension of this Geometry object, which must be less than or equal to the coordinate dimension.
         /// </summary>
-        public override int Dimension
+        public override Int32 Dimension
         {
             get { return 1; }
         }
@@ -34,7 +36,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// The length of this Curve in its associated spatial reference.
         /// </summary>
-        public abstract double Length { get; }
+        public abstract Double Length { get; }
 
         /// <summary>
         /// The start point of this Curve.
@@ -51,7 +53,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public abstract Point Value(double t);
+        public abstract Point Value(Double t);
 
         /// <summary>
         /// Returns true if this Curve is closed (StartPoint = EndPoint).

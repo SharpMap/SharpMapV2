@@ -44,12 +44,12 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Ellipsoid(
-			double semiMajorAxis, 
-			double semiMinorAxis, 
-			double inverseFlattening,
+			Double semiMajorAxis, 
+			Double semiMinorAxis, 
+			Double inverseFlattening,
 			bool isIvfDefinitive,
-			ILinearUnit axisUnit, string name, string authority, long code, string alias, 
-			string abbreviation, string remarks)
+			ILinearUnit axisUnit, String name, String authority, long code, String alias, 
+			String abbreviation, String remarks)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_SemiMajorAxis = semiMajorAxis;
@@ -153,7 +153,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return new Ellipsoid(6378206.4, 6356583.8, double.PositiveInfinity, false, LinearUnit.Metre, "Clarke 1866", "EPSG", 7008, "Clarke 1866", String.Empty,
+				return new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity, false, LinearUnit.Metre, "Clarke 1866", "EPSG", 7008, "Clarke 1866", String.Empty,
 					"Original definition a=20926062 and b=20855121 (British) feet. Uses Clarke's 1865 inch-metre ratio of 39.370432 to obtain metres. (Metric value then converted to US survey feet for use in the United States using 39.37 exactly giving a=20925832.16 ft US).");
 			}
 		}
@@ -169,7 +169,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return new Ellipsoid(6370997.0, 6370997.0, double.PositiveInfinity, false, LinearUnit.Metre, "GRS 1980 Authalic Sphere", "EPSG", 7048, "Sphere", "",
+				return new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity, false, LinearUnit.Metre, "GRS 1980 Authalic Sphere", "EPSG", 7048, "Sphere", "",
 					"Authalic sphere derived from GRS 1980 ellipsoid (code 7019).  (An authalic sphere is one with a surface area equal to the surface area of the ellipsoid). 1/f is infinite.");
 			}
 		}
@@ -177,34 +177,34 @@ namespace SharpMap.CoordinateSystems
 
 		#region IEllipsoid Members
 
-		private double _SemiMajorAxis;
+		private Double _SemiMajorAxis;
 
 		/// <summary>
 		/// Gets or sets the value of the semi-major axis.
 		/// </summary>
-		public double SemiMajorAxis
+		public Double SemiMajorAxis
 		{
 			get { return _SemiMajorAxis; }
 			set { _SemiMajorAxis = value; }
 		}
 
-		private double _SemiMinorAxis;
+		private Double _SemiMinorAxis;
 
 		/// <summary>
 		/// Gets or sets the value of the semi-minor axis.
 		/// </summary>
-		public double SemiMinorAxis
+		public Double SemiMinorAxis
 		{
 			get { return _SemiMinorAxis; }
 			set { _SemiMinorAxis = value; }
 		}
 
-		private double _InverseFlattening;
+		private Double _InverseFlattening;
 
 		/// <summary>
 		/// Gets or sets the value of the inverse of the flattening constant of the ellipsoid.
 		/// </summary>
-		public double InverseFlattening
+		public Double InverseFlattening
 		{
 			get { return _InverseFlattening; }
 			set { _InverseFlattening = value; }
@@ -239,7 +239,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get
 			{
@@ -259,7 +259,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get
 			{

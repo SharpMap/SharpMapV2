@@ -33,22 +33,22 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Offset of the language driver code in the dBase header.
 		/// </summary>
-		internal static readonly int EncodingOffset = 29;
+		internal static readonly Int32 EncodingOffset = 29;
 
 		/// <summary>
 		/// Offset of the start of the column description section.
 		/// </summary>
-		internal static readonly int ColumnDescriptionOffset = 32;
+		internal static readonly Int32 ColumnDescriptionOffset = 32;
 
 		/// <summary>
 		/// Length of a column description entry.
 		/// </summary>
-		internal static readonly int ColumnDescriptionLength = 32;
+		internal static readonly Int32 ColumnDescriptionLength = 32;
 
 		/// <summary>
 		/// Number of bytes to the end of a column entry from the end of the decimal byte.
 		/// </summary>
-		internal static readonly int BytesFromEndOfDecimalInFieldRecord = 14;
+		internal static readonly Int32 BytesFromEndOfDecimalInFieldRecord = 14;
 
 		/// <summary>
 		/// Character used to specify a null value for numbers.
@@ -73,7 +73,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Character used to specify a null value for date-time values.
 		/// </summary>
-		internal static readonly string NullDateValue = new String('0', 8);
+		internal static readonly String NullDateValue = new String('0', 8);
 
 		/// <summary>
 		/// Character used to indicate the end of the dBase header in the file.
@@ -88,12 +88,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// The last updated value in the header is measured from this year.
 		/// </summary>
-		internal static readonly int DbaseEpoch = 1900;
+		internal static readonly Int32 DbaseEpoch = 1900;
 
 		/// <summary>
 		/// Size of the column name field in a column description entry.
 		/// </summary>
-		internal static readonly int FieldNameLength = 11;
+		internal static readonly Int32 FieldNameLength = 11;
 
 		/// <summary>
 		/// The format used to store numbers in a dBase file.

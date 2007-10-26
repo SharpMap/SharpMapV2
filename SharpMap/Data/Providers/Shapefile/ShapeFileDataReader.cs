@@ -169,7 +169,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			Dispose();
 		}
 
-		public int Depth
+		public Int32 Depth
 		{
 			get
 			{
@@ -209,7 +209,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return reading;
 		}
 
-		public int RecordsAffected
+		public Int32 RecordsAffected
 		{
 			get { return -1; }
 		}
@@ -218,7 +218,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#region IDataRecord Members
 
-		public int FieldCount
+		public Int32 FieldCount
 		{
 			get
 			{
@@ -227,7 +227,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 		}
 
-		public bool GetBoolean(int i)
+		public bool GetBoolean(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -235,7 +235,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToBoolean(_currentFeature[i]);
 		}
 
-		public byte GetByte(int i)
+		public byte GetByte(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -243,12 +243,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToByte(_currentFeature[i]);
 		}
 
-		public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+		public long GetBytes(Int32 i, long fieldOffset, byte[] buffer, Int32 bufferoffset, Int32 length)
 		{
 			throw new NotImplementedException();
 		}
 
-		public char GetChar(int i)
+		public char GetChar(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -256,22 +256,22 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToChar(_currentFeature[i]);
 		}
 
-		public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+		public long GetChars(Int32 i, long fieldoffset, char[] buffer, Int32 bufferoffset, Int32 length)
 		{
 			throw new NotImplementedException();
 		}
 
-		public IDataReader GetData(int i)
+		public IDataReader GetData(Int32 i)
 		{
 			throw new NotSupportedException();
 		}
 
-		public string GetDataTypeName(int i)
+		public String GetDataTypeName(Int32 i)
 		{
 			throw new NotImplementedException();
 		}
 
-		public DateTime GetDateTime(int i)
+		public DateTime GetDateTime(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -279,7 +279,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToDateTime(_currentFeature[i]);
 		}
 
-		public decimal GetDecimal(int i)
+		public decimal GetDecimal(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -287,17 +287,17 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToDecimal(_currentFeature[i]);
 		}
 
-		public double GetDouble(int i)
+		public Double GetDouble(Int32 i)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Type GetFieldType(int i)
+		public Type GetFieldType(Int32 i)
 		{
 			throw new NotImplementedException();
 		}
 
-		public float GetFloat(int i)
+		public float GetFloat(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -305,12 +305,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToSingle(_currentFeature[i]);
 		}
 
-		public Guid GetGuid(int i)
+		public Guid GetGuid(Int32 i)
 		{
 			throw new NotImplementedException();
 		}
 
-		public short GetInt16(int i)
+		public short GetInt16(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -318,7 +318,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToInt16(_currentFeature[i]);
 		}
 
-		public int GetInt32(int i)
+		public Int32 GetInt32(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -326,7 +326,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToInt32(_currentFeature[i]);
 		}
 
-		public long GetInt64(int i)
+		public long GetInt64(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -334,21 +334,21 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToInt64(_currentFeature[i]);
 		}
 
-		public string GetName(int i)
+		public String GetName(Int32 i)
 		{
 			checkState();
-			return _schemaTable.Rows[i][0] as string;
+			return _schemaTable.Rows[i][0] as String;
 		}
 
-		public int GetOrdinal(string name)
+		public Int32 GetOrdinal(String name)
 		{
 			checkState();
 
 			if (name == null) throw new ArgumentNullException("name");
 
-			int fieldCount = FieldCount;
+			Int32 fieldCount = FieldCount;
 
-			for (int i = 0; i < fieldCount; i++)
+			for (Int32 i = 0; i < fieldCount; i++)
 			{
 				if (name.Equals(GetName(i)))
 				{
@@ -356,7 +356,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 				}
 			}
 
-			for (int i = 0; i < fieldCount; i++)
+			for (Int32 i = 0; i < fieldCount; i++)
 			{
 				if (String.Compare(name, GetName(i), StringComparison.CurrentCultureIgnoreCase) == 0)
 				{
@@ -367,7 +367,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			throw new IndexOutOfRangeException("Column name not found");
 		}
 
-		public string GetString(int i)
+		public String GetString(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -375,7 +375,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return Convert.ToString(_currentFeature[i]);
 		}
 
-		public object GetValue(int i)
+		public object GetValue(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -383,15 +383,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return _currentFeature[i];
 		}
 
-		public int GetValues(object[] values)
+		public Int32 GetValues(object[] values)
 		{
 			checkState();
 
 			if (values == null) throw new ArgumentNullException("values");
 
-			int count = values.Length > FieldCount ? FieldCount : values.Length;
+			Int32 count = values.Length > FieldCount ? FieldCount : values.Length;
 
-			for (int i = 0; i < count; i++)
+			for (Int32 i = 0; i < count; i++)
 			{
 				values[i] = this[i];
 			}
@@ -399,7 +399,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return count;
 		}
 
-		public bool IsDBNull(int i)
+		public bool IsDBNull(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -407,7 +407,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return _currentFeature.IsNull(i);
 		}
 
-		public object this[string name]
+		public object this[String name]
 		{
 			get
 			{
@@ -416,7 +416,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 		}
 
-		public object this[int i]
+		public object this[Int32 i]
 		{
 			get
 			{
@@ -431,7 +431,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#region Private helper methods
 
-		private void checkIndex(int i)
+		private void checkIndex(Int32 i)
 		{
 			if (i >= FieldCount)
 			{

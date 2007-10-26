@@ -32,7 +32,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Returns the authority name for this factory (e.g., "EPSG" or "POSC").
 		/// </summary>
-		string Authority { get; }
+		String Authority { get; }
 		/// <summary>
 		/// Returns a projected coordinate system object corresponding to the given code.
 		/// </summary>
@@ -103,28 +103,28 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets a description of the object corresponding to a code.
 		/// </summary>
-		string DescriptionText { get; }
+		String DescriptionText { get; }
 		/// <summary>
 		/// Gets the Geoid code from a WKT name.
 		/// </summary>
 		/// <remarks>
 		///  In the OGC definition of WKT horizontal datums, the geoid is referenced 
-		/// by a quoted string, which is used as a key value. This method converts 
-		/// the key value string into a code recognized by this authority.
+		/// by a quoted String, which is used as a key value. This method converts 
+		/// the key value String into a code recognized by this authority.
 		/// </remarks>
 		/// <param name="wkt"></param>
 		/// <returns></returns>
-		string GeoidFromWktName(string wkt);
+		String GeoidFromWktName(String wkt);
 		/// <summary>
 		/// Gets the WKT name of a Geoid.
 		/// </summary>
 		/// <remarks>
 		///  In the OGC definition of WKT horizontal datums, the geoid is referenced by 
-		/// a quoted string, which is used as a key value. This method gets the OGC WKT 
+		/// a quoted String, which is used as a key value. This method gets the OGC WKT 
 		/// key value from a geoid code.
 		/// </remarks>
 		/// <param name="geoid"></param>
 		/// <returns></returns>
-		string WktGeoidName(string geoid);		
+		String WktGeoidName(String geoid);		
 	}
 }

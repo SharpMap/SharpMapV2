@@ -128,7 +128,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
-            int expectedRowCount = 0;
+            Int32 expectedRowCount = 0;
 
             foreach (FeatureDataRow row in table.Rows)
             {

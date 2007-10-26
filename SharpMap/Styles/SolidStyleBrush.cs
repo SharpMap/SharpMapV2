@@ -33,7 +33,7 @@ namespace SharpMap.Styles
         {
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return String.Format("[SolidStyleBrush] Color: {0}", Color);
         }

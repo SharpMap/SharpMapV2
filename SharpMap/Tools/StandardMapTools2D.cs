@@ -230,7 +230,7 @@ namespace SharpMap.Tools
                 view.ToWorld(viewBounds.LowerLeft), view.ToWorld(viewBounds.UpperRight));
 
             // Apply the GeometryFilter derived from the view's selection
-            for (int i = context.Map.Layers.Count - 1; i >= 0; i--)
+            for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)
             {
                 GeometryLayer layer = context.Map.Layers[i] as GeometryLayer;
 
@@ -320,7 +320,7 @@ namespace SharpMap.Tools
 
         #endregion
 
-        private static Predicate<ILayer> isInView(double scale)
+        private static Predicate<ILayer> isInView(Double scale)
         {
             return delegate(ILayer layer)
                    {
@@ -357,7 +357,7 @@ namespace SharpMap.Tools
             return view.Selection.Path.Bounds;
         }
 
-        private static void zoomByFactor(ActionContext<IMapView2D, Point2D> context, double zoomFactor)
+        private static void zoomByFactor(ActionContext<IMapView2D, Point2D> context, Double zoomFactor)
         {
             IMapView2D view = context.MapView;
             zoomFactor = 1 / zoomFactor;

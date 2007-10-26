@@ -36,9 +36,9 @@ namespace SharpMap.Indexing.RTree
 		private readonly EventWaitHandle _machineIdleEvent;
 		private readonly EventWaitHandle _terminateEvent;
 		private readonly Thread _restructureThread;
-		private readonly int _periodMilliseconds;
-		private int _terminating = 0;
-		private int _insertedEntriesSinceLastRestructure = 0;
+		private readonly Int32 _periodMilliseconds;
+		private Int32 _terminating = 0;
+		private Int32 _insertedEntriesSinceLastRestructure = 0;
 		private readonly IdleMonitor _idleMonitor;
 		#endregion
 		
@@ -62,7 +62,7 @@ namespace SharpMap.Indexing.RTree
 			: base(insertStrategy, nodeSplitStrategy, indexHeuristic)
 		{
 			_periodMilliseconds = restructureHeuristic.WhenToRestructure == RestructureOpportunity.Periodic
-									? (int)(restructureHeuristic.Period / 1000.0)
+									? (Int32)(restructureHeuristic.Period / 1000.0)
 									: -1;
 
 			_restructureStrategy = restructureStrategy;
@@ -81,7 +81,7 @@ namespace SharpMap.Indexing.RTree
 
 			RestructureOpportunity idle = RestructureOpportunity.OnMachineIdle | RestructureOpportunity.OnUserIdle;
 
-			if (((int)(restructureHeuristic.WhenToRestructure & idle)) > 0)
+			if (((Int32)(restructureHeuristic.WhenToRestructure & idle)) > 0)
 			{
 				if(_idleMonitor == null) 
 				{

@@ -38,7 +38,7 @@
 namespace SharpMap.Converters.WellKnownBinary
 {
     /// <summary>
-    /// Enumeration to determine geometry type in a Well-Known Binary string.
+    /// Enumeration to determine geometry type in a Well-Known Binary String.
     /// </summary>
     /// <remarks>
     /// <para>

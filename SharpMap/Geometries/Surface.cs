@@ -36,7 +36,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// The area of this Surface, as measured in the spatial reference system of this Surface.
 		/// </summary>
-		public abstract double Area { get; }
+		public abstract Double Area { get; }
 		/// <summary>
 		/// The mathematical centroid for this Surface as a Point.
 		/// The result is not guaranteed to be on this Surface.
@@ -55,7 +55,7 @@ namespace SharpMap.Geometries
 		///  to the coordinate dimension. This specification is restricted to geometries in two-dimensional coordinate
 		///  space.
 		/// </summary>
-		public override int Dimension
+		public override Int32 Dimension
 		{
 			get { return 2; }
 		}
