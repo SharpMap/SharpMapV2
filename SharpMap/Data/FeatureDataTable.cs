@@ -451,6 +451,28 @@ namespace SharpMap.Data
             merger.MergeFeatures(features);
         }
 
+        public void Merge(IFeatureDataRecord record)
+        {
+            Merge(record, SchemaMergeAction.AddWithKey);
+        }
+
+        public void Merge(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
+        {
+            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            merger.MergeFeature(record);
+        }
+
+        public void Merge(IEnumerable<IFeatureDataRecord> records)
+        {
+            Merge(records, SchemaMergeAction.AddWithKey);
+        }
+
+        public void Merge(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
+        {
+            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            merger.MergeFeatures(records);
+        }
+
         /// <summary>
         /// Merges schema from the FeatureDataTable to a target FeatureDataTable,
         /// adding columns and key information to the target.
@@ -862,28 +884,6 @@ namespace SharpMap.Data
         internal void EvaluateExpressions()
         {
             _evaluateExpression(this);
-        }
-
-		public void MergeFeature(IFeatureDataRecord record)
-        {
-            MergeFeature(record, SchemaMergeAction.AddWithKey);
-        }
-
-		public void MergeFeature(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
-        {
-            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-            merger.MergeFeature(record);
-        }
-
-		public void MergeFeatures(IEnumerable<IFeatureDataRecord> records)
-        {
-            MergeFeatures(records, SchemaMergeAction.AddWithKey);
-        }
-
-		public void MergeFeatures(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
-        {
-            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-            merger.MergeFeatures(records);
         }
 
         internal Boolean MergingData

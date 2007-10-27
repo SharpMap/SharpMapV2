@@ -69,7 +69,7 @@ namespace SharpMap.Data
                     FillSchema(table, SchemaType.Mapped, featureReader);
                 }
 
-                table.MergeFeatures(featureReader);
+                table.Merge((IEnumerable<IFeatureDataRecord>)featureReader);
 
                 tableIndex++;
             } while (dataReader.NextResult());

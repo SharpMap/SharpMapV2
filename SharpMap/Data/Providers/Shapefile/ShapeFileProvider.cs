@@ -1075,7 +1075,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             IEnumerable<UInt32> objectsInQuery = GetIntersectingObjectIds(bounds);
 
-            keyedTable.MergeFeatures(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
+            keyedTable.Merge(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
         }
 
         public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids)

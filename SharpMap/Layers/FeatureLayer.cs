@@ -236,7 +236,7 @@ namespace SharpMap.Layers
 
         protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
         {
-            _features.MergeFeatures(features);
+            _features.Merge(features);
         }
 
         #region Private helper methods
@@ -260,7 +260,7 @@ namespace SharpMap.Layers
 
             if (features != null)
             {
-                Features.MergeFeatures(features);
+                Features.Merge(features);
             }
 
             DataSource.EndExecuteFeatureQuery(result);
