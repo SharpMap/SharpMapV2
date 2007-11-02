@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {

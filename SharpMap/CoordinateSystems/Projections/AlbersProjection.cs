@@ -37,7 +37,7 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 

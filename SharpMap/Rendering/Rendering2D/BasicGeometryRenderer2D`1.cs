@@ -21,7 +21,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using SharpMap.Styles;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 
 namespace SharpMap.Rendering.Rendering2D

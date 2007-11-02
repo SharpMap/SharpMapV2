@@ -22,7 +22,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {

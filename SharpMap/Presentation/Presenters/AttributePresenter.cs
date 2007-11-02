@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using SharpMap.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Expressions;

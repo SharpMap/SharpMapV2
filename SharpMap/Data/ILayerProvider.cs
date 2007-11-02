@@ -19,7 +19,7 @@
 using System;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Data
 {

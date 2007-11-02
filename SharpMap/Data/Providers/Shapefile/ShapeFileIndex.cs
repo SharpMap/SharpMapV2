@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile

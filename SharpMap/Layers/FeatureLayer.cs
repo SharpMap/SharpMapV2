@@ -21,7 +21,7 @@ using System.Collections;
 using System.Data;
 using System.Globalization;
 using SharpMap.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 using System.Collections.Generic;

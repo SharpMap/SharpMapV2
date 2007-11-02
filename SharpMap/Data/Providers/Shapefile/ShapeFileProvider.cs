@@ -28,7 +28,7 @@ using System.Threading;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
 using SharpMap.Expressions;
@@ -483,7 +483,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <example>
         /// Declaring a delegate method for filtering (multi)polygon-features whose area is larger than 5.
         /// <code>
-        /// using SharpMap.Geometries;
+        /// using GeoAPI.Geometries;
         /// [...]
         /// myShapeDataSource.FilterDelegate = CountryFilter;
         /// [...]

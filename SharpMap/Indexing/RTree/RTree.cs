@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {

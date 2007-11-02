@@ -20,7 +20,7 @@ using System;
 using System.Data;
 using System.Reflection.Emit;
 using SharpMap.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using System.Reflection;
 
 namespace SharpMap.Data

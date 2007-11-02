@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Indexing.QuadTree
 {

@@ -837,6 +837,23 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
+        #region IVertexStream<Point2D,DoubleComponent> Members
+
+        public IEnumerable<Point2D> GetVertexes()
+        {
+            yield return LowerLeft;
+            yield return UpperLeft;
+            yield return UpperRight;
+            yield return LowerLeft;
+        }
+
+        public IEnumerable<Point2D> GetVertexes(ITransformMatrix<DoubleComponent> transform)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region Private Helper Methods
 
         private static void checkIndexes(Int32 row, Int32 column)
@@ -1052,18 +1069,6 @@ namespace SharpMap.Rendering.Rendering2D
         {
             throw new NotSupportedException();
         }
-        #endregion
-
-        #region IVertexStream<Point2D,DoubleComponent> Members
-
-        public IEnumerable<Point2D> GetVertices()
-        {
-            yield return LowerLeft;
-            yield return UpperLeft;
-            yield return UpperRight;
-            yield return LowerLeft;
-        }
-
         #endregion
     }
 }

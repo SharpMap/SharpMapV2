@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {

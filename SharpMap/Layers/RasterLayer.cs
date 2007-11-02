@@ -17,7 +17,7 @@
 
 using System;
 using SharpMap.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers

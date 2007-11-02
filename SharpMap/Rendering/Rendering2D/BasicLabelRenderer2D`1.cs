@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
@@ -103,7 +103,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         private static IEnumerable<Path2D> generateHaloPath(Rectangle2D layoutRectangle)
         {
-            Path2D path = new Path2D(layoutRectangle.GetVertices(), true);
+            Path2D path = new Path2D(layoutRectangle.GetVertexes(), true);
             yield return path;
         }
 

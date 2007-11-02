@@ -23,7 +23,7 @@ using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 
