@@ -22,7 +22,7 @@ using GeoAPI.CoordinateSystems.Transformations;
 using NPack;
 using NPack.Interfaces;
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
     /// <summary>
     /// Transformation for applying 

@@ -19,43 +19,45 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using NPack.Interfaces;
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
 	/// <summary>
 	/// The GeographicTransform class is implemented on geographic transformation objects and
 	/// implements datum transformations between geographic coordinate systems.
 	/// </summary>
-	public class GeographicTransform : MathTransform
+    public class GeographicTransform<TCoordinate> : MathTransform<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
 	{
-		internal GeographicTransform(IGeographicCoordinateSystem sourceGCS, IGeographicCoordinateSystem targetGCS)
+		internal GeographicTransform(IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
 		{
-			_SourceGCS = sourceGCS;
-			_TargetGCS = targetGCS;
+			_source = source;
+			_target = target;
 		}
 
 		#region IGeographicTransform Members
 
-		private IGeographicCoordinateSystem _SourceGCS;
+		private IGeographicCoordinateSystem<TCoordinate> _source;
 
 		/// <summary>
 		/// Gets or sets the source geographic coordinate system for the transformation.
 		/// </summary>
-		public IGeographicCoordinateSystem SourceGCS
+		public IGeographicCoordinateSystem<TCoordinate> Source
 		{
-			get { return _SourceGCS; }
-			set { _SourceGCS = value; }
+			get { return _source; }
+			set { _source = value; }
 		}
 
-		private IGeographicCoordinateSystem _TargetGCS;
+		private IGeographicCoordinateSystem<TCoordinate> _target;
 
 		/// <summary>
 		/// Gets or sets the target geographic coordinate system for the transformation.
 		/// </summary>
-		public IGeographicCoordinateSystem TargetGCS
+		public IGeographicCoordinateSystem<TCoordinate> Target
 		{
-			get { return _TargetGCS; }
-			set { _TargetGCS = value; }
+			get { return _target; }
+			set { _target = value; }
 		}
 
 		/// <summary>
@@ -88,7 +90,7 @@ namespace ProjNet.Transformations
 		/// </summary>
 		/// <remarks>This method may fail if the transform is not one to one. However, all cartographic projections should succeed.</remarks>
 		/// <returns></returns>
-		public override IMathTransform Inverse()
+		public override IMathTransform<TCoordinate> Inverse()
 		{
 			throw new NotImplementedException();
 		}
@@ -98,13 +100,13 @@ namespace ProjNet.Transformations
 		/// </summary>
 		/// <param name="point"></param>
 		/// <returns></returns>
-        public override double[] Transform(double[] point)
+        public override TCoordinate Transform(TCoordinate point)
 		{
-            double[] pOut = (double[]) point.Clone();
-            pOut[0] /= SourceGCS.AngularUnit.RadiansPerUnit;
-            pOut[0] -= SourceGCS.PrimeMeridian.Longitude / SourceGCS.PrimeMeridian.AngularUnit.RadiansPerUnit;
-            pOut[0] += TargetGCS.PrimeMeridian.Longitude / TargetGCS.PrimeMeridian.AngularUnit.RadiansPerUnit;
-            pOut[0] *= SourceGCS.AngularUnit.RadiansPerUnit;
+            TCoordinate pOut = (TCoordinate) point.Clone();
+            pOut[0] /= Source.AngularUnit.RadiansPerUnit;
+            pOut[0] -= Source.PrimeMeridian.Longitude / Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
+            pOut[0] += Target.PrimeMeridian.Longitude / Target.PrimeMeridian.AngularUnit.RadiansPerUnit;
+            pOut[0] *= Source.AngularUnit.RadiansPerUnit;
 			return pOut;
 		}
 
@@ -125,7 +127,7 @@ namespace ProjNet.Transformations
 		/// </remarks>
 		/// <param name="points"></param>
 		/// <returns></returns>
-        public override List<double[]> TransformList(List<double[]> points)
+        public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
 		{
             List<double[]> trans = new List<double[]>(points.Count);
             foreach (double[] p in points)

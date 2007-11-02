@@ -18,14 +18,18 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
+using NPack.Interfaces;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
 	/// <summary>
 	/// A 2D coordinate system suitable for positions on the Earth's surface.
 	/// </summary>
-	public abstract class HorizontalCoordinateSystem : CoordinateSystem, IHorizontalCoordinateSystem
+    public abstract class HorizontalCoordinateSystem<TCoordinate> : CoordinateSystem<TCoordinate>, IHorizontalCoordinateSystem<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
 	{
+		private IHorizontalDatum _horizontalDatum;
+
 		/// <summary>
 		/// Creates an instance of HorizontalCoordinateSystem
 		/// </summary>
@@ -37,28 +41,30 @@ namespace ProjNet
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal HorizontalCoordinateSystem(IHorizontalDatum datum, List<AxisInfo> axisInfo, 
+		internal HorizontalCoordinateSystem(IHorizontalDatum datum, IEnumerable<AxisInfo> axisInfo, 
 			string name, string authority, long code, string alias,
 			string remarks, string abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
-			_HorizontalDatum = datum;
-			if (axisInfo.Count != 2)
-				throw new ArgumentException("Axis info should contain two axes for horizontal coordinate systems");
-			base.AxisInfo = axisInfo;
+			_horizontalDatum = datum;
+
+			AxisInfo = new List<AxisInfo>(axisInfo);
+
+			if (AxisInfo.Count != 2)
+			{
+			    throw new ArgumentException("Axis info should contain two axes for horizontal coordinate systems");
+			}
 		}
 
 		#region IHorizontalCoordinateSystem Members
-
-		private IHorizontalDatum _HorizontalDatum;
 
 		/// <summary>
 		/// Gets or sets the HorizontalDatum.
 		/// </summary>
 		public IHorizontalDatum HorizontalDatum
 		{
-			get { return _HorizontalDatum; }
-			set { _HorizontalDatum = value; }
+			get { return _horizontalDatum; }
+			set { _horizontalDatum = value; }
 		}
 		
 		#endregion

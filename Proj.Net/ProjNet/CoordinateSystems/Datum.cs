@@ -17,7 +17,7 @@
 
 using GeoAPI.CoordinateSystems;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
 	/// <summary>
 	/// A set of quantities from which other quantities are calculated.

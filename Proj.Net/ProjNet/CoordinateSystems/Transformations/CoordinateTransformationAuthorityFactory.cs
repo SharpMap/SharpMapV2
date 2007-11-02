@@ -15,7 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
 	/// <summary>
 	/// Creates coordinate transformation objects from codes. The codes are maintained by an external authority. A commonly used authority is EPSG, which is also used in the GeoTIFF standard

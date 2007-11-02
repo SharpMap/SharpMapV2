@@ -20,7 +20,7 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.CoordinateSystems;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
 	/// <summary>
 	/// Horizontal datum defining the standard datum information.

@@ -19,7 +19,7 @@ using System;
 using System.Text;
 using GeoAPI.CoordinateSystems;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
 	/// <summary>
 	/// The Info object defines the standard information

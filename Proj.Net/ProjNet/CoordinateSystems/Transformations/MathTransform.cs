@@ -21,7 +21,7 @@ using GeoAPI.CoordinateSystems.Transformations;
 using NPack;
 using NPack.Interfaces;
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
 	/// <summary>
 	/// Abstract class for creating multi-dimensional coordinate points transformations.
@@ -140,33 +140,43 @@ namespace ProjNet.Transformations
 		/// </summary>
 		public abstract void Invert();
 
+		/// <summary>
+		/// Number of degrees per radian.
+		/// </summary>
+		protected const double DegreesPerRadian = 180 / Math.PI;
 
 		/// <summary>
-		/// To convert degrees to radians, multiply degrees by pi/180. 
+		/// Number of radians per degree.
 		/// </summary>
-		protected static double Degrees2Radians(double deg)
+		protected const double RadiansPerDegree = Math.PI / 180;
+
+		/// <summary>
+		/// Converts an angular measure in degrees into an equivilant measure
+		/// in radians.
+		/// </summary>
+		/// <param name="degrees">The measure in degrees to convert.</param>
+		/// <returns>
+		/// The number of radians for the given <paramref name="degrees"/>
+		/// measure.
+		/// </returns>
+		protected static double DegreesToRadians(double degrees)
 		{
-			return (D2R * deg);
+			return RadiansPerDegree * degrees;
 
 		}
-		/// <summary>
-		/// R2D
-		/// </summary>
-		protected const double R2D = 180 / Math.PI;
 
 		/// <summary>
-		/// D2R
+		/// Converts an angular measure in radians into an equivilant measure
+		/// in degrees.
 		/// </summary>
-		protected const double D2R = Math.PI / 180;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="rad"></param>
-		/// <returns></returns>
-		protected static double Radians2Degrees(double rad)
+		/// <param name="radians">The measure in radians to convert.</param>
+		/// <returns>
+		/// The number of radians for the given <paramref name="radians"/>
+		/// measure.
+		/// </returns>
+		protected static double RadiansToDegrees(double radians)
 		{
-			return (R2D * rad);
+			return DegreesPerRadian * radians;
 		}
 
 		#endregion

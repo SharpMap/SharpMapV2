@@ -20,41 +20,47 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using GeoAPI.CoordinateSystems;
+using NPack.Interfaces;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
-	/// <summary>
-	/// A 2D cartographic coordinate system.
-	/// </summary>
-	public class ProjectedCoordinateSystem : HorizontalCoordinateSystem,  IProjectedCoordinateSystem
-	{
-		/// <summary>
-		/// Initializes a new instance of a projected coordinate system
-		/// </summary>
-		/// <param name="datum">Horizontal datum</param>
-		/// <param name="geographicCoordinateSystem">Geographic coordinate system</param>
-		/// <param name="linearUnit">Linear unit</param>
-		/// <param name="projection">Projection</param>
-		/// <param name="axisInfo">Axis info</param>
-		/// <param name="name">Name</param>
-		/// <param name="authority">Authority name</param>
-		/// <param name="code">Authority-specific identification code.</param>
-		/// <param name="alias">Alias</param>
-		/// <param name="abbreviation">Abbreviation</param>
-		/// <param name="remarks">Provider-supplied remarks</param>
-		internal ProjectedCoordinateSystem(IHorizontalDatum datum, IGeographicCoordinateSystem geographicCoordinateSystem,
-			ILinearUnit linearUnit, IProjection projection, List<AxisInfo> axisInfo,
-			string name, string authority, long code, string alias,
-			string remarks, string abbreviation)
-			: base(datum, axisInfo, name, authority, code, alias, abbreviation, remarks)
-		{
-			_GeographicCoordinateSystem = geographicCoordinateSystem;
-			_LinearUnit = linearUnit;
-			_Projection = projection;
-		}
+    /// <summary>
+    /// A 2D cartographic coordinate system.
+    /// </summary>
+    public class ProjectedCoordinateSystem<TCoordinate> : HorizontalCoordinateSystem<TCoordinate>,
+                                                          IProjectedCoordinateSystem<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+            IConvertible
+    {
+        /// <summary>
+        /// Initializes a new instance of a projected coordinate system
+        /// </summary>
+        /// <param name="datum">Horizontal datum</param>
+        /// <param name="geographicCoordinateSystem">Geographic coordinate system</param>
+        /// <param name="linearUnit">Linear unit</param>
+        /// <param name="projection">Projection</param>
+        /// <param name="axisInfo">Axis info</param>
+        /// <param name="name">Name</param>
+        /// <param name="authority">Authority name</param>
+        /// <param name="code">Authority-specific identification code.</param>
+        /// <param name="alias">Alias</param>
+        /// <param name="abbreviation">Abbreviation</param>
+        /// <param name="remarks">Provider-supplied remarks</param>
+        internal ProjectedCoordinateSystem(IHorizontalDatum datum,
+                                           IGeographicCoordinateSystem<TCoordinate> geographicCoordinateSystem,
+                                           ILinearUnit linearUnit, IProjection projection, IEnumerable<AxisInfo> axisInfo,
+                                           string name, string authority, long code, string alias,
+                                           string remarks, string abbreviation)
+            : base(datum, axisInfo, name, authority, code, alias, abbreviation, remarks)
+        {
+            _geographicCoordinateSystem = geographicCoordinateSystem;
+            _linearUnit = linearUnit;
+            _projection = projection;
+        }
 
-		#region Predefined projected coordinate systems
-/*
+        #region Predefined projected coordinate systems
+
+        /*
 		/// <summary>
 		/// Universal Transverse Mercator - WGS84
 		/// </summary>
@@ -81,128 +87,158 @@ namespace ProjNet
 			
 		}*/
 
-		#endregion
+        #endregion
 
-		#region IProjectedCoordinateSystem Members
+        #region IProjectedCoordinateSystem Members
 
-		private IGeographicCoordinateSystem _GeographicCoordinateSystem;
+        private IGeographicCoordinateSystem<TCoordinate> _geographicCoordinateSystem;
 
-		/// <summary>
-		/// Gets or sets the GeographicCoordinateSystem.
-		/// </summary>
-		public IGeographicCoordinateSystem GeographicCoordinateSystem
-		{
-			get { return _GeographicCoordinateSystem; }
-			set { _GeographicCoordinateSystem = value; }
-		}
+        /// <summary>
+        /// Gets or sets the GeographicCoordinateSystem.
+        /// </summary>
+        public IGeographicCoordinateSystem<TCoordinate> GeographicCoordinateSystem
+        {
+            get { return _geographicCoordinateSystem; }
+            set { _geographicCoordinateSystem = value; }
+        }
 
-		private ILinearUnit _LinearUnit;
+        private ILinearUnit _linearUnit;
 
-		/// <summary>
-		/// Gets or sets the <see cref="LinearUnit">LinearUnits</see>. The linear unit must be the same as the <see cref="CoordinateSystem"/> units.
-		/// </summary>
-		public ILinearUnit LinearUnit
-		{
-			get { return _LinearUnit; }
-			set { _LinearUnit = value; }
-		}
+        /// <summary>
+        /// Gets or sets the <see cref="LinearUnit">LinearUnits</see>. 
+        /// The linear unit must be the same as the 
+        /// <see cref="CoordinateSystem{TCoordinate}"/> units.
+        /// </summary>
+        public ILinearUnit LinearUnit
+        {
+            get { return _linearUnit; }
+            set { _linearUnit = value; }
+        }
 
-		/// <summary>
-		/// Gets units for dimension within coordinate system. Each dimension in 
-		/// the coordinate system has corresponding units.
-		/// </summary>
-		/// <param name="dimension">Dimension</param>
-		/// <returns>Unit</returns>
-		public override IUnit GetUnits(int dimension)
-		{
-			return _LinearUnit;
-		}
+        /// <summary>
+        /// Gets units for dimension within coordinate system. Each dimension in 
+        /// the coordinate system has corresponding units.
+        /// </summary>
+        /// <param name="dimension">Dimension</param>
+        /// <returns>Unit</returns>
+        public override IUnit GetUnits(int dimension)
+        {
+            return _linearUnit;
+        }
 
-		private IProjection _Projection;
+        private IProjection _projection;
 
-		/// <summary>
-		/// Gets or sets the projection
-		/// </summary>
-		public IProjection Projection
-		{
-			get { return _Projection; }
-			set { _Projection = value; }
-		}
+        /// <summary>
+        /// Gets or sets the projection
+        /// </summary>
+        public IProjection Projection
+        {
+            get { return _projection; }
+            set { _projection = value; }
+        }
 
-		/// <summary>
-		/// Returns the Well-known text for this object
-		/// as defined in the simple features specification.
-		/// </summary>
-		public override string Wkt
-		{
-			get
-			{
-				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat("PROJCS[\"{0}\", {1}, {2}",Name, GeographicCoordinateSystem.Wkt, Projection.Wkt);
-				for(int i=0;i<Projection.NumParameters;i++)
-					sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, ", {0}", Projection.GetParameter(i).Wkt);
-				sb.AppendFormat(", {0}", LinearUnit.Wkt);
-				//Skip axis info if they contain default values
-				if (AxisInfo.Count != 2 ||
-					AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientationEnum.East ||
-					AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientationEnum.North)
-					for (int i = 0; i < AxisInfo.Count; i++)
-						sb.AppendFormat(", {0}", GetAxis(i).Wkt);
-				if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
-					sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);				
-				sb.Append("]");
-				return sb.ToString();
-			}
-		}
+        /// <summary>
+        /// Returns the Well-known text for this object
+        /// as defined in the simple features specification.
+        /// </summary>
+        public override string Wkt
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("PROJCS[\"{0}\", {1}, {2}", Name, GeographicCoordinateSystem.Wkt, Projection.Wkt);
 
-		/// <summary>
-		/// Gets an XML representation of this object.
-		/// </summary>
-		public override string Xml
-		{
-			get
-			{
-				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
-					"<CS_CoordinateSystem Dimension=\"{0}\"><CS_ProjectedCoordinateSystem>{1}",
-					this.Dimension, InfoXml);
-				foreach (AxisInfo ai in this.AxisInfo)
-					sb.Append(ai.XML);
+                foreach (ProjectionParameter parameter in _projection)
+                {
+                    sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, ", {0}", parameter.Wkt);
+                }
 
-				sb.AppendFormat("{0}{1}{2}</CS_ProjectedCoordinateSystem></CS_CoordinateSystem>",
-					GeographicCoordinateSystem.XML, LinearUnit.XML, Projection.XML);
-				return sb.ToString();
-			}
-		}
+                sb.AppendFormat(", {0}", LinearUnit.Wkt);
 
-		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance.
-		/// Only parameters used for coordinate system are used for comparison.
-		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
-		{
-			if (!(obj is ProjectedCoordinateSystem))
-				return false;
-			ProjectedCoordinateSystem pcs = obj as ProjectedCoordinateSystem;
-			if(pcs.Dimension != this.Dimension)
-				return false;
-			for (int i = 0; i < pcs.Dimension; i++)
-			{
-				if(pcs.GetAxis(i).Orientation != this.GetAxis(i).Orientation)
-					return false;
-				if (!pcs.GetUnits(i).EqualParams(this.GetUnits(i)))
-					return false;
-			}
+                //Skip axis info if they contain default values
+                if (AxisInfo.Count != 2 ||
+                    AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientation.East ||
+                    AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientation.North)
+                {
+                    foreach (AxisInfo info in AxisInfo)
+                    {
+                        sb.AppendFormat(", {0}", info.Wkt);
+                    }
+                }
 
-			return	pcs.GeographicCoordinateSystem.EqualParams(this.GeographicCoordinateSystem) && 
-					pcs.HorizontalDatum.EqualParams(this.HorizontalDatum) &&
-					pcs.LinearUnit.EqualParams(this.LinearUnit) &&
-					pcs.Projection.EqualParams(this.Projection);
-		}
+                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                {
+                    sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
+                }
 
-		#endregion
-	}
+                sb.Append("]");
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets an XML representation of this object.
+        /// </summary>
+        public override string Xml
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
+                                "<CS_CoordinateSystem Dimension=\"{0}\"><CS_ProjectedCoordinateSystem>{1}",
+                                Dimension, InfoXml);
+
+                foreach (AxisInfo ai in AxisInfo)
+                {
+                    sb.Append(ai.Xml);
+                }
+
+                sb.AppendFormat("{0}{1}{2}</CS_ProjectedCoordinateSystem></CS_CoordinateSystem>",
+                                GeographicCoordinateSystem.Xml, LinearUnit.Xml, Projection.Xml);
+
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the values of this instance is equal to the values of another instance.
+        /// Only parameters used for coordinate system are used for comparison.
+        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>True if equal</returns>
+        public override bool EqualParams(object obj)
+        {
+            ProjectedCoordinateSystem<TCoordinate> other = obj as ProjectedCoordinateSystem<TCoordinate>;
+
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            if (other.Dimension != Dimension)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < other.Dimension; i++)
+            {
+                if (other.GetAxis(i).Orientation != GetAxis(i).Orientation)
+                {
+                    return false;
+                }
+                if (!other.GetUnits(i).EqualParams(GetUnits(i)))
+                {
+                    return false;
+                }
+            }
+
+            return other.GeographicCoordinateSystem.EqualParams(GeographicCoordinateSystem) &&
+                   other.HorizontalDatum.EqualParams(HorizontalDatum) &&
+                   other.LinearUnit.EqualParams(LinearUnit) &&
+                   other.Projection.EqualParams(Projection);
+        }
+
+        #endregion
+    }
 }

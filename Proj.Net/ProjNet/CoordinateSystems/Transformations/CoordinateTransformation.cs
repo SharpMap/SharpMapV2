@@ -15,23 +15,36 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using NPack.Interfaces;
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
 	/// <summary>
 	/// Describes a coordinate transformation. This class only describes a 
 	/// coordinate transformation, it does not actually perform the transform 
 	/// operation on points. To transform points you must use a <see cref="MathTransform"/>.
 	/// </summary>
-	public class CoordinateTransformation : ICoordinateTransformation
-	{
+    public class CoordinateTransformation<TCoordinate> : ICoordinateTransformation<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
+    {
+        private readonly ICoordinateSystem<TCoordinate> _source;
+        private readonly ICoordinateSystem<TCoordinate> _target;
+        private readonly TransformType _transformType;
+        private readonly string _areaOfUse;
+        private readonly string _authority;
+        private readonly long _authorityCode;
+        private readonly IMathTransform<TCoordinate> _mathTransform;
+        private readonly string _name;
+        private readonly string _remarks;
+
 		/// <summary>
 		/// Initializes an instance of a CoordinateTransformation
 		/// </summary>
-		/// <param name="sourceCS">Source coordinate system</param>
-		/// <param name="targetCS">Target coordinate system</param>
+		/// <param name="source">Source coordinate system</param>
+		/// <param name="target">Target coordinate system</param>
 		/// <param name="transformType">Transformation type</param>
 		/// <param name="mathTransform">Math transform</param>
 		/// <param name="name">Name of transform</param>
@@ -39,35 +52,32 @@ namespace ProjNet.Transformations
 		/// <param name="authorityCode">Authority code</param>
 		/// <param name="areaOfUse">Area of use</param>
 		/// <param name="remarks">Remarks</param>
-		internal CoordinateTransformation(ICoordinateSystem sourceCS, ICoordinateSystem targetCS, TransformType transformType, IMathTransform mathTransform, 
+		internal CoordinateTransformation(ICoordinateSystem<TCoordinate> source, ICoordinateSystem<TCoordinate> target, TransformType transformType, IMathTransform<TCoordinate> mathTransform, 
 										string name, string authority, long authorityCode, string areaOfUse, string remarks)
-			: base()
 		{
-			_TargetCS = targetCS;
-			_SourceCS = sourceCS;
-			_TransformType = transformType;
-			_MathTransform = mathTransform;
-			_Name = name;
-			_Authority = authority;
-			_AuthorityCode = authorityCode;
-			_AreaOfUse = areaOfUse;
-			_Remarks = remarks;			
+			_target = target;
+			_source = source;
+			_transformType = transformType;
+			_mathTransform = mathTransform;
+			_name = name;
+			_authority = authority;
+			_authorityCode = authorityCode;
+			_areaOfUse = areaOfUse;
+			_remarks = remarks;			
 		}
 		
 
 
 		#region ICoordinateTransformation Members
 
-		private string _AreaOfUse;
 		/// <summary>
 		/// Human readable description of domain in source coordinate system.
 		/// </summary>		
 		public string AreaOfUse
 		{
-			get { return _AreaOfUse; }
+			get { return _areaOfUse; }
 		}
 
-		private string _Authority;
 		/// <summary>
 		/// Authority which defined transformation and parameter values.
 		/// </summary>
@@ -76,71 +86,64 @@ namespace ProjNet.Transformations
 		/// </remarks>
 		public string Authority
 		{
-			get { return _Authority; }
+			get { return _authority; }
 		}
 
-		private long _AuthorityCode;
 		/// <summary>
 		/// Code used by authority to identify transformation. An empty string is used for no code.
 		/// </summary>
 		/// <remarks>The AuthorityCode is a compact string defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
 		public long AuthorityCode
 		{
-			get { return _AuthorityCode; }
+			get { return _authorityCode; }
 		}
 
-		private IMathTransform _MathTransform;
 		/// <summary>
 		/// Gets math transform.
 		/// </summary>
-		public IMathTransform MathTransform
+        public IMathTransform<TCoordinate> MathTransform
 		{
-			get { return _MathTransform; }
+			get { return _mathTransform; }
 		}
 
-		private string _Name;
 		/// <summary>
 		/// Name of transformation.
 		/// </summary>
 		public string Name
 		{
-			get { return _Name; }
+			get { return _name; }
 		}
 
-		private string _Remarks;
 		/// <summary>
 		/// Gets the provider-supplied remarks.
 		/// </summary>
 		public string Remarks
 		{
-			get { return _Remarks; }
+			get { return _remarks; }
 		}
 
-		private ICoordinateSystem _SourceCS;
 		/// <summary>
 		/// Source coordinate system.
 		/// </summary>
-		public ICoordinateSystem SourceCS
+        public ICoordinateSystem<TCoordinate> Source
 		{
-			get { return _SourceCS; }
+			get { return _source; }
 		}
 
-		private ICoordinateSystem _TargetCS;
 		/// <summary>
 		/// Target coordinate system.
 		/// </summary>
-		public ICoordinateSystem TargetCS
+        public ICoordinateSystem<TCoordinate> Target
 		{
-			get { return _TargetCS; }
+			get { return _target; }
 		}
 
-		private TransformType _TransformType;
 		/// <summary>
 		/// Semantic type of transform. For example, a datum transformation or a coordinate conversion.
 		/// </summary>
 		public TransformType TransformType
 		{
-			get { return _TransformType; }
+			get { return _transformType; }
 		}
 
 		#endregion

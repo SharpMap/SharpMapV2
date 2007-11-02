@@ -20,7 +20,7 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.CoordinateSystems;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
 	/// <summary>
 	/// A meridian used to take longitude measurements from.

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
     /// <summary>
     /// 
@@ -96,10 +96,10 @@ namespace ProjNet.Transformations
                 }
             }
 
-            es = 1.0 - (semiMinor*semiMinor)/(semiMajor*semiMajor); //e^2
-            ses = (Math.Pow(semiMajor, 2) - Math.Pow(semiMinor, 2))/Math.Pow(semiMinor, 2);
-            ba = semiMinor/semiMajor;
-            ab = semiMajor/semiMinor;
+            es = 1.0 - (semiMinor * semiMinor) / (semiMajor * semiMajor); //e^2
+            ses = (Math.Pow(semiMajor, 2) - Math.Pow(semiMinor, 2)) / Math.Pow(semiMinor, 2);
+            ba = semiMinor / semiMajor;
+            ab = semiMajor / semiMinor;
         }
 
 
@@ -111,7 +111,7 @@ namespace ProjNet.Transformations
         {
             if (_inverse == null)
             {
-                _inverse = new GeocentricTransform(_parameters, !_isInverse);
+                _inverse = new GeocentricTransform<TCoordinate>(_parameters, !_isInverse);
             }
             return _inverse;
         }
@@ -121,16 +121,16 @@ namespace ProjNet.Transformations
         /// </summary>
         /// <param name="lonlat">The point in decimal degrees.</param>
         /// <returns>Point in projected meters</returns>
-        private double[] DegreesToMeters(double[] lonlat)
+        private TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            double lon = Degrees2Radians(lonlat[0]);
-            double lat = Degrees2Radians(lonlat[1]);
-            double h = lonlat.Length < 3 ? 0 : lonlat[2].Equals(Double.NaN) ? 0 : lonlat[2];
-            double v = semiMajor/Math.Sqrt(1 - es*Math.Pow(Math.Sin(lat), 2));
-            double x = (v + h)*Math.Cos(lat)*Math.Cos(lon);
-            double y = (v + h)*Math.Cos(lat)*Math.Sin(lon);
-            double z = ((1 - es)*v + h)*Math.Sin(lat);
-            return new double[] {x, y, z,};
+            double lon = DegreesToRadians(lonlat[0]);
+            double lat = DegreesToRadians(lonlat[1]);
+            double h = lonlat.ComponentCount < 3 ? 0 : lonlat[2].Equals(Double.NaN) ? 0 : lonlat[2];
+            double v = semiMajor / Math.Sqrt(1 - es * Math.Pow(Math.Sin(lat), 2));
+            double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
+            double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
+            double z = ((1 - es) * v + h) * Math.Sin(lat);
+            return new TCoordinate(x, y, z);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace ProjNet.Transformations
         /// </summary>
         /// <param name="pnt">Point in meters</param>
         /// <returns>Transformed point in decimal degrees</returns>		
-        private double[] MetersToDegrees(double[] pnt)
+        private TCoordinate MetersToDegrees(TCoordinate pnt)
         {
             bool At_Pole = false; // indicates whether location is in polar region */
             double Z = pnt.Length < 3 ? 0 : pnt[2].Equals(Double.NaN) ? 0 : pnt[2];
@@ -154,11 +154,11 @@ namespace ProjNet.Transformations
             {
                 if (pnt[1] > 0)
                 {
-                    lon = Math.PI/2;
+                    lon = Math.PI / 2;
                 }
                 else if (pnt[1] < 0)
                 {
-                    lon = -Math.PI*0.5;
+                    lon = -Math.PI * 0.5;
                 }
                 else
                 {
@@ -167,50 +167,53 @@ namespace ProjNet.Transformations
                     if (Z > 0.0)
                     {
                         /* north pole */
-                        lat = Math.PI*0.5;
+                        lat = Math.PI * 0.5;
                     }
                     else if (Z < 0.0)
                     {
                         /* south pole */
-                        lat = -Math.PI*0.5;
+                        lat = -Math.PI * 0.5;
                     }
                     else
                     {
                         /* center of earth */
-                        return new double[] {Radians2Degrees(lon), Radians2Degrees(Math.PI*0.5), -semiMinor,};
+                        return new double[] { RadiansToDegrees(lon), RadiansToDegrees(Math.PI * 0.5), -semiMinor, };
                     }
                 }
             }
-            double W2 = pnt[0]*pnt[0] + pnt[1]*pnt[1]; // Square of distance from Z axis
+            double W2 = pnt[0] * pnt[0] + pnt[1] * pnt[1]; // Square of distance from Z axis
             double W = Math.Sqrt(W2); // distance from Z axis
-            double T0 = Z*AD_C; // initial estimate of vertical component
-            double S0 = Math.Sqrt(T0*T0 + W2); //initial estimate of horizontal component
-            double Sin_B0 = T0/S0; //sin(B0), B0 is estimate of Bowring aux variable
-            double Cos_B0 = W/S0; //cos(B0)
+            double T0 = Z * AD_C; // initial estimate of vertical component
+            double S0 = Math.Sqrt(T0 * T0 + W2); //initial estimate of horizontal component
+            double Sin_B0 = T0 / S0; //sin(B0), B0 is estimate of Bowring aux variable
+            double Cos_B0 = W / S0; //cos(B0)
             double Sin3_B0 = Math.Pow(Sin_B0, 3);
-            double T1 = Z + semiMinor*ses*Sin3_B0; //corrected estimate of vertical component
-            double Sum = W - semiMajor*es*Cos_B0*Cos_B0*Cos_B0; //numerator of cos(phi1)
-            double S1 = Math.Sqrt(T1*T1 + Sum*Sum); //corrected estimate of horizontal component
-            double Sin_p1 = T1/S1; //sin(phi1), phi1 is estimated latitude
-            double Cos_p1 = Sum/S1; //cos(phi1)
-            double Rn = semiMajor/Math.Sqrt(1.0 - es*Sin_p1*Sin_p1); //Earth radius at location
+            double T1 = Z + semiMinor * ses * Sin3_B0; //corrected estimate of vertical component
+            double Sum = W - semiMajor * es * Cos_B0 * Cos_B0 * Cos_B0; //numerator of cos(phi1)
+            double S1 = Math.Sqrt(T1 * T1 + Sum * Sum); //corrected estimate of horizontal component
+            double Sin_p1 = T1 / S1; //sin(phi1), phi1 is estimated latitude
+            double Cos_p1 = Sum / S1; //cos(phi1)
+            double Rn = semiMajor / Math.Sqrt(1.0 - es * Sin_p1 * Sin_p1); //Earth radius at location
+
             if (Cos_p1 >= COS_67P5)
             {
-                Height = W/Cos_p1 - Rn;
+                Height = W / Cos_p1 - Rn;
             }
             else if (Cos_p1 <= -COS_67P5)
             {
-                Height = W/-Cos_p1 - Rn;
+                Height = W / -Cos_p1 - Rn;
             }
             else
             {
-                Height = Z/Sin_p1 + Rn*(es - 1.0);
+                Height = Z / Sin_p1 + Rn * (es - 1.0);
             }
+
             if (!At_Pole)
             {
-                lat = Math.Atan(Sin_p1/Cos_p1);
+                lat = Math.Atan(Sin_p1 / Cos_p1);
             }
-            return new double[] {Radians2Degrees(lon), Radians2Degrees(lat), Height,};
+
+            return new double[] { RadiansToDegrees(lon), RadiansToDegrees(lat), Height, };
         }
 
         /// <summary>
@@ -218,7 +221,7 @@ namespace ProjNet.Transformations
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public override double[] Transform(double[] point)
+        public override TCoordinate Transform(TCoordinate point)
         {
             if (!_isInverse)
             {
@@ -247,15 +250,12 @@ namespace ProjNet.Transformations
         /// implementation will throw an exception. If this happens then the client should not
         /// make any assumptions about the state of the ordinal values.
         /// </remarks>
-        public override List<double[]> TransformList(List<double[]> points)
+        public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            List<double[]> result = new List<double[]>(points.Count);
-            for (int i = 0; i < points.Count; i++)
+            foreach (TCoordinate point in points)
             {
-                double[] point = points[i];
-                result.Add(Transform(point));
+                yield return Transform(point);
             }
-            return result;
         }
 
         /// <summary>

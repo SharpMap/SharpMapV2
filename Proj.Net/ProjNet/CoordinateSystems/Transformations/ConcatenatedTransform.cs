@@ -17,11 +17,14 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using NPack.Interfaces;
 
-namespace ProjNet.Transformations
+namespace ProjNet.CoordinateSystems.Transformations
 {
     internal class ConcatenatedTransform<TCoordinate> : MathTransform<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
     {
         protected IMathTransform<TCoordinate> _inverse;
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;

@@ -18,66 +18,68 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
+using NPack.Interfaces;
 
-namespace ProjNet
+namespace ProjNet.CoordinateSystems
 {
-	/// <summary>
-	/// The GeographicTransform class is implemented on geographic transformation objects and
-	/// implements datum transformations between geographic coordinate systems.
-	/// </summary>
-	public class GeographicTransform : Info, IGeographicTransform
-	{
-		internal GeographicTransform(
-			string name, string authority, long code, string alias, string remarks, string abbreviation,
-			IGeographicCoordinateSystem sourceGCS, IGeographicCoordinateSystem targetGCS)
-			: base(name, authority, code, alias, abbreviation, remarks)
-		{
-			_SourceGCS = sourceGCS;
-			_TargetGCS = targetGCS;
-		}
+    /// <summary>
+    /// The GeographicTransform class is implemented on geographic transformation objects and
+    /// implements datum transformations between geographic coordinate systems.
+    /// </summary>
+    public class GeographicTransform<TCoordinate> : Info, IGeographicTransform<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+            IConvertible
+    {
+        internal GeographicTransform(
+            string name, string authority, long code, string alias, string remarks, string abbreviation,
+            IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> targetGCS)
+            : base(name, authority, code, alias, abbreviation, remarks)
+        {
+            _source = source;
+            _target = targetGCS;
+        }
 
-		#region IGeographicTransform Members
+        #region IGeographicTransform Members
 
-		private IGeographicCoordinateSystem _SourceGCS;
+        private IGeographicCoordinateSystem<TCoordinate> _source;
+        private IGeographicCoordinateSystem<TCoordinate> _target;
 
-		/// <summary>
-		/// Gets or sets the source geographic coordinate system for the transformation.
-		/// </summary>
-		public IGeographicCoordinateSystem SourceGCS
-		{
-			get { return _SourceGCS; }
-			set { _SourceGCS = value; }
-		}
+        /// <summary>
+        /// Gets or sets the source geographic coordinate system for the transformation.
+        /// </summary>
+        public IGeographicCoordinateSystem<TCoordinate> Source
+        {
+            get { return _source; }
+            set { _source = value; }
+        }
 
-		private IGeographicCoordinateSystem _TargetGCS;
+        /// <summary>
+        /// Gets or sets the target geographic coordinate system for the transformation.
+        /// </summary>
+        public IGeographicCoordinateSystem<TCoordinate> Target
+        {
+            get { return _target; }
+            set { _target = value; }
+        }
 
-		/// <summary>
-		/// Gets or sets the target geographic coordinate system for the transformation.
-		/// </summary>
-		public IGeographicCoordinateSystem TargetGCS
-		{
-			get { return _TargetGCS; }
-			set { _TargetGCS = value; }
-		}
+        /// <summary>
+        /// Returns an accessor interface to the parameters for this geographic transformation.
+        /// </summary>
+        public IParameterInfo ParameterInfo
+        {
+            get { throw new NotImplementedException(); }
+        }
 
-		/// <summary>
-		/// Returns an accessor interface to the parameters for this geographic transformation.
-		/// </summary>
-		public IParameterInfo ParameterInfo
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		/// <summary>
-		/// Transforms an array of points from the source geographic coordinate
-		/// system to the target geographic coordinate system.
-		/// </summary>
-		/// <param name="points">On input points in the source geographic coordinate system</param>
-		/// <returns>Output points in the target geographic coordinate system</returns>
-        public List<double[]> Forward(List<double[]> points)
-		{
-			throw new NotImplementedException();
-			/*
+        /// <summary>
+        /// Transforms an array of points from the source geographic coordinate
+        /// system to the target geographic coordinate system.
+        /// </summary>
+        /// <param name="points">On input points in the source geographic coordinate system</param>
+        /// <returns>Output points in the target geographic coordinate system</returns>
+        public IEnumerable<TCoordinate> Forward(IEnumerable<TCoordinate> points)
+        {
+            throw new NotImplementedException();
+            /*
 			List<Point> trans = new List<Point>(points.Count);
 			foreach (Point p in points)
 			{
@@ -85,56 +87,55 @@ namespace ProjNet
 			}
 			return trans;
 			*/
-		}
+        }
 
-		/// <summary>
-		/// Transforms an array of points from the target geographic coordinate
-		/// system to the source geographic coordinate system.
-		/// </summary>
-		/// <param name="points">Input points in the target geographic coordinate system,</param>
-		/// <returns>Output points in the source geographic coordinate system</returns>
-        public List<double[]> Inverse(List<double[]> points)
-		{
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Transforms an array of points from the target geographic coordinate
+        /// system to the source geographic coordinate system.
+        /// </summary>
+        /// <param name="points">Input points in the target geographic coordinate system,</param>
+        /// <returns>Output points in the source geographic coordinate system</returns>
+        public IEnumerable<TCoordinate> Inverse(IEnumerable<TCoordinate> points)
+        {
+            throw new NotImplementedException();
+        }
 
-		/// <summary>
-		/// Returns the Well-known text for this object
-		/// as defined in the simple features specification.
-		/// </summary>
-		public override string Wkt
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+        /// <summary>
+        /// Returns the Well-known text for this object
+        /// as defined in the simple features specification.
+        /// </summary>
+        public override string Wkt
+        {
+            get { throw new NotImplementedException(); }
+        }
 
-		/// <summary>
-		/// Gets an XML representation of this object [NOT IMPLEMENTED].
-		/// </summary>
-		public override string Xml
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+        /// <summary>
+        /// Gets an XML representation of this object [NOT IMPLEMENTED].
+        /// </summary>
+        public override string Xml
+        {
+            get { throw new NotImplementedException(); }
+        }
 
-		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance.
-		/// Only parameters used for coordinate system are used for comparison.
-		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
-		{
-			if (!(obj is GeographicTransform))
-				return false;
-			GeographicTransform gt = obj as GeographicTransform;
-			return gt.SourceGCS.EqualParams(this.SourceGCS) && gt.TargetGCS.EqualParams(this.TargetGCS);
-		}
-		#endregion
-	}
+        /// <summary>
+        /// Checks whether the values of this instance is equal to the values of another instance.
+        /// Only parameters used for coordinate system are used for comparison.
+        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>True if equal</returns>
+        public override bool EqualParams(object obj)
+        {
+            GeographicTransform<TCoordinate> other = obj as GeographicTransform<TCoordinate>;
+
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            return other.Source.EqualParams(Source) && other.Target.EqualParams(Target);
+        }
+
+        #endregion
+    }
 }

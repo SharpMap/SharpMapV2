@@ -40,10 +40,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using GeoAPI.CoordinateSystems;
-using ProjNet.Transformations;
+using ProjNet.CoordinateSystems.Transformations;
 using ProjNet.CoordinateSystems;
 
-namespace ProjNet.Projections
+namespace ProjNet.CoordinateSystems.Projections
 {
     /// <summary>
     /// Projections inherit from this abstract class to get access to useful mathematical functions.
@@ -59,6 +59,7 @@ namespace ProjNet.Projections
         protected List<ProjectionParameter> _parameters;
         protected MathTransform<TCoordinate> _inverse;
 
+        // TODO: can these fields / properties get factored out and shared with CoordinateTransformation<TCoordinate>?
         private string _abbreviation;
         private string _alias;
         private string _authority;
@@ -605,7 +606,7 @@ namespace ProjNet.Projections
         /// computations in the Lambert Conformal Conic and the Polar
         /// Stereographic projections.
         /// </summary>
-        protected static double ComputeTs(double eccentricity, double phi, double sinphi)
+        protected static double ComputeSmallT(double eccentricity, double phi, double sinphi)
         {
             double con;
             double com;
@@ -692,7 +693,7 @@ namespace ProjNet.Projections
         /// Lambert Conformal Conic and Polar Stereographic projections.
         /// </summary>
         /// <param name="eccentricity">The eccentricity of the ellipsoid.</param>
-        /// <param name="ts">The constant "t" as computed by <see cref="ComputeTs"/>.</param>
+        /// <param name="ts">The constant "t" as computed by <see cref="ComputeSmallT"/>.</param>
         /// <remarks>
         /// The latitude PHI2 is computed using an iterative procedure. PHI2 is 
         /// PHI for the inverse of the Lambert Conformal Conic and Polar 
@@ -827,7 +828,7 @@ namespace ProjNet.Projections
         {
             if (edge ? (x >= -180 && x <= 180) : (x > -180 && x < 180))
             {
-                return Degrees2Radians(x);
+                return DegreesToRadians(x);
             }
             throw new ArgumentOutOfRangeException("x",
                                                   x.ToString(CultureInfo.InvariantCulture) +
@@ -844,7 +845,7 @@ namespace ProjNet.Projections
         {
             if (edge ? (y >= -90 && y <= 90) : (y > -90 && y < 90))
             {
-                return Degrees2Radians(y);
+                return DegreesToRadians(y);
             }
             throw new ArgumentOutOfRangeException("y",
                                                   y.ToString(CultureInfo.InvariantCulture) +
