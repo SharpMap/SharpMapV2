@@ -193,7 +193,7 @@ namespace ProjNet.CoordinateSystems
 			get
 			{
 				return String.Format(CultureInfo.InvariantCulture.NumberFormat, 
-					"<CS_PrimeMeridian Longitude=\"{0}\" >{1}{2}</CS_PrimeMeridian>", Longitude, InfoXml, AngularUnit.XML);
+					"<CS_PrimeMeridian Longitude=\"{0}\" >{1}{2}</CS_PrimeMeridian>", Longitude, InfoXml, AngularUnit.Xml);
 			}
 		}
 

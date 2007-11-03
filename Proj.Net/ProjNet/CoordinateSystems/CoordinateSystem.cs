@@ -46,7 +46,7 @@ namespace ProjNet.CoordinateSystems
             IConvertible
     {
         private List<AxisInfo> _axisInfo;
-        private IEnvelope<TCoordinate> _defaultEnvelope;
+        private IExtents<TCoordinate> _defaultEnvelope;
 
         /// <summary>
         /// Initializes a new instance of a coordinate system.
@@ -113,7 +113,7 @@ namespace ProjNet.CoordinateSystems
         /// (-180,-90) to (180,90), and a geocentric coordinate system could return a box from (-r,-r,-r)
         /// to (+r,+r,+r) where r is the approximate radius of the Earth.
         /// </remarks>
-        public IEnvelope<TCoordinate> DefaultEnvelope
+        public IExtents<TCoordinate> DefaultEnvelope
         {
             get { return _defaultEnvelope; }
             set { _defaultEnvelope = value; }

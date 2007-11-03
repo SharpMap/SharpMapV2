@@ -62,14 +62,14 @@ namespace ProjNet.CoordinateSystems.Projections
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private double _falseEasting;
-        private double _falseNorthing;
-        private double C; //constant c 
-        private double e; //eccentricity
-        private double e_sq = 0;
-        private double ro0;
-        private double n;
-        private double lon_center; //center longitude   
+        private readonly double _falseEasting;
+        private readonly double _falseNorthing;
+        private readonly double C; //constant c 
+        private readonly double e; //eccentricity
+        private readonly double e_sq = 0;
+        private readonly double ro0;
+        private readonly double n;
+        private readonly double lon_center; //center longitude   
 
         #region Constructors
 
@@ -185,7 +185,7 @@ namespace ProjNet.CoordinateSystems.Projections
             n = (Math.Pow(m1, 2) - Math.Pow(m2, 2)) / (alpha2 - alpha1);
             C = Math.Pow(m1, 2) + (n * alpha1);
 
-            ro0 = ro(alpha(lat0));
+            ro0 = computeRo(alpha(lat0));
             /*
             double sin_p0 = Math.Sin(lat0);
             double cos_p0 = Math.Cos(lat0);
@@ -226,7 +226,7 @@ namespace ProjNet.CoordinateSystems.Projections
             double dLatitude = DegreesToRadians(lonlat[1]);
 
             double a = alpha(dLatitude);
-            double ro = ro(a);
+            double ro = computeRo(a);
             double theta = n * (dLongitude - lon_center);
             dLongitude = _falseEasting + ro * Math.Sin(theta);
             dLatitude = _falseNorthing + ro0 - (ro * Math.Cos(theta));
@@ -324,7 +324,7 @@ namespace ProjNet.CoordinateSystems.Projections
             return (1 - e_sq) * (((sin / (1 - e_sq * sinsq)) - 1 / (2 * e) * Math.Log((1 - e * sin) / (1 + e * sin))));
         }
 
-        private double ro(double a)
+        private double computeRo(double a)
         {
             return _semiMajor * Math.Sqrt((C - n * a)) / n;
         }

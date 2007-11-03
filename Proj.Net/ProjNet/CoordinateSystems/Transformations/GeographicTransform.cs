@@ -129,10 +129,10 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <returns></returns>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
 		{
-            List<double[]> trans = new List<double[]>(points.Count);
-            foreach (double[] p in points)
-				trans.Add(Transform(p));
-			return trans;
+		    foreach (TCoordinate point in points)
+		    {
+		        yield return Transform(point);
+		    }
 		}
 
 		/// <summary>

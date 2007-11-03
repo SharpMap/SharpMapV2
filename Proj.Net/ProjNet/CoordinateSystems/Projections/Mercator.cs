@@ -61,12 +61,12 @@ namespace ProjNet.CoordinateSystems.Projections
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private double _falseEasting;
-        private double _falseNorthing;
-        private double lon_center; //Center longitude (projection center)
-        private double lat_origin; //center latitude
-        private double e, e2; //eccentricity constants
-        private double k0; //small value m
+        private readonly double _falseEasting;
+        private readonly double _falseNorthing;
+        private readonly double _lon_center; //Center longitude (projection center)
+        private readonly double _lat_origin; //center latitude
+        private readonly double _e, _e2; //eccentricity constants
+        private readonly double _k0; //small value m
 
         /// <summary>
         /// Initializes the MercatorProjection object with the specified parameters to project points. 
@@ -75,24 +75,70 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <remarks>
         /// </remarks>
         public Mercator(IEnumerable<ProjectionParameter> parameters)
-            : this(parameters, false) {}
+            : this(parameters, false) { }
 
+        
         /// <summary>
-        /// Initializes the MercatorProjection object with the specified parameters.
-        /// </summary>
+        ///   Initializes the MercatorProjection object with the specified parameters.
+        ///</summary>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
         /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
         /// <remarks>
-        /// <para>The parameters this projection expects are listed below.</para>
-        /// <list type="table">
-        /// <listheader><term>Items</term><description>Descriptions</description></listheader>
-        /// <item><term>central_meridian</term><description>The longitude of the point from which the values of both the geographical coordinates on the ellipsoid and the grid coordinates on the projection are deemed to increment or decrement for computational purposes. Alternatively it may be considered as the longitude of the point which in the absence of application of false coordinates has grid coordinates of (0,0).</description></item>
-        /// <item><term>latitude_of_origin</term><description>The latitude of the point from which the values of both the geographical coordinates on the ellipsoid and the grid coordinates on the projection are deemed to increment or decrement for computational purposes. Alternatively it may be considered as the latitude of the point which in the absence of application of false coordinates has grid coordinates of (0,0).</description></item>
-        /// <item><term>scale_factor</term><description>The factor by which the map grid is reduced or enlarged during the projection process, defined by its value at the natural origin.</description></item>
-        /// <item><term>false_easting</term><description>Since the natural origin may be at or near the centre of the projection and under normal coordinate circumstances would thus give rise to negative coordinates over parts of the mapped area, this origin is usually given false coordinates which are large enough to avoid this inconvenience. The False Easting, FE, is the easting value assigned to the abscissa (east).</description></item>
-        /// <item><term>false_northing</term><description>Since the natural origin may be at or near the centre of the projection and under normal coordinate circumstances would thus give rise to negative coordinates over parts of the mapped area, this origin is usually given false coordinates which are large enough to avoid this inconvenience. The False Northing, FN, is the northing value assigned to the ordinate.</description></item>
-        /// </list>
-        /// </remarks>
+        ///   <para>The parameters this projection expects are listed below.</para>
+        ///   <list type="table">
+        ///     <listheader>
+        ///      <term>Items</term>
+        ///      <description>Descriptions</description>
+        ///    </listheader>
+        ///     <item>
+        ///      <term>central_meridian</term>
+        ///      <description>
+        ///         The longitude of the point from which the values of both the 
+        ///         geographical coordinates on the ellipsoid and the grid coordinates 
+        ///         on the projection are deemed to increment or decrement for computational purposes. 
+        ///         Alternatively it may be considered as the longitude of the point which in the 
+        ///         absence of application of false coordinates has grid coordinates of (0, 0).
+        ///       </description>
+        ///    </item>
+        ///     <item>
+        ///      <term>latitude_of_origin</term>
+        ///      <description>
+        ///         The latitude of the point from which the values of both the 
+        ///         geographical coordinates on the ellipsoid and the grid coordinates 
+        ///         on the projection are deemed to increment or decrement for computational purposes. 
+        ///         Alternatively it may be considered as the latitude of the point which in the 
+        ///         absence of application of false coordinates has grid coordinates of (0, 0). 
+        ///      </description>
+        ///    </item>
+        ///     <item>
+        ///      <term>scale_factor</term>
+        ///      <description>
+        ///         The factor by which the map grid is reduced or enlarged during the projection process, 
+        ///         defined by its value at the natural origin.
+        ///      </description>
+        ///    </item>
+        ///     <item>
+        ///      <term>false_easting</term>
+        ///      <description>
+        ///         Since the natural origin may be at or near the centre of the projection and under 
+        ///         normal coordinate circumstances would thus give rise to negative coordinates over 
+        ///         parts of the mapped area, this origin is usually given false coordinates which are 
+        ///         large enough to avoid this inconvenience. The False Easting, FE, is the easting 
+        ///         value assigned to the abscissa (east).
+        ///      </description>
+        ///    </item>
+        ///     <item>
+        ///      <term>false_northing</term>
+        ///      <description>
+        ///         Since the natural origin may be at or near the centre of the projection and under 
+        ///         normal coordinate circumstances would thus give rise to negative coordinates over 
+        ///         parts of the mapped area, this origin is usually given false coordinates which are 
+        ///         large enough to avoid this inconvenience. The False Northing, FN, is the northing 
+        ///         value assigned to the ordinate.
+        ///      </description>
+        ///    </item>
+        ///  </list>
+        ///</remarks>
         public Mercator(IEnumerable<ProjectionParameter> parameters, bool isInverse)
             : base(parameters, isInverse)
         {
@@ -124,24 +170,24 @@ namespace ProjNet.CoordinateSystems.Projections
                 throw new ArgumentException("Missing projection parameter 'false_northing'");
             }
 
-            lon_center = DegreesToRadians(central_meridian.Value);
-            lat_origin = DegreesToRadians(latitude_of_origin.Value);
-            _falseEasting = false_easting.Value*_metersPerUnit;
-            _falseNorthing = false_northing.Value*_metersPerUnit;
+            _lon_center = DegreesToRadians(central_meridian.Value);
+            _lat_origin = DegreesToRadians(latitude_of_origin.Value);
+            _falseEasting = false_easting.Value * _metersPerUnit;
+            _falseNorthing = false_northing.Value * _metersPerUnit;
 
-            double temp = _semiMinor/_semiMajor;
-            e2 = 1 - temp*temp;
-            e = Math.Sqrt(e2);
+            double temp = _semiMinor / _semiMajor;
+            _e2 = 1 - temp * temp;
+            _e = Math.Sqrt(_e2);
 
             if (scale_factor == null) //This is a two standard parallel Mercator projection (2SP)
             {
-                k0 = Math.Cos(lat_origin)/Math.Sqrt(1.0 - e2*Math.Sin(lat_origin)*Math.Sin(lat_origin));
+                _k0 = Math.Cos(_lat_origin) / Math.Sqrt(1.0 - _e2 * Math.Sin(_lat_origin) * Math.Sin(_lat_origin));
                 AuthorityCode = 9805;
                 Name = "Mercator_2SP";
             }
             else //This is a one standard parallel Mercator projection (1SP)
             {
-                k0 = scale_factor.Value;
+                _k0 = scale_factor.Value;
                 Name = "Mercator_1SP";
             }
 
@@ -168,7 +214,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             if (double.IsNaN(lonlat[0]) || double.IsNaN(lonlat[1]))
             {
-                return new double[] {Double.NaN, Double.NaN,};
+                return new double[] { Double.NaN, Double.NaN, };
             }
 
             double dLongitude = DegreesToRadians(lonlat[0]);
@@ -181,18 +227,18 @@ namespace ProjNet.CoordinateSystems.Projections
             }
             else
             {
-                double esinphi = e*Math.Sin(dLatitude);
-                double x = _falseEasting + _semiMajor*k0*(dLongitude - lon_center);
+                double esinphi = _e * Math.Sin(dLatitude);
+                double x = _falseEasting + _semiMajor * _k0 * (dLongitude - _lon_center);
                 double y = _falseNorthing +
-                           _semiMajor*k0*
-                           Math.Log(Math.Tan(PI*0.25 + dLatitude*0.5)*Math.Pow((1 - esinphi)/(1 + esinphi), e*0.5));
+                           _semiMajor * _k0 *
+                           Math.Log(Math.Tan(PI * 0.25 + dLatitude * 0.5) * Math.Pow((1 - esinphi) / (1 + esinphi), _e * 0.5));
                 if (lonlat.ComponentCount < 3)
                 {
-                    return new double[] {x/_metersPerUnit, y/_metersPerUnit};
+                    return new double[] { x / _metersPerUnit, y / _metersPerUnit };
                 }
                 else
                 {
-                    return new double[] {x/_metersPerUnit, y/_metersPerUnit, lonlat[2]};
+                    return new double[] { x / _metersPerUnit, y / _metersPerUnit, lonlat[2] };
                 }
             }
         }
@@ -209,28 +255,29 @@ namespace ProjNet.CoordinateSystems.Projections
 
             /* Inverse equations
               -----------------*/
-            double dX = p[0]*_metersPerUnit - _falseEasting;
-            double dY = p[1]*_metersPerUnit - _falseNorthing;
-            double ts = Math.Exp(-dY/(_semiMajor*k0)); //t
+            double dX = p[Ordinates.X] * _metersPerUnit - _falseEasting;
+            double dY = p[Ordinates.Y] * _metersPerUnit - _falseNorthing;
+            double smallT = Math.Exp(-dY / (_semiMajor * _k0)); // t
 
-            double chi = HalfPI - 2*Math.Atan(ts);
-            double e4 = Math.Pow(e, 4);
-            double e6 = Math.Pow(e, 6);
-            double e8 = Math.Pow(e, 8);
+            double chi = HalfPI - 2 * Math.Atan(smallT);
+            double e4 = Math.Pow(_e, 4);
+            double e6 = Math.Pow(_e, 6);
+            double e8 = Math.Pow(_e, 8);
 
-            dLatitude = chi + (e2*0.5 + 5*e4/24 + e6/12 + 13*e8/360)*Math.Sin(2*chi)
-                        + (7*e4/48 + 29*e6/240 + 811*e8/11520)*Math.Sin(4*chi) +
-                        +(7*e6/120 + 81*e8/1120)*Math.Sin(6*chi) +
-                        +(4279*e8/161280)*Math.Sin(8*chi);
+            dLatitude = chi + (_e2 * 0.5 + 5 * e4 / 24 + e6 / 12 + 13 * e8 / 360) * Math.Sin(2 * chi)
+                        + (7 * e4 / 48 + 29 * e6 / 240 + 811 * e8 / 11520) * Math.Sin(4 * chi) +
+                        +(7 * e6 / 120 + 81 * e8 / 1120) * Math.Sin(6 * chi) +
+                        +(4279 * e8 / 161280) * Math.Sin(8 * chi);
 
-            dLongitude = dX/(_semiMajor*k0) + lon_center;
+            dLongitude = dX / (_semiMajor * _k0) + _lon_center;
+
             if (p.ComponentCount < 3)
             {
-                return new double[] {RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude)};
+                return new double[] { RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude) };
             }
             else
             {
-                return new double[] {RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), p[2]};
+                return new double[] { RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), p[2] };
             }
         }
 

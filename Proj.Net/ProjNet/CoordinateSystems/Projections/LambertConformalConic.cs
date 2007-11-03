@@ -292,7 +292,7 @@ namespace ProjNet.CoordinateSystems.Projections
             {
                 con = 1.0 / ns;
                 ts = Math.Pow((rh1 / (_semiMajor * f0)), con);
-                dLatitude = ComputePhi2(e, ts, out flag);
+                dLatitude = ComputePhi2(e, ts);
                 if (flag != 0)
                 {
                     throw new ApplicationException();
