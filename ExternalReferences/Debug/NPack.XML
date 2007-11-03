@@ -2534,11 +2534,11 @@
             Gets the multiplicative identity as a Double: 1F.
             </summary>
         </member>
-        <member name="T:NPack.BufferedRowVector`1">
+        <member name="T:NPack.Vector`1">
             <summary>
-            A vector which is backed by a buffer.
+            A vector.
             </summary>
-            <typeparam name="T">The type of component in the vector.</typeparam>
+            <typeparam name="T">Type of components in the vector.</typeparam>
         </member>
         <member name="T:NPack.Interfaces.IVector`1">
             <summary>
@@ -2574,31 +2574,6 @@
             </summary>
             <param name="index">The index of the component.</param>
             <returns>The value of the component at the given <paramref name="index"/>.</returns>
-        </member>
-        <member name="M:NPack.BufferedRowVector`1.#ctor(NPack.Interfaces.IVectorBuffer{NPack.BufferedRowVector{`0},`0},System.Int32)">
-            <summary>
-            Creates a new instance of a <see cref="T:NPack.BufferedRowVector`1"/>.
-            </summary>
-            <param name="vectorBuffer">
-            The <see cref="T:NPack.Interfaces.IVectorBuffer`2"/> used to store the components for this vector.
-            </param>
-            <param name="index">The index in the buffer for the vector.</param>
-        </member>
-        <member name="M:NPack.BufferedRowVector`1.Clone">
-            <summary>
-            Creates a copy of the <see cref="T:NPack.BufferedRowVector`1"/>, which doesn't 
-            copy the vector components in the buffer, just copy's the reference to those components.
-            </summary>
-            <returns>
-            A new <see cref="T:NPack.BufferedRowVector`1"/> instance which points to the same location 
-            in the vector buffer.
-            </returns>
-        </member>
-        <member name="T:NPack.Vector`1">
-            <summary>
-            A vector.
-            </summary>
-            <typeparam name="T">Type of components in the vector.</typeparam>
         </member>
         <member name="M:NPack.Vector`1.#ctor(System.Int32)">
             <summary>
@@ -4036,6 +4011,119 @@
             </summary>
             <param name="transform">A transform to apply to the vertex.</param>
             <returns>An enumeration of vertex data contained by the object.</returns>
+        </member>
+        <member name="T:NPack.ManagedVectorBuffer`2">
+            <summary>
+            Implements a vector buffer for storing vector data in a single, contiguous
+            indexed block of memory.
+            </summary>
+            <typeparam name="TVector">The type of vector to store.</typeparam>
+            <typeparam name="TComponent">The type of component in the vector.</typeparam>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.#ctor(System.Int32,System.Boolean,NPack.Interfaces.IBufferedVectorFactory{`1})">
+            <summary>
+            Creates a new <see cref="T:NPack.ManagedVectorBuffer`2"/>
+            for vectors of size <paramref name="vectorDimension"/>, including space 
+            for an extra component if <paramref name="isHomogeneous"/> is <see langword="true"/>. 
+            The initial capacity of the created buffer places it in the CLR's Large Object Heap.
+            </summary>
+            <param name="vectorDimension">The size, or number of components, of each vector.</param>
+            <param name="isHomogeneous">
+            <see langword="true"/> if the vector is represented in homogeneous coordinates 
+            (allowing affine transforms through matrix operations).
+            </param>
+            <param name="vectorFactory">
+            A factory used to create vectors of type <typeparamref name="TVector"/>.
+            </param>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.#ctor(System.Int32,System.Boolean,NPack.Interfaces.IBufferedVectorFactory{`1},System.Int32)">
+            <summary>
+            Creates a new <see cref="T:NPack.ManagedVectorBuffer`2"/> with
+            initial capacity <paramref name="initialCapacity"/> for vectors of size
+            <paramref name="vectorDimension"/>, including space for an extra component
+            if <paramref name="isHomogeneous"/> is <see langword="true"/>. 
+            </summary>
+            <param name="vectorDimension">The size, or number of components, of each vector.</param>
+            <param name="isHomogeneous">
+            <see langword="true"/> if the vector is represented in homogeneous coordinates 
+            (allowing affine transforms through matrix operations).
+            </param>
+            <param name="vectorFactory">
+            A factory used to create vectors of type <typeparamref name="TVector"/>.
+            </param>
+            <param name="initialCapacity">The initial capacity for the buffer.</param>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.Add(`1[])">
+            <summary>
+            Adds an array of components to the buffer as a vector. Returns the resulting
+            <typeparamref name="TVector"/> instance.
+            </summary>
+            <param name="components">The components which make up the vector.</param>
+            <returns>
+            The resulting vector after adding the given <paramref name="components"/>.
+            </returns>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.Add(NPack.Interfaces.IVector{`1})">
+            <summary>
+            Adds an <see cref="T:NPack.Interfaces.IVector`1"/> to the buffer.
+            </summary>
+            <param name="item">The vector to add to the buffer.</param>
+            <returns>The index of the added vector.</returns>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.Clear">
+            <summary>
+            Clears the buffer of all vector instances.
+            </summary>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.CopyTo(`0[],System.Int32,System.Int32)">
+            <summary>
+            Copies the buffer to the given array.
+            </summary>
+            <param name="array">The array to copy the buffer to.</param>
+            <param name="startIndex">The index of the buffer to start copying at.</param>
+            <param name="endIndex">The index of the buffer to end copying at.</param>
+        </member>
+        <member name="M:NPack.ManagedVectorBuffer`2.Contains(NPack.Interfaces.IVector{`1})">
+            <summary>
+            Returns <see langword="true"/> if the buffer contains 
+            the given <see cref="T:NPack.Interfaces.IVector`1"/>.
+            </summary>
+            <param name="item">The vector to check if the buffer contains.</param>
+            <returns>
+            <see langword="true"/> if the buffer contains <paramref name="item"/>;
+            <see langword="false"/> otherwise.
+            </returns>
+        </member>
+        <member name="P:NPack.ManagedVectorBuffer`2.Count">
+            <summary>
+            Gets the number of vectors in the buffer.
+            </summary>
+        </member>
+        <member name="P:NPack.ManagedVectorBuffer`2.IsReadOnly">
+            <summary>
+            Gets <see langword="true"/> if the buffer is read-only.
+            </summary>
+        </member>
+        <member name="P:NPack.ManagedVectorBuffer`2.MaximumSize">
+            <summary>
+            Gets the maximum size of the buffer, in number of vectors.
+            </summary>
+        </member>
+        <member name="P:NPack.ManagedVectorBuffer`2.Item(System.Int32)">
+            <summary>
+            Gets or sets the <typeparamref name="TVector"/> at the given
+            <paramref name="index"/>.
+            </summary>
+            <param name="index">The index of the vector to access.</param>
+            <returns>
+            The <typeparamref name="TVector"/> at <paramref name="index"/>.
+            </returns>
+        </member>
+        <member name="P:NPack.ManagedVectorBuffer`2.VectorLength">
+            <summary>
+            Gets the length, or number of components, in the vectors stored
+            in the buffer.
+            </summary>
         </member>
     </members>
 </doc>
