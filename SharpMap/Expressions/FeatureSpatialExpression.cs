@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Expressions
 {

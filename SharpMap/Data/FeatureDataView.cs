@@ -23,7 +23,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data

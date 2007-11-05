@@ -27,7 +27,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {

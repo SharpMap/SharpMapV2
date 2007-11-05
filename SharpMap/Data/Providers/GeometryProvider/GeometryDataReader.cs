@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.GeometryProvider
 {

@@ -38,7 +38,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Utilities;
 
 namespace SharpMap.Converters.WellKnownBinary

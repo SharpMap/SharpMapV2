@@ -22,7 +22,7 @@ using SharpMap.Converters.WellKnownBinary;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using System.Globalization;
 using System.Collections;
 using SharpMap.Expressions;
