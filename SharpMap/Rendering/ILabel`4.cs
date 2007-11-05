@@ -63,12 +63,12 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets a priority value used in label layout.
         /// </summary>
-        Int32 Priority { get; set; }
+        int Priority { get; set; }
 
         /// <summary>
         /// Gets or sets the label's rotation.
 		/// </summary>
-		Single Rotation { get; set; }
+		float Rotation { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="SharpMap.Styles.LabelStyle"/> of this label.
@@ -78,7 +78,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets the text of the label.
         /// </summary>
-        String Text { get; set; }
+        string Text { get; set; }
 
         IMatrixD Transform { get; set; }
 	}

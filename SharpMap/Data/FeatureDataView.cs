@@ -23,7 +23,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data
@@ -39,10 +39,10 @@ namespace SharpMap.Data
 
         private delegate void SetDataViewManagerDelegate(FeatureDataView view, DataViewManager dataViewManager);
 
-        private delegate void SetLockedDelegate(DataView view, Boolean locked);
+        private delegate void SetLockedDelegate(DataView view, bool locked);
 
         private delegate void SetIndex2Delegate(
-            FeatureDataView view, String newSort, DataViewRowState dataViewRowState, object expression, Boolean fireEvent);
+            FeatureDataView view, string newSort, DataViewRowState dataViewRowState, object expression, bool fireEvent);
 
         #endregion
 
@@ -75,8 +75,8 @@ namespace SharpMap.Data
         //private readonly SpatialQueryType _queryType;
         //private readonly ArrayList _oidFilter = new ArrayList();
         private FeatureSpatialExpression _viewDefinition;
-        private Boolean _reindexingEnabled = true;
-        private Boolean _shouldReindex = false;
+        private bool _reindexingEnabled = true;
+        private bool _shouldReindex = false;
         private BoundingBox _extents = BoundingBox.Empty;
         #endregion
 
@@ -103,7 +103,7 @@ namespace SharpMap.Data
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
-                               String sort, DataViewRowState rowState)
+                               string sort, DataViewRowState rowState)
             : this(table, intersectionFilter, SpatialExpressionType.Intersects, sort, rowState) { }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace SharpMap.Data
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, Geometry query, SpatialExpressionType queryType,
-                               String sort, DataViewRowState rowState)
+                               string sort, DataViewRowState rowState)
             : this(table, new FeatureSpatialExpression(query, queryType, null), sort, rowState) { }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace SharpMap.Data
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, FeatureSpatialExpression definition,
-                               String sort, DataViewRowState rowState)
+                               string sort, DataViewRowState rowState)
             : base(
                 table, "",
                 String.IsNullOrEmpty(sort) ? table.PrimaryKey.Length == 1 ? table.PrimaryKey[0].ColumnName : "" : sort,
@@ -163,7 +163,7 @@ namespace SharpMap.Data
             setFilterPredicate();
         }
 
-        internal FeatureDataView(FeatureDataTable table, Boolean locked)
+        internal FeatureDataView(FeatureDataTable table, bool locked)
             : this(table)
         {
             // The DataView is locked when it is created as a default
@@ -313,7 +313,7 @@ namespace SharpMap.Data
             get { return base.DataViewManager as FeatureDataViewManager; }
         }
 
-        public Boolean ReindexingEnabled
+        public bool ReindexingEnabled
         {
             get { return _reindexingEnabled; }
             set
@@ -333,7 +333,7 @@ namespace SharpMap.Data
             }
         }
 
-        public override String RowFilter
+        public override string RowFilter
         {
             get { return ""; }
             set
@@ -386,7 +386,7 @@ namespace SharpMap.Data
             base.OnListChanged(e);
         }
 
-        protected override void UpdateIndex(Boolean force)
+        protected override void UpdateIndex(bool force)
         {
             if (!ReindexingEnabled)
             {
@@ -426,8 +426,8 @@ namespace SharpMap.Data
             _setDataViewManager(this, featureDataViewManager);
         }
 
-        internal void SetIndex2(String newSort, DataViewRowState dataViewRowState,
-                                object dataExpression, Boolean fireEvent)
+        internal void SetIndex2(string newSort, DataViewRowState dataViewRowState,
+                                object dataExpression, bool fireEvent)
         {
             // Call the delegate we wired up to bypass the normally inaccessible 
             // base class method
@@ -446,7 +446,7 @@ namespace SharpMap.Data
             SetIndex2(Sort, RowStateFilter, iFilter, true);
         }
 
-        private Boolean isRowInView(DataRow row)
+        private bool isRowInView(DataRow row)
         {
             FeatureDataRow feature = row as FeatureDataRow;
 
@@ -460,14 +460,14 @@ namespace SharpMap.Data
                    && inAttributeFilter();
         }
 
-        private Boolean inGeometryFilter(FeatureDataRow feature)
+        private bool inGeometryFilter(FeatureDataRow feature)
         {
             return (_viewDefinition.QueryRegion == Point.Empty &&
                 _viewDefinition.QueryType == SpatialExpressionType.Disjoint) ||
                 _viewDefinition.QueryRegion.Intersects(feature.Geometry);
         }
 
-        private Boolean inOidFilter(FeatureDataRow feature)
+        private bool inOidFilter(FeatureDataRow feature)
         {
             if (!feature.HasOid)
             {
@@ -494,7 +494,7 @@ namespace SharpMap.Data
             return false;
         }
 
-        private Boolean inAttributeFilter()
+        private bool inAttributeFilter()
         {
             // TODO: perhaps this is where we can execute the DataExpression filter
             return true;
@@ -547,7 +547,7 @@ namespace SharpMap.Data
         {
             // Use LCG to create a set accessor to the DataView.locked field
             DynamicMethod setLockedMethod = new DynamicMethod("set_locked_DynamicMethod",
-                                                              null, new Type[] { typeof(DataView), typeof(Boolean) },
+                                                              null, new Type[] { typeof(DataView), typeof(bool) },
                                                               typeof(DataView));
 
             ILGenerator il = setLockedMethod.GetILGenerator();
@@ -591,7 +591,7 @@ namespace SharpMap.Data
             // Unfortunately, this type is only available in the v2.0 CLR which ships with .Net v3.5 Beta 2 (v2.0.50727.1378)
             // Currently, the only two choices to provided spatially filtered views are to implement 
             // System.ComponentModel.IBindingListView or to rely on v3.5.
-            String rowPredicateFilterTypeName =
+            string rowPredicateFilterTypeName =
                 "System.Data.DataView+RowPredicateFilter, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
             Type rowPredicateFilterType = Type.GetType(rowPredicateFilterTypeName);
             Debug.Assert(rowPredicateFilterType != null,

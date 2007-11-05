@@ -21,7 +21,7 @@ using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -37,7 +37,7 @@ namespace SharpMap.Layers
     public class LayerGroup : ILayer, ICloneable
     {
         private List<ILayer> _layers = new List<ILayer>();
-        private Boolean _disposed;
+        private bool _disposed;
 
         #region Object Creation / Disposal
 
@@ -45,7 +45,7 @@ namespace SharpMap.Layers
         /// Initializes a new group layer.
         /// </summary>
         /// <param name="layername">Name of the layer group.</param>
-        public LayerGroup(String layername)
+        public LayerGroup(string layername)
         {
             LayerName = layername;
         }
@@ -87,7 +87,7 @@ namespace SharpMap.Layers
         /// <param name="disposing">
         /// True if being called deterministically, false if being called from finalizer.
         /// </param>
-        protected virtual void Dispose(Boolean disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (IsDisposed)
             {
@@ -108,7 +108,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets whether this layer is disposed, and no longer accessible.
         /// </summary>
-        public Boolean IsDisposed
+        public bool IsDisposed
         {
             get { return _disposed; }
         }
@@ -136,7 +136,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="name">Name of layer</param>
         /// <returns>Layer</returns>
-        public ILayer GetLayerByName(String name)
+        public ILayer GetLayerByName(string name)
         {
             return
                 _layers.Find(
@@ -161,7 +161,7 @@ namespace SharpMap.Layers
             get { throw new NotImplementedException(); }
         }
 
-        public Boolean Enabled
+        public bool Enabled
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -190,13 +190,13 @@ namespace SharpMap.Layers
             }
         }
 
-        public String LayerName
+        public string LayerName
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
         }
 
-        public Int32? Srid
+        public int? Srid
         {
             get { throw new NotImplementedException(); }
         }
@@ -207,7 +207,7 @@ namespace SharpMap.Layers
             set { throw new NotImplementedException(); }
         }
         
-        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
+        public bool IsVisibleWhen(Predicate<ILayer> condition)
         {
             return condition(this);
         }
@@ -239,7 +239,7 @@ namespace SharpMap.Layers
 
         #region ILayer Members
 
-        public Boolean AsyncQuery
+        public bool AsyncQuery
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }

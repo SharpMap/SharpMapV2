@@ -38,10 +38,10 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets the number of available conversions to WGS84 coordinates.
 		/// </summary>
-		Int32 NumConversionToWGS84 { get; }
+		int NumConversionToWGS84 { get; }
 		/// <summary>
 		/// Gets details on a conversion to WGS84.
 		/// </summary>
-		Wgs84ConversionInfo GetWgs84ConversionInfo(Int32 index);
+		Wgs84ConversionInfo GetWgs84ConversionInfo(int index);
 	}    
 }

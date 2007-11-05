@@ -5,7 +5,7 @@ namespace SharpMap.Tests.Presentation
 {
     public static class ScreenHelper
     {
-        public static readonly Double Dpi;
+        public static readonly double Dpi;
 
         static ScreenHelper()
         {
@@ -15,7 +15,7 @@ namespace SharpMap.Tests.Presentation
             {
                 dc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
 
-                Int32 dpi = GetDeviceCaps(dc, LOGPIXELSX);
+                int dpi = GetDeviceCaps(dc, LOGPIXELSX);
 
                 if (dpi == 0)
                 {
@@ -37,15 +37,15 @@ namespace SharpMap.Tests.Presentation
         }
 
         [DllImport("Gdi32")]
-        private static extern IntPtr CreateDC(String driver, String device, String output, IntPtr initData);
+        private static extern IntPtr CreateDC(string driver, string device, string output, IntPtr initData);
 
         [DllImport("Gdi32")]
         private static extern void DeleteDC(IntPtr dc);
 
         [DllImport("Gdi32")]
-        private static extern Int32 GetDeviceCaps(IntPtr hdc, Int32 index);
+        private static extern int GetDeviceCaps(IntPtr hdc, int index);
 
-        private const Int32 LOGPIXELSX = 88;
-        private const Int32 LOGPIXELSY = 90;
+        private const int LOGPIXELSX = 88;
+        private const int LOGPIXELSY = 90;
     }
 }

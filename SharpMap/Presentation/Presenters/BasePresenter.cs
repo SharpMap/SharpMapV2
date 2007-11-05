@@ -30,7 +30,7 @@ namespace SharpMap.Presentation.Presenters
     {
         private readonly Map _map;
         private readonly TView _view;
-        private Boolean _disposed = false;
+        private bool _disposed = false;
 
         #region Object Construction/Destruction
 
@@ -83,7 +83,7 @@ namespace SharpMap.Presentation.Presenters
         /// <param name="disposing">
         /// True if being called deterministically, false if being called from finalizer.
         /// </param>
-        protected virtual void Dispose(Boolean disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (IsDisposed)
             {
@@ -94,7 +94,7 @@ namespace SharpMap.Presentation.Presenters
         /// <summary>
         /// Gets whether this presenter is disposed, and no longer accessible.
         /// </summary>
-        public Boolean IsDisposed
+        public bool IsDisposed
         {
             [DebuggerStepThrough]
             get { return _disposed; }
@@ -165,7 +165,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         [DebuggerStepThrough]
-        protected virtual void OnMapPropertyChanged(String propertyName)
+        protected virtual void OnMapPropertyChanged(string propertyName)
         {
 
         }

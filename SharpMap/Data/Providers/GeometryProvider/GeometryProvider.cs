@@ -22,7 +22,7 @@ using SharpMap.Converters.WellKnownBinary;
 using SharpMap.Converters.WellKnownText;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using System.Globalization;
 using System.Collections;
 using SharpMap.Expressions;
@@ -61,13 +61,13 @@ namespace SharpMap.Data.Providers.GeometryProvider
 	/// </code>
 	/// </example>
 	/// </remarks>
-	public class GeometryProvider : IFeatureLayerProvider<UInt32>
+	public class GeometryProvider : IFeatureLayerProvider<uint>
 	{
 		private ICoordinateTransformation _coordinateTransformation;
 		private ICoordinateSystem _coordinateSystem;
 		private readonly List<Geometry> _geometries = new List<Geometry>();
-		private Int32? _srid = null;
-		private Boolean _isDisposed;
+		private int? _srid = null;
+		private bool _isDisposed;
 
 		#region Object Construction / Disposal
 
@@ -129,7 +129,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <see cref="SharpMap.Geometries.Geometry"/> as Well-Known Binary 
 		/// to add to this datasource.
 		/// </param>
-		public GeometryProvider(Byte[] wellKnownBinaryGeometry)
+		public GeometryProvider(byte[] wellKnownBinaryGeometry)
 			: this(GeometryFromWkb.Parse(wellKnownBinaryGeometry))
 		{
 		}
@@ -141,7 +141,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <see cref="SharpMap.Geometries.Geometry"/> as Well-Known Text 
 		/// to add to this datasource.
 		/// </param>
-		public GeometryProvider(String wellKnownTextGeometry)
+		public GeometryProvider(string wellKnownTextGeometry)
 			: this(GeometryFromWkt.Parse(wellKnownTextGeometry))
 		{
 		}
@@ -171,13 +171,13 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Gets a value indicating whether <see cref="Dispose"/> 
         /// has been called on the instance.
         /// </summary>
-		public Boolean IsDisposed
+		public bool IsDisposed
 		{
 			get { return _isDisposed; }
 			private set { _isDisposed = value; }
 		}
 
-		protected void Dispose(Boolean disposing)
+		protected void Dispose(bool disposing)
 		{
 			if (IsDisposed)
 			{
@@ -218,7 +218,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// The ConnectionID is meant for Connection Pooling which doesn't apply to this datasource. Instead
 		/// <c>String.Empty</c> is returned.
 		/// </remarks>
-		public String ConnectionId
+		public string ConnectionId
 		{
 			get { return String.Empty; }
 		}
@@ -232,7 +232,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <summary>
 		/// Returns true if the datasource is currently open
 		/// </summary>
-		public Boolean IsOpen
+		public bool IsOpen
 		{
 			get { return true; }
 		}
@@ -246,7 +246,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// <summary>
 		/// The spatial reference ID.
 		/// </summary>
-		public Int32? Srid
+		public int? Srid
 		{
 			get { return _srid; }
 			set { _srid = value; }
@@ -514,7 +514,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// Retrieves the number of features accessible with this provider.
 		/// </summary>
 		/// <returns>The number of features this provider can access.</returns>
-		public Int32 GetFeatureCount()
+		public int GetFeatureCount()
 		{
 			return _geometries.Count;
         }
@@ -531,18 +531,18 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 	    #endregion
 
-		#region IFeatureLayerProvider<UInt32> Members
+		#region IFeatureLayerProvider<uint> Members
 
 		/// <summary>
 		/// Returns all objects whose boundingbox intersects 'bbox'.
 		/// </summary>
 		/// <param name="box"></param>
 		/// <returns></returns>
-        public IEnumerable<UInt32> GetIntersectingObjectIds(BoundingBox box)
+        public IEnumerable<uint> GetIntersectingObjectIds(BoundingBox box)
 		{
-			for (UInt32 i = 0; i < _geometries.Count; i++)
+			for (uint i = 0; i < _geometries.Count; i++)
 			{
-				if (_geometries[(Int32)i].GetBoundingBox().Intersects(box))
+				if (_geometries[(int)i].GetBoundingBox().Intersects(box))
 				{
 					yield return i;
 				}
@@ -554,7 +554,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </summary>
 		/// <param name="oid"></param>
 		/// <returns></returns>
-		public FeatureDataRow<UInt32> GetFeature(UInt32 oid)
+		public FeatureDataRow<uint> GetFeature(uint oid)
 		{
 			throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
 		}
@@ -564,17 +564,17 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </summary>
 		/// <param name="oid">Object ID</param>
 		/// <returns>geometry</returns>
-		public Geometry GetGeometryById(UInt32 oid)
+		public Geometry GetGeometryById(uint oid)
 		{
-			return _geometries[(Int32)oid];
+			return _geometries[(int)oid];
 		}
 
-		public void SetTableSchema(FeatureDataTable<UInt32> table)
+		public void SetTableSchema(FeatureDataTable<uint> table)
 		{
             SetTableSchema(table, SchemaMergeAction.Add | SchemaMergeAction.Key);
         }
 
-        public void SetTableSchema(FeatureDataTable<UInt32> table, SchemaMergeAction schemaMergeAction)
+        public void SetTableSchema(FeatureDataTable<uint> table, SchemaMergeAction schemaMergeAction)
         {
             if (table == null) throw new ArgumentNullException("table");
 
@@ -597,10 +597,10 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
         #endregion
 
-        #region IFeatureLayerProvider<UInt32> Members
+        #region IFeatureLayerProvider<uint> Members
 
 
-        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<UInt32> oids)
+        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<uint> oids)
         {
             throw new NotImplementedException();
         }

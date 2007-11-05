@@ -31,7 +31,7 @@ namespace SharpMap.CoordinateSystems
 		/// Initializes a new instance of a angular unit
 		/// </summary>
 		/// <param name="radiansPerUnit">Radians per unit</param>
-		public AngularUnit(Double radiansPerUnit)
+		public AngularUnit(double radiansPerUnit)
 			: this(
 			radiansPerUnit,String.Empty,String.Empty,-1,String.Empty,String.Empty,String.Empty)
 		{
@@ -47,7 +47,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal AngularUnit(Double radiansPerUnit, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+		internal AngularUnit(double radiansPerUnit, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -90,12 +90,12 @@ namespace SharpMap.CoordinateSystems
 
 		#region IAngularUnit Members
 
-		private Double _RadiansPerUnit;
+		private double _RadiansPerUnit;
 
 		/// <summary>
 		/// Gets or sets the number of radians per <see cref="AngularUnit"/>.
 		/// </summary>
-		public Double RadiansPerUnit
+		public double RadiansPerUnit
 		{
 			get { return _RadiansPerUnit; }
 			set { _RadiansPerUnit = value; }
@@ -105,7 +105,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -142,7 +142,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj">Object to compare.</param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			AngularUnit other = obj as AngularUnit;
 

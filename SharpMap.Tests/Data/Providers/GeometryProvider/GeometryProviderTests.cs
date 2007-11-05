@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using SharpMap.Geometries;
 using GeoProvider = SharpMap.Data.Providers.GeometryProvider.GeometryProvider;
@@ -22,7 +21,7 @@ namespace SharpMap.Tests.Data.Providers.GeometryProvider
             Point[] points =
                 new Point[] {new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, 1), new Point(0, 0)};
             Polygon p = new Polygon(new LinearRing(points));
-            Byte[] wkb = p.AsBinary();
+            byte[] wkb = p.AsBinary();
             GeoProvider provider = new GeoProvider(wkb);
             Assert.AreEqual(1, provider.Geometries.Count);
             Assert.AreEqual(p, provider.Geometries[0]);

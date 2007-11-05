@@ -21,7 +21,7 @@ using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -34,7 +34,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets a value indicating that data is obtained asynchronously.
         /// </summary>
-        Boolean AsyncQuery { get; set; }
+        bool AsyncQuery { get; set; }
 
         /// <summary>
         /// The dataum, projection and coordinate system used for this layer.
@@ -58,7 +58,7 @@ namespace SharpMap.Layers
         /// Should be the same value as <see cref="Style"/>'s 
         /// <see cref="IStyle.Enabled"/> value.
         /// </remarks>
-        Boolean Enabled { get; set; }
+        bool Enabled { get; set; }
 
         /// <summary>
         /// Gets the boundingbox of the entire layer.
@@ -68,18 +68,18 @@ namespace SharpMap.Layers
         /// <summary>
         /// Name of layer.
         /// </summary>
-        String LayerName { get; set; }
+        string LayerName { get; set; }
 
         /// <summary>
         /// The spatial reference ID of the layer data source.
         /// </summary>
-        Int32? Srid { get; }
+        int? Srid { get; }
 
         /// <summary>
         /// The style for the layer.
         /// </summary>
         IStyle Style { get; set; }
 
-        Boolean IsVisibleWhen(Predicate<ILayer> condition);
+        bool IsVisibleWhen(Predicate<ILayer> condition);
     }
 }

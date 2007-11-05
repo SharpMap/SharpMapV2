@@ -20,13 +20,13 @@ using System.Collections.Generic;
 
 namespace SharpMap.Presentation
 {
-    public class FeaturesHighlightedChangedEventArgs : EventArgs
+    public class FeaturesHighlightedChangeRequestEventArgs : EventArgs
     {
-        private readonly IEnumerable<Int32> _highlightedFeatures;
+        private readonly IEnumerable<int> _highlightedFeatures;
 		private readonly String _layerName;
 
-        public FeaturesHighlightedChangedEventArgs(
-            String layerName, IEnumerable<Int32> highlightedFeatures)
+        public FeaturesHighlightedChangeRequestEventArgs(
+            String layerName, IEnumerable<int> highlightedFeatures)
         {
 			_layerName = layerName;
             _highlightedFeatures = highlightedFeatures;
@@ -37,7 +37,7 @@ namespace SharpMap.Presentation
     		get { return _layerName; }
     	}
 
-        public IEnumerable<Int32> HighlightedFeatures
+        public IEnumerable<int> HighlightedFeatures
         {
             get { return _highlightedFeatures; }
         }

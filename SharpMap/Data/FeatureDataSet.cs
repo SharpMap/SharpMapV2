@@ -27,7 +27,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {
@@ -49,7 +49,7 @@ namespace SharpMap.Data
         #region Type fields
         private static readonly SetDefaultViewManagerDelegate _setDefaultViewManager;
         private static readonly GetDefaultViewManagerDelegate _getDefaultViewManager;
-        private static Int32 _nameSeries = -1;
+        private static int _nameSeries = -1;
         #endregion
 
         #region Static constructor
@@ -66,7 +66,7 @@ namespace SharpMap.Data
         #region Object fields
         private FeatureTableCollection _featureTables;
         private readonly object _defaultViewManagerSync = new object();
-        private Int32 _defaultViewManagerInitialized = 0;
+        private int _defaultViewManagerInitialized = 0;
         #endregion
 
         #region Object constructors
@@ -80,7 +80,7 @@ namespace SharpMap.Data
         /// <summary>
         /// Initializes a new instance of the FeatureDataSet class with the given name.
         /// </summary>
-        public FeatureDataSet(String name)
+        public FeatureDataSet(string name)
         {
             initClass(name);
             CollectionChangeEventHandler schemaChangedHandler = schemaChanged;
@@ -95,7 +95,7 @@ namespace SharpMap.Data
         /// <param name="context">Remoting context.</param>
         protected FeatureDataSet(SerializationInfo info, StreamingContext context)
         {
-            String schemaString = ((String) (info.GetValue("XmlSchema", typeof (String))));
+            string schemaString = ((string) (info.GetValue("XmlSchema", typeof (string))));
 
             if ((schemaString != null))
             {
@@ -198,7 +198,7 @@ namespace SharpMap.Data
         /// Gets a value indicating whether Tables property should be persisted.
         /// </summary>
         /// <returns></returns>
-        protected override Boolean ShouldSerializeTables()
+        protected override bool ShouldSerializeTables()
         {
             // TODO: no clue what to do here...
             return false;
@@ -208,7 +208,7 @@ namespace SharpMap.Data
         /// Gets a value indicating whether Relations property should be persisted.
         /// </summary>
         /// <returns></returns>
-        protected override Boolean ShouldSerializeRelations()
+        protected override bool ShouldSerializeRelations()
         {
             // TODO: no clue what to do here...
             return false;
@@ -251,9 +251,9 @@ namespace SharpMap.Data
 
         #region Private static helper methods
 
-        private static String generateName()
+        private static string generateName()
         {
-            String name = "FeatureDataSet";
+            string name = "FeatureDataSet";
 
             Interlocked.Increment(ref _nameSeries);
 
@@ -307,7 +307,7 @@ namespace SharpMap.Data
 
         #region Private helper methods
 
-        private void initClass(String name)
+        private void initClass(string name)
         {
             DataSetName = name;
             _featureTables = new FeatureTableCollection(base.Tables);
@@ -318,7 +318,7 @@ namespace SharpMap.Data
             EnforceConstraints = true;
         }
 
-        private Boolean shouldSerializeFeatureTable()
+        private bool shouldSerializeFeatureTable()
         {
             return false;
         }

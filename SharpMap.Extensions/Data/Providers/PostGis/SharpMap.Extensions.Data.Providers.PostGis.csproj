@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NPack, Version=0.7.8392.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ExternalReferences\NPack.dll</HintPath>
-    </Reference>
     <Reference Include="PostgreSql.Data.PostgreSqlClient, Version=2.0.0.0, Culture=neutral, PublicKeyToken=67eb7b24561f0df3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\ExternalReferences\PostgreSql.Data.PostgreSqlClient.dll</HintPath>
@@ -44,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PostGisProvider.cs" />
+    <Compile Include="PostGIS2.cs" />
     <Compile Include="PostGisDataException.cs" />
     <Compile Include="PostGisFeatureDataReader.cs" />
     <Compile Include="PostGisInvalidOperationException.cs" />

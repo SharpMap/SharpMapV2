@@ -22,21 +22,21 @@ namespace SharpMap.Styles
     [Serializable]
     public sealed class StyleFontFamily
     {
-        private readonly String _familyName;
+        private readonly string _familyName;
 
-        public StyleFontFamily(String name)
+        public StyleFontFamily(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
 
             _familyName = name;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return Name;
         }
 
-        public String Name
+        public string Name
         {
             get { return _familyName; }
         }

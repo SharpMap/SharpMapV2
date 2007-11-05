@@ -15,8 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
 namespace SharpMap.Styles
 {
     /// <summary>
@@ -27,16 +25,16 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the minimum zoom value where the style is applied.
         /// </summary>
-        Double MinVisible { get; set; }
+        double MinVisible { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum zoom value where the style is applied.
         /// </summary>
-        Double MaxVisible { get; set; }
+        double MaxVisible { get; set; }
 
         /// <summary>
         /// Gets or sets whether objects in this style is rendered or not.
         /// </summary>
-        Boolean Enabled { get; set; }
+        bool Enabled { get; set; }
     }
 }

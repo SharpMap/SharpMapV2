@@ -54,7 +54,7 @@ namespace SharpMap.Styles
         /// Generates a hash code for use in hashtables and dictionaries.
         /// </summary>
         /// <returns>An integer usable as a hash value in hashtables.</returns>
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             return 7602046 ^ _color.GetHashCode();
         }

@@ -15,10 +15,9 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {
@@ -26,7 +25,7 @@ namespace SharpMap.Data
     /// NOTE: this class is just an experimental attempt to express a view on 
     /// raster data. It _will_ change.
     /// </summary>
-    public class RasterDataView : Stream, IEnumerable<Byte>
+    public class RasterDataView : Stream, IEnumerable<byte>
     {
         public RasterDataView(RasterBand band)
         {
@@ -38,7 +37,7 @@ namespace SharpMap.Data
 
         }
 
-        public RasterDataView(RasterDataSet dataSet, Geometry intersectionFilter, Double scale)
+        public RasterDataView(RasterDataSet dataSet, Geometry intersectionFilter, double scale)
         {
 
         }
@@ -55,7 +54,7 @@ namespace SharpMap.Data
         /// <filterpriority>2</filterpriority>
         public override void Flush()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -67,7 +66,7 @@ namespace SharpMap.Data
         /// </returns>
         ///
         /// <param name="offset">
-        /// A Byte offset relative to the origin parameter.
+        /// A byte offset relative to the origin parameter.
         /// </param>
         /// <param name="origin">
         /// A value of type <see cref="T:System.IO.SeekOrigin"></see> indicating the 
@@ -82,7 +81,7 @@ namespace SharpMap.Data
         /// Methods were called after the stream was closed. 
         /// </exception>
         /// <filterpriority>1</filterpriority>
-        public override Int64 Seek(Int64 offset, SeekOrigin origin)
+        public override long Seek(long offset, SeekOrigin origin)
         {
             throw new System.NotImplementedException();
         }
@@ -103,7 +102,7 @@ namespace SharpMap.Data
         /// Methods were called after the stream was closed.
         /// </exception>
         /// <filterpriority>2</filterpriority>
-        public override void SetLength(Int64 value)
+        public override void SetLength(long value)
         {
             throw new System.NotImplementedException();
         }
@@ -121,7 +120,7 @@ namespace SharpMap.Data
         /// </returns>
         ///
         /// <param name="offset">
-        /// The zero-based Byte offset in buffer at which to begin storing the 
+        /// The zero-based byte offset in buffer at which to begin storing the 
         /// data read from the current stream.
         /// </param>
         /// <param name="count">
@@ -129,7 +128,7 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="buffer">
         /// An array of bytes. When this method returns, the buffer contains the 
-        /// specified Byte array with the values between offset and (offset + count - 1) 
+        /// specified byte array with the values between offset and (offset + count - 1) 
         /// replaced by the bytes read from the current source.
         /// </param>
         /// <exception cref="T:System.ArgumentException">
@@ -151,7 +150,7 @@ namespace SharpMap.Data
         /// <paramref name="offset"/> or <paramref name="count"/> is negative.
         /// </exception>
         /// <filterpriority>1</filterpriority>
-        public override Int32 Read(Byte[] buffer, Int32 offset, Int32 count)
+        public override int Read(byte[] buffer, int offset, int count)
         {
             throw new System.NotImplementedException();
         }
@@ -163,7 +162,7 @@ namespace SharpMap.Data
         /// </summary>
         ///
         /// <param name="offset">
-        /// The zero-based Byte offset in buffer at which to begin copying 
+        /// The zero-based byte offset in buffer at which to begin copying 
         /// bytes to the current stream.
         /// </param>
         /// <param name="count">
@@ -192,7 +191,7 @@ namespace SharpMap.Data
         /// <paramref name="offset"/> or <paramref name="count"/> is negative. 
         /// </exception>
         /// <filterpriority>1</filterpriority>
-        public override void Write(Byte[] buffer, Int32 offset, Int32 count)
+        public override void Write(byte[] buffer, int offset, int count)
         {
             throw new System.NotImplementedException();
         }
@@ -206,7 +205,7 @@ namespace SharpMap.Data
         /// true if the stream supports reading; otherwise, false.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public override Boolean CanRead
+        public override bool CanRead
         {
             get { throw new System.NotImplementedException(); }
         }
@@ -220,7 +219,7 @@ namespace SharpMap.Data
         /// true if the stream supports seeking; otherwise, false.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public override Boolean CanSeek
+        public override bool CanSeek
         {
             get { throw new System.NotImplementedException(); }
         }
@@ -234,7 +233,7 @@ namespace SharpMap.Data
         /// true if the stream supports writing; otherwise, false.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public override Boolean CanWrite
+        public override bool CanWrite
         {
             get { throw new System.NotImplementedException(); }
         }
@@ -244,7 +243,7 @@ namespace SharpMap.Data
         /// </summary>
         ///
         /// <returns>
-        /// A Int64 value representing the length of the stream in bytes.
+        /// A long value representing the length of the stream in bytes.
         /// </returns>
         ///
         /// <exception cref="T:System.NotSupportedException">
@@ -254,7 +253,7 @@ namespace SharpMap.Data
         /// Methods were called after the stream was closed. 
         /// </exception>
         /// <filterpriority>1</filterpriority>
-        public override Int64 Length
+        public override long Length
         {
             get { throw new System.NotImplementedException(); }
         }
@@ -278,15 +277,15 @@ namespace SharpMap.Data
         /// Methods were called after the stream was closed.
         /// </exception><
         /// filterpriority>1</filterpriority>
-        public override Int64 Position
+        public override long Position
         {
             get { throw new System.NotImplementedException(); }
             set { throw new System.NotImplementedException(); }
         }
 
-        #region IEnumerable<Byte> Members
+        #region IEnumerable<byte> Members
 
-        public IEnumerator<Byte> GetEnumerator()
+        public IEnumerator<byte> GetEnumerator()
         {
             throw new System.NotImplementedException();
         }

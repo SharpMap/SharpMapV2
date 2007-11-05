@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing
 {
@@ -30,7 +30,7 @@ namespace SharpMap.Indexing
     /// <typeparam name="TEntry">Type of the index entry.</typeparam>
     public abstract class SpatialIndexNode<TItem, TEntry> : ISpatialIndexNode
     {
-        private UInt32? _nodeId;
+        private uint? _nodeId;
         private BoundingBox _boundingBox = BoundingBox.Empty;
         private readonly List<TItem> _items = new List<TItem>();
         private ISearchableSpatialIndex<TEntry> _index;
@@ -78,7 +78,7 @@ namespace SharpMap.Indexing
         /// <param name="item">Item to add</param>
         public void Add(TItem item)
         {
-            Boolean cancel;
+            bool cancel;
             OnItemAdding(item, out cancel);
 
             if (cancel)
@@ -112,7 +112,7 @@ namespace SharpMap.Indexing
 
             foreach (TItem item in items)
             {
-                Boolean cancel;
+                bool cancel;
                 OnItemAdding(item, out cancel);
 
                 if (cancel)
@@ -136,9 +136,9 @@ namespace SharpMap.Indexing
         /// <see langword="true"/> if the item was found and removed, 
         /// <see langword="false"/> if not found or not removed.
         /// </returns>
-        public virtual Boolean Remove(TItem item)
+        public virtual bool Remove(TItem item)
         {
-            Boolean cancel;
+            bool cancel;
 
             OnItemRemoving(item, out cancel);
 
@@ -147,7 +147,7 @@ namespace SharpMap.Indexing
                 return false;
             }
 
-            Boolean removed = _items.Remove(item);
+            bool removed = _items.Remove(item);
 
             if (removed)
             {
@@ -176,13 +176,13 @@ namespace SharpMap.Indexing
         /// </summary>
         public void Clear()
         {
-            Boolean cancel;
+            bool cancel;
             OnClearing(out cancel);
             BoundingBox = BoundingBox.Empty;
             OnCleared();
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("Node Id: {0}; BoundingBox: {1}", _nodeId, _boundingBox);
         }
@@ -194,7 +194,7 @@ namespace SharpMap.Indexing
         /// <returns>The bounding box of the given <paramref name="item">item</paramref>.</returns>
         protected abstract BoundingBox GetItemBoundingBox(TItem item);
 
-        protected virtual void OnClearing(out Boolean cancel)
+        protected virtual void OnClearing(out bool cancel)
         {
             _items.Clear();
             cancel = false;
@@ -202,14 +202,14 @@ namespace SharpMap.Indexing
 
         protected virtual void OnCleared() {}
 
-        protected virtual void OnItemAdding(TItem entry, out Boolean cancel)
+        protected virtual void OnItemAdding(TItem entry, out bool cancel)
         {
             cancel = false;
         }
 
         protected virtual void OnItemAdded(TItem entry) {}
 
-        protected virtual void OnItemRemoving(TItem entry, out Boolean cancel)
+        protected virtual void OnItemRemoving(TItem entry, out bool cancel)
         {
             cancel = false;
         }

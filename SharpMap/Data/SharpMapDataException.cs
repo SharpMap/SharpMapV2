@@ -38,7 +38,7 @@ namespace SharpMap.Data
         /// <paramref name="message"/>.
         /// </summary>
         /// <param name="message">Text message to include in the exception.</param>
-        public SharpMapDataException(String message)
+        public SharpMapDataException(string message)
             : base(message)
         {
         }
@@ -49,7 +49,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="message">Text message to include in the exception.</param>
         /// <param name="inner">Exception which caused this exception.</param>
-        public SharpMapDataException(String message, Exception inner)
+        public SharpMapDataException(string message, Exception inner)
             : base(message, inner)
         {
         }

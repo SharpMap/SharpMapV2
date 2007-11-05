@@ -27,7 +27,7 @@ namespace SharpMap.CoordinateSystems
 	/// </summary>
     public class Unit : Info, IUnit
     {
-        private Double _conversionFactor;
+        private double _conversionFactor;
 
 		/// <summary>
 		/// Initializes a new unit
@@ -39,7 +39,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal Unit(Double conversionFactor, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+		internal Unit(double conversionFactor, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_conversionFactor = conversionFactor;
@@ -50,7 +50,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="name">Name of unit</param>
 		/// <param name="conversionFactor">Conversion factor to base unit</param>
-		internal Unit(String name, Double conversionFactor)
+		internal Unit(string name, double conversionFactor)
 			: this(conversionFactor, name, String.Empty, -1, String.Empty, String.Empty, String.Empty)
 		{
 		}
@@ -58,7 +58,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the number of units per base-unit.
 		/// </summary>
-		public Double ConversionFactor
+		public double ConversionFactor
 		{
 			get { return _conversionFactor; }
 			set { _conversionFactor = value; }
@@ -68,7 +68,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object [NOT IMPLEMENTED].
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -104,7 +104,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			Unit other = obj as Unit;
 

@@ -124,7 +124,7 @@ namespace SharpMap.Rendering.Thematics
         /// {
         ///		VectorStyle style = new VectorStyle();
         /// 
-        ///     Int32 roadClass = (Int32)row["RoadClass"];
+        ///     int roadClass = (int)row["RoadClass"];
         /// 
         ///		if(roadClass > 3)
         ///     {

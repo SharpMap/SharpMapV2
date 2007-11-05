@@ -24,7 +24,7 @@ namespace SharpMap.Tools
 	public interface IMapTool<TMapView, TPoint>
 		where TPoint : IVector<DoubleComponent>
 	{
-		String Name { get; }
+		string Name { get; }
 		Action<ActionContext<TMapView, TPoint>> QueryAction { get; }
 		Action<ActionContext<TMapView, TPoint>> BeginAction { get; }
 		Action<ActionContext<TMapView, TPoint>> ExtendAction { get; }

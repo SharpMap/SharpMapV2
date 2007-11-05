@@ -20,7 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using System.Globalization;
 using SharpMap.Expressions;
 
@@ -243,7 +243,7 @@ namespace SharpMap.Data
         /// Returns the number of features in the entire data source.
         /// </summary>
         /// <returns>Count of the features in the entire data source.</returns>
-        Int32 GetFeatureCount();
+        int GetFeatureCount();
 
         /// <summary>
         /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema

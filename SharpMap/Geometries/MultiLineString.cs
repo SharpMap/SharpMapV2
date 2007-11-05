@@ -32,7 +32,7 @@ namespace SharpMap.Geometries
         /// </summary>
         public MultiLineString() { }
 
-        public MultiLineString(Int32 initialCapacity)
+        public MultiLineString(int initialCapacity)
             : base(initialCapacity) { }
 
         /// <summary>

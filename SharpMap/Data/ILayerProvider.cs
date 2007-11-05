@@ -19,7 +19,7 @@
 using System;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {
@@ -43,12 +43,12 @@ namespace SharpMap.Data
         /// <summary>
         /// Returns true if the datasource is currently open.
         /// </summary>
-        Boolean IsOpen { get; }
+        bool IsOpen { get; }
 
         /// <summary>
         /// The spatial reference ID for the provider.
         /// </summary>
-        Int32? Srid { get; set; }
+        int? Srid { get; set; }
 
         /// <summary>
         /// Geometric extent of the entire dataset.
@@ -70,7 +70,7 @@ namespace SharpMap.Data
         /// the ConnectionId should return String.Empty.
         /// </para>
         /// </remarks>
-        String ConnectionId { get; }
+        string ConnectionId { get; }
 
         /// <summary>
         /// Opens the datasource.

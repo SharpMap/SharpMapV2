@@ -30,21 +30,21 @@ namespace SharpMap.Styles
         #region Fields
         // This default (10.0f) is the same in both GDI+ and WPF 
         // for the MiterLimit value on the respective Pen objects.
-        private Single _miterLimit = 10.0f;
+        private float _miterLimit = 10.0f;
         private StyleBrush _backgroundBrush;
-        private Single _dashOffset;
+        private float _dashOffset;
         private LineDashCap _dashCap;
         private LineDashStyle _dashStyle;
-        private Single[] _dashPattern;
+        private float[] _dashPattern;
         private StyleBrush[] _dashBrushes;
         private StyleLineCap _startCap;
         private StyleLineCap _endCap;
         private StyleLineJoin _lineJoin;
         private Matrix2D _transform = new Matrix2D();
-        private Double _width;
-        private Single[] _compoundArray;
+        private double _width;
+        private float[] _compoundArray;
         private StylePenAlignment _alignment;
-        private Int32? _hashCode = null;
+        private int? _hashCode = null;
         #endregion
 
         #region Object Constructors
@@ -54,7 +54,7 @@ namespace SharpMap.Styles
         /// </summary>
         /// <param name="color">Color of the pen.</param>
         /// <param name="width">Width of the pen.</param>
-        public StylePen(StyleColor color, Double width)
+        public StylePen(StyleColor color, double width)
             : this(new SolidStyleBrush(color), width) { }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace SharpMap.Styles
         /// The StyleBrush which describes the color of the line.
         /// </param>
         /// <param name="width">The width of the line.</param>
-        public StylePen(StyleBrush backgroundBrush, Double width)
+        public StylePen(StyleBrush backgroundBrush, double width)
         {
             _backgroundBrush = backgroundBrush;
             _width = width;
@@ -73,7 +73,7 @@ namespace SharpMap.Styles
         #endregion
 
         #region ToString
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format(
                 "[StylePen] Width: {0}; Alignment: {2}; CompoundArray: {3}; MiterLimit: {4}; DashOffset: {5}; DashPattern: {6}; DashBrushes: {7}; DashStyle: {8}; StartCap: {9}; EndCap: {10}; DashCap: {11}; LineJoin: {12}; Transform: {13}; Background: {1};",
@@ -82,14 +82,14 @@ namespace SharpMap.Styles
         #endregion
 
         #region GetHashCode
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             if (!_hashCode.HasValue)
             {
                 _hashCode = computeHashCode();
             }
 
-            return (Int32)_hashCode;
+            return (int)_hashCode;
         }
 
         #endregion
@@ -111,7 +111,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets an array of widths used to create a compound line.
         /// </summary>
-        public Single[] CompoundArray
+        public float[] CompoundArray
         {
             get { return _compoundArray; }
             set
@@ -127,7 +127,7 @@ namespace SharpMap.Styles
         /// <remarks>
         /// If the value is set to less than 1.0f, the value is clamped to 1.0f.
         /// </remarks>
-        public Single MiterLimit
+        public float MiterLimit
         {
             get { return _miterLimit; }
             set
@@ -158,7 +158,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the offset of the start of the dash pattern.
         /// </summary>
-        public Single DashOffset
+        public float DashOffset
         {
             get { return _dashOffset; }
             set
@@ -171,7 +171,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets an array of values used as widths in a dash pattern.
         /// </summary>
-        public Single[] DashPattern
+        public float[] DashPattern
         {
             get { return _dashPattern; }
             set
@@ -286,7 +286,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the width of the line drawn by this pen.
         /// </summary>
-        public Double Width
+        public double Width
         {
             get { return _width; }
             set
@@ -299,7 +299,7 @@ namespace SharpMap.Styles
 
         #region Private helper methods
 
-        private Int32 computeHashCode()
+        private int computeHashCode()
         {
             return Alignment.GetHashCode() ^
                    getSingleArrayHashCode(CompoundArray) ^
@@ -318,7 +318,7 @@ namespace SharpMap.Styles
                    -18133844;
         }
 
-        private static String printBrushes(StyleBrush[] brushes)
+        private static string printBrushes(StyleBrush[] brushes)
         {
             if (brushes == null || brushes.Length == 0)
                 return String.Empty;
@@ -335,14 +335,14 @@ namespace SharpMap.Styles
             return buffer.ToString();
         }
 
-        private static String printFloatArray(Single[] values)
+        private static string printFloatArray(float[] values)
         {
             if (values == null || values.Length == 0)
                 return String.Empty;
 
             StringBuilder buffer = new StringBuilder();
 
-            foreach (Single value in values)
+            foreach (float value in values)
             {
                 buffer.AppendFormat("{0:N3}", value);
                 buffer.Append(", ");
@@ -352,9 +352,9 @@ namespace SharpMap.Styles
             return buffer.ToString();
         }
 
-        private static Int32 getStyleBrushesArrayHashCode(StyleBrush[] brushes)
+        private static int getStyleBrushesArrayHashCode(StyleBrush[] brushes)
         {
-            Int32 hashCode = -1720831040;
+            int hashCode = -1720831040;
 
             if (brushes != null)
             {
@@ -367,13 +367,13 @@ namespace SharpMap.Styles
             return hashCode;
         }
 
-        private static Int32 getSingleArrayHashCode(Single[] values)
+        private static int getSingleArrayHashCode(float[] values)
         {
-            Int32 hashCode = 737226580;
+            int hashCode = 737226580;
 
             if (values != null)
             {
-                foreach (Single value in values)
+                foreach (float value in values)
                 {
                     hashCode ^= value.GetHashCode();
                 }

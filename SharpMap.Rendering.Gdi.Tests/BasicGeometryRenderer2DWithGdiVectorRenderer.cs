@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -15,7 +14,7 @@ namespace SharpMap.Rendering.Gdi.Tests
     [TestFixture]
     public class BasicGeometryRenderer2DWithGdiVectorRenderer
     {
-        private static readonly Single _e = 0.0001f;
+        private static readonly float _e = 0.0001f;
 
         [Test]
         public void CreatingBasicGeometryRenderer2DWithGdiVectorRendererSucceeds()
@@ -50,14 +49,14 @@ namespace SharpMap.Rendering.Gdi.Tests
                             Polygon p = g as Polygon;
                             using (GraphicsPathIterator iter = new GraphicsPathIterator(ro.GdiPath))
                             {
-                                Int32 start, end;
-                                Boolean isClosed;
+                                int start, end;
+                                bool isClosed;
                                 iter.NextSubpath(out start, out end, out isClosed);
 
                                 Assert.IsTrue(isClosed);
                                 Assert.AreEqual(p.ExteriorRing.Vertices.Count, end - start + 1);
 
-                                for (Int32 vertexIndex = 0; vertexIndex < p.ExteriorRing.Vertices.Count; vertexIndex++)
+                                for (int vertexIndex = 0; vertexIndex < p.ExteriorRing.Vertices.Count; vertexIndex++)
                                 {
                                     Point v = p.ExteriorRing.Vertices[vertexIndex];
                                     PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
@@ -65,13 +64,13 @@ namespace SharpMap.Rendering.Gdi.Tests
                                     Assert.AreEqual(v.Y, gdiPoint.Y);
                                 }
 
-                                for (Int32 interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
+                                for (int interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
                                 {
                                     iter.NextSubpath(out start, out end, out isClosed);
                                     Assert.IsTrue(isClosed);
                                     Assert.AreEqual(p.InteriorRings[interiorIndex].Vertices.Count, end - start + 1);
 
-                                    for (Int32 vertexIndex = 0;
+                                    for (int vertexIndex = 0;
                                          vertexIndex < p.InteriorRings[interiorIndex].Vertices.Count;
                                          vertexIndex++)
                                     {
@@ -91,14 +90,14 @@ namespace SharpMap.Rendering.Gdi.Tests
                             {
                                 foreach (Polygon p in mp)
                                 {
-                                    Int32 start, end;
-                                    Boolean isClosed;
+                                    int start, end;
+                                    bool isClosed;
                                     iter.NextSubpath(out start, out end, out isClosed);
 
                                     Assert.IsTrue(isClosed);
                                     Assert.AreEqual(p.ExteriorRing.Vertices.Count, end - start + 1);
 
-                                    for (Int32 vertexIndex = 0;
+                                    for (int vertexIndex = 0;
                                          vertexIndex < p.ExteriorRing.Vertices.Count;
                                          vertexIndex++)
                                     {
@@ -108,13 +107,13 @@ namespace SharpMap.Rendering.Gdi.Tests
                                         Assert.AreEqual(v.Y, gdiPoint.Y);
                                     }
 
-                                    for (Int32 interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
+                                    for (int interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
                                     {
                                         iter.NextSubpath(out start, out end, out isClosed);
                                         Assert.IsTrue(isClosed);
                                         Assert.AreEqual(p.InteriorRings[interiorIndex].Vertices.Count, end - start + 1);
 
-                                        for (Int32 vertexIndex = 0;
+                                        for (int vertexIndex = 0;
                                              vertexIndex < p.InteriorRings[interiorIndex].Vertices.Count;
                                              vertexIndex++)
                                         {
@@ -146,15 +145,15 @@ namespace SharpMap.Rendering.Gdi.Tests
                 {
                     IEnumerable<GdiRenderObject> renderedObjects = geometryRenderer.RenderFeature(record);
 
-                    Int32 geoIndex = 0;
+                    int geoIndex = 0;
                     Geometry g = record.Geometry;
 
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
                         using (GraphicsPathIterator iter = new GraphicsPathIterator(ro.GdiPath))
                         {
-                            Int32 start, end;
-                            Boolean isClosed;
+                            int start, end;
+                            bool isClosed;
                             iter.NextSubpath(out start, out end, out isClosed);
 
                             if (g is LineString)
@@ -162,7 +161,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                                 Assert.IsFalse(isClosed);
                                 LineString ls = g as LineString;
                                 Assert.AreEqual(1, iter.SubpathCount);
-                                for (Int32 vertexIndex = 0; vertexIndex < ls.Vertices.Count; vertexIndex++)
+                                for (int vertexIndex = 0; vertexIndex < ls.Vertices.Count; vertexIndex++)
                                 {
                                     Point v = ls.Vertices[vertexIndex];
                                     PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
@@ -177,7 +176,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                                 Assert.AreEqual(mls.Collection.Count, iter.SubpathCount);
                                 foreach (LineString lineString in mls)
                                 {
-                                    for (Int32 vertexIndex = 0; vertexIndex < lineString.Vertices.Count; vertexIndex++)
+                                    for (int vertexIndex = 0; vertexIndex < lineString.Vertices.Count; vertexIndex++)
                                     {
                                         Point v = lineString.Vertices[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
@@ -208,7 +207,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                 {
                     IEnumerable<GdiRenderObject> renderedObjects = geometryRenderer.RenderFeature(record);
 
-                    Int32 geoIndex = 0;
+                    int geoIndex = 0;
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
                         Geometry g = record.Geometry;

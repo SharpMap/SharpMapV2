@@ -57,7 +57,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Initializes a new GeometryCollection
         /// </summary>
-        public GeometryCollection(Int32 initialCapacity)
+        public GeometryCollection(int initialCapacity)
         {
             _geometries = new List<TGeometry>(initialCapacity);
         }
@@ -65,7 +65,7 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Gets the number of geometries in the collection.
         /// </summary>
-        public virtual Int32 NumGeometries
+        public virtual int NumGeometries
         {
             get { return _geometries.Count; }
         }
@@ -75,7 +75,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="index">Geometry index.</param>
         /// <returns>Geometry at given index.</returns>
-        public virtual Geometry Geometry(Int32 index)
+        public virtual Geometry Geometry(int index)
         {
             return _geometries[index];
         }
@@ -85,7 +85,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="index">Geometry index.</param>
         /// <returns>Geometry</returns>
-        public virtual TGeometry this[Int32 index]
+        public virtual TGeometry this[int index]
         {
             get { return _geometries[index]; }
         }
@@ -98,7 +98,7 @@ namespace SharpMap.Geometries
         /// <see langword="true"/> if the GeometryCollection is 
         /// empty or contains only null or empty geometries.
         /// </returns>
-        public override Boolean IsEmpty()
+        public override bool IsEmpty()
         {
             if (_geometries == null)
             {
@@ -129,11 +129,11 @@ namespace SharpMap.Geometries
         /// which must be less than or equal
         /// to the coordinate dimension.
         /// </summary>
-        public override Int32 Dimension
+        public override int Dimension
         {
             get
             {
-                Int32 dim = 0;
+                int dim = 0;
                 _geometries.ForEach(delegate(TGeometry g) { dim = Math.Max(dim, g.Dimension); });
                 return dim;
             }
@@ -162,9 +162,9 @@ namespace SharpMap.Geometries
         /// is suitable for use in hashing algorithms and data structures like a hash table.
         /// </summary>
         /// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
-            Int32 hash = 0;
+            int hash = 0;
             _geometries.ForEach(delegate(TGeometry g) { hash ^= g.GetHashCode(); });
             return hash;
         }
@@ -181,7 +181,7 @@ namespace SharpMap.Geometries
         /// <returns>
         /// <see langword="true"/> if the GeometryCollections are equal.
         /// </returns>
-        public Boolean Equals(GeometryCollection<TGeometry> other)
+        public bool Equals(GeometryCollection<TGeometry> other)
         {
             if (ReferenceEquals(other, null))
             {
@@ -195,7 +195,7 @@ namespace SharpMap.Geometries
 
             unchecked
             {
-                for (Int32 i = 0; i < other.Collection.Count; i++)
+                for (int i = 0; i < other.Collection.Count; i++)
                 {
                     if (!other.Collection[i].Equals(Collection[i]))
                     {
@@ -216,7 +216,7 @@ namespace SharpMap.Geometries
         /// conditions that cause an instance of that class to be classified as not simple.
         /// </summary>
         /// <returns>true if the geometry is simple</returns>
-        public override Boolean IsSimple()
+        public override bool IsSimple()
         {
             throw new NotImplementedException();
         }
@@ -239,7 +239,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="geom">Geometry to calculate distance to</param>
         /// <returns>Shortest distance between any two points in the two geometries</returns>
-        public override Double Distance(Geometry geom)
+        public override double Distance(Geometry geom)
         {
             throw new NotImplementedException();
         }
@@ -251,7 +251,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="d">Buffer distance</param>
         /// <returns>Buffer around geometry</returns>
-        public override Geometry Buffer(Double d)
+        public override Geometry Buffer(double d)
         {
             throw new NotImplementedException();
         }

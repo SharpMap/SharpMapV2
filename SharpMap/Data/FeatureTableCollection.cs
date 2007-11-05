@@ -43,29 +43,29 @@ namespace SharpMap.Data
         public event CollectionChangeEventHandler CollectionChanged;
         public event CollectionChangeEventHandler CollectionChanging;
 
-        public FeatureDataTable this[String name]
+        public FeatureDataTable this[string name]
         {
             get { return _tables[name] as FeatureDataTable; }
         }
 
-        public FeatureDataTable this[String name, String tableNamespace]
+        public FeatureDataTable this[string name, string tableNamespace]
         {
             get { return _tables[name, tableNamespace] as FeatureDataTable; }
         }
 
         #region IList<FeatureDataTable> Members
 
-        public Int32 IndexOf(FeatureDataTable item)
+        public int IndexOf(FeatureDataTable item)
         {
             return _tables.IndexOf(item);
         }
 
-        public void RemoveAt(Int32 index)
+        public void RemoveAt(int index)
         {
             _tables.RemoveAt(index);
         }
 
-        public FeatureDataTable this[Int32 index]
+        public FeatureDataTable this[int index]
         {
             get { return _tables[index] as FeatureDataTable; }
         }
@@ -84,50 +84,50 @@ namespace SharpMap.Data
             _tables.Clear();
         }
 
-        public Boolean Contains(FeatureDataTable item)
+        public bool Contains(FeatureDataTable item)
         {
             if (item == null) throw new ArgumentNullException("item");
             return _tables.Contains(item.TableName);
         }
 
-        public Boolean Contains(String name)
+        public bool Contains(string name)
         {
             return _tables.Contains(name);
         }
 
-        public Boolean Contains(String name, String tableNamespace)
+        public bool Contains(string name, string tableNamespace)
         {
             return _tables.Contains(name, tableNamespace);
         }
 
-        public void CopyTo(FeatureDataTable[] array, Int32 arrayIndex)
+        public void CopyTo(FeatureDataTable[] array, int arrayIndex)
         {
             _tables.CopyTo(array, arrayIndex);
         }
 
-        public Int32 Count
+        public int Count
         {
             get { return _tables.Count; }
         }
 
-        public Boolean IsReadOnly
+        public bool IsReadOnly
         {
             get { return _tables.IsReadOnly; }
         }
 
-        public Boolean Remove(FeatureDataTable item)
+        public bool Remove(FeatureDataTable item)
         {
-            Boolean contained = _tables.Contains(item.TableName);
+            bool contained = _tables.Contains(item.TableName);
             _tables.Remove(item);
             return contained;
         }
 
-        public void Remove(String name)
+        public void Remove(string name)
         {
             _tables.Remove(name);
         }
 
-        public void Remove(String name, String tableNamespace)
+        public void Remove(string name, string tableNamespace)
         {
             _tables.Remove(name, tableNamespace);
         }
@@ -148,12 +148,12 @@ namespace SharpMap.Data
 
         #region IList<FeatureDataTable> Members
 
-        void IList<FeatureDataTable>.Insert(Int32 index, FeatureDataTable item)
+        void IList<FeatureDataTable>.Insert(int index, FeatureDataTable item)
         {
             throw new NotSupportedException();
         }
 
-        FeatureDataTable IList<FeatureDataTable>.this[Int32 index]
+        FeatureDataTable IList<FeatureDataTable>.this[int index]
         {
             get { return this[index]; }
             set { throw new NotSupportedException(); }

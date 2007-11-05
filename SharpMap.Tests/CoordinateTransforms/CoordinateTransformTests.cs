@@ -358,12 +358,12 @@ namespace SharpMap.Tests
             //ED50_to_WGS84_Denmark: datum.Wgs84Parameters = new Wgs84ConversionInfo(-89.5, -93.8, 127.6, 0, 0, 4.5, 1.2);
         }
 
-        private Boolean ToleranceLessThan(Point p1, Point p2, Double tolerance)
+        private bool ToleranceLessThan(Point p1, Point p2, double tolerance)
         {
             return Math.Abs(p1.X - p2.X) < tolerance && Math.Abs(p1.Y - p2.Y) < tolerance;
         }
 
-        private Boolean ToleranceLessThan(Point3D p1, Point3D p2, Double tolerance)
+        private bool ToleranceLessThan(Point3D p1, Point3D p2, double tolerance)
         {
             return
                 Math.Abs(p1.X - p2.X) < tolerance && Math.Abs(p1.Y - p2.Y) < tolerance &&

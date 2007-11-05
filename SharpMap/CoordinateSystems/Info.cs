@@ -88,12 +88,12 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Info(
-						String name,
-						String authority,
-						Int64 code,
-						String alias,
-						String abbreviation,
-						String remarks)
+						string name,
+						string authority,
+						long code,
+						string alias,
+						string abbreviation,
+						string remarks)
 		{
 			_name = name;
 			_authority = authority;
@@ -105,17 +105,17 @@ namespace SharpMap.CoordinateSystems
 
 		#region IInfo Members
 
-		private String _name;
-		private String _authority;
-		private Int64 _code;
-		private String _remarks;
-		private String _abbreviation;
-		private String _alias;
+		private string _name;
+		private string _authority;
+		private long _code;
+		private string _remarks;
+		private string _abbreviation;
+		private string _alias;
 
 		/// <summary>
 		/// Gets or sets the name of the object.
 		/// </summary>
-		public String Name
+		public string Name
 		{
 			get { return _name; }
 			set { _name = value; }
@@ -126,7 +126,7 @@ namespace SharpMap.CoordinateSystems
 		/// is this is a standard object with an authority specific
 		/// identity code. Returns "CUSTOM" if this is a custom object.
 		/// </summary>
-		public String Authority
+		public string Authority
 		{
 			get { return _authority; }
 			set { _authority = value; }
@@ -135,7 +135,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the authority specific identification code of the object
 		/// </summary>
-		public Int64 AuthorityCode
+		public long AuthorityCode
 		{
 			get { return _code; }
 			set { _code = value; }
@@ -144,7 +144,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the alias of the object.
 		/// </summary>
-		public String Alias
+		public string Alias
 		{
 			get { return _alias; }
 			set { _alias = value; }
@@ -153,7 +153,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the abbreviation of the object.
 		/// </summary>
-		public String Abbreviation
+		public string Abbreviation
 		{
 			get { return _abbreviation; }
 			set { _abbreviation = value; }
@@ -162,7 +162,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the provider-supplied remarks for the object.
 		/// </summary>
-		public String Remarks
+		public string Remarks
 		{
 			get { return _remarks; }
 			set { _remarks = value; }
@@ -172,7 +172,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String ToString()
+		public override string ToString()
 		{
 			return Wkt;
 		}
@@ -181,17 +181,17 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public abstract String Wkt { get;}
+		public abstract string Wkt { get;}
 
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		public abstract String Xml { get; }
+		public abstract string Xml { get; }
 
 		/// <summary>
-		/// Returns an XML String of the info object
+		/// Returns an XML string of the info object
 		/// </summary>
-		internal String InfoXml
+		internal string InfoXml
 		{
 			get
 			{
@@ -230,7 +230,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-        public abstract Boolean EqualParams(object obj);
+        public abstract bool EqualParams(object obj);
 
 		#endregion
 	}

@@ -31,7 +31,7 @@ namespace SharpMap.Styles
 	public class StyleColorBlend
 	{
         private StyleColor[] _colors;
-        private Single[] _positions;
+        private float[] _positions;
 
         internal StyleColorBlend() { }
 
@@ -62,11 +62,11 @@ namespace SharpMap.Styles
 		/// <para>The elements of this array specify percentages of distance along the 
         /// gradient line. For example, an element value of 0.2f specifies that this 
         /// point is 20 percent of the total distance from the starting point. 
-        /// The elements in this array are represented by Single values between 0.0f and 1.0f, 
+        /// The elements in this array are represented by float values between 0.0f and 1.0f, 
         /// and the first element of the array must be 0.0f and the last element must be 1.0f.</para>
 		/// <pre>Along with the Colors property, this property defines a multicolor gradient.</pre>
 		/// </remarks>
-		public Single[] Positions
+		public float[] Positions
 		{
 			get { return _positions; }
 			set { _positions = value; }
@@ -79,7 +79,7 @@ namespace SharpMap.Styles
         /// colors to use at corresponding positions along a gradient.</param>
 		/// <param name="positions">An array of values that specify percentages of 
         /// distance along the gradient line.</param>
-		public StyleColorBlend(StyleColor[] colors, Single[] positions)
+		public StyleColorBlend(StyleColor[] colors, float[] positions)
 		{
 			_colors = colors;
 			_positions = positions;
@@ -92,7 +92,7 @@ namespace SharpMap.Styles
 		/// is used (in other words the scale restarts for each integer-part).</remarks>
 		/// <param name="pos">Position on scale between 0.0f and 1.0f</param>
 		/// <returns>Color on scale</returns>
-		public StyleColor GetColor(Single pos)
+		public StyleColor GetColor(float pos)
 		{
             if (_colors.Length != _positions.Length)
             {
@@ -116,19 +116,19 @@ namespace SharpMap.Styles
 
             if (pos > 1 || pos < 0)
             {
-                pos -= (Single)Math.Floor(pos);
+                pos -= (float)Math.Floor(pos);
             }
 
-			Int32 i = 1;
+			int i = 1;
 
 			while (i < _positions.Length && _positions[i] < pos)
 				i++;
 
-			Single frac = (pos - _positions[i - 1]) / (_positions[i] - _positions[i - 1]);
-			Int32 r = (Int32)Math.Round((_colors[i - 1].R * (1 - frac) + _colors[i].R * frac));
-			Int32 g = (Int32)Math.Round((_colors[i - 1].G * (1 - frac) + _colors[i].G * frac));
-			Int32 b = (Int32)Math.Round((_colors[i - 1].B * (1 - frac) + _colors[i].B * frac));
-			Int32 a = (Int32)Math.Round((_colors[i - 1].A * (1 - frac) + _colors[i].A * frac));
+			float frac = (pos - _positions[i - 1]) / (_positions[i] - _positions[i - 1]);
+			int r = (int)Math.Round((_colors[i - 1].R * (1 - frac) + _colors[i].R * frac));
+			int g = (int)Math.Round((_colors[i - 1].G * (1 - frac) + _colors[i].G * frac));
+			int b = (int)Math.Round((_colors[i - 1].B * (1 - frac) + _colors[i].B * frac));
+			int a = (int)Math.Round((_colors[i - 1].A * (1 - frac) + _colors[i].A * frac));
 
 			return StyleColor.FromBgra(b, g, r, a);
 		}
@@ -139,7 +139,7 @@ namespace SharpMap.Styles
         ///// <param name="rectangle"></param>
         ///// <param name="angle"></param>
         ///// <returns></returns>
-        //public LinearGradientBrush ToBrush(ViewRectangle rectangle, Single angle)
+        //public LinearGradientBrush ToBrush(ViewRectangle rectangle, float angle)
         //{
         //    LinearGradientBrush br = new LinearGradientBrush(rectangle, Color.Black, Color.Black, angle, true);
         //    System.Drawing.Drawing2D.ColorBlend cb = new System.Drawing.Drawing2D.ColorBlend();
@@ -163,8 +163,8 @@ namespace SharpMap.Styles
 			get
 			{
 				StyleColorBlend cb = new StyleColorBlend();
-				cb._positions = new Single[7];
-				for (Int32 i = 1; i < 7; i++)
+				cb._positions = new float[7];
+				for (int i = 1; i < 7; i++)
 					cb.Positions[i] = i / 6f;
 				cb.Colors = new StyleColor[] { StyleColor.Red, StyleColor.Orange, StyleColor.Yellow, StyleColor.Green, StyleColor.Blue, StyleColor.Indigo, StyleColor.Violet };
 				return cb;
@@ -184,7 +184,7 @@ namespace SharpMap.Styles
 			{
 				return new StyleColorBlend(
 					new StyleColor[] { StyleColor.Red, StyleColor.Yellow, StyleColor.Green, StyleColor.Cyan, StyleColor.Blue },
-					new Single[] { 0f, 0.25f, 0.5f, 0.75f, 1f });
+					new float[] { 0f, 0.25f, 0.5f, 0.75f, 1f });
 			}
 		}
 
@@ -195,7 +195,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Black, StyleColor.White }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Black, StyleColor.White }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -206,7 +206,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.White, StyleColor.Black }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.White, StyleColor.Black }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -217,7 +217,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Green }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Green }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -228,7 +228,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Red }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Red }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Green }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Green }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -250,7 +250,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Blue }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Green, StyleColor.Blue }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -261,7 +261,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Blue }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Red, StyleColor.Blue }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -272,7 +272,7 @@ namespace SharpMap.Styles
 		{
 			get
 			{
-				return new StyleColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Red }, new Single[] { 0f, 1f });
+				return new StyleColorBlend(new StyleColor[] { StyleColor.Blue, StyleColor.Red }, new float[] { 0f, 1f });
 			}
 		}
 
@@ -288,7 +288,7 @@ namespace SharpMap.Styles
 		/// <returns></returns>
 		public static StyleColorBlend TwoColors(StyleColor fromColor, StyleColor toColor)
 		{
-			return new StyleColorBlend(new StyleColor[] { fromColor, toColor }, new Single[] { 0f, 1f });
+			return new StyleColorBlend(new StyleColor[] { fromColor, toColor }, new float[] { 0f, 1f });
 		}
 
 		/// <summary>
@@ -297,7 +297,7 @@ namespace SharpMap.Styles
 		public static StyleColorBlend ThreeColors(StyleColor fromColor, StyleColor middleColor, StyleColor toColor)
 		{
 			return new StyleColorBlend(new StyleColor[] { fromColor, middleColor, toColor }, 
-                new Single[] { 0f, 0.5f, 1f });
+                new float[] { 0f, 0.5f, 1f });
 		}
 
 		#endregion

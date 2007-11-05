@@ -20,7 +20,7 @@ using System;
 using System.Data;
 using System.Reflection.Emit;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using System.Reflection;
 
 namespace SharpMap.Data
@@ -66,9 +66,9 @@ namespace SharpMap.Data
         private Geometry _originalGeometry;
         private Geometry _currentGeometry;
         private Geometry _proposedGeometry;
-        private Boolean _isGeometryModified = false;
+        private bool _isGeometryModified = false;
         private BoundingBox _extents = BoundingBox.Empty;
-        private Boolean _isFullyLoaded;
+        private bool _isFullyLoaded;
         #endregion
 
         #region Object constructor
@@ -147,7 +147,7 @@ namespace SharpMap.Data
         /// Gets a value indicating whether this feature record
         /// has been fully loaded from the data source.
         /// </summary>
-        public Boolean IsFullyLoaded
+        public bool IsFullyLoaded
         {
             get { return _isFullyLoaded; }
             internal set { _isFullyLoaded = value; }
@@ -157,7 +157,7 @@ namespace SharpMap.Data
         /// Gets true if the <see cref="Geometry"/> value for the
         /// feature has been modified.
         /// </summary>
-        public Boolean IsGeometryModified
+        public bool IsGeometryModified
         {
             get { return _isGeometryModified; }
         }
@@ -166,7 +166,7 @@ namespace SharpMap.Data
         /// Returns true of the geometry is null.
         /// </summary>
         /// <returns></returns>
-        public Boolean IsGeometryNull()
+        public bool IsGeometryNull()
         {
             return Geometry == null;
         }
@@ -190,120 +190,120 @@ namespace SharpMap.Data
 
         #region IDataRecord Members
 
-        public Int32 FieldCount
+        public int FieldCount
         {
             get { return InternalColumns.Count; }
         }
 
-        public Boolean GetBoolean(Int32 i)
+        public bool GetBoolean(int i)
         {
             return Convert.ToBoolean(this[i]);
         }
 
-        public Byte GetByte(Int32 i)
+        public byte GetByte(int i)
         {
             return Convert.ToByte(this[i]);
         }
 
-        public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
+        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
         {
             throw new NotImplementedException();
         }
 
-        public Char GetChar(Int32 i)
+        public char GetChar(int i)
         {
             return Convert.ToChar(this[i]);
         }
 
-        public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
+        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
         {
             throw new NotImplementedException();
         }
 
-        public IDataReader GetData(Int32 i)
+        public IDataReader GetData(int i)
         {
             throw new NotImplementedException();
         }
 
-        public String GetDataTypeName(Int32 i)
+        public string GetDataTypeName(int i)
         {
             return InternalColumns[i].DataType.ToString();
         }
 
-        public DateTime GetDateTime(Int32 i)
+        public DateTime GetDateTime(int i)
         {
             return Convert.ToDateTime(this[i]);
         }
 
-        public decimal GetDecimal(Int32 i)
+        public decimal GetDecimal(int i)
         {
             return Convert.ToDecimal(this[i]);
         }
 
-        public Double GetDouble(Int32 i)
+        public double GetDouble(int i)
         {
             return Convert.ToDouble(this[i]);
         }
 
-        public Type GetFieldType(Int32 i)
+        public Type GetFieldType(int i)
         {
             return InternalColumns[i].DataType;
         }
 
-        public Single GetFloat(Int32 i)
+        public float GetFloat(int i)
         {
             return Convert.ToSingle(this[i]);
         }
 
-        public Guid GetGuid(Int32 i)
+        public Guid GetGuid(int i)
         {
             return (Guid)this[i];
         }
 
-        public Int16 GetInt16(Int32 i)
+        public short GetInt16(int i)
         {
             return Convert.ToInt16(this[i]);
         }
 
-        public Int32 GetInt32(Int32 i)
+        public int GetInt32(int i)
         {
             return Convert.ToInt32(this[i]);
         }
 
-        public Int64 GetInt64(Int32 i)
+        public long GetInt64(int i)
         {
             return Convert.ToInt64(this[i]);
         }
 
-        public String GetName(Int32 i)
+        public string GetName(int i)
         {
             return InternalColumns[i].ColumnName;
         }
 
-        public Int32 GetOrdinal(String name)
+        public int GetOrdinal(string name)
         {
             return InternalColumns[name].Ordinal;
         }
 
-        public String GetString(Int32 i)
+        public string GetString(int i)
         {
             return Convert.ToString(this[i]);
         }
 
-        public object GetValue(Int32 i)
+        public object GetValue(int i)
         {
             return this[i];
         }
 
-        public Int32 GetValues(object[] values)
+        public int GetValues(object[] values)
         {
             object[] items = ItemArray;
-            Int32 elementsCopied = Math.Max(values.Length, items.Length);
+            int elementsCopied = Math.Max(values.Length, items.Length);
             Array.Copy(items, values, elementsCopied);
             return elementsCopied;
         }
 
-        public Boolean IsDBNull(Int32 i)
+        public bool IsDBNull(int i)
         {
             return IsNull(i);
         }
@@ -334,7 +334,7 @@ namespace SharpMap.Data
                 "Use FeatureDataRow<TOid> instead.");
         }
 
-        public virtual Boolean HasOid
+        public virtual bool HasOid
         {
             get 
             {

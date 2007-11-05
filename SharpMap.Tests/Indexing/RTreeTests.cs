@@ -13,8 +13,8 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void CreateRTreeTest()
         {
-            DynamicRTree<Int32> rTree = new DynamicRTree<Int32>(new GuttmanQuadraticInsert<Int32>(),
-                                                            new GuttmanQuadraticSplit<Int32>(),
+            DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
+                                                            new GuttmanQuadraticSplit<int>(),
                                                             new DynamicRTreeBalanceHeuristic());
 
             rTree.Dispose();
@@ -23,8 +23,8 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void InsertTest()
         {
-            DynamicRTree<Int32> rTree = new DynamicRTree<Int32>(new GuttmanQuadraticInsert<Int32>(),
-                                                            new GuttmanQuadraticSplit<Int32>(),
+            DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
+                                                            new GuttmanQuadraticSplit<int>(),
                                                             new DynamicRTreeBalanceHeuristic());
 
             addEntries(rTree);
@@ -37,13 +37,13 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void SearchTest()
         {
-            DynamicRTree<Int32> rTree = new DynamicRTree<Int32>(new GuttmanQuadraticInsert<Int32>(),
-                                                            new GuttmanQuadraticSplit<Int32>(),
+            DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
+                                                            new GuttmanQuadraticSplit<int>(),
                                                             new DynamicRTreeBalanceHeuristic());
 
             addEntries(rTree);
 
-            List<RTreeIndexEntry<Int32>> resultsList = new List<RTreeIndexEntry<Int32>>();
+            List<RTreeIndexEntry<int>> resultsList = new List<RTreeIndexEntry<int>>();
 
             resultsList.AddRange(rTree.Search(new BoundingBox(-100, -100, 5928.57523425, 3252.50803582)));
             Assert.AreEqual(8, resultsList.Count);
@@ -51,34 +51,34 @@ namespace SharpMap.Tests.Indexing
 
             resultsList.AddRange(rTree.Search(new BoundingBox(0, 0, 100, 100)));
             Assert.AreEqual(6, resultsList.Count);
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 1; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 2; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 3; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 6; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 7; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 8; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 1; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 2; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 3; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 6; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 7; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 8; }));
             resultsList.Clear();
 
             resultsList.AddRange(rTree.Search(new BoundingBox(1500, 1500, 1500, 1500)));
             Assert.AreEqual(2, resultsList.Count);
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 4; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 5; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 4; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 5; }));
             resultsList.Clear();
 
             resultsList.AddRange(rTree.Search(new BoundingBox(100, 100, 100, 100)));
             Assert.AreEqual(4, resultsList.Count);
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 1; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 2; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 7; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 8; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 1; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 2; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 7; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 8; }));
             resultsList.Clear();
 
             addRandomEntries(rTree);
             resultsList.AddRange(rTree.Search(new BoundingBox(100, 100, 100, 100)));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 1; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 2; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 7; }));
-            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<Int32> match) { return match.Value == 8; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 1; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 2; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 7; }));
+            Assert.IsTrue(resultsList.Exists(delegate(RTreeIndexEntry<int> match) { return match.Value == 8; }));
             resultsList.Clear();
 
             rTree.Dispose();
@@ -88,8 +88,8 @@ namespace SharpMap.Tests.Indexing
         [Ignore("Saving index broken")]
         public void SaveIndexTest()
         {
-            DynamicRTree<Int32> rTree = new DynamicRTree<Int32>(new GuttmanQuadraticInsert<Int32>(),
-                                                            new GuttmanQuadraticSplit<Int32>(),
+            DynamicRTree<int> rTree = new DynamicRTree<int>(new GuttmanQuadraticInsert<int>(),
+                                                            new GuttmanQuadraticSplit<int>(),
                                                             new DynamicRTreeBalanceHeuristic());
 
             addRandomEntries(rTree);
@@ -98,38 +98,38 @@ namespace SharpMap.Tests.Indexing
             rTree.Dispose();
 
             s.Position = 0;
-            DynamicRTree<Int32> rTree2 = DynamicRTree<Int32>.FromStream(s);
-            List<RTreeIndexEntry<Int32>> results = new List<RTreeIndexEntry<Int32>>();
+            DynamicRTree<int> rTree2 = DynamicRTree<int>.FromStream(s);
+            List<RTreeIndexEntry<int>> results = new List<RTreeIndexEntry<int>>();
             results.AddRange(rTree2.Search(rTree2.Root.BoundingBox));
             Assert.AreEqual(99990, results.Count);
         }
 
-        private static void addEntries(DynamicRTree<Int32> rTree)
+        private static void addEntries(DynamicRTree<int> rTree)
         {
-            rTree.Insert(new RTreeIndexEntry<Int32>(1, new BoundingBox(0, 0, 100, 100)));
-            rTree.Insert(new RTreeIndexEntry<Int32>(2, new BoundingBox(50, 50, 150, 150)));
-            rTree.Insert(new RTreeIndexEntry<Int32>(3, new BoundingBox(-100, -100, 0, 0)));
-            rTree.Insert(new RTreeIndexEntry<Int32>(4, new BoundingBox(1000, 1000, 2000, 2000)));
+            rTree.Insert(new RTreeIndexEntry<int>(1, new BoundingBox(0, 0, 100, 100)));
+            rTree.Insert(new RTreeIndexEntry<int>(2, new BoundingBox(50, 50, 150, 150)));
+            rTree.Insert(new RTreeIndexEntry<int>(3, new BoundingBox(-100, -100, 0, 0)));
+            rTree.Insert(new RTreeIndexEntry<int>(4, new BoundingBox(1000, 1000, 2000, 2000)));
             rTree.Insert(
-                new RTreeIndexEntry<Int32>(5, new BoundingBox(346.23975, 424.5720832, 5928.57523425, 3252.50803582)));
-            rTree.Insert(new RTreeIndexEntry<Int32>(6, new BoundingBox(0, 0, 0, 0)));
-            rTree.Insert(new RTreeIndexEntry<Int32>(7, new BoundingBox(100, 100, 100, 100)));
-            rTree.Insert(new RTreeIndexEntry<Int32>(8, new BoundingBox(0, 0, 100, 100)));
+                new RTreeIndexEntry<int>(5, new BoundingBox(346.23975, 424.5720832, 5928.57523425, 3252.50803582)));
+            rTree.Insert(new RTreeIndexEntry<int>(6, new BoundingBox(0, 0, 0, 0)));
+            rTree.Insert(new RTreeIndexEntry<int>(7, new BoundingBox(100, 100, 100, 100)));
+            rTree.Insert(new RTreeIndexEntry<int>(8, new BoundingBox(0, 0, 100, 100)));
         }
 
-        private static void addRandomEntries(DynamicRTree<Int32> rTree)
+        private static void addRandomEntries(DynamicRTree<int> rTree)
         {
             Random rnd = new Random();
 
-            for (Int32 i = 10; i < 100000; i++)
+            for (int i = 10; i < 100000; i++)
             {
-                Double xMin = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
-                Double xMax = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
-                Double yMin = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
-                Double yMax = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+                double xMin = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+                double xMax = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+                double yMin = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
+                double yMax = rnd.NextDouble()*(rnd.Next(0, 1) == 1 ? -1 : 1)*rnd.Next();
 
                 BoundingBox bounds = new BoundingBox(xMin, yMin, xMax, yMax);
-                rTree.Insert(new RTreeIndexEntry<Int32>(i, bounds));
+                rTree.Insert(new RTreeIndexEntry<int>(i, bounds));
             }
         }
     }

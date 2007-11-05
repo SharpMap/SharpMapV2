@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections;
 
 namespace SharpMap.Geometries
@@ -29,13 +28,13 @@ namespace SharpMap.Geometries
         /// <summary>
         /// Returns the number of geometries in the collection.
         /// </summary>
-        Int32 NumGeometries { get; }
+        int NumGeometries { get; }
 
         /// <summary>
         /// Returns an indexed geometry in the collection
         /// </summary>
         /// <param name="N">Geometry index</param>
         /// <returns>Geometry at index N</returns>
-        Geometry Geometry(Int32 N);
+        Geometry Geometry(int N);
     }
 }

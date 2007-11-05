@@ -25,15 +25,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// </summary>
 	internal class DbaseField : IEquatable<DbaseField>
 	{
-		private readonly String _columnName;
+		private readonly string _columnName;
 		private readonly Type _dataType;
-		private readonly Int16 _length;
-		private readonly Byte _decimals;
+		private readonly short _length;
+		private readonly byte _decimals;
 		private readonly DbaseHeader _header;
-		private readonly Int32 _ordinal;
-		private readonly Int32 _offset;
+		private readonly int _ordinal;
+		private readonly int _offset;
 
-		internal DbaseField(DbaseHeader header, String name, Type type, Int16 length, Byte decimals, Int32 ordinal, Int32 offset)
+		internal DbaseField(DbaseHeader header, string name, Type type, Int16 length, Byte decimals, int ordinal, int offset)
 		{
 			_header = header;
 			_columnName = name;
@@ -47,7 +47,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Gets the name of the field.
 		/// </summary>
-		public String ColumnName
+		public string ColumnName
 		{
 			get { return _columnName; }
 		}
@@ -71,7 +71,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <summary>
 		/// Gets the number of decimals in a numeric field.
 		/// </summary>
-		public Byte Decimals
+		public byte Decimals
 		{
 			get { return _decimals; }
 		}
@@ -80,7 +80,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Gets the position of the column relative to all columns
 		/// in the dBase schema.
 		/// </summary>
-		public Int32 Ordinal
+		public int Ordinal
 		{
 			get { return _ordinal; }
 		}
@@ -89,22 +89,22 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// Gets the number of bytes from the start of the record
 		/// where the field data starts.
 		/// </summary>
-		public Int32 Offset
+		public int Offset
 		{
 			get { return _offset; }
 		}
 
 		/// <summary>
-		/// Converts the field instance into a String representation.
+		/// Converts the field instance into a string representation.
 		/// </summary>
-		/// <returns>A String which describes the field.</returns>
-		public override String ToString()
+		/// <returns>A string which describes the field.</returns>
+		public override string ToString()
 		{
 			return String.Format("[DbaseField] Name: {0}; Type: {1}; Length: {2}; " +
 								 "Decimals: {3}", ColumnName, DataType, Length, Decimals);
 		}
 
-		public override Int32 GetHashCode()
+		public override int GetHashCode()
 		{
 			return (ColumnName ?? "").ToLower().GetHashCode() ^
 				   DataType.GetHashCode() ^
@@ -118,7 +118,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
 		/// <param name="obj">The field to compare to.</param>
 		/// <returns>True if the fields are equal, false otherwise.</returns>
-		public override Boolean Equals(object obj)
+		public override bool Equals(object obj)
 		{
 			DbaseField other = obj as DbaseField;
 			return Equals(other);
@@ -132,7 +132,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
         /// <param name="other">The field to compare to.</param>
 		/// <returns>True if the fields are equal, false otherwise.</returns>
-		public Boolean Equals(DbaseField other)
+		public bool Equals(DbaseField other)
 		{
 			if (ReferenceEquals(other, null))
 			{

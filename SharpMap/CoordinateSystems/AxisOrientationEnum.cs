@@ -27,7 +27,7 @@ namespace SharpMap.CoordinateSystems
 	/// instead of East. This information is obviously relevant for algorithms
 	/// converting South African grid coordinates into Lat/Long.
 	/// </summary>
-	public enum AxisOrientationEnum : short 
+	public enum AxisOrientationEnum : short
 	{
 		/// <summary>
 		/// Unknown or unspecified axis orientation. This can be used for local or fitted coordinate systems.

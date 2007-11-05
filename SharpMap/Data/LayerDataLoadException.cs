@@ -27,19 +27,19 @@ namespace SharpMap.Data
     [Serializable]
     public class LayerDataLoadException : SharpMapDataException
     {
-        private readonly String _connectionId;
+        private readonly string _connectionId;
 
-        public LayerDataLoadException(String connectionId)
+        public LayerDataLoadException(string connectionId)
             : this(connectionId, null)
         {
         }
 
-        public LayerDataLoadException(String connectionId, String message)
+        public LayerDataLoadException(string connectionId, string message)
             : this(connectionId, message, null)
         {
         }
 
-        public LayerDataLoadException(String connectionId, String message, Exception inner)
+        public LayerDataLoadException(string connectionId, string message, Exception inner)
             : base(message, inner)
         {
             _connectionId = connectionId;
@@ -51,7 +51,7 @@ namespace SharpMap.Data
             _connectionId = info.GetString("_connectionId");
         }
 
-        public String ConnectionId
+        public string ConnectionId
         {
             get { return _connectionId; }
         }

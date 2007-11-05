@@ -16,7 +16,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
@@ -31,7 +30,7 @@ namespace SharpMap.Styles
         private StyleTextRenderingHint _textRenderingHint;
         private StyleRenderingMode _smoothingMode;
         private Size2D _collisionBuffer;
-        private Boolean _collisionDetection;
+        private bool _collisionDetection;
         private Point2D _offset;
         private StylePen _halo;
         private StyleFont _font;
@@ -137,7 +136,7 @@ namespace SharpMap.Styles
         /// Gets or sets whether collision detection is enabled for the labels.
         /// If set to true, label collision will be applied.
         /// </summary>
-        public Boolean CollisionDetection
+        public bool CollisionDetection
         {
             get { return _collisionDetection; }
             set { _collisionDetection = value; }

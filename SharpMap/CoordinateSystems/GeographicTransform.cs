@@ -28,7 +28,7 @@ namespace SharpMap.CoordinateSystems
 	public class GeographicTransform : Info, IGeographicTransform
 	{
 		internal GeographicTransform(
-			String name, String authority, Int64 code, String alias, String remarks, String abbreviation,
+			string name, string authority, long code, string alias, string remarks, string abbreviation,
 			IGeographicCoordinateSystem sourceGCS, IGeographicCoordinateSystem targetGCS)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
@@ -102,7 +102,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -113,7 +113,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object [NOT IMPLEMENTED].
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -128,7 +128,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			GeographicTransform other = obj as GeographicTransform;
 

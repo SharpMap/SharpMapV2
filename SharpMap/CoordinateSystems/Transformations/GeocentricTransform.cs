@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.CoordinateSystems.Transformations
@@ -42,26 +42,26 @@ namespace SharpMap.CoordinateSystems.Transformations
 	/// </remarks>
 	internal class GeocentricTransform : MathTransform
 	{
-		private const Double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */
-		private const Double AD_C = 1.0026000; /* Toms region 1 constant */
+		private const double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */
+		private const double AD_C = 1.0026000; /* Toms region 1 constant */
 
 
-		protected Boolean _isInverse = false;
+		protected bool _isInverse = false;
 
 		/// <summary>
 		/// Eccentricity squared : (a^2 - b^2)/a^2
 		/// </summary>
-		private readonly Double es;
+		private readonly double es;
 
-		private readonly Double semiMajor; // major axis
-		private readonly Double semiMinor; // minor axis
-		private Double ab; // Semi_major / semi_minor
-		private Double ba; // Semi_minor / semi_major
+		private readonly double semiMajor; // major axis
+		private readonly double semiMinor; // minor axis
+		private double ab; // Semi_major / semi_minor
+		private double ba; // Semi_minor / semi_major
 
 		/// <summary>
 		/// Second eccentricity squared : (a^2 - b^2)/b^2    
 		/// </summary>
-		private Double ses;
+		private double ses;
 
 		protected List<ProjectionParameter> _Parameters;
 		protected MathTransform _inverse;
@@ -71,7 +71,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// </summary>
 		/// <param name="parameters">List of parameters to initialize the projection.</param>
 		/// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-		public GeocentricTransform(List<ProjectionParameter> parameters, Boolean isInverse)
+		public GeocentricTransform(List<ProjectionParameter> parameters, bool isInverse)
 			: this(parameters)
 		{
 			_isInverse = isInverse;
@@ -121,14 +121,14 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <returns>Point in projected meters</returns>
 		private Point DegreesToMeters(Point lonlat)
 		{
-			Double lon = Degrees2Radians(lonlat.X);
-			Double lat = Degrees2Radians(lonlat.Y);
-			Double h = 0;
+			double lon = Degrees2Radians(lonlat.X);
+			double lat = Degrees2Radians(lonlat.Y);
+			double h = 0;
 			if (lonlat is Point3D) h = (lonlat as Point3D).Z;
-			Double v = semiMajor / Math.Sqrt(1 - es * Math.Pow(Math.Sin(lat), 2));
-			Double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
-			Double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
-			Double z = ((1 - es) * v + h) * Math.Sin(lat);
+			double v = semiMajor / Math.Sqrt(1 - es * Math.Pow(Math.Sin(lat), 2));
+			double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
+			double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
+			double z = ((1 - es) * v + h) * Math.Sin(lat);
 			return new Point3D(x, y, z);
 		}
 
@@ -146,12 +146,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 
 			//The following method is based on Proj.4
 
-			Boolean At_Pole = false; // indicates whether location is in polar region */
-			Double Z = (pnt as Point3D).Z;
+			bool At_Pole = false; // indicates whether location is in polar region */
+			double Z = (pnt as Point3D).Z;
 
-			Double lon = 0;
-			Double lat = 0;
-			Double Height = 0;
+			double lon = 0;
+			double lat = 0;
+			double Height = 0;
 
 			if (pnt.X != 0.0)
 			{
@@ -189,19 +189,19 @@ namespace SharpMap.CoordinateSystems.Transformations
 				}
 			}
 
-			Double W2 = pnt.X * pnt.X + pnt.Y * pnt.Y; // Square of distance from Z axis
-			Double W = Math.Sqrt(W2); // distance from Z axis
-			Double T0 = Z * AD_C; // initial estimate of vertical component
-			Double S0 = Math.Sqrt(T0 * T0 + W2); //initial estimate of horizontal component
-			Double Sin_B0 = T0 / S0; //sin(B0), B0 is estimate of Bowring aux variable
-			Double Cos_B0 = W / S0; //cos(B0)
-			Double Sin3_B0 = Math.Pow(Sin_B0, 3);
-			Double T1 = Z + semiMinor * ses * Sin3_B0; //corrected estimate of vertical component
-			Double Sum = W - semiMajor * es * Cos_B0 * Cos_B0 * Cos_B0; //numerator of cos(phi1)
-			Double S1 = Math.Sqrt(T1 * T1 + Sum * Sum); //corrected estimate of horizontal component
-			Double Sin_p1 = T1 / S1; //sin(phi1), phi1 is estimated latitude
-			Double Cos_p1 = Sum / S1; //cos(phi1)
-			Double Rn = semiMajor / Math.Sqrt(1.0 - es * Sin_p1 * Sin_p1); //Earth radius at location
+			double W2 = pnt.X * pnt.X + pnt.Y * pnt.Y; // Square of distance from Z axis
+			double W = Math.Sqrt(W2); // distance from Z axis
+			double T0 = Z * AD_C; // initial estimate of vertical component
+			double S0 = Math.Sqrt(T0 * T0 + W2); //initial estimate of horizontal component
+			double Sin_B0 = T0 / S0; //sin(B0), B0 is estimate of Bowring aux variable
+			double Cos_B0 = W / S0; //cos(B0)
+			double Sin3_B0 = Math.Pow(Sin_B0, 3);
+			double T1 = Z + semiMinor * ses * Sin3_B0; //corrected estimate of vertical component
+			double Sum = W - semiMajor * es * Cos_B0 * Cos_B0 * Cos_B0; //numerator of cos(phi1)
+			double S1 = Math.Sqrt(T1 * T1 + Sum * Sum); //corrected estimate of horizontal component
+			double Sin_p1 = T1 / S1; //sin(phi1), phi1 is estimated latitude
+			double Cos_p1 = Sum / S1; //cos(phi1)
+			double Rn = semiMajor / Math.Sqrt(1.0 - es * Sin_p1 * Sin_p1); //Earth radius at location
 
 			if (Cos_p1 >= COS_67P5)
 			{
@@ -251,12 +251,12 @@ namespace SharpMap.CoordinateSystems.Transformations
 			_isInverse = !_isInverse;
 		}
 
-		public override String Wkt
+		public override string Wkt
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }
 		}
 
-		public override String Xml
+		public override string Xml
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }
 		}

@@ -40,7 +40,7 @@ namespace SharpMap.Rendering
         private readonly List<Figure<TPoint, TViewBounds>> _figures =
             new List<Figure<TPoint, TViewBounds>>();
 
-        private Int32 _currentFigureIndex;
+        private int _currentFigureIndex;
         private TViewBounds _bounds;
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace SharpMap.Rendering
         /// <param name="isClosed">
         /// True to create a closed path, false for an open path.
         /// </param>
-        protected Path(IEnumerable<TPoint> points, Boolean isClosed)
+        protected Path(IEnumerable<TPoint> points, bool isClosed)
         {
             Figure<TPoint, TViewBounds> figure = CreateFigure(points, isClosed);
             _figures.Add(figure);
@@ -101,11 +101,11 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Provides a String representation of the 
+        /// Provides a string representation of the 
         /// <see cref="Path{TPoint, TViewBounds}"/>.
         /// </summary>
-        /// <returns>A String which describes the <see cref="Path{TPoint, TViewBounds}"/></returns>
-        public override String ToString()
+        /// <returns>A string which describes the <see cref="Path{TPoint, TViewBounds}"/></returns>
+        public override string ToString()
         {
             return String.Format("[{0}] {1} figure{2} of {3} points; Bounds: {4}",
                                  GetType(), _figures.Count, (_figures.Count > 1 ? "s" : ""), typeof (TPoint).Name,
@@ -118,11 +118,11 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A 32-bit signed integer hash code suitable for use in hash tables.
         /// </returns>
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             unchecked
             {
-                Int32 hash = 19638952;
+                int hash = 19638952;
                 foreach (Figure<TPoint, TViewBounds> figure in _figures)
                 {
                     hash ^= figure.GetHashCode();
@@ -145,7 +145,7 @@ namespace SharpMap.Rendering
         /// </remarks>
         /// <param name="obj">The value to compare.</param>
         /// <returns>True if the parameter is a path which is figure-for-figure, point-for-point equal.</returns>
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             Path<TPoint, TViewBounds> other = obj as Path<TPoint, TViewBounds>;
             return Equals(other);
@@ -159,7 +159,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="other">The <see cref="Path{TPoint, TViewBounds}"/> to compare.</param>
         /// <returns>True if the two paths are figure-for-figure, point-for-point equal.</returns>
-        public Boolean Equals(Path<TPoint, TViewBounds> other)
+        public bool Equals(Path<TPoint, TViewBounds> other)
         {
             if (other == null)
             {
@@ -173,7 +173,7 @@ namespace SharpMap.Rendering
 
             unchecked
             {
-                for (Int32 figureIndex = 0; figureIndex < other._figures.Count; figureIndex++)
+                for (int figureIndex = 0; figureIndex < other._figures.Count; figureIndex++)
                 {
                     if (!_figures[figureIndex].Equals(other._figures[figureIndex]))
                     {
@@ -229,7 +229,7 @@ namespace SharpMap.Rendering
             }
             set
             {
-                Int32 index = _figures.IndexOf(value);
+                int index = _figures.IndexOf(value);
 
                 if (index < 0)
                 {
@@ -275,7 +275,7 @@ namespace SharpMap.Rendering
         /// </param>
         /// <returns>A new figure with the given points and open or closed condition.</returns>
         protected abstract Figure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
-                                                                    Boolean isClosed);
+                                                                    bool isClosed);
 
         /// <summary>
         /// Computes a minimum bounding box for this path.
@@ -302,7 +302,7 @@ namespace SharpMap.Rendering
         /// Points to make the Figure from.
         /// </param>
         /// <param name="closeFigure">True to close the figure, false to keep it open.</param>
-        public void NewFigure(IEnumerable<TPoint> points, Boolean closeFigure)
+        public void NewFigure(IEnumerable<TPoint> points, bool closeFigure)
         {
             _figures.Add(CreateFigure(points, closeFigure));
             _currentFigureIndex = _figures.Count - 1;

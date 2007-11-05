@@ -71,10 +71,10 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Returns a String description of the <see cref="LinearGradientStyleBrush"/>.
+        /// Returns a string description of the <see cref="LinearGradientStyleBrush"/>.
         /// </summary>
-        /// <returns>A String which describes the brush.</returns>
-        public override String ToString()
+        /// <returns>A string which describes the brush.</returns>
+        public override string ToString()
         {
             return String.Format("LinearGradientStyleBrush - Base Color: {0}; Start: {1}; End: {2}; Blend: {3}", 
                 Color, StartColor, EndColor, ColorBlend);

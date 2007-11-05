@@ -42,8 +42,8 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal ProjectedCoordinateSystem(IHorizontalDatum datum, IGeographicCoordinateSystem geographicCoordinateSystem,
 			ILinearUnit linearUnit, IProjection projection, List<AxisInfo> axisInfo,
-			String name, String authority, Int64 code, String alias,
-			String remarks, String abbreviation)
+			string name, string authority, long code, string alias,
+			string remarks, string abbreviation)
 			: base(datum, axisInfo, name, authority, code, alias, abbreviation, remarks)
 		{
 			_GeographicCoordinateSystem = geographicCoordinateSystem;
@@ -59,7 +59,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="Zone">UTM zone</param>
 		/// <param name="ZoneIsNorth">true of Northern hemisphere, false if southern</param>
 		/// <returns>UTM/WGS84 coordsys</returns>
-		public static ProjectedCoordinateSystem WGS84_UTM(Int32 Zone, Boolean ZoneIsNorth)
+		public static ProjectedCoordinateSystem WGS84_UTM(int Zone, bool ZoneIsNorth)
 		{
 			ParameterInfo pInfo = new ParameterInfo();
 			pInfo.Add("latitude_of_origin", 0);
@@ -75,7 +75,7 @@ namespace SharpMap.CoordinateSystems
 				SharpMap.SpatialReference.GeographicCoordinateSystem.WGS84,
 				SharpMap.SpatialReference.LinearUnit.Metre, proj, pInfo,
 				"WGS 84 / UTM zone " + Zone.ToString() + (ZoneIsNorth ? "N" : "S"), "EPSG", 32600 + Zone + (ZoneIsNorth ? 0 : 100),
-				String.Empty,String.Empty,String.Empty);
+				String.Empty,String.Empty,string.Empty);
 			
 		}*/
 
@@ -111,7 +111,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="dimension">Dimension</param>
 		/// <returns>Unit</returns>
-		public override IUnit GetUnits(Int32 dimension)
+		public override IUnit GetUnits(int dimension)
 		{
 			return _LinearUnit;
 		}
@@ -131,14 +131,14 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
 				StringBuilder sb = new StringBuilder();
 				sb.AppendFormat("PROJCS[\"{0}\", {1}, {2}",Name, GeographicCoordinateSystem.Wkt, Projection.Wkt);
                 
-                for (Int32 i = 0; i < Projection.NumParameters; i++)
+                for (int i = 0; i < Projection.NumParameters; i++)
                 {
                     sb.AppendFormat(NumberFormat, ", {0}", Projection.GetParameter(i).WKT);
                 }
@@ -150,7 +150,7 @@ namespace SharpMap.CoordinateSystems
                     AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientationEnum.East ||
                     AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientationEnum.North)
                 {
-                    for (Int32 i = 0; i < AxisInfo.Count; i++)
+                    for (int i = 0; i < AxisInfo.Count; i++)
                     {
                         sb.AppendFormat(", {0}", GetAxis(i).WKT);
                     }
@@ -169,7 +169,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -197,7 +197,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			ProjectedCoordinateSystem other = obj as ProjectedCoordinateSystem;
 			
@@ -211,7 +211,7 @@ namespace SharpMap.CoordinateSystems
 				return false;
 			}
 
-			for (Int32 i = 0; i < other.Dimension; i++)
+			for (int i = 0; i < other.Dimension; i++)
 			{
 				if (other.GetAxis(i).Orientation != GetAxis(i).Orientation)
 				{

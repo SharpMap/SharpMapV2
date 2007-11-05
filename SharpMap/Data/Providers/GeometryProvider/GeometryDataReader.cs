@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.GeometryProvider
 {
@@ -32,8 +32,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
         #region Instance fields
         private GeometryProvider _provider;
         private readonly BoundingBox _bounds;
-        private Int32 _currentIndex = -1;
-        private Boolean _isDisposed; 
+        private int _currentIndex = -1;
+        private bool _isDisposed; 
         #endregion
 
         #region Object construction and disposal
@@ -56,7 +56,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #endregion
 
-        private void Dispose(Boolean disposing)
+        private void Dispose(bool disposing)
         {
             if (_isDisposed)
             {
@@ -80,7 +80,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _currentIndex;
         }
 
-        public Boolean HasOid
+        public bool HasOid
         {
             get
             {
@@ -98,7 +98,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 			}
 		}
 
-        public Boolean IsFullyLoaded
+        public bool IsFullyLoaded
         {
             get { return true; }
         }
@@ -111,7 +111,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             Dispose();
         }
 
-        public Int32 Depth
+        public int Depth
         {
             get { return 0; }
         }
@@ -121,17 +121,17 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _provider.GetSchemaTable();
         }
 
-        public Boolean IsClosed
+        public bool IsClosed
         {
             get { return _isDisposed; }
         }
 
-        public Boolean NextResult()
+        public bool NextResult()
         {
             return false;
         }
 
-        public Boolean Read()
+        public bool Read()
         {
             do
             {
@@ -142,11 +142,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _currentIndex < _provider.Geometries.Count;
         }
 
-        public Int32 RecordsAffected
+        public int RecordsAffected
         {
             get
             {
-                Int32 count = 0;
+                int count = 0;
 
                 foreach (Geometry geometry in _provider.Geometries)
                 {
@@ -161,119 +161,119 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IDataRecord Members
 
-        public Int32 FieldCount
+        public int FieldCount
         {
             get { return 1; }
         }
 
-        public Boolean GetBoolean(Int32 i)
+        public bool GetBoolean(int i)
         {
             throw new NotSupportedException();
         }
 
-        public Byte GetByte(Int32 i)
+        public byte GetByte(int i)
         {
             checkState();
             checkIndex(i);
-            return (Byte)_currentIndex;
+            return (byte)_currentIndex;
         }
 
-        public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
+        public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
         {
             throw new NotSupportedException();
         }
 
-        public Char GetChar(Int32 i)
+        public char GetChar(int i)
         {
             checkState();
             checkIndex(i);
-            return (Char)_currentIndex;
+            return (char)_currentIndex;
         }
 
-        public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
+        public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
         {
             throw new NotSupportedException();
         }
 
-        public IDataReader GetData(Int32 i)
+        public IDataReader GetData(int i)
         {
             throw new NotSupportedException();
         }
 
-        public String GetDataTypeName(Int32 i)
+        public string GetDataTypeName(int i)
         {
             checkState();
             checkIndex(i);
             return typeof(Int32).ToString();
         }
 
-        public DateTime GetDateTime(Int32 i)
+        public DateTime GetDateTime(int i)
         {
             throw new NotSupportedException();
         }
 
-        public decimal GetDecimal(Int32 i)
+        public decimal GetDecimal(int i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Double GetDouble(Int32 i)
+        public double GetDouble(int i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Type GetFieldType(Int32 i)
+        public Type GetFieldType(int i)
         {
             checkState();
             checkIndex(i);
             return typeof(Int32);
         }
 
-        public Single GetFloat(Int32 i)
+        public float GetFloat(int i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Guid GetGuid(Int32 i)
+        public Guid GetGuid(int i)
         {
             throw new NotSupportedException();
         }
 
-        public Int16 GetInt16(Int32 i)
+        public short GetInt16(int i)
         {
             checkState();
             checkIndex(i);
-            return (Int16)_currentIndex;
+            return (short)_currentIndex;
         }
 
-        public Int32 GetInt32(Int32 i)
-        {
-            checkState();
-            checkIndex(i);
-            return _currentIndex;
-        }
-
-        public Int64 GetInt64(Int32 i)
+        public int GetInt32(int i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public String GetName(Int32 i)
+        public long GetInt64(int i)
+        {
+            checkState();
+            checkIndex(i);
+            return _currentIndex;
+        }
+
+        public string GetName(int i)
         {
             checkState();
             checkIndex(i);
             return "Oid";
         }
 
-        public Int32 GetOrdinal(String name)
+        public int GetOrdinal(string name)
         {
             checkState();
 
@@ -285,43 +285,43 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return 0;
         }
 
-        public String GetString(Int32 i)
+        public string GetString(int i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex.ToString();
         }
 
-        public object GetValue(Int32 i)
+        public object GetValue(int i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Int32 GetValues(object[] values)
+        public int GetValues(object[] values)
         {
             throw new NotSupportedException();
         }
 
-        public Boolean IsDBNull(Int32 i)
+        public bool IsDBNull(int i)
         {
             checkState();
             checkIndex(i);
             return false;
         }
 
-        public object this[String name]
+        public object this[string name]
         {
             get
             {
                 checkState();
-                Int32 ordinal = GetOrdinal(name);
+                int ordinal = GetOrdinal(name);
                 return GetInt32(ordinal);
             }
         }
 
-        public object this[Int32 i]
+        public object this[int i]
         {
             get
             {
@@ -373,7 +373,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
         }
 
-        private static void checkIndex(Int32 i)
+        private static void checkIndex(int i)
         {
             if (i >= 1) throw new IndexOutOfRangeException("Column index is out of range.");
         }

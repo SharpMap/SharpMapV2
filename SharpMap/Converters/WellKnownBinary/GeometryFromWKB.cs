@@ -38,7 +38,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Utilities;
 
 namespace SharpMap.Converters.WellKnownBinary
@@ -61,27 +61,27 @@ namespace SharpMap.Converters.WellKnownBinary
     /// instance as a sequence of numeric types drawn from the set {Unsigned Integer, Double} and
     /// then serializing each numeric type as a sequence of bytes using one of two well defined,
     /// standard, binary representations for numeric types (NDR, XDR). The specific binary encoding
-    /// (NDR or XDR) used for a geometry Byte stream is described by a one Byte tag that precedes
+    /// (NDR or XDR) used for a geometry byte stream is described by a one byte tag that precedes
     /// the serialized bytes. The only difference between the two encodings of geometry is one of
-    /// Byte order, the XDR encoding is Big Endian, the NDR encoding is Little Endian.
+    /// byte order, the XDR encoding is Big Endian, the NDR encoding is Little Endian.
     /// </para>
     /// </remarks> 
     public class GeometryFromWkb
     {
         /// <summary>
-        /// Creates a <see cref="Geometry"/> from the supplied Byte[] 
+        /// Creates a <see cref="Geometry"/> from the supplied byte[] 
         /// containing the Well-Known Binary representation.
         /// </summary>
         /// <param name="bytes">
-        /// A Byte[] containing the Well-Known Binary representation.
+        /// A byte[] containing the Well-Known Binary representation.
         /// </param>
         /// <returns>
         /// A <see cref="Geometry"/> created from on supplied 
         /// Well-Known Binary representation.
         /// </returns>
-        public static Geometry Parse(Byte[] bytes)
+        public static Geometry Parse(byte[] bytes)
         {
-            // Create a memory stream using the suppiled Byte array.
+            // Create a memory stream using the suppiled byte array.
             using (MemoryStream ms = new MemoryStream(bytes))
             {
                 // Create a new binary reader using the newly created memorystream.
@@ -107,9 +107,9 @@ namespace SharpMap.Converters.WellKnownBinary
         /// </returns>
         public static Geometry Parse(BinaryReader reader)
         {
-            // Get the first Byte in the array.  This specifies if the WKB is in
+            // Get the first byte in the array.  This specifies if the WKB is in
             // XDR (big-endian) format of NDR (little-endian) format.
-            Byte byteOrder = reader.ReadByte();
+            byte byteOrder = reader.ReadByte();
 
             if (!Enum.IsDefined(typeof(WkbByteOrder), byteOrder))
             {
@@ -117,7 +117,7 @@ namespace SharpMap.Converters.WellKnownBinary
             }
 
             // Get the type of this geometry.
-            UInt32 type = readUInt32(reader, (WkbByteOrder)byteOrder);
+            uint type = readUInt32(reader, (WkbByteOrder)byteOrder);
 
             if (!Enum.IsDefined(typeof(WkbGeometryType), type))
             {
@@ -161,13 +161,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static Point[] readCoordinates(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of points in this linestring.
-            Int32 numPoints = (Int32)readUInt32(reader, byteOrder);
+            int numPoints = (int)readUInt32(reader, byteOrder);
 
             // Create a new array of coordinates.
             Point[] coords = new Point[numPoints];
 
             // Loop on the number of points in the ring.
-            for (Int32 i = 0; i < numPoints; i++)
+            for (int i = 0; i < numPoints; i++)
             {
                 // Add the coordinate.
                 coords[i] = new Point(readDouble(reader, byteOrder), readDouble(reader, byteOrder));
@@ -207,14 +207,14 @@ namespace SharpMap.Converters.WellKnownBinary
         private static Polygon createWkbPolygon(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the Number of rings in this Polygon.
-            Int32 numRings = (Int32)readUInt32(reader, byteOrder);
+            int numRings = (int)readUInt32(reader, byteOrder);
 
             Debug.Assert(numRings >= 1, "Number of rings in polygon must be 1 or more.");
 
             Polygon shell = new Polygon(createWkbLinearRing(reader, byteOrder));
 
             // Create a new array of linearrings for the interior rings.
-            for (Int32 i = 0; i < (numRings - 1); i++)
+            for (int i = 0; i < (numRings - 1); i++)
             {
                 shell.InteriorRings.Add(createWkbLinearRing(reader, byteOrder));
             }
@@ -226,13 +226,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static MultiPoint createWkbMultiPoint(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of points in this multipoint.
-            Int32 numPoints = (Int32)readUInt32(reader, byteOrder);
+            int numPoints = (int)readUInt32(reader, byteOrder);
 
             // Create a new array for the points.
             MultiPoint points = new MultiPoint();
 
             // Loop on the number of points.
-            for (Int32 i = 0; i < numPoints; i++)
+            for (int i = 0; i < numPoints; i++)
             {
                 // Read point header
                 reader.ReadByte();
@@ -249,13 +249,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static MultiLineString createWkbMultiLineString(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of linestrings in this multilinestring.
-            Int32 numLineStrings = (Int32)readUInt32(reader, byteOrder);
+            int numLineStrings = (int)readUInt32(reader, byteOrder);
 
             // Create a new array for the linestrings .
             MultiLineString mline = new MultiLineString();
 
             // Loop on the number of linestrings.
-            for (Int32 i = 0; i < numLineStrings; i++)
+            for (int i = 0; i < numLineStrings; i++)
             {
                 // Read linestring header
                 reader.ReadByte();
@@ -272,13 +272,13 @@ namespace SharpMap.Converters.WellKnownBinary
         private static MultiPolygon createWkbMultiPolygon(BinaryReader reader, WkbByteOrder byteOrder)
         {
             // Get the number of Polygons.
-            Int32 numPolygons = (Int32)readUInt32(reader, byteOrder);
+            int numPolygons = (int)readUInt32(reader, byteOrder);
 
             // Create a new array for the Polygons.
             MultiPolygon polygons = new MultiPolygon();
 
             // Loop on the number of polygons.
-            for (Int32 i = 0; i < numPolygons; i++)
+            for (int i = 0; i < numPolygons; i++)
             {
                 // read polygon header
                 reader.ReadByte();
@@ -296,14 +296,14 @@ namespace SharpMap.Converters.WellKnownBinary
 
         private static Geometry createWkbGeometryCollection(BinaryReader reader, WkbByteOrder byteOrder)
         {
-            // The next Byte in the array tells the number of geometries in this collection.
-            Int32 numGeometries = (Int32)readUInt32(reader, byteOrder);
+            // The next byte in the array tells the number of geometries in this collection.
+            int numGeometries = (int)readUInt32(reader, byteOrder);
 
             // Create a new array for the geometries.
             GeometryCollection geometries = new GeometryCollection();
 
             // Loop on the number of geometries.
-            for (Int32 i = 0; i < numGeometries; i++)
+            for (int i = 0; i < numGeometries; i++)
             {
                 // Call the main create function with the next geometry.
                 geometries.Collection.Add(Parse(reader));
@@ -313,7 +313,7 @@ namespace SharpMap.Converters.WellKnownBinary
             return geometries;
         }
 
-        private static UInt32 readUInt32(BinaryReader reader, WkbByteOrder byteOrder)
+        private static uint readUInt32(BinaryReader reader, WkbByteOrder byteOrder)
         {
             if (byteOrder == WkbByteOrder.Xdr)
             {
@@ -325,7 +325,7 @@ namespace SharpMap.Converters.WellKnownBinary
             }
         }
 
-        private static Double readDouble(BinaryReader reader, WkbByteOrder byteOrder)
+        private static double readDouble(BinaryReader reader, WkbByteOrder byteOrder)
         {
             if (byteOrder == WkbByteOrder.Xdr)
             {

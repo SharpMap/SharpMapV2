@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -56,14 +56,14 @@ namespace SharpMap.Indexing.RTree
             {
                 RTreeBranchNode<TValue> branch = node as RTreeBranchNode<TValue>;
 
-                Double leastExpandedArea = Double.PositiveInfinity;
+                double leastExpandedArea = Double.PositiveInfinity;
 
                 ISpatialIndexNode leastExpandedChild = null;
 
                 foreach (ISpatialIndexNode child in branch.Items)
                 {
                     BoundingBox candidateRegion = BoundingBox.Join(child.BoundingBox, entry.BoundingBox);
-                    Double expandedArea = candidateRegion.GetArea() - child.BoundingBox.GetArea();
+                    double expandedArea = candidateRegion.GetArea() - child.BoundingBox.GetArea();
 
                     if (expandedArea < leastExpandedArea)
                     {

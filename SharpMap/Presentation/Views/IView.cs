@@ -15,8 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
 namespace SharpMap.Presentation.Views
 {
     /// <summary>
@@ -27,13 +25,13 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets whether the view is visible.
         /// </summary>
-        Boolean Visible { get; set; }
+        bool Visible { get; set; }
 
         /// <summary>
         /// Gets or sets whether the view is shown as enabled and available,
         /// or disabled and unavailable.
         /// </summary>
-        Boolean Enabled { get; set; }
+        bool Enabled { get; set; }
 
         /// <summary>
         /// Hides the view, causing <see cref="Visible"/> to become false.
@@ -48,6 +46,6 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets the title to display on the view.
         /// </summary>
-        String Title { get; set; }
+        string Title { get; set; }
     }
 }

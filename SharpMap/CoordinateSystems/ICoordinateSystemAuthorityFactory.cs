@@ -32,99 +32,99 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Returns the authority name for this factory (e.g., "EPSG" or "POSC").
 		/// </summary>
-		String Authority { get; }
+		string Authority { get; }
 		/// <summary>
 		/// Returns a projected coordinate system object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The projected coordinate system object with the given code.</returns>
-		IProjectedCoordinateSystem CreateProjectedCoordinateSystem(Int64 code);
+		IProjectedCoordinateSystem CreateProjectedCoordinateSystem(long code);
 		/// <summary>
 		/// Returns a geographic coordinate system object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The geographic coordinate system object with the given code.</returns>
-		IGeographicCoordinateSystem CreateGeographicCoordinateSystem(Int64 code);
+		IGeographicCoordinateSystem CreateGeographicCoordinateSystem(long code);
 		/// <summary>
 		/// Returns a horizontal datum object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The horizontal datum object with the given code.</returns>
-		IHorizontalDatum CreateHorizontalDatum(Int64 code);
+		IHorizontalDatum CreateHorizontalDatum(long code);
 		/// <summary>
 		/// Returns an ellipsoid object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The ellipsoid object with the given code.</returns>
-		IEllipsoid CreateEllipsoid(Int64 code);
+		IEllipsoid CreateEllipsoid(long code);
 		/// <summary>
 		/// Returns a prime meridian object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The prime meridian object with the given code.</returns>
-		IPrimeMeridian CreatePrimeMeridian(Int64 code);
+		IPrimeMeridian CreatePrimeMeridian(long code);
 		/// <summary>
 		/// Returns a linear unit object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The linear unit object with the given code.</returns>
-		ILinearUnit CreateLinearUnit(Int64 code);
+		ILinearUnit CreateLinearUnit(long code);
 		/// <summary>
 		/// Returns an <see cref="IAngularUnit">angular unit</see> object corresponding to the given code.
 		/// </summary>
 		/// <param name="code">The identification code.</param>
 		/// <returns>The angular unit object for the given code.</returns>
-		IAngularUnit CreateAngularUnit(Int64 code);
+		IAngularUnit CreateAngularUnit(long code);
 		/// <summary>
 		/// Creates a <see cref="IVerticalDatum"/> from a code.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns>Vertical datum for the given code</returns>
-		IVerticalDatum CreateVerticalDatum(Int64 code);
+		IVerticalDatum CreateVerticalDatum(long code);
 		/// <summary>
 		/// Create a <see cref="IVerticalCoordinateSystem">vertical coordinate system</see> from a code.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns></returns>
-		IVerticalCoordinateSystem CreateVerticalCoordinateSystem(Int64 code);
+		IVerticalCoordinateSystem CreateVerticalCoordinateSystem(long code);
 		/// <summary>
 		/// Creates a 3D coordinate system from a code.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns>Compound coordinate system for the given code</returns>
-		ICompoundCoordinateSystem CreateCompoundCoordinateSystem(Int64 code);
+		ICompoundCoordinateSystem CreateCompoundCoordinateSystem(long code);
 		/// <summary>
 		/// Creates a <see cref="IHorizontalCoordinateSystem">horizontal co-ordinate system</see> from a code.
 		/// The horizontal coordinate system could be geographic or projected.
 		/// </summary>
 		/// <param name="code">Authority code</param>
 		/// <returns>Horizontal coordinate system for the given code</returns>
-		IHorizontalCoordinateSystem CreateHorizontalCoordinateSystem(Int64 code);
+		IHorizontalCoordinateSystem CreateHorizontalCoordinateSystem(long code);
 		/// <summary>
 		/// Gets a description of the object corresponding to a code.
 		/// </summary>
-		String DescriptionText { get; }
+		string DescriptionText { get; }
 		/// <summary>
 		/// Gets the Geoid code from a WKT name.
 		/// </summary>
 		/// <remarks>
 		///  In the OGC definition of WKT horizontal datums, the geoid is referenced 
-		/// by a quoted String, which is used as a key value. This method converts 
-		/// the key value String into a code recognized by this authority.
+		/// by a quoted string, which is used as a key value. This method converts 
+		/// the key value string into a code recognized by this authority.
 		/// </remarks>
 		/// <param name="wkt"></param>
 		/// <returns></returns>
-		String GeoidFromWktName(String wkt);
+		string GeoidFromWktName(string wkt);
 		/// <summary>
 		/// Gets the WKT name of a Geoid.
 		/// </summary>
 		/// <remarks>
 		///  In the OGC definition of WKT horizontal datums, the geoid is referenced by 
-		/// a quoted String, which is used as a key value. This method gets the OGC WKT 
+		/// a quoted string, which is used as a key value. This method gets the OGC WKT 
 		/// key value from a geoid code.
 		/// </remarks>
 		/// <param name="geoid"></param>
 		/// <returns></returns>
-		String WktGeoidName(String geoid);		
+		string WktGeoidName(string geoid);		
 	}
 }

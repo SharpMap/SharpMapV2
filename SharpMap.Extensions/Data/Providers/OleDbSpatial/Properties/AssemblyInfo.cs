@@ -21,20 +21,17 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("SharpMap OleDb Spatial Provider")]
-[assembly: AssemblyDescription("SharpMap v2.0 Beta 1")]
+[assembly: AssemblyDescription("SharpMap v2.0 Alpha 2")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap")]
 [assembly: AssemblyCopyright("Copyright © 2006-2007 Morten Nielsen, Ricardo Stuven, Christian Giles, Rory Plaire")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-#if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
-[assembly: AssemblyConfiguration("Release")]
-#endif
 
 [assembly: ComVisible(false)]
+
 [assembly: Guid("6fc6e3f8-f81a-4a2a-b2ec-9bac913d98d5")]
 
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]

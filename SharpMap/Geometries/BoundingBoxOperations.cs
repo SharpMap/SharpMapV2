@@ -32,7 +32,7 @@ namespace SharpMap.Geometries
             components.AddRange(union.Split(rhs.UpperLeft));
             components.AddRange(union.Split(rhs.UpperRight));
 
-            for (Int32 i = components.Count - 1; i >= 0; i--)
+            for (int i = components.Count - 1; i >= 0; i--)
             {
                 if (components[i].IsEmpty || rhs.Overlaps(components[i]))
                 {

@@ -50,7 +50,7 @@ namespace SharpMap.Rendering.Rendering2D
         private DoubleComponent _left;
         private DoubleComponent _right;
         private DoubleComponent _top;
-        private Boolean _hasValue;
+        private bool _hasValue;
 
         #region Constructors
 		/// <summary>
@@ -60,7 +60,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="top">The Y value of the top side.</param>
 		/// <param name="right">The X value of the right side.</param>
 		/// <param name="bottom">The Y value of the bottom side.</param>
-        public Rectangle2D(Double left, Double top, Double right, Double bottom)
+        public Rectangle2D(double left, double top, double right, double bottom)
         {
             _left = left;
             _right = right;
@@ -88,7 +88,7 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region ToString
-        public override String ToString()
+        public override string ToString()
         {
             return
                 String.Format(
@@ -98,15 +98,15 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region GetHashCode
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
-            return unchecked((Int32)Left ^ (Int32)Right ^ (Int32)Top ^ (Int32)Bottom);
+            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom);
         }
         #endregion
 
         #region Equality Testing
 
-        public Boolean Equals(IMatrixD other)
+        public bool Equals(IMatrixD other)
         {
             if (other is Rectangle2D)
             {
@@ -143,9 +143,9 @@ namespace SharpMap.Rendering.Rendering2D
 
             unchecked
             {
-                for (Int32 row = 0; row < thisMatrix.RowCount; row++)
+                for (int row = 0; row < thisMatrix.RowCount; row++)
                 {
-                    for (Int32 col = 0; col < thisMatrix.ColumnCount; col++)
+                    for (int col = 0; col < thisMatrix.ColumnCount; col++)
                     {
                         if (!lhs[row][col].Equals(rhs[row][col]))
                         {
@@ -158,17 +158,17 @@ namespace SharpMap.Rendering.Rendering2D
             return true;
         }
 
-        public static Boolean operator ==(Rectangle2D lhs, Rectangle2D rhs)
+        public static bool operator ==(Rectangle2D lhs, Rectangle2D rhs)
         {
             return (lhs.Equals(rhs));
         }
 
-        public static Boolean operator !=(Rectangle2D lhs, Rectangle2D rhs)
+        public static bool operator !=(Rectangle2D lhs, Rectangle2D rhs)
         {
             return !(lhs.Equals(rhs));
         }
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is Rectangle2D)
             {
@@ -183,7 +183,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public Boolean Equals(Rectangle2D rectangle)
+        public bool Equals(Rectangle2D rectangle)
         {
             return IsEmpty == rectangle.IsEmpty &&
                    Left == rectangle.Left &&
@@ -229,7 +229,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// 1 if this rectangle is located to the right or downward from the <paramref name="other"/>
         /// rectangle, and -1 if this rectangle is located to the left or upward from the other.
         /// </returns>
-        public Int32 CompareTo(Rectangle2D other)
+        public int CompareTo(Rectangle2D other)
         {
             if (other.IsEmpty && IsEmpty)
             {
@@ -251,7 +251,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        internal static Rectangle2D FromLTRB(Double left, Double top, Double right, Double bottom)
+        internal static Rectangle2D FromLTRB(double left, double top, double right, double bottom)
         {
             return new Rectangle2D(left, top, right, bottom);
         }
@@ -262,7 +262,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="rectangle"><see cref="Rectangle2D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
-        public Boolean Intersects(Rectangle2D rectangle)
+        public bool Intersects(Rectangle2D rectangle)
         {
             if (IsEmpty || rectangle.IsEmpty)
             {
@@ -283,9 +283,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
-        public Double X
+        public double X
         {
-            get { return (Double)_left; }
+            get { return (double)_left; }
         }
 
         /// <summary>
@@ -293,9 +293,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// corner of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Location"/>
-        public Double Y
+        public double Y
         {
-            get { return (Double)_top; }
+            get { return (double)_top; }
         }
 
         /// <summary>
@@ -304,9 +304,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
-        public Double Left
+        public double Left
         {
-            get { return (Double)_left; }
+            get { return (double)_left; }
         }
 
         /// <summary>
@@ -315,9 +315,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
         /// <seealso cref="Left"/>
-        public Double Top
+        public double Top
         {
-            get { return (Double)_top; }
+            get { return (double)_top; }
         }
 
         /// <summary>
@@ -326,9 +326,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Top"/>
         /// <seealso cref="Left"/>
-        public Double Right
+        public double Right
         {
-            get { return (Double)_right; }
+            get { return (double)_right; }
         }
 
         /// <summary>
@@ -337,9 +337,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
         /// <seealso cref="Left"/>
-        public Double Bottom
+        public double Bottom
         {
-            get { return (Double)_bottom; }
+            get { return (double)_bottom; }
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <seealso cref="Center"/>
         public Point2D Location
         {
-            get { return new Point2D((Double)_left, (Double)_top); }
+            get { return new Point2D((double)_left, (double)_top); }
         }
 
         /// <summary>
@@ -376,24 +376,24 @@ namespace SharpMap.Rendering.Rendering2D
         /// Gets the width of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Size"/>
-        public Double Width
+        public double Width
         {
-            get { return (Double)_right.Subtract(_left); }
+            get { return (double)_right.Subtract(_left); }
         }
 
         /// <summary>
         /// Gets the height of the <see cref="Rectangle2D"/>.
         /// </summary>
         /// <seealso cref="Size"/>
-        public Double Height
+        public double Height
         {
-            get { return (Double)_bottom.Subtract(_top); }
+            get { return (double)_bottom.Subtract(_top); }
         }
 
 		/// <summary>
 		/// Gets true if the Rectangle2D has no set value.
 		/// </summary>
-        public Boolean IsEmpty
+        public bool IsEmpty
         {
             get { return !_hasValue; }
         }
@@ -558,7 +558,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        Double IMatrixD.Determinant
+        double IMatrixD.Determinant
         {
             get { throw new NotSupportedException(); }
         }
@@ -566,7 +566,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        Int32 IMatrixD.ColumnCount
+        int IMatrixD.ColumnCount
         {
             get { return 2; }
         }
@@ -618,7 +618,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        Boolean IMatrixD.IsSingular
+        bool IMatrixD.IsSingular
         {
             get { throw new NotSupportedException(); }
         }
@@ -626,7 +626,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        Boolean IMatrixD.IsInvertible
+        bool IMatrixD.IsInvertible
         {
             get { throw new NotSupportedException(); }
         }
@@ -642,7 +642,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        Boolean IMatrixD.IsSquare
+        bool IMatrixD.IsSquare
         {
             get { return true; }
         }
@@ -650,7 +650,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        Boolean IMatrixD.IsSymmetrical
+        bool IMatrixD.IsSymmetrical
         {
             get { throw new NotSupportedException(); }
         }
@@ -658,7 +658,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        Int32 IMatrixD.RowCount
+        int IMatrixD.RowCount
         {
             get { return 2; }
         }
@@ -670,7 +670,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="j0">The starting column to include.</param>
         /// <param name="j1">The ending column to include.</param>
         /// <returns></returns>
-        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
+        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
         {
             throw new NotSupportedException();
         }
@@ -681,7 +681,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns></returns>
-        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
+        DoubleComponent IMatrixD.this[int row, int column]
         {
             get
             {
@@ -837,26 +837,9 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
-        #region IVertexStream<Point2D,DoubleComponent> Members
-
-        public IEnumerable<Point2D> GetVertexes()
-        {
-            yield return LowerLeft;
-            yield return UpperLeft;
-            yield return UpperRight;
-            yield return LowerLeft;
-        }
-
-        public IEnumerable<Point2D> GetVertexes(ITransformMatrix<DoubleComponent> transform)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region Private Helper Methods
 
-        private static void checkIndexes(Int32 row, Int32 column)
+        private static void checkIndexes(int row, int column)
         {
             if (row < 0 || row > 1)
             {
@@ -913,7 +896,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// The axis to rotate around. May be an addition of the basis vectors.
         /// </param>
         /// <param name="radians">Angle to rotate through.</param>
-        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, Double radians)
+        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, double radians)
         {
             throw new NotSupportedException();
         }
@@ -926,7 +909,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </param>
         /// <param name="radians">Angle to rotate through.</param>
         /// <param name="order">Order in which to apply the operation.</param>
-        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, Double radians,
+        void ITransformMatrix<DoubleComponent>.RotateAlong(IVectorD axis, double radians,
                                                                 MatrixOperationOrder order)
         {
             throw new NotSupportedException();
@@ -939,7 +922,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="point">Point at which to compute the rotation.</param>
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="radians">Angle to rotate through.</param>
-        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, Double radians)
+        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, double radians)
         {
             throw new NotSupportedException();
         }
@@ -952,7 +935,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="axis">The axis to rotate around.</param>
         /// <param name="radians">Angle to rotate through.</param>
         /// <param name="order">Order in which to apply the operation.</param>
-        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, Double radians,
+        void IAffineTransformMatrix<DoubleComponent>.RotateAt(IVectorD point, IVectorD axis, double radians,
                                                              MatrixOperationOrder order)
         {
             throw new NotSupportedException();
@@ -1069,6 +1052,18 @@ namespace SharpMap.Rendering.Rendering2D
         {
             throw new NotSupportedException();
         }
+        #endregion
+
+        #region IVertexStream<Point2D,DoubleComponent> Members
+
+        public IEnumerable<Point2D> GetVertices()
+        {
+            yield return LowerLeft;
+            yield return UpperLeft;
+            yield return UpperRight;
+            yield return LowerLeft;
+        }
+
         #endregion
     }
 }

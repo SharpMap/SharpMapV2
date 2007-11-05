@@ -25,7 +25,6 @@ using System.Text;
 using System.Data;
 using System.IO;
 using System.Globalization;
-using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -34,26 +33,143 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// </summary>
     internal partial class DbaseFile : IDisposable
     {
+        #region Nested types
+        internal class BufferingStream : Stream
+        {
+            private Stream _baseStream;
+            private bool _isDisposed;
+
+            internal BufferingStream(Stream baseStream)
+            {
+                _baseStream = baseStream;
+            }
+
+            public override bool CanRead
+            {
+                get
+                {
+                    checkState();
+                    return _baseStream.CanRead;
+                }
+            }
+
+            public override bool CanSeek
+            {
+                get
+                {
+                    checkState();
+                    return _baseStream.CanSeek;
+                }
+            }
+
+            public override bool CanWrite
+            {
+                get
+                {
+                    checkState();
+                    return _baseStream.CanWrite;
+                }
+            }
+
+            public override void Flush()
+            {
+                checkState();
+                _baseStream.Flush();
+            }
+
+            public override long Length
+            {
+                get
+                {
+                    checkState();
+                    return _baseStream.Length;
+                }
+            }
+
+            public override long Position
+            {
+                get
+                {
+                    checkState();
+                    return _baseStream.Position;
+                }
+                set
+                {
+                    checkState();
+                    _baseStream.Position = value;
+                }
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                checkState();
+                return _baseStream.Read(buffer, offset, count);
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                checkState();
+                return _baseStream.Seek(offset, origin);
+            }
+
+            public override void SetLength(long value)
+            {
+                checkState();
+                _baseStream.SetLength(value);
+            }
+
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                checkState();
+                _baseStream.Write(buffer, offset, count);
+            }
+
+            public override void Close()
+            {
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                IsDisposed = true;
+                _baseStream = null;
+            }
+
+            public bool IsDisposed
+            {
+                get { return _isDisposed; }
+                private set { _isDisposed = value; }
+            }
+
+            private void checkState()
+            {
+                if (IsDisposed)
+                {
+                    throw new ObjectDisposedException(GetType().ToString());
+                }
+            }
+        } 
+        #endregion
+
         #region Instance fields
 
-        private readonly String _filename;
+        private readonly string _filename;
         private DbaseHeader _header;
-        private FeatureDataTable<UInt32> _baseTable;
-        private Boolean _headerIsParsed;
+        private FeatureDataTable<uint> _baseTable;
+        private bool _headerIsParsed;
         private DbaseReader _reader;
         private DbaseWriter _writer;
         private FileStream _dbaseFileStream;
-        private Boolean _isDisposed = false;
-        private Boolean _isOpen;
+        private bool _isDisposed = false;
+        private bool _isOpen;
 
         #endregion
 
-        internal DbaseFile(String fileName)
+        internal DbaseFile(string fileName)
             : this(fileName, true)
         {
         }
 
-        private DbaseFile(String fileName, Boolean checkExists)
+        private DbaseFile(string fileName, bool checkExists)
         {
             if (checkExists && !File.Exists(fileName))
             {
@@ -92,13 +208,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <see langword="true"/> if it is, <see langword="false"/> otherwise
         /// </summary>
         /// <seealso cref="Dispose"/>
-        internal Boolean IsDisposed
+        internal bool IsDisposed
         {
             get { return _isDisposed; }
             private set { _isDisposed = value; }
         }
 
-        private void dispose(Boolean disposing)
+        private void dispose(bool disposing)
         {
             if (IsDisposed)
             {
@@ -179,7 +295,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Gets a value which indicates if the reader is open: 
         /// true if it is, false otherwise.
         /// </summary>
-        internal Boolean IsOpen
+        internal bool IsOpen
         {
             get { return _isOpen; }
         }
@@ -199,10 +315,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region Methods
 
-        internal static DbaseFile CreateDbaseFile(String fileName, DataTable schema, CultureInfo culture, Encoding encoding)
+        internal static DbaseFile CreateDbaseFile(string fileName, DataTable schema, CultureInfo culture, Encoding encoding)
         {
             DbaseFile file = new DbaseFile(fileName, false);
-            Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
+            byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
             file._header.Columns = DbaseSchema.GetFields(schema, file._header);
         	file._headerIsParsed = true;
@@ -222,7 +338,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            DataStream.Seek((Int32)ComputeByteOffsetToRecord(_header.RecordCount), 
+            DataStream.Seek((int)ComputeByteOffsetToRecord(_header.RecordCount), 
                 SeekOrigin.Begin);
 
             _writer.BeginWrite();
@@ -265,7 +381,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             (this as IDisposable).Dispose();
         }
 
-        internal Int64 ComputeByteOffsetToRecord(UInt32 row)
+        internal long ComputeByteOffsetToRecord(UInt32 row)
         {
             return _header.HeaderLength + (row * _header.RecordLength);
         }
@@ -293,7 +409,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// null</exception>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
         /// object has been disposed</exception>
-        internal FeatureDataRow<UInt32> GetAttributes(UInt32 oid, FeatureDataTable<UInt32> table)
+        internal FeatureDataRow<uint> GetAttributes(uint oid, FeatureDataTable<uint> table)
         {
             checkState();
 
@@ -320,7 +436,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return null;
             }
 
-            FeatureDataRow<UInt32> dr = table.NewRow(oid);
+            FeatureDataRow<uint> dr = table.NewRow(oid);
 
             foreach (DbaseField field in _header.Columns)
             {
@@ -353,7 +469,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Returns an empty <see cref="FeatureDataTable"/> 
         /// with the same schema as this DBase file.
         /// </summary>
-        internal FeatureDataTable<UInt32> NewTable
+        internal FeatureDataTable<uint> NewTable
         {
             get
             {
@@ -385,7 +501,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown when the method is called 
         /// and object has been disposed.
         /// </exception>
-        internal void Open(Boolean exclusive)
+        internal void Open(bool exclusive)
         {
             checkState();
 
@@ -397,7 +513,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (!_headerIsParsed) //Don't read the header if it's already parsed
             {
-				_header = DbaseHeader.ParseDbfHeader(new NondisposingStream(DataStream));
+				_header = DbaseHeader.ParseDbfHeader(new BufferingStream(DataStream));
                 _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
                 _headerIsParsed = true;
             }
@@ -447,7 +563,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 //            /// structure indexing values in a column to a row index</returns>
 //            /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
 //            /// object has been disposed</exception>
-//            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(Int32 columnId) where TValue : IComparable<TValue>
+//            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(int columnId) where TValue : IComparable<TValue>
 //            {
 //                if (_isDisposed)
 //                {
@@ -457,9 +573,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 //                BinaryTree<UInt32, TValue> tree = new BinaryTree<UInt32, TValue>();
 
-//                for (UInt32 i = 0; i < _header.RecordCount; i++)
+//                for (uint i = 0; i < _header.RecordCount; i++)
 //                {
-//                    tree.Add(new BinaryTree<UInt32, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
+//                    tree.Add(new BinaryTree<uint, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
 //                }
 
 //                return tree;
@@ -473,14 +589,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         ///// Creates an index on the columns for faster searching [EXPERIMENTAL - Requires Lucene dependencies]
         ///// </summary>
         ///// <returns></returns>
-        //private String createLuceneIndex()
+        //private string createLuceneIndex()
         //{
-        //    String dir = this._filename + ".idx";
+        //    string dir = this._filename + ".idx";
         //    if (!System.IO.Directory.Exists(dir))
         //        System.IO.Directory.CreateDirectory(dir);
         //    Lucene.Net.Index.IndexWriter iw = new Lucene.Net.Index.IndexWriter(dir,new Lucene.Net.Analysis.Standard.StandardAnalyzer(),true);
 
-        //    for (UInt32 i = 0; i < this._NumberOfRecords; i++)
+        //    for (uint i = 0; i < this._NumberOfRecords; i++)
         //    {
         //        FeatureDataRow dr = GetFeature(i,this.NewTable);
         //        Lucene.Net.Documents.Document doc = new Lucene.Net.Documents.Document();
@@ -491,9 +607,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         //        foreach(System.Data.DataColumn col in dr.Table.Columns) //Add and index values from DBF
         //        {
-        //            if(col.DataType.Equals(typeof(String)))
+        //            if(col.DataType.Equals(typeof(string)))
         //                // Add the contents as a valued Text field so it will get tokenized and indexed.
-        //                doc.Add(Lucene.Net.Documents.Field.UnStored(col.ColumnName,(String)dr[col]));
+        //                doc.Add(Lucene.Net.Documents.Field.UnStored(col.ColumnName,(string)dr[col]));
         //            else
         //                doc.Add(Lucene.Net.Documents.Field.UnStored(col.ColumnName, dr[col].ToString()));
         //        }

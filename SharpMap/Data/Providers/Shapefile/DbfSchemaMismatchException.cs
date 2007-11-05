@@ -27,8 +27,8 @@ namespace SharpMap.Data.Providers.ShapeFile
     public class DbfSchemaMismatchException : ShapeFileException
     {
         public DbfSchemaMismatchException() { }
-        public DbfSchemaMismatchException(String message) : base(message) { }
-        public DbfSchemaMismatchException(String message, Exception inner) : base(message, inner) { }
+        public DbfSchemaMismatchException(string message) : base(message) { }
+        public DbfSchemaMismatchException(string message, Exception inner) : base(message, inner) { }
         public DbfSchemaMismatchException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }

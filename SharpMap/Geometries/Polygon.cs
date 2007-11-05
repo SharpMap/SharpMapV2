@@ -95,7 +95,7 @@ namespace SharpMap.Geometries
         /// </remarks>
         /// <param name="N"></param>
         /// <returns></returns>
-        public LinearRing InteriorRing(Int32 N)
+        public LinearRing InteriorRing(int N)
         {
             return _interiorRings[N];
         }
@@ -107,7 +107,7 @@ namespace SharpMap.Geometries
         /// This method is supplied as part of the OpenGIS Simple Features Specification.
         /// </remarks>
         /// <returns></returns>
-        public Int32 NumInteriorRing
+        public int NumInteriorRing
         {
             get { return _interiorRings.Count; }
         }
@@ -120,17 +120,17 @@ namespace SharpMap.Geometries
         //public RenderPoint[] TransformToView(SharpMap.Map map)
         //{
 
-        //    Int32 vertices = _ExteriorRing.Vertices.Count;
-        //    for (Int32 i = 0; i < _InteriorRings.Count;i++)
+        //    int vertices = _ExteriorRing.Vertices.Count;
+        //    for (int i = 0; i < _InteriorRings.Count;i++)
         //        vertices += _InteriorRings[i].Vertices.Count;
 
         //    System.Drawing.PointF[] v = new System.Drawing.PointF[vertices];
-        //    for (Int32 i = 0; i < _ExteriorRing.Vertices.Count; i++)
+        //    for (int i = 0; i < _ExteriorRing.Vertices.Count; i++)
         //        v[i] = SharpMap.Utilities.Transform.WorldToMap(_ExteriorRing.Vertices[i], map);
-        //    Int32 j = _ExteriorRing.Vertices.Count;
-        //    for (Int32 k = 0; k < _InteriorRings.Count;k++)
+        //    int j = _ExteriorRing.Vertices.Count;
+        //    for (int k = 0; k < _InteriorRings.Count;k++)
         //    {
-        //        for (Int32 i = 0; i < _InteriorRings[k].Vertices.Count; i++)
+        //        for (int i = 0; i < _InteriorRings[k].Vertices.Count; i++)
         //            v[j + i] = SharpMap.Utilities.Transform.WorldToMap(_InteriorRings[k].Vertices[i], map);
         //        j += _InteriorRings[k].Vertices.Count;
         //    }
@@ -144,7 +144,7 @@ namespace SharpMap.Geometries
         /// </summary>
         /// <param name="p">Polygon to compare with</param>
         /// <returns></returns>
-        public Boolean Equals(Polygon p)
+        public bool Equals(Polygon p)
         {
             if (ReferenceEquals(p, null))
             {
@@ -161,7 +161,7 @@ namespace SharpMap.Geometries
                 return false;
             }
 
-            for (Int32 i = 0; i < p.InteriorRings.Count; i++)
+            for (int i = 0; i < p.InteriorRings.Count; i++)
             {
                 if (!p.InteriorRings[i].Equals(InteriorRings[i]))
                 {
@@ -177,12 +177,12 @@ namespace SharpMap.Geometries
         /// in hashing algorithms and data structures like a hash table.
         /// </summary>
         /// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
-            Int32 hash = ExteriorRing.GetHashCode();
+            int hash = ExteriorRing.GetHashCode();
             ;
 
-            for (Int32 i = 0; i < InteriorRings.Count; i++)
+            for (int i = 0; i < InteriorRings.Count; i++)
             {
                 hash = hash ^ InteriorRings[i].GetHashCode();
             }
@@ -194,7 +194,7 @@ namespace SharpMap.Geometries
         /// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
         /// </summary>
         /// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-        public override Boolean IsEmpty()
+        public override bool IsEmpty()
         {
             return (ExteriorRing == null) || (ExteriorRing.Vertices.Count == 0);
         }
@@ -204,7 +204,7 @@ namespace SharpMap.Geometries
         /// intersection or self tangency. The description of each instantiable geometric class will include the specific
         /// conditions that cause an instance of that class to be classified as not simple.
         /// </summary>
-        public override Boolean IsSimple()
+        public override bool IsSimple()
         {
             throw new NotImplementedException();
         }
@@ -224,7 +224,7 @@ namespace SharpMap.Geometries
         /// Returns the shortest distance between any two points in the two geometries
         /// as calculated in the spatial reference system of this Geometry.
         /// </summary>
-        public override Double Distance(Geometry geom)
+        public override double Distance(Geometry geom)
         {
             throw new NotImplementedException();
         }
@@ -234,7 +234,7 @@ namespace SharpMap.Geometries
         /// is less than or equal to distance. Calculations are in the Spatial Reference
         /// System of this Geometry.
         /// </summary>
-        public override Geometry Buffer(Double d)
+        public override Geometry Buffer(double d)
         {
             throw new NotImplementedException();
         }
@@ -300,15 +300,15 @@ namespace SharpMap.Geometries
         /// <summary>
         /// The area of this Surface, as measured in the spatial reference system of this Surface.
         /// </summary>
-        public override Double Area
+        public override double Area
         {
             get
             {
-                Double area = 0.0;
+                double area = 0.0;
                 area += _exteriorRing.Area;
-                Boolean extIsClockwise = _exteriorRing.IsCcw();
+                bool extIsClockwise = _exteriorRing.IsCcw();
 
-                for (Int32 i = 0; i < _interiorRings.Count; i++)
+                for (int i = 0; i < _interiorRings.Count; i++)
                 {
                     //opposite direction of exterior subtracts area
                     if (_interiorRings[i].IsCcw() != extIsClockwise)

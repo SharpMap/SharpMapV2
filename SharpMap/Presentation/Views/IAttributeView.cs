@@ -43,7 +43,7 @@ namespace SharpMap.Presentation.Views
         /// Raises an event to request that the controlling presenter
         /// change the list of selected features shown in this view.
         /// </summary>
-        event EventHandler<FeaturesHighlightedChangedEventArgs> FeaturesHighlightedChanged;
+        event EventHandler<FeaturesHighlightedChangeRequestEventArgs> FeaturesHighlightedChangeRequested;
 
         /// <summary>
         /// Update the view to show the given features on the given layer as selected.
@@ -54,6 +54,6 @@ namespace SharpMap.Presentation.Views
         /// <param name="featureIndexes">
         /// Set of indexes of features to set to be selected.
         /// </param>
-        void SetHighlightedFeatures(String layerName, IEnumerable<Int32> featureIndexes);
+        void SetHighlightedFeatures(string layerName, IEnumerable<int> featureIndexes);
     }
 }

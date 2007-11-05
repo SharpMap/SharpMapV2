@@ -56,7 +56,7 @@ namespace SharpMap.Geometries
         /// Returns a WellKnownText representation of the <see cref="Geometry"/>
         /// </summary>
         /// <returns>Well-known text</returns>
-        public override String ToString()
+        public override string ToString()
         {
             return AsText();
         }
@@ -112,7 +112,7 @@ namespace SharpMap.Geometries
 		///  to the coordinate dimension.
 		/// </summary>
 		/// <remarks>This specification is restricted to geometries in two-dimensional coordinate space.</remarks>
-		public abstract Int32 Dimension { get; }
+		public abstract int Dimension { get; }
 
 		/// <summary>
 		/// The minimum bounding box for this <see cref="Geometry"/>, returned as a <see cref="Geometry"/>.
@@ -140,7 +140,7 @@ namespace SharpMap.Geometries
 		/// Exports this <see cref="Geometry"/> to a specific 
 		/// well-known text representation of <see cref="Geometry"/>.
 		/// </summary>
-		public String AsText()
+		public string AsText()
 		{
 			return GeometryToWkt.Write(this);
 		}
@@ -149,7 +149,7 @@ namespace SharpMap.Geometries
 		/// Exports this <see cref="Geometry"/> to a specific 
 		/// well-known binary representation of <see cref="Geometry"/>.
 		/// </summary>
-		public Byte[] AsBinary()
+		public byte[] AsBinary()
 		{
 			return GeometryToWkb.Write(this);
 		}
@@ -169,21 +169,21 @@ namespace SharpMap.Geometries
 	    public abstract BoundingBox GetBoundingBox();
 
 	    /// <summary>
-		/// Creates a <see cref="Geometry"/> based on a Well-Known Text String
+		/// Creates a <see cref="Geometry"/> based on a Well-Known Text string
 		/// </summary>
 		/// <param name="wkt">Well-Known Text</param>
 		/// <returns></returns>
-		public static Geometry FromText(String wkt)
+		public static Geometry FromText(string wkt)
 		{
 			return GeometryFromWkt.Parse(wkt);
 		}
 
 	    /// <summary>
-		/// Creates a <see cref="Geometry"/> based on a Well-Known Binary Byte array
+		/// Creates a <see cref="Geometry"/> based on a Well-Known Binary byte array
 		/// </summary>
 		/// <param name="WKB">Well-Known Binary</param>
 		/// <returns></returns>
-		public static Geometry FromWKB(Byte[] WKB)
+		public static Geometry FromWKB(byte[] WKB)
 		{
 			return GeometryFromWkb.Parse(WKB);
 		}
@@ -192,14 +192,14 @@ namespace SharpMap.Geometries
 		/// Returns 'true' if this <see cref="Geometry"/> is the empty geometry . If true, then this
 		/// <see cref="Geometry"/> represents the empty point set, Ø, for the coordinate space. 
 		/// </summary>
-		public abstract Boolean IsEmpty();
+		public abstract bool IsEmpty();
 
 	    /// <summary>
 		///  Returns 'true' if this Geometry has no anomalous geometric points, such as self
 		/// intersection or self tangency. The description of each instantiable geometric class will include the specific
 		/// conditions that cause an instance of that class to be classified as not simple.
 		/// </summary>
-		public abstract Boolean IsSimple();
+		public abstract bool IsSimple();
 
 	    #endregion
 
@@ -208,7 +208,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 	    /// Returns 'true' if this <see cref="Geometry"/> ‘spatially contains’ another <see cref="Geometry"/>.
 	    /// </summary>
-	    public virtual Boolean Contains(Geometry geom)
+	    public virtual bool Contains(Geometry geom)
 	    {
 	        return SpatialRelations.Contains(this, geom);
 	    }
@@ -216,7 +216,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 	    /// Returns 'true' if this <see cref="Geometry"/> ‘spatially crosses’ another <see cref="Geometry"/>.
 	    /// </summary>
-	    public virtual Boolean Crosses(Geometry geom)
+	    public virtual bool Crosses(Geometry geom)
 	    {
 	        return SpatialRelations.Crosses(this, geom);
 	    }
@@ -224,7 +224,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 		/// Returns 'true' if this Geometry is ‘spatially disjoint’ from another <see cref="Geometry"/>.
 		/// </summary>
-		public virtual Boolean Disjoint(Geometry geom)
+		public virtual bool Disjoint(Geometry geom)
 		{
 			return SpatialRelations.Disjoint(this, geom);
 		}
@@ -232,7 +232,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> ‘spatially intersects’ another <see cref="Geometry"/>.
 		/// </summary>
-		public virtual Boolean Intersects(Geometry geom)
+		public virtual bool Intersects(Geometry geom)
 		{
 			return SpatialRelations.Intersects(this, geom);
 		}
@@ -240,7 +240,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 	    /// Returns 'true' if this <see cref="Geometry"/> 'spatially overlaps' another <see cref="Geometry"/>.
 	    /// </summary>
-	    public virtual Boolean Overlaps(Geometry geom)
+	    public virtual bool Overlaps(Geometry geom)
 	    {
 	        return SpatialRelations.Overlaps(this, geom);
 	    }
@@ -248,7 +248,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> ‘spatially touches’ another <see cref="Geometry"/>.
 		/// </summary>
-		public virtual Boolean Touches(Geometry geom)
+		public virtual bool Touches(Geometry geom)
 		{
 			return SpatialRelations.Touches(this, geom);
 		}
@@ -256,7 +256,7 @@ namespace SharpMap.Geometries
 	    /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is ‘spatially within’ another <see cref="Geometry"/>.
 		/// </summary>
-		public virtual Boolean Within(Geometry geom)
+		public virtual bool Within(Geometry geom)
 		{
 			return SpatialRelations.Within(this, geom);
 		}
@@ -270,7 +270,7 @@ namespace SharpMap.Geometries
 		/// <param name="other"><see cref="Geometry"/> to relate to</param>
 		/// <param name="intersectionPattern">Intersection Pattern</param>
 		/// <returns>True if spatially related</returns>
-		public Boolean Relate(Geometry other, String intersectionPattern)
+		public bool Relate(Geometry other, string intersectionPattern)
 		{
 			throw new NotImplementedException();
 		}
@@ -287,7 +287,7 @@ namespace SharpMap.Geometries
 	    /// System of this Geometry.
 	    /// </summary>
 	    /// <param name="d">Buffer distance</param>
-	    public abstract Geometry Buffer(Double d);
+	    public abstract Geometry Buffer(double d);
 
 	    /// <summary>
 	    /// Geometry—Returns a geometry that represents 
@@ -307,7 +307,7 @@ namespace SharpMap.Geometries
 		/// as calculated in the spatial reference 
 		/// system of this Geometry.
 		/// </summary>
-        public abstract Double Distance(Geometry geometry);
+        public abstract double Distance(Geometry geometry);
 
 	    /// <summary>
 		/// Returns a geometry that represents the point set 
@@ -343,7 +343,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns 'true' if this Geometry is 'spatially equal' to another Geometry.
 		/// </summary>
-		public virtual Boolean Equals(Geometry other)
+		public virtual bool Equals(Geometry other)
 		{
 			return SpatialRelations.Equals(this, other);
 		}
@@ -354,7 +354,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <param name="obj">The <see cref="Object"/> to compare with the current <see cref="Object"/>.</param>
 		/// <returns>true if the specified <see cref="Object"/> is equal to the current <see cref="Object"/>; otherwise, false</returns>
-		public override Boolean Equals(object obj)
+		public override bool Equals(object obj)
 		{
 			Geometry g = obj as Geometry;
 
@@ -378,7 +378,7 @@ namespace SharpMap.Geometries
         /// True if the two <see cref="Geometry"/> instances are equal, 
         /// false otherwise.
         /// </returns>
-		public static Boolean operator ==(Geometry g1, Geometry g2)
+		public static bool operator ==(Geometry g1, Geometry g2)
 		{
             if (ReferenceEquals(g1, g2))
             {
@@ -405,7 +405,7 @@ namespace SharpMap.Geometries
         /// True if the two <see cref="Geometry"/> instances are not equal, 
         /// false otherwise.
         /// </returns>
-		public static Boolean operator !=(Geometry g1, Geometry g2)
+		public static bool operator !=(Geometry g1, Geometry g2)
         {
             if (ReferenceEquals(g1, g2))
             {
@@ -428,9 +428,9 @@ namespace SharpMap.Geometries
 		/// in hashing algorithms and data structures like a hash table.
 		/// </summary>
 		/// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
-		public override Int32 GetHashCode()
+		public override int GetHashCode()
 		{
-		    Int32 hashCode = GetType().GetHashCode();
+		    int hashCode = GetType().GetHashCode();
 
 		    foreach (Point point in GetVertices())
 		    {

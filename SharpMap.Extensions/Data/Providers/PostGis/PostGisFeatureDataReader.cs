@@ -16,8 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using SharpMap.Geometries;
 
@@ -25,12 +23,12 @@ namespace SharpMap.Data.Providers.PostGis
 {
 	public class PostGisFeatureDataReader : IFeatureDataReader
 	{
-		private PostGisProvider _provider;
+		private PostGis2 _provider;
 		private bool _isDisposed;
 
 		#region Object construction and disposal
 		#region Constructor
-		internal PostGisFeatureDataReader(PostGisProvider provider)
+		internal PostGisFeatureDataReader(PostGis2 provider)
 		{
 			_provider = provider;
 		}
@@ -76,59 +74,12 @@ namespace SharpMap.Data.Providers.PostGis
 		#endregion
 
 		#region IFeatureDataReader Members
-        /// <summary>
-        /// Gets the geometry for the current position in the reader.
-        /// </summary>
-        public Geometry Geometry
-        {
-            get { throw new NotImplementedException(); }
-        }
 
-        /// <summary>
-        /// Gets the Object ID for the record.
-        /// </summary>
-        /// <returns>
-        /// The Object ID for the record, or <see langword="null"/> 
-        /// if <see cref="HasOid"/> is <see langword="false"/>.
-        /// </returns>
-        public object GetOid()
-        {
-            throw new NotImplementedException();
-        }
+		public Geometry GetGeometry()
+		{
+			throw new NotImplementedException();
+		}
 
-        /// <summary>
-        /// Gets a value indicating if the feature record
-        /// has an Object Identifier (OID).
-        /// </summary>
-        public bool HasOid
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this feature record
-        /// has been fully loaded from the data source.
-        /// </summary>
-        // TODO: Reevaluate the IsFullyLoaded flag, since consecutive loads may 
-        // eventually fully load a record, yet this won't be able to record it.
-        public bool IsFullyLoaded
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Type"/> of the Object ID.
-        /// </summary>
-        /// <remarks>
-        /// OidType gets a <see cref="Type"/> which can be used
-        /// to call GetOid with generic type parameters in order to avoid 
-        /// boxing. If <see cref="HasOid"/> returns false, <see cref="OidType"/>
-        /// returns <see langword="null"/>.
-        /// </remarks>
-        public Type OidType
-        {
-            get { throw new NotImplementedException(); }
-        }
 		#endregion
 
 		#region IDataReader Members
@@ -298,31 +249,5 @@ namespace SharpMap.Data.Providers.PostGis
 		}
 
 		#endregion
-
-	    ///<summary>
-	    ///Returns an enumerator that iterates through the collection.
-	    ///</summary>
-	    ///
-	    ///<returns>
-	    ///A <see cref="T:System.Collections.Generic.IEnumerator`1"></see> that can be used to iterate through the collection.
-	    ///</returns>
-	    ///<filterpriority>1</filterpriority>
-        public IEnumerator<IFeatureDataRecord> GetEnumerator()
-	    {
-	        throw new NotImplementedException();
-	    }
-
-	    ///<summary>
-	    ///Returns an enumerator that iterates through a collection.
-	    ///</summary>
-	    ///
-	    ///<returns>
-	    ///An <see cref="T:System.Collections.IEnumerator"></see> object that can be used to iterate through the collection.
-	    ///</returns>
-	    ///<filterpriority>2</filterpriority>
-	    IEnumerator IEnumerable.GetEnumerator()
-	    {
-	        return GetEnumerator();
-	    }
 	}
 }

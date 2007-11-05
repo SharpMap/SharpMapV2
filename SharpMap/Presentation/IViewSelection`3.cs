@@ -75,8 +75,8 @@ namespace SharpMap.Presentation
 
         void Close();
         void Clear();
-        Boolean IsEmpty { get; }
-        Boolean IsClosed { get; }
+        bool IsEmpty { get; }
+        bool IsClosed { get; }
 
         event EventHandler SelectionChanged;
     }

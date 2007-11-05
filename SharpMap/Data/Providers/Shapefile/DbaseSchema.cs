@@ -23,7 +23,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 {
     internal static class DbaseSchema
     {
-        internal static readonly String OidColumnName = "OID";
+        internal static readonly string OidColumnName = "OID";
 
         internal static ICollection<DbaseField> GetFields(DataTable schema, DbaseHeader header)
         {
@@ -35,20 +35,20 @@ namespace SharpMap.Data.Providers.ShapeFile
             List<DbaseField> fields = new List<DbaseField>();
 			DataView schemaView = new DataView(schema, "", ProviderSchemaHelper.ColumnOrdinalColumn, DataViewRowState.CurrentRows);
 
-        	Int32 offset = 1;
+        	int offset = 1;
 			foreach (DataRowView rowView in schemaView)
             {
-				if (String.Compare(rowView[ProviderSchemaHelper.ColumnNameColumn] as String, OidColumnName, 
+				if (String.Compare(rowView[ProviderSchemaHelper.ColumnNameColumn] as string, OidColumnName, 
 					StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
 					continue;
 				}
 
-				String colName = rowView[ProviderSchemaHelper.ColumnNameColumn] as String;
+				string colName = rowView[ProviderSchemaHelper.ColumnNameColumn] as string;
 				Type dataType = (Type)rowView[ProviderSchemaHelper.DataTypeColumn];
 				Int16 length = Convert.ToInt16(rowView[ProviderSchemaHelper.ColumnSizeColumn]);
 				Byte decimals = Convert.ToByte(rowView[ProviderSchemaHelper.NumericPrecisionColumn]);
-				Int32 ordinal = Convert.ToInt32(rowView[ProviderSchemaHelper.ColumnOrdinalColumn]);
+				int ordinal = Convert.ToInt32(rowView[ProviderSchemaHelper.ColumnOrdinalColumn]);
 
 				DbaseField field = new DbaseField(header, colName, dataType, length, decimals, ordinal, offset);
 
@@ -60,15 +60,15 @@ namespace SharpMap.Data.Providers.ShapeFile
             return fields;
         }
 
-        internal static FeatureDataTable<UInt32> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns)
+        internal static FeatureDataTable<uint> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns)
         {
-            FeatureDataTable<UInt32> table = new FeatureDataTable<UInt32>(OidColumnName);
+            FeatureDataTable<uint> table = new FeatureDataTable<uint>(OidColumnName);
 
             foreach (DbaseField dbf in _dbaseColumns)
             {
                 DataColumn col = table.Columns.Add(dbf.ColumnName, dbf.DataType);
 
-				if (dbf.DataType == typeof(String))
+				if (dbf.DataType == typeof(string))
 				{
 					col.MaxLength = dbf.Length;
 				}
@@ -86,7 +86,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return table;
         }
 
-        internal static Char GetFieldTypeCode(Type type)
+        internal static char GetFieldTypeCode(Type type)
         {
             switch (Type.GetTypeCode(type))
             {
@@ -115,7 +115,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-		private static Int32 getLengthByHeuristic(DataColumn column)
+		private static int getLengthByHeuristic(DataColumn column)
 		{
 			switch (Type.GetTypeCode(column.DataType))
 			{

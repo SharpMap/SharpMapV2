@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.QuadTree
 {
@@ -33,7 +33,7 @@ namespace SharpMap.Indexing.QuadTree
             set { _value = value; }
         }
 
-        public Boolean IsLeaf
+        public bool IsLeaf
         {
             get { return Items.Count == 0; }
         }

@@ -8,11 +8,6 @@
             <summary>
             A matrix component value modeled by a single-precision floating point.
             </summary>
-            <remarks>
-            Use this structure as the type parameter for <see cref="T:NPack.Matrix`1"/> when you want
-            a matrix of single values, since it implements <see cref="T:NPack.Interfaces.IComputable`1"/>, which 
-            allows numerical operations on value types.
-            </remarks>
         </member>
         <member name="T:NPack.Interfaces.IComputable`1">
             <summary>
@@ -34,17 +29,25 @@
             http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
             </remarks>
         </member>
-        <member name="T:NPack.Interfaces.INegatable`1">
+        <member name="T:NPack.Interfaces.IAddable`1">
             <summary>
-            Every class that defines a unary - operation
-            such that <c>x + (-x) = e</c> and <c>-(-x) = x</c> should consider
+            Every class that defines a + operation 
+            like <c>T operator + (T a, T b)</c> should consider
             implementing this interface.
             </summary>
-            <typeparam name="T">Type which is negatable.</typeparam>
+            <typeparam name="T">Type which is addable.</typeparam>
             <remarks>
             Adapted from an article on lambda-computing.com: 
             http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
             </remarks>
+        </member>
+        <member name="M:NPack.Interfaces.IAddable`1.Add(`0)">
+            <summary>
+            Returns the sum of the object and <paramref name="b"/>.
+            It must not modify the value of the object.
+            </summary>
+            <param name="b">The second operand.</param>
+            <returns>The sum.</returns>
         </member>
         <member name="T:NPack.Interfaces.ISubtractable`1">
             <summary>
@@ -60,8 +63,8 @@
         </member>
         <member name="M:NPack.Interfaces.ISubtractable`1.Subtract(`0)">
             <summary>
-            Returns the difference of the Object and <paramref name="b"/>.
-            It must not modify the value of the Object.
+            Returns the difference of the object and <paramref name="b"/>.
+            It must not modify the value of the object.
             </summary>
             <param name="b">The second operand.</param>
             <returns>The difference.</returns>
@@ -78,69 +81,29 @@
             http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
             </remarks>
         </member>
-        <member name="T:NPack.Interfaces.IAddable`1">
-            <summary>
-            Every class that defines a + operation 
-            like <c>T operator + (T a, T b)</c> should consider
-            implementing this interface.
-            </summary>
-            <typeparam name="T">Type which is addable.</typeparam>
-            <remarks>
-            Adapted from an article on lambda-computing.com: 
-            http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
-            </remarks>
-        </member>
-        <member name="M:NPack.Interfaces.IAddable`1.Add(`0)">
-            <summary>
-            Returns the sum of the Object and <paramref name="b"/>.
-            It must not modify the value of the Object.
-            </summary>
-            <param name="b">The second operand.</param>
-            <returns>The sum.</returns>
-        </member>
         <member name="P:NPack.Interfaces.IHasZero`1.Zero">
             <summary>
             Returns the additive identity.
             </summary>
             <value>e</value>
         </member>
-        <member name="M:NPack.Interfaces.INegatable`1.Negative">
+        <member name="T:NPack.Interfaces.INegatable`1">
             <summary>
-            Returns the negative of the Object. Must not modify the Object itself.
-            </summary>
-            <returns>The negative.</returns>
-        </member>
-        <member name="T:NPack.Interfaces.IDivisible`1">
-            <summary>
-            Every class that defines a / operation 
-            like <c>T operator / (T a, T b)</c> should consider
+            Every class that defines a unary - operation
+            such that <c>x + (-x) = e</c> and <c>-(-x) = x</c> should consider
             implementing this interface.
             </summary>
-            <typeparam name="T">Type which is divisible.</typeparam>
+            <typeparam name="T">Type which is negatable.</typeparam>
             <remarks>
             Adapted from an article on lambda-computing.com: 
             http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
             </remarks>
         </member>
-        <member name="M:NPack.Interfaces.IDivisible`1.Divide(`0)">
+        <member name="M:NPack.Interfaces.INegatable`1.Negative">
             <summary>
-            Returns the quotient of the Object and <paramref name="b"/>.
-            It must not modify the value of the Object.
+            Returns the negative of the object. Must not modify the object itself.
             </summary>
-            <param name="b">The second operand.</param>
-            <returns>The quotient.</returns>
-        </member>
-        <member name="T:NPack.Interfaces.IHasOne`1">
-            <summary>
-            Every class that has a * operation and an element
-            such that <code>x * e = e * x = x</code> for all x should consider implementing
-            this interface.
-            </summary>
-            <typeparam name="T">Type which has multiplicative identity defined.</typeparam>
-            <remarks>
-            Adapted from an article on lambda-computing.com: 
-            http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
-            </remarks>
+            <returns>The negative.</returns>
         </member>
         <member name="T:NPack.Interfaces.IMultipliable`1">
             <summary>
@@ -156,11 +119,43 @@
         </member>
         <member name="M:NPack.Interfaces.IMultipliable`1.Multiply(`0)">
             <summary>
-            Returns the product of the Object and <paramref name="b"/>.
-            It must not modify the value of the Object.
+            Returns the product of the object and <paramref name="b"/>.
+            It must not modify the value of the object.
             </summary>
             <param name="b">The second operand.</param>
             <returns>The product.</returns>
+        </member>
+        <member name="T:NPack.Interfaces.IDivisible`1">
+            <summary>
+            Every class that defines a / operation 
+            like <c>T operator / (T a, T b)</c> should consider
+            implementing this interface.
+            </summary>
+            <typeparam name="T">Type which is divisible.</typeparam>
+            <remarks>
+            Adapted from an article on lambda-computing.com: 
+            http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
+            </remarks>
+        </member>
+        <member name="M:NPack.Interfaces.IDivisible`1.Divide(`0)">
+            <summary>
+            Returns the quotient of the object and <paramref name="b"/>.
+            It must not modify the value of the object.
+            </summary>
+            <param name="b">The second operand.</param>
+            <returns>The quotient.</returns>
+        </member>
+        <member name="T:NPack.Interfaces.IHasOne`1">
+            <summary>
+            Every class that has a * operation and an element
+            such that <code>x * e = e * x = x</code> for all x should consider implementing
+            this interface.
+            </summary>
+            <typeparam name="T">Type which has multiplicative identity defined.</typeparam>
+            <remarks>
+            Adapted from an article on lambda-computing.com: 
+            http://www.lambda-computing.com/publications/articles/generics/IArithmetic.cs.
+            </remarks>
         </member>
         <member name="P:NPack.Interfaces.IHasOne`1.One">
             <summary>
@@ -210,10 +205,10 @@
         </member>
         <member name="M:NPack.Interfaces.IExponential`1.Power(System.Double)">
             <summary>
-            Returns a value which is the called on value raised to the given <paramref name="exponent"/>.
+            Returns a value which is the called on value raised to the given <paramref name="power"/>.
             </summary>
-            <param name="exponent">The power to raise the value by.</param>
-            <value>x ^ <c>exponent</c></value>
+            <param name="power">The power to raise the value by.</param>
+            <value>x ^ <c>power</c></value>
             <returns>The value called on raised to the power given.</returns>
         </member>
         <member name="M:NPack.Interfaces.IExponential`1.Sqrt">
@@ -269,9 +264,9 @@
         </member>
         <member name="M:NPack.SingleComponent.ToString">
             <summary>
-            Returns String representation of this value.
+            Returns string representation of this value.
             </summary>
-            <returns>A formatted String displaying this value.</returns>
+            <returns>A formatted string displaying this value.</returns>
         </member>
         <member name="M:NPack.SingleComponent.GetHashCode">
             <summary>
@@ -281,7 +276,7 @@
         </member>
         <member name="M:NPack.SingleComponent.op_Implicit(System.Single)~NPack.SingleComponent">
             <summary>
-            Implicitly converts a Single value to a SingleComponent.
+            Implicitly converts a float value to a SingleComponent.
             </summary>
             <param name="value">Value to convert.</param>
             <returns>
@@ -290,16 +285,16 @@
         </member>
         <member name="M:NPack.SingleComponent.op_Explicit(NPack.SingleComponent)~System.Single">
             <summary>
-            Explicitly converts a SingleComponent to a Single.
+            Explicitly converts a SingleComponent to a float.
             </summary>
             <param name="component">SingleComponent to convert.</param>
             <returns>
-            Value of type Single with the same value as the SingleComponent.
+            Value of type float with the same value as the SingleComponent.
             </returns>
         </member>
         <member name="M:NPack.SingleComponent.op_Addition(NPack.SingleComponent,System.Single)">
             <summary>
-            Adds a SingleComponent and a Single.
+            Adds a SingleComponent and a float.
             </summary>
             <param name="lhs">Left hand of the addition operation.</param>
             <param name="rhs">Right hand of the addition operation.</param>
@@ -309,7 +304,7 @@
         </member>
         <member name="M:NPack.SingleComponent.op_Subtraction(NPack.SingleComponent,System.Single)">
             <summary>
-            Subtracts a Single from a SingleComponent.
+            Subtracts a float from a SingleComponent.
             </summary>
             <param name="lhs">Left hand of the subtraction operation.</param>
             <param name="rhs">Right hand of the subtraction operation.</param>
@@ -393,18 +388,18 @@
         </member>
         <member name="M:NPack.SingleComponent.Equals(System.Single)">
             <summary>
-            Evaluates equality of a SingleComponent instance and a Single value.
+            Evaluates equality of a SingleComponent instance and a float value.
             </summary>
-            <param name="other">The Single value to compare to.</param>
+            <param name="other">The float value to compare to.</param>
             <returns>
             True if the two SingleComponent instances are equal; false otherwise.
             </returns>
         </member>
         <member name="M:NPack.SingleComponent.CompareTo(System.Single)">
             <summary>
-            Compares a SingleComponent instance and a Single value.
+            Compares a SingleComponent instance and a float value.
             </summary>
-            <param name="other">The Single value to compare to.</param>
+            <param name="other">The float value to compare to.</param>
             <returns>
             0 if they are equal,
             1 if the SingleComponent instance is greater, 
@@ -413,7 +408,7 @@
         </member>
         <member name="M:NPack.SingleComponent.Add(System.Single)">
             <summary>
-            Adds a SingleComponent value and a Single.
+            Adds a SingleComponent value and a float.
             </summary>
             <param name="a">The other addend.</param>
             <returns>
@@ -422,7 +417,7 @@
         </member>
         <member name="M:NPack.SingleComponent.Subtract(System.Single)">
             <summary>
-            Subtracts a Single value from the SingleComponent value.
+            Subtracts a float value from the SingleComponent value.
             </summary>
             <param name="a">The subtrahend.</param>
             <returns>
@@ -432,7 +427,7 @@
         </member>
         <member name="M:NPack.SingleComponent.NPack#Interfaces#INegatable{System#Single}#Negative">
             <summary>
-            Returns the negation of the SingleComponent value as a Single. Also the
+            Returns the negation of the SingleComponent value as a float. Also the
             additive inverse.
             </summary>
             <remarks>
@@ -443,11 +438,11 @@
             Assert.IsTrue(a.Add(b).Equals(0));
             </code>
             </remarks>
-            <returns>The negated SingleComponent as a Single.</returns>
+            <returns>The negated SingleComponent as a float.</returns>
         </member>
         <member name="M:NPack.SingleComponent.Multiply(System.Single)">
             <summary>
-            Multiplies the SingleComponent with Single and returns the product.
+            Multiplies the SingleComponent with float and returns the product.
             </summary>
             <param name="a">The multiplier.</param>
             <returns>
@@ -457,7 +452,7 @@
         </member>
         <member name="M:NPack.SingleComponent.Divide(System.Single)">
             <summary>
-            Divides the SingleComponent by a Single and returns the quotient.
+            Divides the SingleComponent by a float and returns the quotient.
             </summary>
             <param name="a">The divisor.</param>
             <returns>
@@ -508,7 +503,7 @@
         <member name="M:NPack.SingleComponent.GreaterThan(System.Single)">
             <summary>
             Evaluates if the SingleComponent instance is greater than 
-            the given Single value.
+            the given float value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>True if the SingleComponent instance is greater
@@ -517,7 +512,7 @@
         <member name="M:NPack.SingleComponent.GreaterThanOrEqualTo(System.Single)">
             <summary>
             Evaluates if the SingleComponent instance is greater than 
-            or equal to the given Single value.
+            or equal to the given float value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>
@@ -528,7 +523,7 @@
         <member name="M:NPack.SingleComponent.LessThan(System.Single)">
             <summary>
             Evaluates if the SingleComponent instance is less than 
-            the given Single value.
+            the given float value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>True if the SingleComponent instance is less
@@ -537,7 +532,7 @@
         <member name="M:NPack.SingleComponent.LessThanOrEqualTo(System.Single)">
             <summary>
             Evaluates if the SingleComponent instance is less than 
-            or equal to the given Single value.
+            or equal to the given float value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>
@@ -594,7 +589,7 @@
         <member name="M:NPack.SingleComponent.NPack#Interfaces#IExponential{System#Single}#Power(System.Double)">
             <summary>
             Raises the SingleComponent value to the given 
-            exponent, returned as a Single.
+            exponent, returned as a float.
             <paramref name="power"/>.
             </summary>
             <param name="power">
@@ -608,7 +603,7 @@
         <member name="M:NPack.SingleComponent.NPack#Interfaces#IExponential{System#Single}#Sqrt">
             <summary>
             Computes the value of the square root of the SingleComponent,
-            returned as a Single.
+            returned as a float.
             </summary>
             <returns>
             The value of the square root of the SingleComponent.
@@ -618,7 +613,7 @@
             <summary>
             Computes the log of the SingleComponent in the
             <paramref name="newBase">given base</paramref>, 
-            returned as a Single.
+            returned as a float.
             </summary>
             <param name="newBase">The base to compute the log in.</param>
             <returns>
@@ -628,14 +623,14 @@
         <member name="M:NPack.SingleComponent.NPack#Interfaces#IExponential{System#Single}#Log">
             <summary>
             Computes the log of the SingleComponent in base e,
-            returned as a Single.
+            returned as a float.
             </summary>
             <returns>The natural log of the SingleComponent.</returns>
         </member>
         <member name="M:NPack.SingleComponent.NPack#Interfaces#IExponential{System#Single}#Exp">
             <summary>
             Computes e to the power of the SingleComponent,
-            returned as a Single.
+            returned as a float.
             </summary>
             <returns>
             The natural log base, e, raised to the power 
@@ -655,7 +650,7 @@
             Sets the value of the SingleComponent.
             </summary>
             <param name="value">
-            The value to set the SingleComponent to, cast to a Single.
+            The value to set the SingleComponent to, cast to a float.
             </param>
             <returns>
             A SingleComponent with the given <paramref name="value"/>.
@@ -664,7 +659,7 @@
         <member name="M:NPack.SingleComponent.NPack#Interfaces#IComputable{System#Single}#Abs">
             <summary>
             Computes the absolute value of the SingleComponent,
-            returned as a Single.
+            returned as a float.
             </summary>
             <returns>
             The absolute value of the SingleComponent's value.
@@ -673,7 +668,7 @@
         <member name="M:NPack.SingleComponent.NPack#Interfaces#IComputable{System#Single}#Set(System.Double)">
             <summary>
             Computes the absolute value of the SingleComponent,
-            returned as a Single.
+            returned as a float.
             </summary>
             <returns>
             The absolute value of the SingleComponent's value.
@@ -852,15 +847,15 @@
         </member>
         <member name="M:NPack.SingleComponent.ToString(System.String,System.IFormatProvider)">
             <summary>
-            Generates a String representation of the SingleComponent.
+            Generates a string representation of the SingleComponent.
             </summary>
-            <param name="format">The format String to use in formatting.</param>
+            <param name="format">The format string to use in formatting.</param>
             <param name="formatProvider">
             An <see cref="T:System.IFormatProvider"/> instance used to 
             help format the SingleComponent value.
             </param>
             <returns>
-            A formatted String which represents the SingleComponent value.
+            A formatted string which represents the SingleComponent value.
             </returns>
         </member>
         <member name="P:NPack.SingleComponent.Zero">
@@ -875,12 +870,12 @@
         </member>
         <member name="P:NPack.SingleComponent.NPack#Interfaces#IHasZero{System#Single}#Zero">
             <summary>
-            Gets the additive identity as a Single: 0F.
+            Gets the additive identity as a float: 0F.
             </summary>
         </member>
         <member name="P:NPack.SingleComponent.NPack#Interfaces#IHasOne{System#Single}#One">
             <summary>
-            Gets the multiplicative identity as a Single: 1F.
+            Gets the multiplicative identity as a float: 1F.
             </summary>
         </member>
         <member name="T:NPack.Interfaces.IAffineTransformMatrix`1">
@@ -888,12 +883,6 @@
             An interface to an affine transformation matrix.
             </summary>
             <typeparam name="T">Type of element in the matrix.</typeparam>
-        </member>
-        <member name="T:NPack.Interfaces.ITransformMatrix`1">
-            <summary>
-            Provides the interface for linearly transforming a matrix.
-            </summary>
-            <typeparam name="T">Type of component in the matrix.</typeparam>
         </member>
         <member name="T:NPack.Interfaces.IMatrix`1">
             <summary>
@@ -912,12 +901,10 @@
             Gets a submatrix.
             </summary>
             <param name="rowIndexes">The indexes of the rows to include.</param>
-            <param name="startColumn">The starting column to include.</param>
-            <param name="endColumn">The ending column to include.</param>
-            <returns>
-            A submatrix with rows given by <paramref name="rowIndexes"/> and columns 
-            <paramref name="startColumn"/> through <paramref name="endColumn"/>.
-            </returns>
+            <param name="j0">The starting column to include.</param>
+            <param name="j1">The ending column to include.</param>
+            <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
+            through <paramref name="j1"/>.</returns>
         </member>
         <member name="M:NPack.Interfaces.IMatrix`1.Transpose">
             <summary>
@@ -968,6 +955,11 @@
         <member name="P:NPack.Interfaces.IMatrix`1.RowCount">
             <summary>
             Gets the number of rows in the matrix.
+            </summary>
+        </member>
+        <member name="P:NPack.Interfaces.IMatrix`1.Elements">
+            <summary>
+            Gets the elements in the matrix as an array of arrays (jagged array).
             </summary>
         </member>
         <member name="P:NPack.Interfaces.IMatrix`1.Item(System.Int32,System.Int32)">
@@ -1045,6 +1037,15 @@
         <member name="M:NPack.Interfaces.ITransformMatrix`1.TransformMatrix(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Applies this transform to the given <paramref name="input"/> matrix.
+            </summary>
+            <param name="input">Matrix to transform.</param>
+            <returns>
+            The multiplication of this transform matrix with the input matrix.
+            </returns>
+        </member>
+        <member name="M:NPack.Interfaces.ITransformMatrix`1.TransformMatrix(`0[][])">
+            <summary>
+            Applies this transform to the given <paramref name="input"/> matrix in place.
             </summary>
             <param name="input">Matrix to transform.</param>
             <returns>
@@ -1142,6 +1143,61 @@
             Gets the inverse of the affine transform.
             </summary>
         </member>
+        <member name="T:NPack.QrDecomposition`1">
+            <summary>
+            QR decomposition for a rectangular matrix.
+            </summary>
+            <remarks>
+            For an m-by-n Matrix{T} <c>A</c> with <c>m &gt;= n</c>, the QR decomposition is an m-by-n
+            orthogonal Matrix{T} <c>Q</c> and an n-by-n upper triangular 
+            Matrix{T} <c>R</c> so that <c>A = Q * R</c>.
+            The QR decompostion always exists, even if the Matrix{T} does not have
+            full rank, so the constructor will never fail.  The primary use of the
+            QR decomposition is in the least squares solution of nonsquare systems
+            of simultaneous linear equations.
+            This will fail if <see cref="P:NPack.QrDecomposition`1.IsFullRank"/> returns <see langword="false"/>.
+            </remarks>
+        </member>
+        <member name="M:NPack.QrDecomposition`1.#ctor(NPack.Interfaces.IMatrix{`0})">
+            <summary>
+            Construct a QR decomposition.
+            </summary>	
+        </member>
+        <member name="M:NPack.QrDecomposition`1.Solve(NPack.Interfaces.IMatrix{`0})">
+            <summary>
+            Least squares solution of <c>A * X = B</c>.
+            </summary>
+            <param name="value">
+            Right-hand-side Matrix{T} with as many rows as <c>A</c> and any number of columns.
+            </param>
+            <returns>
+            A Matrix{T} that minimized the two norm of <c>Q * R * X - B</c>.
+            </returns>
+            <exception cref="T:System.ArgumentException">
+            Matrix{T} row dimensions must be the same.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Matrix{T} is rank deficient.
+            </exception>
+        </member>
+        <member name="P:NPack.QrDecomposition`1.IsFullRank">
+            <summary>
+            Gets a value which indicates if the Matrix{T} <c>A</c> is of full rank.
+            </summary>
+            <value>
+            <see langword="true"/> if <c>R</c>, and hence <c>A</c>, has full rank; <see langword="false"/> otherwise.
+            </value>
+        </member>
+        <member name="P:NPack.QrDecomposition`1.Q">
+            <summary>
+            Returns the orthogonal factor <c>Q</c>.
+            </summary>
+        </member>
+        <member name="P:NPack.QrDecomposition`1.R">
+            <summary>
+            Returns the upper triangular factor <c>R</c>.
+            </summary>
+        </member>
         <member name="T:NPack.Matrix`1">
             <summary>
             A matrix. The fundamental unit of computation in linear algebra.
@@ -1179,35 +1235,6 @@
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when length of 'elements' is 0 
             or when the first element of 'elements' is an array of length 0.</exception>
             <exception cref="T:System.ArgumentException">When the arrays of 'elements' are not all the same length.</exception>
-        </member>
-        <member name="M:NPack.Matrix`1.#ctor(NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Creates a new matrix as a copy of the given matrix.
-            </summary>
-            <param name="matrixToCopy">The matrix to copy.</param>
-        </member>
-        <member name="M:NPack.Matrix`1.op_Equality(NPack.Matrix{`0},NPack.Matrix{`0})">
-            <summary>
-            Compares two <see cref="T:NPack.Matrix`1"/> instances for element-by-element
-            equality.
-            </summary>
-            <param name="left">The left hand side of the equality comparison.</param>
-            <param name="right">The right hand side of the equality comparison.</param>
-            <returns>
-            <see langword="true"/> if the matrixes are element-by-element equal, <see langword="false"/> otherwise.
-            </returns>
-        </member>
-        <member name="M:NPack.Matrix`1.op_Inequality(NPack.Matrix{`0},NPack.Matrix{`0})">
-            <summary>
-            Compares two <see cref="T:NPack.Matrix`1"/> instances element-by-element for 
-            inequality.
-            </summary>
-            <param name="left">The left hand side of the inequality comparison.</param>
-            <param name="right">The right hand side of the inequality comparison.</param>
-            <returns>
-            <see langword="true"/> if the matrixes are not equal in an element-by-element comparison, 
-            <see langword="false"/> if they are equal.
-            </returns>
         </member>
         <member name="M:NPack.Matrix`1.GetMatrix(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
@@ -1310,6 +1337,14 @@
             <returns>The multiplication of this transform matrix with the input matrix, 
             with the transform on the left-hand side of the operation.</returns>
         </member>
+        <member name="M:NPack.Matrix`1.TransformMatrix(`0[][])">
+            <summary>
+            Applies this transform to the given <paramref name="input"/> matrix.
+            </summary>
+            <param name="input">Matrix to transform.</param>
+            <returns>The multiplication of this transform matrix with the input matrix, 
+            with the transform on the left-hand side of the operation.</returns>
+        </member>
         <member name="M:NPack.Matrix`1.TransformVector(NPack.Interfaces.IVector{`0})">
             <summary>
             Applies this transform to the given <paramref name="input"/> vector.
@@ -1371,37 +1406,6 @@
             <param name="value">Matrix to multiply.</param>
             <returns>For matrix A, (value)A.</returns>
         </member>
-        <member name="M:NPack.Matrix`1.op_UnaryNegation(NPack.Matrix{`0})">
-            <summary>
-            Negates the values of a matrix.
-            </summary>
-            <param name="value">The matrix to negate.</param>
-            <returns>A negated matrix instance.</returns>
-        </member>
-        <member name="M:NPack.Matrix`1.op_Addition(NPack.Matrix{`0},NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Adds two matrixes element-by-element.
-            </summary>
-            <param name="lhs">The left hand side of the addition operation.</param>
-            <param name="rhs">The right hand side of the addition operation.</param>
-            <returns>The sum of <paramref name="lhs"/> and <paramref name="rhs"/>.</returns>
-            <exception cref="T:System.InvalidOperationException">
-            Thrown if the dimensions of <paramref name="lhs"/> and <paramref name="rhs"/>
-            are not the same.
-            </exception>
-        </member>
-        <member name="M:NPack.Matrix`1.op_Subtraction(NPack.Matrix{`0},NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Subtracts two matrixes element-by-element.
-            </summary>
-            <param name="lhs">The left hand side of the subtraction operation.</param>
-            <param name="rhs">The right hand side of the subtraction operation.</param>
-            <returns>The difference of <paramref name="lhs"/> and <paramref name="rhs"/>.</returns>
-            <exception cref="T:System.InvalidOperationException">
-            Thrown if the dimensions of <paramref name="lhs"/> and <paramref name="rhs"/>
-            are not the same.
-            </exception>
-        </member>
         <member name="M:NPack.Matrix`1.op_Multiply(NPack.Matrix{`0},`0)">
             <summary>
             Scalar multiplication.
@@ -1409,7 +1413,7 @@
         </member>
         <member name="M:NPack.Matrix`1.op_Multiply(NPack.Matrix{`0},NPack.Interfaces.IMatrix{`0})">
             <summary>
-            <see cref="T:NPack.Matrix`1"/> multiplication.
+            Matrix{T} multiplication.
             </summary>
         </member>
         <member name="M:NPack.Matrix`1.NPack#Interfaces#IDivisible{NPack#Interfaces#IMatrix{T}}#Divide(NPack.Interfaces.IMatrix{`0})">
@@ -1443,6 +1447,15 @@
             <param name="columns">Number of columns in the matrix.</param>
             <param name="rows">Number of rows in the matrix.</param>
             <returns>A <paramref name="rows"/> by <paramref name="columns"/> matrix with random values.</returns>
+        </member>
+        <member name="P:NPack.Matrix`1.Elements">
+            <summary>
+            Gets or sets an array of arrays representing the matrix elements.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Thrown when value is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when there are zero rows.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when there are zero columns.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the arrays in the jagged array are of different lengths.</exception>
         </member>
         <member name="P:NPack.Matrix`1.Item(System.Int32,System.Int32)">
             <summary>
@@ -1533,84 +1546,7 @@
             </summary>
             <returns>The inverse.</returns>
         </member>
-        <member name="T:NPack.DoubleComplexComponent">
-            <summary>
-            A matrix component or matrix element which represents a complex number with a 
-            <see cref="T:System.Double"/> real component and imaginary coefficient.
-            </summary>
-            <remarks>
-            Use this structure as the type parameter for <see cref="T:NPack.Matrix`1"/> when you want
-            a matrix of Double floating point complex values, since it implements <see cref="T:NPack.Interfaces.IComputable`1"/>, 
-            which allows numerical operations on value types.
-            </remarks>
-        </member>
-        <member name="T:NPack.HouseholderReflectionQrDecomposition`1">
-            <summary>
-            QR decomposition for a rectangular matrix.
-            </summary>
-            <remarks>
-            <para>
-            For an m-by-n Matrix{T} <c>A</c> with <c>m &gt;= n</c>, the QR decomposition is an m-by-n
-            orthogonal Matrix{T} <c>Q</c> and an n-by-n upper triangular 
-            Matrix{T} <c>R</c> so that <c>A = Q * R</c>.
-            </para>
-            <para>
-            The QR decompostion always exists, even if the Matrix{T} does not have
-            full rank, so the constructor will never fail.  The primary use of the
-            QR decomposition is in the least squares solution of non-square systems
-            of simultaneous linear equations. It is well-suited to computation due to the
-            fact that the Q matrix in the decomposition is an orthogonal matrix, allowing
-            errors that arise in its computation to be removed by reforming it to orthogonality.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:NPack.Interfaces.IFactorization`1.InputMatrix">
-            <summary>
-            Gets the matrix which was factorized.
-            </summary>
-        </member>
-        <member name="M:NPack.HouseholderReflectionQrDecomposition`1.#ctor(NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Construct a QR decomposition.
-            </summary>	
-        </member>
-        <member name="M:NPack.HouseholderReflectionQrDecomposition`1.Solve(NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Least squares solution of <c>A * X = B</c>.
-            </summary>
-            <param name="value">
-            Right-hand-side Matrix{T} with as many rows as <c>A</c> and any number of columns.
-            </param>
-            <returns>
-            A Matrix{T} that minimized the two norm of <c>Q * R * X - B</c>.
-            </returns>
-            <exception cref="T:System.ArgumentException">
-            Matrix{T} row dimensions must be the same.
-            </exception>
-            <exception cref="T:System.InvalidOperationException">
-            Matrix{T} is rank deficient.
-            </exception>
-        </member>
-        <member name="P:NPack.HouseholderReflectionQrDecomposition`1.IsFullRank">
-            <summary>
-            Gets a value which indicates if the Matrix{T} <c>A</c> is of full rank.
-            </summary>
-            <value>
-            <see langword="true"/> if <c>R</c>, and hence <c>A</c>, has full rank; 
-            <see langword="false"/> otherwise.
-            </value>
-        </member>
-        <member name="P:NPack.HouseholderReflectionQrDecomposition`1.Q">
-            <summary>
-            Returns the orthogonal factor <c>Q</c>.
-            </summary>
-        </member>
-        <member name="P:NPack.HouseholderReflectionQrDecomposition`1.R">
-            <summary>
-            Returns the upper triangular factor <c>R</c>.
-            </summary>
-        </member>
-        <member name="T:NPack.LUDecomposition`1">
+        <member name="T:NPack.LuDecomposition`1">
             <summary>
             LU decomposition of a rectangular matrix.
             </summary>
@@ -1627,16 +1563,16 @@
             singular, so the constructor will never fail.  The primary use of the
             LU decomposition is in the solution of square systems of simultaneous
             linear equations. There is no solution, or infinite solutions if 
-            <see cref="P:NPack.LUDecomposition`1.IsNonsingular"/> returns <see langword="false"/>.
+            <see cref="P:NPack.LuDecomposition`1.NonSingular"/> returns <see langword="false"/>.
             </para>
             </remarks>
         </member>
-        <member name="M:NPack.LUDecomposition`1.#ctor(NPack.Interfaces.IMatrix{`0})">
+        <member name="M:NPack.LuDecomposition`1.#ctor(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Create a new LU decomposition.
             </summary>	
         </member>
-        <member name="M:NPack.LUDecomposition`1.Solve(NPack.Interfaces.IMatrix{`0})">
+        <member name="M:NPack.LuDecomposition`1.Solve(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Solves a set of equation systems of type <c>A * X = B</c>.
             </summary>
@@ -1648,31 +1584,31 @@
             <see cref="T:NPack.Matrix`1"/> <c>X</c> so that <c>L * U * X = B</c>.
             </returns>
         </member>
-        <member name="P:NPack.LUDecomposition`1.IsNonsingular">
+        <member name="P:NPack.LuDecomposition`1.NonSingular">
             <summary>
             Gets true if the <see cref="T:NPack.Matrix`1"/> is non-singular, 
             false if singular (non-invertible).
             </summary>
         </member>
-        <member name="P:NPack.LUDecomposition`1.Determinant">
+        <member name="P:NPack.LuDecomposition`1.Determinant">
             <summary>
             Gets the determinant of the matrix.
             </summary>
             <exception cref="T:System.InvalidOperationException">Thrown if the matrix used to compute the factorization is non-square.</exception>
         </member>
-        <member name="P:NPack.LUDecomposition`1.L">
+        <member name="P:NPack.LuDecomposition`1.L">
             <summary>
             Gets the lower triangular matrix <c>L</c> such that 
-            <c>A * <see cref="P:NPack.LUDecomposition`1.Pivot"/> = L * <see cref="P:NPack.LUDecomposition`1.U"/></c>.
+            <c>A * <see cref="P:NPack.LuDecomposition`1.Pivot"/> = L * <see cref="P:NPack.LuDecomposition`1.U"/></c>.
             </summary>
         </member>
-        <member name="P:NPack.LUDecomposition`1.U">
+        <member name="P:NPack.LuDecomposition`1.U">
             <summary>
             Gets the lower triangular matrix <c>L</c> such that 
-            <c>A * <see cref="P:NPack.LUDecomposition`1.Pivot"/> = <see cref="P:NPack.LUDecomposition`1.L"/> * U</c>.
+            <c>A * <see cref="P:NPack.LuDecomposition`1.Pivot"/> = <see cref="P:NPack.LuDecomposition`1.L"/> * U</c>.
             </summary>
         </member>
-        <member name="P:NPack.LUDecomposition`1.Pivot">
+        <member name="P:NPack.LuDecomposition`1.Pivot">
             <summary>
             Gets the pivot permutation matrix.
             </summary>
@@ -1697,18 +1633,7 @@
             Creates a new affine transform matrix with the given <paramref name="elements"/>.
             </summary>
             <param name="format">Storage format of the matrix, either row-major or column-major.</param>
-            <param name="elements">
-            The elements for the array, with rows in the outer array for a <see cref="F:NPack.MatrixFormat.RowMajor"/> 
-            matrix, and columns in the outer array for a <see cref="F:NPack.MatrixFormat.ColumnMajor"/> matrix.
-            </param>
-            <exception cref="T:System.ArgumentException">If the matrix is not square.</exception>
-            <exception cref="T:System.NotSupportedException">If the matrix has a rank other than 3 or 4.</exception>
-        </member>
-        <member name="M:NPack.AffineMatrix`1.#ctor(NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Creates a new affine transform matrix from the given <paramref name="matrix"/>.
-            </summary>
-            <param name="matrix">The matrix to copy.</param>
+            <param name="elements">The elements for the array, with rows in the outer array.</param>
             <exception cref="T:System.ArgumentException">If the matrix is not square.</exception>
             <exception cref="T:System.NotSupportedException">If the matrix has a rank other than 3 or 4.</exception>
         </member>
@@ -1767,6 +1692,19 @@
             transform in the corresponding dimension.
             </param>
             <param name="order">The order to apply the transform in.</param>
+        </member>
+        <member name="P:NPack.AffineMatrix`1.Elements">
+            <summary>
+            Gets or sets an array of arrays representing the affine matrix elements.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Thrown when value is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when there are zero rows.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when there are zero columns.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the arrays in the jagged array are of different lengths.</exception>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the length of the outer array is not the same 
+            as the lengths of the inner arrays (when not square).
+            </exception>
         </member>
         <member name="P:NPack.AffineMatrix`1.Inverse">
             <summary>
@@ -1891,12 +1829,6 @@
             Sum of the diagonal elements.
             </returns>
         </member>
-        <member name="T:NPack.Interfaces.IEigenvalueDecomposition`1">
-            <summary>
-            An interface for an eigenvalue decomposition of a matrix.
-            </summary>
-            <typeparam name="T">Type of component in the matrix.</typeparam>
-        </member>
         <member name="T:NPack.MatrixProcessor`1">
             <summary>
             Provides access to <see cref="T:NPack.Matrix`1"/> processing operations via a configured operations engine.
@@ -1920,7 +1852,7 @@
             </summary>
             <remarks>
             Use this structure as the type parameter for <see cref="T:NPack.Matrix`1"/> when you want
-            a matrix of Double values, since it implements <see cref="T:NPack.Interfaces.IComputable`1"/>, which 
+            a matrix of double values, since it implements <see cref="T:NPack.Interfaces.IComputable`1"/>, which 
             allows numerical operations on value types.
             </remarks>
         </member>
@@ -1928,13 +1860,13 @@
             <summary>
              Creates a new <see cref="T:NPack.DoubleComponent"/> converting from the given <paramref name="value"/>.
             </summary>
-            <param name="value">The Double used to set the DoubleComponent value.</param>
+            <param name="value">The double used to set the DoubleComponent value.</param>
         </member>
         <member name="M:NPack.DoubleComponent.ToString">
             <summary>
-            Returns String representation of this value.
+            Returns string representation of this value.
             </summary>
-            <returns>A formatted String displaying this value.</returns>
+            <returns>A formatted string displaying this value.</returns>
         </member>
         <member name="M:NPack.DoubleComponent.GetHashCode">
             <summary>
@@ -1944,7 +1876,7 @@
         </member>
         <member name="M:NPack.DoubleComponent.op_Implicit(System.Double)~NPack.DoubleComponent">
             <summary>
-            Implicitly converts a Double value to a DoubleComponent.
+            Implicitly converts a double value to a DoubleComponent.
             </summary>
             <param name="value">Value to convert.</param>
             <returns>
@@ -1953,16 +1885,16 @@
         </member>
         <member name="M:NPack.DoubleComponent.op_Explicit(NPack.DoubleComponent)~System.Double">
             <summary>
-            Explicitly converts a DoubleComponent to a Double.
+            Explicitly converts a DoubleComponent to a double.
             </summary>
             <param name="component">DoubleComponent to convert.</param>
             <returns>
-            Value of type Double with the same value as the DoubleComponent.
+            Value of type double with the same value as the DoubleComponent.
             </returns>
         </member>
         <member name="M:NPack.DoubleComponent.op_Addition(NPack.DoubleComponent,System.Double)">
             <summary>
-            Adds a DoubleComponent and a Double.
+            Adds a DoubleComponent and a double.
             </summary>
             <param name="lhs">Left hand of the addition operation.</param>
             <param name="rhs">Right hand of the addition operation.</param>
@@ -1972,7 +1904,7 @@
         </member>
         <member name="M:NPack.DoubleComponent.op_Subtraction(NPack.DoubleComponent,System.Double)">
             <summary>
-            Subtracts a Double from a DoubleComponent.
+            Subtracts a double from a DoubleComponent.
             </summary>
             <param name="lhs">Left hand of the subtraction operation.</param>
             <param name="rhs">Right hand of the subtraction operation.</param>
@@ -2056,18 +1988,18 @@
         </member>
         <member name="M:NPack.DoubleComponent.Equals(System.Double)">
             <summary>
-            Evaluates equality of a DoubleComponent instance and a Double value.
+            Evaluates equality of a DoubleComponent instance and a double value.
             </summary>
-            <param name="other">The Double value to compare to.</param>
+            <param name="other">The double value to compare to.</param>
             <returns>
             True if the two DoubleComponent instances are equal; false otherwise.
             </returns>
         </member>
         <member name="M:NPack.DoubleComponent.CompareTo(System.Double)">
             <summary>
-            Compares a DoubleComponent instance and a Double value.
+            Compares a DoubleComponent instance and a double value.
             </summary>
-            <param name="other">The Double value to compare to.</param>
+            <param name="other">The double value to compare to.</param>
             <returns>
             0 if they are equal,
             1 if the DoubleComponent instance is greater, 
@@ -2076,7 +2008,7 @@
         </member>
         <member name="M:NPack.DoubleComponent.Add(System.Double)">
             <summary>
-            Adds a DoubleComponent value and a Double.
+            Adds a DoubleComponent value and a double.
             </summary>
             <param name="a">The other addend.</param>
             <returns>
@@ -2085,7 +2017,7 @@
         </member>
         <member name="M:NPack.DoubleComponent.Subtract(System.Double)">
             <summary>
-            Subtracts a Double value from the DoubleComponent value.
+            Subtracts a double value from the DoubleComponent value.
             </summary>
             <param name="a">The subtrahend.</param>
             <returns>
@@ -2095,7 +2027,7 @@
         </member>
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#INegatable{System#Double}#Negative">
             <summary>
-            Returns the negation of the DoubleComponent value as a Double. Also the
+            Returns the negation of the DoubleComponent value as a double. Also the
             additive inverse.
             </summary>
             <remarks>
@@ -2106,11 +2038,11 @@
             Assert.IsTrue(a.Add(b).Equals(0));
             </code>
             </remarks>
-            <returns>The negated DoubleComponent as a Double.</returns>
+            <returns>The negated DoubleComponent as a double.</returns>
         </member>
         <member name="M:NPack.DoubleComponent.Multiply(System.Double)">
             <summary>
-            Multiplies the DoubleComponent with Double and returns the product.
+            Multiplies the DoubleComponent with double and returns the product.
             </summary>
             <param name="a">The multiplier.</param>
             <returns>
@@ -2120,7 +2052,7 @@
         </member>
         <member name="M:NPack.DoubleComponent.Divide(System.Double)">
             <summary>
-            Divides the DoubleComponent by a Double and returns the quotient.
+            Divides the DoubleComponent by a double and returns the quotient.
             </summary>
             <param name="a">The divisor.</param>
             <returns>
@@ -2171,7 +2103,7 @@
         <member name="M:NPack.DoubleComponent.GreaterThan(System.Double)">
             <summary>
             Evaluates if the DoubleComponent instance is greater than 
-            the given Double value.
+            the given double value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>True if the DoubleComponent instance is greater
@@ -2180,7 +2112,7 @@
         <member name="M:NPack.DoubleComponent.GreaterThanOrEqualTo(System.Double)">
             <summary>
             Evaluates if the DoubleComponent instance is greater than 
-            or equal to the given Double value.
+            or equal to the given double value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>
@@ -2191,7 +2123,7 @@
         <member name="M:NPack.DoubleComponent.LessThan(System.Double)">
             <summary>
             Evaluates if the DoubleComponent instance is less than 
-            the given Double value.
+            the given double value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>True if the DoubleComponent instance is less
@@ -2200,7 +2132,7 @@
         <member name="M:NPack.DoubleComponent.LessThanOrEqualTo(System.Double)">
             <summary>
             Evaluates if the DoubleComponent instance is less than 
-            or equal to the given Double value.
+            or equal to the given double value.
             </summary>
             <param name="value">The value to compare to.</param>
             <returns>
@@ -2257,7 +2189,7 @@
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#IExponential{System#Double}#Power(System.Double)">
             <summary>
             Raises the DoubleComponent value to the given 
-            exponent, returned as a Double.
+            exponent, returned as a double.
             <paramref name="power"/>.
             </summary>
             <param name="power">
@@ -2271,7 +2203,7 @@
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#IExponential{System#Double}#Sqrt">
             <summary>
             Computes the value of the square root of the DoubleComponent,
-            returned as a Double.
+            returned as a double.
             </summary>
             <returns>
             The value of the square root of the DoubleComponent.
@@ -2279,9 +2211,11 @@
         </member>
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#IExponential{System#Double}#Log">
             <summary>
-            Computes the log of the DoubleComponent in base 10,
-            returned as a Double.
+            Computes the log of the DoubleComponent in the
+            <paramref name="newBase">given base</paramref>, 
+            returned as a double.
             </summary>
+            <param name="newBase">The base to compute the log in.</param>
             <returns>
             The log of the DoubleComponent in the new base given.
             </returns>
@@ -2289,7 +2223,7 @@
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#IExponential{System#Double}#Exp">
             <summary>
             Computes the log of the DoubleComponent in base e,
-            returned as a Double.
+            returned as a double.
             </summary>
             <returns>The natural log of the DoubleComponent.</returns>
         </member>
@@ -2306,7 +2240,7 @@
             Sets the value of the DoubleComponent.
             </summary>
             <param name="value">
-            The value to set the DoubleComponent to, cast to a Double.
+            The value to set the DoubleComponent to, cast to a double.
             </param>
             <returns>
             A DoubleComponent with the given <paramref name="value"/>.
@@ -2315,7 +2249,7 @@
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#IComputable{System#Double}#Abs">
             <summary>
             Computes the absolute value of the DoubleComponent,
-            returned as a Double.
+            returned as a double.
             </summary>
             <returns>
             The absolute value of the DoubleComponent's value.
@@ -2324,7 +2258,7 @@
         <member name="M:NPack.DoubleComponent.NPack#Interfaces#IComputable{System#Double}#Set(System.Double)">
             <summary>
             Computes the absolute value of the DoubleComponent,
-            returned as a Double.
+            returned as a double.
             </summary>
             <returns>
             The absolute value of the DoubleComponent's value.
@@ -2456,21 +2390,7 @@
             </param>
             <returns>The DoubleComponent as a <see cref="T:System.String"/>.</returns>
         </member>
-        <member name="M:NPack.DoubleComponent.ToType(System.Type,System.IFormatProvider)">
-            <summary>
-            Converts the DoubleComponent to a value of the given type.
-            </summary>
-            <param name="conversionType">
-            Type to convert to.
-            </param>
-            <param name="provider">
-            An <see cref="T:System.IFormatProvider"/> instance used to 
-            help convert the DoubleComponent value.
-            </param>
-            <returns>
-            The DoubleComponent as a value of <paramref name="conversionType"/>.
-            </returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:NPack.DoubleComponent.ToType(System.Type,System.IFormatProvider)" -->
         <member name="M:NPack.DoubleComponent.ToUInt16(System.IFormatProvider)">
             <summary>
             Converts the DoubleComponent to a <see cref="T:System.UInt16"/> value.
@@ -2503,15 +2423,15 @@
         </member>
         <member name="M:NPack.DoubleComponent.ToString(System.String,System.IFormatProvider)">
             <summary>
-            Generates a String representation of the DoubleComponent.
+            Generates a string representation of the DoubleComponent.
             </summary>
-            <param name="format">The format String to use in formatting.</param>
+            <param name="format">The format string to use in formatting.</param>
             <param name="formatProvider">
             An <see cref="T:System.IFormatProvider"/> instance used to 
             help format the DoubleComponent value.
             </param>
             <returns>
-            A formatted String which represents the DoubleComponent value.
+            A formatted string which represents the DoubleComponent value.
             </returns>
         </member>
         <member name="P:NPack.DoubleComponent.Zero">
@@ -2526,12 +2446,12 @@
         </member>
         <member name="P:NPack.DoubleComponent.NPack#Interfaces#IHasZero{System#Double}#Zero">
             <summary>
-            Gets the additive identity as a Double: 0F.
+            Gets the additive identity as a double: 0F.
             </summary>
         </member>
         <member name="P:NPack.DoubleComponent.NPack#Interfaces#IHasOne{System#Double}#One">
             <summary>
-            Gets the multiplicative identity as a Double: 1F.
+            Gets the multiplicative identity as a double: 1F.
             </summary>
         </member>
         <member name="T:NPack.Vector`1">
@@ -2589,9 +2509,9 @@
         </member>
         <member name="M:NPack.Vector`1.ToString">
             <summary>
-            Gets a String representation of the vector.
+            Gets a string representation of the vector.
             </summary>
-            <returns>A String describing the vector.</returns>
+            <returns>A string describing the vector.</returns>
         </member>
         <member name="M:NPack.Vector`1.Clone">
             <summary>
@@ -2703,6 +2623,11 @@
             </summary>
             <exception cref="T:System.NotSupportedException">Thrown when accessed.</exception>
         </member>
+        <member name="P:NPack.Vector`1.NPack#Interfaces#IMatrix{T}#Elements">
+            <summary>
+            Gets the elements in the matrix as an array of arrays (jagged array).
+            </summary>
+        </member>
         <member name="P:NPack.Vector`1.NPack#Interfaces#IMatrix{T}#Item(System.Int32,System.Int32)">
             <summary>
             Gets or sets an element in the matrix.
@@ -2710,17 +2635,6 @@
             <param name="row">The index of the row of the element.</param>
             <param name="column">The index of the column of the element.</param>
             <returns>The value of the element at the specified row and column.</returns>
-        </member>
-        <member name="T:NPack.SingleComplexComponent">
-            <summary>
-            A matrix component or matrix element which represents a complex number with a 
-            <see cref="T:System.Single"/> real component and imaginary coefficient.
-            </summary>
-            <remarks>
-            Use this structure as the type parameter for <see cref="T:NPack.Matrix`1"/> when you want
-            a matrix of single floating point complex values, since it implements <see cref="T:NPack.Interfaces.IComputable`1"/>, 
-            which allows numerical operations on value types.
-            </remarks>
         </member>
         <member name="T:NPack.MatrixOperationOrder">
             <summary>
@@ -2760,22 +2674,22 @@
         </member>
         <member name="M:NPack.MersenneTwister.GenerateUInt">
             <summary>
-            Generates a new random unsigned Int32.
+            Generates a new random unsigned int.
             </summary>
-            <returns>A random UInt32.</returns>
+            <returns>A random uint.</returns>
         </member>
         <member name="M:NPack.MersenneTwister.NextUInt">
             <summary>
             Returns the next random <see cref="T:System.UInt32"/>.
             </summary>
-            <returns>A random UInt32 value.</returns>
+            <returns>A random uint value.</returns>
         </member>
         <member name="M:NPack.MersenneTwister.NextUInt(System.UInt32)">
             <summary>
             Returns the next random <see cref="T:System.UInt32"/> up to <paramref name="maxValue"/>.
             </summary>
             <param name="maxValue">The maximum value of the random number to create.</param>
-            <returns>A random UInt32 value which is at most <paramref name="maxValue"/>.</returns>
+            <returns>A random uint value which is at most <paramref name="maxValue"/>.</returns>
         </member>
         <member name="M:NPack.MersenneTwister.NextUInt(System.UInt32,System.UInt32)">
             <summary>
@@ -2784,7 +2698,7 @@
             </summary>
             <param name="minValue">The minimum value of the random number to create.</param>
             <param name="maxValue">The maximum value of the random number to create.</param>
-            <returns>A random UInt32 value which is at least <paramref name="minValue"/> and at 
+            <returns>A random uint value which is at least <paramref name="minValue"/> and at 
             most <paramref name="maxValue"/>.</returns>
             <exception cref="T:System.ArgumentOutOfRangeException">If <c>minValue &gt;= maxValue</c>.</exception>
         </member>
@@ -2792,14 +2706,14 @@
             <summary>
             Returns the next random <see cref="T:System.Int32"/>.
             </summary>
-            <returns>A random Int32 value.</returns>
+            <returns>A random int value.</returns>
         </member>
         <member name="M:NPack.MersenneTwister.Next(System.Int32)">
             <summary>
             Returns the next random <see cref="T:System.Int32"/> up to <paramref name="maxValue"/>.
             </summary>
             <param name="maxValue">The maximum value of the random number to create.</param>
-            <returns>A random Int32 value which is at most <paramref name="maxValue"/>.</returns>
+            <returns>A random int value which is at most <paramref name="maxValue"/>.</returns>
         </member>
         <member name="M:NPack.MersenneTwister.Next(System.Int32,System.Int32)">
             <summary>
@@ -2808,7 +2722,7 @@
             </summary>
             <param name="minValue">The minimum value of the random number to create.</param>
             <param name="maxValue">The maximum value of the random number to create.</param>
-            <returns>A random Int32 value which is at least <paramref name="minValue"/> and at 
+            <returns>A random int value which is at least <paramref name="minValue"/> and at 
             most <paramref name="maxValue"/>.</returns>
             <exception cref="T:System.ArgumentOutOfRangeException">If <c>minValue &gt;= maxValue</c>.</exception>
         </member>
@@ -2823,7 +2737,7 @@
             <summary>
             Returns the next random <see cref="T:System.Double"/> value.
             </summary>
-            <returns>A random Double floating point value.</returns>
+            <returns>A random double floating point value.</returns>
         </member>
         <member name="T:NPack.Interfaces.IMatrixOperations`1">
             <summary>
@@ -2921,36 +2835,6 @@
             does not equal the row count of <paramref name="rhs"/>.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0}@,NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Multiplies two matrixes, with the result stored in the left matrix.
-            </summary>
-            <param name="lhs">Matrix on the left of the multiplication operation.</param>
-            <param name="rhs">Matrix on the right of the multiplication operation.</param>
-            <value>lhs * rhs</value>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown if <paramref name="lhs"/> is null or if <paramref name="rhs"/> is null.
-            </exception>
-            <exception cref="T:System.InvalidOperationException">
-            If the column count of <paramref name="lhs"/> 
-            does not equal the row count of <paramref name="rhs"/>.
-            </exception>
-        </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IMatrix{`0}@)">
-            <summary>
-            Multiplies two matrixes, with the result stored in the right matrix.
-            </summary>
-            <param name="lhs">Matrix on the left of the multiplication operation.</param>
-            <param name="rhs">Matrix on the right of the multiplication operation.</param>
-            <value>lhs * rhs</value>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown if <paramref name="lhs"/> is null or if <paramref name="rhs"/> is null.
-            </exception>
-            <exception cref="T:System.InvalidOperationException">
-            If the column count of <paramref name="lhs"/> 
-            does not equal the row count of <paramref name="rhs"/>.
-            </exception>
-        </member>
         <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0})">
             <summary>
             Multiplies a vector by a matrix, where the vector is represented in column form.
@@ -2964,30 +2848,6 @@
             </exception>
         </member>
         <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IVector{`0},NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Multiplies a vector by a matrix, where the vector is represented in row form.
-            </summary>
-            <param name="multiplier">Matrix to multiply by.</param>
-            <param name="rowVector">The row vector to multiply.</param>
-            <returns>The vector product.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown if <paramref name="multiplier"/> is null or 
-            <paramref name="rowVector"/> is null.
-            </exception>
-        </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},`0[])">
-            <summary>
-            Multiplies a vector by a matrix, where the vector is represented in column form.
-            </summary>
-            <param name="multiplier">Matrix to multiply by.</param>
-            <param name="columnVector">The column vector to multiply.</param>
-            <returns>The vector product.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown if <paramref name="multiplier"/> is null or 
-            <paramref name="columnVector"/> is null.
-            </exception>
-        </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(`0[],NPack.Interfaces.IMatrix{`0})">
             <summary>
             Multiplies a vector by a matrix, where the vector is represented in row form.
             </summary>
@@ -3098,6 +2958,64 @@
             <paramref name="rowVectorsComponents"/> is null.
             </exception>
         </member>
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},`0[])">
+            <summary>
+            Multiplies a vector by a matrix, where the vector is represented in column form.
+            </summary>
+            <param name="multiplier">Matrix to multiply by.</param>
+            <param name="columnVector">
+            The column vector to multiply as an array of components.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="multiplier"/> is null or 
+            <paramref name="columnVector"/> is null.
+            </exception>
+        </member>
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(`0[],NPack.Interfaces.IMatrix{`0})">
+            <summary>
+            Multiplies a vector by a matrix, where the vector is represented in row form.
+            </summary>
+            <param name="rowVector">The row vector to multiply as an array of components.</param>
+            <param name="multiplier">Matrix to multiply by.</param>
+        </member>
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},`0[][])">
+            <summary>
+            Multiplies a matrix elements array by another matrix.
+            </summary>
+            <param name="multiplier">The matrix on the left side.</param>
+            <param name="matrixElements">The matrix on the right side.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrixElements"/> is null or 
+            <paramref name="multiplier"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            Throw if <c>matrixElements.Length</c> is zero, or if any element 
+            in matrixElements has zero length.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            If the column count of <paramref name="multiplier"/> 
+            does not equal the row count of <paramref name="matrixElements"/>.
+            </exception>
+        </member>
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Multiply(`0[][],NPack.Interfaces.IMatrix{`0})">
+            <summary>
+            Multiplies a matrix elements array by another matrix.
+            </summary>
+            <param name="multiplier">The matrix on the right side.</param>
+            <param name="matrixElements">The matrix on the left side.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrixElements"/> is null or 
+            <paramref name="multiplier"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            Throw if <c>matrixElements.Length</c> is zero, or if any 
+            element in matrixElements has zero length.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            If the column count of <paramref name="multiplier"/> 
+            does not equal the row count of <paramref name="matrixElements"/>.
+            </exception>
+        </member>
         <member name="M:NPack.Interfaces.IMatrixOperations`1.ScalarMultiply(NPack.Interfaces.IMatrix{`0},`0)">
             <summary>
             Multiplies a matrix by a scalar value.
@@ -3105,6 +3023,16 @@
             <param name="matrix">The matrix to multiply.</param>
             <param name="scalar">The scalar to multiply the matrix by.</param>
             <returns>The matrix product.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrix"/> is null.
+            </exception>
+        </member>
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.ScalarMultiply(`0[][],`0)">
+            <summary>
+            Multiplies a matrix by a scalar value in place.
+            </summary>
+            <param name="matrix">The matrix to multiply.</param>
+            <param name="scalar">The scalar to multiply the matrix by.</param>
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
             </exception>
@@ -3134,7 +3062,16 @@
             Thrown if <paramref name="matrix"/> is null.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Rotate(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0},System.Double)">
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Negate(`0[][])">
+            <summary>
+            Negates a matrix in place.
+            </summary>
+            <param name="matrix">The matrix to negate each element of.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrix"/> is null.
+            </exception>
+        </member>
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Rotate(NPack.Interfaces.IMatrix{`0},`0[],System.Double)">
             <summary>
             Performs the rotate linear operation on the given <paramref name="matrix"/>.
             </summary>
@@ -3153,7 +3090,7 @@
             than one component with a value greater than 0.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Scale(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0})">
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Scale(NPack.Interfaces.IMatrix{`0},`0[])">
             <summary>
             Performs the scale linear operation on a matrix.
             </summary>
@@ -3167,7 +3104,7 @@
             components than the dimension of the linear transform submatrix of <paramref name="matrix"/>.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Shear(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0})">
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Shear(NPack.Interfaces.IMatrix{`0},`0[])">
             <summary>
             Performs the shear linear operation on a matrix.
             </summary>
@@ -3181,7 +3118,7 @@
             components than the dimension of the linear transform submatrix of <paramref name="matrix"/>.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.Translate(NPack.Interfaces.IAffineTransformMatrix{`0},NPack.Interfaces.IVector{`0})">
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.Translate(NPack.Interfaces.IAffineTransformMatrix{`0},`0[])">
             <summary>
             Performs the translate affine operation on a matrix.
             </summary>
@@ -3332,33 +3269,25 @@
             Thrown if <paramref name="matrix"/> is null.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.SetMatrix(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Sets the values of a <paramref name="target"/> matrix with those of
-            a <paramref name="source"/> matrix.
-            </summary>
-            <param name="source">The matrix with the values to copy.</param>
-            <param name="target">The matrix with the values to replace.</param>
-        </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.GetLUDecomposition(NPack.Interfaces.IMatrix{`0})">
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.GetLuDecomposition(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Computes an LU factorization for the matrix.
             </summary>
             <param name="matrix">Matrix to compute the LU factorization for.</param>
             <returns>
-            An <see cref="T:NPack.Interfaces.ILUDecomposition`1"/> instance describing the factorization result.
+            An <see cref="T:NPack.Interfaces.ILuDecomposition`1"/> instance describing the factorization result.
             </returns>
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
             </exception>
         </member>
-        <member name="M:NPack.Interfaces.IMatrixOperations`1.GetQRDecomposition(NPack.Interfaces.IMatrix{`0})">
+        <member name="M:NPack.Interfaces.IMatrixOperations`1.GetQrDecomposition(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Computes a QR factorization for the matrix.
             </summary>
             <param name="matrix">Matrix to compute the QR factorization for.</param>
             <returns>
-            An <see cref="T:NPack.Interfaces.IQRDecomposition`1"/> instance describing the factorization result.
+            An <see cref="T:NPack.Interfaces.IQrDecomposition`1"/> instance describing the factorization result.
             </returns>
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
@@ -3520,36 +3449,6 @@
             does not equal the row count of <paramref name="rhs"/>.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0}@,NPack.Interfaces.IMatrix{`0})">
-            <summary>
-            Multiplies two matrixes, with the result stored in the left matrix.
-            </summary>
-            <param name="lhs">Matrix on the left of the multiplication operation.</param>
-            <param name="rhs">Matrix on the right of the multiplication operation.</param>
-            <value>lhs * rhs</value>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown if <paramref name="lhs"/> is null or if <paramref name="rhs"/> is null.
-            </exception>
-            <exception cref="T:System.InvalidOperationException">
-            If the column count of <paramref name="lhs"/> 
-            does not equal the row count of <paramref name="rhs"/>.
-            </exception>
-        </member>
-        <member name="M:NPack.ClrMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IMatrix{`0}@)">
-            <summary>
-            Multiplies two matrixes, with the result stored in the right matrix.
-            </summary>
-            <param name="lhs">Matrix on the left of the multiplication operation.</param>
-            <param name="rhs">Matrix on the right of the multiplication operation.</param>
-            <value>lhs * rhs</value>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown if <paramref name="lhs"/> is null or if <paramref name="rhs"/> is null.
-            </exception>
-            <exception cref="T:System.InvalidOperationException">
-            If the column count of <paramref name="lhs"/> 
-            does not equal the row count of <paramref name="rhs"/>.
-            </exception>
-        </member>
         <member name="M:NPack.ClrMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},System.Collections.Generic.IEnumerable{NPack.Interfaces.IMatrix{`0}})">
             <summary>
             Multiplies a matrix by a series of matrixes, and returns the series of products.
@@ -3592,6 +3491,64 @@
             <exception cref="T:System.InvalidOperationException">
             If the column count of <paramref name="lhs"/> 
             does not equal the row count of <paramref name="rhs"/>.
+            </exception>
+        </member>
+        <member name="M:NPack.ClrMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},`0[])">
+            <summary>
+            Multiplies a vector by a matrix, where the vector is represented in column form.
+            </summary>
+            <param name="multiplier">Matrix to multiply by.</param>
+            <param name="columnVector">
+            The column vector to multiply as an array of components.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="multiplier"/> is null or 
+            <paramref name="columnVector"/> is null.
+            </exception>
+        </member>
+        <member name="M:NPack.ClrMatrixOperations`1.Multiply(`0[],NPack.Interfaces.IMatrix{`0})">
+            <summary>
+            Multiplies a vector by a matrix, where the vector is represented in row form.
+            </summary>
+            <param name="rowVector">The row vector to multiply as an array of components.</param>
+            <param name="multiplier">Matrix to multiply by.</param>
+        </member>
+        <member name="M:NPack.ClrMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},`0[][])">
+            <summary>
+            Multiplies a matrix elements array in place by another matrix.
+            </summary>
+            <param name="multiplier">The matrix on the left side.</param>
+            <param name="matrixElements">The matrix on the right side.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrixElements"/> is null or 
+            <paramref name="multiplier"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            Throw if <c>matrixElements.Length</c> is zero, or if any element 
+            in matrixElements has zero length.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            If the column count of <paramref name="multiplier"/> 
+            does not equal the row count of <paramref name="matrixElements"/>.
+            </exception>
+        </member>
+        <member name="M:NPack.ClrMatrixOperations`1.Multiply(`0[][],NPack.Interfaces.IMatrix{`0})">
+            <summary>
+            Multiplies a matrix elements array by another matrix.
+            </summary>
+            <param name="matrixElements">The matrix on the left side.</param>
+            <param name="multiplier">The matrix on the right side.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrixElements"/> is null or 
+            <paramref name="multiplier"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            Throw if <c>matrixElements.Length</c> is zero, or if any 
+            element in matrixElements has zero length.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            If the column count of <paramref name="multiplier"/> 
+            does not equal the row count of <paramref name="matrixElements"/>.
             </exception>
         </member>
         <member name="M:NPack.ClrMatrixOperations`1.Multiply(NPack.Interfaces.IMatrix{`0},System.Collections.Generic.IEnumerable{`0[]})">
@@ -3680,6 +3637,16 @@
             <param name="matrix">The matrix to multiply.</param>
             <param name="scalar">The scalar to multiply the matrix by.</param>
             <returns>The matrix product.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown if <paramref name="matrix"/> is null.
+            </exception>
+        </member>
+        <member name="M:NPack.ClrMatrixOperations`1.ScalarMultiply(`0[][],`0)">
+            <summary>
+            Multiplies a matrix by a scalar value in place.
+            </summary>
+            <param name="matrix">The matrix to multiply.</param>
+            <param name="scalar">The scalar to multiply the matrix by.</param>
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
             </exception>
@@ -3855,7 +3822,7 @@
             Thrown if <paramref name="matrix"/> is null.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.Rotate(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0},System.Double)">
+        <member name="M:NPack.ClrMatrixOperations`1.Rotate(NPack.Interfaces.IMatrix{`0},`0[],System.Double)">
             <summary>
             Performs the rotate linear operation on the given <paramref name="matrix"/>.
             </summary>
@@ -3879,7 +3846,7 @@
             not of rank 2 or 3 for linear matrixes, or rank 3 or 4 for affine matrixes.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.Scale(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0})">
+        <member name="M:NPack.ClrMatrixOperations`1.Scale(NPack.Interfaces.IMatrix{`0},`0[])">
             <summary>
             Performs the scale linear operation on a matrix.
             </summary>
@@ -3895,7 +3862,7 @@
             components than the dimension of the linear transform submatrix of <paramref name="matrix"/>.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.Shear(NPack.Interfaces.IMatrix{`0},NPack.Interfaces.IVector{`0})">
+        <member name="M:NPack.ClrMatrixOperations`1.Shear(NPack.Interfaces.IMatrix{`0},`0[])">
             <summary>
             Performs the shear linear operation on a matrix.
             </summary>
@@ -3913,7 +3880,7 @@
             components than the dimension of the linear transform submatrix of <paramref name="matrix"/>.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.Translate(NPack.Interfaces.IAffineTransformMatrix{`0},NPack.Interfaces.IVector{`0})">
+        <member name="M:NPack.ClrMatrixOperations`1.Translate(NPack.Interfaces.IAffineTransformMatrix{`0},`0[])">
             <summary>
             Performs the translate affine operation on a matrix.
             </summary>
@@ -3931,25 +3898,25 @@
             components than the dimension of the affine transform submatrix of <paramref name="affineMatrix"/>.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.GetLUDecomposition(NPack.Interfaces.IMatrix{`0})">
+        <member name="M:NPack.ClrMatrixOperations`1.GetLuDecomposition(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Computes an LU factorization for the matrix.
             </summary>
             <param name="matrix">Matrix to compute the LU factorization for.</param>
             <returns>
-            An <see cref="T:NPack.Interfaces.ILUDecomposition`1"/> instance describing the factorization result.
+            An <see cref="T:NPack.Interfaces.ILuDecomposition`1"/> instance describing the factorization result.
             </returns>
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
             </exception>
         </member>
-        <member name="M:NPack.ClrMatrixOperations`1.GetQRDecomposition(NPack.Interfaces.IMatrix{`0})">
+        <member name="M:NPack.ClrMatrixOperations`1.GetQrDecomposition(NPack.Interfaces.IMatrix{`0})">
             <summary>
             Computes a QR factorization for the matrix.
             </summary>
             <param name="matrix">Matrix to compute the QR factorization for.</param>
             <returns>
-            An <see cref="T:NPack.Interfaces.IQRDecomposition`1"/> instance describing the factorization result.
+            An <see cref="T:NPack.Interfaces.IQrDecomposition`1"/> instance describing the factorization result.
             </returns>
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
@@ -3990,140 +3957,6 @@
             <exception cref="T:System.ArgumentNullException">
             Thrown if <paramref name="matrix"/> is null.
             </exception>
-        </member>
-        <member name="T:NPack.Interfaces.IVertexStream`2">
-            <summary>
-            Interface to a stream of vertex data.
-            </summary>
-            <typeparam name="TVertex">The type of vertex to stream.</typeparam>
-            <typeparam name="TVertexComponent">The type of component in the vertex.</typeparam>
-        </member>
-        <member name="M:NPack.Interfaces.IVertexStream`2.GetVertexes">
-            <summary>
-            Gets an enumeration of the vertices in the object.
-            </summary>
-            <returns>An enumeration of vertex data contained by the object.</returns>
-        </member>
-        <member name="M:NPack.Interfaces.IVertexStream`2.GetVertexes(NPack.Interfaces.ITransformMatrix{`1})">
-            <summary>
-            Gets an enumeration of the vertices in the object, applying a
-            <paramref name="transform"/> to each vertex as it is returned.
-            </summary>
-            <param name="transform">A transform to apply to the vertex.</param>
-            <returns>An enumeration of vertex data contained by the object.</returns>
-        </member>
-        <member name="T:NPack.ManagedVectorBuffer`2">
-            <summary>
-            Implements a vector buffer for storing vector data in a single, contiguous
-            indexed block of memory.
-            </summary>
-            <typeparam name="TVector">The type of vector to store.</typeparam>
-            <typeparam name="TComponent">The type of component in the vector.</typeparam>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.#ctor(System.Int32,System.Boolean,NPack.Interfaces.IBufferedVectorFactory{`1})">
-            <summary>
-            Creates a new <see cref="T:NPack.ManagedVectorBuffer`2"/>
-            for vectors of size <paramref name="vectorDimension"/>, including space 
-            for an extra component if <paramref name="isHomogeneous"/> is <see langword="true"/>. 
-            The initial capacity of the created buffer places it in the CLR's Large Object Heap.
-            </summary>
-            <param name="vectorDimension">The size, or number of components, of each vector.</param>
-            <param name="isHomogeneous">
-            <see langword="true"/> if the vector is represented in homogeneous coordinates 
-            (allowing affine transforms through matrix operations).
-            </param>
-            <param name="vectorFactory">
-            A factory used to create vectors of type <typeparamref name="TVector"/>.
-            </param>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.#ctor(System.Int32,System.Boolean,NPack.Interfaces.IBufferedVectorFactory{`1},System.Int32)">
-            <summary>
-            Creates a new <see cref="T:NPack.ManagedVectorBuffer`2"/> with
-            initial capacity <paramref name="initialCapacity"/> for vectors of size
-            <paramref name="vectorDimension"/>, including space for an extra component
-            if <paramref name="isHomogeneous"/> is <see langword="true"/>. 
-            </summary>
-            <param name="vectorDimension">The size, or number of components, of each vector.</param>
-            <param name="isHomogeneous">
-            <see langword="true"/> if the vector is represented in homogeneous coordinates 
-            (allowing affine transforms through matrix operations).
-            </param>
-            <param name="vectorFactory">
-            A factory used to create vectors of type <typeparamref name="TVector"/>.
-            </param>
-            <param name="initialCapacity">The initial capacity for the buffer.</param>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.Add(`1[])">
-            <summary>
-            Adds an array of components to the buffer as a vector. Returns the resulting
-            <typeparamref name="TVector"/> instance.
-            </summary>
-            <param name="components">The components which make up the vector.</param>
-            <returns>
-            The resulting vector after adding the given <paramref name="components"/>.
-            </returns>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.Add(NPack.Interfaces.IVector{`1})">
-            <summary>
-            Adds an <see cref="T:NPack.Interfaces.IVector`1"/> to the buffer.
-            </summary>
-            <param name="item">The vector to add to the buffer.</param>
-            <returns>The index of the added vector.</returns>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.Clear">
-            <summary>
-            Clears the buffer of all vector instances.
-            </summary>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.CopyTo(`0[],System.Int32,System.Int32)">
-            <summary>
-            Copies the buffer to the given array.
-            </summary>
-            <param name="array">The array to copy the buffer to.</param>
-            <param name="startIndex">The index of the buffer to start copying at.</param>
-            <param name="endIndex">The index of the buffer to end copying at.</param>
-        </member>
-        <member name="M:NPack.ManagedVectorBuffer`2.Contains(NPack.Interfaces.IVector{`1})">
-            <summary>
-            Returns <see langword="true"/> if the buffer contains 
-            the given <see cref="T:NPack.Interfaces.IVector`1"/>.
-            </summary>
-            <param name="item">The vector to check if the buffer contains.</param>
-            <returns>
-            <see langword="true"/> if the buffer contains <paramref name="item"/>;
-            <see langword="false"/> otherwise.
-            </returns>
-        </member>
-        <member name="P:NPack.ManagedVectorBuffer`2.Count">
-            <summary>
-            Gets the number of vectors in the buffer.
-            </summary>
-        </member>
-        <member name="P:NPack.ManagedVectorBuffer`2.IsReadOnly">
-            <summary>
-            Gets <see langword="true"/> if the buffer is read-only.
-            </summary>
-        </member>
-        <member name="P:NPack.ManagedVectorBuffer`2.MaximumSize">
-            <summary>
-            Gets the maximum size of the buffer, in number of vectors.
-            </summary>
-        </member>
-        <member name="P:NPack.ManagedVectorBuffer`2.Item(System.Int32)">
-            <summary>
-            Gets or sets the <typeparamref name="TVector"/> at the given
-            <paramref name="index"/>.
-            </summary>
-            <param name="index">The index of the vector to access.</param>
-            <returns>
-            The <typeparamref name="TVector"/> at <paramref name="index"/>.
-            </returns>
-        </member>
-        <member name="P:NPack.ManagedVectorBuffer`2.VectorLength">
-            <summary>
-            Gets the length, or number of components, in the vectors stored
-            in the buffer.
-            </summary>
         </member>
     </members>
 </doc>

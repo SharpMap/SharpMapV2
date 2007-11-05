@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="NPack, Version=0.7.8392.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+      <HintPath>..\ExternalReferences\NPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GdiRenderObjectType.cs" />
     <Compile Include="ViewConverter.cs" />
     <Compile Include="GdiTextRenderer.cs" />
     <Compile Include="GdiRenderObject.cs" />
@@ -61,9 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SharpMap.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

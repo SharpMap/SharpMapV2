@@ -38,7 +38,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Converters.WellKnownText
 {
@@ -79,14 +79,14 @@ namespace SharpMap.Converters.WellKnownText
         /// <see cref="Geometry"/>.
         /// </summary>
         /// <param name="wellKnownText">
-        /// A <see cref="Geometry"/> tagged text String 
+        /// A <see cref="Geometry"/> tagged text string 
         /// (see the OpenGIS Simple Features Specification).
         /// </param>
         /// <returns>
         /// Returns a <see cref="Geometry"/> specified by wellKnownText.  
         /// Throws an exception if there is a parsing problem.
         /// </returns>
-        public static Geometry Parse(String wellKnownText)
+        public static Geometry Parse(string wellKnownText)
         {
             // throws a parsing exception is there is a problem.
             StringReader reader = new StringReader(wellKnownText);
@@ -99,7 +99,7 @@ namespace SharpMap.Converters.WellKnownText
         /// </summary>
         /// <param name="reader">
         /// A reader which will return a Geometry Tagged Text
-        /// String (see the OpenGIS Simple Features Specification).</param>
+        /// string (see the OpenGIS Simple Features Specification).</param>
         /// <returns>
         /// Returns a <see cref="Geometry"/> read from StreamReader. 
         /// An exception will be thrown if there is a parsing problem.
@@ -127,7 +127,7 @@ namespace SharpMap.Converters.WellKnownText
         {
             List<Point> coordinates = new List<Point>();
 
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken == "EMPTY")
             {
@@ -164,7 +164,7 @@ namespace SharpMap.Converters.WellKnownText
         /// </param>
         /// <returns>Returns the next number in the stream.</returns>
         /// <exception cref="ParseException">Thrown if the next token is not a number.</exception>
-        private static Double getNextNumber(WktStreamTokenizer tokenizer)
+        private static double getNextNumber(WktStreamTokenizer tokenizer)
         {
             tokenizer.NextToken();
             return tokenizer.GetNumericValue();
@@ -183,10 +183,10 @@ namespace SharpMap.Converters.WellKnownText
         /// <exception cref="ParseException">
         /// Thrown if the next token is not "EMPTY" or "(".
         /// </exception>
-        private static String getNextEmptyOrOpener(WktStreamTokenizer tokenizer)
+        private static string getNextEmptyOrOpener(WktStreamTokenizer tokenizer)
         {
             tokenizer.NextToken();
-            String nextWord = tokenizer.GetStringValue();
+            string nextWord = tokenizer.GetStringValue();
 
             if (nextWord == "EMPTY" || nextWord == "(")
             {
@@ -207,10 +207,10 @@ namespace SharpMap.Converters.WellKnownText
         /// <exception cref="ParseException">
         /// Thrown if the next token is not ")" or ",".
         /// </exception>
-        private static String getNextCloserOrComma(WktStreamTokenizer tokenizer)
+        private static string getNextCloserOrComma(WktStreamTokenizer tokenizer)
         {
             tokenizer.NextToken();
-            String nextWord = tokenizer.GetStringValue();
+            string nextWord = tokenizer.GetStringValue();
 
             if (nextWord == "," || nextWord == ")")
             {
@@ -233,9 +233,9 @@ namespace SharpMap.Converters.WellKnownText
         /// <exception cref="ParseException">
         /// Thrown if the next token is not ")".
         /// </exception>
-        private static String getNextCloser(WktStreamTokenizer tokenizer)
+        private static string getNextCloser(WktStreamTokenizer tokenizer)
         {
-            String nextWord = getNextWord(tokenizer);
+            string nextWord = getNextWord(tokenizer);
 
             if (nextWord == ")")
             {
@@ -256,10 +256,10 @@ namespace SharpMap.Converters.WellKnownText
         /// <exception cref="ParseException">
         /// Thrown if the next token is not a word.
         /// </exception>
-        private static String getNextWord(WktStreamTokenizer tokenizer)
+        private static string getNextWord(WktStreamTokenizer tokenizer)
         {
             TokenType type = tokenizer.NextToken();
-            String token = tokenizer.GetStringValue();
+            string token = tokenizer.GetStringValue();
             if (type == TokenType.Number)
             {
                 throw new Exception("Expected a number but got " + token);
@@ -304,7 +304,7 @@ namespace SharpMap.Converters.WellKnownText
         private static Geometry readGeometryTaggedText(WktStreamTokenizer tokenizer)
         {
             tokenizer.NextToken();
-            String type = tokenizer.GetStringValue().ToUpper();
+            string type = tokenizer.GetStringValue().ToUpper();
             Geometry geometry = null;
 
             switch (type)
@@ -355,7 +355,7 @@ namespace SharpMap.Converters.WellKnownText
         private static MultiPolygon readMultiPolygonText(WktStreamTokenizer tokenizer)
         {
             MultiPolygon polygons = new MultiPolygon();
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken == "EMPTY")
             {
@@ -394,7 +394,7 @@ namespace SharpMap.Converters.WellKnownText
         private static Polygon readPolygonText(WktStreamTokenizer tokenizer)
         {
             Polygon pol = new Polygon();
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken == "EMPTY")
             {
@@ -432,7 +432,7 @@ namespace SharpMap.Converters.WellKnownText
         private static Point readPointText(WktStreamTokenizer tokenizer)
         {
             Point p = new Point();
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken == "EMPTY")
             {
@@ -463,7 +463,7 @@ namespace SharpMap.Converters.WellKnownText
         private static MultiPoint readMultiPointText(WktStreamTokenizer tokenizer)
         {
             MultiPoint mp = new MultiPoint();
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken == "EMPTY")
             {
@@ -495,7 +495,7 @@ namespace SharpMap.Converters.WellKnownText
         private static MultiLineString readMultiLineStringText(WktStreamTokenizer tokenizer)
         {
             MultiLineString lines = new MultiLineString();
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken == "EMPTY")
             {
@@ -548,7 +548,7 @@ namespace SharpMap.Converters.WellKnownText
         private static GeometryCollection readGeometryCollectionText(WktStreamTokenizer tokenizer)
         {
             GeometryCollection geometries = new GeometryCollection();
-            String nextToken = getNextEmptyOrOpener(tokenizer);
+            string nextToken = getNextEmptyOrOpener(tokenizer);
 
             if (nextToken.Equals("EMPTY"))
             {

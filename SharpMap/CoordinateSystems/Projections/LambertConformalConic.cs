@@ -56,16 +56,16 @@ namespace SharpMap.CoordinateSystems.Projections
 	internal class LambertConformalConic2SP : MapProjection
 	{
 	
-		Double _falseEasting;
-		Double _falseNorthing;
+		double _falseEasting;
+		double _falseNorthing;
 	
-		private Double es=0;              /* eccentricity squared         */
-		private Double e=0;               /* eccentricity                 */
-		private Double center_lon=0;      /* center longituted            */
-		private Double center_lat=0;      /* cetner latitude              */
-		private Double ns=0;              /* ratio of angle between meridian*/
-		private Double f0=0;              /* flattening of ellipsoid      */
-		private Double rh=0;              /* height above ellipsoid       */
+		private double es=0;              /* eccentricity squared         */
+		private double e=0;               /* eccentricity                 */
+		private double center_lon=0;      /* center longituted            */
+		private double center_lat=0;      /* cetner latitude              */
+		private double ns=0;              /* ratio of angle between meridian*/
+		private double f0=0;              /* flattening of ellipsoid      */
+		private double rh=0;              /* height above ellipsoid       */
 
 		#region Constructors
 		/// <summary>
@@ -105,7 +105,7 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// </remarks>
 		/// <param name="parameters">List of parameters to initialize the projection.</param>
 		/// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-		public LambertConformalConic2SP(List<ProjectionParameter> parameters, Boolean isInverse)
+		public LambertConformalConic2SP(List<ProjectionParameter> parameters, bool isInverse)
 			: base(parameters, isInverse)
 		{
 			this.Name = "Lambert_Conformal_Conic_2SP";
@@ -131,21 +131,21 @@ namespace SharpMap.CoordinateSystems.Projections
 			if (false_northing == null)
 				throw new ArgumentException("Missing projection parameter 'false_northing'");
 
-			Double c_lat = Degrees2Radians(latitude_of_origin.Value);
-			Double c_lon = Degrees2Radians(central_meridian.Value);
-			Double lat1 = Degrees2Radians(standard_parallel_1.Value);
-			Double lat2 = Degrees2Radians(standard_parallel_2.Value);
+			double c_lat = Degrees2Radians(latitude_of_origin.Value);
+			double c_lon = Degrees2Radians(central_meridian.Value);
+			double lat1 = Degrees2Radians(standard_parallel_1.Value);
+			double lat2 = Degrees2Radians(standard_parallel_2.Value);
 			this._falseEasting = false_easting.Value;
 			this._falseNorthing = false_northing.Value;
 
-			Double sin_po;                  /* sin value                            */
-			Double cos_po;                  /* cos value                            */
-			Double con;                     /* temporary variable                   */
-			Double ms1;                     /* small m 1                            */
-			Double ms2;                     /* small m 2                            */
-			Double ts0;                     /* small t 0                            */
-			Double ts1;                     /* small t 1                            */
-			Double ts2;                     /* small t 2                            */
+			double sin_po;                  /* sin value                            */
+			double cos_po;                  /* cos value                            */
+			double con;                     /* temporary variable                   */
+			double ms1;                     /* small m 1                            */
+			double ms2;                     /* small m 2                            */
+			double ts0;                     /* small t 0                            */
+			double ts1;                     /* small t 1                            */
+			double ts2;                     /* small t 2                            */
 
 
 
@@ -190,14 +190,14 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// <returns>Point in projected meters</returns>
 		public override SharpMap.Geometries.Point DegreesToMeters(SharpMap.Geometries.Point lonlat)
 		{
-			Double dLongitude = Degrees2Radians(lonlat.X);
-			Double dLatitude = Degrees2Radians(lonlat.Y);
+			double dLongitude = Degrees2Radians(lonlat.X);
+			double dLatitude = Degrees2Radians(lonlat.Y);
 
-			Double con;                     /* temporary angle variable             */
-			Double rh1;                     /* height above ellipsoid               */
-			Double sinphi;                  /* sin value                            */
-			Double theta;                   /* angle                                */
-			Double ts;                      /* small value t                        */
+			double con;                     /* temporary angle variable             */
+			double rh1;                     /* height above ellipsoid               */
+			double sinphi;                  /* sin value                            */
+			double theta;                   /* angle                                */
+			double ts;                      /* small value t                        */
 
 
 			con  = Math.Abs( Math.Abs(dLatitude) - HALF_PI);
@@ -230,18 +230,18 @@ namespace SharpMap.CoordinateSystems.Projections
 		/// <returns>Transformed point in decimal degrees</returns>
 		public override SharpMap.Geometries.Point MetersToDegrees(SharpMap.Geometries.Point p)
 		{
-			Double dLongitude =Double.NaN;
-			Double dLatitude =Double.NaN;
+			double dLongitude =Double.NaN;
+			double dLatitude =Double.NaN;
 
-			Double rh1;			/* height above ellipsoid	*/
-			Double con;			/* sign variable		*/
-			Double ts;			/* small t			*/
-			Double theta;			/* angle			*/
-			Int64   flag;			/* error flag			*/
+			double rh1;			/* height above ellipsoid	*/
+			double con;			/* sign variable		*/
+			double ts;			/* small t			*/
+			double theta;			/* angle			*/
+			long   flag;			/* error flag			*/
 
 			flag = 0;
-			Double dX = p.X - this._falseEasting;
-			Double dY = rh - p.Y + this._falseNorthing;
+			double dX = p.X - this._falseEasting;
+			double dY = rh - p.Y + this._falseNorthing;
 			if (ns > 0)
 			{
 				rh1 = Math.Sqrt(dX * dX + dY * dY);

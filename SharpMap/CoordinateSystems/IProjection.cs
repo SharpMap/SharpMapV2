@@ -34,17 +34,17 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets number of parameters of the projection.
 		/// </summary>
-		Int32 NumParameters { get; }
+		int NumParameters { get; }
 		/// <summary>
 		/// Gets the projection classification name (e.g. 'Transverse_Mercator').
 		/// </summary>
-		String ClassName { get; }
+		string ClassName { get; }
 		/// <summary>
 		/// Gets an indexed parameter of the projection.
 		/// </summary>
 		/// <param name="n">Index of parameter</param>
 		/// <returns>n'th parameter</returns>
-		ProjectionParameter GetParameter(Int32 n);
+		ProjectionParameter GetParameter(int n);
 
 		/// <summary>
 		/// Gets an named parameter of the projection.
@@ -52,6 +52,6 @@ namespace SharpMap.CoordinateSystems
 		/// <remarks>The parameter name is case insensitive</remarks>
 		/// <param name="name">Name of parameter</param>
 		/// <returns>parameter or null if not found</returns>
-		ProjectionParameter GetParameter(String name);
+		ProjectionParameter GetParameter(string name);
 	}
 }

@@ -24,8 +24,8 @@ namespace SharpMap.Converters
     public class ParseException : Exception
     {
         public ParseException() { }
-        public ParseException(String message) : base(message) { }
-        public ParseException(String message, Exception inner) : base(message, inner) { }
+        public ParseException(string message) : base(message) { }
+        public ParseException(string message, Exception inner) : base(message, inner) { }
         protected ParseException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }

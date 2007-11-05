@@ -36,8 +36,8 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal PrimeMeridian(Double longitude, IAngularUnit angularUnit, String name,
-		                       String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+		internal PrimeMeridian(double longitude, IAngularUnit angularUnit, string name,
+		                       string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
 			_Longitude = longitude;
@@ -225,12 +225,12 @@ namespace SharpMap.CoordinateSystems
 
 		#region IPrimeMeridian Members
 
-		private Double _Longitude;
+		private double _Longitude;
 
 		/// <summary>
 		/// Gets or sets the longitude of the prime meridian (relative to the Greenwich prime meridian).
 		/// </summary>
-		public Double Longitude
+		public double Longitude
 		{
 			get { return _Longitude; }
 			set { _Longitude = value; }
@@ -251,7 +251,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -271,7 +271,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -288,7 +288,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			PrimeMeridian other = obj as PrimeMeridian;
 

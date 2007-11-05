@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Expressions;
@@ -32,8 +32,6 @@ namespace SharpMap.Presentation.Presenters
     /// </summary>
     public class AttributePresenter : BasePresenter<IAttributeView>
     {
-        private Boolean _highlightUpdating;
-
         /// <summary>
         /// Creates a new AttributePresenter with the given map and view.
         /// </summary>
@@ -43,7 +41,7 @@ namespace SharpMap.Presentation.Presenters
             : base(map, view)
         {
             Map.Layers.ListChanged += handleLayersChanged;
-            View.FeaturesHighlightedChanged += handleViewFeaturesHighlightedChanged;
+            View.FeaturesHighlightedChangeRequested += handleFeaturesHighlightedChangeRequested;
             View.Layers = Map.Layers;
         }
 
@@ -66,13 +64,8 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void handleViewFeaturesHighlightedChanged(object sender, FeaturesHighlightedChangedEventArgs e)
+        private void handleFeaturesHighlightedChangeRequested(object sender, FeaturesHighlightedChangeRequestEventArgs e)
         {
-            if (_highlightUpdating)
-            {
-                return;
-            }
-
             IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer;
 
             Debug.Assert(layer != null);
@@ -92,18 +85,11 @@ namespace SharpMap.Presentation.Presenters
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }
 
-            _highlightUpdating = true;
             layer.HighlightedFeatures.ViewDefinition = query;
-            _highlightUpdating = false;
         }
 
         private void handleHighlightedFeaturesChanged(object sender, ListChangedEventArgs e)
         {
-            if(_highlightUpdating)
-            {
-                return;
-            }
-
             IFeatureLayer featureLayer = null;
 
             foreach (ILayer layer in Map.Layers)
@@ -120,17 +106,15 @@ namespace SharpMap.Presentation.Presenters
                     break;
                 }
             }
-            
+
             Debug.Assert(featureLayer != null);
 
             // When the user selects features in the view, 
             // we need to highlight those features
-            IEnumerable<Int32> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
+            IEnumerable<int> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
                 featureLayer.SelectedFeatures, featureLayer.HighlightedFeatures);
 
-            _highlightUpdating = true;
             View.SetHighlightedFeatures(featureLayer.LayerName, indexes);
-            _highlightUpdating = false;
         }
 
         private void wireupFeatureLayer(IFeatureLayer layer)
@@ -144,9 +128,9 @@ namespace SharpMap.Presentation.Presenters
         }
 
         private static IEnumerable<object> getFeatureIdsFromIndexes(
-            IFeatureLayer layer, IEnumerable<Int32> indexes)
+            IFeatureLayer layer, IEnumerable<int> indexes)
         {
-            foreach (Int32 index in indexes)
+            foreach (int index in indexes)
             {
                 FeatureDataRow feature = layer.SelectedFeatures[index].Row as FeatureDataRow;
                 Debug.Assert(feature != null);
@@ -161,7 +145,7 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
+        private static IEnumerable<int> getSelectedFeatureIndexesFromHighlighedFeatures(
             FeatureDataView selectedFeatures, FeatureDataView highlightedFeatures)
         {
             foreach (FeatureDataRow feature in highlightedFeatures)

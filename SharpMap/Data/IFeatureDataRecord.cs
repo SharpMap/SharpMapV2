@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using System;
 
 namespace SharpMap.Data
@@ -45,7 +45,7 @@ namespace SharpMap.Data
         /// Gets a value indicating if the feature record
         /// has an Object Identifier (OID).
         /// </summary>
-        Boolean HasOid { get; }
+        bool HasOid { get; }
 
 	    /// <summary>
 	    /// Gets a value indicating whether this feature record
@@ -53,7 +53,7 @@ namespace SharpMap.Data
 	    /// </summary>
         // TODO: Reevaluate the IsFullyLoaded flag, since consecutive loads may 
         // eventually fully load a record, yet this won't be able to record it.
-	    Boolean IsFullyLoaded { get; }
+	    bool IsFullyLoaded { get; }
 
 	    /// <summary>
         /// Gets the <see cref="Type"/> of the Object ID.

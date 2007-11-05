@@ -36,17 +36,17 @@ namespace SharpMap.Rendering.Rendering2D
         public static readonly Point2D One = new Point2D(1, 1);
 
         private DoubleComponent _x, _y;
-        private Boolean _hasValue;
+        private bool _hasValue;
 
         #region Constructors
-        public Point2D(Double x, Double y)
+        public Point2D(double x, double y)
         {
             _x = x;
             _y = y;
             _hasValue = true;
         }
 
-        public Point2D(Double[] elements)
+        public Point2D(double[] elements)
         {
             if (elements == null) throw new ArgumentNullException("elements");
 
@@ -76,42 +76,42 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region ToString
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("[Point2D] ({0:N3}, {1:N3})", _x, _y);
         }
         #endregion
 
         #region GetHashCode
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
-            return unchecked((Int32)_x ^ (Int32)_y);
+            return unchecked((int)_x ^ (int)_y);
         }
         #endregion
 
         #region Equality Testing
 
-        public static Boolean operator ==(Point2D lhs, Point2D rhs)
+        public static bool operator ==(Point2D lhs, Point2D rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static Boolean operator !=(Point2D lhs, Point2D rhs)
+        public static bool operator !=(Point2D lhs, Point2D rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public static Boolean operator ==(Point2D lhs, IVectorD rhs)
+        public static bool operator ==(Point2D lhs, IVectorD rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static Boolean operator !=(Point2D lhs, IVectorD rhs)
+        public static bool operator !=(Point2D lhs, IVectorD rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is Point2D)
             {
@@ -126,7 +126,7 @@ namespace SharpMap.Rendering.Rendering2D
             return false;
         }
 
-        public Boolean Equals(Point2D point)
+        public bool Equals(Point2D point)
         {
             return _x.Equals(point._x) &&
                 _y.Equals(point._y) &&
@@ -135,7 +135,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IEquatable<IViewVector> Members
 
-        public Boolean Equals(IVectorD other)
+        public bool Equals(IVectorD other)
         {
             if (other == null)
             {
@@ -168,7 +168,7 @@ namespace SharpMap.Rendering.Rendering2D
         ///</returns>
         ///
         ///<param name="other">An object to compare with this object.</param>
-        public Boolean Equals(IMatrixD other)
+        public bool Equals(IMatrixD other)
         {
             if (other == null)
             {
@@ -192,27 +192,27 @@ namespace SharpMap.Rendering.Rendering2D
         #endregion
 
         #region Properties
-        public Double X
+        public double X
         {
-            get { return (Double)_x; }
+            get { return (double)_x; }
         }
 
-        public Double Y
+        public double Y
         {
-            get { return (Double)_y; }
+            get { return (double)_y; }
         }
 
-        public Double this[Int32 element]
+        public double this[int element]
         {
             get
             {
                 checkIndex(element);
 
-                return element == 0 ? (Double)_x : (Double)_y;
+                return element == 0 ? (double)_x : (double)_y;
             }
         }
 
-        public Boolean IsEmpty
+        public bool IsEmpty
         {
             get { return !_hasValue; }
         }
@@ -221,23 +221,23 @@ namespace SharpMap.Rendering.Rendering2D
         #region Clone
         public Point2D Clone()
         {
-            return new Point2D((Double)_x, (Double)_y);
+            return new Point2D((double)_x, (double)_y);
         }
         #endregion
 
         #region Negative
         public Point2D Negative()
         {
-            return new Point2D((Double)_x.Negative(), (Double)_y.Negative());
+            return new Point2D((double)_x.Negative(), (double)_y.Negative());
         }
         #endregion
 
-        #region IEnumerable<Double> Members
+        #region IEnumerable<double> Members
 
-        public IEnumerator<Double> GetEnumerator()
+        public IEnumerator<double> GetEnumerator()
         {
-            yield return (Double)_x;
-            yield return (Double)_y;
+            yield return (double)_x;
+            yield return (double)_y;
         }
 
         #endregion
@@ -268,7 +268,7 @@ namespace SharpMap.Rendering.Rendering2D
             return Negative();
         }
 
-        Int32 IVectorD.ComponentCount
+        int IVectorD.ComponentCount
         {
             get { return IsEmpty ? 0 : 2; }
         }
@@ -293,7 +293,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        DoubleComponent IVectorD.this[Int32 index]
+        DoubleComponent IVectorD.this[int index]
         {
             get
             {
@@ -449,7 +449,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        Double IMatrixD.Determinant
+        double IMatrixD.Determinant
         {
             get { throw new NotSupportedException(); }
         }
@@ -457,7 +457,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        Int32 IMatrixD.ColumnCount
+        int IMatrixD.ColumnCount
         {
             get { return 2; }
         }
@@ -465,7 +465,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        Boolean IMatrixD.IsSingular
+        bool IMatrixD.IsSingular
         {
             get { return true; }
         }
@@ -473,7 +473,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singluar).
         /// </summary>
-        Boolean IMatrixD.IsInvertible
+        bool IMatrixD.IsInvertible
         {
             get { return false; }
         }
@@ -489,7 +489,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        Boolean IMatrixD.IsSquare
+        bool IMatrixD.IsSquare
         {
             get { return false; }
         }
@@ -497,7 +497,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        Boolean IMatrixD.IsSymmetrical
+        bool IMatrixD.IsSymmetrical
         {
             get { return false; }
         }
@@ -505,7 +505,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        Int32 IMatrixD.RowCount
+        int IMatrixD.RowCount
         {
             get { return 1; }
         }
@@ -526,7 +526,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="j0">The starting column to include.</param>
         /// <param name="j1">The ending column to include.</param>
         /// <returns></returns>
-        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
+        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
         {
             throw new NotSupportedException();
         }
@@ -537,7 +537,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns>The value of the element at the given index.</returns>
-        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
+        DoubleComponent IMatrixD.this[int row, int column]
         {
             get
             {
@@ -568,7 +568,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region Private Helper Methods
 
-        private static void checkIndex(Int32 index)
+        private static void checkIndex(int index)
         {
             if (index != 0 && index != 1)
             {
@@ -576,7 +576,7 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
-        private static void checkIndexes(Int32 row, Int32 column)
+        private static void checkIndexes(int row, int column)
         {
             if (row != 0)
             {
@@ -620,7 +620,7 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentException("Vector must have only 2 components.");
             }
 
-            return new Point2D(X - (Double)b[0], Y - (Double)b[1]);
+            return new Point2D(X - (double)b[0], Y - (double)b[1]);
         }
 
         #endregion
@@ -645,7 +645,7 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentException("Vector must have only 2 components.");
             }
 
-            return new Point2D(X + (Double)b[0], Y + (Double)b[1]);
+            return new Point2D(X + (double)b[0], Y + (double)b[1]);
         }
 
         #endregion

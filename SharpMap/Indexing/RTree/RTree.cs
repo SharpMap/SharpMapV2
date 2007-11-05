@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -30,8 +30,8 @@ namespace SharpMap.Indexing.RTree
 
     {
         private ISpatialIndexNode _root;
-        private Boolean _disposed;
-        private Int64 _nextNodeId = 0;
+        private bool _disposed;
+        private long _nextNodeId = 0;
 
         #region Object Construction/Destruction
 
@@ -63,9 +63,9 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        protected virtual void Dispose(Boolean disposing) {}
+        protected virtual void Dispose(bool disposing) {}
 
-        protected Boolean IsDisposed
+        protected bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
@@ -233,9 +233,9 @@ namespace SharpMap.Indexing.RTree
             Root = CreateLeafNode();
         }
 
-        private UInt32 getNewNodeId()
+        private uint getNewNodeId()
         {
-            return (UInt32) Interlocked.Increment(ref _nextNodeId);
+            return (uint) Interlocked.Increment(ref _nextNodeId);
         }
 
         #endregion

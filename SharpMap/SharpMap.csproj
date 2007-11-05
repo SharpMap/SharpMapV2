@@ -48,7 +48,7 @@
   <ItemGroup>
     <Reference Include="NPack, Version=0.7.8392.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+      <HintPath>..\ExternalReferences\NPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -175,6 +175,9 @@
     <Compile Include="Expressions\FeatureSpatialExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialExpressionType.cs" />
+    <Compile Include="Geometries\BoundingBoxOperations.cs" />
+    <Compile Include="Geometries\FakeSpatialOperations.cs" />
+    <Compile Include="Geometries\GeometryCollection`1.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
     <Compile Include="Layers\DuplicateLayerException.cs" />
@@ -198,6 +201,24 @@
     <Compile Include="Data\Providers\Shapefile\DbaseWriter.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeFileProvider.cs" />
     <Compile Include="Data\Providers\Shapefile\ShapeType.cs" />
+    <Compile Include="Geometries\BoundingBox.cs" />
+    <Compile Include="Geometries\Curve.cs" />
+    <Compile Include="Geometries\Geometry.cs" />
+    <Compile Include="Geometries\GeometryCollection.cs" />
+    <Compile Include="Geometries\IGeometry.cs" />
+    <Compile Include="Geometries\IGeometryCollection.cs" />
+    <Compile Include="Geometries\LinearRing.cs" />
+    <Compile Include="Geometries\LineString.cs" />
+    <Compile Include="Geometries\MultiCurve.cs" />
+    <Compile Include="Geometries\MultiLineString.cs" />
+    <Compile Include="Geometries\MultiPoint.cs" />
+    <Compile Include="Geometries\MultiPolygon.cs" />
+    <Compile Include="Geometries\MultiSurface.cs" />
+    <Compile Include="Geometries\Point.cs" />
+    <Compile Include="Geometries\Geometries3D\Point3D.cs" />
+    <Compile Include="Geometries\Polygon.cs" />
+    <Compile Include="Geometries\SpatialRelations.cs" />
+    <Compile Include="Geometries\Surface.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTreeNode.cs" />
     <Compile Include="Indexing\IndexBalanceHeuristic.cs" />
     <Compile Include="Indexing\QuadTree\DynamicQuadTree.cs" />
@@ -357,9 +378,10 @@
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
+    <Compile Include="Utilities\IVertexStream.cs" />
     <Compile Include="Utilities\LeastSquaresTransform.cs" />
-    <Compile Include="Utilities\NondisposingStream.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
+    <Compile Include="Utilities\Tolerance.cs" />
     <Compile Include="Utilities\SharpMapVersion.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -369,15 +391,6 @@
     <None Include="Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />
     <None Include="SharpMap.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPINoTFS.csproj">
-      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-      <Name>GeoAPINoTFS</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

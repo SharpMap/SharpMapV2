@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -36,17 +36,17 @@ namespace SharpMap.Presentation.Views
         event EventHandler<MapActionEventArgs<Point2D>> EndAction;
         event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
         event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
-        event EventHandler SizeChanged;
+        event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
         event EventHandler ZoomToExtentsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
 
         /// <summary>
         /// Gets or sets map background color.
@@ -56,7 +56,7 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets the view resolution in dots per inch.
         /// </summary>
-        Double Dpi { get; }
+        double Dpi { get; }
 
         /// <summary>
         /// Gets or sets center of map in world coordinates.
@@ -68,12 +68,12 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets the minimum width in world units of the view.
         /// </summary>
-        Double MaximumWorldWidth { get; set; }
+        double MaximumWorldWidth { get; set; }
 
         /// <summary>
         /// Gets or sets the minimum width in world units of the view.
         /// </summary>
-        Double MinimumWorldWidth { get; set; }
+        double MinimumWorldWidth { get; set; }
 
         /// <summary>
         /// Moves the view by the given vector.
@@ -88,7 +88,7 @@ namespace SharpMap.Presentation.Views
         /// The value returned is the same as <see cref="WorldUnitsPerPixel"/> 
         /// unless <see cref="WorldAspectRatio"/> is different from 1.
         /// </remarks>
-        Double PixelWorldHeight { get; }
+        double PixelWorldHeight { get; }
 
         /// <summary>
         /// Gets the width of a pixel in world coordinate units.
@@ -96,7 +96,7 @@ namespace SharpMap.Presentation.Views
         /// <remarks>
         /// The value returned is the same as <see cref="WorldUnitsPerPixel"/>.
         /// </remarks>
-        Double PixelWorldWidth { get; }
+        double PixelWorldWidth { get; }
 
         /// <summary>
         /// Gets the selection on a view, if one exists.
@@ -145,7 +145,7 @@ namespace SharpMap.Presentation.Views
         /// corresponds to the given (<paramref name="x"/>, <paramref name="y"/>) coordinate
         /// pair in map world space.
         /// </returns>
-        Point2D ToView(Double x, Double y);
+        Point2D ToView(double x, double y);
 
         /// <summary>
         /// Creates a <see cref="Point"/> in the map's world space from a
@@ -169,7 +169,7 @@ namespace SharpMap.Presentation.Views
         /// corresponds to the given (<paramref name="x"/>, <paramref name="y"/>) coordinate
         /// pair in view space.
         /// </returns>
-        Point ToWorld(Double x, Double y);
+        Point ToWorld(double x, double y);
 
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
@@ -194,7 +194,7 @@ namespace SharpMap.Presentation.Views
         /// <exception cref="ArgumentOutOfRangeException">
         /// Throws an exception when value is 0 or less.
         /// </exception>
-        Double WorldAspectRatio { get; set; }
+        double WorldAspectRatio { get; set; }
 
         /// <summary>
         /// Gets the height of view in world units.
@@ -205,7 +205,7 @@ namespace SharpMap.Presentation.Views
         /// <see cref="BasePresenter{TView}.View"/> ViewSize height 
         /// / <see cref="BasePresenter{IMapView2D}.View"/> ViewSize width).
         /// </returns>
-        Double WorldHeight { get; }
+        double WorldHeight { get; }
 
         /// <summary>
         /// Gets the width of view in world units.
@@ -215,12 +215,12 @@ namespace SharpMap.Presentation.Views
         /// (<see cref="BasePresenter{IMapView2D}.View" /> height 
         /// * <see cref="WorldUnitsPerPixel"/>).
         /// </returns>
-        Double WorldWidth { get; }
+        double WorldWidth { get; }
 
         /// <summary>
         /// Gets the width of a pixel in world coordinate units.
         /// </summary>
-        Double WorldUnitsPerPixel { get; }
+        double WorldUnitsPerPixel { get; }
 
         /// <summary>
         /// Zooms to the extents of all visible layers in the current <see cref="Map"/>.
@@ -267,6 +267,6 @@ namespace SharpMap.Presentation.Views
         /// <see cref="MaximumWorldWidth"/> and <see cref="WorldAspectRatio"/>
         /// are taken into account when zooming to this width.
         /// </remarks>
-        void ZoomToWorldWidth(Double newWorldWidth);
+        void ZoomToWorldWidth(double newWorldWidth);
     }
 }

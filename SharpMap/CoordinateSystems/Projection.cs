@@ -32,11 +32,11 @@ namespace SharpMap.CoordinateSystems
 	public class Projection : Info, IProjection
 	{
 		private List<ProjectionParameter> _parameters;
-		private String _className;
+		private string _className;
 
-		internal Projection(String className, IList<ProjectionParameter> parameters,
-			String name, String authority, Int64 code, String alias,
-			String remarks, String abbreviation)
+		internal Projection(string className, IList<ProjectionParameter> parameters,
+			string name, string authority, long code, string alias,
+			string remarks, string abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_parameters = new List<ProjectionParameter>(parameters);
@@ -51,7 +51,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets the number of parameters of the projection.
 		/// </summary>
-		public Int32 NumParameters
+		public int NumParameters
 		{
 			get { return _parameters.Count; }
 		}
@@ -70,7 +70,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="n">Index of parameter</param>
 		/// <returns>n'th parameter</returns>
-		public ProjectionParameter GetParameter(Int32 n)
+		public ProjectionParameter GetParameter(int n)
 		{
 			return _parameters[n];
 		}
@@ -81,7 +81,7 @@ namespace SharpMap.CoordinateSystems
 		/// <remarks>The parameter name is case insensitive</remarks>
 		/// <param name="name">Name of parameter</param>
 		/// <returns>parameter or null if not found</returns>
-		public ProjectionParameter GetParameter(String name)
+		public ProjectionParameter GetParameter(string name)
 		{
 			return _parameters.Find(delegate(ProjectionParameter par)
 					{ return par.Name.Equals(name, StringComparison.OrdinalIgnoreCase); });
@@ -90,7 +90,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets the projection classification name (e.g. "Transverse_Mercator").
 		/// </summary>
-		public String ClassName
+		public string ClassName
 		{
 			get { return _className; }
 		}
@@ -99,7 +99,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -119,7 +119,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -143,7 +143,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			if (!(obj is Projection))
 			{
@@ -157,7 +157,7 @@ namespace SharpMap.CoordinateSystems
 				return false;
 			}
 
-			for (Int32 i = 0; i < _parameters.Count; i++)
+			for (int i = 0; i < _parameters.Count; i++)
 			{
 				ProjectionParameter param = _parameters.Find(delegate(ProjectionParameter par)
 				{

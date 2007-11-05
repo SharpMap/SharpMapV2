@@ -59,7 +59,7 @@ namespace SharpMap.Presentation
             DefaultOutline = new StylePen(StyleColor.Black, 1.0f);
             DefaultOutline.DashStyle = LineDashStyle.Dash;
             DefaultOutline.DashBrushes = new StyleBrush[] { new SolidStyleBrush(StyleColor.White) };
-            DefaultOutline.DashPattern = new Single[] { 4, 4 };
+            DefaultOutline.DashPattern = new float[] { 4, 4 };
         }
 
         /// <summary>
@@ -91,11 +91,6 @@ namespace SharpMap.Presentation
                 AnchorPoint = point;
             }
 
-            if (PathInternal.Points.Count > 0 && PathInternal.Points[PathInternal.Points.Count - 1].Equals(point))
-            {
-                return;
-            }
-
             PathInternal.AddPoint(point);
             recomputeBoundingRegion();
 
@@ -124,7 +119,7 @@ namespace SharpMap.Presentation
 
         public void Expand(TSize size)
         {
-            for (Int32 pointIndex = 0; pointIndex < PathInternal.Points.Count; pointIndex++)
+            for (int pointIndex = 0; pointIndex < PathInternal.Points.Count; pointIndex++)
             {
                 throw new NotImplementedException("implement this");
             }
@@ -165,12 +160,12 @@ namespace SharpMap.Presentation
         }
 
 
-        public Boolean IsEmpty
+        public bool IsEmpty
         {
             get { return PathInternal.CurrentFigure == null; }
         }
 
-        public Boolean IsClosed
+        public bool IsClosed
         {
             get { return !IsEmpty && PathInternal.CurrentFigure.IsClosed; }
         }
@@ -238,21 +233,21 @@ namespace SharpMap.Presentation
             if (boxElements.Length == 0 || boxElements[0].Length == 0)
             {
                 boxElements = new DoubleComponent[BoundingRegion.RowCount][];
-                for (Int32 rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
+                for (int rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
                 {
                     boxElements[rowIndex] = new DoubleComponent[BoundingRegion.ColumnCount];
                 }
             }
 
-            Boolean recorded = false;
+            bool recorded = false;
 
             foreach (TPoint point in Path.Points)
             {
                 DoubleComponent[] components = point.Components;
 
-                for (Int32 componentIndex = 0; componentIndex < components.Length; componentIndex++)
+                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
                 {
-                    for (Int32 rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
+                    for (int rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
                     {
                         if (components[componentIndex].GreaterThan(boxElements[rowIndex][componentIndex])) { }
                         boxElements[rowIndex][componentIndex] = components[componentIndex];

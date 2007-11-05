@@ -22,7 +22,7 @@ namespace SharpMap.Tests.Rendering
 
         private struct RenderObject
         {
-            public Double[][] RenderedPaths;
+            public double[][] RenderedPaths;
         }
 
         private class TestVectorRenderer : VectorRenderer2D<RenderObject>
@@ -35,13 +35,13 @@ namespace SharpMap.Tests.Rendering
                 {
                     RenderObject ro = new RenderObject();
 
-                    ro.RenderedPaths = new Double[path.Figures.Count][];
+                    ro.RenderedPaths = new double[path.Figures.Count][];
 
-                    for (Int32 figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
+                    for (int figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
                     {
-                        ro.RenderedPaths[figureIndex] = new Double[path.Figures[figureIndex].Points.Count*2];
+                        ro.RenderedPaths[figureIndex] = new double[path.Figures[figureIndex].Points.Count*2];
 
-                        for (Int32 pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
+                        for (int pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
                         {
                             Point2D point = path.Figures[figureIndex].Points[pointIndex];
                             ro.RenderedPaths[figureIndex][pointIndex*2] = point.X;
@@ -76,13 +76,13 @@ namespace SharpMap.Tests.Rendering
                 {
                     RenderObject ro = new RenderObject();
 
-                    ro.RenderedPaths = new Double[path.Figures.Count][];
+                    ro.RenderedPaths = new double[path.Figures.Count][];
 
-                    for (Int32 figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
+                    for (int figureIndex = 0; figureIndex < path.Figures.Count; figureIndex++)
                     {
-                        ro.RenderedPaths[figureIndex] = new Double[path.Figures[figureIndex].Points.Count*2];
+                        ro.RenderedPaths[figureIndex] = new double[path.Figures[figureIndex].Points.Count*2];
 
-                        for (Int32 pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
+                        for (int pointIndex = 0; pointIndex < path.Figures[figureIndex].Points.Count; pointIndex++)
                         {
                             Point2D point = path.Figures[figureIndex].Points[pointIndex];
                             ro.RenderedPaths[figureIndex][pointIndex*2] = point.X;
@@ -101,7 +101,7 @@ namespace SharpMap.Tests.Rendering
                 {
                     RenderObject ro = new RenderObject();
 
-                    ro.RenderedPaths = new Double[][] {new Double[] {point.X, point.Y}};
+                    ro.RenderedPaths = new double[][] {new double[] {point.X, point.Y}};
 
                     yield return ro;
                 }
@@ -115,7 +115,7 @@ namespace SharpMap.Tests.Rendering
                 {
                     RenderObject ro = new RenderObject();
 
-                    ro.RenderedPaths = new Double[][] {new Double[] {point.X, point.Y}};
+                    ro.RenderedPaths = new double[][] {new double[] {point.X, point.Y}};
 
                     yield return ro;
                 }
@@ -129,7 +129,7 @@ namespace SharpMap.Tests.Rendering
                 {
                     RenderObject ro = new RenderObject();
 
-                    ro.RenderedPaths = new Double[][] {new Double[] {point.X, point.Y}};
+                    ro.RenderedPaths = new double[][] {new double[] {point.X, point.Y}};
 
                     yield return ro;
                 }
@@ -155,7 +155,7 @@ namespace SharpMap.Tests.Rendering
                 Geometry g = feature.Geometry;
                 List<RenderObject> renderedObjects = new List<RenderObject>(geometryRenderer.RenderFeature(feature));
 
-                for (Int32 i = 0; i < renderedObjects.Count; i++)
+                for (int i = 0; i < renderedObjects.Count; i++)
                 {
                     RenderObject ro = renderedObjects[i];
                 }

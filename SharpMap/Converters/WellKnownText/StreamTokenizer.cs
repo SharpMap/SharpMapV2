@@ -72,10 +72,10 @@ namespace SharpMap.Converters.WellKnownText
 
 		TokenType _currentTokenType;
 		TextReader _reader;
-		String _currentToken;
-		Boolean _ignoreWhitespace = false;
-		Int32 _lineNumber=1;
-		Int32 _colNumber=1;
+		string _currentToken;
+		bool _ignoreWhitespace = false;
+		int _lineNumber=1;
+		int _colNumber=1;
 			
 		#region Constructors
 	
@@ -85,7 +85,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="reader">A TextReader with some text to read.</param>
 		/// <param name="ignoreWhitespace">Flag indicating whether whitespace should be ignored.</param>
-		public StreamTokenizer(TextReader reader, Boolean ignoreWhitespace)
+		public StreamTokenizer(TextReader reader, bool ignoreWhitespace)
 		{
 			if (reader==null)
 			{
@@ -100,7 +100,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// <summary>
 		/// The current line number of the stream being read.
 		/// </summary>
-		public Int32 LineNumber
+		public int LineNumber
 		{
 			get
 			{
@@ -110,7 +110,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// <summary>
 		/// The current column number of the stream being read.
 		/// </summary>
-		public Int32 Column
+		public int Column
 		{
 			get
 			{
@@ -129,22 +129,22 @@ namespace SharpMap.Converters.WellKnownText
 		/// If the current token is a number, this field contains the value of that number. The current token is a number when the value of the ttype field is TT_NUMBER.
 		/// </remarks>
 		/// <exception cref="FormatException">Current token is not a number in a valid format.</exception>
-		public Double GetNumericValue()
+		public double GetNumericValue()
 		{
-			String number = this.GetStringValue();
+			string number = this.GetStringValue();
 
 			if (GetTokenType() == TokenType.Number)
 			{
-				return Double.Parse(number, NumberFormat_EnUS);
+				return double.Parse(number, NumberFormat_EnUS);
 			}
 
             throw new Exception(String.Format(NumberFormat_EnUS, "The token '{0}' is not a number at line {1} column {2}.", number, this.LineNumber, this.Column)); ;
 
 		}
 		/// <summary>
-		/// If the current token is a word token, this field contains a String giving the characters of the word token. 
+		/// If the current token is a word token, this field contains a string giving the characters of the word token. 
 		/// </summary>
-		public String GetStringValue()
+		public string GetStringValue()
 		{
 			return _currentToken;
 		}
@@ -163,7 +163,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="ignoreWhitespace">Determines is whitespace is ignored. True if whitespace is to be ignored.</param>
 		/// <returns>The TokenType of the next token.</returns>
-		public TokenType NextToken(Boolean ignoreWhitespace)
+		public TokenType NextToken(bool ignoreWhitespace)
 		{
 			TokenType nextTokenType;
 			if (ignoreWhitespace)
@@ -188,22 +188,22 @@ namespace SharpMap.Converters.WellKnownText
 		private TokenType NextTokenAny()
 		{
 			TokenType nextTokenType = TokenType.Eof;
-			Char[] chars = new Char[1];
+			char[] chars = new char[1];
 			_currentToken="";
 			_currentTokenType = TokenType.Eof;
-			Int32 finished = _reader.Read(chars,0,1);
+			int finished = _reader.Read(chars,0,1);
 
-			Boolean isNumber=false;
-			Boolean isWord=false;
-			Byte[] ba=null;
+			bool isNumber=false;
+			bool isWord=false;
+			byte[] ba=null;
 			ASCIIEncoding AE = new ASCIIEncoding();
-			Char[] ascii=null;
+			char[] ascii=null;
 			Char currentCharacter;
 			Char nextCharacter;
 			while (finished != 0 )
 			{
-				// convert Int32 to Char
-				ba = new Byte[]{(Byte)_reader.Peek()};
+				// convert int to char
+				ba = new Byte[]{(byte)_reader.Peek()};
 				
 				 ascii = AE.GetChars(ba);
 
@@ -293,7 +293,7 @@ namespace SharpMap.Converters.WellKnownText
 		/// </summary>
 		/// <param name="character">The character to determine.</param>
 		/// <returns>The TokenType the character is.</returns>
-		private TokenType GetType(Char character)
+		private TokenType GetType(char character)
 		{
 			if (Char.IsDigit(character))
 			{

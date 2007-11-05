@@ -33,18 +33,18 @@ namespace SharpMap.CoordinateSystems
 		/// <remarks>Units are always either meters or degrees.</remarks>
 		/// <param name="name">Name of parameter</param>
 		/// <param name="value">Value</param>
-		public Parameter(String name, Double value)
+		public Parameter(string name, double value)
 		{
 			_Name = name;
 			_Value = Value;
 		}
 
-		public override String ToString()
+		public override string ToString()
 		{
 			return String.Format("[Parameter] {0} = {1}", Name, Value);
 		}
 
-		public override Boolean Equals(object obj)
+		public override bool Equals(object obj)
 		{
 			Parameter other = obj as Parameter;
 
@@ -56,30 +56,30 @@ namespace SharpMap.CoordinateSystems
 			return other.Name == Name && Tolerance.Equal<Parameter>(Value, other.Value);
 		}
 
-		public override Int32 GetHashCode()
+		public override int GetHashCode()
 		{
 			return Name.GetHashCode() ^ Value.GetHashCode();
 		}
 
 		#region IParameter Members
 
-		private String _Name;
+		private string _Name;
 
 		/// <summary>
 		/// Parameter name
 		/// </summary>
-		public String Name
+		public string Name
 		{
 			get { return _Name; }
 			set { _Name = value; }
 		}
 
-		private Double _Value;
+		private double _Value;
 
 		/// <summary>
 		/// Parameter value
 		/// </summary>
-		public Double Value
+		public double Value
 		{
 			get { return _Value; }
 			set { _Value = value; }

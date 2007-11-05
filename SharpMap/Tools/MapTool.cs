@@ -15,20 +15,18 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
 namespace SharpMap.Tools
 {
 	public abstract class MapTool
 	{
-		private readonly String _name;
+		private readonly string _name;
 
-		protected MapTool(String name)
+		protected MapTool(string name)
 		{
 			_name = name;
 		}
 
-		public String Name
+		public string Name
 		{
 			get { return _name; }
 		}

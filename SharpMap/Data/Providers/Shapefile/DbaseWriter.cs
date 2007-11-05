@@ -27,11 +27,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         private class DbaseWriter : IDisposable
         {
             private readonly DbaseFile _dbaseFile;
-            private const String NumberFormatTemplate = "{0,:F}";
+            private const string NumberFormatTemplate = "{0,:F}";
             private readonly StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
             private readonly BinaryReader _binaryReader;
             private readonly BinaryWriter _binaryWriter;
-            private Boolean _disposed = false;
+            private bool _disposed = false;
 
             #region Object Construction/Destruction
             public DbaseWriter(DbaseFile file)
@@ -63,7 +63,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             #endregion
 
-            private void dispose(Boolean disposing)
+            private void dispose(bool disposing)
             {
                 if (disposing) // Deterministically dispose managed resources
                 {
@@ -79,7 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
             }
 
-            internal Boolean IsDisposed
+            internal bool IsDisposed
             {
                 get { return _disposed; }
                 private set { _disposed = value; }
@@ -101,10 +101,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             internal void UpdateHeader(DbaseHeader header)
             {
                 _binaryWriter.Seek(1, SeekOrigin.Begin);
-                Byte[] dateBytes = new Byte[3] { 
-                    (Byte)(header.LastUpdate.Year - DbaseConstants.DbaseEpoch),
-                    (Byte)header.LastUpdate.Month, 
-                    (Byte)header.LastUpdate.Day };
+                byte[] dateBytes = new byte[3] { 
+                    (byte)(header.LastUpdate.Year - DbaseConstants.DbaseEpoch),
+                    (byte)header.LastUpdate.Month, 
+                    (byte)header.LastUpdate.Day };
                 _binaryWriter.Write(dateBytes);
                 _binaryWriter.Write(header.RecordCount);
             }
@@ -116,31 +116,31 @@ namespace SharpMap.Data.Providers.ShapeFile
                 UpdateHeader(header);
                 _binaryWriter.Write(header.HeaderLength);
                 _binaryWriter.Write(header.RecordLength);
-                _binaryWriter.Write(new Byte[DbaseConstants.EncodingOffset - (Int32)_binaryWriter.BaseStream.Position]);
+                _binaryWriter.Write(new byte[DbaseConstants.EncodingOffset - (int)_binaryWriter.BaseStream.Position]);
                 _binaryWriter.Write(header.LanguageDriver);
-                _binaryWriter.Write(new Byte[2]);
+                _binaryWriter.Write(new byte[2]);
 
                 foreach (DbaseField field in header.Columns)
                 {
-                    String colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
-                    Byte[] colNameBytes = Encoding.ASCII.GetBytes(colName.Substring(0, DbaseConstants.FieldNameLength));
+                    string colName = field.ColumnName + new String('\0', DbaseConstants.FieldNameLength);
+                    byte[] colNameBytes = Encoding.ASCII.GetBytes(colName.Substring(0, DbaseConstants.FieldNameLength));
                     _binaryWriter.Write(colNameBytes);
-                    Char fieldTypeCode = DbaseSchema.GetFieldTypeCode(field.DataType);
+                    char fieldTypeCode = DbaseSchema.GetFieldTypeCode(field.DataType);
                     _binaryWriter.Write(fieldTypeCode);
                     _binaryWriter.Write(0); // Address field isn't supported
 
                     if (fieldTypeCode == 'N' || fieldTypeCode == 'F')
                     {
-                        _binaryWriter.Write((Byte)field.Length);
+                        _binaryWriter.Write((byte)field.Length);
                         _binaryWriter.Write(field.Decimals);
                     }
                     else
                     {
-                        _binaryWriter.Write((Byte)field.Length);
-                        _binaryWriter.Write((Byte)(field.Length >> 8));
+                        _binaryWriter.Write((byte)field.Length);
+                        _binaryWriter.Write((byte)(field.Length >> 8));
                     }
 
-                    _binaryWriter.Write(new Byte[14]);
+                    _binaryWriter.Write(new byte[14]);
                 }
 
                 _binaryWriter.Write(DbaseConstants.HeaderTerminator);
@@ -184,7 +184,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-								writeBoolean((Boolean)row[column.ColumnName]);
+								writeBoolean((bool)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.DateTime:
@@ -228,7 +228,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-								writeString((String)row[column.ColumnName], column.Length);
+								writeString((string)row[column.ColumnName], column.Length);
                             }
                             break;
                         case TypeCode.Char:
@@ -254,50 +254,50 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _binaryWriter.Write(DbaseConstants.NullDateValue);
             }
 
-            private void writeNullString(Int32 length)
+            private void writeNullString(int length)
             {
-                Byte[] bytes = Encoding.ASCII.GetBytes(new String('\0', length));
+                byte[] bytes = Encoding.ASCII.GetBytes(new String('\0', length));
                 _binaryWriter.Write(bytes);
             }
 
-            private void writeNullNumber(Int32 length)
+            private void writeNullNumber(int length)
             {
                 _binaryWriter.Write(new String(DbaseConstants.NumericNullIndicator, length));
             }
 
-            private void writeNumber(Double value, Int16 length, Byte decimalPlaces)
+            private void writeNumber(double value, short length, byte decimalPlaces)
             {
-                // Create number format String
+                // Create number format string
                 _format.Length = 0;
                 _format.Append(NumberFormatTemplate);
                 _format.Insert(5, decimalPlaces).Insert(3, length);
-                String number = String.Format(DbaseConstants.StorageNumberFormat, _format.ToString(), value);
-                Byte[] bytes = Encoding.ASCII.GetBytes(number);
+                string number = String.Format(DbaseConstants.StorageNumberFormat, _format.ToString(), value);
+                byte[] bytes = Encoding.ASCII.GetBytes(number);
                 _binaryWriter.Write(bytes);
             }
 
-            private void writeNumber(Int64 value, Int16 length)
+            private void writeNumber(long value, short length)
             {
-                // Create number format String
+                // Create number format string
                 writeNumber(value, length, 0);
             }
 
             private void writeDateTime(DateTime dateTime)
             {
-                Byte[] bytes = Encoding.ASCII.GetBytes(dateTime.ToString("yyyyMMdd"));
+                byte[] bytes = Encoding.ASCII.GetBytes(dateTime.ToString("yyyyMMdd"));
                 _binaryWriter.Write(bytes);
             }
 
-            private void writeString(String value, Int32 length)
+            private void writeString(string value, int length)
             {
-                value = (value ?? String.Empty) + new String((Char)0x0, length);
-                Byte[] chars = _dbaseFile.Encoding.GetBytes(value.Substring(0, length));
+                value = (value ?? String.Empty) + new String((char)0x0, length);
+                byte[] chars = _dbaseFile.Encoding.GetBytes(value.Substring(0, length));
                 _binaryWriter.Write(chars);
             }
 
-            private void writeBoolean(Boolean value)
+            private void writeBoolean(bool value)
             {
-                Byte[] bytes = value ? Encoding.ASCII.GetBytes("T") : Encoding.ASCII.GetBytes("F");
+                byte[] bytes = value ? Encoding.ASCII.GetBytes("T") : Encoding.ASCII.GetBytes("F");
                 _binaryWriter.Write(bytes);
             }
             #endregion

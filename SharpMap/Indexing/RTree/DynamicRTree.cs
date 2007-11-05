@@ -22,7 +22,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -81,7 +81,7 @@ namespace SharpMap.Indexing.RTree
 
         protected DynamicRTree(SerializationInfo info, StreamingContext context)
         {
-            Byte[] data = (Byte[]) info.GetValue("data", typeof (Byte[]));
+            byte[] data = (byte[]) info.GetValue("data", typeof (byte[]));
             MemoryStream buffer = new MemoryStream(data);
             DynamicRTree<TValue> tree = FromStream(buffer);
             Root = tree.Root;
@@ -190,9 +190,9 @@ namespace SharpMap.Indexing.RTree
                                                                "Invalid index file version. Please rebuild the spatial index by deleting the index.");
                 }
 
-                UInt32 keyLength = (UInt32) Marshal.SizeOf(typeof (TValue));
+                uint keyLength = (uint) Marshal.SizeOf(typeof (TValue));
 
-                using (MemoryStream keyBuffer = new MemoryStream((Int32) keyLength))
+                using (MemoryStream keyBuffer = new MemoryStream((int) keyLength))
                 {
                     tree.Root = readNode(tree, br, keyBuffer, keyLength);
                 }
@@ -215,9 +215,9 @@ namespace SharpMap.Indexing.RTree
             writer.Write(IndexFileVersion.Build);
             writer.Write(IndexFileVersion.Revision);
 
-            UInt32 keyLength = (UInt32) Marshal.SizeOf(typeof (TValue));
+            uint keyLength = (uint) Marshal.SizeOf(typeof (TValue));
 
-            using (MemoryStream keyBuffer = new MemoryStream((Int32) keyLength))
+            using (MemoryStream keyBuffer = new MemoryStream((int) keyLength))
             {
                 saveNode(Root, writer, keyBuffer, keyLength);
             }
@@ -231,7 +231,7 @@ namespace SharpMap.Indexing.RTree
         /// <param name="keyBuffer">Buffer to serialze key data into.</param>
         /// <param name="keyLength">Data length of serialized key.</param>
         private static ISpatialIndexNode readNode(DynamicRTree<TValue> tree, BinaryReader reader, 
-            MemoryStream keyBuffer, UInt32 keyLength)
+            MemoryStream keyBuffer, uint keyLength)
         {
             if (reader.BaseStream.Position == reader.BaseStream.Length)
             {
@@ -239,7 +239,7 @@ namespace SharpMap.Indexing.RTree
             }
 
             ISpatialIndexNode node;
-            Boolean isLeaf = reader.ReadBoolean();
+            bool isLeaf = reader.ReadBoolean();
 
             BoundingBox bounds = new BoundingBox(
                                         reader.ReadDouble(), 
@@ -261,9 +261,9 @@ namespace SharpMap.Indexing.RTree
                 RTreeLeafNode<TValue> leaf = node as RTreeLeafNode<TValue>;
                 Debug.Assert(leaf != null);
 
-                Int32 featureCount = reader.ReadInt32();
+                int featureCount = reader.ReadInt32();
 
-                for (Int32 i = 0; i < featureCount; i++)
+                for (int i = 0; i < featureCount; i++)
                 {
                     RTreeIndexEntry<TValue> entry = new RTreeIndexEntry<TValue>();
 
@@ -274,7 +274,7 @@ namespace SharpMap.Indexing.RTree
                                                 reader.ReadDouble());
 
                     keyBuffer.Position = 0;
-                    keyBuffer.Write(reader.ReadBytes((Int32) keyLength), 0, (Int32) keyLength);
+                    keyBuffer.Write(reader.ReadBytes((int) keyLength), 0, (int) keyLength);
                     entry.Value = (TValue) _keyFormatter.Deserialize(keyBuffer);
 
                     leaf.Add(entry);
@@ -285,9 +285,9 @@ namespace SharpMap.Indexing.RTree
                 RTreeBranchNode<TValue> index = node as RTreeBranchNode<TValue>;
                 Debug.Assert(index != null);
 
-                UInt32 childNodes = reader.ReadUInt32();
+                uint childNodes = reader.ReadUInt32();
 
-                for (Int32 c = 0; c < childNodes; c++)
+                for (int c = 0; c < childNodes; c++)
                 {
                     ISpatialIndexNode child = readNode(tree, reader, keyBuffer, keyLength);
 
@@ -308,7 +308,7 @@ namespace SharpMap.Indexing.RTree
         /// <param name="writer">BinaryWriter to format values and write to stream.</param>
         /// <param name="keyBuffer">Buffer used to serialize key value.</param>
         /// <param name="keyLength">Number of bytes in the key's memory representation.</param>
-        private static void saveNode(ISpatialIndexNode node, BinaryWriter writer, MemoryStream keyBuffer, UInt32 keyLength)
+        private static void saveNode(ISpatialIndexNode node, BinaryWriter writer, MemoryStream keyBuffer, uint keyLength)
         {
             //Write node boundingbox
             writer.Write(node.BoundingBox.Left);
@@ -325,7 +325,7 @@ namespace SharpMap.Indexing.RTree
                 if (keyBuffer.Capacity != keyLength)
                 {
                     keyBuffer.SetLength(keyLength);
-                    keyBuffer.Capacity = (Int32) keyLength;
+                    keyBuffer.Capacity = (int) keyLength;
                 }
 
                 foreach (RTreeIndexEntry<TValue> entry in leaf.Items) //Write each featurebox

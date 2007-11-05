@@ -181,7 +181,7 @@ namespace SharpMap.Tests.Rendering
             Path2D p1 = new Path2D(points1);
 
             Rectangle2D bounds = new Rectangle2D(Point2D.Zero, Size2D.Unit);
-            String expected = String.Format("[{0}] 1 figure of Point2D points; Bounds: {1}", typeof (Path2D), bounds);
+            string expected = String.Format("[{0}] 1 figure of Point2D points; Bounds: {1}", typeof (Path2D), bounds);
 
             Assert.AreEqual(expected, p1.ToString());
         }
@@ -212,7 +212,7 @@ namespace SharpMap.Tests.Rendering
                 new Point2D[] {new Point2D(0, 0), new Point2D(1, 0), new Point2D(1, 1), new Point2D(0, 1)};
             Path2D p1 = new Path2D(points1);
 
-            Int32 i = 0;
+            int i = 0;
             foreach (Figure2D figure in p1)
             {
                 foreach (Point2D point in figure)

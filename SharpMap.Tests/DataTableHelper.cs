@@ -1,4 +1,3 @@
-using System;
 using System.Data;
 using NUnit.Framework;
 
@@ -12,7 +11,7 @@ namespace SharpMap.Tests
             Assert.Greater(lhs.Columns.Count, 0);
             Assert.AreEqual(lhs.Columns.Count, rhs.Columns.Count);
 
-            for (Int32 i = 0; i < lhs.Columns.Count; i++)
+            for (int i = 0; i < lhs.Columns.Count; i++)
             {
                 Assert.AreEqual(lhs.Columns[i].AllowDBNull, rhs.Columns[i].AllowDBNull);
                 Assert.AreEqual(lhs.Columns[i].AutoIncrement, rhs.Columns[i].AutoIncrement);
@@ -41,7 +40,7 @@ namespace SharpMap.Tests
 
                 Assert.AreEqual(lhsProperties.Length, rhsProperties.Length);
 
-                for (Int32 epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
+                for (int epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
                 {
                     Assert.AreEqual(lhsProperties[epIndex], rhsProperties[epIndex]);
                 }
@@ -51,7 +50,7 @@ namespace SharpMap.Tests
 
             if (lhs.PrimaryKey.Length > 0)
             {
-                for (Int32 i = 0; i < lhs.PrimaryKey.Length; i++)
+                for (int i = 0; i < lhs.PrimaryKey.Length; i++)
                 {
                     Assert.AreEqual(lhs.PrimaryKey[i].AllowDBNull, rhs.PrimaryKey[i].AllowDBNull);
                     Assert.AreEqual(lhs.PrimaryKey[i].AutoIncrement, rhs.PrimaryKey[i].AutoIncrement);
@@ -79,14 +78,14 @@ namespace SharpMap.Tests
                     object[] rhsProperties = new object[rhs.PrimaryKey[i].ExtendedProperties.Count];
                     rhs.PrimaryKey[i].ExtendedProperties.CopyTo(rhsProperties, 0);
 
-                    for (Int32 epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
+                    for (int epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
                     {
                         Assert.AreEqual(lhsProperties[epIndex], rhsProperties[epIndex]);
                     }
                 }
             }
 
-            for (Int32 i = 0; i < lhs.Constraints.Count; i++)
+            for (int i = 0; i < lhs.Constraints.Count; i++)
             {
                 Assert.AreEqual(lhs.Constraints[i].ConstraintName, rhs.Constraints[i].ConstraintName);
 
@@ -96,7 +95,7 @@ namespace SharpMap.Tests
                 object[] rhsProperties = new object[rhs.Constraints[i].ExtendedProperties.Count];
                 rhs.Columns[i].ExtendedProperties.CopyTo(rhsProperties, 0);
 
-                for (Int32 epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
+                for (int epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
                 {
                     Assert.AreEqual(lhsProperties[epIndex], rhsProperties[epIndex]);
                 }

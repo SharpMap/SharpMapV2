@@ -31,7 +31,7 @@ namespace SharpMap.Geometries
 		/// </summary>
 		public MultiPolygon() { }
 
-		public MultiPolygon(Int32 initialCapacity) :
+		public MultiPolygon(int initialCapacity) :
             base(initialCapacity) { }
 
 		/// <summary>

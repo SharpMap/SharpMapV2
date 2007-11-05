@@ -26,8 +26,8 @@ namespace SharpMap.Data.Providers.ShapeFile
     public class ShapeFileInvalidOperationException : ShapeFileException
     {
         public ShapeFileInvalidOperationException() : base() { }
-        public ShapeFileInvalidOperationException(String message) : base(message) { }
-        public ShapeFileInvalidOperationException(String message, Exception inner) : base(message, inner) { }
+        public ShapeFileInvalidOperationException(string message) : base(message) { }
+        public ShapeFileInvalidOperationException(string message, Exception inner) : base(message, inner) { }
         public ShapeFileInvalidOperationException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }

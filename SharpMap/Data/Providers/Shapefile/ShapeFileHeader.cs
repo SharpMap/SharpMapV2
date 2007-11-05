@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using SharpMap.Utilities;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -28,14 +28,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 	{
 		private ShapeType _shapeType;
 		private BoundingBox _envelope;
-		private Int32 _fileLengthInWords;
+		private int _fileLengthInWords;
 
 		public ShapeFileHeader(BinaryReader reader)
 		{
 			parseHeader(reader);
 		}
 
-		public override String ToString()
+		public override string ToString()
 		{
 			return String.Format("[ShapeFileHeader] ShapeType: {0}; Envelope: {1}; FileLengthInWords: {2}", 
 				ShapeType, Envelope, FileLengthInWords);
@@ -53,7 +53,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			set { _envelope = value; }
 		}
 
-		public Int32 FileLengthInWords
+		public int FileLengthInWords
 		{
 			get { return _fileLengthInWords; }
 			set { _fileLengthInWords = value; }
@@ -63,15 +63,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			writer.Seek(0, SeekOrigin.Begin);
 			writer.Write(ByteEncoder.GetBigEndian(ShapeFileConstants.HeaderStartCode));
-			writer.Write(new Byte[20]);
+			writer.Write(new byte[20]);
 			writer.Write(ByteEncoder.GetBigEndian(FileLengthInWords));
 			writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
-			writer.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType));
+			writer.Write(ByteEncoder.GetLittleEndian((int)ShapeType));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Left));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Bottom));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Right));
 			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Top));
-			writer.Write(new Byte[32]); // Z-values and M-values
+			writer.Write(new byte[32]); // Z-values and M-values
 		}
 
 		#region File parsing helpers
@@ -145,11 +145,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 		#endregion
 		
-		private Int32 computeMainFileLengthInWords(ShapeFileIndex index)
+		private int computeMainFileLengthInWords(ShapeFileIndex index)
 		{
-			Int32 length = ShapeFileConstants.HeaderSizeBytes / 2;
+			int length = ShapeFileConstants.HeaderSizeBytes / 2;
 
-			foreach (KeyValuePair<UInt32, ShapeFileIndex.IndexEntry> kvp in index)
+			foreach (KeyValuePair<uint, ShapeFileIndex.IndexEntry> kvp in index)
 			{
 				length += kvp.Value.Length + ShapeFileConstants.ShapeRecordHeaderByteLength / 2;
 			}
@@ -157,9 +157,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return length;
 		}
 
-		private Int32 computeIndexFileLengthInWords(ShapeFileIndex index)
+		private int computeIndexFileLengthInWords(ShapeFileIndex index)
 		{
-			Int32 length = ShapeFileConstants.HeaderSizeBytes / 2;
+			int length = ShapeFileConstants.HeaderSizeBytes / 2;
 
 			length += index.Count * ShapeFileConstants.IndexRecordByteLength / 2;
 

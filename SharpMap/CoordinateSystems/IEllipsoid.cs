@@ -29,15 +29,15 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the value of the semi-major axis.
 		/// </summary>
-		Double SemiMajorAxis { get; set; }
+		double SemiMajorAxis { get; set; }
 		/// <summary>
 		/// Gets or sets the value of the semi-minor axis.
 		/// </summary>
-		Double SemiMinorAxis { get; set; }
+		double SemiMinorAxis { get; set; }
 		/// <summary>
 		/// Gets or sets the value of the inverse of the flattening constant of the ellipsoid.
 		/// </summary>
-		Double InverseFlattening { get; set; }
+		double InverseFlattening { get; set; }
 		/// <summary>
 		/// Gets or sets the value of the axis unit.
 		/// </summary>
@@ -48,6 +48,6 @@ namespace SharpMap.CoordinateSystems
 		/// ellipsoids use the polar radius to calculate the IVF whenever asked. This
 		/// distinction can be important to avoid floating-point rounding errors.
 		/// </summary>
-		Boolean IsIvfDefinitive { get; set; }
+		bool IsIvfDefinitive { get; set; }
 	}
 }

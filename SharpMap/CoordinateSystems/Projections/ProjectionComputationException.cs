@@ -26,8 +26,8 @@ namespace SharpMap.CoordinateSystems.Projections
     public class ProjectionComputationException : Exception
     {
         public ProjectionComputationException() : base() { }
-        public ProjectionComputationException(String message) : base(message) { }
-        public ProjectionComputationException(String message, Exception inner) : base(message, inner) { }
+        public ProjectionComputationException(string message) : base(message) { }
+        public ProjectionComputationException(string message, Exception inner) : base(message, inner) { }
         public ProjectionComputationException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }

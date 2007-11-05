@@ -31,7 +31,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the longitude of the prime meridian (relative to the Greenwich prime meridian).
 		/// </summary>
-		Double Longitude { get; set; }
+		double Longitude { get; set; }
 		/// <summary>
 		/// Gets or sets the AngularUnits.
 		/// </summary>

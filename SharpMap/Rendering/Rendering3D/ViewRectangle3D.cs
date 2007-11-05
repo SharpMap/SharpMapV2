@@ -32,12 +32,12 @@ namespace SharpMap.Rendering.Rendering3D
         private DoubleComponent _yMax;
         private DoubleComponent _zMin;
         private DoubleComponent _zMax;
-        private Boolean _hasValue;
+        private bool _hasValue;
 
         public static readonly ViewRectangle3D Empty = new ViewRectangle3D();
         public static readonly ViewRectangle3D Zero = new ViewRectangle3D(0, 0, 0, 0, 0, 0);
 
-        public ViewRectangle3D(Double xMin, Double xMax, Double yMin, Double yMax, Double zMin, Double zMax)
+        public ViewRectangle3D(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
         {
             _xMin = xMin;
             _xMax = xMax;
@@ -119,22 +119,22 @@ namespace SharpMap.Rendering.Rendering3D
             get { return new ViewPoint3D(Width, Height, Depth); }
         }
 
-        public Double Width
+        public double Width
         {
-            get { return Math.Abs((Double)_xMax.Subtract(_xMin)); }
+            get { return Math.Abs((double)_xMax.Subtract(_xMin)); }
         }
 
-        public Double Height
+        public double Height
         {
-            get { return Math.Abs((Double)_yMax.Subtract(_yMin)); }
+            get { return Math.Abs((double)_yMax.Subtract(_yMin)); }
         }
 
-        public Double Depth
+        public double Depth
         {
-            get { return Math.Abs((Double)_zMax.Subtract(_zMin)); }
+            get { return Math.Abs((double)_zMax.Subtract(_zMin)); }
         }
 
-        public static Boolean operator ==(ViewRectangle3D rect1, ViewRectangle3D rect2)
+        public static bool operator ==(ViewRectangle3D rect1, ViewRectangle3D rect2)
         {
             return rect1.Left.Equals(rect2.Left) &&
                 rect1.Right.Equals(rect2.Right) &&
@@ -144,12 +144,12 @@ namespace SharpMap.Rendering.Rendering3D
                 rect1.Front.Equals(rect2.Front);
         }
 
-        public static Boolean operator !=(ViewRectangle3D rect1, ViewRectangle3D rect2)
+        public static bool operator !=(ViewRectangle3D rect1, ViewRectangle3D rect2)
         {
             return !(rect1 == rect2);
         }
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (!(obj is ViewRectangle3D))
             {
@@ -161,12 +161,12 @@ namespace SharpMap.Rendering.Rendering3D
             return other == this;
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
-            return unchecked((Int32)Left ^ (Int32)Right ^ (Int32)Top ^ (Int32)Bottom ^ (Int32)Back ^ (Int32)Front);
+            return unchecked((int)Left ^ (int)Right ^ (int)Top ^ (int)Bottom ^ (int)Back ^ (int)Front);
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("ViewRectangle - Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; Back: {4:N3}; Front: {5:N3}",
                 Left, Top, Right, Top, Bottom, Back, Front);
@@ -177,7 +177,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// </summary>
         /// <param name="rectangle"><see cref="ViewRectangle3D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
-        public Boolean Intersects(ViewRectangle3D rectangle)
+        public bool Intersects(ViewRectangle3D rectangle)
         {
             return !(rectangle.Left.GreaterThan(Right) ||
                      rectangle.Right.LessThan(Left) ||
@@ -200,7 +200,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// 1 if this Rectangle is located to the right or down from the <paramref name="other"/>
         /// Rectange, and -1 if this Rectangle is located to the left or up from the other.
         /// </returns>
-        public Int32 CompareTo(ViewRectangle3D other)
+        public int CompareTo(ViewRectangle3D other)
         {
             if (Intersects(other))
             {
@@ -229,17 +229,17 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotSupportedException();
         }
 
-        public Boolean IsInvertible
+        public bool IsInvertible
         {
             get { return false; }
         }
 
-        public Boolean IsEmpty
+        public bool IsEmpty
         {
             get { return _hasValue; }
         }
 
-        public Double[,] Elements
+        public double[,] Elements
         {
             get
             {
@@ -254,7 +254,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        Double IMatrixD.Determinant
+        double IMatrixD.Determinant
         {
             get { throw new NotImplementedException(); }
         }
@@ -262,7 +262,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        Int32 IMatrixD.ColumnCount
+        int IMatrixD.ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -278,7 +278,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        Boolean IMatrixD.IsSingular
+        bool IMatrixD.IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -286,7 +286,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        Boolean IMatrixD.IsInvertible
+        bool IMatrixD.IsInvertible
         {
             get { throw new NotImplementedException(); }
         }
@@ -302,7 +302,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        Boolean IMatrixD.IsSquare
+        bool IMatrixD.IsSquare
         {
             get { throw new NotImplementedException(); }
         }
@@ -310,7 +310,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        Boolean IMatrixD.IsSymmetrical
+        bool IMatrixD.IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
@@ -318,7 +318,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        Int32 IMatrixD.RowCount
+        int IMatrixD.RowCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -338,7 +338,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns>The value of the element at the specified row and column.</returns>
-        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
+        DoubleComponent IMatrixD.this[int row, int column]
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -361,7 +361,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="j1">The ending column to include.</param>
         /// <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
         /// through <paramref name="j1"/>.</returns>
-        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
+        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
         {
             throw new NotImplementedException();
         }
@@ -478,17 +478,17 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        public void Rotate(Double degreesTheta)
+        public void Rotate(double degreesTheta)
         {
             throw new NotSupportedException();
         }
 
-        public void RotateAt(Double degreesTheta, IVectorD center)
+        public void RotateAt(double degreesTheta, IVectorD center)
         {
             throw new NotSupportedException();
         }
 
-        public Double GetOffset(Int32 dimension)
+        public double GetOffset(int dimension)
         {
             throw new NotSupportedException();
         }
@@ -503,7 +503,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotSupportedException();
         }
 
-        public void Scale(Double scaleAmount)
+        public void Scale(double scaleAmount)
         {
             throw new NotImplementedException();
         }
@@ -513,7 +513,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        public void Translate(Double translationAmount)
+        public void Translate(double translationAmount)
         {
             throw new NotImplementedException();
         }
@@ -528,7 +528,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        public Double[] Transform(params Double[] vector)
+        public double[] Transform(params double[] vector)
         {
             throw new NotImplementedException();
         }
@@ -545,7 +545,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IViewMatrix> Members
 
-        public Boolean Equals(IMatrixD other)
+        public bool Equals(IMatrixD other)
         {
             throw new NotImplementedException();
         }

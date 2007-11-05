@@ -36,7 +36,7 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #region ITextRenderer2D<TRenderObject> Members
 
-        public abstract IEnumerable<TRenderObject> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle,
+        public abstract IEnumerable<TRenderObject> RenderText(string text, StyleFont font, Rectangle2D layoutRectangle,
                                                               Path2D flowPath, StyleBrush fontBrush, Matrix2D transform);
 
         #endregion
@@ -49,9 +49,9 @@ namespace SharpMap.Rendering.Rendering2D
             set { _textRenderingHint = value; }
         }
 
-        public abstract Size2D MeasureString(String text, StyleFont font);
+        public abstract Size2D MeasureString(string text, StyleFont font);
 
-        public IEnumerable<TRenderObject> RenderText(String text, StyleFont font, Point2D location, StyleBrush fontBrush)
+        public IEnumerable<TRenderObject> RenderText(string text, StyleFont font, Point2D location, StyleBrush fontBrush)
         {
             Rectangle2D layoutRectangle = new Rectangle2D(location, MeasureString(text, font));
             return RenderText(text, font, layoutRectangle, null, fontBrush, null);
@@ -62,7 +62,7 @@ namespace SharpMap.Rendering.Rendering2D
         #region ITextRenderer<Point2D,Size2D,Rectangle2D> Explicit Members
 
         IEnumerable ITextRenderer<Point2D, Size2D, Rectangle2D>.RenderText(
-            String text, StyleFont font, Rectangle2D layoutRectangle, Path<Point2D, Rectangle2D> flowPath, 
+            string text, StyleFont font, Rectangle2D layoutRectangle, Path<Point2D, Rectangle2D> flowPath, 
             StyleBrush fontBrush, IMatrix<DoubleComponent> transform)
         {
             if (!(flowPath is Path2D))
@@ -78,7 +78,7 @@ namespace SharpMap.Rendering.Rendering2D
             return RenderText(text, font, layoutRectangle, flowPath as Path2D, fontBrush, transform as Matrix2D);
         }
 
-        IEnumerable ITextRenderer<Point2D, Size2D, Rectangle2D>.RenderText(String text, StyleFont font, Point2D location, StyleBrush fontBrush)
+        IEnumerable ITextRenderer<Point2D, Size2D, Rectangle2D>.RenderText(string text, StyleFont font, Point2D location, StyleBrush fontBrush)
         {
             throw new Exception("The method or operation is not implemented.");
         }

@@ -38,7 +38,7 @@ namespace SharpMap.Geometries
 		/// <summary>
 		///  The inherent dimension of this <see cref="Geometry"/> object, which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		Int32 Dimension { get; }
+		int Dimension { get; }
 
         /// <summary>
 		/// The minimum bounding box for this Geometry, returned as a <see cref="Geometry"/>. The
@@ -56,24 +56,24 @@ namespace SharpMap.Geometries
         /// <summary>
 		/// Exports this <see cref="Geometry"/> to a specific well-known text representation of <see cref="Geometry"/>.
         /// </summary>
-		String AsText();
+		string AsText();
 
 		/// <summary>
 		/// Exports this <see cref="Geometry"/> to a specific well-known binary representation of <see cref="Geometry"/>.
 		/// </summary>
-		Byte[] AsBinary();
+		byte[] AsBinary();
 
 		/// <summary>
 		/// Returns a WellKnownText representation of the <see cref="Geometry"/>
 		/// </summary>
 		/// <returns>Well-known text</returns>
-		String ToString();
+		string ToString();
 
 		/// <summary>
 		/// If true, then this <see cref="Geometry"/> represents the empty point set, Ø, for the coordinate space. 
 		/// </summary>
 		/// <returns>Returns 'true' if this <see cref="Geometry"/> is the empty geometry</returns>
-		Boolean IsEmpty();
+		bool IsEmpty();
 
 		/// <summary>
 		///  Returns 'true' if this <see cref="Geometry"/> has no anomalous geometric points, such as self
@@ -81,7 +81,7 @@ namespace SharpMap.Geometries
 		/// conditions that cause an instance of that class to be classified as not simple.
 		/// </summary>
 		/// <returns>true if the <see cref="Geometry"/> is simple</returns>
-		Boolean IsSimple();
+		bool IsSimple();
 
         /// <summary>
 		/// Returns the closure of the combinatorial boundary of this <see cref="Geometry"/>. The
@@ -100,7 +100,7 @@ namespace SharpMap.Geometries
 		/// <param name="other"><see cref="Geometry"/> to relate to</param>
 		/// <param name="intersectionPattern">Intersection Pattern</param>
 		/// <returns>True if spatially related</returns>
-		Boolean Relate(Geometry other, String intersectionPattern);
+		bool Relate(Geometry other, string intersectionPattern);
 
 
         #endregion
@@ -110,42 +110,42 @@ namespace SharpMap.Geometries
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is 'spatially equal' to another <see cref="Geometry"/>
         /// </summary>
-		Boolean Equals(Geometry geom);
+		bool Equals(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is 'spatially disjoint' from another <see cref="Geometry"/>
         /// </summary>
-		Boolean Disjoint(Geometry geom);
+		bool Disjoint(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially intersects' another <see cref="Geometry"/>
         /// </summary>
-		Boolean Intersects(Geometry geom);
+		bool Intersects(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially touches' another <see cref="Geometry"/>.
         /// </summary>
-		Boolean Touches(Geometry geom);
+		bool Touches(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially crosses' another <see cref="Geometry"/>.
         /// </summary>
-		Boolean Crosses(Geometry geom);
+		bool Crosses(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> is 'spatially within' another <see cref="Geometry"/>.
         /// </summary>
-		Boolean Within(Geometry geom);
+		bool Within(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially contains' another <see cref="Geometry"/>.
         /// </summary>
-		Boolean Contains(Geometry geom);
+		bool Contains(Geometry geom);
 
         /// <summary>
 		/// Returns 'true' if this <see cref="Geometry"/> 'spatially overlaps' another <see cref="Geometry"/>.
         /// </summary>
-		Boolean Overlaps(Geometry geom);
+		bool Overlaps(Geometry geom);
 
 
         #endregion
@@ -158,7 +158,7 @@ namespace SharpMap.Geometries
         /// </summary>
 		/// <param name="geom"><see cref="Geometry"/> to calculate distance to</param>
 		/// <returns>Shortest distance between any two points in the two geometries</returns>
-		Double Distance(Geometry geom);
+		double Distance(Geometry geom);
 
         /// <summary>
 		/// Returns a <see cref="Geometry"/> that represents all points whose distance from this <see cref="Geometry"/>
@@ -167,7 +167,7 @@ namespace SharpMap.Geometries
         /// </summary>
 		/// <param name="d">Buffer distance</param>
 		/// <returns>Buffer around <see cref="Geometry"/></returns>
-		Geometry Buffer(Double d);
+		Geometry Buffer(double d);
 
 
         /// <summary>

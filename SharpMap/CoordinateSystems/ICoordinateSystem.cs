@@ -31,11 +31,11 @@ namespace SharpMap.CoordinateSystems
 	/// described by a list containing 2 numbers.</para>
 	/// <para>
 	/// However, in a coordinate system, not all lists of numbers correspond to a position - 
-	/// some lists may be outside the domain of the coordinate system. For example, in a 2D Lat / Lon
+	/// some lists may be outside the domain of the coordinate system. For example, in a 2D Lat/Lon
 	/// coordinate system, the list (91,91) does not correspond to a position.</para>
 	/// <para>
 	/// Some coordinate systems also have a mapping from the mathematical space into locations
-	/// in the real world. So in a Lat / Lon coordinate system, the mathematical position (lat, Int64) 
+	/// in the real world. So in a Lat/Lon coordinate system, the mathematical position (lat, long) 
 	/// corresponds to a location on the surface of the Earth. This mapping from the mathematical 
 	/// space into real-world locations is called a Datum.</para>
 	/// </remarks>
@@ -43,18 +43,18 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Dimension of the coordinate system.
 		/// </summary>
-		Int32 Dimension { get; }
+		int Dimension { get; }
 
 		/// <summary>
 		/// Gets axis details for dimension within coordinate system.
 		/// </summary>
 		/// <param name="dimension">Dimension</param>
 		/// <returns>Axis info</returns>
-		AxisInfo GetAxis(Int32 dimension);
+		AxisInfo GetAxis(int dimension);
 		/// <summary>
 		/// Gets units for dimension within coordinate system.
 		/// </summary>
-		IUnit GetUnits(Int32 dimension);
+		IUnit GetUnits(int dimension);
 		/// <summary>
 		/// Gets default envelope of coordinate system.
 		/// </summary>

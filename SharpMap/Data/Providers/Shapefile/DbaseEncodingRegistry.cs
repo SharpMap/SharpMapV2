@@ -96,10 +96,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		} 
 		#endregion
 
-        private static readonly Dictionary<Byte, CultureWithEncoding> _dbaseToEncoding
-            = new Dictionary<Byte, CultureWithEncoding>();
-        private static readonly Dictionary<KeyValuePair<Int32, Int32>, Byte> _encodingToDbase
-            = new Dictionary<KeyValuePair<Int32, Int32>, Byte>();
+        private static readonly Dictionary<byte, CultureWithEncoding> _dbaseToEncoding
+            = new Dictionary<byte, CultureWithEncoding>();
+        private static readonly Dictionary<KeyValuePair<int, int>, byte> _encodingToDbase
+            = new Dictionary<KeyValuePair<int, int>, byte>();
 
         static DbaseLocaleRegistry()
         {
@@ -182,7 +182,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private static void setupEncodingToDbaseMap()
         {
-            foreach (KeyValuePair<Byte, CultureWithEncoding> item in _dbaseToEncoding)
+            foreach (KeyValuePair<byte, CultureWithEncoding> item in _dbaseToEncoding)
             {
 				// These encodings are duplicated. When a dBase file is created by
 				// the DbaseFile.Create method, these will not be used in the LDID
@@ -194,9 +194,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 					continue;
 				}
 
-                Int32 lcid = item.Value.CultureInfo.LCID;
-				Int32 codePage = item.Value.Encoding.CodePage;
-				_encodingToDbase.Add(new KeyValuePair<Int32, Int32>(lcid, codePage), item.Key);	
+                int lcid = item.Value.CultureInfo.LCID;
+				int codePage = item.Value.Encoding.CodePage;
+				_encodingToDbase.Add(new KeyValuePair<int, int>(lcid, codePage), item.Key);	
             }
         }
 
@@ -211,7 +211,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// A <see cref="CultureInfo"/> which uses the encoding represented by 
 		/// <paramref name="dBaseEncoding"/> by default.
 		/// </returns>
-        public static CultureInfo GetCulture(Byte dBaseEncoding)
+        public static CultureInfo GetCulture(byte dBaseEncoding)
         {
             CultureWithEncoding pair;
 
@@ -236,7 +236,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// An <see cref="Encoding"/> which corresponds to the the
 		/// <paramref name="dBaseEncoding"/> code established by ESRI.
 		/// </returns>
-        public static Encoding GetEncoding(Byte dBaseEncoding)
+        public static Encoding GetEncoding(byte dBaseEncoding)
         {
             CultureWithEncoding pair;
 
@@ -259,10 +259,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <returns>
 		/// A language driver code used to specify the encoding used to write text in the dBase file.
 		/// </returns>
-        public static Byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
+        public static byte GetLanguageDriverCode(CultureInfo info, Encoding encoding)
         {
             Byte driverCode;
-            KeyValuePair<Int32, Int32> key = new KeyValuePair<Int32, Int32>(info.LCID, encoding.CodePage);
+            KeyValuePair<int, int> key = new KeyValuePair<int, int>(info.LCID, encoding.CodePage);
 
             if (_encodingToDbase.TryGetValue(key, out driverCode))
             {

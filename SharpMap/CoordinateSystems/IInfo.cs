@@ -36,45 +36,45 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets or sets the name of the object.
 		/// </summary>
-		String Name { get; }
+		string Name { get; }
 
 		/// <summary>
 		/// Gets or sets the authority name for this object, e.g., “POSC”,
 		/// is this is a standard object with an authority specific
 		/// identity code. Returns “CUSTOM” if this is a custom object.
 		/// </summary>
-		String Authority { get; }
+		string Authority { get; }
 
 		/// <summary>
 		/// Gets or sets the authority specific identification code of the object
 		/// </summary>
-		Int64 AuthorityCode { get; }
+		long AuthorityCode { get; }
 
 		/// <summary>
 		/// Gets or sets the alias of the object.
 		/// </summary>
-		String Alias { get; }
+		string Alias { get; }
 
 		/// <summary>
 		/// Gets or sets the abbreviation of the object.
 		/// </summary>
-		String Abbreviation { get; }
+		string Abbreviation { get; }
 
 		/// <summary>
 		/// Gets or sets the provider-supplied remarks for the object.
 		/// </summary>
-		String Remarks { get; }
+		string Remarks { get; }
 
 		/// <summary>
 		/// Returns the Well-known text for this spatial reference object
 		/// as defined in the simple features specification.
 		/// </summary>
-		String Wkt { get; }
+		string Wkt { get; }
 
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		String Xml { get; }
+		string Xml { get; }
 
 		/// <summary>
 		/// Checks whether the values of this instance is equal to the values of another instance.
@@ -83,6 +83,6 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		Boolean EqualParams(object obj);
+		bool EqualParams(object obj);
 	}
 }

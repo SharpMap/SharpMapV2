@@ -63,8 +63,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                                         {
                                             new DataColumn("Name", typeof (String)),
                                             new DataColumn("Date_Created", typeof (DateTime)),
-                                            new DataColumn("Visits", typeof (Int32)),
-                                            new DataColumn("Weight", typeof (Single))
+                                            new DataColumn("Visits", typeof (int)),
+                                            new DataColumn("Weight", typeof (float))
                                         });
             ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test1", ShapeType.Point, schema);
             Assert.IsTrue(File.Exists(@"UnitTestData\Test1.shp"));
@@ -159,7 +159,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP");
             shapeFile.Open();
-            String wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
+            string wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
             IProjectedCoordinateSystem cs = CoordinateSystemWktReader.Parse(wkt) as IProjectedCoordinateSystem;
             shapeFile.SpatialReference = cs;
             Assert.IsNotNull(shapeFile.SpatialReference);
@@ -456,8 +456,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         public void GetFeatureCountTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-            Int32 expected = 7291;
-            Int32 actual = shapeFile.GetFeatureCount();
+            int expected = 7291;
+            int actual = shapeFile.GetFeatureCount();
             Assert.AreEqual(expected, actual);
         }
 
@@ -466,7 +466,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            FeatureDataRow<UInt32> feature = shapeFile.GetFeature(0);
+            FeatureDataRow<uint> feature = shapeFile.GetFeature(0);
             Assert.AreEqual(0, feature.Id);
             shapeFile.Close();
         }
@@ -507,20 +507,20 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         [Test]
         public void InsertFeatureTest()
         {
-            FeatureDataTable<UInt32> schema = new FeatureDataTable<UInt32>("oid");
+            FeatureDataTable<uint> schema = new FeatureDataTable<uint>("oid");
             schema.Columns.AddRange(new DataColumn[]
                                         {
                                             new DataColumn("Name", typeof (String)),
                                             new DataColumn("DateCreated", typeof (DateTime)),
-                                            new DataColumn("Visits", typeof (Int32)),
-                                            new DataColumn("Weight", typeof (Single))
+                                            new DataColumn("Visits", typeof (int)),
+                                            new DataColumn("Weight", typeof (float))
                                         });
 
             ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test2", ShapeType.Point, schema);
             shapeFile.Open();
 
             DateTime dateCreated = DateTime.Now;
-            FeatureDataRow<UInt32> feature = schema.NewRow(1);
+            FeatureDataRow<uint> feature = schema.NewRow(1);
             feature["Name"] = "Test feature";
             feature["DateCreated"] = dateCreated;
             feature["Visits"] = 0;
@@ -542,7 +542,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             Assert.AreEqual(1, dataSet.Tables.Count);
             Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
 
-            FeatureDataRow<UInt32> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<UInt32>;
+            FeatureDataRow<uint> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<uint>;
             Assert.AreEqual(new Point(1, 1), newFeature.Geometry);
             Assert.AreEqual(newFeature["Name"], "Test feature");
             DateTime dateCreatedActual = (DateTime) newFeature["DateCreated"];
@@ -557,13 +557,13 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         [Test]
         public void InsertFeaturesTest()
         {
-            FeatureDataTable<UInt32> schema = new FeatureDataTable<UInt32>("OID");
+            FeatureDataTable<uint> schema = new FeatureDataTable<uint>("OID");
             schema.Columns.AddRange(new DataColumn[]
                                         {
                                             new DataColumn("Name", typeof (String)),
                                             new DataColumn("DateCreated", typeof (DateTime)),
                                             new DataColumn("Visits", typeof (Int64)),
-                                            new DataColumn("Weight", typeof (Double))
+                                            new DataColumn("Weight", typeof (double))
                                         });
 
             ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test3", ShapeType.PolyLine, schema);
@@ -572,17 +572,17 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             Random rnd = new Random();
             BoundingBox computedBounds = BoundingBox.Empty;
 
-            List<FeatureDataRow<UInt32>> rows = new List<FeatureDataRow<UInt32>>();
+            List<FeatureDataRow<uint>> rows = new List<FeatureDataRow<uint>>();
 
-            for (Int32 i = 0; i < 10000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 DateTime dateCreated = new DateTime(rnd.Next(1900, 2155), rnd.Next(1, 12), rnd.Next(1, 28));
-                FeatureDataRow<UInt32> feature = schema.NewRow((UInt32) i);
+                FeatureDataRow<uint> feature = schema.NewRow((uint) i);
 
-                Char[] chars = new Char[rnd.Next(0, 254)];
-                for (Int32 charIndex = 0; charIndex < chars.Length; charIndex++)
+                char[] chars = new char[rnd.Next(0, 254)];
+                for (int charIndex = 0; charIndex < chars.Length; charIndex++)
                 {
-                    chars[charIndex] = (Char) (Byte) rnd.Next(32, 126);
+                    chars[charIndex] = (char) (byte) rnd.Next(32, 126);
                 }
 
                 feature["Name"] = new String(chars);
@@ -592,8 +592,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
                 LineString line = new LineString();
 
-                Int32 pointCount = rnd.Next(1, 100);
-                for (Int32 pointIndex = 0; pointIndex < pointCount; pointIndex++)
+                int pointCount = rnd.Next(1, 100);
+                for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
                 {
                     Point p = new Point(rnd.NextDouble()*rnd.Next(200000, 700000),
                                         (rnd.NextDouble()*rnd.Next(1000000)) + 50000000);
@@ -705,14 +705,14 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
+            FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
             shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
 
             FeatureDataTable nonKeyedTable = new FeatureDataTable();
             shapeFile.SetTableSchema(nonKeyedTable);
             DataTableHelper.AssertTableStructureIdentical(nonKeyedTable, queryTable);
 
-            FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("OID");
+            FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("OID");
             shapeFile.SetTableSchema(keyedTable);
             DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
         }
@@ -723,10 +723,10 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
+            FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
             shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
 
-            FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("oid");
+            FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("oid");
             shapeFile.SetTableSchema(keyedTable);
             DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
         }
@@ -737,10 +737,10 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
+            FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
             shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
 
-            FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("oid");
+            FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("oid");
             shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.CaseInsensitive);
             DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
         }
@@ -751,10 +751,10 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
+            FeatureDataTable<uint> queryTable = new FeatureDataTable<uint>("OID");
             shapeFile.ExecuteIntersectionQuery(BoundingBox.Empty, queryTable);
 
-            FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("FID");
+            FeatureDataTable<uint> keyedTable = new FeatureDataTable<uint>("FID");
             shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.KeyByType);
             DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
         }

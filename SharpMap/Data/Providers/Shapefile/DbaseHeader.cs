@@ -32,11 +32,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         private UInt32 _numberOfRecords;
         private Int16 _headerLength;
         private Int16 _recordLength;
-        private readonly Byte _languageDriver;
+        private readonly byte _languageDriver;
         //private DbaseField[] _dbaseColumns;
-    	private readonly Dictionary<String, DbaseField> _dbaseColumns = new Dictionary<String, DbaseField>();
+    	private readonly Dictionary<string, DbaseField> _dbaseColumns = new Dictionary<string, DbaseField>();
 
-        internal DbaseHeader(Byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
+        internal DbaseHeader(byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
         {
             _languageDriver = languageDriverCode;
             _lastUpdate = lastUpdate;
@@ -47,7 +47,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Gets a value which indicates which code page text data is 
         /// stored in.
         /// </summary>
-        internal Byte LanguageDriver
+        internal byte LanguageDriver
         {
             get { return _languageDriver; }
         }
@@ -79,7 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 					RecordLength += field.Length;
             	}
 
-                HeaderLength = (Int16)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count)
+                HeaderLength = (short)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count)
                     + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
             }
         }
@@ -101,7 +101,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get { return DbaseLocaleRegistry.GetEncoding(LanguageDriver); }
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("[DbaseHeader] Records: {0}; Columns: {1}; Last Update: {2}; " +
                 "Record Length: {3}; Header Length: {4}", RecordCount, Columns.Count,
@@ -116,7 +116,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             DataTable schema = ProviderSchemaHelper.CreateSchemaTable();
 
-        	foreach (KeyValuePair<String, DbaseField> entry in _dbaseColumns)
+        	foreach (KeyValuePair<string, DbaseField> entry in _dbaseColumns)
         	{
                 DataRow r = schema.NewRow();
         		DbaseField column = entry.Value;
@@ -169,7 +169,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 header = new DbaseHeader(languageDriver, lastUpdate, recordCount);
 
                 DbaseField[] columns = new DbaseField[numberOfColumns];
-            	Int32 offset = 1;
+            	int offset = 1;
 
                 for (Int32 i = 0; i < columns.Length; i++)
                 {
@@ -190,7 +190,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     }
                     else
                     {
-                        fieldLength += (Int16)(reader.ReadByte() << 8);
+                        fieldLength += (short)(reader.ReadByte() << 8);
                     }
 
                     Type dataType = mapFieldTypeToClrType(fieldtype, decimals, fieldLength);
@@ -228,10 +228,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             switch (fieldtype)
             {
                 case 'L':
-                    return typeof(Boolean);
+                    return typeof(bool);
                     break;
                 case 'C':
-                    return typeof(String);
+                    return typeof(string);
                     break;
                 case 'D':
                     return typeof(DateTime);
@@ -244,16 +244,16 @@ namespace SharpMap.Data.Providers.ShapeFile
                         if (length <= 4) return typeof(Int16);
                         else if (length <= 9) return typeof(Int32);
                         else if (length <= 18) return typeof(Int64);
-                        else return typeof(Double);
+                        else return typeof(double);
                     }
                     else
                     {
-                        return typeof(Double);
+                        return typeof(double);
                     }
                 case 'F':
-                    return typeof(Single);
+                    return typeof(float);
                 case 'B':
-                    return typeof(Byte[]);
+                    return typeof(byte[]);
                 default:
                     return null;
             }

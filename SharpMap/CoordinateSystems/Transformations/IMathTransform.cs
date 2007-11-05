@@ -15,9 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {
@@ -35,28 +34,28 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// Gets the dimension of input points.
         /// </summary>
-        Int32 DimSource { get; }
+        int DimSource { get; }
 
         /// <summary>
         /// Gets the dimension of output points.
         /// </summary>
-        Int32 DimTarget { get; }
+        int DimTarget { get; }
 
         /// <summary>
         /// Tests whether this transform does not move any points.
         /// </summary>
         /// <returns></returns>
-        Boolean Identity();
+        bool Identity();
 
         /// <summary>
         /// Gets a Well-Known text representation of this object.
         /// </summary>
-        String Wkt { get; }
+        string Wkt { get; }
 
         /// <summary>
         /// Gets an XML representation of this object.
         /// </summary>
-        String Xml { get; }
+        string Xml { get; }
 
         /// <summary>
         /// Gets the derivative of this transform at a point. If the transform does 
@@ -72,7 +71,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        Double[,] Derivative(Point point);
+        double[,] Derivative(Point point);
 
         /// <summary>
         /// Gets transformed convex hull.
@@ -95,7 +94,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </remarks>
         /// <param name="points"></param>
         /// <returns></returns>
-        List<Double> GetCodomainConvexHull(List<Double> points);
+        List<double> GetCodomainConvexHull(List<double> points);
 
         /// <summary>
         /// Gets flags classifying domain points within a convex hull.
@@ -110,7 +109,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </remarks>
         /// <param name="points"></param>
         /// <returns></returns>
-        DomainFlags GetDomainFlags(List<Double> points);
+        DomainFlags GetDomainFlags(List<double> points);
 
         /// <summary>
         /// Creates the inverse transform of this object.

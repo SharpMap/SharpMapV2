@@ -28,8 +28,8 @@ namespace SharpMap.Presentation.WinForms
 {
     internal class MapPresenter : MapPresenter2D
     {
-        private Boolean _isRenderingSelection = false;
-        private Boolean _isRenderingAll = false;
+        private bool _isRenderingSelection = false;
+        private bool _isRenderingAll = false;
 
         internal MapPresenter(Map map, MapViewControl mapView)
             : base(map, mapView)
@@ -103,7 +103,7 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        protected override void SetViewLocationInformation(String text)
+        protected override void SetViewLocationInformation(string text)
         {
             ViewControl.Information = text;
         }
@@ -120,22 +120,22 @@ namespace SharpMap.Presentation.WinForms
             get { return GeoCenterInternal; }
         }
 
-        internal Double MaximumWorldWidth
+        internal double MaximumWorldWidth
         {
             get { return MaximumWorldWidthInternal; }
         }
 
-        internal Double MinimumWorldWidth
+        internal double MinimumWorldWidth
         {
             get { return MinimumWorldWidthInternal; }
         }
 
-        internal Double PixelWorldWidth
+        internal double PixelWorldWidth
         {
             get { return PixelWorldWidthInternal; }
         }
 
-        internal Double PixelWorldHeight
+        internal double PixelWorldHeight
         {
             get { return PixelWorldHeightInternal; }
         }
@@ -160,7 +160,7 @@ namespace SharpMap.Presentation.WinForms
             return ToViewInternal(point);
         }
 
-        internal Point2D ToView(Double x, Double y)
+        internal Point2D ToView(double x, double y)
         {
             return ToViewInternal(x, y);
         }
@@ -170,7 +170,7 @@ namespace SharpMap.Presentation.WinForms
             return ToWorldInternal(point);
         }
 
-        internal Point ToWorld(Double x, Double y)
+        internal Point ToWorld(double x, double y)
         {
             return ToWorldInternal(x, y);
         }
@@ -185,22 +185,22 @@ namespace SharpMap.Presentation.WinForms
             get { return ViewEnvelopeInternal; }
         }
 
-        internal Double WorldAspectRatio
+        internal double WorldAspectRatio
         {
             get { return WorldAspectRatioInternal; }
         }
 
-        internal Double WorldHeight
+        internal double WorldHeight
         {
             get { return WorldHeightInternal; }
         }
 
-        internal Double WorldWidth
+        internal double WorldWidth
         {
             get { return WorldWidthInternal; }
         }
 
-        internal Double WorldUnitsPerPixel
+        internal double WorldUnitsPerPixel
         {
             get { return WorldUnitsPerPixelInternal; }
         }
@@ -220,7 +220,7 @@ namespace SharpMap.Presentation.WinForms
             ZoomToWorldBoundsInternal(zoomBox);
         }
 
-        internal void ZoomToWorldWidth(Double newWorldWidth)
+        internal void ZoomToWorldWidth(double newWorldWidth)
         {
             ZoomToWorldWidthInternal(newWorldWidth);
         }

@@ -37,7 +37,7 @@ namespace SharpMap.Rendering
         where TViewBounds : IMatrixD
     {
         private readonly List<TPoint> _points = new List<TPoint>();
-        private Boolean _isClosed;
+        private bool _isClosed;
         private TViewBounds _bounds;
 
         #region Object Construction
@@ -58,7 +58,7 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         /// <param name="isClosed">True to close the path, false to keep it open.</param>
-        public Figure(IEnumerable<TPoint> points, Boolean isClosed)
+        public Figure(IEnumerable<TPoint> points, bool isClosed)
         {
             _points.AddRange(points);
             IsClosed = isClosed;
@@ -69,9 +69,9 @@ namespace SharpMap.Rendering
         #region ToString
 
         /// <summary>
-        /// Returns a String representation of this <see cref="Figure"/>.
+        /// Returns a string representation of this <see cref="Figure"/>.
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return
                 String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count,
@@ -85,11 +85,11 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Returns a value to use in hash sets.
         /// </summary>
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             unchecked
             {
-                Int32 hash = 86848163;
+                int hash = 86848163;
 
                 foreach (TPoint p in Points)
                 {
@@ -104,7 +104,7 @@ namespace SharpMap.Rendering
 
         #region Equality Computation
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             Figure<TPoint, TViewBounds> other = obj as Figure<TPoint, TViewBounds>;
             return Equals(other);
@@ -112,7 +112,7 @@ namespace SharpMap.Rendering
 
         #region IEquatable<Path<TPoint>> Members
 
-        public Boolean Equals(Figure<TPoint, TViewBounds> other)
+        public bool Equals(Figure<TPoint, TViewBounds> other)
         {
             if (other == null)
             {
@@ -129,7 +129,7 @@ namespace SharpMap.Rendering
                 return false;
             }
 
-            for (Int32 pointIndex = 0; pointIndex < other.Points.Count; pointIndex++)
+            for (int pointIndex = 0; pointIndex < other.Points.Count; pointIndex++)
             {
                 if (!Points[pointIndex].Equals(other.Points[pointIndex]))
                 {
@@ -193,7 +193,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets true if the figure is closed, false if open.
         /// </summary>
-        public Boolean IsClosed
+        public bool IsClosed
         {
             get { return _isClosed; }
             protected set { _isClosed = value; }
@@ -244,7 +244,7 @@ namespace SharpMap.Rendering
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new Figure instance.</returns>
         protected abstract Figure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
-                                                                                Boolean isClosed);
+                                                                                bool isClosed);
 
         #endregion
 
@@ -255,7 +255,7 @@ namespace SharpMap.Rendering
 
         internal void TransformPoints(ITransformMatrix<DoubleComponent> transform)
         {
-            for (Int32 i = 0; i < _points.Count; i++)
+            for (int i = 0; i < _points.Count; i++)
             {
                 TPoint point = _points[i];
 

@@ -31,11 +31,11 @@ namespace SharpMap.CoordinateSystems
 	/// coordinate system each position is described by a list containing 2 numbers.</para>
 	/// <para>However, in a coordinate system, not all lists of numbers correspond to a 
 	/// position - some lists may be outside the domain of the coordinate system. For 
-	/// example, in a 2D Lat / Lon coordinate system, the list (91,91) does not correspond
+	/// example, in a 2D Lat/Lon coordinate system, the list (91,91) does not correspond
 	/// to a position.</para>
 	/// <para>Some coordinate systems also have a mapping from the mathematical space into 
-	/// locations in the real world. So in a Lat / Lon coordinate system, the mathematical 
-	/// position (lat, Int64) corresponds to a location on the surface of the Earth. This 
+	/// locations in the real world. So in a Lat/Lon coordinate system, the mathematical 
+	/// position (lat, long) corresponds to a location on the surface of the Earth. This 
 	/// mapping from the mathematical space into real-world locations is called a Datum.</para>
 	/// </remarks>		
 	public abstract class CoordinateSystem : Info, ICoordinateSystem
@@ -49,7 +49,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal CoordinateSystem(String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+		internal CoordinateSystem(string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			: base (name,authority,authorityCode,alias,abbreviation,remarks)
 		{
 		}
@@ -58,7 +58,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Dimension of the coordinate system.
 		/// </summary>
-		public Int32 Dimension
+		public int Dimension
 		{
 			get { return _AxisInfo.Count; }
 		}
@@ -67,7 +67,7 @@ namespace SharpMap.CoordinateSystems
 		/// Gets the units for the dimension within coordinate system. 
 		/// Each dimension in the coordinate system has corresponding units.
 		/// </summary>
-		public abstract IUnit GetUnits(Int32 dimension);
+		public abstract IUnit GetUnits(int dimension);
 
 		private List<AxisInfo> _AxisInfo;
 		internal List<AxisInfo> AxisInfo
@@ -82,7 +82,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="dimension">Dimension</param>
 		/// <returns>Axis info</returns>
-		public AxisInfo GetAxis(Int32 dimension)
+		public AxisInfo GetAxis(int dimension)
 		{
 			if (dimension >= _AxisInfo.Count || dimension < 0)
 				throw new ArgumentException("AxisInfo not available for dimension " + dimension.ToString());

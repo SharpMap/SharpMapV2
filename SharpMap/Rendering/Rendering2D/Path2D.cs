@@ -42,7 +42,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="points">Points to add to the path in sequence.</param>
         /// <param name="closeFigure">True to create a closed path, false for an open path.</param>
-        public Path2D(IEnumerable<Point2D> points, Boolean closeFigure)
+        public Path2D(IEnumerable<Point2D> points, bool closeFigure)
 			: base(points, closeFigure) { }
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="points">Points to use in the figure.</param>
         /// <param name="closeFigure">True to close the figure, false to leave it open.</param>
         /// <returns>A Figure instance made from the given points.</returns>
-        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, Boolean closeFigure)
+        protected override Figure<Point2D, Rectangle2D> CreateFigure(IEnumerable<Point2D> points, bool closeFigure)
         {
             return new Figure2D(points, closeFigure);
         }
@@ -104,7 +104,7 @@ namespace SharpMap.Rendering.Rendering2D
                 return Rectangle2D.Empty;
             }
 
-            Double minX = Double.MaxValue, maxX = Double.MinValue, minY = Double.MaxValue, maxY = Double.MinValue;
+            double minX = Double.MaxValue, maxX = Double.MinValue, minY = Double.MaxValue, maxY = Double.MinValue;
 
             foreach (Figure2D figure in Figures)
             {

@@ -16,8 +16,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
 namespace SharpMap.Geometries
 {
 	/// <summary>
@@ -31,14 +29,14 @@ namespace SharpMap.Geometries
 		/// </summary>
 		protected MultiCurve() { }
 
-        protected MultiCurve(Int32 initialCapacity)
+        protected MultiCurve(int initialCapacity)
             : base(initialCapacity) { }
 
 		/// <summary>
 		/// The inherent dimension of this Geometry object, 
 		/// which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		public override Int32 Dimension
+		public override int Dimension
 		{
 			get { return 1; }
 		}
@@ -51,7 +49,7 @@ namespace SharpMap.Geometries
         /// <see cref="Curve.StartPoint"/>.Equals(<see cref="Curve.EndPoint"/>) 
         /// is true for each curve in the collection.
 		/// </remarks>
-		public Boolean IsClosed
+		public bool IsClosed
         {
             get
             {
@@ -71,11 +69,11 @@ namespace SharpMap.Geometries
 		/// The Length of this MultiCurve which is equal 
 		/// to the sum of the lengths of the element Curves.
 		/// </summary>
-		public Double Length 
+		public double Length 
         {
             get
             {
-                Double length = 0.0;
+                double length = 0.0;
 
                 foreach (TCurve curve in this)
                 {

@@ -34,26 +34,26 @@ namespace SharpMap.CoordinateSystems
 	/// </remarks>
 	public class ProjectionParameter
     {
-        private String _name;
-        private Double _value;
+        private string _name;
+        private double _value;
 
 		/// <summary>
 		/// Initializes an instance of a ProjectionParameter
 		/// </summary>
 		/// <param name="name">Name of parameter</param>
 		/// <param name="value">Parameter value</param>
-		public ProjectionParameter(String name, Double value)
+		public ProjectionParameter(string name, double value)
 		{
 			_name = name;
 			_value = value;
 		}
 
-		public override String ToString()
+		public override string ToString()
 		{
 			return String.Format("[ProjectionParameter] {0} = {1}", Name, Value);
 		}
 
-		public override Boolean Equals(object obj)
+		public override bool Equals(object obj)
 		{
 			Parameter other = obj as Parameter;
 
@@ -66,7 +66,7 @@ namespace SharpMap.CoordinateSystems
                 && Tolerance.Equal<Parameter>(Value, other.Value);
 		}
 
-		public override Int32 GetHashCode()
+		public override int GetHashCode()
 		{
 			return Name.GetHashCode() ^ Value.GetHashCode();
 		}
@@ -74,7 +74,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Parameter name.
 		/// </summary>
-		public String Name
+		public string Name
 		{
 			get { return _name; }
 			set { _name = value; }
@@ -87,7 +87,7 @@ namespace SharpMap.CoordinateSystems
 		/// angular units of the geographic coordinate system that the projected coordinate 
 		/// system is based on.
 		/// </summary>
-		public Double Value
+		public double Value
 		{
 			get { return _value; }
 			set { _value = value; }
@@ -98,7 +98,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public String WKT
+		public string WKT
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public String XML
+		public string XML
 		{
 			get
 			{

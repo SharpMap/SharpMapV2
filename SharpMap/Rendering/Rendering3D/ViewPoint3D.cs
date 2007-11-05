@@ -28,7 +28,7 @@ namespace SharpMap.Rendering.Rendering3D
     public struct ViewPoint3D : IVectorD
     {
         private DoubleComponent _x, _y, _z;
-        private Boolean _hasValue;
+        private bool _hasValue;
 
         public static readonly ViewPoint3D Empty = new ViewPoint3D();
         public static readonly ViewPoint3D Zero = new ViewPoint3D(0, 0, 0);
@@ -41,7 +41,7 @@ namespace SharpMap.Rendering.Rendering3D
             _hasValue = true;
         }
 
-        public ViewPoint3D(Double[] elements)
+        public ViewPoint3D(double[] elements)
         {
             if (elements == null)
             {
@@ -59,12 +59,12 @@ namespace SharpMap.Rendering.Rendering3D
             _hasValue = true;
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
-            return unchecked((Int32)_x ^ (Int32)_y ^ (Int32)_z);
+            return unchecked((int)_x ^ (int)_y ^ (int)_z);
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("[ViewPoint3D] ({0:N3}, {1:N3}, {2:N3})", _x, _y, _z);
         }
@@ -91,12 +91,12 @@ namespace SharpMap.Rendering.Rendering3D
             get { return new DoubleComponent[][] { new DoubleComponent[] { _x, _y, _z } }; }
         }
 
-        public Int32 ComponentCount
+        public int ComponentCount
         {
             get { return 3; }
         }
 
-        public DoubleComponent this[Int32 element]
+        public DoubleComponent this[int element]
         {
             get
             {
@@ -124,7 +124,7 @@ namespace SharpMap.Rendering.Rendering3D
             }
         }
 
-        public Boolean IsEmpty
+        public bool IsEmpty
         {
             get { return _hasValue; }
         }
@@ -133,7 +133,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region Equality Computation
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if(obj is ViewPoint3D)
             {
@@ -153,7 +153,7 @@ namespace SharpMap.Rendering.Rendering3D
             return false;
         }
 
-        public Boolean Equals(ViewPoint3D point)
+        public bool Equals(ViewPoint3D point)
         {
             return point._hasValue == _hasValue &&
                    point._x.Equals(_x) &&
@@ -163,7 +163,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IMatrix<DoubleComponent>> Members
 
-        public Boolean Equals(IMatrix<DoubleComponent> other)
+        public bool Equals(IMatrix<DoubleComponent> other)
         {
             if (other == null)
             {
@@ -175,7 +175,7 @@ namespace SharpMap.Rendering.Rendering3D
                 return false;
             }
 
-            for (Int32 elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
+            for (int elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
             {
                 if (!this[elementIndex].Equals(other[0, elementIndex]))
                 {
@@ -188,12 +188,12 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        public static Boolean operator ==(ViewPoint3D vector1, IVectorD vector2)
+        public static bool operator ==(ViewPoint3D vector1, IVectorD vector2)
         {
             return vector1.Equals(vector2);
         }
 
-        public static Boolean operator !=(ViewPoint3D vector1, IVectorD vector2)
+        public static bool operator !=(ViewPoint3D vector1, IVectorD vector2)
         {
             return !(vector1 == vector2);
         }
@@ -215,22 +215,22 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="j1">The ending column to include.</param>
         /// <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
         /// through <paramref name="j1"/>.</returns>
-        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
+        IMatrixD IMatrixD.GetMatrix(int[] rowIndexes, int j0, int j1)
         {
             throw new NotImplementedException();
         }
 
-        public Double Determinant
+        public double Determinant
         {
             get { throw new NotImplementedException(); }
         }
 
-        public Int32 ColumnCount
+        public int ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
 
-        public Boolean IsSingular
+        public bool IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -240,27 +240,27 @@ namespace SharpMap.Rendering.Rendering3D
             get { throw new NotImplementedException(); }
         }
 
-        public Boolean IsSquare
+        public bool IsSquare
         {
             get { throw new NotImplementedException(); }
         }
 
-        public Boolean IsSymmetrical
+        public bool IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
 
-        public Int32 RowCount
+        public int RowCount
         {
             get { throw new NotImplementedException(); }
         }
 
-        public IMatrix<DoubleComponent> GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
+        public IMatrix<DoubleComponent> GetMatrix(int[] rowIndexes, int j0, int j1)
         {
             throw new NotImplementedException();
         }
 
-        public DoubleComponent this[Int32 row, Int32 column]
+        public DoubleComponent this[int row, int column]
         {
             get
             {
@@ -407,7 +407,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of components in the vector.
         /// </summary>
-        Int32 IVectorD.ComponentCount
+        int IVectorD.ComponentCount
         {
             get { return IsEmpty ? 0 : 3; }
         }
@@ -435,7 +435,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// </summary>
         /// <param name="index">The index of the component.</param>
         /// <returns>The value of the component at the given <paramref name="index"/>.</returns>
-        DoubleComponent IVectorD.this[Int32 index]
+        DoubleComponent IVectorD.this[int index]
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -444,7 +444,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
         /// </summary>
-        Double IMatrixD.Determinant
+        double IMatrixD.Determinant
         {
             get { throw new NotImplementedException(); }
         }
@@ -452,7 +452,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of columns in the matrix.
         /// </summary>
-        Int32 IMatrixD.ColumnCount
+        int IMatrixD.ColumnCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -468,7 +468,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
         /// </summary>
-        Boolean IMatrixD.IsSingular
+        bool IMatrixD.IsSingular
         {
             get { throw new NotImplementedException(); }
         }
@@ -476,7 +476,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is invertable (non-singular).
         /// </summary>
-        Boolean IMatrixD.IsInvertible
+        bool IMatrixD.IsInvertible
         {
             get { throw new NotImplementedException(); }
         }
@@ -492,7 +492,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is square (<c>RowCount == ColumnCount != 0</c>).
         /// </summary>
-        Boolean IMatrixD.IsSquare
+        bool IMatrixD.IsSquare
         {
             get { throw new NotImplementedException(); }
         }
@@ -500,7 +500,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets true if the matrix is symmetrical.
         /// </summary>
-        Boolean IMatrixD.IsSymmetrical
+        bool IMatrixD.IsSymmetrical
         {
             get { throw new NotImplementedException(); }
         }
@@ -508,7 +508,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <summary>
         /// Gets the number of rows in the matrix.
         /// </summary>
-        Int32 IMatrixD.RowCount
+        int IMatrixD.RowCount
         {
             get { throw new NotImplementedException(); }
         }
@@ -528,7 +528,7 @@ namespace SharpMap.Rendering.Rendering3D
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
         /// <returns>The value of the element at the specified row and column.</returns>
-        DoubleComponent IMatrixD.this[Int32 row, Int32 column]
+        DoubleComponent IMatrixD.this[int row, int column]
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
@@ -594,7 +594,7 @@ namespace SharpMap.Rendering.Rendering3D
         ///</returns>
         ///
         ///<param name="other">An object to compare with this object.</param>
-        Boolean IEquatable<IMatrixD>.Equals(IMatrixD other)
+        bool IEquatable<IMatrixD>.Equals(IMatrixD other)
         {
             throw new NotImplementedException();
         }

@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.CoordinateSystems.Transformations
 {
@@ -37,7 +37,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// Gets the dimension of input points.
         /// </summary>
-        public virtual Int32 DimSource
+        public virtual int DimSource
         {
             get { throw new NotImplementedException(); }
         }
@@ -45,7 +45,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// Gets the dimension of output points.
         /// </summary>
-        public virtual Int32 DimTarget
+        public virtual int DimTarget
         {
             get { throw new NotImplementedException(); }
         }
@@ -54,7 +54,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// Tests whether this transform does not move any points.
         /// </summary>
         /// <returns></returns>
-        public virtual Boolean Identity()
+        public virtual bool Identity()
         {
             throw new NotImplementedException();
         }
@@ -62,12 +62,12 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// Gets a Well-Known text representation of this object.
         /// </summary>
-        public abstract String Wkt { get; }
+        public abstract string Wkt { get; }
 
         /// <summary>
         /// Gets an XML representation of this object.
         /// </summary>
-        public abstract String Xml { get; }
+        public abstract string Xml { get; }
 
         /// <summary>
         /// Gets the derivative of this transform at a point. If the transform does 
@@ -83,7 +83,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public virtual Double[,] Derivative(Point point)
+        public virtual double[,] Derivative(Point point)
         {
             throw new NotImplementedException();
         }
@@ -109,7 +109,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </remarks>
         /// <param name="points"></param>
         /// <returns></returns>
-        public virtual List<Double> GetCodomainConvexHull(List<Double> points)
+        public virtual List<double> GetCodomainConvexHull(List<double> points)
         {
             throw new NotImplementedException();
         }
@@ -127,7 +127,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// </remarks>
         /// <param name="points"></param>
         /// <returns></returns>
-        public virtual DomainFlags GetDomainFlags(List<Double> points)
+        public virtual DomainFlags GetDomainFlags(List<double> points)
         {
             throw new NotImplementedException();
         }
@@ -174,7 +174,7 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// To convert degrees to radians, multiply degrees by pi/180. 
         /// </summary>
-        protected static Double Degrees2Radians(Double deg)
+        protected static double Degrees2Radians(double deg)
         {
             return (D2R*deg);
         }
@@ -182,19 +182,19 @@ namespace SharpMap.CoordinateSystems.Transformations
         /// <summary>
         /// R2D
         /// </summary>
-        protected const Double R2D = 180/Math.PI;
+        protected const double R2D = 180/Math.PI;
 
         /// <summary>
         /// D2R
         /// </summary>
-        protected const Double D2R = Math.PI/180;
+        protected const double D2R = Math.PI/180;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="rad"></param>
         /// <returns></returns>
-        protected static Double Radians2Degrees(Double rad)
+        protected static double Radians2Degrees(double rad)
         {
             return (R2D*rad);
         }

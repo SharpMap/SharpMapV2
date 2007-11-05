@@ -23,19 +23,19 @@ namespace SharpMap.Utilities
 {
     public class IdleMonitor : IDisposable
     {
-        public static readonly Int32 MachineUtilizationConsideredIdle = 3;
+        public static readonly int MachineUtilizationConsideredIdle = 3;
 
-        private Int32 _userIdleThresholdSeconds;
-        private Int32 _machineIdleThresholdSeconds;
-        private Int32 _checkIdleFrequencyInSeconds = 1;
+        private int _userIdleThresholdSeconds;
+        private int _machineIdleThresholdSeconds;
+        private int _checkIdleFrequencyInSeconds = 1;
         private Thread _pollIdleThread;
         private EventWaitHandle _terminateEvent;
-        private Boolean _isDisposed;
-        private Int32 _terminating = 0;
-        private Boolean _wasUserIdle = false;
-        private Boolean _wasMachineIdle = false;
+        private bool _isDisposed;
+        private int _terminating = 0;
+        private bool _wasUserIdle = false;
+        private bool _wasMachineIdle = false;
 
-        public IdleMonitor(Int32 userIdleThresholdInSeconds, Int32 machineIdleThresholdInSeconds)
+        public IdleMonitor(int userIdleThresholdInSeconds, int machineIdleThresholdInSeconds)
         {
             _userIdleThresholdSeconds = userIdleThresholdInSeconds;
             _machineIdleThresholdSeconds = machineIdleThresholdInSeconds;
@@ -50,7 +50,7 @@ namespace SharpMap.Utilities
             dispose(false);
         }
 
-        public Boolean IsDisposed
+        public bool IsDisposed
         {
             get { return _isDisposed; }
             private set { _isDisposed = value; }
@@ -72,7 +72,7 @@ namespace SharpMap.Utilities
 
         #endregion
 
-        private void dispose(Boolean disposing)
+        private void dispose(bool disposing)
         {
             if (IsDisposed)
             {
@@ -105,7 +105,7 @@ namespace SharpMap.Utilities
             _terminateEvent.Set();
         }
 
-        public Int32 CheckIdleFrequencyInSeconds
+        public int CheckIdleFrequencyInSeconds
         {
             get { return _checkIdleFrequencyInSeconds; }
             set { Interlocked.Exchange(ref _checkIdleFrequencyInSeconds, value); }
@@ -115,7 +115,7 @@ namespace SharpMap.Utilities
         /// Gets or sets the amount of time in seconds during which no 
         /// user activity is detected before a user is considered idle.
         /// </summary>
-        public Int32 UserIdleThresholdInSeconds
+        public int UserIdleThresholdInSeconds
         {
             get { return _userIdleThresholdSeconds; }
             set
@@ -135,7 +135,7 @@ namespace SharpMap.Utilities
         /// machine activity is less than or equal to <see cref="MachineUtilizationConsideredIdle"/> 
         /// before a machine is considered idle.
         /// </summary>
-        public Int32 MachineIdleThresholdInSeconds
+        public int MachineIdleThresholdInSeconds
         {
             get { return _machineIdleThresholdSeconds; }
             set
@@ -150,18 +150,18 @@ namespace SharpMap.Utilities
             }
         }
 
-        public static Boolean IsUserIdle(Int32 userIdleThresholdInSeconds)
+        public static bool IsUserIdle(int userIdleThresholdInSeconds)
         {
             LastInputInfo info = LastInputInfo.Create();
 
             if (GetLastInputInfo(ref info))
             {
-                Int32 idleTicks = 0;
-                Int32 tickCount = Environment.TickCount;
+                int idleTicks = 0;
+                int tickCount = Environment.TickCount;
 
                 if (tickCount - info.dwTime < 0)
                 {
-                    Int32 tickCountWrapDifference = Int32.MaxValue - info.dwTime;
+                    int tickCountWrapDifference = Int32.MaxValue - info.dwTime;
                     idleTicks = tickCountWrapDifference + tickCount;
                 }
                 else
@@ -175,7 +175,7 @@ namespace SharpMap.Utilities
             return false;
         }
 
-        public Boolean IsMachineIdle(Int32 machineIdleThresholdInSeconds, Int32 machineUtilizationConsideredIdle)
+        public bool IsMachineIdle(int machineIdleThresholdInSeconds, int machineUtilizationConsideredIdle)
         {
             // TODO: Implement machine idle detection
             throw new NotImplementedException();
@@ -185,7 +185,7 @@ namespace SharpMap.Utilities
         {
             while (Thread.VolatileRead(ref _terminating) == 0)
             {
-                Int32 userIdleThreshold = Thread.VolatileRead(ref _userIdleThresholdSeconds);
+                int userIdleThreshold = Thread.VolatileRead(ref _userIdleThresholdSeconds);
 
                 if (IsUserIdle(userIdleThreshold))
                 {
@@ -196,7 +196,7 @@ namespace SharpMap.Utilities
                     onUserBusy();
                 }
 
-                Int32 machineIdleThreshold = Thread.VolatileRead(ref _machineIdleThresholdSeconds);
+                int machineIdleThreshold = Thread.VolatileRead(ref _machineIdleThresholdSeconds);
 
                 if (IsMachineIdle(machineIdleThreshold, MachineUtilizationConsideredIdle))
                 {
@@ -207,7 +207,7 @@ namespace SharpMap.Utilities
                     onMachineBusy();
                 }
 
-                Int32 sleepTime = Thread.VolatileRead(ref _checkIdleFrequencyInSeconds);
+                int sleepTime = Thread.VolatileRead(ref _checkIdleFrequencyInSeconds);
                 Thread.Sleep(sleepTime*1000);
             }
         }
@@ -282,13 +282,13 @@ namespace SharpMap.Utilities
         }
 
         [DllImport("user32.dll")]
-        private static extern Boolean GetLastInputInfo(ref LastInputInfo lastInput);
+        private static extern bool GetLastInputInfo(ref LastInputInfo lastInput);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct LastInputInfo
         {
-            [MarshalAs(UnmanagedType.U4)] public Int32 cbSize;
-            [MarshalAs(UnmanagedType.U4)] public Int32 dwTime;
+            [MarshalAs(UnmanagedType.U4)] public int cbSize;
+            [MarshalAs(UnmanagedType.U4)] public int dwTime;
 
             public static LastInputInfo Create()
             {

@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -115,7 +115,7 @@ namespace SharpMap.Indexing.RTree
 
         private void pickSeeds(IList<RTreeIndexEntry<TValue>> entries, List<RTreeIndexEntry<TValue>> group1, List<RTreeIndexEntry<TValue>> group2)
         {
-            Double largestWaste = Double.MinValue;
+            double largestWaste = Double.MinValue;
 
             foreach (RTreeIndexEntry<TValue> entry1 in entries)
             {
@@ -127,7 +127,7 @@ namespace SharpMap.Indexing.RTree
                     }
 
                     BoundingBox minBoundingRectangle = new BoundingBox(entry1.BoundingBox, entry2.BoundingBox);
-                    Double waste = minBoundingRectangle.GetArea() - entry1.BoundingBox.GetArea() - entry2.BoundingBox.GetArea() + entry1.BoundingBox.GetIntersectingArea(entry2.BoundingBox);
+                    double waste = minBoundingRectangle.GetArea() - entry1.BoundingBox.GetArea() - entry2.BoundingBox.GetArea() + entry1.BoundingBox.GetIntersectingArea(entry2.BoundingBox);
 
                     if (group1.Count == 0 && group2.Count == 0)
                     {
@@ -152,7 +152,7 @@ namespace SharpMap.Indexing.RTree
 
         private void pickSeeds(IList<ISpatialIndexNode> nodes, List<ISpatialIndexNode> group1, List<ISpatialIndexNode> group2)
         {
-            Double largestWaste = Double.MinValue;
+            double largestWaste = Double.MinValue;
 
             // Here's why it's known as a quadratic algorithm - O(n^2)
             foreach (ISpatialIndexNode node1 in nodes)
@@ -165,7 +165,7 @@ namespace SharpMap.Indexing.RTree
                     }
 
                     BoundingBox minBoundingRectangle = new BoundingBox(node1.BoundingBox, node2.BoundingBox);
-                    Double waste = minBoundingRectangle.GetArea() - node1.BoundingBox.GetArea() - node2.BoundingBox.GetArea() + node1.BoundingBox.GetIntersectingArea(node2.BoundingBox);
+                    double waste = minBoundingRectangle.GetArea() - node1.BoundingBox.GetArea() - node2.BoundingBox.GetArea() + node1.BoundingBox.GetIntersectingArea(node2.BoundingBox);
 
                     if (group1.Count == 0 && group2.Count == 0)
                     {
@@ -317,14 +317,14 @@ namespace SharpMap.Indexing.RTree
 
         private GroupBoxLeastEnlarged pickNext(IList<RTreeIndexEntry<TValue>> entries, BoundingBox group1Box, BoundingBox group2Box, out RTreeIndexEntry<TValue> entry)
         {
-            Double maxArealDifference = Double.MinValue;
+            double maxArealDifference = Double.MinValue;
             GroupBoxLeastEnlarged group = GroupBoxLeastEnlarged.Tie;
             RTreeIndexEntry<TValue>? nextEntry = null;
 
             foreach (RTreeIndexEntry<TValue> e in entries)
             {
-                Double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, e.BoundingBox).GetArea() - group1Box.GetArea());
-                Double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, e.BoundingBox).GetArea() - group2Box.GetArea());
+                double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, e.BoundingBox).GetArea() - group1Box.GetArea());
+                double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, e.BoundingBox).GetArea() - group2Box.GetArea());
                 
                 if (Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2) > maxArealDifference)
                 {
@@ -349,14 +349,14 @@ namespace SharpMap.Indexing.RTree
 
         private GroupBoxLeastEnlarged pickNext(IList<ISpatialIndexNode> nodes, BoundingBox group1Box, BoundingBox group2Box, out ISpatialIndexNode nextNode)
         {
-            Double maxArealDifference = Double.MinValue;
+            double maxArealDifference = Double.MinValue;
             GroupBoxLeastEnlarged group = GroupBoxLeastEnlarged.Tie;
             nextNode = null;
 
             foreach (ISpatialIndexNode node in nodes)
             {
-                Double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, node.BoundingBox).GetArea() - group1Box.GetArea());
-                Double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, node.BoundingBox).GetArea() - group2Box.GetArea());
+                double arealDifferenceGroup1 = Math.Abs(BoundingBox.Join(group1Box, node.BoundingBox).GetArea() - group1Box.GetArea());
+                double arealDifferenceGroup2 = Math.Abs(BoundingBox.Join(group2Box, node.BoundingBox).GetArea() - group2Box.GetArea());
                 
                 if (Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2) > maxArealDifference)
                 {

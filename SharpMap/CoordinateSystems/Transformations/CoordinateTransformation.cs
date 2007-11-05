@@ -41,7 +41,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <param name="areaOfUse">Area of use</param>
 		/// <param name="remarks">Remarks</param>
 		internal CoordinateTransformation(ICoordinateSystem sourceCS, ICoordinateSystem targetCS, TransformType transformType, IMathTransform mathTransform, 
-										String name, String authority, Int64 authorityCode, String areaOfUse, String remarks)
+										string name, string authority, long authorityCode, string areaOfUse, string remarks)
 			: base()
 		{
 			_TargetCS = targetCS;
@@ -59,33 +59,33 @@ namespace SharpMap.CoordinateSystems.Transformations
 
 		#region ICoordinateTransformation Members
 
-		private String _AreaOfUse;
+		private string _AreaOfUse;
 		/// <summary>
 		/// Human readable description of domain in source coordinate system.
 		/// </summary>		
-		public String AreaOfUse
+		public string AreaOfUse
 		{
 			get { return _AreaOfUse; }
 		}
 
-		private String _Authority;
+		private string _Authority;
 		/// <summary>
 		/// Authority which defined transformation and parameter values.
 		/// </summary>
 		/// <remarks>
-		/// An Authority is an organization that maintains definitions of Authority Codes. For example the European Petroleum Survey Group (EPSG) maintains a database of coordinate systems, and other spatial referencing objects, where each object has a code number ID. For example, the EPSG code for a WGS84 Lat / Lon coordinate system is ‘4326’
+		/// An Authority is an organization that maintains definitions of Authority Codes. For example the European Petroleum Survey Group (EPSG) maintains a database of coordinate systems, and other spatial referencing objects, where each object has a code number ID. For example, the EPSG code for a WGS84 Lat/Lon coordinate system is ‘4326’
 		/// </remarks>
-		public String Authority
+		public string Authority
 		{
 			get { return _Authority; }
 		}
 
-		private Int64 _AuthorityCode;
+		private long _AuthorityCode;
 		/// <summary>
-		/// Code used by authority to identify transformation. An empty String is used for no code.
+		/// Code used by authority to identify transformation. An empty string is used for no code.
 		/// </summary>
-		/// <remarks>The AuthorityCode is a compact String defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat / Lon is ‘4326’.</remarks>
-		public Int64 AuthorityCode
+		/// <remarks>The AuthorityCode is a compact string defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
+		public long AuthorityCode
 		{
 			get { return _AuthorityCode; }
 		}
@@ -99,20 +99,20 @@ namespace SharpMap.CoordinateSystems.Transformations
 			get { return _MathTransform; }
 		}
 
-		private String _Name;
+		private string _Name;
 		/// <summary>
 		/// Name of transformation.
 		/// </summary>
-		public String Name
+		public string Name
 		{
 			get { return _Name; }
 		}
 
-		private String _Remarks;
+		private string _Remarks;
 		/// <summary>
 		/// Gets the provider-supplied remarks.
 		/// </summary>
-		public String Remarks
+		public string Remarks
 		{
 			get { return _Remarks; }
 		}

@@ -26,11 +26,11 @@ namespace SharpMap.Indexing
     /// </summary>
     public abstract class IndexBalanceHeuristic
     {
-        private Int32 _nodeItemMin;
-        private Int32 _nodeItemMax;
-        private UInt32 _maxTreeDepth;
+        private int _nodeItemMin;
+        private int _nodeItemMax;
+        private uint _maxTreeDepth;
 
-        protected IndexBalanceHeuristic(Int32 nodeItemMinimumCount, Int32 nodeItemMaximumCount, UInt32 maxTreeDepth)
+        protected IndexBalanceHeuristic(int nodeItemMinimumCount, int nodeItemMaximumCount, uint maxTreeDepth)
         {
             _nodeItemMin = nodeItemMinimumCount;
             _nodeItemMax = nodeItemMaximumCount;
@@ -41,7 +41,7 @@ namespace SharpMap.Indexing
         /// Minimum number of index entries in a node before it is a candiate for splitting
         /// the node.
         /// </summary>
-        public virtual Int32 NodeItemMinimumCount
+        public virtual int NodeItemMinimumCount
         {
             get { return _nodeItemMin; }
         }
@@ -50,7 +50,7 @@ namespace SharpMap.Indexing
         /// Number of index entries in a node to target. More than this will cause a split
         /// if <see cref="MaxTreeDepth"/> is not reached.
         /// </summary>
-        public virtual Int32 NodeItemMaximumCount
+        public virtual int NodeItemMaximumCount
         {
             get { return _nodeItemMax; }
         }
@@ -58,7 +58,7 @@ namespace SharpMap.Indexing
         /// <summary>
         /// The maximum depth of the tree including the root.
         /// </summary>
-        public virtual UInt32 MaxTreeDepth
+        public virtual uint MaxTreeDepth
         {
             get { return _maxTreeDepth; }
         }
@@ -66,6 +66,6 @@ namespace SharpMap.Indexing
         /// <summary>
         /// The target number of nodes for a split node.
         /// </summary>
-        public abstract Int32 TargetNodeCount { get; }
+        public abstract int TargetNodeCount { get; }
     }
 }

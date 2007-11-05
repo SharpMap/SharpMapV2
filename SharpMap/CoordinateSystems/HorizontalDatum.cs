@@ -45,7 +45,7 @@ namespace SharpMap.CoordinateSystems
         /// <param name="remarks">Provider-supplied remarks</param>
         internal HorizontalDatum(
             IEllipsoid ellipsoid, Wgs84ConversionInfo toWgs84, DatumType type,
-            String name, String authority, Int64 code, String alias, String remarks, String abbreviation)
+            string name, string authority, long code, string alias, string remarks, string abbreviation)
             : base(type, name, authority, code, alias, remarks, abbreviation)
         {
             _ellipsoid = ellipsoid;
@@ -241,7 +241,7 @@ namespace SharpMap.CoordinateSystems
         /// Returns the Well-known text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override String Wkt
+        public override string Wkt
         {
             get
             {
@@ -266,13 +266,13 @@ namespace SharpMap.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override String Xml
+        public override string Xml
         {
             get
             {
                 return String.Format(Info.NumberFormat,
                     "<CS_HorizontalDatum DatumType=\"{0}\">{1}{2}{3}</CS_HorizontalDatum>",
-                    (Int32)DatumType, InfoXml, Ellipsoid.Xml, (Wgs84Parameters == null ? String.Empty : Wgs84Parameters.XML));
+                    (int)DatumType, InfoXml, Ellipsoid.Xml, (Wgs84Parameters == null ? String.Empty : Wgs84Parameters.XML));
             }
         }
 
@@ -286,7 +286,7 @@ namespace SharpMap.CoordinateSystems
         /// </summary>
         /// <param name="obj">Object to test equality to.</param>
         /// <returns>True if equal; false otherwise.</returns>
-        public override Boolean EqualParams(object obj)
+        public override bool EqualParams(object obj)
         {
             HorizontalDatum datum = obj as HorizontalDatum;
 

@@ -27,12 +27,12 @@ namespace SharpMap.Presentation
     public class ViewSelection2D : ViewSelection<Point2D, Size2D, Rectangle2D>
     {
         /// <summary>
-        /// Returns a String description of the <see cref="ViewSelection2D"/>.
+        /// Returns a string description of the <see cref="ViewSelection2D"/>.
         /// </summary>
-        /// <returns>A String which describes the <see cref="ViewSelection2D"/>.</returns>
-        public override String ToString()
+        /// <returns>A string which describes the <see cref="ViewSelection2D"/>.</returns>
+        public override string ToString()
         {
-            return String.Format("[ViewSelection2D] Path: {0}", Path);
+            return String.Format("[ViewSelection2D] Bounds: {0}", Path.Bounds);
         }
 
         /// <summary>
@@ -40,20 +40,19 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <param name="upperLeft">The upper left point of the rectangle.</param>
         /// <param name="size">The size of the rectangle.</param>
-        /// <returns>
-        /// A ViewSelection2D rectangular selection with upper left corner at 
-        /// <paramref name="upperLeft"/> and the given <paramref name="size"/>.
-        /// </returns>
-        public void SelectRectangle(Point2D upperLeft, Size2D size)
+        /// <returns>A ViewSelection2D rectangular selection with upper left corner at <paramref name="upperLeft"/> and
+        /// the given <paramref name="size"/>.</returns>
+        public static ViewSelection2D CreateRectangluarSelection(Point2D upperLeft, Size2D size)
         {
-            Clear();
+            ViewSelection2D selection = new ViewSelection2D();
+            selection.AddPoint(upperLeft);
+            selection.AddPoint(upperLeft);
+            selection.AddPoint(upperLeft);
+            selection.AddPoint(upperLeft);
 
-            AddPoint(upperLeft);
-            AddPoint(upperLeft);
-            AddPoint(upperLeft);
-            AddPoint(upperLeft);
+            selection.Expand(size);
 
-            Expand(size);
+            return selection;
         }
 
         public new Path2D Path

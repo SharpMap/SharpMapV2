@@ -36,9 +36,9 @@ namespace SharpMap.Indexing.RTree
 		private readonly EventWaitHandle _machineIdleEvent;
 		private readonly EventWaitHandle _terminateEvent;
 		private readonly Thread _restructureThread;
-		private readonly Int32 _periodMilliseconds;
-		private Int32 _terminating = 0;
-		private Int32 _insertedEntriesSinceLastRestructure = 0;
+		private readonly int _periodMilliseconds;
+		private int _terminating = 0;
+		private int _insertedEntriesSinceLastRestructure = 0;
 		private readonly IdleMonitor _idleMonitor;
 		#endregion
 		
@@ -62,7 +62,7 @@ namespace SharpMap.Indexing.RTree
 			: base(insertStrategy, nodeSplitStrategy, indexHeuristic)
 		{
 			_periodMilliseconds = restructureHeuristic.WhenToRestructure == RestructureOpportunity.Periodic
-									? (Int32)(restructureHeuristic.Period / 1000.0)
+									? (int)(restructureHeuristic.Period / 1000.0)
 									: -1;
 
 			_restructureStrategy = restructureStrategy;
@@ -81,7 +81,7 @@ namespace SharpMap.Indexing.RTree
 
 			RestructureOpportunity idle = RestructureOpportunity.OnMachineIdle | RestructureOpportunity.OnUserIdle;
 
-			if (((Int32)(restructureHeuristic.WhenToRestructure & idle)) > 0)
+			if (((int)(restructureHeuristic.WhenToRestructure & idle)) > 0)
 			{
 				if(_idleMonitor == null) 
 				{
@@ -125,7 +125,7 @@ namespace SharpMap.Indexing.RTree
 			Dispose(false);
 		}
 
-		protected override void Dispose(Boolean disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -163,13 +163,13 @@ namespace SharpMap.Indexing.RTree
 
 		#region Private helper methods
 
-		private Boolean restructureOnUserIdle()
+		private bool restructureOnUserIdle()
 		{
 			return (_restructuringHeuristic.WhenToRestructure & RestructureOpportunity.OnUserIdle) 
 				!= RestructureOpportunity.None;
 		}
 
-		private Boolean restructureOnMachineIdle()
+		private bool restructureOnMachineIdle()
 		{
 			return (_restructuringHeuristic.WhenToRestructure & RestructureOpportunity.OnMachineIdle) 
 				!= RestructureOpportunity.None;

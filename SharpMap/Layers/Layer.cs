@@ -23,7 +23,7 @@ using System.ComponentModel;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 
@@ -110,12 +110,12 @@ namespace SharpMap.Layers
 
         #region Instance fields
         private ICoordinateTransformation _coordinateTransform;
-        private String _layerName;
+        private string _layerName;
         private IStyle _style;
-        private Boolean _disposed;
+        private bool _disposed;
         private readonly ILayerProvider _dataSource;
-        private Boolean _asyncQuery = false;
-        private Boolean _handleFeaturesNotFoundEvent = true;
+        private bool _asyncQuery = false;
+        private bool _handleFeaturesNotFoundEvent = true;
         #endregion
 
         #region Object Creation / Disposal
@@ -143,7 +143,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(String layerName, ILayerProvider dataSource) :
+        protected Layer(string layerName, ILayerProvider dataSource) :
             this(layerName, null, dataSource)
         {
         }
@@ -164,7 +164,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(String layerName, IStyle style, ILayerProvider dataSource)
+        protected Layer(string layerName, IStyle style, ILayerProvider dataSource)
         {
             LayerName = layerName;
             _dataSource = dataSource;
@@ -210,7 +210,7 @@ namespace SharpMap.Layers
         /// <param name="disposing">
         /// True if being called deterministically, false if being called from finalizer.
         /// </param>
-        protected virtual void Dispose(Boolean disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -224,7 +224,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets whether this layer is disposed, and no longer accessible.
         /// </summary>
-        public Boolean IsDisposed
+        public bool IsDisposed
         {
             get { return _disposed; }
         }
@@ -244,7 +244,7 @@ namespace SharpMap.Layers
         /// Returns the name of the layer.
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             return LayerName;
         }
@@ -255,7 +255,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets a value indicating that data is obtained asynchronously.
         /// </summary>
-        public Boolean AsyncQuery
+        public bool AsyncQuery
         {
             get { return _asyncQuery; }
             set
@@ -321,7 +321,7 @@ namespace SharpMap.Layers
         /// object is created and assigned to the Style property, 
         /// and then the Style.Enabled property is set.
         /// </remarks>
-        public Boolean Enabled
+        public bool Enabled
         {
             get { return Style.Enabled; }
             set
@@ -371,7 +371,7 @@ namespace SharpMap.Layers
         /// an event from a data store indicating that the data is not cached
         /// and must be read from <see cref="DataSource"/>.
         /// </summary>
-        public Boolean ShouldHandleFeaturesNotFoundEvent
+        public bool ShouldHandleFeaturesNotFoundEvent
         {
             get { return _handleFeaturesNotFoundEvent; }
             set
@@ -390,7 +390,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets the name of the layer.
         /// </summary>
-        public String LayerName
+        public string LayerName
         {
             get { return _layerName; }
             set
@@ -413,7 +413,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the spatial reference ID of the layer data source, if one is set.
         /// </summary>
-        public virtual Int32? Srid
+        public virtual int? Srid
         {
             get
             {
@@ -445,7 +445,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
+        public bool IsVisibleWhen(Predicate<ILayer> condition)
         {
             return condition(this);
         }
@@ -553,7 +553,7 @@ namespace SharpMap.Layers
         /// Raises the <see cref="PropertyChanged"/> event.
         /// </summary>
         /// <param name="propertyName">Name of the property changed.</param>
-        protected virtual void OnPropertyChanged(String propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler e = PropertyChanged;
 

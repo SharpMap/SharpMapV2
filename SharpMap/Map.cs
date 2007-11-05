@@ -26,10 +26,12 @@ using NPack;
 using NPack.Interfaces;
 using SharpMap.CoordinateSystems;
 using SharpMap.Data;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
+using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap
 {
@@ -102,7 +104,7 @@ namespace SharpMap
         public class LayerCollection : BindingList<ILayer>, ITypedList
         {
             private readonly Map _map;
-            private Boolean? _sortedAscending = null;
+            private bool? _sortedAscending = null;
             private readonly object _collectionChangeSync = new object();
             private PropertyDescriptor _sortProperty;
             private static readonly PropertyDescriptorCollection _layerProperties;
@@ -137,7 +139,7 @@ namespace SharpMap
                 ResetBindings();
             }
 
-            internal Boolean Exists(Predicate<ILayer> predicate)
+            internal bool Exists(Predicate<ILayer> predicate)
             {
                 foreach (ILayer layer in this)
                 {
@@ -160,7 +162,7 @@ namespace SharpMap
             /// <returns>
             /// Layer with <see cref="ILayer.LayerName"/> of <paramref name="layerName"/>.
             /// </returns>
-            public ILayer this[String layerName]
+            public ILayer this[string layerName]
             {
                 get { return _map.GetLayerByName(layerName); }
             }
@@ -177,7 +179,7 @@ namespace SharpMap
             /// <see langword="false"/> and throws an exception if set.
             /// </summary>
             /// <exception cref="NotSupportedException">Thrown if set.</exception>
-            public new Boolean AllowNew
+            public new bool AllowNew
             {
                 get { return false; }
                 set { throw new NotSupportedException(); }
@@ -188,12 +190,12 @@ namespace SharpMap
                 base.OnAddingNew(e);
             }
 
-            public override void CancelNew(Int32 itemIndex)
+            public override void CancelNew(int itemIndex)
             {
                 base.CancelNew(itemIndex);
             }
 
-            public override void EndNew(Int32 itemIndex)
+            public override void EndNew(int itemIndex)
             {
                 base.EndNew(itemIndex);
             }
@@ -212,7 +214,7 @@ namespace SharpMap
 
                         if (prop.Name == "LayerName")
                         {
-                            Int32 sortDirValue = (direction == ListSortDirection.Ascending ? 1 : -1);
+                            int sortDirValue = (direction == ListSortDirection.Ascending ? 1 : -1);
                             Comparison<ILayer> comparison = delegate(ILayer lhs, ILayer rhs)
                                                             {
                                                                 return sortDirValue*
@@ -240,12 +242,12 @@ namespace SharpMap
                 _sortedAscending = null;
             }
 
-            protected override Boolean SupportsSortingCore
+            protected override bool SupportsSortingCore
             {
                 get { return true; }
             }
 
-            protected override Boolean IsSortedCore
+            protected override bool IsSortedCore
             {
                 get { return _sortedAscending.HasValue; }
             }
@@ -259,7 +261,7 @@ namespace SharpMap
                         throw new InvalidOperationException("List is not sorted.");
                     }
 
-                    return ((Boolean) _sortedAscending)
+                    return ((bool) _sortedAscending)
                                ? ListSortDirection.Ascending
                                : ListSortDirection.Descending;
                 }
@@ -274,7 +276,7 @@ namespace SharpMap
 
             #region Searching support
 
-            protected override Int32 FindCore(PropertyDescriptor prop, object key)
+            protected override int FindCore(PropertyDescriptor prop, object key)
             {
                 if (prop.Name == "LayerName")
                 {
@@ -283,7 +285,7 @@ namespace SharpMap
                     if (String.IsNullOrEmpty(layerName))
                     {
                         throw new ArgumentException(
-                            "Layer name must be a non-null, non-empty String.");
+                            "Layer name must be a non-null, non-empty string.");
                     }
 
                     foreach (ILayer layer in this)
@@ -303,7 +305,7 @@ namespace SharpMap
                 }
             }
 
-            protected override Boolean SupportsSearchingCore
+            protected override bool SupportsSearchingCore
             {
                 get { return true; }
             }
@@ -315,12 +317,12 @@ namespace SharpMap
                 base.ClearItems();
             }
 
-            protected override void InsertItem(Int32 index, ILayer item)
+            protected override void InsertItem(int index, ILayer item)
             {
                 base.InsertItem(index, item);
             }
 
-            protected override void RemoveItem(Int32 index)
+            protected override void RemoveItem(int index)
             {
                 // This defines the missing "OnDeleting" functionality:
                 // having a ListChangedEventArgs.NewIndex == -1 and
@@ -334,7 +336,7 @@ namespace SharpMap
                 base.RemoveItem(index);
             }
 
-            protected override void SetItem(Int32 index, ILayer item)
+            protected override void SetItem(int index, ILayer item)
             {
                 base.SetItem(index, item);
             }
@@ -344,7 +346,7 @@ namespace SharpMap
                 base.OnListChanged(e);
             }
 
-            protected override Boolean SupportsChangeNotificationCore
+            protected override bool SupportsChangeNotificationCore
             {
                 get { return true; }
             }
@@ -374,7 +376,7 @@ namespace SharpMap
             /// From the MSDN docs: This method is used only in the design-time framework 
             /// and by the obsolete DataGrid control.
             /// </remarks>
-            public String GetListName(PropertyDescriptor[] listAccessors)
+            public string GetListName(PropertyDescriptor[] listAccessors)
             {
                 return "LayerCollection";
             }
@@ -396,8 +398,8 @@ namespace SharpMap
         private BoundingBox _extents = BoundingBox.Empty;
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
-        private Boolean _disposed;
-        private readonly String _defaultName;
+        private bool _disposed;
+        private readonly string _defaultName;
 
         #endregion
 
@@ -416,7 +418,7 @@ namespace SharpMap
         /// <summary>
         /// Creates a new instance of a Map with the given title.
         /// </summary>
-        public Map(String title)
+        public Map(string title)
         {
             _layers = new LayerCollection(this);
             _layers.ListChanged += handleLayersChanged;
@@ -456,7 +458,7 @@ namespace SharpMap
         /// <summary>
         /// Disposes the map object and all layers.
         /// </summary>
-        protected virtual void Dispose(Boolean disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -475,7 +477,7 @@ namespace SharpMap
         /// <summary>
         /// Gets whether this layer is disposed, and no longer accessible.
         /// </summary>
-        public Boolean IsDisposed
+        public bool IsDisposed
         {
             get { return _disposed; }
         }
@@ -537,7 +539,7 @@ namespace SharpMap
                 throw new ArgumentNullException("layers");
             }
 
-            List<String> layerNames = new List<String>(16);
+            List<String> layerNames = new List<string>(16);
 
             foreach (ILayer layer in layers)
             {
@@ -549,9 +551,9 @@ namespace SharpMap
                 layerNames.Add(layer.LayerName);
             }
 
-            for (Int32 i = 0; i < layerNames.Count; i++)
+            for (int i = 0; i < layerNames.Count; i++)
             {
-                for (Int32 j = i + 1; j < layerNames.Count; j++)
+                for (int j = i + 1; j < layerNames.Count; j++)
                 {
                     if (String.Compare(layerNames[i], layerNames[j], StringComparison.CurrentCultureIgnoreCase) == 0)
                     {
@@ -583,7 +585,7 @@ namespace SharpMap
         /// Thrown when <paramref name="index"/> is less than 0 or greater than or equal to 
         /// Layers.Count.
         /// </exception>
-        public void DisableLayer(Int32 index)
+        public void DisableLayer(int index)
         {
             if (index < 0 || index >= Layers.Count)
             {
@@ -604,7 +606,7 @@ namespace SharpMap
         /// <exception cref="ArgumentNullException">
         /// Thrown when <paramref name="name"/> is <see langword="null"/> or empty.
         /// </exception>
-        public void DisableLayer(String name)
+        public void DisableLayer(string name)
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -647,7 +649,7 @@ namespace SharpMap
         /// Thrown when <paramref name="index"/> is less than 0 or greater than or equal to 
         /// Layers.Count.
         /// </exception>
-        public void EnableLayer(Int32 index)
+        public void EnableLayer(int index)
         {
             if (index < 0 || index >= Layers.Count)
             {
@@ -668,7 +670,7 @@ namespace SharpMap
         /// <exception cref="ArgumentNullException">
         /// Thrown when <paramref name="name"/> is <see langword="null"/> or empty.
         /// </exception>
-        public void EnableLayer(String name)
+        public void EnableLayer(string name)
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -713,13 +715,13 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Returns an enumerable set of all layers containing the String 
+        /// Returns an enumerable set of all layers containing the string 
         /// <paramref name="layerNamePart"/>  in the <see cref="ILayer.LayerName"/> property.
         /// </summary>
         /// <param name="layerNamePart">Part of the layer name to search for.</param>
         /// <returns>IEnumerable{ILayer} of all layers with <see cref="ILayer.LayerName"/> 
         /// containing <paramref name="layerNamePart"/>.</returns>
-        public IEnumerable<ILayer> FindLayers(String layerNamePart)
+        public IEnumerable<ILayer> FindLayers(string layerNamePart)
         {
             lock (Layers.LayersChangeSync)
             {
@@ -758,11 +760,11 @@ namespace SharpMap
         /// <returns>
         /// Layer with <see cref="ILayer.LayerName"/> of <paramref name="name"/>.
         /// </returns>
-        public ILayer GetLayerByName(String name)
+        public ILayer GetLayerByName(string name)
         {
             lock (Layers.LayersChangeSync)
             {
-                Int32 index = (_layers as IBindingList).Find(Layer.LayerNameProperty, name);
+                int index = (_layers as IBindingList).Find(Layer.LayerNameProperty, name);
 
                 if (index < 0)
                 {
@@ -792,7 +794,7 @@ namespace SharpMap
         /// Removes a layer from the map using the given layer name.
         /// </summary>
         /// <param name="name">The name of the layer to remove.</param>
-        public void RemoveLayer(String name)
+        public void RemoveLayer(string name)
         {
             lock (Layers.LayersChangeSync)
             {
@@ -805,11 +807,11 @@ namespace SharpMap
         /// Selects a layer, using the given index, to be the target of action on the map.
         /// </summary>
         /// <param name="index">The index of the layer to select.</param>
-        public void SelectLayer(Int32 index)
+        public void SelectLayer(int index)
         {
             lock (Layers.LayersChangeSync)
             {
-                SelectLayers(new Int32[] {index});
+                SelectLayers(new int[] {index});
             }
         }
 
@@ -820,11 +822,11 @@ namespace SharpMap
         /// <exception cref="ArgumentException">
         /// If <paramref name="name"/> is <see langword="null"/> or empty.
         /// </exception>
-        public void SelectLayer(String name)
+        public void SelectLayer(string name)
         {
             lock (Layers.LayersChangeSync)
             {
-                SelectLayers(new String[] {name});
+                SelectLayers(new string[] {name});
             }
         }
 
@@ -848,7 +850,7 @@ namespace SharpMap
         /// to be the targets of action on the map.
         /// </summary>
         /// <param name="indexes">The set of indexes of the layers to select.</param>
-        public void SelectLayers(IEnumerable<Int32> indexes)
+        public void SelectLayers(IEnumerable<int> indexes)
         {
             if (indexes == null)
             {
@@ -857,7 +859,7 @@ namespace SharpMap
 
             lock (Layers.LayersChangeSync)
             {
-                Converter<IEnumerable<Int32>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
+                Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
                 selectLayersInternal(layerGenerator(indexes));
             }
         }
@@ -870,7 +872,7 @@ namespace SharpMap
         /// <exception cref="ArgumentException">
         /// If <paramref name="layerNames"/> is <see langword="null"/>.
         /// </exception>
-        public void SelectLayers(IEnumerable<String> layerNames)
+        public void SelectLayers(IEnumerable<string> layerNames)
         {
             if (layerNames == null)
             {
@@ -879,7 +881,7 @@ namespace SharpMap
 
             lock (Layers.LayersChangeSync)
             {
-                Converter<IEnumerable<String>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
+                Converter<IEnumerable<string>, IEnumerable<ILayer>> layerGenerator = layersGenerator;
                 selectLayersInternal(layerGenerator(layerNames));
             }
         }
@@ -904,7 +906,7 @@ namespace SharpMap
             }
         }
 
-        public void SetLayerStyle(Int32 index, Style style)
+        public void SetLayerStyle(int index, Style style)
         {
             if (index < 0 || index >= Layers.Count)
             {
@@ -917,7 +919,7 @@ namespace SharpMap
             }
         }
 
-        public void SetLayerStyle(String name, Style style)
+        public void SetLayerStyle(string name, Style style)
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -952,9 +954,9 @@ namespace SharpMap
         /// If <paramref name="index"/> is less than 0 or greater than or equal
         /// to Layers.Count.
         /// </exception>
-        public void DeselectLayer(Int32 index)
+        public void DeselectLayer(int index)
         {
-            DeselectLayers(new Int32[] {index});
+            DeselectLayers(new int[] {index});
         }
 
         /// <summary>
@@ -965,9 +967,9 @@ namespace SharpMap
         /// <exception cref="ArgumentNullException">
         /// If <paramref name="name"/> is <see langword="null"/>.
         /// </exception>
-        public void DeselectLayer(String name)
+        public void DeselectLayer(string name)
         {
-            DeselectLayers(new String[] {name});
+            DeselectLayers(new string[] {name});
         }
 
         /// <summary>
@@ -995,7 +997,7 @@ namespace SharpMap
         /// If any item in <paramref name="indexes"/> is less than 0 or greater than or equal
         /// to Layers.Count.
         /// </exception>
-        public void DeselectLayers(IEnumerable<Int32> indexes)
+        public void DeselectLayers(IEnumerable<int> indexes)
         {
             if (indexes == null)
             {
@@ -1004,7 +1006,7 @@ namespace SharpMap
 
             lock (Layers.LayersChangeSync)
             {
-                Converter<IEnumerable<Int32>, IEnumerable<ILayer>> layerGenerator
+                Converter<IEnumerable<int>, IEnumerable<ILayer>> layerGenerator
                     = layersGenerator;
 
                 unselectLayersInternal(layerGenerator(indexes));
@@ -1019,7 +1021,7 @@ namespace SharpMap
         /// <exception cref="ArgumentNullException">
         /// If <paramref name="layerNames"/> is <see langword="null"/>.
         /// </exception>
-        public void DeselectLayers(IEnumerable<String> layerNames)
+        public void DeselectLayers(IEnumerable<string> layerNames)
         {
             if (layerNames == null)
             {
@@ -1249,7 +1251,7 @@ namespace SharpMap
             raisePropertyChanged(TitleProperty.Name);
         }
 
-        private void raisePropertyChanged(String propertyName)
+        private void raisePropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler e = PropertyChanged;
 
@@ -1323,7 +1325,7 @@ namespace SharpMap
             _extents = extents;
         }
 
-        private static void changeLayerEnabled(ILayer layer, Boolean enabled)
+        private static void changeLayerEnabled(ILayer layer, bool enabled)
         {
             layer.Style.Enabled = enabled;
         }
@@ -1379,9 +1381,9 @@ namespace SharpMap
             onSelectedLayersChanged();
         }
 
-        private IEnumerable<ILayer> layersGenerator(IEnumerable<Int32> layerIndexes)
+        private IEnumerable<ILayer> layersGenerator(IEnumerable<int> layerIndexes)
         {
-            foreach (Int32 index in layerIndexes)
+            foreach (int index in layerIndexes)
             {
                 if (index < 0 || index >= _layers.Count)
                 {
@@ -1394,9 +1396,9 @@ namespace SharpMap
             }
         }
 
-        private IEnumerable<ILayer> layersGenerator(IEnumerable<String> layerNames)
+        private IEnumerable<ILayer> layersGenerator(IEnumerable<string> layerNames)
         {
-            foreach (String name in layerNames)
+            foreach (string name in layerNames)
             {
                 if (String.IsNullOrEmpty(name))
                 {

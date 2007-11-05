@@ -41,7 +41,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <remarks>If the transform's input dimension is M, and output dimension is N, then the matrix will have size [N+1][M+1]. The +1 in the matrix dimensions allows the matrix to do a shift, as well as a rotation. The [M][j] element of the matrix will be the j'th ordinate of the moved origin. The [i][N] element of the matrix will be 0 for i less than M, and 1 for i equals M.</remarks>
 		/// <param name="matrix"></param>
 		/// <returns></returns>
-		MathTransform CreateAffineTransform(Double[,] matrix);
+		MathTransform CreateAffineTransform(double[,] matrix);
 		/// <summary>
 		/// Creates a transform by concatenating two existing transforms. A concatenated transform acts in the same way as applying two transforms, one after the other.
 		/// </summary>
@@ -51,17 +51,17 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <returns></returns>
 		MathTransform CreateConcatenatedTransform(MathTransform transform1, MathTransform transform2);
 		/// <summary>
-		/// Creates a math transform from a Well-Known Text String.
+		/// Creates a math transform from a Well-Known Text string.
 		/// </summary>
 		/// <param name="wkt"></param>
 		/// <returns></returns>
-		MathTransform CreateFromWKT(String wkt);
+		MathTransform CreateFromWKT(string wkt);
 		/// <summary>
 		/// Creates a math transform from XML.
 		/// </summary>
 		/// <param name="xml"></param>
 		/// <returns></returns>
-		MathTransform CreateFromXML(String xml);
+		MathTransform CreateFromXML(string xml);
 		/// <summary>
 		/// Creates a transform from a classification name and parameters.
 		/// </summary>
@@ -71,7 +71,7 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <param name="classification"></param>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		MathTransform CreateParameterizedTransform(String classification, List<Parameter> parameters);
+		MathTransform CreateParameterizedTransform(string classification, List<Parameter> parameters);
 		/// <summary>
 		/// Creates a transform which passes through a subset of ordinates to another transform.
 		/// </summary>
@@ -81,18 +81,18 @@ namespace SharpMap.CoordinateSystems.Transformations
 		/// <param name="firstAffectedOrdinate"></param>
 		/// <param name="subTransform"></param>
 		/// <returns></returns>
-		MathTransform CreatePassThroughTransform(Int32 firstAffectedOrdinate, MathTransform subTransform);
+		MathTransform CreatePassThroughTransform(int firstAffectedOrdinate, MathTransform subTransform);
 		/// <summary>
 		/// Tests whether parameter is angular. Clients must ensure that all angular parameter values are in degrees.
 		/// </summary>
 		/// <param name="parameterName"></param>
 		/// <returns></returns>
-		Boolean IsParameterAngular(String parameterName);
+		bool IsParameterAngular(string parameterName);
 		/// <summary>
 		/// Tests whether parameter is linear. Clients must ensure that all linear parameter values are in meters.
 		/// </summary>
 		/// <param name="parameterName"></param>
 		/// <returns></returns>
-		Boolean IsParameterLinear(String parameterName);
+		bool IsParameterLinear(string parameterName);
 	}
 }

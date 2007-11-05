@@ -37,7 +37,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		public LinearUnit(Double metersPerUnit, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+		public LinearUnit(double metersPerUnit, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -90,12 +90,12 @@ namespace SharpMap.CoordinateSystems
 
 		#region ILinearUnit Members
 
-		private Double _MetersPerUnit;
+		private double _MetersPerUnit;
 
 		/// <summary>
 		/// Gets or sets the number of meters per <see cref="LinearUnit"/>.
 		/// </summary>
-		public Double MetersPerUnit
+		public double MetersPerUnit
 		{
 			get { return _MetersPerUnit; }
 			set { _MetersPerUnit = value; }
@@ -105,7 +105,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -143,7 +143,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			LinearUnit other = obj as LinearUnit;
 

@@ -25,26 +25,26 @@ namespace SharpMap.Data
 {
     internal sealed class LoadFeaturesAdapter : DataAdapter
     {
-        public Int32 Fill(FeatureDataTable table, IFeatureDataReader dataReader)
+        public int Fill(FeatureDataTable table, IFeatureDataReader dataReader)
         {
             return Fill(new FeatureDataTable[] { table }, dataReader);
         }
 
-        public Int32 Fill(ICollection<FeatureDataTable> dataTables, IFeatureDataReader dataReader)
+        public int Fill(ICollection<FeatureDataTable> dataTables, IFeatureDataReader dataReader)
         {
             FeatureDataTable[] tables = new FeatureDataTable[dataTables.Count];
             dataTables.CopyTo(tables, 0);
             return Fill(tables, dataReader, 0, 0);
         }
 
-        protected override Int32 Fill(DataTable[] dataTables, IDataReader dataReader, Int32 startRecord, Int32 maxRecords)
+        protected override int Fill(DataTable[] dataTables, IDataReader dataReader, int startRecord, int maxRecords)
         {
             if (dataTables.Length == 0)
             {
                 return 0;
             }
 
-            Int32 tableIndex = 0;
+            int tableIndex = 0;
 
             IFeatureDataReader featureReader = dataReader as IFeatureDataReader;
 
@@ -69,7 +69,7 @@ namespace SharpMap.Data
                     FillSchema(table, SchemaType.Mapped, featureReader);
                 }
 
-                table.Merge((IEnumerable<IFeatureDataRecord>)featureReader);
+                table.MergeFeatures(featureReader);
 
                 tableIndex++;
             } while (dataReader.NextResult());

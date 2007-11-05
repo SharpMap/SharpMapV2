@@ -54,7 +54,7 @@ namespace SharpMap.Tests
             map.AddLayer(new GeometryLayer("Layer 2", dataSource));
             map.AddLayer(new GeometryLayer("layer 3b", dataSource));
 
-            Int32 count = 0;
+            int count = 0;
 
             foreach (ILayer layer in map.FindLayers("Layer 3"))
             {

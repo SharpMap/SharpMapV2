@@ -56,16 +56,16 @@ namespace SharpMap.Styles
         #region Private fields
 
         [FieldOffset(0)]
-        private Byte _b;
+        private byte _b;
         [FieldOffset(1)]
-        private Byte _g;
+        private byte _g;
         [FieldOffset(2)]
-        private Byte _r;
+        private byte _r;
         [FieldOffset(3)]
-        private Byte _a;
+        private byte _a;
 
         [FieldOffset(0)]
-        private UInt32 _bgra;
+        private uint _bgra;
 
         #endregion
 
@@ -73,14 +73,14 @@ namespace SharpMap.Styles
 
         /// <summary>
         /// Creates a new <see cref="StyleColor"/> from a <see cref="UInt32"/>
-        /// value where the highest order Byte is the blue, the next highest is green,
-        /// the next is red and the lowest order Byte is the alpha value.
+        /// value where the highest order byte is the blue, the next highest is green,
+        /// the next is red and the lowest order byte is the alpha value.
         /// </summary>
         /// <param name="bgra">
         /// The blue, green, red, alpha encoded <see cref="UInt32"/> value to create
         /// the <see cref="StyleColor"/> from.
         /// </param>
-        public StyleColor(UInt32 bgra)
+        public StyleColor(uint bgra)
         {
             _b = _g = _r = _a = 0;
             _bgra = bgra;
@@ -97,7 +97,7 @@ namespace SharpMap.Styles
         /// If any of the parameters are outside the range [0 - 255] the value
         /// is clamped on the nearest value within that range.
         /// </remarks>
-        public StyleColor(Int32 b, Int32 g, Int32 r, Int32 a)
+        public StyleColor(int b, int g, int r, int a)
         {
             _bgra = 0;
             _b = clampToByte(b);
@@ -108,7 +108,7 @@ namespace SharpMap.Styles
 
         #endregion
 
-        public override String ToString()
+        public override string ToString()
         {
             return "[StyleColor] " + (LookupColorName(this) 
                 ?? String.Format("B = {0}; G = {1}; R = {2}; A = {3}", B, G, R, A));
@@ -116,8 +116,8 @@ namespace SharpMap.Styles
 
         /// <summary>
         /// Generates a new <see cref="StyleColor"/> from a <see cref="UInt32"/>
-        /// value where the highest order Byte is the blue, the next highest is green,
-        /// the next is red and the lowest order Byte is the alpha value.
+        /// value where the highest order byte is the blue, the next highest is green,
+        /// the next is red and the lowest order byte is the alpha value.
         /// </summary>
         /// <param name="bgra">
         /// The blue, green, red, alpha encoded <see cref="UInt32"/> value to create
@@ -126,7 +126,7 @@ namespace SharpMap.Styles
         /// <returns>
         /// A <see cref="StyleColor"/> with the same value as <paramref name="bgra"/>.
         /// </returns>
-        public static StyleColor FromBgra(UInt32 bgra)
+        public static StyleColor FromBgra(uint bgra)
         {
             return new StyleColor(bgra);
         }
@@ -146,7 +146,7 @@ namespace SharpMap.Styles
         /// If any of the parameters are outside the range [0 - 255] the value
         /// is clamped on the nearest value within that range.
         /// </remarks>
-        public static StyleColor FromBgra(Int32 b, Int32 g, Int32 r, Int32 a)
+        public static StyleColor FromBgra(int b, int g, int r, int a)
         {
             return new StyleColor(b, g, r, a);
         }
@@ -162,7 +162,7 @@ namespace SharpMap.Styles
         /// <param name="saturation">The saturation value.</param> 
         /// <param name="brightness">The brightness value.</param> 
         /// <returns>A <see cref="StyleColor"/> structure containing the equivalent RGBA values</returns> 
-        public static StyleColor FromHsb(Double hue, Double saturation, Double brightness)
+        public static StyleColor FromHsb(double hue, double saturation, double brightness)
         {
             StyleColor c = new StyleColor();
             c.setByHsb(hue, saturation, brightness);
@@ -216,7 +216,7 @@ namespace SharpMap.Styles
         /// This value is correct for modern monitors' phosphors. 
         /// See ITU-R BT.709 for definition.
         /// </remarks>
-        public const Double RedLuminanceFactor = 0.2126;
+        public const double RedLuminanceFactor = 0.2126;
 
         /// <summary>
         /// Value of pure green luminance - 0.7152.
@@ -225,7 +225,7 @@ namespace SharpMap.Styles
         /// This value is correct for modern monitors' phosphors. 
         /// See ITU-R BT.709 for definition.
         /// </remarks>
-        public const Double GreenLuminanceFactor = 0.7152;
+        public const double GreenLuminanceFactor = 0.7152;
 
         /// <summary>
         /// Value of pure blue luminance - 0.0722.
@@ -234,7 +234,7 @@ namespace SharpMap.Styles
         /// This value is correct for modern monitors' phosphors. 
         /// See ITU-R BT.709 for definition.
         /// </remarks>
-        public const Double BlueLuminanceFactor = 0.0722;
+        public const double BlueLuminanceFactor = 0.0722;
 
         /// <summary>
         /// Gets the luminance of the color based on the values 
@@ -246,7 +246,7 @@ namespace SharpMap.Styles
         /// what is blended with the alpha.
         /// </remarks>
         /// <returns>A value in the range [0 to 1] (inclusive).</returns>
-        public Double Luminance
+        public double Luminance
         {
             get
             {
@@ -261,7 +261,7 @@ namespace SharpMap.Styles
         /// of the red, green and blue components.
         /// </summary>
         /// <returns>A value in the range [0 to 360] (inclusive).</returns>
-        public Double Hue
+        public double Hue
         {
             get
             {
@@ -270,11 +270,11 @@ namespace SharpMap.Styles
                     return 0.0;
                 }
 
-                Double redFactor = R / 255.0;
-                Double greenFactor = G / 255.0;
-                Double blueFactor = B / 255.0;
-                Double largestFactor = redFactor;
-                Double smallestFactor = redFactor;
+                double redFactor = R / 255.0;
+                double greenFactor = G / 255.0;
+                double blueFactor = B / 255.0;
+                double largestFactor = redFactor;
+                double smallestFactor = redFactor;
 
                 if (greenFactor > largestFactor)
                 {
@@ -296,8 +296,8 @@ namespace SharpMap.Styles
                     smallestFactor = blueFactor;
                 }
 
-                Double majorFactorDifference = largestFactor - smallestFactor;
-                Double hue = 0.0;
+                double majorFactorDifference = largestFactor - smallestFactor;
+                double hue = 0.0;
 
                 if (redFactor == largestFactor)
                 {
@@ -328,17 +328,17 @@ namespace SharpMap.Styles
         /// of the red, green and blue components.
         /// </summary>
         /// <returns>A value in the range [0 to 1] (inclusive).</returns>
-        public Double Saturation
+        public double Saturation
         {
             get
             {
-                Double redFactor = R / 255.0;
-                Double greenFactor = G / 255.0;
-                Double blueFactor = B / 255.0;
-                Double saturation = 0.0;
+                double redFactor = R / 255.0;
+                double greenFactor = G / 255.0;
+                double blueFactor = B / 255.0;
+                double saturation = 0.0;
 
-                Double largestFactor = redFactor;
-                Double smallestFactor = redFactor;
+                double largestFactor = redFactor;
+                double smallestFactor = redFactor;
 
                 if (greenFactor > largestFactor) largestFactor = greenFactor;
                 if (blueFactor > largestFactor) largestFactor = blueFactor;
@@ -350,7 +350,7 @@ namespace SharpMap.Styles
                     return saturation;
                 }
 
-                Double average = (largestFactor + smallestFactor) / 2.0;
+                double average = (largestFactor + smallestFactor) / 2.0;
 
                 if (average <= 0.5)
                 {
@@ -369,17 +369,17 @@ namespace SharpMap.Styles
         /// Yellow, for example, is brighter than blue. This method computes the relative
         /// brightness of a given color.
         /// </remarks>
-        public Double Brightness
+        public double Brightness
         {
             get
             {
                 // Normalize color vector (to between 0 and 1)
-                Double redFactor = R / 255.0;
-                Double greenFactor = G / 255.0;
-                Double blueFactor = B / 255.0;
+                double redFactor = R / 255.0;
+                double greenFactor = G / 255.0;
+                double blueFactor = B / 255.0;
 
-                Double largestFactor = redFactor;
-                Double smallestFactor = redFactor;
+                double largestFactor = redFactor;
+                double smallestFactor = redFactor;
 
                 // Find the largest and smallest components
                 if (greenFactor > largestFactor) largestFactor = greenFactor;
@@ -418,7 +418,7 @@ namespace SharpMap.Styles
         /// </returns>
         /// <remarks>If <paramref name="blendFactor"/> is less than 0 or more than 100,
         /// the value used is 0 or 100 respectively.</remarks>
-        public static StyleColor Interpolate(StyleColor color1, StyleColor color2, Double blendFactor)
+        public static StyleColor Interpolate(StyleColor color1, StyleColor color2, double blendFactor)
         {
             // Clamp values
             if (blendFactor < 0) blendFactor = 0;
@@ -438,17 +438,17 @@ namespace SharpMap.Styles
             }
             else
             {
-                Double r = Math.Abs(color1.R - color2.R) * blendFactor + color1.R;
-                Double g = Math.Abs(color1.G - color2.G) * blendFactor + color1.G;
-                Double b = Math.Abs(color1.B - color2.B) * blendFactor + color1.B;
-                Double a = Math.Abs(color1.A - color2.A) * blendFactor + color1.A;
+                double r = Math.Abs(color1.R - color2.R) * blendFactor + color1.R;
+                double g = Math.Abs(color1.G - color2.G) * blendFactor + color1.G;
+                double b = Math.Abs(color1.B - color2.B) * blendFactor + color1.B;
+                double a = Math.Abs(color1.A - color2.A) * blendFactor + color1.A;
 
                 if (r > 255) r = 255;
                 if (g > 255) g = 255;
                 if (b > 255) b = 255;
                 if (a > 255) a = 255;
 
-                return new StyleColor((Int32)b, (Int32)g, (Int32)r, (Int32)a);
+                return new StyleColor((int)b, (int)g, (int)r, (int)a);
             }
         }
 
@@ -459,7 +459,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
         /// </summary>
-        public Boolean Equals(StyleColor other)
+        public bool Equals(StyleColor other)
         {
             return this == other;
         }
@@ -469,7 +469,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
         /// </summary>
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj != null && obj is StyleColor && ((StyleColor)obj).Bgra == Bgra)
             {
@@ -484,7 +484,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Returns true if two <see cref="StyleColor"/> instances are equal, false if they are not equal.
         /// </summary>
-        public static Boolean operator ==(StyleColor color1, StyleColor color2)
+        public static bool operator ==(StyleColor color1, StyleColor color2)
         {
             return color1.Bgra == color2.Bgra;
         }
@@ -492,7 +492,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Returns true if two <see cref="StyleColor"/> instances are not equal, false if they are equal.
         /// </summary>
-        public static Boolean operator !=(StyleColor color1, StyleColor color2)
+        public static bool operator !=(StyleColor color1, StyleColor color2)
         {
             return color1.Bgra != color2.Bgra;
         }
@@ -525,11 +525,11 @@ namespace SharpMap.Styles
         /// Returns a hash code for this color value.
         /// </summary>
         /// <returns></returns>
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             unchecked
             {
-                return (Int32)Bgra;
+                return (int)Bgra;
             }
         }
 
@@ -2245,15 +2245,15 @@ namespace SharpMap.Styles
         #region Color name lookup by value
 
         private static readonly object _colorNameLookupSync = new object();
-        private static readonly Dictionary<StyleColor, String> _colorNameLookup 
-            = new Dictionary<StyleColor, String>();
+        private static readonly Dictionary<StyleColor, string> _colorNameLookup 
+            = new Dictionary<StyleColor, string>();
 
         /// <summary>
         /// Gets the name of a color, if one exists.
         /// </summary>
         /// <param name="color">The color value to lookup.</param>
         /// <returns>The name of the color if one exists, otherwise null.</returns>
-        public static String LookupColorName(StyleColor color)
+        public static string LookupColorName(StyleColor color)
         {
             if (_colorNameLookup.Count == 0)
             {
@@ -2275,7 +2275,7 @@ namespace SharpMap.Styles
                 }
             }
 
-            String name;
+            string name;
             _colorNameLookup.TryGetValue(color, out name);
             return name;
         }
@@ -2285,13 +2285,13 @@ namespace SharpMap.Styles
         #region Predefined Colors Dictionary
 
         private static readonly object _predefinedColorsSync = new object();
-        private static readonly Dictionary<String, StyleColor> _predefinedColors = new Dictionary<String, StyleColor>();
+        private static readonly Dictionary<string, StyleColor> _predefinedColors = new Dictionary<string, StyleColor>();
 
         /// <summary>
         /// Gets a <see cref="System.Collections.Generic.Dictionary{String, StyleColor}"/> 
         /// which indexes a StyleColor value by its name.
         /// </summary>
-        public static Dictionary<String, StyleColor> PredefinedColors
+        public static Dictionary<string, StyleColor> PredefinedColors
         {
             get
             {
@@ -2316,7 +2316,7 @@ namespace SharpMap.Styles
                     }
                 }
 
-                return new Dictionary<String, StyleColor>(_predefinedColors);
+                return new Dictionary<string, StyleColor>(_predefinedColors);
             }
         }
 
@@ -2324,19 +2324,19 @@ namespace SharpMap.Styles
 
         #region Private helper methods
 
-        private static Byte clampToByte(Int32 value)
+        private static byte clampToByte(int value)
         {
-            return value > 255 ? (Byte)255 : value < 0 ? (Byte)0 : (Byte)value;
+            return value > 255 ? (byte)255 : value < 0 ? (byte)0 : (byte)value;
         }
 
-        private void setByHsb(Double h, Double s, Double v)
+        private void setByHsb(double h, double s, double v)
         {
             _r = 0;
             _g = 0;
             _b = 0;
             _a = 255;
 
-            Double r, g, b;
+            double r, g, b;
 
             if (v == 0)
             {
@@ -2349,15 +2349,15 @@ namespace SharpMap.Styles
             }
             else
             {
-                Double temp1, temp2;
+                double temp1, temp2;
                 h = h % 360;
                 temp2 = ((v <= 0.5) ? v * (1.0 + s) : v + s - (v * s));
                 temp1 = 2.0 * v - temp2;
 
-                Double[] t3 = new Double[] { h + 1.0 / 3.0, h, h - 1.0 / 3.0 };
-                Double[] clr = new Double[] { 0, 0, 0 };
+                double[] t3 = new double[] { h + 1.0 / 3.0, h, h - 1.0 / 3.0 };
+                double[] clr = new double[] { 0, 0, 0 };
 
-                for (Int32 i = 0; i < 3; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     if (t3[i] < 0)
                     {
@@ -2392,9 +2392,9 @@ namespace SharpMap.Styles
                 b = clr[2];
             }
 
-            _b = (Byte)(255 * b);
-            _g = (Byte)(255 * g);
-            _r = (Byte)(255 * r);
+            _b = (byte)(255 * b);
+            _g = (byte)(255 * g);
+            _r = (byte)(255 * r);
         }
 
         #endregion

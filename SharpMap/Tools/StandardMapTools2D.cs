@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
@@ -30,6 +30,9 @@ namespace SharpMap.Tools
     /// </summary>
     public static class StandardMapTools2D
     {
+        private static readonly Dictionary<IMapView2D, Point2D> _actionPositions
+            = new Dictionary<IMapView2D, Point2D>();
+
         /// <summary>
         /// No active tool
         /// </summary>
@@ -109,19 +112,23 @@ namespace SharpMap.Tools
             {
                 throw new InvalidOperationException("No visible region is set for this view.");
             }
+
+            _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
         }
 
         private static void ContinuePan(ActionContext<IMapView2D, Point2D> context)
         {
             IMapView2D view = context.MapView;
-            Point2D previousPoint = context.PreviousPoint;
-            Point2D currentPoint = context.CurrentPoint;
+            Point2D previousPoint = _actionPositions[view];
+            Point2D currentPoint = context.ActionArgs.ActionPoint;
             Point2D difference = previousPoint - currentPoint;
+            _actionPositions[context.MapView] = context.ActionArgs.ActionPoint;
             view.Offset(difference);
         }
 
         private static void EndPan(ActionContext<IMapView2D, Point2D> context)
         {
+            _actionPositions.Remove(context.MapView);
         }
 
         #endregion
@@ -151,7 +158,7 @@ namespace SharpMap.Tools
             else
             {
                 // Zoom in
-                zoomByFactor(context, 1.2);
+                zoomByPercentage(context, true);
             }
         }
 
@@ -174,7 +181,7 @@ namespace SharpMap.Tools
         private static void EndZoomOut(ActionContext<IMapView2D, Point2D> context)
         {
             // Zoom out
-            zoomByFactor(context, 0.833333333333333);
+            zoomByPercentage(context, false);
         }
 
         #endregion
@@ -183,7 +190,7 @@ namespace SharpMap.Tools
 
         private static void QueryQuery(ActionContext<IMapView2D, Point2D> context)
         {
-            Point2D point = context.CurrentPoint;
+            Point2D point = context.ActionArgs.ActionPoint;
             Point worldPoint = context.MapView.ToWorld(point);
             context.MapView.IdentifyLocation(worldPoint);
         }
@@ -230,7 +237,7 @@ namespace SharpMap.Tools
                 view.ToWorld(viewBounds.LowerLeft), view.ToWorld(viewBounds.UpperRight));
 
             // Apply the GeometryFilter derived from the view's selection
-            for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)
+            for (int i = context.Map.Layers.Count - 1; i >= 0; i--)
             {
                 GeometryLayer layer = context.Map.Layers[i] as GeometryLayer;
 
@@ -320,7 +327,7 @@ namespace SharpMap.Tools
 
         #endregion
 
-        private static Predicate<ILayer> isInView(Double scale)
+        private static Predicate<ILayer> isInView(double scale)
         {
             return delegate(ILayer layer)
                    {
@@ -340,37 +347,63 @@ namespace SharpMap.Tools
             }
 
             view.Selection.Clear();
-            view.Selection.AddPoint(context.CurrentPoint);
+            view.Selection.AddPoint(context.ActionArgs.ActionPoint);
+
+            _actionPositions[view] = context.ActionArgs.ActionPoint;
         }
 
         private static void continueSelection(ActionContext<IMapView2D, Point2D> context)
         {
-            context.MapView.Selection.AddPoint(context.CurrentPoint);
+            context.MapView.Selection.AddPoint(context.ActionArgs.ActionPoint);
         }
 
         private static Rectangle2D endSelection(ActionContext<IMapView2D, Point2D> context)
         {
             IMapView2D view = context.MapView;
 
+            _actionPositions.Remove(view);
+
             view.Selection.Close();
 
-            return view.Selection.Path.Bounds;
+            return new Rectangle2D(
+                view.Selection.Path.Bounds.Location, view.Selection.Path.Bounds.Size);
         }
 
-        private static void zoomByFactor(ActionContext<IMapView2D, Point2D> context, Double zoomFactor)
+        private static void zoomByPercentage(ActionContext<IMapView2D, Point2D> context, bool zoomIn)
         {
             IMapView2D view = context.MapView;
-            zoomFactor = 1 / zoomFactor;
 
-            Size2D viewSize = view.ViewSize;
-            Point2D viewCenter = new Point2D((viewSize.Width / 2), (viewSize.Height / 2));
-            Point2D viewDifference = context.CurrentPoint - viewCenter;
+            double zoomPercentage;
 
-            Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor, viewDifference.Y * zoomFactor);
-            Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
-            Rectangle2D zoomViewBounds = new Rectangle2D(zoomUpperLeft, zoomBoundsSize);
+            if (zoomIn)
+            {
+                zoomPercentage = .80;
+            }
+            else
+            {
+                zoomPercentage = 1.20;
+            }
 
-            view.ZoomToViewBounds(zoomViewBounds);
+            Point2D middleLocation = new Point2D((view.ViewSize.Width / 2), (view.ViewSize.Height / 2));
+            Point2D viewDifference = context.ActionArgs.ActionPoint - middleLocation;
+            Point2D upperLeft = new Point2D(viewDifference.X * zoomPercentage, viewDifference.Y * zoomPercentage);
+
+            //if (view.Selection.Path.Points.Count > 0)
+            //{
+            //    // Center the new view over the cursor
+            //    upperLeft = new Point2D(viewDifference.X * zoomPercentage, viewDifference.Y * zoomPercentage);
+            //}
+            //else
+            //{
+            //    // If there are no points selected then we're zooming via the mouse wheel
+            //    upperLeft = new Point2D(viewDifference.X * zoomPercentage, viewDifference.Y * zoomPercentage);
+            //}
+
+            Rectangle2D viewBounds =
+                new Rectangle2D(upperLeft,
+                    new Size2D(view.ViewSize.Width * zoomPercentage, view.ViewSize.Height * zoomPercentage));
+
+            view.ZoomToViewBounds(viewBounds);
         }
 
         #endregion

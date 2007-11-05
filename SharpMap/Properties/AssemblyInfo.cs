@@ -21,14 +21,10 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("SharpMap Engine")]
 [assembly: AssemblyDescription("SharpMap v2.0 Beta 1")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap")]
 [assembly: AssemblyCopyright("Copyright © 2005-2007 Morten Nielsen, Ricardo Stuven, Christian Gräfe, Rory Plaire")]
-#if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
-[assembly: AssemblyConfiguration("Release")]
-#endif
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

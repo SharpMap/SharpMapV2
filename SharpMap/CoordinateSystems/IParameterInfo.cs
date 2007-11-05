@@ -33,7 +33,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets the number of parameters expected.
 		/// </summary>
-		Int32 NumParameters { get; }
+		int NumParameters { get; }
 		/// <summary>
 		/// Returns the default parameters for this projection.
 		/// </summary>
@@ -48,6 +48,6 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		Parameter GetParameterByName(String name);
+		Parameter GetParameterByName(string name);
 	}
 }

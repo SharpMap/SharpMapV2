@@ -64,8 +64,8 @@ namespace SharpMap.Indexing.QuadTree
     public class QuadTreeIndexInsertOverflowException : Exception
     {
         public QuadTreeIndexInsertOverflowException() { }
-        public QuadTreeIndexInsertOverflowException(String message) : base(message) { }
-        public QuadTreeIndexInsertOverflowException(String message, Exception inner) : base(message, inner) { }
+        public QuadTreeIndexInsertOverflowException(string message) : base(message) { }
+        public QuadTreeIndexInsertOverflowException(string message, Exception inner) : base(message, inner) { }
         protected QuadTreeIndexInsertOverflowException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)

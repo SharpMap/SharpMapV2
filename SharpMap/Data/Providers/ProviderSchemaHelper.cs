@@ -22,22 +22,22 @@ namespace SharpMap.Data.Providers
 {
     public static class ProviderSchemaHelper
     {
-        public static readonly String ColumnNameColumn = "ColumnName";
-        public static readonly String ColumnSizeColumn = "ColumnSize";
-        public static readonly String ColumnOrdinalColumn = "ColumnOrdinal";
-        public static readonly String NumericPrecisionColumn = "NumericPrecision";
-        public static readonly String NumericScaleColumn = "NumericScale";
-        public static readonly String DataTypeColumn = "DataType";
-        public static readonly String AllowDBNullColumn = "AllowDBNull";
-        public static readonly String IsReadOnlyColumn = "IsReadOnly";
-        public static readonly String IsUniqueColumn = "IsUnique";
-        public static readonly String IsRowVersionColumn = "IsRowVersion";
-        public static readonly String IsKeyColumn = "IsKey";
-        public static readonly String IsAutoIncrementColumn = "IsAutoIncrement";
-        public static readonly String IsLongColumn = "IsLong";
-        public static readonly String NumericPrecisionExtendedProperty = "Precision";
-        public static readonly String NumericScaleExtendedProperty = "Scale";
-        public static readonly String LengthExtendedProperty = "Length";
+        public static readonly string ColumnNameColumn = "ColumnName";
+        public static readonly string ColumnSizeColumn = "ColumnSize";
+        public static readonly string ColumnOrdinalColumn = "ColumnOrdinal";
+        public static readonly string NumericPrecisionColumn = "NumericPrecision";
+        public static readonly string NumericScaleColumn = "NumericScale";
+        public static readonly string DataTypeColumn = "DataType";
+        public static readonly string AllowDBNullColumn = "AllowDBNull";
+        public static readonly string IsReadOnlyColumn = "IsReadOnly";
+        public static readonly string IsUniqueColumn = "IsUnique";
+        public static readonly string IsRowVersionColumn = "IsRowVersion";
+        public static readonly string IsKeyColumn = "IsKey";
+        public static readonly string IsAutoIncrementColumn = "IsAutoIncrement";
+        public static readonly string IsLongColumn = "IsLong";
+        public static readonly string NumericPrecisionExtendedProperty = "Precision";
+        public static readonly string NumericScaleExtendedProperty = "Scale";
+        public static readonly string LengthExtendedProperty = "Length";
 
         /// <summary>
         /// Creates an empty schema table.
@@ -190,13 +190,13 @@ namespace SharpMap.Data.Providers
             schemaTable.Columns.Add(NumericPrecisionColumn, typeof(Int16));
             schemaTable.Columns.Add(NumericScaleColumn, typeof(Int16));
             schemaTable.Columns.Add(DataTypeColumn, typeof(Type));
-            schemaTable.Columns.Add(AllowDBNullColumn, typeof(Boolean));
-            schemaTable.Columns.Add(IsReadOnlyColumn, typeof(Boolean));
-            schemaTable.Columns.Add(IsUniqueColumn, typeof(Boolean));
-            schemaTable.Columns.Add(IsRowVersionColumn, typeof(Boolean));
-            schemaTable.Columns.Add(IsKeyColumn, typeof(Boolean));
-            schemaTable.Columns.Add(IsAutoIncrementColumn, typeof(Boolean));
-            schemaTable.Columns.Add(IsLongColumn, typeof(Boolean));
+            schemaTable.Columns.Add(AllowDBNullColumn, typeof(bool));
+            schemaTable.Columns.Add(IsReadOnlyColumn, typeof(bool));
+            schemaTable.Columns.Add(IsUniqueColumn, typeof(bool));
+            schemaTable.Columns.Add(IsRowVersionColumn, typeof(bool));
+            schemaTable.Columns.Add(IsKeyColumn, typeof(bool));
+            schemaTable.Columns.Add(IsAutoIncrementColumn, typeof(bool));
+            schemaTable.Columns.Add(IsLongColumn, typeof(bool));
 
             return schemaTable;
         }
@@ -212,17 +212,17 @@ namespace SharpMap.Data.Providers
             {
                 DataColumn[] keyColumns = table.PrimaryKey ?? new DataColumn[] { };
 
-                Int32 length = column.ExtendedProperties.ContainsKey(LengthExtendedProperty)
+                int length = column.ExtendedProperties.ContainsKey(LengthExtendedProperty)
                     ? Convert.ToInt32(column.ExtendedProperties[LengthExtendedProperty])
                     : (lengthComputationDelegate == null) ? 0 : lengthComputationDelegate(column);
 
-                Int16 precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty)
+                short precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty)
                     ? Convert.ToInt16(column.ExtendedProperties[NumericPrecisionExtendedProperty])
-                    : (precisionComputationDelegate == null) ? (Int16)0 : precisionComputationDelegate(column);
+                    : (precisionComputationDelegate == null) ? (short)0 : precisionComputationDelegate(column);
 
-                Int16 scale = column.ExtendedProperties.ContainsKey(NumericScaleExtendedProperty)
+                short scale = column.ExtendedProperties.ContainsKey(NumericScaleExtendedProperty)
                     ? Convert.ToInt16(column.ExtendedProperties[NumericScaleExtendedProperty])
-                    : (scaleComputationDelegate == null) ? (Int16)0 : scaleComputationDelegate(column);
+                    : (scaleComputationDelegate == null) ? (short)0 : scaleComputationDelegate(column);
 
                 schema.Rows.Add(
                     column.ColumnName,

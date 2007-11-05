@@ -17,28 +17,25 @@
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.CoordinateSystems;
-using NPack;
-using NPack.Interfaces;
+using SharpMap.Geometries;
 
 namespace SharpMap.Utilities
 {
     /// <summary>
     /// Calculates Affine and Helmert transformation using Least-Squares Regression of input and output points
     /// </summary>
-    public class LeastSquaresTransform<TCoordinate>
-        where TCoordinate : ICoordinate2D
+    public class LeastSquaresTransform
     {
-        private readonly List<TCoordinate> inputs;
-        private readonly List<TCoordinate> outputs;
+        private List<Point> inputs;
+        private List<Point> outputs;
 
         /// <summary>
         /// Initialize Least Squares transformations
         /// </summary>
-        public LeastSquaresTransform( )
+        public LeastSquaresTransform()
         {
-            inputs = new List<TCoordinate>();
-            outputs = new List<TCoordinate>();
+            inputs = new List<Point>();
+            outputs = new List<Point>();
         }
 
         /// <summary>
@@ -46,7 +43,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="input"></param>
         /// <param name="output"></param>
-        public void AddInputOutputPoint(TCoordinate input, TCoordinate output)
+        public void AddInputOutputPoint(Point input, Point output)
         {
             inputs.Add(input);
             outputs.Add(output);
@@ -56,7 +53,7 @@ namespace SharpMap.Utilities
         /// Removes input and output value pair at the specified index
         /// </summary>
         /// <param name="i"></param>
-        public void RemoveInputOutputPointAt(Int32 i)
+        public void RemoveInputOutputPointAt(int i)
         {
             inputs.RemoveAt(i);
             outputs.RemoveAt(i);
@@ -67,7 +64,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="i">index</param>
         /// <returns>Input point value a index 'i'</returns>
-        public TCoordinate GetInputPoint(Int32 i)
+        public Point GetInputPoint(int i)
         {
             return inputs[i];
         }
@@ -77,7 +74,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="p">Point value</param>
         /// <param name="i">index</param>
-        public void SetInputPointAt(TCoordinate p, Int32 i)
+        public void SetInputPointAt(Point p, int i)
         {
             inputs[i] = p;
         }
@@ -87,7 +84,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="i">index</param>
         /// <returns>Output point value a index 'i'</returns>
-        public TCoordinate GetOutputPoint(Int32 i)
+        public Point GetOutputPoint(int i)
         {
             return outputs[i];
         }
@@ -97,7 +94,7 @@ namespace SharpMap.Utilities
         /// </summary>
         /// <param name="p">Point value</param>
         /// <param name="i">index</param>
-        public void SetOutputPointAt(TCoordinate p, Int32 i)
+        public void SetOutputPointAt(Point p, int i)
         {
             outputs[i] = p;
         }
@@ -120,19 +117,19 @@ namespace SharpMap.Utilities
         /// <returns>
         /// Array with the six transformation parameters and sum of squared residuals:  a, b, c, d, e, f, s0
         /// </returns>
-        public Double[] GetAffineTransformation()
+        public double[] GetAffineTransformation()
         {
             if (inputs.Count < 3)
                 throw new InvalidOperationException(
                     "At least 3 measurements required to calculate affine transformation");
 
-            // Double precision isn't always enough when transforming large numbers.
+            // double precision isn't always enough when transforming large numbers.
             // Lets subtract some mean values and add them later again:
             // Find approximate center values:
-            TCoordinate meanInput = new TCoordinate(0, 0);
-            TCoordinate meanOutput = new TCoordinate(0, 0);
+            Point meanInput = new Point(0, 0);
+            Point meanOutput = new Point(0, 0);
 
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
                 meanInput.X += inputs[i].X;
                 meanInput.Y += inputs[i].Y;
@@ -140,16 +137,16 @@ namespace SharpMap.Utilities
                 meanOutput.Y += outputs[i].Y;
             }
 
-            meanInput.X = Math.Round(meanInput.X / inputs.Count);
-            meanInput.Y = Math.Round(meanInput.Y / inputs.Count);
-            meanOutput.X = Math.Round(meanOutput.X / inputs.Count);
-            meanOutput.Y = Math.Round(meanOutput.Y / inputs.Count);
+            meanInput.X = Math.Round(meanInput.X/inputs.Count);
+            meanInput.Y = Math.Round(meanInput.Y/inputs.Count);
+            meanOutput.X = Math.Round(meanOutput.X/inputs.Count);
+            meanOutput.Y = Math.Round(meanOutput.Y/inputs.Count);
 
-            Double[][] N = CreateMatrix(3, 3);
+            double[][] N = CreateMatrix(3, 3);
 
             // Create normal equation: transpose(B)*B
             // B: matrix of calibrated values. Example of row in B: [x , y , -1]
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
                 //Subtract mean values
                 inputs[i].X -= meanInput.X;
@@ -159,7 +156,7 @@ namespace SharpMap.Utilities
 
                 //Calculate summed values
                 N[0][0] += Math.Pow(inputs[i].X, 2);
-                N[0][1] += inputs[i].X * inputs[i].Y;
+                N[0][1] += inputs[i].X*inputs[i].Y;
                 N[0][2] += -inputs[i].X;
                 N[1][1] += Math.Pow(inputs[i].Y, 2);
                 N[1][2] += -inputs[i].Y;
@@ -167,46 +164,46 @@ namespace SharpMap.Utilities
 
             N[2][2] = inputs.Count;
 
-            Double[] t1 = new Double[3];
-            Double[] t2 = new Double[3];
+            double[] t1 = new double[3];
+            double[] t2 = new double[3];
 
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
-                t1[0] += inputs[i].X * outputs[i].X;
-                t1[1] += inputs[i].Y * outputs[i].X;
+                t1[0] += inputs[i].X*outputs[i].X;
+                t1[1] += inputs[i].Y*outputs[i].X;
                 t1[2] += -outputs[i].X;
 
-                t2[0] += inputs[i].X * outputs[i].Y;
-                t2[1] += inputs[i].Y * outputs[i].Y;
+                t2[0] += inputs[i].X*outputs[i].Y;
+                t2[1] += inputs[i].Y*outputs[i].Y;
                 t2[2] += -outputs[i].Y;
             }
-            Double[] trans = new Double[7];
+            double[] trans = new double[7];
 
             // Solve equation N = transpose(B)*t1
-            Double frac = 1 /
-                          (-N[0][0] * N[1][1] * N[2][2] + N[0][0] * Math.Pow(N[1][2], 2) + Math.Pow(N[0][1], 2) * N[2][2] -
-                           2 * N[1][2] * N[0][1] * N[0][2] + N[1][1] * Math.Pow(N[0][2], 2));
-            trans[0] = (-N[0][1] * N[1][2] * t1[2] + N[0][1] * t1[1] * N[2][2] - N[0][2] * N[1][2] * t1[1] + N[0][2] * N[1][1] * t1[2] -
-                        t1[0] * N[1][1] * N[2][2] + t1[0] * Math.Pow(N[1][2], 2)) * frac;
-            trans[1] = (-N[0][1] * N[0][2] * t1[2] + N[0][1] * t1[0] * N[2][2] + N[0][0] * N[1][2] * t1[2] - N[0][0] * t1[1] * N[2][2] -
-                        N[0][2] * N[1][2] * t1[0] + Math.Pow(N[0][2], 2) * t1[1]) * frac;
+            double frac = 1/
+                          (-N[0][0]*N[1][1]*N[2][2] + N[0][0]*Math.Pow(N[1][2], 2) + Math.Pow(N[0][1], 2)*N[2][2] -
+                           2*N[1][2]*N[0][1]*N[0][2] + N[1][1]*Math.Pow(N[0][2], 2));
+            trans[0] = (-N[0][1]*N[1][2]*t1[2] + N[0][1]*t1[1]*N[2][2] - N[0][2]*N[1][2]*t1[1] + N[0][2]*N[1][1]*t1[2] -
+                        t1[0]*N[1][1]*N[2][2] + t1[0]*Math.Pow(N[1][2], 2))*frac;
+            trans[1] = (-N[0][1]*N[0][2]*t1[2] + N[0][1]*t1[0]*N[2][2] + N[0][0]*N[1][2]*t1[2] - N[0][0]*t1[1]*N[2][2] -
+                        N[0][2]*N[1][2]*t1[0] + Math.Pow(N[0][2], 2)*t1[1])*frac;
             trans[2] =
-                -(-N[1][2] * N[0][1] * t1[0] + Math.Pow(N[0][1], 2) * t1[2] + N[0][0] * N[1][2] * t1[1] - N[0][0] * N[1][1] * t1[2] -
-                  N[0][2] * N[0][1] * t1[1] + N[1][1] * N[0][2] * t1[0]) * frac;
-            trans[2] += -meanOutput.X + meanInput.X;
+                -(-N[1][2]*N[0][1]*t1[0] + Math.Pow(N[0][1], 2)*t1[2] + N[0][0]*N[1][2]*t1[1] - N[0][0]*N[1][1]*t1[2] -
+                  N[0][2]*N[0][1]*t1[1] + N[1][1]*N[0][2]*t1[0])*frac;
+            trans[2] += - meanOutput.X + meanInput.X;
 
             // Solve equation N = transpose(B)*t2
-            trans[3] = (-N[0][1] * N[1][2] * t2[2] + N[0][1] * t2[1] * N[2][2] - N[0][2] * N[1][2] * t2[1] + N[0][2] * N[1][1] * t2[2] -
-                        t2[0] * N[1][1] * N[2][2] + t2[0] * Math.Pow(N[1][2], 2)) * frac;
-            trans[4] = (-N[0][1] * N[0][2] * t2[2] + N[0][1] * t2[0] * N[2][2] + N[0][0] * N[1][2] * t2[2] - N[0][0] * t2[1] * N[2][2] -
-                        N[0][2] * N[1][2] * t2[0] + Math.Pow(N[0][2], 2) * t2[1]) * frac;
+            trans[3] = (-N[0][1]*N[1][2]*t2[2] + N[0][1]*t2[1]*N[2][2] - N[0][2]*N[1][2]*t2[1] + N[0][2]*N[1][1]*t2[2] -
+                        t2[0]*N[1][1]*N[2][2] + t2[0]*Math.Pow(N[1][2], 2))*frac;
+            trans[4] = (-N[0][1]*N[0][2]*t2[2] + N[0][1]*t2[0]*N[2][2] + N[0][0]*N[1][2]*t2[2] - N[0][0]*t2[1]*N[2][2] -
+                        N[0][2]*N[1][2]*t2[0] + Math.Pow(N[0][2], 2)*t2[1])*frac;
             trans[5] =
-                -(-N[1][2] * N[0][1] * t2[0] + Math.Pow(N[0][1], 2) * t2[2] + N[0][0] * N[1][2] * t2[1] - N[0][0] * N[1][1] * t2[2] -
-                  N[0][2] * N[0][1] * t2[1] + N[1][1] * N[0][2] * t2[0]) * frac;
-            trans[5] += -meanOutput.Y + meanInput.Y;
+                -(-N[1][2]*N[0][1]*t2[0] + Math.Pow(N[0][1], 2)*t2[2] + N[0][0]*N[1][2]*t2[1] - N[0][0]*N[1][1]*t2[2] -
+                  N[0][2]*N[0][1]*t2[1] + N[1][1]*N[0][2]*t2[0])*frac;
+            trans[5] += - meanOutput.Y + meanInput.Y;
 
             //Restore values
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
                 inputs[i].X += meanInput.X;
                 inputs[i].Y += meanInput.Y;
@@ -215,16 +212,16 @@ namespace SharpMap.Utilities
             }
 
             //Calculate s0
-            Double s0 = 0;
+            double s0 = 0;
 
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
-                Double x = inputs[i].X * trans[0] + inputs[i].Y * trans[1] + trans[2];
-                Double y = inputs[i].X * trans[3] + inputs[i].Y * trans[4] + trans[5];
+                double x = inputs[i].X*trans[0] + inputs[i].Y*trans[1] + trans[2];
+                double y = inputs[i].X*trans[3] + inputs[i].Y*trans[4] + trans[5];
                 s0 += Math.Pow(x - outputs[i].X, 2) + Math.Pow(y - outputs[i].Y, 2);
             }
 
-            trans[6] = Math.Sqrt(s0) / (inputs.Count);
+            trans[6] = Math.Sqrt(s0)/(inputs.Count);
 
             return trans;
         }
@@ -249,82 +246,79 @@ namespace SharpMap.Utilities
         /// <returns>
         /// Array with the four transformation parameters, and sum of squared residuals: a, b, c, d, s0
         /// </returns>
-        public Double[] GetHelmertTransformation()
+        public double[] GetHelmertTransformation()
         {
             if (inputs.Count < 2)
                 throw new InvalidOperationException(
                     "At least 2 measurements required to calculate helmert transformation");
 
-            //Double precision isn't always enough. Lets subtract some mean values and add them later again:
+            //double precision isn't always enough. Lets subtract some mean values and add them later again:
             //Find approximate center values:
-            Double meanInputX = 0, meanInputY = 0;
-            Double meanOutputX = 0, meanOutputY = 0;
+            Point meanInput = new Point(0, 0);
+            Point meanOutput = new Point(0, 0);
 
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
-                meanInputX += inputs[i].X;
-                meanInputY += inputs[i].Y;
-                meanOutputX += outputs[i].X;
-                meanOutputY += outputs[i].Y;
+                meanInput.X += inputs[i].X;
+                meanInput.Y += inputs[i].Y;
+                meanOutput.X += outputs[i].X;
+                meanOutput.Y += outputs[i].Y;
             }
 
-            meanInputX = Math.Round(meanInputX / inputs.Count);
-            meanInputY = Math.Round(meanInputY / inputs.Count);
-            meanOutputX = Math.Round(meanOutputX / inputs.Count);
-            meanOutputY = Math.Round(meanOutputY / inputs.Count);
+            meanInput.X = Math.Round(meanInput.X/inputs.Count);
+            meanInput.Y = Math.Round(meanInput.Y/inputs.Count);
+            meanOutput.X = Math.Round(meanOutput.X/inputs.Count);
+            meanOutput.Y = Math.Round(meanOutput.Y/inputs.Count);
 
-            Double b00 = 0;
-            Double b02 = 0;
-            Double b03 = 0;
-            Double[] t = new Double[4];
+            double b00 = 0;
+            double b02 = 0;
+            double b03 = 0;
+            double[] t = new double[4];
 
-            Double inputX, inputY, outputX, outputY;
-
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
                 //Subtract mean values
-                inputs[i] =  - meanInputX;
-                inputs[i].Y -= meanInputY;
-                outputs[i].X -= meanOutputX;
-                outputs[i].Y -= meanOutputY;
+                inputs[i].X -= meanInput.X;
+                inputs[i].Y -= meanInput.Y;
+                outputs[i].X -= meanOutput.X;
+                outputs[i].Y -= meanOutput.Y;
 
                 //Calculate summed values
                 b00 += Math.Pow(inputs[i].X, 2) + Math.Pow(inputs[i].Y, 2);
                 b02 -= inputs[i].X;
                 b03 -= inputs[i].Y;
-                t[0] += -(inputs[i].X * outputs[i].X) - (inputs[i].Y * outputs[i].Y);
-                t[1] += -(inputs[i].Y * outputs[i].X) + (inputs[i].X * outputs[i].Y);
+                t[0] += -(inputs[i].X*outputs[i].X) - (inputs[i].Y*outputs[i].Y);
+                t[1] += -(inputs[i].Y*outputs[i].X) + (inputs[i].X*outputs[i].Y);
                 t[2] += outputs[i].X;
                 t[3] += outputs[i].Y;
             }
 
-            Double frac = 1 / (-inputs.Count * b00 + Math.Pow(b02, 2) + Math.Pow(b03, 2));
-            Double[] result = new Double[5];
-            result[0] = (-inputs.Count * t[0] + b02 * t[2] + b03 * t[3]) * frac;
-            result[1] = (-inputs.Count * t[1] + b03 * t[2] - b02 * t[3]) * frac;
-            result[2] = (b02 * t[0] + b03 * t[1] - t[2] * b00) * frac + meanOutputX;
-            result[3] = (b03 * t[0] - b02 * t[1] - t[3] * b00) * frac + meanOutputY;
+            double frac = 1/(-inputs.Count*b00 + Math.Pow(b02, 2) + Math.Pow(b03, 2));
+            double[] result = new double[5];
+            result[0] = (-inputs.Count*t[0] + b02*t[2] + b03*t[3])*frac;
+            result[1] = (-inputs.Count*t[1] + b03*t[2] - b02*t[3])*frac;
+            result[2] = (b02*t[0] + b03*t[1] - t[2]*b00)*frac + meanOutput.X;
+            result[3] = (b03*t[0] - b02*t[1] - t[3]*b00)*frac + meanOutput.Y;
 
             //Restore values
-            for (Int32 i = 0; i < inputs.Count; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
-                inputs[i].X += meanInputX;
-                inputs[i].Y += meanInputY;
-                outputs[i].X += meanOutputX;
-                outputs[i].Y += meanOutputY;
+                inputs[i].X += meanInput.X;
+                inputs[i].Y += meanInput.Y;
+                outputs[i].X += meanOutput.X;
+                outputs[i].Y += meanOutput.Y;
             }
 
             //Calculate s0
-            Double s0 = 0;
-
-            for (Int32 i = 0; i < inputs.Count; i++)
+            double s0 = 0;
+            for (int i = 0; i < inputs.Count; i++)
             {
-                Double x = inputs[i].X * result[0] + inputs[i].Y * result[1] + result[2];
-                Double y = -inputs[i].X * result[1] + inputs[i].Y * result[0] + result[3];
+                double x = inputs[i].X*result[0] + inputs[i].Y*result[1] + result[2];
+                double y = -inputs[i].X*result[1] + inputs[i].Y*result[0] + result[3];
                 s0 += Math.Pow(x - outputs[i].X, 2) + Math.Pow(y - outputs[i].Y, 2);
             }
 
-            result[4] = Math.Sqrt(s0) / (inputs.Count);
+            result[4] = Math.Sqrt(s0)/(inputs.Count);
 
             return result;
         }
@@ -335,12 +329,12 @@ namespace SharpMap.Utilities
         /// <param name="n">width of matrix</param>
         /// <param name="m">height of matrix</param>
         /// <returns>n*m matrix</returns>
-        private Double[][] CreateMatrix(Int32 n, Int32 m)
+        private double[][] CreateMatrix(int n, int m)
         {
-            Double[][] N = new Double[n][];
+            double[][] N = new double[n][];
 
-            for (Int32 i = 0; i < n; i++)
-                N[i] = new Double[m];
+            for (int i = 0; i < n; i++)
+                N[i] = new double[m];
 
             return N;
         }

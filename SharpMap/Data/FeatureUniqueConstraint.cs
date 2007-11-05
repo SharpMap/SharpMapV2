@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Data;
 
 namespace SharpMap.Data
@@ -29,18 +28,18 @@ namespace SharpMap.Data
             : base(columns) {}
 
         public FeatureUniqueConstraint(DataColumn column) : base(column) {}
-        public FeatureUniqueConstraint(DataColumn column, Boolean isPrimaryKey) : base(column, isPrimaryKey) {}
-        public FeatureUniqueConstraint(String name, DataColumn[] columns) : base(name, columns) {}
-        public FeatureUniqueConstraint(DataColumn[] columns, Boolean isPrimaryKey) : base(columns, isPrimaryKey) {}
-        public FeatureUniqueConstraint(String name, DataColumn column) : base(name, column) {}
+        public FeatureUniqueConstraint(DataColumn column, bool isPrimaryKey) : base(column, isPrimaryKey) {}
+        public FeatureUniqueConstraint(string name, DataColumn[] columns) : base(name, columns) {}
+        public FeatureUniqueConstraint(DataColumn[] columns, bool isPrimaryKey) : base(columns, isPrimaryKey) {}
+        public FeatureUniqueConstraint(string name, DataColumn column) : base(name, column) {}
 
-        public FeatureUniqueConstraint(String name, DataColumn column, Boolean isPrimaryKey)
+        public FeatureUniqueConstraint(string name, DataColumn column, bool isPrimaryKey)
             : base(name, column, isPrimaryKey) {}
 
-        public FeatureUniqueConstraint(String name, DataColumn[] columns, Boolean isPrimaryKey)
+        public FeatureUniqueConstraint(string name, DataColumn[] columns, bool isPrimaryKey)
             : base(name, columns, isPrimaryKey) {}
 
-        public FeatureUniqueConstraint(String name, String[] columnNames, Boolean isPrimaryKey)
+        public FeatureUniqueConstraint(string name, string[] columnNames, bool isPrimaryKey)
             : base(name, columnNames, isPrimaryKey) {}
     }
 }

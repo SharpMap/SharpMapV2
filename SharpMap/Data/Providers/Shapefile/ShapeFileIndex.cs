@@ -19,20 +19,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-	internal sealed class ShapeFileIndex : IDictionary<UInt32, ShapeFileIndex.IndexEntry>
+	internal sealed class ShapeFileIndex : IDictionary<uint, ShapeFileIndex.IndexEntry>
 	{
 		#region Fields
 		private ShapeFileProvider _shapeFile;
-		private readonly SortedList<UInt32, IndexEntry> _shapeIndex = new SortedList<UInt32, IndexEntry>();
+		private readonly SortedList<uint, IndexEntry> _shapeIndex = new SortedList<uint, IndexEntry>();
 		private FileInfo _indexFile;
 		private ShapeFileHeader _header;
-		private Boolean _isOpen;
-		private Boolean _exclusiveMode;
+		private bool _isOpen;
+		private bool _exclusiveMode;
 		#endregion
 
 		#region Object Construction / Disposal
@@ -65,16 +65,16 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 				indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
 
-				Int32 featureCount = (Int32)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes) 
+				int featureCount = (int)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes) 
 					/ ShapeFileConstants.IndexRecordByteLength);
 
-				for (Int32 id = 0; id < featureCount; id++)
+				for (int id = 0; id < featureCount; id++)
 				{
-					Int32 offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
-					Int32 length = ByteEncoder.GetBigEndian(reader.ReadInt32());
+					int offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
+					int length = ByteEncoder.GetBigEndian(reader.ReadInt32());
 
 					IndexEntry entry = new IndexEntry(length, offset);
-					_shapeIndex.Add((UInt32)id, entry);
+					_shapeIndex.Add((uint)id, entry);
 				}
 			}
 		}
@@ -86,9 +86,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 			get { return _shapeFile; }
 		}
 
-		public void AddFeatureToIndex(FeatureDataRow<UInt32> feature)
+		public void AddFeatureToIndex(FeatureDataRow<uint> feature)
 		{
-			UInt32 id = feature.Id;
+			uint id = feature.Id;
 
 			if (ContainsKey(id))
 			{
@@ -97,14 +97,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 			_header.Envelope = BoundingBox.Join(_header.Envelope, feature.Geometry.GetBoundingBox());
 
-			Int32 length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
-			Int32 offset = ComputeShapeFileSizeInWords();
+			int length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
+			int offset = ComputeShapeFileSizeInWords();
 
 			IndexEntry entry = new IndexEntry(length, offset);
 			_shapeIndex[id] = entry;
 		}
 
-		public Int32 ComputeShapeFileSizeInWords()
+		public int ComputeShapeFileSizeInWords()
 		{
 			if (_shapeIndex.Count == 0)
 			{
@@ -115,9 +115,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return lastEntry.Offset + lastEntry.Length + ShapeFileConstants.ShapeRecordHeaderByteLength / 2;
 		}
 
-		public UInt32 GetNextId()
+		public uint GetNextId()
 		{
-			return (UInt32)_shapeIndex.Count;
+			return (uint)_shapeIndex.Count;
 		}
 
 		public void Save()
@@ -139,39 +139,39 @@ namespace SharpMap.Data.Providers.ShapeFile
 			}
 		}
 
-		#region IDictionary<UInt32,IndexEntry> Members
+		#region IDictionary<uint,IndexEntry> Members
 
-		void IDictionary<UInt32, IndexEntry>.Add(UInt32 key, ShapeFileIndex.IndexEntry value)
+		void IDictionary<uint, IndexEntry>.Add(uint key, ShapeFileIndex.IndexEntry value)
 		{
 			_shapeIndex.Add(key, value);
 		}
 
-		public Boolean ContainsKey(UInt32 key)
+		public bool ContainsKey(uint key)
 		{
 			return _shapeIndex.ContainsKey(key);
 		}
 
-		ICollection<UInt32> IDictionary<UInt32, IndexEntry>.Keys
+		ICollection<uint> IDictionary<uint, IndexEntry>.Keys
 		{
 			get { return _shapeIndex.Keys; }
 		}
 
-		Boolean IDictionary<UInt32, IndexEntry>.Remove(UInt32 key)
+		bool IDictionary<uint, IndexEntry>.Remove(uint key)
 		{
 			return _shapeIndex.Remove(key);
 		}
 
-		public Boolean TryGetValue(UInt32 key, out ShapeFileIndex.IndexEntry value)
+		public bool TryGetValue(uint key, out ShapeFileIndex.IndexEntry value)
 		{
 			return _shapeIndex.TryGetValue(key, out value);
 		}
 
-		ICollection<ShapeFileIndex.IndexEntry> IDictionary<UInt32, IndexEntry>.Values
+		ICollection<ShapeFileIndex.IndexEntry> IDictionary<uint, IndexEntry>.Values
 		{
 			get { return _shapeIndex.Values; }
 		}
 
-		public ShapeFileIndex.IndexEntry this[UInt32 key]
+		public ShapeFileIndex.IndexEntry this[uint key]
 		{
 			get
 			{
@@ -185,50 +185,50 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#endregion
 
-		#region ICollection<KeyValuePair<UInt32,IndexEntry>> Members
+		#region ICollection<KeyValuePair<uint,IndexEntry>> Members
 
-		void ICollection<KeyValuePair<UInt32, IndexEntry>>.Add(KeyValuePair<UInt32, IndexEntry> item)
+		void ICollection<KeyValuePair<uint, IndexEntry>>.Add(KeyValuePair<uint, IndexEntry> item)
 		{
 			_shapeIndex.Add(item.Key, item.Value);
 		}
 
-		void ICollection<KeyValuePair<UInt32, IndexEntry>>.Clear()
+		void ICollection<KeyValuePair<uint, IndexEntry>>.Clear()
 		{
 			_shapeIndex.Clear();
 		}
 
-		Boolean ICollection<KeyValuePair<UInt32, IndexEntry>>.Contains(KeyValuePair<UInt32, IndexEntry> item)
+		bool ICollection<KeyValuePair<uint, IndexEntry>>.Contains(KeyValuePair<uint, IndexEntry> item)
 		{
-			return (_shapeIndex as ICollection<KeyValuePair<UInt32, IndexEntry>>).Contains(item);
+			return (_shapeIndex as ICollection<KeyValuePair<uint, IndexEntry>>).Contains(item);
 		}
 
-		void ICollection<KeyValuePair<UInt32, IndexEntry>>.CopyTo(KeyValuePair<UInt32, IndexEntry>[] array, Int32 arrayIndex)
+		void ICollection<KeyValuePair<uint, IndexEntry>>.CopyTo(KeyValuePair<uint, IndexEntry>[] array, int arrayIndex)
 		{
-			(_shapeIndex as ICollection<KeyValuePair<UInt32, IndexEntry>>).CopyTo(array, arrayIndex);
+			(_shapeIndex as ICollection<KeyValuePair<uint, IndexEntry>>).CopyTo(array, arrayIndex);
 		}
 
-		public Int32 Count
+		public int Count
 		{
 			get { return _shapeIndex.Count; }
 		}
 
-		public Boolean IsReadOnly
+		public bool IsReadOnly
 		{
 			get { return false; }
 		}
 
-		Boolean ICollection<KeyValuePair<UInt32, IndexEntry>>.Remove(KeyValuePair<UInt32, IndexEntry> item)
+		bool ICollection<KeyValuePair<uint, IndexEntry>>.Remove(KeyValuePair<uint, IndexEntry> item)
 		{
-			return (_shapeIndex as ICollection<KeyValuePair<UInt32, IndexEntry>>).Remove(item);
+			return (_shapeIndex as ICollection<KeyValuePair<uint, IndexEntry>>).Remove(item);
 		}
 
 		#endregion
 
-		#region IEnumerable<KeyValuePair<UInt32,IndexEntry>> Members
+		#region IEnumerable<KeyValuePair<uint,IndexEntry>> Members
 
-		public IEnumerator<KeyValuePair<UInt32, IndexEntry>> GetEnumerator()
+		public IEnumerator<KeyValuePair<uint, IndexEntry>> GetEnumerator()
 		{
-			foreach (KeyValuePair<UInt32, IndexEntry> entry in _shapeIndex)
+			foreach (KeyValuePair<uint, IndexEntry> entry in _shapeIndex)
 			{
 				yield return entry;
 			}
@@ -246,7 +246,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		#endregion
 
 		#region Private helper methods
-		private Int32 computeIndexLengthInWords()
+		private int computeIndexLengthInWords()
 		{
 			return ((_shapeIndex.Count * ShapeFileConstants.IndexRecordByteLength) 
 				+ ShapeFileConstants.HeaderSizeBytes) / 2;
@@ -277,11 +277,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 			using (BinaryReader indexReader = new BinaryReader(indexStream, Encoding.Unicode))
 			{
 				indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
-				UInt32 recordNumber = 0;
+				uint recordNumber = 0;
 				while (indexStream.Position < indexStream.Length)
 				{
-					Int32 offset = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
-					Int32 length = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
+					int offset = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
+					int length = ByteEncoder.GetBigEndian(indexReader.ReadInt32());
 					IndexEntry entry = new IndexEntry(length, offset);
 					_shapeIndex[recordNumber++] = entry;
 				}
@@ -297,10 +297,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
 		public struct IndexEntry
 		{
-			private readonly Int32 _offset;
-			private readonly Int32 _length;
+			private readonly int _offset;
+			private readonly int _length;
 
-			public IndexEntry(Int32 length, Int32 offset)
+			public IndexEntry(int length, int offset)
 			{
 				_length = length;
 				_offset = offset;
@@ -309,7 +309,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// <summary>
 			/// Number of 16-bit words taken up by the record.
 			/// </summary>
-			public Int32 Length
+			public int Length
 			{
 				get { return _length; }
 			}
@@ -318,7 +318,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// Offset of the record in 16-bit words from the 
 			/// beginning of the shapefile.
 			/// </summary>
-			public Int32 Offset
+			public int Offset
 			{
 				get { return _offset; }
 			}
@@ -326,7 +326,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// <summary>
 			/// Number of bytes in the shapefile record.
 			/// </summary>
-			public Int32 ByteLength
+			public int ByteLength
 			{
 				get { return _length * 2; }
 			}
@@ -334,12 +334,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// <summary>
 			/// Record offest in bytes from the beginning of the shapefile.
 			/// </summary>
-			public Int32 AbsoluteByteOffset
+			public int AbsoluteByteOffset
 			{
 				get { return _offset * 2; }
 			}
 
-			public override String ToString()
+			public override string ToString()
 			{
 				return String.Format("[IndexEntry] Offset: {0}; Length: {1}; Stream Position: {2}", 
 					Offset, Length, AbsoluteByteOffset);

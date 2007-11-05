@@ -15,13 +15,13 @@ namespace SharpMap.Tests.Utilities
                 if (BitConverter.IsLittleEndian)
                 {
                     Assert.AreEqual(0x01000000, ByteEncoder.GetBigEndian(1));
-                    Assert.AreEqual((Int32) 0xFFFFFF7F, ByteEncoder.GetBigEndian(Int32.MaxValue));
+                    Assert.AreEqual((int) 0xFFFFFF7F, ByteEncoder.GetBigEndian(Int32.MaxValue));
                     Assert.AreEqual(0x00000080, ByteEncoder.GetBigEndian(Int32.MinValue));
                 }
                 else
                 {
                     Assert.AreEqual(0x01000000, ByteEncoder.GetLittleEndian(1));
-                    Assert.AreEqual((Int32) 0xFFFFFF7F, ByteEncoder.GetLittleEndian(Int32.MaxValue));
+                    Assert.AreEqual((int) 0xFFFFFF7F, ByteEncoder.GetLittleEndian(Int32.MaxValue));
                     Assert.AreEqual(0x00000080, ByteEncoder.GetLittleEndian(Int32.MinValue));
                 }
             }

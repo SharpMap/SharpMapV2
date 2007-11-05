@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -58,7 +58,7 @@ namespace SharpMap.Indexing.RTree
             internal set { _boundingBox = value; }
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("[{0}] Value: {1}; BoundingBox: {2}", 
                 GetType(), Value, BoundingBox);

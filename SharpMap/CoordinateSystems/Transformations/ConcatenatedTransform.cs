@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.CoordinateSystems.Transformations
@@ -115,12 +115,12 @@ namespace SharpMap.CoordinateSystems.Transformations
             }
         }
 
-        public override String Wkt
+        public override string Wkt
         {
             get { throw new NotImplementedException(); }
         }
 
-        public override String Xml
+        public override string Xml
         {
             get { throw new NotImplementedException(); }
         }

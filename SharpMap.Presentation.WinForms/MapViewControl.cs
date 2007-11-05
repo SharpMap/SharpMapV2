@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using SharpMap.Geometries;
@@ -48,8 +47,8 @@ namespace SharpMap.Presentation.WinForms
     /// </summary>
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
-        private readonly Double _dpi;
-        private Boolean _dragging = false;
+        private readonly double _dpi;
+        private bool _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
         private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
         private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
@@ -60,7 +59,7 @@ namespace SharpMap.Presentation.WinForms
         private GdiMatrix _gdiViewMatrix;
         private readonly StringFormat _format;
         private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
-        private Boolean _backgroundBeingSet;
+        private bool _backgroundBeingSet;
         private readonly Label _infoLabel = new Label();
 
         /// <summary>
@@ -80,7 +79,7 @@ namespace SharpMap.Presentation.WinForms
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.Opaque, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.ResizeRedraw, false);
+            SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.Selectable, true);
             SetStyle(ControlStyles.SupportsTransparentBackColor, false);
             SetStyle(ControlStyles.UserMouse, true);
@@ -107,13 +106,13 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        internal Boolean BackgroundBeingSet
+        internal bool BackgroundBeingSet
         {
             get { return _backgroundBeingSet; }
             set { _backgroundBeingSet = value; }
         }
 
-        internal String Information
+        internal string Information
         {
             get { return _infoLabel.Text; }
             set { _infoLabel.Text = value; }
@@ -121,7 +120,7 @@ namespace SharpMap.Presentation.WinForms
 
         #region IView Members
 
-        public String Title
+        public string Title
         {
             get { return Name; }
             set { Name = value; }
@@ -138,17 +137,17 @@ namespace SharpMap.Presentation.WinForms
         public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
         public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
         public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
-        public event EventHandler SizeChanged;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Size2D>> SizeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
         public event EventHandler ZoomToExtentsRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
         #endregion
 
         #region Properties
@@ -173,7 +172,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double Dpi
+        public double Dpi
         {
             get { return _dpi; }
         }
@@ -188,7 +187,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double MaximumWorldWidth
+        public double MaximumWorldWidth
         {
             get { return _presenter.MaximumWorldWidth; }
             set { onRequestMaximumWorldWidthChange(MaximumWorldWidth, value); }
@@ -196,7 +195,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double MinimumWorldWidth
+        public double MinimumWorldWidth
         {
             get { return _presenter.MinimumWorldWidth; }
             set { onRequestMinimumWorldWidthChange(MinimumWorldWidth, value); }
@@ -204,14 +203,14 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double PixelWorldWidth
+        public double PixelWorldWidth
         {
             get { return _presenter.PixelWorldWidth; }
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double PixelWorldHeight
+        public double PixelWorldHeight
         {
             get { return _presenter.PixelWorldHeight; }
         }
@@ -228,7 +227,7 @@ namespace SharpMap.Presentation.WinForms
             return _presenter.ToView(point);
         }
 
-        public Point2D ToView(Double x, Double y)
+        public Point2D ToView(double x, double y)
         {
             return _presenter.ToView(x, y);
         }
@@ -245,7 +244,7 @@ namespace SharpMap.Presentation.WinForms
             return _presenter.ToWorld(point);
         }
 
-        public GeoPoint ToWorld(Double x, Double y)
+        public GeoPoint ToWorld(double x, double y)
         {
             return _presenter.ToWorld(x, y);
         }
@@ -275,7 +274,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double WorldAspectRatio
+        public double WorldAspectRatio
         {
             get { return _presenter.WorldAspectRatio; }
             set { onRequestWorldAspectRatioChange(WorldAspectRatio, value); }
@@ -283,21 +282,21 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double WorldHeight
+        public double WorldHeight
         {
             get { return _presenter.WorldHeight; }
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double WorldWidth
+        public double WorldWidth
         {
             get { return _presenter.WorldWidth; }
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Double WorldUnitsPerPixel
+        public double WorldUnitsPerPixel
         {
             get { return _presenter.WorldUnitsPerPixel; }
         }
@@ -354,7 +353,7 @@ namespace SharpMap.Presentation.WinForms
             onRequestZoomToWorldBounds(zoomBox);
         }
 
-        public void ZoomToWorldWidth(Double newWorldWidth)
+        public void ZoomToWorldWidth(double newWorldWidth)
         {
             onRequestZoomToWorldWidth(newWorldWidth);
         }
@@ -514,8 +513,6 @@ namespace SharpMap.Presentation.WinForms
         {
             Graphics g = e.Graphics;
 
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
             if (DesignMode || _presenter == null)
             {
                 g.Clear(BackColor);
@@ -540,18 +537,9 @@ namespace SharpMap.Presentation.WinForms
                     case RenderState.Normal:
                         if (ro.GdiPath != null)
                         {
-                            if(ro.Line != null)
-                            {
-                                if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
-                                
-                                g.DrawPath(ro.Line, ro.GdiPath);
-                            }
-                            else if (ro.Fill != null)
-                            {
-                                g.FillPath(ro.Fill, ro.GdiPath);
-                                
-                                if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
-                            }
+                            if (ro.Fill != null) g.FillPath(ro.Fill, ro.GdiPath);
+                            if (ro.Line != null) g.DrawPath(ro.Line, ro.GdiPath);
+                            if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
                         }
 
                         if (ro.Text != null)
@@ -563,18 +551,9 @@ namespace SharpMap.Presentation.WinForms
                     case RenderState.Highlighted:
                         if (ro.GdiPath != null)
                         {
-                            if (ro.HighlightLine != null)
-                            {
-                                if (ro.HighlightOutline != null) g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-
-                                g.DrawPath(ro.HighlightLine, ro.GdiPath);
-                            }
-                            else if (ro.HighlightFill != null)
-                            {
-                                g.FillPath(ro.HighlightFill, ro.GdiPath);
-
-                                if (ro.HighlightOutline != null) g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-                            }
+                            if (ro.HighlightFill != null) g.FillPath(ro.HighlightFill, ro.GdiPath);
+                            if (ro.HightlightLine != null) g.DrawPath(ro.HightlightLine, ro.GdiPath);
+                            if (ro.HightlightOutline != null) g.DrawPath(ro.HightlightOutline, ro.GdiPath);
                         }
 
                         if (ro.Text != null)
@@ -586,18 +565,9 @@ namespace SharpMap.Presentation.WinForms
                     case RenderState.Selected:
                         if (ro.GdiPath != null)
                         {
-                            if (ro.SelectLine != null)
-                            {
-                                if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
-
-                                g.DrawPath(ro.SelectLine, ro.GdiPath);
-                            }
-                            else if (ro.SelectFill != null)
-                            {
-                                g.FillPath(ro.SelectFill, ro.GdiPath);
-
-                                if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
-                            }
+                            if (ro.SelectFill != null) g.FillPath(ro.SelectFill, ro.GdiPath);
+                            if (ro.SelectLine != null) g.DrawPath(ro.SelectLine, ro.GdiPath);
+                            if (ro.SelectOutline != null) g.DrawPath(ro.SelectOutline, ro.GdiPath);
                         }
 
                         if (ro.Text != null) 
@@ -634,14 +604,9 @@ namespace SharpMap.Presentation.WinForms
             g.ResetTransform();
         }
 
-        protected override void OnSizeChanged(EventArgs args)
+        protected override void OnSizeChanged(EventArgs e)
         {
-            EventHandler e = SizeChanged;
-
-            if (e != null)
-            {
-                e(this, args);
-            }
+            onViewSizeChangeRequested(Size);
         }
         #endregion
 
@@ -649,45 +614,45 @@ namespace SharpMap.Presentation.WinForms
 
         private void onBeginAction(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> e = BeginAction;
+            EventHandler<MapActionEventArgs<Point2D>> @event = BeginAction;
 
-            if (e != null)
+            if (@event != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                e(this, _globalActionArgs);
+                @event(this, _globalActionArgs);
             }
         }
 
         private void onHover(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> e = Hover;
+            EventHandler<MapActionEventArgs<Point2D>> @event = Hover;
 
-            if (e != null)
+            if (@event != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                e(this, _globalActionArgs);
+                @event(this, _globalActionArgs);
             }
         }
 
         private void onEndAction(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> e = EndAction;
+            EventHandler<MapActionEventArgs<Point2D>> @event = EndAction;
 
-            if (e != null)
+            if (@event != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                e(this, _globalActionArgs);
+                @event(this, _globalActionArgs);
             }
         }
 
         private void onMoveTo(Point2D actionLocation)
         {
-            EventHandler<MapActionEventArgs<Point2D>> e = MoveTo;
+            EventHandler<MapActionEventArgs<Point2D>> @event = MoveTo;
 
-            if (e != null)
+            if (@event != null)
             {
                 _globalActionArgs.SetActionPoint(actionLocation);
-                e(this, _globalActionArgs);
+                @event(this, _globalActionArgs);
             }
         }
 
@@ -714,27 +679,27 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestMaximumWorldWidthChange(Double current, Double requested)
+        private void onRequestMaximumWorldWidthChange(double current, double requested)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<Double>> e = MaximumWorldWidthChangeRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = MaximumWorldWidthChangeRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<Double> args =
-                    new MapViewPropertyChangeEventArgs<Double>(current, requested);
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(current, requested);
 
                 e(this, args);
             }
         }
 
-        private void onRequestMinimumWorldWidthChange(Double current, Double requested)
+        private void onRequestMinimumWorldWidthChange(double current, double requested)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<Double>> e = MinimumWorldWidthChangeRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = MinimumWorldWidthChangeRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<Double> args =
-                    new MapViewPropertyChangeEventArgs<Double>(current, requested);
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(current, requested);
 
                 e(this, args);
             }
@@ -777,14 +742,14 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestWorldAspectRatioChange(Double current, Double requested)
+        private void onRequestWorldAspectRatioChange(double current, double requested)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<Double>> e = WorldAspectRatioChangeRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = WorldAspectRatioChangeRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<Double> args =
-                    new MapViewPropertyChangeEventArgs<Double>(current, requested);
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(current, requested);
 
                 e(this, args);
             }
@@ -826,14 +791,14 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestZoomToWorldWidth(Double newWorldWidth)
+        private void onRequestZoomToWorldWidth(double newWorldWidth)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<Double>> e = ZoomToWorldWidthRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<double>> e = ZoomToWorldWidthRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<Double> args =
-                    new MapViewPropertyChangeEventArgs<Double>(WorldWidth, newWorldWidth);
+                MapViewPropertyChangeEventArgs<double> args =
+                    new MapViewPropertyChangeEventArgs<double>(WorldWidth, newWorldWidth);
 
                 e(this, args);
             }
@@ -841,13 +806,26 @@ namespace SharpMap.Presentation.WinForms
 
         private void onSelectedToolChangeRequest(MapTool requestedTool)
         {
-            EventHandler<ToolChangeRequestedEventArgs> e = ToolChangeRequested;
+            EventHandler<ToolChangeRequestedEventArgs> @event = ToolChangeRequested;
 
             ToolChangeRequestedEventArgs args = new ToolChangeRequestedEventArgs(requestedTool);
 
-            if (e != null)
+            if (@event != null)
             {
-                e(this, args);
+                @event(this, args);
+            }
+        }
+
+        private void onViewSizeChangeRequested(GdiSize sizeRequested)
+        {
+            EventHandler<MapViewPropertyChangeEventArgs<Size2D>> @event = SizeChangeRequested;
+
+            if (@event != null)
+            {
+                MapViewPropertyChangeEventArgs<Size2D> args = new MapViewPropertyChangeEventArgs<Size2D>(
+                    ViewConverter.Convert(Size), ViewConverter.Convert(sizeRequested));
+
+                SizeChangeRequested(this, args);
             }
         }
         #endregion
@@ -883,18 +861,18 @@ namespace SharpMap.Presentation.WinForms
             }
 
             Matrix2D viewMatrix = ToViewTransform ?? new Matrix2D();
-            Single[] gdiElements = _gdiViewMatrix.Elements;
+            float[] gdiElements = _gdiViewMatrix.Elements;
 
-            if (gdiElements[0] != (Single)viewMatrix.M11
-                || gdiElements[1] != (Single)viewMatrix.M12
-                || gdiElements[2] != (Single)viewMatrix.M21
-                || gdiElements[3] != (Single)viewMatrix.M22
-                || gdiElements[4] != (Single)viewMatrix.OffsetX
-                || gdiElements[5] != (Single)viewMatrix.OffsetY)
+            if (gdiElements[0] != (float)viewMatrix.M11
+                || gdiElements[1] != (float)viewMatrix.M12
+                || gdiElements[2] != (float)viewMatrix.M21
+                || gdiElements[3] != (float)viewMatrix.M22
+                || gdiElements[4] != (float)viewMatrix.OffsetX
+                || gdiElements[5] != (float)viewMatrix.OffsetY)
             {
                 Debug.WriteLine(String.Format("Disposing GDI matrix on values: {0} : {1}; {2} : {3}; {4} : {5}; {6} : {7}; {8} : {9}; {10} : {11}",
-                    gdiElements[0], (Single)viewMatrix.M11, gdiElements[1], (Single)viewMatrix.M12, gdiElements[2], (Single)viewMatrix.M21,
-                    gdiElements[3], (Single)viewMatrix.M22, gdiElements[4], (Single)viewMatrix.OffsetX, gdiElements[5], (Single)viewMatrix.OffsetY));
+                    gdiElements[0], (float)viewMatrix.M11, gdiElements[1], (float)viewMatrix.M12, gdiElements[2], (float)viewMatrix.M21,
+                    gdiElements[3], (float)viewMatrix.M22, gdiElements[4], (float)viewMatrix.OffsetX, gdiElements[5], (float)viewMatrix.OffsetY));
 
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(ToViewTransform);
@@ -903,15 +881,15 @@ namespace SharpMap.Presentation.WinForms
             return _gdiViewMatrix;
         }
 
-        private Boolean withinDragTolerance(GdiPoint point)
+        private bool withinDragTolerance(GdiPoint point)
         {
             return Math.Abs(_mouseDownLocation.X - point.X) <= 3
                 && Math.Abs(_mouseDownLocation.Y - point.Y) <= 3;
         }
 
-        private Rectangle2D computeBoxFromWheelDelta(PointF location, Int32 deltaDegrees)
+        private Rectangle2D computeBoxFromWheelDelta(PointF location, int deltaDegrees)
         {
-            Single scale = (Single)Math.Pow(2, (Single)Math.Abs(deltaDegrees) / 360f);
+            float scale = (float)Math.Pow(2, (float)Math.Abs(deltaDegrees) / 360f);
             RectangleF zoomBox = ClientRectangle;
             PointF center = new PointF((zoomBox.Width + zoomBox.Left) / 2, (zoomBox.Height + zoomBox.Top) / 2);
             PointF centerDeltaVector = new PointF(location.X - center.X, location.Y - center.Y);

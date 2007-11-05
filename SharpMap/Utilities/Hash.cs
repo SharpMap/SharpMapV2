@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,19 +26,19 @@ namespace SharpMap.Utilities
     /// </summary>
     public static class Hash
     {
-        private const String _digits = "0123456789ABCDEF";
+        private const string _digits = "0123456789ABCDEF";
         private static readonly SHA1Managed _hash = new SHA1Managed();
 
         /// <summary>
-        /// Computes a hash value of a stream of data as a String.
+        /// Computes a hash value of a stream of data as a string.
         /// </summary>
         /// <param name="data">The data to compute the hash for.</param>
-        /// <returns>A String which uniquely identifies the data.</returns>
-        public static String AsString(Stream data)
+        /// <returns>A string which uniquely identifies the data.</returns>
+        public static string AsString(Stream data)
         {
-            Int64 streamPos = data.Position;
+            long streamPos = data.Position;
             data.Seek(0, SeekOrigin.Begin);
-            Byte[] hashValue;
+            byte[] hashValue;
 
             lock (_hash)
             {
@@ -50,7 +49,7 @@ namespace SharpMap.Utilities
 
             StringBuilder builder = new StringBuilder();
 
-            foreach (Byte b in hashValue)
+            foreach (byte b in hashValue)
             {
                 builder.Append(_digits[b >> 4]);
                 builder.Append(_digits[b & 0x07]);

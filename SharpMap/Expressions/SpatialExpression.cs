@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Expressions
 {
@@ -41,7 +41,7 @@ namespace SharpMap.Expressions
             get { return _queryType; }
         }
 
-        public Boolean HasIntersection(Geometry geometry)
+        public bool HasIntersection(Geometry geometry)
         {
             switch (QueryType)
             {
@@ -68,12 +68,12 @@ namespace SharpMap.Expressions
             }
         }
 
-        public static Boolean operator !=(SpatialExpression lhs, SpatialExpression rhs)
+        public static bool operator !=(SpatialExpression lhs, SpatialExpression rhs)
         {
             return !(lhs == rhs);
         }
 
-        public static Boolean operator ==(SpatialExpression lhs, SpatialExpression rhs)
+        public static bool operator ==(SpatialExpression lhs, SpatialExpression rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -90,7 +90,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        public Boolean Equals(SpatialExpression other)
+        public bool Equals(SpatialExpression other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -101,7 +101,7 @@ namespace SharpMap.Expressions
                 && _queryType == other._queryType;
         }
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
             {
@@ -111,7 +111,7 @@ namespace SharpMap.Expressions
             return Equals(obj as SpatialExpression);
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             unchecked
             {

@@ -15,12 +15,11 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Data;
 
 namespace SharpMap.Data.Providers
 {
-    public delegate Int32 ColumnLengthComputationDelegate(DataColumn column);
-    public delegate Int16 ColumnPrecisionComputationDelegate(DataColumn column);
-    public delegate Int16 ColumnScaleComputationDelegate(DataColumn column);
+    public delegate int ColumnLengthComputationDelegate(DataColumn column);
+    public delegate short ColumnPrecisionComputationDelegate(DataColumn column);
+    public delegate short ColumnScaleComputationDelegate(DataColumn column);
 }

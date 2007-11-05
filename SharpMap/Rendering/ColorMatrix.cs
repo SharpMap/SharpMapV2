@@ -35,8 +35,8 @@ namespace SharpMap.Rendering
         public ColorMatrix()
             : this(Identity) { }
 
-        public ColorMatrix(Double redLevel, Double greenLevel, Double blueLevel, Double alphaLevel,
-            Double redShift, Double greenShift, Double blueShift)
+        public ColorMatrix(double redLevel, double greenLevel, double blueLevel, double alphaLevel,
+            double redShift, double greenShift, double blueShift)
             : base(MatrixFormat.RowMajor, 5)
         {
             this[0, 0] = redLevel;
@@ -52,21 +52,21 @@ namespace SharpMap.Rendering
         public ColorMatrix(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 5)
         {
-            for (Int32 i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
-                for (Int32 j = 0; j < 5; j++)
+                for (int j = 0; j < 5; j++)
                 {
                     this[i, j] = matrixToCopy[i, j];
                 }
             }
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}; dxR: {5}; dxG: {6}; dxB: {7}", GetType(), R, G, B, A, RedShift, GreenShift, BlueShift);
         }
 
-        public override Int32 GetHashCode()
+        public override int GetHashCode()
         {
             return unchecked(R.GetHashCode() + 2352 ^ G.GetHashCode() + 235509 ^ B.GetHashCode() + 753 
                 ^ A.GetHashCode() + 89 ^ RedShift.GetHashCode() + 897210 ^ GreenShift.GetHashCode() + 78595 
@@ -75,7 +75,7 @@ namespace SharpMap.Rendering
 
         #region Equality Computation
 
-        public override Boolean Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is ColorMatrix)
             {
@@ -92,7 +92,7 @@ namespace SharpMap.Rendering
 
         #region IEquatable<ColorMatrix> Members
 
-        public Boolean Equals(ColorMatrix other)
+        public bool Equals(ColorMatrix other)
         {
             return R == other.R &&
                 G == other.G &&
@@ -105,45 +105,45 @@ namespace SharpMap.Rendering
         #endregion
         #endregion
 
-        public Double R
+        public double R
         {
-            get { return (Double)this[0, 0]; }
+            get { return (double)this[0, 0]; }
             set { this[0, 0] = value; }
         }
 
-        public Double G
+        public double G
         {
-            get { return (Double)this[1, 1]; }
+            get { return (double)this[1, 1]; }
             set { this[1, 1] = value; }
         }
 
-        public Double B
+        public double B
         {
-            get { return (Double)this[2, 2]; }
+            get { return (double)this[2, 2]; }
             set { this[2, 2] = value; }
         }
 
-        public Double A
+        public double A
         {
-            get { return (Double)this[3, 3]; }
+            get { return (double)this[3, 3]; }
             set { this[3, 3] = value; }
         }
 
-        public Double RedShift
+        public double RedShift
         {
-            get { return (Double)this[0, 4]; }
+            get { return (double)this[0, 4]; }
             set { this[0, 4] = value; }
         }
 
-        public Double GreenShift
+        public double GreenShift
         {
-            get { return (Double)this[1, 4]; }
+            get { return (double)this[1, 4]; }
             set { this[1, 4] = value; }
         }
 
-        public Double BlueShift
+        public double BlueShift
         {
-            get { return (Double)this[2, 4]; }
+            get { return (double)this[2, 4]; }
             set { this[2, 4] = value; }
         }
 

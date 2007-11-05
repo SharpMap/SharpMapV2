@@ -29,7 +29,7 @@ namespace SharpMap.Tools
 		private readonly Action<ActionContext<TMapView, TPoint>> _extendAction;
 		private readonly Action<ActionContext<TMapView, TPoint>> _endAction;
 
-		public MapTool(String name, Action<ActionContext<TMapView, TPoint>> queryAction,
+		public MapTool(string name, Action<ActionContext<TMapView, TPoint>> queryAction,
 			Action<ActionContext<TMapView, TPoint>> beginAction,
 			Action<ActionContext<TMapView, TPoint>> extendAction,
 			Action<ActionContext<TMapView, TPoint>> endAction)
@@ -41,7 +41,7 @@ namespace SharpMap.Tools
 			_endAction = endAction;
 		}
 
-		public override String ToString()
+		public override string ToString()
 		{
 			return String.Format("[MapTool] {0}", String.IsNullOrEmpty(Name) ? "<None>" : Name);
 		}

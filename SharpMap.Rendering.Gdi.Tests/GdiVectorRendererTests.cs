@@ -11,7 +11,7 @@ namespace SharpMap.Rendering.Gdi.Tests
     [TestFixture]
     public class GdiVectorRendererTests
     {
-        private const Double _e = 0.0005;
+        private const double _e = 0.0005;
 
         [Test]
         public void CreateGdiVectorRendererTest()
@@ -51,7 +51,7 @@ namespace SharpMap.Rendering.Gdi.Tests
 
             PathData data = ro.GdiPath.PathData;
 
-            for (Int32 i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 Assert.AreEqual(points[i].X, data.Points[i].X, _e);
                 Assert.AreEqual(points[i].Y, data.Points[i].Y, _e);
@@ -67,7 +67,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             Pen expectedSelected = new Pen(Brushes.Green, 1.0f);
 
             Assert.IsTrue(pensAreEqual(expectedOutline, ro.Outline));
-            Assert.IsTrue(pensAreEqual(expectedHighlight, ro.HighlightOutline));
+            Assert.IsTrue(pensAreEqual(expectedHighlight, ro.HightlightOutline));
             Assert.IsTrue(pensAreEqual(expectedSelected, ro.SelectOutline));
 
             expectedOutline.Dispose();
@@ -76,7 +76,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             renderer.Dispose();
         }
 
-        private static Boolean pensAreEqual(Pen p1, Pen p2)
+        private static bool pensAreEqual(Pen p1, Pen p2)
         {
             if (ReferenceEquals(p1, p2))
             {
@@ -109,7 +109,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             return true;
         }
 
-        private static Boolean elementsAreEqual(Single[] lhs, Single[] rhs)
+        private static bool elementsAreEqual(float[] lhs, float[] rhs)
         {
             if (ReferenceEquals(lhs, rhs))
             {
@@ -126,7 +126,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                 return false;
             }
 
-            for (Int32 i = 0; i < lhs.Length; i++)
+            for (int i = 0; i < lhs.Length; i++)
             {
                 if (lhs[i] != rhs[i])
                 {
@@ -137,7 +137,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             return true;
         }
 
-        private static Boolean brushesAreEqual(Brush b1, Brush b2)
+        private static bool brushesAreEqual(Brush b1, Brush b2)
         {
             if (ReferenceEquals(b1, b2))
             {
@@ -169,7 +169,7 @@ namespace SharpMap.Rendering.Gdi.Tests
             return false;
         }
 
-        private static Boolean solidBrushesAreEqual(SolidBrush b1, SolidBrush b2)
+        private static bool solidBrushesAreEqual(SolidBrush b1, SolidBrush b2)
         {
             return b1.Color == b2.Color;
         }

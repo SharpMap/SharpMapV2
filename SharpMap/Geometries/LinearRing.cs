@@ -55,11 +55,11 @@ namespace SharpMap.Geometries
 		/// Tests whether a ring is oriented counter-clockwise.
 		/// </summary>
 		/// <returns>Returns true if ring is oriented counter-clockwise.</returns>
-		public Boolean IsCcw()
+		public bool IsCcw()
 		{
 			Point hip, p, prev, next;
-			Int32 hii, i;
-			Int32 nPts = Vertices.Count;
+			int hii, i;
+			int nPts = Vertices.Count;
 
 			// check that this is a valid ring - if not, simply return a dummy value
 			if (nPts < 4)
@@ -82,9 +82,9 @@ namespace SharpMap.Geometries
 			}
 
 			// find points on either side of highest
-			Int32 iPrev = hii - 1;
+			int iPrev = hii - 1;
 			if (iPrev < 0) iPrev = nPts - 2;
-			Int32 iNext = hii + 1;
+			int iNext = hii + 1;
 			if (iNext >= nPts) iNext = 1;
 			prev = Vertices[iPrev];
 			next = Vertices[iNext];
@@ -93,14 +93,14 @@ namespace SharpMap.Geometries
 			// This will not affect the area calculation, and will avoid
 			// finite-accuracy errors (i.e very small vectors with very large coordinates)
 			// This also simplifies the discriminant calculation.
-			Double prev2x = prev.X - hip.X;
-			Double prev2y = prev.Y - hip.Y;
-			Double next2x = next.X - hip.X;
-			Double next2y = next.Y - hip.Y;
+			double prev2x = prev.X - hip.X;
+			double prev2y = prev.Y - hip.Y;
+			double next2x = next.X - hip.X;
+			double next2y = next.Y - hip.Y;
 
 			// compute cross-product of vectors hip->next and hip->prev
 			// (e.g. area of parallelogram they enclose)
-			Double disc = next2x * prev2y - next2y * prev2x;
+			double disc = next2x * prev2y - next2y * prev2x;
 
 			// If disc is exactly 0, lines are collinear.  There are two possible cases:
 			//	(1) the lines lie along the x axis in opposite directions
@@ -123,21 +123,21 @@ namespace SharpMap.Geometries
 		/// <summary>
 		/// Returns the area of the LinearRing
 		/// </summary>
-		public Double Area
+		public double Area
 		{
 			get
 			{
 				if (Vertices.Count < 3)
 					return 0;
-				Double sum = 0;
-				Double ax = Vertices[0].X;
-				Double ay = Vertices[0].Y;
-				for (Int32 i = 1; i < Vertices.Count - 1; i++)
+				double sum = 0;
+				double ax = Vertices[0].X;
+				double ay = Vertices[0].Y;
+				for (int i = 1; i < Vertices.Count - 1; i++)
 				{
-					Double bx = Vertices[i].X;
-					Double by = Vertices[i].Y;
-					Double cx = Vertices[i + 1].X;
-					Double cy = Vertices[i + 1].Y;
+					double bx = Vertices[i].X;
+					double by = Vertices[i].Y;
+					double cx = Vertices[i + 1].X;
+					double cy = Vertices[i + 1].Y;
 					sum += ax * by - ay * bx +
 						   ay * cx - ax * cy +
 						   bx * cy - cx * by;
@@ -151,11 +151,11 @@ namespace SharpMap.Geometries
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public Boolean IsPointWithin(Point p)
+		public bool IsPointWithin(Point p)
 		{
-			Boolean c = false;
-			for (Int32 i = 0; i < Vertices.Count; i++)
-				for (Int32 j = i + 1; j < Vertices.Count - 1; j++)
+			bool c = false;
+			for (int i = 0; i < Vertices.Count; i++)
+				for (int j = i + 1; j < Vertices.Count - 1; j++)
 				{
 					if ((((Vertices[i].Y <= p.Y) && (p.Y < Vertices[j].Y)) ||
 						 ((Vertices[j].Y <= p.Y) && (p.Y < Vertices[i].Y))) &&

@@ -16,7 +16,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
@@ -31,7 +30,7 @@ namespace SharpMap.Styles
 		private StylePen _lineStyle;
 		private StylePen _highlightLineStyle;
 		private StylePen _selectLineStyle;
-		private Boolean _outline;
+		private bool _outline;
 		private StylePen _outlineStyle;
 		private StylePen _highlightOutlineStyle;
 		private StylePen _selectOutlineStyle;
@@ -43,7 +42,7 @@ namespace SharpMap.Styles
 		private Symbol2D _selectSymbol;
 		private StyleRenderingMode _smoothingMode;
 		private StyleTextRenderingHint _textRenderingHint;
-		private Boolean _areFeaturesSelectable = true;
+		private bool _areFeaturesSelectable = true;
 
 		#endregion
 
@@ -115,7 +114,7 @@ namespace SharpMap.Styles
 		/// <summary>
 		/// Specified whether the objects are rendered with or without outlining
 		/// </summary>
-		public Boolean EnableOutline
+		public bool EnableOutline
 		{
 			get { return _outline; }
 			set { _outline = value; }
@@ -227,7 +226,7 @@ namespace SharpMap.Styles
 		/// Gets or sets a value to determine if features can 
 		/// be selected on this layer.
 		/// </summary>
-		public Boolean AreFeaturesSelectable
+		public bool AreFeaturesSelectable
 		{
 			get { return _areFeaturesSelectable; }
 			set { _areFeaturesSelectable = value; }

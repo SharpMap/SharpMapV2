@@ -30,7 +30,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             #region Instance fields
             private readonly DbaseFile _dbaseFile;
             private BinaryReader _dbaseReader;
-            private Boolean _isDisposed = false;
+            private bool _isDisposed = false;
 
             #endregion
 
@@ -59,7 +59,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             /// <see langword="true"/> if it is, <see langword="false"/> otherwise
             /// </summary>
             /// <seealso cref="Dispose"/>
-            internal Boolean IsDisposed
+            internal bool IsDisposed
             {
                 get { return _isDisposed; }
                 private set { _isDisposed = value; }
@@ -84,7 +84,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             #endregion
 
-            private void dispose(Boolean disposing)
+            private void dispose(bool disposing)
             {
                 if (IsDisposed)
                 {
@@ -103,9 +103,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             #endregion
 
-            internal Boolean IsRowDeleted(UInt32 row)
+            internal bool IsRowDeleted(UInt32 row)
             {
-                Int64 rowOffset = _dbaseFile.ComputeByteOffsetToRecord(row);
+                long rowOffset = _dbaseFile.ComputeByteOffsetToRecord(row);
                 _dbaseFile.DataStream.Seek(rowOffset, SeekOrigin.Begin);
                 return _dbaseReader.ReadChar() == DbaseConstants.DeletedIndicator;
             }
@@ -136,7 +136,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			/// Thrown if <paramref name="row"/> is 
             /// less than 0 or greater than <see cref="RecordCount"/> - 1.
             /// </exception>
-            internal object GetValue(UInt32 row, DbaseField column)
+            internal object GetValue(uint row, DbaseField column)
             {
                 checkState();
 
@@ -155,7 +155,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
 
                 // Compute the position in the file stream for the requested row and column
-                Int64 offset = header.HeaderLength + (row * header.RecordLength);
+                long offset = header.HeaderLength + (row * header.RecordLength);
                 offset += column.Offset;
 
                 // Seek to the computed offset
@@ -193,7 +193,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 switch (Type.GetTypeCode(dbf.DataType))
                 {
                     case TypeCode.Boolean:
-                        Char tempChar = (Char)_dbaseReader.ReadByte();
+                        char tempChar = (char)_dbaseReader.ReadByte();
                         return ((tempChar == 'T') || (tempChar == 't') || (tempChar == 'Y') || (tempChar == 'y'));
 
                     case TypeCode.DateTime:
@@ -224,10 +224,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 					    }
 #endif
                     case TypeCode.Double:
-                        String temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
-                        Double dbl;
+                        string temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
+                        double dbl;
 
-                        if (Double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl))
+                        if (double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl))
                         {
                             return dbl;
                         }
@@ -237,7 +237,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Int16:
-                        String temp16 =
+                        string temp16 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int16 i16;
 
@@ -251,7 +251,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Int32:
-                        String temp32 =
+                        string temp32 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int32 i32;
 
@@ -265,7 +265,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Int64:
-                        String temp64 =
+                        string temp64 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int64 i64 = 0;
 
@@ -279,10 +279,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
 
                     case TypeCode.Single:
-                        String temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
-                        Single f = 0;
+                        string temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
+                        float f = 0;
 
-                        if (Single.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f))
+                        if (float.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f))
                         {
                             return f;
                         }
@@ -293,8 +293,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     case TypeCode.String:
                         {
-                            Byte[] chars = _dbaseReader.ReadBytes(dbf.Length);
-                            String value = _dbaseFile.Encoding.GetString(chars);
+                            byte[] chars = _dbaseReader.ReadBytes(dbf.Length);
+                            string value = _dbaseFile.Encoding.GetString(chars);
                             return value.Replace("\0", "").Trim();
                         }
 

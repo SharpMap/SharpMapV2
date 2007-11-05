@@ -40,11 +40,11 @@ namespace SharpMap.Tests.Rendering
 
             IMatrixD m1Inverse = m1.Inverse;
 
-            for (Int32 i = 0; i < m1.RowCount; i++)
+            for (int i = 0; i < m1.RowCount; i++)
             {
-                for (Int32 j = 0; j < m1.ColumnCount; j++)
+                for (int j = 0; j < m1.ColumnCount; j++)
                 {
-                    Assert.AreEqual((Double)expected[i, j], (Double)m1Inverse[i, j], TestConstants.Epsilon);
+                    Assert.AreEqual((double)expected[i, j], (double)m1Inverse[i, j], TestConstants.Epsilon);
                 }
             }
         }

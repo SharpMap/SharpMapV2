@@ -34,8 +34,8 @@ namespace SharpMap.Rendering
     {
         private ColorMatrix _colorTransform = ColorMatrix.Identity;
         private Stream _symbolData;
-        private String _symbolDataHash;
-        private Boolean _disposed;
+        private string _symbolDataHash;
+        private bool _disposed;
         private IAffineMatrixD _rotationTransform;
         private IAffineMatrixD _scalingTransform;
         private IAffineMatrixD _translationTransform;
@@ -45,7 +45,7 @@ namespace SharpMap.Rendering
 
         protected Symbol()
         {
-            _symbolData = new MemoryStream(new Byte[] {0x0, 0x0, 0x0, 0x0});
+            _symbolData = new MemoryStream(new byte[] {0x0, 0x0, 0x0, 0x0});
             initMatrixes();
         }
 
@@ -70,7 +70,7 @@ namespace SharpMap.Rendering
 
                 using (BinaryReader reader = new BinaryReader(symbolData))
                 {
-                    copy.Write(reader.ReadBytes((Int32) symbolData.Length), 0, (Int32) symbolData.Length);
+                    copy.Write(reader.ReadBytes((int) symbolData.Length), 0, (int) symbolData.Length);
                 }
 
                 symbolData = copy;
@@ -107,13 +107,13 @@ namespace SharpMap.Rendering
         /// Gets a value indicating if the <see cref="Symbol{TPoint,TSize}"/>
         /// is disposed.
         /// </summary>
-        public Boolean IsDisposed
+        public bool IsDisposed
         {
             get { return _disposed; }
             private set { _disposed = value; }
         }
 
-        protected void Dispose(Boolean disposing)
+        protected void Dispose(bool disposing)
         {
             if (IsDisposed)
             {
@@ -287,7 +287,7 @@ namespace SharpMap.Rendering
             }
         }
 
-        protected String SymbolDataHash
+        protected string SymbolDataHash
         {
             get { return _symbolDataHash; }
         }
@@ -323,10 +323,10 @@ namespace SharpMap.Rendering
             Symbol<TPoint, TSize> clone = CreateNew(Size);
 
             // Record the original position
-            Int64 streamPos = _symbolData.Position;
+            long streamPos = _symbolData.Position;
             _symbolData.Seek(0, SeekOrigin.Begin);
 
-            Byte[] buffer = new Byte[_symbolData.Length];
+            byte[] buffer = new byte[_symbolData.Length];
             _symbolData.Read(buffer, 0, buffer.Length);
             MemoryStream copy = new MemoryStream(buffer);
 

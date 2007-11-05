@@ -44,12 +44,12 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Ellipsoid(
-			Double semiMajorAxis, 
-			Double semiMinorAxis, 
-			Double inverseFlattening,
-			Boolean isIvfDefinitive,
-			ILinearUnit axisUnit, String name, String authority, Int64 code, String alias, 
-			String abbreviation, String remarks)
+			double semiMajorAxis, 
+			double semiMinorAxis, 
+			double inverseFlattening,
+			bool isIvfDefinitive,
+			ILinearUnit axisUnit, string name, string authority, long code, string alias, 
+			string abbreviation, string remarks)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_SemiMajorAxis = semiMajorAxis;
@@ -153,7 +153,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity, false, LinearUnit.Metre, "Clarke 1866", "EPSG", 7008, "Clarke 1866", String.Empty,
+				return new Ellipsoid(6378206.4, 6356583.8, double.PositiveInfinity, false, LinearUnit.Metre, "Clarke 1866", "EPSG", 7008, "Clarke 1866", String.Empty,
 					"Original definition a=20926062 and b=20855121 (British) feet. Uses Clarke's 1865 inch-metre ratio of 39.370432 to obtain metres. (Metric value then converted to US survey feet for use in the United States using 39.37 exactly giving a=20925832.16 ft US).");
 			}
 		}
@@ -169,7 +169,7 @@ namespace SharpMap.CoordinateSystems
 		{
 			get
 			{
-				return new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity, false, LinearUnit.Metre, "GRS 1980 Authalic Sphere", "EPSG", 7048, "Sphere", "",
+				return new Ellipsoid(6370997.0, 6370997.0, double.PositiveInfinity, false, LinearUnit.Metre, "GRS 1980 Authalic Sphere", "EPSG", 7048, "Sphere", "",
 					"Authalic sphere derived from GRS 1980 ellipsoid (code 7019).  (An authalic sphere is one with a surface area equal to the surface area of the ellipsoid). 1/f is infinite.");
 			}
 		}
@@ -177,34 +177,34 @@ namespace SharpMap.CoordinateSystems
 
 		#region IEllipsoid Members
 
-		private Double _SemiMajorAxis;
+		private double _SemiMajorAxis;
 
 		/// <summary>
 		/// Gets or sets the value of the semi-major axis.
 		/// </summary>
-		public Double SemiMajorAxis
+		public double SemiMajorAxis
 		{
 			get { return _SemiMajorAxis; }
 			set { _SemiMajorAxis = value; }
 		}
 
-		private Double _SemiMinorAxis;
+		private double _SemiMinorAxis;
 
 		/// <summary>
 		/// Gets or sets the value of the semi-minor axis.
 		/// </summary>
-		public Double SemiMinorAxis
+		public double SemiMinorAxis
 		{
 			get { return _SemiMinorAxis; }
 			set { _SemiMinorAxis = value; }
 		}
 
-		private Double _InverseFlattening;
+		private double _InverseFlattening;
 
 		/// <summary>
 		/// Gets or sets the value of the inverse of the flattening constant of the ellipsoid.
 		/// </summary>
-		public Double InverseFlattening
+		public double InverseFlattening
 		{
 			get { return _InverseFlattening; }
 			set { _InverseFlattening = value; }
@@ -221,7 +221,7 @@ namespace SharpMap.CoordinateSystems
 			set { _AxisUnit = value; }
 		}
 
-		private Boolean _IsIvfDefinitive;
+		private bool _IsIvfDefinitive;
 
 		/// <summary>
 		/// Tells if the Inverse Flattening is definitive for this ellipsoid. Some ellipsoids use 
@@ -229,7 +229,7 @@ namespace SharpMap.CoordinateSystems
 		/// ellipsoids use the polar radius to calculate the IVF whenever asked. This 
 		/// distinction can be important to avoid floating-point rounding errors.
 		/// </summary>
-		public Boolean IsIvfDefinitive
+		public bool IsIvfDefinitive
 		{
 			get { return _IsIvfDefinitive; }
 			set { _IsIvfDefinitive = value; }
@@ -239,7 +239,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -259,7 +259,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -279,7 +279,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj">Object to determine equality with.</param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			Ellipsoid e = obj as Ellipsoid;
 			

@@ -70,10 +70,10 @@ namespace SharpMap.Rendering.Gdi
             HighlightFill = highlightFill;
             SelectFill = selectFill;
             Line = line;
-            HighlightLine = highlightLine;
+            HightlightLine = highlightLine;
             SelectLine = selectLine;
             Outline = outline;
-            HighlightOutline = highlightOutline;
+            HightlightOutline = highlightOutline;
             SelectOutline = selectOutline;
 
             Image = null;
@@ -105,16 +105,15 @@ namespace SharpMap.Rendering.Gdi
             HighlightFill = null;
             SelectFill = null;
             Line = null;
-            HighlightLine = null;
+            HightlightLine = null;
             SelectLine = null;
             Outline = null;
-            HighlightOutline = null;
+            HightlightOutline = null;
             SelectOutline = null;
 
             Text = null;
             Font = null;
         }
-
         /// <summary>
         /// Creates a new GdiRenderObject instance.
         /// </summary>
@@ -157,10 +156,10 @@ namespace SharpMap.Rendering.Gdi
             HighlightFill = highlightFill;
             SelectFill = selectFill;
             Outline = outline;
-            HighlightOutline = highlightOutline;
+            HightlightOutline = highlightOutline;
             SelectOutline = selectOutline;
             Line = null;
-            HighlightLine = null;
+            HightlightLine = null;
             SelectLine = null;
         }
 
@@ -220,7 +219,7 @@ namespace SharpMap.Rendering.Gdi
         /// The pen used to draw a line when the state is 
         /// <see cref="RenderState.Highlighted"/>.
         /// </summary>
-        public readonly Pen HighlightLine;
+        public readonly Pen HightlightLine;
 
         /// <summary>
         /// The pen used to draw a line when the state is 
@@ -238,7 +237,7 @@ namespace SharpMap.Rendering.Gdi
         /// The pen used to outline the path when the state is 
         /// <see cref="RenderState.Highlighted"/>.
         /// </summary>
-        public readonly Pen HighlightOutline;
+        public readonly Pen HightlightOutline;
 
         /// <summary>
         /// The pen used to outline the path when the state is 

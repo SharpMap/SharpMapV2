@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Data;
 using SharpMap.CoordinateSystems;
 using SharpMap.CoordinateSystems.Transformations;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using System.Globalization;
 using SharpMap.Expressions;
 
@@ -31,7 +31,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
     /// </summary>
 	public class FeatureProvider : IWritableFeatureLayerProvider<Guid>
 	{
-        internal readonly static String OidColumnName = "Oid";
+        internal readonly static string OidColumnName = "Oid";
 		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
 		private ICoordinateTransformation _transform = null;
 
@@ -45,7 +45,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		{
             foreach (DataColumn column in columns)
             {
-                String keyColumnName = _features.PrimaryKey[0].ColumnName;
+                string keyColumnName = _features.PrimaryKey[0].ColumnName;
                 if (String.Compare(keyColumnName, column.ColumnName) != 0)
                 {
                     _features.Columns.Add(column);
@@ -309,7 +309,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// Returns the number of features in the entire dataset.
         /// </summary>
         /// <returns>Count of the features in the entire dataset.</returns>
-	    public Int32 GetFeatureCount()
+	    public int GetFeatureCount()
 		{
 			return _features.FeatureCount;
         }
@@ -364,12 +364,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			get { return GeographicCoordinateSystem.WGS84;  }
 		}
 
-		public Boolean IsOpen
+		public bool IsOpen
 		{
 			get { return true; }
 		}
 
-		public Int32? Srid
+		public int? Srid
 		{
 			get { return null; }
 			set {  }
@@ -380,7 +380,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			return _features.Extents;
 		}
 
-		public String ConnectionId
+		public string ConnectionId
 		{
 			get { return String.Empty; }
 		}

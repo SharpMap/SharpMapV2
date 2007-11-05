@@ -27,8 +27,8 @@ namespace SharpMap.CoordinateSystems
 	public class GeocentricCoordinateSystem : CoordinateSystem, IGeocentricCoordinateSystem
 	{
 		internal GeocentricCoordinateSystem(IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian, List<AxisInfo> axisinfo,
-			String name, String authority, Int64 code, String alias, 
-			String remarks, String abbreviation)
+			string name, string authority, long code, string alias, 
+			string remarks, string abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_HorizontalDatum = datum;
@@ -88,7 +88,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="dimension">Dimension</param>
 		/// <returns>Unit</returns>
-		public override IUnit GetUnits(Int32 dimension)
+		public override IUnit GetUnits(int dimension)
 		{
 			return _LinearUnit;
 		}
@@ -108,7 +108,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -122,7 +122,7 @@ namespace SharpMap.CoordinateSystems
                     AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientationEnum.East ||
                     AxisInfo[2].Name != "Z" || AxisInfo[2].Orientation != AxisOrientationEnum.North)
                 {
-                    for (Int32 i = 0; i < AxisInfo.Count; i++)
+                    for (int i = 0; i < AxisInfo.Count; i++)
                     {
                         sb.AppendFormat(", {0}", GetAxis(i).WKT);
                     }
@@ -141,7 +141,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -170,7 +170,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			GeocentricCoordinateSystem other = obj as GeocentricCoordinateSystem;
 

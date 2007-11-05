@@ -25,7 +25,7 @@ namespace SharpMap.CoordinateSystems
 	/// A coordinate system based on latitude and longitude. 
 	/// </summary>
 	/// <remarks>
-	/// Some geographic coordinate systems are Lat / Lon, and some are Lon / Lat. 
+	/// Some geographic coordinate systems are Lat/Lon, and some are Lon/Lat. 
 	/// You can find out which this is by examining the axes. You should also 
 	/// check the angular units, since not all geographic coordinate systems 
 	/// use degrees.
@@ -46,7 +46,7 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal GeographicCoordinateSystem(IAngularUnit angularUnit, IHorizontalDatum horizontalDatum, IPrimeMeridian primeMeridian, List<AxisInfo> axisInfo, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+		internal GeographicCoordinateSystem(IAngularUnit angularUnit, IHorizontalDatum horizontalDatum, IPrimeMeridian primeMeridian, List<AxisInfo> axisInfo, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
 			:
 			base(horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -68,7 +68,7 @@ namespace SharpMap.CoordinateSystems
 				axes.Add(new AxisInfo("Lat", AxisOrientationEnum.North));
 				return new GeographicCoordinateSystem(SharpMap.CoordinateSystems.AngularUnit.Degrees,
 					SharpMap.CoordinateSystems.HorizontalDatum.WGS84, SharpMap.CoordinateSystems.PrimeMeridian.Greenwich, 
-					axes, "WGS 84", "EPSG", 4326, String.Empty, String.Empty, String.Empty);
+					axes, "WGS 84", "EPSG", 4326, String.Empty, string.Empty, string.Empty);
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="dimension">Dimension</param>
 		/// <returns>Unit</returns>
-		public override IUnit GetUnits(Int32 dimension)
+		public override IUnit GetUnits(int dimension)
 		{
 			return _AngularUnit;
 		}
@@ -111,7 +111,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets the number of available conversions to WGS84 coordinates.
 		/// </summary>
-		public Int32 NumConversionToWGS84
+		public int NumConversionToWGS84
 		{
 			get { return _WGS84ConversionInfo.Count; }
 		}
@@ -127,7 +127,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets details on a conversion to WGS84.
 		/// </summary>
-		public Wgs84ConversionInfo GetWgs84ConversionInfo(Int32 index)
+		public Wgs84ConversionInfo GetWgs84ConversionInfo(int index)
 		{
 			return _WGS84ConversionInfo[index];
 		}
@@ -136,7 +136,7 @@ namespace SharpMap.CoordinateSystems
 		/// Returns the Well-known text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override String Wkt
+		public override string Wkt
 		{
 			get
 			{
@@ -147,7 +147,7 @@ namespace SharpMap.CoordinateSystems
                     AxisInfo[0].Name != "Lon" || AxisInfo[0].Orientation != AxisOrientationEnum.East ||
                     AxisInfo[1].Name != "Lat" || AxisInfo[1].Orientation != AxisOrientationEnum.North)
                 {
-                    for (Int32 i = 0; i < AxisInfo.Count; i++)
+                    for (int i = 0; i < AxisInfo.Count; i++)
                     {
                         sb.AppendFormat(", {0}", GetAxis(i).WKT);
                     }
@@ -166,7 +166,7 @@ namespace SharpMap.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override String Xml
+		public override string Xml
 		{
 			get
 			{
@@ -195,7 +195,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			GeographicCoordinateSystem other = obj as GeographicCoordinateSystem;
 
@@ -226,7 +226,7 @@ namespace SharpMap.CoordinateSystems
 					return false;
 				}
 
-				for (Int32 i = 0; i < WGS84ConversionInfo.Count; i++)
+				for (int i = 0; i < WGS84ConversionInfo.Count; i++)
 				{
 					if (!other.WGS84ConversionInfo[i].Equals(WGS84ConversionInfo[i]))
 					{
@@ -240,7 +240,7 @@ namespace SharpMap.CoordinateSystems
 				return false;
 			}
 
-			for (Int32 i = 0; i < other.AxisInfo.Count; i++)
+			for (int i = 0; i < other.AxisInfo.Count; i++)
 			{
 				if (other.AxisInfo[i].Orientation != AxisInfo[i].Orientation)
 				{

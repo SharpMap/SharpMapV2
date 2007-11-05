@@ -128,7 +128,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Int32 expectedRowCount = 0;
+            int expectedRowCount = 0;
 
             foreach (FeatureDataRow row in table.Rows)
             {
@@ -156,7 +156,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean resetNotificationOccured = false;
+            bool resetNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -244,7 +244,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean resetNotificationOccured = false;
+            bool resetNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -279,7 +279,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(halfBounds, table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean addNotificationOccured = false;
+            bool addNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -315,7 +315,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(halfBounds, table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean addNotificationOccured = false;
+            bool addNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -351,7 +351,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(halfBounds, table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean addNotificationOccured = false;
+            bool addNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -384,7 +384,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(halfBounds, table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean addNotificationOccured = false;
+            bool addNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -419,7 +419,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(halfBounds, table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean addNotificationOccured = false;
+            bool addNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {
@@ -442,7 +442,7 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
             FeatureDataTable table = new FeatureDataTable();
 
-            Boolean featuresRequested = false;
+            bool featuresRequested = false;
             table.FeaturesNotFound += delegate { featuresRequested = true; };
 
             BoundingBox dataExtents = data.GetExtents();
@@ -499,7 +499,7 @@ namespace SharpMap.Tests.Data
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
-            Boolean resetNotificationOccured = false;
+            bool resetNotificationOccured = false;
 
             view.ListChanged += delegate(object sender, ListChangedEventArgs e)
                                     {

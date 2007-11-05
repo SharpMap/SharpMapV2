@@ -31,7 +31,7 @@ namespace SharpMap.Geometries
 		/// <param name="sourceGeometry"></param>
 		/// <param name="otherGeometry"></param>
 		/// <returns>True if otherGeometry is wholly contained within the source geometry.</returns>
-		public static Boolean Contains(Geometry sourceGeometry, Geometry otherGeometry)
+		public static bool Contains(Geometry sourceGeometry, Geometry otherGeometry)
 		{
 			return (otherGeometry.Within(sourceGeometry));
 		}
@@ -44,7 +44,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
-		public static Boolean Crosses(Geometry g1, Geometry g2)
+		public static bool Crosses(Geometry g1, Geometry g2)
 		{
 			Geometry g = g2.Intersection(g1);
 			return (g.Intersection(g1).Dimension < Math.Max(g1.Dimension, g2.Dimension) && !g.Equals(g1) && !g.Equals(g2));
@@ -56,7 +56,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
-		public static Boolean Disjoint(Geometry g1, Geometry g2)
+		public static bool Disjoint(Geometry g1, Geometry g2)
 		{
 			return !g2.Intersects(g1);
 		}
@@ -67,7 +67,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1">source geometry</param>
 		/// <param name="g2">other Geometry</param>
 		/// <returns></returns>
-		public static Boolean Equals(Geometry g1, Geometry g2)
+		public static bool Equals(Geometry g1, Geometry g2)
 		{
 			if (ReferenceEquals(g1, null) && ReferenceEquals(g2, null))
 			{
@@ -115,7 +115,7 @@ namespace SharpMap.Geometries
 					return false;
 				}
 
-				for (Int32 i = 0; i < (g1 as GeometryCollection).Collection.Count; i++)
+				for (int i = 0; i < (g1 as GeometryCollection).Collection.Count; i++)
 				{
 					if (!Equals((g1 as GeometryCollection)[i], (g2 as GeometryCollection)[i]))
 					{
@@ -138,7 +138,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
-		public static Boolean Intersects(Geometry g1, Geometry g2)
+		public static bool Intersects(Geometry g1, Geometry g2)
 		{
 #warning BoundingBox intersection is wrong, wrong, wrong, but it won't be fixed until we use NTS
 
@@ -162,7 +162,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
-		public static Boolean Overlaps(Geometry g1, Geometry g2)
+		public static bool Overlaps(Geometry g1, Geometry g2)
 		{
 			throw new NotImplementedException();
 		}
@@ -173,7 +173,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
-		public static Boolean Touches(Geometry g1, Geometry g2)
+		public static bool Touches(Geometry g1, Geometry g2)
 		{
 			throw new NotImplementedException();
 		}
@@ -185,7 +185,7 @@ namespace SharpMap.Geometries
 		/// <param name="g1"></param>
 		/// <param name="g2"></param>
 		/// <returns></returns>
-		public static Boolean Within(Geometry g1, Geometry g2)
+		public static bool Within(Geometry g1, Geometry g2)
 		{
 		    if (g1 == null) throw new ArgumentNullException("g1");
 		    if (g2 == null) throw new ArgumentNullException("g2");

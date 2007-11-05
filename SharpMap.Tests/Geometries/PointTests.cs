@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using SharpMap.Geometries;
 using SharpMap.Geometries.Geometries3D;
@@ -35,8 +34,8 @@ namespace SharpMap.Tests.Geometries
             Assert.AreEqual(new Point(500, 100), p2 - new Point(-50, 20));
             Assert.AreEqual(new Point(900, 240), p2*2);
             Assert.AreEqual(0, p2.Dimension);
-            Assert.AreEqual(450, (Double)p2[0]);
-            Assert.AreEqual(120, (Double)p2[1]);
+            Assert.AreEqual(450, (double)p2[0]);
+            Assert.AreEqual(120, (double)p2[1]);
             Assert.IsNull(p2.Boundary());
             Assert.AreEqual(p2.X.GetHashCode() ^ p2.Y.GetHashCode() ^ p2.IsEmpty().GetHashCode(), p2.GetHashCode());
             Assert.Greater(p2.CompareTo(p1), 0);
@@ -64,7 +63,7 @@ namespace SharpMap.Tests.Geometries
             p0.X += 100;
             p0.Y = 150;
             p0.Z += 499;
-            p0[2] = ((Double) p0[2]) + ((Double) p0[2]);
+            p0[2] = ((double) p0[2]) + ((double) p0[2]);
             Assert.AreEqual(new Point3D(550, 150, 1066), p0);
             Assert.AreEqual(p2.AsPoint(), p2.GetBoundingBox().Min);
             Assert.AreEqual(p2.AsPoint(), p2.GetBoundingBox().Max);
@@ -73,9 +72,9 @@ namespace SharpMap.Tests.Geometries
             Assert.AreEqual(new Point(73, 1), p2 - new Point(-50, 20));
             Assert.AreEqual(new Point3D(46, 42, 188), p2*2);
             Assert.AreEqual(0, p2.Dimension);
-            Assert.AreEqual(23, (Double)p2[0], TestConstants.Epsilon);
-            Assert.AreEqual(21, (Double)p2[1], TestConstants.Epsilon);
-            Assert.AreEqual(94, (Double)p2[2], TestConstants.Epsilon);
+            Assert.AreEqual(23, (double)p2[0], TestConstants.Epsilon);
+            Assert.AreEqual(21, (double)p2[1], TestConstants.Epsilon);
+            Assert.AreEqual(94, (double)p2[2], TestConstants.Epsilon);
             Assert.IsNull(p2.Boundary());
             Assert.AreEqual(p2.X.GetHashCode() ^ p2.Y.GetHashCode() ^ p2.Z.GetHashCode() ^ p2.IsEmpty().GetHashCode(),
                             p2.GetHashCode());

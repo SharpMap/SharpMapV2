@@ -15,8 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-
 namespace SharpMap.Geometries
 {
 	/// <summary>
@@ -38,18 +36,18 @@ namespace SharpMap.Geometries
     {
         protected MultiSurface() { }
 
-        protected MultiSurface(Int32 initialCapacity)
+        protected MultiSurface(int initialCapacity)
             : base(initialCapacity) {  }
 
 		/// <summary>
 		/// The area of this Surface, as measured in the 
 		/// spatial reference system of this Surface.
         /// </summary>
-        public virtual Double Area
+        public virtual double Area
         {
             get
             {
-                Double result = 0;
+                double result = 0;
 
 #warning Areal calculation in MultiSurface is incorrect, since it doesn't account for overlap.
                 foreach (TSurface surface in this)
@@ -76,7 +74,7 @@ namespace SharpMap.Geometries
 		/// Gets the inherent dimension of this Geometry object, 
 		/// which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		public override Int32 Dimension
+		public override int Dimension
 		{
 			get { return 2; }
         }

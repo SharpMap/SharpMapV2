@@ -21,7 +21,7 @@ using System.Collections;
 using System.Data;
 using System.Globalization;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 using System.Collections.Generic;
@@ -56,7 +56,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource)
+        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource)
             : this(layername, new VectorStyle(), dataSource, true)
         {
         }
@@ -71,7 +71,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, Boolean handleFeatureDataRequest)
+        protected FeatureLayer(string layername, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
             : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest)
         {
         }
@@ -84,7 +84,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource)
+        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource)
             : this(layername, style, dataSource, true) {}
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource, Boolean handleFeatureDataRequest)
+        protected FeatureLayer(string layername, VectorStyle style, IFeatureLayerProvider dataSource, bool handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
             ShouldHandleFeaturesNotFoundEvent = handleFeatureDataRequest;
@@ -112,11 +112,11 @@ namespace SharpMap.Layers
             _features.IsSpatiallyIndexed = true;
 
             _selectedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Intersects, null),
+                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null),
                 "", DataViewRowState.CurrentRows);
 
-            _highlightedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Intersects, null), 
+            _highlightedFeatures = new FeatureDataView(_features, 
+                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null), 
                 "", DataViewRowState.CurrentRows);
 
             if (ShouldHandleFeaturesNotFoundEvent)
@@ -236,7 +236,7 @@ namespace SharpMap.Layers
 
         protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
         {
-            _features.Merge(features);
+            _features.MergeFeatures(features);
         }
 
         #region Private helper methods
@@ -245,7 +245,7 @@ namespace SharpMap.Layers
         {
             Geometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
 
-            Boolean hasIntersectionWithLayerData = !(available.IsEmpty() || Features.Envelope.Contains(available)) &&
+            bool hasIntersectionWithLayerData = !(available.IsEmpty() || Features.Envelope.Contains(available)) &&
                                                 e.MissingForQuery.QueryType != SpatialExpressionType.Disjoint;
 
             if(hasIntersectionWithLayerData || e.MissingForQuery.Oids != null)
@@ -260,7 +260,7 @@ namespace SharpMap.Layers
 
             if (features != null)
             {
-                Features.Merge(features);
+                Features.MergeFeatures(features);
             }
 
             DataSource.EndExecuteFeatureQuery(result);

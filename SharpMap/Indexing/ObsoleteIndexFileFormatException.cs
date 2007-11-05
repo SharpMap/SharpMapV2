@@ -33,7 +33,7 @@ namespace SharpMap.Indexing
         public ObsoleteIndexFileFormatException(System.Version versionExpected, System.Version versionEncountered)
             : this(versionExpected, versionEncountered, null) { }
 
-        public ObsoleteIndexFileFormatException(System.Version versionExpected, System.Version versionEncountered, String message)
+        public ObsoleteIndexFileFormatException(System.Version versionExpected, System.Version versionEncountered, string message)
             : base(message)
         {
             _versionExpected = versionExpected;
@@ -64,7 +64,7 @@ namespace SharpMap.Indexing
             get { return _versionEncountered; }
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return String.Format("Spatial index file version was not compatible with the version expected. Expected: {0}; Encountered: {1}.", VersionExpected, VersionEncountered);
         }

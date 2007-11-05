@@ -43,7 +43,7 @@ namespace SharpMap.Rendering.Gdi
             _internalGraphics = Graphics.FromImage(bitmap);   
         }
 
-        protected override void Dispose(Boolean disposing)
+        protected override void Dispose(bool disposing)
         {
             if(IsDisposed)
             {
@@ -58,7 +58,7 @@ namespace SharpMap.Rendering.Gdi
             base.Dispose(disposing);
         }
 
-        public override Size2D MeasureString(String text, StyleFont font)
+        public override Size2D MeasureString(string text, StyleFont font)
         {
             GdiFont gdiFont = ViewConverter.Convert(font);
             SizeF gdiSize = _internalGraphics.MeasureString(
@@ -66,7 +66,7 @@ namespace SharpMap.Rendering.Gdi
             return ViewConverter.Convert(gdiSize);
         }
 
-        public override IEnumerable<GdiRenderObject> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle, 
+        public override IEnumerable<GdiRenderObject> RenderText(string text, StyleFont font, Rectangle2D layoutRectangle, 
             Path2D flowPath, StyleBrush fontBrush, Matrix2D transform)
         {
             GdiRenderObject renderedText = new GdiRenderObject(

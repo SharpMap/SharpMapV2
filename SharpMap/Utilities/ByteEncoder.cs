@@ -159,7 +159,7 @@ namespace SharpMap.Utilities
         }
 
         /// <summary>
-        /// Swaps the Byte order of an Int32.
+        /// Swaps the byte order of an Int32.
         /// </summary>
         /// <param name="value">Int32 to  to swap the bytes of.</param>
         /// <returns>Byte Order swapped Int32.</returns>
@@ -173,7 +173,7 @@ namespace SharpMap.Utilities
         }
 
         /// <summary>
-        /// Swaps the Byte order of a UInt16.
+        /// Swaps the byte order of a UInt16.
         /// </summary>
         /// <param name="value">UInt16 to swap the bytes of.</param>
         /// <returns>Byte Order swapped UInt16.</returns>
@@ -184,7 +184,7 @@ namespace SharpMap.Utilities
         }
 
         /// <summary>
-        /// Swaps the Byte order of a UInt32.
+        /// Swaps the byte order of a UInt32.
         /// </summary>
         /// <param name="value">UInt32 to swap the bytes of.</param>
         /// <returns>Byte Order swapped UInt32.</returns>
@@ -198,13 +198,13 @@ namespace SharpMap.Utilities
         }
 
         /// <summary>
-        /// Swaps the Byte order of a Double (Double precision IEEE 754)
+        /// Swaps the byte order of a Double (double precision IEEE 754)
         /// </summary>
         /// <param name="value">Double to swap</param>
         /// <returns>Byte Order swapped Double</returns>
-        private static Double swapByteOrder(Double value)
+        private static double swapByteOrder(double value)
         {
-            Byte[] buffer = BitConverter.GetBytes(value);
+            byte[] buffer = BitConverter.GetBytes(value);
             Array.Reverse(buffer, 0, buffer.Length);
             return BitConverter.ToDouble(buffer, 0);
         }

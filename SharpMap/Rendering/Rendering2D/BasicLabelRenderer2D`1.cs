@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
@@ -103,7 +103,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         private static IEnumerable<Path2D> generateHaloPath(Rectangle2D layoutRectangle)
         {
-            Path2D path = new Path2D(layoutRectangle.GetVertexes(), true);
+            Path2D path = new Path2D(layoutRectangle.GetVertices(), true);
             yield return path;
         }
 
@@ -145,12 +145,12 @@ namespace SharpMap.Rendering.Rendering2D
         //            else
         //                style = this.Style;
 
-        //            Single rotation = 0;
+        //            float rotation = 0;
 
         //            if (layer.RotationColumn != null && layer.RotationColumn != "")
-        //                Single.TryParse(feature[layer.RotationColumn].ToString(), NumberStyles.Any, Map.NumberFormat_EnUS, out rotation);
+        //                float.TryParse(feature[layer.RotationColumn].ToString(), NumberStyles.Any, Map.NumberFormat_EnUS, out rotation);
 
-        //            String text = layer.GetLabelText(feature);
+        //            string text = layer.GetLabelText(feature);
 
         //            if (!String.IsNullOrEmpty(text))
         //            {
@@ -188,10 +188,10 @@ namespace SharpMap.Rendering.Rendering2D
         //                        GeometryCollection coll = (feature.Geometry as GeometryCollection);
         //                        if (coll.NumGeometries > 0)
         //                        {
-        //                            Double largestVal = 0;
-        //                            Int32 idxOfLargest = 0;
+        //                            double largestVal = 0;
+        //                            int idxOfLargest = 0;
 
-        //                            for (Int32 j = 0; j < coll.NumGeometries; j++)
+        //                            for (int j = 0; j < coll.NumGeometries; j++)
         //                            {
         //                                Geometry geom = coll.Geometry(j);
 
@@ -259,20 +259,20 @@ namespace SharpMap.Rendering.Rendering2D
         ///// <param name="backColor">Background color.</param>
         ///// <param name="halo">Halo to be drawn around the label text.</param>
         ///// <param name="rotation">Text rotation in degrees.</param>
-        //public void DrawLabel(String text, Point2D location, Point2D offset, StyleFont font,
-        //    StyleColor foreColor, StyleBrush backColor, StylePen halo, Single rotation)
+        //public void DrawLabel(string text, Point2D location, Point2D offset, StyleFont font,
+        //    StyleColor foreColor, StyleBrush backColor, StylePen halo, float rotation)
         //{
         //    DrawLabel(text, location, offset, font, foreColor, backColor, halo, rotation);
         //}
 
-        //private Label CreateLabel(Geometry feature, String text, Single rotation, LabelStyle style)
+        //private Label CreateLabel(Geometry feature, string text, float rotation, LabelStyle style)
         //{
         //    LabelLayer layer = null;
         //    ViewSize2D size = MeasureString(text, style.Font);
 
         //    Point2D position = ViewTransformer.WorldToView(feature.GetBoundingBox().GetCentroid());
-        //    Double x = position.X - size.Width * (Int16)style.HorizontalAlignment * 0.5f;
-        //    Double y = position.Y - size.Height * (Int16)style.VerticalAlignment * 0.5f;
+        //    double x = position.X - size.Width * (short)style.HorizontalAlignment * 0.5f;
+        //    double y = position.Y - size.Height * (short)style.VerticalAlignment * 0.5f;
 
         //    position = new Point2D(x, y);
 
@@ -290,7 +290,7 @@ namespace SharpMap.Rendering.Rendering2D
         //    }
         //    else
         //    {
-        //        //Collision detection is enabled so we need to measure the size of the String
+        //        //Collision detection is enabled so we need to measure the size of the string
         //        label = new Label(text, position, rotation, layer.Priority,
         //            new Rectangle2D(position.X - size.Width * 0.5f - style.CollisionBuffer.Width, position.Y + size.Height * 0.5f + style.CollisionBuffer.Height,
         //            size.Width + 2f * style.CollisionBuffer.Width, size.Height + style.CollisionBuffer.Height * 2f), style);
@@ -300,7 +300,7 @@ namespace SharpMap.Rendering.Rendering2D
         //    {
         //        LineString line = feature as LineString;
 
-        //        if (line.Length / ViewTransformer.PixelSize > size.Width) //Only label feature if it is Int64 enough
+        //        if (line.Length / ViewTransformer.PixelSize > size.Width) //Only label feature if it is long enough
         //            CalculateLabelOnLineString(line, ref label);
         //        else
         //            return null;
@@ -311,12 +311,12 @@ namespace SharpMap.Rendering.Rendering2D
 
         private void calculateLabelOnLineString(LineString line, ref Label2D label)
         {
-            Double dx, dy;
-            Double tmpx, tmpy;
-            Double angle = 0.0;
+            double dx, dy;
+            double tmpx, tmpy;
+            double angle = 0.0;
 
             // first find the middle segment of the line
-            Int32 midPoint = (line.Vertices.Count - 1)/2;
+            int midPoint = (line.Vertices.Count - 1)/2;
 
             if (line.Vertices.Count > 2)
             {
@@ -343,7 +343,7 @@ namespace SharpMap.Rendering.Rendering2D
                 // calculate angle of line					
                 angle = -Math.Atan(dy/dx) + Math.PI*0.5;
                 angle *= (180d/Math.PI); // convert radians to degrees
-                label.Rotation = (Single) angle - 90; // -90 text orientation
+                label.Rotation = (float) angle - 90; // -90 text orientation
             }
 
             tmpx = line.Vertices[midPoint].X + (dx*0.5);

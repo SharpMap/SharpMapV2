@@ -47,8 +47,8 @@ namespace SharpMap.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Datum(DatumType type,
-			String name, String authority, Int64 code, String alias,
-			String remarks, String abbreviation)
+			string name, string authority, long code, string alias,
+			string remarks, string abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_DatumType = DatumType;
@@ -75,7 +75,7 @@ namespace SharpMap.CoordinateSystems
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>True if equal</returns>
-		public override Boolean EqualParams(object obj)
+		public override bool EqualParams(object obj)
 		{
 			Datum other = obj as Datum;
 			
