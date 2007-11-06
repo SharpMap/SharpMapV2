@@ -49,8 +49,8 @@ namespace ProjNet.CoordinateSystems
         internal ProjectedCoordinateSystem(IHorizontalDatum datum,
                                            IGeographicCoordinateSystem<TCoordinate> geographicCoordinateSystem,
                                            ILinearUnit linearUnit, IProjection projection, IEnumerable<AxisInfo> axisInfo,
-                                           string name, string authority, long code, string alias,
-                                           string remarks, string abbreviation)
+                                           String name, String authority, long code, String alias,
+                                           String remarks, String abbreviation)
             : base(datum, axisInfo, name, authority, code, alias, abbreviation, remarks)
         {
             _geographicCoordinateSystem = geographicCoordinateSystem;
@@ -67,7 +67,7 @@ namespace ProjNet.CoordinateSystems
 		/// <param name="Zone">UTM zone</param>
 		/// <param name="ZoneIsNorth">true of Northern hemisphere, false if southern</param>
 		/// <returns>UTM/WGS84 coordsys</returns>
-		public static ProjectedCoordinateSystem WGS84_UTM(int Zone, bool ZoneIsNorth)
+		public static ProjectedCoordinateSystem WGS84_UTM(Int32 Zone, Boolean ZoneIsNorth)
 		{
 			ParameterInfo pInfo = new ParameterInfo();
 			pInfo.Add("latitude_of_origin", 0);
@@ -83,7 +83,7 @@ namespace ProjNet.CoordinateSystems
 				SharpMap.SpatialReference.GeographicCoordinateSystem.WGS84,
 				SharpMap.SpatialReference.LinearUnit.Metre, proj, pInfo,
 				"WGS 84 / UTM zone " + Zone.ToString() + (ZoneIsNorth ? "N" : "S"), "EPSG", 32600 + Zone + (ZoneIsNorth ? 0 : 100),
-				String.Empty,String.Empty,string.Empty);
+				String.Empty,String.Empty,String.Empty);
 			
 		}*/
 
@@ -121,7 +121,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="dimension">Dimension</param>
         /// <returns>Unit</returns>
-        public override IUnit GetUnits(int dimension)
+        public override IUnit GetUnits(Int32 dimension)
         {
             return _linearUnit;
         }
@@ -138,10 +138,10 @@ namespace ProjNet.CoordinateSystems
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -179,7 +179,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object.
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
@@ -200,43 +200,36 @@ namespace ProjNet.CoordinateSystems
             }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            ProjectedCoordinateSystem<TCoordinate> other = obj as ProjectedCoordinateSystem<TCoordinate>;
+            ProjectedCoordinateSystem<TCoordinate> p = other as ProjectedCoordinateSystem<TCoordinate>;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(p, null))
             {
                 return false;
             }
 
-            if (other.Dimension != Dimension)
+            if (p.Dimension != Dimension)
             {
                 return false;
             }
 
-            for (int i = 0; i < other.Dimension; i++)
+            for (Int32 i = 0; i < p.Dimension; i++)
             {
-                if (other.GetAxis(i).Orientation != GetAxis(i).Orientation)
+                if (p.GetAxis(i).Orientation != GetAxis(i).Orientation)
                 {
                     return false;
                 }
-                if (!other.GetUnits(i).EqualParams(GetUnits(i)))
+                if (!p.GetUnits(i).EqualParams(GetUnits(i)))
                 {
                     return false;
                 }
             }
 
-            return other.GeographicCoordinateSystem.EqualParams(GeographicCoordinateSystem) &&
-                   other.HorizontalDatum.EqualParams(HorizontalDatum) &&
-                   other.LinearUnit.EqualParams(LinearUnit) &&
-                   other.Projection.EqualParams(Projection);
+            return p.GeographicCoordinateSystem.EqualParams(GeographicCoordinateSystem) &&
+                   p.HorizontalDatum.EqualParams(HorizontalDatum) &&
+                   p.LinearUnit.EqualParams(LinearUnit) &&
+                   p.Projection.EqualParams(Projection);
         }
 
         #endregion

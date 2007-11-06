@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="CoordinateSystems\AngularUnit.cs" />
     <Compile Include="CoordinateSystems\ComputationConvergenceException.cs" />
+    <Compile Include="CoordinateSystems\ComputationException.cs" />
     <Compile Include="CoordinateSystems\CoordinateSystem.cs" />
     <Compile Include="CoordinateSystems\CoordinateSystemFactory.cs" />
     <Compile Include="CoordinateSystems\Datum.cs" />

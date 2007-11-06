@@ -27,13 +27,13 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class AngularUnit : Info, IAngularUnit
     {
-        private double _radiansPerUnit;
+        private Double _radiansPerUnit;
 
         /// <summary>
         /// Initializes a new instance of a angular unit
         /// </summary>
         /// <param name="radiansPerUnit">Radians per unit</param>
-        public AngularUnit(double radiansPerUnit)
+        public AngularUnit(Double radiansPerUnit)
             : this(radiansPerUnit, String.Empty, String.Empty, -1, String.Empty,
                    String.Empty, String.Empty) {}
 
@@ -47,8 +47,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal AngularUnit(double radiansPerUnit, string name, string authority,
-                             long authorityCode, string alias, string abbreviation, string remarks)
+        internal AngularUnit(Double radiansPerUnit, String name, String authority,
+                             Int64 authorityCode, String alias, String abbreviation, String remarks)
             : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _radiansPerUnit = radiansPerUnit;
@@ -63,8 +63,8 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return new AngularUnit(0.017453292519943295769236907684886, 
-                    "degree", "EPSG", 9102, "deg", String.Empty, "=pi/180 radians");
+                return new AngularUnit(0.017453292519943295769236907684886,
+                                       "degree", "EPSG", 9102, "deg", String.Empty, "=pi/180 radians");
             }
         }
 
@@ -83,8 +83,8 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return new AngularUnit(0.015707963267948966192313216916398, 
-                    "grad", "EPSG", 9105, "gr", String.Empty, "=pi/200 radians.");
+                return new AngularUnit(0.015707963267948966192313216916398,
+                                       "grad", "EPSG", 9105, "gr", String.Empty, "=pi/200 radians.");
             }
         }
 
@@ -96,8 +96,8 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new AngularUnit(0.015707963267948966192313216916398, 
-                        "gon", "EPSG", 9106, "g", String.Empty, "=pi/200 radians.");
+                    new AngularUnit(0.015707963267948966192313216916398,
+                                    "gon", "EPSG", 9106, "g", String.Empty, "=pi/200 radians.");
             }
         }
 
@@ -108,17 +108,17 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets or sets the number of radians per <see cref="AngularUnit"/>.
         /// </summary>
-        public double RadiansPerUnit
+        public Double RadiansPerUnit
         {
             get { return _radiansPerUnit; }
             set { _radiansPerUnit = value; }
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -138,7 +138,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object.
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
@@ -155,18 +155,16 @@ namespace ProjNet.CoordinateSystems
         /// Only parameters used for coordinate system are used for comparison.
         /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            AngularUnit other = obj as AngularUnit;
+            AngularUnit otherUnit = other as AngularUnit;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(otherUnit, null))
             {
                 return false;
             }
 
-            return (obj as AngularUnit).RadiansPerUnit == RadiansPerUnit;
+            return otherUnit.RadiansPerUnit == RadiansPerUnit;
         }
     }
 }

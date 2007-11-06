@@ -38,8 +38,8 @@ namespace ProjNet.CoordinateSystems
 
         internal GeocentricCoordinateSystem(IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian,
                                             IEnumerable<AxisInfo> axisinfo,
-                                            string name, string authority, long code, string alias,
-                                            string remarks, string abbreviation)
+                                            String name, String authority, long code, String alias,
+                                            String remarks, String abbreviation)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
             _horizontalDatum = datum;
@@ -56,27 +56,6 @@ namespace ProjNet.CoordinateSystems
                 throw new ArgumentException("Axis info should contain three axes for geocentric coordinate systems");
             }
         }
-
-        #region Predefined geographic coordinate systems
-
-        /// <summary>
-        /// Creates a geocentric coordinate system based on the WGS84 ellipsoid, suitable for GPS measurements
-        /// </summary>
-        public static IGeocentricCoordinateSystem<TCoordinate> Wgs84
-        {
-            get
-            {
-                return new CoordinateSystemFactory<TCoordinate>()
-                    .CreateGeocentricCoordinateSystem("WGS84 Geocentric",
-                                                      CoordinateSystems.HorizontalDatum.
-                                                          WGS84,
-                                                      CoordinateSystems.LinearUnit.Metre,
-                                                      CoordinateSystems.PrimeMeridian.
-                                                          Greenwich);
-            }
-        }
-
-        #endregion
 
         #region IGeocentricCoordinateSystem Members
 
@@ -106,7 +85,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="dimension">Dimension</param>
         /// <returns>Unit</returns>
-        public override IUnit GetUnits(int dimension)
+        public override IUnit GetUnits(Int32 dimension)
         {
             return _linearUnit;
         }
@@ -121,25 +100,26 @@ namespace ProjNet.CoordinateSystems
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat("GEOCCS[\"{0}\", {1}, {2}, {3}", Name, HorizontalDatum.Wkt, PrimeMeridian.Wkt,
                                 LinearUnit.Wkt);
-                //Skip axis info if they contain default values				
+
+                // Skip axis info if they contain default values				
                 if (AxisInfo.Count != 3 ||
                     AxisInfo[0].Name != "X" || AxisInfo[0].Orientation != AxisOrientation.Other ||
                     AxisInfo[1].Name != "Y" || AxisInfo[1].Orientation != AxisOrientation.East ||
                     AxisInfo[2].Name != "Z" || AxisInfo[2].Orientation != AxisOrientation.North)
                 {
-                    for (int i = 0; i < AxisInfo.Count; i++)
+                    foreach (AxisInfo axis in AxisInfo)
                     {
-                        sb.AppendFormat(", {0}", GetAxis(i).Wkt);
+                        sb.AppendFormat(", {0}", axis.Wkt);
                     }
                 }
 
@@ -156,11 +136,12 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
                 StringBuilder sb = new StringBuilder();
+
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
                                 "<CS_CoordinateSystem Dimension=\"{0}\"><CS_GeocentricCoordinateSystem>{1}",
                                 Dimension, InfoXml);
@@ -172,29 +153,24 @@ namespace ProjNet.CoordinateSystems
 
                 sb.AppendFormat("{0}{1}{2}</CS_GeocentricCoordinateSystem></CS_CoordinateSystem>",
                                 HorizontalDatum.Xml, LinearUnit.Xml, PrimeMeridian.Xml);
+                
                 return sb.ToString();
             }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            GeocentricCoordinateSystem<TCoordinate> other = obj as GeocentricCoordinateSystem<TCoordinate>;
+            GeocentricCoordinateSystem<TCoordinate> g = 
+                other as GeocentricCoordinateSystem<TCoordinate>;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(g, null))
             {
                 return false;
             }
 
-            return other.HorizontalDatum.EqualParams(HorizontalDatum) &&
-                   other.LinearUnit.EqualParams(LinearUnit) &&
-                   other.PrimeMeridian.EqualParams(PrimeMeridian);
+            return g.HorizontalDatum.EqualParams(HorizontalDatum) &&
+                   g.LinearUnit.EqualParams(LinearUnit) &&
+                   g.PrimeMeridian.EqualParams(PrimeMeridian);
         }
 
         #endregion

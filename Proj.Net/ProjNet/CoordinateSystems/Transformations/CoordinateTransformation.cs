@@ -33,12 +33,12 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly ICoordinateSystem<TCoordinate> _source;
         private readonly ICoordinateSystem<TCoordinate> _target;
         private readonly TransformType _transformType;
-        private readonly string _areaOfUse;
-        private readonly string _authority;
+        private readonly String _areaOfUse;
+        private readonly String _authority;
         private readonly long _authorityCode;
         private readonly IMathTransform<TCoordinate> _mathTransform;
-        private readonly string _name;
-        private readonly string _remarks;
+        private readonly String _name;
+        private readonly String _remarks;
 
 		/// <summary>
 		/// Initializes an instance of a CoordinateTransformation
@@ -53,7 +53,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <param name="areaOfUse">Area of use</param>
 		/// <param name="remarks">Remarks</param>
 		internal CoordinateTransformation(ICoordinateSystem<TCoordinate> source, ICoordinateSystem<TCoordinate> target, TransformType transformType, IMathTransform<TCoordinate> mathTransform, 
-										string name, string authority, long authorityCode, string areaOfUse, string remarks)
+										String name, String authority, long authorityCode, String areaOfUse, String remarks)
 		{
 			_target = target;
 			_source = source;
@@ -65,15 +65,13 @@ namespace ProjNet.CoordinateSystems.Transformations
 			_areaOfUse = areaOfUse;
 			_remarks = remarks;			
 		}
-		
-
 
 		#region ICoordinateTransformation Members
 
 		/// <summary>
 		/// Human readable description of domain in source coordinate system.
 		/// </summary>		
-		public string AreaOfUse
+		public String AreaOfUse
 		{
 			get { return _areaOfUse; }
 		}
@@ -84,15 +82,15 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <remarks>
 		/// An Authority is an organization that maintains definitions of Authority Codes. For example the European Petroleum Survey Group (EPSG) maintains a database of coordinate systems, and other spatial referencing objects, where each object has a code number ID. For example, the EPSG code for a WGS84 Lat/Lon coordinate system is ‘4326’
 		/// </remarks>
-		public string Authority
+		public String Authority
 		{
 			get { return _authority; }
 		}
 
 		/// <summary>
-		/// Code used by authority to identify transformation. An empty string is used for no code.
+		/// Code used by authority to identify transformation. An empty String is used for no code.
 		/// </summary>
-		/// <remarks>The AuthorityCode is a compact string defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
+		/// <remarks>The AuthorityCode is a compact String defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
 		public long AuthorityCode
 		{
 			get { return _authorityCode; }
@@ -109,7 +107,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Name of transformation.
 		/// </summary>
-		public string Name
+		public String Name
 		{
 			get { return _name; }
 		}
@@ -117,7 +115,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets the provider-supplied remarks.
 		/// </summary>
-		public string Remarks
+		public String Remarks
 		{
 			get { return _remarks; }
 		}

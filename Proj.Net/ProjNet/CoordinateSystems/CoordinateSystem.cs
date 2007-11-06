@@ -57,8 +57,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal CoordinateSystem(string name, string authority, long authorityCode, string alias, string abbreviation,
-                                  string remarks)
+        internal CoordinateSystem(String name, String authority, long authorityCode, String alias, String abbreviation,
+                                  String remarks)
             : base(name, authority, authorityCode, alias, abbreviation, remarks) { }
 
         #region ICoordinateSystem Members
@@ -66,7 +66,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Dimension of the coordinate system.
         /// </summary>
-        public int Dimension
+        public Int32 Dimension
         {
             get { return _axisInfo.Count; }
         }
@@ -75,7 +75,7 @@ namespace ProjNet.CoordinateSystems
         /// Gets the units for the dimension within coordinate system. 
         /// Each dimension in the coordinate system has corresponding units.
         /// </summary>
-        public abstract IUnit GetUnits(int dimension);
+        public abstract IUnit GetUnits(Int32 dimension);
 
         internal IList<AxisInfo> AxisInfo
         {
@@ -92,7 +92,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="dimension">Dimension</param>
         /// <returns>Axis info</returns>
-        public AxisInfo GetAxis(int dimension)
+        public AxisInfo GetAxis(Int32 dimension)
         {
             if (dimension >= _axisInfo.Count || dimension < 0)
             {

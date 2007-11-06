@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using GeoAPI.CoordinateSystems;
 
 namespace ProjNet.CoordinateSystems
@@ -45,12 +46,13 @@ namespace ProjNet.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal Datum(DatumType type,
-			string name, string authority, long code, string alias,
-			string remarks, string abbreviation)
+			String name, String authority, long code, String alias,
+			String remarks, String abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_DatumType = type;
 		}
+
 		#region IDatum Members
 
 		private DatumType _DatumType;
@@ -66,18 +68,16 @@ namespace ProjNet.CoordinateSystems
 
 		#endregion
 
-		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance.
-		/// Only parameters used for coordinate system are used for comparison.
-		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(IInfo obj)
 		{
-			if (!(obj is Ellipsoid))
-				return false;
-			return (obj as Datum).DatumType == this.DatumType;
+		    Datum d = obj as Datum;
+
+            if (ReferenceEquals(d, null))
+            {
+                return false;
+            }
+
+			return d.DatumType == DatumType;
 		}
 	}
 }

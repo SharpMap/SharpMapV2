@@ -34,11 +34,11 @@ namespace ProjNet.CoordinateSystems
     public class Projection : Info, IProjection
     {
         private readonly List<ProjectionParameter> _parameters;
-        private readonly string _className;
+        private readonly String _className;
 
-        internal Projection(string className, IEnumerable<ProjectionParameter> parameters,
-                            string name, string authority, long code, string alias,
-                            string remarks, string abbreviation)
+        internal Projection(String className, IEnumerable<ProjectionParameter> parameters,
+                            String name, String authority, long code, String alias,
+                            String remarks, String abbreviation)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
             _parameters = new List<ProjectionParameter>(parameters);
@@ -54,7 +54,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets the number of parameters of the projection.
         /// </summary>
-        public int ParameterCount
+        public Int32 ParameterCount
         {
             get { return _parameters.Count; }
         }
@@ -77,7 +77,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="index">Index of parameter.</param>
         /// <returns>The parameter at <paramref name="index"/>.</returns>
-        public ProjectionParameter this[int index]
+        public ProjectionParameter this[Int32 index]
         {
             get { return _parameters[index]; }
         }
@@ -88,7 +88,7 @@ namespace ProjNet.CoordinateSystems
         /// <remarks>The parameter name is case insensitive</remarks>
         /// <param name="name">Name of parameter</param>
         /// <returns>parameter or null if not found</returns>
-        public ProjectionParameter this[string name]
+        public ProjectionParameter this[String name]
         {
             get
             {
@@ -101,16 +101,16 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets the projection classification name (e.g. "Transverse_Mercator").
         /// </summary>
-        public string ClassName
+        public String ClassName
         {
             get { return _className; }
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -130,13 +130,14 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, "<CS_Projection Classname=\"{0}\">{1}",
-                                ClassName, InfoXml);
+
+                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, 
+                    "<CS_Projection Classname=\"{0}\">{1}", ClassName, InfoXml);
 
                 foreach (ProjectionParameter param in Parameters)
                 {
@@ -148,38 +149,34 @@ namespace ProjNet.CoordinateSystems
             }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            Projection other = obj as Projection;
+            Projection p = other as Projection;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(p, null))
             {
                 return false;
             }
 
-            if (other.ParameterCount != ParameterCount)
+            if (p.ParameterCount != ParameterCount)
             {
                 return false;
             }
 
-            for (int i = 0; i < _parameters.Count; i++)
+            foreach (ProjectionParameter parameter in _parameters)
             {
-                ProjectionParameter param = _parameters.Find(
-                    delegate(ProjectionParameter par) { return par.Name.Equals(other[i].Name, StringComparison.OrdinalIgnoreCase); });
+                ProjectionParameter found = _parameters.Find(
+                    delegate(ProjectionParameter seek)
+                    {
+                        return seek.Name.Equals(parameter.Name, StringComparison.OrdinalIgnoreCase);
+                    });
 
-                if (param == null)
+                if (found == null)
                 {
                     return false;
                 }
 
-                if (param.Value != other[i].Value)
+                if (found.Value != parameter.Value)
                 {
                     return false;
                 }

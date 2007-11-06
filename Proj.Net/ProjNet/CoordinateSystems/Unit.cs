@@ -27,7 +27,7 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class Unit : Info, IUnit
     {
-        private double _conversionFactor;
+        private Double _conversionFactor;
 
         /// <summary>
         /// Initializes a new unit
@@ -39,8 +39,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal Unit(double conversionFactor, string name, string authority, long authorityCode, string alias,
-                      string abbreviation, string remarks)
+        internal Unit(Double conversionFactor, String name, String authority, long authorityCode, String alias,
+                      String abbreviation, String remarks)
             :
                 base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
@@ -52,23 +52,23 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="name">Name of unit</param>
         /// <param name="conversionFactor">Conversion factor to base unit</param>
-        internal Unit(string name, double conversionFactor)
+        internal Unit(String name, Double conversionFactor)
             : this(conversionFactor, name, String.Empty, -1, String.Empty, String.Empty, String.Empty) {}
 
         /// <summary>
         /// Gets or sets the number of units per base-unit.
         /// </summary>
-        public double ConversionFactor
+        public Double ConversionFactor
         {
             get { return _conversionFactor; }
             set { _conversionFactor = value; }
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -86,28 +86,21 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object [NOT IMPLEMENTED].
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            Unit other = obj as Unit;
+            Unit u = other as Unit;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(u, null))
             {
                 return false;
             }
 
-            return other.ConversionFactor == ConversionFactor;
+            return u.ConversionFactor == ConversionFactor;
         }
     }
 }

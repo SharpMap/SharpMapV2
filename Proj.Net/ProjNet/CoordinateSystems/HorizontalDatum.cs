@@ -44,7 +44,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="remarks">Provider-supplied remarks</param>
         internal HorizontalDatum(
             IEllipsoid ellipsoid, Wgs84ConversionInfo toWgs84, DatumType type,
-            string name, string authority, long code, string alias, string remarks, string abbreviation)
+            String name, String authority, long code, String alias, String remarks, String abbreviation)
             : base(type, name, authority, code, alias, remarks, abbreviation)
         {
             _ellipsoid = ellipsoid;
@@ -176,10 +176,10 @@ namespace ProjNet.CoordinateSystems
 
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -204,27 +204,20 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
                 return String.Format(CultureInfo.InvariantCulture.NumberFormat,
                                      "<CS_HorizontalDatum DatumType=\"{0}\">{1}{2}{3}</CS_HorizontalDatum>",
-                                     (int)DatumType, InfoXml, Ellipsoid.Xml,
+                                     (Int32)DatumType, InfoXml, Ellipsoid.Xml,
                                      (Wgs84Parameters == null ? String.Empty : Wgs84Parameters.Xml));
             }
         }
 
         #endregion
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo obj)
         {
             HorizontalDatum other = obj as HorizontalDatum;
 

@@ -1,25 +1,25 @@
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace ProjNet.CoordinateSystems
 {
     /// <summary>
-    /// Exception thrown when a computation doesn't converge during iteration.
+    /// Exception thrown when a computation fails.
     /// </summary>
     [Serializable]
-    public class ComputationConvergenceException : ComputationException
+    public class ComputationException : Exception
     {
         /// <summary>
         /// Creates a new instance of a <see cref="ComputationConvergenceException"/>.
         /// </summary>
-        public ComputationConvergenceException() { }
+        public ComputationException() { }
 
         /// <summary>
         /// Creates a new <see cref="ComputationConvergenceException"/> instance with the given 
         /// <paramref name="message"/>.
         /// </summary>
         /// <param name="message">Information about the exception.</param>
-        public ComputationConvergenceException(String message) : base(message) { }
+        public ComputationException(String message) : base(message) { }
 
         /// <summary>
         /// Creates a new <see cref="ComputationConvergenceException"/> instance with the given 
@@ -27,9 +27,9 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="message">Information about the exception.</param>
         /// <param name="inner">The <see cref="Exception"/> which caused this exception.</param>
-        public ComputationConvergenceException(String message, Exception inner) : base(message, inner) { }
+        public ComputationException(String message, Exception inner) : base(message, inner) { }
 
-        protected ComputationConvergenceException(SerializationInfo info, StreamingContext context)
+        protected ComputationException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

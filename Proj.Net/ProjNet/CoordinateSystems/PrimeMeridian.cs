@@ -38,7 +38,7 @@ namespace ProjNet.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		internal PrimeMeridian(double longitude, IAngularUnit angularUnit, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
+		internal PrimeMeridian(Double longitude, IAngularUnit angularUnit, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -146,12 +146,12 @@ namespace ProjNet.CoordinateSystems
 
 		#region IPrimeMeridian Members
 
-		private double _Longitude;
+		private Double _Longitude;
 
 		/// <summary>
 		/// Gets or sets the longitude of the prime meridian (relative to the Greenwich prime meridian).
 		/// </summary>
-		public double Longitude
+		public Double Longitude
 		{
 			get { return _Longitude; }
 			set { _Longitude = value; }
@@ -169,10 +169,10 @@ namespace ProjNet.CoordinateSystems
 		}
 
 		/// <summary>
-		/// Returns the Well-known text for this object
+		/// Returns the Well-Known Text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get
 			{
@@ -188,7 +188,7 @@ namespace ProjNet.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get
 			{
@@ -197,19 +197,17 @@ namespace ProjNet.CoordinateSystems
 			}
 		}
 
-		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance.
-		/// Only parameters used for coordinate system are used for comparison.
-		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(IInfo other)
 		{
-			if (!(obj is PrimeMeridian))
-				return false;
-			PrimeMeridian prime = obj as PrimeMeridian;
-			return prime.AngularUnit.EqualParams(this.AngularUnit) && prime.Longitude == this.Longitude;
+			PrimeMeridian p = other as PrimeMeridian;
+
+            if (ReferenceEquals(p, null))
+            {
+                return false;
+            }
+
+			return p.AngularUnit.EqualParams(AngularUnit) 
+                && p.Longitude == Longitude;
 		}
 
 		#endregion

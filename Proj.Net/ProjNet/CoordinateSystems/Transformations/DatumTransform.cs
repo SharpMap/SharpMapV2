@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Utilities;
 using NPack;
 using NPack.Interfaces;
 
@@ -28,25 +29,26 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// Transformation for applying 
     /// </summary>
     internal class DatumTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+            IConvertible
     {
         protected IMathTransform<TCoordinate> _inverse;
         private readonly Wgs84ConversionInfo _toWgs84;
-        private ITransformMatrix<DoubleComponent> _transform;
-
-        private bool _isInverse = false;
+        private readonly ITransformMatrix<DoubleComponent> _transform;
+        private readonly ITransformMatrix<DoubleComponent> _inverseTransform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatumTransform{TCoordinate}"/> class.
         /// </summary>
-        /// <param name="towgs84"></param>
-        public DatumTransform(Wgs84ConversionInfo towgs84)
-            : this(towgs84, false) { }
+        public DatumTransform(Wgs84ConversionInfo towgs84, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+            : this(towgs84, coordinateFactory, false) { }
 
-        private DatumTransform(Wgs84ConversionInfo towgs84, bool isInverse)
+        private DatumTransform(Wgs84ConversionInfo towgs84, CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+            : base(null, coordinateFactory, isInverse)
         {
             _toWgs84 = towgs84;
             _transform = _toWgs84.GetAffineTransform();
+            _inverseTransform = _transform.Inverse as ITransformMatrix<DoubleComponent>;
             _isInverse = isInverse;
         }
 
@@ -54,7 +56,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Gets a Well-Known Text representation of this object.
         /// </summary>
         /// <value></value>
-        public override string Wkt
+        public override String Wkt
         {
             get { throw new NotImplementedException(); }
         }
@@ -63,7 +65,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Gets an XML representation of this object.
         /// </summary>
         /// <value></value>
-        public override string Xml
+        public override String Xml
         {
             get { throw new NotImplementedException(); }
         }
@@ -77,7 +79,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             if (_inverse == null)
             {
-                _inverse = new DatumTransform<TCoordinate>(_toWgs84, !_isInverse);
+                _inverse = new DatumTransform<TCoordinate>(_toWgs84,
+                    CoordinateFactory, !_isInverse);
             }
 
             return _inverse;
@@ -85,22 +88,22 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         private TCoordinate applyTransformToPoint(TCoordinate p)
         {
-            return new double[]
-                {
-                    _transform[0]*p[0] - _transform[3]*p[1] + _transform[2]*p[2] + _transform[4],
-                    _transform[3]*p[0] + _transform[0]*p[1] - _transform[1]*p[2] + _transform[5],
-                    -_transform[2]*p[0] + _transform[1]*p[1] + _transform[0]*p[2] + _transform[6],
-                };
+            return (TCoordinate)_transform.TransformVector(p);
+            //return _coordinateFactory(
+            //        _transform[0]*p[0] - _transform[3]*p[1] + _transform[2]*p[2] + _transform[4],
+            //        _transform[3]*p[0] + _transform[0]*p[1] - _transform[1]*p[2] + _transform[5],
+            //        -_transform[2]*p[0] + _transform[1]*p[1] + _transform[0]*p[2] + _transform[6],
+            //    );
         }
 
         private TCoordinate applyInvertedTransformToPoint(TCoordinate p)
         {
-            return new double[]
-                {
-                    _transform[0]*p[0] + _transform[3]*p[1] - _transform[2]*p[2] - _transform[4],
-                    -_transform[3]*p[0] + _transform[0]*p[1] + _transform[1]*p[2] - _transform[5],
-                    _transform[2]*p[0] - _transform[1]*p[1] + _transform[0]*p[2] - _transform[6],
-                };
+            return (TCoordinate)_inverseTransform.TransformVector(p);
+            //return _coordinateFactory(
+            //        _transform[0]*p[0] + _transform[3]*p[1] - _transform[2]*p[2] - _transform[4],
+            //        -_transform[3]*p[0] + _transform[0]*p[1] + _transform[1]*p[2] - _transform[5],
+            //        _transform[2]*p[0] - _transform[1]*p[1] + _transform[0]*p[2] - _transform[6],
+            //    );
         }
 
         /// <summary>
@@ -123,8 +126,6 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Transforms a list of coordinate point ordinal values.
         /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
         /// <remarks>
         /// This method is provided for efficiently transforming many points. The supplied array
         /// of ordinal values will contain packed ordinal values. For example, if the source
@@ -139,18 +140,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </remarks>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            foreach (TCoordinate p in points)
-            {
-                yield return Transform(p);
-            }
-        }
-
-        /// <summary>
-        /// Reverses the transformation
-        /// </summary>
-        public override void Invert()
-        {
-            _isInverse = !_isInverse;
+            return EnumerableConverter.Downcast<TCoordinate, IVector<DoubleComponent>>(
+                _transform.TransformVectors(EnumerableConverter.Upcast<IVector<DoubleComponent>, TCoordinate>(points)));
         }
     }
 }

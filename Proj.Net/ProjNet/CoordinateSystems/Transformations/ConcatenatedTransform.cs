@@ -29,10 +29,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         protected IMathTransform<TCoordinate> _inverse;
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;
 
-        public ConcatenatedTransform()
-            : this(new ICoordinateTransformation<TCoordinate>[0]) { }
+        public ConcatenatedTransform(CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+            : this(new ICoordinateTransformation<TCoordinate>[0], coordinateFactory) { }
 
-        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms)
+        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+            : base(null, coordinateFactory, false)
         {
             _transforms = new List<ICoordinateTransformation<TCoordinate>>(transforms);
         }
@@ -49,7 +50,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Transforms a point
+        /// Transforms a coordinate.
         /// </summary>
         public override TCoordinate Transform(TCoordinate point)
         {
@@ -62,14 +63,18 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Transforms a list point
+        /// Transforms a set of coordinates.
         /// </summary>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            foreach (TCoordinate point in points)
+            IEnumerable<TCoordinate> transformed = points;
+
+            foreach (ICoordinateTransformation<TCoordinate> ct in _transforms)
             {
-                yield return Transform(point);
+                transformed = ct.MathTransform.Transform(transformed);
             }
+
+            return transformed;
         }
 
         /// <summary>
@@ -80,7 +85,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             if (_inverse == null)
             {
-                _inverse = new ConcatenatedTransform<TCoordinate>(_transforms);
+                _inverse = new ConcatenatedTransform<TCoordinate>(_transforms, CoordinateFactory);
                 _inverse.Invert();
             }
 
@@ -104,7 +109,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Gets a Well-Known Text representation of this object.
         /// </summary>
         /// <value></value>
-        public override string Wkt
+        public override String Wkt
         {
             get { throw new NotImplementedException(); }
         }
@@ -113,7 +118,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Gets an XML representation of this object.
         /// </summary>
         /// <value></value>
-        public override string Xml
+        public override String Xml
         {
             get { throw new NotImplementedException(); }
         }

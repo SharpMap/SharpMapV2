@@ -37,7 +37,7 @@ namespace ProjNet.CoordinateSystems
 		/// <param name="alias">Alias</param>
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
-		public LinearUnit(double metersPerUnit, string name, string authority, long authorityCode, string alias, string abbreviation, string remarks)
+		public LinearUnit(Double metersPerUnit, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
@@ -90,22 +90,22 @@ namespace ProjNet.CoordinateSystems
 
 		#region ILinearUnit Members
 
-		private double _MetersPerUnit;
+		private Double _MetersPerUnit;
 
 		/// <summary>
 		/// Gets or sets the number of meters per <see cref="LinearUnit"/>.
 		/// </summary>
-		public double MetersPerUnit
+		public Double MetersPerUnit
 		{
 			get { return _MetersPerUnit; }
 			set { _MetersPerUnit = value; }
 		}
 
 		/// <summary>
-		/// Returns the Well-known text for this object
+		/// Returns the Well-Known Text for this object
 		/// as defined in the simple features specification.
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace ProjNet.CoordinateSystems
 		/// <summary>
 		/// Gets an XML representation of this object
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get
 			{
@@ -131,18 +131,16 @@ namespace ProjNet.CoordinateSystems
 
 		#endregion
 
-		/// <summary>
-		/// Checks whether the values of this instance is equal to the values of another instance.
-		/// Only parameters used for coordinate system are used for comparison.
-		/// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns>True if equal</returns>
-		public override bool EqualParams(object obj)
+		public override Boolean EqualParams(IInfo other)
 		{
-			if (!(obj is LinearUnit))
-				return false;
-			return (obj as LinearUnit).MetersPerUnit == this.MetersPerUnit;
+		    LinearUnit l = other as LinearUnit;
+
+            if (ReferenceEquals(l, null))
+            {
+                return false;
+            }
+
+			return l.MetersPerUnit == MetersPerUnit;
 		}		
 	}
 }

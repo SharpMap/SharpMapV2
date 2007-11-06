@@ -24,13 +24,16 @@ using NPack.Interfaces;
 namespace ProjNet.CoordinateSystems.Transformations
 {
 	/// <summary>
-	/// The GeographicTransform class is implemented on geographic transformation objects and
-	/// implements datum transformations between geographic coordinate systems.
+	/// The GeographicTransform class is implemented on geographic 
+	/// transformation objects and implements datum transformations 
+	/// between geographic coordinate systems.
 	/// </summary>
     public class GeographicTransform<TCoordinate> : MathTransform<TCoordinate>
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
 	{
-		internal GeographicTransform(IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
+		internal GeographicTransform(IGeographicCoordinateSystem<TCoordinate> source, 
+            IGeographicCoordinateSystem<TCoordinate> target, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+            : base(null, coordinateFactory, false)
 		{
 			_source = source;
 			_target = target;
@@ -61,10 +64,10 @@ namespace ProjNet.CoordinateSystems.Transformations
 		}
 
 		/// <summary>
-		/// Returns the Well-known text for this object
+		/// Returns the Well-Known Text for this object
 		/// as defined in the simple features specification. [NOT IMPLEMENTED].
 		/// </summary>
-		public override string Wkt
+		public override String Wkt
 		{
 			get
 			{
@@ -75,7 +78,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets an XML representation of this object [NOT IMPLEMENTED].
 		/// </summary>
-		public override string Xml
+		public override String Xml
 		{
 			get
 			{
@@ -102,12 +105,23 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <returns></returns>
         public override TCoordinate Transform(TCoordinate point)
 		{
-            TCoordinate pOut = (TCoordinate) point.Clone();
-            pOut[0] /= Source.AngularUnit.RadiansPerUnit;
-            pOut[0] -= Source.PrimeMeridian.Longitude / Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
-            pOut[0] += Target.PrimeMeridian.Longitude / Target.PrimeMeridian.AngularUnit.RadiansPerUnit;
-            pOut[0] *= Source.AngularUnit.RadiansPerUnit;
-			return pOut;
+            Double value = (Double) point[0];
+
+            value /= Source.AngularUnit.RadiansPerUnit;
+            value -= Source.PrimeMeridian.Longitude / Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
+            value += Target.PrimeMeridian.Longitude / Target.PrimeMeridian.AngularUnit.RadiansPerUnit;
+            value *= Source.AngularUnit.RadiansPerUnit;
+
+		    Int32 componentCount = point.ComponentCount;
+            Double[] coordValues = new Double[componentCount];
+		    coordValues[0] = value;
+
+            for (int i = 1; i < point.ComponentCount; i++)
+            {
+                coordValues[i] = (Double)point[i];
+            }
+
+            return CreateCoordinate(coordValues);
 		}
 
 		/// <summary>

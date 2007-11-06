@@ -59,10 +59,10 @@ namespace ProjNet.IO.CoordinateSystems
 	{	
 		TokenType _currentTokenType;
 		TextReader _reader;
-		string _currentToken;
-		bool _ignoreWhitespace = false;
-		int _lineNumber=1;
-		int _colNumber=1;
+		String _currentToken;
+		Boolean _ignoreWhitespace = false;
+		Int32 _lineNumber=1;
+		Int32 _colNumber=1;
 			
 		#region Constructors
 	
@@ -72,7 +72,7 @@ namespace ProjNet.IO.CoordinateSystems
 		/// </summary>
 		/// <param name="reader">A TextReader with some text to read.</param>
 		/// <param name="ignoreWhitespace">Flag indicating whether whitespace should be ignored.</param>
-		public StreamTokenizer(TextReader reader, bool ignoreWhitespace)
+		public StreamTokenizer(TextReader reader, Boolean ignoreWhitespace)
 		{
 			if (reader==null)
 			{
@@ -87,7 +87,7 @@ namespace ProjNet.IO.CoordinateSystems
 		/// <summary>
 		/// The current line number of the stream being read.
 		/// </summary>
-		public int LineNumber
+		public Int32 LineNumber
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace ProjNet.IO.CoordinateSystems
 		/// <summary>
 		/// The current column number of the stream being read.
 		/// </summary>
-		public int Column
+		public Int32 Column
 		{
 			get
 			{
@@ -116,18 +116,18 @@ namespace ProjNet.IO.CoordinateSystems
 		/// If the current token is a number, this field contains the value of that number. The current token is a number when the value of the ttype field is TT_NUMBER.
 		/// </remarks>
 		/// <exception cref="FormatException">Current token is not a number in a valid format.</exception>
-		public double GetNumericValue()
+		public Double GetNumericValue()
 		{
-			string number = this.GetStringValue();
+			String number = this.GetStringValue();
 			if (this.GetTokenType() == TokenType.Number)
-				return double.Parse(number, CultureInfo.InvariantCulture.NumberFormat);
+				return Double.Parse(number, CultureInfo.InvariantCulture.NumberFormat);
             throw new InvalidDataException(String.Format(CultureInfo.InvariantCulture.NumberFormat, "The token '{0}' is not a number at line {1} column {2}.", 
                 number, this.LineNumber, this.Column));
 		}
 		/// <summary>
-		/// If the current token is a word token, this field contains a string giving the characters of the word token. 
+		/// If the current token is a word token, this field contains a String giving the characters of the word token. 
 		/// </summary>
-		public string GetStringValue()
+		public String GetStringValue()
 		{
 			return _currentToken;
 		}
@@ -146,7 +146,7 @@ namespace ProjNet.IO.CoordinateSystems
 		/// </summary>
 		/// <param name="ignoreWhitespace">Determines is whitespace is ignored. True if whitespace is to be ignored.</param>
 		/// <returns>The TokenType of the next token.</returns>
-		public TokenType NextToken(bool ignoreWhitespace)
+		public TokenType NextToken(Boolean ignoreWhitespace)
 		{
 			TokenType nextTokenType;
 			if (ignoreWhitespace)
@@ -174,10 +174,10 @@ namespace ProjNet.IO.CoordinateSystems
 			char[] chars = new char[1];
 			_currentToken="";
 			_currentTokenType = TokenType.Eof;
-			int finished = _reader.Read(chars,0,1);
+			Int32 finished = _reader.Read(chars,0,1);
 
-			bool isNumber=false;
-			bool isWord=false;
+			Boolean isNumber=false;
+			Boolean isWord=false;
 			byte[] ba=null;
 #if Silverlight
 			Encoding AE = System.Text.Encoding.Default;
@@ -189,7 +189,7 @@ namespace ProjNet.IO.CoordinateSystems
 			Char nextCharacter;
 			while (finished != 0 )
 			{
-				// convert int to char
+				// convert Int32 to char
 				ba = new Byte[]{(byte)_reader.Peek()};
 				
 				 ascii = AE.GetChars(ba);

@@ -42,8 +42,8 @@ namespace ProjNet.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		internal HorizontalCoordinateSystem(IHorizontalDatum datum, IEnumerable<AxisInfo> axisInfo, 
-			string name, string authority, long code, string alias,
-			string remarks, string abbreviation)
+			String name, String authority, long code, String alias,
+			String remarks, String abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
 			_horizontalDatum = datum;

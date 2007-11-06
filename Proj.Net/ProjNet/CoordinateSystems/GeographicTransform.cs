@@ -31,7 +31,7 @@ namespace ProjNet.CoordinateSystems
             IConvertible
     {
         internal GeographicTransform(
-            string name, string authority, long code, string alias, string remarks, string abbreviation,
+            String name, String authority, long code, String alias, String remarks, String abbreviation,
             IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> targetGCS)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
@@ -101,10 +101,10 @@ namespace ProjNet.CoordinateSystems
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get { throw new NotImplementedException(); }
         }
@@ -112,28 +112,22 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object [NOT IMPLEMENTED].
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            GeographicTransform<TCoordinate> other = obj as GeographicTransform<TCoordinate>;
+            GeographicTransform<TCoordinate> g = other as GeographicTransform<TCoordinate>;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(g, null))
             {
                 return false;
             }
 
-            return other.Source.EqualParams(Source) && other.Target.EqualParams(Target);
+            return g.Source.EqualParams(Source) 
+                && g.Target.EqualParams(Target);
         }
 
         #endregion

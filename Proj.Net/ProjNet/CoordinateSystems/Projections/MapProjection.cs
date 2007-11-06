@@ -40,6 +40,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.Utilities;
+using NPack.Interfaces;
 using ProjNet.CoordinateSystems.Transformations;
 using ProjNet.CoordinateSystems;
 
@@ -49,86 +51,71 @@ namespace ProjNet.CoordinateSystems.Projections
     /// Projections inherit from this abstract class to get access to useful mathematical functions.
     /// </summary>
     internal abstract class MapProjection<TCoordinate> : MathTransform<TCoordinate>, IProjection
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+            IConvertible
     {
-        protected bool _isInverse = false;
-        protected double _es;
-        protected double _semiMajor;
-        protected double _semiMinor;
-        protected double _metersPerUnit;
-
-        protected List<ProjectionParameter> _parameters;
+        protected Double _metersPerUnit;
         protected MathTransform<TCoordinate> _inverse;
 
         // TODO: can these fields / properties get factored out and shared with CoordinateTransformation<TCoordinate>?
-        private string _abbreviation;
-        private string _alias;
-        private string _authority;
-        private long _code;
-        private string _name;
-        private string _remarks;
+        private String _abbreviation;
+        private String _alias;
+        private String _authority;
+        private Int64 _code;
+        private String _name;
+        private String _remarks;
 
-        protected MapProjection(IEnumerable<ProjectionParameter> parameters, bool isInverse)
-            : this(parameters)
+        protected MapProjection(IEnumerable<ProjectionParameter> parameters, 
+            CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+            : base(EnumerableConverter.Upcast<Parameter, ProjectionParameter>(parameters), 
+                    coordinateFactory, isInverse)
         {
-            _isInverse = isInverse;
-        }
-
-        protected MapProjection(IEnumerable<ProjectionParameter> parameters)
-        {
-            _parameters = new List<ProjectionParameter>(parameters);
-
-            // TODO: Should really convert to the correct linear units??
-            ProjectionParameter semimajor = GetParameter("semi_major");
-            ProjectionParameter semiminor = GetParameter("semi_minor");
-
-            if (semimajor == null)
-            {
-                throw new ArgumentException("Missing projection parameter 'semi_major'");
-            }
-            if (semiminor == null)
-            {
-                throw new ArgumentException("Missing projection parameter 'semi_minor'");
-            }
-
-            _semiMajor = semimajor.Value;
-            _semiMinor = semiminor.Value;
-
             ProjectionParameter unit = GetParameter("unit");
             _metersPerUnit = unit.Value;
-
-            _es = 1.0 - (_semiMinor * _semiMinor) / (_semiMajor * _semiMajor);
         }
 
         #region IProjection Members
-        public ProjectionParameter this[int index]
+        public ProjectionParameter this[Int32 index]
         {
-            get { return _parameters[index]; }
+            get { return GetParameter(index); }
         }
 
-        public ProjectionParameter this[string name]
+        public ProjectionParameter this[String name]
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return GetParameter(name); }
         }
 
         /// <summary>
         /// Gets an named parameter of the projection.
         /// </summary>
-        /// <remarks>The parameter name is case insensitive</remarks>
-        /// <param name="name">Name of parameter</param>
-        /// <returns>parameter or null if not found</returns>
-        public ProjectionParameter GetParameter(string name)
+        /// <remarks>The parameter name is case insensitive.</remarks>
+        /// <param name="name">Name of parameter.</param>
+        /// <returns>
+        /// The parameter with the given name or 
+        /// <see langword="null"/> if not found.
+        /// </returns>
+        public ProjectionParameter GetParameter(String name)
         {
-            return
-                _parameters.Find(
-                    delegate(ProjectionParameter par) { return par.Name.Equals(name, StringComparison.OrdinalIgnoreCase); });
+            return GetParameterInternal(name) as ProjectionParameter;
         }
 
-        public int ParameterCount
+        /// <summary>
+        /// Gets an named parameter of the projection.
+        /// </summary>
+        /// <param name="index">Index of parameter.</param>
+        /// <returns>
+        /// The parameter at the given <paramref name="index"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="index"/> is less than 0 or greater than
+        /// or equal to <see cref="ParameterCount"/>.
+        /// </exception>
+        public ProjectionParameter GetParameter(Int32 index)
         {
-            get { return _parameters.Count; }
+            return GetParameterInternal(index) as ProjectionParameter;
         }
 
-        public string ClassName
+        public String ClassName
         {
             get { return ClassName; }
         }
@@ -136,7 +123,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Gets or sets the abbreviation of the object.
         /// </summary>
-        public string Abbreviation
+        public String Abbreviation
         {
             get { return _abbreviation; }
             set { _abbreviation = value; }
@@ -145,7 +132,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Gets or sets the alias of the object.
         /// </summary>
-        public string Alias
+        public String Alias
         {
             get { return _alias; }
             set { _alias = value; }
@@ -156,7 +143,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// if this is a standard object with an authority specific
         /// identity code. Returns "CUSTOM" if this is a custom object.
         /// </summary>
-        public string Authority
+        public String Authority
         {
             get { return _authority; }
             set { _authority = value; }
@@ -174,7 +161,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Gets or sets the name of the object.
         /// </summary>
-        public string Name
+        public String Name
         {
             get { return _name; }
             set { _name = value; }
@@ -183,22 +170,22 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Gets or sets the provider-supplied remarks for the object.
         /// </summary>
-        public string Remarks
+        public String Remarks
         {
             get { return _remarks; }
             set { _remarks = value; }
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
                 StringBuilder sb = new StringBuilder();
-                
+
                 if (_isInverse)
                 {
                     sb.Append("INVERSE_MT[");
@@ -212,12 +199,12 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
 
                 sb.Append("]");
-                
+
                 if (_isInverse)
                 {
                     sb.Append("]");
                 }
-                
+
                 return sb.ToString();
             }
         }
@@ -225,7 +212,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
@@ -266,7 +253,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public IEnumerator<ProjectionParameter> GetEnumerator()
         {
-            foreach (ProjectionParameter parameter in _parameters)
+            foreach (ProjectionParameter parameter in Parameters)
             {
                 yield return parameter;
             }
@@ -280,19 +267,11 @@ namespace ProjNet.CoordinateSystems.Projections
         #region IMathTransform
 
         /// <summary>
-        /// Reverses the transformation
-        /// </summary>
-        public override void Invert()
-        {
-            _isInverse = !_isInverse;
-        }
-
-        /// <summary>
         /// Returns true if this projection is inverted.
         /// Most map projections define forward projection as "from geographic to projection", and backwards
         /// as "from projection to geographic". If this projection is inverted, this will be the other way around.
         /// </summary>
-        internal bool IsInverse
+        internal Boolean IsInverse
         {
             get { return _isInverse; }
         }
@@ -320,46 +299,45 @@ namespace ProjNet.CoordinateSystems.Projections
             }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public bool EqualParams(object obj)
+        public Boolean EqualParams(IInfo obj)
         {
-            MapProjection<TCoordinate> other = obj as MapProjection<TCoordinate>;
+            MapProjection<TCoordinate> m = obj as MapProjection<TCoordinate>;
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(m, null))
             {
                 return false;
             }
 
-            if (other.ParameterCount != ParameterCount)
+            if (m.ParameterCount != ParameterCount)
             {
                 return false;
             }
 
-            for (int i = 0; i < _parameters.Count; i++)
+            foreach (ProjectionParameter parameter in m)
             {
-                ProjectionParameter param = _parameters.Find(delegate(ProjectionParameter par)
-                                                                  {
-                                                                      return par.Name.Equals(other[i].Name,
-                                                                          StringComparison.OrdinalIgnoreCase);
-                                                                  });
-                if (param == null)
+                ProjectionParameter found = null;
+
+                foreach (Parameter localParam in Parameters)
+                {
+                    if (localParam.Name.Equals(parameter.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        found = localParam as ProjectionParameter;
+                        break;
+                    }
+                }
+
+                if (found == null)
                 {
                     return false;
                 }
 
-                if (param.Value != other[i].Value)
+                if (found.Value != parameter.Value)
                 {
                     return false;
                 }
             }
 
-            if (IsInverse != other.IsInverse)
+            if (IsInverse != m.IsInverse)
             {
                 return false;
             }
@@ -419,51 +397,51 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Shortcut constant for π, the ratio of the circumferance of a circle to its diameter.
         /// </summary>
-        protected const double PI = Math.PI;
+        protected const Double PI = Math.PI;
 
         /// <summary>
         /// π * 0.5 
         /// </summary>
-        protected const double HalfPI = (PI * 0.5);
+        protected const Double HalfPI = (PI * 0.5);
 
         /// <summary>
         /// π * 2
         /// </summary>
-        protected const double TwoPI = (PI * 2.0);
+        protected const Double TwoPI = (PI * 2.0);
 
         /// <summary>
         /// The smallest tolerable difference between two real numbers. Differences
         /// smaller than this number are considered to be equal to zero.
         /// </summary>
-        protected const double Epsilon = 1.0e-10;
+        protected const Double Epsilon = 1.0e-10;
 
         /// <summary>
         /// Number of radians in one second.
         /// </summary>
-        protected const double SecondsToRadians = 4.848136811095359e-6;
+        protected const Double SecondsToRadians = 4.848136811095359e-6;
 
         /// <summary>
         /// The maximum number of iterations for normalizing longitude.
         /// </summary>
-        protected const double MaxIterationCount = 20;
+        protected const Double MaxIterationCount = 20;
 
         /// <summary>
         /// The maximum positive value of an <see cref="Int32"/>, as a <see cref="Double"/>.
         /// </summary>
-        protected const double MaxInt32 = 2147483647;
+        protected const Double MaxInt32 = 2147483647;
 
         /// <summary>
         /// Approximately <see cref="Int64.MaxValue"/> / 2, or 4611686018427387903L, as a 
         /// <see cref="Double"/>.
         /// </summary>
         /// <value><see cref="Int64.MaxValue"/> / 2</value>
-        protected const double HalfMaxInt64 = 4.61168601e18;
+        protected const Double HalfMaxInt64 = 4.61168601e18;
 
         /// <summary>
         /// Returns the cube of a number.
         /// </summary>
         /// <param name="x"> </param>
-        protected static double Cube(double x)
+        protected static Double Cube(Double x)
         {
             return Math.Pow(x, 3); /* x^3 */
         }
@@ -472,24 +450,24 @@ namespace ProjNet.CoordinateSystems.Projections
         /// Returns the quad of a number.
         /// </summary>
         /// <param name="x"> </param>
-        protected static double Quad(double x)
+        protected static Double Quad(Double x)
         {
             return Math.Pow(x, 4); /* x^4 */
         }
 
-        protected static double GMax(ref double a, ref double b)
+        protected static Double GMax(ref Double a, ref Double b)
         {
             // NOTE: why are the parameters "ref" here?
             return Math.Max(a, b); /* assign maximum of a and b */
         }
 
-        protected static double GMin(ref double a, ref double b)
+        protected static Double GMin(ref Double a, ref Double b)
         {
             // NOTE: why are the parameters "ref" here?
             return ((a) < (b) ? (a) : (b)); /* assign minimum of a and b */
         }
 
-        protected static double IMod(double a, double b)
+        protected static Double IMod(Double a, Double b)
         {
             return (a) - (((a) / (b)) * (b)); /* Integer mod function */
         }
@@ -497,7 +475,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Function to return the sign of an argument.
         /// </summary>
-        protected static double Sign(double x)
+        protected static Double Sign(Double x)
         {
             if (x < 0.0)
             {
@@ -509,7 +487,7 @@ namespace ProjNet.CoordinateSystems.Projections
             }
         }
 
-        protected static double AdjustLongitude(double x)
+        protected static Double AdjustLongitude(Double x)
         {
             long count = 0;
 
@@ -548,7 +526,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         protected static Double ComputeSmallM(Double eccentricity, Double sinPhi, Double cosPhi)
         {
-            double con;
+            Double con;
 
             con = eccentricity * sinPhi;
 
@@ -563,7 +541,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             if (eccentricity > 1.0e-7)
             {
-                double con;
+                Double con;
                 con = eccentricity * sinPhi;
 
                 return ((1.0 - eccentricity * eccentricity)
@@ -595,7 +573,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// The current CLR has obviously not done this yet, but it may at some point...
         /// </para>
         /// </remarks>
-        protected static void SinCos(double radians, out double sinValue, out double cosValue)
+        protected static void SinCos(Double radians, out Double sinValue, out Double cosValue)
         {
             sinValue = Math.Sin(radians);
             cosValue = Math.Cos(radians);
@@ -606,10 +584,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// computations in the Lambert Conformal Conic and the Polar
         /// Stereographic projections.
         /// </summary>
-        protected static double ComputeSmallT(double eccentricity, double phi, double sinphi)
+        protected static Double ComputeSmallT(Double eccentricity, Double phi, Double sinphi)
         {
-            double con;
-            double com;
+            Double con;
+            Double com;
             con = eccentricity * sinphi;
             com = .5 * eccentricity;
             con = Math.Pow(((1.0 - con) / (1.0 + con)), com);
@@ -628,10 +606,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// All values are <see cref="Double"/> and all angular values are in radians.
         /// </remarks>
         /// <returns>The inverse of the Albers Conical Equal-Area projection</returns>
-        protected static double ComputePhi1(double eccentricity, double qs)
+        protected static Double ComputePhi1(Double eccentricity, Double qs)
         {
-            double eccnts;
-            double phi;
+            Double eccnts;
+            Double phi;
             long i;
 
             phi = Asin(.5 * qs);
@@ -645,11 +623,11 @@ namespace ProjNet.CoordinateSystems.Projections
 
             for (i = 1; i <= MaxIterationCount; i++)
             {
-                double dphi;
-                double con;
-                double com;
-                double sinpi;
-                double cospi;
+                Double dphi;
+                Double con;
+                Double com;
+                Double sinpi;
+                Double cospi;
 
                 SinCos(phi, out sinpi, out cospi);
                 con = eccentricity * sinpi;
@@ -671,7 +649,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Function to eliminate roundoff errors in an arcsine computation.
         /// </summary>
-        protected static double Asin(double con)
+        protected static Double Asin(Double con)
         {
             if (Math.Abs(con) > 1.0)
             {
@@ -700,18 +678,18 @@ namespace ProjNet.CoordinateSystems.Projections
         /// Stereographic projections.
         /// All real variables are <see cref="Double"/>.
         /// </remarks>
-        protected static double ComputePhi2(double eccentricity, double ts)
+        protected static Double ComputePhi2(Double eccentricity, Double ts)
         {
             long i;
 
-            double eccnth = .5 * eccentricity;
-            double chi = HalfPI - 2 * Math.Atan(ts);
+            Double eccnth = .5 * eccentricity;
+            Double chi = HalfPI - 2 * Math.Atan(ts);
 
             for (i = 0; i <= MaxIterationCount; i++)
             {
-                double con;
-                double dphi;
-                double sinpi;
+                Double con;
+                Double dphi;
+                Double sinpi;
                 sinpi = Math.Sin(chi);
                 con = eccentricity * sinpi;
                 dphi = HalfPI - 2 * Math.Atan(ts * (Math.Pow(((1.0 - con) / (1.0 + con)), eccnth))) - chi;
@@ -736,7 +714,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>
         /// The value "e0" which is used in a series to calculate a distance along a meridian.
         /// </returns>
-        protected static double ComputeE0(double eccSquared)
+        protected static Double ComputeE0(Double eccSquared)
         {
             return (1.0 - 0.25 * eccSquared * (1.0 + eccSquared / 16.0 * (3.0 + 1.25 * eccSquared)));
         }
@@ -748,7 +726,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>
         /// The value "e1" which is used in a series to calculate a distance along a meridian.
         /// </returns>
-        protected static double ComputeE1(double eccSquared)
+        protected static Double ComputeE1(Double eccSquared)
         {
             return (0.375 * eccSquared * (1.0 + 0.25 * eccSquared * (1.0 + 0.46875 * eccSquared)));
         }
@@ -760,7 +738,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>
         /// The value "e2" which is used in a series to calculate a distance along a meridian.
         /// </returns>
-        protected static double ComputeE2(double eccSquared)
+        protected static Double ComputeE2(Double eccSquared)
         {
             return (0.05859375 * eccSquared * eccSquared * (1.0 + 0.75 * eccSquared));
         }
@@ -772,7 +750,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>
         /// The value "e3" which is used in a series to calculate a distance along a meridian.
         /// </returns>
-        protected static double ComputeE3(double eccSquared)
+        protected static Double ComputeE3(Double eccSquared)
         {
             return (eccSquared * eccSquared * eccSquared * (35.0 / 3072.0));
         }
@@ -782,10 +760,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// of the ellipsoid, x.  This constant is used in the Polar Stereographic
         /// projection.
         /// </summary>
-        protected static double ComputeE4(double x)
+        protected static Double ComputeE4(Double x)
         {
-            double con;
-            double com;
+            Double con;
+            Double com;
             con = 1.0 + x;
             com = 1.0 - x;
             return (Math.Sqrt((Math.Pow(con, con)) * (Math.Pow(com, com))));
@@ -800,7 +778,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="e2">The third eccentricity computation in the series, as computed by <see cref="ComputeE2"/>.</param>
         /// <param name="e3">The fourth eccentricity computation in the series, as computed by <see cref="ComputeE3"/>.</param>
         /// <param name="phi">The measure of the latitude to measure to, in radians.</param>
-        protected static double MeridianLength(double e0, double e1, double e2, double e3, double phi)
+        protected static Double MeridianLength(Double e0, Double e1, Double e2, Double e3, Double phi)
         {
             return (e0 * phi - e1 * Math.Sin(2.0 * phi) + e2 * Math.Sin(4.0 * phi) - e3 * Math.Sin(6.0 * phi));
         }
@@ -809,7 +787,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// Function to calculate UTM zone number from degrees longitude.
         /// </summary>
         /// <param name="degreesLongitude">Longitude to find UTM zone for in degrees.</param>
-        protected static long UtmZoneFromDegreesLongitude(double degreesLongitude)
+        protected static long UtmZoneFromDegreesLongitude(Double degreesLongitude)
         {
             return ((long)(((degreesLongitude + 180.0) / 6.0) + 1.0));
         }
@@ -824,7 +802,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="x">The value in degrees to convert to radians.</param>
         /// <param name="edge">If true, -180 and +180 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static double LongitudeToRadians(double x, bool edge)
+        protected static Double LongitudeToRadians(Double x, Boolean edge)
         {
             if (edge ? (x >= -180 && x <= 180) : (x > -180 && x < 180))
             {
@@ -841,7 +819,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="y">The value in degrees to to radians.</param>
         /// <param name="edge">If true, -90 and +90 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static double LatitudeToRadians(double y, bool edge)
+        protected static Double LatitudeToRadians(Double y, Boolean edge)
         {
             if (edge ? (y >= -90 && y <= 90) : (y > -90 && y < 90))
             {

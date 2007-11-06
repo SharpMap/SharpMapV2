@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Utilities;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Projections
@@ -47,26 +48,31 @@ namespace ProjNet.CoordinateSystems.Projections
     /// Implements the Mercator projection.
     /// </summary>
     /// <remarks>
-    /// <para>This map projection introduced in 1569 by Gerardus Mercator. It is often described as a cylindrical projection,
-    /// but it must be derived mathematically. The meridians are equally spaced, parallel vertical lines, and the
-    /// parallels of latitude are parallel, horizontal straight lines, spaced farther and farther apart as their distance
-    /// from the Equator increases. This projection is widely used for navigation charts, because any straight line
-    /// on a Mercator-projection map is a line of constant true bearing that enables a navigator to plot a straight-line
-    /// course. It is less practical for world maps because the scale is distorted; areas farther away from the equator
-    /// appear disproportionately large. On a Mercator projection, for example, the landmass of Greenland appears to be
-    /// greater than that of the continent of South America; in actual area, Greenland is smaller than the Arabian Peninsula.
+    /// <para>
+    /// This map projection introduced in 1569 by Gerardus Mercator. 
+    /// It is often described as a cylindrical projection, but it must be derived
+    /// mathematically. The meridians are equally spaced, parallel vertical lines, 
+    /// and the parallels of latitude are parallel, horizontal straight lines, 
+    /// spaced farther and farther apart as their distance from the Equator 
+    /// increases. This projection is widely used for navigation charts, because 
+    /// any straight line on a Mercator-projection map is a line of constant true 
+    /// bearing that enables a navigator to plot a straight-line course. 
+    /// It is less practical for world maps because the scale is distorted; 
+    /// areas farther away from the equator appear disproportionately large. 
+    /// On a Mercator projection, for example, the landmass of Greenland appears 
+    /// to be greater than that of the continent of South America; in actual area, 
+    /// Greenland is smaller than the Arabian Peninsula.
     /// </para>
     /// </remarks>
     internal class Mercator<TCoordinate> : MapProjection<TCoordinate>
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private readonly double _falseEasting;
-        private readonly double _falseNorthing;
-        private readonly double _lon_center; //Center longitude (projection center)
-        private readonly double _lat_origin; //center latitude
-        private readonly double _e, _e2; //eccentricity constants
-        private readonly double _k0; //small value m
+        private readonly Double _falseEasting;
+        private readonly Double _falseNorthing;
+        private readonly Double _lon_center; //Center longitude (projection center)
+        private readonly Double _lat_origin; //center latitude
+        private readonly Double _k0; //small value m
 
         /// <summary>
         /// Initializes the MercatorProjection object with the specified parameters to project points. 
@@ -74,10 +80,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="parameters">ParameterList with the required parameters.</param>
         /// <remarks>
         /// </remarks>
-        public Mercator(IEnumerable<ProjectionParameter> parameters)
-            : this(parameters, false) { }
+        public Mercator(IEnumerable<ProjectionParameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+            : this(parameters, coordinateFactory, false) { }
 
-        
+
         /// <summary>
         ///   Initializes the MercatorProjection object with the specified parameters.
         ///</summary>
@@ -139,10 +145,11 @@ namespace ProjNet.CoordinateSystems.Projections
         ///    </item>
         ///  </list>
         ///</remarks>
-        public Mercator(IEnumerable<ProjectionParameter> parameters, bool isInverse)
-            : base(parameters, isInverse)
+        public Mercator(IEnumerable<ProjectionParameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+            : base(parameters, coordinateFactory, isInverse)
         {
             Authority = "EPSG";
+
             ProjectionParameter central_meridian = GetParameter("central_meridian");
             ProjectionParameter latitude_of_origin = GetParameter("latitude_of_origin");
             ProjectionParameter scale_factor = GetParameter("scale_factor");
@@ -152,22 +159,26 @@ namespace ProjNet.CoordinateSystems.Projections
             //Check for missing parameters
             if (central_meridian == null)
             {
-                throw new ArgumentException("Missing projection parameter 'central_meridian'");
+                throw new ArgumentException(
+                    "Missing projection parameter 'central_meridian'");
             }
 
             if (latitude_of_origin == null)
             {
-                throw new ArgumentException("Missing projection parameter 'latitude_of_origin'");
+                throw new ArgumentException(
+                    "Missing projection parameter 'latitude_of_origin'");
             }
 
             if (false_easting == null)
             {
-                throw new ArgumentException("Missing projection parameter 'false_easting'");
+                throw new ArgumentException(
+                    "Missing projection parameter 'false_easting'");
             }
 
             if (false_northing == null)
             {
-                throw new ArgumentException("Missing projection parameter 'false_northing'");
+                throw new ArgumentException(
+                    "Missing projection parameter 'false_northing'");
             }
 
             _lon_center = DegreesToRadians(central_meridian.Value);
@@ -175,13 +186,9 @@ namespace ProjNet.CoordinateSystems.Projections
             _falseEasting = false_easting.Value * _metersPerUnit;
             _falseNorthing = false_northing.Value * _metersPerUnit;
 
-            double temp = _semiMinor / _semiMajor;
-            _e2 = 1 - temp * temp;
-            _e = Math.Sqrt(_e2);
-
             if (scale_factor == null) //This is a two standard parallel Mercator projection (2SP)
             {
-                _k0 = Math.Cos(_lat_origin) / Math.Sqrt(1.0 - _e2 * Math.Sin(_lat_origin) * Math.Sin(_lat_origin));
+                _k0 = Math.Cos(_lat_origin) / Math.Sqrt(1.0 - E2 * Math.Sin(_lat_origin) * Math.Sin(_lat_origin));
                 AuthorityCode = 9805;
                 Name = "Mercator_2SP";
             }
@@ -212,33 +219,38 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            if (double.IsNaN(lonlat[0]) || double.IsNaN(lonlat[1]))
+            if (Double.IsNaN((Double)lonlat[0]) || Double.IsNaN((Double)lonlat[1]))
             {
-                return new double[] { Double.NaN, Double.NaN, };
+                return CreateCoordinate(Double.NaN, Double.NaN);
             }
 
-            double dLongitude = DegreesToRadians(lonlat[0]);
-            double dLatitude = DegreesToRadians(lonlat[1]);
+            Double dLongitude = DegreesToRadians((Double)lonlat[0]);
+            Double dLatitude = DegreesToRadians((Double)lonlat[1]);
 
             /* Forward equations */
             if (Math.Abs(Math.Abs(dLatitude) - HalfPI) <= Epsilon)
             {
-                throw new ApplicationException("Transformation cannot be computed at the poles.");
+                throw new ComputationException(
+                    "Transformation cannot be computed at the poles.");
             }
             else
             {
-                double esinphi = _e * Math.Sin(dLatitude);
-                double x = _falseEasting + _semiMajor * _k0 * (dLongitude - _lon_center);
-                double y = _falseNorthing +
-                           _semiMajor * _k0 *
-                           Math.Log(Math.Tan(PI * 0.25 + dLatitude * 0.5) * Math.Pow((1 - esinphi) / (1 + esinphi), _e * 0.5));
+                Double esinphi = E * Math.Sin(dLatitude);
+                Double semiMajor = SemiMajor;
+
+                Double x = _falseEasting + semiMajor * _k0 * (dLongitude - _lon_center);
+                Double y = _falseNorthing +
+                           semiMajor * _k0 *
+                           Math.Log(Math.Tan(PI * 0.25 + dLatitude * 0.5)
+                            * Math.Pow((1 - esinphi) / (1 + esinphi), E * 0.5));
+
                 if (lonlat.ComponentCount < 3)
                 {
-                    return new double[] { x / _metersPerUnit, y / _metersPerUnit };
+                    return CreateCoordinate(x / _metersPerUnit, y / _metersPerUnit);
                 }
                 else
                 {
-                    return new double[] { x / _metersPerUnit, y / _metersPerUnit, lonlat[2] };
+                    return CreateCoordinate(x / _metersPerUnit, y / _metersPerUnit, (Double)lonlat[2]);
                 }
             }
         }
@@ -250,34 +262,35 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override TCoordinate MetersToDegrees(TCoordinate p)
         {
-            double dLongitude;
-            double dLatitude;
+            Double dLongitude;
+            Double dLatitude;
+            Double semiMajor = SemiMajor;
 
             /* Inverse equations
               -----------------*/
-            double dX = p[Ordinates.X] * _metersPerUnit - _falseEasting;
-            double dY = p[Ordinates.Y] * _metersPerUnit - _falseNorthing;
-            double smallT = Math.Exp(-dY / (_semiMajor * _k0)); // t
+            Double dX = p[Ordinates.X] * _metersPerUnit - _falseEasting;
+            Double dY = p[Ordinates.Y] * _metersPerUnit - _falseNorthing;
+            Double smallT = Math.Exp(-dY / (semiMajor * _k0)); // t
 
-            double chi = HalfPI - 2 * Math.Atan(smallT);
-            double e4 = Math.Pow(_e, 4);
-            double e6 = Math.Pow(_e, 6);
-            double e8 = Math.Pow(_e, 8);
+            Double chi = HalfPI - 2 * Math.Atan(smallT);
+            Double e4 = Math.Pow(E, 4);
+            Double e6 = Math.Pow(E, 6);
+            Double e8 = Math.Pow(E, 8);
 
-            dLatitude = chi + (_e2 * 0.5 + 5 * e4 / 24 + e6 / 12 + 13 * e8 / 360) * Math.Sin(2 * chi)
+            dLatitude = chi + (E2 * 0.5 + 5 * e4 / 24 + e6 / 12 + 13 * e8 / 360) * Math.Sin(2 * chi)
                         + (7 * e4 / 48 + 29 * e6 / 240 + 811 * e8 / 11520) * Math.Sin(4 * chi) +
                         +(7 * e6 / 120 + 81 * e8 / 1120) * Math.Sin(6 * chi) +
                         +(4279 * e8 / 161280) * Math.Sin(8 * chi);
 
-            dLongitude = dX / (_semiMajor * _k0) + _lon_center;
+            dLongitude = dX / (semiMajor * _k0) + _lon_center;
 
             if (p.ComponentCount < 3)
             {
-                return new double[] { RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude) };
+                return CreateCoordinate(RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude));
             }
             else
             {
-                return new double[] { RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), p[2] };
+                return CreateCoordinate(RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), (Double)p[2]);
             }
         }
 
@@ -289,7 +302,9 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             if (_inverse == null)
             {
-                _inverse = new Mercator<TCoordinate>(_parameters, !_isInverse);
+                _inverse = new Mercator<TCoordinate>(
+                    EnumerableConverter.Downcast<ProjectionParameter, Parameter>(Parameters), 
+                    CoordinateFactory, !_isInverse);
             }
 
             return _inverse;

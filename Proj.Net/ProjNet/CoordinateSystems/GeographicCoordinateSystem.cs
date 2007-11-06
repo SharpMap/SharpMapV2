@@ -56,9 +56,9 @@ namespace ProjNet.CoordinateSystems
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
         internal GeographicCoordinateSystem(IAngularUnit angularUnit, IHorizontalDatum horizontalDatum,
-                                            IPrimeMeridian primeMeridian, IEnumerable<AxisInfo> axisInfo, string name,
-                                            string authority, long authorityCode, string alias, string abbreviation,
-                                            string remarks)
+                                            IPrimeMeridian primeMeridian, IEnumerable<AxisInfo> axisInfo, String name,
+                                            String authority, long authorityCode, String alias, String abbreviation,
+                                            String remarks)
             : base(horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _angularUnit = angularUnit;
@@ -83,7 +83,7 @@ namespace ProjNet.CoordinateSystems
                 return new GeographicCoordinateSystem<TCoordinate>(CoordinateSystems.AngularUnit.Degrees,
                                                       CoordinateSystems.HorizontalDatum.WGS84,
                                                       CoordinateSystems.PrimeMeridian.Greenwich, axes,
-                                                      "WGS 84", "EPSG", 4326, String.Empty, string.Empty, string.Empty);
+                                                      "WGS 84", "EPSG", 4326, String.Empty, String.Empty, String.Empty);
             }
         }
 
@@ -106,7 +106,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="dimension">Dimension</param>
         /// <returns>Unit</returns>
-        public override IUnit GetUnits(int dimension)
+        public override IUnit GetUnits(Int32 dimension)
         {
             return _angularUnit;
         }
@@ -123,7 +123,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets the number of available conversions to WGS84 coordinates.
         /// </summary>
-        public int ConversionToWgs84Count
+        public Int32 ConversionToWgs84Count
         {
             get { return _wgs84ConversionInfo.Count; }
         }
@@ -137,16 +137,16 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets details on a conversion to WGS84.
         /// </summary>
-        public Wgs84ConversionInfo GetWgs84ConversionInfo(int index)
+        public Wgs84ConversionInfo GetWgs84ConversionInfo(Int32 index)
         {
             return _wgs84ConversionInfo[index];
         }
 
         /// <summary>
-        /// Returns the Well-known text for this object
+        /// Returns the Well-Known Text for this object
         /// as defined in the simple features specification.
         /// </summary>
-        public override string Wkt
+        public override String Wkt
         {
             get
             {
@@ -177,7 +177,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets an XML representation of this object
         /// </summary>
-        public override string Xml
+        public override String Xml
         {
             get
             {
@@ -199,69 +199,63 @@ namespace ProjNet.CoordinateSystems
             }
         }
 
-        /// <summary>
-        /// Checks whether the values of this instance is equal to the values of another instance.
-        /// Only parameters used for coordinate system are used for comparison.
-        /// Name, abbreviation, authority, alias and remarks are ignored in the comparison.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>True if equal</returns>
-        public override bool EqualParams(object obj)
+        public override Boolean EqualParams(IInfo other)
         {
-            GeographicCoordinateSystem<TCoordinate> other = obj as GeographicCoordinateSystem<TCoordinate>;
+            GeographicCoordinateSystem<TCoordinate> gcs = 
+                other as GeographicCoordinateSystem<TCoordinate>;
 
-            if (other == null)
+            if (ReferenceEquals(gcs, null))
             {
                 return false;
             }
 
-            if (other.Dimension != Dimension)
+            if (gcs.Dimension != Dimension)
             {
                 return false;
             }
 
-            if (Wgs84ConversionInfo != null && other.Wgs84ConversionInfo == null)
+            if (Wgs84ConversionInfo != null && gcs.Wgs84ConversionInfo == null)
             {
                 return false;
             }
 
-            if (Wgs84ConversionInfo == null && other.Wgs84ConversionInfo != null)
+            if (Wgs84ConversionInfo == null && gcs.Wgs84ConversionInfo != null)
             {
                 return false;
             }
 
-            if (Wgs84ConversionInfo != null && other.Wgs84ConversionInfo != null)
+            if (Wgs84ConversionInfo != null && gcs.Wgs84ConversionInfo != null)
             {
-                if (Wgs84ConversionInfo.Count != other.Wgs84ConversionInfo.Count)
+                if (Wgs84ConversionInfo.Count != gcs.Wgs84ConversionInfo.Count)
                 {
                     return false;
                 }
 
-                for (int i = 0; i < Wgs84ConversionInfo.Count; i++)
+                for (Int32 i = 0; i < Wgs84ConversionInfo.Count; i++)
                 {
-                    if (!other.Wgs84ConversionInfo[i].Equals(Wgs84ConversionInfo[i]))
+                    if (!gcs.Wgs84ConversionInfo[i].Equals(Wgs84ConversionInfo[i]))
                     {
                         return false;
                     }
                 }
             }
 
-            if (AxisInfo.Count != other.AxisInfo.Count)
+            if (AxisInfo.Count != gcs.AxisInfo.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < other.AxisInfo.Count; i++)
+            for (Int32 i = 0; i < gcs.AxisInfo.Count; i++)
             {
-                if (other.AxisInfo[i].Orientation != AxisInfo[i].Orientation)
+                if (gcs.AxisInfo[i].Orientation != AxisInfo[i].Orientation)
                 {
                     return false;
                 }
             }
 
-            return other.AngularUnit.EqualParams(AngularUnit) &&
-                   other.HorizontalDatum.EqualParams(HorizontalDatum) &&
-                   other.PrimeMeridian.EqualParams(PrimeMeridian);
+            return gcs.AngularUnit.EqualParams(AngularUnit) &&
+                   gcs.HorizontalDatum.EqualParams(HorizontalDatum) &&
+                   gcs.PrimeMeridian.EqualParams(PrimeMeridian);
         }
 
         #endregion

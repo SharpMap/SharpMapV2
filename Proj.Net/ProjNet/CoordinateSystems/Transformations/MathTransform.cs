@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using NPack;
 using NPack.Interfaces;
@@ -33,13 +34,146 @@ namespace ProjNet.CoordinateSystems.Transformations
 	/// math transform object whenever it wishes to perform a transform.
 	/// </remarks>
     public abstract class MathTransform<TCoordinate> : IMathTransform<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+            IConvertible
 	{
+        private readonly CoordinateFactoryDelegate<TCoordinate> _coordinateFactory;
+        protected Boolean _isInverse = false;
+        private readonly Double _e;
+        private readonly Double _e2;
+        private readonly Double _semiMajor;
+        private readonly Double _semiMinor;
+        private readonly List<Parameter> _parameters;
+
+        protected MathTransform(IEnumerable<Parameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+        {
+            _isInverse = isInverse;
+            _parameters = new List<Parameter>(parameters ?? new Parameter[0]);
+            _coordinateFactory = coordinateFactory;
+
+            Parameter semiMajorParam = null, semiMinorParam = null;
+
+            foreach (Parameter p in _parameters)
+            {
+                String name = p.Name;
+
+                if (name.Equals("semi_major", StringComparison.OrdinalIgnoreCase))
+                {
+                    semiMajorParam = p;
+                }
+
+                if (name.Equals("semi_minor", StringComparison.OrdinalIgnoreCase))
+                {
+                    semiMinorParam = p;
+                }
+            }
+
+            if (ReferenceEquals(semiMajorParam, null))
+            {
+                throw new ArgumentException(
+                    "Missing projection parameter 'semi_major'.");
+            }
+
+            if (ReferenceEquals(semiMinorParam, null))
+            {
+                throw new ArgumentException(
+                    "Missing projection parameter 'semi_minor'.");
+            }
+
+            _semiMajor = semiMajorParam.Value;
+            _semiMinor = semiMinorParam.Value;
+
+            _e2 = 1.0 - Math.Pow(_semiMinor / _semiMajor, 2);
+            _e = Math.Sqrt(_e2);
+        }
+
+        public Int32 ParameterCount
+        {
+            get { return _parameters.Count; }
+        }
+
+        /// <summary>
+        /// Gets the parameter at the given index.
+        /// </summary>
+        /// <param name="index">Index of parameter.</param>
+        /// <returns>The parameter at the given index.</returns>
+        protected Parameter GetParameterInternal(Int32 index)
+        {
+            if (index < 0 || index >= _parameters.Count)
+            {
+                throw new ArgumentOutOfRangeException("index", index, 
+                    "Parameter index out of range.");
+            }
+
+            return _parameters[index];
+        }
+
+        /// <summary>
+        /// Gets an named parameter of the projection.
+        /// </summary>
+        /// <remarks>The parameter name is case insensitive</remarks>
+        /// <param name="name">Name of parameter</param>
+        /// <returns>parameter or null if not found</returns>
+        protected Parameter GetParameterInternal(String name)
+        {
+            foreach (Parameter parameter in Parameters)
+            {
+                if (parameter.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return parameter;
+                }
+            }
+
+            return null;
+        }
+
+        public Double SemiMajor
+        {
+            get { return _semiMajor; }
+        }
+
+        public Double SemiMinor
+        {
+            get { return _semiMinor; }
+        }
+
+        protected Double E
+        {
+            get { return _e; }
+        }
+
+        protected Double E2
+        {
+            get { return _e2; }
+        }
+
+        protected TCoordinate CreateCoordinate(params Double[] components)
+        {
+            return _coordinateFactory(components);
+        }
+
+	    protected IEnumerable<Parameter> Parameters
+	    {
+	        get
+	        {
+	            foreach (Parameter parameter in _parameters)
+	            {
+                    yield return parameter;
+	            }
+	        }
+	    }
+
+        protected CoordinateFactoryDelegate<TCoordinate> CoordinateFactory
+        {
+            get { return _coordinateFactory; }
+        }
+
 		#region IMathTransform Members
 
 		/// <summary>
 		/// Gets the dimension of input points.
 		/// </summary>
-		public virtual int SourceDimension
+		public virtual Int32 SourceDimension
 		{
 			get { throw new NotImplementedException(); }
 		}
@@ -47,7 +181,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets the dimension of output points.
 		/// </summary>
-		public virtual int TargetDimension
+		public virtual Int32 TargetDimension
 		{
 			get { throw new NotImplementedException(); }
 		}
@@ -67,12 +201,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Gets a Well-Known Text representation of this object.
 		/// </summary>
-		public abstract string Wkt { get; }
+		public abstract String Wkt { get; }
 
 		/// <summary>
 		/// Gets an XML representation of this object.
 		/// </summary>
-		public abstract string Xml { get; }
+		public abstract String Xml { get; }
 
 		public virtual IMatrix<DoubleComponent> Derivative(TCoordinate point)
 		{
@@ -105,7 +239,10 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Creates the inverse transform of this object.
 		/// </summary>
-		/// <remarks>This method may fail if the transform is not one to one. However, all cartographic projections should succeed.</remarks>
+		/// <remarks>
+		/// This method may fail if the transform is not one to one. 
+		/// However, all cartographic projections should succeed.
+		/// </remarks>
 		/// <returns></returns>
 		public abstract IMathTransform<TCoordinate> Inverse();
 
@@ -138,17 +275,20 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <summary>
 		/// Reverses the transformation
 		/// </summary>
-		public abstract void Invert();
+		public virtual void Invert()
+		{
+		    _isInverse = !_isInverse;
+		}
 
 		/// <summary>
 		/// Number of degrees per radian.
 		/// </summary>
-		protected const double DegreesPerRadian = 180 / Math.PI;
+		protected const Double DegreesPerRadian = 180 / Math.PI;
 
 		/// <summary>
 		/// Number of radians per degree.
 		/// </summary>
-		protected const double RadiansPerDegree = Math.PI / 180;
+		protected const Double RadiansPerDegree = Math.PI / 180;
 
 		/// <summary>
 		/// Converts an angular measure in degrees into an equivilant measure
@@ -159,7 +299,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// The number of radians for the given <paramref name="degrees"/>
 		/// measure.
 		/// </returns>
-		protected static double DegreesToRadians(double degrees)
+		protected static Double DegreesToRadians(Double degrees)
 		{
 			return RadiansPerDegree * degrees;
 
@@ -174,7 +314,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// The number of radians for the given <paramref name="radians"/>
 		/// measure.
 		/// </returns>
-		protected static double RadiansToDegrees(double radians)
+		protected static Double RadiansToDegrees(Double radians)
 		{
 			return DegreesPerRadian * radians;
 		}
