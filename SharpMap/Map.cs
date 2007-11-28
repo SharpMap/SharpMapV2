@@ -24,7 +24,7 @@ using System.ComponentModel;
 using System.Globalization;
 using NPack;
 using NPack.Interfaces;
-using SharpMap.CoordinateSystems;
+using GeoAPI.CoordinateSystems;
 using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Styles;

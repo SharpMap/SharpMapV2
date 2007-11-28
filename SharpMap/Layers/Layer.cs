@@ -20,8 +20,8 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using SharpMap.CoordinateSystems;
-using SharpMap.CoordinateSystems.Transformations;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
