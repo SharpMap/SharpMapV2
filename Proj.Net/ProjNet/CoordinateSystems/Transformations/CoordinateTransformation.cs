@@ -1,21 +1,22 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using NPack.Interfaces;
@@ -35,7 +36,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly TransformType _transformType;
         private readonly String _areaOfUse;
         private readonly String _authority;
-        private readonly long _authorityCode;
+        private readonly Int64 _authorityCode;
         private readonly IMathTransform<TCoordinate> _mathTransform;
         private readonly String _name;
         private readonly String _remarks;
@@ -52,8 +53,10 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// <param name="authorityCode">Authority code</param>
 		/// <param name="areaOfUse">Area of use</param>
 		/// <param name="remarks">Remarks</param>
-		internal CoordinateTransformation(ICoordinateSystem<TCoordinate> source, ICoordinateSystem<TCoordinate> target, TransformType transformType, IMathTransform<TCoordinate> mathTransform, 
-										String name, String authority, long authorityCode, String areaOfUse, String remarks)
+		internal CoordinateTransformation(ICoordinateSystem<TCoordinate> source, 
+            ICoordinateSystem<TCoordinate> target, TransformType transformType, 
+            IMathTransform<TCoordinate> mathTransform, String name, String authority, 
+            Int64 authorityCode, String areaOfUse, String remarks)
 		{
 			_target = target;
 			_source = source;
@@ -91,7 +94,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		/// Code used by authority to identify transformation. An empty String is used for no code.
 		/// </summary>
 		/// <remarks>The AuthorityCode is a compact String defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
-		public long AuthorityCode
+		public Int64 AuthorityCode
 		{
 			get { return _authorityCode; }
 		}

@@ -1,23 +1,23 @@
 // Copyright 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
-using GeoAPI.CoordinateSystems;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems.Transformations;
 using NPack.Interfaces;
 
@@ -26,13 +26,13 @@ namespace ProjNet.CoordinateSystems.Transformations
     internal class ConcatenatedTransform<TCoordinate> : MathTransform<TCoordinate>
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
     {
-        protected IMathTransform<TCoordinate> _inverse;
+        private IMathTransform<TCoordinate> _inverse;
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;
 
-        public ConcatenatedTransform(CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+        public ConcatenatedTransform(ICoordinateFactory<TCoordinate> coordinateFactory)
             : this(new ICoordinateTransformation<TCoordinate>[0], coordinateFactory) { }
 
-        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms, ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(null, coordinateFactory, false)
         {
             _transforms = new List<ICoordinateTransformation<TCoordinate>>(transforms);

@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -27,12 +27,12 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public abstract class Info : IInfo
     {
-        private String _abbreviation;
-        private String _alias;
-        private String _authority;
-        private Int64 _code;
-        private String _name;
-        private String _remarks;
+        private readonly String _abbreviation;
+        private readonly String _alias;
+        private readonly String _authority;
+        private readonly Int64 _code;
+        private readonly String _name;
+        private readonly String _remarks;
 
         /// <summary>
         /// A base interface for metadata applicable to coordinate system objects.
@@ -91,7 +91,6 @@ namespace ProjNet.CoordinateSystems
         public String Name
         {
             get { return _name; }
-            set { _name = value; }
         }
 
         /// <summary>
@@ -102,7 +101,6 @@ namespace ProjNet.CoordinateSystems
         public String Authority
         {
             get { return _authority; }
-            set { _authority = value; }
         }
 
         /// <summary>
@@ -112,7 +110,6 @@ namespace ProjNet.CoordinateSystems
         public Int64 AuthorityCode
         {
             get { return _code; }
-            set { _code = value; }
         }
 
         /// <summary>
@@ -121,7 +118,6 @@ namespace ProjNet.CoordinateSystems
         public String Alias
         {
             get { return _alias; }
-            set { _alias = value; }
         }
 
         /// <summary>
@@ -130,7 +126,6 @@ namespace ProjNet.CoordinateSystems
         public String Abbreviation
         {
             get { return _abbreviation; }
-            set { _abbreviation = value; }
         }
 
         /// <summary>
@@ -139,7 +134,6 @@ namespace ProjNet.CoordinateSystems
         public String Remarks
         {
             get { return _remarks; }
-            set { _remarks = value; }
         }
 
         /// <summary>

@@ -1,25 +1,27 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.Geometries;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems
@@ -32,15 +34,15 @@ namespace ProjNet.CoordinateSystems
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private IHorizontalDatum _horizontalDatum;
-        private ILinearUnit _linearUnit;
-        private IPrimeMeridian _primeMeridan;
+        private readonly IHorizontalDatum _horizontalDatum;
+        private readonly ILinearUnit _linearUnit;
+        private readonly IPrimeMeridian _primeMeridan;
 
-        internal GeocentricCoordinateSystem(IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian,
-                                            IEnumerable<AxisInfo> axisinfo,
-                                            String name, String authority, long code, String alias,
-                                            String remarks, String abbreviation)
-            : base(name, authority, code, alias, abbreviation, remarks)
+        protected internal GeocentricCoordinateSystem(IExtents<TCoordinate> extents,
+            IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian,
+            IEnumerable<IAxisInfo> axisinfo, String name, String authority, 
+            Int64 code, String alias, String remarks, String abbreviation)
+            : base(extents, name, authority, code, alias, abbreviation, remarks)
         {
             _horizontalDatum = datum;
             _linearUnit = linearUnit;
@@ -67,7 +69,6 @@ namespace ProjNet.CoordinateSystems
         public IHorizontalDatum HorizontalDatum
         {
             get { return _horizontalDatum; }
-            set { _horizontalDatum = value; }
         }
 
         /// <summary>
@@ -76,7 +77,6 @@ namespace ProjNet.CoordinateSystems
         public ILinearUnit LinearUnit
         {
             get { return _linearUnit; }
-            set { _linearUnit = value; }
         }
 
         /// <summary>
@@ -96,7 +96,6 @@ namespace ProjNet.CoordinateSystems
         public IPrimeMeridian PrimeMeridian
         {
             get { return _primeMeridan; }
-            set { _primeMeridan = value; }
         }
 
         /// <summary>

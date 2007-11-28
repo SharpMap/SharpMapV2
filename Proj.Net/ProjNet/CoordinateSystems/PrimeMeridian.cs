@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -26,7 +26,10 @@ namespace ProjNet.CoordinateSystems
 	/// A meridian used to take longitude measurements from.
 	/// </summary>
 	public class PrimeMeridian : Info, IPrimeMeridian
-	{
+    {
+        private readonly Double _longitude;
+        private readonly IAngularUnit _angularUnit;
+
 		/// <summary>
 		/// Initializes a new instance of a prime meridian
 		/// </summary>
@@ -42,8 +45,8 @@ namespace ProjNet.CoordinateSystems
 			:
 			base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
-			_Longitude = longitude;
-			_AngularUnit = angularUnit;
+			_longitude = longitude;
+			_angularUnit = angularUnit;
 		}
 		#region Predefined prime meridans
 		/// <summary>
@@ -146,26 +149,20 @@ namespace ProjNet.CoordinateSystems
 
 		#region IPrimeMeridian Members
 
-		private Double _Longitude;
-
 		/// <summary>
 		/// Gets or sets the longitude of the prime meridian (relative to the Greenwich prime meridian).
 		/// </summary>
 		public Double Longitude
 		{
-			get { return _Longitude; }
-			set { _Longitude = value; }
+			get { return _longitude; }
 		}
-
-		private IAngularUnit _AngularUnit;
 
 		/// <summary>
 		/// Gets or sets the AngularUnits.
 		/// </summary>
 		public IAngularUnit AngularUnit
 		{
-			get { return _AngularUnit; }
-			set { _AngularUnit = value; }
+			get { return _angularUnit; }
 		}
 
 		/// <summary>

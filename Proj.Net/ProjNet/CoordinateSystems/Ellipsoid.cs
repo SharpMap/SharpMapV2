@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -27,11 +27,11 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class Ellipsoid : Info, IEllipsoid
     {
-        private Boolean _isIvfDefinitive;
-        private ILinearUnit _axisUnit;
-        private Double _inverseFlattening;
-        private Double _semiMinorAxis;
-        private Double _semiMajorAxis;
+        private readonly Boolean _isIvfDefinitive;
+        private readonly ILinearUnit _axisUnit;
+        private readonly Double _inverseFlattening;
+        private readonly Double _semiMinorAxis;
+        private readonly Double _semiMajorAxis;
 
         /// <summary>
         /// Initializes a new instance of an <see cref="Ellipsoid"/>.
@@ -44,16 +44,16 @@ namespace ProjNet.CoordinateSystems
         /// (Semi-minor axis will be overridden).
         /// </param>
         /// <param name="axisUnit">Axis unit.</param>
-        /// <param name="name">Name.</param>
+        /// <param name="name">Name of the ellipsoid.</param>
         /// <param name="authority">Authority name.</param>
         /// <param name="code">Authority-specific identification code.</param>
         /// <param name="alias">Alias.</param>
         /// <param name="abbreviation">Abbreviation.</param>
         /// <param name="remarks">Provider-supplied remarks.</param>
         internal Ellipsoid(Double semiMajorAxis, Double semiMinorAxis, Double inverseFlattening,
-            Boolean isIvfDefinitive, ILinearUnit axisUnit, String name, String authority, 
+            Boolean isIvfDefinitive, ILinearUnit axisUnit, String name, String authority,
             Int64 code, String alias, String abbreviation, String remarks)
-                : base(name, authority, code, alias, abbreviation, remarks)
+            : base(name, authority, code, alias, abbreviation, remarks)
         {
             _semiMajorAxis = semiMajorAxis;
             _inverseFlattening = inverseFlattening;
@@ -66,7 +66,7 @@ namespace ProjNet.CoordinateSystems
             }
             else if (isIvfDefinitive)
             {
-                _semiMinorAxis = (1.0 - (1.0/_inverseFlattening))*semiMajorAxis;
+                _semiMinorAxis = (1.0 - (1.0 / _inverseFlattening)) * semiMajorAxis;
             }
             else
             {
@@ -86,12 +86,12 @@ namespace ProjNet.CoordinateSystems
         /// earth's angular velocity w = 7292115e11 rad/sec;
         /// gravitational constant GM = 3986005e8 m*m*m/s/s).
         /// </remarks>
-        public static Ellipsoid WGS84
+        public static Ellipsoid Wgs84
         {
             get
             {
                 return
-                    new Ellipsoid(6378137, 0, 298.257223563, true, LinearUnit.Metre, "WGS 84", "EPSG", 7030, "WGS84", "",
+                    new Ellipsoid(6378137, 0, 298.257223563, true, LinearUnit.Meter, "WGS 84", "EPSG", 7030, "WGS84", "",
                                   "Inverse flattening derived from four defining parameters (semi-major axis; C20 = -484.16685*10e-6; earth's angular velocity w = 7292115e11 rad/sec; gravitational constant GM = 3986005e8 m*m*m/s/s).");
             }
         }
@@ -99,12 +99,12 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// WGS 72 Ellipsoid
         /// </summary>
-        public static Ellipsoid WGS72
+        public static Ellipsoid Wgs72
         {
             get
             {
                 return
-                    new Ellipsoid(6378135.0, 0, 298.26, true, LinearUnit.Metre, "WGS 72", "EPSG", 7043, "WGS 72",
+                    new Ellipsoid(6378135.0, 0, 298.26, true, LinearUnit.Meter, "WGS 72", "EPSG", 7043, "WGS 72",
                                   String.Empty, String.Empty);
             }
         }
@@ -118,12 +118,12 @@ namespace ProjNet.CoordinateSystems
         /// geocentric gravitational constant GM = 3986005e8 m*m*m/s/s;
         /// dynamic form factor J2 = 108263e8 and Earth's angular velocity = 7292115e-11 rad/s.")
         /// </remarks>
-        public static Ellipsoid GRS80
+        public static Ellipsoid Grs80
         {
             get
             {
                 return
-                    new Ellipsoid(6378137, 0, 298.257222101, true, LinearUnit.Metre, "GRS 1980", "EPSG", 7019,
+                    new Ellipsoid(6378137, 0, 298.257222101, true, LinearUnit.Meter, "GRS 1980", "EPSG", 7019,
                                   "International 1979", "",
                                   "Adopted by IUGG 1979 Canberra.  Inverse flattening is derived from geocentric gravitational constant GM = 3986005e8 m*m*m/s/s; dynamic form factor J2 = 108263e8 and Earth's angular velocity = 7292115e-11 rad/s.");
             }
@@ -142,7 +142,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new Ellipsoid(6378388, 0, 297, true, LinearUnit.Metre, "International 1924", "EPSG", 7022,
+                    new Ellipsoid(6378388, 0, 297, true, LinearUnit.Meter, "International 1924", "EPSG", 7022,
                                   "Hayford 1909", String.Empty,
                                   "Described as a=6378388 m. and b=6356909 m. from which 1/f derived to be 296.95926. The figure was adopted as the International ellipsoid in 1924 but with 1/f taken as 297 exactly from which b is derived as 6356911.946m.");
             }
@@ -176,7 +176,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity, false, LinearUnit.Metre, "Clarke 1866",
+                    new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity, false, LinearUnit.Meter, "Clarke 1866",
                                   "EPSG", 7008, "Clarke 1866", String.Empty,
                                   "Original definition a=20926062 and b=20855121 (British) feet. Uses Clarke's 1865 inch-metre ratio of 39.370432 to obtain metres. (Metric value then converted to US survey feet for use in the United States using 39.37 exactly giving a=20925832.16 ft US).");
             }
@@ -194,7 +194,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity, false, LinearUnit.Metre,
+                    new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity, false, LinearUnit.Meter,
                                   "GRS 1980 Authalic Sphere", "EPSG", 7048, "Sphere", "",
                                   "Authalic sphere derived from GRS 1980 ellipsoid (code 7019).  (An authalic sphere is one with a surface area equal to the surface area of the ellipsoid). 1/f is infinite.");
             }
@@ -210,7 +210,6 @@ namespace ProjNet.CoordinateSystems
         public Double SemiMajorAxis
         {
             get { return _semiMajorAxis; }
-            set { _semiMajorAxis = value; }
         }
 
         /// <summary>
@@ -219,7 +218,6 @@ namespace ProjNet.CoordinateSystems
         public Double SemiMinorAxis
         {
             get { return _semiMinorAxis; }
-            set { _semiMinorAxis = value; }
         }
 
         /// <summary>
@@ -228,7 +226,6 @@ namespace ProjNet.CoordinateSystems
         public Double InverseFlattening
         {
             get { return _inverseFlattening; }
-            set { _inverseFlattening = value; }
         }
 
         /// <summary>
@@ -237,7 +234,6 @@ namespace ProjNet.CoordinateSystems
         public ILinearUnit AxisUnit
         {
             get { return _axisUnit; }
-            set { _axisUnit = value; }
         }
 
         /// <summary>
@@ -249,7 +245,6 @@ namespace ProjNet.CoordinateSystems
         public Boolean IsIvfDefinitive
         {
             get { return _isIvfDefinitive; }
-            set { _isIvfDefinitive = value; }
         }
 
         /// <summary>
@@ -261,9 +256,9 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, 
+                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
                     "SPHEROID[\"{0}\", {1}, {2}", Name, SemiMajorAxis, InverseFlattening);
-               
+
                 if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
@@ -282,9 +277,9 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return String.Format(CultureInfo.InvariantCulture.NumberFormat,
-                    "<CS_Ellipsoid SemiMajorAxis=\"{0}\" SemiMinorAxis=\"{1}\" "+
+                    "<CS_Ellipsoid SemiMajorAxis=\"{0}\" SemiMinorAxis=\"{1}\" " +
                     "InverseFlattening=\"{2}\" IvfDefinitive=\"{3}\">{4}{5}</CS_Ellipsoid>",
-                    SemiMajorAxis, SemiMinorAxis, InverseFlattening, (IsIvfDefinitive ? 1 : 0), 
+                    SemiMajorAxis, SemiMinorAxis, InverseFlattening, (IsIvfDefinitive ? 1 : 0),
                     InfoXml, AxisUnit.Xml);
             }
         }

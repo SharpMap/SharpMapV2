@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -23,26 +23,25 @@ using GeoAPI.CoordinateSystems;
 namespace ProjNet.CoordinateSystems
 {
     /// <summary>
-    /// Class for defining units
+    /// Class for defining units.
     /// </summary>
     public class Unit : Info, IUnit
     {
-        private Double _conversionFactor;
+        private readonly Double _conversionFactor;
 
         /// <summary>
-        /// Initializes a new unit
+        /// Initializes a new unit.
         /// </summary>
-        /// <param name="conversionFactor">Conversion factor to base unit</param>
-        /// <param name="name">Name of unit</param>
-        /// <param name="authority">Authority name</param>
+        /// <param name="conversionFactor">Conversion factor to base unit.</param>
+        /// <param name="name">Name of unit.</param>
+        /// <param name="authority">Authority name.</param>
         /// <param name="authorityCode">Authority-specific identification code.</param>
-        /// <param name="alias">Alias</param>
-        /// <param name="abbreviation">Abbreviation</param>
-        /// <param name="remarks">Provider-supplied remarks</param>
-        internal Unit(Double conversionFactor, String name, String authority, long authorityCode, String alias,
+        /// <param name="alias">Alias.</param>
+        /// <param name="abbreviation">Abbreviation.</param>
+        /// <param name="remarks">Provider-supplied remarks.</param>
+        protected internal Unit(Double conversionFactor, String name, String authority, Int64 authorityCode, String alias,
                       String abbreviation, String remarks)
-            :
-                base(name, authority, authorityCode, alias, abbreviation, remarks)
+            : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _conversionFactor = conversionFactor;
         }
@@ -52,7 +51,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="name">Name of unit</param>
         /// <param name="conversionFactor">Conversion factor to base unit</param>
-        internal Unit(String name, Double conversionFactor)
+        protected internal Unit(String name, Double conversionFactor)
             : this(conversionFactor, name, String.Empty, -1, String.Empty, String.Empty, String.Empty) {}
 
         /// <summary>
@@ -61,7 +60,6 @@ namespace ProjNet.CoordinateSystems
         public Double ConversionFactor
         {
             get { return _conversionFactor; }
-            set { _conversionFactor = value; }
         }
 
         /// <summary>

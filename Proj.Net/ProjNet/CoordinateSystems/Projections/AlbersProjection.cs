@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 // SOURCECODE IS MODIFIED FROM ANOTHER WORK AND IS ORIGINALLY BASED ON GeoTools.NET:
@@ -37,6 +37,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Utilities;
@@ -88,7 +89,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <item><term>northing_at_false_origin</term><description>The northing value assigned to the false origin.</description></item>
         /// </list>
         /// </remarks>
-        public AlbersProjection(IEnumerable<ProjectionParameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+        public AlbersProjection(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory)
             : this(parameters, coordinateFactory, false) { }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </remarks>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
         /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-        public AlbersProjection(IEnumerable<ProjectionParameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+        public AlbersProjection(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
             : base(parameters, coordinateFactory, isInverse)
         {
             Name = "Albers_Conic_Equal_Area";

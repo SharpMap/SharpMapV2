@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -26,7 +26,9 @@ namespace ProjNet.CoordinateSystems
 	/// Definition of linear units.
 	/// </summary>
 	public class LinearUnit : Info, ILinearUnit
-	{
+    {
+        private readonly Double _metersPerUnit;
+
 		/// <summary>
 		/// Creates an instance of a linear unit
 		/// </summary>
@@ -38,18 +40,17 @@ namespace ProjNet.CoordinateSystems
 		/// <param name="abbreviation">Abbreviation</param>
 		/// <param name="remarks">Provider-supplied remarks</param>
 		public LinearUnit(Double metersPerUnit, String name, String authority, long authorityCode, String alias, String abbreviation, String remarks)
-			:
-			base(name, authority, authorityCode, alias, abbreviation, remarks)
+			: base(name, authority, authorityCode, alias, abbreviation, remarks)
 		{
-			_MetersPerUnit = metersPerUnit;
+			_metersPerUnit = metersPerUnit;
 		}
 
 		#region Predefined units
 		/// <summary>
 		/// Returns the meters linear unit.
-		/// Also known as International metre. SI standard unit.
+		/// Also known as International meter. SI standard unit.
 		/// </summary>
-		public static ILinearUnit Metre
+		public static ILinearUnit Meter
 		{
 			get { return new LinearUnit(1.0,"metre", "EPSG", 9001, "m", String.Empty, "Also known as International metre. SI standard unit."); }
 		}
@@ -90,15 +91,12 @@ namespace ProjNet.CoordinateSystems
 
 		#region ILinearUnit Members
 
-		private Double _MetersPerUnit;
-
 		/// <summary>
 		/// Gets or sets the number of meters per <see cref="LinearUnit"/>.
 		/// </summary>
 		public Double MetersPerUnit
 		{
-			get { return _MetersPerUnit; }
-			set { _MetersPerUnit = value; }
+			get { return _metersPerUnit; }
 		}
 
 		/// <summary>

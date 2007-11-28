@@ -1,25 +1,27 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.Geometries;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems
@@ -38,9 +40,9 @@ namespace ProjNet.CoordinateSystems
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private IAngularUnit _angularUnit;
-        private IPrimeMeridian _primeMeridian;
-        private List<Wgs84ConversionInfo> _wgs84ConversionInfo;
+        private readonly IAngularUnit _angularUnit;
+        private readonly IPrimeMeridian _primeMeridian;
+        private readonly List<Wgs84ConversionInfo> _wgs84ConversionInfo;
 
         /// <summary>
         /// Creates an instance of a Geographic Coordinate System
@@ -55,11 +57,12 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal GeographicCoordinateSystem(IAngularUnit angularUnit, IHorizontalDatum horizontalDatum,
-                                            IPrimeMeridian primeMeridian, IEnumerable<AxisInfo> axisInfo, String name,
-                                            String authority, long authorityCode, String alias, String abbreviation,
-                                            String remarks)
-            : base(horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
+        protected internal GeographicCoordinateSystem(IExtents<TCoordinate> extents, 
+            IAngularUnit angularUnit, IHorizontalDatum horizontalDatum,
+            IPrimeMeridian primeMeridian, IEnumerable<IAxisInfo> axisInfo, 
+            String name, String authority, Int64 authorityCode, String alias, 
+            String abbreviation, String remarks)
+            : base(extents, horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _angularUnit = angularUnit;
             _primeMeridian = primeMeridian;
@@ -80,10 +83,12 @@ namespace ProjNet.CoordinateSystems
                         new AxisInfo("Lat", AxisOrientation.North)
                     };
 
-                return new GeographicCoordinateSystem<TCoordinate>(CoordinateSystems.AngularUnit.Degrees,
-                                                      CoordinateSystems.HorizontalDatum.WGS84,
-                                                      CoordinateSystems.PrimeMeridian.Greenwich, axes,
-                                                      "WGS 84", "EPSG", 4326, String.Empty, String.Empty, String.Empty);
+                // TODO: DefaultEnvelope should be (-180, 180; -90, 90)
+                return new GeographicCoordinateSystem<TCoordinate>(null,
+                    CoordinateSystems.AngularUnit.Degrees, 
+                    CoordinateSystems.HorizontalDatum.Wgs84,
+                    CoordinateSystems.PrimeMeridian.Greenwich, axes,
+                    "WGS 84", "EPSG", 4326, String.Empty, String.Empty, String.Empty);
             }
         }
 
@@ -97,7 +102,6 @@ namespace ProjNet.CoordinateSystems
         public IAngularUnit AngularUnit
         {
             get { return _angularUnit; }
-            set { _angularUnit = value; }
         }
 
         /// <summary>
@@ -117,7 +121,6 @@ namespace ProjNet.CoordinateSystems
         public IPrimeMeridian PrimeMeridian
         {
             get { return _primeMeridian; }
-            set { _primeMeridian = value; }
         }
 
         /// <summary>
@@ -131,7 +134,6 @@ namespace ProjNet.CoordinateSystems
         internal List<Wgs84ConversionInfo> Wgs84ConversionInfo
         {
             get { return _wgs84ConversionInfo; }
-            set { _wgs84ConversionInfo = value; }
         }
 
         /// <summary>

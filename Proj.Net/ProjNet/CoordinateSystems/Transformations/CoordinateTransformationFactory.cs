@@ -1,25 +1,27 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Geometries;
 using NPack.Interfaces;
 using ProjNet.CoordinateSystems.Projections;
 
@@ -32,15 +34,20 @@ namespace ProjNet.CoordinateSystems.Transformations
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private readonly CoordinateFactoryDelegate<TCoordinate> _coordinateFactory;
+        private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;
+        private readonly IGeometryFactory<TCoordinate> _geometryFactory;
         private readonly IGeocentricCoordinateSystem<TCoordinate> _wgs84;
 
-        public CoordinateTransformationFactory(CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+        public CoordinateTransformationFactory(
+            ICoordinateFactory<TCoordinate> coordinateFactory, 
+            IGeometryFactory<TCoordinate> geometryFactory)
         {
             _coordinateFactory = coordinateFactory;
+            _geometryFactory = geometryFactory;
 
-            CoordinateSystemFactory<TCoordinate> coordSystemFactory 
-                = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory);
+            CoordinateSystemFactory<TCoordinate> coordSystemFactory
+                = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+
             _wgs84 = coordSystemFactory.CreateWgs84CoordinateSystem();
         }
 
@@ -154,7 +161,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             IProjectedCoordinateSystem<TCoordinate> source, IProjectedCoordinateSystem<TCoordinate> target)
         {
             CoordinateTransformationFactory<TCoordinate> ctFac
-                = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory);
+                = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
             ICoordinateTransformation<TCoordinate>[] transforms
                 = new ICoordinateTransformation<TCoordinate>[]
@@ -190,7 +197,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             else
             {
                 // Geographic coordinate systems differ - create concatenated transform
-                CoordinateTransformationFactory<TCoordinate> ctFac = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory);
+                CoordinateTransformationFactory<TCoordinate> ctFac 
+                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
                 ICoordinateTransformation<TCoordinate>[] transforms = new ICoordinateTransformation<TCoordinate>[]
                     {
@@ -224,8 +232,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             else
             {
                 // Geographic coordinate systems differ - create concatenated transform
-                CoordinateTransformationFactory<TCoordinate> ctFac 
-                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory);
+                CoordinateTransformationFactory<TCoordinate> ctFac
+                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
                 ICoordinateTransformation<TCoordinate>[] transforms = new ICoordinateTransformation<TCoordinate>[]
                     {
@@ -258,14 +266,20 @@ namespace ProjNet.CoordinateSystems.Transformations
             {
                 // Create datum shift
                 // Convert to geocentric, perform shift and return to geographic
-                CoordinateTransformationFactory<TCoordinate> ctFac = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory);
-                CoordinateSystemFactory<TCoordinate> cFac = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory);
+                CoordinateTransformationFactory<TCoordinate> ctFac
+                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+                
+                CoordinateSystemFactory<TCoordinate> cFac 
+                    = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+               
+                // TODO: The DefaultEnvelope extents shouldn't be null...
                 IGeocentricCoordinateSystem<TCoordinate> sourceCentric = cFac.CreateGeocentricCoordinateSystem(
-                    source.HorizontalDatum.Name + " Geocentric", source.HorizontalDatum, LinearUnit.Metre,
-                    source.PrimeMeridian);
+                    null, source.HorizontalDatum, LinearUnit.Meter,
+                    source.PrimeMeridian, source.HorizontalDatum.Name + " Geocentric");
+               
                 IGeocentricCoordinateSystem<TCoordinate> targetCentric = cFac.CreateGeocentricCoordinateSystem(
-                    target.HorizontalDatum.Name + " Geocentric", target.HorizontalDatum, LinearUnit.Metre,
-                    source.PrimeMeridian);
+                    null, target.HorizontalDatum, LinearUnit.Meter,
+                    source.PrimeMeridian, target.HorizontalDatum.Name + " Geocentric");
 
                 ICoordinateTransformation<TCoordinate>[] transforms = new ICoordinateTransformation<TCoordinate>[]
                     {
@@ -286,9 +300,6 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Geocentric to Geocentric transformation
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
         private ICoordinateTransformation<TCoordinate> createGeocentricToGeocentric(
             IGeocentricCoordinateSystem<TCoordinate> source, IGeocentricCoordinateSystem<TCoordinate> target)
         {

@@ -1,25 +1,27 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.Geometries;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems
@@ -32,11 +34,14 @@ namespace ProjNet.CoordinateSystems
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
+        private readonly IProjection _projection;
+        private readonly ILinearUnit _linearUnit;
+        private readonly IGeographicCoordinateSystem<TCoordinate> _geographicCoordinateSystem;
+
         /// <summary>
         /// Initializes a new instance of a projected coordinate system
         /// </summary>
-        /// <param name="datum">Horizontal datum</param>
-        /// <param name="geographicCoordinateSystem">Geographic coordinate system</param>
+        /// <param name="gcs">Geographic coordinate system</param>
         /// <param name="linearUnit">Linear unit</param>
         /// <param name="projection">Projection</param>
         /// <param name="axisInfo">Axis info</param>
@@ -46,14 +51,13 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal ProjectedCoordinateSystem(IHorizontalDatum datum,
-                                           IGeographicCoordinateSystem<TCoordinate> geographicCoordinateSystem,
-                                           ILinearUnit linearUnit, IProjection projection, IEnumerable<AxisInfo> axisInfo,
-                                           String name, String authority, long code, String alias,
-                                           String remarks, String abbreviation)
-            : base(datum, axisInfo, name, authority, code, alias, abbreviation, remarks)
+        internal ProjectedCoordinateSystem(IGeographicCoordinateSystem<TCoordinate> gcs,
+           IProjection projection, ILinearUnit linearUnit, IEnumerable<IAxisInfo> axisInfo,
+            String name, String authority, Int64 code, String alias,
+            String remarks, String abbreviation)
+            : base(gcs.DefaultEnvelope, gcs.HorizontalDatum, axisInfo, name, authority, code, alias, abbreviation, remarks)
         {
-            _geographicCoordinateSystem = geographicCoordinateSystem;
+            _geographicCoordinateSystem = gcs;
             _linearUnit = linearUnit;
             _projection = projection;
         }
@@ -76,12 +80,12 @@ namespace ProjNet.CoordinateSystems
 			pInfo.Add("false_easting", 500000);
 			pInfo.Add("false_northing", ZoneIsNorth ? 0 : 10000000);
 			Projection proj = new Projection(String.Empty,String.Empty,pInfo,AngularUnit.Degrees,
-				SharpMap.SpatialReference.LinearUnit.Metre,Ellipsoid.WGS84,
+				Proj.Net.SpatialReference.LinearUnit.Metre,Ellipsoid.WGS84,
 				"Transverse_Mercator", "EPSG", 32600 + Zone + (ZoneIsNorth ? 0 : 100), String.Empty, String.Empty, String.Empty);
 
 			return new ProjectedCoordinateSystem("Large and medium scale topographic mapping and engineering survey.",
-				SharpMap.SpatialReference.GeographicCoordinateSystem.WGS84,
-				SharpMap.SpatialReference.LinearUnit.Metre, proj, pInfo,
+				Proj.Net.SpatialReference.GeographicCoordinateSystem.WGS84,
+				Proj.Net.SpatialReference.LinearUnit.Metre, proj, pInfo,
 				"WGS 84 / UTM zone " + Zone.ToString() + (ZoneIsNorth ? "N" : "S"), "EPSG", 32600 + Zone + (ZoneIsNorth ? 0 : 100),
 				String.Empty,String.Empty,String.Empty);
 			
@@ -91,18 +95,13 @@ namespace ProjNet.CoordinateSystems
 
         #region IProjectedCoordinateSystem Members
 
-        private IGeographicCoordinateSystem<TCoordinate> _geographicCoordinateSystem;
-
         /// <summary>
         /// Gets or sets the GeographicCoordinateSystem.
         /// </summary>
         public IGeographicCoordinateSystem<TCoordinate> GeographicCoordinateSystem
         {
             get { return _geographicCoordinateSystem; }
-            set { _geographicCoordinateSystem = value; }
         }
-
-        private ILinearUnit _linearUnit;
 
         /// <summary>
         /// Gets or sets the <see cref="LinearUnit">LinearUnits</see>. 
@@ -112,7 +111,6 @@ namespace ProjNet.CoordinateSystems
         public ILinearUnit LinearUnit
         {
             get { return _linearUnit; }
-            set { _linearUnit = value; }
         }
 
         /// <summary>
@@ -126,15 +124,12 @@ namespace ProjNet.CoordinateSystems
             return _linearUnit;
         }
 
-        private IProjection _projection;
-
         /// <summary>
         /// Gets or sets the projection
         /// </summary>
         public IProjection Projection
         {
             get { return _projection; }
-            set { _projection = value; }
         }
 
         /// <summary>
@@ -230,6 +225,15 @@ namespace ProjNet.CoordinateSystems
                    p.HorizontalDatum.EqualParams(HorizontalDatum) &&
                    p.LinearUnit.EqualParams(LinearUnit) &&
                    p.Projection.EqualParams(Projection);
+        }
+
+        #endregion
+
+        #region IProjectedCoordinateSystem Members
+
+        IGeographicCoordinateSystem IProjectedCoordinateSystem.GeographicCoordinateSystem
+        {
+            get { return GeographicCoordinateSystem; }
         }
 
         #endregion

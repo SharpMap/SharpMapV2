@@ -1,22 +1,23 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using NPack.Interfaces;
 
@@ -30,19 +31,19 @@ namespace ProjNet.CoordinateSystems
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
+        private readonly IGeographicCoordinateSystem<TCoordinate> _source;
+        private readonly IGeographicCoordinateSystem<TCoordinate> _target;
+
         internal GeographicTransform(
             String name, String authority, long code, String alias, String remarks, String abbreviation,
-            IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> targetGCS)
+            IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
             _source = source;
-            _target = targetGCS;
+            _target = target;
         }
 
         #region IGeographicTransform Members
-
-        private IGeographicCoordinateSystem<TCoordinate> _source;
-        private IGeographicCoordinateSystem<TCoordinate> _target;
 
         /// <summary>
         /// Gets or sets the source geographic coordinate system for the transformation.
@@ -50,7 +51,6 @@ namespace ProjNet.CoordinateSystems
         public IGeographicCoordinateSystem<TCoordinate> Source
         {
             get { return _source; }
-            set { _source = value; }
         }
 
         /// <summary>
@@ -59,7 +59,6 @@ namespace ProjNet.CoordinateSystems
         public IGeographicCoordinateSystem<TCoordinate> Target
         {
             get { return _target; }
-            set { _target = value; }
         }
 
         /// <summary>

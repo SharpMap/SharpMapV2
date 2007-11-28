@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CoordinateSystems\AngularUnit.cs" />
+    <Compile Include="CoordinateSystems\AxisInfo.cs" />
     <Compile Include="CoordinateSystems\ComputationConvergenceException.cs" />
     <Compile Include="CoordinateSystems\ComputationException.cs" />
     <Compile Include="CoordinateSystems\CoordinateSystem.cs" />
@@ -76,10 +77,6 @@
     <Compile Include="CoordinateSystems\Transformations\GeographicTransform.cs" />
     <Compile Include="CoordinateSystems\Transformations\MathTransform.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />
-    <Compile Include="IO\CoordinateSystems\CoordinateSystemWktReader.cs" />
-    <Compile Include="IO\CoordinateSystems\StreamTokenizer.cs" />
-    <Compile Include="IO\CoordinateSystems\TokenType.cs" />
-    <Compile Include="IO\CoordinateSystems\WKTStreamTokenizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

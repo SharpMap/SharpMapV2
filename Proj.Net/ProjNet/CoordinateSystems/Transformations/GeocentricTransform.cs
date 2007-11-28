@@ -1,22 +1,23 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Utilities;
@@ -60,7 +61,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
         /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-        public GeocentricTransform(IEnumerable<ProjectionParameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+        public GeocentricTransform(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
             : base(EnumerableConverter.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory, isInverse)
         {
             Double semiMinor = SemiMinor;
@@ -73,7 +74,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Initializes a geocentric projection object
         /// </summary>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
-        internal GeocentricTransform(IEnumerable<ProjectionParameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+        internal GeocentricTransform(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory)
             : this(parameters, coordinateFactory, false) { }
 
 

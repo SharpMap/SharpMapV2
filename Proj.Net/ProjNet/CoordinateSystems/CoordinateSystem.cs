@@ -1,23 +1,24 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using NPack.Interfaces;
@@ -45,8 +46,8 @@ namespace ProjNet.CoordinateSystems
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
     {
-        private List<AxisInfo> _axisInfo;
-        private IExtents<TCoordinate> _defaultEnvelope;
+        private readonly List<IAxisInfo> _axisInfo = new List<IAxisInfo>();
+        private readonly IExtents<TCoordinate> _extents;
 
         /// <summary>
         /// Initializes a new instance of a coordinate system.
@@ -57,9 +58,13 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal CoordinateSystem(String name, String authority, long authorityCode, String alias, String abbreviation,
-                                  String remarks)
-            : base(name, authority, authorityCode, alias, abbreviation, remarks) { }
+        protected internal CoordinateSystem(IExtents<TCoordinate> extents, 
+            String name, String authority, Int64 authorityCode, String alias, 
+            String abbreviation, String remarks)
+            : base(name, authority, authorityCode, alias, abbreviation, remarks)
+        {
+            _extents = extents;
+        }
 
         #region ICoordinateSystem Members
 
@@ -77,7 +82,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         public abstract IUnit GetUnits(Int32 dimension);
 
-        internal IList<AxisInfo> AxisInfo
+        internal IList<IAxisInfo> AxisInfo
         {
             get { return _axisInfo; }
             set
@@ -92,7 +97,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="dimension">Dimension</param>
         /// <returns>Axis info</returns>
-        public AxisInfo GetAxis(Int32 dimension)
+        public IAxisInfo GetAxis(Int32 dimension)
         {
             if (dimension >= _axisInfo.Count || dimension < 0)
             {
@@ -115,8 +120,15 @@ namespace ProjNet.CoordinateSystems
         /// </remarks>
         public IExtents<TCoordinate> DefaultEnvelope
         {
-            get { return _defaultEnvelope; }
-            set { _defaultEnvelope = value; }
+            get { return _extents; }
+        }
+
+        #endregion
+
+        #region ICoordinateSystem Members
+        IExtents ICoordinateSystem.DefaultEnvelope
+        {
+            get { return DefaultEnvelope; }
         }
 
         #endregion

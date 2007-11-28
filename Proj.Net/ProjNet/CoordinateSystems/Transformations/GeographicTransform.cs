@@ -1,22 +1,23 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using NPack.Interfaces;
@@ -32,7 +33,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
 	{
 		internal GeographicTransform(IGeographicCoordinateSystem<TCoordinate> source, 
-            IGeographicCoordinateSystem<TCoordinate> target, CoordinateFactoryDelegate<TCoordinate> coordinateFactory)
+            IGeographicCoordinateSystem<TCoordinate> target, ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(null, coordinateFactory, false)
 		{
 			_source = source;
@@ -99,13 +100,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 		}
 
 		/// <summary>
-		/// Transforms a coordinate point. The passed parameter point should not be modified.
+		/// Transforms a coordinate point. 
+		/// The passed parameter point should not be modified.
 		/// </summary>
-		/// <param name="point"></param>
-		/// <returns></returns>
         public override TCoordinate Transform(TCoordinate point)
 		{
-            Double value = (Double) point[0];
+            Double value = point[0];
 
             value /= Source.AngularUnit.RadiansPerUnit;
             value -= Source.PrimeMeridian.Longitude / Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
@@ -116,12 +116,14 @@ namespace ProjNet.CoordinateSystems.Transformations
             Double[] coordValues = new Double[componentCount];
 		    coordValues[0] = value;
 
-            for (int i = 1; i < point.ComponentCount; i++)
+            if (point is ICoordinate3D)
             {
-                coordValues[i] = (Double)point[i];
+                return CreateCoordinate(point[Ordinates.X], point[Ordinates.Y], point[Ordinates.Z]);
             }
-
-            return CreateCoordinate(coordValues);
+            else
+            {
+                return CreateCoordinate(point[Ordinates.X], point[Ordinates.Y]);
+            }
 		}
 
 		/// <summary>

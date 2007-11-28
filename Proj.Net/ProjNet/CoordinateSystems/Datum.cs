@@ -1,18 +1,18 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -34,7 +34,9 @@ namespace ProjNet.CoordinateSystems
 	/// the orientation of the coordinate axes).
 	/// </remarks>
 	public abstract class Datum : Info, IDatum
-	{
+    {
+        private readonly DatumType _datumType;
+
 		/// <summary>
 		/// Initializes a new instance of a Datum object
 		/// </summary>
@@ -50,20 +52,17 @@ namespace ProjNet.CoordinateSystems
 			String remarks, String abbreviation)
 			: base(name, authority, code, alias, abbreviation, remarks)
 		{
-			_DatumType = type;
+			_datumType = type;
 		}
 
 		#region IDatum Members
-
-		private DatumType _DatumType;
 
 		/// <summary>
 		/// Gets or sets the type of the datum as an enumerated code.
 		/// </summary>
 		public DatumType DatumType
 		{
-			get { return _DatumType; }
-			set { _DatumType = value; }
+			get { return _datumType; }
 		}
 
 		#endregion

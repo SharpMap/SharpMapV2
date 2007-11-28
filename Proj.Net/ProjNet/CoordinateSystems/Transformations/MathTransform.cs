@@ -1,22 +1,23 @@
 // Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
 //
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// SharpMap is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using NPack;
@@ -37,7 +38,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
             IConvertible
 	{
-        private readonly CoordinateFactoryDelegate<TCoordinate> _coordinateFactory;
+        private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;
         protected Boolean _isInverse = false;
         private readonly Double _e;
         private readonly Double _e2;
@@ -45,7 +46,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly Double _semiMinor;
         private readonly List<Parameter> _parameters;
 
-        protected MathTransform(IEnumerable<Parameter> parameters, CoordinateFactoryDelegate<TCoordinate> coordinateFactory, Boolean isInverse)
+        protected MathTransform(IEnumerable<Parameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
         {
             _isInverse = isInverse;
             _parameters = new List<Parameter>(parameters ?? new Parameter[0]);
@@ -147,9 +148,14 @@ namespace ProjNet.CoordinateSystems.Transformations
             get { return _e2; }
         }
 
-        protected TCoordinate CreateCoordinate(params Double[] components)
+        protected TCoordinate CreateCoordinate(Double x, Double y)
         {
-            return _coordinateFactory(components);
+            return _coordinateFactory.Create(x, y);
+        }
+
+        protected TCoordinate CreateCoordinate(Double x, Double y, Double z)
+        {
+            return _coordinateFactory.Create3D(x, y, z);
         }
 
 	    protected IEnumerable<Parameter> Parameters
@@ -163,7 +169,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 	        }
 	    }
 
-        protected CoordinateFactoryDelegate<TCoordinate> CoordinateFactory
+        protected ICoordinateFactory<TCoordinate> CoordinateFactory
         {
             get { return _coordinateFactory; }
         }
