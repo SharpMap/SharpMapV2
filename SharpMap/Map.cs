@@ -24,12 +24,14 @@ using System.ComponentModel;
 using System.Globalization;
 using NPack;
 using NPack.Interfaces;
-using GeoAPI.CoordinateSystems;
+using SharpMap.CoordinateSystems;
 using SharpMap.Data;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
+using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap
 {

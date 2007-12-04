@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
