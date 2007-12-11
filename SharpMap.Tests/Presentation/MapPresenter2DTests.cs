@@ -474,7 +474,7 @@ namespace SharpMap.Tests.Presentation
                 OnRequestGeoCenterChange(GeoCenter, offsetGeoCenter);
             }
 
-            public void ShowRenderedObjects(IEnumerable renderedObjects)
+            public void ShowRenderedObjects(IEnumerable renderedObjects, ILayer layer)
             {
             }
 

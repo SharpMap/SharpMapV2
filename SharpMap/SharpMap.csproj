@@ -276,6 +276,7 @@
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\ITextRenderer`3.cs" />
+    <Compile Include="Rendering\Rendering2D\Foo.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />

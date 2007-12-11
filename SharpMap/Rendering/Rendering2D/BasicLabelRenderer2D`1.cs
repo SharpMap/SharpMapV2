@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Styles;
+using SharpMap.Layers;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -31,12 +32,14 @@ namespace SharpMap.Rendering.Rendering2D
         : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
     {
         private TextRenderer2D<TRenderObject> _textRenderer;
+		private LabelLayer _labelLayer;
 
         #region Object construction and disposal
         public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
-            VectorRenderer2D<TRenderObject> vectorRenderer)
+            VectorRenderer2D<TRenderObject> vectorRenderer, LabelLayer layer)
             : this(textRenderer, vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
+			_labelLayer = layer;
         }
 
         public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
@@ -97,8 +100,16 @@ namespace SharpMap.Rendering.Rendering2D
         protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style,
                                                                       RenderState renderState)
         {
-            // TODO: create label from feature and call RenderLabel(Label2D)
-            throw new NotImplementedException();
+			Point min = feature.Geometry.GetBoundingBox().Min;
+			Point max = feature.Geometry.GetBoundingBox().Max;
+			
+			double x = (min.X + max.X) / 2.0;
+			double y = (min.Y + max.Y) / 2.0;
+
+			Point2D p = new Point2D(x, y);
+			Label2D l = new Label2D(_labelLayer.GetLabelText((FeatureDataRow)feature), p, style ?? new LabelStyle(new StyleFont(new StyleFontFamily("Arial"), new Size2D(10, 10), StyleFontStyle.Regular), new SolidStyleBrush(StyleColor.Black)));
+
+			return RenderLabel(l);
         }
 
         private static IEnumerable<Path2D> generateHaloPath(Rectangle2D layoutRectangle)

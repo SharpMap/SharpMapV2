@@ -33,6 +33,7 @@ using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
+using SharpMap.Layers;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
@@ -48,6 +49,8 @@ namespace SharpMap.Presentation.WinForms
     /// </summary>
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
+		private float labelScale = 0;
+
         private readonly Double _dpi;
         private Boolean _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
@@ -62,6 +65,7 @@ namespace SharpMap.Presentation.WinForms
         private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
         private Boolean _backgroundBeingSet;
         private readonly Label _infoLabel = new Label();
+		private Bitmap doubleBuffer;
 
         /// <summary>
         /// Initializes a new WinForms map view control.
@@ -116,7 +120,7 @@ namespace SharpMap.Presentation.WinForms
         internal String Information
         {
             get { return _infoLabel.Text; }
-            set { _infoLabel.Text = value; }
+            set { _infoLabel.Text = value + ", scale: "+getGdiViewTransform().Elements[0] + ", labelScale: "+labelScale; }
         }
 
         #region IView Members
@@ -318,21 +322,23 @@ namespace SharpMap.Presentation.WinForms
         /// Draws the rendered object to the view.
         /// </summary>
         /// <param name="renderedObjects">The rendered objects to draw.</param>
-        public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
+		public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects, ILayer layer)
         {
             if (renderedObjects == null) throw new ArgumentNullException("renderedObjects");
 
             foreach (GdiRenderObject ro in renderedObjects)
             {
-                _renderObjectQueue.Enqueue(ro);
+				GdiRenderObject go = ro;
+				go.Layer = layer;
+                _renderObjectQueue.Enqueue(go);
             }
         }
 
-        void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
+		void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects, ILayer layer)
         {
             if (renderedObjects is IEnumerable<GdiRenderObject>)
             {
-                ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>);
+                ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>, layer);
                 return;
             }
 
@@ -514,6 +520,8 @@ namespace SharpMap.Presentation.WinForms
         {
             Graphics g = e.Graphics;
 
+			Graphics screenGraphics = e.Graphics;
+
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             if (DesignMode || _presenter == null)
@@ -522,7 +530,36 @@ namespace SharpMap.Presentation.WinForms
                 return;
             }
 
-            g.Transform = getGdiViewTransform();
+			if (_renderObjectQueue.Count == 0 && doubleBuffer != null)
+			{
+				// dump to screen and return
+				if(doubleBuffer != null)
+				{
+		            g.Clear(BackColor);
+
+					Graphics dbg = Graphics.FromImage(doubleBuffer);
+
+					g.DrawImageUnscaled(doubleBuffer, (int)((this.Width-doubleBuffer.Width)/2.0f), (int)((this.Height-doubleBuffer.Height)/2.0f));
+
+					return;
+				}
+			}
+
+			if(doubleBuffer != null && ( doubleBuffer.Width != this.Width || doubleBuffer.Height != this.Height))
+			{
+				doubleBuffer.Dispose();
+				doubleBuffer = null;
+			}
+
+			if(doubleBuffer == null)
+			{
+				doubleBuffer = new Bitmap(this.Width, this.Height);
+			}
+
+			g = Graphics.FromImage(doubleBuffer);
+			g.SmoothingMode = SmoothingMode.AntiAlias;
+
+			g.Transform = getGdiViewTransform();
 
             g.Clear(BackColor);
 
@@ -556,8 +593,11 @@ namespace SharpMap.Presentation.WinForms
 
                         if (ro.Text != null)
                         {
-                            g.DrawString(ro.Text, ro.Font, ro.Fill, ro.Bounds);
-                        }
+							RectangleF newBounds = AdjustForLabel(g, ro);
+							//g.FillRectangle(ViewConverter.Convert(new SolidStyleBrush(StyleColor.Chartreuse)), newBounds);
+							g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
+							g.Transform = getGdiViewTransform();
+						}
 
                         break;
                     case RenderState.Highlighted:
@@ -578,9 +618,11 @@ namespace SharpMap.Presentation.WinForms
                         }
 
                         if (ro.Text != null)
-                        {
-                            g.DrawString(ro.Text, ro.Font, ro.HighlightFill, ro.Bounds);
-                        }
+						{
+							RectangleF newBounds = AdjustForLabel(g, ro);
+							g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
+							g.Transform = getGdiViewTransform();
+						}
 
                         break;
                     case RenderState.Selected:
@@ -602,8 +644,10 @@ namespace SharpMap.Presentation.WinForms
 
                         if (ro.Text != null) 
                         {
-                            g.DrawString(ro.Text, ro.Font, ro.SelectFill, ro.Bounds);
-                        }
+							RectangleF newBounds = AdjustForLabel(g, ro);
+							g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
+							g.Transform = getGdiViewTransform();
+						}
                         break;
                     case RenderState.Unknown:
                     default:
@@ -631,18 +675,105 @@ namespace SharpMap.Presentation.WinForms
                 }
             }
 
-            g.ResetTransform();
-        }
+			g.ResetTransform();
+
+			if (g != screenGraphics)
+			{
+				screenGraphics.DrawImageUnscaled(doubleBuffer, 0, 0);
+			}
+		}
+
+		/// <summary>
+		/// Without this change, labels render upside down and don't all scale readably.
+		/// </summary>
+		/// <param name="g"></param>
+		/// <param name="ro"></param>
+		/// <returns></returns>
+		protected RectangleF AdjustForLabel(Graphics g, GdiRenderObject ro)
+		{
+			// this transform goes from the underlying coordinates to 
+			// screen coordinates, but for some reason renders text upside down
+			// we cannot just scale by 1, -1 because offsets are affected also
+			Matrix m = g.Transform;
+			// used to scale text size for the current zoom level
+			float scale = Math.Abs(m.Elements[0]);
+
+			// get the bounds of the label in the underlying coordinate space
+			System.Drawing.Point ll = new System.Drawing.Point((int)ro.Bounds.X, (int)ro.Bounds.Y);
+			System.Drawing.Point ur = new System.Drawing.Point((int)(ro.Bounds.X + ro.Bounds.Width), (int)(ro.Bounds.Y + ro.Bounds.Height));
+
+			System.Drawing.Point[] transformedPoints1 = 
+								{ new System.Drawing.Point((int)ro.Bounds.X, (int)ro.Bounds.Y),
+								  new System.Drawing.Point((int)(ro.Bounds.X + ro.Bounds.Width), (int)(ro.Bounds.Y + ro.Bounds.Height)) };
+
+			// get the label bounds transformed into screen coordinates
+			// note that if we just render this as-is the label is upside down
+			m.TransformPoints(transformedPoints1);
+
+			// for labels, we're going to use an identity matrix and screen coordinates
+			Matrix newM = new Matrix();
+
+			Boolean scaleText = true;
+
+			if (ro.Layer != null)
+			{
+				Double min = ro.Layer.Style.MinVisible;
+				Double max = ro.Layer.Style.MaxVisible;
+				float scaleMult = Double.IsInfinity(max) ? 2.0f : 1.0f;
+
+				//max = Math.Min(max, _presenter.MaximumWorldWidth);
+				max = Math.Min(max, Map.Extents.Width);
+				//double pct = (max - _presenter.WorldWidth) / (max - min);
+				double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
+
+				if (scaleMult > 1)
+				{
+					pct = Math.Max(.5, pct * 2);
+				}
+
+				scale = (float)pct*scaleMult;
+				labelScale = scale;
+			}
+
+			// ok, I lied, if we're scaling labels we need to scale our new matrix, but still no offsets
+			if (scaleText)
+			{
+				newM.Scale(scale, scale);
+			}
+			else
+			{
+				scale = 1.0f;
+			}
+
+			g.Transform = newM;
+
+			int pixelWidth = ur.X - ll.X;
+			int pixelHeight = ur.Y - ll.Y;
+
+			// if we're scaling text, then x,y position will get multiplied by our 
+			// scale, so adjust for it here so that we can use actual pixel x,y
+			// Also center our label on the coordinate instead of putting the label origin on the coordinate
+			RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
+
+			return newBounds;
+		}
 
         protected override void OnSizeChanged(EventArgs args)
         {
             EventHandler e = SizeChanged;
 
+			//Controls.Remove(_infoLabel);
+			_infoLabel.Visible = false;
+
             if (e != null)
             {
                 e(this, args);
             }
-        }
+
+			//Controls.Add(_infoLabel);
+			//this.Update();
+			_infoLabel.Visible = true;
+		}
         #endregion
 
         #region Event Invokers
