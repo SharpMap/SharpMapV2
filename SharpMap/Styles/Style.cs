@@ -28,7 +28,6 @@ namespace SharpMap.Styles
 		private Double _minVisible;
 		private Double _maxVisible;
 		private Boolean _visible;
-		private String _labelColumn;
 
 		/// <summary>
 		/// Initializes a style as sets Min = 0, Max = Double.PositiveInfinity and Visible = true
@@ -38,7 +37,6 @@ namespace SharpMap.Styles
 			_minVisible = 0;
 			_maxVisible = Double.PositiveInfinity;
 			_visible = true;
-			_labelColumn = null;
 		}
 
 		/// <summary>
@@ -66,15 +64,6 @@ namespace SharpMap.Styles
 		{
 			get { return _visible; }
 			set { _visible = value; }
-		}
-
-		/// <summary>
-		/// IF this is set, it indicates that 
-		/// </summary>
-		public String LabelColumn
-		{
-			get { return _labelColumn; }
-			set { _labelColumn = value; }
 		}
 	}
 }

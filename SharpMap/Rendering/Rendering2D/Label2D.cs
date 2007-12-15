@@ -176,7 +176,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns></returns>
         public Int32 CompareTo(Label2D other)
         {
-            if (this == other)
+			if (this == other || (_collisionBuffer == Size2D.Empty && other.CollisionBuffer == Size2D.Empty))
             {
                 return 0;
             }

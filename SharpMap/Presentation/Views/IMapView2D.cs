@@ -21,7 +21,6 @@ using SharpMap.Geometries;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-using SharpMap.Layers;
 
 namespace SharpMap.Presentation.Views
 {
@@ -108,7 +107,7 @@ namespace SharpMap.Presentation.Views
         /// Draws the rendered object to the view.
         /// </summary>
         /// <param name="renderedObjects">The rendered objects to draw.</param>
-        void ShowRenderedObjects(IEnumerable renderedObjects, ILayer layer);
+        void ShowRenderedObjects(IEnumerable renderedObjects);
 
         /// <summary>
         /// Gets a <see cref="Matrix2D"/> used to project the world

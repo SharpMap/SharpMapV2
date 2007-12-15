@@ -638,18 +638,12 @@ namespace SharpMap.Presentation.Presenters
             CreateRendererForLayerType(basicGeometryRendererType, renderObjectType, layerType, VectorRenderer);
         }
 
-        private void CreateLabelRenderer(Type renderObjectType, LabelLayer layer)
+        private void CreateLabelRenderer(Type renderObjectType)
         {
             Type basicLabelRendererType = typeof(BasicLabelRenderer2D<>);
             Type layerType = typeof(LabelLayer);
 
-			//CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer, l);
-
-			IRenderer renderer;
-			Type constructedType = basicLabelRendererType.MakeGenericType(renderObjectType);
-			renderer = Activator.CreateInstance(constructedType, new object[] { TextRenderer, VectorRenderer, layer }) as IRenderer;
-			Debug.Assert(renderer != null);
-			RegisterRendererForLayer(layer, renderer);
+			CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
 		}
 
         protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, Type layerType, params object[] constructorParams)
@@ -693,11 +687,6 @@ namespace SharpMap.Presentation.Presenters
 			LayerRendererRegistry.Instance.Register(layerType, renderer);
 		}
 
-		protected void RegisterRendererForLayer(ILayer layer, IRenderer renderer)
-		{
-			LayerRendererRegistry.Instance.Register(layer.LayerName, renderer);
-		}
-
         protected void RenderSelection(ViewSelection2D selection)
         {
             OnRenderingSelection();
@@ -716,7 +705,7 @@ namespace SharpMap.Presentation.Presenters
                     selection.FillBrush, null, null,
                     selection.OutlineStyle, null, null, RenderState.Normal);
 			
-            View.ShowRenderedObjects(renderedSelection, null);
+            View.ShowRenderedObjects(renderedSelection);
 
             OnRenderedSelection();
         }
@@ -730,15 +719,15 @@ namespace SharpMap.Presentation.Presenters
             IEnumerable<FeatureDataRow> features
                 = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
 
-            Debug.Assert(layer.Style is VectorStyle);
-            VectorStyle style = layer.Style as VectorStyle;
+			Debug.Assert(layer.Style is FeatureStyle);
+			FeatureStyle style = layer.Style as FeatureStyle;
 
             foreach (FeatureDataRow feature in features)
             {
                 IEnumerable renderedFeature;
 
                 renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal);
-                View.ShowRenderedObjects(renderedFeature, layer);
+                View.ShowRenderedObjects(renderedFeature);
             }
 
             IEnumerable<FeatureDataRow> selectedRows = layer.SelectedFeatures;
@@ -746,7 +735,7 @@ namespace SharpMap.Presentation.Presenters
             foreach (FeatureDataRow selectedFeature in selectedRows)
             {
                 IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected);
-                View.ShowRenderedObjects(renderedFeature, layer);
+                View.ShowRenderedObjects(renderedFeature);
             }
 
             IEnumerable<FeatureDataRow> highlightedRows = layer.HighlightedFeatures;
@@ -754,7 +743,7 @@ namespace SharpMap.Presentation.Presenters
             foreach (FeatureDataRow highlightedFeature in highlightedRows)
             {
                 IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature, style, RenderState.Highlighted);
-                View.ShowRenderedObjects(renderedFeature, layer);
+                View.ShowRenderedObjects(renderedFeature);
             }
         }
 
@@ -1080,13 +1069,7 @@ namespace SharpMap.Presentation.Presenters
             CreateGeometryRenderer(renderObjectType);
 
             // Create renderer for label layers
-			foreach(ILayer l in Map.Layers)
-			{
-				if (l is LabelLayer)
-				{
-					CreateLabelRenderer(renderObjectType, l as LabelLayer);
-				}
-			}
+			CreateLabelRenderer(renderObjectType);
 
             // TODO: create raster renderer
         }

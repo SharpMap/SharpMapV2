@@ -298,6 +298,7 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
+    <Compile Include="Styles\FeatureStyle.cs" />
     <Compile Include="Styles\HorizontalAlignment.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Styles\RasterStyle.cs" />

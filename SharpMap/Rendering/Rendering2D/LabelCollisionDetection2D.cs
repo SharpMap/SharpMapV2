@@ -25,12 +25,36 @@ namespace SharpMap.Rendering.Rendering2D
 	/// </summary>
 	public class LabelCollisionDetection2D
 	{
+		#region public interface
+
+		/// <summary>
+		/// Test whether label collides.
+		/// </summary>
+		/// <param name="newLabel"></param>
+		/// <returns>true if label collided with another (more important or earlier) label</returns>
+		public Boolean SimpleCollisionTest(Label2D newLabel)
+		{
+			return false;
+		}
+
+		/// <summary>
+		/// Test whether label collides.
+		/// </summary>
+		/// <param name="newLabel"></param>
+		/// <returns>true if label collided with another (more important or earlier) label</returns>
+		public Boolean AdvancedCollisionTest(Label2D newLabel)
+		{
+			return false;
+		}
+
+		#endregion
+
 		#region Label filter methods
 		/// <summary>
 		/// Simple and fast label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-		public static IEnumerable SimpleCollisionDetection(IList labels)
+		private IEnumerable SimpleCollisionDetection(IList labels)
 		{
             ArrayList labelList = new ArrayList(labels);
 
@@ -68,7 +92,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// Thorough label collision detection.
 		/// </summary>
 		/// <param name="labels"></param>
-        public static IEnumerable ThoroughCollisionDetection(IList labels)
+		private IEnumerable ThoroughCollisionDetection(IList labels)
         {
             ArrayList labelList = new ArrayList(labels);
 

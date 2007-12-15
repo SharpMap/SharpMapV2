@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using SharpMap.Data;
 using SharpMap.Geometries;
 using SharpMap.Styles;
-using SharpMap.Layers;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -31,15 +30,22 @@ namespace SharpMap.Rendering.Rendering2D
     public class BasicLabelRenderer2D<TRenderObject>
         : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
     {
-        private TextRenderer2D<TRenderObject> _textRenderer;
-		private LabelLayer _labelLayer;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="feature"></param>
+		/// <returns></returns>
+		private delegate String LabelTextFormatter(FeatureDataRow feature);
+
+		private TextRenderer2D<TRenderObject> _textRenderer;
+		private Dictionary<LabelStyle, LabelCollisionDetection2D> collisionDetectors = new Dictionary<LabelStyle, LabelCollisionDetection2D>();
+		private Dictionary<LabelStyle, LabelTextFormatter> textFormatters = new Dictionary<LabelStyle, LabelTextFormatter>();
 
         #region Object construction and disposal
         public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
-            VectorRenderer2D<TRenderObject> vectorRenderer, LabelLayer layer)
+            VectorRenderer2D<TRenderObject> vectorRenderer)
             : this(textRenderer, vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
-			_labelLayer = layer;
         }
 
         public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
@@ -100,16 +106,56 @@ namespace SharpMap.Rendering.Rendering2D
         protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, LabelStyle style,
                                                                       RenderState renderState)
         {
-			Point min = feature.Geometry.GetBoundingBox().Min;
-			Point max = feature.Geometry.GetBoundingBox().Max;
-			
-			double x = (min.X + max.X) / 2.0;
-			double y = (min.Y + max.Y) / 2.0;
+			if(style == null)
+			{
+				throw new ArgumentNullException("style", "LabelStyle is a required argument to properly render the label");
+			}
+        	Point p = feature.Geometry.GetBoundingBox().GetCentroid();
 
-			Point2D p = new Point2D(x, y);
-			Label2D l = new Label2D(_labelLayer.GetLabelText((FeatureDataRow)feature), p, style ?? new LabelStyle(new StyleFont(new StyleFontFamily("Arial"), new Size2D(10, 10), StyleFontStyle.Regular), new SolidStyleBrush(StyleColor.Black)));
+        	LabelTextFormatter formatter;
+			if(!textFormatters.TryGetValue(style, out formatter))
+			{
+				// setup formatter based on style.LabelFormatExpression
+				formatter = delegate(FeatureDataRow feature2)
+				            	{
+				            		return feature2[style.LabelFormatExpression].ToString();
+				            	};
 
-			return RenderLabel(l);
+				textFormatters.Add(style, formatter);
+			}
+
+			Label2D newLabel = new Label2D(formatter.Invoke((FeatureDataRow)feature), new Point2D(p.X, p.Y), style);
+
+			// now find out if we even need to render this label...
+			if(style.CollisionTest != LabelStyle.CollisionTestType.None)
+			{
+				LabelCollisionDetection2D collisionDetector;
+
+				if (!collisionDetectors.TryGetValue(style, out collisionDetector))
+				{
+					collisionDetector = new LabelCollisionDetection2D();
+					collisionDetectors.Add(style, collisionDetector);
+				}
+
+				if(style.CollisionTest == LabelStyle.CollisionTestType.Simple)
+				{
+					if (collisionDetector.SimpleCollisionTest(newLabel))
+					{
+						// we are not going to render this label
+						return new List<TRenderObject>();
+					}
+				}
+				else if(style.CollisionTest == LabelStyle.CollisionTestType.Advanced)
+				{
+					if (collisionDetector.AdvancedCollisionTest(newLabel))
+					{
+						// we are not going to render this label
+						return new List<TRenderObject>();
+					}
+				}
+			}
+
+			return RenderLabel(newLabel);
         }
 
         private static IEnumerable<Path2D> generateHaloPath(Rectangle2D layoutRectangle)
