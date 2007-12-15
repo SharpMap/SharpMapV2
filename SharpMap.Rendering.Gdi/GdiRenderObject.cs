@@ -29,7 +29,6 @@ namespace SharpMap.Rendering.Gdi
     public struct GdiRenderObject
     {
         private RenderState _state;
-		private ILayer _layer;
 
         /// <summary>
         /// Creates a new GdiRenderObject instance.
@@ -66,7 +65,6 @@ namespace SharpMap.Rendering.Gdi
             Pen line, Pen highlightLine, Pen selectLine,
             Pen outline, Pen highlightOutline, Pen selectOutline)
         {
-			_layer = null;
 			_state = RenderState.Normal;
             GdiPath = path;
             Fill = fill;
@@ -97,7 +95,6 @@ namespace SharpMap.Rendering.Gdi
         /// <param name="colorTransform">The color transform applied to the symbol before drawing.</param>
         public GdiRenderObject(Bitmap image, RectangleF imageBounds, Matrix transform, GdiColorMatrix colorTransform)
         {
-			_layer = null;
 			_state = RenderState.Normal;
             Image = image;
             Bounds = imageBounds;
@@ -146,7 +143,6 @@ namespace SharpMap.Rendering.Gdi
         public GdiRenderObject(String text, Font font, RectangleF bounds, Brush fill, Brush highlightFill, Brush selectFill,
             Pen outline, Pen highlightOutline, Pen selectOutline)
         {
-			_layer = null;
 			_state = RenderState.Normal;
             GdiPath = null;
 
@@ -258,12 +254,6 @@ namespace SharpMap.Rendering.Gdi
 		{
 			get { return _state; }
 			set { _state = value; }
-		}
-
-		public ILayer Layer
-		{
-			get { return _layer; }
-			set { _layer = value; }
 		}
 	}
 }

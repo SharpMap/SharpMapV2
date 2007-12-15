@@ -49,6 +49,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapDisplayControlRunner", "
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CascadeSpatialProviderTest", "..\CascadeSpatialProvider\CascadeSpatialProviderTest\CascadeSpatialProviderTest.csproj", "{12DB68EE-4894-4391-A17F-88B32E530F7E}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +93,10 @@ Global
 		{5EA31DDA-22B0-4159-97B4-B45DED866BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EA31DDA-22B0-4159-97B4-B45DED866BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EA31DDA-22B0-4159-97B4-B45DED866BF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12DB68EE-4894-4391-A17F-88B32E530F7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12DB68EE-4894-4391-A17F-88B32E530F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12DB68EE-4894-4391-A17F-88B32E530F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12DB68EE-4894-4391-A17F-88B32E530F7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

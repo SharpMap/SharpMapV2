@@ -322,23 +322,22 @@ namespace SharpMap.Presentation.WinForms
         /// Draws the rendered object to the view.
         /// </summary>
         /// <param name="renderedObjects">The rendered objects to draw.</param>
-		public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects, ILayer layer)
+		public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
         {
             if (renderedObjects == null) throw new ArgumentNullException("renderedObjects");
 
             foreach (GdiRenderObject ro in renderedObjects)
             {
 				GdiRenderObject go = ro;
-				go.Layer = layer;
                 _renderObjectQueue.Enqueue(go);
             }
         }
 
-		void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects, ILayer layer)
+		void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
         {
             if (renderedObjects is IEnumerable<GdiRenderObject>)
             {
-                ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>, layer);
+                ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>);
                 return;
             }
 
@@ -715,6 +714,7 @@ namespace SharpMap.Presentation.WinForms
 
 			Boolean scaleText = true;
 
+/*
 			if (ro.Layer != null)
 			{
 				Double min = ro.Layer.Style.MinVisible;
@@ -734,6 +734,7 @@ namespace SharpMap.Presentation.WinForms
 				scale = (float)pct*scaleMult;
 				labelScale = scale;
 			}
+*/
 
 			// ok, I lied, if we're scaling labels we need to scale our new matrix, but still no offsets
 			if (scaleText)
@@ -762,7 +763,6 @@ namespace SharpMap.Presentation.WinForms
         {
             EventHandler e = SizeChanged;
 
-			//Controls.Remove(_infoLabel);
 			_infoLabel.Visible = false;
 
             if (e != null)
@@ -770,8 +770,6 @@ namespace SharpMap.Presentation.WinForms
                 e(this, args);
             }
 
-			//Controls.Add(_infoLabel);
-			//this.Update();
 			_infoLabel.Visible = true;
 		}
         #endregion
