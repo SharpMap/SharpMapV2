@@ -1061,7 +1061,7 @@ namespace SharpMap.Rendering.Rendering2D
             yield return LowerLeft;
             yield return UpperLeft;
             yield return UpperRight;
-            yield return LowerLeft;
+            yield return LowerRight;
         }
 
         #endregion

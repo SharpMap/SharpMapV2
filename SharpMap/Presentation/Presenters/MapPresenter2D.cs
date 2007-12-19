@@ -26,6 +26,7 @@ using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
+//using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
@@ -726,7 +727,7 @@ namespace SharpMap.Presentation.Presenters
             {
                 IEnumerable renderedFeature;
 
-                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal);
+                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal, layer);
                 View.ShowRenderedObjects(renderedFeature);
             }
 
@@ -734,7 +735,7 @@ namespace SharpMap.Presentation.Presenters
 
             foreach (FeatureDataRow selectedFeature in selectedRows)
             {
-                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected);
+                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected, layer);
                 View.ShowRenderedObjects(renderedFeature);
             }
 
@@ -742,9 +743,11 @@ namespace SharpMap.Presentation.Presenters
 
             foreach (FeatureDataRow highlightedFeature in highlightedRows)
             {
-                IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature, style, RenderState.Highlighted);
+                IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature, style, RenderState.Highlighted, layer);
                 View.ShowRenderedObjects(renderedFeature);
             }
+
+			renderer.CleanUp();
         }
 
         protected virtual void RenderRasterLayer(IRasterLayer layer)

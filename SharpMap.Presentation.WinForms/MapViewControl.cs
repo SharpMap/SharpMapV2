@@ -585,7 +585,6 @@ namespace SharpMap.Presentation.WinForms
                             else if (ro.Fill != null)
                             {
                                 g.FillPath(ro.Fill, ro.GdiPath);
-                                
                                 if (ro.Outline != null) g.DrawPath(ro.Outline, ro.GdiPath);
                             }
                         }
@@ -593,8 +592,8 @@ namespace SharpMap.Presentation.WinForms
                         if (ro.Text != null)
                         {
 							RectangleF newBounds = AdjustForLabel(g, ro);
-							//g.FillRectangle(ViewConverter.Convert(new SolidStyleBrush(StyleColor.Chartreuse)), newBounds);
 							g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
+                        	//g.FillEllipse(ViewConverter.Convert(new SolidStyleBrush(StyleColor.Chartreuse)),newBounds.Location.X, newBounds.Location.Y, 2, 2);
 							g.Transform = getGdiViewTransform();
 						}
 
@@ -754,7 +753,8 @@ namespace SharpMap.Presentation.WinForms
 			// if we're scaling text, then x,y position will get multiplied by our 
 			// scale, so adjust for it here so that we can use actual pixel x,y
 			// Also center our label on the coordinate instead of putting the label origin on the coordinate
-			RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
+			RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale, (transformedPoints1[0].Y / scale) - pixelHeight, pixelWidth, pixelHeight);
+			//RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
 
 			return newBounds;
 		}

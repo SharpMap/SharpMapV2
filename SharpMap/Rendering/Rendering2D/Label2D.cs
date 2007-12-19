@@ -71,6 +71,10 @@ namespace SharpMap.Rendering.Rendering2D
             _priority = priority;
             _collisionBuffer = collisionBuffer;
             _style = style ?? new LabelStyle();
+
+        	_collisionBuffer = _style.CollisionBuffer;
+        	_font = _style.Font;
+        	_offset = _style.Offset;
         }
 
         /// <summary>

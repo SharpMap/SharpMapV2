@@ -23,6 +23,7 @@ using System.Threading;
 using SharpMap.Styles;
 using SharpMap.Geometries;
 using SharpMap.Data;
+using SharpMap.Layers;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -112,7 +113,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
-		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style, RenderState renderState)
+		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style, RenderState renderState, ILayer layer)
 		{
 			if (feature == null) throw new ArgumentNullException("feature");
 			if (style == null) throw new ArgumentNullException("style");

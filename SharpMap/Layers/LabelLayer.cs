@@ -17,7 +17,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-
+using System.Collections.Generic;
+using System.Configuration;
 using SharpMap.Data;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
@@ -48,6 +49,11 @@ namespace SharpMap.Layers
 
         #endregion
 
+		public delegate String LabelTextFormatter(FeatureDataRow feature);
+
+		private LabelCollisionDetection2D collisionDetector = null;
+    	private LabelTextFormatter textFormatter = null;
+
         #region Fields
 
         private Int32 _priority;
@@ -55,6 +61,7 @@ namespace SharpMap.Layers
         //private GenerateLabelTextDelegate _getLabelMethod;
         //private String _labelColumn;
         private MultipartGeometryLabelingBehavior _multipartGeometryBehaviour;
+    	private Dictionary<Object, Label2D> _renderCache = null;
 
         #endregion
 
@@ -127,7 +134,53 @@ namespace SharpMap.Layers
             set { _priority = value; }
         }
 
-        /// <summary>
+    	public Dictionary<Object, Label2D> RenderCache
+    	{
+    		get
+    		{
+				if(_renderCache == null)
+				{
+					_renderCache = new Dictionary<Object, Label2D>();
+				}
+    			return _renderCache;
+    		}
+    	}
+
+    	public LabelCollisionDetection2D CollisionDetector
+    	{
+    		get
+    		{
+				if(collisionDetector == null)
+				{
+					collisionDetector = new LabelCollisionDetection2D();
+				}
+    			return collisionDetector;
+    		}
+    		set { collisionDetector = value; }
+    	}
+
+    	public LabelTextFormatter TextFormatter
+    	{
+    		get
+    		{
+				if(textFormatter == null)
+				{
+					if (Style == null)
+					{
+						throw new NotImplementedException("Style must be set before getting the TextFormatter");
+					}
+
+					textFormatter = delegate(FeatureDataRow feature2)
+					{
+						return feature2[((LabelStyle)Style).LabelFormatExpression].ToString();
+					};
+				}
+
+    			return textFormatter;
+    		}
+    	}
+
+    	/// <summary>
         /// Clones the object
         /// </summary>
         /// <returns></returns>
