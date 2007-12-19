@@ -157,7 +157,33 @@ namespace SharpMap.Rendering.Rendering2D
 			if(newLabel == null)
 			{
 				Point p = feature.Geometry.GetBoundingBox().GetCentroid();
-				newLabel = new Label2D(formatter.Invoke(feature), new Point2D(p.X, p.Y), style);
+
+				String labelText = formatter.Invoke(feature);
+
+				if(style.HorizontalAlignment != HorizontalAlignment.Right || style.VerticalAlignment != VerticalAlignment.Bottom)
+				{
+					Size2D size = TextRenderer.MeasureString(labelText, style.Font);
+
+					if(style.HorizontalAlignment == HorizontalAlignment.Center)
+					{
+						p.X -= (int) (size.Width/2.0f);
+					}
+					else if(style.HorizontalAlignment == HorizontalAlignment.Left)
+					{
+						p.X -= size.Width;
+					}
+
+					if(style.VerticalAlignment == VerticalAlignment.Middle)
+					{
+						p.Y += (int) (size.Height/2.0f);
+					}
+					else if(style.VerticalAlignment == VerticalAlignment.Top)
+					{
+						p.Y += size.Height;
+					}
+				}
+
+				newLabel = new Label2D(labelText, new Point2D(p.X, p.Y), style);
 
 				if (layer != null)
 				{

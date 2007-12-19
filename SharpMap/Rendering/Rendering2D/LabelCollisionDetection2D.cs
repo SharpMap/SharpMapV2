@@ -55,14 +55,22 @@ namespace SharpMap.Rendering.Rendering2D
 				return false;
 			}
 
+			Size2D newSize = TextRenderer.MeasureString(newLabel.Text, newLabel.Font);
+			newSize = new Size2D(newSize.Width + 2 * newLabel.CollisionBuffer.Width, newSize.Height + 2 * newLabel.CollisionBuffer.Height);
+			Rectangle2D newRect = new Rectangle2D(new Point2D(newLabel.Location.X - newLabel.CollisionBuffer.Width, newLabel.Location.Y - newLabel.CollisionBuffer.Height), newSize);
+
 			foreach (Label2D label in labelList)
 			{
-				if (label.CompareTo(newLabel) == 0)
+				Size2D size = TextRenderer.MeasureString(label.Text, label.Font);
+				size = new Size2D(size.Width + 2*label.CollisionBuffer.Width, size.Height + 2*label.CollisionBuffer.Height);
+				Rectangle2D rect =
+					new Rectangle2D(
+						new Point2D(label.Location.X - newLabel.CollisionBuffer.Width, label.Location.Y - label.CollisionBuffer.Height),
+						size);
+
+				if (newRect.Intersects(rect))
 				{
-					if (label.Priority >= newLabel.Priority)
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 
@@ -87,7 +95,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 		private Boolean AdvancedCollisionTest(Label2D newLabel, int depth)
 		{
-			newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
+			//newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
 
 			Size2D newSize = TextRenderer.MeasureString(newLabel.Text, newLabel.Font);
 
@@ -97,9 +105,7 @@ namespace SharpMap.Rendering.Rendering2D
 			foreach (Label2D label in labelList)
 			{
 				Size2D size = TextRenderer.MeasureString(label.Text, label.Font);
-
 				size = new Size2D(size.Width + 2 * label.CollisionBuffer.Width, size.Height + 2 * label.CollisionBuffer.Height);
-
 				Rectangle2D rect = new Rectangle2D(new Point2D(label.Location.X - newLabel.CollisionBuffer.Width, label.Location.Y - label.CollisionBuffer.Height), size);
 
 				if(newRect.Intersects(rect))
@@ -117,7 +123,10 @@ namespace SharpMap.Rendering.Rendering2D
 						newLabel.Text = newLabel.Text + ":" + label.Text;
 						labelList.Add(newLabel);
 						/*/
+
+						// give up on this label after 5 tries at moving it
 						return true;
+
 						/* */
 					}
 					else
@@ -130,10 +139,10 @@ namespace SharpMap.Rendering.Rendering2D
 						{
 							newLabel.Location = new Point2D(newLabel.Location.X, rect.Location.Y - newRect.Height - 3);
 						}
-						newLabel.Style.Foreground = new SolidStyleBrush(StyleColor.Blue);
-						//StyleFont font = newLabel.Font;
-						//newLabel.Font = new StyleFont(font.FontFamily, new Size2D(font.Size.Width / depth, font.Size.Height / depth), font.Style);
-						newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
+						//newLabel.Style.Foreground = new SolidStyleBrush(StyleColor.Blue);
+						////StyleFont font = newLabel.Font;
+						////newLabel.Font = new StyleFont(font.FontFamily, new Size2D(font.Size.Width / depth, font.Size.Height / depth), font.Style);
+						//newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
 						return AdvancedCollisionTest(newLabel, depth + 1);
 					}
 				}
