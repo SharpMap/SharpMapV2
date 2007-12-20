@@ -387,7 +387,7 @@ namespace SharpMap.Rendering.Thematics
             LabelStyle labelMin = min as LabelStyle;
             LabelStyle labelMax = max as LabelStyle;
 
-            style.CollisionDetection = labelMin.CollisionDetection;
+			style.CollisionTest = labelMin.CollisionTest;
             style.Enabled = interpolateBool(min.Enabled, max.Enabled, value);
 
             Double fontSize = interpolateDouble(labelMin.Font.Size.Width, labelMax.Font.Size.Width, value);

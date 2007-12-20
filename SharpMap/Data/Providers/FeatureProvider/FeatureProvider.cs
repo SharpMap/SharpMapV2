@@ -18,9 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using GeoAPI.CoordinateSystems;
-using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.Geometries;
+using SharpMap.CoordinateSystems;
+using SharpMap.CoordinateSystems.Transformations;
+using SharpMap.Geometries;
 using System.Globalization;
 using SharpMap.Expressions;
 

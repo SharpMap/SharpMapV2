@@ -82,14 +82,14 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnRenderingSelection()
         {
             _isRenderingSelection = true;
-            RenderAllLayers();
-            _isRenderingSelection = false;
-        }
+			//RenderAllLayers();
+		}
 
         protected override void OnRenderedSelection()
         {
             ViewControl.Refresh();
-        }
+			_isRenderingSelection = false;
+		}
 
         protected override void RenderFeatureLayer(IFeatureLayer layer)
         {
@@ -205,7 +205,15 @@ namespace SharpMap.Presentation.WinForms
             get { return WorldUnitsPerPixelInternal; }
         }
 
-        internal void ZoomToExtents()
+    	public Boolean IsRenderingSelection
+    	{
+    		get
+    		{
+    			return _isRenderingSelection;
+    		}
+    	}
+
+    	internal void ZoomToExtents()
         {
             ZoomToExtentsInternal();
         }

@@ -22,10 +22,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
+//using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
@@ -643,8 +644,8 @@ namespace SharpMap.Presentation.Presenters
             Type basicLabelRendererType = typeof(BasicLabelRenderer2D<>);
             Type layerType = typeof(LabelLayer);
 
-            CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
-        }
+			CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
+		}
 
         protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, Type layerType, params object[] constructorParams)
         {
@@ -652,7 +653,7 @@ namespace SharpMap.Presentation.Presenters
             Type constructedType = rendererType.MakeGenericType(renderObjectType);
             renderer = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
             Debug.Assert(renderer != null);
-            RegisterRendererForLayerType(layerType, renderer);
+			RegisterRendererForLayerType(layerType, renderer);
         }
 
         protected static TRenderer GetRenderer<TRenderer, TLayer>()
@@ -682,10 +683,10 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void OnViewMatrixChanged() { }
 
-        protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
-        {
-            LayerRendererRegistry.Instance.Register(layerType, renderer);
-        }
+		protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
+		{
+			LayerRendererRegistry.Instance.Register(layerType, renderer);
+		}
 
         protected void RenderSelection(ViewSelection2D selection)
         {
@@ -704,7 +705,7 @@ namespace SharpMap.Presentation.Presenters
                 renderer.RenderPaths(paths,
                     selection.FillBrush, null, null,
                     selection.OutlineStyle, null, null, RenderState.Normal);
-
+			
             View.ShowRenderedObjects(renderedSelection);
 
             OnRenderedSelection();
@@ -719,14 +720,14 @@ namespace SharpMap.Presentation.Presenters
             IEnumerable<FeatureDataRow> features
                 = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
 
-            Debug.Assert(layer.Style is VectorStyle);
-            VectorStyle style = layer.Style as VectorStyle;
+			Debug.Assert(layer.Style is FeatureStyle);
+			FeatureStyle style = layer.Style as FeatureStyle;
 
             foreach (FeatureDataRow feature in features)
             {
                 IEnumerable renderedFeature;
 
-                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal);
+                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal, layer);
                 View.ShowRenderedObjects(renderedFeature);
             }
 
@@ -734,7 +735,7 @@ namespace SharpMap.Presentation.Presenters
 
             foreach (FeatureDataRow selectedFeature in selectedRows)
             {
-                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected);
+                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature, style, RenderState.Selected, layer);
                 View.ShowRenderedObjects(renderedFeature);
             }
 
@@ -742,9 +743,11 @@ namespace SharpMap.Presentation.Presenters
 
             foreach (FeatureDataRow highlightedFeature in highlightedRows)
             {
-                IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature, style, RenderState.Highlighted);
+                IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature, style, RenderState.Highlighted, layer);
                 View.ShowRenderedObjects(renderedFeature);
             }
+
+			renderer.CleanUp();
         }
 
         protected virtual void RenderRasterLayer(IRasterLayer layer)
@@ -1069,7 +1072,7 @@ namespace SharpMap.Presentation.Presenters
             CreateGeometryRenderer(renderObjectType);
 
             // Create renderer for label layers
-            CreateLabelRenderer(renderObjectType);
+			CreateLabelRenderer(renderObjectType);
 
             // TODO: create raster renderer
         }

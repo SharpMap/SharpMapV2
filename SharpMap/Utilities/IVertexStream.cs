@@ -17,13 +17,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-using SharpMap.Geometries;
-
-namespace SharpMap.Indexing.QuadTree
+namespace NPack.Interfaces
 {
-    public class QuadTree<TValue> : QuadTreeNode<TValue>, ISearchableSpatialIndex<TValue>
+    /// <summary>
+    /// This interface will be moved into the linear algebra library.
+    /// </summary>
+    /// <typeparam name="TVertex"></typeparam>
+    /// <typeparam name="TVertexComponent"></typeparam>
+    public interface IVertexStream<TVertex, TVertexComponent>
+        where TVertexComponent : struct, IEquatable<TVertexComponent>, IComparable<TVertexComponent>,
+            IComputable<TVertexComponent>, IConvertible
+        where TVertex : IVector<TVertexComponent>
     {
+        /// <summary>
+        /// Gets an enumeration of the vertices in the object.
+        /// </summary>
+        /// <returns>An enumeration of vertex data contained by the object.</returns>
+        IEnumerable<TVertex> GetVertices();
     }
 }

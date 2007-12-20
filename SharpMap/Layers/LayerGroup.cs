@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using GeoAPI.CoordinateSystems;
-using GeoAPI.CoordinateSystems.Transformations;
+using SharpMap.CoordinateSystems;
+using SharpMap.CoordinateSystems.Transformations;
 using SharpMap.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers

@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {

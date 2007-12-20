@@ -17,6 +17,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using SharpMap.Data;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
@@ -24,21 +26,34 @@ namespace SharpMap.Styles
     /// <summary>
     /// Defines a style used for rendering labels.
     /// </summary>
-    public class LabelStyle : Style
-    {
-        private HorizontalAlignment _horisontalAlignment;
+    public class LabelStyle : FeatureStyle
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+    	public enum CollisionTestType
+    	{
+    		None,
+    		Simple,
+    		Advanced
+    	}
+
+		#region private fields
+
+		private HorizontalAlignment _horizontalAlignment;
         private VerticalAlignment _verticalAlignment;
         private StyleTextRenderingHint _textRenderingHint;
-        private StyleRenderingMode _smoothingMode;
         private Size2D _collisionBuffer;
-        private Boolean _collisionDetection;
         private Point2D _offset;
         private StylePen _halo;
         private StyleFont _font;
         private StyleBrush _foreground;
         private StyleBrush _background;
+    	private CollisionTestType _collisionTestType;
 
-        /// <summary>
+		#endregion
+
+		/// <summary>
         /// Initializes a new <see cref="LabelStyle"/>.
         /// </summary>
         public LabelStyle()
@@ -46,33 +61,43 @@ namespace SharpMap.Styles
         {
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="font"></param>
+		/// <param name="foreground"></param>
         public LabelStyle(StyleFont font, StyleBrush foreground)
             : this(font, foreground, new SolidStyleBrush(StyleColor.Transparent), 
                 Point2D.Empty, Size2D.Empty, HorizontalAlignment.Left, VerticalAlignment.Middle)
         {
         }
 
-        public LabelStyle(StyleFont font, StyleBrush foreground, StyleBrush background, Point2D offset, Size2D collisionBuffer, 
-            HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="font"></param>
+		/// <param name="foreground"></param>
+		/// <param name="background"></param>
+		/// <param name="offset"></param>
+		/// <param name="collisionBuffer"></param>
+		/// <param name="horizontalAlignment"></param>
+		/// <param name="verticalAlignment"></param>
+        public LabelStyle(StyleFont font,
+						  StyleBrush foreground,
+						  StyleBrush background,
+						  Point2D offset,
+						  Size2D collisionBuffer,
+						  HorizontalAlignment horizontalAlignment,
+						  VerticalAlignment verticalAlignment)
         {
             _font = font;
             _foreground = foreground;
             _background = background;
             _collisionBuffer = collisionBuffer;
-            _collisionDetection = !_collisionBuffer.IsEmpty;
             _offset = offset;
-            _horisontalAlignment = horizontalAlignment;
+            _horizontalAlignment = horizontalAlignment;
             _verticalAlignment = verticalAlignment;
-        }
-
-        /// <summary>
-        /// Render whether smoothing (anti-aliasing) is applied to lines 
-        /// and curves and the edges of filled areas.
-        /// </summary>
-        public StyleRenderingMode SmoothingMode
-        {
-            get { return _smoothingMode; }
-            set { _smoothingMode = value; }
+			AreFeaturesSelectable = false;
         }
 
         /// <summary>
@@ -139,8 +164,10 @@ namespace SharpMap.Styles
         /// </summary>
         public Boolean CollisionDetection
         {
-            get { return _collisionDetection; }
-            set { _collisionDetection = value; }
+            get
+            {
+				return _collisionTestType != LabelStyle.CollisionTestType.None;
+			}
         }
 
         /// <summary>
@@ -158,8 +185,8 @@ namespace SharpMap.Styles
         /// </summary>
         public HorizontalAlignment HorizontalAlignment
         {
-            get { return _horisontalAlignment; }
-            set { _horisontalAlignment = value; }
+            get { return _horizontalAlignment; }
+            set { _horizontalAlignment = value; }
         }
 
         /// <summary>
@@ -171,5 +198,14 @@ namespace SharpMap.Styles
             get { return _verticalAlignment; }
             set { _verticalAlignment = value; }
         }
-    }
+
+		/// <summary>
+		/// 
+		/// </summary>
+    	public CollisionTestType CollisionTest
+    	{
+    		get { return _collisionTestType; }
+    		set { _collisionTestType = value; }
+    	}
+	}
 }

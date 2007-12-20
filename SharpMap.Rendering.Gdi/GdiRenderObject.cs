@@ -19,6 +19,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
+using SharpMap.Layers;
 
 namespace SharpMap.Rendering.Gdi
 {
@@ -64,7 +65,7 @@ namespace SharpMap.Rendering.Gdi
             Pen line, Pen highlightLine, Pen selectLine,
             Pen outline, Pen highlightOutline, Pen selectOutline)
         {
-            _state = RenderState.Normal;
+			_state = RenderState.Normal;
             GdiPath = path;
             Fill = fill;
             HighlightFill = highlightFill;
@@ -94,7 +95,7 @@ namespace SharpMap.Rendering.Gdi
         /// <param name="colorTransform">The color transform applied to the symbol before drawing.</param>
         public GdiRenderObject(Bitmap image, RectangleF imageBounds, Matrix transform, GdiColorMatrix colorTransform)
         {
-            _state = RenderState.Normal;
+			_state = RenderState.Normal;
             Image = image;
             Bounds = imageBounds;
             AffineTransform = transform;
@@ -142,7 +143,7 @@ namespace SharpMap.Rendering.Gdi
         public GdiRenderObject(String text, Font font, RectangleF bounds, Brush fill, Brush highlightFill, Brush selectFill,
             Pen outline, Pen highlightOutline, Pen selectOutline)
         {
-            _state = RenderState.Normal;
+			_state = RenderState.Normal;
             GdiPath = null;
 
             Image = null;
@@ -249,10 +250,10 @@ namespace SharpMap.Rendering.Gdi
         /// <summary>
         /// Gets or sets the render object state of visual appearance.
         /// </summary>
-        public RenderState State
-        {
-            get { return _state; }
-            set { _state = value; }
-        }
-    }
+		public RenderState State
+		{
+			get { return _state; }
+			set { _state = value; }
+		}
+	}
 }

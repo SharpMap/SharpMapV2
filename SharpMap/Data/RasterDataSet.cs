@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.ObjectModel;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Data
 {

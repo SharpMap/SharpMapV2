@@ -37,7 +37,7 @@
 
 using System;
 using System.IO;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.Converters.WellKnownText
 {

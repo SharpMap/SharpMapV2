@@ -39,7 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SharpMap.CoordinateSystems.Transformations;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 
 namespace SharpMap.CoordinateSystems.Projections
 {

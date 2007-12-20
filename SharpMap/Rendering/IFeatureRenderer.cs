@@ -19,6 +19,7 @@ using System.Collections;
 using SharpMap.Data;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
+using SharpMap.Layers;
 
 namespace SharpMap.Rendering
 {
@@ -56,7 +57,9 @@ namespace SharpMap.Rendering
         /// <returns>
         /// An enumeration of rendered objects used to draw the spatial data.
         /// </returns>
-        IEnumerable RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState);
+        IEnumerable RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer);
+
+		void CleanUp();
 
         /// <summary>
         /// Gets or sets the theme by which to compute styles 
