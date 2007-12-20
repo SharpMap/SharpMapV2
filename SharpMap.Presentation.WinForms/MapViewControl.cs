@@ -49,8 +49,6 @@ namespace SharpMap.Presentation.WinForms
     /// </summary>
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
-		private float labelScale = 0;
-
         private readonly Double _dpi;
         private Boolean _dragging = false;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
@@ -92,8 +90,9 @@ namespace SharpMap.Presentation.WinForms
 
             _infoLabel.Dock = DockStyle.Bottom;
             _infoLabel.Height = 12;
-            _infoLabel.BackColor = Color.Transparent;
-            Controls.Add(_infoLabel);
+			_infoLabel.BackColor = Color.FromArgb(128, base.BackColor.R, base.BackColor.G, base.BackColor.B);
+			
+			Controls.Add(_infoLabel);
         }
 
         /// <summary>
@@ -120,7 +119,7 @@ namespace SharpMap.Presentation.WinForms
         internal String Information
         {
             get { return _infoLabel.Text; }
-            set { _infoLabel.Text = value + ", scale: "+getGdiViewTransform().Elements[0] + ", labelScale: "+labelScale; }
+            set { _infoLabel.Text = value; }
         }
 
         #region IView Members
@@ -421,7 +420,8 @@ namespace SharpMap.Presentation.WinForms
 
                 BackgroundBeingSet = true;
                 base.BackColor = value;
-                BackgroundBeingSet = false;
+				_infoLabel.BackColor = Color.FromArgb(128, value.R, value.G, value.B); 
+				BackgroundBeingSet = false;
             }
         }
 
@@ -529,22 +529,20 @@ namespace SharpMap.Presentation.WinForms
                 return;
             }
 
-			if (_renderObjectQueue.Count == 0 && doubleBuffer != null)
+			// dump to screen and return
+			if(doubleBuffer != null)
 			{
-				// dump to screen and return
-				if(doubleBuffer != null)
-				{
-		            g.Clear(BackColor);
+	            g.Clear(BackColor);
 
-					Graphics dbg = Graphics.FromImage(doubleBuffer);
+				Graphics dbg = Graphics.FromImage(doubleBuffer);
 
-					g.DrawImageUnscaled(doubleBuffer, (int)((this.Width-doubleBuffer.Width)/2.0f), (int)((this.Height-doubleBuffer.Height)/2.0f));
+				g.DrawImageUnscaled(doubleBuffer, (int)((this.Width-doubleBuffer.Width)/2.0f), (int)((this.Height-doubleBuffer.Height)/2.0f));
 
+				if (_renderObjectQueue.Count == 0)
 					return;
-				}
 			}
 
-			if(doubleBuffer != null && ( doubleBuffer.Width != this.Width || doubleBuffer.Height != this.Height))
+			if (doubleBuffer != null && (doubleBuffer.Width != this.Width || doubleBuffer.Height != this.Height))
 			{
 				doubleBuffer.Dispose();
 				doubleBuffer = null;
@@ -560,7 +558,10 @@ namespace SharpMap.Presentation.WinForms
 
 			g.Transform = getGdiViewTransform();
 
-            g.Clear(BackColor);
+			if(!_presenter.IsRenderingSelection)
+			{
+				g.Clear(BackColor);
+			}
 
             while (_renderObjectQueue.Count > 0)
             {

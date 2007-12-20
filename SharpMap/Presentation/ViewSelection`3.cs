@@ -41,8 +41,11 @@ namespace SharpMap.Presentation
     {
         private Path<TPoint, TViewRegion> _path;
         private StylePen _outline;
-        private StyleBrush _fill;
-        private TPoint _anchorPoint;
+		private StyleBrush _fill;
+    	private StyleBrush _lightFill = 
+			new SolidStyleBrush(new StyleColor(255, 64, 64, 1));
+
+		private TPoint _anchorPoint;
 
         /// <summary>
         /// The default style of the selection outline.
@@ -52,7 +55,7 @@ namespace SharpMap.Presentation
         /// <summary>
         /// The default fill of the selection.
         /// </summary>
-        public static readonly StyleBrush DefaultFill = new SolidStyleBrush(new StyleColor(255, 32, 32, 32));
+		public static readonly StyleBrush DefaultFill = new SolidStyleBrush(new StyleColor(255, 32, 32, 32));
 
         static ViewSelection()
         {
@@ -202,8 +205,8 @@ namespace SharpMap.Presentation
         /// </summary>
         public StyleBrush FillBrush
         {
-            get { return _fill; }
-            set { _fill = value; }
+			get { return IsClosed ? _fill : _lightFill; }
+			set { _fill = value; }
         }
 
         #region Protected members
