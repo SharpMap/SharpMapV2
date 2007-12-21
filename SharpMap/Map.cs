@@ -112,13 +112,12 @@ namespace SharpMap
 
             static LayerCollection()
             {
-                PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof (ILayer));
-                PropertyDescriptor[] propsArray = new PropertyDescriptor[props.Count];
+				PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(ILayer));
+				PropertyDescriptor[] propsArray = new PropertyDescriptor[props.Count];
                 props.CopyTo(propsArray, 0);
 
                 _layerProperties = new PropertyDescriptorCollection(propsArray, true);
             }
-
 
             internal LayerCollection(Map map)
             {
@@ -384,9 +383,9 @@ namespace SharpMap
             #endregion
         }
 
-        #endregion
+        #endregion LayerCollection
 
-        #endregion
+        #endregion Nested Types
 
         #region Fields
 
@@ -768,6 +767,18 @@ namespace SharpMap
 
                 if (index < 0)
                 {
+                	foreach (ILayer layer in _layers)
+                	{
+                		if(layer is LayerGroup)
+                		{
+                			ILayer groupMember = (layer as LayerGroup)[name];
+
+                			if(groupMember != null)
+                			{
+                				return groupMember;
+                			}
+                		}
+                	}
                     return null;
                 }
 

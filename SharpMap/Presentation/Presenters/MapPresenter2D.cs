@@ -809,7 +809,8 @@ namespace SharpMap.Presentation.Presenters
                     RenderAllLayers();
                     break;
                 case ListChangedType.ItemChanged:
-                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
+                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name ||
+						e.PropertyDescriptor.Name == "ShowChildren")
                     {
                         RenderAllLayers();
                     }
@@ -835,6 +836,18 @@ namespace SharpMap.Presentation.Presenters
         {
             OnRenderingLayer(layer);
 
+			if(layer is LayerGroup && layer.Enabled)
+			{
+				foreach (ILayer groupMember in ((LayerGroup)layer).Layers)
+				{
+					RenderLayer(groupMember);
+				}
+
+				OnRenderedLayer(layer);
+
+				return;
+			}
+
             if (!layer.Enabled ||
                 layer.Style.MinVisible > WorldWidthInternal ||
                 layer.Style.MaxVisible < WorldWidthInternal)
@@ -851,8 +864,8 @@ namespace SharpMap.Presentation.Presenters
                 RenderRasterLayer(layer as IRasterLayer);
             }
 
-            OnRenderedLayer(layer);
-        }
+			OnRenderedLayer(layer);
+		}
 
         private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

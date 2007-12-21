@@ -31,7 +31,8 @@ namespace SharpMap.Presentation.Presenters
     public class LayersPresenter : BasePresenter<ILayersView>
     {
         private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
-        private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
+		private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
+		private EventHandler<LayerActionEventArgs> _layersChildrenVisibleChangeRequestedDelegate;
 
         /// <summary>
         /// Creates a new instance of a LayersPresenter with the given <see cref="Map"/>
@@ -44,11 +45,13 @@ namespace SharpMap.Presentation.Presenters
         {
             _selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
             _visibleLayersChangeRequestedDelegate = handleVisibleLayersChangeRequested;
+        	_layersChildrenVisibleChangeRequestedDelegate = handleLayerChildrenVisibleChangeRequested;
 
             Map.Layers.ListChanged += handleLayersCollectionChanged;
 
             View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
             View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
+        	View.LayerChildrenVisibilityChangeRequested += _layersChildrenVisibleChangeRequestedDelegate;
         }
 
         protected override void OnMapPropertyChanged(String propertyName)
@@ -82,18 +85,44 @@ namespace SharpMap.Presentation.Presenters
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
-                    {
+					if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
+					{
                         ILayer layer = Map.Layers[e.NewIndex];
-                        if (layer.Enabled)
+						if(layer is LayerGroup)
+						{
+							foreach (ILayer groupMember in ((LayerGroup)layer).Layers)
+							{
+								if(groupMember.Enabled)
+								{
+									View.EnableLayer(groupMember.LayerName);
+								}
+								else
+								{
+									View.DisableLayer(groupMember.LayerName);
+								}
+							}
+						}
+                        else if (layer.Enabled)
                         {
-                            View.EnableLayer(layer.LayerName);
-                        }
-                        else
-                        {
-                            View.DisableLayer(layer.LayerName);
-                        }
-                    }
+							View.EnableLayer(layer.LayerName);
+						}
+						else
+						{
+							View.DisableLayer(layer.LayerName);
+						}
+					}
+					else if (e.PropertyDescriptor.Name == "ShowChildren")
+					{
+						ILayer layer = Map.Layers[e.NewIndex];
+						if(layer.ShowChildren)
+						{
+							View.EnableChildLayers(layer.LayerName);
+						}
+						else
+						{
+							View.DisableChildLayers(layer.LayerName);
+						}
+					}
                     break;
                     // The following are taken care of by data binding:
                 case ListChangedType.ItemMoved:
@@ -124,6 +153,40 @@ namespace SharpMap.Presentation.Presenters
                     break;
             }
         }
+
+		private void handleLayerChildrenVisibleChangeRequested(object sender, LayerActionEventArgs e)
+		{
+			switch (e.LayerAction)
+			{
+				case LayerAction.Enabled:
+				case LayerAction.Disabled:
+					foreach (String layerName in e.Layers)
+					{
+						LayerGroup group = Map.Layers[layerName] as LayerGroup;
+						if(group != null)
+						{
+							foreach (ILayer layer in group.Layers)
+							{
+								if(layer == group.MasterLayer)
+								{
+									continue;
+								}
+								if(e.LayerAction == LayerAction.Enabled)
+								{
+									Map.EnableLayer(layer);
+								}
+								else
+								{
+									Map.DisableLayer(layer);
+								}
+							}
+						}
+					}
+					break;
+				default:
+					break;
+			}
+		}
 
         private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)
         {

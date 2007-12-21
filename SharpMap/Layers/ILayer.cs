@@ -80,6 +80,8 @@ namespace SharpMap.Layers
         /// </summary>
         IStyle Style { get; set; }
 
+		Boolean ShowChildren { get; set; }
+
         Boolean IsVisibleWhen(Predicate<ILayer> condition);
     }
 }

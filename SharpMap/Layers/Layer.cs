@@ -453,6 +453,18 @@ namespace SharpMap.Layers
 
         #region Protected members
 
+		public Boolean ShowChildren
+		{
+			get
+			{
+				return false;
+			}
+			set
+			{
+				; // do nothing
+			}
+		}
+
         protected void AddLoadedRegion(BoundingBox region)
         {
             AddLoadedRegion(region.ToGeometry());

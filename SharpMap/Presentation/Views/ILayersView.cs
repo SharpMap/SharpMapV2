@@ -35,17 +35,29 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         IBindingList Layers { set; }
 
-        /// <summary>
-        /// Disables the layer identified by <paramref name="layer"/>.
-        /// </summary>
-        /// <param name="layer">The name of the <see cref="Layer"/> to disable.</param>
-        void DisableLayer(String layer);
+		/// <summary>
+		/// Disables the layer identified by <paramref name="layer"/>.
+		/// </summary>
+		/// <param name="layer">The name of the <see cref="Layer"/> to disable.</param>
+		void DisableLayer(String layer);
 
-        /// <summary>
-        /// Enables the layer identified by <paramref name="layer"/>.
-        /// </summary>
-        /// <param name="layer">The name of the <see cref="Layer"/> to enable.</param>
-        void EnableLayer(String layer);
+		/// <summary>
+		/// Enables the layer identified by <paramref name="layer"/>.
+		/// </summary>
+		/// <param name="layer">The name of the <see cref="Layer"/> to enable.</param>
+		void EnableLayer(String layer);
+
+		/// <summary>
+		/// Disables the layer identified by <paramref name="layer"/>.
+		/// </summary>
+		/// <param name="layer">The name of the <see cref="Layer"/> to disable.</param>
+		void DisableChildLayers(String layer);
+
+		/// <summary>
+		/// Enables the layer identified by <paramref name="layer"/>.
+		/// </summary>
+		/// <param name="layer">The name of the <see cref="Layer"/> to enable.</param>
+		void EnableChildLayers(String layer);
         
         /// <summary>
         /// Gets or sets a list of layers to show as selected.
@@ -58,10 +70,16 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         event EventHandler<LayerActionEventArgs> LayersSelectionChangeRequested;
 
-        /// <summary>
-        /// Event triggered when a layer is requested to be enabled or disabled
-        /// by the associated <see cref="LayersPresenter"/>.
-        /// </summary>
-        event EventHandler<LayerActionEventArgs> LayersEnabledChangeRequested;
-    }
+		/// <summary>
+		/// Event triggered when a layer is requested to be enabled or disabled
+		/// by the associated <see cref="LayersPresenter"/>.
+		/// </summary>
+		event EventHandler<LayerActionEventArgs> LayersEnabledChangeRequested;
+
+		/// <summary>
+		/// Event triggered when a layer is requested to have its children be
+		/// enabled or disabled by the associated <see cref="LayersPresenter"/>.
+		/// </summary>
+		event EventHandler<LayerActionEventArgs> LayerChildrenVisibilityChangeRequested;
+	}
 }
