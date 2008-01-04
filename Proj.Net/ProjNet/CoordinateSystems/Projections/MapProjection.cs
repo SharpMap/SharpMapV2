@@ -68,7 +68,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         protected MapProjection(IEnumerable<ProjectionParameter> parameters, 
             ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
-            : base(EnumerableConverter.Upcast<Parameter, ProjectionParameter>(parameters), 
+            : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters), 
                     coordinateFactory, isInverse)
         {
             ProjectionParameter unit = GetParameter("unit");

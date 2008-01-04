@@ -31,7 +31,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="geometry">Geometry to intersect with.</param>
         /// <returns>A Stream to access the raster data of the result.</returns>
-        Stream ExecuteIntersectionQuery(Geometry geometry);
+        Stream ExecuteIntersectionQuery(IGeometry geometry);
 
         /// <summary>
         /// Retrieves a <see cref="Stream"/> for the raster data that 
@@ -39,6 +39,6 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="box">BoundingBox to intersect with.</param>
         /// <returns>A Stream to access the raster data of the result.</returns>
-        Stream ExecuteIntersectionQuery(BoundingBox box);
+        Stream ExecuteIntersectionQuery(IExtents box);
     }
 }

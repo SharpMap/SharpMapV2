@@ -17,6 +17,7 @@
 
 using System;
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -24,20 +25,20 @@ namespace SharpMap.Indexing.RTree
     /// An entry in an <see cref="RTree"/>.
     /// </summary>
     /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
-    public struct RTreeIndexEntry<TValue>
+    public struct RTreeIndexEntry<TValue> : IBoundable<IExtents>
     {
         private TValue _value;
-        private BoundingBox _boundingBox;
+        private IExtents _bounds;
 
         /// <summary>
         /// Creates a new instance of an RTreeIndexEntry.
         /// </summary>
         /// <param name="value">The value to store in the index.</param>
         /// <param name="box">The extents of the <paramref name="value"/>.</param>
-        public RTreeIndexEntry(TValue value, BoundingBox box)
+        public RTreeIndexEntry(TValue value, IExtents box)
         {
             _value = value;
-            _boundingBox = box;
+            _bounds = box;
         }
 
         /// <summary>
@@ -52,16 +53,16 @@ namespace SharpMap.Indexing.RTree
         /// <summary>
         /// The extents of the <see cref="Value"/>.
         /// </summary>
-        public BoundingBox BoundingBox
+        public IExtents Bounds
         {
-            get { return _boundingBox; }
-            internal set { _boundingBox = value; }
+            get { return _bounds; }
+            internal set { _bounds = value; }
         }
 
         public override String ToString()
         {
             return String.Format("[{0}] Value: {1}; BoundingBox: {2}", 
-                GetType(), Value, BoundingBox);
+                GetType(), Value, Bounds);
         }
     }
 }

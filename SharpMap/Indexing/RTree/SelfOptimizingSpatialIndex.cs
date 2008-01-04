@@ -17,6 +17,8 @@
 
 using System;
 using System.Threading;
+using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 using NPack;
 using SharpMap.Utilities;
 
@@ -25,12 +27,12 @@ namespace SharpMap.Indexing.RTree
 	/// <summary>
 	/// A dynamic R-Tree which periodically restructures in order to provide more optimal indexing.
 	/// </summary>
-	/// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
-	public sealed class SelfOptimizingDynamicSpatialIndex<TValue> : DynamicRTree<TValue>
+	/// <typeparam name="TItem">The type of the value used in the entries.</typeparam>
+	public sealed class SelfOptimizingDynamicSpatialIndex<TItem> : DynamicRTree<TItem>
 	{
 		#region Instance fields
 		private readonly MersenneTwister _executionProbability = new MersenneTwister();
-		private readonly IIndexRestructureStrategy _restructureStrategy;
+		private readonly IIndexRestructureStrategy<IExtents, TItem> _restructureStrategy;
 		private RestructuringHuristic _restructuringHeuristic;
 		private readonly EventWaitHandle _userIdleEvent;
 		private readonly EventWaitHandle _machineIdleEvent;
@@ -54,12 +56,14 @@ namespace SharpMap.Indexing.RTree
 		/// <param name="nodeSplitStrategy">The strategy used to split index nodes.</param>
 		/// <param name="indexHeuristic">A heuristic used to balance the index for optimum efficiency.</param>
 		/// <param name="idleMonitor">A monitor to determine idle conditions on the executing machine.</param>
-		public SelfOptimizingDynamicSpatialIndex(IIndexRestructureStrategy restructureStrategy,
+		public SelfOptimizingDynamicSpatialIndex(IIndexRestructureStrategy<IExtents, TItem> restructureStrategy,
 												 RestructuringHuristic restructureHeuristic,
-												 IEntryInsertStrategy<RTreeIndexEntry<TValue>> insertStrategy,
-												 INodeSplitStrategy nodeSplitStrategy,
-												 DynamicRTreeBalanceHeuristic indexHeuristic, IdleMonitor idleMonitor)
-			: base(insertStrategy, nodeSplitStrategy, indexHeuristic)
+                                                 IItemInsertStrategy<IExtents, TItem> insertStrategy,
+                                                 INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy,
+												 DynamicRTreeBalanceHeuristic indexHeuristic, 
+                                                 Func<TItem, IExtents> bounder,
+                                                 IdleMonitor idleMonitor)
+			: base(insertStrategy, nodeSplitStrategy, indexHeuristic, bounder)
 		{
 			_periodMilliseconds = restructureHeuristic.WhenToRestructure == RestructureOpportunity.Periodic
 									? (Int32)(restructureHeuristic.Period / 1000.0)
@@ -154,7 +158,7 @@ namespace SharpMap.Indexing.RTree
 
 		#region Overrides
 
-		public override void Insert(RTreeIndexEntry<TValue> entry)
+		public override void Insert(TItem entry)
 		{
 			base.Insert(entry);
 			Interlocked.Increment(ref _insertedEntriesSinceLastRestructure);

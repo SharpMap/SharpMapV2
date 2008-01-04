@@ -98,7 +98,7 @@ namespace SharpMap.Layers
             {
                 if (layer is IDisposable)
                 {
-                    ((IDisposable) layer).Dispose();
+                    ((IDisposable)layer).Dispose();
                 }
             }
 
@@ -173,18 +173,28 @@ namespace SharpMap.Layers
         /// <returns>
         /// Bounding box corresponding to the extent of the features in the layer.
         /// </returns>
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {
-                BoundingBox bbox = BoundingBox.Empty;
+                IExtents bbox = null;
 
                 if (Layers.Count == 0)
                 {
                     return bbox;
                 }
 
-                _layers.ForEach(delegate(ILayer layer) { bbox.ExpandToInclude(layer.Extents); });
+                _layers.ForEach(delegate(ILayer layer)
+                                {
+                                    if (bbox == null)
+                                    {
+                                        bbox = layer.Extents;
+                                    }
+                                    else
+                                    {
+                                        bbox.ExpandToInclude(layer.Extents);
+                                    }
+                                });
 
                 return bbox;
             }
@@ -206,7 +216,7 @@ namespace SharpMap.Layers
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
         }
-        
+
         public Boolean IsVisibleWhen(Predicate<ILayer> condition)
         {
             return condition(this);

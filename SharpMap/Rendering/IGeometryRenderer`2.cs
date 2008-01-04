@@ -23,28 +23,28 @@ namespace SharpMap.Rendering
 {
     public interface IGeometryRenderer<TSymbol, TRenderObject>
     {
-        IEnumerable<TRenderObject> DrawMultiLineString(MultiLineString lines, StylePen fill,
+        IEnumerable<TRenderObject> DrawMultiLineString(IMultiLineString lines, StylePen fill,
                                                        StylePen highlightFill, StylePen selectFill, StylePen outline,
                                                        StylePen highlightOutline,
                                                        StylePen selectOutline, RenderState renderState);
 
-        IEnumerable<TRenderObject> DrawLineString(LineString line, StylePen fill, StylePen highlightFill,
+        IEnumerable<TRenderObject> DrawLineString(ILineString line, StylePen fill, StylePen highlightFill,
                                                   StylePen selectFill, StylePen outline, StylePen highlightOutline,
                                                   StylePen selectOutline, RenderState renderState);
 
-        IEnumerable<TRenderObject> DrawMultiPolygon(MultiPolygon multipolygon, StyleBrush fill,
+        IEnumerable<TRenderObject> DrawMultiPolygon(IMultiPolygon multipolygon, StyleBrush fill,
                                                     StyleBrush highlightFill, StyleBrush selectFill, StylePen outline,
                                                     StylePen highlightOutline,
                                                     StylePen selectOutline, RenderState renderState);
 
-        IEnumerable<TRenderObject> DrawPolygon(Polygon polygon, StyleBrush fill, StyleBrush highlightFill,
+        IEnumerable<TRenderObject> DrawPolygon(IPolygon polygon, StyleBrush fill, StyleBrush highlightFill,
                                                StyleBrush selectFill, StylePen outline, StylePen highlightOutline,
                                                StylePen selectOutline, RenderState renderState);
 
-        IEnumerable<TRenderObject> DrawPoint(Point point, TSymbol symbol, TSymbol highlightSymbol, TSymbol selectSymbol,
+        IEnumerable<TRenderObject> DrawPoint(IPoint point, TSymbol symbol, TSymbol highlightSymbol, TSymbol selectSymbol,
                                              RenderState renderState);
 
-        IEnumerable<TRenderObject> DrawMultiPoint(MultiPoint points, TSymbol symbol, TSymbol highlightSymbol,
+        IEnumerable<TRenderObject> DrawMultiPoint(IMultiPoint points, TSymbol symbol, TSymbol highlightSymbol,
                                                   TSymbol selectSymbol, RenderState renderState);
     }
 }

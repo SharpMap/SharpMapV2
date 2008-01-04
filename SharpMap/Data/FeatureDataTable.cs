@@ -26,7 +26,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 using GeoAPI.Geometries;
-using SharpMap.Indexing;
+using GeoAPI.Indexing;
 using SharpMap.Indexing.RTree;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
@@ -121,8 +121,9 @@ namespace SharpMap.Data
 
         #region Instance fields
 
-        private SelfOptimizingDynamicSpatialIndex<FeatureDataRow> _rTreeIndex;
-        private Geometry _envelope;
+        private IGeometryFactory _geoFactory;
+        private IUpdatableSpatialIndex<IExtents, FeatureDataRow> _rTreeIndex;
+        private IGeometry _envelope;
 
         #endregion
 
@@ -206,9 +207,9 @@ namespace SharpMap.Data
 
         #region Properties
 
-        public Geometry Envelope
+        public IGeometry Envelope
         {
-            get { return _envelope ?? Point.Empty; }
+            get { return _envelope; }
             internal set
             {
                 _envelope = value;
@@ -218,9 +219,9 @@ namespace SharpMap.Data
         /// <summary>
         /// Gets the full extents of all features in the feature table.
         /// </summary>
-        public BoundingBox Extents
+        public IExtents Extents
         {
-            get { return Envelope.GetBoundingBox(); }
+            get { return Envelope.Extents; }
         }
 
         /// <summary>
@@ -543,15 +544,15 @@ namespace SharpMap.Data
         /// which intersect with the given <paramref name="bounds"/>.
         /// </summary>
         /// <param name="bounds">
-        /// The <see cref="BoundingBox"/> to perform intersection testing with.
+        /// The <see cref="IExtents"/> to perform intersection testing with.
         /// </param>
         /// <returns>
         /// The set of <see cref="FeatureDataRow"/>s which intersect 
         /// <paramref name="bounds"/>.
         /// </returns>
-        public IEnumerable<FeatureDataRow> Select(BoundingBox bounds)
+        public IEnumerable<FeatureDataRow> Select(IExtents bounds)
         {
-            Geometry boundsGeometry = bounds.ToGeometry();
+            IGeometry boundsGeometry = bounds.ToGeometry();
 
             notifyIfEnvelopeDoesNotContain(boundsGeometry);
 
@@ -559,16 +560,19 @@ namespace SharpMap.Data
 
             if (IsSpatiallyIndexed)
             {
-                foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(bounds))
+                foreach (FeatureDataRow row in _rTreeIndex.Query(bounds))
                 {
-                    yield return entry.Value;
+                    if (boundsGeometry.Intersects(row.Geometry))
+                    {
+                        yield return row;
+                    }
                 }
             }
             else
             {
                 foreach (FeatureDataRow feature in this)
                 {
-                    if (bounds.Intersects(feature.Geometry))
+                    if (boundsGeometry.Intersects(feature.Geometry))
                     {
                         yield return feature;
                     }
@@ -581,13 +585,13 @@ namespace SharpMap.Data
         /// which intersect with the given <paramref name="geometry"/>.
         /// </summary>
         /// <param name="geometry">
-        /// The <see cref="Geometry"/> to perform intersection testing with.
+        /// The <see cref="IGeometry"/> to perform intersection testing with.
         /// </param>
         /// <returns>
         /// The set of <see cref="FeatureDataRow"/>s which intersect 
         /// <paramref name="geometry"/>.
         /// </returns>
-        public IEnumerable<FeatureDataRow> Select(Geometry geometry)
+        public IEnumerable<FeatureDataRow> Select(IGeometry geometry)
         {
             notifyIfEnvelopeDoesNotContain(geometry);
 
@@ -595,11 +599,11 @@ namespace SharpMap.Data
 
             if (IsSpatiallyIndexed)
             {
-                foreach (RTreeIndexEntry<FeatureDataRow> entry in _rTreeIndex.Search(geometry))
+                foreach (FeatureDataRow row in _rTreeIndex.Query(geometry.Extents))
                 {
-                    if (entry.Value.Geometry.Intersects(geometry))
+                    if (row.Geometry.Intersects(geometry))
                     {
-                        yield return entry.Value;
+                        yield return row;
                     }
                 }
             }
@@ -767,18 +771,16 @@ namespace SharpMap.Data
                     {
                         if (_envelope == null)
                         {
-                            _envelope = r.Geometry.Envelope();
+                            _envelope = r.Geometry.Envelope;
                         }
                         else
                         {
-                            _envelope = _envelope.Union(r.Geometry).Envelope();
+                            _envelope = _envelope.Union(r.Geometry).Envelope;
                         }
 
                         if (IsSpatiallyIndexed)
                         {
-                            RTreeIndexEntry<FeatureDataRow> entry =
-                                new RTreeIndexEntry<FeatureDataRow>(r, r.Geometry.GetBoundingBox());
-                            _rTreeIndex.Insert(entry);
+                            _rTreeIndex.Insert(r.Geometry.Extents, r);
                         }
                     }
                     break;
@@ -790,13 +792,11 @@ namespace SharpMap.Data
                 case DataRowAction.Delete:
                     if (r.Geometry != null)
                     {
-                        _envelope = _envelope.Difference(r.Geometry).Envelope();
+                        _envelope = _envelope.Difference(r.Geometry).Envelope;
 
                         if (IsSpatiallyIndexed)
                         {
-                            RTreeIndexEntry<FeatureDataRow> entry =
-                                new RTreeIndexEntry<FeatureDataRow>(r, r.Geometry.GetBoundingBox());
-                            _rTreeIndex.Remove(entry);
+                            _rTreeIndex.Remove(r.Geometry.Extents, r);
                         }
                     }
                     break;
@@ -908,24 +908,23 @@ namespace SharpMap.Data
             _restoreIndexEvents(this, forceReset);
         }
 
-        internal void RowGeometryChanged(FeatureDataRow row, Geometry oldGeometry)
+        internal void RowGeometryChanged(FeatureDataRow row, IGeometry oldGeometry)
         {
             if (IsSpatiallyIndexed)
             {
-                RTreeIndexEntry<FeatureDataRow> entry = new RTreeIndexEntry<FeatureDataRow>(row, row.Extents);
-                _rTreeIndex.Remove(entry);
-                _rTreeIndex.Insert(entry);
+                _rTreeIndex.Remove(row.Extents, row);
+                _rTreeIndex.Insert(row.Extents, row);
             }
 
             if (_envelope == null)
             {
-                _envelope = row.Geometry.Envelope();
+                _envelope = row.Geometry.Envelope;
             }
             else
             {
 #warning Must implement FeatureDataTable cached region management when geometry is changed.
                 //_cachedRegion = _cachedRegion.Difference(oldGeometry);
-                _envelope = _envelope.Union(row.Geometry).Envelope();
+                _envelope = _envelope.Union(row.Geometry).Envelope;
             }
         }
 
@@ -1308,9 +1307,9 @@ namespace SharpMap.Data
 
         #region Private helper methods
 
-        private void notifyIfEnvelopeDoesNotContain(Geometry geometry)
+        private void notifyIfEnvelopeDoesNotContain(IGeometry geometry)
         {
-            if (!geometry.IsEmpty() && !Envelope.Contains(geometry))
+            if (!geometry.IsEmpty && !Envelope.Contains(geometry))
             {
                 FeatureSpatialExpression notFound = new FeatureSpatialExpression(
                     geometry.Difference(Envelope), SpatialExpressionType.Intersects, null);
@@ -1338,16 +1337,21 @@ namespace SharpMap.Data
         private void initializeSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
-            IIndexRestructureStrategy restructureStrategy = new NullRestructuringStrategy();
+            Func<FeatureDataRow, IExtents> bounder = delegate(FeatureDataRow item)
+                                                     {
+                                                         return item.Geometry.Extents;
+                                                     };
+
+            IIndexRestructureStrategy<IExtents, FeatureDataRow> restructureStrategy = new NullRestructuringStrategy<IExtents, FeatureDataRow>();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IEntryInsertStrategy<RTreeIndexEntry<FeatureDataRow>> insertStrategy =
-                new GuttmanQuadraticInsert<FeatureDataRow>();
-            INodeSplitStrategy nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>();
+            IItemInsertStrategy<IExtents, FeatureDataRow> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>(_geoFactory);
+            INodeSplitStrategy<IExtents, FeatureDataRow> nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>(_geoFactory, bounder);
             IdleMonitor idleMonitor = null;
             _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(restructureStrategy,
                                                                                 restructureHeuristic, insertStrategy,
                                                                                 nodeSplitStrategy,
                                                                                 new DynamicRTreeBalanceHeuristic(),
+                                                                                bounder,
                                                                                 idleMonitor);
         }
 

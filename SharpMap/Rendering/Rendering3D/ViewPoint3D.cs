@@ -285,8 +285,7 @@ namespace SharpMap.Rendering.Rendering3D
         {
             checkRank(a);
 
-            DoubleComponent[] elements = a.Elements[0];
-            return new ViewPoint3D(elements[0].Add(_x), elements[1].Add(_y), elements[2].Add(_z));
+            return new ViewPoint3D(a[0, 0].Add(_x), a[0, 1].Add(_y), a[0, 2].Add(_z));
         }
 
         #endregion
@@ -297,8 +296,7 @@ namespace SharpMap.Rendering.Rendering3D
         {
             checkRank(a);
 
-            DoubleComponent[] elements = a.Elements[0];
-            return new ViewPoint3D(elements[0].Subtract(_x), elements[1].Subtract(_y), elements[2].Subtract(_z));
+            return new ViewPoint3D(a[0, 0].Subtract(_x), a[0, 1].Subtract(_y), a[0, 2].Subtract(_z));
         }
 
         #endregion
@@ -511,15 +509,6 @@ namespace SharpMap.Rendering.Rendering3D
         Int32 IMatrixD.RowCount
         {
             get { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Gets the elements in the matrix as an array of arrays (jagged array).
-        /// </summary>
-        DoubleComponent[][] IMatrixD.Elements
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
         }
 
         /// <summary>

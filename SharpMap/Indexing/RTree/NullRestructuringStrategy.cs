@@ -15,17 +15,15 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.RTree
 {
-    public class NullRestructuringStrategy : IIndexRestructureStrategy
+    public class NullRestructuringStrategy<TBounds, TItem> : IIndexRestructureStrategy<TBounds, TItem>
     {
         #region IIndexRestructureStrategy<RTreeIndexEntry> Members
 
-        public void RestructureNode(ISpatialIndexNode node)
+        public void RestructureNode(ISpatialIndexNode<TBounds, TItem> node)
         {
         }
 

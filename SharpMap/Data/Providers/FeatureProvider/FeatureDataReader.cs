@@ -32,14 +32,14 @@ namespace SharpMap.Data.Providers.FeatureProvider
         private readonly FeatureDataTable _table;
         private readonly QueryExecutionOptions _options;
         private DataTable _schemaTable;
-        private readonly BoundingBox _queryRegion;
+        private readonly IExtents _queryRegion;
         private Int32 _currentRow = -1;
         private Boolean _isDisposed; 
         #endregion
 
         #region Object Construction / Disposal
 
-        internal FeatureDataReader(FeatureDataTable source, BoundingBox queryRegion, QueryExecutionOptions options)
+        internal FeatureDataReader(FeatureDataTable source, IExtents queryRegion, QueryExecutionOptions options)
         {
             if (source == null) throw new ArgumentNullException("source");
 
@@ -103,7 +103,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		#endregion
 
 		#region IFeatureDataRecord Members
-		public Geometry Geometry
+		public IGeometry Geometry
 		{
 			get
 			{

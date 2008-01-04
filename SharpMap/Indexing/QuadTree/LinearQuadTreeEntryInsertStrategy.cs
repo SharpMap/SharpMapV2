@@ -16,28 +16,28 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.QuadTree
 {
-    public class LinearQuadTreeEntryInsertStrategy<TValue> : IEntryInsertStrategy<TValue>
+    public class LinearQuadTreeEntryInsertStrategy<TItem> : IItemInsertStrategy<IExtents, TItem>
     {
-        #region IEntryInsertStrategy<TValue> Members
+        #region IEntryInsertStrategy<TItem> Members
 
-        public void InsertEntry(TValue entry, ISpatialIndexNode node, INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit)
+        public void Insert(IExtents bounds, TItem entry, ISpatialIndexNode<IExtents, TItem> node, INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit)
         {
             if (node == null)
             {
                 throw new ArgumentNullException("node");
             }
 
-            if (!(node is QuadTreeNode<TValue>))
+            if (!(node is QuadTreeNode<TItem>))
             {
-                throw new ArgumentException("Parameter 'node' must be of type QuadTreeNode<TValue>", "node");
+                throw new ArgumentException("Parameter 'node' must be of type QuadTreeNode<TItem>", "node");
             }
 
-            QuadTreeNode<TValue> quadTreeNode = node as QuadTreeNode<TValue>;
+            QuadTreeNode<TItem> quadTreeNode = node as QuadTreeNode<TItem>;
 
             insertEntryRecursive(quadTreeNode, entry, nodeSplitStrategy, heuristic, out newSiblingFromSplit);
 
@@ -48,13 +48,13 @@ namespace SharpMap.Indexing.QuadTree
                     throw new QuadTreeIndexInsertOverflowException();
                 }
 
-                quadTreeNode.Items.Add(newSiblingFromSplit as QuadTreeNode<TValue>);
+                quadTreeNode.AddChild(newSiblingFromSplit);
             }
         }
 
         #endregion
 
-        private void insertEntryRecursive(QuadTreeNode<TValue> quadTreeNode, TValue entry, INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode newSiblingFromSplit)
+        private void insertEntryRecursive(QuadTreeNode<TItem> quadTreeNode, TItem entry, INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit)
         {
             throw new NotImplementedException();
         }

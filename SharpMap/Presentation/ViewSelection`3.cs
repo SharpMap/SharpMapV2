@@ -233,11 +233,11 @@ namespace SharpMap.Presentation
 
         private void recomputeBoundingRegion()
         {
-            DoubleComponent[][] boxElements = BoundingRegion.Elements;
-
-            if (boxElements.Length == 0 || boxElements[0].Length == 0)
+#warning not creating bounding region
+            if (BoundingRegion.RowCount == 0 || BoundingRegion.ColumnCount == 0)
             {
-                boxElements = new DoubleComponent[BoundingRegion.RowCount][];
+                DoubleComponent[][] boxElements = new DoubleComponent[BoundingRegion.RowCount][];
+
                 for (Int32 rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
                 {
                     boxElements[rowIndex] = new DoubleComponent[BoundingRegion.ColumnCount];
@@ -252,10 +252,14 @@ namespace SharpMap.Presentation
 
                 for (Int32 componentIndex = 0; componentIndex < components.Length; componentIndex++)
                 {
-                    for (Int32 rowIndex = 0; rowIndex < boxElements.Length; rowIndex++)
+                    for (Int32 rowIndex = 0; rowIndex < BoundingRegion.RowCount; rowIndex++)
                     {
-                        if (components[componentIndex].GreaterThan(boxElements[rowIndex][componentIndex])) { }
-                        boxElements[rowIndex][componentIndex] = components[componentIndex];
+                        if (components[componentIndex].GreaterThan(BoundingRegion[rowIndex, componentIndex]))
+                        {
+#warning What happened here?
+                        }
+
+                        BoundingRegion[rowIndex, componentIndex] = components[componentIndex];
                     }
 
                     if (!recorded)
@@ -264,20 +268,18 @@ namespace SharpMap.Presentation
                     }
                     else
                     {
-                        if (components[componentIndex].GreaterThan(boxElements[0][componentIndex]))
+                        if (components[componentIndex].GreaterThan(BoundingRegion[0, componentIndex]))
                         {
-                            boxElements[0][componentIndex] = components[componentIndex];
+                            BoundingRegion[0, componentIndex] = components[componentIndex];
                         }
 
-                        if (components[componentIndex].GreaterThan(boxElements[1][componentIndex]))
+                        if (components[componentIndex].GreaterThan(BoundingRegion[1, componentIndex]))
                         {
-                            boxElements[1][componentIndex] = components[componentIndex];
+                            BoundingRegion[1, componentIndex] = components[componentIndex];
                         }
                     }
                 }
             }
-
-            BoundingRegion.Elements = boxElements;
         }
     }
 }

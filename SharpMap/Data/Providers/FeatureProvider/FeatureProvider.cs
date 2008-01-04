@@ -34,6 +34,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         internal readonly static String OidColumnName = "Oid";
 		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
 		private ICoordinateTransformation _transform = null;
+        private ICoordinateSystem _spatialReference;
 
         /// <summary>
         /// Creates a new FeatureProvider with the given columns as a schema.
@@ -92,17 +93,17 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		#region IFeatureLayerProvider<Guid> Members
 
-        public IEnumerable<Guid> GetIntersectingObjectIds(BoundingBox boundingBox)
+        public IEnumerable<Guid> GetIntersectingObjectIds(IExtents boundingBox)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Geometry GetGeometryById(Guid oid)
+		public IGeometry GetGeometryById(Guid oid)
 		{
 			throw new NotImplementedException();
 		}
 
-		public FeatureDataRow<Guid> GetFeature(Guid oid)
+		public IFeatureDataRecord GetFeature(Guid oid)
 		{
 			throw new NotImplementedException();
         }
@@ -136,22 +137,22 @@ namespace SharpMap.Data.Providers.FeatureProvider
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -218,17 +219,17 @@ namespace SharpMap.Data.Providers.FeatureProvider
                     "A query type other than SpatialQueryType.Intersects is not supported.");
             }
 
-            ExecuteIntersectionQuery(query.QueryRegion.GetBoundingBox(), table);
+            ExecuteIntersectionQuery(query.QueryRegion.Extents, table);
 		}
 
         /// <summary>
-        /// Gets the geometries intersecting the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// Gets the geometries intersecting the specified <see cref="IExtents"/>.
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <returns>
-        /// An enumeration of features within the specified <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// An enumeration of features within the specified <see cref="IExtents"/>.
         /// </returns>
-        public IEnumerable<Geometry> ExecuteGeometryIntersectionQuery(BoundingBox bounds)
+        public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IExtents bounds)
 	    {
 	        throw new NotImplementedException();
         }
@@ -239,7 +240,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-	    public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds)
+        public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds)
 	    {
             return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.FullFeature);
         }
@@ -251,7 +252,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        public IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds, QueryExecutionOptions options)
+        public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options)
         {
             FeatureDataReader reader = new FeatureDataReader(_features, bounds, options);
             return reader;
@@ -263,7 +264,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
-        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet)
+        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet)
 		{
             ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.FullFeature);
         }
@@ -275,7 +276,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
-        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, QueryExecutionOptions options)
+        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options)
         {
             throw new NotImplementedException();
         }
@@ -286,7 +287,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table)
+        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table)
 		{
             ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.FullFeature);
         }
@@ -298,7 +299,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
-        public void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options)
+        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options)
         {
             IFeatureDataReader reader = ExecuteIntersectionQuery(bounds, options);
 
@@ -361,7 +362,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		public ICoordinateSystem SpatialReference
 		{
-			get { return GeographicCoordinateSystem.WGS84;  }
+			get { return _spatialReference;  }
 		}
 
 		public Boolean IsOpen
@@ -375,7 +376,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			set {  }
 		}
 
-		public BoundingBox GetExtents()
+		public IExtents GetExtents()
 		{
 			return _features.Extents;
 		}
@@ -409,12 +410,5 @@ namespace SharpMap.Data.Providers.FeatureProvider
 		}
 
 		#endregion
-
-        #region IFeatureLayerProvider<UInt32> Explicit Members
-        IEnumerable<Guid> IFeatureLayerProvider<Guid>.GetObjectIdsInView(BoundingBox bounds)
-        {
-            return GetIntersectingObjectIds(bounds);
-        }
-        #endregion
     }
 }

@@ -17,58 +17,38 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.QuadTree
 {
-    public class QuadTreeNode<TValue> : SpatialIndexNode<QuadTreeNode<TValue>, TValue>
+    public class QuadTreeNode<TItem> : SpatialIndexNode<TItem>
     {
-        private TValue _value;
+        public QuadTreeNode(Func<TItem, IExtents> bounder) : base(bounder) {}
 
-        public TValue Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-
-        public Boolean IsLeaf
+        public override Boolean IsLeaf
         {
             get { return Items.Count == 0; }
         }
 
-        public virtual IEnumerable<TValue> Search(BoundingBox searchBounds)
+        public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children
         {
-            if (BoundingBox == BoundingBox.Empty)
-            {
-                yield break;
-            }
-
-            foreach (QuadTreeNode<TValue> node in Items)
-            {
-                if (node.BoundingBox.Intersects(searchBounds))
-                {
-                    if (node.IsLeaf)
-                    {
-                        yield return node.Value;
-                    }
-                    else
-                    {
-                        node.Search(searchBounds);
-                    }
-                }
-            }
+            get { throw new NotImplementedException(); }
         }
 
-        public virtual IEnumerable<TValue> Search(Geometry geometry)
+        public override void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
         {
             throw new NotImplementedException();
         }
 
-        protected override BoundingBox GetItemBoundingBox(QuadTreeNode<TValue> item)
+        public override void AddChild(ISpatialIndexNode<IExtents, TItem> child)
         {
-            return item.BoundingBox;
+            throw new NotImplementedException();
+        }
+
+        public override bool RemoveChild(ISpatialIndexNode<IExtents, TItem> child)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace SharpMap.Data
 		/// <summary>
 		/// Gets the geometry for the current position in the reader.
 		/// </summary>
-        Geometry Geometry { get; }
+        IGeometry Geometry { get; }
 
         /// <summary>
         /// Gets the Object ID for the record.

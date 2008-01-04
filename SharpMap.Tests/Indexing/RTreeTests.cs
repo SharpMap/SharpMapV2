@@ -29,7 +29,7 @@ namespace SharpMap.Tests.Indexing
 
             addEntries(rTree);
 
-            Assert.AreEqual(new BoundingBox(-100, -100, 5928.57523425, 3252.50803582), rTree.Root.BoundingBox);
+            Assert.AreEqual(new BoundingBox(-100, -100, 5928.57523425, 3252.50803582), rTree.Root.Bounds);
 
             rTree.Dispose();
         }
@@ -100,7 +100,7 @@ namespace SharpMap.Tests.Indexing
             s.Position = 0;
             DynamicRTree<Int32> rTree2 = DynamicRTree<Int32>.FromStream(s);
             List<RTreeIndexEntry<Int32>> results = new List<RTreeIndexEntry<Int32>>();
-            results.AddRange(rTree2.Search(rTree2.Root.BoundingBox));
+            results.AddRange(rTree2.Search(rTree2.Root.Bounds));
             Assert.AreEqual(99990, results.Count);
         }
 

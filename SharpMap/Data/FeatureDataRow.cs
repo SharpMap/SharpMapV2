@@ -63,11 +63,11 @@ namespace SharpMap.Data
 
         #region Instance fields
         // TODO: implement original and proposed geometry to match DataRow RowState model
-        private Geometry _originalGeometry;
-        private Geometry _currentGeometry;
-        private Geometry _proposedGeometry;
+        private IGeometry _originalGeometry;
+        private IGeometry _currentGeometry;
+        private IGeometry _proposedGeometry;
         private Boolean _isGeometryModified = false;
-        private BoundingBox _extents = BoundingBox.Empty;
+        private IExtents _extents;
         private Boolean _isFullyLoaded;
         #endregion
 
@@ -95,13 +95,13 @@ namespace SharpMap.Data
         /// Thrown if <see cref="Geometry"/> is not null, since Extents
         /// just reflects the Geometry's extents, if set.
         /// </exception>
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {
                 if (Geometry != null)
                 {
-                    return Geometry.GetBoundingBox();
+                    return Geometry.Extents;
                 }
                 else
                 {
@@ -122,7 +122,7 @@ namespace SharpMap.Data
         /// <summary>
         /// The geometry of the feature.
         /// </summary>
-        public Geometry Geometry
+        public IGeometry Geometry
         {
             get { return _currentGeometry; }
             set
@@ -132,7 +132,7 @@ namespace SharpMap.Data
                     return;
                 }
 
-                Geometry oldGeometry = _currentGeometry;
+                IGeometry oldGeometry = _currentGeometry;
                 _currentGeometry = value;
 
                 if (RowState != DataRowState.Detached)

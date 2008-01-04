@@ -19,7 +19,6 @@
 using System;
 using SharpMap.Data;
 using SharpMap.Styles;
-using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Layers
 {

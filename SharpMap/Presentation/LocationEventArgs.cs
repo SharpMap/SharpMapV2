@@ -22,14 +22,14 @@ namespace SharpMap.Presentation
 {
     public class LocationEventArgs : EventArgs
     {
-        private readonly Point _point;
+        private readonly IPoint _point;
 
-        public LocationEventArgs(Point location)
+        public LocationEventArgs(IPoint location)
         {
             _point = location;
         }
 
-        public Point Point
+        public IPoint Point
         {
             get { return _point; }
         }

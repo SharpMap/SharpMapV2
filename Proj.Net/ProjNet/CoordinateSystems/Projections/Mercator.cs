@@ -304,7 +304,7 @@ namespace ProjNet.CoordinateSystems.Projections
             if (_inverse == null)
             {
                 _inverse = new Mercator<TCoordinate>(
-                    EnumerableConverter.Downcast<ProjectionParameter, Parameter>(Parameters), 
+                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters), 
                     CoordinateFactory, !_isInverse);
             }
 

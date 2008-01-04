@@ -32,14 +32,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly ShapeFileProvider _shapeFile;
         private readonly QueryExecutionOptions _options;
         private readonly DataTable _schemaTable;
-        private FeatureDataRow<UInt32> _currentFeature;
+        private IFeatureDataRecord _currentFeature;
         private Boolean _isDisposed;
         private readonly IEnumerator<UInt32> _objectEnumerator;
         #endregion
 
 		#region Object Construction / Disposal
 
-		internal ShapeFileDataReader(ShapeFileProvider source, BoundingBox queryRegion, QueryExecutionOptions options)
+        internal ShapeFileDataReader(ShapeFileProvider source, IExtents queryRegion, QueryExecutionOptions options)
 		{
             if (options != QueryExecutionOptions.FullFeature)
             {
@@ -118,7 +118,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		#endregion
 
 		#region IFeatureDataRecord Members
-		public Geometry Geometry
+		public IGeometry Geometry
 		{
 			get
 			{
@@ -404,7 +404,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			checkState();
 			checkIndex(i);
 
-			return _currentFeature.IsNull(i);
+			return _currentFeature.IsDBNull(i);
 		}
 
 		public object this[String name]

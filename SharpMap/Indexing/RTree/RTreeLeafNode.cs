@@ -17,18 +17,18 @@
 
 using System;
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.RTree
 {
     /// <summary>
     /// A leaf node in an R-Tree index.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
-    public class RTreeLeafNode<TValue> 
-        : SpatialIndexNode<RTreeIndexEntry<TValue>, RTreeIndexEntry<TValue>>
+    /// <typeparam name="TItem">The type of the value used in the entries.</typeparam>
+    public class RTreeLeafNode<TItem> : SpatialIndexNode<TItem>
 
     {
-        internal RTreeLeafNode(ISearchableSpatialIndex<RTreeIndexEntry<TValue>> index)
+        internal RTreeLeafNode(ISpatialIndex<IExtents, TItem> index)
         {
             Index = index;
         }
@@ -48,15 +48,15 @@ namespace SharpMap.Indexing.RTree
         /// <summary>
         /// Gets the BoundingBox for this node, which minimally bounds all items.
         /// </summary>
-        public new BoundingBox BoundingBox
+        public new IExtents Bounds
         {
-            get { return base.BoundingBox; }
-            protected internal set { base.BoundingBox = value; }
+            get { return base.Bounds; }
+            protected internal set { base.Bounds = value; }
         }
 
         public override String ToString()
         {
-            return String.Format("Leaf NodeId: {0}; BoundingBox: {1}; Entries: {2}", NodeId, BoundingBox, Items.Count);
+            return String.Format("Leaf NodeId: {0}; BoundingBox: {1}; Entries: {2}", NodeId, Bounds, Items.Count);
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace SharpMap.Indexing.RTree
         /// <returns>
         /// The bounding box of the given <paramref name="item">entry</paramref>.
         /// </returns>
-        protected override BoundingBox GetItemBoundingBox(RTreeIndexEntry<TValue> item)
+        protected override IExtents GetItemBounds(RTreeIndexEntry<TItem> item)
         {
-            return item.BoundingBox;
+            return item.Bounds;
         }
     }
 }

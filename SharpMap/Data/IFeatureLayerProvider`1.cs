@@ -15,7 +15,6 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
 
@@ -26,49 +25,33 @@ namespace SharpMap.Data
 	/// </summary>
     public interface IFeatureLayerProvider<TOid> : IFeatureLayerProvider
 	{
-		/// <summary>
-		/// Returns all objects whose <see cref="BoundingBox"/> 
-        /// intersects <paramref name="boundingBox"/>.
-		/// </summary>
-		/// <remarks>
-		/// This method is usually much faster than the ExecuteIntersectionQuery method, 
-		/// because intersection tests are performed on objects simplifed by 
-		/// their <see cref="BoundingBox"/>, often using
-		/// spatial indexing to retrieve the id values.
-		/// </remarks>
-		/// <param name="boundingBox">BoundingBox that objects should intersect.</param>
-		/// <returns>An enumeration of all intersecting objects' ids.</returns>
-		[Obsolete("Will be removed in Beta 2. Use GetIntersectingObjectIds instead.")]
-		IEnumerable<TOid> GetObjectIdsInView(BoundingBox boundingBox);
-
         /// <summary>
-        /// Returns all objects whose <see cref="BoundingBox"/> 
-        /// intersects <paramref name="boundingBox"/>.
+        /// Returns all objects whose <see cref="IExtents"/> 
+        /// intersects <paramref name="extents"/>.
         /// </summary>
         /// <remarks>
         /// This method is usually much faster than the ExecuteIntersectionQuery method, 
         /// because intersection tests are performed on objects simplifed by 
-        /// their <see cref="BoundingBox"/>, often using
+        /// their <see cref="IExtents"/>, often using
         /// spatial indexing to retrieve the id values.
         /// </remarks>
-        /// <param name="boundingBox">BoundingBox that objects should intersect.</param>
+        /// <param name="extents">BoundingBox that objects should intersect.</param>
         /// <returns>An enumeration of all intersecting objects' ids.</returns>
-	    IEnumerable<TOid> GetIntersectingObjectIds(BoundingBox boundingBox);
+	    IEnumerable<TOid> GetIntersectingObjectIds(IExtents extents);
 
 		/// <summary>
 		/// Returns the geometry corresponding to the object ID.
 		/// </summary>
 		/// <param name="oid">Object ID.</param>
 		/// <returns>The geometry corresponding to the <paramref name="oid"/>.</returns>
-		Geometry GetGeometryById(TOid oid);
+		IGeometry GetGeometryById(TOid oid);
 
 		/// <summary>
         /// Returns a <see cref="FeatureDataRow"/> based on an object id (OID).
 		/// </summary>
 		/// <param name="oid">The object id (OID) of the feature.</param>
 		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
-		[Obsolete("Will be replaced in Beta 2 by a method which returns an IFeatureDataRecord.")]
-        FeatureDataRow<TOid> GetFeature(TOid oid);
+        IFeatureDataRecord GetFeature(TOid oid);
 
         /// <summary>
         /// Returns a <see cref="IFeatureDataReader"/> for obtaining features
@@ -85,7 +68,7 @@ namespace SharpMap.Data
         /// present in the IProvider with the given connection.
         /// </summary>
         /// <param name="table">The FeatureDataTable to configure the schema of.</param>
-		void SetTableSchema(FeatureDataTable<TOid> table);
+        void SetTableSchema(FeatureDataTable<TOid> table);
 
 		/// <summary>
 		/// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 

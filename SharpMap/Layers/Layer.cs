@@ -18,7 +18,6 @@
 
 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
@@ -345,19 +344,22 @@ namespace SharpMap.Layers
         /// Gets the full extent of the data available to the layer.
         /// </summary>
         /// <returns>
-        /// A <see cref="BoundingBox"/> defining the extent of 
+        /// A <see cref="IExtents"/> defining the extent of 
         /// all data available to the layer.
         /// </returns>
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {
-                BoundingBox fullExtents = DataSource.GetExtents();
+                IExtents fullExtents = DataSource.GetExtents();
 
                 if (CoordinateTransformation != null)
                 {
-                    return GeometryTransform.TransformBox(
-                        fullExtents, CoordinateTransformation.MathTransform);
+                    throw new NotImplementedException();
+
+                    // TODO: This needs to be supported in GeoAPI
+                    //return GeometryTransform.TransformBox(
+                    //    fullExtents, CoordinateTransformation.MathTransform);
                 }
                 else
                 {
@@ -453,12 +455,12 @@ namespace SharpMap.Layers
 
         #region Protected members
 
-        protected void AddLoadedRegion(BoundingBox region)
+        protected void AddLoadedRegion(IExtents region)
         {
             AddLoadedRegion(region.ToGeometry());
         }
 
-        protected void AddLoadedRegion(Geometry region)
+        protected void AddLoadedRegion(IGeometry region)
         {
             if (region == null)
             {
@@ -472,7 +474,6 @@ namespace SharpMap.Layers
             else
             {
                 LoadedRegion = LoadedRegion.Union(region);
-                LoadedRegion = FakeSpatialOperations.SimplifyRegion(LoadedRegion);
             }
         }
 
@@ -481,15 +482,15 @@ namespace SharpMap.Layers
             return new Style();
         }
 
-        public abstract Geometry LoadedRegion { get; protected set; }
+        public abstract IGeometry LoadedRegion { get; protected set; }
 
-        public virtual void LoadIntersectingLayerData(BoundingBox region)
+        public virtual void LoadIntersectingLayerData(IExtents region)
         {
             SpatialExpression query = new SpatialExpression(region.ToGeometry(), SpatialExpressionType.Intersects);
             LoadLayerData(query);
         }
 
-        public virtual void LoadIntersectingLayerData(Geometry region)
+        public virtual void LoadIntersectingLayerData(IGeometry region)
         {
             SpatialExpression query = new SpatialExpression(region, SpatialExpressionType.Intersects);
             LoadLayerData(query);

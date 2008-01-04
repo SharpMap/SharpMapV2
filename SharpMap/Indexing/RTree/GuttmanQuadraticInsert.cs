@@ -16,90 +16,97 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.RTree
 {
     /// <summary>
-    /// Implements a common, well accepted R-Tree insertion strategy.
+    /// Implements a common, well known R-Tree insertion strategy.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
+    /// <typeparam name="TItem">The type of items indexed.</typeparam>
     /// <remarks>
     /// This strategy follows Antonin Guttman's findings in his paper 
     /// entitled "R-Trees: A Dynamic Index Structure for Spatial Searching", 
     /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
     /// </remarks>
-    public class GuttmanQuadraticInsert<TValue> : IEntryInsertStrategy<RTreeIndexEntry<TValue>>
+    public class GuttmanQuadraticInsert<TItem> : IItemInsertStrategy<IExtents, TItem>
     {
-        #region IEntryInsertStrategy Members
+        private IGeometryFactory _geoFactory;
 
-        public void InsertEntry(RTreeIndexEntry<TValue> entry, ISpatialIndexNode node, 
-            INodeSplitStrategy nodeSplitStrategy, IndexBalanceHeuristic heuristic, 
-            out ISpatialIndexNode newSiblingFromSplit)
+        public GuttmanQuadraticInsert(IGeometryFactory geoFactory)
+        {
+            _geoFactory = geoFactory;
+        }
+
+        #region IItemInsertStrategy Members
+
+        public void Insert(IExtents bounds, TItem entry, ISpatialIndexNode<IExtents, TItem> node, 
+            INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, 
+            IndexBalanceHeuristic heuristic, 
+            out ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit)
         {
             newSiblingFromSplit = null;
 
-            if (node is RTreeLeafNode<TValue>)
+            if (node.IsLeaf)
             {
-                RTreeLeafNode<TValue> leaf = node as RTreeLeafNode<TValue>;
-                
-                leaf.Add(entry);
+                node.AddItem(entry);
 
-                if (leaf.Items.Count > heuristic.NodeItemMaximumCount)
+                if (node.Items.Count > heuristic.NodeItemMaximumCount)
                 {
                     newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
                 }
             }
             else
             {
-                RTreeBranchNode<TValue> branch = node as RTreeBranchNode<TValue>;
-
                 Double leastExpandedArea = Double.PositiveInfinity;
 
-                ISpatialIndexNode leastExpandedChild = null;
+                ISpatialIndexNode<IExtents, TItem> leastExpandedChild = null;
 
-                foreach (ISpatialIndexNode child in branch.Items)
+                foreach (ISpatialIndexNode<IExtents, TItem> child in node.Children)
                 {
-                    BoundingBox candidateRegion = BoundingBox.Join(child.BoundingBox, entry.BoundingBox);
-                    Double expandedArea = candidateRegion.GetArea() - child.BoundingBox.GetArea();
+                    IExtents childBounds = child.Bounds;
+                    IExtents candidateRegion = _geoFactory.CreateExtents(childBounds, bounds);
+                   
+                    Double candidateRegionArea = candidateRegion.GetSize(Ordinates.X, Ordinates.Y);
+                    Double childArea = childBounds.GetSize(Ordinates.X, Ordinates.Y);
+                    Double expandedArea = candidateRegionArea - childArea;
 
                     if (expandedArea < leastExpandedArea)
                     {
                         leastExpandedChild = child;
                         leastExpandedArea = expandedArea;
                     }
-                    else if (leastExpandedChild == null 
-                        || (expandedArea == leastExpandedArea 
-                                && child.BoundingBox.GetArea() < leastExpandedChild.BoundingBox.GetArea()))
+                    else if (leastExpandedChild == null || (expandedArea == leastExpandedArea
+                            && childArea < leastExpandedChild.Bounds.GetSize(Ordinates.X, Ordinates.Y)))
                     {
                         leastExpandedChild = child;
                     }
                 }
 
                 // Found least expanded child node - insert into it
-                InsertEntry(entry, leastExpandedChild, nodeSplitStrategy, heuristic, out newSiblingFromSplit);
+                Insert(bounds, entry, leastExpandedChild, nodeSplitStrategy, heuristic, out newSiblingFromSplit);
 
                 // Adjust this node...
-                branch.BoundingBox = BoundingBox.Join(leastExpandedChild.BoundingBox, node.BoundingBox);
+                node.Bounds = _geoFactory.CreateExtents(leastExpandedChild.Bounds, node.Bounds);
                 
                 // Check for overflow and add to current node if it occured
                 if (newSiblingFromSplit != null)
                 {
                     // Add new sibling node to the current node
-                    RTreeBranchNode<TValue> indexNode = node as RTreeBranchNode<TValue>;
-                    indexNode.Add(newSiblingFromSplit);
+                    node.AddChild(newSiblingFromSplit);
                     newSiblingFromSplit = null;
 
                     // Split the current node, since the child count is too high, and return the split to the caller
-                    if (indexNode.Items.Count > heuristic.NodeItemMaximumCount)
+                    if (node.Items.Count > heuristic.NodeItemMaximumCount)
                     {
-                        newSiblingFromSplit = nodeSplitStrategy.SplitNode(indexNode, heuristic);
+                        newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
                     }
                 }
             }
         }
         #endregion
+
     }
 }

@@ -124,14 +124,14 @@ namespace SharpMap.Rendering.Rendering2D
             }
 
             IMatrixD thisMatrix = this;
-            DoubleComponent[][] lhs = thisMatrix.Elements, rhs = other.Elements;
+            //DoubleComponent[][] lhs = thisMatrix.Elements, rhs = other.Elements;
 
-            if (lhs.Length != rhs.Length)
+            if (thisMatrix.ColumnCount != other.ColumnCount)
             {
                 return false;
             }
 
-            if (lhs.Rank != rhs.Rank)
+            if (thisMatrix.RowCount != thisMatrix.RowCount)
             {
                 return false;
             }
@@ -147,7 +147,7 @@ namespace SharpMap.Rendering.Rendering2D
                 {
                     for (Int32 col = 0; col < thisMatrix.ColumnCount; col++)
                     {
-                        if (!lhs[row][col].Equals(rhs[row][col]))
+                        if (!thisMatrix[row, col].Equals(other[row, col]))
                         {
                             return false;
                         }
@@ -571,49 +571,49 @@ namespace SharpMap.Rendering.Rendering2D
             get { return 2; }
         }
 
-        /// <summary>
-        /// Gets the elements in the matrix as an array of arrays (jagged array).
-        /// </summary>
-        DoubleComponent[][] IMatrixD.Elements
-        {
-            get
-            {
-                if (IsEmpty)
-                {
-                    return new DoubleComponent[0][];
-                }
+        ///// <summary>
+        ///// Gets the elements in the matrix as an array of arrays (jagged array).
+        ///// </summary>
+        //DoubleComponent[][] IMatrixD.Elements
+        //{
+        //    get
+        //    {
+        //        if (IsEmpty)
+        //        {
+        //            return new DoubleComponent[0][];
+        //        }
 
-                return new DoubleComponent[][] { new DoubleComponent[] { _left, _top }, new DoubleComponent[] { _right, _bottom } };
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
+        //        return new DoubleComponent[][] { new DoubleComponent[] { _left, _top }, new DoubleComponent[] { _right, _bottom } };
+        //    }
+        //    set
+        //    {
+        //        if (value == null)
+        //        {
+        //            throw new ArgumentNullException("value");
+        //        }
 
-                if (value.Length != 2)
-                {
-                    throw new ArgumentException("Elements can be set only to a 2x2 array");
-                }
+        //        if (value.Length != 2)
+        //        {
+        //            throw new ArgumentException("Elements can be set only to a 2x2 array");
+        //        }
 
-                if (value[0] == null || value[1] == null)
-                {
-                    throw new ArgumentException("The array elements of value cannot be null.");
-                }
+        //        if (value[0] == null || value[1] == null)
+        //        {
+        //            throw new ArgumentException("The array elements of value cannot be null.");
+        //        }
 
-                if (value[0].Length != 2 || value[1].Length != 2)
-                {
-                    throw new ArgumentException("Elements can be set only to a 2x2 array");
-                }
+        //        if (value[0].Length != 2 || value[1].Length != 2)
+        //        {
+        //            throw new ArgumentException("Elements can be set only to a 2x2 array");
+        //        }
 
-                _left = value[0][0].LessThan(value[1][0]) ? value[0][0] : value[1][0];
-                _top = value[0][1].LessThan(value[1][1]) ? value[0][1] : value[1][1];
-                _right = value[0][0].LessThan(value[1][0]) ? value[1][0] : value[0][0];
-                _bottom = value[0][1].LessThan(value[1][1]) ? value[1][1] : value[0][1];
-                _hasValue = true;
-            }
-        }
+        //        _left = value[0][0].LessThan(value[1][0]) ? value[0][0] : value[1][0];
+        //        _top = value[0][1].LessThan(value[1][1]) ? value[0][1] : value[1][1];
+        //        _right = value[0][0].LessThan(value[1][0]) ? value[1][0] : value[0][0];
+        //        _bottom = value[0][1].LessThan(value[1][1]) ? value[1][1] : value[0][1];
+        //        _hasValue = true;
+        //    }
+        //}
 
         /// <summary>
         /// Gets true if the matrix is singular (non-invertable).
@@ -1016,17 +1016,17 @@ namespace SharpMap.Rendering.Rendering2D
             throw new NotSupportedException();
         }
 
-        /// <summary>
-        /// Applies this transform to the given <paramref name="input"/> matrix in place.
-        /// </summary>
-        /// <param name="input">Matrix to transform.</param>
-        /// <returns>
-        /// The multiplication of this transform matrix with the input matrix.
-        /// </returns>
-        void ITransformMatrix<DoubleComponent>.TransformMatrix(DoubleComponent[][] input)
-        {
-            throw new NotSupportedException();
-        }
+        ///// <summary>
+        ///// Applies this transform to the given <paramref name="input"/> matrix in place.
+        ///// </summary>
+        ///// <param name="input">Matrix to transform.</param>
+        ///// <returns>
+        ///// The multiplication of this transform matrix with the input matrix.
+        ///// </returns>
+        //void ITransformMatrix<DoubleComponent>.TransformMatrix(DoubleComponent[][] input)
+        //{
+        //    throw new NotSupportedException();
+        //}
 
         /// <summary>
         /// Applies this transform to the given <paramref name="input"/> vector.

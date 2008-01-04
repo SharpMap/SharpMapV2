@@ -34,7 +34,7 @@ namespace SharpMap.Presentation.WinForms
         public ImageTileCache(BoundingBox initialBounds)
         {
             // Set the bounds of the index
-            BoundingBox = initialBounds;
+            Bounds = initialBounds;
         }
 
         public void Add(BoundingBox tileBounds, Bitmap tile)
@@ -43,7 +43,7 @@ namespace SharpMap.Presentation.WinForms
             tileNode.Value = tile;
 #warning This doesn't compile in Orcas B2, but it does in VS2005
             //tileNode.BoundingBox = tileBounds;
-            Add(tileNode);
+            AddItem(tileNode);
         }
 
         public override IEnumerable<Bitmap> Search(BoundingBox searchBounds)
@@ -55,7 +55,7 @@ namespace SharpMap.Presentation.WinForms
         {
             // If search bounds are only partially by node bounds, then return node's value,
             // since successive searches will be incomplete.
-            if (node.BoundingBox.Intersects(searchBounds) && !node.BoundingBox.Contains(searchBounds))
+            if (node.Bounds.Intersects(searchBounds) && !node.Bounds.Contains(searchBounds))
             {
                 yield return node.Value;
                 yield break;
@@ -72,7 +72,7 @@ namespace SharpMap.Presentation.WinForms
             {
                 QuadTreeNode<Bitmap> testNode = Items[nodeIndex];
 
-                if (testNode.BoundingBox.Intersects(searchBounds))
+                if (testNode.Bounds.Intersects(searchBounds))
                 {
                     intersectNodes[++intersectNodeIndex] = nodeIndex;
                 }

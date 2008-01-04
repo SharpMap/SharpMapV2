@@ -17,7 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Coordinates;
+using SharpMap.Coordinates;
 using SharpMap.Utilities;
 using System.IO;
 using GeoAPI.Geometries;
@@ -27,7 +28,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	internal class ShapeFileHeader
 	{
 		private ShapeType _shapeType;
-		private BoundingBox _envelope;
+		private IExtents _envelope;
 		private Int32 _fileLengthInWords;
 
 		public ShapeFileHeader(BinaryReader reader)
@@ -38,7 +39,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		public override String ToString()
 		{
 			return String.Format("[ShapeFileHeader] ShapeType: {0}; Envelope: {1}; FileLengthInWords: {2}", 
-				ShapeType, Envelope, FileLengthInWords);
+				ShapeType, Extents, FileLengthInWords);
 		}
 
 		public ShapeType ShapeType
@@ -47,7 +48,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			private set { _shapeType = value; }
 		}
 
-		public BoundingBox Envelope
+        public IExtents Extents
 		{
 			get { return _envelope; }
 			set { _envelope = value; }
@@ -67,10 +68,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 			writer.Write(ByteEncoder.GetBigEndian(FileLengthInWords));
 			writer.Write(ByteEncoder.GetLittleEndian(ShapeFileConstants.VersionCode));
 			writer.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType));
-			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Left));
-			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Bottom));
-			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Right));
-			writer.Write(ByteEncoder.GetLittleEndian(Envelope.Top));
+			writer.Write(ByteEncoder.GetLittleEndian(Extents.GetMin(Ordinates.X)));
+            writer.Write(ByteEncoder.GetLittleEndian(Extents.GetMin(Ordinates.Y)));
+            writer.Write(ByteEncoder.GetLittleEndian(Extents.GetMax(Ordinates.X)));
+            writer.Write(ByteEncoder.GetLittleEndian(Extents.GetMax(Ordinates.Y)));
 			writer.Write(new Byte[32]); // Z-values and M-values
 		}
 
@@ -129,18 +130,19 @@ namespace SharpMap.Data.Providers.ShapeFile
 			ShapeType = (ShapeType)reader.ReadInt32();
 
 			// Seek to bounding box of shapefile
-			reader.BaseStream.Seek(36, 0); 
+			reader.BaseStream.Seek(36, 0);
 
 			// Read the spatial bounding box of the contents
-			Envelope = new BoundingBox(
-				ByteEncoder.GetLittleEndian(reader.ReadDouble()),
-				ByteEncoder.GetLittleEndian(reader.ReadDouble()),
-				ByteEncoder.GetLittleEndian(reader.ReadDouble()),
-				ByteEncoder.GetLittleEndian(reader.ReadDouble()));
+            Double xMin = ByteEncoder.GetLittleEndian(reader.ReadDouble());
+            Double yMin = ByteEncoder.GetLittleEndian(reader.ReadDouble());
+            Double xMax = ByteEncoder.GetLittleEndian(reader.ReadDouble());
+            Double yMax = ByteEncoder.GetLittleEndian(reader.ReadDouble());
 
-			if (Envelope == new BoundingBox(0, 0, 0, 0))
+		    Extents = new Extents2D(xMin, yMin, xMax, yMax);
+
+			if (Extents.IsEmpty)
 			{
-				Envelope = BoundingBox.Empty;
+                Extents = null;
 			}
 		}
 		#endregion

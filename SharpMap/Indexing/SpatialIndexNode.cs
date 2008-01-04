@@ -18,45 +18,61 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing
 {
     /// <summary>
     /// Abstract representation of a node in an 
-    /// <see cref="ISearchableSpatialIndex{TEntry}"/> or a 
-    /// <see cref="IUpdatableSpatialIndex{TEntry}"/>.
+    /// <see cref="ISpatialIndex{TBounds,TItem}"/> or a 
+    /// <see cref="IUpdatableSpatialIndex{TBounds,TItem}"/>.
     /// </summary>
-    /// <typeparam name="TItem">Type of the node's children items.</typeparam>
-    /// <typeparam name="TEntry">Type of the index entry.</typeparam>
-    public abstract class SpatialIndexNode<TItem, TEntry> : ISpatialIndexNode
+    /// <typeparam name="TItem">Type of the index entry.</typeparam>
+    public abstract class SpatialIndexNode<TItem> : ISpatialIndexNode<IExtents, TItem>
     {
-        private UInt32? _nodeId;
-        private BoundingBox _boundingBox = BoundingBox.Empty;
+        private readonly Func<TItem, IExtents> _bounder;
+        //private UInt32? _nodeId;
+        private IExtents _bounds;
         private readonly List<TItem> _items = new List<TItem>();
-        private ISearchableSpatialIndex<TEntry> _index;
+        private ISpatialIndex<IExtents, TItem> _index;
 
-        /// <summary>
-        /// Gets the BoundingBox for this node, which minimally bounds all items.
-        /// </summary>
-        public BoundingBox BoundingBox
+        protected SpatialIndexNode(Func<TItem, IExtents> bounder)
         {
-            get { return _boundingBox; }
-            protected set { _boundingBox = value; }
+            _bounder = bounder;
+        }
+
+        protected Func<TItem, IExtents> Bounder
+        {
+            get
+            {
+                return _bounder;
+            }
         }
 
         /// <summary>
-        /// Node identifier.
+        /// Gets the extents for this node, which minimally bounds all items.
         /// </summary>
-        public UInt32? NodeId
+        public IExtents Bounds
         {
-            get { return _nodeId; }
-            protected set { _nodeId = value; }
+            get { return _bounds; }
+            set { _bounds = value; }
         }
+
+        public abstract Boolean IsLeaf { get; }
+
+        ///// <summary>
+        ///// Node identifier.
+        ///// </summary>
+        //public UInt32? NodeId
+        //{
+        //    get { return _nodeId; }
+        //    protected set { _nodeId = value; }
+        //}
 
         /// <summary>
         /// Gets a reference to the containing spatial index.
         /// </summary>
-        public ISearchableSpatialIndex<TEntry> Index
+        public ISpatialIndex<IExtents, TItem> Index
         {
             get { return _index; }
             protected set { _index = value; }
@@ -65,18 +81,24 @@ namespace SharpMap.Indexing
         /// <summary>
         /// Gets the list of items in the index node.
         /// </summary>
-        public IList<TItem> Items
+        public ICollection<TItem> Items
         {
-            get { return _items.AsReadOnly(); }
+            get { return _items; }
         }
+
+        public abstract IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children { get; }
+
+        public abstract void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children);
+
+        public abstract void AddChild(ISpatialIndexNode<IExtents, TItem> child);
 
         /// <summary>
         /// Adds item to <see cref="Items"/> list and expands node's
-        /// <see cref="ISpatialIndexNode.BoundingBox">bounding box</see> to contain the
-        /// <paramref name="item"/>'s BoundingBox.
+        /// <see cref="ISpatialIndexNode{TBounds, TItem}.Bounds">bounds</see> 
+        /// to contain the <paramref name="item"/>'s bounds.
         /// </summary>
         /// <param name="item">Item to add</param>
-        public void Add(TItem item)
+        public void AddItem(TItem item)
         {
             Boolean cancel;
             OnItemAdding(item, out cancel);
@@ -87,7 +109,7 @@ namespace SharpMap.Indexing
             }
 
             _items.Add(item);
-            BoundingBox = BoundingBox.Join(GetItemBoundingBox(item));
+            Bounds = Bounds.Union(_bounder(item));
 
             OnItemAdded(item);
         }
@@ -95,7 +117,7 @@ namespace SharpMap.Indexing
         /// <summary>
         /// Adds <paramref name="items">items</paramref> to 
         /// <see cref="Items"/> list and expands node's
-        /// <see cref="BoundingBox">bounding box</see> to contain all 
+        /// <see cref="IExtents">extents</see> to contain all 
         /// <paramref name="items">items'</paramref>
         /// bounding boxes.
         /// </summary>
@@ -103,7 +125,7 @@ namespace SharpMap.Indexing
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="items"/> is null.
         /// </exception>
-        public void AddRange(IEnumerable<TItem> items)
+        public void AddItems(IEnumerable<TItem> items)
         {
             if (items == null)
             {
@@ -121,14 +143,14 @@ namespace SharpMap.Indexing
                 }
 
                 _items.Add(item);
-                BoundingBox = BoundingBox.Join(GetItemBoundingBox(item));
+                Bounds = Bounds.Union(_bounder(item));
                 OnItemAdded(item);
             }
         }
 
         /// <summary>
         /// Removes an item and adjusts 
-        /// <see cref="ISpatialIndexNode.BoundingBox">bounding box</see> 
+        /// <see cref="ISpatialIndexNode{TBounds, TItem}.Bounds">bounds</see> 
         /// to accomodate new set of items.
         /// </summary>
         /// <param name="item">Item to remove.</param>
@@ -136,7 +158,7 @@ namespace SharpMap.Indexing
         /// <see langword="true"/> if the item was found and removed, 
         /// <see langword="false"/> if not found or not removed.
         /// </returns>
-        public virtual Boolean Remove(TItem item)
+        public virtual Boolean RemoveItem(TItem item)
         {
             Boolean cancel;
 
@@ -154,45 +176,43 @@ namespace SharpMap.Indexing
                 OnItemRemoved(item);
             }
 
-            BoundingBox itemBounds = GetItemBoundingBox(item);
+            IExtents itemBounds = _bounder(item);
 
-            if (removed && BoundingBox.Borders(itemBounds))
+            if (removed && Bounds.Borders(itemBounds))
             {
-                BoundingBox = BoundingBox.Empty;
+                Bounds = null;
 
                 foreach (TItem keptItem in _items)
                 {
-                    BoundingBox = BoundingBox.Join(GetItemBoundingBox(keptItem));
+                    Bounds = Bounds.Union(_bounder(keptItem));
                 }
             }
 
             return removed;
         }
 
+        public abstract Boolean RemoveChild(ISpatialIndexNode<IExtents, TItem> child);
+
+
         /// <summary>
         /// Removes all contained items and sets the 
-        /// <see cref="ISpatialIndexNode.BoundingBox">bounding box</see> 
-        /// to <see cref="SharpMap.Geometries.BoundingBox.Empty"/>.
+        /// <see cref="ISpatialIndexNode{TBounds, TItem}.Bounds">bounds</see> 
+        /// to <see langword="null"/>.
         /// </summary>
         public void Clear()
         {
             Boolean cancel;
             OnClearing(out cancel);
-            BoundingBox = BoundingBox.Empty;
+            Bounds = null;
             OnCleared();
         }
 
-        public override String ToString()
-        {
-            return String.Format("Node Id: {0}; BoundingBox: {1}", _nodeId, _boundingBox);
-        }
-
-        /// <summary>
-        /// Gets the bounding box for the <paramref name="item">item</paramref>.
-        /// </summary>
-        /// <param name="item">The item to retrieve the bounding box for.</param>
-        /// <returns>The bounding box of the given <paramref name="item">item</paramref>.</returns>
-        protected abstract BoundingBox GetItemBoundingBox(TItem item);
+        ///// <summary>
+        ///// Gets the bounding box for the <paramref name="item">item</paramref>.
+        ///// </summary>
+        ///// <param name="item">The item to retrieve the bounding box for.</param>
+        ///// <returns>The bounding box of the given <paramref name="item">item</paramref>.</returns>
+        //protected abstract IExtents GetItemBounds(TItem item);
 
         protected virtual void OnClearing(out Boolean cancel)
         {
@@ -200,20 +220,20 @@ namespace SharpMap.Indexing
             cancel = false;
         }
 
-        protected virtual void OnCleared() {}
+        protected virtual void OnCleared() { }
 
         protected virtual void OnItemAdding(TItem entry, out Boolean cancel)
         {
             cancel = false;
         }
 
-        protected virtual void OnItemAdded(TItem entry) {}
+        protected virtual void OnItemAdded(TItem entry) { }
 
         protected virtual void OnItemRemoving(TItem entry, out Boolean cancel)
         {
             cancel = false;
         }
 
-        protected virtual void OnItemRemoved(TItem entry) {}
+        protected virtual void OnItemRemoved(TItem entry) { }
     }
 }

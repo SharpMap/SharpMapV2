@@ -141,8 +141,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </remarks>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            return EnumerableConverter.Downcast<TCoordinate, IVector<DoubleComponent>>(
-                _transform.TransformVectors(EnumerableConverter.Upcast<IVector<DoubleComponent>, TCoordinate>(points)));
+            return Enumerable.Downcast<TCoordinate, IVector<DoubleComponent>>(
+                _transform.TransformVectors(Enumerable.Upcast<IVector<DoubleComponent>, TCoordinate>(points)));
         }
     }
 }

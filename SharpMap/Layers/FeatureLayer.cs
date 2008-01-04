@@ -112,11 +112,13 @@ namespace SharpMap.Layers
             _features.IsSpatiallyIndexed = true;
 
             _selectedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Intersects, null),
+                // NOTE: changed Point.Empty to null
+                new FeatureSpatialExpression(null, SpatialExpressionType.Intersects, null),
                 "", DataViewRowState.CurrentRows);
 
             _highlightedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Intersects, null), 
+                // NOTE: changed Point.Empty to null
+                new FeatureSpatialExpression(null, SpatialExpressionType.Intersects, null), 
                 "", DataViewRowState.CurrentRows);
 
             if (ShouldHandleFeaturesNotFoundEvent)
@@ -188,7 +190,7 @@ namespace SharpMap.Layers
 
         #region Layer overrides
 
-        public override Geometry LoadedRegion
+        public override IGeometry LoadedRegion
         {
             get
             {
@@ -243,9 +245,9 @@ namespace SharpMap.Layers
 
         private void handleFeaturesRequested(object sender, FeaturesNotFoundEventArgs e)
         {
-            Geometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
+            IGeometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
 
-            Boolean hasIntersectionWithLayerData = !(available.IsEmpty() || Features.Envelope.Contains(available)) &&
+            Boolean hasIntersectionWithLayerData = !(available.IsEmpty || Features.Envelope.Contains(available)) &&
                                                 e.MissingForQuery.QueryType != SpatialExpressionType.Disjoint;
 
             if(hasIntersectionWithLayerData || e.MissingForQuery.Oids != null)

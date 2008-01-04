@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using GeoAPI.Coordinates;
+using GeoAPI.Geometries;
 using NPack;
 using NPack.Interfaces;
 using GeoAPI.CoordinateSystems;
@@ -393,7 +395,7 @@ namespace SharpMap
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
-        private BoundingBox _extents = BoundingBox.Empty;
+        private IExtents _extents;
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
         private Boolean _disposed;
@@ -707,7 +709,7 @@ namespace SharpMap
         /// in the layers collection.
         /// </summary>
         /// <returns>Full map extents.</returns>
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get { return _extents; }
         }
@@ -1092,9 +1094,9 @@ namespace SharpMap
         /// <summary>
         /// Gets center of map in world coordinates.
         /// </summary>
-        public GeoPoint Center
+        public ICoordinate Center
         {
-            get { return _extents.GetCentroid(); }
+            get { return _extents.Center; }
         }
 
         /// <summary>
@@ -1310,13 +1312,20 @@ namespace SharpMap
 
         private void recomputeExtents()
         {
-            BoundingBox extents = BoundingBox.Empty;
+            IExtents extents = null;
 
             foreach (ILayer layer in Layers)
             {
                 if (layer.Enabled)
                 {
-                    extents.ExpandToInclude(layer.Extents);
+                    if (extents == null)
+                    {
+                        extents = layer.Extents;
+                    }
+                    else
+                    {
+                        extents.ExpandToInclude(layer.Extents);
+                    }
                 }
             }
 

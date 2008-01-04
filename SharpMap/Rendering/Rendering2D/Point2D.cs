@@ -511,15 +511,6 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         /// <summary>
-        /// Gets the elements in the matrix as an array of arrays (jagged array).
-        /// </summary>
-        DoubleComponent[][] IMatrixD.Elements
-        {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
-        }
-
-        /// <summary>
         /// Gets a submatrix.
         /// </summary>
         /// <param name="rowIndexes">The indexes of the rows to include.</param>

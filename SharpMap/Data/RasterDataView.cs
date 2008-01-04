@@ -38,7 +38,7 @@ namespace SharpMap.Data
 
         }
 
-        public RasterDataView(RasterDataSet dataSet, Geometry intersectionFilter, Double scale)
+        public RasterDataView(RasterDataSet dataSet, IGeometry intersectionFilter, Double scale)
         {
 
         }

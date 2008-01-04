@@ -22,7 +22,7 @@ namespace SharpMap.Data
 {
     public class RasterBand
     {
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {

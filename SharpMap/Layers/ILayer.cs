@@ -63,7 +63,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the boundingbox of the entire layer.
         /// </summary>
-        BoundingBox Extents { get; }
+        IExtents Extents { get; }
 
         /// <summary>
         /// Name of layer.

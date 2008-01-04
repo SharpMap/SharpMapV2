@@ -17,13 +17,57 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.QuadTree
 {
-    public class QuadTree<TValue> : QuadTreeNode<TValue>, ISearchableSpatialIndex<TValue>
+    public class QuadTree<TItem> : QuadTreeNode<TItem>, ISpatialIndex<IExtents, TItem>
     {
+        public QuadTree(Func<TItem, IExtents> bounder) : base(bounder)
+        {}
+
+        /// <summary>
+        /// Adds a spatial item with an extent specified by the given
+        /// <paramref name="bounds"/> to the index.
+        /// </summary>
+        public void Insert(IExtents bounds, TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary> 
+        /// Queries the index for all items whose extents intersect the given search <c>Envelope</c> 
+        /// Note that some kinds of indexes may also return objects which do not in fact
+        /// intersect the query envelope.
+        /// </summary>
+        /// <param name="bounds">The envelope to query for.</param>
+        /// <returns>A list of the items found by the query.</returns>
+        public IEnumerable<TItem> Query(IExtents bounds)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Queries the index for all items whose extents intersect the given search 
+        /// <see cref="IExtents{TCoordinate}" />, and applies an <see cref="Action{T}" /> to them.
+        /// Note that some kinds of indexes may also return objects which do not in fact
+        /// intersect the query envelope.
+        /// </summary>
+        /// <param name="bounds">The envelope to query for.</param>
+        /// <param name="predicate">A predicate delegate to apply to the items found.</param>
+        public IEnumerable<TItem> Query(IExtents bounds, Predicate<TItem> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        ///<summary>
+        ///Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///</summary>
+        ///<filterpriority>2</filterpriority>
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

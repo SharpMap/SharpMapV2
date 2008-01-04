@@ -16,15 +16,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Indexing.QuadTree
 {
-    public class LinearDynamicQuadTree<TValue> : DynamicQuadTree<TValue>
+    public class LinearDynamicQuadTree<TItem> : DynamicQuadTree<TItem>
     {
-        public LinearDynamicQuadTree()
-            : base(new LinearQuadTreeEntryInsertStrategy<TValue>(), new LinearQuadTreeNodeSplitStrategy<TValue>(), new DynamicQuadTreeBalanceHeuristic())
+        public LinearDynamicQuadTree(Func<TItem, IExtents> bounder)
+            : base(new LinearQuadTreeEntryInsertStrategy<TItem>(), 
+            new LinearQuadTreeNodeSplitStrategy<TItem>(), 
+            new DynamicQuadTreeBalanceHeuristic(), bounder)
         {
         }
     }

@@ -73,7 +73,7 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, 
+        IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, 
             FeatureDataSet dataSet, AsyncCallback callback, object asyncState);
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet,
+        IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
             QueryExecutionOptions options, AsyncCallback callback, object asyncState);
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, 
+        IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, 
             AsyncCallback callback, object asyncState);
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace SharpMap.Data
         /// <param name="asyncState">
         /// Custom state to pass to the <paramref name="callback"/>.
         /// </param>
-        IAsyncResult BeginExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table,
+        IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
             QueryExecutionOptions options, AsyncCallback callback, object asyncState);
 
         IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, object asyncState);
@@ -169,14 +169,14 @@ namespace SharpMap.Data
 
         /// <summary>
         /// Gets the geometries within the specified 
-        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// <see cref="GeoAPI.Geometries.IExtents"/>.
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <returns>
         /// An enumeration of features within the specified 
-        /// <see cref="SharpMap.Geometries.BoundingBox"/>.
+        /// <see cref="GeoAPI.Geometries.IExtents"/>.
         /// </returns>
-        IEnumerable<Geometry> ExecuteGeometryIntersectionQuery(BoundingBox bounds);
+        IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IExtents bounds);
 
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
@@ -184,7 +184,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds);
+        IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds);
 
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
@@ -193,7 +193,7 @@ namespace SharpMap.Data
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteIntersectionQuery(BoundingBox bounds, QueryExecutionOptions options);
+        IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options);
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -201,7 +201,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
-        void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet);
+        void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet);
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -210,7 +210,7 @@ namespace SharpMap.Data
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="dataSet">FeatureDataSet to fill data into.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
-        void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataSet dataSet, QueryExecutionOptions options);
+        void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options);
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -218,7 +218,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table);
+        void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table);
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -227,7 +227,7 @@ namespace SharpMap.Data
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
-        void ExecuteIntersectionQuery(BoundingBox bounds, FeatureDataTable table, QueryExecutionOptions options);
+        void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options);
 
         /// <summary>
         /// Returns a <see cref="IFeatureDataReader"/> for obtaining features

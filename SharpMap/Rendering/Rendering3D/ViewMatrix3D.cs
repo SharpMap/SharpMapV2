@@ -82,98 +82,98 @@ namespace SharpMap.Rendering.Rendering3D
 
         public Double X1
         {
-            get { return (Double)Elements[0][0]; }
-            set { Elements[0][0] = value; }
+            get { return (Double)this[0, 0]; }
+            set { this[0, 0] = value; }
         }
 
         public Double X2
         {
-            get { return (Double)Elements[1][0]; }
-            set { Elements[1][0] = value; }
+            get { return (Double)this[1, 0]; }
+            set { this[1, 0] = value; }
         }
 
         public Double X3
         {
-            get { return (Double)Elements[2][0]; }
-            set { Elements[2][0] = value; }
+            get { return (Double)this[2, 0]; }
+            set { this[2, 0] = value; }
         }
 
         public Double X4
         {
-            get { return (Double)Elements[3][0]; }
-            set { Elements[3][0] = value; }
+            get { return (Double)this[3, 0]; }
+            set { this[3, 0] = value; }
         }
 
         public Double Y1
         {
-            get { return (Double)Elements[0][1]; }
-            set { Elements[0][1] = value; }
+            get { return (Double)this[0, 1]; }
+            set { this[0, 1] = value; }
         }
 
         public Double Y2
         {
-            get { return (Double)Elements[1][1]; }
-            set { Elements[1][1] = value; }
+            get { return (Double)this[1, 1]; }
+            set { this[1, 1] = value; }
         }
 
         public Double Y3
         {
-            get { return (Double)Elements[2][1]; }
-            set { Elements[2][1] = value; }
+            get { return (Double)this[2, 1]; }
+            set { this[2, 1] = value; }
         }
 
         public Double Y4
         {
-            get { return (Double)Elements[3][1]; }
-            set { Elements[3][1] = value; }
+            get { return (Double)this[3, 1]; }
+            set { this[3, 1] = value; }
         }
 
         public Double Z1
         {
-            get { return (Double)Elements[0][2]; }
-            set { Elements[0][2] = value; }
+            get { return (Double)this[0, 2]; }
+            set { this[0, 2] = value; }
         }
 
         public Double Z2
         {
-            get { return (Double)Elements[1][2]; }
-            set { Elements[1][2] = value; }
+            get { return (Double)this[1, 2]; }
+            set { this[1, 2] = value; }
         }
 
         public Double Z3
         {
-            get { return (Double)Elements[2][2]; }
-            set { Elements[2][2] = value; }
+            get { return (Double)this[2, 2]; }
+            set { this[2, 2] = value; }
         }
 
         public Double Z4
         {
-            get { return (Double)Elements[3][2]; }
-            set { Elements[3][2] = value; }
+            get { return (Double)this[3, 2]; }
+            set { this[3, 2] = value; }
         }
 
         public Double W1
         {
-            get { return (Double)Elements[0][3]; }
-            set { Elements[0][3] = value; }
+            get { return (Double)this[0, 3]; }
+            set { this[0, 3] = value; }
         }
 
         public Double W2
         {
-            get { return (Double)Elements[1][3]; }
-            set { Elements[1][3] = value; }
+            get { return (Double)this[1, 3]; }
+            set { this[1, 3] = value; }
         }
 
         public Double W3
         {
-            get { return (Double)Elements[2][3]; }
-            set { Elements[2][3] = value; }
+            get { return (Double)this[2, 3]; }
+            set { this[2, 3] = value; }
         }
 
         public Double W4
         {
-            get { return (Double)Elements[3][3]; }
-            set { Elements[3][3] = value; }
+            get { return (Double)this[3, 3]; }
+            set { this[3, 3] = value; }
         }
     }
 }

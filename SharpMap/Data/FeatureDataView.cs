@@ -77,7 +77,7 @@ namespace SharpMap.Data
         private FeatureSpatialExpression _viewDefinition;
         private Boolean _reindexingEnabled = true;
         private Boolean _shouldReindex = false;
-        private BoundingBox _extents = BoundingBox.Empty;
+        private IExtents _extents;
         #endregion
 
         #region Object constructors
@@ -88,7 +88,8 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="table">Table to create view on.</param>
         public FeatureDataView(FeatureDataTable table)
-            : this(table, new FeatureSpatialExpression(Point.Empty, SpatialExpressionType.Disjoint, null), 
+            // NOTE: changed Point.Empty to null
+            : this(table, new FeatureSpatialExpression(null, SpatialExpressionType.Disjoint, null), 
                 "", DataViewRowState.CurrentRows) { }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, Geometry intersectionFilter,
+        public FeatureDataView(FeatureDataTable table, IGeometry intersectionFilter,
                                String sort, DataViewRowState rowState)
             : this(table, intersectionFilter, SpatialExpressionType.Intersects, sort, rowState) { }
 
@@ -120,7 +121,7 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, Geometry query, SpatialExpressionType queryType,
+        public FeatureDataView(FeatureDataTable table, IGeometry query, SpatialExpressionType queryType,
                                String sort, DataViewRowState rowState)
             : this(table, new FeatureSpatialExpression(query, queryType, null), sort, rowState) { }
 
@@ -174,21 +175,21 @@ namespace SharpMap.Data
         #endregion
 
         /// <summary>
-        /// Gets or sets the <see cref="Geometry"/> instance used
+        /// Gets or sets the <see cref="IGeometry"/> instance used
         /// to filter the table data based on intersection.
         /// </summary>
-        public Geometry GeometryFilter
+        public IGeometry GeometryFilter
         {
             get
             {
+                // NOTE: changed Point.Empty to null
                 return _viewDefinition.QueryRegion == null
-                  ? Point.Empty
+                  ? null
                   : _viewDefinition.QueryRegion.Clone();
             }
             set
             {
-                value = value ?? Point.Empty;
-
+                // NOTE: changed Point.Empty to null
                 if (_viewDefinition.QueryRegion == value)
                 {
                     return;
@@ -235,9 +236,9 @@ namespace SharpMap.Data
         }
 
         /// <summary>
-        /// Gets the bounds which this view covers as a <see cref="BoundingBox"/>.
+        /// Gets the bounds which this view covers as an <see cref="IExtents"/>.
         /// </summary>
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {
@@ -265,10 +266,11 @@ namespace SharpMap.Data
 
                 _viewDefinition = value;
 
-                Geometry missingGeometry = Point.Empty;
+                // NOTE: changed Point.Empty to null
+                IGeometry missingGeometry = null;
                 ArrayList missingOids = new ArrayList();
 
-                if (!_viewDefinition.QueryRegion.IsEmpty()
+                if (!_viewDefinition.QueryRegion.IsEmpty
                     && !Table.Envelope.Contains(_viewDefinition.QueryRegion))
                 {
                     missingGeometry = _viewDefinition.QueryRegion.Difference(Table.Envelope);
@@ -287,7 +289,7 @@ namespace SharpMap.Data
                     }
                 }
 
-                if (!missingGeometry.IsEmpty() || missingOids.Count > 0)
+                if (!missingGeometry.IsEmpty || missingOids.Count > 0)
                 {
                     FeatureSpatialExpression notFound = new FeatureSpatialExpression(
                         missingGeometry, value.QueryType, missingOids);
@@ -462,7 +464,8 @@ namespace SharpMap.Data
 
         private Boolean inGeometryFilter(FeatureDataRow feature)
         {
-            return (_viewDefinition.QueryRegion == Point.Empty &&
+            // NOTE: changed Point.Empty to null
+            return (_viewDefinition.QueryRegion == null &&
                 _viewDefinition.QueryType == SpatialExpressionType.Disjoint) ||
                 _viewDefinition.QueryRegion.Intersects(feature.Geometry);
         }
@@ -519,11 +522,18 @@ namespace SharpMap.Data
         {
             IEnumerable<FeatureDataRow> features = this;
 
-            _extents = BoundingBox.Empty;
+            _extents = null;
 
             foreach (FeatureDataRow feature in features)
             {
-                _extents.ExpandToInclude(feature.Extents);
+                if (_extents == null)
+                {
+                    _extents = feature.Extents;
+                }
+                else
+                {
+                    _extents.ExpandToInclude(feature.Extents);
+                }
             }
         }
         #endregion

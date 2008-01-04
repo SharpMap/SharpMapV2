@@ -30,7 +30,7 @@ namespace SharpMap.Layers
 	/// </example>
 	public class RasterLayer : Layer, IRasterLayer
 	{
-	    private Geometry _loadedRegion = Point.Empty;
+        private IGeometry _loadedRegion = null;
 
 		public RasterLayer(ILayerProvider dataSource)
 			: base(dataSource)
@@ -47,15 +47,15 @@ namespace SharpMap.Layers
             return new RasterStyle();
         }
 
-        public override Geometry LoadedRegion
+        public override IGeometry LoadedRegion
         {
             get
             {
-                return _loadedRegion.Clone();
+                return _loadedRegion;
             }
             protected set
             {
-                _loadedRegion = value ?? Point.Empty;
+                _loadedRegion = value;
             }
         }
 

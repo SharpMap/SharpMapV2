@@ -293,15 +293,6 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Gets the elements in the matrix as an array of arrays (jagged array).
-        /// </summary>
-        DoubleComponent[][] IMatrixD.Elements
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
         /// Gets or sets an element in the matrix.
         /// </summary>
         /// <param name="row">The index of the row of the element.</param>

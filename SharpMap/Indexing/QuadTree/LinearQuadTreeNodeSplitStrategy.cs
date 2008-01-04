@@ -16,23 +16,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.QuadTree
 {
-    public class LinearQuadTreeNodeSplitStrategy<TValue> : INodeSplitStrategy
+    public class LinearQuadTreeNodeSplitStrategy<TItem> : INodeSplitStrategy<IExtents, TItem>
     {
         #region INodeSplitStrategy Members
 
-        public ISpatialIndexNode SplitNode(ISpatialIndexNode node, IndexBalanceHeuristic heuristic)
+        public ISpatialIndexNode<IExtents, TItem> SplitNode(ISpatialIndexNode<IExtents, TItem> node, IndexBalanceHeuristic heuristic)
         {
             if (node == null)
             {
                 return null;
             }
 
-            QuadTreeNode<TValue> quadTreeNode = node as QuadTreeNode<TValue>;
+            QuadTreeNode<TItem> quadTreeNode = node as QuadTreeNode<TItem>;
             DynamicQuadTreeBalanceHeuristic quadTreeHeuristic = heuristic as DynamicQuadTreeBalanceHeuristic;
 
             throw new NotImplementedException();

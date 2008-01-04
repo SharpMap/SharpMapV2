@@ -29,7 +29,7 @@ namespace SharpMap.Indexing
         /// <summary>
         /// Gets the BoundingBox for this node, which minimally bounds all items.
         /// </summary>
-        BoundingBox BoundingBox { get; }
+        IExtents Bounds { get; }
 
         /// <summary>
         /// Node identifier.
@@ -53,7 +53,7 @@ namespace SharpMap.Indexing
         /// <returns>
         /// A set of entries which intersect the given <paramref name="bounds"/>.
         /// </returns>
-        IEnumerable<TEntry> Search(BoundingBox bounds);
+        IEnumerable<TEntry> Search(IExtents bounds);
 
         /// <summary>
         /// Returns a set of entries which intersect the <paramref name="geometry"/>.
@@ -64,7 +64,7 @@ namespace SharpMap.Indexing
         /// <returns>
         /// A set of entries which intersect the given <paramref name="geometry"/>.
         /// </returns>
-        IEnumerable<TEntry> Search(Geometry geometry);
+        IEnumerable<TEntry> Search(IGeometry geometry);
     }
 
     /// <summary>

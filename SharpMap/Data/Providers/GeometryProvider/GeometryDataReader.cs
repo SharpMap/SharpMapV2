@@ -31,13 +31,13 @@ namespace SharpMap.Data.Providers.GeometryProvider
     {
         #region Instance fields
         private GeometryProvider _provider;
-        private readonly BoundingBox _bounds;
+        private readonly IExtents _bounds;
         private Int32 _currentIndex = -1;
         private Boolean _isDisposed; 
         #endregion
 
         #region Object construction and disposal
-        internal GeometryDataReader(GeometryProvider provider, BoundingBox bounds)
+        internal GeometryDataReader(GeometryProvider provider, IExtents bounds)
         {
             _provider = provider;
             _bounds = bounds;
@@ -89,7 +89,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
         }
 		
-        public Geometry Geometry
+        public IGeometry Geometry
 		{
 			get
 			{
@@ -137,7 +137,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             {
                 Interlocked.Increment(ref _currentIndex);
             } while (_currentIndex < _provider.Geometries.Count &&
-                     _bounds.Intersects(_provider.Geometries[_currentIndex]));
+                     _bounds.Intersects(_provider.Geometries[_currentIndex].Extents));
 
             return _currentIndex < _provider.Geometries.Count;
         }
@@ -148,9 +148,9 @@ namespace SharpMap.Data.Providers.GeometryProvider
             {
                 Int32 count = 0;
 
-                foreach (Geometry geometry in _provider.Geometries)
+                foreach (IGeometry geometry in _provider.Geometries)
                 {
-                    if (_bounds.Intersects(geometry)) count++;
+                    if (_bounds.Intersects(geometry.Extents)) count++;
                 }
 
                 return count;

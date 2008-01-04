@@ -22,18 +22,19 @@ namespace SharpMap.Expressions
 {
     public class SpatialExpression : IEquatable<SpatialExpression>
     {
-        private readonly Geometry _queryRegion;
+        private readonly IGeometry _queryRegion;
         private readonly SpatialExpressionType _queryType;
 
-        public SpatialExpression(Geometry queryRegion, SpatialExpressionType queryType)
+        public SpatialExpression(IGeometry queryRegion, SpatialExpressionType queryType)
         {
             _queryRegion = queryRegion;
             _queryType = queryType;
         }
 
-        public Geometry QueryRegion
+        public IGeometry QueryRegion
         {
-            get { return _queryRegion ?? Point.Empty; }
+            // NOTE: changed Point.Empty to null
+            get { return _queryRegion; }
         }
 
         public SpatialExpressionType QueryType
@@ -41,7 +42,7 @@ namespace SharpMap.Expressions
             get { return _queryType; }
         }
 
-        public Boolean HasIntersection(Geometry geometry)
+        public Boolean HasIntersection(IGeometry geometry)
         {
             switch (QueryType)
             {

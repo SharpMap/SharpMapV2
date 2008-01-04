@@ -79,9 +79,10 @@ namespace SharpMap.Presentation.Presenters
 
             FeatureSpatialExpression query;
 
-            if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty())
+            if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty)
             {
-                query = new FeatureSpatialExpression(Point.Empty,
+                // NOTE: changed Point.Empty to null
+                query = new FeatureSpatialExpression(null,
                                         SpatialExpressionType.Disjoint,
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }

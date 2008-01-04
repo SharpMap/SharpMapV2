@@ -38,7 +38,7 @@ namespace SharpMap.Data
 
         #region IFeatureDataRecord Members
 
-        public Geometry Geometry
+        public IGeometry Geometry
         {
             get { throw new NotImplementedException(); }
         }

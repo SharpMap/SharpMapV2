@@ -31,7 +31,7 @@ namespace SharpMap.Data
             }
         }
 
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {

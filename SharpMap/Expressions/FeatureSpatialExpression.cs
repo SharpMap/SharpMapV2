@@ -29,7 +29,7 @@ namespace SharpMap.Expressions
         public FeatureSpatialExpression(IEnumerable oids)
             : this(null, SpatialExpressionType.None, oids) { }
 
-        public FeatureSpatialExpression(Geometry queryRegion, SpatialExpressionType type, IEnumerable oids)
+        public FeatureSpatialExpression(IGeometry queryRegion, SpatialExpressionType type, IEnumerable oids)
             : base(queryRegion, type)
         {
             _oids = oids;

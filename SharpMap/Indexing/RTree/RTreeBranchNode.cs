@@ -17,16 +17,18 @@
 
 using System;
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.RTree
 {
     /// <summary>
     /// A branch node in an R-Tree index.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value used in the entries.</typeparam>
-    public class RTreeBranchNode<TValue> : SpatialIndexNode<ISpatialIndexNode, RTreeIndexEntry<TValue>>
+    /// <typeparam name="TItem">The type of the value used in the entries.</typeparam>
+    public class RTreeBranchNode<TItem> : SpatialIndexNode<TItem>
     {
-        internal RTreeBranchNode(ISearchableSpatialIndex<RTreeIndexEntry<TValue>> index)
+        internal RTreeBranchNode(ISpatialIndex<IExtents, TItem> index, Func<TItem, IExtents> bounder)
+            : base(bounder)
         {
             Index = index;
         }
@@ -46,30 +48,32 @@ namespace SharpMap.Indexing.RTree
         /// <summary> 
         /// Gets the extents of the nodes accessible via this branch.
         /// </summary>
-        public new BoundingBox BoundingBox
+        public new IExtents Bounds
         {
-            get { return base.BoundingBox; }
-            protected internal set { base.BoundingBox = value; }
+            get { return base.Bounds; }
+            protected internal set { base.Bounds = value; }
         }
 
         /// <summary>
         /// Recursively descends the branch to remove the given <paramref name="entry"/>.
         /// </summary>
         /// <param name="entry">The index entry to remove.</param>
-        public void Remove(RTreeIndexEntry<TValue> entry)
+        public void Remove(TItem entry)
         {
-            foreach (ISpatialIndexNode node in Items)
+            foreach (ISpatialIndexNode<IExtents, TItem> node in Items)
             {
-                if (node.BoundingBox.Contains(entry.BoundingBox))
+                IExtents itemBounds = Bounder(entry);
+
+                if (node.Bounds.Contains(itemBounds))
                 {
-                    if (node is RTreeBranchNode<TValue>)
+                    if (node is RTreeBranchNode<TItem>)
                     {
-                        RTreeBranchNode<TValue> branch = node as RTreeBranchNode<TValue>;
+                        RTreeBranchNode<TItem> branch = node as RTreeBranchNode<TItem>;
                         branch.Remove(entry);
                     }
-                    else if (node is RTreeLeafNode<TValue>)
+                    else if (node is RTreeLeafNode<TItem>)
                     {
-                        RTreeLeafNode<TValue> leaf = node as RTreeLeafNode<TValue>;
+                        RTreeLeafNode<TItem> leaf = node as RTreeLeafNode<TItem>;
                         leaf.Remove(entry);
                     }
 
@@ -81,19 +85,7 @@ namespace SharpMap.Indexing.RTree
         public override String ToString()
         {
             return String.Format("[{0}] NodeId: {1}; BoundingBox: {2}; Children Count: {3}", 
-                GetType(), NodeId, BoundingBox, Items.Count);
-        }
-
-        /// <summary>
-        /// Gets the bounding box for the <paramref name="item">child node</paramref>.
-        /// </summary>
-        /// <param name="item">The child node to retrieve the bounding box for.</param>
-        /// <returns>
-        /// The bounding box of the given <paramref name="item">child node</paramref>.
-        /// </returns>
-        protected override BoundingBox GetItemBoundingBox(ISpatialIndexNode item)
-        {
-            return item.BoundingBox;
+                GetType(), NodeId, Bounds, Items.Count);
         }
     }
 }

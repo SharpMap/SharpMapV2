@@ -35,17 +35,17 @@ namespace SharpMap.Presentation.Views
         event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
         event EventHandler<MapActionEventArgs<Point2D>> EndAction;
         event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<IPoint>> GeoCenterChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
         event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
         event EventHandler SizeChanged;
-        event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ViewEnvelopeChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
         event EventHandler ZoomToExtentsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ZoomToWorldBoundsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets center of map in world coordinates.
         /// </summary>
-        Point GeoCenter { get; set; }
+        IPoint GeoCenter { get; set; }
 
-        void IdentifyLocation(Point worldPoint);
+        void IdentifyLocation(IPoint worldPoint);
 
         /// <summary>
         /// Gets or sets the minimum width in world units of the view.
@@ -125,14 +125,14 @@ namespace SharpMap.Presentation.Views
 
         /// <summary>
         /// Creates a <see cref="Point2D"/> in view space from a
-        /// <see cref="Point"/> in the map's world space.
+        /// <see cref="IPoint"/> in the map's world space.
         /// </summary>
         /// <param name="point">Point in the map's world space to transform.</param>
         /// <returns>
         /// A <see cref="Point2D"/> in view space coordinates which 
         /// corresponds to the given <paramref name="point"/> in map world space.
         /// </returns>
-        Point2D ToView(Point point);
+        Point2D ToView(IPoint point);
 
         /// <summary>
         /// Creates a <see cref="Point2D"/> in view space from X and Y
@@ -148,33 +148,33 @@ namespace SharpMap.Presentation.Views
         Point2D ToView(Double x, Double y);
 
         /// <summary>
-        /// Creates a <see cref="Point"/> in the map's world space from a
+        /// Creates a <see cref="IPoint"/> in the map's world space from a
         /// <see cref="Point2D"/> in the view space.
         /// </summary>
         /// <param name="point">Point in the view space to transform.</param>
         /// <returns>
-        /// A <see cref="Point"/> in the map's world space coordinates which 
+        /// A <see cref="IPoint"/> in the map's world space coordinates which 
         /// corresponds to the given <paramref name="point"/> in view space.
         /// </returns>
-        Point ToWorld(Point2D point);
+        IPoint ToWorld(Point2D point);
 
         /// <summary>
-        /// Creates a <see cref="Point"/> in map world space from X and Y
+        /// Creates a <see cref="IPoint"/> in map world space from X and Y
         /// coordinate values in the view space.
         /// </summary>
         /// <param name="x">X coordinate in the view space to transform.</param>
         /// <param name="y">Y coordinate in the view space to transform.</param>
         /// <returns>
-        /// A <see cref="Point"/> in view space coordinates which 
+        /// A <see cref="IPoint"/> in view space coordinates which 
         /// corresponds to the given (<paramref name="x"/>, <paramref name="y"/>) coordinate
         /// pair in view space.
         /// </returns>
-        Point ToWorld(Double x, Double y);
+        IPoint ToWorld(Double x, Double y);
 
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
         /// </summary>
-        BoundingBox ViewEnvelope { get; set; }
+        IExtents ViewEnvelope { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the view.
@@ -255,9 +255,9 @@ namespace SharpMap.Presentation.Views
         /// area.
         /// </remarks>
         /// <param name="zoomBox">
-        /// <see cref="BoundingBox"/> to set zoom to.
+        /// <see cref="IExtents"/> to set zoom to.
         /// </param>
-        void ZoomToWorldBounds(BoundingBox zoomBox);
+        void ZoomToWorldBounds(IExtents zoomBox);
 
         /// <summary>
         /// Zooms the view to the given width.

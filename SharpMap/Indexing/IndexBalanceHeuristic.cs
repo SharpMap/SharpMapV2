@@ -16,8 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Indexing
 {
@@ -26,9 +24,9 @@ namespace SharpMap.Indexing
     /// </summary>
     public abstract class IndexBalanceHeuristic
     {
-        private Int32 _nodeItemMin;
-        private Int32 _nodeItemMax;
-        private UInt32 _maxTreeDepth;
+        private readonly Int32 _nodeItemMin;
+        private readonly Int32 _nodeItemMax;
+        private readonly UInt32 _maxTreeDepth;
 
         protected IndexBalanceHeuristic(Int32 nodeItemMinimumCount, Int32 nodeItemMaximumCount, UInt32 maxTreeDepth)
         {

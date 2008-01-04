@@ -157,15 +157,22 @@ namespace SharpMap.Data
             }
         }
 
-        public BoundingBox Extents
+        public IExtents Extents
         {
             get
             {
-                BoundingBox extents = BoundingBox.Empty;
+                IExtents extents = null;
 
                 foreach (FeatureDataTable table in _featureTables)
                 {
-                    extents.ExpandToInclude(table.Extents);
+                    if (extents == null)
+	                {
+	                    extents = table.Extents;
+	                }
+                    else
+                    {
+                        extents.ExpandToInclude(table.Extents);
+                    }
                 }
 
                 return extents;

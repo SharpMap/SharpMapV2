@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using SharpMap.Data;
 using GeoAPI.Geometries;
 using SharpMap.Styles;
@@ -33,13 +34,13 @@ namespace SharpMap.Rendering.Rendering2D
         private TextRenderer2D<TRenderObject> _textRenderer;
 
         #region Object construction and disposal
-        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
+        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer,
             VectorRenderer2D<TRenderObject> vectorRenderer)
             : this(textRenderer, vectorRenderer, StyleTextRenderingHint.SystemDefault)
         {
         }
 
-        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer, 
+        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer,
             VectorRenderer2D<TRenderObject> vectorRenderer, StyleTextRenderingHint renderingHint)
             : base(vectorRenderer)
         {
@@ -58,7 +59,7 @@ namespace SharpMap.Rendering.Rendering2D
         public TextRenderer2D<TRenderObject> TextRenderer
         {
             get { return _textRenderer; }
-            private  set { _textRenderer = value; }
+            private set { _textRenderer = value; }
         }
 
         #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
@@ -309,26 +310,24 @@ namespace SharpMap.Rendering.Rendering2D
         //    return label;
         //}
 
-        private void calculateLabelOnLineString(LineString line, ref Label2D label)
+        private void calculateLabelOnLineString(ILineString line, ref Label2D label)
         {
             Double dx, dy;
             Double tmpx, tmpy;
-            Double angle = 0.0;
 
             // first find the middle segment of the line
-            Int32 midPoint = (line.Vertices.Count - 1)/2;
+            Int32 midPoint = 0;
 
-            if (line.Vertices.Count > 2)
+            if (line.Coordinates.Count > 2)
             {
-                dx = line.Vertices[midPoint + 1].X - line.Vertices[midPoint].X;
-                dy = line.Vertices[midPoint + 1].Y - line.Vertices[midPoint].Y;
+                midPoint = (line.Coordinates.Count - 1) / 2;
             }
-            else
-            {
-                midPoint = 0;
-                dx = line.Vertices[1].X - line.Vertices[0].X;
-                dy = line.Vertices[1].Y - line.Vertices[0].Y;
-            }
+
+            ICoordinate p0 = (ICoordinate)line.Coordinates[midPoint];
+            ICoordinate p1 = (ICoordinate)line.Coordinates[midPoint + 1];
+
+            dx = p1[Ordinates.X] - p0[Ordinates.X];
+            dy = p1[Ordinates.Y] - p0[Ordinates.Y];
 
             if (dy == 0)
             {
@@ -340,14 +339,15 @@ namespace SharpMap.Rendering.Rendering2D
             }
             else
             {
+                Double angle;
                 // calculate angle of line					
-                angle = -Math.Atan(dy/dx) + Math.PI*0.5;
-                angle *= (180d/Math.PI); // convert radians to degrees
-                label.Rotation = (Single) angle - 90; // -90 text orientation
+                angle = -Math.Atan(dy / dx) + Math.PI * 0.5;
+                angle *= (180d / Math.PI); // convert radians to degrees
+                label.Rotation = (Single)angle - 90; // -90 text orientation
             }
 
-            tmpx = line.Vertices[midPoint].X + (dx*0.5);
-            tmpy = line.Vertices[midPoint].Y + (dy*0.5);
+            tmpx = p0[Ordinates.X] + (dx * 0.5);
+            tmpy = p0[Ordinates.Y] + (dy * 0.5);
 
 #warning figure out label positioning
             throw new NotImplementedException();
@@ -358,7 +358,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         IEnumerable<TRenderObject> ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>.RenderLabel(ILabel<Point2D, Size2D, Rectangle2D, Path<Point2D, Rectangle2D>> label)
         {
-            if(!(label is Label2D))
+            if (!(label is Label2D))
             {
                 throw new ArgumentException("Parameter must be an instance of type Label2D.", "label");
             }

@@ -16,6 +16,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using GeoAPI.Geometries;
+
 namespace SharpMap.Data.Providers.ShapeFile
 {
     /// <summary>
@@ -33,7 +35,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <remarks>
         /// A point consists of a Double-precision coordinate in 2D space.
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.Point"/>.
+        /// SharpMap interprets this as <see cref="IPoint"/>.
         /// </remarks>
         Point = 1,
 
@@ -45,8 +47,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A part is a connected sequence of two or more points. Parts may or may not 
         /// be connected to one another. Parts may or may not intersect one another.
         /// SharpMap interprets this as either 
-        /// <see cref="SharpMap.Geometries.LineString"/> 
-        /// or <see cref="SharpMap.Geometries.MultiLineString"/>.
+        /// <see cref="ILineString"/> 
+        /// or <see cref="IMultiLineString"/>.
         /// </remarks>
         PolyLine = 3,
 
@@ -62,8 +64,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// holes in polygons are in a counterclockwise direction. Vertices for a single, ringed
         /// polygon are, therefore, always in clockwise order. The rings of a polygon are referred to
         /// as its parts.
-        /// SharpMap interprets this as either <see cref="SharpMap.Geometries.Polygon"/> 
-        /// or <see cref="SharpMap.Geometries.MultiPolygon"/>.
+        /// SharpMap interprets this as either <see cref="IPolygon"/> 
+        /// or <see cref="IMultiPolygon"/>.
         /// </remarks>
         Polygon = 5,
 
@@ -71,7 +73,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A set of <see cref="ShapeType.Point">points</see>.
         /// </summary>
         /// <remarks>
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.MultiPoint"/>.
+        /// SharpMap interprets this as <see cref="IMultiPoint"/>.
         /// </remarks>
         MultiPoint = 8,
 
@@ -81,7 +83,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <remarks>
         /// A PointZ has 3 components to the coordinate vector, allowing it to be positioned 
         /// anywhere in 3D space.
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.Geometries3D.Point3D"/>.
+        /// SharpMap interprets this as <see cref="IPoint3D"/>.
         /// </remarks>
         PointZ = 11,
 
@@ -92,8 +94,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A PolyLineZ consists of one or more parts. A part is a connected sequence of two or
         /// more points. Parts may or may not be connected to one another. Parts may or may not
         /// intersect one another.
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.LineString"/> 
-        /// or <see cref="SharpMap.Geometries.MultiLineString"/>.
+        /// SharpMap interprets this as <see cref="ILineString"/> 
+        /// or <see cref="IMultiLineString"/>.
         /// </remarks>
         PolyLineZ = 13,
 
@@ -104,8 +106,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A PolygonZ consists of a number of rings. A ring is a closed, non-self-intersecting loop.
         /// A PolygonZ may contain multiple outer rings. The rings of a PolygonZ are referred to as
         /// its parts.
-        /// SharpMap interprets this as either <see cref="SharpMap.Geometries.Polygon"/> 
-        /// or <see cref="SharpMap.Geometries.MultiPolygon"/>.
+        /// SharpMap interprets this as either <see cref="IPolygon"/> 
+        /// or <see cref="IMultiPolygon"/>.
         /// </remarks>
         PolygonZ = 15,
 
@@ -113,7 +115,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A set of <see cref="PointZ"/>s.
         /// </summary>
         /// <remarks>
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.MultiPoint"/>.
+        /// SharpMap interprets this as <see cref="IMultiPoint"/>.
         /// </remarks>
         MultiPointZ = 18,
 
@@ -122,7 +124,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <remarks>
         /// A PointM consists of a Double-precision coordinate in the order 'X', 'Y', and a measure 'M'.
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.Point"/>.
+        /// SharpMap interprets this as <see cref="IPoint"/>.
         /// </remarks>
         PointM = 21,
 
@@ -133,8 +135,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A shapefile PolyLineM consists of one or more parts. A part is a connected sequence of
         /// two or more points. Parts may or may not be connected to one another. Parts may or may
         /// not intersect one another.
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.LineString"/> 
-        /// or <see cref="SharpMap.Geometries.MultiLineString"/>.
+        /// SharpMap interprets this as <see cref="ILineString"/> 
+        /// or <see cref="IMultiLineString"/>.
         /// </remarks>
         PolyLineM = 23,
 
@@ -143,8 +145,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <remarks>
         /// A PolygonM consists of a number of rings. A ring is a closed, non-self-intersecting loop.
-        /// SharpMap interprets this as either <see cref="SharpMap.Geometries.Polygon"/> 
-        /// or <see cref="SharpMap.Geometries.MultiPolygon"/>.
+        /// SharpMap interprets this as either <see cref="IPolygon"/> 
+        /// or <see cref="IMultiPolygon"/>.
         /// </remarks>
         PolygonM = 25,
 
@@ -152,7 +154,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// A set of <see cref="PointM"/>s.
         /// </summary>
         /// <remarks>
-        /// SharpMap interprets this as <see cref="SharpMap.Geometries.MultiPoint"/>.
+        /// SharpMap interprets this as <see cref="IMultiPoint"/>.
         /// </remarks>
         MultiPointM = 28,
 

@@ -54,7 +54,7 @@ namespace SharpMap.Data
         /// Geometric extent of the entire dataset.
         /// </summary>
         /// <returns>The extents of the dataset as a BoundingBox.</returns>
-        BoundingBox GetExtents();
+        IExtents GetExtents();
 
         /// <summary>
         /// Gets the connection ID of the datasource.

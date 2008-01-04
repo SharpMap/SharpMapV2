@@ -16,16 +16,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.QuadTree
 {
-    public class DynamicQuadTree<TValue> : QuadTree<TValue>, IUpdatableSpatialIndex<TValue>
+    public class DynamicQuadTree<TItem> : QuadTree<TItem>, IUpdatableSpatialIndex<IExtents, TItem>
     {
-        private IEntryInsertStrategy<TValue> _insertStrategy;
-        private INodeSplitStrategy _nodeSplitStrategy;
-        private DynamicQuadTreeBalanceHeuristic _heuristic;
+        private readonly IItemInsertStrategy<IExtents, TItem> _insertStrategy;
+        private readonly INodeSplitStrategy<IExtents, TItem> _nodeSplitStrategy;
+        private readonly DynamicQuadTreeBalanceHeuristic _heuristic;
 
         /// <summary>
         /// Creates a new updatable QuadTree instance
@@ -33,8 +33,8 @@ namespace SharpMap.Indexing.QuadTree
         /// <param name="insertStrategy">Strategy used to insert new entries into the index.</param>
         /// <param name="nodeSplitStrategy">Strategy used to split nodes when they are full.</param>
         /// <param name="heuristic">Heuristics used to build the index and keep it balanced.</param>
-        public DynamicQuadTree(IEntryInsertStrategy<TValue> insertStrategy, INodeSplitStrategy nodeSplitStrategy, DynamicQuadTreeBalanceHeuristic heuristic)
-            : base()
+        public DynamicQuadTree(IItemInsertStrategy<IExtents, TItem> insertStrategy, INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, DynamicQuadTreeBalanceHeuristic heuristic, Func<TItem, IExtents> bounder)
+            :base(bounder)
         {
             _insertStrategy = insertStrategy;
             _nodeSplitStrategy = nodeSplitStrategy;
@@ -49,32 +49,11 @@ namespace SharpMap.Indexing.QuadTree
             get { return _heuristic; }
         }
 
-        /// <summary>
-        /// The strategy used to insert new entries into the index.
-        /// </summary>
-        public IEntryInsertStrategy<TValue> EntryInsertStrategy
+        #region IUpdatableSpatialIndex<IExtents,TItem> Members
+
+        public bool Remove(IExtents bounds, TItem item)
         {
-            get { return _insertStrategy; }
-        }
-
-        #region IUpdatableSpatialIndex<TValue> Members
-
-        public void Insert(TValue entry)
-        {
-            ISpatialIndexNode newSiblingFromSplit;
-            
-            EntryInsertStrategy.InsertEntry(entry, this, _nodeSplitStrategy, Heuristic, out newSiblingFromSplit);
-
-            if (newSiblingFromSplit != null)
-	        {
-                Items.Add(newSiblingFromSplit as QuadTreeNode<TValue>);
-	        }
-        }
-
-        public void Remove(TValue entry)
-        {
-            // TODO: Implement quad-tree remove.
-            throw new NotImplementedException("TODO: Implement quad-tree remove");
+            throw new NotImplementedException();
         }
 
         #endregion
