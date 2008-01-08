@@ -326,5 +326,39 @@ namespace ProjNet.CoordinateSystems.Transformations
 		}
 
 		#endregion
-	}
+
+        #region Explicit IMathTransform Members
+
+        IMatrix<DoubleComponent> IMathTransform.Derivative(ICoordinate point)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<ICoordinate> IMathTransform.GetCodomainConvexHull(IEnumerable<ICoordinate> points)
+        {
+            throw new NotImplementedException();
+        }
+
+        DomainFlags IMathTransform.GetDomainFlags(IEnumerable<ICoordinate> points)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMathTransform IMathTransform.Inverse()
+        {
+            throw new NotImplementedException();
+        }
+
+        ICoordinate IMathTransform.Transform(ICoordinate coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<ICoordinate> IMathTransform.Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

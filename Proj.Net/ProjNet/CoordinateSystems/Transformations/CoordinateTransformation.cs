@@ -148,5 +148,25 @@ namespace ProjNet.CoordinateSystems.Transformations
 		}
 
 		#endregion
-	}
+
+        #region Explicit ICoordinateTransformation Members
+
+
+        IMathTransform ICoordinateTransformation.MathTransform
+        {
+            get { return MathTransform; }
+        }
+
+        ICoordinateSystem ICoordinateTransformation.Source
+        {
+            get { return Source; }
+        }
+
+        ICoordinateSystem ICoordinateTransformation.Target
+        {
+            get { return Target; }
+        }
+
+        #endregion
+    }
 }
