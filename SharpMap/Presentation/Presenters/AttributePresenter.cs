@@ -73,7 +73,8 @@ namespace SharpMap.Presentation.Presenters
                 return;
             }
 
-            IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer;
+			// HACK: fix this Monday
+			IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer ?? (Map.Layers[e.LayerName] as LayerGroup).MasterLayer as IFeatureLayer;
 
             Debug.Assert(layer != null);
 
@@ -107,8 +108,10 @@ namespace SharpMap.Presentation.Presenters
             IFeatureLayer featureLayer = null;
 
             foreach (ILayer layer in Map.Layers)
-            { 
-                featureLayer = layer as IFeatureLayer;
+            {
+				// HACK: fix this Monday
+				featureLayer = layer as IFeatureLayer ?? (layer as LayerGroup).MasterLayer as IFeatureLayer;
+				//featureLayer = layer as IFeatureLayer;
 
                 if (featureLayer == null)
                 {

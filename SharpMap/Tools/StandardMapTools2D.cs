@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using SharpMap.Geometries;
 using SharpMap.Layers;
+using SharpMap.Styles;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
 
@@ -232,19 +233,38 @@ namespace SharpMap.Tools
             // Apply the GeometryFilter derived from the view's selection
             for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)
             {
-                GeometryLayer layer = context.Map.Layers[i] as GeometryLayer;
-
-                if (layer == null)
-                {
-                    continue;
-                }
-
-                if (layer.Enabled && layer.IsVisibleWhen(isInView(view.WorldWidth)))
-                {
-                    layer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
-                }
+				filterSelected(context.Map.Layers[i], view, worldBounds);
             }
         }
+
+		private static void filterSelected(ILayer layer, IMapView2D view, BoundingBox worldBounds)
+		{
+			if (layer == null)
+			{
+				return;
+			}
+
+			GeometryLayer filterLayer;
+
+			if (layer is GeometryLayer)
+			{
+				filterLayer = layer as GeometryLayer;
+
+				Debug.Assert(filterLayer.Style != null);
+
+				if (layer.Enabled && (filterLayer.Style.AreFeaturesSelectable) && layer.IsVisibleWhen(isInView(view.WorldWidth)))
+				{
+					filterLayer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
+				}
+			}
+			else if (layer is LayerGroup)
+			{
+				foreach (ILayer glayer in (layer as LayerGroup).Layers)
+				{
+					filterSelected(glayer, view, worldBounds);
+				}
+			}
+		}
 
         #endregion
 
