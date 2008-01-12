@@ -782,6 +782,16 @@ namespace SharpMap.Presentation.Presenters
                         Debug.Assert(layer != null);
                         wireupLayer(layer);
                     }
+					else if (Map.Layers[e.NewIndex] is LayerGroup)
+					{
+						foreach(ILayer glayer in (Map.Layers[e.NewIndex] as LayerGroup).Layers)
+						{
+							if(glayer is IFeatureLayer)
+							{
+								wireupLayer(glayer as IFeatureLayer);
+							}
+						}
+					}
                     RenderLayer(Map.Layers[e.NewIndex]);
                     break;
                 case ListChangedType.ItemDeleted:
@@ -799,7 +809,17 @@ namespace SharpMap.Presentation.Presenters
                         {
                             unwireLayer(layer);
                         }
-                    }
+						else if (Map.Layers[e.OldIndex] is LayerGroup)
+						{
+							foreach (ILayer glayer in (Map.Layers[e.OldIndex] as LayerGroup).Layers)
+							{
+								if (glayer is IFeatureLayer)
+								{
+									unwireLayer(glayer as IFeatureLayer);
+								}
+							}
+						}
+					}
                     break;
                 case ListChangedType.ItemMoved:
                     RenderAllLayers();
@@ -1054,7 +1074,17 @@ namespace SharpMap.Presentation.Presenters
                     Debug.Assert(featureLayer != null);
                     wireupLayer(featureLayer);
                 }
-            }
+				else if (layer is LayerGroup)
+				{
+					foreach (ILayer glayer in (layer as LayerGroup).Layers)
+					{
+						if (glayer is IFeatureLayer)
+						{
+							wireupLayer(glayer as IFeatureLayer);
+						}
+					}
+				}
+			}
         }
 
         private void wireupLayer(IFeatureLayer layer)
@@ -1341,17 +1371,34 @@ namespace SharpMap.Presentation.Presenters
         {
             foreach (ILayer layer in Map.Layers)
             {
-                if (layer is IFeatureLayer)
-                {
-                    FeatureDataView compareView = getSelectedView
-                                                      ? (layer as IFeatureLayer).SelectedFeatures
-                                                      : (layer as IFeatureLayer).HighlightedFeatures;
+				if (layer is IFeatureLayer)
+				{
+					FeatureDataView compareView = getSelectedView
+													  ? (layer as IFeatureLayer).SelectedFeatures
+													  : (layer as IFeatureLayer).HighlightedFeatures;
 
-                    if (ReferenceEquals(compareView, view))
-                    {
-                        return layer as IFeatureLayer;
-                    }
-                }
+					if (ReferenceEquals(compareView, view))
+					{
+						return layer as IFeatureLayer;
+					}
+				}
+				else if (layer is LayerGroup)
+				{
+					foreach(ILayer glayer in (layer as LayerGroup).Layers)
+					{
+						if (glayer is IFeatureLayer)
+						{
+							FeatureDataView compareView = getSelectedView
+															  ? (glayer as IFeatureLayer).SelectedFeatures
+															  : (glayer as IFeatureLayer).HighlightedFeatures;
+
+							if (ReferenceEquals(compareView, view))
+							{
+								return glayer as IFeatureLayer;
+							}
+						}
+					}
+				}
             }
 
             return null;
