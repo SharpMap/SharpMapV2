@@ -24,7 +24,7 @@ using NPack.Interfaces;
 namespace ProjNet.CoordinateSystems.Transformations
 {
     internal class ConcatenatedTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>, IConvertible
     {
         private IMathTransform<TCoordinate> _inverse;
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;

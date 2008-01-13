@@ -30,7 +30,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// Transformation for applying 
     /// </summary>
     internal class DatumTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         protected IMathTransform<TCoordinate> _inverse;

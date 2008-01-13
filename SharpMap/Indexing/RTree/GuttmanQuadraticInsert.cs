@@ -53,7 +53,7 @@ namespace SharpMap.Indexing.RTree
             {
                 node.AddItem(entry);
 
-                if (node.Items.Count > heuristic.NodeItemMaximumCount)
+                if (node.ItemCount > heuristic.NodeItemMaximumCount)
                 {
                     newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
                 }
@@ -88,8 +88,10 @@ namespace SharpMap.Indexing.RTree
                 // Found least expanded child node - insert into it
                 Insert(bounds, entry, leastExpandedChild, nodeSplitStrategy, heuristic, out newSiblingFromSplit);
 
+                RTreeNode<TItem> rNode = node as RTreeNode<TItem>;
+
                 // Adjust this node...
-                node.Bounds = _geoFactory.CreateExtents(leastExpandedChild.Bounds, node.Bounds);
+                rNode.Bounds = _geoFactory.CreateExtents(leastExpandedChild.Bounds, node.Bounds);
                 
                 // Check for overflow and add to current node if it occured
                 if (newSiblingFromSplit != null)
@@ -99,7 +101,7 @@ namespace SharpMap.Indexing.RTree
                     newSiblingFromSplit = null;
 
                     // Split the current node, since the child count is too high, and return the split to the caller
-                    if (node.Items.Count > heuristic.NodeItemMaximumCount)
+                    if (node.ItemCount > heuristic.NodeItemMaximumCount)
                     {
                         newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
                     }

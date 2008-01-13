@@ -63,7 +63,7 @@ namespace ProjNet.CoordinateSystems.Projections
     ///            U.S. Geological Survey Professional Paper 1395, 1987)</para>
     /// </remarks>
     internal class TransverseMercator<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly Double _scale_factor;     /* scale factor				*/

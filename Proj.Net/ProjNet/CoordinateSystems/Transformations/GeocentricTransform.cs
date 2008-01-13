@@ -44,7 +44,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// to metres.</para>
     /// </remarks>
     internal class GeocentricTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private const Double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */

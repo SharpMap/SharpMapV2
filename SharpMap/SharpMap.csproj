@@ -286,6 +286,7 @@
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
+    <Compile Include="Utilities\MatrixProcessor.cs" />
     <Compile Include="Utilities\NondisposingStream.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
     <Compile Include="Utilities\SharpMapVersion.cs" />

@@ -30,7 +30,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 	/// between geographic coordinate systems.
 	/// </summary>
     public class GeographicTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>, IConvertible
 	{
 		internal GeographicTransform(IGeographicCoordinateSystem<TCoordinate> source, 
             IGeographicCoordinateSystem<TCoordinate> target, ICoordinateFactory<TCoordinate> coordinateFactory)

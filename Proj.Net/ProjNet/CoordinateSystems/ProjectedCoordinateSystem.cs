@@ -31,7 +31,7 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class ProjectedCoordinateSystem<TCoordinate> : HorizontalCoordinateSystem<TCoordinate>,
                                                           IProjectedCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly IProjection _projection;

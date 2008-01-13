@@ -542,5 +542,81 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         #endregion
+
+        #region IComparable<IMatrix<DoubleComponent>> Members
+
+        public int CompareTo(IMatrix<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Set(double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IMatrix<DoubleComponent>> Members
+
+        public bool GreaterThan(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThan(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Log(double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Power(double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

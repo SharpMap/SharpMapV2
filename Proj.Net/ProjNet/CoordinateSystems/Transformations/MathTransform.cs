@@ -35,7 +35,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 	/// math transform object whenever it wishes to perform a transform.
 	/// </remarks>
     public abstract class MathTransform<TCoordinate> : IMathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
 	{
         private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;

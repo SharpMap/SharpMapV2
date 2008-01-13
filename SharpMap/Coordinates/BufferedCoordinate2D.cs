@@ -8,7 +8,7 @@ namespace SharpMap.Coordinates
 {
     public struct BufferedCoordinate2D : ICoordinate2D, 
         IBufferedVector<DoubleComponent>, IEquatable<BufferedCoordinate2D>, 
-        IComparable<BufferedCoordinate2D>, IComputable<BufferedCoordinate2D>, 
+        IComparable<BufferedCoordinate2D>, IComputable<Double, BufferedCoordinate2D>, 
         IConvertible
     {
         #region ICoordinate2D Members
@@ -606,6 +606,176 @@ namespace SharpMap.Coordinates
         }
 
         public ulong ToUInt64(IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComparable<IMatrix<DoubleComponent>> Members
+
+        public int CompareTo(IMatrix<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IMatrix<DoubleComponent>> Members
+
+        IMatrix<DoubleComponent> IComputable<IMatrix<DoubleComponent>>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrix<DoubleComponent> IComputable<IMatrix<DoubleComponent>>.Set(double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IMatrix<DoubleComponent>> Members
+
+        public bool GreaterThan(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThan(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IMatrix<DoubleComponent>> Members
+
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Log(double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Power(double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IVector<DoubleComponent>> Members
+
+        public bool GreaterThan(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GreaterThanOrEqualTo(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThan(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThanOrEqualTo(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log(double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Power(double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEquatable<IVector<DoubleComponent>> Members
+
+        public bool Equals(IVector<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComparable<IVector<DoubleComponent>> Members
+
+        public int CompareTo(IVector<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double, BufferedCoordinate2D> Members
+
+        public BufferedCoordinate2D Divide(Double b)
         {
             throw new NotImplementedException();
         }

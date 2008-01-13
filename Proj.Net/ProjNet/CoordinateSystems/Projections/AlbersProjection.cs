@@ -61,7 +61,7 @@ namespace ProjNet.CoordinateSystems.Projections
     ///		direction, distance and shape somewhat.</para>
     /// </remarks>
     internal class AlbersProjection<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly Double _falseEasting;

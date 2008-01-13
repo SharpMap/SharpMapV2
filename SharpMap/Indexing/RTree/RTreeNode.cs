@@ -19,7 +19,7 @@ namespace SharpMap.Indexing.RTree
         public override String ToString()
         {
             return String.Format("[{0}] IsLeaf: {1}; Bounds: {2}; Children Count: {3}; Item Count: {4}",
-                                 GetType(), IsLeaf, Bounds, _children == null ? 0 : _children.Count, Items.Count);
+                                 GetType(), IsLeaf, Bounds, _children == null ? 0 : _children.Count, ItemCount);
         }
 
         public override Boolean IsLeaf

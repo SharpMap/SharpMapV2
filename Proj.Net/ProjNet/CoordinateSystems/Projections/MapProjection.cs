@@ -52,7 +52,7 @@ namespace ProjNet.CoordinateSystems.Projections
     /// Projections inherit from this abstract class to get access to useful mathematical functions.
     /// </summary>
     internal abstract class MapProjection<TCoordinate> : MathTransform<TCoordinate>, IProjection
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         protected Double _metersPerUnit;

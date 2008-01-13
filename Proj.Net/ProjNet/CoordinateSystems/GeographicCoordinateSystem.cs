@@ -37,7 +37,7 @@ namespace ProjNet.CoordinateSystems
     /// </remarks>
     public class GeographicCoordinateSystem<TCoordinate> : HorizontalCoordinateSystem<TCoordinate>,
                                                            IGeographicCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly IAngularUnit _angularUnit;

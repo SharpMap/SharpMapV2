@@ -31,7 +31,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// Creates coordinate transformations.
     /// </summary>
     public class CoordinateTransformationFactory<TCoordinate> : ICoordinateTransformationFactory<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;

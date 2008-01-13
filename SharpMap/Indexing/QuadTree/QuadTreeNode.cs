@@ -28,7 +28,7 @@ namespace SharpMap.Indexing.QuadTree
 
         public override Boolean IsLeaf
         {
-            get { return Items.Count == 0; }
+            get { return ItemCount == 0; }
         }
 
         public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children

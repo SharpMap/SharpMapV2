@@ -17,6 +17,7 @@
 
 using System;
 using NPack;
+using SharpMap.Utilities;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -199,7 +200,7 @@ namespace SharpMap.Rendering.Rendering2D
         {
             DoubleComponent[] transferPoints = new DoubleComponent[] { x, y, 1 };
 
-            MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(transferPoints, this);
+            MatrixProcessor.Multiply(transferPoints, this);
             return new Point2D((Double)transferPoints[0], (Double)transferPoints[1]);
         }
 

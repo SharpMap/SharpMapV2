@@ -51,7 +51,7 @@ namespace ProjNet.CoordinateSystems
     /// </para>
     /// </remarks>
     public class CoordinateSystemFactory<TCoordinate> : ICoordinateSystemFactory<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly ICoordinateFactory<TCoordinate> _coordFactory;

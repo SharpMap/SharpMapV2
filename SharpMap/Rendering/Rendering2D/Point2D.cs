@@ -20,6 +20,7 @@ using System.Collections.Generic;
 
 using NPack;
 using NPack.Interfaces;
+using SharpMap.Utilities;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -329,7 +330,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The sum.</returns>
         public IMatrixD Add(IMatrixD b)
         {
-            return MatrixProcessor<DoubleComponent>.Instance.Operations.Add(this, b);
+            return MatrixProcessor.Add(this, b);
         }
 
         #endregion
@@ -344,7 +345,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The difference.</returns>
         public IMatrixD Subtract(IMatrixD b)
         {
-            return MatrixProcessor<DoubleComponent>.Instance.Operations.Subtract(this, b);
+            return MatrixProcessor.Subtract(this, b);
         }
 
         #endregion
@@ -385,7 +386,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The product.</returns>
         public IMatrixD Multiply(IMatrixD b)
         {
-            return MatrixProcessor<DoubleComponent>.Instance.Operations.Multiply(this, b);
+            return MatrixProcessor.Multiply(this, b);
         }
 
         #endregion
@@ -664,6 +665,158 @@ namespace SharpMap.Rendering.Rendering2D
         public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
         {
             throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IComparable<IMatrix<DoubleComponent>> Members
+
+        public int CompareTo(IMatrix<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Set(double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IMatrix<DoubleComponent>> Members
+
+        public bool GreaterThan(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThan(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IMatrix<DoubleComponent>> Members
+
+        public IMatrix<DoubleComponent> Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Log(double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Power(double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<DoubleComponent> Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IVector<DoubleComponent>> Members
+
+        public bool GreaterThan(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GreaterThanOrEqualTo(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThan(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LessThanOrEqualTo(IVector<DoubleComponent> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log(double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Power(double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComparable<IVector<DoubleComponent>> Members
+
+        public int CompareTo(IVector<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

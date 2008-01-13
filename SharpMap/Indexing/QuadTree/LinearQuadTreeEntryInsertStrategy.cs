@@ -43,7 +43,7 @@ namespace SharpMap.Indexing.QuadTree
 
             if (newSiblingFromSplit != null)
             {
-                if (quadTreeNode.Items.Count == 4)
+                if (quadTreeNode.ItemCount == 4)
                 {
                     throw new QuadTreeIndexInsertOverflowException();
                 }

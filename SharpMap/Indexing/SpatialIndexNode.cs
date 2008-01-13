@@ -81,7 +81,7 @@ namespace SharpMap.Indexing
         /// <summary>
         /// Gets the list of items in the index node.
         /// </summary>
-        public ICollection<TItem> Items
+        public IEnumerable<TItem> Items
         {
             get { return _items; }
         }
@@ -235,5 +235,70 @@ namespace SharpMap.Indexing
         }
 
         protected virtual void OnItemRemoved(TItem entry) { }
+
+        #region ISpatialIndexNode<IExtents,TItem> Members
+
+
+        public int ChildCount
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public int ItemCount
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsEmpty
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsPrunable
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool HasItems
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool HasChildren
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IEnumerable<TItem> Query(IExtents query)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<TItem> Query(IExtents query, Predicate<TItem> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int TotalItems
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public int TotalNodes
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IBoundable<IExtents> Members
+
+
+        public bool Intersects(IExtents bounds)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -28,7 +28,7 @@ namespace ProjNet.CoordinateSystems
 	/// A 2D coordinate system suitable for positions on the Earth's surface.
 	/// </summary>
     public abstract class HorizontalCoordinateSystem<TCoordinate> : CoordinateSystem<TCoordinate>, IHorizontalCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>, IConvertible
 	{
 		private readonly IHorizontalDatum _horizontalDatum;
 
