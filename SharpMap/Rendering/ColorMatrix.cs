@@ -25,7 +25,7 @@ namespace SharpMap.Rendering
     public class ColorMatrix : AffineMatrix<DoubleComponent>, IEquatable<ColorMatrix>
     {
         private readonly static ColorMatrix _identity
-            = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+            = new ColorMatrix(1, 1, 1, 1, 0, 0, 0, 0);
 
         public static new ColorMatrix Identity
         {
@@ -36,7 +36,7 @@ namespace SharpMap.Rendering
             : this(Identity) { }
 
         public ColorMatrix(Double redLevel, Double greenLevel, Double blueLevel, Double alphaLevel,
-            Double redShift, Double greenShift, Double blueShift)
+			Double redShift, Double greenShift, Double blueShift, Double alphaShift)
             : base(MatrixFormat.RowMajor, 5)
         {
             this[0, 0] = redLevel;
@@ -47,7 +47,8 @@ namespace SharpMap.Rendering
             this[4, 0] = redShift;
             this[4, 1] = greenShift;
             this[4, 2] = blueShift;
-        }
+			this[4, 3] = alphaShift;
+		}
 
         public ColorMatrix(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 5)
@@ -63,7 +64,7 @@ namespace SharpMap.Rendering
 
         public override String ToString()
         {
-            return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}; dxR: {5}; dxG: {6}; dxB: {7}", GetType(), R, G, B, A, RedShift, GreenShift, BlueShift);
+			return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}; dxR: {5}; dxG: {6}; dxB: {7}; dxA: {8}", GetType(), R, G, B, A, RedShift, GreenShift, BlueShift, AlphaShift);
         }
 
         public override Int32 GetHashCode()
@@ -131,23 +132,29 @@ namespace SharpMap.Rendering
 
         public Double RedShift
         {
-            get { return (Double)this[0, 4]; }
-            set { this[0, 4] = value; }
+            get { return (Double)this[4, 0]; }
+            set { this[4, 0] = value; }
         }
 
         public Double GreenShift
         {
-            get { return (Double)this[1, 4]; }
-            set { this[1, 4] = value; }
+            get { return (Double)this[4, 1]; }
+            set { this[4, 1] = value; }
         }
 
         public Double BlueShift
         {
-            get { return (Double)this[2, 4]; }
-            set { this[2, 4] = value; }
+            get { return (Double)this[4, 2]; }
+            set { this[4, 2] = value; }
         }
 
-        public new ColorMatrix Clone()
+		public Double AlphaShift
+		{
+			get { return (Double)this[4, 3]; }
+			set { this[4, 3] = value; }
+		}
+		
+		public new ColorMatrix Clone()
         {
             return new ColorMatrix(this);
         }

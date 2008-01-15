@@ -17,7 +17,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ResetTest()
         {
-            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0, 0);
 
             m1.Reset();
 
@@ -27,7 +27,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void InvertTest()
         {
-            ColorMatrix m1 = new ColorMatrix(0.5, 0.5, 0.5, 0.5, 10, 20, 30);
+			ColorMatrix m1 = new ColorMatrix(0.5, 0.5, 0.5, 0.5, 10, 20, 30, 0);
             IMatrix<DoubleComponent> expected =
                 new Matrix<DoubleComponent>(MatrixFormat.RowMajor, new DoubleComponent[][]
                                                                        {
@@ -52,7 +52,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IsInvertableTest()
         {
-            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+			ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0, 0);
             Assert.IsTrue(m1.IsInvertible);
         }
 
@@ -60,7 +60,7 @@ namespace SharpMap.Tests.Rendering
         public void ElementsTest1()
         {
             ColorMatrix m1 = ColorMatrix.Identity;
-            ColorMatrix m2 = new ColorMatrix(0.5, 0.5, 0.5, 1, 0, 0, 0);
+			ColorMatrix m2 = new ColorMatrix(0.5, 0.5, 0.5, 1, 0, 0, 0, 0);
 
             Assert.AreEqual(5, m1.RowCount);
             Assert.AreEqual(5, m2.ColumnCount);
@@ -122,7 +122,7 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void ScaleTest1()
         {
-            ColorMatrix m1 = new ColorMatrix(0, 0, 0, 0, 0, 0, 0);
+			ColorMatrix m1 = new ColorMatrix(0, 0, 0, 0, 0, 0, 0, 0);
             ColorMatrix m2 = ColorMatrix.Identity;
         }
 
@@ -164,7 +164,23 @@ namespace SharpMap.Tests.Rendering
             ColorMatrix m1 = ColorMatrix.Identity;
             // Scale by a vector for which multiplicatio isn't defined...
         }
-    }
 
-    #endregion
+		[Test]
+		public void ConstructorInitializedPropertiesTest()
+		{
+			ColorMatrix m1 = new ColorMatrix(2, 3, 4, 5, 6, 7, 8, 9);
+
+			Assert.AreEqual(2, m1.R);
+			Assert.AreEqual(3, m1.G);
+			Assert.AreEqual(4, m1.B);
+			Assert.AreEqual(5, m1.A);
+			Assert.AreEqual(6, m1.RedShift);
+			Assert.AreEqual(7, m1.GreenShift);
+			Assert.AreEqual(8, m1.BlueShift);
+			Assert.AreEqual(9, m1.AlphaShift);
+		}
+
+	}
+
+	#endregion
 }
