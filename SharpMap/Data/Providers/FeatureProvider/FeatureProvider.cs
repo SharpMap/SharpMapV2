@@ -306,6 +306,18 @@ namespace SharpMap.Data.Providers.FeatureProvider
             table.Load(reader);
         }
 
+        public IGeometryFactory GeometryFactory
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         /// <summary>
         /// Returns the number of features in the entire dataset.
         /// </summary>

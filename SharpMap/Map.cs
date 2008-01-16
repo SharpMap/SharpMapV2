@@ -391,7 +391,7 @@ namespace SharpMap
         #region Fields
 
         private readonly object _activeToolSync = new object();
-
+        private readonly IGeometryFactory _geoFactory;
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
@@ -409,8 +409,8 @@ namespace SharpMap
         /// Creates a new instance of a Map with a title describing 
         /// when the map was created.
         /// </summary>
-        public Map()
-            : this("Map created " + DateTime.Now.ToShortDateString())
+        public Map(IGeometryFactory geoFactory)
+            : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory)
         {
             _defaultName = _featureDataSet.DataSetName;
         }
@@ -418,8 +418,9 @@ namespace SharpMap
         /// <summary>
         /// Creates a new instance of a Map with the given title.
         /// </summary>
-        public Map(String title)
+        public Map(String title, IGeometryFactory geoFactory)
         {
+            _geoFactory = geoFactory;
             _layers = new LayerCollection(this);
             _layers.ListChanged += handleLayersChanged;
             _featureDataSet = new FeatureDataSet(title);
@@ -1097,6 +1098,11 @@ namespace SharpMap
         public ICoordinate Center
         {
             get { return _extents.Center; }
+        }
+
+        public IGeometryFactory GeometryFactory
+        {
+            get { return _geoFactory; }
         }
 
         /// <summary>

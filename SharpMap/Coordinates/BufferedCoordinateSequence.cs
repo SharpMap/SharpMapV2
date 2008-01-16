@@ -362,5 +362,22 @@ namespace SharpMap.Coordinates
         }
 
         #endregion
+
+        #region ICoordinateSequence<BufferedCoordinate2D> Members
+
+
+        public ICoordinateSequence<BufferedCoordinate2D> WithoutDuplicatePoints()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ICoordinateSequence Members
+
+
+        public event EventHandler SequenceChanged;
+
+        #endregion
     }
 }

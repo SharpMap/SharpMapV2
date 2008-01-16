@@ -64,7 +64,6 @@
     <Compile Include="Coordinates\BufferedCoordinateSequence.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Coordinates\Extents2D.cs" />
     <Compile Include="Coordinates\IndexedCoordinateBuffer.cs">
       <SubType>Code</SubType>
     </Compile>

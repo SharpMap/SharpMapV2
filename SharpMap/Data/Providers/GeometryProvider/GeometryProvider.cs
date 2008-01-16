@@ -65,6 +65,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 	/// </remarks>
     public class GeometryProvider : IFeatureLayerProvider<UInt32>
 	{
+	    private IGeometryFactory _geoFactory;
 		private ICoordinateTransformation _coordinateTransformation;
 		private ICoordinateSystem _coordinateSystem;
         private readonly List<IGeometry> _geometries = new List<IGeometry>();
@@ -518,7 +519,18 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 	        return list.AsReadOnly();
 	    }
-
+       
+        public IGeometryFactory GeometryFactory
+        {
+            get
+            {
+                return _geoFactory;
+            }
+            set
+            {
+                _geoFactory = value;
+            }
+        }
         public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids)
         {
             throw new NotImplementedException();

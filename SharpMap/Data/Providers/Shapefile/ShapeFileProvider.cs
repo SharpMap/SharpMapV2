@@ -140,7 +140,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
             {
-                _header = new ShapeFileHeader(reader);
+                _header = new ShapeFileHeader(reader, _geoFactory);
             }
 
             _shapeFileIndex = new ShapeFileIndex(this);
@@ -1081,6 +1081,18 @@ namespace SharpMap.Data.Providers.ShapeFile
             IEnumerable<UInt32> objectsInQuery = GetIntersectingObjectIds(bounds);
 
             keyedTable.Merge(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
+        }
+
+        public IGeometryFactory GeometryFactory
+        {
+            get
+            {
+                return _geoFactory;
+            }
+            set
+            {
+                _geoFactory = value;
+            }
         }
 
         public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids)
@@ -2139,7 +2151,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 lineId = 0; lineId < parts; lineId++)
             {
-                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create();
+                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create(2);
 
                 for (Int32 i = segments[lineId]; i < segments[lineId + 1]; i++)
                 {
@@ -2178,7 +2190,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 ringId = 0; ringId < parts; ringId++)
             {
-                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create();
+                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create(2);
 
                 for (Int32 i = segments[ringId]; i < segments[ringId + 1]; i++)
                 {
@@ -2458,5 +2470,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         #endregion
+
     }
 }

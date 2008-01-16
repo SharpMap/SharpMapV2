@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
-using SharpMap.Coordinates;
 using SharpMap.Utilities;
 using System.IO;
 using GeoAPI.Geometries;
@@ -27,12 +26,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 {
 	internal class ShapeFileHeader
 	{
+	    private readonly IGeometryFactory _geoFactory;
 		private ShapeType _shapeType;
 		private IExtents _envelope;
 		private Int32 _fileLengthInWords;
 
-		public ShapeFileHeader(BinaryReader reader)
+		public ShapeFileHeader(BinaryReader reader, IGeometryFactory geoFactory)
 		{
+		    _geoFactory = geoFactory;
 			parseHeader(reader);
 		}
 
@@ -138,7 +139,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             Double xMax = ByteEncoder.GetLittleEndian(reader.ReadDouble());
             Double yMax = ByteEncoder.GetLittleEndian(reader.ReadDouble());
 
-		    Extents = new Extents2D(xMin, yMin, xMax, yMax);
+		    ICoordinate min = _geoFactory.CoordinateFactory.Create(xMin, yMin);
+		    ICoordinate max = _geoFactory.CoordinateFactory.Create(xMax, yMax);
+
+            Extents = _geoFactory.CreateExtents(min, max);
 
 			if (Extents.IsEmpty)
 			{

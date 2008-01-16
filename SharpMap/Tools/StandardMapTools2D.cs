@@ -229,8 +229,9 @@ namespace SharpMap.Tools
             Rectangle2D viewBounds = endSelection(context);
 
             // Create a BoundingBox for the view's selection using the map's world space
-            IExtents worldBounds = new Extents2D(
-                view.ToWorld(viewBounds.LowerLeft), view.ToWorld(viewBounds.UpperRight));
+            IExtents worldBounds = context.Map.GeometryFactory.CreateExtents(
+                                        view.ToWorld(viewBounds.LowerLeft).Coordinate, 
+                                        view.ToWorld(viewBounds.UpperRight).Coordinate);
 
             // Apply the GeometryFilter derived from the view's selection
             for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)

@@ -26,7 +26,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
@@ -39,7 +39,6 @@ using GdiRectangle = System.Drawing.Rectangle;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
-using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Presentation.WinForms
 {
@@ -137,17 +136,17 @@ namespace SharpMap.Presentation.WinForms
         public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
         public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
         public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> GeoCenterChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<IPoint>> GeoCenterChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
         public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
         public event EventHandler SizeChanged;
-        public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ViewEnvelopeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
         public event EventHandler ZoomToExtentsRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ZoomToWorldBoundsRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
         #endregion
 
@@ -180,7 +179,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public GeoPoint GeoCenter
+        public IPoint GeoCenter
         {
             get { return _presenter.GeoCenter; }
             set { onRequestGeoCenterChange(GeoCenter, value); }
@@ -223,7 +222,7 @@ namespace SharpMap.Presentation.WinForms
             get { return _presenter.Selection; }
         }
 
-        public Point2D ToView(GeoPoint point)
+        public Point2D ToView(IPoint point)
         {
             return _presenter.ToView(point);
         }
@@ -240,12 +239,12 @@ namespace SharpMap.Presentation.WinForms
             get { return _presenter.ToViewTransform; }
         }
 
-        public GeoPoint ToWorld(Point2D point)
+        public IPoint ToWorld(Point2D point)
         {
             return _presenter.ToWorld(point);
         }
 
-        public GeoPoint ToWorld(Double x, Double y)
+        public IPoint ToWorld(Double x, Double y)
         {
             return _presenter.ToWorld(x, y);
         }
@@ -259,7 +258,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public BoundingBox ViewEnvelope
+        public IExtents ViewEnvelope
         {
             get { return _presenter.ViewEnvelope; }
             set { onRequestViewEnvelopeChange(ViewEnvelope, value); ; }
@@ -304,7 +303,7 @@ namespace SharpMap.Presentation.WinForms
         #endregion
 
         #region Methods
-        public void IdentifyLocation(GeoPoint location)
+        public void IdentifyLocation(IPoint location)
         {
             onRequestIdentifyLocation(location);
         }
@@ -349,7 +348,7 @@ namespace SharpMap.Presentation.WinForms
             onRequestZoomToViewBounds(viewBounds);
         }
 
-        public void ZoomToWorldBounds(BoundingBox zoomBox)
+        public void ZoomToWorldBounds(IExtents zoomBox)
         {
             onRequestZoomToWorldBounds(zoomBox);
         }
@@ -701,14 +700,14 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestGeoCenterChange(GeoPoint current, GeoPoint requested)
+        private void onRequestGeoCenterChange(IPoint current, IPoint requested)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<GeoPoint>> e = GeoCenterChangeRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<IPoint>> e = GeoCenterChangeRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<GeoPoint> args =
-                    new MapViewPropertyChangeEventArgs<GeoPoint>(current, requested);
+                MapViewPropertyChangeEventArgs<IPoint> args =
+                    new MapViewPropertyChangeEventArgs<IPoint>(current, requested);
 
                 e(this, args);
             }
@@ -740,7 +739,7 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestIdentifyLocation(GeoPoint location)
+        private void onRequestIdentifyLocation(IPoint location)
         {
             EventHandler<LocationEventArgs> e = IdentifyLocationRequested;
 
@@ -764,14 +763,14 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestViewEnvelopeChange(BoundingBox current, BoundingBox requested)
+        private void onRequestViewEnvelopeChange(IExtents current, IExtents requested)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ViewEnvelopeChangeRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<IExtents>> e = ViewEnvelopeChangeRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<BoundingBox> args =
-                    new MapViewPropertyChangeEventArgs<BoundingBox>(current, requested);
+                MapViewPropertyChangeEventArgs<IExtents> args =
+                    new MapViewPropertyChangeEventArgs<IExtents>(current, requested);
 
                 e(this, args);
             }
@@ -813,14 +812,14 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestZoomToWorldBounds(BoundingBox zoomBox)
+        private void onRequestZoomToWorldBounds(IExtents zoomBox)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ZoomToWorldBoundsRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<IExtents>> e = ZoomToWorldBoundsRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<BoundingBox> args =
-                    new MapViewPropertyChangeEventArgs<BoundingBox>(ViewEnvelope, zoomBox);
+                MapViewPropertyChangeEventArgs<IExtents> args =
+                    new MapViewPropertyChangeEventArgs<IExtents>(ViewEnvelope, zoomBox);
 
                 e(this, args);
             }

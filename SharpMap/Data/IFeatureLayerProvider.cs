@@ -229,6 +229,8 @@ namespace SharpMap.Data
         /// <param name="options">Options indicating which data to retrieve.</param>
         void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options);
 
+        IGeometryFactory GeometryFactory { get; set; }
+
         /// <summary>
         /// Returns a <see cref="IFeatureDataReader"/> for obtaining features
         /// from a set of feature object identifiers (oids).

@@ -44,12 +44,12 @@ namespace SharpMap.Coordinates
             throw new NotImplementedException();
         }
 
-        public NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent> CreateTransform(BufferedCoordinate2D scaleVector, double rotation, BufferedCoordinate2D translateVector)
+        public AffineTransformMatrix<BufferedCoordinate2D> CreateTransform(BufferedCoordinate2D scaleVector, Double rotation, BufferedCoordinate2D translateVector)
         {
             throw new NotImplementedException();
         }
 
-        public NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent> CreateTransform(BufferedCoordinate2D scaleVector, BufferedCoordinate2D rotationAxis, double rotation, BufferedCoordinate2D translateVector)
+        public AffineTransformMatrix<BufferedCoordinate2D> CreateTransform(BufferedCoordinate2D scaleVector, BufferedCoordinate2D rotationAxis, Double rotation, BufferedCoordinate2D translateVector)
         {
             throw new NotImplementedException();
         }

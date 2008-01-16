@@ -19,9 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using SharpMap.Geometries;
+using GeoAPI.Geometries;
 using SharpMap.Indexing.QuadTree;
-using GeoPoint = SharpMap.Geometries.Point;
 
 namespace SharpMap.Presentation.WinForms
 {
@@ -31,13 +30,13 @@ namespace SharpMap.Presentation.WinForms
         /// Creates a new ImageTileCache.
         /// </summary>
         /// <param name="initialBounds">The extents for the entire index. May grow if tiles are added which exceed these bounds.</param>
-        public ImageTileCache(BoundingBox initialBounds)
+        public ImageTileCache(IExtents initialBounds)
         {
             // Set the bounds of the index
             Bounds = initialBounds;
         }
 
-        public void Add(BoundingBox tileBounds, Bitmap tile)
+        public void Add(IExtents tileBounds, Bitmap tile)
         {
             QuadTreeNode<Bitmap> tileNode = new QuadTreeNode<Bitmap>();
             tileNode.Value = tile;
@@ -46,12 +45,12 @@ namespace SharpMap.Presentation.WinForms
             AddItem(tileNode);
         }
 
-        public override IEnumerable<Bitmap> Search(BoundingBox searchBounds)
+        public override IEnumerable<Bitmap> Search(IExtents searchBounds)
         {
             return recursiveNodeSearch(searchBounds, this);
         }
 
-        private IEnumerable<Bitmap> recursiveNodeSearch(BoundingBox searchBounds, QuadTreeNode<Bitmap> node)
+        private IEnumerable<Bitmap> recursiveNodeSearch(IExtents searchBounds, QuadTreeNode<Bitmap> node)
         {
             // If search bounds are only partially by node bounds, then return node's value,
             // since successive searches will be incomplete.
@@ -68,7 +67,7 @@ namespace SharpMap.Presentation.WinForms
             Int32[] intersectNodes = new Int32[4];
             Int32 intersectNodeIndex = -1;
 
-            for (Int32 nodeIndex = 0; nodeIndex < node.Items.Count; nodeIndex++)
+            for (Int32 nodeIndex = 0; nodeIndex < node.ItemCount; nodeIndex++)
             {
                 QuadTreeNode<Bitmap> testNode = Items[nodeIndex];
 

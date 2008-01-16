@@ -19,8 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using GeoAPI.Geometries;
-using SharpMap.Coordinates;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile
@@ -62,7 +60,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 			using (FileStream indexStream = _indexFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
 			using (BinaryReader reader = new BinaryReader(indexStream))
 			{
-				_header = new ShapeFileHeader(reader);
+				_header = new ShapeFileHeader(reader, _shapeFile.GeometryFactory);
 
 				indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
 
@@ -96,7 +94,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 				throw new ShapeFileInvalidOperationException("Cannot add a feature with the same id to the index more than once.");
 			}
 
-			_header.Extents = new Extents2D(_header.Extents, feature.Geometry.Extents);
+            _header.Extents = _shapeFile.GeometryFactory.CreateExtents(
+                _header.Extents, feature.Geometry.Extents);
 
 			Int32 length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
 			Int32 offset = ComputeShapeFileSizeInWords();
