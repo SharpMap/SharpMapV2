@@ -2,7 +2,6 @@ using System;
 using NUnit.Framework;
 using Rhino.Mocks;
 using SharpMap.Data;
-using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Tools;
 

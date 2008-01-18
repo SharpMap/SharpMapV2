@@ -1,6 +1,5 @@
 using System;
 using NUnit.Framework;
-using SharpMap.Geometries;
 using SharpMap.Utilities;
 
 namespace SharpMap.Tests.Geometries

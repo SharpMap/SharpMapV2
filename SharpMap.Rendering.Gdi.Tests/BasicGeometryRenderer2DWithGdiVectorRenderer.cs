@@ -1,14 +1,15 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using GeoAPI.Coordinates;
+using GeoAPI.Geometries;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.Geometries;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Tests;
-using Point=SharpMap.Geometries.Point;
 
 namespace SharpMap.Rendering.Gdi.Tests
 {
@@ -43,11 +44,11 @@ namespace SharpMap.Rendering.Gdi.Tests
 
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
-                        Geometry g = record.Geometry;
+                        IGeometry g = record.Geometry;
 
-                        if (g is Polygon)
+                        if (g is IPolygon)
                         {
-                            Polygon p = g as Polygon;
+                            IPolygon p = g as IPolygon;
                             using (GraphicsPathIterator iter = new GraphicsPathIterator(ro.GdiPath))
                             {
                                 Int32 start, end;
@@ -55,73 +56,73 @@ namespace SharpMap.Rendering.Gdi.Tests
                                 iter.NextSubpath(out start, out end, out isClosed);
 
                                 Assert.IsTrue(isClosed);
-                                Assert.AreEqual(p.ExteriorRing.Vertices.Count, end - start + 1);
+                                Assert.AreEqual(p.ExteriorRing.Coordinates.Count, end - start + 1);
 
-                                for (Int32 vertexIndex = 0; vertexIndex < p.ExteriorRing.Vertices.Count; vertexIndex++)
+                                for (Int32 vertexIndex = 0; vertexIndex < p.ExteriorRing.Coordinates.Count; vertexIndex++)
                                 {
-                                    Point v = p.ExteriorRing.Vertices[vertexIndex];
+                                    ICoordinate v = (ICoordinate)p.ExteriorRing.Coordinates[vertexIndex];
                                     PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
-                                    Assert.AreEqual(v.X, gdiPoint.X);
-                                    Assert.AreEqual(v.Y, gdiPoint.Y);
+                                    Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
+                                    Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                 }
 
                                 for (Int32 interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
                                 {
                                     iter.NextSubpath(out start, out end, out isClosed);
                                     Assert.IsTrue(isClosed);
-                                    Assert.AreEqual(p.InteriorRings[interiorIndex].Vertices.Count, end - start + 1);
+                                    Assert.AreEqual(p.InteriorRings[interiorIndex].Coordinates.Count, end - start + 1);
 
                                     for (Int32 vertexIndex = 0;
-                                         vertexIndex < p.InteriorRings[interiorIndex].Vertices.Count;
+                                         vertexIndex < p.InteriorRings[interiorIndex].Coordinates.Count;
                                          vertexIndex++)
                                     {
-                                        Point v = p.InteriorRings[interiorIndex].Vertices[vertexIndex];
+                                        ICoordinate v = (ICoordinate)p.InteriorRings[interiorIndex].Coordinates[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
-                                        Assert.AreEqual(v.X, gdiPoint.X);
-                                        Assert.AreEqual(v.Y, gdiPoint.Y);
+                                        Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
+                                        Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                     }
                                 }
                             }
                         }
-                        else if (g is MultiPolygon)
+                        else if (g is IMultiPolygon)
                         {
-                            MultiPolygon mp = g as MultiPolygon;
+                            IMultiPolygon mp = g as IMultiPolygon;
 
                             using (GraphicsPathIterator iter = new GraphicsPathIterator(ro.GdiPath))
                             {
-                                foreach (Polygon p in mp)
+                                foreach (IPolygon p in (IEnumerable<IPolygon>)mp)
                                 {
                                     Int32 start, end;
                                     Boolean isClosed;
                                     iter.NextSubpath(out start, out end, out isClosed);
 
                                     Assert.IsTrue(isClosed);
-                                    Assert.AreEqual(p.ExteriorRing.Vertices.Count, end - start + 1);
+                                    Assert.AreEqual(p.ExteriorRing.Coordinates.Count, end - start + 1);
 
                                     for (Int32 vertexIndex = 0;
-                                         vertexIndex < p.ExteriorRing.Vertices.Count;
+                                         vertexIndex < p.ExteriorRing.Coordinates.Count;
                                          vertexIndex++)
                                     {
-                                        Point v = p.ExteriorRing.Vertices[vertexIndex];
+                                        ICoordinate v = (ICoordinate)p.ExteriorRing.Coordinates[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
-                                        Assert.AreEqual(v.X, gdiPoint.X);
-                                        Assert.AreEqual(v.Y, gdiPoint.Y);
+                                        Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
+                                        Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                     }
 
                                     for (Int32 interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
                                     {
                                         iter.NextSubpath(out start, out end, out isClosed);
                                         Assert.IsTrue(isClosed);
-                                        Assert.AreEqual(p.InteriorRings[interiorIndex].Vertices.Count, end - start + 1);
+                                        Assert.AreEqual(p.InteriorRings[interiorIndex].Coordinates.Count, end - start + 1);
 
                                         for (Int32 vertexIndex = 0;
-                                             vertexIndex < p.InteriorRings[interiorIndex].Vertices.Count;
+                                             vertexIndex < p.InteriorRings[interiorIndex].Coordinates.Count;
                                              vertexIndex++)
                                         {
-                                            Point v = p.InteriorRings[interiorIndex].Vertices[vertexIndex];
+                                            ICoordinate v = (ICoordinate)p.InteriorRings[interiorIndex].Coordinates[vertexIndex];
                                             PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
-                                            Assert.AreEqual(v.X, gdiPoint.X);
-                                            Assert.AreEqual(v.Y, gdiPoint.Y);
+                                            Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
+                                            Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                         }
                                     }
                                 }
@@ -147,7 +148,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                     IEnumerable<GdiRenderObject> renderedObjects = geometryRenderer.RenderFeature(record);
 
                     Int32 geoIndex = 0;
-                    Geometry g = record.Geometry;
+                    IGeometry g = record.Geometry;
 
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
@@ -157,32 +158,32 @@ namespace SharpMap.Rendering.Gdi.Tests
                             Boolean isClosed;
                             iter.NextSubpath(out start, out end, out isClosed);
 
-                            if (g is LineString)
+                            if (g is ILineString)
                             {
                                 Assert.IsFalse(isClosed);
-                                LineString ls = g as LineString;
+                                ILineString ls = g as ILineString;
                                 Assert.AreEqual(1, iter.SubpathCount);
-                                for (Int32 vertexIndex = 0; vertexIndex < ls.Vertices.Count; vertexIndex++)
+                                for (Int32 vertexIndex = 0; vertexIndex < ls.Coordinates.Count; vertexIndex++)
                                 {
-                                    Point v = ls.Vertices[vertexIndex];
+                                    ICoordinate v = (ICoordinate)ls.Coordinates[vertexIndex];
                                     PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
-                                    Assert.AreEqual(v.X, gdiPoint.X);
-                                    Assert.AreEqual(v.Y, gdiPoint.Y);
+                                    Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
+                                    Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                 }
                             }
-                            else if (g is MultiLineString)
+                            else if (g is IMultiLineString)
                             {
                                 Assert.IsFalse(isClosed);
-                                MultiLineString mls = g as MultiLineString;
-                                Assert.AreEqual(mls.Collection.Count, iter.SubpathCount);
-                                foreach (LineString lineString in mls)
+                                IMultiLineString mls = g as IMultiLineString;
+                                Assert.AreEqual(mls.Count, iter.SubpathCount);
+                                foreach (ILineString lineString in (IEnumerable<ILineString>)mls)
                                 {
-                                    for (Int32 vertexIndex = 0; vertexIndex < lineString.Vertices.Count; vertexIndex++)
+                                    for (Int32 vertexIndex = 0; vertexIndex < lineString.Coordinates.Count; vertexIndex++)
                                     {
-                                        Point v = lineString.Vertices[vertexIndex];
+                                        ICoordinate v = (ICoordinate)lineString.Coordinates[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
-                                        Assert.AreEqual(v.X, gdiPoint.X);
-                                        Assert.AreEqual(v.Y, gdiPoint.Y);
+                                        Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
+                                        Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                     }
 
                                     iter.NextSubpath(out start, out end, out isClosed);
@@ -211,20 +212,20 @@ namespace SharpMap.Rendering.Gdi.Tests
                     Int32 geoIndex = 0;
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
-                        Geometry g = record.Geometry;
+                        IGeometry g = record.Geometry;
 
-                        if (g is MultiPoint)
+                        if (g is IMultiPoint)
                         {
-                            MultiPoint mp = g as MultiPoint;
-                            Assert.AreEqual(mp[geoIndex].X, ro.Bounds.Location.X, _e);
-                            Assert.AreEqual(mp[geoIndex].Y, ro.Bounds.Location.Y, _e);
+                            IMultiPoint mp = g as IMultiPoint;
+                            Assert.AreEqual(mp[geoIndex][Ordinates.X], ro.Bounds.Location.X, _e);
+                            Assert.AreEqual(mp[geoIndex][Ordinates.Y], ro.Bounds.Location.Y, _e);
                             geoIndex++;
                         }
-                        else if (g is Point)
+                        else if (g is IPoint)
                         {
-                            Point p = g as Point;
-                            Assert.AreEqual(p.X, ro.Bounds.Location.X, _e);
-                            Assert.AreEqual(p.Y, ro.Bounds.Location.Y, _e);
+                            IPoint p = g as IPoint;
+                            Assert.AreEqual(p[Ordinates.X], ro.Bounds.Location.X, _e);
+                            Assert.AreEqual(p[Ordinates.Y], ro.Bounds.Location.Y, _e);
                         }
                     }
                 }

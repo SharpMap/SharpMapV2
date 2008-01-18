@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using SharpMap.Data;
-using SharpMap.Geometries;
 using SharpMap.Layers;
 
 namespace SharpMap.Tests.Layers

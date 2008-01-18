@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using GeoAPI.Geometries;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Expressions;
-using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Data
 {
@@ -271,7 +271,7 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource();
             FeatureDataTable table = new FeatureDataTable();
-            BoundingBox dataExtents = data.GetExtents();
+            IExtents dataExtents = data.GetExtents();
             BoundingBox halfBounds = new BoundingBox(dataExtents.Left, dataExtents.Bottom,
                                                      dataExtents.Left + dataExtents.Width/2,
                                                      dataExtents.Bottom + dataExtents.Height/2);

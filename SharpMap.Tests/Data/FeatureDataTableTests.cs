@@ -3,7 +3,6 @@ using System.Data;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Data
 {

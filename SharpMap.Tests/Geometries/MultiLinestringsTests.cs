@@ -1,5 +1,6 @@
+using System.Collections.Generic;
+using GeoAPI.Geometries;
 using NUnit.Framework;
-using SharpMap.Geometries;
 
 namespace SharpMap.Tests.Geometries
 {
@@ -9,22 +10,22 @@ namespace SharpMap.Tests.Geometries
         [Test]
         public void MultiLinestring()
         {
-            MultiLineString mls = new MultiLineString();
-            Assert.IsTrue(mls.IsEmpty());
-            mls.LineStrings.Add(new LineString());
-            Assert.IsTrue(mls.IsEmpty());
-            mls.LineStrings[0].Vertices.Add(new Point(45, 68));
-            mls.LineStrings[0].Vertices.Add(new Point(82, 44));
-            mls.LineStrings.Add(CreateLineString());
+            IMultiLineString mls = new IMultiLineString();
+            Assert.IsTrue(mls.IsEmpty);
+            mls.Add(new ILineString());
+            Assert.IsTrue(mls.IsEmpty);
+            mls[0].Coordinates.Add(new Point(45, 68));
+            mls[0].Coordinates.Add(new Point(82, 44));
+            mls.Add(CreateLineString());
 
-            foreach (LineString ls in mls)
+            foreach (ILineString ls in (IEnumerable<ILineString>)mls)
             {
-                Assert.IsFalse(ls.IsEmpty());
+                Assert.IsFalse(ls.IsEmpty);
             }
 
-            Assert.IsFalse(mls.IsEmpty());
+            Assert.IsFalse(mls.IsEmpty);
 
-            foreach (LineString ls in mls)
+            foreach (ILineString ls in (IEnumerable<ILineString>)mls)
             {
                 Assert.IsFalse(ls.IsClosed);
             }
@@ -32,26 +33,26 @@ namespace SharpMap.Tests.Geometries
             Assert.IsFalse(mls.IsClosed);
 
             //Close linestrings
-            foreach (LineString ls in mls)
+            foreach (ILineString ls in mls)
             {
-                ls.Vertices.Add(ls.StartPoint.Clone() as Point);
+                ls.Coordinates.Add((ls.StartPoint.Clone() as IPoint).Coordinate);
             }
 
-            foreach (LineString ls in mls)
+            foreach (ILineString ls in mls)
             {
                 Assert.IsTrue(ls.IsClosed);
             }
 
             Assert.IsTrue(mls.IsClosed);
-            Assert.AreEqual(new BoundingBox(1, 2, 930, 123), mls.GetBoundingBox());
+            Assert.AreEqual(new IExtents(1, 2, 930, 123), mls.Extents);
         }
 
-        private LineString CreateLineString()
+        private ILineString CreateLineString()
         {
-            LineString ls = new LineString();
-            ls.Vertices.Add(new Point(1, 2));
-            ls.Vertices.Add(new Point(10, 22));
-            ls.Vertices.Add(new Point(930, 123));
+            ILineString ls = new ILineString();
+            ls.Coordinates.Add(new Point(1, 2));
+            ls.Coordinates.Add(new Point(10, 22));
+            ls.Coordinates.Add(new Point(930, 123));
             return ls;
         }
     }

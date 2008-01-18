@@ -1,6 +1,5 @@
 using System;
 using NUnit.Framework;
-using SharpMap.Geometries;
 using GeoProvider = SharpMap.Data.Providers.GeometryProvider.GeometryProvider;
 
 namespace SharpMap.Tests.Data.Providers.GeometryProvider

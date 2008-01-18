@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using GeoAPI.Geometries;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
-using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation;
 using SharpMap.Presentation.Presenters;
@@ -143,7 +143,7 @@ namespace SharpMap.Tests.Presentation
                 get { return BackgroundColorInternal; }
             }
 
-            internal Point GeoCenter
+            internal IPoint GeoCenter
             {
                 get { return GeoCenterInternal; }
                 set { GeoCenterInternal = value; }
@@ -186,7 +186,7 @@ namespace SharpMap.Tests.Presentation
                 get { return ToWorldTransformInternal; }
             }
 
-            internal BoundingBox ViewEnvelope
+            internal IExtents ViewEnvelope
             {
                 get { return ViewEnvelopeInternal; }
             }
@@ -222,7 +222,7 @@ namespace SharpMap.Tests.Presentation
                 ZoomToViewBoundsInternal(viewBounds);
             }
 
-            internal void ZoomToWorldBounds(BoundingBox zoomBox)
+            internal void ZoomToWorldBounds(IExtents zoomBox)
             {
                 ZoomToWorldBoundsInternal(zoomBox);
             }
@@ -232,7 +232,7 @@ namespace SharpMap.Tests.Presentation
                 ZoomToWorldWidthInternal(newWorldWidth);
             }
 
-            internal Point2D ToView(Point point)
+            internal Point2D ToView(IPoint point)
             {
                 return ToViewInternal(point);
             }
@@ -242,12 +242,12 @@ namespace SharpMap.Tests.Presentation
                 return ToViewInternal(x, y);
             }
 
-            internal Point ToWorld(Point2D point)
+            internal IPoint ToWorld(Point2D point)
             {
                 return ToWorldInternal(point);
             }
 
-            internal Point ToWorld(Double x, Double y)
+            internal IPoint ToWorld(Double x, Double y)
             {
                 return ToWorldInternal(x, y);
             }
@@ -258,7 +258,7 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
-            protected override void SetViewGeoCenter(Point fromGeoPoint, Point toGeoPoint)
+            protected override void SetViewGeoCenter(IPoint fromGeoPoint, IPoint toGeoPoint)
             {
             }
 
@@ -270,7 +270,7 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
-            protected override void SetViewEnvelope(BoundingBox fromEnvelope, BoundingBox toEnvelope)
+            protected override void SetViewEnvelope(IExtents fromEnvelope, IExtents toEnvelope)
             {
             }
 
@@ -327,17 +327,17 @@ namespace SharpMap.Tests.Presentation
             public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
             public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
             public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-            public event EventHandler<MapViewPropertyChangeEventArgs<Point>> GeoCenterChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<IPoint>> GeoCenterChangeRequested;
             public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
             public event EventHandler SizeChanged;
-            public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ViewEnvelopeChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ViewEnvelopeChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
             public event EventHandler ZoomToExtentsRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
-            public event EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> ZoomToWorldBoundsRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ZoomToWorldBoundsRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
 
             #endregion
@@ -355,7 +355,7 @@ namespace SharpMap.Tests.Presentation
                 get { return ScreenHelper.Dpi; }
             }
 
-            public Point GeoCenter
+            public IPoint GeoCenter
             {
                 get { return _presenter.GeoCenter; }
                 set { OnRequestGeoCenterChange(GeoCenter, value); }
@@ -398,7 +398,7 @@ namespace SharpMap.Tests.Presentation
                 get { return _presenter.ToWorldTransform; }
             }
 
-            public Point2D ToView(Point point)
+            public Point2D ToView(IPoint point)
             {
                 return _presenter.ToView(point);
             }
@@ -408,17 +408,17 @@ namespace SharpMap.Tests.Presentation
                 return _presenter.ToView(x, y);
             }
 
-            public Point ToWorld(Point2D point)
+            public IPoint ToWorld(Point2D point)
             {
                 return _presenter.ToWorld(point);
             }
 
-            public Point ToWorld(Double x, Double y)
+            public IPoint ToWorld(Double x, Double y)
             {
                 return _presenter.ToWorld(x, y);
             }
 
-            public BoundingBox ViewEnvelope
+            public IExtents ViewEnvelope
             {
                 get { return _presenter.ViewEnvelope; }
                 set
@@ -462,7 +462,7 @@ namespace SharpMap.Tests.Presentation
 
             #region Methods
 
-            public void IdentifyLocation(Point worldPoint)
+            public void IdentifyLocation(IPoint worldPoint)
             {
                 throw new Exception("The method or operation is not implemented.");
             }
@@ -470,7 +470,7 @@ namespace SharpMap.Tests.Presentation
             public void Offset(Point2D offsetVector)
             {
                 Point2D viewCenter = _bounds.Center;
-                Point offsetGeoCenter = ToWorld(viewCenter + offsetVector);
+                IPoint offsetGeoCenter = ToWorld(viewCenter + offsetVector);
                 OnRequestGeoCenterChange(GeoCenter, offsetGeoCenter);
             }
 
@@ -488,7 +488,7 @@ namespace SharpMap.Tests.Presentation
                 OnRequestZoomToViewBounds(viewBounds);
             }
 
-            public void ZoomToWorldBounds(BoundingBox zoomBox)
+            public void ZoomToWorldBounds(IExtents zoomBox)
             {
                 OnRequestZoomToWorldBounds(zoomBox);
             }
@@ -598,14 +598,14 @@ namespace SharpMap.Tests.Presentation
                 }
             }
 
-            protected virtual void OnRequestGeoCenterChange(Point current, Point requested)
+            protected virtual void OnRequestGeoCenterChange(IPoint current, IPoint requested)
             {
-                EventHandler<MapViewPropertyChangeEventArgs<Point>> e = GeoCenterChangeRequested;
+                EventHandler<MapViewPropertyChangeEventArgs<IPoint>> e = GeoCenterChangeRequested;
 
                 if (e != null)
                 {
-                    MapViewPropertyChangeEventArgs<Point> args =
-                        new MapViewPropertyChangeEventArgs<Point>(current, requested);
+                    MapViewPropertyChangeEventArgs<IPoint> args =
+                        new MapViewPropertyChangeEventArgs<IPoint>(current, requested);
 
                     e(this, args);
                 }
@@ -637,14 +637,14 @@ namespace SharpMap.Tests.Presentation
                 }
             }
 
-            private void OnRequestViewEnvelopeChange(BoundingBox current, BoundingBox requested)
+            private void OnRequestViewEnvelopeChange(IExtents current, IExtents requested)
             {
-                EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ViewEnvelopeChangeRequested;
+                EventHandler<MapViewPropertyChangeEventArgs<IExtents>> e = ViewEnvelopeChangeRequested;
 
                 if (e != null)
                 {
-                    MapViewPropertyChangeEventArgs<BoundingBox> args =
-                        new MapViewPropertyChangeEventArgs<BoundingBox>(current, requested);
+                    MapViewPropertyChangeEventArgs<IExtents> args =
+                        new MapViewPropertyChangeEventArgs<IExtents>(current, requested);
 
                     e(this, args);
                 }
@@ -699,14 +699,14 @@ namespace SharpMap.Tests.Presentation
                 }
             }
 
-            private void OnRequestZoomToWorldBounds(BoundingBox zoomBox)
+            private void OnRequestZoomToWorldBounds(IExtents zoomBox)
             {
-                EventHandler<MapViewPropertyChangeEventArgs<BoundingBox>> e = ZoomToWorldBoundsRequested;
+                EventHandler<MapViewPropertyChangeEventArgs<IExtents>> e = ZoomToWorldBoundsRequested;
 
                 if (e != null)
                 {
-                    MapViewPropertyChangeEventArgs<BoundingBox> args =
-                        new MapViewPropertyChangeEventArgs<BoundingBox>(ViewEnvelope, zoomBox);
+                    MapViewPropertyChangeEventArgs<IExtents> args =
+                        new MapViewPropertyChangeEventArgs<IExtents>(ViewEnvelope, zoomBox);
 
                     e(this, args);
                 }
@@ -744,7 +744,7 @@ namespace SharpMap.Tests.Presentation
             mocks.ReplayAll();
 
             TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
-            Assert.AreEqual(Point.Empty, mapPresenter.GeoCenter);
+            Assert.AreEqual(IPoint.Empty, mapPresenter.GeoCenter);
             Assert.AreEqual(0, mapPresenter.WorldWidth);
             Assert.AreEqual(0, mapPresenter.WorldHeight);
             Assert.AreEqual(0, mapPresenter.WorldUnitsPerPixel);
@@ -753,8 +753,8 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(0, mapPresenter.PixelWorldHeight);
             Assert.AreEqual(null, mapPresenter.ToViewTransform);
             Assert.AreEqual(null, mapPresenter.ToWorldTransform);
-            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(new Point(50, 50)));
-            Assert.AreEqual(Point.Empty, mapPresenter.ToWorld(new Point2D(100, 100)));
+            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(new IPoint(50, 50)));
+            Assert.AreEqual(IPoint.Empty, mapPresenter.ToWorld(new Point2D(100, 100)));
         }
 
         [Test]
@@ -783,8 +783,8 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(0, mapPresenter.PixelWorldHeight);
             Assert.AreEqual(null, mapPresenter.ToViewTransform);
             Assert.AreEqual(null, mapPresenter.ToWorldTransform);
-            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(new Point(50, 50)));
-            Assert.AreEqual(Point.Empty, mapPresenter.ToWorld(new Point2D(100, 100)));
+            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(new IPoint(50, 50)));
+            Assert.AreEqual(IPoint.Empty, mapPresenter.ToWorld(new Point2D(100, 100)));
         }
 
         [Test]
@@ -816,8 +816,8 @@ namespace SharpMap.Tests.Presentation
 
             mapPresenter.ZoomToExtents();
             
-            BoundingBox expected = new BoundingBox(0, 0, 120, 100);
-            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            IExtents expected = new IExtents(0, 0, 120, 100);
+            Assert.AreEqual(new IPoint(60, 50), mapPresenter.GeoCenter);
             Assert.AreEqual(1, mapPresenter.WorldUnitsPerPixel);
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(100, mapPresenter.WorldHeight);
@@ -865,7 +865,7 @@ namespace SharpMap.Tests.Presentation
             view.RaiseMoveTo(new Point2D(0, 0));
             view.RaiseEnd(new Point2D(0, 0));
 
-            Assert.AreEqual(new Point(62.5, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(62.5, 50), mapPresenter.GeoCenter);
         }
 
         [Test]
@@ -941,7 +941,7 @@ namespace SharpMap.Tests.Presentation
 
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(150, mapPresenter.WorldHeight);
-            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(60, 50), mapPresenter.GeoCenter);
 
             Map map = mapPresenter.Map;
 
@@ -954,13 +954,13 @@ namespace SharpMap.Tests.Presentation
 
             Assert.AreEqual(100, mapPresenter.WorldWidth);
             Assert.AreEqual(125, mapPresenter.WorldHeight);
-            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(60, 50), mapPresenter.GeoCenter);
 
             mapPresenter.ZoomToExtents();
 
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(150, mapPresenter.WorldHeight);
-            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(60, 50), mapPresenter.GeoCenter);
 
             // Zoom using selection
             view.RaiseBegin(new Point2D(100, 125));
@@ -969,7 +969,7 @@ namespace SharpMap.Tests.Presentation
 
             Assert.AreEqual(60, mapPresenter.WorldWidth);
             Assert.AreEqual(75, mapPresenter.WorldHeight);
-            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(60, 50), mapPresenter.GeoCenter);
         }
 
         [Test]
@@ -1110,7 +1110,7 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
 
             mapPresenter.ZoomToViewBounds(new Rectangle2D(300, 300, 900, 900));
-            Assert.AreEqual(new Point(72, 38), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(72, 38), mapPresenter.GeoCenter);
             Assert.AreEqual(72, mapPresenter.WorldWidth);
             Assert.AreEqual(72, mapPresenter.WorldHeight);
         }
@@ -1130,7 +1130,7 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(120, mapPresenter.WorldHeight);
             // Zoom to a 200x100 rectangle in view coordinates
             mapPresenter.ZoomToViewBounds(new Rectangle2D(100, 50, 300, 150));
-            Assert.AreEqual(new Point(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(new IPoint(60, 50), mapPresenter.GeoCenter);
             Assert.AreEqual(60, mapPresenter.WorldWidth);
             Assert.AreEqual(60, mapPresenter.WorldHeight);
         }
@@ -1142,8 +1142,8 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
-            mapPresenter.ZoomToWorldBounds(new BoundingBox(20, 50, 100, 80));
-            Assert.AreEqual(new Point(60, 65), mapPresenter.GeoCenter);
+            mapPresenter.ZoomToWorldBounds(new IExtents(20, 50, 100, 80));
+            Assert.AreEqual(new IPoint(60, 65), mapPresenter.GeoCenter);
             Assert.AreEqual(80, mapPresenter.WorldWidth);
         }
 
@@ -1154,8 +1154,8 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
             mapPresenter.WorldAspectRatio = 2;
-            mapPresenter.ZoomToWorldBounds(new BoundingBox(20, 10, 100, 180));
-            Assert.AreEqual(new Point(60, 95), mapPresenter.GeoCenter);
+            mapPresenter.ZoomToWorldBounds(new IExtents(20, 10, 100, 180));
+            Assert.AreEqual(new IPoint(60, 95), mapPresenter.GeoCenter);
             Assert.AreEqual(170, mapPresenter.WorldWidth);
             Assert.AreEqual(170, mapPresenter.WorldHeight);
         }
@@ -1167,11 +1167,11 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
-            mapPresenter.GeoCenter = new Point(23, 34);
+            mapPresenter.GeoCenter = new IPoint(23, 34);
             mapPresenter.ZoomToWorldWidth(2500);
 
             Point2D p1 = mapPresenter.ToView(8, 50);
-            Point2D p2 = mapPresenter.ToView(new Point(8, 50));
+            Point2D p2 = mapPresenter.ToView(new IPoint(8, 50));
             Assert.AreEqual(new Point2D(494, 493.6), p1);
             Assert.AreEqual(p1, p2);
         }
@@ -1183,12 +1183,12 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 500, 200);
 
-            mapPresenter.GeoCenter = new Point(23, 34);
+            mapPresenter.GeoCenter = new IPoint(23, 34);
             mapPresenter.ZoomToWorldWidth(1000);
 
-            Point p1 = mapPresenter.ToWorld(242.5f, 92);
-            Point p2 = mapPresenter.ToWorld(new Point2D(242.5f, 92));
-            Assert.AreEqual(new Point(8, 50), p1);
+            IPoint p1 = mapPresenter.ToWorld(242.5f, 92);
+            IPoint p2 = mapPresenter.ToWorld(new Point2D(242.5f, 92));
+            Assert.AreEqual(new IPoint(8, 50), p1);
             Assert.AreEqual(p1, p2);
         }
 

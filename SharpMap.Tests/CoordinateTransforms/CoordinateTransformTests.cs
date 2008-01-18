@@ -1,10 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
+using GeoAPI.Coordinates;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Geometries;
 using NUnit.Framework;
-using SharpMap.CoordinateSystems;
-using SharpMap.CoordinateSystems.Transformations;
-using SharpMap.Geometries;
-using SharpMap.Geometries.Geometries3D;
 
 namespace SharpMap.Tests
 {
@@ -14,18 +14,20 @@ namespace SharpMap.Tests
         [Test]
         public void TestAlbersProjection()
         {
-            CoordinateSystemFactory cFac = new CoordinateSystemFactory();
+            ICoordinateSystemFactory cFac = new CoordinateSystemFactory();
+            ILinearUnit usSurveyFoot = cFac.CreateLinearUnit();
 
-            IEllipsoid ellipsoid =
-                cFac.CreateFlattenedSphere("Clarke 1866", 6378206.4, 294.9786982138982, LinearUnit.USSurveyFoot);
+            IEllipsoid ellipsoid = cFac.CreateFlattenedSphere(
+                6378206.4, 294.9786982138982, LinearUnit.USSurveyFoot, "Clarke 1866");
 
-            IHorizontalDatum datum = cFac.CreateHorizontalDatum("Clarke 1866", DatumType.HD_Geocentric, ellipsoid, null);
+            IHorizontalDatum datum = cFac.CreateHorizontalDatum(
+                DatumType.HorizontalGeocentric, ellipsoid, null, "Clarke 1866");
 
-            IGeographicCoordinateSystem gcs =
-                cFac.CreateGeographicCoordinateSystem("Clarke 1866", AngularUnit.Degrees, datum,
-                                                      PrimeMeridian.Greenwich,
-                                                      new AxisInfo("Lon", AxisOrientationEnum.East),
-                                                      new AxisInfo("Lat", AxisOrientationEnum.North));
+            IGeographicCoordinateSystem gcs = cFac.CreateGeographicCoordinateSystem(
+                "Clarke 1866", AngularUnit.Degrees, datum, 
+                PrimeMeridian.Greenwich, 
+                new AxisInfo("Lon", AxisOrientation.East),
+                new AxisInfo("Lat", AxisOrientation.North));
 
             //Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
             Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
@@ -39,22 +41,25 @@ namespace SharpMap.Tests
             IProjection projection = cFac.CreateProjection("Albers Conical Equal Area", "albers", parameters);
 
             IProjectedCoordinateSystem coordsys =
-                cFac.CreateProjectedCoordinateSystem("Albers Conical Equal Area", gcs, projection, LinearUnit.Metre,
-                                                     new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                cFac.CreateProjectedCoordinateSystem(
+                gcs, projection, LinearUnit.Metre,
+                new AxisInfo("East", AxisOrientation.East),
+                new AxisInfo("North", AxisOrientation.North));
 
-            ICoordinateTransformation trans =
-                new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
+            ICoordinateTransformation trans = new CoordinateTransformationFactory()
+                .CreateFromCoordinateSystems(gcs, coordsys);
 
-            Point pGeo = new Point(-75, 35);
-            Point pUtm = trans.MathTransform.Transform(pGeo);
-            Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
+            IPoint pGeo = new Point(-75, 35);
+            IPoint pUtm = trans.MathTransform.Transform(pGeo);
+            IPoint pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
-            Point expected = new Point(1885472.7, 1535925);
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05),
+            IPoint expected = new IPoint(1885472.7, 1535925);
+
+            Assert.IsTrue(toleranceLessThan(pUtm, expected, 0.05),
                           String.Format("Albers forward transformation outside tolerance, Expected {0}, got {1}",
-                                        expected.ToString(), pUtm.ToString()));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+                                        expected, pUtm));
+
+            Assert.IsTrue(toleranceLessThan(pGeo, pGeo2, 0.0000001),
                           String.Format("Albers reverse transformation outside tolerance, Expected {0}, got {1}",
                                         pGeo.ToString(), pGeo2.ToString()));
         }
@@ -70,8 +75,8 @@ namespace SharpMap.Tests
             IGeographicCoordinateSystem gcs =
                 cFac.CreateGeographicCoordinateSystem("Bessel 1840", AngularUnit.Degrees, datum,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("Lon", AxisOrientationEnum.East),
-                                                      new AxisInfo("Lat", AxisOrientationEnum.North));
+                                                      new AxisInfo("Lon", AxisOrientation.East),
+                                                      new AxisInfo("Lat", AxisOrientation.North));
             //Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
             Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
             parameters.Add(new ProjectionParameter("latitude_of_origin", 0));
@@ -83,8 +88,8 @@ namespace SharpMap.Tests
 
             IProjectedCoordinateSystem coordsys =
                 cFac.CreateProjectedCoordinateSystem("Makassar / NEIEZ", gcs, projection, LinearUnit.Metre,
-                                                     new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                                                     new AxisInfo("East", AxisOrientation.East),
+                                                     new AxisInfo("North", AxisOrientation.North));
 
             ICoordinateTransformation trans =
                 new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
@@ -94,10 +99,10 @@ namespace SharpMap.Tests
             Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
             Point expected = new Point(5009726.58, 569150.82);
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            Assert.IsTrue(toleranceLessThan(pUtm, expected, 0.02),
                           String.Format("Mercator_1SP forward transformation outside tolerance, Expected {0}, got {1}",
                                         expected.ToString(), pUtm.ToString()));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            Assert.IsTrue(toleranceLessThan(pGeo, pGeo2, 0.0000001),
                           String.Format("Mercator_1SP reverse transformation outside tolerance, Expected {0}, got {1}",
                                         pGeo.ToString(), pGeo2.ToString()));
         }
@@ -114,8 +119,8 @@ namespace SharpMap.Tests
             IGeographicCoordinateSystem gcs =
                 cFac.CreateGeographicCoordinateSystem("Krassowski 1940", AngularUnit.Degrees, datum,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("Lon", AxisOrientationEnum.East),
-                                                      new AxisInfo("Lat", AxisOrientationEnum.North));
+                                                      new AxisInfo("Lon", AxisOrientation.East),
+                                                      new AxisInfo("Lat", AxisOrientation.North));
             //Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
             Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
             parameters.Add(new ProjectionParameter("latitude_of_origin", 42));
@@ -126,8 +131,8 @@ namespace SharpMap.Tests
 
             IProjectedCoordinateSystem coordsys =
                 cFac.CreateProjectedCoordinateSystem("Pulkovo 1942 / Mercator Caspian Sea", gcs, projection,
-                                                     LinearUnit.Metre, new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                                                     LinearUnit.Metre, new AxisInfo("East", AxisOrientation.East),
+                                                     new AxisInfo("North", AxisOrientation.North));
 
             ICoordinateTransformation trans =
                 new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
@@ -137,10 +142,10 @@ namespace SharpMap.Tests
             Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
             Point expected = new Point(165704.29, 5171848.07);
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            Assert.IsTrue(toleranceLessThan(pUtm, expected, 0.02),
                           String.Format("Mercator_2SP forward transformation outside tolerance, Expected {0}, got {1}",
                                         expected.ToString(), pUtm.ToString()));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            Assert.IsTrue(toleranceLessThan(pGeo, pGeo2, 0.0000001),
                           String.Format("Mercator_2SP reverse transformation outside tolerance, Expected {0}, got {1}",
                                         pGeo.ToString(), pGeo2.ToString()));
         }
@@ -156,8 +161,8 @@ namespace SharpMap.Tests
             IGeographicCoordinateSystem gcs =
                 cFac.CreateGeographicCoordinateSystem("Airy 1830", AngularUnit.Degrees, datum,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("Lon", AxisOrientationEnum.East),
-                                                      new AxisInfo("Lat", AxisOrientationEnum.North));
+                                                      new AxisInfo("Lon", AxisOrientation.East),
+                                                      new AxisInfo("Lat", AxisOrientation.North));
             //Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
             Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
             parameters.Add(new ProjectionParameter("latitude_of_origin", 49));
@@ -169,8 +174,8 @@ namespace SharpMap.Tests
 
             IProjectedCoordinateSystem coordsys =
                 cFac.CreateProjectedCoordinateSystem("OSGB 1936 / British National Grid", gcs, projection,
-                                                     LinearUnit.Metre, new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                                                     LinearUnit.Metre, new AxisInfo("East", AxisOrientation.East),
+                                                     new AxisInfo("North", AxisOrientation.North));
 
             ICoordinateTransformation trans =
                 new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
@@ -180,11 +185,11 @@ namespace SharpMap.Tests
             Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
             Point expected = new Point(577274.99, 69740.50);
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            Assert.IsTrue(toleranceLessThan(pUtm, expected, 0.02),
                           String.Format(
                               "TransverseMercator forward transformation outside tolerance, Expected {0}, got {1}",
                               expected.ToString(), pUtm.ToString()));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            Assert.IsTrue(toleranceLessThan(pGeo, pGeo2, 0.0000001),
                           String.Format(
                               "TransverseMercator reverse transformation outside tolerance, Expected {0}, got {1}",
                               pGeo.ToString(), pGeo2.ToString()));
@@ -202,8 +207,8 @@ namespace SharpMap.Tests
             IGeographicCoordinateSystem gcs =
                 cFac.CreateGeographicCoordinateSystem("Clarke 1866", AngularUnit.Degrees, datum,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("Lon", AxisOrientationEnum.East),
-                                                      new AxisInfo("Lat", AxisOrientationEnum.North));
+                                                      new AxisInfo("Lon", AxisOrientation.East),
+                                                      new AxisInfo("Lat", AxisOrientation.North));
             //Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>(5);
             Collection<ProjectionParameter> parameters = new Collection<ProjectionParameter>();
             parameters.Add(new ProjectionParameter("latitude_of_origin", 27.833333333));
@@ -218,8 +223,8 @@ namespace SharpMap.Tests
             IProjectedCoordinateSystem coordsys =
                 cFac.CreateProjectedCoordinateSystem("NAD27 / Texas South Central", gcs, projection,
                                                      LinearUnit.USSurveyFoot,
-                                                     new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                                                     new AxisInfo("East", AxisOrientation.East),
+                                                     new AxisInfo("North", AxisOrientation.North));
 
             ICoordinateTransformation trans =
                 new CoordinateTransformationFactory().CreateFromCoordinateSystems(gcs, coordsys);
@@ -229,11 +234,11 @@ namespace SharpMap.Tests
             Point pGeo2 = trans.MathTransform.Inverse().Transform(pUtm);
 
             Point expected = new Point(2963503.91, 254759.80);
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            Assert.IsTrue(toleranceLessThan(pUtm, expected, 0.02),
                           String.Format(
                               "LambertConicConformal2SP forward transformation outside tolerance, Expected {0}, got {1}",
                               expected.ToString(), pUtm.ToString()));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            Assert.IsTrue(toleranceLessThan(pGeo, pGeo2, 0.0000001),
                           String.Format(
                               "LambertConicConformal2SP reverse transformation outside tolerance, Expected {0}, got {1}",
                               pGeo.ToString(), pGeo2.ToString()));
@@ -246,8 +251,8 @@ namespace SharpMap.Tests
             IGeographicCoordinateSystem gcs =
                 cFac.CreateGeographicCoordinateSystem("ETRF89 Geographic", AngularUnit.Degrees, HorizontalDatum.ETRF89,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("East", AxisOrientationEnum.East),
-                                                      new AxisInfo("North", AxisOrientationEnum.North));
+                                                      new AxisInfo("East", AxisOrientation.East),
+                                                      new AxisInfo("North", AxisOrientation.North));
             IGeocentricCoordinateSystem gcenCs =
                 cFac.CreateGeocentricCoordinateSystem("ETRF89 Geocentric", HorizontalDatum.ETRF89, LinearUnit.Metre,
                                                       PrimeMeridian.Greenwich);
@@ -258,36 +263,37 @@ namespace SharpMap.Tests
             Point3D p0 = new Point3D(3771793.97, 140253.34, 5124304.35);
             Point3D p1 = ct.MathTransform.Transform(pExpected3D) as Point3D;
             Point3D p2 = ct.MathTransform.Inverse().Transform(p1) as Point3D;
-            Assert.IsTrue(ToleranceLessThan(p1, p0, 0.01));
-            Assert.IsTrue(ToleranceLessThan(p2, pExpected, 0.00001));
+            Assert.IsTrue(toleranceLessThan(p1, p0, 0.01));
+            Assert.IsTrue(toleranceLessThan(p2, pExpected, 0.00001));
         }
 
         [Test]
         public void TestDatumTransform()
         {
-            CoordinateSystemFactory cFac = new CoordinateSystemFactory();
+            ICoordinateSystemFactory cFac = new ICoordinateSystemFactory();
+            
             //Define datums
-            HorizontalDatum wgs72 = HorizontalDatum.WGS72;
-            HorizontalDatum ed50 = HorizontalDatum.ED50;
+            IHorizontalDatum wgs72 = HorizontalDatum.WGS72;
+            IHorizontalDatum ed50 = HorizontalDatum.ED50;
 
             //Define geographic coordinate systems
             IGeographicCoordinateSystem gcsWGS72 =
                 cFac.CreateGeographicCoordinateSystem("WGS72 Geographic", AngularUnit.Degrees, wgs72,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("East", AxisOrientationEnum.East),
-                                                      new AxisInfo("North", AxisOrientationEnum.North));
+                                                      new AxisInfo("East", AxisOrientation.East),
+                                                      new AxisInfo("North", AxisOrientation.North));
 
             IGeographicCoordinateSystem gcsWGS84 =
                 cFac.CreateGeographicCoordinateSystem("WGS84 Geographic", AngularUnit.Degrees, HorizontalDatum.WGS84,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("East", AxisOrientationEnum.East),
-                                                      new AxisInfo("North", AxisOrientationEnum.North));
+                                                      new AxisInfo("East", AxisOrientation.East),
+                                                      new AxisInfo("North", AxisOrientation.North));
 
             IGeographicCoordinateSystem gcsED50 =
                 cFac.CreateGeographicCoordinateSystem("ED50 Geographic", AngularUnit.Degrees, ed50,
                                                       PrimeMeridian.Greenwich,
-                                                      new AxisInfo("East", AxisOrientationEnum.East),
-                                                      new AxisInfo("North", AxisOrientationEnum.North));
+                                                      new AxisInfo("East", AxisOrientation.East),
+                                                      new AxisInfo("North", AxisOrientation.North));
 
             //Define geocentric coordinate systems
             IGeocentricCoordinateSystem gcenCsWGS72 =
@@ -310,12 +316,12 @@ namespace SharpMap.Tests
             IProjection projection = cFac.CreateProjection("Transverse Mercator", "Transverse_Mercator", parameters);
             IProjectedCoordinateSystem utmED50 =
                 cFac.CreateProjectedCoordinateSystem("ED50 UTM Zone 32N", gcsED50, projection, LinearUnit.Metre,
-                                                     new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                                                     new AxisInfo("East", AxisOrientation.East),
+                                                     new AxisInfo("North", AxisOrientation.North));
             IProjectedCoordinateSystem utmWGS84 =
                 cFac.CreateProjectedCoordinateSystem("WGS84 UTM Zone 32N", gcsWGS84, projection, LinearUnit.Metre,
-                                                     new AxisInfo("East", AxisOrientationEnum.East),
-                                                     new AxisInfo("North", AxisOrientationEnum.North));
+                                                     new AxisInfo("East", AxisOrientation.East),
+                                                     new AxisInfo("North", AxisOrientation.North));
 
             //Set TOWGS84 parameters
             wgs72.Wgs84Parameters = new Wgs84ConversionInfo(0, 0, 4.5, 0, 0, 0.554, 0.219);
@@ -324,7 +330,7 @@ namespace SharpMap.Tests
                                                            -0.540645); //Parameters for Denmark
 
             //Set up coordinate transformations
-            CoordinateTransformationFactory ctFac = new CoordinateTransformationFactory();
+            ICoordinateTransformationFactory ctFac = new CoordinateTransformationFactory();
             ICoordinateTransformation ctForw = ctFac.CreateFromCoordinateSystems(gcsWGS72, gcenCsWGS72);
                 //Geographic->Geocentric (WGS72)
             ICoordinateTransformation ctWGS84_Gcen2Geo = ctFac.CreateFromCoordinateSystems(gcenCsWGS84, gcsWGS84);
@@ -338,36 +344,33 @@ namespace SharpMap.Tests
 
             //Test datum-shift from WGS72 to WGS84
             //Point3D pGeoCenWGS72 = ctForw.MathTransform.Transform(pLongLatWGS72) as Point3D;
-            Point3D pGeoCenWGS72 = new Point3D(3657660.66, 255768.55, 5201382.11);
+            IPoint3D pGeoCenWGS72 = new IPoint3D(3657660.66, 255768.55, 5201382.11);
             ICoordinateTransformation geocen_ed50_2_Wgs84 = ctFac.CreateFromCoordinateSystems(gcenCsWGS72, gcenCsWGS84);
-            Point3D pGeoCenWGS84 = geocen_ed50_2_Wgs84.MathTransform.Transform(pGeoCenWGS72) as Point3D;
+            IPoint3D pGeoCenWGS84 = geocen_ed50_2_Wgs84.MathTransform.Transform(pGeoCenWGS72) as IPoint3D;
             //Point3D pGeoCenWGS84 = wgs72.Wgs84Parameters.Apply(pGeoCenWGS72);
 
-            Assert.IsTrue(ToleranceLessThan(new Point3D(3657660.78, 255778.43, 5201387.75), pGeoCenWGS84, 0.01));
+            Assert.IsTrue(toleranceLessThan(new IPoint3D(3657660.78, 255778.43, 5201387.75), pGeoCenWGS84, 0.01));
 
             ICoordinateTransformation utm_ed50_2_Wgs84 = ctFac.CreateFromCoordinateSystems(utmED50, utmWGS84);
-            Point pUTMED50 = new Point(600000, 6100000);
-            Point pUTMWGS84 = utm_ed50_2_Wgs84.MathTransform.Transform(pUTMED50);
-            Assert.IsTrue(ToleranceLessThan(new Point(599928.6, 6099790.2), pUTMWGS84, 0.1));
+            IPoint pUTMED50 = new IPoint(600000, 6100000);
+            IPoint pUTMWGS84 = utm_ed50_2_Wgs84.MathTransform.Transform(pUTMED50);
+            Assert.IsTrue(toleranceLessThan(new IPoint(599928.6, 6099790.2), pUTMWGS84, 0.1));
             //Perform reverse
             ICoordinateTransformation utm_Wgs84_2_Ed50 = ctFac.CreateFromCoordinateSystems(utmWGS84, utmED50);
             pUTMED50 = utm_Wgs84_2_Ed50.MathTransform.Transform(pUTMWGS84);
-            Assert.IsTrue(ToleranceLessThan(new Point(600000, 6100000), pUTMED50, 0.1));
+            Assert.IsTrue(toleranceLessThan(new IPoint(600000, 6100000), pUTMED50, 0.1));
             //Assert.IsTrue(Math.Abs((pUTMWGS84 as Point3D).Z - 36.35) < 0.5);
             //Point pExpected = Point.FromDMS(2, 7, 46.38, 53, 48, 33.82);
             //ED50_to_WGS84_Denmark: datum.Wgs84Parameters = new Wgs84ConversionInfo(-89.5, -93.8, 127.6, 0, 0, 4.5, 1.2);
         }
 
-        private Boolean ToleranceLessThan(Point p1, Point p2, Double tolerance)
+        private static Boolean toleranceLessThan(IPoint p1, IPoint p2, Double tolerance)
         {
-            return Math.Abs(p1.X - p2.X) < tolerance && Math.Abs(p1.Y - p2.Y) < tolerance;
-        }
-
-        private Boolean ToleranceLessThan(Point3D p1, Point3D p2, Double tolerance)
-        {
-            return
-                Math.Abs(p1.X - p2.X) < tolerance && Math.Abs(p1.Y - p2.Y) < tolerance &&
-                Math.Abs(p1.Z - p2.Z) < tolerance;
+            return Math.Abs(p1[Ordinates.X] - p2[Ordinates.X]) < tolerance 
+                && Math.Abs(p1[Ordinates.Y] - p2[Ordinates.Y]) < tolerance
+                && (p1.ContainsOrdinate(Ordinates.Z) && p2.ContainsOrdinate(Ordinates.Z))
+                    ? Math.Abs(p1[Ordinates.Z] - p2[Ordinates.Z]) < tolerance 
+                    : true;
         }
     }
 }
