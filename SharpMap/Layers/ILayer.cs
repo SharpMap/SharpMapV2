@@ -29,59 +29,61 @@ namespace SharpMap.Layers
     /// <summary>
     /// Interface for map layers.
     /// </summary>
-    public interface ILayer : INotifyPropertyChanged, IDisposable
-    {
-        /// <summary>
-        /// Gets or sets a value indicating that data is obtained asynchronously.
-        /// </summary>
-        Boolean AsyncQuery { get; set; }
+	public interface ILayer : INotifyPropertyChanged, IDisposable
+	{
+		/// <summary>
+		/// Gets or sets a value indicating that data is obtained asynchronously.
+		/// </summary>
+		Boolean AsyncQuery { get; set; }
 
-        /// <summary>
-        /// The dataum, projection and coordinate system used for this layer.
-        /// </summary>
-        ICoordinateSystem CoordinateSystem { get; }
+		/// <summary>
+		/// The dataum, projection and coordinate system used for this layer.
+		/// </summary>
+		ICoordinateSystem CoordinateSystem { get; }
 
-        /// <summary>
-        /// Applies a coordinate transformation to the geometries in this layer.
-        /// </summary>
-        ICoordinateTransformation CoordinateTransformation { get; set; }
+		/// <summary>
+		/// Applies a coordinate transformation to the geometries in this layer.
+		/// </summary>
+		ICoordinateTransformation CoordinateTransformation { get; set; }
 
-        /// <summary>
-        /// Gets the data source used to create this layer.
-        /// </summary>
-        ILayerProvider DataSource { get; }
+		/// <summary>
+		/// Gets the data source used to create this layer.
+		/// </summary>
+		ILayerProvider DataSource { get; }
 
-        /// <summary>
-        /// Gets or sets a value representing the visibility of the layer.
-        /// </summary>
-        /// <remarks>
-        /// Should be the same value as <see cref="Style"/>'s 
-        /// <see cref="IStyle.Enabled"/> value.
-        /// </remarks>
-        Boolean Enabled { get; set; }
+		/// <summary>
+		/// Gets or sets a value representing the visibility of the layer.
+		/// </summary>
+		/// <remarks>
+		/// Should be the same value as <see cref="Style"/>'s 
+		/// <see cref="IStyle.Enabled"/> value.
+		/// </remarks>
+		Boolean Enabled { get; set; }
 
-        /// <summary>
-        /// Gets the boundingbox of the entire layer.
-        /// </summary>
-        BoundingBox Extents { get; }
+		/// <summary>
+		/// Gets the boundingbox of the entire layer.
+		/// </summary>
+		BoundingBox Extents { get; }
 
-        /// <summary>
-        /// Name of layer.
-        /// </summary>
-        String LayerName { get; set; }
+		/// <summary>
+		/// Name of layer.
+		/// </summary>
+		String LayerName { get; set; }
 
-        /// <summary>
-        /// The spatial reference ID of the layer data source.
-        /// </summary>
-        Int32? Srid { get; }
+		/// <summary>
+		/// The spatial reference ID of the layer data source.
+		/// </summary>
+		Int32? Srid { get; }
 
-        /// <summary>
-        /// The style for the layer.
-        /// </summary>
-        IStyle Style { get; set; }
+		/// <summary>
+		/// The style for the layer.
+		/// </summary>
+		IStyle Style { get; set; }
 
 		Boolean ShowChildren { get; set; }
 
-        Boolean IsVisibleWhen(Predicate<ILayer> condition);
-    }
+		Boolean AreFeaturesSelectable { get; set; }
+
+		Boolean IsVisibleWhen(Predicate<ILayer> condition);
+	}
 }

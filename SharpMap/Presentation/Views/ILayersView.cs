@@ -58,7 +58,14 @@ namespace SharpMap.Presentation.Views
 		/// </summary>
 		/// <param name="layer">The name of the <see cref="Layer"/> to enable.</param>
 		void EnableChildLayers(String layer);
-        
+
+		/// <summary>
+		/// Make the layer identified by <paramref name="layer"/> (un)selectable.
+		/// </summary>
+		/// <param name="layer"></param>
+		/// <param name="selectable"></param>
+    	void SetFeaturesSelectable(String layer, Boolean selectable);
+
         /// <summary>
         /// Gets or sets a list of layers to show as selected.
         /// </summary>
@@ -81,5 +88,11 @@ namespace SharpMap.Presentation.Views
 		/// enabled or disabled by the associated <see cref="LayersPresenter"/>.
 		/// </summary>
 		event EventHandler<LayerActionEventArgs> LayerChildrenVisibilityChangeRequested;
+
+		/// <summary>
+		/// Event triggered when a layer is requested to have its selectability be
+		/// enabled or disabled by the associated <see cref="LayersPresenter"/>.
+		/// </summary>
+		event EventHandler<LayerActionEventArgs> LayerSelectabilityChangeRequested;
 	}
 }

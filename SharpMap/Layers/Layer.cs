@@ -102,10 +102,21 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets a PropertyDescriptor for Layer's <see cref="Style"/> property.
         /// </summary>
-        public static PropertyDescriptor StyleProperty
-        {
-            get { return _properties.Find("Style", false); }
-        }
+		public static PropertyDescriptor StyleProperty
+		{
+			get { return _properties.Find("Style", false); }
+		}
+
+		public static PropertyDescriptor ShowChildrenProperty
+		{
+			get { return _properties.Find("ShowChildren", false); }
+		}
+
+		public static PropertyDescriptor AreFeaturesSelectableProperty
+		{
+			get { return _properties.Find("AreFeaturesSelectable", false); }
+		}
+
         #endregion
 
         #region Instance fields
@@ -454,6 +465,18 @@ namespace SharpMap.Layers
         #region Protected members
 
 		public Boolean ShowChildren
+		{
+			get
+			{
+				return false;
+			}
+			set
+			{
+				; // do nothing
+			}
+		}
+
+		public virtual Boolean AreFeaturesSelectable
 		{
 			get
 			{

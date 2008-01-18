@@ -830,7 +830,7 @@ namespace SharpMap.Presentation.Presenters
                     break;
                 case ListChangedType.ItemChanged:
                     if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name ||
-						e.PropertyDescriptor.Name == "ShowChildren")
+						e.PropertyDescriptor.Name == Layer.ShowChildrenProperty.Name)
                     {
                         RenderAllLayers();
                     }
@@ -1322,7 +1322,7 @@ namespace SharpMap.Presentation.Presenters
                     RenderFeatureLayer(featureLayer);
                     break;
                 case ListChangedType.Reset:
-                    if (featureLayer.SelectedFeatures.Count > 0)
+                    //if (featureLayer.SelectedFeatures.Count > 0)
                     {
                         RenderFeatureLayer(featureLayer);
                     }
@@ -1347,7 +1347,7 @@ namespace SharpMap.Presentation.Presenters
                     RenderFeatureLayer(featureLayer);
                     break;
                 case ListChangedType.Reset:
-                    if (featureLayer.HighlightedFeatures.Count > 0)
+                    //if (featureLayer.HighlightedFeatures.Count > 0)
                     {
                         RenderFeatureLayer(featureLayer);
                     }

@@ -374,6 +374,7 @@ namespace SharpMap.Layers
     	{
     		get
     		{
+				// Yes, if we find even one enabled child we say the children are all visible
 				foreach (ILayer layer in _layers)
 				{
 					if (layer != MasterLayer)
@@ -404,10 +405,35 @@ namespace SharpMap.Layers
 
 				if(valChanged)
 				{
-					OnPropertyChanged("ShowChildren");
+					OnPropertyChanged(Layer.ShowChildrenProperty.Name);
 				}
 			}
     	}
+
+		/// <summary>
+		/// Whether we should show anything other than the master
+		/// </summary>
+		public Boolean AreFeaturesSelectable
+		{
+			get
+			{
+				return MasterLayer.AreFeaturesSelectable;
+			}
+			set
+			{
+				if (value != MasterLayer.AreFeaturesSelectable)
+				{
+					MasterLayer.AreFeaturesSelectable = value;
+
+					// this double check is here because some layers may not have an impl for 
+					// that property setter, so the set may not have actually done anything
+					if (value == MasterLayer.AreFeaturesSelectable)
+					{
+						OnPropertyChanged(Layer.AreFeaturesSelectableProperty.Name);
+					}
+				}
+			}
+		}
 
     	public event EventHandler LayerDataAvailable;
 

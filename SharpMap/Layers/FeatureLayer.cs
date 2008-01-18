@@ -200,6 +200,27 @@ namespace SharpMap.Layers
             }
         }
 
+		public override Boolean AreFeaturesSelectable
+		{
+			get
+			{
+				FeatureStyle fstyle = Style as FeatureStyle;
+				if (fstyle != null)
+				{
+					return fstyle.AreFeaturesSelectable;
+				}
+				return false;
+			}
+			set
+			{
+				FeatureStyle fstyle = Style as FeatureStyle;
+				if (fstyle != null)
+				{
+					fstyle.AreFeaturesSelectable = value;
+				}
+			}
+		}
+
         /// <summary>
         /// Loads data from the <see cref="DataSource"/> which satisfy
         /// the given <see cref="query"/>.
