@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GeoAPI.Geometries;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Rendering;
@@ -151,7 +152,7 @@ namespace SharpMap.Tests.Rendering
 
             foreach (FeatureDataRow feature in features)
             {
-                Geometry g = feature.Geometry;
+                IGeometry g = feature.Geometry;
                 List<RenderObject> renderedObjects = new List<RenderObject>(geometryRenderer.RenderFeature(feature));
 
                 for (Int32 i = 0; i < renderedObjects.Count; i++)

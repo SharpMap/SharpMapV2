@@ -1,4 +1,5 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -17,10 +18,11 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
-    internal static class BoundingBoxOperations
+    internal static class BoundingBoxSpatialOperations
     {
         internal static Geometry Difference(Extents lhs, Extents rhs)
         {
@@ -52,9 +54,10 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
-        internal static Geometry Intersection(Extents lhs, Extents rhs)
+        internal static Geometry Union(Extents lhs, Extents rhs)
         {
-            return Extents.Intersection(lhs, rhs).ToGeometry();
+            Extents union = new Extents(lhs, rhs);
+            return union.ToGeometry();
         }
 
         internal static Geometry Union(Geometry lhs, Geometry rhs)
@@ -85,9 +88,28 @@ namespace SharpMap.SimpleGeometries
             return new Extents(lhs.Extents, rhs.Extents).ToGeometry();
         }
 
+        internal static IGeometry Union(IGeometry lhs, IGeometry rhs)
+        {
+            return Union(
+                ((Geometry)lhs).ExtentsInternal,
+                ((Geometry)rhs).ExtentsInternal);
+        }
+
+        internal static Geometry Intersection(Extents lhs, Extents rhs)
+        {
+            return Extents.Intersection(lhs, rhs).ToGeometry();
+        }
+
         internal static Geometry Intersection(Geometry lhs, Geometry rhs)
         {
-            return BoundingBoxOperations.Intersection(lhs.ExtentsInternal, rhs.ExtentsInternal);
+            return Intersection(lhs.ExtentsInternal, rhs.ExtentsInternal);
+        }
+
+        internal static IGeometry Intersection(IGeometry lhs, IGeometry rhs)
+        {
+            return Intersection(
+                ((Geometry)lhs).ExtentsInternal, 
+                ((Geometry)rhs).ExtentsInternal);
         }
     }
 }

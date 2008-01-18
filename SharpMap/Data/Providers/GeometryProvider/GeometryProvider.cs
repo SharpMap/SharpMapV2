@@ -133,7 +133,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// to add to this datasource.
 		/// </param>
 		public GeometryProvider(Byte[] wellKnownBinaryGeometry, IGeometryFactory factory)
-            : this(GeometryFromWkb.Parse(wellKnownBinaryGeometry, factory))
+            : this(WkbEncoder.ToGeometry(wellKnownBinaryGeometry, factory))
 		{
 		}
 
@@ -145,7 +145,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// to add to this datasource.
 		/// </param>
         public GeometryProvider(String wellKnownTextGeometry, IGeometryFactory factory)
-            : this(GeometryFromWkt.Parse(wellKnownTextGeometry, factory))
+            : this(WktEncoder.ToGeometry(wellKnownTextGeometry, factory))
 		{
 		}
 

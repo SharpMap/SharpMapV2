@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -38,9 +39,9 @@ namespace SharpMap.SimpleGeometries
 		/// The inherent dimension of this Geometry object, 
 		/// which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		public override Int32 Dimension
+		public override Dimensions Dimension
 		{
-			get { return 1; }
+            get { return Dimensions.Curve; }
 		}
 
 		/// <summary>

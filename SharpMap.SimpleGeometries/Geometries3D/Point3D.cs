@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -69,7 +70,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		{
 			get
 			{
-				if (!IsEmpty())
+				if (!IsEmpty)
 					return _z;
 				else
 					throw new InvalidOperationException("Point is empty");
@@ -92,7 +93,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 			{
 				if (index == 2)
 				{
-					if (IsEmpty())
+					if (IsEmpty)
 						throw new InvalidOperationException("Point is empty");
 
 					return Z;
@@ -110,14 +111,6 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 				else
 					base[index] = value;
 			}
-		}
-
-		/// <summary>
-		/// Returns the number of ordinates for this point
-		/// </summary>
-		public override Int32 NumOrdinates
-		{
-			get { return 3; }
 		}
 
 		#region Operators
@@ -186,9 +179,9 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		/// </summary>
 		/// <param name="geom"></param>
 		/// <returns></returns>
-		public override Double Distance(Geometry geom)
+		public Double Distance(Geometry geom)
 		{
-			if (geom.GetType() == typeof (Point3D))
+			if (geom is Point3D)
 			{
 				Point3D p = geom as Point3D;
 				return Math.Sqrt(Math.Pow(X - p.X, 2) + Math.Pow(Y - p.Y, 2) + Math.Pow(Z - p.Z, 2));

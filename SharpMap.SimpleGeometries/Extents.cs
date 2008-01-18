@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack;
+using NPack.Interfaces;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -28,11 +30,11 @@ namespace SharpMap.SimpleGeometries
     /// Bounding extents type with Double precision.
     /// </summary>
     /// <remarks>
-    /// The BoundingBox represents a 2D extents whose sides are parallel to the 
-    /// two axes of the coordinate system.
+    /// The <see cref="Extents"/> represents a 2D extents whose sides 
+    /// are parallel to the two axes of the coordinate system.
     /// </remarks>
     [Serializable]
-    public struct Extents : IExtents, IEquatable<Extents>
+    public struct Extents : IExtents2D, IEquatable<Extents>
     {
         private static readonly Extents _empty = new Extents();
 
@@ -78,7 +80,8 @@ namespace SharpMap.SimpleGeometries
         public Extents(Point lowerLeft, Point upperRight)
             : this(0, 0, 0, 0)
         {
-            if (lowerLeft == null || lowerLeft.IsEmpty() || upperRight == null || upperRight.IsEmpty())
+            if (lowerLeft == null || lowerLeft.IsEmpty 
+                || upperRight == null || upperRight.IsEmpty)
             {
                 _hasValue = false;
                 return;
@@ -211,8 +214,8 @@ namespace SharpMap.SimpleGeometries
                     return;
                 }
 
-                _xMax = value.X;
-                _yMax = value.Y;
+                _xMax = value[Ordinates.X];
+                _yMax = value[Ordinates.Y];
             }
         }
 
@@ -221,7 +224,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public Point LowerLeft
         {
-            get { return Min; }
+            get { return new Point(Min); }
         }
 
         /// <summary>
@@ -261,7 +264,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public Point UpperRight
         {
-            get { return Max; }
+            get { return new Point(Max); }
         }
 
         /// <summary>
@@ -460,7 +463,7 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Contains(Point p, Tolerance tolerance)
         {
-            if (p == null || IsEmpty || p.IsEmpty())
+            if (p == null || IsEmpty || p.IsEmpty)
             {
                 return false;
             }
@@ -720,12 +723,12 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Overlaps(Point p, Tolerance tolerance)
         {
-            if (p == null || p.IsEmpty())
+            if (p == null || p.IsEmpty)
             {
                 return false;
             }
 
-            return Overlaps(p.GetBoundingBox());
+            return Overlaps(p.Extents);
         }
 
         /// <summary>
@@ -873,7 +876,7 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Touches(Point p, Tolerance tolerance)
         {
-            if (p == null || p.IsEmpty())
+            if (p == null || p.IsEmpty)
             {
                 return false;
             }
@@ -1004,7 +1007,7 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Within(Point p, Tolerance tolerance)
         {
-            if (p == null || IsEmpty || p.IsEmpty())
+            if (p == null || IsEmpty || p.IsEmpty)
             {
                 return false;
             }
@@ -1419,7 +1422,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns>Minimum distance.</returns>
         public Double Distance(Point p)
         {
-            return Distance(p.GetBoundingBox());
+            return Distance(p.Extents);
         }
 
         #endregion
@@ -1436,7 +1439,7 @@ namespace SharpMap.SimpleGeometries
                 return Point.Empty;
             }
 
-            return (Min + Max) * 0.5f;
+            return (LowerLeft + UpperRight) * 0.5f;
         }
 
         #endregion
@@ -1509,11 +1512,11 @@ namespace SharpMap.SimpleGeometries
         #region Object Overrides
 
         /// <summary>
-        /// Indicates whether the current object is equal to another object of the same type.
+        /// Indicates whether the current Object is equal to another Object of the same type.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (obj == null)
             {
@@ -1530,9 +1533,9 @@ namespace SharpMap.SimpleGeometries
         }
 
         /// <summary>
-        /// Returns a hash code for the specified object
+        /// Returns a hash code for the specified Object
         /// </summary>
-        /// <returns>A hash code for the specified object</returns>
+        /// <returns>A hash code for the specified Object</returns>
         public override Int32 GetHashCode()
         {
             return (Int32)(_xMin + _yMin + _xMax + _yMax);
@@ -1619,5 +1622,187 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion Private Helper Methods
+
+        #region IExtents Members
+
+        public Boolean Borders(IExtents other, Tolerance tolerance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Borders(IExtents other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICoordinate Center
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public Boolean Contains(ICoordinate other, Tolerance tolerance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Contains(Tolerance tolerance, params Double[] coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Contains(ICoordinate other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Contains(params Double[] coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double Distance(IExtents extents)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExpandToInclude(IGeometry other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExpandToInclude(params Double[] coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double GetMax(Ordinates ordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double GetMin(Ordinates ordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double GetSize(params Ordinates[] axes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double GetSize(Ordinates axis1, Ordinates axis2, Ordinates axis3)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double GetSize(Ordinates axis1, Ordinates axis2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double GetSize(Ordinates axis)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IExtents Intersection(IExtents extents)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Intersects(Tolerance tolerance, params Double[] coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Intersects(params Double[] coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Overlaps(ICoordinate other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Overlaps(params Double[] coordinate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Scale(Double factor, Ordinates axis)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Scale(Double factor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Scale(params Double[] vector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetToEmpty()
+        {
+            throw new NotImplementedException();
+        }
+
+        IGeometry IExtents.ToGeometry()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Transform(IMatrix<DoubleComponent> transformMatrix)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Translate(params Double[] vector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IExtents Union(IExtents box)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IExtents Union(IPoint point)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComparable Members
+
+        public Int32 CompareTo(Object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEquatable<IExtents> Members
+
+        public Boolean Equals(IExtents other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        Object ICloneable.Clone()
+        {
+            // value type copies and boxes for a deep copy
+            return this;
+        }
+
+        #endregion
     }
 }

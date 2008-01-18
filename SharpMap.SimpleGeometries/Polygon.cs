@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -30,7 +31,7 @@ namespace SharpMap.SimpleGeometries
     /// are in the opposite direction of the exterior ring.
     /// </remarks>
     [Serializable]
-    public class Polygon : Surface
+    public class Polygon : Surface, IPolygon
     {
         private LinearRing _exteriorRing;
         private List<LinearRing> _interiorRings = new List<LinearRing>();
@@ -194,9 +195,12 @@ namespace SharpMap.SimpleGeometries
         /// If true, then this Geometry represents the empty point set, Ø, for the coordinate space. 
         /// </summary>
         /// <returns>Returns 'true' if this Geometry is the empty geometry</returns>
-        public override Boolean IsEmpty()
+        public override Boolean IsEmpty
         {
-            return (ExteriorRing == null) || (ExteriorRing.Vertices.Count == 0);
+            get
+            {
+                return (ExteriorRing == null) || (ExteriorRing.Vertices.Count == 0);
+            }
         }
 
         /// <summary>
@@ -204,9 +208,12 @@ namespace SharpMap.SimpleGeometries
         /// intersection or self tangency. The description of each instantiable geometric class will include the specific
         /// conditions that cause an instance of that class to be classified as not simple.
         /// </summary>
-        public override Boolean IsSimple()
+        public override Boolean IsSimple
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -215,16 +222,16 @@ namespace SharpMap.SimpleGeometries
         /// is a closure, and hence topologically closed, the resulting boundary can be represented using
         /// representational geometry primitives
         /// </summary>
-        public override Geometry Boundary()
+        public override IGeometry Boundary
         {
-            throw new NotImplementedException();
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
         /// Returns the shortest distance between any two points in the two geometries
         /// as calculated in the spatial reference system of this Geometry.
         /// </summary>
-        public override Double Distance(Geometry geom)
+        public override Double Distance(IGeometry geom)
         {
             throw new NotImplementedException();
         }
@@ -234,7 +241,7 @@ namespace SharpMap.SimpleGeometries
         /// is less than or equal to distance. Calculations are in the Spatial Reference
         /// System of this Geometry.
         /// </summary>
-        public override Geometry Buffer(Double d)
+        public override IGeometry Buffer(Double d)
         {
             throw new NotImplementedException();
         }
@@ -242,7 +249,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Geometry—Returns a geometry that represents the convex hull of this Geometry.
         /// </summary>
-        public override Geometry ConvexHull()
+        public override IGeometry ConvexHull()
         {
             throw new NotImplementedException();
         }
@@ -251,46 +258,45 @@ namespace SharpMap.SimpleGeometries
         /// Returns a geometry that represents the point set intersection of this Geometry
         /// with anotherGeometry.
         /// </summary>
-        public override Geometry Intersection(Geometry geom)
+        public override IGeometry Intersection(IGeometry geom)
         {
-            return FakeSpatialOperations.Intersection(this, geom);
+            return BoundingBoxSpatialOperations.Intersection(this, geom);
         }
 
         /// <summary>
         /// Returns a geometry that represents the point set union 
         /// of this Geometry with another Geometry.
         /// </summary>
-        public override Geometry Union(Geometry geometry)
+        public override IGeometry Union(IGeometry geometry)
         {
 #warning fake the union using a GeometryCollection
-            return FakeSpatialOperations.Union(this, geometry);
+            return BoundingBoxSpatialOperations.Union(this, geometry);
         }
 
         /// <summary>
         /// Returns a geometry that represents the point set difference of this Geometry with anotherGeometry.
         /// </summary>
-        public override Geometry Difference(Geometry geometry)
+        public override IGeometry Difference(IGeometry geometry)
         {
             if (geometry == null) throw new ArgumentNullException("geometry");
 
-#warning fake the difference by using bounding boxes. Broken until we go to NTS in Beta 2
-            if (IsEmpty())
+            if (IsEmpty)
             {
                 return geometry;
             }
 
-            if (geometry.IsEmpty())
+            if (geometry.IsEmpty)
             {
                 return this;
             }
 
-            return BoundingBoxOperations.Difference(GetBoundingBox(), geometry.GetBoundingBox());
+            return BoundingBoxSpatialOperations.Difference(ExtentsInternal, new Extents(geometry.Extents));
         }
 
         /// <summary>
         /// Returns a geometry that represents the point set symmetric difference of this Geometry with anotherGeometry.
         /// </summary>
-        public override Geometry SymDifference(Geometry geom)
+        public override IGeometry SymmetricDifference(IGeometry geom)
         {
             throw new NotImplementedException();
         }
@@ -331,13 +337,13 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public override Point Centroid
         {
-            get { return ExteriorRing.GetBoundingBox().GetCentroid(); }
+            get { return ExteriorRing.ExtentsInternal.GetCentroid(); }
         }
 
         /// <summary>
         /// A point guaranteed to be on this Surface.
         /// </summary>
-        public override Point PointOnSurface
+        public override IPoint PointOnSurface
         {
             get { throw new NotImplementedException(); }
         }
@@ -346,15 +352,18 @@ namespace SharpMap.SimpleGeometries
         /// Returns the bounding box of the object
         /// </summary>
         /// <returns>bounding box</returns>
-        public override Extents GetBoundingBox()
+        public override IExtents Extents
         {
-            if (_exteriorRing == null || _exteriorRing.IsEmpty())
+            get
             {
-                return Extents.Empty;
-            }
-            else
-            {
-                return _exteriorRing.GetBoundingBox();
+                if (_exteriorRing == null || _exteriorRing.IsEmpty)
+                {
+                    return new Extents();
+                }
+                else
+                {
+                    return _exteriorRing.ExtentsInternal;
+                }
             }
         }
 
@@ -394,5 +403,39 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        #region IPolygon Members
+
+        ILineString IPolygon.ExteriorRing
+        {
+            get { return ExteriorRing; }
+        }
+
+        public Int32 InteriorRingsCount
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        IList<ILineString> IPolygon.InteriorRings
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        public override Int32 PointCount
+        {
+            get
+            {
+                Int32 pointCount = ExteriorRing.PointCount;
+
+                foreach (LinearRing ring in _interiorRings)
+                {
+                    pointCount += ring.PointCount;
+                }
+
+                return pointCount;
+            }
+        }
     }
 }

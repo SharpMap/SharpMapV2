@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -37,28 +38,11 @@ namespace SharpMap.SimpleGeometries
             : base(initialCapacity) { }
 
 		/// <summary>
-		/// Gets or sets the MultiPoint collection
-		/// </summary>
-		public IList<Point> Points
-		{
-			get { return Collection; }
-		}
-
-		/// <summary>
 		///  The inherent dimension of this Geometry object, which must be less than or equal to the coordinate dimension.
 		/// </summary>
-		public override Int32 Dimension
+		public override Dimensions Dimension
 		{
-			get { return 0; }
-		}
-
-		/// <summary>
-		/// The boundary of a MultiPoint is the empty set (null).
-		/// </summary>
-		/// <returns></returns>
-		public override Geometry Boundary()
-		{
-			return null;
+            get { return Dimensions.Point; }
 		}
 
 		/// <summary>
@@ -69,9 +53,9 @@ namespace SharpMap.SimpleGeometries
 		{
 			MultiPoint multiPoint = new MultiPoint();
 
-			foreach (Point p in Points)
+			foreach (Point p in this)
 			{
-				multiPoint.Points.Add(p.Clone() as Point);
+				multiPoint.Add(p.Clone() as Point);
 			}
 
 			return multiPoint;

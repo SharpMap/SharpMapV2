@@ -35,14 +35,14 @@ namespace SharpMap.SimpleGeometries
         public MultiLineString(Int32 initialCapacity)
             : base(initialCapacity) { }
 
-        /// <summary>
-        /// Collection of <see cref="LineString">LineStrings</see> 
-        /// in the <see cref="MultiLineString"/>
-        /// </summary>
-        public IList<LineString> LineStrings
-        {
-            get { return Collection; }
-        }
+        ///// <summary>
+        ///// Collection of <see cref="LineString">LineStrings</see> 
+        ///// in the <see cref="MultiLineString"/>
+        ///// </summary>
+        //public IList<LineString> LineStrings
+        //{
+        //    get { return Collection; }
+        //}
 
         /// <summary>
         /// Creates a copy of this geometry.
@@ -52,9 +52,9 @@ namespace SharpMap.SimpleGeometries
         {
             MultiLineString multiLineString = new MultiLineString();
 
-            foreach (LineString lineString in Collection)
+            foreach (LineString lineString in this)
             {
-                multiLineString.LineStrings.Add(lineString.Clone() as LineString);
+                multiLineString.Add(lineString.Clone() as LineString);
             }
 
             return multiLineString;

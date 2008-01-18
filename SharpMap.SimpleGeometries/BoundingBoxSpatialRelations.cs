@@ -1,4 +1,5 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,13 +17,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
 	/// <summary>
 	/// Class defining a set of named spatial relationship operators for geometric shape objects.
 	/// </summary>
-	public class SpatialRelations
+	public class BoundingBoxSpatialRelations
 	{
 		/// <summary>
 		/// Returns true if otherGeometry is wholly contained within the source geometry. This is the same as
@@ -41,21 +43,18 @@ namespace SharpMap.SimpleGeometries
 		/// the maximum dimension of the two geometries and the intersection geometry is not equal to either.
 		/// geometry.
 		/// </summary>
-		/// <param name="g1"></param>
-		/// <param name="g2"></param>
-		/// <returns></returns>
 		public static Boolean Crosses(Geometry g1, Geometry g2)
 		{
-			Geometry g = g2.Intersection(g1);
-			return (g.Intersection(g1).Dimension < Math.Max(g1.Dimension, g2.Dimension) && !g.Equals(g1) && !g.Equals(g2));
+			IGeometry g = g2.Intersection(g1);
+		    Int32 maxDimension = Math.Max((Int32) g1.Dimension, (Int32) g2.Dimension);
+
+            return ((Int32)g.Intersection(g1).Dimension < maxDimension 
+                && !g.Equals(g1) && !g.Equals(g2));
 		}
 
 		/// <summary>
 		/// Returns true if otherGeometry is disjoint from the source geometry.
 		/// </summary>
-		/// <param name="g1"></param>
-		/// <param name="g2"></param>
-		/// <returns></returns>
 		public static Boolean Disjoint(Geometry g1, Geometry g2)
 		{
 			return !g2.Intersects(g1);
@@ -66,7 +65,6 @@ namespace SharpMap.SimpleGeometries
 		/// </summary>
 		/// <param name="g1">source geometry</param>
 		/// <param name="g2">other Geometry</param>
-		/// <returns></returns>
 		public static Boolean Equals(Geometry g1, Geometry g2)
 		{
 			if (ReferenceEquals(g1, null) && ReferenceEquals(g2, null))
@@ -110,12 +108,12 @@ namespace SharpMap.SimpleGeometries
 			}
 			else if (g1 is GeometryCollection)
 			{
-				if ((g1 as GeometryCollection).Collection.Count != (g2 as GeometryCollection).Collection.Count)
+				if ((g1 as GeometryCollection).Count != (g2 as GeometryCollection).Count)
 				{
 					return false;
 				}
 
-				for (Int32 i = 0; i < (g1 as GeometryCollection).Collection.Count; i++)
+				for (Int32 i = 0; i < (g1 as GeometryCollection).Count; i++)
 				{
 					if (!Equals((g1 as GeometryCollection)[i], (g2 as GeometryCollection)[i]))
 					{
@@ -135,13 +133,8 @@ namespace SharpMap.SimpleGeometries
 		/// <summary>
 		/// Returns true if there is any intersection between the two geometries.
 		/// </summary>
-		/// <param name="g1"></param>
-		/// <param name="g2"></param>
-		/// <returns></returns>
 		public static Boolean Intersects(Geometry g1, Geometry g2)
 		{
-#warning BoundingBox intersection is wrong, wrong, wrong, but it won't be fixed until we use NTS
-
 			if (g1 == null || g2 == null)
 			{
 				return false;
@@ -152,16 +145,13 @@ namespace SharpMap.SimpleGeometries
 				return true;
 			}
 
-			return g1.GetBoundingBox().Intersects(g2.GetBoundingBox());
+            return g1.ExtentsInternal.Intersects(g2.ExtentsInternal);
 		}
 
 		/// <summary>
 		/// Returns true if the intersection of the two geometries results in an object of the same dimension as the
 		/// input geometries and the intersection geometry is not equal to either geometry.
 		/// </summary>
-		/// <param name="g1"></param>
-		/// <param name="g2"></param>
-		/// <returns></returns>
 		public static Boolean Overlaps(Geometry g1, Geometry g2)
 		{
 			throw new NotImplementedException();
@@ -170,9 +160,6 @@ namespace SharpMap.SimpleGeometries
 		/// <summary>
 		/// Returns true if the only points in common between the two geometries lie in the union of their boundaries.
 		/// </summary>
-		/// <param name="g1"></param>
-		/// <param name="g2"></param>
-		/// <returns></returns>
 		public static Boolean Touches(Geometry g1, Geometry g2)
 		{
 			throw new NotImplementedException();
@@ -182,16 +169,12 @@ namespace SharpMap.SimpleGeometries
 		/// Returns true if the primary geometry is wholly contained 
 		/// within the comparison geometry.
 		/// </summary>
-		/// <param name="g1"></param>
-		/// <param name="g2"></param>
-		/// <returns></returns>
 		public static Boolean Within(Geometry g1, Geometry g2)
 		{
 		    if (g1 == null) throw new ArgumentNullException("g1");
 		    if (g2 == null) throw new ArgumentNullException("g2");
 
-#warning fake spatial relation using BoundingBox instances. Shhh...
-		    return g2.GetBoundingBox().Contains(g1.GetBoundingBox());
+            return g2.ExtentsInternal.Contains(g1.ExtentsInternal);
 		}
 	}
 }

@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -48,16 +49,16 @@ namespace SharpMap.SimpleGeometries
 		/// <summary>
 		/// A point guaranteed to be on this Surface.
 		/// </summary>
-		public abstract Point PointOnSurface { get; }
+		public abstract IPoint PointOnSurface { get; }
 
 		/// <summary>
 		///  The inherent dimension of this Geometry object, which must be less than or equal
 		///  to the coordinate dimension. This specification is restricted to geometries in two-dimensional coordinate
 		///  space.
 		/// </summary>
-		public override Int32 Dimension
+		public override Dimensions Dimension
 		{
-			get { return 2; }
+			get { return Dimensions.Curve; }
 		}
 	}
 }

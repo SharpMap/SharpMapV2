@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using GeoAPI.Utilities;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -26,7 +27,7 @@ namespace SharpMap.SimpleGeometries
     /// Each consecutive pair of points defines a line segment.
     /// </summary>
     [Serializable]
-    public class LineString : Curve
+    public class LineString : Curve, ILineString
     {
         private readonly List<IPoint> _vertices = new List<IPoint>();
         private Extents _extents = new Extents();
@@ -35,11 +36,11 @@ namespace SharpMap.SimpleGeometries
         /// Initializes an instance of a LineString from a set of vertices.
         /// </summary>
         /// <param name="vertices"></param>
-        public LineString(IEnumerable<Point> vertices)
+        public LineString(IEnumerable<IPoint> vertices)
         {
-            foreach (Point p in vertices)
+            foreach (IPoint p in vertices)
             {
-                _vertices.Add(p.Clone() as Point);
+                _vertices.Add(p.Clone() as IPoint);
             }
         }
 
@@ -230,7 +231,7 @@ namespace SharpMap.SimpleGeometries
         public override IGeometry Union(IGeometry geom)
         {
 #warning fake the union using a GeometryCollection
-            return BoundingBoxOperations.Union(this, geom as Geometry);
+            return BoundingBoxSpatialOperations.Union(this, geom as Geometry);
         }
 
         /// <summary>
@@ -379,6 +380,15 @@ namespace SharpMap.SimpleGeometries
             }
 
             return l;
+        }
+
+        #endregion
+
+        #region ILineString Members
+
+        public ILineString Reverse()
+        {
+            return new LineString(Slice.Reverse(_vertices));
         }
 
         #endregion

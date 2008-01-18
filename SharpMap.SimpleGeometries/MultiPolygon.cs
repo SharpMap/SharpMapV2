@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -34,13 +33,13 @@ namespace SharpMap.SimpleGeometries
 		public MultiPolygon(Int32 initialCapacity) :
             base(initialCapacity) { }
 
-		/// <summary>
-		/// Collection of polygons in the multipolygon
-		/// </summary>
-		public IList<Polygon> Polygons
-		{
-			get { return Collection; }
-		}
+        ///// <summary>
+        ///// Collection of polygons in the multipolygon
+        ///// </summary>
+        //public IList<Polygon> Polygons
+        //{
+        //    get { return Collection; }
+        //}
 
 		/// <summary>
 		/// The mathematical centroid for the surfaces as a Point.
@@ -67,9 +66,9 @@ namespace SharpMap.SimpleGeometries
 		{
 			MultiPolygon multiPolygon = new MultiPolygon();
 
-			foreach (Polygon poly in Polygons)
+			foreach (Polygon poly in this)
 			{
-				multiPolygon.Polygons.Add(poly.Clone() as Polygon);
+				multiPolygon.Add(poly.Clone() as Polygon);
 			}
 
 			return multiPolygon;

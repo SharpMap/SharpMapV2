@@ -475,5 +475,10 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        public override int PointCount
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

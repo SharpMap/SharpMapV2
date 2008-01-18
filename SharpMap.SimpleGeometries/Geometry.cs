@@ -246,7 +246,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public String AsText()
         {
-            return GeometryToWkt.Write(this);
+            return WktEncoder.ToWkt(this);
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public Byte[] AsBinary()
         {
-            return GeometryToWkb.Write(this);
+            return WkbEncoder.ToWkb(this);
         }
 
         /// <summary>
@@ -291,7 +291,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Contains(IGeometry geom)
         {
-            return SpatialRelations.Contains(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Contains(this, g);
         }
 
         /// <summary>
@@ -299,7 +301,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Crosses(IGeometry geom)
         {
-            return SpatialRelations.Crosses(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Crosses(this, g);
         }
 
         public Boolean Covers(IGeometry g, Tolerance tolerance)
@@ -322,7 +326,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Disjoint(IGeometry geom)
         {
-            return SpatialRelations.Disjoint(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Disjoint(this, g);
         }
 
         public Boolean Disjoint(IGeometry g, Tolerance tolerance)
@@ -351,7 +357,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Equals(Geometry other)
         {
-            return SpatialRelations.Equals(this, other);
+            return BoundingBoxSpatialRelations.Equals(this, other);
         }
 
         /// <summary>
@@ -435,7 +441,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Intersects(IGeometry geom)
         {
-            return SpatialRelations.Intersects(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Intersects(this, g);
         }
 
         public Boolean Intersects(IGeometry g, Tolerance tolerance)
@@ -473,7 +481,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Overlaps(IGeometry geom)
         {
-            return SpatialRelations.Overlaps(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Overlaps(this, g);
         }
 
         /// <summary>
@@ -520,7 +530,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Touches(IGeometry geom)
         {
-            return SpatialRelations.Touches(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Touches(this, g);
         }
 
         /// <summary>
@@ -528,7 +540,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public virtual Boolean Within(IGeometry geom)
         {
-            return SpatialRelations.Within(this, geom);
+            Geometry g = checkParameterType(geom);
+
+            return BoundingBoxSpatialRelations.Within(this, g);
         }
 
         public Boolean Within(IGeometry g, Tolerance tolerance)
@@ -678,5 +692,17 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+
+        private static Geometry checkParameterType(IGeometry geom)
+        {
+            if (!(geom is Geometry))
+            {
+                throw new ArgumentException(
+                    "Parameter must be a SharpMap.SimpleGeometries.Geometry instance");
+            }
+
+            return geom as Geometry;
+        }
     }
 }

@@ -91,7 +91,7 @@ namespace ProjNet.CoordinateSystems
         /// </returns>
         public ICoordinateSystem<TCoordinate> CreateFromWkt(String Wkt)
         {
-            return CoordinateSystemWktReader.Parse(Wkt, this) as ICoordinateSystem<TCoordinate>;
+            return WktEncoder.ToCoordinateSystemInfo(Wkt, this) as ICoordinateSystem<TCoordinate>;
         }
 
         /// <summary>
@@ -704,9 +704,135 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        IGeocentricCoordinateSystem ICoordinateSystemFactory.CreateWgs84CoordinateSystem()
+        #endregion
+
+        #region ICoordinateSystemFactory Members
+
+
+        public IAngularUnit CreateAngularUnit(CommonAngularUnits angularUnitType)
         {
-            throw new NotImplementedException();
+            switch (angularUnitType)
+            {
+                case CommonAngularUnits.Radian:
+                    return AngularUnit.Radian;
+                case CommonAngularUnits.Degree:
+                    return AngularUnit.Degrees;
+                case CommonAngularUnits.Grad:
+                    return AngularUnit.Grad;
+                case CommonAngularUnits.Gon:
+                    return AngularUnit.Gon;
+                default:
+                    throw new ArgumentException("Unknown angular unit: " + angularUnitType);
+            }
+        }
+
+        public IEllipsoid CreateEllipsoid(CommonEllipsoids ellipsoidType)
+        {
+            switch (ellipsoidType)
+            {
+                case CommonEllipsoids.Wgs84:
+                    return Ellipsoid.Wgs84;
+                case CommonEllipsoids.Wgs72:
+                    return Ellipsoid.Wgs72;
+                case CommonEllipsoids.Grs80:
+                    return Ellipsoid.Grs80;
+                case CommonEllipsoids.International1924:
+                    return Ellipsoid.International1924;
+                case CommonEllipsoids.Clarke1880:
+                    return Ellipsoid.Clarke1880;
+                case CommonEllipsoids.Clarke1866:
+                    return Ellipsoid.Clarke1866;
+                case CommonEllipsoids.Grs80AuthalicSphere:
+                    return Ellipsoid.Sphere;
+                default:
+                    throw new ArgumentException("Unknown ellipsoid: " + ellipsoidType);
+            }
+        }
+
+        public IGeographicCoordinateSystem CreateGeographicCoordinateSystem(CommonGeographicCoordinateSystems coordSystemType)
+        {
+            switch (coordSystemType)
+            {
+                case CommonGeographicCoordinateSystems.Wgs84:
+                    return GeographicCoordinateSystem<TCoordinate>.Wgs84;
+                default:
+                    throw new ArgumentException(
+                        "Unknown geographic coordinate system: " + coordSystemType);
+            }
+        }
+
+        public IHorizontalDatum CreateHorizontalDatum(CommonHorizontalDatums datumType)
+        {
+            switch (datumType)
+            {
+                case CommonHorizontalDatums.Wgs84:
+                    return HorizontalDatum.Wgs84;
+                case CommonHorizontalDatums.Wgs72:
+                    return HorizontalDatum.Wgs72;
+                case CommonHorizontalDatums.Etrf89:
+                    return HorizontalDatum.Etrf89;
+                case CommonHorizontalDatums.ED50:
+                    return HorizontalDatum.ED50;
+                case CommonHorizontalDatums.Nad27:
+                case CommonHorizontalDatums.Nad83:
+                case CommonHorizontalDatums.Harn:
+                default:
+                    throw new ArgumentException("Unknown datum: " + datumType);
+            }
+        }
+
+        public ILinearUnit CreateLinearUnit(CommonLinearUnits linearUnitType)
+        {
+            switch (linearUnitType)
+            {
+                case CommonLinearUnits.Meter:
+                    return LinearUnit.Meter;
+                case CommonLinearUnits.USSurveyFoot:
+                    return LinearUnit.USSurveyFoot;
+                case CommonLinearUnits.NauticalMile:
+                    return LinearUnit.NauticalMile;
+                case CommonLinearUnits.ClarkesFoot:
+                    return LinearUnit.ClarkesFoot;
+                case CommonLinearUnits.InternationalFoot:
+                default:
+                    throw new ArgumentException("Unknown linear unit: " + linearUnitType);
+            }
+        }
+
+        public IPrimeMeridian CreatePrimeMeridian(CommonPrimeMeridians primeMeridian)
+        {
+            switch (primeMeridian)
+            {
+                case CommonPrimeMeridians.Greenwich:
+                    return PrimeMeridian.Greenwich;
+                case CommonPrimeMeridians.Lisbon:
+                    return PrimeMeridian.Lisbon;
+                case CommonPrimeMeridians.Paris:
+                    return PrimeMeridian.Paris;
+                case CommonPrimeMeridians.Bogota:
+                    return PrimeMeridian.Bogota;
+                case CommonPrimeMeridians.Madrid:
+                    return PrimeMeridian.Madrid;
+                case CommonPrimeMeridians.Rome:
+                    return PrimeMeridian.Rome;
+                case CommonPrimeMeridians.Bern:
+                    return PrimeMeridian.Bern;
+                case CommonPrimeMeridians.Jakarta:
+                    return PrimeMeridian.Jakarta;
+                case CommonPrimeMeridians.Ferro:
+                    return PrimeMeridian.Ferro;
+                case CommonPrimeMeridians.Brussels:
+                    return PrimeMeridian.Brussels;
+                case CommonPrimeMeridians.Stockholm:
+                    return PrimeMeridian.Stockholm;
+                case CommonPrimeMeridians.Athens:
+                    return PrimeMeridian.Athens;
+                case CommonPrimeMeridians.Oslo:
+                    return PrimeMeridian.Oslo;
+                case CommonPrimeMeridians.Antwerp:
+                default:
+                    throw new ArgumentException("Unknown prime meridian: " + primeMeridian);
+            }
         }
 
         #endregion

@@ -53,6 +53,17 @@ namespace SharpMap.SimpleGeometries
         }
 
         /// <summary>
+        /// Initializes a new Point
+        /// </summary>
+        /// <param name="coordinate">The coordinate used to define the point.</param>
+        public Point(ICoordinate coordinate)
+        {
+            _x = coordinate[Ordinates.X];
+            _y = coordinate[Ordinates.Y];
+            SetNotEmpty();
+        }
+
+        /// <summary>
         /// Initializes a new empty Point
         /// </summary>
         public Point() { }
@@ -426,7 +437,7 @@ namespace SharpMap.SimpleGeometries
             }
 
             GeometryCollection union = new GeometryCollection();
-            union.Collection.Add(this);
+            union.Add(this);
             return union;
         }
 
@@ -1281,5 +1292,10 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        public override Int32 PointCount
+        {
+            get { return 1; }
+        }
     }
 }
