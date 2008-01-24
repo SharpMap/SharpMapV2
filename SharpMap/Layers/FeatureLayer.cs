@@ -20,8 +20,8 @@ using System;
 using System.Collections;
 using System.Data;
 using System.Globalization;
-using SharpMap.Data;
 using GeoAPI.Geometries;
+using SharpMap.Data;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 using System.Collections.Generic;
@@ -112,13 +112,13 @@ namespace SharpMap.Layers
             _features.IsSpatiallyIndexed = true;
 
             _selectedFeatures = new FeatureDataView(_features,
-                // NOTE: changed Point.Empty to null
-                new FeatureSpatialExpression(null, SpatialExpressionType.Intersects, null),
+                new FeatureSpatialExpression(null,  // Changed to null from Point.Empty
+                    SpatialExpressionType.Intersects, null),
                 "", DataViewRowState.CurrentRows);
 
             _highlightedFeatures = new FeatureDataView(_features,
-                // NOTE: changed Point.Empty to null
-                new FeatureSpatialExpression(null, SpatialExpressionType.Intersects, null), 
+                new FeatureSpatialExpression(null, // Changed to null from Point.Empty
+                    SpatialExpressionType.Intersects, null), 
                 "", DataViewRowState.CurrentRows);
 
             if (ShouldHandleFeaturesNotFoundEvent)
@@ -201,6 +201,27 @@ namespace SharpMap.Layers
                 _features.Envelope = value;
             }
         }
+
+		public override Boolean AreFeaturesSelectable
+		{
+			get
+			{
+				FeatureStyle fstyle = Style as FeatureStyle;
+				if (fstyle != null)
+				{
+					return fstyle.AreFeaturesSelectable;
+				}
+				return false;
+			}
+			set
+			{
+				FeatureStyle fstyle = Style as FeatureStyle;
+				if (fstyle != null)
+				{
+					fstyle.AreFeaturesSelectable = value;
+				}
+			}
+		}
 
         /// <summary>
         /// Loads data from the <see cref="DataSource"/> which satisfy

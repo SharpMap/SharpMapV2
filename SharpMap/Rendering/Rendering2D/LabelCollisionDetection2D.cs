@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -25,88 +27,141 @@ namespace SharpMap.Rendering.Rendering2D
 	/// </summary>
 	public class LabelCollisionDetection2D
 	{
-		#region Label filter methods
-		/// <summary>
-		/// Simple and fast label collision detection.
-		/// </summary>
-		/// <param name="labels"></param>
-		public static IEnumerable SimpleCollisionDetection(IList labels)
+		#region private data
+		List<Label2D> labelList = new List<Label2D>();
+		private ITextRenderer2D _textRenderer;
+		#endregion
+
+		#region properties
+
+		public ITextRenderer2D TextRenderer
 		{
-            ArrayList labelList = new ArrayList(labels);
+			get { return _textRenderer; }
+			set { _textRenderer = value; }
+		}
+		#endregion
 
-			labelList.Sort(); // sort labels by intersection tests of the label's collision box
+		#region public interface
 
-			//remove labels that intersect other labels
-			for (Int32 i = labelList.Count - 1; i > 0; i--)
+		/// <summary>
+		/// Test whether label collides.
+		/// </summary>
+		/// <param name="newLabel"></param>
+		/// <returns>true if label collided with another (more important or earlier) label</returns>
+		public Boolean SimpleCollisionTest(Label2D newLabel)
+		{
+			if (labelList.Contains(newLabel))
 			{
-                Label2D label1 = labelList[i] as Label2D;
-                Label2D label2 = labelList[i - 1] as Label2D;
+				return false;
+			}
 
-                if (label1 == null)
-                {
-                    labelList.RemoveAt(i);
-                    continue;
-                }
+			Size2D newSize = TextRenderer.MeasureString(newLabel.Text, newLabel.Font);
+			newSize = new Size2D(newSize.Width + 2 * newLabel.CollisionBuffer.Width, newSize.Height + 2 * newLabel.CollisionBuffer.Height);
+			Rectangle2D newRect = new Rectangle2D(new Point2D(newLabel.Location.X - newLabel.CollisionBuffer.Width, newLabel.Location.Y - newLabel.CollisionBuffer.Height), newSize);
 
-                if (label1.CompareTo(label2) == 0)
+			foreach (Label2D label in labelList)
+			{
+				Size2D size = TextRenderer.MeasureString(label.Text, label.Font);
+				size = new Size2D(size.Width + 2*label.CollisionBuffer.Width, size.Height + 2*label.CollisionBuffer.Height);
+				Rectangle2D rect =
+					new Rectangle2D(
+						new Point2D(label.Location.X - newLabel.CollisionBuffer.Width, label.Location.Y - label.CollisionBuffer.Height),
+						size);
+
+				if (newRect.Intersects(rect))
 				{
-                    if (label1.Priority > label2.Priority)
+					return true;
+				}
+			}
+
+			labelList.Add(newLabel);
+
+			return false;
+		}
+
+		/// <summary>
+		/// Test whether label collides.
+		/// </summary>
+		/// <param name="newLabel"></param>
+		/// <returns>true if label collided with another (more important or earlier) label</returns>
+		public Boolean AdvancedCollisionTest(Label2D newLabel)
+		{
+			if (labelList.Contains(newLabel))
+			{
+				return false;
+			}
+			return AdvancedCollisionTest(newLabel, 0);
+		}
+
+		private Boolean AdvancedCollisionTest(Label2D newLabel, int depth)
+		{
+			//newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
+
+			Size2D newSize = TextRenderer.MeasureString(newLabel.Text, newLabel.Font);
+
+			newSize = new Size2D(newSize.Width + 2 * newLabel.CollisionBuffer.Width, newSize.Height + 2 * newLabel.CollisionBuffer.Height);
+			Rectangle2D newRect = new Rectangle2D(new Point2D(newLabel.Location.X - newLabel.CollisionBuffer.Width, newLabel.Location.Y - newLabel.CollisionBuffer.Height), newSize);
+
+			foreach (Label2D label in labelList)
+			{
+				Size2D size = TextRenderer.MeasureString(label.Text, label.Font);
+				size = new Size2D(size.Width + 2 * label.CollisionBuffer.Width, size.Height + 2 * label.CollisionBuffer.Height);
+				Rectangle2D rect = new Rectangle2D(new Point2D(label.Location.X - newLabel.CollisionBuffer.Width, label.Location.Y - label.CollisionBuffer.Height), size);
+
+				if(newRect.Intersects(rect))
+				{
+					if (label.Text == newLabel.Text)
+						return true;
+
+					if (depth == 5)
 					{
-						labelList.RemoveAt(i - 1);
+						/* *
+						StyleFont font = newLabel.Font;
+						newLabel.Style.Foreground = new SolidStyleBrush(StyleColor.Yellow);
+						newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
+						newLabel.Font = new StyleFont(font.FontFamily, new Size2D(font.Size.Width / 3.0, font.Size.Height / 3.0), font.Style);
+						newLabel.Text = newLabel.Text + ":" + label.Text;
+						labelList.Add(newLabel);
+						/*/
+
+						// give up on this label after 5 tries at moving it
+						return true;
+
+						/* */
 					}
 					else
 					{
-						labelList.RemoveAt(i);
-					}
-				}
-			}
-
-			return labelList;
-		}
-
-		/// <summary>
-		/// Thorough label collision detection.
-		/// </summary>
-		/// <param name="labels"></param>
-        public static IEnumerable ThoroughCollisionDetection(IList labels)
-        {
-            ArrayList labelList = new ArrayList(labels);
-
-            labelList.Sort(); // sort labels by intersectiontests of labelbox
-
-			//remove labels that intersect other labels
-            for (Int32 i = labelList.Count - 1; i > 0; i--)
-			{
-				for (Int32 j = i - 1; j > 0; j--)
-                {
-                    Label2D label1 = labelList[i] as Label2D;
-                    Label2D label2 = labelList[j] as Label2D;
-
-                    if (label1 == null)
-                    {
-                        labelList.RemoveAt(i);
-                        break;
-                    }
-
-                    if (label1.CompareTo(label2) == 0)
-					{
-                        if (label1.Priority >= label2.Priority)
+						if(newRect.Location.Y > (rect.Location.Y + rect.Height/2.0))
 						{
-                            labelList.RemoveAt(j);
-							i--;
+							newLabel.Location = new Point2D(newLabel.Location.X, rect.Location.Y + rect.Height + 3);
 						}
 						else
 						{
-                            labelList.RemoveAt(i);
-							i--;
-							break;
+							newLabel.Location = new Point2D(newLabel.Location.X, rect.Location.Y - newRect.Height - 3);
 						}
+						//newLabel.Style.Foreground = new SolidStyleBrush(StyleColor.Blue);
+						////StyleFont font = newLabel.Font;
+						////newLabel.Font = new StyleFont(font.FontFamily, new Size2D(font.Size.Width / depth, font.Size.Height / depth), font.Style);
+						//newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
+						return AdvancedCollisionTest(newLabel, depth + 1);
 					}
 				}
+				//else
+				//{
+				//    newLabel.Style.Halo = new StylePen(new SolidStyleBrush(StyleColor.Purple), 1);
+				//}
 			}
 
-            return labelList;
+			labelList.Add(newLabel);
+
+			return false;
 		}
+
+		public void CleanUp()
+		{
+			labelList.Clear();
+		}
+
 		#endregion
 	}
 }

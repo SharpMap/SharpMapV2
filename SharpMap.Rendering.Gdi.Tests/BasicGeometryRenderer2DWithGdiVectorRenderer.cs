@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.SimpleGeometries;
 using SharpMap.Tests;
 
 namespace SharpMap.Rendering.Gdi.Tests
@@ -17,6 +18,7 @@ namespace SharpMap.Rendering.Gdi.Tests
     public class BasicGeometryRenderer2DWithGdiVectorRenderer
     {
         private static readonly Single _e = 0.0001f;
+        private IGeometryFactory _geoFactory = new GeometryFactory();
 
         [Test]
         public void CreatingBasicGeometryRenderer2DWithGdiVectorRendererSucceeds()
@@ -36,7 +38,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
                     = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
 
-                FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();
+                FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
                 foreach (IFeatureDataRecord record in provider.ExecuteIntersectionQuery(provider.GetExtents()))
                 {
@@ -141,7 +143,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
                     = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
 
-                FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();
+                FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
                 foreach (IFeatureDataRecord record in provider.ExecuteIntersectionQuery(provider.GetExtents()))
                 {
@@ -203,7 +205,7 @@ namespace SharpMap.Rendering.Gdi.Tests
                 BasicGeometryRenderer2D<GdiRenderObject> geometryRenderer
                     = new BasicGeometryRenderer2D<GdiRenderObject>(vectorRenderer);
 
-                FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource();
+                FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
                 foreach (IFeatureDataRecord record in provider.ExecuteIntersectionQuery(provider.GetExtents()))
                 {

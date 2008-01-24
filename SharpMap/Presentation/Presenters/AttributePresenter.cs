@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using SharpMap.Data;
-using GeoAPI.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Expressions;
@@ -73,7 +72,8 @@ namespace SharpMap.Presentation.Presenters
                 return;
             }
 
-            IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer;
+			// HACK: fix this Monday
+			IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer ?? (Map.Layers[e.LayerName] as LayerGroup).MasterLayer as IFeatureLayer;
 
             Debug.Assert(layer != null);
 
@@ -81,8 +81,7 @@ namespace SharpMap.Presentation.Presenters
 
             if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty)
             {
-                // NOTE: changed Point.Empty to null
-                query = new FeatureSpatialExpression(null,
+                query = new FeatureSpatialExpression(null, // Changed to null from Point.Empty
                                         SpatialExpressionType.Disjoint,
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }
@@ -108,8 +107,10 @@ namespace SharpMap.Presentation.Presenters
             IFeatureLayer featureLayer = null;
 
             foreach (ILayer layer in Map.Layers)
-            { 
-                featureLayer = layer as IFeatureLayer;
+            {
+				// HACK: fix this Monday
+				featureLayer = layer as IFeatureLayer ?? (layer as LayerGroup).MasterLayer as IFeatureLayer;
+				//featureLayer = layer as IFeatureLayer;
 
                 if (featureLayer == null)
                 {

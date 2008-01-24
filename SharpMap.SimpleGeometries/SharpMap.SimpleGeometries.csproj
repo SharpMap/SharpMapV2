@@ -59,6 +59,7 @@
     <Compile Include="Geometry.cs" />
     <Compile Include="GeometryCollection.cs" />
     <Compile Include="GeometryCollection`1.cs" />
+    <Compile Include="GeometryFactory.cs" />
     <Compile Include="LinearRing.cs" />
     <Compile Include="LineString.cs" />
     <Compile Include="MultiCurve.cs" />

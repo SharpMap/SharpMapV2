@@ -196,7 +196,7 @@ namespace SharpMap.Tests.Rendering
         [ExpectedException(typeof (ArgumentException))]
         public void ScaleTest2()
         {
-            ViewSize3D scaleSize = new ViewSize3D(10, 10, 10);
+            Size3D scaleSize = new Size3D(10, 10, 10);
             Rectangle2D r2 = Rectangle2D.Zero;
             r2.Scale(scaleSize);
         }
@@ -224,7 +224,7 @@ namespace SharpMap.Tests.Rendering
         public void TranslateTest2()
         {
             Rectangle2D r1 = Rectangle2D.Zero;
-            r1.Translate(new ViewPoint3D(3, 4, 5));
+            r1.Translate(new Point3D(3, 4, 5));
         }
 
         [Test]

@@ -17,7 +17,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void ResetTest()
         {
-            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0, 0);
 
             m1.Reset();
 
@@ -27,7 +27,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void InvertTest()
         {
-            ColorMatrix m1 = new ColorMatrix(0.5, 0.5, 0.5, 0.5, 10, 20, 30);
+			ColorMatrix m1 = new ColorMatrix(0.5, 0.5, 0.5, 0.5, 10, 20, 30, 0);
             IMatrix<DoubleComponent> expected =
                 new Matrix<DoubleComponent>(MatrixFormat.RowMajor, new DoubleComponent[][]
                                                                        {
@@ -52,7 +52,7 @@ namespace SharpMap.Tests.Rendering
         [Test]
         public void IsInvertableTest()
         {
-            ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0);
+			ColorMatrix m1 = new ColorMatrix(1, 1, 1, 1, 0, 0, 0, 0);
             Assert.IsTrue(m1.IsInvertible);
         }
 
@@ -60,7 +60,7 @@ namespace SharpMap.Tests.Rendering
         public void ElementsTest1()
         {
             ColorMatrix m1 = ColorMatrix.Identity;
-            ColorMatrix m2 = new ColorMatrix(0.5, 0.5, 0.5, 1, 0, 0, 0);
+			ColorMatrix m2 = new ColorMatrix(0.5, 0.5, 0.5, 1, 0, 0, 0, 0);
 
             Assert.AreEqual(5, m1.RowCount);
             Assert.AreEqual(5, m2.ColumnCount);
@@ -74,42 +74,43 @@ namespace SharpMap.Tests.Rendering
                     new DoubleComponent[] {0, 0, 0, 0, 1}
                 };
 
-            DoubleComponent[][] actual = m2.Elements;
+            //DoubleComponent[][] actual = m2.Elements;
 
-            Assert.AreEqual(expected[0][0], actual[0][0]);
-            Assert.AreEqual(expected[0][1], actual[0][1]);
-            Assert.AreEqual(expected[0][2], actual[0][2]);
-            Assert.AreEqual(expected[1][0], actual[1][0]);
-            Assert.AreEqual(expected[1][1], actual[1][1]);
-            Assert.AreEqual(expected[1][2], actual[1][2]);
-            Assert.AreEqual(expected[2][0], actual[2][0]);
-            Assert.AreEqual(expected[2][1], actual[2][1]);
-            Assert.AreEqual(expected[2][2], actual[2][2]);
+            Assert.AreEqual(expected[0][0], m2[0, 0]);
+            Assert.AreEqual(expected[0][1], m2[0, 1]);
+            Assert.AreEqual(expected[0][2], m2[0, 2]);
+            Assert.AreEqual(expected[1][0], m2[1, 0]);
+            Assert.AreEqual(expected[1][1], m2[1, 1]);
+            Assert.AreEqual(expected[1][2], m2[1, 2]);
+            Assert.AreEqual(expected[2][0], m2[2, 0]);
+            Assert.AreEqual(expected[2][1], m2[2, 1]);
+            Assert.AreEqual(expected[2][2], m2[2, 2]);
 
-            m1.Elements = expected;
+            //m1.Elements = expected;
+            m1 = new ColorMatrix(new Matrix<DoubleComponent>(MatrixFormat.RowMajor, expected));
             Assert.AreEqual(m1, m2);
             Assert.IsTrue(m1.Equals(m2 as IMatrix<DoubleComponent>));
         }
 
-        [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
-        public void ElementsTest2()
-        {
-            ColorMatrix m1 = ColorMatrix.Identity;
-            m1.Elements = null;
-        }
+        //[Test]
+        //[ExpectedException(typeof (ArgumentNullException))]
+        //public void ElementsTest2()
+        //{
+        //    ColorMatrix m1 = ColorMatrix.Identity;
+        //    m1.Elements = null;
+        //}
 
-        [Test]
-        [ExpectedException(typeof (ArgumentException))]
-        public void ElementsTest3()
-        {
-            ColorMatrix m1 = ColorMatrix.Identity;
-            m1.Elements = new DoubleComponent[][]
-                {
-                    new DoubleComponent[] {1, 2, 3},
-                    new DoubleComponent[] {2, 3, 4}
-                };
-        }
+        //[Test]
+        //[ExpectedException(typeof (ArgumentException))]
+        //public void ElementsTest3()
+        //{
+        //    ColorMatrix m1 = ColorMatrix.Identity;
+        //    m1.Elements = new DoubleComponent[][]
+        //        {
+        //            new DoubleComponent[] {1, 2, 3},
+        //            new DoubleComponent[] {2, 3, 4}
+        //        };
+        //}
 
         [Test]
         [Ignore("Test not yet implemented")]
@@ -122,7 +123,7 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void ScaleTest1()
         {
-            ColorMatrix m1 = new ColorMatrix(0, 0, 0, 0, 0, 0, 0);
+			ColorMatrix m1 = new ColorMatrix(0, 0, 0, 0, 0, 0, 0, 0);
             ColorMatrix m2 = ColorMatrix.Identity;
         }
 
@@ -164,7 +165,23 @@ namespace SharpMap.Tests.Rendering
             ColorMatrix m1 = ColorMatrix.Identity;
             // Scale by a vector for which multiplicatio isn't defined...
         }
-    }
 
-    #endregion
+		[Test]
+		public void ConstructorInitializedPropertiesTest()
+		{
+			ColorMatrix m1 = new ColorMatrix(2, 3, 4, 5, 6, 7, 8, 9);
+
+			Assert.AreEqual(2, m1.R);
+			Assert.AreEqual(3, m1.G);
+			Assert.AreEqual(4, m1.B);
+			Assert.AreEqual(5, m1.A);
+			Assert.AreEqual(6, m1.RedShift);
+			Assert.AreEqual(7, m1.GreenShift);
+			Assert.AreEqual(8, m1.BlueShift);
+			Assert.AreEqual(9, m1.AlphaShift);
+		}
+
+	}
+
+	#endregion
 }

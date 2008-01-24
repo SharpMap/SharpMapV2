@@ -891,17 +891,39 @@ namespace SharpMap.Data.Providers.ShapeFile
             table.Merge(result, true);
         }
 
-        private IEnumerable<UInt32> intersectFeatureGeometry(IEnumerable<UInt32> keys, IGeometry query)
+        public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IGeometry geometry)
         {
-            foreach (UInt32 key in keys)
-            {
-                IGeometry candidate = GetGeometryById(key);
+            throw new NotImplementedException();
+        }
 
-                if (candidate.Intersects(query))
-                {
-                    yield return key;
-                }
-            }
+        public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -1816,6 +1838,19 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+        private IEnumerable<UInt32> intersectFeatureGeometry(IEnumerable<UInt32> keys, IGeometry query)
+        {
+            foreach (UInt32 key in keys)
+            {
+                IGeometry candidate = GetGeometryById(key);
+
+                if (candidate.Intersects(query))
+                {
+                    yield return key;
+                }
+            }
+        }
+
         #endregion
 
         #region Spatial indexing helper functions
@@ -2470,6 +2505,5 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         #endregion
-
     }
 }

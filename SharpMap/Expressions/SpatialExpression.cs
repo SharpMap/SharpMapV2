@@ -116,8 +116,10 @@ namespace SharpMap.Expressions
         {
             unchecked
             {
-                return (_queryRegion != null ? _queryRegion.GetHashCode() : 472054336)
-                       ^ 29*_queryType.GetHashCode();
+                return (_queryRegion != null 
+                    ? _queryRegion.GetHashCode() 
+                    : 0x1fd3b)
+                 ^ 29 * _queryType.GetHashCode();
             }
         }
 

@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug_Net20\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DEBUG_STEPINTO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,7 +31,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release_Net20\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,11 +64,11 @@
       <ItemGroup>
         <Reference Include="NPack, Version=0.7.13341.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+          <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
         </Reference>
         <Reference Include="GeoAPI, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
+          <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
         </Reference>
       </ItemGroup>
     </When>
@@ -76,7 +76,7 @@
       <ItemGroup>
         <Reference Include="NPack, Version=0.7.13341.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+          <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
         </Reference>
       </ItemGroup>
       <ItemGroup>
@@ -111,13 +111,10 @@
     <Compile Include="Coordinates\BufferedCoordinate2DFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Coordinates\BufferedCoordinateSequence.cs">
+    <Compile Include="Coordinates\BufferedCoordinate2DSequence.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Coordinates\BufferedCoordinateSequenceFactory.cs" />
-    <Compile Include="Coordinates\IndexedCoordinateBuffer.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Coordinates\BufferedCoordinate2DSequenceFactory.cs" />
     <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />
@@ -242,10 +239,10 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering3D\ViewMatrix3D.cs" />
-    <Compile Include="Rendering\Rendering3D\ViewPoint3D.cs" />
-    <Compile Include="Rendering\Rendering3D\ViewRectangle3D.cs" />
-    <Compile Include="Rendering\Rendering3D\ViewSize3D.cs" />
+    <Compile Include="Rendering\Rendering3D\Matrix3D.cs" />
+    <Compile Include="Rendering\Rendering3D\Point3D.cs" />
+    <Compile Include="Rendering\Rendering3D\Rectangle3D.cs" />
+    <Compile Include="Rendering\Rendering3D\Size3D.cs" />
     <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />
@@ -256,6 +253,7 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
+    <Compile Include="Styles\FeatureStyle.cs" />
     <Compile Include="Styles\HorizontalAlignment.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
     <Compile Include="Styles\RasterStyle.cs" />

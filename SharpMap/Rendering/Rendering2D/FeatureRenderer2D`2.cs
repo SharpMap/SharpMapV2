@@ -23,6 +23,7 @@ using SharpMap.Data;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using SharpMap.Layers;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -117,7 +118,7 @@ namespace SharpMap.Rendering.Rendering2D
                 style = (TStyle) Theme.GetStyle(feature);
             }
 
-            return RenderFeature(feature, style, RenderState.Normal);
+            return RenderFeature(feature, style, RenderState.Normal, null);
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="style">The style to use to render the feature.</param>
         /// <returns>An enumeration of positioned render objects for display.</returns>
         public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, TStyle style,
-                                                        RenderState renderState)
+                                                        RenderState renderState, ILayer layer)
         {
             Boolean cancel = false;
 
@@ -138,7 +139,7 @@ namespace SharpMap.Rendering.Rendering2D
                 yield break;
             }
 
-            IEnumerable<TRenderObject> renderedObjects = DoRenderFeature(feature, style, renderState);
+            IEnumerable<TRenderObject> renderedObjects = DoRenderFeature(feature, style, renderState, layer);
 
             OnFeatureRendered();
 
@@ -182,8 +183,15 @@ namespace SharpMap.Rendering.Rendering2D
         /// A <see cref="RenderState"/> value to indicate how to render the feature.
         /// </param>
         /// <returns></returns>
+        /// <param name="layer"></param>
         protected abstract IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, TStyle style,
-                                                                      RenderState state);
+                                                                      RenderState state, ILayer layer);
+
+
+    	public virtual void CleanUp()
+    	{
+    		
+    	}
 
         #region Protected virtual methods
 
@@ -244,9 +252,9 @@ namespace SharpMap.Rendering.Rendering2D
             return RenderFeature(feature);
         }
 
-        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState)
+        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer)
         {
-            return RenderFeature(feature, style as TStyle, renderState);
+            return RenderFeature(feature, style as TStyle, renderState, layer);
         }
 
         #endregion
@@ -254,12 +262,12 @@ namespace SharpMap.Rendering.Rendering2D
         #region IFeatureRenderer<TRenderObject> Members
 
         IEnumerable<TRenderObject> IFeatureRenderer<TRenderObject>.RenderFeature(
-            IFeatureDataRecord feature, IStyle style, RenderState renderState)
+            IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer)
         {
-            return RenderFeature(feature, style as TStyle, renderState);
+            return RenderFeature(feature, style as TStyle, renderState, layer);
         }
 
-        #endregion
+    	#endregion
 
         #endregion
     }

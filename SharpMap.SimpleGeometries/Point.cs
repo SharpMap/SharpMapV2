@@ -35,6 +35,7 @@ namespace SharpMap.SimpleGeometries
     {
         private static readonly Point _empty = new Point();
         private static readonly Point _zero = new Point(0, 0);
+        private static readonly Point _one = new Point(1, 1);
 
         private Double _x = 0.0;
         private Double _y = 0.0;
@@ -215,23 +216,37 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
-        ///// <summary>
-        ///// Returns the number of ordinates for this point
-        ///// </summary>
-        //public virtual Int32 NumOrdinates
-        //{
-        //    get { return 2; }
-        //}
+        #region IPoint Members
 
-        ///// <summary>
-        ///// Transforms the point to image coordinates, based on the map
-        ///// </summary>
-        ///// <param name="map">Map to base coordinates on</param>
-        ///// <returns>point in image coordinates</returns>
-        //public System.Drawing.PointF TransformToImage(Map map)
-        //{
-        //    return SharpMap.Utilities.Transform.WorldToMap(this, map);
-        //}
+        public ICoordinate Coordinate
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public Double this[Ordinates ordinate]
+        {
+            get
+            {
+                switch (ordinate)
+                {
+                    case Ordinates.X:
+                        return X;
+                    case Ordinates.Y:
+                        return Y;
+                    case Ordinates.Z:
+                    case Ordinates.M:
+                    default:
+                        return Double.NaN;
+                }
+            }
+        }
+
+        public Int32 OrdinateCount
+        {
+            get { return ComponentCount; }
+        }
+
+        #endregion
 
         #region Operators
         /// <summary>
@@ -269,6 +284,11 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        public override Int32 PointCount
+        {
+            get { return 1; }
+        }
 
         #region "Inherited methods from abstract class Geometry"
 
@@ -609,6 +629,15 @@ namespace SharpMap.SimpleGeometries
             _hasValue = true;
         }
 
+        #region IEnumerable<DoubleComponent> Members
+
+        public IEnumerator<DoubleComponent> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region IVector<DoubleComponent> Members
 
         IVector<DoubleComponent> IVector<DoubleComponent>.Clone()
@@ -634,11 +663,6 @@ namespace SharpMap.SimpleGeometries
             {
                 throw new NotImplementedException();
             }
-        }
-
-        public IVector<DoubleComponent> Negative()
-        {
-            return new Point(-_x, -_y);
         }
 
         public DoubleComponent this[Int32 index]
@@ -743,18 +767,27 @@ namespace SharpMap.SimpleGeometries
 
         #endregion
 
+        #region INegatable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
+        {
+            return new Point(-_x, -_y);
+        }
+
+        #endregion
+
         #region INegatable<IMatrix<DoubleComponent>> Members
 
         IMatrix<DoubleComponent> INegatable<IMatrix<DoubleComponent>>.Negative()
         {
-            return Negative();
+            return new Point(-_x, -_y);
         }
 
         #endregion
 
         #region ISubtractable<IMatrix<DoubleComponent>> Members
 
-        public IMatrix<DoubleComponent> Subtract(IMatrix<DoubleComponent> b)
+        IMatrix<DoubleComponent> ISubtractable<IMatrix<DoubleComponent>>.Subtract(IMatrix<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -772,7 +805,7 @@ namespace SharpMap.SimpleGeometries
 
         #region IAddable<IMatrix<DoubleComponent>> Members
 
-        public IMatrix<DoubleComponent> Add(IMatrix<DoubleComponent> b)
+        IMatrix<DoubleComponent> IAddable<IMatrix<DoubleComponent>>.Add(IMatrix<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -781,7 +814,7 @@ namespace SharpMap.SimpleGeometries
 
         #region IDivisible<IMatrix<DoubleComponent>> Members
 
-        public IMatrix<DoubleComponent> Divide(IMatrix<DoubleComponent> b)
+        IMatrix<DoubleComponent> IDivisible<IMatrix<DoubleComponent>>.Divide(IMatrix<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -792,14 +825,14 @@ namespace SharpMap.SimpleGeometries
 
         IMatrix<DoubleComponent> IHasOne<IMatrix<DoubleComponent>>.One
         {
-            get { return One; }
+            get { return _one; }
         }
 
         #endregion
 
         #region IMultipliable<IMatrix<DoubleComponent>> Members
 
-        public IMatrix<DoubleComponent> Multiply(IMatrix<DoubleComponent> b)
+        IMatrix<DoubleComponent> IMultipliable<IMatrix<DoubleComponent>>.Multiply(IMatrix<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -808,25 +841,7 @@ namespace SharpMap.SimpleGeometries
 
         #region IEquatable<IMatrix<DoubleComponent>> Members
 
-        public Boolean Equals(IMatrix<DoubleComponent> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IEnumerable<DoubleComponent> Members
-
-        public IEnumerator<DoubleComponent> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        Boolean IEquatable<IMatrix<DoubleComponent>>.Equals(IMatrix<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }
@@ -871,9 +886,9 @@ namespace SharpMap.SimpleGeometries
 
         #region IHasOne<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> One
+        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
         {
-            get { return new Point(1, 1); }
+            get { return _one; }
         }
 
         #endregion
@@ -883,33 +898,6 @@ namespace SharpMap.SimpleGeometries
         public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
         {
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IPoint Members
-
-        public ICoordinate Coordinate
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Double this[Ordinates ordinate]
-        {
-            get
-            {
-                switch (ordinate)
-                {
-                    case Ordinates.X:
-                        return X;
-                    case Ordinates.Y:
-                        return Y;
-                    case Ordinates.Z:
-                    case Ordinates.M:
-                    default:
-                        return Double.NaN;
-                }
-            }
         }
 
         #endregion
@@ -1024,15 +1012,6 @@ namespace SharpMap.SimpleGeometries
 
         #endregion
 
-        #region IEquatable<IMatrix<DoubleComponent>> Members
-
-        Boolean IEquatable<IMatrix<DoubleComponent>>.Equals(IMatrix<DoubleComponent> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region IComparable<IMatrix<DoubleComponent>> Members
 
         Int32 IComparable<IMatrix<DoubleComponent>>.CompareTo(IMatrix<DoubleComponent> other)
@@ -1050,42 +1029,6 @@ namespace SharpMap.SimpleGeometries
         }
 
         IMatrix<DoubleComponent> IComputable<IMatrix<DoubleComponent>>.Set(Double value)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region ISubtractable<IMatrix<DoubleComponent>> Members
-
-        IMatrix<DoubleComponent> ISubtractable<IMatrix<DoubleComponent>>.Subtract(IMatrix<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IAddable<IMatrix<DoubleComponent>> Members
-
-        IMatrix<DoubleComponent> IAddable<IMatrix<DoubleComponent>>.Add(IMatrix<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IDivisible<IMatrix<DoubleComponent>> Members
-
-        IMatrix<DoubleComponent> IDivisible<IMatrix<DoubleComponent>>.Divide(IMatrix<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IMultipliable<IMatrix<DoubleComponent>> Members
-
-        IMatrix<DoubleComponent> IMultipliable<IMatrix<DoubleComponent>>.Multiply(IMatrix<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -1154,29 +1097,6 @@ namespace SharpMap.SimpleGeometries
 
         #endregion
 
-        #region IComputable<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Abs()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(Double value)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region INegatable<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region ISubtractable<IVector<DoubleComponent>> Members
 
         IVector<DoubleComponent> ISubtractable<IVector<DoubleComponent>>.Subtract(IVector<DoubleComponent> b)
@@ -1200,15 +1120,6 @@ namespace SharpMap.SimpleGeometries
         IVector<DoubleComponent> IDivisible<IVector<DoubleComponent>>.Divide(IVector<DoubleComponent> b)
         {
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IHasOne<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
-        {
-            get { throw new NotImplementedException(); }
         }
 
         #endregion
@@ -1293,9 +1204,211 @@ namespace SharpMap.SimpleGeometries
 
         #endregion
 
-        public override Int32 PointCount
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            get { return 1; }
+            throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region IComputable<Double,IPoint> Members
+
+        IPoint IComputable<Double, IPoint>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IPoint> Members
+
+        IPoint IComputable<IPoint>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IPoint IComputable<IPoint>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region INegatable<IPoint> Members
+
+        IPoint INegatable<IPoint>.Negative()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<IPoint> Members
+
+        public IPoint Subtract(IPoint b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasZero<IPoint> Members
+
+        IPoint IHasZero<IPoint>.Zero
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IAddable<IPoint> Members
+
+        public IPoint Add(IPoint b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<IPoint> Members
+
+        public IPoint Divide(IPoint b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IPoint> Members
+
+        IPoint IHasOne<IPoint>.One
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IMultipliable<IPoint> Members
+
+        public IPoint Multiply(IPoint b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IPoint> Members
+
+        public Boolean GreaterThan(IPoint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean GreaterThanOrEqualTo(IPoint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean LessThan(IPoint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean LessThanOrEqualTo(IPoint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IPoint> Members
+
+        IPoint IExponential<IPoint>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        IPoint IExponential<IPoint>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        IPoint IExponential<IPoint>.Log(Double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        IPoint IExponential<IPoint>.Power(Double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IPoint IExponential<IPoint>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMultipliable<Double,IPoint> Members
+
+        public IPoint Multiply(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double,IPoint> Members
+
+        public IPoint Divide(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<Double,IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IComputable<Double, IVector<DoubleComponent>>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMultipliable<Double,IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IMultipliable<Double, IVector<DoubleComponent>>.Multiply(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double,IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IDivisible<Double, IVector<DoubleComponent>>.Divide(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

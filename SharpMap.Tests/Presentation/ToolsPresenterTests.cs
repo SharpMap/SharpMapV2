@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using GeoAPI.Geometries;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -12,6 +13,9 @@ namespace SharpMap.Tests.Presentation
     [TestFixture]
     public class ToolsPresenterTests
     {
+        private static readonly IGeometryFactory _geoFactory
+            = new SharpMap.SimpleGeometries.GeometryFactory();
+
         [Test]
         public void PresenterSetsTools()
         {
@@ -21,7 +25,7 @@ namespace SharpMap.Tests.Presentation
 
             mocks.ReplayAll();
 
-            Map map = new Map();
+            Map map = new Map(_geoFactory);
             ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
             Assert.IsNotNull(view.Tools);
@@ -40,7 +44,7 @@ namespace SharpMap.Tests.Presentation
 
             mocks.ReplayAll();
 
-            Map map = new Map();
+            Map map = new Map(_geoFactory);
             ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
             Random rnd = new Random();

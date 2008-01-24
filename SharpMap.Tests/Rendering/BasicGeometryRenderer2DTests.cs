@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.SimpleGeometries;
 using SharpMap.Styles;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -18,6 +19,7 @@ namespace SharpMap.Tests.Rendering
     [TestFixture]
     public class BasicGeometryRenderer2DTests
     {
+        private static readonly IGeometryFactory _geoFactory = new GeometryFactory();
         #region Test stub types
 
         private struct RenderObject
@@ -142,7 +144,7 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void RenderFeatureTest()
         {
-            IFeatureLayerProvider provider = DataSourceHelper.CreateGeometryDatasource();
+            IFeatureLayerProvider provider = DataSourceHelper.CreateGeometryDatasource(_geoFactory);
             TestVectorRenderer vectorRenderer = new TestVectorRenderer();
             BasicGeometryRenderer2D<RenderObject> geometryRenderer =
                 new BasicGeometryRenderer2D<RenderObject>(vectorRenderer);

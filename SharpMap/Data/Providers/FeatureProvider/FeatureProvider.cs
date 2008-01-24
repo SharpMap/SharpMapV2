@@ -222,6 +222,41 @@ namespace SharpMap.Data.Providers.FeatureProvider
             ExecuteIntersectionQuery(query.QueryRegion.Extents, table);
 		}
 
+        public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table, QueryExecutionOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Gets the geometries intersecting the specified <see cref="IExtents"/>.
         /// </summary>

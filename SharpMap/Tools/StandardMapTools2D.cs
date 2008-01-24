@@ -16,10 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using GeoAPI.Geometries;
-using SharpMap.Coordinates;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
@@ -236,19 +234,38 @@ namespace SharpMap.Tools
             // Apply the GeometryFilter derived from the view's selection
             for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)
             {
-                GeometryLayer layer = context.Map.Layers[i] as GeometryLayer;
-
-                if (layer == null)
-                {
-                    continue;
-                }
-
-                if (layer.Enabled && layer.IsVisibleWhen(isInView(view.WorldWidth)))
-                {
-                    layer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
-                }
+				filterSelected(context.Map.Layers[i], view, worldBounds);
             }
         }
+
+		private static void filterSelected(ILayer layer, IMapView2D view, IExtents worldBounds)
+		{
+			if (layer == null)
+			{
+				return;
+			}
+
+			GeometryLayer filterLayer;
+
+			if (layer is GeometryLayer)
+			{
+				filterLayer = layer as GeometryLayer;
+
+				Debug.Assert(filterLayer.Style != null);
+
+				if (layer.Enabled && (filterLayer.Style.AreFeaturesSelectable) && layer.IsVisibleWhen(isInView(view.WorldWidth)))
+				{
+					filterLayer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
+				}
+			}
+			else if (layer is LayerGroup)
+			{
+				foreach (ILayer glayer in (layer as LayerGroup).Layers)
+				{
+					filterSelected(glayer, view, worldBounds);
+				}
+			}
+		}
 
         #endregion
 

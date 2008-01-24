@@ -8,7 +8,19 @@ namespace SharpMap.Coordinates
 {
     public class IndexedCoordinateBuffer : IVectorBuffer<BufferedCoordinate2D, DoubleComponent>
     {
+        private readonly IVectorFactory<BufferedCoordinate2D, DoubleComponent> _factory;
+       
+        public IndexedCoordinateBuffer(IVectorFactory<BufferedCoordinate2D, DoubleComponent> factory)
+        {
+            _factory = factory;
+        }
+
         #region IVectorBuffer<BufferedCoordinate2D,DoubleComponent> Members
+
+        public Int32 Add(BufferedCoordinate2D vector)
+        {
+            throw new NotImplementedException();
+        }
 
         public Int32 Add(IVector<DoubleComponent> vector)
         {
@@ -21,6 +33,11 @@ namespace SharpMap.Coordinates
         }
 
         public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Contains(BufferedCoordinate2D item)
         {
             throw new NotImplementedException();
         }
@@ -40,12 +57,17 @@ namespace SharpMap.Coordinates
             get { throw new NotImplementedException(); }
         }
 
+        public IVectorFactory<BufferedCoordinate2D, DoubleComponent> Factory
+        {
+            get { return _factory; }
+        }
+
         public Boolean IsReadOnly
         {
             get { throw new NotImplementedException(); }
         }
 
-        public Int64 MaximumSize
+        public long MaximumSize
         {
             get
             {

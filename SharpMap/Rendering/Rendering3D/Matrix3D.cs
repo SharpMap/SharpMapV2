@@ -21,20 +21,20 @@ using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering3D
 {
-    public class ViewMatrix3D : AffineMatrix<DoubleComponent>
+    public class Matrix3D : AffineMatrix<DoubleComponent>
     {
-        public new static readonly ViewMatrix3D Identity
-            = new ViewMatrix3D(1, 0, 0, 0,
+        public new static readonly Matrix3D Identity
+            = new Matrix3D(1, 0, 0, 0,
                                0, 1, 0, 0,
                                0, 0, 1, 0,
                                0, 0, 0, 1);
 
-        public ViewMatrix3D()
+        public Matrix3D()
             : this(Identity)
         {
         }
 
-        public ViewMatrix3D(Double x1, Double x2, Double x3, Double x4,
+        public Matrix3D(Double x1, Double x2, Double x3, Double x4,
                             Double y1, Double y2, Double y3, Double y4,
                             Double z1, Double z2, Double z3, Double z4,
                             Double w1, Double w2, Double w3, Double w4)
@@ -58,7 +58,7 @@ namespace SharpMap.Rendering.Rendering3D
             W4 = w4;
         }
 
-        public ViewMatrix3D(IMatrixD matrixToCopy)
+        public Matrix3D(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 4)
         {
             if(matrixToCopy.ColumnCount != 4)

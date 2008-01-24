@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
+using GeoAPI.IO.WellKnownText;
 using NUnit.Framework;
+using ProjNet.CoordinateSystems;
 using SharpMap.Data;
 using SharpMap.Data.Providers.ShapeFile;
 
@@ -13,6 +16,10 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
     [TestFixture]
     public class ShapeFileTests
     {
+        private static readonly Random _rnd = new Random();
+        private static readonly IGeometryFactory _geoFactory
+            = new SharpMap.SimpleGeometries.GeometryFactory();
+
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
@@ -158,12 +165,14 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP");
             shapeFile.Open();
+            ICoordinateSystemFactory coordSysFactory = null;
             String wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
-            IProjectedCoordinateSystem cs = CoordinateSystemWktReader.Parse(wkt) as IProjectedCoordinateSystem;
+            IProjectedCoordinateSystem cs = WktEncoder.ToCoordinateSystemInfo(wkt, coordSysFactory) 
+                as IProjectedCoordinateSystem;
             shapeFile.SpatialReference = cs;
             Assert.IsNotNull(shapeFile.SpatialReference);
 
-            Geometry g = shapeFile.GetGeometryById(0);
+            IGeometry g = shapeFile.GetGeometryById(0);
 
             Assert.IsTrue(g.SpatialReference.EqualParams(createExpectedCoordinateSystem()));
 
@@ -372,13 +381,14 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            List<Geometry> geometries = new List<Geometry>();
+            List<IGeometry> geometries = new List<IGeometry>();
 
             geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(shapeFile.GetExtents()));
             Assert.AreEqual(shapeFile.GetFeatureCount(), geometries.Count);
             geometries.Clear();
 
-            geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(IExtents.Empty));
+            IGeometry empty = _geoFactory.CreatePoint();
+            geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(empty));
             Assert.AreEqual(0, geometries.Count);
         }
 
@@ -387,8 +397,10 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         public void GetGeometriesInViewWhenClosedThrowsExceptionTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-            List<Geometry> geometries =
-                new List<Geometry>(shapeFile.ExecuteGeometryIntersectionQuery(IExtents.Empty));
+
+            IGeometry empty = _geoFactory.CreatePoint();
+            List<IGeometry> geometries =
+                new List<IGeometry>(shapeFile.ExecuteGeometryIntersectionQuery(empty));
         }
 
         [Test]
@@ -465,7 +477,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
-            FeatureDataRow<UInt32> feature = shapeFile.GetFeature(0);
+            FeatureDataRow<UInt32> feature = shapeFile.GetFeature(0) as FeatureDataRow<UInt32>;
+            Assert.IsNotNull(feature);
             Assert.AreEqual(0, feature.Id);
             shapeFile.Close();
         }
@@ -474,8 +487,9 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         public void GetExtentsTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
-            IExtents expected =
-                new IExtents(7332083.2127965018, 236823.71867240831, 7538428.618, 405610.34692560317);
+            IExtents expected =_geoFactory.CreateExtents2D(
+                7332083.2127965018, 236823.71867240831, 
+                7538428.618, 405610.34692560317);
             IExtents actual = shapeFile.GetExtents();
             Assert.AreEqual(expected, actual);
         }
@@ -524,7 +538,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             feature["DateCreated"] = dateCreated;
             feature["Visits"] = 0;
             feature["Weight"] = 100.0f;
-            feature.Geometry = new Point(1, 1);
+            feature.Geometry = _geoFactory.CreatePoint2D(1, 1);
 
             shapeFile.Insert(feature);
             shapeFile.Close();
@@ -536,13 +550,13 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
             FeatureDataSet dataSet = new FeatureDataSet("ShapeFile test");
 
-            shapeFile.ExecuteIntersectionQuery(new IExtents(1, 1, 1, 1), dataSet);
+            shapeFile.ExecuteIntersectionQuery(_geoFactory.CreateExtents2D(1, 1, 1, 1), dataSet);
 
             Assert.AreEqual(1, dataSet.Tables.Count);
             Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
 
             FeatureDataRow<UInt32> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<UInt32>;
-            Assert.AreEqual(new Point(1, 1), newFeature.Geometry);
+            Assert.AreEqual(_geoFactory.CreatePoint2D(1, 1), newFeature.Geometry);
             Assert.AreEqual(newFeature["Name"], "Test feature");
             DateTime dateCreatedActual = (DateTime) newFeature["DateCreated"];
             Assert.AreEqual(dateCreatedActual.Year, dateCreated.Year);
@@ -568,39 +582,32 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             ShapeFileProvider shapeFile = ShapeFileProvider.Create("UnitTestData", "Test3", ShapeType.PolyLine, schema);
             shapeFile.Open();
 
-            Random rnd = new Random();
-            IExtents computedBounds = IExtents.Empty;
+            IExtents computedBounds = _geoFactory.CreateExtents();
 
             List<FeatureDataRow<UInt32>> rows = new List<FeatureDataRow<UInt32>>();
 
             for (Int32 i = 0; i < 10000; i++)
             {
-                DateTime dateCreated = new DateTime(rnd.Next(1900, 2155), rnd.Next(1, 12), rnd.Next(1, 28));
+                DateTime dateCreated = new DateTime(_rnd.Next(1900, 2155), _rnd.Next(1, 12), _rnd.Next(1, 28));
                 FeatureDataRow<UInt32> feature = schema.NewRow((UInt32) i);
 
-                Char[] chars = new Char[rnd.Next(0, 254)];
+                Char[] chars = new Char[_rnd.Next(0, 254)];
                 for (Int32 charIndex = 0; charIndex < chars.Length; charIndex++)
                 {
-                    chars[charIndex] = (Char) (Byte) rnd.Next(32, 126);
+                    chars[charIndex] = (Char) (Byte) _rnd.Next(32, 126);
                 }
 
                 feature["Name"] = new String(chars);
                 feature["DateCreated"] = dateCreated;
-                feature["Visits"] = rnd.Next(0, Int32.MaxValue) << rnd.Next(0, 32);
-                feature["Weight"] = rnd.NextDouble()*rnd.Next(0, 100000);
+                feature["Visits"] = _rnd.Next(0, Int32.MaxValue) << _rnd.Next(0, 32);
+                feature["Weight"] = _rnd.NextDouble()*_rnd.Next(0, 100000);
 
-                LineString line = new LineString();
+                ICoordinateSequence coordinates
+                    = _geoFactory.CoordinateSequenceFactory.Create(generateCoordinates());
+                
+                ILineString line = _geoFactory.CreateLineString(coordinates);
 
-                Int32 pointCount = rnd.Next(1, 100);
-                for (Int32 pointIndex = 0; pointIndex < pointCount; pointIndex++)
-                {
-                    Point p = new Point(rnd.NextDouble()*rnd.Next(200000, 700000),
-                                        (rnd.NextDouble()*rnd.Next(1000000)) + 50000000);
-
-                    line.Vertices.Add(p);
-                }
-
-                computedBounds.ExpandToInclude(line.GetBoundingBox());
+                computedBounds.ExpandToInclude(line.Extents);
 
                 feature.Geometry = line;
 
@@ -650,9 +657,10 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
         private static IProjectedCoordinateSystem createExpectedCoordinateSystem()
         {
-            ICoordinateSystemFactory factory = new CoordinateSystemFactory();
+            ICoordinateSystemFactory factory = new CoordinateSystemFactory<ICoordinate>(
+                _geoFactory.CoordinateFactory, _geoFactory);
 
-            IEllipsoid grs80 = IEllipsoid.GRS80;
+            IEllipsoid grs80 = Ellipsoid.Grs80;
 
             IHorizontalDatum harn = factory.CreateHorizontalDatum(
                 DatumType.HorizontalClassic, grs80, null, "D_North_American_1983_HARN");
@@ -662,7 +670,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             IAxisInfo axis0 = new AxisInfo("Lon", AxisOrientation.East);
             IAxisInfo axis1 = new AxisInfo("Lat", AxisOrientation.North);
 
-            IGeographicCoordinateSystem gcs = factory.CreateGeographicCoordinateSystem(
+            // Made the first parameter - the IExtents - null, which should be improved
+            IGeographicCoordinateSystem gcs = factory.CreateGeographicCoordinateSystem(null,
                 AngularUnit.Degrees, harn, greenwich, axis0, axis1, "GCS_North_American_1983_HARN");
 
             IProjection prj = factory.CreateProjection(
@@ -681,7 +690,8 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             IProjectedCoordinateSystem expected = factory.CreateProjectedCoordinateSystem(
                 gcs, prj, LinearUnit.Foot, axis0, axis1, "NAD_1983_HARN_StatePlane_Oregon_North_FIPS_3601");
 
-            // TODO: Check if this is correct, since on line 184 of CoorindateSystemFactory.cs, HorizontalDatum is passed in as null
+            // TODO: Check if this is correct, since on line 184 of CoorindateSystemFactory.cs, 
+            // HorizontalDatum is passed in as null
             expected.HorizontalDatum = harn;
             return expected;
         }
@@ -701,8 +711,9 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
+            IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
-            shapeFile.ExecuteIntersectionQuery(IExtents.Empty, queryTable);
+            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
 
             FeatureDataTable nonKeyedTable = new FeatureDataTable();
             shapeFile.SetTableSchema(nonKeyedTable);
@@ -719,8 +730,9 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
+            IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
-            shapeFile.ExecuteIntersectionQuery(IExtents.Empty, queryTable);
+            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
 
             FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("oid");
             shapeFile.SetTableSchema(keyedTable);
@@ -733,8 +745,9 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
+            IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
-            shapeFile.ExecuteIntersectionQuery(IExtents.Empty, queryTable);
+            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
 
             FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("oid");
             shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.CaseInsensitive);
@@ -747,12 +760,29 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP");
             shapeFile.Open();
+            IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID");
-            shapeFile.ExecuteIntersectionQuery(IExtents.Empty, queryTable);
+            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
 
             FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("FID");
             shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.KeyByType);
             DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
+        }
+
+        private static IEnumerable<ICoordinate> generateCoordinates()
+        {
+            ICoordinateFactory coordFactory = _geoFactory.CoordinateFactory;
+
+            Int32 pointCount = _rnd.Next(1, 100);
+
+            for (Int32 pointIndex = 0; pointIndex < pointCount; pointIndex++)
+            {
+                ICoordinate p = coordFactory.Create(
+                    _rnd.NextDouble() * _rnd.Next(200000, 700000),
+                    (_rnd.NextDouble() * _rnd.Next(1000000)) + 50000000);
+
+                yield return p;
+            }
         }
     }
 }

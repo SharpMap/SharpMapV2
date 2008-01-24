@@ -74,38 +74,37 @@ namespace SharpMap.Tests.Rendering
                     new DoubleComponent[] {2, 5, 0},
                     new DoubleComponent[] {3, 6, 1}
                 };
-            DoubleComponent[][] actual = m3.Elements;
 
-            Assert.AreEqual(expected[0][0], actual[0][0]);
-            Assert.AreEqual(expected[0][1], actual[0][1]);
-            Assert.AreEqual(expected[0][2], actual[0][2]);
-            Assert.AreEqual(expected[1][0], actual[1][0]);
-            Assert.AreEqual(expected[1][1], actual[1][1]);
-            Assert.AreEqual(expected[1][2], actual[1][2]);
-            Assert.AreEqual(expected[2][0], actual[2][0]);
-            Assert.AreEqual(expected[2][1], actual[2][1]);
-            Assert.AreEqual(expected[2][2], actual[2][2]);
+            Assert.AreEqual(expected[0][0], m3[0, 0]);
+            Assert.AreEqual(expected[0][1], m3[0, 1]);
+            Assert.AreEqual(expected[0][2], m3[0, 2]);
+            Assert.AreEqual(expected[1][0], m3[1, 0]);
+            Assert.AreEqual(expected[1][1], m3[1, 1]);
+            Assert.AreEqual(expected[1][2], m3[1, 2]);
+            Assert.AreEqual(expected[2][0], m3[2, 0]);
+            Assert.AreEqual(expected[2][1], m3[2, 1]);
+            Assert.AreEqual(expected[2][2], m3[2, 2]);
 
-            m1.Elements = expected;
+            //m1.Elements = expected;
             Assert.AreEqual(m1, m3);
             Assert.IsTrue(m1.Equals(m3 as IMatrixD));
         }
 
-        [Test]
-        [ExpectedException(typeof (ArgumentNullException))]
-        public void ElementsTest2()
-        {
-            Matrix2D m1 = Matrix2D.Identity;
-            m1.Elements = null;
-        }
+        //[Test]
+        //[ExpectedException(typeof (ArgumentNullException))]
+        //public void ElementsTest2()
+        //{
+        //    Matrix2D m1 = Matrix2D.Identity;
+        //    m1.Elements = null;
+        //}
 
-        [Test]
-        [ExpectedException(typeof (ArgumentException))]
-        public void ElementsTest3()
-        {
-            Matrix2D m1 = Matrix2D.Identity;
-            m1.Elements = new DoubleComponent[][] {new DoubleComponent[] {1, 2, 3}, new DoubleComponent[] {2, 3, 4}};
-        }
+        //[Test]
+        //[ExpectedException(typeof (ArgumentException))]
+        //public void ElementsTest3()
+        //{
+        //    Matrix2D m1 = Matrix2D.Identity;
+        //    m1.Elements = new DoubleComponent[][] {new DoubleComponent[] {1, 2, 3}, new DoubleComponent[] {2, 3, 4}};
+        //}
 
         [Test]
         [Ignore("Test not yet implemented")]

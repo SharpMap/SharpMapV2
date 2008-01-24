@@ -30,11 +30,21 @@ namespace SharpMap.Rendering.Rendering2D
     /// A point in 2 dimensional Cartesian space.
     /// </summary>
     [Serializable]
-    public struct Point2D : IVectorD, IHasEmpty
+    public struct Point2D : IVectorD, IHasEmpty, IComputable<Double, Point2D>
     {
         public static readonly Point2D Empty = new Point2D();
         public static readonly Point2D Zero = new Point2D(0, 0);
         public static readonly Point2D One = new Point2D(1, 1);
+
+        public static Point2D operator +(Point2D lhs, Point2D rhs)
+        {
+            return new Point2D(lhs.Add(rhs));
+        }
+
+        public static Point2D operator -(Point2D lhs, Point2D rhs)
+        {
+            return new Point2D(lhs.Subtract(rhs));
+        }
 
         private DoubleComponent _x, _y;
         private Boolean _hasValue;
@@ -158,7 +168,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IEquatable<IMatrix<DoubleComponent>> Members
+        #region IEquatable<IMatrixD> Members
 
         ///<summary>
         ///Indicates whether the current object is equal to another object of the same type.
@@ -233,6 +243,136 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
+        #region IComputable<Double,Point2D> Members
+
+        public Point2D Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        Point2D IComputable<Double, Point2D>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<Point2D> Members
+
+        public Point2D Subtract(Point2D b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasZero<Point2D> Members
+
+        Point2D IHasZero<Point2D>.Zero
+        {
+            get { return Zero; }
+        }
+
+        #endregion
+
+        #region IAddable<Point2D> Members
+
+        public Point2D Add(Point2D b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Point2D> Members
+
+        public Point2D Divide(Point2D b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasOne<Point2D> Members
+
+        Point2D IHasOne<Point2D>.One
+        {
+            get { return One; }
+        }
+
+        #endregion
+
+        #region IMultipliable<Point2D> Members
+
+        public Point2D Multiply(Point2D b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double,Point2D> Members
+
+        public Point2D Divide(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<Point2D> Members
+
+        public Boolean GreaterThan(Point2D value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean GreaterThanOrEqualTo(Point2D value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean LessThan(Point2D value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean LessThanOrEqualTo(Point2D value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<Point2D> Members
+
+        Point2D IExponential<Point2D>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        Point2D IExponential<Point2D>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        Point2D IExponential<Point2D>.Log(Double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Point2D Power(Double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Point2D Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region IEnumerable<Double> Members
 
         public IEnumerator<Double> GetEnumerator()
@@ -252,9 +392,9 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IVector<DoubleComponent> Members
+        #region IVectorD Members
 
-        MatrixFormat IMatrix<DoubleComponent>.Format
+        MatrixFormat IMatrixD.Format
         {
             get { return MatrixFormat.Unspecified; }
         }
@@ -320,7 +460,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IAddable<IMatrix<DoubleComponent>> Members
+        #region IAddable<IMatrixD> Members
 
         /// <summary>
         /// Returns the sum of the object and <paramref name="b"/>.
@@ -328,14 +468,14 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The sum.</returns>
-        public IMatrixD Add(IMatrixD b)
+        IMatrixD IAddable<IMatrixD>.Add(IMatrixD b)
         {
             return MatrixProcessor.Add(this, b);
         }
 
         #endregion
 
-        #region ISubtractable<IMatrix<DoubleComponent>> Members
+        #region ISubtractable<IMatrixD> Members
 
         /// <summary>
         /// Returns the difference of the object and <paramref name="b"/>.
@@ -343,14 +483,14 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The difference.</returns>
-        public IMatrixD Subtract(IMatrixD b)
+        IMatrixD ISubtractable<IMatrixD>.Subtract(IMatrixD b)
         {
             return MatrixProcessor.Subtract(this, b);
         }
 
         #endregion
 
-        #region IHasZero<IMatrix<DoubleComponent>> Members
+        #region IHasZero<IMatrixD> Members
 
         /// <summary>
         /// Returns the additive identity.
@@ -363,7 +503,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region INegatable<IMatrix<DoubleComponent>> Members
+        #region INegatable<IMatrixD> Members
 
         /// <summary>
         /// Returns the negative of the object. Must not modify the object itself.
@@ -376,7 +516,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IMultipliable<IMatrix<DoubleComponent>> Members
+        #region IMultipliable<IMatrixD> Members
 
         /// <summary>
         /// Returns the product of the object and <paramref name="b"/>.
@@ -384,14 +524,14 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The product.</returns>
-        public IMatrixD Multiply(IMatrixD b)
+        IMatrixD IMultipliable<IMatrixD>.Multiply(IMatrixD b)
         {
             return MatrixProcessor.Multiply(this, b);
         }
 
         #endregion
 
-        #region IDivisible<IMatrix<DoubleComponent>> Members
+        #region IDivisible<IMatrixD> Members
 
         /// <summary>
         /// Returns the quotient of the object and <paramref name="b"/>.
@@ -399,14 +539,14 @@ namespace SharpMap.Rendering.Rendering2D
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The quotient.</returns>
-        public IMatrixD Divide(IMatrixD b)
+        IMatrixD IDivisible<IMatrixD>.Divide(IMatrixD b)
         {
             throw new NotSupportedException();
         }
 
         #endregion
 
-        #region IHasOne<IMatrix<DoubleComponent>> Members
+        #region IHasOne<IMatrixD> Members
 
         /// <summary>
         /// Returns the multiplicative identity.
@@ -437,7 +577,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IMatrix<DoubleComponent> Members
+        #region IMatrixD Members
         /// <summary>
         /// Makes an element-by-element copy of the matrix.
         /// </summary>
@@ -558,6 +698,244 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
+        #region INegatable<IVectorD> Members
+
+        IVectorD INegatable<IVectorD>.Negative()
+        {
+            return new Point2D(-X, -Y);
+        }
+
+        #endregion
+
+        #region ISubtractable<IVectorD> Members
+
+        IVectorD ISubtractable<IVectorD>.Subtract(IVectorD b)
+        {
+            if (b == null) throw new ArgumentNullException("b");
+
+            if (b.ComponentCount != 2)
+            {
+                throw new ArgumentException("Vector must have only 2 components.");
+            }
+
+            return new Point2D(X - (Double)b[0], Y - (Double)b[1]);
+        }
+
+        #endregion
+
+        #region IHasZero<IVectorD> Members
+
+        IVectorD IHasZero<IVectorD>.Zero
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IAddable<IVectorD> Members
+
+        IVectorD IAddable<IVectorD>.Add(IVectorD b)
+        {
+            if (b == null) throw new ArgumentNullException("b");
+
+            if (b.ComponentCount != 2)
+            {
+                throw new ArgumentException("Vector must have only 2 components.");
+            }
+
+            return new Point2D(X + (Double)b[0], Y + (Double)b[1]);
+        }
+
+        #endregion
+
+        #region IDivisible<IVectorD> Members
+
+        IVectorD IDivisible<IVectorD>.Divide(IVectorD b)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double, IVectorD> Members
+
+        IVectorD IDivisible<Double, IVectorD>.Divide(Double b)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IHasOne<IVectorD> Members
+
+        IVectorD IHasOne<IVectorD>.One
+        {
+            get { return new Point2D(1, 1); }
+        }
+
+        #endregion
+
+        #region IMultipliable<IVectorD> Members
+
+        IVectorD IMultipliable<IVectorD>.Multiply(IVectorD b)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IComparable<IMatrixD> Members
+
+        Int32 IComparable<IMatrixD>.CompareTo(IMatrixD other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IMatrixD> Members
+
+        IMatrixD IComputable<IMatrixD>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrixD IComputable<IMatrixD>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IMatrixD> Members
+
+        Boolean IBooleanComparable<IMatrixD>.GreaterThan(IMatrixD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        Boolean IBooleanComparable<IMatrixD>.GreaterThanOrEqualTo(IMatrixD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        Boolean IBooleanComparable<IMatrixD>.LessThan(IMatrixD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        Boolean IBooleanComparable<IMatrixD>.LessThanOrEqualTo(IMatrixD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IMatrixD> Members
+
+        IMatrixD IExponential<IMatrixD>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrixD IExponential<IMatrixD>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrixD IExponential<IMatrixD>.Log(Double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrixD IExponential<IMatrixD>.Power(Double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMatrixD IExponential<IMatrixD>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<IVectorD> Members
+
+        IVectorD IComputable<IVectorD>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVectorD IComputable<Double, IVectorD>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<IVectorD> Members
+
+        Boolean IBooleanComparable<IVectorD>.GreaterThan(IVectorD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        Boolean IBooleanComparable<IVectorD>.GreaterThanOrEqualTo(IVectorD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        Boolean IBooleanComparable<IVectorD>.LessThan(IVectorD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        Boolean IBooleanComparable<IVectorD>.LessThanOrEqualTo(IVectorD value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<IVectorD> Members
+
+        IVectorD IExponential<IVectorD>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVectorD IExponential<IVectorD>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        IVectorD IExponential<IVectorD>.Log(Double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        IVectorD IExponential<IVectorD>.Power(Double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IVectorD IExponential<IVectorD>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComparable<IVectorD> Members
+
+        Int32 IComparable<IVectorD>.CompareTo(IVectorD other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region Private Helper Methods
 
         private static void checkIndex(Int32 index)
@@ -582,239 +960,35 @@ namespace SharpMap.Rendering.Rendering2D
         }
         #endregion
 
-        public static Point2D operator +(Point2D lhs, Point2D rhs)
-        {
-            return new Point2D(lhs.Add(rhs));
-        }
+        #region IComputable<IVectorD> Members
 
-        public static Point2D operator -(Point2D lhs, Point2D rhs)
-        {
-            return new Point2D(lhs.Subtract(rhs));
-        }
-
-        #region INegatable<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
-        {
-            return new Point2D(-X, -Y);
-        }
-
-        #endregion
-
-        #region ISubtractable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Subtract(IVector<DoubleComponent> b)
-        {
-            if (b == null) throw new ArgumentNullException("b");
-
-            if (b.ComponentCount != 2)
-            {
-                throw new ArgumentException("Vector must have only 2 components.");
-            }
-
-            return new Point2D(X - (Double)b[0], Y - (Double)b[1]);
-        }
-
-        #endregion
-
-        #region IHasZero<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IHasZero<IVector<DoubleComponent>>.Zero
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IAddable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
-        {
-            if (b == null) throw new ArgumentNullException("b");
-
-            if (b.ComponentCount != 2)
-            {
-                throw new ArgumentException("Vector must have only 2 components.");
-            }
-
-            return new Point2D(X + (Double)b[0], Y + (Double)b[1]);
-        }
-
-        #endregion
-
-        #region IDivisible<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Divide(IVector<DoubleComponent> b)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region IHasOne<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
-        {
-            get { return new Point2D(1, 1); }
-        }
-
-        #endregion
-
-        #region IMultipliable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region IComparable<IMatrix<DoubleComponent>> Members
-
-        public int CompareTo(IMatrix<DoubleComponent> other)
+        IVectorD IComputable<IVectorD>.Set(Double value)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IComputable<IMatrix<DoubleComponent>> Members
+        #region IMultipliable<Double,IVectorD> Members
 
-        public IMatrix<DoubleComponent> Abs()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMatrix<DoubleComponent> Set(double value)
+        IVectorD IMultipliable<Double, IVectorD>.Multiply(Double b)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IBooleanComparable<IMatrix<DoubleComponent>> Members
-
-        public bool GreaterThan(IMatrix<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LessThan(IMatrix<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        #region IComputable<Point2D> Members
+        Point2D IComputable<Point2D>.Set(Double value)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IExponential<IMatrix<DoubleComponent>> Members
+        #region IMultipliable<Double,Point2D> Members
 
-        public IMatrix<DoubleComponent> Exp()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMatrix<DoubleComponent> Log()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMatrix<DoubleComponent> Log(double newBase)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMatrix<DoubleComponent> Power(double exponent)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMatrix<DoubleComponent> Sqrt()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IComputable<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Abs()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(double value)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IBooleanComparable<IVector<DoubleComponent>> Members
-
-        public bool GreaterThan(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool GreaterThanOrEqualTo(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LessThan(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LessThanOrEqualTo(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IExponential<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Exp()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log(double newBase)
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Power(double exponent)
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Sqrt()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IComparable<IVector<DoubleComponent>> Members
-
-        public int CompareTo(IVector<DoubleComponent> other)
+        public Point2D Multiply(Double b)
         {
             throw new NotImplementedException();
         }

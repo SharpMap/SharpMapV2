@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GeoAPI.Geometries;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Layers;
@@ -9,15 +10,17 @@ namespace SharpMap.Tests.Layers
     [TestFixture]
     public class LayerTests
     {
+        private static readonly IGeometryFactory _geoFactory
+            = new SharpMap.SimpleGeometries.GeometryFactory();
         [Test]
         [Ignore("Test deferred until caching detection improved")]
         public void LayerCachingTest()
         {
-            GeometryLayer layer1 = DataSourceHelper.CreateFeatureFeatureLayer();
-            GeometryLayer layer2 = DataSourceHelper.CreateFeatureFeatureLayer();
+            GeometryLayer layer1 = DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory);
+            GeometryLayer layer2 = DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory);
 
-            BoundingBox box1 = new BoundingBox(0, 0, 10, 10);
-            BoundingBox box2 = new BoundingBox(35, 25, 45, 35);
+            IExtents box1 = _geoFactory.CreateExtents2D(0, 0, 10, 10);
+            IExtents box2 = _geoFactory.CreateExtents2D(35, 25, 45, 35);
 
             layer1.AsyncQuery = false;
             // Do query

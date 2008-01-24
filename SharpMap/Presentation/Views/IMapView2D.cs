@@ -41,11 +41,11 @@ namespace SharpMap.Presentation.Views
         event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
         event EventHandler SizeChanged;
-        event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ViewEnvelopeChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ViewEnvelopeChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
         event EventHandler ZoomToExtentsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<IExtents>> ZoomToWorldBoundsRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ZoomToWorldBoundsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
         /// </summary>
-        IExtents ViewEnvelope { get; set; }
+        IExtents2D ViewEnvelope { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the view.
@@ -257,7 +257,7 @@ namespace SharpMap.Presentation.Views
         /// <param name="zoomBox">
         /// <see cref="IExtents"/> to set zoom to.
         /// </param>
-        void ZoomToWorldBounds(IExtents zoomBox);
+        void ZoomToWorldBounds(IExtents2D zoomBox);
 
         /// <summary>
         /// Zooms the view to the given width.

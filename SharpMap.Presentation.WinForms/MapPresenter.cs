@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using GeoAPI.Geometries;
+using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Gdi;
@@ -82,14 +82,14 @@ namespace SharpMap.Presentation.WinForms
         protected override void OnRenderingSelection()
         {
             _isRenderingSelection = true;
-            RenderAllLayers();
-            _isRenderingSelection = false;
-        }
+			//RenderAllLayers();
+		}
 
         protected override void OnRenderedSelection()
         {
             ViewControl.Refresh();
-        }
+			_isRenderingSelection = false;
+		}
 
         protected override void RenderFeatureLayer(IFeatureLayer layer)
         {
@@ -115,7 +115,7 @@ namespace SharpMap.Presentation.WinForms
             get { return BackgroundColorInternal; }
         }
 
-        internal IPoint GeoCenter
+        internal Point GeoCenter
         {
             get { return GeoCenterInternal; }
         }
@@ -155,7 +155,7 @@ namespace SharpMap.Presentation.WinForms
             get { return ToWorldTransformInternal; }
         }
 
-        internal Point2D ToView(IPoint point)
+        internal Point2D ToView(Point point)
         {
             return ToViewInternal(point);
         }
@@ -165,22 +165,22 @@ namespace SharpMap.Presentation.WinForms
             return ToViewInternal(x, y);
         }
 
-        internal IPoint ToWorld(Point2D point)
+        internal Point ToWorld(Point2D point)
         {
             return ToWorldInternal(point);
         }
 
-        internal IPoint ToWorld(Double x, Double y)
+        internal Point ToWorld(Double x, Double y)
         {
             return ToWorldInternal(x, y);
         }
 
-        internal IExtents ToWorld(Rectangle2D bounds)
+        internal BoundingBox ToWorld(Rectangle2D bounds)
         {
             return ToWorldInternal(bounds);
         }
 
-        internal IExtents ViewEnvelope
+        internal BoundingBox ViewEnvelope
         {
             get { return ViewEnvelopeInternal; }
         }
@@ -205,7 +205,15 @@ namespace SharpMap.Presentation.WinForms
             get { return WorldUnitsPerPixelInternal; }
         }
 
-        internal void ZoomToExtents()
+    	public Boolean IsRenderingSelection
+    	{
+    		get
+    		{
+    			return _isRenderingSelection;
+    		}
+    	}
+
+    	internal void ZoomToExtents()
         {
             ZoomToExtentsInternal();
         }
@@ -215,7 +223,7 @@ namespace SharpMap.Presentation.WinForms
             ZoomToViewBoundsInternal(viewBounds);
         }
 
-        internal void ZoomToWorldBounds(IExtents zoomBox)
+        internal void ZoomToWorldBounds(BoundingBox zoomBox)
         {
             ZoomToWorldBoundsInternal(zoomBox);
         }

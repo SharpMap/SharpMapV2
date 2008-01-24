@@ -17,6 +17,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using System.Configuration;
 using SharpMap.Data;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
@@ -47,30 +49,34 @@ namespace SharpMap.Layers
 
         #endregion
 
+		public delegate String LabelTextFormatter(FeatureDataRow feature);
+
+		private LabelCollisionDetection2D collisionDetector = null;
+    	private LabelTextFormatter textFormatter = null;
+
         #region Fields
 
         private Int32 _priority;
         private String _rotationColumn;
-        private GenerateLabelTextDelegate _getLabelMethod;
-        private String _labelColumn;
-        private LabelFilterDelegate _labelFilter;
+        //private GenerateLabelTextDelegate _getLabelMethod;
+        //private String _labelColumn;
         private MultipartGeometryLabelingBehavior _multipartGeometryBehaviour;
+    	private Dictionary<Object, Label2D> _renderCache = null;
 
         #endregion
 
         #region Object Construction / Disposal
 
-        /// <summary>
-        /// Creates a new instance of a LabelLayer with the given name.
-        /// </summary>
-        /// <param name="layerName">Name of the layer.</param>
-        /// <param name="dataSource">Data source provider for the layer.</param>
-        public LabelLayer(String layerName, IFeatureLayerProvider dataSource)
-            : base(layerName, dataSource)
-        {
-            _multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
-            _labelFilter = LabelCollisionDetection2D.SimpleCollisionDetection;
-        }
+		/// <summary>
+		/// Creates a new instance of a LabelLayer with the given name.
+		/// </summary>
+		/// <param name="layerName">Name of the layer.</param>
+		/// <param name="dataSource">Data source provider for the layer.</param>
+		public LabelLayer(String layerName, IFeatureLayerProvider dataSource)
+			: base(layerName, dataSource)
+		{
+			_multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
+		}
 
         #region IDisposable Members
 
@@ -109,60 +115,6 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Delegate for performing filtering on labels.
-        /// </summary>
-        /// <remarks>
-        /// Default method is 
-        /// <see cref="LabelCollisionDetection2D.SimpleCollisionDetection"/>.
-        /// </remarks>
-        public LabelFilterDelegate LabelFilter
-        {
-            get { return _labelFilter; }
-            set { _labelFilter = value; }
-        }
-
-        /// <summary>
-        /// Data column or expression where label text is extracted from.
-        /// </summary>
-        /// <remarks>
-        /// This property is overriden by the 
-        /// <see cref="GenerateLabelTextDelegate"/>.
-        /// </remarks>
-        public String LabelColumn
-        {
-            get { return _labelColumn; }
-            set { _labelColumn = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the method for creating a custom label String 
-        /// based on a feature.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// If this method is not null, it will override the 
-        /// <see cref="LabelColumn"/> value.
-        /// </para>
-        /// <para>
-        /// The label delegate must take a <see cref="FeatureDataRow"/> 
-        /// and return a String.
-        /// </para>
-        /// <example>
-        /// Creating a label-text by combining attributes "ROADNAME" 
-        /// and "STATE" into one String, using an anonymous delegate:
-        /// <code lang="C#">
-        /// myLabelLayer.LabelStringDelegate = delegate(FeatureDataRow fdr)
-        ///				{ return fdr["ROADNAME"].ToString() + ", " + fdr["STATE"].ToString(); };
-        /// </code>
-        /// </example>
-        /// </remarks>
-        public GenerateLabelTextDelegate LabelTextDelegate
-        {
-            get { return _getLabelMethod; }
-            set { _getLabelMethod = value; }
-        }
-
-        /// <summary>
         /// Data column from where the label rotation is derived.
         /// If this is empty, rotation will be zero, or aligned to a linestring.
         /// Rotation are in degrees (positive = clockwise).
@@ -182,31 +134,53 @@ namespace SharpMap.Layers
             set { _priority = value; }
         }
 
-        /// <summary>
-        /// Generates the label text for a given feature.
-        /// </summary>
-        /// <param name="feature">The feature to label.</param>
-        /// <returns>The text of the label.</returns>
-        public String GetLabelText(FeatureDataRow feature)
-        {
-            if (_getLabelMethod != null)
-            {
-                return _getLabelMethod(feature);
-            }
-            else
-            {
-                if (feature.IsNull(LabelColumn))
-                {
-                    return String.Empty;
-                }
-                else
-                {
-                    return feature[LabelColumn].ToString();
-                }
-            }
-        }
+    	public Dictionary<Object, Label2D> RenderCache
+    	{
+    		get
+    		{
+				if(_renderCache == null)
+				{
+					_renderCache = new Dictionary<Object, Label2D>();
+				}
+    			return _renderCache;
+    		}
+    	}
 
-        /// <summary>
+    	public LabelCollisionDetection2D CollisionDetector
+    	{
+    		get
+    		{
+				if(collisionDetector == null)
+				{
+					collisionDetector = new LabelCollisionDetection2D();
+				}
+    			return collisionDetector;
+    		}
+    		set { collisionDetector = value; }
+    	}
+
+    	public LabelTextFormatter TextFormatter
+    	{
+    		get
+    		{
+				if(textFormatter == null)
+				{
+					if (Style == null)
+					{
+						throw new NotImplementedException("Style must be set before getting the TextFormatter");
+					}
+
+					textFormatter = delegate(FeatureDataRow feature2)
+					{
+						return feature2[((LabelStyle)Style).LabelFormatExpression].ToString();
+					};
+				}
+
+    			return textFormatter;
+    		}
+    	}
+
+    	/// <summary>
         /// Clones the object
         /// </summary>
         /// <returns></returns>
@@ -218,7 +192,6 @@ namespace SharpMap.Layers
         protected override IStyle CreateStyle()
         {
             return new LabelStyle();
-        }
-
-    }
+		}
+	}
 }

@@ -104,11 +104,11 @@
       <ItemGroup>
         <Reference Include="NPack, Version=0.7.13341.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+          <HintPath>..\..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
         </Reference>
         <Reference Include="GeoAPI, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
+          <HintPath>..\..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
         </Reference>
       </ItemGroup>
     </When>
@@ -116,7 +116,7 @@
       <ItemGroup>
         <Reference Include="NPack, Version=0.7.13341.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+          <HintPath>..\..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
         </Reference>
       </ItemGroup>
       <ItemGroup>
@@ -140,7 +140,6 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-  
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

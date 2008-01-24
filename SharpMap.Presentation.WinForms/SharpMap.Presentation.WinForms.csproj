@@ -70,8 +70,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Core"
-               Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'" />
+    <Reference Include="System.Core" Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MapPresenter.cs" />

@@ -79,6 +79,18 @@
           <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
           <Name>GeoAPINoTFS</Name>
         </ProjectReference>
+        <ProjectReference Include="..\Proj.Net\ProjNet\ProjNet.csproj">
+          <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
+          <Name>ProjNet</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\SharpMap.SimpleGeometries\SharpMap.SimpleGeometries.csproj">
+          <Project>{7F258589-6452-4B7B-8884-8965A42C1D9E}</Project>
+          <Name>SharpMap.SimpleGeometries</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\SharpMap\SharpMap.csproj">
+          <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
+          <Name>SharpMap</Name>
+        </ProjectReference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -129,11 +141,6 @@
     <Compile Include="Layers\LayersCollectionTests.cs" />
     <Compile Include="Layers\LayerTests.cs" />
     <Compile Include="Presentation\AttributePresenterTests.cs" />
-    <Compile Include="Geometries\BoundingBoxTests.cs" />
-    <Compile Include="Geometries\LinestringTests.cs" />
-    <Compile Include="Geometries\MultiLinestringsTests.cs" />
-    <Compile Include="Geometries\PointTests.cs" />
-    <Compile Include="Geometries\PolygonTests.cs" />
     <Compile Include="Presentation\LayerPresenterTests.cs" />
     <Compile Include="Presentation\LayerStylePresenterTests.cs" />
     <Compile Include="Presentation\MapPresenter2DTests.cs" />
@@ -141,7 +148,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Presentation\ScreenHelper.cs" />
     <Compile Include="Presentation\ToolsPresenterTests.cs" />
-    <Compile Include="Data\Providers\GeometryProvider\GeometryProviderTests.cs" />
     <Compile Include="Data\Providers\ShapeFile\ShapeFileTests.cs" />
     <Compile Include="Rendering\BasicGeometryRenderer2DTests.cs" />
     <Compile Include="Rendering\GraphicsFigure2DTests.cs" />
@@ -162,18 +168,15 @@
     <Compile Include="Utilities\QuickSortTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpMap\SharpMap.csproj">
-      <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
-      <Name>SharpMap</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="SRID.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Providers\GeometryProvider\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

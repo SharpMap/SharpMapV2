@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using NPack;
 using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -24,97 +23,215 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering3D
 {
-    /// <summary>
-    /// A measurement of size in 3 dimensions.
-    /// </summary>
-	public struct ViewSize3D : IVectorD
+    [Serializable]
+    public struct Rectangle3D : IMatrixD, IComparable<Rectangle3D>
     {
-        private DoubleComponent _width, _height, _depth;
+        private DoubleComponent _xMin;
+        private DoubleComponent _yMin;
+        private DoubleComponent _xMax;
+        private DoubleComponent _yMax;
+        private DoubleComponent _zMin;
+        private DoubleComponent _zMax;
         private Boolean _hasValue;
 
-        public static readonly ViewSize3D Empty = new ViewSize3D();
-        public static readonly ViewSize3D Zero = new ViewSize3D(0, 0, 0);
+        public static readonly Rectangle3D Empty = new Rectangle3D();
+        public static readonly Rectangle3D Zero = new Rectangle3D(0, 0, 0, 0, 0, 0);
 
-        /// <summary>
-        /// Creates a new non-empty ViewSize3D with the given values.
-        /// </summary>
-        /// <param name="width">Width of the measurement.</param>
-        /// <param name="height">Height of the measurement.</param>
-        /// <param name="depth">Depth of the measurement.</param>
-        public ViewSize3D(DoubleComponent width, DoubleComponent height, DoubleComponent depth)
+        public Rectangle3D(Double xMin, Double xMax, Double yMin, Double yMax, Double zMin, Double zMax)
         {
-            _width = width;
-            _height = height;
-            _depth = depth;
+            _xMin = xMin;
+            _xMax = xMax;
+            _yMin = yMin;
+            _yMax = yMax;
+            _zMin = zMin;
+            _zMax = zMax;
             _hasValue = true;
         }
 
-        public override String ToString()
+        public Rectangle3D(Point3D location, Size3D size)
         {
-            return String.Format("[ViewSize3D] Width: {0}, Height: {1}, Depth: {2}", Width, Height, Depth);
+            _xMin = location.X;
+            _yMin = location.Y;
+            _zMin = location.Z;
+            _xMax = _xMin.Add(size.Width);
+            _yMax = _yMin.Add(size.Height);
+            _zMax = _zMin.Add(size.Depth);
+            _hasValue = true;
         }
 
-        public override Int32 GetHashCode()
+        public DoubleComponent X
         {
-            return unchecked(Width.GetHashCode() ^ Height.GetHashCode() ^ Depth.GetHashCode());
+            get { return _xMin; }
         }
 
-        public DoubleComponent Width
+        public DoubleComponent Y
         {
-            get { return _width; }
+            get { return _yMin; }
         }
 
-        public DoubleComponent Height
+        public DoubleComponent Z
         {
-            get { return _height; }
+            get { return _zMin; }
         }
 
-        public DoubleComponent Depth
+        public DoubleComponent Left
         {
-            get { return _depth; }
+            get { return _xMin; }
+        }
+
+        public DoubleComponent Top
+        {
+            get { return _yMin; }
+        }
+
+        public DoubleComponent Right
+        {
+            get { return _xMax; }
+        }
+
+        public DoubleComponent Bottom
+        {
+            get { return _yMax; }
+        }
+
+        public DoubleComponent Back
+        {
+            get { return _zMax; }
+        }
+
+        public DoubleComponent Front
+        {
+            get { return _zMin; }
+        }
+
+        public Point3D Center
+        {
+            get { return new Point3D(X + Width / 2, Y + Height / 2, Z + Depth / 2); }
+        }
+
+        public Point3D Location
+        {
+            get { return new Point3D(_xMin, _yMin, _zMin); }
+        }
+
+        public Point3D Size
+        {
+            get { return new Point3D(Width, Height, Depth); }
+        }
+
+        public Double Width
+        {
+            get { return Math.Abs((Double)_xMax.Subtract(_xMin)); }
+        }
+
+        public Double Height
+        {
+            get { return Math.Abs((Double)_yMax.Subtract(_yMin)); }
+        }
+
+        public Double Depth
+        {
+            get { return Math.Abs((Double)_zMax.Subtract(_zMin)); }
+        }
+
+        public static Boolean operator ==(Rectangle3D rect1, Rectangle3D rect2)
+        {
+            return rect1.Left.Equals(rect2.Left) &&
+                rect1.Right.Equals(rect2.Right) &&
+                rect1.Top.Equals(rect2.Top) &&
+                rect1.Bottom.Equals(rect2.Bottom) &&
+                rect1.Back.Equals(rect2.Back) &&
+                rect1.Front.Equals(rect2.Front);
+        }
+
+        public static Boolean operator !=(Rectangle3D rect1, Rectangle3D rect2)
+        {
+            return !(rect1 == rect2);
         }
 
         public override Boolean Equals(object obj)
         {
-            if (!(obj is ViewSize3D))
+            if (!(obj is Rectangle3D))
             {
                 return false;
             }
 
-            return Equals((ViewSize3D)obj);
+            Rectangle3D other = (Rectangle3D)obj;
+
+            return other == this;
         }
 
-        public Boolean Equals(ViewSize3D size)
+        public override Int32 GetHashCode()
         {
-            return _hasValue == size._hasValue
-                && Width.Equals(size.Width)
-                && Height.Equals(size.Height)
-                && Depth.Equals(size.Depth);
+            return unchecked((Int32)Left ^ (Int32)Right ^ (Int32)Top ^ (Int32)Bottom ^ (Int32)Back ^ (Int32)Front);
         }
 
-        #region IVector<DoubleComponent> Members
-
-        public DoubleComponent this[Int32 element]
+        public override String ToString()
         {
-            get 
+            return String.Format("ViewRectangle - Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; Back: {4:N3}; Front: {5:N3}",
+                Left, Top, Right, Top, Bottom, Back, Front);
+        }
+
+        /// <summary>
+        /// Determines whether this <see cref="ViewRectangle3D"/> intersects another.
+        /// </summary>
+        /// <param name="rectangle"><see cref="ViewRectangle3D"/> to check intersection with.</param>
+        /// <returns>True if there is intersection, false if not.</returns>
+        public Boolean Intersects(Rectangle3D rectangle)
+        {
+            return !(rectangle.Left.GreaterThan(Right) ||
+                     rectangle.Right.LessThan(Left) ||
+                     rectangle.Bottom.GreaterThan(Top) ||
+                     rectangle.Top.LessThan(Bottom) ||
+                     rectangle.Front.GreaterThan(Back) ||
+                     rectangle.Back.LessThan(Front));
+        }
+
+        #region IComparable<Rectangle> Members
+
+        /// <summary>
+        /// Compares this <see cref="ViewRectangle3D"/> instance with another instance.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="other">Rectangle to perform intersection test with.</param>
+        /// <returns>
+        /// Returns 0 if the <see cref="ViewRectangle3D"/> instances intersect each other,
+        /// 1 if this Rectangle is located to the right or down from the <paramref name="other"/>
+        /// Rectange, and -1 if this Rectangle is located to the left or up from the other.
+        /// </returns>
+        public Int32 CompareTo(Rectangle3D other)
+        {
+            if (Intersects(other))
             {
-                if (element == 0)
-                {
-                    return _width;
-                }
-                else if (element == 1)
-                {
-                    return _height;
-                }
-                else if (element == 2)
-                {
-                    return _depth;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException("element", element, "Index must be 0, 1 or 2 for a 3D size.");
-                }
+                return 0;
             }
+
+            if (other.Left.GreaterThan(Right) || other.Top.GreaterThan(Bottom) || other.Front.GreaterThan(Back))
+            {
+                return -1;
+            }
+
+            return 1;
+        }
+
+        #endregion
+
+        #region IViewMatrix Members
+
+        public void Reset()
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Invert()
+        {
+            throw new NotSupportedException();
+        }
+
+        public Boolean IsInvertible
+        {
+            get { return false; }
         }
 
         public Boolean IsEmpty
@@ -122,103 +239,17 @@ namespace SharpMap.Rendering.Rendering3D
             get { return _hasValue; }
         }
 
-        #endregion
-
-        #region ICloneable Members
-
-        public object Clone()
+        public Double[,] Elements
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
-
-        #endregion
-
-        #region IEquatable<IViewVector> Members
-
-        public Boolean Equals(IVectorD other)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IEnumerable<Double> Members
-
-        public IEnumerator<Double> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        public static Boolean operator !=(ViewSize3D size1, ViewSize3D size2)
-        {
-            return ! (size1 == size2);
-        }
-
-        public static Boolean operator ==(ViewSize3D size1, ViewSize3D size2)
-        {
-            return size1.Equals(size2);
-        }
-
-        /// <summary>
-        /// Creates a component-by-component copy of the vector.
-        /// </summary>
-        /// <returns>A copy of the vector.</returns>
-        IVectorD IVectorD.Clone()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the number of components in the vector.
-        /// </summary>
-        Int32 IVectorD.ComponentCount
-        {
-            get { return IsEmpty ? 0 : 3; }
-        }
-
-        /// <summary>
-        /// Gets or sets the vector component array.
-        /// </summary>
-        DoubleComponent[] IVectorD.Components
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        /// <summary>
-        /// Returns the vector multiplied by -1.
-        /// </summary>
-        /// <returns>The vector when multiplied by -1.</returns>
-        IVectorD IVectorD.Negative()
-        {
-            throw new NotImplementedException();
-        }
-
-        #region IVector<DoubleComponent> Members
-
-        /// <summary>
-        /// Gets or sets a component in the vector.
-        /// </summary>
-        /// <param name="index">The index of the component.</param>
-        /// <returns>The value of the component at the given <paramref name="index"/>.</returns>
-        DoubleComponent IVectorD.this[Int32 index]
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        #endregion
 
         /// <summary>
         /// Gets the determinant for the matrix, if it exists.
@@ -438,98 +469,74 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        #region IEquatable<IMatrix<DoubleComponent>> Members
+        public void Rotate(Double degreesTheta)
+        {
+            throw new NotSupportedException();
+        }
 
-        ///<summary>
-        ///Indicates whether the current object is equal to another object of the same type.
-        ///</summary>
-        ///
-        ///<returns>
-        ///true if the current object is equal to the other parameter; otherwise, false.
-        ///</returns>
-        ///
-        ///<param name="other">An object to compare with this object.</param>
-        Boolean IEquatable<IMatrixD>.Equals(IMatrixD other)
+        public void RotateAt(Double degreesTheta, IVectorD center)
+        {
+            throw new NotSupportedException();
+        }
+
+        public Double GetOffset(Int32 dimension)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Offset(IVectorD offsetVector)
+        {
+            Translate(offsetVector);
+        }
+
+        public void Multiply(IMatrixD matrix)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Scale(Double scaleAmount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Scale(IVectorD scaleVector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Translate(Double translationAmount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Translate(IVectorD translationVector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVectorD Transform(IVectorD vector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double[] Transform(params Double[] vector)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region ICloneable Members
+
+        public object Clone()
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IEnumerable<DoubleComponent> Members
+        #region IEquatable<IViewMatrix> Members
 
-        ///<summary>
-        ///Returns an enumerator that iterates through the collection.
-        ///</summary>
-        ///
-        ///<returns>
-        ///A <see cref="T:System.Collections.Generic.IEnumerator`1"></see> that can be used to iterate through the collection.
-        ///</returns>
-        ///<filterpriority>1</filterpriority>
-        IEnumerator<DoubleComponent> IEnumerable<DoubleComponent>.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region INegatable<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region ISubtractable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Subtract(IVector<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IHasZero<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IHasZero<IVector<DoubleComponent>>.Zero
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IAddable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IDivisible<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Divide(IVector<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IHasOne<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IMultipliable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
+        public Boolean Equals(IMatrixD other)
         {
             throw new NotImplementedException();
         }
@@ -606,82 +613,6 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         public IMatrix<DoubleComponent> Sqrt()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IComputable<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Abs()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(double value)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IBooleanComparable<IVector<DoubleComponent>> Members
-
-        public bool GreaterThan(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool GreaterThanOrEqualTo(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LessThan(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LessThanOrEqualTo(IVector<DoubleComponent> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IExponential<IVector<DoubleComponent>> Members
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Exp()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log()
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log(double newBase)
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Power(double exponent)
-        {
-            throw new NotImplementedException();
-        }
-
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Sqrt()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IComparable<IVector<DoubleComponent>> Members
-
-        public int CompareTo(IVector<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }

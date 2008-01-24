@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -24,6 +25,7 @@ using GeoAPI.Coordinates;
 using SharpMap.Styles;
 using GeoAPI.Geometries;
 using SharpMap.Data;
+using SharpMap.Layers;
 
 namespace SharpMap.Rendering.Rendering2D
 {
@@ -113,7 +115,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
-		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style, RenderState renderState)
+		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style, RenderState renderState, ILayer layer)
 		{
 			if (feature == null) throw new ArgumentNullException("feature");
 			if (style == null) throw new ArgumentNullException("style");
@@ -129,7 +131,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Renders a <see cref="IMultiLineString"/>.
 		/// </summary>
-		/// <param name="lines">MultiLineString to be rendered.</param>
+		/// <param name="lines">IMultiLineString to be rendered.</param>
 		/// <param name="fill">Pen used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Pen used for filling when highlighted.</param>
 		/// <param name="selectFill">Pen used for filling when selected.</param>
@@ -137,7 +139,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="highlightOutline">Outline pen style used when highlighted.</param>
 		/// <param name="selectOutline">Outline pen style used when selected.</param>
 		public virtual IEnumerable<TRenderObject> DrawMultiLineString(
-            IMultiLineString lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
+			IMultiLineString lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
             StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
 		{
 			return drawLineStrings(lines, fill, highlightFill, selectFill,
@@ -147,7 +149,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Renders a <see cref="ILineString"/>.
 		/// </summary>
-		/// <param name="line">LineString to render.</param>
+		/// <param name="line">ILineString to render.</param>
 		/// <param name="fill">Pen used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Pen used for filling when highlighted.</param>
 		/// <param name="selectFill">Pen used for filling when selected.</param>
@@ -165,7 +167,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Renders a <see cref="IMultiPolygon"/>.
 		/// </summary>
-		/// <param name="multipolygon">MultiPolygon to render.</param>
+		/// <param name="multipolygon">IMultiPolygon to render.</param>
 		/// <param name="fill">Brush used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Brush used for filling when highlighted.</param>
 		/// <param name="selectFill">Brush used for filling when selected.</param>
@@ -183,7 +185,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Renders a <see cref="IPolygon"/>.
 		/// </summary>
-		/// <param name="polygon">Polygon to render</param>
+		/// <param name="polygon">IPolygon to render</param>
 		/// <param name="fill">Brush used for filling (null or transparent for no filling).</param>
 		/// <param name="highlightFill">Brush used for filling when highlighted.</param>
 		/// <param name="selectFill">Brush used for filling when selected.</param>
@@ -201,7 +203,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Renders a <see cref="IPoint"/>.
 		/// </summary>
-		/// <param name="point">Point to render.</param>
+		/// <param name="point">IPoint to render.</param>
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
 		/// <param name="selectSymbol">Symbol to use for point when point is selected.</param>
@@ -214,7 +216,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <summary>
 		/// Renders a <see cref="IMultiPoint"/>.
 		/// </summary>
-		/// <param name="points">MultiPoint to render.</param>
+		/// <param name="points">IMultiPoint to render.</param>
 		/// <param name="symbol">Symbol to place over point.</param>
 		/// <param name="highlightSymbol">Symbol to use for point when point is highlighted.</param>
 		/// <param name="selectSymbol">Symbol to use for point when point is selected.</param>
@@ -269,7 +271,7 @@ namespace SharpMap.Rendering.Rendering2D
 				return renderObjects;
 			}
 
-			throw new NotSupportedException(String.Format("Geometry type is not supported: {0}", geometry.GetType()));
+			throw new NotSupportedException(String.Format("IGeometry type is not supported: {0}", geometry.GetType()));
 		}
 
 		private IEnumerable<TRenderObject> drawPoints(IEnumerable<IPoint> points, Symbol2D symbol,
@@ -280,7 +282,7 @@ namespace SharpMap.Rendering.Rendering2D
             if (highlightSymbol == null) highlightSymbol = symbol;
             if (selectSymbol == null) selectSymbol = symbol;
 
-            return VectorRenderer.RenderSymbols(convertPoints(points), symbol, highlightSymbol, selectSymbol, renderState);
+            return VectorRenderer.RenderSymbols(convertCoordinates(points), symbol, highlightSymbol, selectSymbol, renderState);
 		}
 
 		private IEnumerable<TRenderObject> drawLineStrings(IEnumerable<ILineString> lines, StylePen fill,
@@ -335,7 +337,7 @@ namespace SharpMap.Rendering.Rendering2D
 					continue;
 				}
 
-				gp.NewFigure(convertPoints(line.Coordinates), false);
+				gp.NewFigure(convertCoordinates(line.Coordinates), false);
             }
 
             yield return gp;
@@ -353,31 +355,23 @@ namespace SharpMap.Rendering.Rendering2D
 				}
 
 				// Add the exterior polygon
-				gp.NewFigure(convertPoints(polygon.ExteriorRing.Coordinates), true);
+				gp.NewFigure(convertCoordinates(polygon.ExteriorRing.Coordinates), true);
 
 				// Add the interior polygons (holes)
 				foreach (ILinearRing ring in polygon.InteriorRings)
 				{
-					gp.NewFigure(convertPoints(ring.Coordinates), true);
+					gp.NewFigure(convertCoordinates(ring.Coordinates), true);
 				}
             }
 
             yield return gp;
 		}
 
-		private static IEnumerable<Point2D> convertPoints(IEnumerable<IPoint> points)
+        private static IEnumerable<Point2D> convertCoordinates(IEnumerable coordinates)
 		{
-			foreach (IPoint geoPoint in points)
+            foreach (ICoordinate coordinate in coordinates)
 			{
-				yield return new Point2D(geoPoint[Ordinates.X], geoPoint[Ordinates.Y]);
-			}
-		}
-
-        private static IEnumerable<Point2D> convertPoints(ICoordinateSequence points)
-		{
-			foreach (ICoordinate geoPoint in points)
-			{
-				yield return new Point2D(geoPoint[Ordinates.X], geoPoint[Ordinates.Y]);
+                yield return new Point2D(coordinate[Ordinates.X], coordinate[Ordinates.Y]);
 			}
 		}
 		#endregion

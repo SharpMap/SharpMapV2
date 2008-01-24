@@ -25,15 +25,15 @@ using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering.Rendering3D
 {
-    public struct ViewPoint3D : IVectorD
+    public struct Point3D : IVectorD
     {
         private DoubleComponent _x, _y, _z;
-        private Boolean _hasValue;
+        private readonly Boolean _hasValue;
 
-        public static readonly ViewPoint3D Empty = new ViewPoint3D();
-        public static readonly ViewPoint3D Zero = new ViewPoint3D(0, 0, 0);
+        public static readonly Point3D Empty = new Point3D();
+        public static readonly Point3D Zero = new Point3D(0, 0, 0);
 
-        public ViewPoint3D(DoubleComponent x, DoubleComponent y, DoubleComponent z)
+        public Point3D(DoubleComponent x, DoubleComponent y, DoubleComponent z)
         {
             _x = x;
             _y = y;
@@ -41,7 +41,7 @@ namespace SharpMap.Rendering.Rendering3D
             _hasValue = true;
         }
 
-        public ViewPoint3D(Double[] elements)
+        public Point3D(Double[] elements)
         {
             if (elements == null)
             {
@@ -61,7 +61,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         public override Int32 GetHashCode()
         {
-            return unchecked((Int32)_x ^ (Int32)_y ^ (Int32)_z);
+            return unchecked(_x.GetHashCode() ^ _y.GetHashCode() ^ _z.GetHashCode());
         }
 
         public override String ToString()
@@ -86,10 +86,10 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IVector<DoubleComponent> Members
 
-        public DoubleComponent[][] ElementArray
-        {
-            get { return new DoubleComponent[][] { new DoubleComponent[] { _x, _y, _z } }; }
-        }
+        //public DoubleComponent[][] ElementArray
+        //{
+        //    get { return new DoubleComponent[][] { new DoubleComponent[] { _x, _y, _z } }; }
+        //}
 
         public Int32 ComponentCount
         {
@@ -133,11 +133,11 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region Equality Computation
 
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
-            if(obj is ViewPoint3D)
+            if(obj is Point3D)
             {
-                return Equals((ViewPoint3D) obj);
+                return Equals((Point3D) obj);
             }
             
             if (obj is IVectorD)
@@ -153,7 +153,7 @@ namespace SharpMap.Rendering.Rendering3D
             return false;
         }
 
-        public Boolean Equals(ViewPoint3D point)
+        public Boolean Equals(Point3D point)
         {
             return point._hasValue == _hasValue &&
                    point._x.Equals(_x) &&
@@ -161,39 +161,12 @@ namespace SharpMap.Rendering.Rendering3D
                    point._z.Equals(_z);
         }
 
-        #region IEquatable<IMatrix<DoubleComponent>> Members
-
-        public Boolean Equals(IMatrix<DoubleComponent> other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (ComponentCount != other.ColumnCount)
-            {
-                return false;
-            }
-
-            for (Int32 elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
-            {
-                if (!this[elementIndex].Equals(other[0, elementIndex]))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        #endregion
-
-        public static Boolean operator ==(ViewPoint3D vector1, IVectorD vector2)
+        public static Boolean operator ==(Point3D vector1, IVectorD vector2)
         {
             return vector1.Equals(vector2);
         }
 
-        public static Boolean operator !=(ViewPoint3D vector1, IVectorD vector2)
+        public static Boolean operator !=(Point3D vector1, IVectorD vector2)
         {
             return !(vector1 == vector2);
         }
@@ -207,99 +180,8 @@ namespace SharpMap.Rendering.Rendering3D
             return new Vector<DoubleComponent>(_x, _y, _z);
         }
 
-        /// <summary>
-        /// Gets a submatrix.
-        /// </summary>
-        /// <param name="rowIndexes">The indexes of the rows to include.</param>
-        /// <param name="j0">The starting column to include.</param>
-        /// <param name="j1">The ending column to include.</param>
-        /// <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
-        /// through <paramref name="j1"/>.</returns>
-        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Double Determinant
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Int32 ColumnCount
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Boolean IsSingular
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IMatrix<DoubleComponent> Inverse
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Boolean IsSquare
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Boolean IsSymmetrical
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Int32 RowCount
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IMatrix<DoubleComponent> GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DoubleComponent this[Int32 row, Int32 column]
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IMatrix<DoubleComponent> Transpose()
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
-        #region IAddable<IMatrix<DoubleComponent>> Members
-
-        public IMatrix<DoubleComponent> Add(IMatrix<DoubleComponent> a)
-        {
-            checkRank(a);
-
-            return new ViewPoint3D(a[0, 0].Add(_x), a[0, 1].Add(_y), a[0, 2].Add(_z));
-        }
-
-        #endregion
-
-        #region ISubtractable<IMatrix<DoubleComponent>> Members
-
-        public IMatrix<DoubleComponent> Subtract(IMatrix<DoubleComponent> a)
-        {
-            checkRank(a);
-
-            return new ViewPoint3D(a[0, 0].Subtract(_x), a[0, 1].Subtract(_y), a[0, 2].Subtract(_z));
-        }
-
-        #endregion
 
         #region IHasZero<IMatrix<DoubleComponent>> Members
 
@@ -309,55 +191,6 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         #endregion
-
-        #region INegatable<IMatrix<DoubleComponent>> Members
-
-        public IMatrix<DoubleComponent> Negative()
-        {
-            return new ViewPoint3D(_x.Negative(), _y.Negative(), _z.Negative());
-        }
-
-        #endregion
-
-        #region IMultipliable<IMatrix<DoubleComponent>> Members
-
-        public IMatrix<DoubleComponent> Multiply(IMatrix<DoubleComponent> a)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IDivisible<IMatrix<DoubleComponent>> Members
-
-        public IMatrix<DoubleComponent> Divide(IMatrix<DoubleComponent> a)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region IHasOne<IMatrix<DoubleComponent>> Members
-
-        public IMatrix<DoubleComponent> One
-        {
-            get { return new ViewPoint3D(1, 1, 1); }
-        }
-
-        #endregion
-
-        private void checkRank(IMatrixD a)
-        {
-            if (a.ColumnCount != ColumnCount)
-            {
-                throw new ArgumentException("Addend must have the same number of components as this vector.", "a");
-            }
-
-            if (a.RowCount != 1)
-            {
-                throw new ArgumentException("Addend must be a vector.", "a");
-            }
-        }
 
         #region IEnumerable<DoubleComponent> Members
 
@@ -383,7 +216,7 @@ namespace SharpMap.Rendering.Rendering3D
         ///</summary>
         ///
         ///<returns>
-        ///An <see cref="T:System.Collections.IEnumerator"></see> object that can be used to iterate through the collection.
+        ///An <see cref="T:System.Collections.IEnumerator"></see> Object that can be used to iterate through the collection.
         ///</returns>
         ///<filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator()
@@ -533,8 +366,8 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the sum of the object and <paramref name="b"/>.
-        /// It must not modify the value of the object.
+        /// Returns the sum of the Object and <paramref name="b"/>.
+        /// It must not modify the value of the Object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The sum.</returns>
@@ -544,28 +377,31 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the difference of the object and <paramref name="b"/>.
-        /// It must not modify the value of the object.
+        /// Returns the difference of the Object and <paramref name="b"/>.
+        /// It must not modify the value of the Object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The difference.</returns>
         IMatrixD ISubtractable<IMatrixD>.Subtract(IMatrixD b)
         {
-            throw new NotImplementedException();
+            checkRank(b);
+
+            return new Point3D(
+                b[0, 0].Subtract(_x), b[0, 1].Subtract(_y), b[0, 2].Subtract(_z));
         }
 
         /// <summary>
-        /// Returns the negative of the object. Must not modify the object itself.
+        /// Returns the negative of the Object. Must not modify the Object itself.
         /// </summary>
         /// <returns>The negative.</returns>
         IMatrixD INegatable<IMatrixD>.Negative()
         {
-            throw new NotImplementedException();
+            return new Point3D(_x.Negative(), _y.Negative(), _z.Negative());
         }
 
         /// <summary>
-        /// Returns the product of the object and <paramref name="b"/>.
-        /// It must not modify the value of the object.
+        /// Returns the product of the Object and <paramref name="b"/>.
+        /// It must not modify the value of the Object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The product.</returns>
@@ -574,32 +410,67 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        ///<summary>
-        ///Indicates whether the current object is equal to another object of the same type.
-        ///</summary>
-        ///
-        ///<returns>
-        ///true if the current object is equal to the other parameter; otherwise, false.
-        ///</returns>
-        ///
-        ///<param name="other">An object to compare with this object.</param>
-        Boolean IEquatable<IMatrixD>.Equals(IMatrixD other)
+        /// <summary>
+        /// Gets a submatrix.
+        /// </summary>
+        /// <param name="rowIndexes">The indexes of the rows to include.</param>
+        /// <param name="j0">The starting column to include.</param>
+        /// <param name="j1">The ending column to include.</param>
+        /// <returns>A submatrix with rows given by <paramref name="rowIndexes"/> and columns <paramref name="j0"/> 
+        /// through <paramref name="j1"/>.</returns>
+        IMatrixD IMatrixD.GetMatrix(Int32[] rowIndexes, Int32 j0, Int32 j1)
         {
             throw new NotImplementedException();
         }
 
+        #region IEquatable<IMatrix<DoubleComponent>> Members
+        /// <summary>
+        /// Indicates whether the <see cref="IMatrix{DoubleComponent}"/> is equal 
+        /// to another <see cref="IMatrix{DoubleComponent}"/>.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if the matrix is equal to the other matrix; 
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        /// <param name="other">
+        /// An <see cref="IMatrix{DoubleComponent}"/> to compare with.
+        /// </param>
+        Boolean IEquatable<IMatrixD>.Equals(IMatrixD other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (ComponentCount != other.ColumnCount)
+            {
+                return false;
+            }
+
+            for (Int32 elementIndex = 0; elementIndex < ComponentCount; elementIndex++)
+            {
+                if (!this[elementIndex].Equals(other[0, elementIndex]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion
+
         /// <summary>
         /// Returns the multiplicative identity.
         /// </summary>
-        /// <value>e</value>
         IMatrixD IHasOne<IMatrixD>.One
         {
-            get { throw new NotImplementedException(); }
+            get { return new Point3D(1, 1, 1); }
         }
 
         /// <summary>
-        /// Returns the quotient of the object and <paramref name="b"/>.
-        /// It must not modify the value of the object.
+        /// Returns the quotient of the Object and <paramref name="b"/>.
+        /// It must not modify the value of the Object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The quotient.</returns>
@@ -607,6 +478,24 @@ namespace SharpMap.Rendering.Rendering3D
         {
             throw new NotImplementedException();
         }
+
+        #region IAddable<IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IAddable<IVector<DoubleComponent>>.Add(IVector<DoubleComponent> b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double,IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IDivisible<Double,IVector<DoubleComponent>>.Divide(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
         #region INegatable<IVector<DoubleComponent>> Members
 
@@ -619,7 +508,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region ISubtractable<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Subtract(IVector<DoubleComponent> b)
+        IVector<DoubleComponent> ISubtractable<IVector<DoubleComponent>>.Subtract(IVector<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -635,20 +524,11 @@ namespace SharpMap.Rendering.Rendering3D
 
         #endregion
 
-        #region IAddable<IVector<DoubleComponent>> Members
-
-        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region IDivisible<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Divide(IVector<DoubleComponent> b)
+        IVector<DoubleComponent> IDivisible<IVector<DoubleComponent>>.Divide(IVector<DoubleComponent> b)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         #endregion
@@ -664,7 +544,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IMultipliable<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Multiply(IVector<DoubleComponent> b)
+        IVector<DoubleComponent> IMultipliable<IVector<DoubleComponent>>.Multiply(IVector<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -673,7 +553,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IComparable<IMatrix<DoubleComponent>> Members
 
-        public int CompareTo(IMatrix<DoubleComponent> other)
+        Int32 IComparable<IMatrix<DoubleComponent>>.CompareTo(IMatrix<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }
@@ -682,12 +562,12 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IComputable<IMatrix<DoubleComponent>> Members
 
-        public IMatrix<DoubleComponent> Abs()
+        IMatrix<DoubleComponent> IComputable<IMatrix<DoubleComponent>>.Abs()
         {
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Set(double value)
+        IMatrix<DoubleComponent> IComputable<IMatrix<DoubleComponent>>.Set(Double value)
         {
             throw new NotImplementedException();
         }
@@ -696,22 +576,22 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IBooleanComparable<IMatrix<DoubleComponent>> Members
 
-        public bool GreaterThan(IMatrix<DoubleComponent> value)
+        Boolean IBooleanComparable<IMatrix<DoubleComponent>>.GreaterThan(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
+        Boolean IBooleanComparable<IMatrix<DoubleComponent>>.GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThan(IMatrix<DoubleComponent> value)
+        Boolean IBooleanComparable<IMatrix<DoubleComponent>>.LessThan(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        Boolean IBooleanComparable<IMatrix<DoubleComponent>>.LessThanOrEqualTo(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
@@ -720,27 +600,27 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IExponential<IMatrix<DoubleComponent>> Members
 
-        public IMatrix<DoubleComponent> Exp()
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Exp()
         {
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Log()
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Log()
         {
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Log(double newBase)
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Log(Double newBase)
         {
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Power(double exponent)
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Power(Double exponent)
         {
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Sqrt()
+        IMatrix<DoubleComponent> IExponential<IMatrix<DoubleComponent>>.Sqrt()
         {
             throw new NotImplementedException();
         }
@@ -754,7 +634,7 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(double value)
+        IVector<DoubleComponent> IComputable<IVector<DoubleComponent>>.Set(Double value)
         {
             throw new NotImplementedException();
         }
@@ -763,22 +643,22 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IBooleanComparable<IVector<DoubleComponent>> Members
 
-        public bool GreaterThan(IVector<DoubleComponent> value)
+        Boolean IBooleanComparable<IVector<DoubleComponent>>.GreaterThan(IVector<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool GreaterThanOrEqualTo(IVector<DoubleComponent> value)
+        Boolean IBooleanComparable<IVector<DoubleComponent>>.GreaterThanOrEqualTo(IVector<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThan(IVector<DoubleComponent> value)
+        Boolean IBooleanComparable<IVector<DoubleComponent>>.LessThan(IVector<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThanOrEqualTo(IVector<DoubleComponent> value)
+        Boolean IBooleanComparable<IVector<DoubleComponent>>.LessThanOrEqualTo(IVector<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
@@ -797,12 +677,12 @@ namespace SharpMap.Rendering.Rendering3D
             throw new NotImplementedException();
         }
 
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log(double newBase)
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Log(Double newBase)
         {
             throw new NotImplementedException();
         }
 
-        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Power(double exponent)
+        IVector<DoubleComponent> IExponential<IVector<DoubleComponent>>.Power(Double exponent)
         {
             throw new NotImplementedException();
         }
@@ -816,7 +696,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IEquatable<IVector<DoubleComponent>> Members
 
-        public bool Equals(IVector<DoubleComponent> other)
+        Boolean IEquatable<IVector<DoubleComponent>>.Equals(IVector<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }
@@ -825,7 +705,38 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IComparable<IVector<DoubleComponent>> Members
 
-        public int CompareTo(IVector<DoubleComponent> other)
+        Int32 IComparable<IVector<DoubleComponent>>.CompareTo(IVector<DoubleComponent> other)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        private void checkRank(IMatrixD a)
+        {
+            if (a.ColumnCount != (this as IMatrixD).ColumnCount)
+            {
+                throw new ArgumentException("Addend must have the same number of components as this vector.", "a");
+            }
+
+            if (a.RowCount != 1)
+            {
+                throw new ArgumentException("Addend must be a vector.", "a");
+            }
+        }
+
+        #region IComputable<Double,IVector<DoubleComponent>> Members
+
+        IVector<DoubleComponent> IComputable<Double, IVector<DoubleComponent>>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMultipliable<Double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Multiply(Double b)
         {
             throw new NotImplementedException();
         }

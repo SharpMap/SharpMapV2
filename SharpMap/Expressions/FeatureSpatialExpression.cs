@@ -114,12 +114,12 @@ namespace SharpMap.Expressions
         {
             unchecked
             {
-                return base.GetHashCode() ^ 137 * 
-                    (_oids != null ? _oids.GetHashCode() : 81040488);
+                return base.GetHashCode() ^ 131 *
+                    (_oids != null ? _oids.GetHashCode() : 0x38ff);
             }
         }
 
-        public FeatureSpatialExpression Clone()
+        public new FeatureSpatialExpression Clone()
         {
             FeatureSpatialExpression clone = new FeatureSpatialExpression(
                 QueryRegion == null ? null : QueryRegion.Clone(), QueryType, Oids);

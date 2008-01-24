@@ -18,6 +18,7 @@
 
 
 using System;
+using System.Collections;
 using System.ComponentModel;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
@@ -101,10 +102,21 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets a PropertyDescriptor for Layer's <see cref="Style"/> property.
         /// </summary>
-        public static PropertyDescriptor StyleProperty
-        {
-            get { return _properties.Find("Style", false); }
-        }
+		public static PropertyDescriptor StyleProperty
+		{
+			get { return _properties.Find("Style", false); }
+		}
+
+		public static PropertyDescriptor ShowChildrenProperty
+		{
+			get { return _properties.Find("ShowChildren", false); }
+		}
+
+		public static PropertyDescriptor AreFeaturesSelectableProperty
+		{
+			get { return _properties.Find("AreFeaturesSelectable", false); }
+		}
+
         #endregion
 
         #region Instance fields
@@ -452,6 +464,32 @@ namespace SharpMap.Layers
             return condition(this);
         }
         #endregion
+
+        // TODO: refactor this to LayerGroup?
+        public virtual Boolean ShowChildren
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+                ; // do nothing
+            }
+        }
+
+        // TODO: refactor this to FeatureLayer?
+        public virtual Boolean AreFeaturesSelectable
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+                ; // do nothing
+            }
+        }
 
         #region Protected members
 

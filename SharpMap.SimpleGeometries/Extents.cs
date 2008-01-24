@@ -1765,6 +1765,11 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
+        public void TranslateRelative(params Double[] vector)
+        {
+            throw new NotImplementedException();
+        }
+
         public IExtents Union(IExtents box)
         {
             throw new NotImplementedException();

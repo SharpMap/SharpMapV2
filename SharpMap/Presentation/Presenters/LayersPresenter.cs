@@ -18,128 +18,212 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using SharpMap;
 using SharpMap.Layers;
-using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
+using SharpMap.Styles;
 
 namespace SharpMap.Presentation.Presenters
 {
-    /// <summary>
-    /// Provides a presenter for the layers of a <see cref="Map"/>.
-    /// </summary>
-    public class LayersPresenter : BasePresenter<ILayersView>
-    {
-        private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
-        private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
+	/// <summary>
+	/// Provides a presenter for the layers of a <see cref="Map"/>.
+	/// </summary>
+	public class LayersPresenter : BasePresenter<ILayersView>
+	{
+		private EventHandler<LayerActionEventArgs> _layersChildrenVisibleChangeRequestedDelegate;
+		private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
+		private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
+		private EventHandler<LayerActionEventArgs> _layerSelectabilityChangeRequestedDelegate;
 
-        /// <summary>
-        /// Creates a new instance of a LayersPresenter with the given <see cref="Map"/>
-        /// instance and the given concrete <see cref="ILayersView"/> implementation.
-        /// </summary>
-        /// <param name="map">Map to present.</param>
-        /// <param name="view">View to present to.</param>
-        public LayersPresenter(Map map, ILayersView view)
-            : base(map, view)
-        {
-            _selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
-            _visibleLayersChangeRequestedDelegate = handleVisibleLayersChangeRequested;
+		/// <summary>
+		/// Creates a new instance of a LayersPresenter with the given <see cref="Map"/>
+		/// instance and the given concrete <see cref="ILayersView"/> implementation.
+		/// </summary>
+		/// <param name="map">Map to present.</param>
+		/// <param name="view">View to present to.</param>
+		public LayersPresenter(Map map, ILayersView view)
+			: base(map, view)
+		{
+			_selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
+			_visibleLayersChangeRequestedDelegate = handleVisibleLayersChangeRequested;
+			_layersChildrenVisibleChangeRequestedDelegate = handleLayerChildrenVisibleChangeRequested;
+			_layerSelectabilityChangeRequestedDelegate = handleLayerSelectabilityChangeRequested;
 
-            Map.Layers.ListChanged += handleLayersCollectionChanged;
+			Map.Layers.ListChanged += handleLayersCollectionChanged;
 
-            View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
-            View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
-        }
+			View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
+			View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
+			View.LayerChildrenVisibilityChangeRequested += _layersChildrenVisibleChangeRequestedDelegate;
+			View.LayerSelectabilityChangeRequested += _layerSelectabilityChangeRequestedDelegate;
+		}
 
-        protected override void OnMapPropertyChanged(String propertyName)
-        {
-            if (propertyName == Map.SelectedLayersProperty.Name)
-            {
-                View.SelectedLayers = new List<String>(generateLayerNames(Map.SelectedLayers));
-            }
+		protected override void OnMapPropertyChanged(String propertyName)
+		{
+			if(propertyName == Map.SelectedLayersProperty.Name)
+			{
+				View.SelectedLayers = new List<String>(generateLayerNames(Map.SelectedLayers));
+			}
 
-            if (propertyName == Map.ActiveToolProperty.Name)
-            {
-            }
+			if(propertyName == Map.ActiveToolProperty.Name)
+			{
+			}
 
-            if (propertyName == Map.SpatialReferenceProperty.Name)
-            {
-            }
-        }
+			if(propertyName == Map.SpatialReferenceProperty.Name)
+			{
+			}
+		}
 
-        #region Private helper functions
+		#region Private helper functions
 
-        private IEnumerable<String> generateLayerNames(IEnumerable<ILayer> layers)
-        {
-            foreach (ILayer layer in layers)
-            {
-                yield return layer.LayerName;
-            }
-        }
+		private IEnumerable<String> generateLayerNames(IEnumerable<ILayer> layers)
+		{
+			foreach(ILayer layer in layers)
+			{
+				yield return layer.LayerName;
+			}
+		}
 
-        private void handleLayersCollectionChanged(object sender, ListChangedEventArgs e)
-        {
-            switch (e.ListChangedType)
-            {
-                case ListChangedType.ItemChanged:
-                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
-                    {
-                        ILayer layer = Map.Layers[e.NewIndex];
-                        if (layer.Enabled)
-                        {
-                            View.EnableLayer(layer.LayerName);
-                        }
-                        else
-                        {
-                            View.DisableLayer(layer.LayerName);
-                        }
-                    }
-                    break;
-                    // The following are taken care of by data binding:
-                case ListChangedType.ItemMoved:
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                default:
-                    break;
-            }
-        }
+		private void handleLayersCollectionChanged(object sender, ListChangedEventArgs e)
+		{
+			switch(e.ListChangedType)
+			{
+				case ListChangedType.ItemChanged:
+					if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
+					{
+						ILayer layer = Map.Layers[e.NewIndex];
+						if(layer is LayerGroup)
+						{
+							foreach(ILayer groupMember in ((LayerGroup) layer).Layers)
+							{
+								if(groupMember.Enabled)
+								{
+									View.EnableLayer(groupMember.LayerName);
+								}
+								else
+								{
+									View.DisableLayer(groupMember.LayerName);
+								}
+							}
+						}
+						else if(layer.Enabled)
+						{
+							View.EnableLayer(layer.LayerName);
+						}
+						else
+						{
+							View.DisableLayer(layer.LayerName);
+						}
+					}
+					else if(e.PropertyDescriptor.Name == Layer.ShowChildrenProperty.Name)
+					{
+						ILayer layer = Map.Layers[e.NewIndex];
+						if(layer.ShowChildren)
+						{
+							View.EnableChildLayers(layer.LayerName);
+						}
+						else
+						{
+							View.DisableChildLayers(layer.LayerName);
+						}
+					}
+					else if(e.PropertyDescriptor.Name == Layer.AreFeaturesSelectableProperty.Name)
+					{
+						ILayer layer = Map.Layers[e.NewIndex];
+						FeatureStyle fstyle = layer.Style as FeatureStyle;
 
-        private void handleVisibleLayersChangeRequested(object sender, LayerActionEventArgs e)
-        {
-            switch (e.LayerAction)
-            {
-                case LayerAction.Enabled:
-                    foreach (String layerName in e.Layers)
-                    {
-                        Map.EnableLayer(layerName);
-                    }
-                    break;
-                case LayerAction.Disabled:
-                    foreach (String layerName in e.Layers)
-                    {
-                        Map.DisableLayer(layerName);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+						if(fstyle != null && fstyle.AreFeaturesSelectable)
+						{
+							View.SetFeaturesSelectable(layer.LayerName, true);
+						}
+						else
+						{
+							View.SetFeaturesSelectable(layer.LayerName, false);
+						}
+					}
+					break;
+					// The following are taken care of by data binding:
+				case ListChangedType.ItemMoved:
+				case ListChangedType.ItemAdded:
+				case ListChangedType.ItemDeleted:
+				default:
+					break;
+			}
+		}
 
-        private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)
-        {
-            switch (e.LayerAction)
-            {
-                case LayerAction.Selected:
-                    Map.SelectLayers(e.Layers);
-                    break;
-                case LayerAction.Deselected:
-                    Map.DeselectLayers(e.Layers);
-                    break;
-                default:
-                    break;
-            }
-        }
+		private void handleVisibleLayersChangeRequested(object sender, LayerActionEventArgs e)
+		{
+			switch(e.LayerAction)
+			{
+				case LayerAction.Enabled:
+					foreach(String layerName in e.Layers)
+					{
+						Map.EnableLayer(layerName);
+					}
+					break;
+				case LayerAction.Disabled:
+					foreach(String layerName in e.Layers)
+					{
+						Map.DisableLayer(layerName);
+					}
+					break;
+				default:
+					break;
+			}
+		}
 
-        #endregion
-    }
+		private void handleLayerSelectabilityChangeRequested(object sender, LayerActionEventArgs e)
+		{
+			// do nothing at this point
+		}
+
+		private void handleLayerChildrenVisibleChangeRequested(object sender, LayerActionEventArgs e)
+		{
+			switch(e.LayerAction)
+			{
+				case LayerAction.Enabled:
+				case LayerAction.Disabled:
+					foreach(String layerName in e.Layers)
+					{
+						LayerGroup group = Map.Layers[layerName] as LayerGroup;
+						if(group != null)
+						{
+							foreach(ILayer layer in group.Layers)
+							{
+								if(layer == group.MasterLayer)
+								{
+									continue;
+								}
+								if(e.LayerAction == LayerAction.Enabled)
+								{
+									Map.EnableLayer(layer);
+								}
+								else
+								{
+									Map.DisableLayer(layer);
+								}
+							}
+						}
+					}
+					break;
+				default:
+					break;
+			}
+		}
+
+		private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)
+		{
+			switch(e.LayerAction)
+			{
+				case LayerAction.Selected:
+					Map.SelectLayers(e.Layers);
+					break;
+				case LayerAction.Deselected:
+					Map.DeselectLayers(e.Layers);
+					break;
+				default:
+					break;
+			}
+		}
+
+		#endregion
+	}
 }
