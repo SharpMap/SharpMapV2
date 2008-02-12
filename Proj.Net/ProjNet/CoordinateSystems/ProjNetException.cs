@@ -1,4 +1,4 @@
-// Copyright 2007, 2008 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2007, 2008 - Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of Proj.Net.
 // Proj.Net is free software; you can redistribute it and/or modify
@@ -21,32 +21,32 @@ using System.Runtime.Serialization;
 namespace ProjNet.CoordinateSystems
 {
     /// <summary>
-    /// Exception thrown when a computation doesn't converge during iteration.
+    /// The base class for Proj.Net generated exceptions.
     /// </summary>
     [Serializable]
-    public class ComputationConvergenceException : ComputationException
+    public class ProjNetException : Exception
     {
         /// <summary>
-        /// Creates a new instance of a <see cref="ComputationConvergenceException"/>.
+        /// Creates a new instance of a <see cref="ProjNetException"/>.
         /// </summary>
-        public ComputationConvergenceException() { }
+        public ProjNetException() { }
 
         /// <summary>
-        /// Creates a new <see cref="ComputationConvergenceException"/> instance with the given 
+        /// Creates a new <see cref="ProjNetException"/> instance with the given 
         /// <paramref name="message"/>.
         /// </summary>
         /// <param name="message">Information about the exception.</param>
-        public ComputationConvergenceException(String message) : base(message) { }
+        public ProjNetException(String message) : base(message) { }
 
         /// <summary>
-        /// Creates a new <see cref="ComputationConvergenceException"/> instance with the given 
+        /// Creates a new <see cref="ProjNetException"/> instance with the given 
         /// <paramref name="message"/> and causal <paramref name="inner"/> <see cref="Exception"/>.
         /// </summary>
         /// <param name="message">Information about the exception.</param>
         /// <param name="inner">The <see cref="Exception"/> which caused this exception.</param>
-        public ComputationConvergenceException(String message, Exception inner) : base(message, inner) { }
+        public ProjNetException(String message, Exception inner) : base(message, inner) { }
 
-        protected ComputationConvergenceException(SerializationInfo info, StreamingContext context)
+        protected ProjNetException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

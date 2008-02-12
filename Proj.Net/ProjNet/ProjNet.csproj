@@ -82,6 +82,7 @@
     <Compile Include="CoordinateSystems\Projections\MapProjection.cs" />
     <Compile Include="CoordinateSystems\Projections\Mercator.cs" />
     <Compile Include="CoordinateSystems\Projections\TransverseMercator.cs" />
+    <Compile Include="CoordinateSystems\ProjNetException.cs" />
     <Compile Include="CoordinateSystems\Transformations\ConcatenatedTransform.cs" />
     <Compile Include="CoordinateSystems\Transformations\CoordinateTransformation.cs" />
     <Compile Include="CoordinateSystems\Transformations\CoordinateTransformationAuthorityFactory.cs" />
@@ -137,6 +138,8 @@
     <Otherwise>
       <ItemGroup>
         <Reference Include="System" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
       </ItemGroup>
     </Otherwise>
   </Choose>

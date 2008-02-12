@@ -568,18 +568,18 @@ namespace SharpMap.Coordinates
 
         #endregion
 
-        #region IComparable Members
+        #region IEquatable<ICoordinate> Members
 
-        Int32 IComparable.CompareTo(Object obj)
+        Boolean IEquatable<ICoordinate>.Equals(ICoordinate other)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IEquatable<ICoordinate> Members
+        #region IComparable<ICoordinate> Members
 
-        Boolean IEquatable<ICoordinate>.Equals(ICoordinate other)
+        Int32 IComparable<ICoordinate>.CompareTo(ICoordinate obj)
         {
             throw new NotImplementedException();
         }
