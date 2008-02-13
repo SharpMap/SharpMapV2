@@ -889,5 +889,163 @@ namespace SharpMap.Coordinates
         }
 
         #endregion
+
+
+        #region IComputable<Double,ICoordinate> Members
+
+        ICoordinate IComputable<Double, ICoordinate>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IComputable<ICoordinate> Members
+
+        ICoordinate IComputable<ICoordinate>.Abs()
+        {
+            throw new NotImplementedException();
+        }
+
+        ICoordinate IComputable<ICoordinate>.Set(Double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region INegatable<ICoordinate> Members
+
+        ICoordinate INegatable<ICoordinate>.Negative()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<ICoordinate> Members
+
+        ICoordinate ISubtractable<ICoordinate>.Subtract(ICoordinate b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasZero<ICoordinate> Members
+
+        ICoordinate IHasZero<ICoordinate>.Zero
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IAddable<ICoordinate> Members
+
+        ICoordinate IAddable<ICoordinate>.Add(ICoordinate b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<ICoordinate> Members
+
+        ICoordinate IDivisible<ICoordinate>.Divide(ICoordinate b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IHasOne<ICoordinate> Members
+
+        ICoordinate IHasOne<ICoordinate>.One
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region IMultipliable<ICoordinate> Members
+
+        ICoordinate IMultipliable<ICoordinate>.Multiply(ICoordinate b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IBooleanComparable<ICoordinate> Members
+
+        bool IBooleanComparable<ICoordinate>.GreaterThan(ICoordinate value)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IBooleanComparable<ICoordinate>.GreaterThanOrEqualTo(ICoordinate value)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IBooleanComparable<ICoordinate>.LessThan(ICoordinate value)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IBooleanComparable<ICoordinate>.LessThanOrEqualTo(ICoordinate value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IExponential<ICoordinate> Members
+
+        ICoordinate IExponential<ICoordinate>.Exp()
+        {
+            throw new NotImplementedException();
+        }
+
+        ICoordinate IExponential<ICoordinate>.Log()
+        {
+            throw new NotImplementedException();
+        }
+
+        ICoordinate IExponential<ICoordinate>.Log(Double newBase)
+        {
+            throw new NotImplementedException();
+        }
+
+        ICoordinate IExponential<ICoordinate>.Power(Double exponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        ICoordinate IExponential<ICoordinate>.Sqrt()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IMultipliable<Double,ICoordinate> Members
+
+        ICoordinate IMultipliable<Double, ICoordinate>.Multiply(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IDivisible<Double,ICoordinate> Members
+
+        ICoordinate IDivisible<Double, ICoordinate>.Divide(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
