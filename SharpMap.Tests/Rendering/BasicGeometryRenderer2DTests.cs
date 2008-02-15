@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Rendering;
@@ -13,13 +14,21 @@ using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponen
 
 namespace SharpMap.Tests.Rendering
 {
-
     #region BasicGeometryRenderer2D
 
     [TestFixture]
     public class BasicGeometryRenderer2DTests
     {
-        private static readonly IGeometryFactory _geoFactory = new GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
+
         #region Test stub types
 
         private struct RenderObject

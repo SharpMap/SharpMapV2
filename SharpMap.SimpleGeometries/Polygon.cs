@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
@@ -62,10 +63,14 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Instatiates an empty polygon.
         /// </summary>
+        public Polygon(IEnumerable<ICoordinate> verticies)
+            : this(new LinearRing(verticies)) { }
+
+        /// <summary>
+        /// Instatiates an empty polygon.
+        /// </summary>
         public Polygon()
-            : this(new LinearRing())
-        {
-        }
+            : this(new LinearRing()) { }
 
         /// <summary>
         /// Gets or sets the exterior ring of this Polygon
@@ -199,7 +204,7 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                return (ExteriorRing == null) || (ExteriorRing.Vertices.Count == 0);
+                return (ExteriorRing == null) || (ExteriorRing.PointCount == 0);
             }
         }
 
@@ -436,6 +441,11 @@ namespace SharpMap.SimpleGeometries
 
                 return pointCount;
             }
+        }
+
+        public override OgcGeometryType GeometryType
+        {
+            get { return OgcGeometryType.Polygon; }
         }
     }
 }

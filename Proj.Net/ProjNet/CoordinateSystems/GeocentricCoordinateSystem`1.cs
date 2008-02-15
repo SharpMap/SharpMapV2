@@ -31,7 +31,8 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class GeocentricCoordinateSystem<TCoordinate> : CoordinateSystem<TCoordinate>,
                                                            IGeocentricCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly IHorizontalDatum _horizontalDatum;
@@ -39,9 +40,10 @@ namespace ProjNet.CoordinateSystems
         private readonly IPrimeMeridian _primeMeridan;
 
         protected internal GeocentricCoordinateSystem(IExtents<TCoordinate> extents,
-            IHorizontalDatum datum, ILinearUnit linearUnit, IPrimeMeridian primeMeridian,
-            IEnumerable<IAxisInfo> axisinfo, String name, String authority, 
-            Int64 code, String alias, String remarks, String abbreviation)
+                                                      IHorizontalDatum datum, ILinearUnit linearUnit,
+                                                      IPrimeMeridian primeMeridian,
+                                                      IEnumerable<IAxisInfo> axisinfo, String name, String authority,
+                                                      Int64 code, String alias, String remarks, String abbreviation)
             : base(extents, name, authority, code, alias, abbreviation, remarks)
         {
             _horizontalDatum = datum;
@@ -152,14 +154,14 @@ namespace ProjNet.CoordinateSystems
 
                 sb.AppendFormat("{0}{1}{2}</CS_GeocentricCoordinateSystem></CS_CoordinateSystem>",
                                 HorizontalDatum.Xml, LinearUnit.Xml, PrimeMeridian.Xml);
-                
+
                 return sb.ToString();
             }
         }
 
         public override Boolean EqualParams(IInfo other)
         {
-            GeocentricCoordinateSystem<TCoordinate> g = 
+            GeocentricCoordinateSystem<TCoordinate> g =
                 other as GeocentricCoordinateSystem<TCoordinate>;
 
             if (ReferenceEquals(g, null))

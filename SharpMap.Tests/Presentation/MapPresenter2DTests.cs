@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using GeoAPI.Geometries;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -13,6 +14,7 @@ using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.SimpleGeometries;
 using SharpMap.Styles;
 using SharpMap.Tools;
 
@@ -21,8 +23,15 @@ namespace SharpMap.Tests.Presentation
     [TestFixture]
     public class MapPresenter2DTests
     {
-        private static readonly IGeometryFactory _geoFactory
-            = new SharpMap.SimpleGeometries.GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
 
         #region Manual fakes
 
@@ -1239,7 +1248,7 @@ namespace SharpMap.Tests.Presentation
             map.Dispose();
         }
 
-        private static TestPresenter2D createPresenter(MockRepository mocks, Double width, Double height)
+        private TestPresenter2D createPresenter(MockRepository mocks, Double width, Double height)
         {
             Map map = new Map(_geoFactory);
             map.AddLayer(DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory));
@@ -1253,7 +1262,7 @@ namespace SharpMap.Tests.Presentation
             return mapPresenter;
         }
 
-        private static TestPresenter2D createPresenter(Double width, Double height, out TestView2D view)
+        private TestPresenter2D createPresenter(Double width, Double height, out TestView2D view)
         {
             Map map = new Map(_geoFactory);
             map.AddLayer(DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory));

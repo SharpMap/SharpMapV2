@@ -44,7 +44,8 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// to metres.</para>
     /// </remarks>
     internal class GeocentricTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private const Double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */
@@ -61,11 +62,12 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
         /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
-        public GeocentricTransform(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+        public GeocentricTransform(IEnumerable<ProjectionParameter> parameters,
+                                   ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
             : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory, isInverse)
         {
             Double semiMinor = SemiMinor;
-            _ses = (Math.Pow(SemiMajor, 2) - Math.Pow(semiMinor, 2)) / Math.Pow(semiMinor, 2);
+            _ses = (Math.Pow(SemiMajor, 2) - Math.Pow(semiMinor, 2))/Math.Pow(semiMinor, 2);
             //ba = _semiMinor / _semiMajor;
             //ab = _semiMajor / _semiMinor;
         }
@@ -74,8 +76,9 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Initializes a geocentric projection object
         /// </summary>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
-        internal GeocentricTransform(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
+        internal GeocentricTransform(IEnumerable<ProjectionParameter> parameters,
+                                     ICoordinateFactory<TCoordinate> coordinateFactory)
+            : this(parameters, coordinateFactory, false) {}
 
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             if (_inverse == null)
             {
                 _inverse = new GeocentricTransform<TCoordinate>(
-                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters), 
+                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters),
                     CoordinateFactory, !_isInverse);
             }
 
@@ -101,18 +104,18 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns>Point in projected meters</returns>
         private TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            Double lon = DegreesToRadians((Double)lonlat[0]);
-            Double lat = DegreesToRadians((Double)lonlat[1]);
-            Double h = lonlat.ComponentCount < 3 
-                ? 0 
-                : ((Double)lonlat[2]).Equals(Double.NaN) 
-                    ? 0
-                    : (Double)lonlat[2];
+            Double lon = DegreesToRadians((Double) lonlat[0]);
+            Double lat = DegreesToRadians((Double) lonlat[1]);
+            Double h = lonlat.ComponentCount < 3
+                           ? 0
+                           : ((Double) lonlat[2]).Equals(Double.NaN)
+                                 ? 0
+                                 : (Double) lonlat[2];
 
-            Double v = SemiMajor / Math.Sqrt(1 - E2 * Math.Pow(Math.Sin(lat), 2));
-            Double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
-            Double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
-            Double z = ((1 - E2) * v + h) * Math.Sin(lat);
+            Double v = SemiMajor/Math.Sqrt(1 - E2*Math.Pow(Math.Sin(lat), 2));
+            Double x = (v + h)*Math.Cos(lat)*Math.Cos(lon);
+            Double y = (v + h)*Math.Cos(lat)*Math.Sin(lon);
+            Double z = ((1 - E2)*v + h)*Math.Sin(lat);
             return CreateCoordinate(x, y, z);
         }
 
@@ -124,11 +127,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         private TCoordinate MetersToDegrees(TCoordinate pnt)
         {
             Boolean At_Pole = false; // indicates whether location is in polar region */
-            Double Z = pnt.ComponentCount < 3 
-                ? 0 
-                : ((Double)pnt[2]).Equals(Double.NaN) 
-                    ? 0 
-                    : (Double)pnt[2];
+            Double Z = pnt.ComponentCount < 3
+                           ? 0
+                           : ((Double) pnt[2]).Equals(Double.NaN)
+                                 ? 0
+                                 : (Double) pnt[2];
 
             Double lon;
             Double lat = 0;
@@ -136,17 +139,17 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             if (pnt[0] != 0.0)
             {
-                lon = Math.Atan2((Double)pnt[1], (Double)pnt[0]);
+                lon = Math.Atan2((Double) pnt[1], (Double) pnt[0]);
             }
             else
             {
-                if ((Double)pnt[1] > 0)
+                if ((Double) pnt[1] > 0)
                 {
-                    lon = Math.PI / 2;
+                    lon = Math.PI/2;
                 }
-                else if ((Double)pnt[1] < 0)
+                else if ((Double) pnt[1] < 0)
                 {
-                    lon = -Math.PI * 0.5;
+                    lon = -Math.PI*0.5;
                 }
                 else
                 {
@@ -155,53 +158,53 @@ namespace ProjNet.CoordinateSystems.Transformations
                     if (Z > 0.0)
                     {
                         /* north pole */
-                        lat = Math.PI * 0.5;
+                        lat = Math.PI*0.5;
                     }
                     else if (Z < 0.0)
                     {
                         /* south pole */
-                        lat = -Math.PI * 0.5;
+                        lat = -Math.PI*0.5;
                     }
                     else
                     {
                         /* center of earth */
-                        return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(Math.PI * 0.5), -SemiMajor);
+                        return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(Math.PI*0.5), -SemiMajor);
                     }
                 }
             }
-            
+
             Double semiMajor = SemiMajor;
 
-            Double W2 = pnt[0] * pnt[0] + (Double)pnt[1] * (Double)pnt[1]; // Square of distance from Z axis
+            Double W2 = pnt[0]*pnt[0] + (Double) pnt[1]*(Double) pnt[1]; // Square of distance from Z axis
             Double W = Math.Sqrt(W2); // distance from Z axis
-            Double T0 = Z * AD_C; // initial estimate of vertical component
-            Double S0 = Math.Sqrt(T0 * T0 + W2); //initial estimate of horizontal component
-            Double Sin_B0 = T0 / S0; //sin(B0), B0 is estimate of Bowring aux variable
-            Double Cos_B0 = W / S0; //cos(B0)
+            Double T0 = Z*AD_C; // initial estimate of vertical component
+            Double S0 = Math.Sqrt(T0*T0 + W2); //initial estimate of horizontal component
+            Double Sin_B0 = T0/S0; //sin(B0), B0 is estimate of Bowring aux variable
+            Double Cos_B0 = W/S0; //cos(B0)
             Double Sin3_B0 = Math.Pow(Sin_B0, 3);
-            Double T1 = Z + semiMajor * _ses * Sin3_B0; //corrected estimate of vertical component
-            Double Sum = W - semiMajor * E2 * Cos_B0 * Cos_B0 * Cos_B0; //numerator of cos(phi1)
-            Double S1 = Math.Sqrt(T1 * T1 + Sum * Sum); //corrected estimate of horizontal component
-            Double Sin_p1 = T1 / S1; //sin(phi1), phi1 is estimated latitude
-            Double Cos_p1 = Sum / S1; //cos(phi1)
-            Double Rn = semiMajor / Math.Sqrt(1.0 - E2 * Sin_p1 * Sin_p1); //Earth radius at location
+            Double T1 = Z + semiMajor*_ses*Sin3_B0; //corrected estimate of vertical component
+            Double Sum = W - semiMajor*E2*Cos_B0*Cos_B0*Cos_B0; //numerator of cos(phi1)
+            Double S1 = Math.Sqrt(T1*T1 + Sum*Sum); //corrected estimate of horizontal component
+            Double Sin_p1 = T1/S1; //sin(phi1), phi1 is estimated latitude
+            Double Cos_p1 = Sum/S1; //cos(phi1)
+            Double Rn = semiMajor/Math.Sqrt(1.0 - E2*Sin_p1*Sin_p1); //Earth radius at location
 
             if (Cos_p1 >= COS_67P5)
             {
-                Height = W / Cos_p1 - Rn;
+                Height = W/Cos_p1 - Rn;
             }
             else if (Cos_p1 <= -COS_67P5)
             {
-                Height = W / -Cos_p1 - Rn;
+                Height = W/-Cos_p1 - Rn;
             }
             else
             {
-                Height = Z / Sin_p1 + Rn * (E2 - 1.0);
+                Height = Z/Sin_p1 + Rn*(E2 - 1.0);
             }
 
             if (!At_Pole)
             {
-                lat = Math.Atan(Sin_p1 / Cos_p1);
+                lat = Math.Atan(Sin_p1/Cos_p1);
             }
 
             return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(lat), Height);

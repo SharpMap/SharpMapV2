@@ -1,20 +1,29 @@
 using System;
 using System.Collections;
 using GeoAPI.Geometries;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using SharpMap.Presentation;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
+using SharpMap.SimpleGeometries;
 
 namespace SharpMap.Tests.Presentation
 {
     [TestFixture]
     public class ToolsPresenterTests
     {
-        private static readonly IGeometryFactory _geoFactory
-            = new SharpMap.SimpleGeometries.GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
 
         [Test]
         public void PresenterSetsTools()

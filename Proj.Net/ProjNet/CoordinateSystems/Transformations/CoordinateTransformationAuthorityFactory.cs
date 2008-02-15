@@ -25,7 +25,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// A commonly used authority is EPSG, which is also used in the GeoTIFF 
     /// standard.
     /// </remarks>
-	public interface CoordinateTransformationAuthorityFactory
+	public class CoordinateTransformationAuthorityFactory : ICoordinateTransformationAuthorityFactory
 	{
 	}
 }

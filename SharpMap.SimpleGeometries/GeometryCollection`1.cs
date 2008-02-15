@@ -476,9 +476,24 @@ namespace SharpMap.SimpleGeometries
 
         #endregion
 
-        public override int PointCount
+        public override Int32 PointCount
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                Int32 pointCount = 0;
+
+                foreach (TGeometry geometry in _geometries)
+                {
+                    pointCount += geometry.PointCount;    
+                }
+
+                return pointCount;
+            }
+        }
+
+        public override OgcGeometryType GeometryType
+        {
+            get { return OgcGeometryType.GeometryCollection; }
         }
     }
 }

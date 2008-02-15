@@ -39,7 +39,6 @@ namespace SharpMap.SimpleGeometries
 	/// </remarks>
     public class GeometryCollection : GeometryCollection<Geometry>
 	{
-
         /// <summary>
         /// Initializes a new GeometryCollection.
         /// </summary>

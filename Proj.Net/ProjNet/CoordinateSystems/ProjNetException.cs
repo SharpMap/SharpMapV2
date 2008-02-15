@@ -29,14 +29,14 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Creates a new instance of a <see cref="ProjNetException"/>.
         /// </summary>
-        public ProjNetException() { }
+        public ProjNetException() {}
 
         /// <summary>
         /// Creates a new <see cref="ProjNetException"/> instance with the given 
         /// <paramref name="message"/>.
         /// </summary>
         /// <param name="message">Information about the exception.</param>
-        public ProjNetException(String message) : base(message) { }
+        public ProjNetException(String message) : base(message) {}
 
         /// <summary>
         /// Creates a new <see cref="ProjNetException"/> instance with the given 
@@ -44,9 +44,9 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="message">Information about the exception.</param>
         /// <param name="inner">The <see cref="Exception"/> which caused this exception.</param>
-        public ProjNetException(String message, Exception inner) : base(message, inner) { }
+        public ProjNetException(String message, Exception inner) : base(message, inner) {}
 
         protected ProjNetException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+            : base(info, context) {}
     }
 }

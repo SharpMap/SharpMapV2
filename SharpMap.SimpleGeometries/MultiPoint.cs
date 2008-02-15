@@ -27,7 +27,7 @@ namespace SharpMap.SimpleGeometries
 	/// The elements of a MultiPoint are restricted to Points. 
 	/// The points are not connected or ordered.
 	/// </summary>
-	public class MultiPoint : GeometryCollection<Point>
+    public class MultiPoint : GeometryCollection<Point>, IMultiPoint
 	{
 		/// <summary>
 		/// Initializes a new MultiPoint collection
@@ -60,5 +60,65 @@ namespace SharpMap.SimpleGeometries
 
 			return multiPoint;
 		}
-	}
+
+        #region IMultiPoint Members
+
+        public new IPoint this[Int32 index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IList<IGeometry> Members
+
+
+        IGeometry IList<IGeometry>.this[Int32 index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable<IGeometry> Members
+
+        IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEnumerable<IPoint> Members
+
+        IEnumerator<IPoint> IEnumerable<IPoint>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

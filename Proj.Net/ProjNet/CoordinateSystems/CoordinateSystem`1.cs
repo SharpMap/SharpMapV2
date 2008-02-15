@@ -43,7 +43,8 @@ namespace ProjNet.CoordinateSystems
     /// mapping from the mathematical space into real-world locations is called a Datum.</para>
     /// </remarks>		
     public abstract class CoordinateSystem<TCoordinate> : Info, ICoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly List<IAxisInfo> _axisInfo = new List<IAxisInfo>();
@@ -58,9 +59,9 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        protected internal CoordinateSystem(IExtents<TCoordinate> extents, 
-            String name, String authority, Int64 authorityCode, String alias, 
-            String abbreviation, String remarks)
+        protected internal CoordinateSystem(IExtents<TCoordinate> extents,
+                                            String name, String authority, Int64 authorityCode, String alias,
+                                            String abbreviation, String remarks)
             : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _extents = extents;
@@ -126,6 +127,7 @@ namespace ProjNet.CoordinateSystems
         #endregion
 
         #region ICoordinateSystem Members
+
         IExtents ICoordinateSystem.DefaultEnvelope
         {
             get { return DefaultEnvelope; }

@@ -30,7 +30,8 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// Transformation for applying 
     /// </summary>
     internal class DatumTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         protected IMathTransform<TCoordinate> _inverse;
@@ -42,9 +43,10 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Initializes a new instance of the <see cref="DatumTransform{TCoordinate}"/> class.
         /// </summary>
         public DatumTransform(Wgs84ConversionInfo towgs84, ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(towgs84, coordinateFactory, false) { }
+            : this(towgs84, coordinateFactory, false) {}
 
-        private DatumTransform(Wgs84ConversionInfo towgs84, ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+        private DatumTransform(Wgs84ConversionInfo towgs84, ICoordinateFactory<TCoordinate> coordinateFactory,
+                               Boolean isInverse)
             : base(null, coordinateFactory, isInverse)
         {
             _toWgs84 = towgs84;
@@ -81,7 +83,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             if (_inverse == null)
             {
                 _inverse = new DatumTransform<TCoordinate>(_toWgs84,
-                    CoordinateFactory, !_isInverse);
+                                                           CoordinateFactory, !_isInverse);
             }
 
             return _inverse;
@@ -89,7 +91,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         private TCoordinate applyTransformToPoint(TCoordinate p)
         {
-            return (TCoordinate)_transform.TransformVector(p);
+            return (TCoordinate) _transform.TransformVector(p);
             //return _coordinateFactory(
             //        _transform[0]*p[0] - _transform[3]*p[1] + _transform[2]*p[2] + _transform[4],
             //        _transform[3]*p[0] + _transform[0]*p[1] - _transform[1]*p[2] + _transform[5],
@@ -99,7 +101,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         private TCoordinate applyInvertedTransformToPoint(TCoordinate p)
         {
-            return (TCoordinate)_inverseTransform.TransformVector(p);
+            return (TCoordinate) _inverseTransform.TransformVector(p);
             //return _coordinateFactory(
             //        _transform[0]*p[0] + _transform[3]*p[1] - _transform[2]*p[2] - _transform[4],
             //        -_transform[3]*p[0] + _transform[0]*p[1] + _transform[1]*p[2] - _transform[5],

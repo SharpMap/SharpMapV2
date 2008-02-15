@@ -1,17 +1,27 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Layers;
+using SharpMap.SimpleGeometries;
 
 namespace SharpMap.Tests.Layers
 {
     [TestFixture]
     public class LayerTests
     {
-        private static readonly IGeometryFactory _geoFactory
-            = new SharpMap.SimpleGeometries.GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
+
         [Test]
         [Ignore("Test deferred until caching detection improved")]
         public void LayerCachingTest()

@@ -24,15 +24,17 @@ using NPack.Interfaces;
 namespace ProjNet.CoordinateSystems.Transformations
 {
     internal class ConcatenatedTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>, IConvertible
     {
         private IMathTransform<TCoordinate> _inverse;
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;
 
         public ConcatenatedTransform(ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(new ICoordinateTransformation<TCoordinate>[0], coordinateFactory) { }
+            : this(new ICoordinateTransformation<TCoordinate>[0], coordinateFactory) {}
 
-        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms, ICoordinateFactory<TCoordinate> coordinateFactory)
+        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms,
+                                     ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(null, coordinateFactory, false)
         {
             _transforms = new List<ICoordinateTransformation<TCoordinate>>(transforms);

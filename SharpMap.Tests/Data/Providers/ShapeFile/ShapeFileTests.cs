@@ -6,10 +6,14 @@ using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using GeoAPI.IO.WellKnownText;
+using GisSharpBlog.NetTopologySuite.Geometries;
+using NetTopologySuite.Coordinates;
+using NPack.Interfaces;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using SharpMap.Data;
 using SharpMap.Data.Providers.ShapeFile;
+using NPack;
 
 namespace SharpMap.Tests.Data.Providers.ShapeFile
 {
@@ -17,13 +21,16 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
     public class ShapeFileTests
     {
         private static readonly Random _rnd = new Random();
-        private static readonly IGeometryFactory _geoFactory
-            = new SharpMap.SimpleGeometries.GeometryFactory();
+
+        private static IGeometryFactory<BufferedCoordinate2D> _geoFactory;
 
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
             Directory.CreateDirectory("UnitTestData");
+
+            ICoordinateSequenceFactory<BufferedCoordinate2D> sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
         }
 
         [TestFixtureTearDown]
@@ -657,7 +664,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
         private static IProjectedCoordinateSystem createExpectedCoordinateSystem()
         {
-            ICoordinateSystemFactory factory = new CoordinateSystemFactory<ICoordinate>(
+            ICoordinateSystemFactory factory = new CoordinateSystemFactory<BufferedCoordinate2D>(
                 _geoFactory.CoordinateFactory, _geoFactory);
 
             IEllipsoid grs80 = Ellipsoid.Grs80;
@@ -692,7 +699,6 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
 
             // TODO: Check if this is correct, since on line 184 of CoorindateSystemFactory.cs, 
             // HorizontalDatum is passed in as null
-            expected.HorizontalDatum = harn;
             return expected;
         }
 

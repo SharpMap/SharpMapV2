@@ -21,7 +21,6 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
-using GeoAPI.Geometries;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems
@@ -31,7 +30,8 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class ProjectedCoordinateSystem<TCoordinate> : HorizontalCoordinateSystem<TCoordinate>,
                                                           IProjectedCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly IProjection _projection;
@@ -52,10 +52,12 @@ namespace ProjNet.CoordinateSystems
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
         internal ProjectedCoordinateSystem(IGeographicCoordinateSystem<TCoordinate> gcs,
-           IProjection projection, ILinearUnit linearUnit, IEnumerable<IAxisInfo> axisInfo,
-            String name, String authority, Int64 code, String alias,
-            String remarks, String abbreviation)
-            : base(gcs.DefaultEnvelope, gcs.HorizontalDatum, axisInfo, name, authority, code, alias, abbreviation, remarks)
+                                           IProjection projection, ILinearUnit linearUnit,
+                                           IEnumerable<IAxisInfo> axisInfo,
+                                           String name, String authority, Int64 code, String alias,
+                                           String remarks, String abbreviation)
+            : base(
+                gcs.DefaultEnvelope, gcs.HorizontalDatum, axisInfo, name, authority, code, alias, abbreviation, remarks)
         {
             _geographicCoordinateSystem = gcs;
             _linearUnit = linearUnit;

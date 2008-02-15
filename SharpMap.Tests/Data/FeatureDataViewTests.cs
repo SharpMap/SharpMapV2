@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
@@ -15,7 +16,16 @@ namespace SharpMap.Tests.Data
     [TestFixture]
     public class FeatureDataViewTests
     {
-        private static readonly IGeometryFactory _geoFactory = new GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
+
         #region CreatingDataViewReturnsValidDataView
 
         [Test]

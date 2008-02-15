@@ -31,7 +31,7 @@ namespace SharpMap.SimpleGeometries
     /// The boundary of a Point is the empty set.
     /// </summary>
     [Serializable]
-    public class Point : Geometry, IPoint, IComparable<Point>, IVector<DoubleComponent>
+    public class Point : Geometry, IPoint2D, IComparable<Point>, IVector<DoubleComponent>
     {
         private static readonly Point _empty = new Point();
         private static readonly Point _zero = new Point(0, 0);
@@ -1410,5 +1410,10 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        public override OgcGeometryType GeometryType
+        {
+            get { return OgcGeometryType.Point;}
+        }
     }
 }

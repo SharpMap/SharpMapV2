@@ -36,6 +36,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -44,7 +45,6 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.Utilities;
 using NPack.Interfaces;
 using ProjNet.CoordinateSystems.Transformations;
-using ProjNet.CoordinateSystems;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
@@ -52,7 +52,8 @@ namespace ProjNet.CoordinateSystems.Projections
     /// Projections inherit from this abstract class to get access to useful mathematical functions.
     /// </summary>
     internal abstract class MapProjection<TCoordinate> : MathTransform<TCoordinate>, IProjection
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         protected Double _metersPerUnit;
@@ -66,16 +67,17 @@ namespace ProjNet.CoordinateSystems.Projections
         private String _name;
         private String _remarks;
 
-        protected MapProjection(IEnumerable<ProjectionParameter> parameters, 
-            ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
-            : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters), 
-                    coordinateFactory, isInverse)
+        protected MapProjection(IEnumerable<ProjectionParameter> parameters,
+                                ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+            : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters),
+                   coordinateFactory, isInverse)
         {
             ProjectionParameter unit = GetParameter("unit");
             _metersPerUnit = unit.Value;
         }
 
         #region IProjection Members
+
         public ProjectionParameter this[Int32 index]
         {
             get { return GetParameter(index); }
@@ -403,12 +405,12 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// π * 0.5 
         /// </summary>
-        protected const Double HalfPI = (PI * 0.5);
+        protected const Double HalfPI = (PI*0.5);
 
         /// <summary>
         /// π * 2
         /// </summary>
-        protected const Double TwoPI = (PI * 2.0);
+        protected const Double TwoPI = (PI*2.0);
 
         /// <summary>
         /// The smallest tolerable difference between two real numbers. Differences
@@ -470,7 +472,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         protected static Double IMod(Double a, Double b)
         {
-            return (a) - (((a) / (b)) * (b)); /* Integer mod function */
+            return (a) - (((a)/(b))*(b)); /* Integer mod function */
         }
 
         /// <summary>
@@ -494,25 +496,25 @@ namespace ProjNet.CoordinateSystems.Projections
 
             while (count <= MaxIterationCount && Math.Abs(x) > PI)
             {
-                if (((long)Math.Abs(x / Math.PI)) < 2)
+                if (((long) Math.Abs(x/Math.PI)) < 2)
                 {
-                    x = x - (Sign(x) * TwoPI);
+                    x = x - (Sign(x)*TwoPI);
                 }
-                else if (((long)Math.Abs(x / TwoPI)) < MaxInt32)
+                else if (((long) Math.Abs(x/TwoPI)) < MaxInt32)
                 {
-                    x = x - (((long)(x / TwoPI)) * TwoPI);
+                    x = x - (((long) (x/TwoPI))*TwoPI);
                 }
-                else if (((long)Math.Abs(x / (MaxInt32 * TwoPI))) < MaxInt32)
+                else if (((long) Math.Abs(x/(MaxInt32*TwoPI))) < MaxInt32)
                 {
-                    x = x - (((long)(x / (MaxInt32 * TwoPI))) * (TwoPI * MaxInt32));
+                    x = x - (((long) (x/(MaxInt32*TwoPI)))*(TwoPI*MaxInt32));
                 }
-                else if (((long)Math.Abs(x / (HalfMaxInt64 * TwoPI))) < MaxInt32)
+                else if (((long) Math.Abs(x/(HalfMaxInt64*TwoPI))) < MaxInt32)
                 {
-                    x = x - (((long)(x / (HalfMaxInt64 * TwoPI))) * (TwoPI * HalfMaxInt64));
+                    x = x - (((long) (x/(HalfMaxInt64*TwoPI)))*(TwoPI*HalfMaxInt64));
                 }
                 else
                 {
-                    x = x - (Sign(x) * TwoPI);
+                    x = x - (Sign(x)*TwoPI);
                 }
 
                 count++;
@@ -529,9 +531,9 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             Double con;
 
-            con = eccentricity * sinPhi;
+            con = eccentricity*sinPhi;
 
-            return ((cosPhi / (Math.Sqrt(1.0 - con * con))));
+            return ((cosPhi/(Math.Sqrt(1.0 - con*con))));
         }
 
         /// <summary>
@@ -543,15 +545,15 @@ namespace ProjNet.CoordinateSystems.Projections
             if (eccentricity > 1.0e-7)
             {
                 Double con;
-                con = eccentricity * sinPhi;
+                con = eccentricity*sinPhi;
 
-                return ((1.0 - eccentricity * eccentricity)
-                    * (sinPhi / (1.0 - con * con) - (.5 / eccentricity)
-                        * Math.Log((1.0 - con) / (1.0 + con))));
+                return ((1.0 - eccentricity*eccentricity)
+                        *(sinPhi/(1.0 - con*con) - (.5/eccentricity)
+                                                   *Math.Log((1.0 - con)/(1.0 + con))));
             }
             else
             {
-                return 2.0 * sinPhi;
+                return 2.0*sinPhi;
             }
         }
 
@@ -589,10 +591,10 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             Double con;
             Double com;
-            con = eccentricity * sinphi;
-            com = .5 * eccentricity;
-            con = Math.Pow(((1.0 - con) / (1.0 + con)), com);
-            return (Math.Tan(.5 * (HalfPI - phi)) / con);
+            con = eccentricity*sinphi;
+            com = .5*eccentricity;
+            con = Math.Pow(((1.0 - con)/(1.0 + con)), com);
+            return (Math.Tan(.5*(HalfPI - phi))/con);
         }
 
         /// <summary>
@@ -613,14 +615,14 @@ namespace ProjNet.CoordinateSystems.Projections
             Double phi;
             long i;
 
-            phi = Asin(.5 * qs);
+            phi = Asin(.5*qs);
 
             if (eccentricity < Epsilon)
             {
                 return phi;
             }
 
-            eccnts = eccentricity * eccentricity;
+            eccnts = eccentricity*eccentricity;
 
             for (i = 1; i <= MaxIterationCount; i++)
             {
@@ -631,10 +633,10 @@ namespace ProjNet.CoordinateSystems.Projections
                 Double cospi;
 
                 SinCos(phi, out sinpi, out cospi);
-                con = eccentricity * sinpi;
-                com = 1.0 - con * con;
-                dphi = .5 * com * com / cospi * (qs / (1.0 - eccnts) - sinpi / com +
-                                         .5 / eccentricity * Math.Log((1.0 - con) / (1.0 + con)));
+                con = eccentricity*sinpi;
+                com = 1.0 - con*con;
+                dphi = .5*com*com/cospi*(qs/(1.0 - eccnts) - sinpi/com +
+                                         .5/eccentricity*Math.Log((1.0 - con)/(1.0 + con)));
                 phi = phi + dphi;
 
                 if (Math.Abs(dphi) <= 1e-7)
@@ -683,8 +685,8 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             long i;
 
-            Double eccnth = .5 * eccentricity;
-            Double chi = HalfPI - 2 * Math.Atan(ts);
+            Double eccnth = .5*eccentricity;
+            Double chi = HalfPI - 2*Math.Atan(ts);
 
             for (i = 0; i <= MaxIterationCount; i++)
             {
@@ -692,8 +694,8 @@ namespace ProjNet.CoordinateSystems.Projections
                 Double dphi;
                 Double sinpi;
                 sinpi = Math.Sin(chi);
-                con = eccentricity * sinpi;
-                dphi = HalfPI - 2 * Math.Atan(ts * (Math.Pow(((1.0 - con) / (1.0 + con)), eccnth))) - chi;
+                con = eccentricity*sinpi;
+                dphi = HalfPI - 2*Math.Atan(ts*(Math.Pow(((1.0 - con)/(1.0 + con)), eccnth))) - chi;
                 chi += dphi;
 
                 if (Math.Abs(dphi) <= .0000000001)
@@ -717,7 +719,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE0(Double eccSquared)
         {
-            return (1.0 - 0.25 * eccSquared * (1.0 + eccSquared / 16.0 * (3.0 + 1.25 * eccSquared)));
+            return (1.0 - 0.25*eccSquared*(1.0 + eccSquared/16.0*(3.0 + 1.25*eccSquared)));
         }
 
         /// <summary>
@@ -729,7 +731,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE1(Double eccSquared)
         {
-            return (0.375 * eccSquared * (1.0 + 0.25 * eccSquared * (1.0 + 0.46875 * eccSquared)));
+            return (0.375*eccSquared*(1.0 + 0.25*eccSquared*(1.0 + 0.46875*eccSquared)));
         }
 
         /// <summary>
@@ -741,7 +743,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE2(Double eccSquared)
         {
-            return (0.05859375 * eccSquared * eccSquared * (1.0 + 0.75 * eccSquared));
+            return (0.05859375*eccSquared*eccSquared*(1.0 + 0.75*eccSquared));
         }
 
         /// <summary>
@@ -753,7 +755,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE3(Double eccSquared)
         {
-            return (eccSquared * eccSquared * eccSquared * (35.0 / 3072.0));
+            return (eccSquared*eccSquared*eccSquared*(35.0/3072.0));
         }
 
         /// <summary>
@@ -767,7 +769,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Double com;
             con = 1.0 + x;
             com = 1.0 - x;
-            return (Math.Sqrt((Math.Pow(con, con)) * (Math.Pow(com, com))));
+            return (Math.Sqrt((Math.Pow(con, con))*(Math.Pow(com, com))));
         }
 
         /// <summary>
@@ -781,7 +783,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="phi">The measure of the latitude to measure to, in radians.</param>
         protected static Double MeridianLength(Double e0, Double e1, Double e2, Double e3, Double phi)
         {
-            return (e0 * phi - e1 * Math.Sin(2.0 * phi) + e2 * Math.Sin(4.0 * phi) - e3 * Math.Sin(6.0 * phi));
+            return (e0*phi - e1*Math.Sin(2.0*phi) + e2*Math.Sin(4.0*phi) - e3*Math.Sin(6.0*phi));
         }
 
         /// <summary>
@@ -790,7 +792,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="degreesLongitude">Longitude to find UTM zone for in degrees.</param>
         protected static long UtmZoneFromDegreesLongitude(Double degreesLongitude)
         {
-            return ((long)(((degreesLongitude + 180.0) / 6.0) + 1.0));
+            return ((long) (((degreesLongitude + 180.0)/6.0) + 1.0));
         }
 
         #endregion
@@ -835,7 +837,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

@@ -52,8 +52,12 @@ namespace SharpMap.SimpleGeometries
     public abstract class Geometry : IGeometry, IEquatable<Geometry>, IVertexStream<Point, DoubleComponent>
     {
         private ICoordinateSystem _spatialReference;
+        private Int32? _srid;
         private Tolerance _tolerance = Tolerance.Global;
         private Extents _extents = new Extents();
+        private IGeometryFactory _factory;
+        private ICoordinateSequence _coordinates;
+        private Object _userData;
 
         /// <summary>
         /// Serves as a hash function for a particular type. 
@@ -148,22 +152,21 @@ namespace SharpMap.SimpleGeometries
 
         public ICoordinateSequence Coordinates
         {
-            get { throw new NotImplementedException(); }
+            get { return _coordinates; }
+            internal set { _coordinates = value; }
         }
 
         public IGeometryFactory Factory
         {
-            get { throw new NotImplementedException(); }
+            get { return _factory; }
+            internal set { _factory = value; }
         }
 
-        public OgcGeometryType GeometryType
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract OgcGeometryType GeometryType { get; }
 
         public string GeometryTypeName
         {
-            get { throw new NotImplementedException(); }
+            get { return GeometryType.ToString(); }
         }
 
         public Boolean IsRectangle
@@ -190,18 +193,18 @@ namespace SharpMap.SimpleGeometries
 
         public Int32? Srid
         {
-            get { throw new NotImplementedException(); }
+            get { return _srid; }
         }
 
         public Object UserData
         {
             get
             {
-                throw new NotImplementedException();
+                return _userData;
             }
             set
             {
-                throw new NotImplementedException();
+                _userData = value;
             }
         }
 
@@ -230,14 +233,19 @@ namespace SharpMap.SimpleGeometries
             get
             {
                 Extents box = ExtentsInternal;
-                Polygon envelope = new Polygon();
-                envelope.ExteriorRing.Vertices.Add(new Point(box.Left, box.Bottom)); //minx miny
-                envelope.ExteriorRing.Vertices.Add(new Point(box.Right, box.Bottom)); //maxx miny
-                envelope.ExteriorRing.Vertices.Add(new Point(box.Right, box.Top)); //maxx maxy
-                envelope.ExteriorRing.Vertices.Add(new Point(box.Left, box.Top)); //minx maxy
-                envelope.ExteriorRing.Vertices.Add(envelope.ExteriorRing.StartPoint); //close ring
+                IEnumerable<ICoordinate> coordinates = getBoundCoordinates(box);
+                Polygon envelope = new Polygon(coordinates);
                 return envelope;
             }
+        }
+
+        private IEnumerable<ICoordinate> getBoundCoordinates(Extents box)
+        {
+            yield return Factory.CoordinateFactory.Create(box.Left, box.Bottom);    //minx miny
+            yield return Factory.CoordinateFactory.Create(box.Right, box.Bottom);   //maxx miny
+            yield return Factory.CoordinateFactory.Create(box.Right, box.Top);      //maxx maxy
+            yield return Factory.CoordinateFactory.Create(box.Left, box.Top);       //minx maxy
+            yield return Factory.CoordinateFactory.Create(box.Left, box.Bottom);    //close ring
         }
 
         /// <summary>
@@ -259,7 +267,7 @@ namespace SharpMap.SimpleGeometries
         }
 
         /// <summary>
-        /// The minimum bounding box for this <see cref="Geometry"/>, returned as a <see cref="BoundingBox"/>.
+        /// The minimum bounding box for this <see cref="Geometry"/>, returned as an <see cref="IExtents"/>.
         /// </summary>
         /// <returns></returns>
         public abstract IExtents Extents { get; }

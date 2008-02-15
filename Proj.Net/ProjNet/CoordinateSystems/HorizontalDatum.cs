@@ -75,7 +75,8 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return new HorizontalDatum(CoordinateSystems.Ellipsoid.Wgs84,
-                                           null, DatumType.HorizontalGeocentric, "World Geodetic System 1984", "EPSG", 6326,
+                                           null, DatumType.HorizontalGeocentric, "World Geodetic System 1984", "EPSG",
+                                           6326,
                                            String.Empty,
                                            "EPSG's WGS 84 datum has been the then current realisation. No distinction is made between the original WGS 84 frame, WGS 84 (G730), WGS 84 (G873) and WGS 84 (G1150). Since 1997, WGS 84 has been maintained within 10cm of the then current ITRF.",
                                            String.Empty);
@@ -98,11 +99,11 @@ namespace ProjNet.CoordinateSystems
                 Wgs84ConversionInfo wgsConversion = new Wgs84ConversionInfo(0, 0, 4.5, 0, 0, 0.554, 0.219);
                 HorizontalDatum datum =
                     new HorizontalDatum(CoordinateSystems.Ellipsoid.Wgs72,
-                        wgsConversion, DatumType.HorizontalGeocentric, 
-                        "World Geodetic System 1972", "EPSG", 6322, String.Empty,
-                        "Used by GPS before 1987. For TRANSIT satellite positioning "+
-                        "see also WGS 72BE. Datum code 6323 reserved for southern "+
-                        "hemisphere projected coordinate systems.", String.Empty);
+                                        wgsConversion, DatumType.HorizontalGeocentric,
+                                        "World Geodetic System 1972", "EPSG", 6322, String.Empty,
+                                        "Used by GPS before 1987. For TRANSIT satellite positioning " +
+                                        "see also WGS 72BE. Datum code 6323 reserved for southern " +
+                                        "hemisphere projected coordinate systems.", String.Empty);
                 return datum;
             }
         }
@@ -134,13 +135,13 @@ namespace ProjNet.CoordinateSystems
             {
                 Wgs84ConversionInfo wgsConversion = new Wgs84ConversionInfo();
                 HorizontalDatum datum =
-                    new HorizontalDatum(CoordinateSystems.Ellipsoid.Grs80, wgsConversion, 
-                        DatumType.HorizontalGeocentric, 
-                        "European Terrestrial Reference System 1989", 
-                        "EPSG", 6258, "ETRF89", 
-                        "The distinction in usage between ETRF89 and ETRS89 is confused: "+
-                        "although in principle conceptually different in practice both are "+
-                        "used for the realisation.", String.Empty);
+                    new HorizontalDatum(CoordinateSystems.Ellipsoid.Grs80, wgsConversion,
+                                        DatumType.HorizontalGeocentric,
+                                        "European Terrestrial Reference System 1989",
+                                        "EPSG", 6258, "ETRF89",
+                                        "The distinction in usage between ETRF89 and ETRS89 is confused: " +
+                                        "although in principle conceptually different in practice both are " +
+                                        "used for the realisation.", String.Empty);
                 return datum;
             }
         }
@@ -168,9 +169,9 @@ namespace ProjNet.CoordinateSystems
             {
                 return
                     new HorizontalDatum(CoordinateSystems.Ellipsoid.International1924,
-                        new Wgs84ConversionInfo(-87, -98, -121, 0, 0, 0, 0), 
-                        DatumType.HorizontalGeocentric, "European Datum 1950", 
-                        "EPSG", 6230, "ED50", String.Empty, String.Empty);
+                                        new Wgs84ConversionInfo(-87, -98, -121, 0, 0, 0, 0),
+                                        DatumType.HorizontalGeocentric, "European Datum 1950",
+                                        "EPSG", 6230, "ED50", String.Empty, String.Empty);
             }
         }
 
@@ -205,7 +206,7 @@ namespace ProjNet.CoordinateSystems
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat("DATUM[\"{0}\", {1}", Name, _ellipsoid.Wkt);
-                
+
                 if (_wgs84ConversionInfo != null)
                 {
                     sb.AppendFormat(", {0}", _wgs84ConversionInfo.Wkt);
@@ -215,7 +216,7 @@ namespace ProjNet.CoordinateSystems
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }
-                
+
                 sb.Append("]");
                 return sb.ToString();
             }
@@ -230,7 +231,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return String.Format(CultureInfo.InvariantCulture.NumberFormat,
                                      "<CS_HorizontalDatum DatumType=\"{0}\">{1}{2}{3}</CS_HorizontalDatum>",
-                                     (Int32)DatumType, InfoXml, Ellipsoid.Xml,
+                                     (Int32) DatumType, InfoXml, Ellipsoid.Xml,
                                      (Wgs84Parameters == null ? String.Empty : Wgs84Parameters.Xml));
             }
         }

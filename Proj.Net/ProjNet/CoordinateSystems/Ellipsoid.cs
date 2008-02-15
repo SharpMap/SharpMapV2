@@ -51,8 +51,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="abbreviation">Abbreviation.</param>
         /// <param name="remarks">Provider-supplied remarks.</param>
         internal Ellipsoid(Double semiMajorAxis, Double semiMinorAxis, Double inverseFlattening,
-            Boolean isIvfDefinitive, ILinearUnit axisUnit, String name, String authority,
-            Int64 code, String alias, String abbreviation, String remarks)
+                           Boolean isIvfDefinitive, ILinearUnit axisUnit, String name, String authority,
+                           Int64 code, String alias, String abbreviation, String remarks)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
             _semiMajorAxis = semiMajorAxis;
@@ -66,7 +66,7 @@ namespace ProjNet.CoordinateSystems
             }
             else if (isIvfDefinitive)
             {
-                _semiMinorAxis = (1.0 - (1.0 / _inverseFlattening)) * semiMajorAxis;
+                _semiMinorAxis = (1.0 - (1.0/_inverseFlattening))*semiMajorAxis;
             }
             else
             {
@@ -257,7 +257,7 @@ namespace ProjNet.CoordinateSystems
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
-                    "SPHEROID[\"{0}\", {1}, {2}", Name, SemiMajorAxis, InverseFlattening);
+                                "SPHEROID[\"{0}\", {1}, {2}", Name, SemiMajorAxis, InverseFlattening);
 
                 if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
                 {
@@ -277,10 +277,10 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return String.Format(CultureInfo.InvariantCulture.NumberFormat,
-                    "<CS_Ellipsoid SemiMajorAxis=\"{0}\" SemiMinorAxis=\"{1}\" " +
-                    "InverseFlattening=\"{2}\" IvfDefinitive=\"{3}\">{4}{5}</CS_Ellipsoid>",
-                    SemiMajorAxis, SemiMinorAxis, InverseFlattening, (IsIvfDefinitive ? 1 : 0),
-                    InfoXml, AxisUnit.Xml);
+                                     "<CS_Ellipsoid SemiMajorAxis=\"{0}\" SemiMinorAxis=\"{1}\" " +
+                                     "InverseFlattening=\"{2}\" IvfDefinitive=\"{3}\">{4}{5}</CS_Ellipsoid>",
+                                     SemiMajorAxis, SemiMinorAxis, InverseFlattening, (IsIvfDefinitive ? 1 : 0),
+                                     InfoXml, AxisUnit.Xml);
             }
         }
 

@@ -51,13 +51,15 @@ namespace ProjNet.CoordinateSystems
     /// </para>
     /// </remarks>
     public class CoordinateSystemFactory<TCoordinate> : ICoordinateSystemFactory<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly ICoordinateFactory<TCoordinate> _coordFactory;
         private readonly IGeometryFactory<TCoordinate> _geometryFactory;
 
-        public CoordinateSystemFactory(ICoordinateFactory<TCoordinate> coordinateFactory, IGeometryFactory<TCoordinate> geometryFactory)
+        public CoordinateSystemFactory(ICoordinateFactory<TCoordinate> coordinateFactory,
+                                       IGeometryFactory<TCoordinate> geometryFactory)
         {
             _coordFactory = coordinateFactory;
             _geometryFactory = geometryFactory;
@@ -108,7 +110,9 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        public ICompoundCoordinateSystem<TCoordinate> CreateCompoundCoordinateSystem(ICoordinateSystem<TCoordinate> head, ICoordinateSystem<TCoordinate> tail, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+        public ICompoundCoordinateSystem<TCoordinate> CreateCompoundCoordinateSystem(
+            ICoordinateSystem<TCoordinate> head, ICoordinateSystem<TCoordinate> tail, String name, String authority,
+            Int64 authorityCode, String alias, String abbreviation, String remarks)
         {
             throw new NotImplementedException();
         }
@@ -136,7 +140,9 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        public IFittedCoordinateSystem<TCoordinate> CreateFittedCoordinateSystem(ICoordinateSystem<TCoordinate> baseCoordinateSystem, String toBaseWkt, IEnumerable<IAxisInfo> axes, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+        public IFittedCoordinateSystem<TCoordinate> CreateFittedCoordinateSystem(
+            ICoordinateSystem<TCoordinate> baseCoordinateSystem, String toBaseWkt, IEnumerable<IAxisInfo> axes,
+            String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
         {
             throw new NotImplementedException();
         }
@@ -161,7 +167,11 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        public ILocalCoordinateSystem<TCoordinate> CreateLocalCoordinateSystem(ILocalDatum datum, IUnit unit, IEnumerable<IAxisInfo> axes, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+        public ILocalCoordinateSystem<TCoordinate> CreateLocalCoordinateSystem(ILocalDatum datum, IUnit unit,
+                                                                               IEnumerable<IAxisInfo> axes, String name,
+                                                                               String authority, Int64 authorityCode,
+                                                                               String alias, String abbreviation,
+                                                                               String remarks)
         {
             throw new NotImplementedException();
         }
@@ -173,7 +183,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="name">Name of ellipsoid.</param>
         /// <returns>Ellipsoid.</returns>
         public IEllipsoid CreateEllipsoid(Double semiMajorAxis,
-            Double semiMinorAxis, ILinearUnit linearUnit, String name)
+                                          Double semiMinorAxis, ILinearUnit linearUnit, String name)
         {
             return new Ellipsoid(semiMajorAxis, semiMinorAxis, 1.0, false,
                                  linearUnit, name, String.Empty, -1, String.Empty, String.Empty,
@@ -190,8 +200,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="inverseFlattening">Inverse flattening.</param>
         /// <param name="linearUnit">Linear unit.</param>
         /// <returns>Ellipsoid.</returns>
-        public IEllipsoid CreateFlattenedSphere(Double semiMajorAxis, 
-            Double inverseFlattening, ILinearUnit linearUnit, String name)
+        public IEllipsoid CreateFlattenedSphere(Double semiMajorAxis,
+                                                Double inverseFlattening, ILinearUnit linearUnit, String name)
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -238,14 +248,14 @@ namespace ProjNet.CoordinateSystems
             ILinearUnit linearUnit, IAxisInfo axis0, IAxisInfo axis1, String name)
         {
             return CreateProjectedCoordinateSystem(gcs, projection,
-                linearUnit, axis0, axis1, name, String.Empty, -1, String.Empty,
-                String.Empty, String.Empty);
+                                                   linearUnit, axis0, axis1, name, String.Empty, -1, String.Empty,
+                                                   String.Empty, String.Empty);
         }
 
         public IProjectedCoordinateSystem<TCoordinate> CreateProjectedCoordinateSystem(
-            IGeographicCoordinateSystem<TCoordinate> gcs, IProjection projection, 
-            ILinearUnit linearUnit, IAxisInfo axis0, IAxisInfo axis1, String name, 
-            String authority, Int64 authorityCode, String alias, String abbreviation, 
+            IGeographicCoordinateSystem<TCoordinate> gcs, IProjection projection,
+            ILinearUnit linearUnit, IAxisInfo axis0, IAxisInfo axis1, String name,
+            String authority, Int64 authorityCode, String alias, String abbreviation,
             String remarks)
         {
             if (String.IsNullOrEmpty(name))
@@ -274,9 +284,9 @@ namespace ProjNet.CoordinateSystems
                     axis1
                 };
 
-            return new ProjectedCoordinateSystem<TCoordinate>(gcs, projection, 
-                linearUnit, info, name, String.Empty, -1, String.Empty,
-                String.Empty, String.Empty);
+            return new ProjectedCoordinateSystem<TCoordinate>(gcs, projection,
+                                                              linearUnit, info, name, String.Empty, -1, String.Empty,
+                                                              String.Empty, String.Empty);
         }
 
         /// <summary>
@@ -286,8 +296,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="wktProjectionClass">Projection class.</param>
         /// <param name="parameters">Projection parameters.</param>
         /// <returns>Projection.</returns>
-        public IProjection CreateProjection(String wktProjectionClass, 
-            IEnumerable<ProjectionParameter> parameters, String name)
+        public IProjection CreateProjection(String wktProjectionClass,
+                                            IEnumerable<ProjectionParameter> parameters, String name)
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -393,14 +403,14 @@ namespace ProjNet.CoordinateSystems
             IPrimeMeridian primeMeridian, IAxisInfo axis0, IAxisInfo axis1, String name)
         {
             return CreateGeographicCoordinateSystem(extents, angularUnit, datum,
-                                                    primeMeridian, axis0, axis1, 
+                                                    primeMeridian, axis0, axis1,
                                                     name, "", -1, "", "", "");
         }
 
         public IGeographicCoordinateSystem<TCoordinate> CreateGeographicCoordinateSystem(
-            IExtents<TCoordinate> extents, IAngularUnit angularUnit, 
-            IHorizontalDatum datum, IPrimeMeridian primeMeridian, IAxisInfo axis0, 
-            IAxisInfo axis1, String name, String authority, Int64 authorityCode, 
+            IExtents<TCoordinate> extents, IAngularUnit angularUnit,
+            IHorizontalDatum datum, IPrimeMeridian primeMeridian, IAxisInfo axis0,
+            IAxisInfo axis1, String name, String authority, Int64 authorityCode,
             String alias, String abbreviation, String remarks)
         {
             if (String.IsNullOrEmpty(name))
@@ -413,8 +423,8 @@ namespace ProjNet.CoordinateSystems
             info[1] = axis1;
 
             return new GeographicCoordinateSystem<TCoordinate>(extents,
-                angularUnit, datum, primeMeridian, info, name, authority,
-                authorityCode, alias, abbreviation, remarks);
+                                                               angularUnit, datum, primeMeridian, info, name, authority,
+                                                               authorityCode, alias, abbreviation, remarks);
         }
 
         /// <summary>
@@ -454,7 +464,12 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        public IVerticalCoordinateSystem<TCoordinate> CreateVerticalCoordinateSystem(IVerticalDatum datum, ILinearUnit verticalUnit, IAxisInfo axis, String name, String authority, Int64 authorityCode, String alias, String abbreviation, String remarks)
+        public IVerticalCoordinateSystem<TCoordinate> CreateVerticalCoordinateSystem(IVerticalDatum datum,
+                                                                                     ILinearUnit verticalUnit,
+                                                                                     IAxisInfo axis, String name,
+                                                                                     String authority,
+                                                                                     Int64 authorityCode, String alias,
+                                                                                     String abbreviation, String remarks)
         {
             throw new NotImplementedException();
         }
@@ -468,8 +483,9 @@ namespace ProjNet.CoordinateSystems
             TCoordinate max = _coordFactory.Create3D(semiMajor, semiMajor, semiMinor);
             IExtents<TCoordinate> wgs84Extents = _geometryFactory.CreateExtents(min, max);
             return CreateGeocentricCoordinateSystem(wgs84Extents, HorizontalDatum.Wgs84,
-                LinearUnit.Meter, PrimeMeridian.Greenwich, "WGS84 Geocentric");
+                                                    LinearUnit.Meter, PrimeMeridian.Greenwich, "WGS84 Geocentric");
         }
+
         #endregion
 
         #region ICoordinateSystemFactory Members
@@ -569,19 +585,21 @@ namespace ProjNet.CoordinateSystems
         }
 
         IGeographicCoordinateSystem ICoordinateSystemFactory.CreateGeographicCoordinateSystem(
-            IExtents extents, IAngularUnit angularUnit, IHorizontalDatum datum, 
+            IExtents extents, IAngularUnit angularUnit, IHorizontalDatum datum,
             IPrimeMeridian primeMeridian, IAxisInfo axis0, IAxisInfo axis1, String name)
         {
-            return CreateGeographicCoordinateSystem(convert(extents), angularUnit, datum, primeMeridian, axis0, axis1, name);
+            return
+                CreateGeographicCoordinateSystem(convert(extents), angularUnit, datum, primeMeridian, axis0, axis1, name);
         }
 
         IGeographicCoordinateSystem ICoordinateSystemFactory.CreateGeographicCoordinateSystem(
             IExtents extents, IAngularUnit angularUnit, IHorizontalDatum datum,
-            IPrimeMeridian primeMeridian, IAxisInfo axis0, IAxisInfo axis1, 
+            IPrimeMeridian primeMeridian, IAxisInfo axis0, IAxisInfo axis1,
             String name, String authority, Int64 authorityCode, String alias,
             String abbreviation, String remarks)
         {
-            return CreateGeographicCoordinateSystem(convert(extents), angularUnit, datum, primeMeridian, axis0, axis1, name);
+            return
+                CreateGeographicCoordinateSystem(convert(extents), angularUnit, datum, primeMeridian, axis0, axis1, name);
         }
 
         private IExtents<TCoordinate> convert(IExtents extents)
@@ -623,9 +641,11 @@ namespace ProjNet.CoordinateSystems
         }
 
         ILocalCoordinateSystem ICoordinateSystemFactory.CreateLocalCoordinateSystem(ILocalDatum datum, IUnit unit,
-                                                                  IEnumerable<IAxisInfo> axes, String name,
-                                                                  String authority, Int64 authorityCode, String alias,
-                                                                  String abbreviation, String remarks)
+                                                                                    IEnumerable<IAxisInfo> axes,
+                                                                                    String name,
+                                                                                    String authority,
+                                                                                    Int64 authorityCode, String alias,
+                                                                                    String abbreviation, String remarks)
         {
             throw new NotImplementedException();
         }
@@ -690,10 +710,14 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        IVerticalCoordinateSystem ICoordinateSystemFactory.CreateVerticalCoordinateSystem(IVerticalDatum datum, ILinearUnit verticalUnit,
-                                                                        IAxisInfo axis, String name, String authority,
-                                                                        Int64 authorityCode, String alias,
-                                                                        String abbreviation, String remarks)
+        IVerticalCoordinateSystem ICoordinateSystemFactory.CreateVerticalCoordinateSystem(IVerticalDatum datum,
+                                                                                          ILinearUnit verticalUnit,
+                                                                                          IAxisInfo axis, String name,
+                                                                                          String authority,
+                                                                                          Int64 authorityCode,
+                                                                                          String alias,
+                                                                                          String abbreviation,
+                                                                                          String remarks)
         {
             throw new NotImplementedException();
         }
@@ -707,7 +731,6 @@ namespace ProjNet.CoordinateSystems
         #endregion
 
         #region ICoordinateSystemFactory Members
-
 
         public IAngularUnit CreateAngularUnit(CommonAngularUnits angularUnitType)
         {
@@ -749,7 +772,8 @@ namespace ProjNet.CoordinateSystems
             }
         }
 
-        public IGeographicCoordinateSystem CreateGeographicCoordinateSystem(CommonGeographicCoordinateSystems coordSystemType)
+        public IGeographicCoordinateSystem CreateGeographicCoordinateSystem(
+            CommonGeographicCoordinateSystems coordSystemType)
         {
             switch (coordSystemType)
             {

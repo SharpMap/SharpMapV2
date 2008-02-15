@@ -1291,7 +1291,8 @@ namespace SharpMap.SimpleGeometries
         }
 
         /// <summary>
-        /// Expands the <see cref="Extents"/> instance to contain the space contained by <paramref name="extents"/>.
+        /// Expands the <see cref="Extents"/> instance to contain the space 
+        /// contained by <paramref name="extent"/>.
         /// </summary>
         /// <param name="extent"><see cref="Extents"/> to enlarge extents to contain.</param>
         public void ExpandToInclude(Extents extent)
@@ -1313,6 +1314,7 @@ namespace SharpMap.SimpleGeometries
                 Top = extent.Top;
             }
 
+            // TODO: check if this is the right behavior... expanding by an empty makes the target empty?
             if (IsEmpty)
             {
                 IsEmpty = extent.IsEmpty;
@@ -1326,6 +1328,47 @@ namespace SharpMap.SimpleGeometries
         public void ExpandToInclude(Geometry geometry)
         {
             ExpandToInclude(geometry.Extents);
+        }
+
+        /// <summary>
+        /// Expands the <see cref="Extents"/> instance to contain geometry <paramref name="coordinate"/>.
+        /// </summary>
+        /// <param name="coordinate"><see cref="ICoordinate"/> to enlarge extents to contain.</param>
+        public void ExpandToInclude(ICoordinate coordinate)
+        {
+            if(coordinate == null)
+            {
+                return;
+            }
+
+            Double x = coordinate[Ordinates.X];
+            Double y = coordinate[Ordinates.Y];
+
+            if (x < Left || IsEmpty)
+            {
+                Left = x;
+            }
+
+            if (y < Bottom || IsEmpty)
+            {
+                Bottom = y;
+            }
+            
+            if (x > Right || IsEmpty)
+            {
+                Right = x;
+            }
+
+            if (y > Top || IsEmpty)
+            {
+                Top = y;
+            }
+
+            // TODO: check if this is the right behavior... expanding by an empty makes the target empty?
+            if (IsEmpty)
+            {
+                IsEmpty = coordinate.IsEmpty;
+            }
         }
 
         #endregion ExpandToInclude

@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Indexing.RTree;
+using SharpMap.SimpleGeometries;
 
 namespace SharpMap.Tests.Indexing
 {
     [TestFixture]
     public class RTreeTests
     {
-        private static readonly IGeometryFactory _geoFactory
-            = new SharpMap.SimpleGeometries.GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
 
         [Test]
         public void CreateRTreeTest()
@@ -119,7 +128,7 @@ namespace SharpMap.Tests.Indexing
             Assert.AreEqual(99990, results.Count);
         }
 
-        private static void addEntries(ISpatialIndex<IExtents, int> rTree)
+        private void addEntries(ISpatialIndex<IExtents, int> rTree)
         {
             rTree.Insert(_geoFactory.CreateExtents2D(0, 0, 100, 100), 1);
             rTree.Insert(_geoFactory.CreateExtents2D(50, 50, 150, 150), 2);
@@ -131,7 +140,7 @@ namespace SharpMap.Tests.Indexing
             rTree.Insert(_geoFactory.CreateExtents2D(0, 0, 100, 100), 8);
         }
 
-        private static void addRandomEntries(ISpatialIndex<IExtents, int> rTree)
+        private void addRandomEntries(ISpatialIndex<IExtents, int> rTree)
         {
             Random rnd = new Random();
 

@@ -28,7 +28,8 @@ namespace ProjNet.CoordinateSystems
     /// implements datum transformations between geographic coordinate systems.
     /// </summary>
     public class GeographicTransform<TCoordinate> : Info, IGeographicTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly IGeographicCoordinateSystem<TCoordinate> _source;
@@ -125,8 +126,8 @@ namespace ProjNet.CoordinateSystems
                 return false;
             }
 
-            return g.Source.EqualParams(Source) 
-                && g.Target.EqualParams(Target);
+            return g.Source.EqualParams(Source)
+                   && g.Target.EqualParams(Target);
         }
 
         #endregion

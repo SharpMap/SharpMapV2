@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries.Geometries3D
 {
@@ -27,7 +28,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 	/// The boundary of a Point3D is the empty set.
 	/// </summary>
 	[Serializable]
-	public class Point3D : Point
+	public class Point3D : Point, IPoint3D
 	{
 		private static readonly Point3D _empty = new Point3D();
 		private Double _z;

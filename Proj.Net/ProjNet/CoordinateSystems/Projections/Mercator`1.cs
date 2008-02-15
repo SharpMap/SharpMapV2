@@ -66,7 +66,8 @@ namespace ProjNet.CoordinateSystems.Projections
     /// </para>
     /// </remarks>
     internal class Mercator<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly Double _falseEasting;
@@ -82,7 +83,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <remarks>
         /// </remarks>
         public Mercator(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
+            : this(parameters, coordinateFactory, false) {}
 
 
         /// <summary>
@@ -146,7 +147,8 @@ namespace ProjNet.CoordinateSystems.Projections
         ///    </item>
         ///  </list>
         ///</remarks>
-        public Mercator(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+        public Mercator(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory,
+                        Boolean isInverse)
             : base(parameters, coordinateFactory, isInverse)
         {
             Authority = "EPSG";
@@ -184,12 +186,12 @@ namespace ProjNet.CoordinateSystems.Projections
 
             _lon_center = DegreesToRadians(central_meridian.Value);
             _lat_origin = DegreesToRadians(latitude_of_origin.Value);
-            _falseEasting = false_easting.Value * _metersPerUnit;
-            _falseNorthing = false_northing.Value * _metersPerUnit;
+            _falseEasting = false_easting.Value*_metersPerUnit;
+            _falseNorthing = false_northing.Value*_metersPerUnit;
 
             if (scale_factor == null) //This is a two standard parallel Mercator projection (2SP)
             {
-                _k0 = Math.Cos(_lat_origin) / Math.Sqrt(1.0 - E2 * Math.Sin(_lat_origin) * Math.Sin(_lat_origin));
+                _k0 = Math.Cos(_lat_origin)/Math.Sqrt(1.0 - E2*Math.Sin(_lat_origin)*Math.Sin(_lat_origin));
                 AuthorityCode = 9805;
                 Name = "Mercator_2SP";
             }
@@ -220,13 +222,13 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            if (Double.IsNaN((Double)lonlat[0]) || Double.IsNaN((Double)lonlat[1]))
+            if (Double.IsNaN((Double) lonlat[0]) || Double.IsNaN((Double) lonlat[1]))
             {
                 return CreateCoordinate(Double.NaN, Double.NaN);
             }
 
-            Double dLongitude = DegreesToRadians((Double)lonlat[0]);
-            Double dLatitude = DegreesToRadians((Double)lonlat[1]);
+            Double dLongitude = DegreesToRadians((Double) lonlat[0]);
+            Double dLatitude = DegreesToRadians((Double) lonlat[1]);
 
             /* Forward equations */
             if (Math.Abs(Math.Abs(dLatitude) - HalfPI) <= Epsilon)
@@ -236,22 +238,22 @@ namespace ProjNet.CoordinateSystems.Projections
             }
             else
             {
-                Double esinphi = E * Math.Sin(dLatitude);
+                Double esinphi = E*Math.Sin(dLatitude);
                 Double semiMajor = SemiMajor;
 
-                Double x = _falseEasting + semiMajor * _k0 * (dLongitude - _lon_center);
+                Double x = _falseEasting + semiMajor*_k0*(dLongitude - _lon_center);
                 Double y = _falseNorthing +
-                           semiMajor * _k0 *
-                           Math.Log(Math.Tan(PI * 0.25 + dLatitude * 0.5)
-                            * Math.Pow((1 - esinphi) / (1 + esinphi), E * 0.5));
+                           semiMajor*_k0*
+                           Math.Log(Math.Tan(PI*0.25 + dLatitude*0.5)
+                                    *Math.Pow((1 - esinphi)/(1 + esinphi), E*0.5));
 
                 if (lonlat.ComponentCount < 3)
                 {
-                    return CreateCoordinate(x / _metersPerUnit, y / _metersPerUnit);
+                    return CreateCoordinate(x/_metersPerUnit, y/_metersPerUnit);
                 }
                 else
                 {
-                    return CreateCoordinate(x / _metersPerUnit, y / _metersPerUnit, (Double)lonlat[2]);
+                    return CreateCoordinate(x/_metersPerUnit, y/_metersPerUnit, (Double) lonlat[2]);
                 }
             }
         }
@@ -269,21 +271,21 @@ namespace ProjNet.CoordinateSystems.Projections
 
             /* Inverse equations
               -----------------*/
-            Double dX = p[Ordinates.X] * _metersPerUnit - _falseEasting;
-            Double dY = p[Ordinates.Y] * _metersPerUnit - _falseNorthing;
-            Double smallT = Math.Exp(-dY / (semiMajor * _k0)); // t
+            Double dX = p[Ordinates.X]*_metersPerUnit - _falseEasting;
+            Double dY = p[Ordinates.Y]*_metersPerUnit - _falseNorthing;
+            Double smallT = Math.Exp(-dY/(semiMajor*_k0)); // t
 
-            Double chi = HalfPI - 2 * Math.Atan(smallT);
+            Double chi = HalfPI - 2*Math.Atan(smallT);
             Double e4 = Math.Pow(E, 4);
             Double e6 = Math.Pow(E, 6);
             Double e8 = Math.Pow(E, 8);
 
-            dLatitude = chi + (E2 * 0.5 + 5 * e4 / 24 + e6 / 12 + 13 * e8 / 360) * Math.Sin(2 * chi)
-                        + (7 * e4 / 48 + 29 * e6 / 240 + 811 * e8 / 11520) * Math.Sin(4 * chi) +
-                        +(7 * e6 / 120 + 81 * e8 / 1120) * Math.Sin(6 * chi) +
-                        +(4279 * e8 / 161280) * Math.Sin(8 * chi);
+            dLatitude = chi + (E2*0.5 + 5*e4/24 + e6/12 + 13*e8/360)*Math.Sin(2*chi)
+                        + (7*e4/48 + 29*e6/240 + 811*e8/11520)*Math.Sin(4*chi) +
+                        +(7*e6/120 + 81*e8/1120)*Math.Sin(6*chi) +
+                        +(4279*e8/161280)*Math.Sin(8*chi);
 
-            dLongitude = dX / (semiMajor * _k0) + _lon_center;
+            dLongitude = dX/(semiMajor*_k0) + _lon_center;
 
             if (p.ComponentCount < 3)
             {
@@ -291,7 +293,7 @@ namespace ProjNet.CoordinateSystems.Projections
             }
             else
             {
-                return CreateCoordinate(RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), (Double)p[2]);
+                return CreateCoordinate(RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), (Double) p[2]);
             }
         }
 
@@ -304,7 +306,7 @@ namespace ProjNet.CoordinateSystems.Projections
             if (_inverse == null)
             {
                 _inverse = new Mercator<TCoordinate>(
-                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters), 
+                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters),
                     CoordinateFactory, !_isInverse);
             }
 

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
 using GeoAPI.Utilities;
+using GeoAPI.Coordinates;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -29,7 +30,7 @@ namespace SharpMap.SimpleGeometries
     [Serializable]
     public class LineString : Curve, ILineString
     {
-        private readonly List<IPoint> _vertices = new List<IPoint>();
+        private readonly List<ICoordinate> _vertices = new List<ICoordinate>();
         private Extents _extents = new Extents();
 
         /// <summary>
@@ -40,7 +41,19 @@ namespace SharpMap.SimpleGeometries
         {
             foreach (IPoint p in vertices)
             {
-                _vertices.Add(p.Clone() as IPoint);
+                _vertices.Add(p.Coordinate);
+            }
+        }
+
+        /// <summary>
+        /// Initializes an instance of a LineString from a set of vertices.
+        /// </summary>
+        /// <param name="vertices"></param>
+        public LineString(IEnumerable<ICoordinate> vertices)
+        {
+            foreach (ICoordinate p in vertices)
+            {
+                _vertices.Add(p);
             }
         }
 
@@ -48,16 +61,8 @@ namespace SharpMap.SimpleGeometries
         /// Initializes an instance of a LineString.
         /// </summary>
         public LineString()
-            : this(new Point[0])
+            : this(new ICoordinate[0])
         {
-        }
-
-        /// <summary>
-        /// Gets or sets the collection of vertices in this Geometry.
-        /// </summary>
-        public virtual IList<IPoint> Vertices
-        {
-            get { return _vertices; }
         }
 
         #region OpenGIS Methods
@@ -70,7 +75,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns></returns>
         public IPoint GetPoint(Int32 index)
         {
-            return _vertices[index];
+            return new Point(Coordinates[index]);
         }
 
         /// <summary>
@@ -97,13 +102,13 @@ namespace SharpMap.SimpleGeometries
             {
                 return false;
             }
-            if (l.Vertices.Count != Vertices.Count)
+            if (l.PointCount != PointCount)
             {
                 return false;
             }
-            for (Int32 i = 0; i < l.Vertices.Count; i++)
+            for (Int32 i = 0; i < l.PointCount; i++)
             {
-                if (!l.Vertices[i].Equals(Vertices[i]))
+                if (!l.Coordinates[i].Equals(Coordinates[i]))
                 {
                     return false;
                 }
@@ -121,9 +126,9 @@ namespace SharpMap.SimpleGeometries
         {
             Int32 hash = 0;
 
-            for (Int32 i = 0; i < Vertices.Count; i++)
+            for (Int32 i = 0; i < PointCount; i++)
             {
-                hash = hash ^ Vertices[i].GetHashCode();
+                hash = hash ^ Coordinates[i].GetHashCode();
             }
 
             return hash;
@@ -151,13 +156,13 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                List<IPoint> verts = new List<IPoint>(_vertices.Count);
+                List<ICoordinate> verts = new List<ICoordinate>(_vertices.Count);
 
                 for (Int32 i = 0; i < _vertices.Count; i++)
                 {
-                    if (!verts.Exists(delegate(IPoint p) { return p.Equals(_vertices[i]); }))
+                    if (!verts.Exists(delegate(ICoordinate p) { return p.Equals(_vertices[i]); }))
                     {
-                        verts.Add(_vertices[i]);
+                        verts.Add(Coordinates[i]);
                     }
                 }
 
@@ -269,7 +274,7 @@ namespace SharpMap.SimpleGeometries
                     throw new InvalidOperationException("No starting point found: LineString has no vertices.");
                 }
 
-                return _vertices[0];
+                return new Point(Coordinates[0]);
             }
         }
 
@@ -286,7 +291,7 @@ namespace SharpMap.SimpleGeometries
                     throw new InvalidOperationException("No endpoint found: LineString has no vertices.");
                 }
 
-                return _vertices[_vertices.Count - 1];
+                return new Point(Coordinates[PointCount - 1]);
             }
         }
 
@@ -306,16 +311,16 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                if (Vertices.Count < 2)
+                if (PointCount < 2)
                 {
                     return 0;
                 }
 
                 Double sum = 0;
 
-                for (Int32 i = 1; i < Vertices.Count; i++)
+                for (Int32 i = 1; i < PointCount; i++)
                 {
-                    sum += Vertices[i].Distance(Vertices[i - 1]);
+                    sum += Coordinates[i].Distance(Coordinates[i - 1]);
                 }
 
                 return sum;
@@ -342,12 +347,12 @@ namespace SharpMap.SimpleGeometries
             {
                 Extents bbox = new Extents();
 
-                if (Vertices == null || Vertices.Count == 0)
+                if (Coordinates == null || PointCount == 0)
                 {
                     return bbox;
                 }
 
-                foreach (Point p in Vertices)
+                foreach (ICoordinate p in Coordinates)
                 {
                     bbox.ExpandToInclude(p);
                 }
@@ -372,14 +377,8 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A copy of the LineString instance.</returns>
         public override Geometry Clone()
         {
-            LineString l = new LineString();
-
-            for (Int32 i = 0; i < _vertices.Count; i++)
-            {
-                l.Vertices.Add(_vertices[i].Clone() as Point);
-            }
-
-            return l;
+            ICoordinateSequence coordinates = Coordinates.Clone();
+            return new LineString((IEnumerable<ICoordinate>)coordinates);
         }
 
         #endregion
@@ -392,5 +391,10 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        public override OgcGeometryType GeometryType
+        {
+            get { return OgcGeometryType.LineString; }
+        }
     }
 }

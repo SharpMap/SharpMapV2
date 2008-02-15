@@ -33,6 +33,12 @@ namespace SharpMap.SimpleGeometries
         /// <param name="vertices"></param>
         public LinearRing(IEnumerable<IPoint> vertices)
             : base(vertices) { }
+        /// <summary>
+        /// Initializes an instance of a LinearRing from a set of vertices
+        /// </summary>
+        /// <param name="vertices"></param>
+        public LinearRing(IEnumerable<ICoordinate> vertices)
+            : base(vertices) { }
 
         /// <summary>
         /// Initializes an instance of a LinearRing
@@ -45,7 +51,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A copy of the LinearRing instance.</returns>
         public override Geometry Clone()
         {
-            LinearRing ring = new LinearRing(Vertices);
+            LinearRing ring = new LinearRing((IEnumerable<ICoordinate>)Coordinates);
             return ring;
         }
 
@@ -55,9 +61,9 @@ namespace SharpMap.SimpleGeometries
         /// <returns>Returns true if ring is oriented counter-clockwise.</returns>
         public Boolean IsCcw()
         {
-            IPoint hip, p, prev, next;
+            ICoordinate hip, prev, next;
             Int32 hii, i;
-            Int32 nPts = Vertices.Count;
+            Int32 nPts = PointCount;
 
             // check that this is a valid ring - if not, simply return a dummy value
             if (nPts < 4)
@@ -67,12 +73,12 @@ namespace SharpMap.SimpleGeometries
 
             // algorithm to check if a Ring is stored in CCW order
             // find highest point
-            hip = Vertices[0];
+            hip = Coordinates[0];
             hii = 0;
 
             for (i = 1; i < nPts; i++)
             {
-                p = Vertices[i];
+                ICoordinate p = Coordinates[i];
 
                 if (p[Ordinates.Y] > hip[Ordinates.Y])
                 {
@@ -96,8 +102,8 @@ namespace SharpMap.SimpleGeometries
                 iNext = 1;
             }
 
-            prev = Vertices[iPrev];
-            next = Vertices[iNext];
+            prev = Coordinates[iPrev];
+            next = Coordinates[iNext];
 
             // translate so that hip is at the origin.
             // This will not affect the area calculation, and will avoid
@@ -137,21 +143,21 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                if (Vertices.Count < 3)
+                if (PointCount < 3)
                 {
                     return 0;
                 }
 
                 Double sum = 0;
-                Double ax = Vertices[0][Ordinates.X];
-                Double ay = Vertices[0][Ordinates.Y];
+                Double ax = Coordinates[0][Ordinates.X];
+                Double ay = Coordinates[0][Ordinates.Y];
 
-                for (Int32 i = 1; i < Vertices.Count - 1; i++)
+                for (Int32 i = 1; i < PointCount - 1; i++)
                 {
-                    Double bx = Vertices[i][Ordinates.X];
-                    Double by = Vertices[i][Ordinates.Y];
-                    Double cx = Vertices[i + 1][Ordinates.X];
-                    Double cy = Vertices[i + 1][Ordinates.Y];
+                    Double bx = Coordinates[i][Ordinates.X];
+                    Double by = Coordinates[i][Ordinates.Y];
+                    Double cx = Coordinates[i + 1][Ordinates.X];
+                    Double cy = Coordinates[i + 1][Ordinates.Y];
 
                     sum += ax * by - ay * bx +
                            ay * cx - ax * cy +
@@ -170,22 +176,23 @@ namespace SharpMap.SimpleGeometries
         public Boolean IsPointWithin(Point p)
         {
             Boolean c = false;
-            for (Int32 i = 0; i < Vertices.Count; i++)
+            for (Int32 i = 0; i < PointCount; i++)
             {
-                for (Int32 j = i + 1; j < Vertices.Count - 1; j++)
+                for (Int32 j = i + 1; j < PointCount - 1; j++)
                 {
                     // this is horrible code to read. If the unit tests were working,
                     // I could fix it without worrying I'd break something!
-                    if ((((Vertices[i][Ordinates.Y] <= p.Y) && (p.Y < Vertices[j][Ordinates.Y])) ||
-                         ((Vertices[j][Ordinates.Y] <= p.Y) && (p.Y < Vertices[i][Ordinates.Y]))) &&
-                        (p.X < (Vertices[j][Ordinates.X] - Vertices[i][Ordinates.X]) 
-                            * (p.Y - Vertices[i][Ordinates.Y]) / (Vertices[j][Ordinates.Y] 
-                            - Vertices[i][Ordinates.Y]) + Vertices[i][Ordinates.X]))
+                    if ((((Coordinates[i][Ordinates.Y] <= p.Y) && (p.Y < Coordinates[j][Ordinates.Y])) ||
+                         ((Coordinates[j][Ordinates.Y] <= p.Y) && (p.Y < Coordinates[i][Ordinates.Y]))) &&
+                        (p.X < (Coordinates[j][Ordinates.X] - Coordinates[i][Ordinates.X])
+                            * (p.Y - Coordinates[i][Ordinates.Y]) / (Coordinates[j][Ordinates.Y]
+                            - Coordinates[i][Ordinates.Y]) + Coordinates[i][Ordinates.X]))
                     {
                         c = !c;
                     }
                 }
             }
+
             return c;
         }
 

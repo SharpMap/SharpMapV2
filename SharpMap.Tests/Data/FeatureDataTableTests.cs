@@ -1,17 +1,26 @@
 using System;
 using System.Data;
 using GeoAPI.Geometries;
+using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.SimpleGeometries;
 
 namespace SharpMap.Tests.Data
 {
     [TestFixture]
     public class FeatureDataTableTests
     {
-        private static readonly IGeometryFactory _geoFactory
-            = new SharpMap.SimpleGeometries.GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
+            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
 
         [Test]
         public void CreateTable()

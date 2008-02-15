@@ -105,16 +105,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Coordinates\BufferedCoordinate2D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coordinates\BufferedCoordinate2DFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coordinates\BufferedCoordinate2DSequence.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Coordinates\BufferedCoordinate2DSequenceFactory.cs" />
     <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />

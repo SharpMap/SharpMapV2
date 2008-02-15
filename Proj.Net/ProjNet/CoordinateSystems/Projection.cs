@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -92,10 +93,9 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return _parameters.Find(delegate(ProjectionParameter par)
-                                        {
-                                            return par.Name.Equals(name, StringComparison.OrdinalIgnoreCase);
-                                        });
+                return
+                    _parameters.Find(
+                        delegate(ProjectionParameter par) { return par.Name.Equals(name, StringComparison.OrdinalIgnoreCase); });
             }
         }
 
@@ -137,8 +137,8 @@ namespace ProjNet.CoordinateSystems
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, 
-                    "<CS_Projection Classname=\"{0}\">{1}", ClassName, InfoXml);
+                sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
+                                "<CS_Projection Classname=\"{0}\">{1}", ClassName, InfoXml);
 
                 foreach (ProjectionParameter param in Parameters)
                 {
@@ -167,10 +167,7 @@ namespace ProjNet.CoordinateSystems
             foreach (ProjectionParameter parameter in _parameters)
             {
                 ProjectionParameter found = _parameters.Find(
-                    delegate(ProjectionParameter seek)
-                    {
-                        return seek.Name.Equals(parameter.Name, StringComparison.OrdinalIgnoreCase);
-                    });
+                    delegate(ProjectionParameter seek) { return seek.Name.Equals(parameter.Name, StringComparison.OrdinalIgnoreCase); });
 
                 if (found == null)
                 {
@@ -202,7 +199,7 @@ namespace ProjNet.CoordinateSystems
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

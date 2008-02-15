@@ -37,7 +37,8 @@ namespace ProjNet.CoordinateSystems
     /// </remarks>
     public class GeographicCoordinateSystem<TCoordinate> : HorizontalCoordinateSystem<TCoordinate>,
                                                            IGeographicCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>, IComputable<Double, TCoordinate>,
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+            IComputable<Double, TCoordinate>,
             IConvertible
     {
         private readonly IAngularUnit _angularUnit;
@@ -57,11 +58,11 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        protected internal GeographicCoordinateSystem(IExtents<TCoordinate> extents, 
-            IAngularUnit angularUnit, IHorizontalDatum horizontalDatum,
-            IPrimeMeridian primeMeridian, IEnumerable<IAxisInfo> axisInfo, 
-            String name, String authority, Int64 authorityCode, String alias, 
-            String abbreviation, String remarks)
+        protected internal GeographicCoordinateSystem(IExtents<TCoordinate> extents,
+                                                      IAngularUnit angularUnit, IHorizontalDatum horizontalDatum,
+                                                      IPrimeMeridian primeMeridian, IEnumerable<IAxisInfo> axisInfo,
+                                                      String name, String authority, Int64 authorityCode, String alias,
+                                                      String abbreviation, String remarks)
             : base(extents, horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _angularUnit = angularUnit;
@@ -85,10 +86,11 @@ namespace ProjNet.CoordinateSystems
 
                 // TODO: DefaultEnvelope should be (-180, 180; -90, 90)
                 return new GeographicCoordinateSystem<TCoordinate>(null,
-                    CoordinateSystems.AngularUnit.Degrees, 
-                    CoordinateSystems.HorizontalDatum.Wgs84,
-                    CoordinateSystems.PrimeMeridian.Greenwich, axes,
-                    "WGS 84", "EPSG", 4326, String.Empty, String.Empty, String.Empty);
+                                                                   CoordinateSystems.AngularUnit.Degrees,
+                                                                   CoordinateSystems.HorizontalDatum.Wgs84,
+                                                                   CoordinateSystems.PrimeMeridian.Greenwich, axes,
+                                                                   "WGS 84", "EPSG", 4326, String.Empty, String.Empty,
+                                                                   String.Empty);
             }
         }
 
@@ -203,7 +205,7 @@ namespace ProjNet.CoordinateSystems
 
         public override Boolean EqualParams(IInfo other)
         {
-            GeographicCoordinateSystem<TCoordinate> gcs = 
+            GeographicCoordinateSystem<TCoordinate> gcs =
                 other as GeographicCoordinateSystem<TCoordinate>;
 
             if (ReferenceEquals(gcs, null))
