@@ -296,7 +296,7 @@ namespace SharpMap.SimpleGeometries
             }
             else
             {
-                GeometryCollection union = new GeometryCollection();
+                GeometryCollection union = new GeometryCollection(2);
                 union.Add(this);
                 union.Add(geometry);
                 return union;
@@ -344,7 +344,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A copy of the GeometryCollection instance.</returns>
         public override Geometry Clone()
         {
-            GeometryCollection geoms = new GeometryCollection();
+            GeometryCollection geoms = new GeometryCollection(Count);
 
             foreach (TGeometry geometry in this)
             {

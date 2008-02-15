@@ -456,7 +456,7 @@ namespace SharpMap.SimpleGeometries
                 return this;
             }
 
-            GeometryCollection union = new GeometryCollection();
+            GeometryCollection union = new GeometryCollection(1);
             union.Add(this);
             return union;
         }

@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBufferedCoordinate2D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBufferedCoordinate2DTests", "..\NTS\ManagedBufferedCoordinate2DTests\ManagedBufferedCoordinate2DTests.csproj", "{66EF7231-2966-4FCA-8113-D1B2686447FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.SimpleGeometries.Tests", "SharpMap.SimpleGeometries.Tests\SharpMap.SimpleGeometries.Tests.csproj", "{D177DBFE-0DDC-4E15-8136-010193F02513}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Net20|Any CPU = Debug_Net20|Any CPU
@@ -216,6 +218,18 @@ Global
 		{66EF7231-2966-4FCA-8113-D1B2686447FF}.Release_Net35|Any CPU.Build.0 = Release|Any CPU
 		{66EF7231-2966-4FCA-8113-D1B2686447FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66EF7231-2966-4FCA-8113-D1B2686447FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Debug_Net20|Any CPU.ActiveCfg = Debug|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Debug_Net20|Any CPU.Build.0 = Debug|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Debug_Net35|Any CPU.ActiveCfg = Debug|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Debug_Net35|Any CPU.Build.0 = Debug|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Release_Net20|Any CPU.ActiveCfg = Release|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Release_Net20|Any CPU.Build.0 = Release|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Release_Net35|Any CPU.ActiveCfg = Release|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Release_Net35|Any CPU.Build.0 = Release|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D177DBFE-0DDC-4E15-8136-010193F02513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

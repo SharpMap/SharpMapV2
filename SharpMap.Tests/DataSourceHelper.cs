@@ -61,25 +61,29 @@ namespace SharpMap.Tests
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A geometry collection";
-            row.Geometry =
-                WktEncoder.ToGeometry("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))", geoFactory);
+            row.Geometry = WktEncoder.ToGeometry(
+                "GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))", 
+                geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multipolygon";
-            row.Geometry =
-                WktEncoder.ToGeometry("MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))", geoFactory);
+            row.Geometry = WktEncoder.ToGeometry(
+                "MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))", 
+                geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A linestring";
-            row.Geometry = WktEncoder.ToGeometry("LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)", geoFactory);
+            row.Geometry = WktEncoder.ToGeometry(
+                "LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multilinestring";
-            row.Geometry =
-                WktEncoder.ToGeometry("MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))", geoFactory);
+            row.Geometry = WktEncoder.ToGeometry(
+                "MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))", 
+                geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
@@ -91,12 +95,14 @@ namespace SharpMap.Tests
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A point";
-            row.Geometry = WktEncoder.ToGeometry("POINT (58.813841159 84.7561198972)", geoFactory);
+            row.Geometry = WktEncoder.ToGeometry(
+                "POINT (58.813841159 84.7561198972)", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multipoint";
-            row.Geometry = WktEncoder.ToGeometry("MULTIPOINT (20 100, 45 32, 120 54)", geoFactory);
+            row.Geometry = WktEncoder.ToGeometry(
+                "MULTIPOINT (20 100, 45 32, 120 54)", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());

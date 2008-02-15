@@ -303,12 +303,12 @@ namespace SharpMap.SimpleGeometries
 
         public IGeometryCollection CreateGeometryCollection()
         {
-            return new GeometryCollection();
+            return new GeometryCollection(4);
         }
 
         public IGeometryCollection CreateGeometryCollection(IEnumerable<IGeometry> geometries)
         {
-            GeometryCollection collection = new GeometryCollection();
+            GeometryCollection collection = new GeometryCollection(16);
 
             foreach (IGeometry geometry in geometries)
             {
