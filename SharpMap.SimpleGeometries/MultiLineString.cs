@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -25,7 +26,7 @@ namespace SharpMap.SimpleGeometries
     /// A MultiLineString is a MultiCurve whose elements are LineStrings.
     /// </summary>
     [Serializable]
-    public class MultiLineString : MultiCurve<LineString>
+    public class MultiLineString : MultiCurve<LineString>, IMultiLineString
     {
         /// <summary>
         /// Initializes an instance of a MultiLineString
@@ -59,5 +60,69 @@ namespace SharpMap.SimpleGeometries
 
             return multiLineString;
         }
+
+        #region IMultiLineString Members
+
+        public new ILineString this[Int32 index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IMultiLineString Reverse()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IList<IGeometry> Members
+
+        IGeometry IList<IGeometry>.this[Int32 index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable<IGeometry> Members
+
+        IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEnumerable<ILineString> Members
+
+        public new IEnumerator<ILineString> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

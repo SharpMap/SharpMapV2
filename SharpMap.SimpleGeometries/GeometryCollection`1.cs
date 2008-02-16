@@ -364,7 +364,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns></returns>
         public IEnumerator<TGeometry> GetEnumerator()
         {
-            foreach (TGeometry g in this)
+            foreach (TGeometry g in _geometries)
             {
                 yield return g;
             }

@@ -283,7 +283,9 @@ namespace SharpMap.SimpleGeometries
 
         public IMultiLineString CreateMultiLineString()
         {
-            throw new NotImplementedException();
+            MultiLineString l = new MultiLineString();
+            l.Factory = this;
+            return l;
         }
 
         public IMultiLineString CreateMultiLineString(IEnumerable<ILineString> lineStrings)
@@ -293,7 +295,9 @@ namespace SharpMap.SimpleGeometries
 
         public IMultiPolygon CreateMultiPolygon()
         {
-            throw new NotImplementedException();
+            MultiPolygon p = new MultiPolygon();
+            p.Factory = this;
+            return p;
         }
 
         public IMultiPolygon CreateMultiPolygon(IEnumerable<IPolygon> polygons)

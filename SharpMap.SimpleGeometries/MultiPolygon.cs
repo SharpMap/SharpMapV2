@@ -16,6 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -23,7 +25,7 @@ namespace SharpMap.SimpleGeometries
 	/// A MultiPolygon is a MultiSurface whose elements are Polygons.
 	/// </summary>
 	[Serializable]
-	public class MultiPolygon : MultiSurface<Polygon>
+	public class MultiPolygon : MultiSurface<Polygon>, IMultiPolygon
 	{
 		/// <summary>
 		/// Instantiates a MultiPolygon
@@ -73,5 +75,65 @@ namespace SharpMap.SimpleGeometries
 
 			return multiPolygon;
 		}
-	}
+
+        #region IMultiPolygon Members
+
+        public new IPolygon this[Int32 index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IList<IGeometry> Members
+
+
+        IGeometry System.Collections.Generic.IList<IGeometry>.this[Int32 index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable<IGeometry> Members
+
+        IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IEnumerable<IPolygon> Members
+
+        public new IEnumerator<IPolygon> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }
