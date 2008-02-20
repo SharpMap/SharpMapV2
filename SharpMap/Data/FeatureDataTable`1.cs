@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 
 namespace SharpMap.Data
@@ -153,8 +154,20 @@ namespace SharpMap.Data
             setIdColumn(idColumnName);
         }
 
+        public FeatureDataTable(String idColumnName, IGeometryFactory factory)
+            : base(factory)
+        {
+            setIdColumn(idColumnName);
+        }
+
         public FeatureDataTable(String tableName, String idColumnName)
             : base(tableName)
+        {
+            setIdColumn(idColumnName);
+        }
+
+        public FeatureDataTable(String tableName, String idColumnName, IGeometryFactory factory)
+            : base(tableName, factory)
         {
             setIdColumn(idColumnName);
         }

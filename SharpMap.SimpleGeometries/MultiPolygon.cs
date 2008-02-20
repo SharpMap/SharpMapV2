@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using GeoAPI.Utilities;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -131,7 +132,12 @@ namespace SharpMap.SimpleGeometries
 
         public new IEnumerator<IPolygon> GetEnumerator()
         {
-            throw new NotImplementedException();
+            IEnumerator<Polygon> polygons = base.GetEnumerator();
+
+            while (polygons.MoveNext())
+            {
+                yield return polygons.Current;
+            }
         }
 
         #endregion

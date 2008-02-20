@@ -22,11 +22,18 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
 {
-    internal static class BoundingBoxSpatialOperations
+    internal class BoundingBoxSpatialOperations
     {
-        internal static Geometry Difference(Extents lhs, Extents rhs)
+        private readonly GeometryFactory _factory;
+
+        internal BoundingBoxSpatialOperations(GeometryFactory factory)
         {
-            Extents union = new Extents(lhs, rhs);
+            _factory = factory;
+        }
+
+        internal Geometry Difference(Extents lhs, Extents rhs)
+        {
+            Extents union = new Extents(_factory, lhs, rhs);
 
             List<Extents> components = new List<Extents>();
             components.AddRange(union.Split(rhs.LowerLeft));
@@ -42,7 +49,7 @@ namespace SharpMap.SimpleGeometries
                 }
             }
 
-            Extents diff = Extents.Join(components.ToArray());
+            Extents diff = Extents.Join(_factory, components.ToArray());
 
             if (diff.Contains(rhs))
             {
@@ -54,13 +61,13 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
-        internal static Geometry Union(Extents lhs, Extents rhs)
+        internal Geometry Union(Extents lhs, Extents rhs)
         {
-            Extents union = new Extents(lhs, rhs);
+            Extents union = new Extents(_factory, lhs, rhs);
             return union.ToGeometry();
         }
 
-        internal static Geometry Union(Geometry lhs, Geometry rhs)
+        internal Geometry Union(Geometry lhs, Geometry rhs)
         {
             if (lhs == null) throw new ArgumentNullException("lhs");
             if (rhs == null) throw new ArgumentNullException("rhs");
@@ -85,27 +92,27 @@ namespace SharpMap.SimpleGeometries
                 return rhs;
             }
 
-            return new Extents(lhs.Extents, rhs.Extents).ToGeometry();
+            return new Extents(_factory, lhs.Extents, rhs.Extents).ToGeometry();
         }
 
-        internal static IGeometry Union(IGeometry lhs, IGeometry rhs)
+        internal IGeometry Union(IGeometry lhs, IGeometry rhs)
         {
             return Union(
                 ((Geometry)lhs).ExtentsInternal,
                 ((Geometry)rhs).ExtentsInternal);
         }
 
-        internal static Geometry Intersection(Extents lhs, Extents rhs)
+        internal Geometry Intersection(Extents lhs, Extents rhs)
         {
-            return Extents.Intersection(lhs, rhs).ToGeometry();
+            return Extents.Intersection(_factory, lhs, rhs).ToGeometry();
         }
 
-        internal static Geometry Intersection(Geometry lhs, Geometry rhs)
+        internal Geometry Intersection(Geometry lhs, Geometry rhs)
         {
             return Intersection(lhs.ExtentsInternal, rhs.ExtentsInternal);
         }
 
-        internal static IGeometry Intersection(IGeometry lhs, IGeometry rhs)
+        internal IGeometry Intersection(IGeometry lhs, IGeometry rhs)
         {
             return Intersection(
                 ((Geometry)lhs).ExtentsInternal, 

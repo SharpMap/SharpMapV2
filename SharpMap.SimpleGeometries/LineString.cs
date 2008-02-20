@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using GeoAPI.Geometries;
 using GeoAPI.Utilities;
 using GeoAPI.Coordinates;
+using NPack;
+using NPack.Interfaces;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -31,7 +33,6 @@ namespace SharpMap.SimpleGeometries
     public class LineString : Curve, ILineString
     {
         private readonly List<ICoordinate> _vertices = new List<ICoordinate>();
-        private Extents _extents = new Extents();
 
         /// <summary>
         /// Initializes an instance of a LineString from a set of vertices.
@@ -84,7 +85,7 @@ namespace SharpMap.SimpleGeometries
         /// <remarks>This method is supplied as part of the OpenGIS Simple Features Specification</remarks>
         public override Int32 PointCount
         {
-            get { return _vertices.Count; }
+            get { return _vertices == null ? 0 : _vertices.Count; }
         }
 
         #endregion
@@ -108,7 +109,7 @@ namespace SharpMap.SimpleGeometries
             }
             for (Int32 i = 0; i < l.PointCount; i++)
             {
-                if (!l.Coordinates[i].Equals(Coordinates[i]))
+                if (!l._vertices[i].Equals(_vertices[i]))
                 {
                     return false;
                 }
@@ -185,6 +186,16 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
+        public override Dimensions BoundaryDimension
+        {
+            get { return Dimensions.Point; }
+        }
+
+        public override IPoint Centroid
+        {
+            get { return FactoryInternal.CreatePoint(ExtentsInternal.Center); }
+        }
+
         /// <summary>
         /// Returns the shortest distance between any two points in the two geometries
         /// as calculated in the spatial reference system of this Geometry.
@@ -236,7 +247,7 @@ namespace SharpMap.SimpleGeometries
         public override IGeometry Union(IGeometry geom)
         {
 #warning fake the union using a GeometryCollection
-            return BoundingBoxSpatialOperations.Union(this, geom as Geometry);
+            return FactoryInternal.SpatialOps.Union(this, geom as Geometry);
         }
 
         /// <summary>
@@ -345,14 +356,14 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                Extents bbox = new Extents();
+                Extents bbox = new Extents(FactoryInternal);
 
-                if (Coordinates == null || PointCount == 0)
+                if (PointCount == 0)
                 {
                     return bbox;
                 }
 
-                foreach (ICoordinate p in Coordinates)
+                foreach (ICoordinate p in _vertices)
                 {
                     bbox.ExpandToInclude(p);
                 }
@@ -361,12 +372,17 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
-        public override IEnumerable<Point> GetVertices()
+        public override IEnumerable<Point> GetVertexes()
         {
-            foreach (Point point in _vertices)
+            foreach (ICoordinate coordinate in _vertices)
             {
-                yield return point;
+                yield return (Point)FactoryInternal.CreatePoint(coordinate);
             }
+        }
+
+        public override IEnumerable<Point> GetVertexes(ITransformMatrix<DoubleComponent> transform)
+        {
+            throw new NotImplementedException();
         }
 
         #region ICloneable Members
@@ -377,8 +393,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A copy of the LineString instance.</returns>
         public override Geometry Clone()
         {
-            ICoordinateSequence coordinates = Coordinates.Clone();
-            return new LineString((IEnumerable<ICoordinate>)coordinates);
+            return FactoryInternal.CreateLineString(_vertices) as Geometry;
         }
 
         #endregion

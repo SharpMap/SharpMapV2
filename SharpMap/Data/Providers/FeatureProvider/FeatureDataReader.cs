@@ -34,12 +34,13 @@ namespace SharpMap.Data.Providers.FeatureProvider
         private DataTable _schemaTable;
         private readonly IExtents _queryRegion;
         private Int32 _currentRow = -1;
-        private Boolean _isDisposed; 
+        private Boolean _isDisposed;
+        private IGeometryFactory _factory;
         #endregion
 
         #region Object Construction / Disposal
 
-        internal FeatureDataReader(FeatureDataTable source, IExtents queryRegion, QueryExecutionOptions options)
+        internal FeatureDataReader(IGeometryFactory factory, FeatureDataTable source, IExtents queryRegion, QueryExecutionOptions options)
         {
             if (source == null) throw new ArgumentNullException("source");
 
@@ -48,11 +49,12 @@ namespace SharpMap.Data.Providers.FeatureProvider
                 throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
             }
 
+            _factory = factory;
             _options = options;
             _table = source.Clone();
-            _queryRegion = queryRegion;
+            _queryRegion = factory.CreateExtents(queryRegion);
 
-			foreach (FeatureDataRow row in source.Select(_queryRegion))
+            foreach (FeatureDataRow row in source.Select(_queryRegion))
 			{
 				_table.ImportRow(row);
             }

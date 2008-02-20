@@ -42,7 +42,7 @@ namespace SharpMap.SimpleGeometries
 		/// The mathematical centroid for this Surface as a Point.
 		/// The result is not guaranteed to be on this Surface.
 		/// </summary>
-		public virtual Point Centroid
+		public override IPoint Centroid
 		{
 			get { return ExtentsInternal.GetCentroid(); }
 		}

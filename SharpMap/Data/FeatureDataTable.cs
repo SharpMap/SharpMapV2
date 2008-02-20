@@ -133,6 +133,11 @@ namespace SharpMap.Data
         /// Initializes a new instance of the FeatureDataTable class with no arguments.
         /// </summary>
         public FeatureDataTable()
+            : this(null, null)
+        { }
+
+        public FeatureDataTable(IGeometryFactory factory)
+            : this(null, factory)
         {
             Constraints.CollectionChanged += OnConstraintsChanged;
         }
@@ -142,8 +147,15 @@ namespace SharpMap.Data
         /// table name.
         /// </summary>
         public FeatureDataTable(String tableName)
+            : base(tableName, null)
+        {
+            Constraints.CollectionChanged += OnConstraintsChanged;
+        }
+
+        public FeatureDataTable(String tableName, IGeometryFactory factory)
             : base(tableName)
         {
+            _geoFactory = factory;
             Constraints.CollectionChanged += OnConstraintsChanged;
         }
 
@@ -263,6 +275,11 @@ namespace SharpMap.Data
                     _rTreeIndex = null;
                 }
             }
+        }
+
+        public IGeometryFactory Factory
+        {
+            get { return _geoFactory; }
         }
 
         #endregion

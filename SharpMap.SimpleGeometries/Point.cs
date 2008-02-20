@@ -34,22 +34,21 @@ namespace SharpMap.SimpleGeometries
     public class Point : Geometry, IPoint2D, IComparable<Point>, IVector<DoubleComponent>
     {
         private static readonly Point _empty = new Point();
-        private static readonly Point _zero = new Point(0, 0);
-        private static readonly Point _one = new Point(1, 1);
+        //private static readonly Point _zero = new Point(0, 0);
+        //private static readonly Point _one = new Point(1, 1);
 
-        private Double _x = 0.0;
-        private Double _y = 0.0;
-        private Boolean _hasValue = false;
+        private ICoordinate2D _coord;
+        private Boolean _hasValue;
 
         /// <summary>
         /// Initializes a new Point
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
-        public Point(Double x, Double y)
+        internal Point(GeometryFactory factory, Double x, Double y)
         {
-            _x = x;
-            _y = y;
+            _coord = (ICoordinate2D)factory.CoordinateFactory.Create(x, y);
+            Factory = factory;
             SetNotEmpty();
         }
 
@@ -57,10 +56,9 @@ namespace SharpMap.SimpleGeometries
         /// Initializes a new Point
         /// </summary>
         /// <param name="coordinate">The coordinate used to define the point.</param>
-        public Point(ICoordinate coordinate)
+        internal Point(ICoordinate coordinate)
         {
-            _x = coordinate[Ordinates.X];
-            _y = coordinate[Ordinates.Y];
+            _coord = coordinate as ICoordinate2D;
             SetNotEmpty();
         }
 
@@ -80,37 +78,37 @@ namespace SharpMap.SimpleGeometries
         /// <param name="latMinutes">Latitude minutes</param>
         /// <param name="latSeconds">Latitude seconds</param>
         /// <returns>Point</returns>
-        public static Point FromDMS(Double longDegrees, Double longMinutes, Double longSeconds,
+        public static Point FromDMS(GeometryFactory factory, Double longDegrees, Double longMinutes, Double longSeconds,
             Double latDegrees, Double latMinutes, Double latSeconds)
         {
             Double x = longDegrees + longMinutes / 60 + longSeconds / 3600;
             Double y = latDegrees + latMinutes / 60 + latSeconds / 3600;
-            return new Point(x, y);
+            return (Point)factory.CreatePoint2D(x, y);
         }
 
-        /// <summary>
-        /// Gets an empty (uninitialized) point.
-        /// </summary>
-        /// <remarks>
-        /// Returns a new empty point. If checking if a point is empty, especially in a loop, use <see cref="IsEmpty"/>
-        /// since it doesn't create a new object.
-        /// </remarks>
-        public static Point Empty
-        {
-            get { return _empty.Clone() as Point; }
-        }
+        ///// <summary>
+        ///// Gets an empty (uninitialized) point.
+        ///// </summary>
+        ///// <remarks>
+        ///// Returns a new empty point. If checking if a point is empty, especially in a loop, use <see cref="IsEmpty"/>
+        ///// since it doesn't create a new object.
+        ///// </remarks>
+        //public static Point Empty
+        //{
+        //    get { return _empty.Clone() as Point; }
+        //}
 
-        /// <summary>
-        /// Gets a point representing (0, 0).
-        /// </summary>
-        /// <remarks>
-        /// Returns a new point set to (0, 0). If checking if a point is zero, especially in a loop, use the <see cref="X"/>
-        /// and <see cref="Y"/> properties, since these operations don't create a new object.
-        /// </remarks>
-        public static Point Zero
-        {
-            get { return _zero.Clone() as Point; }
-        }
+        ///// <summary>
+        ///// Gets a point representing (0, 0).
+        ///// </summary>
+        ///// <remarks>
+        ///// Returns a new point set to (0, 0). If checking if a point is zero, especially in a loop, use the <see cref="X"/>
+        ///// and <see cref="Y"/> properties, since these operations don't create a new object.
+        ///// </remarks>
+        //public static Point Zero
+        //{
+        //    get { return _zero.Clone() as Point; }
+        //}
 
         /// <summary>
         /// Returns a 2D <see cref="Point"/> instance from this <see cref="Point"/>.
@@ -122,11 +120,11 @@ namespace SharpMap.SimpleGeometries
         /// <returns><see cref="Point"/></returns>
         public Point AsPoint()
         {
-            return new Point(_x, _y);
+            return (Point)FactoryInternal.CreatePoint(_coord);
         }
 
         /// <summary>
-        /// Gets or sets the X coordinate of the point
+        /// Gets the X coordinate of the point.
         /// </summary>
         public Double X
         {
@@ -134,22 +132,22 @@ namespace SharpMap.SimpleGeometries
             {
                 if (!IsEmpty)
                 {
-                    return _x;
+                    return _coord[Ordinates.X];
                 }
                 else
                 {
                     throw new InvalidOperationException("Point is empty");
                 }
             }
-            set
-            {
-                _x = value;
-                SetNotEmpty();
-            }
+            //set
+            //{
+            //    _x = value;
+            //    SetNotEmpty();
+            //}
         }
 
         /// <summary>
-        /// Gets or sets the Y coordinate of the point
+        /// Gets the Y coordinate of the point.
         /// </summary>
         public Double Y
         {
@@ -157,18 +155,18 @@ namespace SharpMap.SimpleGeometries
             {
                 if (!IsEmpty)
                 {
-                    return _y;
+                    return _coord[Ordinates.Y];
                 }
                 else
                 {
                     throw new InvalidOperationException("Point is empty");
                 }
             }
-            set
-            {
-                _y = value;
-                SetNotEmpty();
-            }
+            //set
+            //{
+            //    _y = value;
+            //    SetNotEmpty();
+            //}
         }
 
         /// <summary>
@@ -197,30 +195,33 @@ namespace SharpMap.SimpleGeometries
                     throw (new ArgumentOutOfRangeException("index", "Point index out of bounds."));
                 }
             }
-            set
-            {
-                if (index == 0)
-                {
-                    X = value;
-                }
-                else if (index == 1)
-                {
-                    Y = value;
-                }
-                else
-                {
-                    throw (new ArgumentOutOfRangeException("index", "Point index out of bounds."));
-                }
+            //set
+            //{
+            //    if (index == 0)
+            //    {
+            //        X = value;
+            //    }
+            //    else if (index == 1)
+            //    {
+            //        Y = value;
+            //    }
+            //    else
+            //    {
+            //        throw (new ArgumentOutOfRangeException("index", "Point index out of bounds."));
+            //    }
 
-                SetNotEmpty();
-            }
+            //    SetNotEmpty();
+            //}
         }
 
         #region IPoint Members
 
         public ICoordinate Coordinate
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return _coord;
+            }
         }
 
         public Double this[Ordinates ordinate]
@@ -249,39 +250,39 @@ namespace SharpMap.SimpleGeometries
         #endregion
 
         #region Operators
-        /// <summary>
-        /// Vector + Vector
-        /// </summary>
-        /// <param name="v1">Vector</param>
-        /// <param name="v2">Vector</param>
-        /// <returns></returns>
-        public static Point operator +(Point v1, Point v2)
-        {
-            return new Point(v1.X + v2.X, v1.Y + v2.Y);
-        }
+        ///// <summary>
+        ///// Vector + Vector
+        ///// </summary>
+        ///// <param name="v1">Vector</param>
+        ///// <param name="v2">Vector</param>
+        ///// <returns></returns>
+        //public static Point operator +(Point v1, Point v2)
+        //{
+        //    return new Point(v1.X + v2.X, v1.Y + v2.Y);
+        //}
 
 
-        /// <summary>
-        /// Vector - Vector
-        /// </summary>
-        /// <param name="v1">Vector</param>
-        /// <param name="v2">Vector</param>
-        /// <returns>Cross product</returns>
-        public static Point operator -(Point v1, Point v2)
-        {
-            return new Point(v1.X - v2.X, v1.Y - v2.Y);
-        }
+        ///// <summary>
+        ///// Vector - Vector
+        ///// </summary>
+        ///// <param name="v1">Vector</param>
+        ///// <param name="v2">Vector</param>
+        ///// <returns>Cross product</returns>
+        //public static Point operator -(Point v1, Point v2)
+        //{
+        //    return new Point(v1.X - v2.X, v1.Y - v2.Y);
+        //}
 
-        /// <summary>
-        /// Vector * Scalar
-        /// </summary>
-        /// <param name="m">Vector</param>
-        /// <param name="d">Scalar (Double)</param>
-        /// <returns></returns>
-        public static Point operator *(Point m, Double d)
-        {
-            return new Point(m.X * d, m.Y * d);
-        }
+        ///// <summary>
+        ///// Vector * Scalar
+        ///// </summary>
+        ///// <param name="m">Vector</param>
+        ///// <param name="d">Scalar (Double)</param>
+        ///// <returns></returns>
+        //public static Point operator *(Point m, Double d)
+        //{
+        //    return new Point(m.X * d, m.Y * d);
+        //}
 
         #endregion
 
@@ -314,7 +315,7 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            return Tolerance.Equal(p.X, _x) && Tolerance.Equal(p.Y, _y);
+            return Tolerance.Equal(p.X, X) && Tolerance.Equal(p.Y, Y);
         }
 
         /// <summary>
@@ -324,7 +325,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A hash code for the current <see cref="GetHashCode"/>.</returns>
         public override Int32 GetHashCode()
         {
-            return _x.GetHashCode() ^ _y.GetHashCode() ^ IsEmpty.GetHashCode();
+            return X.GetHashCode() ^ Y.GetHashCode() ^ IsEmpty.GetHashCode();
         }
 
         /// <summary>
@@ -371,6 +372,16 @@ namespace SharpMap.SimpleGeometries
             {
                 return null;
             }
+        }
+
+        public override Dimensions BoundaryDimension
+        {
+            get { return Dimensions.False; }
+        }
+
+        public override IPoint Centroid
+        {
+            get { return (Point)Clone(); }
         }
 
         /// <summary>
@@ -473,7 +484,7 @@ namespace SharpMap.SimpleGeometries
 
             if (Equals(geom))
             {
-                return Empty;
+                return FactoryInternal.CreatePoint();
             }
 
             return geom;
@@ -503,7 +514,7 @@ namespace SharpMap.SimpleGeometries
                     return new Extents();
                 }
 
-                return new Extents(X, Y, X, Y);
+                return new Extents(FactoryInternal, X, Y, X, Y);
             }
         }
         /// <summary>
@@ -561,15 +572,20 @@ namespace SharpMap.SimpleGeometries
         {
             if (IsEmpty)
             {
-                return new Point();
+                return FactoryInternal.CreatePoint() as Geometry;
             }
 
-            return new Point(X, Y);
+            return new Point(FactoryInternal, X, Y);
         }
 
-        public override IEnumerable<Point> GetVertices()
+        public override IEnumerable<Point> GetVertexes()
         {
             yield return this;
+        }
+
+        public override IEnumerable<Point> GetVertexes(ITransformMatrix<DoubleComponent> transform)
+        {
+            throw new NotImplementedException();
         }
 
         #region IComparable<Point> Members
@@ -620,7 +636,7 @@ namespace SharpMap.SimpleGeometries
 
         protected virtual void SetEmpty()
         {
-            _x = _y = 0;
+            _coord = null;
             _hasValue = false;
         }
 
@@ -655,8 +671,8 @@ namespace SharpMap.SimpleGeometries
             get
             {
                 DoubleComponent[] components = new DoubleComponent[2];
-                components[0] = _x;
-                components[1] = _y;
+                components[0] = X;
+                components[1] = Y;
                 return components;
             }
             set
@@ -673,7 +689,8 @@ namespace SharpMap.SimpleGeometries
             }
             set
             {
-                this[(UInt32) index] = (Double)value;
+                //this[(UInt32) index] = (Double)value;
+                throw new NotSupportedException();
             }
         }
 
@@ -771,7 +788,7 @@ namespace SharpMap.SimpleGeometries
 
         IVector<DoubleComponent> INegatable<IVector<DoubleComponent>>.Negative()
         {
-            return new Point(-_x, -_y);
+            return new Point(FactoryInternal, -X, -Y);
         }
 
         #endregion
@@ -780,7 +797,7 @@ namespace SharpMap.SimpleGeometries
 
         IMatrix<DoubleComponent> INegatable<IMatrix<DoubleComponent>>.Negative()
         {
-            return new Point(-_x, -_y);
+            return new Point(FactoryInternal, -X, -Y);
         }
 
         #endregion
@@ -798,7 +815,7 @@ namespace SharpMap.SimpleGeometries
 
         IMatrix<DoubleComponent> IHasZero<IMatrix<DoubleComponent>>.Zero
         {
-            get { return Zero; }
+            get { return (IMatrix<DoubleComponent>)FactoryInternal.CreatePoint2D(0, 0); }
         }
 
         #endregion
@@ -825,7 +842,7 @@ namespace SharpMap.SimpleGeometries
 
         IMatrix<DoubleComponent> IHasOne<IMatrix<DoubleComponent>>.One
         {
-            get { return _one; }
+            get { return (IMatrix<DoubleComponent>)FactoryInternal.CreatePoint2D(1, 1); }
         }
 
         #endregion
@@ -861,14 +878,14 @@ namespace SharpMap.SimpleGeometries
 
         IVector<DoubleComponent> IHasZero<IVector<DoubleComponent>>.Zero
         {
-            get { return Zero; }
+            get { return (IVector<DoubleComponent>)FactoryInternal.CreatePoint2D(0, 0); }
         }
 
         #endregion
 
         #region IAddable<IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Add(IVector<DoubleComponent> b)
+        IVector<DoubleComponent> IAddable<IVector<DoubleComponent>>.Add(IVector<DoubleComponent> b)
         {
             throw new NotImplementedException();
         }
@@ -888,7 +905,7 @@ namespace SharpMap.SimpleGeometries
 
         IVector<DoubleComponent> IHasOne<IVector<DoubleComponent>>.One
         {
-            get { return _one; }
+            get { return (IVector<DoubleComponent>)FactoryInternal.CreatePoint2D(1, 1); }
         }
 
         #endregion
@@ -1106,14 +1123,14 @@ namespace SharpMap.SimpleGeometries
 
         #endregion
 
-        #region IAddable<IVector<DoubleComponent>> Members
+        //#region IAddable<IVector<DoubleComponent>> Members
 
-        IVector<DoubleComponent> IAddable<IVector<DoubleComponent>>.Add(IVector<DoubleComponent> b)
-        {
-            throw new NotImplementedException();
-        }
+        //IVector<DoubleComponent> IAddable<IVector<DoubleComponent>>.Add(IVector<DoubleComponent> b)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        #endregion
+        //#endregion
 
         #region IDivisible<IVector<DoubleComponent>> Members
 

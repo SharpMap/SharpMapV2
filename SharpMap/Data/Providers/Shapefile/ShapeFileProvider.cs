@@ -2325,7 +2325,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 try
                 {
                     String wkt = File.ReadAllText(projfile);
-                    _coordinateSystem = (ICoordinateSystem)WktEncoder.ToCoordinateSystemInfo(wkt, _coordSysFactory);
+                    _coordinateSystem = (ICoordinateSystem)WktDecoder.ToCoordinateSystemInfo(wkt, _coordSysFactory);
                     _geoFactory.SpatialReference = _coordinateSystem;
                     _coordsysReadFromFile = true;
                 }

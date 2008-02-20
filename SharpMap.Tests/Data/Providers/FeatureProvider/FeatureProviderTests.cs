@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using NUnit.Framework;
-using FeatProvider = SharpMap.Data.Providers.FeatureProvider.FeatureProvider;
+using FProvider = SharpMap.Data.Providers.FeatureProvider.FeatureProvider;
 
 namespace SharpMap.Tests.Data.Providers.FeatureProvider
 {
@@ -12,7 +12,7 @@ namespace SharpMap.Tests.Data.Providers.FeatureProvider
         [Ignore("Not implemented")]
         public void CreatingFeatureProviderWithNoSchema()
         {
-            FeatProvider provider = new FeatProvider();
+            FProvider provider = new FProvider(null);
             DataTable schema = provider.GetSchemaTable();
             Assert.AreEqual(0, schema.Rows);
         }
@@ -27,7 +27,8 @@ namespace SharpMap.Tests.Data.Providers.FeatureProvider
                     new DataColumn("Column2", typeof (String)),
                     new DataColumn("Column3", typeof (DateTime)),
                 };
-            FeatProvider provider = new FeatProvider(columns);
+
+            FProvider provider = new FProvider(null, columns);
             DataTable schema = provider.GetSchemaTable();
             Assert.AreEqual(3, schema.Rows);
         }

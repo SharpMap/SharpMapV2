@@ -120,7 +120,12 @@ namespace SharpMap.SimpleGeometries
 
         public new IEnumerator<ILineString> GetEnumerator()
         {
-            throw new NotImplementedException();
+            IEnumerator<LineString> lines = base.GetEnumerator();
+
+            while(lines.MoveNext())
+            {
+                yield return lines.Current;
+            }
         }
 
         #endregion

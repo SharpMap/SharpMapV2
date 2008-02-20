@@ -39,8 +39,8 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		/// <param name="x">X coordinate</param>
 		/// <param name="y">Y coordinate</param>
 		/// <param name="z">Z coordinate</param>
-		public Point3D(Double x, Double y, Double z)
-			: base(x, y)
+		internal Point3D(GeometryFactory factory, Double x, Double y, Double z)
+            : base(factory, x, y)
 		{
 			_z = z;
 		}
@@ -51,7 +51,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		/// <param name="p">2D Point</param>
 		/// <param name="z">Z coordinate</param>
 		public Point3D(Point p, Double z)
-			: base(p.X, p.Y)
+            : base(p.FactoryInternal, p.X, p.Y)
 		{
 			_z = z;
 		}
@@ -92,63 +92,67 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		{
 			get
 			{
-				if (index == 2)
-				{
-					if (IsEmpty)
-						throw new InvalidOperationException("Point is empty");
+                if (index == 2)
+                {
+                    if (IsEmpty)
+                    {
+                        throw new InvalidOperationException("Point is empty");
+                    }
 
-					return Z;
-				}
-				else
-					return base[index];
+                    return Z;
+                }
+                else
+                {
+                    return base[index];
+                }
 			}
-			set
-			{
-				if (index == 2)
-				{
-					Z = value;
-					SetNotEmpty();
-				}
-				else
-					base[index] = value;
-			}
+            //set
+            //{
+            //    if (index == 2)
+            //    {
+            //        Z = value;
+            //        SetNotEmpty();
+            //    }
+            //    else
+            //        base[index] = value;
+            //}
 		}
 
 		#region Operators
 
-		/// <summary>
-		/// Vector + Vector
-		/// </summary>
-		/// <param name="v1">Vector</param>
-		/// <param name="v2">Vector</param>
-		/// <returns></returns>
-		public static Point3D operator +(Point3D v1, Point3D v2)
-		{
-			return new Point3D(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
-		}
+        ///// <summary>
+        ///// Vector + Vector
+        ///// </summary>
+        ///// <param name="v1">Vector</param>
+        ///// <param name="v2">Vector</param>
+        ///// <returns></returns>
+        //public static Point3D operator +(Point3D v1, Point3D v2)
+        //{
+        //    return new Point3D(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
+        //}
 
 
-		/// <summary>
-		/// Vector - Vector
-		/// </summary>
-		/// <param name="v1">Vector</param>
-		/// <param name="v2">Vector</param>
-		/// <returns>Cross product</returns>
-		public static Point3D operator -(Point3D v1, Point3D v2)
-		{
-			return new Point3D(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
-		}
+        ///// <summary>
+        ///// Vector - Vector
+        ///// </summary>
+        ///// <param name="v1">Vector</param>
+        ///// <param name="v2">Vector</param>
+        ///// <returns>Cross product</returns>
+        //public static Point3D operator -(Point3D v1, Point3D v2)
+        //{
+        //    return new Point3D(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
+        //}
 
-		/// <summary>
-		/// Vector * Scalar
-		/// </summary>
-		/// <param name="m">Vector</param>
-		/// <param name="d">Scalar (Double)</param>
-		/// <returns></returns>
-		public static Point3D operator *(Point3D m, Double d)
-		{
-			return new Point3D(m.X*d, m.Y*d, m.Z*d);
-		}
+        ///// <summary>
+        ///// Vector * Scalar
+        ///// </summary>
+        ///// <param name="m">Vector</param>
+        ///// <param name="d">Scalar (Double)</param>
+        ///// <returns></returns>
+        //public static Point3D operator *(Point3D m, Double d)
+        //{
+        //    return new Point3D(m.X*d, m.Y*d, m.Z*d);
+        //}
 
 		#endregion
 
@@ -199,7 +203,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		/// <returns>Clone</returns>
 		public new Point3D Clone()
 		{
-			return new Point3D(X, Y, Z);
+			return new Point3D(FactoryInternal, X, Y, Z);
 		}
 
 		#region IEqualityComparer<Point3D> Members

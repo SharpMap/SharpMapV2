@@ -5,6 +5,7 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using GeoAPI.Utilities;
 using SharpMap.SimpleGeometries.Geometries3D;
+using GeoAPI.DataStructures;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -14,6 +15,7 @@ namespace SharpMap.SimpleGeometries
         private readonly ICoordinateSequenceFactory _sequenceFactory;
         private Int32? _srid;
         private ICoordinateSystem _spatialReference;
+        private BoundingBoxSpatialOperations _spatialOps;
 
         public GeometryFactory(ICoordinateFactory coordFactory, ICoordinateSequenceFactory sequenceFactory)
             : this(coordFactory, sequenceFactory, null, null) { }
@@ -27,6 +29,12 @@ namespace SharpMap.SimpleGeometries
             _sequenceFactory = sequenceFactory;
             _srid = srid;
             _spatialReference = spatialReference;
+            _spatialOps = new BoundingBoxSpatialOperations(this);
+        }
+
+        internal BoundingBoxSpatialOperations SpatialOps
+        {
+            get { return _spatialOps; }
         }
 
         #region IGeometryFactory Members
@@ -61,27 +69,27 @@ namespace SharpMap.SimpleGeometries
 
         public IPrecisionModel PrecisionModel
         {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         public IGeometry BuildGeometry(IEnumerable<IGeometry> geometryList)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public IExtents CreateExtents()
         {
-            return new Extents();
+            return new Extents(this, new Extents[0]);
         }
 
         public IExtents CreateExtents(ICoordinate min, ICoordinate max)
         {
-            return new Extents(min[Ordinates.X], min[Ordinates.Y], max[Ordinates.X], max[Ordinates.Y]);
+            return new Extents(this, min[Ordinates.X], min[Ordinates.Y], max[Ordinates.X], max[Ordinates.Y]);
         }
 
         public IGeometry CreateGeometry(IGeometry g)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public IGeometry CreateGeometry(ICoordinateSequence coordinates, OgcGeometryType type)
@@ -140,8 +148,7 @@ namespace SharpMap.SimpleGeometries
 
         public IPoint2D CreatePoint2D(Double x, Double y)
         {
-            Point p = new Point(x, y);
-            p.Factory = this;
+            Point p = new Point(this, x, y);
             return p;
         }
 
@@ -159,15 +166,13 @@ namespace SharpMap.SimpleGeometries
 
         public IPoint3D CreatePoint3D(Double x, Double y, Double z)
         {
-            Point3D p = new Point3D(x, y, z);
-            p.Factory = this;
+            Point3D p = new Point3D(this, x, y, z);
             return p;
         }
 
         public IPoint3D CreatePoint3D(IPoint2D point2D, Double z)
         {
-            Point3D p = new Point3D(point2D.X, point2D.Y, z);
-            p.Factory = this;
+            Point3D p = new Point3D(this, point2D.X, point2D.Y, z);
             return p;
         }
 
@@ -214,6 +219,13 @@ namespace SharpMap.SimpleGeometries
             return CreateLinearRing((IEnumerable<ICoordinate>)coordinates);
         }
 
+        public ILinearRing CreateLinearRing(IEnumerable<Point> coordinates)
+        {
+            LinearRing l = new LinearRing(Enumerable.Upcast<IPoint, Point>(coordinates));
+            l.Factory = this;
+            return l;
+        }
+
         public IPolygon CreatePolygon()
         {
             Polygon p = new Polygon();
@@ -223,7 +235,9 @@ namespace SharpMap.SimpleGeometries
 
         public IPolygon CreatePolygon(IEnumerable<ICoordinate> shell)
         {
-            Polygon p = new Polygon(shell);
+            LinearRing ring = CreateLinearRing(shell) as LinearRing;
+            ring.Factory = this;
+            Polygon p = new Polygon(ring);
             p.Factory = this;
             return p;
         }
@@ -234,9 +248,11 @@ namespace SharpMap.SimpleGeometries
 
             if(l == null)
             {
-                throw new ArgumentException("Parameter must be a non-null LinearRing instance");
+                throw new ArgumentException(
+                    "Parameter must be a non-null LinearRing instance");
             }
 
+            //l.Factory = this;
             Polygon p = new Polygon(l);
             p.Factory = this;
             return p;
@@ -271,14 +287,25 @@ namespace SharpMap.SimpleGeometries
             //return p;
         }
 
-        public IMultiPoint CreateMultiPoint(IEnumerable<IPoint> point)
+        public IMultiPoint CreateMultiPoint(IEnumerable<IPoint> points)
         {
-            throw new NotImplementedException();
+            MultiPoint mp = new MultiPoint();
+            mp.Factory = this;
+
+            foreach (Point point in points)
+            {
+                mp.Add(point);
+            }
+
+            return mp;
         }
 
         public IMultiPoint CreateMultiPoint(ICoordinateSequence coordinates)
         {
-            throw new NotImplementedException();
+            MultiPoint mp = new MultiPoint();
+            mp.Factory = this;
+            mp.Coordinates = coordinates;
+            return mp;
         }
 
         public IMultiLineString CreateMultiLineString()
@@ -290,7 +317,15 @@ namespace SharpMap.SimpleGeometries
 
         public IMultiLineString CreateMultiLineString(IEnumerable<ILineString> lineStrings)
         {
-            throw new NotImplementedException();
+            MultiLineString mls = new MultiLineString();
+            mls.Factory = this;
+
+            foreach (LineString lineString in lineStrings)
+            {
+                mls.Add(lineString);
+            }
+
+            return mls;
         }
 
         public IMultiPolygon CreateMultiPolygon()
@@ -302,21 +337,32 @@ namespace SharpMap.SimpleGeometries
 
         public IMultiPolygon CreateMultiPolygon(IEnumerable<IPolygon> polygons)
         {
-            throw new NotImplementedException();
+            MultiPolygon mp = new MultiPolygon();
+            mp.Factory = this;
+
+            foreach (Polygon polygon in polygons)
+            {
+                mp.Add(polygon);
+            }
+
+            return mp;
         }
 
         public IGeometryCollection CreateGeometryCollection()
         {
-            return new GeometryCollection(4);
+            GeometryCollection collection = new GeometryCollection(4);
+            collection.Factory = this;
+            return collection;
         }
 
         public IGeometryCollection CreateGeometryCollection(IEnumerable<IGeometry> geometries)
         {
             GeometryCollection collection = new GeometryCollection(16);
+            collection.Factory = this;
 
-            foreach (IGeometry geometry in geometries)
+            foreach (Geometry geometry in geometries)
             {
-                collection.Add(geometry);
+                collection.Add(geometry.Clone());
             }
 
             return collection;
@@ -336,42 +382,50 @@ namespace SharpMap.SimpleGeometries
             verticies[4] = max;
 
             LinearRing ring = new LinearRing(verticies);
-            return new Polygon(ring);
+            ring.Factory = this;
+            Polygon p = new Polygon(ring);
+            p.Factory = this;
+            return p;
+        }
+
+        public IExtents CreateExtents(IExtents first)
+        {
+            return new Extents(this, first);
         }
 
         public IExtents CreateExtents(IExtents first, IExtents second)
         {
-            throw new NotImplementedException();
+            return new Extents(this, first, second);
         }
 
         public IExtents CreateExtents(IExtents first, IExtents second, IExtents third)
         {
-            throw new NotImplementedException();
+            return new Extents(this, first, second, third);
         }
 
         public IExtents CreateExtents(params IExtents[] extents)
         {
-            throw new NotImplementedException();
+            return new Extents(this, extents);
         }
 
         public IExtents2D CreateExtents2D(Double left, Double bottom, Double right, Double top)
         {
-            throw new NotImplementedException();
+            return new Extents(this, left, bottom, right, top);
         }
 
-        public IExtents2D CreateExtents2D(GeoAPI.DataStructures.Pair<Double> lowerLeft, GeoAPI.DataStructures.Pair<Double> upperRight)
+        public IExtents2D CreateExtents2D(Pair<Double> lowerLeft, Pair<Double> upperRight)
         {
             throw new NotImplementedException();
         }
 
         public IExtents3D CreateExtents3D(Double left, Double bottom, Double front, Double right, Double top, Double back)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
-        public IExtents3D CreateExtents3D(GeoAPI.DataStructures.Triple<Double> lowerLeft, GeoAPI.DataStructures.Triple<Double> upperRight)
+        public IExtents3D CreateExtents3D(Triple<Double> lowerLeft, Triple<Double> upperRight)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         #endregion

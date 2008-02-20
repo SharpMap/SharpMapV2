@@ -20,6 +20,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using GeoAPI.Utilities;
+using NPack;
+using NPack.Interfaces;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -83,6 +86,11 @@ namespace SharpMap.SimpleGeometries
             get { return _geometries[index]; }
         }
 
+        public override IPoint Centroid
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         /// <summary>
         /// Determines if all the geometries are 
         /// empty or the collection is empty.
@@ -127,6 +135,11 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
+        public override Dimensions BoundaryDimension
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         /// <summary>
         /// The minimum bounding box for this Geometry, returned as a BoundingBox.
         /// </summary>
@@ -135,7 +148,7 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                Extents b = new Extents();
+                Extents b = new Extents(FactoryInternal);
 
                 if (Count == 0)
                 {
@@ -291,14 +304,14 @@ namespace SharpMap.SimpleGeometries
 
             if (geometry is TGeometry)
             {
-                Add(geometry as TGeometry);
+                Add((TGeometry)geometry);
                 return this;
             }
             else
             {
                 GeometryCollection union = new GeometryCollection(2);
                 union.Add(this);
-                union.Add(geometry);
+                union.Add((Geometry)geometry);
                 return union;
             }
         }
@@ -325,15 +338,25 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
-        public override IEnumerable<Point> GetVertices()
+        public override IEnumerable<Point> GetVertexes()
         {
             foreach (TGeometry geometry in _geometries)
             {
-                foreach (Point point in geometry.GetVertices())
+                foreach (Point point in geometry.GetVertexes())
                 {
                     yield return point;
                 }
             }
+        }
+
+        public override IEnumerable<Point> GetVertexes(ITransformMatrix<DoubleComponent> transform)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(TGeometry geometry)
+        {
+            _geometries.Add(geometry);
         }
 
         #region ICloneable Members
@@ -344,14 +367,8 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A copy of the GeometryCollection instance.</returns>
         public override Geometry Clone()
         {
-            GeometryCollection geoms = new GeometryCollection(Count);
-
-            foreach (TGeometry geometry in this)
-            {
-                geoms.Add(geometry.Clone());
-            }
-
-            return geoms;
+            return FactoryInternal.CreateGeometryCollection(
+                Enumerable.Upcast<IGeometry, TGeometry>(_geometries)) as Geometry;
         }
 
         #endregion
@@ -388,12 +405,29 @@ namespace SharpMap.SimpleGeometries
 
         public Int32 Count
         {
-            get { throw new NotImplementedException(); }
+            get { return _geometries.Count; }
         }
 
         public Boolean IsHomogeneous
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                OgcGeometryType type = OgcGeometryType.Unknown;
+
+                foreach (TGeometry geometry in _geometries)
+                {
+                    if (type == OgcGeometryType.Unknown)
+                    {
+                        type = geometry.GeometryType;
+                    }
+                    else if(type != geometry.GeometryType)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
 
         #endregion
@@ -428,11 +462,11 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                throw new NotImplementedException();
+                return _geometries[index];
             }
             set
             {
-                throw new NotImplementedException();
+                _geometries[index] = (TGeometry)value;
             }
         }
 
@@ -440,9 +474,9 @@ namespace SharpMap.SimpleGeometries
 
         #region ICollection<IGeometry> Members
 
-        public void Add(IGeometry item)
+        void ICollection<IGeometry>.Add(IGeometry item)
         {
-            throw new NotImplementedException();
+            Add((TGeometry)item);
         }
 
         public void Clear()
@@ -450,7 +484,7 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
-        public void CopyTo(IGeometry[] array, Int32 arrayIndex)
+        void ICollection<IGeometry>.CopyTo(IGeometry[] array, Int32 arrayIndex)
         {
             throw new NotImplementedException();
         }
@@ -460,7 +494,7 @@ namespace SharpMap.SimpleGeometries
             get { throw new NotImplementedException(); }
         }
 
-        public Boolean Remove(IGeometry item)
+        Boolean ICollection<IGeometry>.Remove(IGeometry item)
         {
             throw new NotImplementedException();
         }

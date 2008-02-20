@@ -36,7 +36,7 @@ namespace SharpMap.SimpleGeometries
     [Serializable]
     public struct Extents : IExtents2D, IEquatable<Extents>
     {
-        private static readonly Extents _empty = new Extents();
+        private static readonly Extents _empty;
 
         /// <summary>
         /// Gets an empty BoundingBox.
@@ -46,6 +46,7 @@ namespace SharpMap.SimpleGeometries
             get { return _empty; }
         }
 
+        private readonly GeometryFactory _factory;
         private Double _xMin, _yMin, _xMax, _yMax;
         private Boolean _hasValue;
 
@@ -62,8 +63,9 @@ namespace SharpMap.SimpleGeometries
         /// <param name="minY">bottom</param>
         /// <param name="maxX">right</param>
         /// <param name="maxY">top</param>
-        public Extents(Double minX, Double minY, Double maxX, Double maxY)
+        internal Extents(GeometryFactory factory, Double minX, Double minY, Double maxX, Double maxY)
         {
+            _factory = factory;
             _xMin = minX;
             _yMin = minY;
             _xMax = maxX;
@@ -77,8 +79,8 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         /// <param name="lowerLeft">Lower left corner.</param>
         /// <param name="upperRight">Upper right corner.</param>
-        public Extents(Point lowerLeft, Point upperRight)
-            : this(0, 0, 0, 0)
+        internal Extents(GeometryFactory factory, ICoordinate2D lowerLeft, ICoordinate2D upperRight)
+            : this(factory, 0, 0, 0, 0)
         {
             if (lowerLeft == null || lowerLeft.IsEmpty 
                 || upperRight == null || upperRight.IsEmpty)
@@ -98,8 +100,8 @@ namespace SharpMap.SimpleGeometries
         /// Initializes a bounding extents.
         /// </summary>
         /// <param name="extents">Extents instances to join.</param>
-        public Extents(params Extents[] extents)
-            : this(0, 0, 0, 0)
+        internal Extents(GeometryFactory factory, params Extents[] extents)
+            : this(factory, 0, 0, 0, 0)
         {
             _hasValue = false;
 
@@ -114,8 +116,8 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
-        public Extents(params IExtents[] extents)
-            : this(0, 0, 0, 0)
+        internal Extents(GeometryFactory factory, params IExtents[] extents)
+            : this(factory, 0, 0, 0, 0)
         {
             _hasValue = false;
 
@@ -130,12 +132,18 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
+        internal Extents(GeometryFactory factory)
+            : this(factory, 0, 0, 0, 0)
+        {
+            _hasValue = false;
+        }
+
         /// <summary>
         /// Initializes a new BoundingBox based on the bounds from a set of geometries.
         /// </summary>
         /// <param name="objects">List of <see cref="Geometry"/> objects to compute the BoundingBox for.</param>
-        public Extents(IEnumerable<Geometry> objects)
-            : this(0, 0, 0, 0)
+        internal Extents(GeometryFactory factory, IEnumerable<Geometry> objects)
+            : this(factory, 0, 0, 0, 0)
         {
             _hasValue = false;
 
@@ -156,8 +164,8 @@ namespace SharpMap.SimpleGeometries
         /// Initializes a new BoundingBox based on the bounds from a set of bounding boxes.
         /// </summary>
         /// <param name="objects">list of <see cref="Extents"/> objects to compute the BoundingBox for.</param>
-        public Extents(IEnumerable<Extents> objects)
-            : this(0, 0, 0, 0)
+        internal Extents(GeometryFactory factory, IEnumerable<Extents> objects)
+            : this(factory, 0, 0, 0, 0)
         {
             _hasValue = false;
 
@@ -183,12 +191,7 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                if (IsEmpty)
-                {
-                    return null;
-                }
-
-                return new Point(_xMin, _yMin).Coordinate;
+                return IsEmpty ? null : _factory.CoordinateFactory.Create(_xMin, _yMin);
             }
         }
 
@@ -199,12 +202,7 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                if (IsEmpty)
-                {
-                    return null;
-                }
-
-                return new Point(_xMax, _yMax).Coordinate;
+                return IsEmpty ? null : _factory.CoordinateFactory.Create(_xMax, _yMax);
             }
             private set
             {
@@ -236,10 +234,10 @@ namespace SharpMap.SimpleGeometries
             {
                 if (IsEmpty)
                 {
-                    return Point.Empty;
+                    return _factory.CreatePoint() as Point;
                 }
 
-                return new Point(_xMax, _yMin);
+                return (Point)_factory.CreatePoint2D(_xMax, _yMin);
             }
         }
 
@@ -252,10 +250,11 @@ namespace SharpMap.SimpleGeometries
             {
                 if (IsEmpty)
                 {
-                    return Point.Empty;
+                    return _factory.CreatePoint() as Point;
                 }
 
-                return new Point(_xMin, _yMax);
+
+                return (Point)_factory.CreatePoint2D(_xMin, _yMax);
             }
         }
 
@@ -425,15 +424,23 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Contains(IExtents extents, Tolerance tolerance)
         {
-            if (IsEmpty || extents.IsEmpty)
+            IExtents2D extents2D = extents as IExtents2D;
+
+            if (extents2D == null)
+            {
+                throw new ArgumentException(
+                    "Parameter must be a non-null IExtent2D instance.");
+            }
+
+            if (IsEmpty || extents2D.IsEmpty)
             {
                 return false;
             }
 
-            return tolerance.LessOrEqual(Left, extents.GetMin(Ordinates.X)) &&
-                   tolerance.GreaterOrEqual(Top, extents.GetMax(Ordinates.Y)) &&
-                   tolerance.GreaterOrEqual(Right, extents.GetMax(Ordinates.X)) &&
-                   tolerance.LessOrEqual(Bottom, extents.GetMin(Ordinates.Y));
+            return tolerance.LessOrEqual(Left, extents2D.Left) &&
+                   tolerance.GreaterOrEqual(Top, extents2D.Top) &&
+                   tolerance.GreaterOrEqual(Right, extents2D.Right) &&
+                   tolerance.LessOrEqual(Bottom, extents2D.Bottom);
         }
 
         /// <summary>
@@ -833,15 +840,23 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Touches(IExtents extents, Tolerance tolerance)
         {
-            if (IsEmpty || extents.IsEmpty)
+            IExtents2D extents2D = extents as IExtents2D;
+
+            if (extents2D == null)
+            {
+                throw new ArgumentException(
+                    "Parameter must be a non-null IExtent2D instance.");
+            }
+
+            if (IsEmpty || extents2D.IsEmpty)
             {
                 return false;
             }
 
-            return !(tolerance.Greater(extents.GetMin(Ordinates.X), Right) ||
-                     tolerance.Less(extents.GetMax(Ordinates.X), Left) ||
-                     tolerance.Less(extents.GetMax(Ordinates.Y), Bottom) ||
-                     tolerance.Greater(extents.GetMin(Ordinates.Y), Top));
+            return !(tolerance.Greater(extents2D.Left, Right) ||
+                     tolerance.Less(extents2D.Right, Left) ||
+                     tolerance.Less(extents2D.Top, Bottom) ||
+                     tolerance.Greater(extents2D.Bottom, Top));
         }
 
         /// <summary>
@@ -1138,8 +1153,12 @@ namespace SharpMap.SimpleGeometries
             }
             else
             {
-                return new Extents(Math.Min(Left, extents.Left), Math.Min(Bottom, extents.Bottom),
-                                       Math.Max(Right, extents.Right), Math.Max(Top, extents.Top));
+                return new Extents(
+                    _factory,
+                    Math.Min(Left, extents.Left), 
+                    Math.Min(Bottom, extents.Bottom),
+                    Math.Max(Right, extents.Right), 
+                    Math.Max(Top, extents.Top));
             }
         }
 
@@ -1159,9 +1178,9 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         /// <param name="boxes">BoundingBox instances to join.</param>
         /// <returns>Combined BoundingBox.</returns>
-        public static Extents Join(params Extents[] boxes)
+        public static Extents Join(GeometryFactory factory, params Extents[] boxes)
         {
-            return new Extents(boxes);
+            return new Extents(factory, boxes);
         }
 
         #endregion
@@ -1267,21 +1286,29 @@ namespace SharpMap.SimpleGeometries
         /// <param name="extent"><see cref="Extents"/> to enlarge extents to contain.</param>
         public void ExpandToInclude(IExtents extent)
         {
-            if (extent.GetMin(Ordinates.X) < Left || IsEmpty)
+            IExtents2D extent2D = extent as IExtents2D;
+
+            if (extent2D == null)
             {
-                Left = extent.GetMin(Ordinates.X);
+                throw new ArgumentException(
+                    "Parameter must be a non-null IExtent2D instance.");
             }
-            if (extent.GetMin(Ordinates.Y) < Bottom || IsEmpty)
+
+            if (extent2D.Left < Left || IsEmpty)
             {
-                Bottom = extent.GetMin(Ordinates.Y);
+                Left = extent2D.Left;
             }
-            if (extent.GetMax(Ordinates.X) > Right || IsEmpty)
+            if (extent2D.Bottom < Bottom || IsEmpty)
             {
-                Right = extent.GetMax(Ordinates.X);
+                Bottom = extent2D.Bottom;
             }
-            if (extent.GetMax(Ordinates.Y) > Top || IsEmpty)
+            if (extent2D.Right > Right || IsEmpty)
             {
-                Top = extent.GetMax(Ordinates.Y);
+                Right = extent2D.Right;
+            }
+            if (extent2D.Top > Top || IsEmpty)
+            {
+                Top = extent2D.Top;
             }
 
             if (IsEmpty)
@@ -1393,10 +1420,10 @@ namespace SharpMap.SimpleGeometries
 
             List<Extents> splits = new List<Extents>(4);
 
-            Extents b1 = new Extents(Left, point.Y, point.X, Top);
-            Extents b2 = new Extents(point.X, point.Y, Right, Top);
-            Extents b3 = new Extents(Left, Bottom, point.X, point.Y);
-            Extents b4 = new Extents(point.X, Bottom, Right, point.Y);
+            Extents b1 = new Extents(_factory, Left, point.Y, point.X, Top);
+            Extents b2 = new Extents(_factory, point.X, point.Y, Right, Top);
+            Extents b3 = new Extents(_factory, Left, Bottom, point.X, point.Y);
+            Extents b4 = new Extents(_factory, point.X, Bottom, Right, point.Y);
 
             if (b1.GetArea() > 0)
             {
@@ -1479,10 +1506,10 @@ namespace SharpMap.SimpleGeometries
         {
             if (IsEmpty)
             {
-                return Point.Empty;
+                return _factory.CreatePoint() as Point;
             }
 
-            return (LowerLeft + UpperRight) * 0.5f;
+            return (Point)LowerLeft.Add(UpperRight).Multiply(0.5);
         }
 
         #endregion
@@ -1502,11 +1529,20 @@ namespace SharpMap.SimpleGeometries
         {
             if (IsEmpty)
             {
-                return Point.Empty;
+                return _factory.CreatePoint() as Geometry;
             }
 
-            Point[] vertices = new Point[] { LowerLeft, UpperLeft, UpperRight, LowerRight, LowerLeft };
-            return new Polygon(new LinearRing(vertices));
+            ICoordinate[] vertices = new ICoordinate[]
+                                         {
+                                              LowerLeft.Coordinate, 
+                                              UpperLeft.Coordinate, 
+                                              UpperRight.Coordinate, 
+                                              LowerRight.Coordinate, 
+                                              LowerLeft.Coordinate
+                                         };
+
+            Polygon p = (Polygon)_factory.CreatePolygon(vertices);
+            return p;
         }
 
         #endregion
@@ -1625,7 +1661,7 @@ namespace SharpMap.SimpleGeometries
         /// <param name="b1">The first <see cref="Extents"/> to intersect.</param>
         /// <param name="b2">The second BoundingBox to intersect.</param>
         /// <returns>The BoundingBox which represents the shared area between <paramref name="b1"/> and <paramref name="b2"/>.</returns>
-        public static Extents Intersection(Extents b1, Extents b2)
+        public static Extents Intersection(GeometryFactory factory, Extents b1, Extents b2)
         {
             if (!b1.Intersects(b2))
             {
@@ -1633,6 +1669,7 @@ namespace SharpMap.SimpleGeometries
             }
 
             return new Extents(
+                factory, 
                 b1.Left < b2.Left ? b2.Left : b1.Left,
                 b1.Bottom < b2.Bottom ? b2.Bottom : b1.Bottom,
                 b1.Right > b2.Right ? b2.Right : b1.Right,
@@ -1670,17 +1707,22 @@ namespace SharpMap.SimpleGeometries
 
         public Boolean Borders(IExtents other, Tolerance tolerance)
         {
-            throw new NotImplementedException();
+            Extents otherExtents = getAsExtents(other);
+            return Borders(otherExtents, tolerance);
         }
 
         public Boolean Borders(IExtents other)
         {
-            throw new NotImplementedException();
+            Extents otherExtents = getAsExtents(other);
+            return Borders(otherExtents);
         }
 
         public ICoordinate Center
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return (Min.Add(Max)).Divide(2);
+            }
         }
 
         public Boolean Contains(ICoordinate other, Tolerance tolerance)
@@ -1705,12 +1747,13 @@ namespace SharpMap.SimpleGeometries
 
         public Double Distance(IExtents extents)
         {
-            throw new NotImplementedException();
+            return Distance(getAsExtents(extents));
         }
 
         public void ExpandToInclude(IGeometry other)
         {
-            throw new NotImplementedException();
+            Extents otherExtents = getAsExtents(other.Extents);
+            ExpandToInclude(otherExtents);
         }
 
         public void ExpandToInclude(params Double[] coordinate)
@@ -1720,37 +1763,52 @@ namespace SharpMap.SimpleGeometries
 
         public Double GetMax(Ordinates ordinate)
         {
-            throw new NotImplementedException();
+            return Max[ordinate];
         }
 
         public Double GetMin(Ordinates ordinate)
         {
-            throw new NotImplementedException();
+            return Min[ordinate];
         }
 
         public Double GetSize(params Ordinates[] axes)
         {
-            throw new NotImplementedException();
+            if (axes.Length == 1)
+            {
+                return GetSize(axes[0]);
+            }
+            else if (axes.Length == 2)
+            {
+                return GetSize(axes[0], axes[1]);
+            }
+
+            throw new NotSupportedException(
+                "The axes vector can only have 1 or 2 components, " +
+                "since this is a 2D extents.");
         }
 
         public Double GetSize(Ordinates axis1, Ordinates axis2, Ordinates axis3)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException(
+                "The axes vector can only have 1 or 2 components, " +
+                "since this is a 2D extents.");
         }
 
         public Double GetSize(Ordinates axis1, Ordinates axis2)
         {
-            throw new NotImplementedException();
+            // The dot product of the axes
+            return (GetMax(axis1) - GetMin(axis1))
+                * (GetMax(axis2) - GetMin(axis2));
         }
 
         public Double GetSize(Ordinates axis)
         {
-            throw new NotImplementedException();
+            return GetMax(axis) - GetMin(axis);
         }
 
         public IExtents Intersection(IExtents extents)
         {
-            throw new NotImplementedException();
+            return Intersection(_factory, this, getAsExtents(extents));
         }
 
         public Boolean Intersects(Tolerance tolerance, params Double[] coordinate)
@@ -1795,7 +1853,7 @@ namespace SharpMap.SimpleGeometries
 
         IGeometry IExtents.ToGeometry()
         {
-            throw new NotImplementedException();
+            return ToGeometry();
         }
 
         public void Transform(IMatrix<DoubleComponent> transformMatrix)
@@ -1815,7 +1873,7 @@ namespace SharpMap.SimpleGeometries
 
         public IExtents Union(IExtents box)
         {
-            throw new NotImplementedException();
+            return Join(this, getAsExtents(box));
         }
 
         public IExtents Union(IPoint point)
@@ -1852,5 +1910,23 @@ namespace SharpMap.SimpleGeometries
         }
 
         #endregion
+
+        private Extents getAsExtents(IExtents other)
+        {
+            Extents otherExtents;
+
+            if (other is Extents)
+            {
+                otherExtents = (Extents)other;
+            }
+            else
+            {
+                otherExtents = new Extents(_factory,
+                                           (ICoordinate2D)other.Min,
+                                           (ICoordinate2D)other.Max);
+            }
+
+            return otherExtents;
+        }
     }
 }

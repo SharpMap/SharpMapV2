@@ -52,7 +52,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.Crosses, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.Crosses, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -64,7 +65,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.Contains, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.Contains, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -76,7 +78,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.Equals, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.Equals, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -88,7 +91,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.None, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.None, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -100,7 +104,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.Overlaps, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.Overlaps, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -112,7 +117,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.Touches, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.Touches, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -124,7 +130,8 @@ namespace SharpMap.Tests.Data
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable();
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            new FeatureDataView(table, Point.Empty, SpatialExpressionType.Within, "", DataViewRowState.CurrentRows);
+            Point empty = _geoFactory.CreatePoint() as Point;
+            new FeatureDataView(table, empty, SpatialExpressionType.Within, "", DataViewRowState.CurrentRows);
         }
 
         #endregion
@@ -341,7 +348,7 @@ namespace SharpMap.Tests.Data
             FeatureDataRow row = table.NewRow();
             row["Oid"] = Guid.NewGuid();
             row["FeatureName"] = "New row";
-            row.Geometry = new Point(44, 44);
+            row.Geometry = _geoFactory.CreatePoint2D(44, 44);
             table.AddRow(row);
 
             Assert.IsTrue(addNotificationOccured);

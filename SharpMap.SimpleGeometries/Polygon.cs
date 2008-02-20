@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack;
+using NPack.Interfaces;
 
 namespace SharpMap.SimpleGeometries
 {
@@ -232,6 +234,11 @@ namespace SharpMap.SimpleGeometries
             get { throw new NotImplementedException(); }
         }
 
+        public override Dimensions BoundaryDimension
+        {
+            get { return Dimensions.Curve; }
+        }
+
         /// <summary>
         /// Returns the shortest distance between any two points in the two geometries
         /// as calculated in the spatial reference system of this Geometry.
@@ -265,7 +272,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public override IGeometry Intersection(IGeometry geom)
         {
-            return BoundingBoxSpatialOperations.Intersection(this, geom);
+            return FactoryInternal.SpatialOps.Intersection(this, geom);
         }
 
         /// <summary>
@@ -275,7 +282,7 @@ namespace SharpMap.SimpleGeometries
         public override IGeometry Union(IGeometry geometry)
         {
 #warning fake the union using a GeometryCollection
-            return BoundingBoxSpatialOperations.Union(this, geometry);
+            return FactoryInternal.SpatialOps.Union(this, geometry);
         }
 
         /// <summary>
@@ -295,7 +302,8 @@ namespace SharpMap.SimpleGeometries
                 return this;
             }
 
-            return BoundingBoxSpatialOperations.Difference(ExtentsInternal, new Extents(geometry.Extents));
+            return FactoryInternal.SpatialOps.Difference(
+                ExtentsInternal, new Extents(FactoryInternal, geometry.Extents));
         }
 
         /// <summary>
@@ -340,7 +348,7 @@ namespace SharpMap.SimpleGeometries
         /// The mathematical centroid for this Surface as a Point.
         /// The result is not guaranteed to be on this Surface.
         /// </summary>
-        public override Point Centroid
+        public override IPoint Centroid
         {
             get { return ExteriorRing.ExtentsInternal.GetCentroid(); }
         }
@@ -363,7 +371,7 @@ namespace SharpMap.SimpleGeometries
             {
                 if (_exteriorRing == null || _exteriorRing.IsEmpty)
                 {
-                    return new Extents();
+                    return new Extents(FactoryInternal);
                 }
                 else
                 {
@@ -372,20 +380,25 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
-        public override IEnumerable<Point> GetVertices()
+        public override IEnumerable<Point> GetVertexes()
         {
-            foreach (Point point in ExteriorRing.GetVertices())
+            foreach (Point point in ExteriorRing.GetVertexes())
             {
                 yield return point;
             }
 
             foreach (LinearRing ring in _interiorRings)
             {
-                foreach (Point point in ring.GetVertices())
+                foreach (Point point in ring.GetVertexes())
                 {
                     yield return point;
                 }
             }
+        }
+
+        public override IEnumerable<Point> GetVertexes(ITransformMatrix<DoubleComponent> transform)
+        {
+            throw new NotImplementedException();
         }
 
         #region ICloneable Members
@@ -418,12 +431,19 @@ namespace SharpMap.SimpleGeometries
 
         public Int32 InteriorRingsCount
         {
-            get { throw new NotImplementedException(); }
+            get { return _interiorRings.Count; }
         }
 
         IList<ILineString> IPolygon.InteriorRings
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return InteriorRings.ConvertAll<ILineString>(
+                    delegate(LinearRing l)
+                    {
+                        return l;
+                    });
+            }
         }
 
         #endregion

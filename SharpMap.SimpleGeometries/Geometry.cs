@@ -54,8 +54,8 @@ namespace SharpMap.SimpleGeometries
         private ICoordinateSystem _spatialReference;
         private Int32? _srid;
         private Tolerance _tolerance = Tolerance.Global;
-        private Extents _extents = new Extents();
-        private IGeometryFactory _factory;
+        private Extents? _extents;
+        private GeometryFactory _factory;
         private ICoordinateSequence _coordinates;
         private Object _userData;
 
@@ -69,7 +69,7 @@ namespace SharpMap.SimpleGeometries
         {
             Int32 hashCode = GetType().GetHashCode();
 
-            foreach (Point point in GetVertices())
+            foreach (Point point in GetVertexes())
             {
                 hashCode ^= point.X.GetHashCode() ^ point.Y.GetHashCode();
             }
@@ -128,26 +128,13 @@ namespace SharpMap.SimpleGeometries
 
         #region IGeometry Members
 
-        public Dimensions BoundaryDimension
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public abstract Dimensions BoundaryDimension { get; }
 
-        public IPoint Centroid
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract IPoint Centroid { get; }
 
         IGeometry IGeometry.Clone()
         {
-            throw new NotImplementedException();
+            return Clone();
         }
 
         public ICoordinateSequence Coordinates
@@ -159,7 +146,7 @@ namespace SharpMap.SimpleGeometries
         public IGeometryFactory Factory
         {
             get { return _factory; }
-            internal set { _factory = value; }
+            internal set { _factory = (GeometryFactory)value; }
         }
 
         public abstract OgcGeometryType GeometryType { get; }
@@ -188,7 +175,7 @@ namespace SharpMap.SimpleGeometries
 
         public IPrecisionModel PrecisionModel
         {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         public Int32? Srid
@@ -234,7 +221,7 @@ namespace SharpMap.SimpleGeometries
             {
                 Extents box = ExtentsInternal;
                 IEnumerable<ICoordinate> coordinates = getBoundCoordinates(box);
-                Polygon envelope = new Polygon(coordinates);
+                Polygon envelope = _factory.CreatePolygon(coordinates) as Polygon;
                 return envelope;
             }
         }
@@ -642,8 +629,6 @@ namespace SharpMap.SimpleGeometries
         /// <returns>Copy of Geometry</returns>
         public abstract Geometry Clone();
 
-        public abstract IEnumerable<Point> GetVertices();
-
         #region ICloneable Members
 
         Object ICloneable.Clone()
@@ -664,7 +649,20 @@ namespace SharpMap.SimpleGeometries
 
         protected internal virtual Extents ExtentsInternal
         {
-            get { return _extents; }
+            get
+            {
+                if (_extents == null)
+                {
+                    _extents = (Extents)Extents;
+                }
+
+                return _extents.Value;
+            }
+        }
+
+        protected internal GeometryFactory FactoryInternal
+        {
+            get { return _factory; }
         }
 
         ///// <summary>
@@ -689,15 +687,9 @@ namespace SharpMap.SimpleGeometries
 
         #region IVertexStream<Point,DoubleComponent> Members
 
-        public IEnumerable<Point> GetVertexes(ITransformMatrix<DoubleComponent> transform)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IEnumerable<Point> GetVertexes(ITransformMatrix<DoubleComponent> transform);
 
-        public IEnumerable<Point> GetVertexes()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IEnumerable<Point> GetVertexes();
 
         #endregion
 

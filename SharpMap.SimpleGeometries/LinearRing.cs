@@ -51,8 +51,7 @@ namespace SharpMap.SimpleGeometries
         /// <returns>A copy of the LinearRing instance.</returns>
         public override Geometry Clone()
         {
-            LinearRing ring = new LinearRing((IEnumerable<ICoordinate>)Coordinates);
-            return ring;
+            return (Geometry)FactoryInternal.CreateLinearRing(GetVertexes());
         }
 
         /// <summary>

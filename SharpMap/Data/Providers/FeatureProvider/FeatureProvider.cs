@@ -32,9 +32,10 @@ namespace SharpMap.Data.Providers.FeatureProvider
 	public class FeatureProvider : IWritableFeatureLayerProvider<Guid>
 	{
         internal readonly static String OidColumnName = "Oid";
-		private FeatureDataTable<Guid> _features = new FeatureDataTable<Guid>(OidColumnName);
+        private FeatureDataTable<Guid> _features;
 		private ICoordinateTransformation _transform = null;
         private ICoordinateSystem _spatialReference;
+        private IGeometryFactory _geoFactory;
 
         /// <summary>
         /// Creates a new FeatureProvider with the given columns as a schema.
@@ -42,8 +43,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="columns">
         /// The schema to create the FeatureProvider with.
         /// </param>
-		public FeatureProvider(params DataColumn[] columns)
+		public FeatureProvider(IGeometryFactory factory, params DataColumn[] columns)
 		{
+            _geoFactory = factory;
+            _features = new FeatureDataTable<Guid>(OidColumnName, GeometryFactory);
+
             foreach (DataColumn column in columns)
             {
                 String keyColumnName = _features.PrimaryKey[0].ColumnName;
@@ -289,7 +293,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
         public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options)
         {
-            FeatureDataReader reader = new FeatureDataReader(_features, bounds, options);
+            FeatureDataReader reader = new FeatureDataReader(_geoFactory, _features, bounds, options);
             return reader;
         }
 
@@ -345,11 +349,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get
             {
-                throw new NotImplementedException();
+                return _geoFactory;
             }
             set
             {
-                throw new NotImplementedException();
+                _geoFactory = value;
             }
         }
 
