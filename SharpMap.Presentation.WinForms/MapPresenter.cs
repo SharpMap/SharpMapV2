@@ -16,13 +16,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using SharpMap.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Presentation.WinForms
 {
@@ -115,7 +115,7 @@ namespace SharpMap.Presentation.WinForms
             get { return BackgroundColorInternal; }
         }
 
-        internal Point GeoCenter
+        internal IPoint GeoCenter
         {
             get { return GeoCenterInternal; }
         }
@@ -155,7 +155,7 @@ namespace SharpMap.Presentation.WinForms
             get { return ToWorldTransformInternal; }
         }
 
-        internal Point2D ToView(Point point)
+        internal Point2D ToView(IPoint point)
         {
             return ToViewInternal(point);
         }
@@ -165,22 +165,22 @@ namespace SharpMap.Presentation.WinForms
             return ToViewInternal(x, y);
         }
 
-        internal Point ToWorld(Point2D point)
+        internal IPoint ToWorld(Point2D point)
         {
             return ToWorldInternal(point);
         }
 
-        internal Point ToWorld(Double x, Double y)
+        internal IPoint ToWorld(Double x, Double y)
         {
             return ToWorldInternal(x, y);
         }
 
-        internal BoundingBox ToWorld(Rectangle2D bounds)
+        internal IExtents2D ToWorld(Rectangle2D bounds)
         {
             return ToWorldInternal(bounds);
         }
 
-        internal BoundingBox ViewEnvelope
+        internal IExtents2D ViewEnvelope
         {
             get { return ViewEnvelopeInternal; }
         }
@@ -223,7 +223,7 @@ namespace SharpMap.Presentation.WinForms
             ZoomToViewBoundsInternal(viewBounds);
         }
 
-        internal void ZoomToWorldBounds(BoundingBox zoomBox)
+        internal void ZoomToWorldBounds(IExtents2D zoomBox)
         {
             ZoomToWorldBoundsInternal(zoomBox);
         }
