@@ -475,7 +475,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
 			if(table == null)
 			{
-				table = new FeatureDataTable(ConnectionId);
+				table = new FeatureDataTable(ConnectionId, _geoFactory);
 				dataSet.Tables.Add(table);
 			}
 

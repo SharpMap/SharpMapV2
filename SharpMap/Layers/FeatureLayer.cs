@@ -37,6 +37,7 @@ namespace SharpMap.Layers
         private readonly FeatureDataTable _features;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
+        private IGeometryFactory _geoFactory;
         #endregion
 
         /// <summary>
@@ -46,8 +47,7 @@ namespace SharpMap.Layers
         /// </summary>
         protected FeatureLayer(IFeatureLayerProvider dataSource)
             : this(String.Empty, dataSource)
-        {
-        }
+        { }
 
         /// <summary>
         /// Initializes a new features layer with the given name and datasource
@@ -105,7 +105,8 @@ namespace SharpMap.Layers
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-            _features = DataSource.CreateNewTable() ?? new FeatureDataTable();
+            _features = DataSource.CreateNewTable() ?? new FeatureDataTable(dataSource.GeometryFactory);
+            _geoFactory = dataSource.GeometryFactory;
             DataSource.Close();
 
             // We generally want spatial indexing on the feature table...
@@ -186,6 +187,19 @@ namespace SharpMap.Layers
             get { return _selectedFeatures; }
         }
 
+
+        public IGeometryFactory GeometryFactory
+        {
+            get
+            {
+                return _geoFactory;
+            }
+            set
+            {
+                _geoFactory = value;
+            }
+        }
+
         #endregion
 
         #region Layer overrides
@@ -246,7 +260,7 @@ namespace SharpMap.Layers
             }
             else
             {
-                FeatureDataTable featureCache = new FeatureDataTable();
+                FeatureDataTable featureCache = new FeatureDataTable(DataSource.GeometryFactory);
                 DataSource.SetTableSchema(featureCache);
                 DataSource.BeginExecuteFeatureQuery(featureQuery, featureCache,
                     queryCallback, featureCache);
@@ -259,7 +273,7 @@ namespace SharpMap.Layers
 
         protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
         {
-            _features.Merge(features);
+            _features.Merge(features, GeometryFactory);
         }
 
         #region Private helper methods
@@ -296,5 +310,6 @@ namespace SharpMap.Layers
         }
 
         #endregion
+
     }
 }

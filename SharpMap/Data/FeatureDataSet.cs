@@ -63,10 +63,11 @@ namespace SharpMap.Data
         }
         #endregion
 
-        #region Object fields
+        #region Instance fields
         private FeatureTableCollection _featureTables;
         private readonly object _defaultViewManagerSync = new object();
         private Int32 _defaultViewManagerInitialized = 0;
+        private readonly IGeometryFactory _geoFactory;
         #endregion
 
         #region Object constructors
@@ -74,14 +75,15 @@ namespace SharpMap.Data
         /// <summary>
         /// Initializes a new instance of the FeatureDataSet class.
         /// </summary>
-        public FeatureDataSet()
-            : this(generateName()) { }
+        public FeatureDataSet(IGeometryFactory geoFactory)
+            : this(generateName(), geoFactory) { }
 
         /// <summary>
         /// Initializes a new instance of the FeatureDataSet class with the given name.
         /// </summary>
-        public FeatureDataSet(String name)
+        public FeatureDataSet(String name, IGeometryFactory geoFactory)
         {
+            _geoFactory = geoFactory;
             initClass(name);
             CollectionChangeEventHandler schemaChangedHandler = schemaChanged;
             //this.Tables.CollectionChanged += schemaChangedHandler;
@@ -105,7 +107,7 @@ namespace SharpMap.Data
 
                 if ((ds.Tables["FeatureTable"] != null))
                 {
-                    Tables.Add(new FeatureDataTable(ds.Tables["FeatureTable"]));
+                    Tables.Add(new FeatureDataTable(ds.Tables["FeatureTable"], _geoFactory));
                 }
 
                 DataSetName = ds.DataSetName;

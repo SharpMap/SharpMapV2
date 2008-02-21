@@ -19,12 +19,20 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 
 namespace SharpMap.Data
 {
     internal sealed class LoadFeaturesAdapter : DataAdapter
     {
+        private IGeometryFactory _factory;
+
+        public LoadFeaturesAdapter(IGeometryFactory factory)
+        {
+            _factory = factory;
+        }
+        
         public Int32 Fill(FeatureDataTable table, IFeatureDataReader dataReader)
         {
             return Fill(new FeatureDataTable[] { table }, dataReader);
@@ -69,7 +77,7 @@ namespace SharpMap.Data
                     FillSchema(table, SchemaType.Mapped, featureReader);
                 }
 
-                table.Merge((IEnumerable<IFeatureDataRecord>)featureReader);
+                table.Merge((IEnumerable<IFeatureDataRecord>)featureReader, _factory);
 
                 tableIndex++;
             } while (dataReader.NextResult());

@@ -168,7 +168,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public FeatureDataTable CreateNewTable()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(GeometryFactory);
             SetTableSchema(table);
             return table;
         }

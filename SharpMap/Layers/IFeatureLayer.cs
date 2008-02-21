@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Collections;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using System.Globalization;
 
@@ -56,5 +57,7 @@ namespace SharpMap.Layers
         /// selected.
         /// </summary>
 		FeatureDataView SelectedFeatures { get; }
+
+        IGeometryFactory GeometryFactory { get; set; }
 	}
 }

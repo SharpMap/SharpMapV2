@@ -114,8 +114,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Initializes a ShapeFile data provider without a file-based spatial index.
         /// </summary>
         /// <param name="filename">Path to shapefile (.shp file).</param>
-        public ShapeFileProvider(String filename)
-            : this(filename, false) { }
+        public ShapeFileProvider(String filename, IGeometryFactory geoFactory)
+            : this(filename, geoFactory, false) { }
 
         /// <summary>
         /// Initializes a ShapeFile data provider.
@@ -129,9 +129,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <param name="filename">Path to shapefile (.shp file).</param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-        public ShapeFileProvider(String filename, Boolean fileBasedIndex)
+        public ShapeFileProvider(String filename, IGeometryFactory geoFactory, Boolean fileBasedIndex)
         {
             _filename = filename;
+            _geoFactory = geoFactory;
 
             if (!File.Exists(filename))
             {
@@ -152,7 +153,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             // Initialize DBF
             if (HasDbf)
             {
-                _dbaseFile = new DbaseFile(DbfFilename);
+                _dbaseFile = new DbaseFile(DbfFilename, geoFactory);
             }
         }
 
@@ -254,9 +255,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="layerName">Name of the shapefile.</param>
         /// <param name="type">Type of shape to store in the shapefile.</param>
         /// <returns>A ShapeFile instance.</returns>
-        public static ShapeFileProvider Create(String directory, String layerName, ShapeType type)
+        public static ShapeFileProvider Create(String directory, String layerName, ShapeType type, IGeometryFactory geoFactory)
         {
-            return Create(directory, layerName, type, null);
+            return Create(directory, layerName, type, null, geoFactory);
         }
 
         /// <summary>
@@ -282,7 +283,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
         public static ShapeFileProvider Create(String directory, String layerName, ShapeType type,
-                                               FeatureDataTable schema)
+                                               FeatureDataTable schema, IGeometryFactory geoFactory)
         {
             if (type == ShapeType.Null)
             {
@@ -296,7 +297,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             DirectoryInfo directoryInfo = new DirectoryInfo(directory);
 
-            return Create(directoryInfo, layerName, type, schema);
+            return Create(directoryInfo, layerName, type, schema, geoFactory);
         }
 
         /// <summary>
@@ -316,11 +317,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
-                                               ShapeType type, FeatureDataTable model)
+                                               ShapeType type, FeatureDataTable model, IGeometryFactory geoFactory)
         {
             CultureInfo culture = Thread.CurrentThread.CurrentCulture;
             Encoding encoding = Encoding.GetEncoding(culture.TextInfo.OEMCodePage);
-            return Create(directory, layerName, type, model, culture, encoding);
+            return Create(directory, layerName, type, model, culture, encoding, geoFactory);
         }
 
 
@@ -347,7 +348,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName, ShapeType type,
-                                               FeatureDataTable model, CultureInfo culture, Encoding encoding)
+                                               FeatureDataTable model, CultureInfo culture, Encoding encoding,
+                                               IGeometryFactory geoFactory)
         {
             if (String.IsNullOrEmpty(layerName))
             {
@@ -406,11 +408,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (schemaTable != null)
             {
                 String filePath = Path.Combine(directory.FullName, layerName + ".dbf");
-                DbaseFile file = DbaseFile.CreateDbaseFile(filePath, schemaTable, culture, encoding);
+                DbaseFile file = DbaseFile.CreateDbaseFile(filePath, schemaTable, culture, encoding, geoFactory);
                 file.Close();
             }
 
-            return new ShapeFileProvider(shapeFile);
+            return new ShapeFileProvider(shapeFile, geoFactory);
         }
 
         #endregion
@@ -739,7 +741,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     if (HasDbf)
                     {
-                        _dbaseFile = new DbaseFile(DbfFilename);
+                        _dbaseFile = new DbaseFile(DbfFilename, _geoFactory);
                         _dbaseFile.Open(exclusive);
                     }
                 }
@@ -832,7 +834,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             FeatureDataTable<UInt32> dt = HasDbf
                                             ? _dbaseFile.NewTable
-                                            : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                                            : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
 
             dt.TableName = Path.GetFileNameWithoutExtension(Filename);
 
@@ -1102,7 +1104,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             IEnumerable<UInt32> objectsInQuery = GetIntersectingObjectIds(bounds);
 
-            keyedTable.Merge(getFeatureRecordsFromIds(objectsInQuery, keyedTable));
+            keyedTable.Merge(getFeatureRecordsFromIds(objectsInQuery, keyedTable), GeometryFactory);
         }
 
         public IGeometryFactory GeometryFactory
@@ -1710,7 +1712,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else
             {
-                return FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                return FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
             }
         }
 
@@ -1733,7 +1735,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (!HasDbf)
                 {
-                    table = FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName);
+                    table = FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
                 }
                 else
                 {

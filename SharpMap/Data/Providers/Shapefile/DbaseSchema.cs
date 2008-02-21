@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -60,9 +61,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             return fields;
         }
 
-        internal static FeatureDataTable<UInt32> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns)
+        internal static FeatureDataTable<UInt32> GetFeatureTableForFields(IEnumerable<DbaseField> _dbaseColumns, IGeometryFactory factory)
         {
-            FeatureDataTable<UInt32> table = new FeatureDataTable<UInt32>(OidColumnName);
+            FeatureDataTable<UInt32> table = new FeatureDataTable<UInt32>(OidColumnName, factory);
 
             foreach (DbaseField dbf in _dbaseColumns)
             {
@@ -115,39 +116,39 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-		private static Int32 getLengthByHeuristic(DataColumn column)
-		{
-			switch (Type.GetTypeCode(column.DataType))
-			{
-				case TypeCode.Boolean:
-					return 1;
-				case TypeCode.DateTime:
-					return 8;
-				case TypeCode.Byte:
-				case TypeCode.SByte:
-				case TypeCode.Int16:
-				case TypeCode.Int32:
-				case TypeCode.Int64:
-				case TypeCode.UInt16:
-				case TypeCode.UInt32:
-				case TypeCode.UInt64:
-					return 18;
-				case TypeCode.Decimal:
-				case TypeCode.Single:
-				case TypeCode.Double:
-					return 20;
-				case TypeCode.Char:
-				case TypeCode.String:
-					return 254;
-				default:
-					throw new NotSupportedException("Type is not supported");
-			}
-        }
-
         internal static DataTable DeriveSchemaTable(FeatureDataTable model)
         {
             // UNDONE: the precision computation delegate should not be null
             return ProviderSchemaHelper.DeriveSchemaTable(model, getLengthByHeuristic, null, null);
+        }
+
+        private static Int32 getLengthByHeuristic(DataColumn column)
+        {
+            switch (Type.GetTypeCode(column.DataType))
+            {
+                case TypeCode.Boolean:
+                    return 1;
+                case TypeCode.DateTime:
+                    return 8;
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    return 18;
+                case TypeCode.Decimal:
+                case TypeCode.Single:
+                case TypeCode.Double:
+                    return 20;
+                case TypeCode.Char:
+                case TypeCode.String:
+                    return 254;
+                default:
+                    throw new NotSupportedException("Type is not supported");
+            }
         }
     }
 }

@@ -422,7 +422,7 @@ namespace SharpMap
             _geoFactory = geoFactory;
             _layers = new LayerCollection(this);
             _layers.ListChanged += handleLayersChanged;
-            _featureDataSet = new FeatureDataSet(title);
+            _featureDataSet = new FeatureDataSet(title, geoFactory);
         }
 
         #region Dispose Pattern
@@ -1302,9 +1302,17 @@ namespace SharpMap
                 case ListChangedType.ItemAdded:
                 {
                     ILayer layer = _layers[args.NewIndex];
-                    _extents.ExpandToInclude(layer.Extents);
+
+                    if(_extents == null)
+                    {
+                        _extents = layer.Extents;
+                    }
+                    else
+                    {
+                        _extents.ExpandToInclude(layer.Extents);
+                    }
                 }
-                    break;
+                break;
                 case ListChangedType.ItemChanged:
                     if (args.PropertyDescriptor.Name == Layer.ExtentsProperty.Name)
                     {

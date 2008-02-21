@@ -21,6 +21,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection.Emit;
 using System.Reflection;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using System.Collections;
 
@@ -111,13 +112,13 @@ namespace SharpMap.Data
         }
         #endregion
 
-        internal void MergeFeature(IFeatureDataRecord record)
+        internal void MergeFeature(IFeatureDataRecord record, IGeometryFactory factory)
         {
             if (record == null) throw new ArgumentNullException("record");
 
             Boolean checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
 
-            mergeSchemaIfNeeded(record);
+            mergeSchemaIfNeeded(record, factory);
 
             FeatureDataRow targetFeature = null;
 
@@ -221,7 +222,7 @@ namespace SharpMap.Data
         }
 
         // TODO: MergeFeatures(FeatureDataTable) and MergeFeatures(IEnumerable<IFeatureDataRecord>) seem to overlap... try refactor
-        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> sourceFeatures)
+        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> sourceFeatures, IGeometryFactory factory)
         {
             if (sourceFeatures == null) throw new ArgumentNullException("sourceFeatures");
 
@@ -238,7 +239,7 @@ namespace SharpMap.Data
                     {
                         checkedSchema = true;
 
-                        mergeSchemaIfNeeded(srcFeature);
+                        mergeSchemaIfNeeded(srcFeature, factory);
                     }
 
                     FeatureDataRow targetFeature = null;
@@ -273,7 +274,7 @@ namespace SharpMap.Data
         }
 
         #region Private helper methods
-        private void mergeSchemaIfNeeded(IFeatureDataRecord record)
+        private void mergeSchemaIfNeeded(IFeatureDataRecord record, IGeometryFactory factory)
         {
             if ((SchemaMergeAction & SchemaMergeAction.Add) != SchemaMergeAction.None)
             {
@@ -288,7 +289,7 @@ namespace SharpMap.Data
                 }
                 else
                 {
-                    schemaModel = createModelFromFeature(record);
+                    schemaModel = createModelFromFeature(record, factory);
                 }
 
                 MergeSchema(schemaModel);
@@ -441,9 +442,9 @@ namespace SharpMap.Data
         #endregion
 
         #region Private static helpers
-        private static FeatureDataTable createModelFromFeature(IFeatureDataRecord srcFeature)
+        private static FeatureDataTable createModelFromFeature(IFeatureDataRecord srcFeature, IGeometryFactory factory)
         {
-            FeatureDataTable schemaModel = new FeatureDataTable();
+            FeatureDataTable schemaModel = new FeatureDataTable(factory);
             for (Int32 fieldIndex = 0; fieldIndex < srcFeature.FieldCount; fieldIndex++)
             {
                 schemaModel.Columns.Add(srcFeature.GetName(fieldIndex),

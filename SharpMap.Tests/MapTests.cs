@@ -82,12 +82,12 @@ namespace SharpMap.Tests
         {
             Map map = new Map(_geoFactory);
             IExtents emptyExtents = _geoFactory.CreateExtents();
-            Assert.AreEqual(map.Extents, emptyExtents);
+            Assert.AreEqual(emptyExtents, map.Extents);
             // changed to null from Point.Empty
-            Assert.AreEqual(map.Center, null);
+            Assert.AreEqual(null, map.Center);
             Assert.IsNotNull(map.Layers);
-            Assert.AreEqual(map.Layers.Count, 0);
-            Assert.AreEqual(map.ActiveTool, StandardMapTools2D.None);
+            Assert.AreEqual(0, map.Layers.Count);
+            Assert.AreEqual(StandardMapTools2D.None, map.ActiveTool);
             Assert.IsNotNull(map.SelectedLayers);
         }
 

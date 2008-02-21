@@ -41,9 +41,9 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="idColumnName">The name of the id column in the feature table.</param>
         /// <returns>A new, empty FeatureDataTable{TOid} with a single column for the id.</returns>
-        public static FeatureDataTable<TOid> CreateEmpty(String idColumnName)
+        public static FeatureDataTable<TOid> CreateEmpty(String idColumnName, IGeometryFactory factory)
         {
-            return CreateTableWithId(new FeatureDataTable(), idColumnName);
+            return CreateTableWithId(new FeatureDataTable(factory), idColumnName, factory);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace SharpMap.Data
         /// <param name="columnName">The name of the id column.</param>
         /// <returns>A FeatureDataTable{TOid} instance which is a copy of <paramref name="table"/> 
         /// and with id column <paramref name="columnName"/>.</returns>
-        public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, String columnName)
+        public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, String columnName, IGeometryFactory factory)
         {
             if (table == null)
             {
@@ -73,7 +73,7 @@ namespace SharpMap.Data
                 table.Columns.Add(columnName, typeof(TOid));
             }
 
-            return internalCreateTableWithId(table, table.Columns[columnName]);
+            return internalCreateTableWithId(table, table.Columns[columnName], factory);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace SharpMap.Data
         /// <param name="column">The id column.</param>
         /// <returns>A FeatureDataTable{TOid} instance which is a copy of <paramref name="table"/> 
         /// and with id column <paramref name="column"/>.</returns>
-        public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, DataColumn column)
+        public static FeatureDataTable<TOid> CreateTableWithId(FeatureDataTable table, DataColumn column, IGeometryFactory factory)
         {
             if (table == null)
             {
@@ -96,12 +96,12 @@ namespace SharpMap.Data
                 throw new ArgumentNullException("column");
             }
 
-            return internalCreateTableWithId(table.Copy() as FeatureDataTable, column);
+            return internalCreateTableWithId(table.Copy() as FeatureDataTable, column, factory);
         }
 
-        private static FeatureDataTable<TOid> internalCreateTableWithId(FeatureDataTable tableCopy, DataColumn objectIdColumn)
+        private static FeatureDataTable<TOid> internalCreateTableWithId(FeatureDataTable tableCopy, DataColumn objectIdColumn, IGeometryFactory factory)
         {
-            FeatureDataTable<TOid> tableWithId = new FeatureDataTable<TOid>(tableCopy, objectIdColumn.ColumnName);
+            FeatureDataTable<TOid> tableWithId = new FeatureDataTable<TOid>(tableCopy, objectIdColumn.ColumnName, factory);
 
             // TODO: shouldn't this be in the base class? Need to check if changing base behavior will break stuff.
             foreach (DataColumn col in tableCopy.Columns)
@@ -147,12 +147,14 @@ namespace SharpMap.Data
 
         #region Constructors
 
-        private FeatureDataTable() { }
+        private FeatureDataTable(IGeometryFactory factory)
+            : base(factory)
+        { }
 
-        public FeatureDataTable(String idColumnName)
-        {
-            setIdColumn(idColumnName);
-        }
+        //public FeatureDataTable(String idColumnName)
+        //{
+        //    setIdColumn(idColumnName);
+        //}
 
         public FeatureDataTable(String idColumnName, IGeometryFactory factory)
             : base(factory)
@@ -160,11 +162,11 @@ namespace SharpMap.Data
             setIdColumn(idColumnName);
         }
 
-        public FeatureDataTable(String tableName, String idColumnName)
-            : base(tableName)
-        {
-            setIdColumn(idColumnName);
-        }
+        //public FeatureDataTable(String tableName, String idColumnName)
+        //    : base(tableName)
+        //{
+        //    setIdColumn(idColumnName);
+        //}
 
         public FeatureDataTable(String tableName, String idColumnName, IGeometryFactory factory)
             : base(tableName, factory)
@@ -179,8 +181,8 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="table">The table to copy.</param>
         /// <param name="idColumnName">The name of the OID column.</param>
-        public FeatureDataTable(DataTable table, String idColumnName)
-            : base(table)
+        public FeatureDataTable(DataTable table, String idColumnName, IGeometryFactory factory)
+            : base(table, factory)
         {
             setIdColumn(idColumnName);
         }
@@ -357,7 +359,7 @@ namespace SharpMap.Data
         /// <returns>A new instance of a <see cref="FeatureDataTable{TOid}"/>.</returns>
         protected override DataTable CreateInstance()
         {
-            return new FeatureDataTable<TOid>();
+            return new FeatureDataTable<TOid>(GeometryFactory);
         }
 
         /// <summary>

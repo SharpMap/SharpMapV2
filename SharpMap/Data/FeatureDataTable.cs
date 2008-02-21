@@ -129,28 +129,28 @@ namespace SharpMap.Data
 
         #region Object constructors
 
-        /// <summary>
-        /// Initializes a new instance of the FeatureDataTable class with no arguments.
-        /// </summary>
-        public FeatureDataTable()
-            : this(null, null)
-        { }
+        ///// <summary>
+        ///// Initializes a new instance of the FeatureDataTable class with no arguments.
+        ///// </summary>
+        //public FeatureDataTable()
+        //    : this(null, null)
+        //{ }
 
         public FeatureDataTable(IGeometryFactory factory)
-            : this(null, factory)
+            : this(String.Empty, factory)
         {
             Constraints.CollectionChanged += OnConstraintsChanged;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the FeatureDataTable class with the given
-        /// table name.
-        /// </summary>
-        public FeatureDataTable(String tableName)
-            : base(tableName, null)
-        {
-            Constraints.CollectionChanged += OnConstraintsChanged;
-        }
+        ///// <summary>
+        ///// Initializes a new instance of the FeatureDataTable class with the given
+        ///// table name.
+        ///// </summary>
+        //public FeatureDataTable(String tableName)
+        //    : base(tableName, null)
+        //{
+        //    Constraints.CollectionChanged += OnConstraintsChanged;
+        //}
 
         public FeatureDataTable(String tableName, IGeometryFactory factory)
             : base(tableName)
@@ -164,9 +164,10 @@ namespace SharpMap.Data
         /// copies the name and structure of the given <paramref name="table"/>.
         /// </summary>
         /// <param name="table"></param>
-        public FeatureDataTable(DataTable table)
+        public FeatureDataTable(DataTable table, IGeometryFactory factory)
             : base(table.TableName)
         {
+            _geoFactory = factory;
             Constraints.CollectionChanged += OnConstraintsChanged;
 
             if (table.DataSet == null || (table.CaseSensitive != table.DataSet.CaseSensitive))
@@ -277,7 +278,7 @@ namespace SharpMap.Data
             }
         }
 
-        public IGeometryFactory Factory
+        public IGeometryFactory GeometryFactory
         {
             get { return _geoFactory; }
         }
@@ -436,7 +437,7 @@ namespace SharpMap.Data
                 throw new ArgumentNullException("reader");
             }
 
-            LoadFeaturesAdapter adapter = new LoadFeaturesAdapter();
+            LoadFeaturesAdapter adapter = new LoadFeaturesAdapter(GeometryFactory);
             adapter.FillLoadOption = loadOption;
             adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
 
@@ -469,26 +470,26 @@ namespace SharpMap.Data
             merger.MergeFeatures(features);
         }
 
-        public void Merge(IFeatureDataRecord record)
+        public void Merge(IFeatureDataRecord record, IGeometryFactory factory)
         {
-            Merge(record, SchemaMergeAction.AddWithKey);
+            Merge(record, factory, SchemaMergeAction.AddWithKey);
         }
 
-        public void Merge(IFeatureDataRecord record, SchemaMergeAction schemaMergeAction)
+        public void Merge(IFeatureDataRecord record, IGeometryFactory factory, SchemaMergeAction schemaMergeAction)
         {
             FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-            merger.MergeFeature(record);
+            merger.MergeFeature(record, factory);
         }
 
-        public void Merge(IEnumerable<IFeatureDataRecord> records)
+        public void Merge(IEnumerable<IFeatureDataRecord> records, IGeometryFactory factory)
         {
-            Merge(records, SchemaMergeAction.AddWithKey);
+            Merge(records, factory, SchemaMergeAction.AddWithKey);
         }
 
-        public void Merge(IEnumerable<IFeatureDataRecord> records, SchemaMergeAction schemaMergeAction)
+        public void Merge(IEnumerable<IFeatureDataRecord> records, IGeometryFactory factory, SchemaMergeAction schemaMergeAction)
         {
             FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-            merger.MergeFeatures(records);
+            merger.MergeFeatures(records, factory);
         }
 
         /// <summary>
@@ -713,7 +714,7 @@ namespace SharpMap.Data
         /// <returns>An empty FeatureDataTable.</returns>
         protected override DataTable CreateInstance()
         {
-            return new FeatureDataTable();
+            return new FeatureDataTable(_geoFactory);
         }
 
         /// <summary>

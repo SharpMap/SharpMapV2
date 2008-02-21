@@ -275,6 +275,10 @@ namespace SharpMap.Data
                 {
                     missingGeometry = _viewDefinition.QueryRegion.Difference(Table.Envelope);
                 }
+                else
+                {
+                    missingGeometry = Table.GeometryFactory.CreatePoint();
+                }
 
                 if (value.Oids != null)
                 {

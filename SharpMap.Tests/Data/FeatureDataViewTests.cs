@@ -230,7 +230,7 @@ namespace SharpMap.Tests.Data
         public void ChangeViewSpatialFilterReturnsOnlyFilteredRows()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             table.Load(data.ExecuteIntersectionQuery(data.GetExtents()));
             IGeometry queryExtents = _geoFactory.CreateExtents2D(0, 0, 10, 10).ToGeometry();
 

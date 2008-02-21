@@ -25,6 +25,7 @@ using System.Text;
 using System.Data;
 using System.IO;
 using System.Globalization;
+using GeoAPI.Geometries;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data.Providers.ShapeFile
@@ -43,18 +44,25 @@ namespace SharpMap.Data.Providers.ShapeFile
         private DbaseReader _reader;
         private DbaseWriter _writer;
         private FileStream _dbaseFileStream;
-        private Boolean _isDisposed = false;
+        private Boolean _isDisposed;
         private Boolean _isOpen;
+	    private readonly IGeometryFactory _geoFactory;
 
         #endregion
 
-        internal DbaseFile(String fileName)
-            : this(fileName, true)
-        {
-        }
+        // TODO: [codekaizen] instead of passing an IGeometryFactory to 
+        // this DbaseFile class, it might be more sensible to create a 
+        // FeatureDataTable factory. This is especially true if we extract 
+        // interfaces from FeatureDataTable in order to allow some other 
+        // implementation to be used.
+        internal DbaseFile(String fileName, IGeometryFactory geoFactory)
+            : this(fileName, geoFactory, true)
+        { }
 
-        private DbaseFile(String fileName, Boolean checkExists)
+        private DbaseFile(String fileName, IGeometryFactory geoFactory, Boolean checkExists)
         {
+            _geoFactory = geoFactory;
+
             if (checkExists && !File.Exists(fileName))
             {
                 throw new ArgumentException("Cannot find file", "fileName");
@@ -199,9 +207,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region Methods
 
-        internal static DbaseFile CreateDbaseFile(String fileName, DataTable schema, CultureInfo culture, Encoding encoding)
+        internal static DbaseFile CreateDbaseFile(String fileName, DataTable schema, CultureInfo culture, Encoding encoding, IGeometryFactory geoFactory)
         {
-            DbaseFile file = new DbaseFile(fileName, false);
+            DbaseFile file = new DbaseFile(fileName, geoFactory, false);
             Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
             file._header.Columns = DbaseSchema.GetFields(schema, file._header);
@@ -398,7 +406,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (!_headerIsParsed) //Don't read the header if it's already parsed
             {
 				_header = DbaseHeader.ParseDbfHeader(new NondisposingStream(DataStream));
-                _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns);
+                _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns, _geoFactory);
                 _headerIsParsed = true;
             }
 
