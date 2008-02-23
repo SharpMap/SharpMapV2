@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -21,15 +21,14 @@ using System.Runtime.Serialization;
 namespace SharpMap.Data.Providers.ShapeFile
 {    
     /// <summary>
-    /// Exception thrown when the requested operation is 
-    /// invalid for the state of the reader.
+    /// Exception thrown when an operation is attempted which is not defined for the state of the <see cref="ShapeFile"/>
     /// </summary>
-    public class InvalidDbaseFileOperationException : Exception
+    public class ShapeFileInvalidOperationException : ShapeFileException
     {
-        public InvalidDbaseFileOperationException() { }
-        public InvalidDbaseFileOperationException(String message) : base(message) { }
-        public InvalidDbaseFileOperationException(String message, Exception inner) : base(message, inner) { }
-        public InvalidDbaseFileOperationException(SerializationInfo info, StreamingContext context)
+        public ShapeFileInvalidOperationException() : base() { }
+        public ShapeFileInvalidOperationException(String message) : base(message) { }
+        public ShapeFileInvalidOperationException(String message, Exception inner) : base(message, inner) { }
+        public ShapeFileInvalidOperationException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

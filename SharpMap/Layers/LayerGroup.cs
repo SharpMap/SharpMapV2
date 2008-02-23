@@ -340,7 +340,7 @@ namespace SharpMap.Layers
         /// Clones the layer.
         /// </summary>
         /// <returns>A deep-copy of the layer.</returns>
-        object ICloneable.Clone()
+        Object ICloneable.Clone()
         {
             return Clone();
         }

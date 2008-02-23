@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -115,7 +115,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			}
         }
 
-        public object GetOid()
+        public Object GetOid()
         {
             checkDisposed();
             checkReadState();
@@ -352,7 +352,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return Convert.ToString(_table[_currentRow][i]);
         }
 
-        public object GetValue(Int32 i)
+        public Object GetValue(Int32 i)
         {
             checkDisposed();
             checkReadState();
@@ -360,7 +360,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return _table[_currentRow][i];
         }
 
-        public Int32 GetValues(object[] values)
+        public Int32 GetValues(Object[] values)
         {
             checkDisposed();
             checkReadState();
@@ -385,7 +385,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return _table[_currentRow].IsNull(i);
         }
 
-        public object this[String name]
+        public Object this[String name]
         {
             get
             {
@@ -395,7 +395,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
         }
 
-        public object this[Int32 i]
+        public Object this[Int32 i]
         {
             get
             {

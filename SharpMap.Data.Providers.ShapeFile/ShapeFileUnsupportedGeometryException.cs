@@ -1,5 +1,4 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -22,14 +21,14 @@ using System.Runtime.Serialization;
 namespace SharpMap.Data.Providers.ShapeFile
 {
     /// <summary>
-    /// Exception thrown during shapefile operations
+    /// Exception thrown when a geometry type exists in a shapefile which is not currently supported.
     /// </summary>
-    public class ShapeFileException : SharpMapDataException
+    public class ShapeFileUnsupportedGeometryException : ShapeFileException
     {
-        public ShapeFileException() : base() { }
-        public ShapeFileException(String message) : base(message) { }
-        public ShapeFileException(String message, Exception inner) : base(message, inner) { }
-        public ShapeFileException(SerializationInfo info, StreamingContext context)
+        public ShapeFileUnsupportedGeometryException() : base() { }
+        public ShapeFileUnsupportedGeometryException(String message) : base(message) { }
+        public ShapeFileUnsupportedGeometryException(String message, Exception inner) : base(message, inner) { }
+        public ShapeFileUnsupportedGeometryException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

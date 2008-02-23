@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -135,7 +135,7 @@ namespace SharpMap.Data
                 FeatureDataRow<TOid> newRow = tableWithId.NewRow() as FeatureDataRow<TOid>;
                 Debug.Assert(newRow != null);
                 Int32 itemCount = newRow.ItemArray.Length;
-                newRow.ItemArray = new object[itemCount];
+                newRow.ItemArray = new Object[itemCount];
                 //Array.Copy(row.ItemArray, newRow.ItemArray, itemCount);
                 newRow.ItemArray = row.ItemArray;
                 tableWithId.AddRow(newRow);
@@ -278,7 +278,7 @@ namespace SharpMap.Data
         }
 
         /// <summary>
-        /// Finds a feature given the feature's <abbr title="object identifier">OID</abbr>.
+        /// Finds a feature given the feature's <abbr title="Object identifier">OID</abbr>.
         /// </summary>
         /// <param name="key">
         /// The unique key value (the OID) to use to find the feature.

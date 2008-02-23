@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@ namespace SharpMap.SimpleGeometries
 {
     /// <summary>
     /// Represents an geometrical entity in a defined Cartesian space.
-    /// The root class of the Geometry Object Model hierarchy.
+    /// The root class of the Geometry object Model hierarchy.
     /// <see cref="Geometry"/> is an abstract (non-instantiable) class.
     /// </summary>
     /// <remarks>
@@ -196,7 +196,7 @@ namespace SharpMap.SimpleGeometries
         }
 
         /// <summary>
-        /// The inherent dimension of this <see cref="Geometry"/> Object, 
+        /// The inherent dimension of this <see cref="Geometry"/> object, 
         /// which must be less than or equal to the coordinate dimension.
         /// </summary>
         /// <remarks>
@@ -221,7 +221,14 @@ namespace SharpMap.SimpleGeometries
             {
                 Extents box = ExtentsInternal;
                 IEnumerable<ICoordinate> coordinates = getBoundCoordinates(box);
-                Polygon envelope = _factory.CreatePolygon(coordinates) as Polygon;
+
+                if (_factory == null)
+                {
+                    throw new InvalidOperationException(
+                        "No IGeometryFactory has been set for this geometry.");
+                }
+
+                Polygon envelope = FactoryInternal.CreatePolygon(coordinates) as Polygon;
                 return envelope;
             }
         }

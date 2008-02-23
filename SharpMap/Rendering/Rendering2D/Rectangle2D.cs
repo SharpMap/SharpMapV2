@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -168,7 +168,7 @@ namespace SharpMap.Rendering.Rendering2D
             return !(lhs.Equals(rhs));
         }
 
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (obj is Rectangle2D)
             {

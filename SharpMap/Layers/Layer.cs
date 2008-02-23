@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -582,7 +582,7 @@ namespace SharpMap.Layers
         /// Clones the layer
         /// </summary>
         /// <returns>cloned object</returns>
-        public abstract object Clone();
+        public abstract Object Clone();
 
         #endregion
 

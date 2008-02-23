@@ -1,4 +1,4 @@
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -469,7 +469,7 @@ namespace SharpMap.Styles
         /// <summary>
         /// Compares two <see cref="StyleColor"/> instances to determine if they are equal.
         /// </summary>
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (obj != null && obj is StyleColor && ((StyleColor)obj).Bgra == Bgra)
             {
@@ -2244,7 +2244,7 @@ namespace SharpMap.Styles
 
         #region Color name lookup by value
 
-        private static readonly object _colorNameLookupSync = new object();
+        private static readonly Object _colorNameLookupSync = new Object();
         private static readonly Dictionary<StyleColor, String> _colorNameLookup 
             = new Dictionary<StyleColor, String>();
 
@@ -2284,7 +2284,7 @@ namespace SharpMap.Styles
 
         #region Predefined Colors Dictionary
 
-        private static readonly object _predefinedColorsSync = new object();
+        private static readonly Object _predefinedColorsSync = new Object();
         private static readonly Dictionary<String, StyleColor> _predefinedColors = new Dictionary<String, StyleColor>();
 
         /// <summary>

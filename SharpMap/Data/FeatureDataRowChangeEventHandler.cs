@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using SharpMap.Data;
 
 namespace SharpMap.Data
@@ -24,7 +25,5 @@ namespace SharpMap.Data
     /// Represents the method that will handle the RowChanging, RowChanged, RowDeleting, 
     /// and RowDeleted events of a FeatureDataTable. 
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    public delegate void FeatureDataRowChangeEventHandler(object sender, FeatureDataRowChangeEventArgs e);
+    public delegate void FeatureDataRowChangeEventHandler(Object sender, FeatureDataRowChangeEventArgs e);
 }

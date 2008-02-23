@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using GeoAPI.Geometries;
+using GeoAPI.Utilities;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data
@@ -42,7 +43,7 @@ namespace SharpMap.Data
         private delegate void SetLockedDelegate(DataView view, Boolean locked);
 
         private delegate void SetIndex2Delegate(
-            FeatureDataView view, String newSort, DataViewRowState dataViewRowState, object expression, Boolean fireEvent);
+            FeatureDataView view, String newSort, DataViewRowState dataViewRowState, Object expression, Boolean fireEvent);
 
         #endregion
 
@@ -76,7 +77,7 @@ namespace SharpMap.Data
         //private readonly ArrayList _oidFilter = new ArrayList();
         private FeatureSpatialExpression _viewDefinition;
         private Boolean _reindexingEnabled = true;
-        private Boolean _shouldReindex = false;
+        private Boolean _shouldReindex;
         private IExtents _extents;
         #endregion
 
@@ -89,7 +90,7 @@ namespace SharpMap.Data
         /// <param name="table">Table to create view on.</param>
         public FeatureDataView(FeatureDataTable table)
             // NOTE: changed Point.Empty to null
-            : this(table, new FeatureSpatialExpression(null, SpatialExpressionType.Disjoint, null), 
+            : this(table, new FeatureSpatialExpression(table.GeometryFactory.CreatePoint(), SpatialExpressionType.Disjoint), 
                 "", DataViewRowState.CurrentRows) { }
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace SharpMap.Data
         /// <param name="rowState">Filter on the state of the rows to view.</param>
         public FeatureDataView(FeatureDataTable table, IGeometry query, SpatialExpressionType queryType,
                                String sort, DataViewRowState rowState)
-            : this(table, new FeatureSpatialExpression(query, queryType, null), sort, rowState) { }
+            : this(table, new FeatureSpatialExpression(query, queryType), sort, rowState) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -183,12 +184,15 @@ namespace SharpMap.Data
             get
             {
                 // NOTE: changed Point.Empty to null
-                return _viewDefinition.QueryRegion == null
-                  ? null
-                  : _viewDefinition.QueryRegion.Clone();
+                return _viewDefinition.QueryRegion.Clone();
             }
             set
             {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
                 // NOTE: changed Point.Empty to null
                 if (_viewDefinition.QueryRegion == value)
                 {
@@ -267,7 +271,7 @@ namespace SharpMap.Data
                 _viewDefinition = value;
 
                 // NOTE: changed Point.Empty to null
-                IGeometry missingGeometry = null;
+                IGeometry missingGeometry;
                 ArrayList missingOids = new ArrayList();
 
                 if (!_viewDefinition.QueryRegion.IsEmpty
@@ -280,16 +284,13 @@ namespace SharpMap.Data
                     missingGeometry = Table.GeometryFactory.CreatePoint();
                 }
 
-                if (value.Oids != null)
+                foreach (Object oid in value.Oids)
                 {
-                    foreach (object oid in value.Oids)
-                    {
-                        FeatureDataRow feature = Table.Find(oid);
+                    FeatureDataRow feature = Table.Find(oid);
 
-                        if (feature == null || !feature.IsFullyLoaded)
-                        {
-                            missingOids.Add(oid);
-                        }
+                    if (feature == null || !feature.IsFullyLoaded)
+                    {
+                        missingOids.Add(oid);
                     }
                 }
 
@@ -361,19 +362,26 @@ namespace SharpMap.Data
         // TODO: Please don't optimize the following apparently useless overrides out, 
         // I need to figure out what to do with them [ck]
 
-        protected override void ColumnCollectionChanged(object sender, CollectionChangeEventArgs e)
+        protected override void ColumnCollectionChanged(Object sender, CollectionChangeEventArgs e)
         {
             base.ColumnCollectionChanged(sender, e);
         }
 
-        protected override void IndexListChanged(object sender, ListChangedEventArgs e)
+        protected override void IndexListChanged(Object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
                     FeatureDataRow feature = this[e.NewIndex].Row as FeatureDataRow;
                     Debug.Assert(feature != null);
-                    _extents.ExpandToInclude(feature.Extents);
+                    if (_extents == null)
+                    {
+                        _extents = feature.Extents;
+                    }
+                    else
+                    {
+                        _extents.ExpandToInclude(feature.Extents);
+                    }
                     break;
                 case ListChangedType.Reset:
                 case ListChangedType.ItemChanged:
@@ -433,7 +441,7 @@ namespace SharpMap.Data
         }
 
         internal void SetIndex2(String newSort, DataViewRowState dataViewRowState,
-                                object dataExpression, Boolean fireEvent)
+                                Object dataExpression, Boolean fireEvent)
         {
             // Call the delegate we wired up to bypass the normally inaccessible 
             // base class method
@@ -448,7 +456,7 @@ namespace SharpMap.Data
         {
             // TODO: rethink how the view is filtered... perhaps we could bypass SetIndex2 and create
             // the System.Data.Index directly with rows returned from the SharpMap.Indexing.RTree
-            object iFilter = createRowPredicateFilter(isRowInView);
+            Object iFilter = createRowPredicateFilter(isRowInView);
             SetIndex2(Sort, RowStateFilter, iFilter, true);
         }
 
@@ -469,7 +477,7 @@ namespace SharpMap.Data
         private Boolean inGeometryFilter(FeatureDataRow feature)
         {
             // NOTE: changed Point.Empty to null
-            return (_viewDefinition.QueryRegion == null &&
+            return (_viewDefinition.QueryRegion.IsEmpty &&
                 _viewDefinition.QueryType == SpatialExpressionType.Disjoint) ||
                 _viewDefinition.QueryRegion.Intersects(feature.Geometry);
         }
@@ -481,16 +489,16 @@ namespace SharpMap.Data
                 return false;
             }
 
-            if (_viewDefinition.Oids == null)
+            if (!Slice.CountGreaterThan(_viewDefinition.Oids, 0))
             {
                 return true;
             }
 
-            object featureOid = feature.GetOid();
+            Object featureOid = feature.GetOid();
 
             Debug.Assert(featureOid != null);
 
-            foreach (object oid in _viewDefinition.Oids)
+            foreach (Object oid in _viewDefinition.Oids)
             {
                 if (featureOid.Equals(oid))
                 {
@@ -552,7 +560,7 @@ namespace SharpMap.Data
             MethodInfo setIndex2Info = typeof(DataView).GetMethod(
                 "SetIndex2", BindingFlags.NonPublic | BindingFlags.Instance);
             ConstructorInfo setIndexDelegateCtor = typeof(SetIndex2Delegate)
-                .GetConstructor(new Type[] { typeof(object), typeof(IntPtr) });
+                .GetConstructor(new Type[] { typeof(Object), typeof(IntPtr) });
             IntPtr setIndex2Pointer = setIndex2Info.MethodHandle.GetFunctionPointer();
             return (SetIndex2Delegate)setIndexDelegateCtor.Invoke(new Object[] { null, setIndex2Pointer });
         }
@@ -598,7 +606,7 @@ namespace SharpMap.Data
                    as SetDataViewManagerDelegate;
         }
 
-        private static object createRowPredicateFilter(Predicate<DataRow> filter)
+        private static Object createRowPredicateFilter(Predicate<DataRow> filter)
         {
 #warning Reflection on internal type breaks in CLR versions less than v2.0.50727.1378
             // This is the only way we have to take control of what predicate is used to filter the DataView.
@@ -611,8 +619,8 @@ namespace SharpMap.Data
             Debug.Assert(rowPredicateFilterType != null,
                          "Can't find the type System.Data.DataView+RowPredicateFilter. " +
                          "This is probably because you are not running the v2.0 CLR which ships with .Net v3.5 Beta 2.");
-            object[] args = new object[] { filter };
-            object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
+            Object[] args = new Object[] { filter };
+            Object rowPredicateFilter = Activator.CreateInstance(rowPredicateFilterType,
                                                                  BindingFlags.Instance | BindingFlags.NonPublic,
                                                                  null, args, null);
 

@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ namespace SharpMap.Presentation.Presenters
             View.Layers = Map.Layers;
         }
 
-        private void handleLayersChanged(object sender, ListChangedEventArgs e)
+        private void handleLayersChanged(Object sender, ListChangedEventArgs e)
         {
             if (e.ListChangedType == ListChangedType.ItemAdded)
             {
@@ -65,7 +65,7 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void handleViewFeaturesHighlightedChanged(object sender, FeaturesHighlightedChangedEventArgs e)
+        private void handleViewFeaturesHighlightedChanged(Object sender, FeaturesHighlightedChangedEventArgs e)
         {
             if (_highlightUpdating)
             {
@@ -97,7 +97,7 @@ namespace SharpMap.Presentation.Presenters
             _highlightUpdating = false;
         }
 
-        private void handleHighlightedFeaturesChanged(object sender, ListChangedEventArgs e)
+        private void handleHighlightedFeaturesChanged(Object sender, ListChangedEventArgs e)
         {
             if(_highlightUpdating)
             {
@@ -145,7 +145,7 @@ namespace SharpMap.Presentation.Presenters
             layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesChanged;
         }
 
-        private static IEnumerable<object> getFeatureIdsFromIndexes(
+        private static IEnumerable<Object> getFeatureIdsFromIndexes(
             IFeatureLayer layer, IEnumerable<Int32> indexes)
         {
             foreach (Int32 index in indexes)
@@ -156,7 +156,7 @@ namespace SharpMap.Presentation.Presenters
                 if (!feature.HasOid)
                 {
                     throw new InvalidOperationException(
-                        "Feature must have object identifier in order to highlight.");
+                        "Feature must have Object identifier in order to highlight.");
                 }
 
                 yield return feature.GetOid();

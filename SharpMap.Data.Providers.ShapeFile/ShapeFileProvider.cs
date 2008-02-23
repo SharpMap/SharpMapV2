@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -1198,7 +1198,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Returns the geometry corresponding to the Object ID
+        /// Returns the geometry corresponding to the object ID
         /// </summary>
         /// <param name="oid">Object ID</param>
         /// <returns><see cref="IGeometry"/></returns>
@@ -1229,7 +1229,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Returns geometry Object IDs whose bounding box intersects <paramref name="bounds"/>.
+        /// Returns geometry object IDs whose bounding box intersects <paramref name="bounds"/>.
         /// </summary>
         /// <param name="bounds">Bounds which to search for objects in.</param>
         /// <returns>

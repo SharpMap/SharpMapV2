@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -105,10 +105,10 @@ namespace SharpMap
         {
             private readonly Map _map;
             private Boolean? _sortedAscending = null;
-            private readonly object _collectionChangeSync = new object();
+            private readonly Object _collectionChangeSync = new Object();
             private PropertyDescriptor _sortProperty;
             private static readonly PropertyDescriptorCollection _layerProperties;
-            internal readonly object LayersChangeSync = new object();
+            internal readonly Object LayersChangeSync = new Object();
 
             static LayerCollection()
             {
@@ -168,7 +168,7 @@ namespace SharpMap
 
             #region AddNew support
 
-            protected override object AddNewCore()
+            protected override Object AddNewCore()
             {
                 throw new InvalidOperationException();
             }
@@ -275,7 +275,7 @@ namespace SharpMap
 
             #region Searching support
 
-            protected override Int32 FindCore(PropertyDescriptor prop, object key)
+            protected override Int32 FindCore(PropertyDescriptor prop, Object key)
             {
                 if (prop.Name == "LayerName")
                 {
@@ -389,7 +389,7 @@ namespace SharpMap
 
         #region Fields
 
-        private readonly object _activeToolSync = new object();
+        private readonly Object _activeToolSync = new Object();
         private readonly IGeometryFactory _geoFactory;
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
@@ -1108,7 +1108,7 @@ namespace SharpMap
         /// </summary>
         public ICoordinate Center
         {
-            get { return _extents.Center; }
+            get { return _extents == null ? null : _extents.Center; }
         }
 
         public IGeometryFactory GeometryFactory
@@ -1295,7 +1295,7 @@ namespace SharpMap
             }
         }
 
-        private void handleLayersChanged(object sender, ListChangedEventArgs args)
+        private void handleLayersChanged(Object sender, ListChangedEventArgs args)
         {
             switch (args.ListChangedType)
             {

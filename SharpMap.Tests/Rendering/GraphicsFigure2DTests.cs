@@ -9,7 +9,6 @@ using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponen
 
 namespace SharpMap.Tests.Rendering
 {
-
     #region Figure2D
 
     [TestFixture]
@@ -50,7 +49,7 @@ namespace SharpMap.Tests.Rendering
             Assert.AreNotEqual(f1, f3);
             Assert.AreNotEqual(f1, f4);
             Assert.AreNotEqual(f4, f5);
-            Assert.IsFalse(f1.Equals(new object()));
+            Assert.IsFalse(f1.Equals(new Object()));
             f2 = null;
             Assert.IsFalse(f1.Equals(f2));
         }

@@ -1,5 +1,5 @@
-﻿// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -112,14 +112,16 @@ namespace SharpMap.Layers
             // We generally want spatial indexing on the feature table...
             _features.IsSpatiallyIndexed = true;
 
+            IGeometry empty = dataSource.GeometryFactory.CreatePoint();
+
             _selectedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(null,  // Changed to null from Point.Empty
-                    SpatialExpressionType.Intersects, null),
+                new FeatureSpatialExpression(empty,  
+                    SpatialExpressionType.Intersects),
                 "", DataViewRowState.CurrentRows);
 
             _highlightedFeatures = new FeatureDataView(_features,
-                new FeatureSpatialExpression(null, // Changed to null from Point.Empty
-                    SpatialExpressionType.Intersects, null), 
+                new FeatureSpatialExpression(empty, 
+                    SpatialExpressionType.Intersects), 
                 "", DataViewRowState.CurrentRows);
 
             if (ShouldHandleFeaturesNotFoundEvent)
@@ -250,7 +252,7 @@ namespace SharpMap.Layers
 
             FeatureSpatialExpression featureQuery =
                 query as FeatureSpatialExpression
-                ?? new FeatureSpatialExpression(query.QueryRegion, query.QueryType, null);
+                ?? new FeatureSpatialExpression(query.QueryRegion, query.QueryType);
 
             _features.SuspendIndexEvents();
 
@@ -278,7 +280,7 @@ namespace SharpMap.Layers
 
         #region Private helper methods
 
-        private void handleFeaturesRequested(object sender, FeaturesNotFoundEventArgs e)
+        private void handleFeaturesRequested(Object sender, FeaturesNotFoundEventArgs e)
         {
             IGeometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
 

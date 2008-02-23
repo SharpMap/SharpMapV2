@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -41,10 +41,10 @@ namespace SharpMap.Presentation.Presenters
     public abstract class MapPresenter2D : BasePresenter<IMapView2D>
     {
         #region Private static fields
-        private static readonly object _rendererInitSync = new object();
-        private static object _vectorRenderer;
-        private static object _rasterRenderer;
-        private static object _textRenderer;
+        private static readonly Object _rendererInitSync = new Object();
+        private static Object _vectorRenderer;
+        private static Object _rasterRenderer;
+        private static Object _textRenderer;
         #endregion
 
         #region Private instance fields
@@ -190,10 +190,12 @@ namespace SharpMap.Presentation.Presenters
             get
             {
                 ICoordinate mapCenter = Map.Center;
-                
-                if(mapCenter.IsEmpty)
+
+                // changed from mapCenter.IsEmpty to null
+                if (mapCenter == null)
                 {
-                    return Map.GeometryFactory.CreatePoint();
+                    // changed from Point.Empty to null
+                    return null;
                 }
 
                 ICoordinate viewCenter = Map.GeometryFactory.CoordinateFactory.Create(
@@ -657,7 +659,7 @@ namespace SharpMap.Presentation.Presenters
 			CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
 		}
 
-        protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, Type layerType, params object[] constructorParams)
+        protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, Type layerType, params Object[] constructorParams)
         {
             IRenderer renderer;
             Type constructedType = rendererType.MakeGenericType(renderObjectType);
@@ -781,7 +783,7 @@ namespace SharpMap.Presentation.Presenters
         #region Event handlers
 
         #region Map events
-        private void handleLayersChanged(object sender, ListChangedEventArgs e)
+        private void handleLayersChanged(Object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
             {
@@ -897,7 +899,7 @@ namespace SharpMap.Presentation.Presenters
 			OnRenderedLayer(layer);
 		}
 
-        private void handleMapPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void handleMapPropertyChanged(Object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == Map.SpatialReferenceProperty.Name)
             {
@@ -925,7 +927,7 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region View events
-        private void handleIdentifyLocationRequested(object sender, LocationEventArgs e)
+        private void handleIdentifyLocationRequested(Object sender, LocationEventArgs e)
         {
             // TODO: if map units are in latitude / longitude, terms easting and northing aren't used... are they?
             SetViewLocationInformation(String.Format("Easting: {0:N4}; Northing: {1:N4}",
@@ -933,7 +935,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the offset request from the view
-        private void handleViewOffsetChangeRequested(object sender, MapViewPropertyChangeEventArgs<Point2D> e)
+        private void handleViewOffsetChangeRequested(Object sender, MapViewPropertyChangeEventArgs<Point2D> e)
         {
             Size2D viewSize = View.ViewSize;
             Point2D newViewCenter = new Point2D(viewSize.Width / 2, viewSize.Height / 2) + e.RequestedValue;
@@ -942,7 +944,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the size-change request from the view
-        private void handleViewSizeChanged(object sender, EventArgs e)
+        private void handleViewSizeChanged(Object sender, EventArgs e)
         {
             setViewMetricsInternal(View.ViewSize, GeoCenterInternal.Coordinate, WorldWidthInternal);
         }
@@ -950,7 +952,7 @@ namespace SharpMap.Presentation.Presenters
         private Point2D _previousActionPoint = Point2D.Empty;
 
         // Handles the hover request from the view
-        private void handleViewHover(object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewHover(Object sender, MapActionEventArgs<Point2D> e)
         {
             ActionContext<IMapView2D, Point2D> context 
                 = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
@@ -959,7 +961,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the begin action request from the view
-        private void handleViewBeginAction(object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewBeginAction(Object sender, MapActionEventArgs<Point2D> e)
         {
             ActionContext<IMapView2D, Point2D> context
                 = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
@@ -968,7 +970,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the move-to request from the view
-        private void handleViewMoveTo(object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewMoveTo(Object sender, MapActionEventArgs<Point2D> e)
         {
             ActionContext<IMapView2D, Point2D> context
                 = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
@@ -977,7 +979,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the end action request from the view
-        private void handleViewEndAction(object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewEndAction(Object sender, MapActionEventArgs<Point2D> e)
         {
             ActionContext<IMapView2D, Point2D> context
                 = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
@@ -986,13 +988,13 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the background color change request from the view
-        private void handleViewBackgroundColorChangeRequested(object sender, MapViewPropertyChangeEventArgs<StyleColor> e)
+        private void handleViewBackgroundColorChangeRequested(Object sender, MapViewPropertyChangeEventArgs<StyleColor> e)
         {
             SetViewBackgroundColor(e.CurrentValue, e.RequestedValue);
         }
 
         // Handles the geographic view center change request from the view
-        private void handleViewGeoCenterChangeRequested(object sender, MapViewPropertyChangeEventArgs<IPoint> e)
+        private void handleViewGeoCenterChangeRequested(Object sender, MapViewPropertyChangeEventArgs<IPoint> e)
         {
             GeoCenterInternal = e.RequestedValue;
 
@@ -1000,7 +1002,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the maximum world width change request from the view
-        private void handleViewMaximumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<Double> e)
+        private void handleViewMaximumWorldWidthChangeRequested(Object sender, MapViewPropertyChangeEventArgs<Double> e)
         {
             MaximumWorldWidthInternal = e.RequestedValue;
 
@@ -1008,7 +1010,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the minimum world width change request from the view
-        private void handleViewMinimumWorldWidthChangeRequested(object sender, MapViewPropertyChangeEventArgs<Double> e)
+        private void handleViewMinimumWorldWidthChangeRequested(Object sender, MapViewPropertyChangeEventArgs<Double> e)
         {
             MinimumWorldWidthInternal = e.RequestedValue;
 
@@ -1016,7 +1018,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the view envelope change request from the view
-        private void handleViewViewEnvelopeChangeRequested(object sender, MapViewPropertyChangeEventArgs<IExtents2D> e)
+        private void handleViewViewEnvelopeChangeRequested(Object sender, MapViewPropertyChangeEventArgs<IExtents2D> e)
         {
             ViewEnvelopeInternal = e.RequestedValue;
 
@@ -1024,7 +1026,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the world aspect ratio change request from the view
-        private void handleViewWorldAspectRatioChangeRequested(object sender, MapViewPropertyChangeEventArgs<Double> e)
+        private void handleViewWorldAspectRatioChangeRequested(Object sender, MapViewPropertyChangeEventArgs<Double> e)
         {
             WorldAspectRatioInternal = e.RequestedValue;
 
@@ -1032,31 +1034,31 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the view zoom to extents request from the view
-        private void handleViewZoomToExtentsRequested(object sender, EventArgs e)
+        private void handleViewZoomToExtentsRequested(Object sender, EventArgs e)
         {
             ZoomToExtentsInternal();
         }
 
         // Handles the view zoom to specified view bounds request from the view
-        private void handleViewZoomToViewBoundsRequested(object sender, MapViewPropertyChangeEventArgs<Rectangle2D> e)
+        private void handleViewZoomToViewBoundsRequested(Object sender, MapViewPropertyChangeEventArgs<Rectangle2D> e)
         {
             ZoomToViewBoundsInternal(e.RequestedValue);
         }
 
         // Handles the view zoom to specified world bounds request from the view
-        private void handleViewZoomToWorldBoundsRequested(object sender, MapViewPropertyChangeEventArgs<IExtents2D> e)
+        private void handleViewZoomToWorldBoundsRequested(Object sender, MapViewPropertyChangeEventArgs<IExtents2D> e)
         {
             ZoomToWorldBoundsInternal(e.RequestedValue);
         }
 
         // Handles the view zoom to specified world width request from the view
-        private void handleViewZoomToWorldWidthRequested(object sender, MapViewPropertyChangeEventArgs<Double> e)
+        private void handleViewZoomToWorldWidthRequested(Object sender, MapViewPropertyChangeEventArgs<Double> e)
         {
             ZoomToWorldWidthInternal(e.RequestedValue);
         }
 
         // Handles the selection changes on the view
-        private void handleSelectionChanged(object sender, EventArgs e)
+        private void handleSelectionChanged(Object sender, EventArgs e)
         {
             if (SelectionInternal.Path.CurrentFigure == null)
             {
@@ -1147,7 +1149,7 @@ namespace SharpMap.Presentation.Presenters
 
             Double oldWidth, oldHeight;
 
-            if (oldEnvelope.IsEmpty)
+            if (oldEnvelope == null || oldEnvelope.IsEmpty)
             {
                 oldWidth = 1;
                 oldHeight = View.ViewSize.Height / View.ViewSize.Width * WorldAspectRatioInternal;
@@ -1324,7 +1326,7 @@ namespace SharpMap.Presentation.Presenters
             return Map.GeometryFactory.CoordinateFactory.Create(point.X, point.Y);
         }
 
-        private void handleSelectedFeaturesListChanged(object sender, ListChangedEventArgs e)
+        private void handleSelectedFeaturesListChanged(Object sender, ListChangedEventArgs e)
         {
             IFeatureLayer featureLayer = getLayerFromSelectedView(sender);
 
@@ -1349,7 +1351,7 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void handleHighlightedFeaturesListChanged(object sender, ListChangedEventArgs e)
+        private void handleHighlightedFeaturesListChanged(Object sender, ListChangedEventArgs e)
         {
             IFeatureLayer featureLayer = getLayerFromHighlightView(sender);
 
@@ -1374,17 +1376,17 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private IFeatureLayer getLayerFromSelectedView(object view)
+        private IFeatureLayer getLayerFromSelectedView(Object view)
         {
             return getLayerFromFeatureDataView(view, true);
         }
 
-        private IFeatureLayer getLayerFromHighlightView(object view)
+        private IFeatureLayer getLayerFromHighlightView(Object view)
         {
             return getLayerFromFeatureDataView(view, false);
         }
 
-        private IFeatureLayer getLayerFromFeatureDataView(object view, Boolean getSelectedView)
+        private IFeatureLayer getLayerFromFeatureDataView(Object view, Boolean getSelectedView)
         {
             foreach (ILayer layer in Map.Layers)
             {

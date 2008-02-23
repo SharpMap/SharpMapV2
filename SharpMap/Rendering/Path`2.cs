@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -145,7 +145,7 @@ namespace SharpMap.Rendering
         /// </remarks>
         /// <param name="obj">The value to compare.</param>
         /// <returns>True if the parameter is a path which is figure-for-figure, point-for-point equal.</returns>
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             Path<TPoint, TViewBounds> other = obj as Path<TPoint, TViewBounds>;
             return Equals(other);
@@ -394,7 +394,7 @@ namespace SharpMap.Rendering
 
         #region ICloneable Members
 
-        object ICloneable.Clone()
+        Object ICloneable.Clone()
         {
             return Clone();
         }

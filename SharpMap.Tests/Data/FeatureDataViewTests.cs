@@ -32,7 +32,7 @@ namespace SharpMap.Tests.Data
         public void CreatingDataViewReturnsValidDataView()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
             Assert.IsInstanceOfType(typeof (FeatureDataTable), view.Table);
@@ -50,7 +50,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.Crosses, "", DataViewRowState.CurrentRows);
@@ -63,7 +63,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.Contains, "", DataViewRowState.CurrentRows);
@@ -76,7 +76,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.Equals, "", DataViewRowState.CurrentRows);
@@ -89,7 +89,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.None, "", DataViewRowState.CurrentRows);
@@ -102,7 +102,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.Overlaps, "", DataViewRowState.CurrentRows);
@@ -115,7 +115,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.Touches, "", DataViewRowState.CurrentRows);
@@ -128,7 +128,7 @@ namespace SharpMap.Tests.Data
             // This test is here so that when it is supported, the test breaks and is rewritten
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Point empty = _geoFactory.CreatePoint() as Point;
             new FeatureDataView(table, empty, SpatialExpressionType.Within, "", DataViewRowState.CurrentRows);
@@ -144,7 +144,7 @@ namespace SharpMap.Tests.Data
         public void ChangeViewAttributeFilterReturnsOnlyFilteredRows()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
@@ -172,13 +172,13 @@ namespace SharpMap.Tests.Data
         public void ChangeViewAttributeFilterTriggersNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean resetNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.Reset)
                                         {
@@ -201,7 +201,7 @@ namespace SharpMap.Tests.Data
         public void NullSpatialFilterReturnsAllRows()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             table.Load(data.ExecuteIntersectionQuery(data.GetExtents()));
             FeatureDataView view = new FeatureDataView(table);
 
@@ -216,7 +216,7 @@ namespace SharpMap.Tests.Data
         public void DefaultViewReturnsAllRows()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             table.Load(data.ExecuteIntersectionQuery(data.GetExtents()));
 
             Assert.AreEqual(table.Rows.Count, table.DefaultView.Count);
@@ -260,13 +260,13 @@ namespace SharpMap.Tests.Data
         public void ChangeViewSpatialFilterTriggersNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean resetNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.Reset)
                                         {
@@ -290,7 +290,7 @@ namespace SharpMap.Tests.Data
         public void ExecutingQueryOnTableTriggersViewListChangedResetNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             IExtents dataExtents = data.GetExtents();
             IExtents halfBounds = _geoFactory.CreateExtents(
                 dataExtents.Min, dataExtents.Max);
@@ -301,7 +301,7 @@ namespace SharpMap.Tests.Data
 
             Boolean addNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.Reset)
                                         {
@@ -327,7 +327,7 @@ namespace SharpMap.Tests.Data
         public void AddingRowToTableTriggersViewListChangedItemAddedNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
 
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
@@ -337,7 +337,7 @@ namespace SharpMap.Tests.Data
 
             Boolean addNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.ItemAdded)
                                         {
@@ -362,7 +362,7 @@ namespace SharpMap.Tests.Data
         public void RemovingRowFromTableTriggersViewListChangedItemDeletedNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
 
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
@@ -372,7 +372,7 @@ namespace SharpMap.Tests.Data
 
             Boolean addNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.ItemDeleted)
                                         {
@@ -394,7 +394,7 @@ namespace SharpMap.Tests.Data
         public void ChangingRowTriggersViewListChangedItemChangedNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
 
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
@@ -404,7 +404,7 @@ namespace SharpMap.Tests.Data
 
             Boolean addNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.ItemChanged)
                                         {
@@ -428,7 +428,7 @@ namespace SharpMap.Tests.Data
         {
             // TODO: implement MovingRowTriggersViewListChangedItemMovedNotification
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
 
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
@@ -438,7 +438,7 @@ namespace SharpMap.Tests.Data
 
             Boolean addNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.ItemMoved)
                                         {
@@ -457,7 +457,7 @@ namespace SharpMap.Tests.Data
         public void SettingViewFilterToIncludeRowsNotPresentInTableCausesFeaturesRequestNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
 
             Boolean featuresRequested = false;
             table.FeaturesNotFound += delegate { featuresRequested = true; };
@@ -483,7 +483,7 @@ namespace SharpMap.Tests.Data
         public void SettingOidFilterAllowsOnlyFeaturesContainingFilteredOidsInView()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid");
+            FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid", _geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             Guid[] ids = new Guid[3];
             ids[0] = (table.Rows[1] as FeatureDataRow<Guid>).Id;
@@ -510,13 +510,13 @@ namespace SharpMap.Tests.Data
         public void ChangingOidFilterTriggersNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid");
+            FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid", _geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean resetNotificationOccured = false;
 
-            view.ListChanged += delegate(object sender, ListChangedEventArgs e)
+            view.ListChanged += delegate(Object sender, ListChangedEventArgs e)
                                     {
                                         if (e.ListChangedType == ListChangedType.Reset)
                                         {
@@ -556,7 +556,7 @@ namespace SharpMap.Tests.Data
         public void AddNewRowThrowsNotSupported()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             FeatureDataView view = new FeatureDataView(table);
             view.AddNew();
@@ -570,7 +570,7 @@ namespace SharpMap.Tests.Data
         public void SettingGeometryFilterToIdenticalGeometryDoesntChangeFilterObject()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             IGeometry filter = _geoFactory.CreateExtents2D(0, 0, 10, 10).ToGeometry();
             FeatureDataView view = new FeatureDataView(table, filter, "", DataViewRowState.CurrentRows);
@@ -589,7 +589,7 @@ namespace SharpMap.Tests.Data
         public void SpatialQueryTypeIsWhatIsSpecifiedAtCreateTime()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
             IGeometry filter = _geoFactory.CreateExtents2D(0, 0, 10, 10).ToGeometry();
             FeatureDataView view = new FeatureDataView(table, filter, "", DataViewRowState.CurrentRows);
@@ -605,9 +605,9 @@ namespace SharpMap.Tests.Data
         public void DataViewManagerIsAFeatureDataViewManager()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             data.ExecuteIntersectionQuery(data.GetExtents(), table);
-            FeatureDataSet dataSet = new FeatureDataSet();
+            FeatureDataSet dataSet = new FeatureDataSet(_geoFactory);
             dataSet.Tables.Add(table);
             FeatureDataView view = dataSet.DefaultViewManager.CreateDataView(table);
 

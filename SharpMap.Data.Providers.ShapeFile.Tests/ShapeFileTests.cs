@@ -8,14 +8,13 @@ using GeoAPI.Geometries;
 using GeoAPI.IO.WellKnownText;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
-using NPack.Interfaces;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using SharpMap.Data;
-using SharpMap.Data.Providers.ShapeFile;
 using NPack;
+using NPack.Interfaces;
 
-namespace SharpMap.Tests.Data.Providers.ShapeFile
+namespace SharpMap.Data.Providers.ShapeFile.Tests
 {
     [TestFixture]
     public class ShapeFileTests

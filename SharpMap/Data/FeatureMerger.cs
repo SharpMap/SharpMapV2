@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -316,8 +316,8 @@ namespace SharpMap.Data
 
             if (source.Rows.Count > 0)
             {
-                object primaryKeyIndex = null;
-                object srcLookupKey = createEmptyDataKey();
+                Object primaryKeyIndex = null;
+                Object srcLookupKey = createEmptyDataKey();
                 target.SuspendIndexEvents();
 
                 try
@@ -328,7 +328,7 @@ namespace SharpMap.Data
 
                         if (getDataKeyHasValue(srcLookupKey))
                         {
-                            object rowLookupKey = getDataKeyFromUniqueConstraint(target.PrimaryKeyConstraint);
+                            Object rowLookupKey = getDataKeyFromUniqueConstraint(target.PrimaryKeyConstraint);
                             DataViewRowState rowState = DataViewRowState.OriginalRows | DataViewRowState.Added;
                             primaryKeyIndex = getDataKeySortIndex(rowLookupKey, rowState);
                         }
@@ -369,17 +369,17 @@ namespace SharpMap.Data
             mergeExtendedProperties(source.ExtendedProperties, target.ExtendedProperties);
         }
 
-        private object getDataKeySortIndex(object rowLookupKey, DataViewRowState rowStateFilter)
+        private Object getDataKeySortIndex(Object rowLookupKey, DataViewRowState rowStateFilter)
         {
             return _dataKeyGetSortIndex(rowLookupKey, rowStateFilter);
         }
 
-        private Boolean getDataKeyHasValue(object srcKey)
+        private Boolean getDataKeyHasValue(Object srcKey)
         {
             return _getDataKeyHasValue(srcKey);
         }
 
-        private object getSourceKeyOrTargetKeyForSource(FeatureDataTable source, FeatureDataTable target)
+        private Object getSourceKeyOrTargetKeyForSource(FeatureDataTable source, FeatureDataTable target)
         {
             // TODO: check if there is code which already does this.
             if (source.PrimaryKeyConstraint != null)
@@ -392,7 +392,7 @@ namespace SharpMap.Data
                 return createEmptyDataKey();
             }
 
-            object dataKey = getDataKeyFromUniqueConstraint(target.PrimaryKeyConstraint);
+            Object dataKey = getDataKeyFromUniqueConstraint(target.PrimaryKeyConstraint);
             DataColumn[] columnsReference = getDataKeyColumnReference(dataKey);
             DataColumn[] columns = new DataColumn[columnsReference.Length];
 
@@ -406,22 +406,22 @@ namespace SharpMap.Data
             return createDataKey(columns, false);
         }
 
-        private DataColumn[] getDataKeyColumnReference(object dataKey)
+        private DataColumn[] getDataKeyColumnReference(Object dataKey)
         {
             return _getDataKeyColumnReference(dataKey);
         }
 
-        private static object createDataKey(DataColumn[] columns, Boolean copyColumns)
+        private static Object createDataKey(DataColumn[] columns, Boolean copyColumns)
         {
             return _createDataKey(columns, copyColumns);
         }
 
-        private static object createEmptyDataKey()
+        private static Object createEmptyDataKey()
         {
             return _createEmptyDataKey();
         }
 
-        private static object getDataKeyFromUniqueConstraint(UniqueConstraint uniqueConstraint)
+        private static Object getDataKeyFromUniqueConstraint(UniqueConstraint uniqueConstraint)
         {
             return _getDataKeyFromUniqueConstraint(uniqueConstraint);
         }
@@ -488,7 +488,7 @@ namespace SharpMap.Data
             targetFeature.IsFullyLoaded = targetFeature.IsFullyLoaded || srcFeature.IsFullyLoaded;
         }
 
-        private static object createInnerMerger(DataTable target, Boolean preserveChanges, SchemaMergeAction schemaMergeAction)
+        private static Object createInnerMerger(DataTable target, Boolean preserveChanges, SchemaMergeAction schemaMergeAction)
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
@@ -505,7 +505,7 @@ namespace SharpMap.Data
             return _createMerger(target, preserveChanges, missingSchemaAction);
         }
 
-        private static object getKeyIndex(FeatureDataTable table)
+        private static Object getKeyIndex(FeatureDataTable table)
         {
             return _getKeyIndex(table);
         }
@@ -543,7 +543,7 @@ namespace SharpMap.Data
                                                                 MethodAttributes.Public | MethodAttributes.Static,
                                                                 CallingConventions.Standard,
                                                                 typeof(DataTable),
-                                                                new Type[] { typeof(object), typeof(DataTable) },
+                                                                new Type[] { typeof(Object), typeof(DataTable) },
                                                                 AdoNetInternalTypes.MergerType,
                                                                 false);
 

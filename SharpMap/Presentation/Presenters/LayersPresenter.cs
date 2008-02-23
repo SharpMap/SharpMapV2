@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -82,7 +82,7 @@ namespace SharpMap.Presentation.Presenters
 			}
 		}
 
-		private void handleLayersCollectionChanged(object sender, ListChangedEventArgs e)
+		private void handleLayersCollectionChanged(Object sender, ListChangedEventArgs e)
 		{
 			switch(e.ListChangedType)
 			{
@@ -149,7 +149,7 @@ namespace SharpMap.Presentation.Presenters
 			}
 		}
 
-		private void handleVisibleLayersChangeRequested(object sender, LayerActionEventArgs e)
+		private void handleVisibleLayersChangeRequested(Object sender, LayerActionEventArgs e)
 		{
 			switch(e.LayerAction)
 			{
@@ -170,12 +170,12 @@ namespace SharpMap.Presentation.Presenters
 			}
 		}
 
-		private void handleLayerSelectabilityChangeRequested(object sender, LayerActionEventArgs e)
+		private void handleLayerSelectabilityChangeRequested(Object sender, LayerActionEventArgs e)
 		{
 			// do nothing at this point
 		}
 
-		private void handleLayerChildrenVisibleChangeRequested(object sender, LayerActionEventArgs e)
+		private void handleLayerChildrenVisibleChangeRequested(Object sender, LayerActionEventArgs e)
 		{
 			switch(e.LayerAction)
 			{
@@ -209,7 +209,7 @@ namespace SharpMap.Presentation.Presenters
 			}
 		}
 
-		private void handleLayerSelectionChangedRequested(object sender, LayerActionEventArgs e)
+		private void handleLayerSelectionChangedRequested(Object sender, LayerActionEventArgs e)
 		{
 			switch(e.LayerAction)
 			{

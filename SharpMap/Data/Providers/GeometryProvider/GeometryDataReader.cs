@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -74,7 +74,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureDataRecord Members
 
-        public object GetOid()
+        public Object GetOid()
         {
             checkState();
             return _currentIndex;
@@ -292,14 +292,14 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _currentIndex.ToString();
         }
 
-        public object GetValue(Int32 i)
+        public Object GetValue(Int32 i)
         {
             checkState();
             checkIndex(i);
             return _currentIndex;
         }
 
-        public Int32 GetValues(object[] values)
+        public Int32 GetValues(Object[] values)
         {
             throw new NotSupportedException();
         }
@@ -311,7 +311,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return false;
         }
 
-        public object this[String name]
+        public Object this[String name]
         {
             get
             {
@@ -321,7 +321,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
         }
 
-        public object this[Int32 i]
+        public Object this[Int32 i]
         {
             get
             {

@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -1591,7 +1591,7 @@ namespace SharpMap.SimpleGeometries
         #region Object Overrides
 
         /// <summary>
-        /// Indicates whether the current Object is equal to another Object of the same type.
+        /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -1612,9 +1612,9 @@ namespace SharpMap.SimpleGeometries
         }
 
         /// <summary>
-        /// Returns a hash code for the specified Object
+        /// Returns a hash code for the specified object
         /// </summary>
-        /// <returns>A hash code for the specified Object</returns>
+        /// <returns>A hash code for the specified object</returns>
         public override Int32 GetHashCode()
         {
             return (Int32)(_xMin + _yMin + _xMax + _yMax);
@@ -1838,7 +1838,10 @@ namespace SharpMap.SimpleGeometries
 
         public void Scale(Double factor)
         {
-            throw new NotImplementedException();
+            _xMin *= factor;
+            _xMax *= factor;
+            _yMin *= factor;
+            _yMax *= factor;
         }
 
         public void Scale(params Double[] vector)

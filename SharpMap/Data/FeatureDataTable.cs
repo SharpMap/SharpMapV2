@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ namespace SharpMap.Data
         #region Nested types
 
         private delegate DataRow MergeRowDelegate(FeatureDataTable table, FeatureDataRow sourceRow,
-                                                  FeatureDataRow targetRow, Boolean preserveChanges, object index);
+                                                  FeatureDataRow targetRow, Boolean preserveChanges, Object index);
 
         private delegate Boolean GetEnforceConstraintsDelegate(FeatureDataTable table);
 
@@ -72,7 +72,7 @@ namespace SharpMap.Data
         private delegate void RestoreIndexEventsDelegate(DataTable table, Boolean forcesReset);
 
         private delegate FeatureDataRow FindMergeTargetDelegate(
-            FeatureDataTable table, FeatureDataRow sourceRow, object dataKey, object index);
+            FeatureDataTable table, FeatureDataRow sourceRow, Object dataKey, Object index);
 
         #endregion
 
@@ -124,6 +124,7 @@ namespace SharpMap.Data
         private IGeometryFactory _geoFactory;
         private IUpdatableSpatialIndex<IExtents, FeatureDataRow> _rTreeIndex;
         private IGeometry _envelope;
+        private IGeometry _empty;
 
         #endregion
 
@@ -156,6 +157,7 @@ namespace SharpMap.Data
             : base(tableName)
         {
             _geoFactory = factory;
+            _empty = _geoFactory.CreatePoint();
             Constraints.CollectionChanged += OnConstraintsChanged;
         }
 
@@ -168,6 +170,7 @@ namespace SharpMap.Data
             : base(table.TableName)
         {
             _geoFactory = factory;
+            _empty = _geoFactory.CreatePoint();
             Constraints.CollectionChanged += OnConstraintsChanged;
 
             if (table.DataSet == null || (table.CaseSensitive != table.DataSet.CaseSensitive))
@@ -222,7 +225,7 @@ namespace SharpMap.Data
 
         public IGeometry Envelope
         {
-            get { return _envelope; }
+            get { return _envelope ?? _empty; }
             internal set
             {
                 _envelope = value;
@@ -329,7 +332,7 @@ namespace SharpMap.Data
         /// The feature row identified by <paramref name="key"/>, or <see langword="null"/>
         /// if the feature row is not found.
         /// </returns>
-        public FeatureDataRow Find(object key)
+        public FeatureDataRow Find(Object key)
         {
             return Rows.Find(key) as FeatureDataRow;
         }
@@ -641,7 +644,7 @@ namespace SharpMap.Data
 
         #region Protected virtual members
 
-        protected virtual void OnConstraintsChanged(object sender, CollectionChangeEventArgs args)
+        protected virtual void OnConstraintsChanged(Object sender, CollectionChangeEventArgs args)
         {
             if (args.Action == CollectionChangeAction.Add && args.Element is UniqueConstraint)
             {
@@ -883,7 +886,7 @@ namespace SharpMap.Data
             get { return _getDefaultView(this); }
         }
 
-        internal FeatureDataRow FindMergeTarget(FeatureDataRow sourceRow, object dataKey, object index)
+        internal FeatureDataRow FindMergeTarget(FeatureDataRow sourceRow, Object dataKey, Object index)
         {
             return _findMergeTarget(this, sourceRow, dataKey, index);
         }
@@ -963,7 +966,7 @@ namespace SharpMap.Data
         }
 
         internal FeatureDataRow MergeRowInternal(FeatureDataRow sourceRow, FeatureDataRow targetRow, Boolean preserveChanges,
-                                       object index)
+                                       Object index)
         {
             FeatureDataRow mergedRow = _mergeRow(this, sourceRow, targetRow, preserveChanges, index) as FeatureDataRow;
             return mergedRow;
@@ -1293,7 +1296,7 @@ namespace SharpMap.Data
                                                                      typeof (FeatureDataRow),
                                                                      typeof (FeatureDataRow),
                                                                      typeof (Boolean),
-                                                                     typeof (object)
+                                                                     typeof (Object)
                                                                  },
                                                              typeof(DataTable));
 

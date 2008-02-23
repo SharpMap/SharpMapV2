@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -39,8 +39,8 @@ namespace SharpMap.Rendering.Rendering2D
 		IGeometryRenderer<Symbol2D, TRenderObject>
 	{
 		#region Type Members
-		private static object _defaultSymbol;
-		private static readonly object _defaultSymbolSync = new object();
+		private static Object _defaultSymbol;
+		private static readonly Object _defaultSymbolSync = new Object();
 
 		/// <summary>
 		/// The default basic symbol for rendering point data.

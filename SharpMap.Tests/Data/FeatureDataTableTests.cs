@@ -25,7 +25,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void CreateTable()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             Assert.IsNotNull(table);
             Assert.IsNull(table.DataSet);
         }
@@ -33,7 +33,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void NewRowReturnsDetachedFeatureDataRow()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureDataRow row = table.NewRow();
             Assert.IsNotNull(row);
             Assert.AreEqual(0, table.Rows.Count);
@@ -44,7 +44,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void AddedRowChangesRowState()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             Assert.AreEqual(DataRowState.Added, row.RowState);
@@ -53,7 +53,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void AddedRowIncreasesRowCount()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             Assert.AreEqual(1, table.Rows.Count);
@@ -63,7 +63,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void AddedRowAppearsAsChange()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             FeatureDataTable changes = table.GetChanges();
@@ -73,7 +73,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void AcceptChangesAppearAsUnchanged()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             table.AcceptChanges();
@@ -83,7 +83,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void AcceptChangesReturnsNullChangesTable()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             table.AcceptChanges();
@@ -94,7 +94,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void DefaultViewIsFeatureDataView()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             DataView view = table.DefaultView;
             Assert.IsNotNull(view);
             Assert.IsInstanceOfType(typeof (FeatureDataView), view);
@@ -113,7 +113,7 @@ namespace SharpMap.Tests.Data
         [Test]
         public void LoadingTableFromReader()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             table.Load(provider.ExecuteIntersectionQuery(provider.GetExtents()));
         }
@@ -121,11 +121,11 @@ namespace SharpMap.Tests.Data
         [Test]
         public void CloneToCopiesTableStructureAndNoData()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), table);
 
-            FeatureDataTable clone = new FeatureDataTable();
+            FeatureDataTable clone = new FeatureDataTable(_geoFactory);
             table.CloneTo(clone);
             DataTableHelper.AssertTableStructureIdentical(table, clone);
 
@@ -135,11 +135,11 @@ namespace SharpMap.Tests.Data
         [Test]
         public void MergeSchemaToSchemalessTargetShouldCreateIdenticalTable()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), table);
 
-            FeatureDataTable target = new FeatureDataTable();
+            FeatureDataTable target = new FeatureDataTable(_geoFactory);
             table.MergeSchema(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
@@ -148,11 +148,11 @@ namespace SharpMap.Tests.Data
         [Test]
         public void MergeSchemaToIdenticalTableShouldRemainIdentical()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), table);
 
-            FeatureDataTable target = new FeatureDataTable();
+            FeatureDataTable target = new FeatureDataTable(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), target);
 
             table.MergeSchema(target);
@@ -163,11 +163,11 @@ namespace SharpMap.Tests.Data
         [Test]
         public void MergeSchemaToKeyedTableShouldKeepKeyButAddOtherColumns()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), table);
 
-            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("Oid");
+            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("Oid", _geoFactory);
 
             table.MergeSchema(target);
 
@@ -178,11 +178,11 @@ namespace SharpMap.Tests.Data
         [Ignore("This functionality isn't implemented yet")]
         public void MergeSchemaToKeyedTableWithDifferentKeyNameButSameTypeShouldKeepKeyButAddOtherColumns()
         {
-            FeatureDataTable table = new FeatureDataTable();
+            FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), table);
 
-            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("GID");
+            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("GID", _geoFactory);
 
             table.MergeSchema(target);
 

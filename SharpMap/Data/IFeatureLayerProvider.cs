@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -297,9 +297,9 @@ namespace SharpMap.Data
 
         /// <summary>
         /// Returns a <see cref="IFeatureDataReader"/> for obtaining features
-        /// from a set of feature Object identifiers (oids).
+        /// from a set of feature object identifiers (oids).
         /// </summary>
-        /// <param name="oids">A set of Object ids (OIDs) of the features.</param>
+        /// <param name="oids">A set of object ids (OIDs) of the features.</param>
         /// <returns>
         /// A set of features corresponding one-to-one to the given <paramref name="oids"/>.
         /// </returns>

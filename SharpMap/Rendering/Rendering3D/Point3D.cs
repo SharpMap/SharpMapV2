@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -216,7 +216,7 @@ namespace SharpMap.Rendering.Rendering3D
         ///</summary>
         ///
         ///<returns>
-        ///An <see cref="T:System.Collections.IEnumerator"></see> Object that can be used to iterate through the collection.
+        ///An <see cref="T:System.Collections.IEnumerator"></see> object that can be used to iterate through the collection.
         ///</returns>
         ///<filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator()
@@ -366,8 +366,8 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the sum of the Object and <paramref name="b"/>.
-        /// It must not modify the value of the Object.
+        /// Returns the sum of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The sum.</returns>
@@ -377,8 +377,8 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the difference of the Object and <paramref name="b"/>.
-        /// It must not modify the value of the Object.
+        /// Returns the difference of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The difference.</returns>
@@ -391,7 +391,7 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the negative of the Object. Must not modify the Object itself.
+        /// Returns the negative of the object. Must not modify the object itself.
         /// </summary>
         /// <returns>The negative.</returns>
         IMatrixD INegatable<IMatrixD>.Negative()
@@ -400,8 +400,8 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the product of the Object and <paramref name="b"/>.
-        /// It must not modify the value of the Object.
+        /// Returns the product of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The product.</returns>
@@ -469,8 +469,8 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Returns the quotient of the Object and <paramref name="b"/>.
-        /// It must not modify the value of the Object.
+        /// Returns the quotient of the object and <paramref name="b"/>.
+        /// It must not modify the value of the object.
         /// </summary>
         /// <param name="b">The second operand.</param>
         /// <returns>The quotient.</returns>

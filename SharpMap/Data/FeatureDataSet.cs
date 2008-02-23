@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -65,7 +65,7 @@ namespace SharpMap.Data
 
         #region Instance fields
         private FeatureTableCollection _featureTables;
-        private readonly object _defaultViewManagerSync = new object();
+        private readonly Object _defaultViewManagerSync = new Object();
         private Int32 _defaultViewManagerInitialized = 0;
         private readonly IGeometryFactory _geoFactory;
         #endregion
@@ -332,7 +332,7 @@ namespace SharpMap.Data
             return false;
         }
 
-        private void schemaChanged(object sender, CollectionChangeEventArgs e)
+        private void schemaChanged(Object sender, CollectionChangeEventArgs e)
         {
             if (e.Action == CollectionChangeAction.Remove)
             {

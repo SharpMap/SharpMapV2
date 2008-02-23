@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -27,13 +27,17 @@ namespace SharpMap.Expressions
 
         public SpatialExpression(IGeometry queryRegion, SpatialExpressionType queryType)
         {
+            if (queryRegion == null)
+            {
+                throw new ArgumentNullException("queryRegion");
+            }
+
             _queryRegion = queryRegion;
             _queryType = queryType;
         }
 
         public IGeometry QueryRegion
         {
-            // NOTE: changed Point.Empty to null
             get { return _queryRegion; }
         }
 
@@ -42,7 +46,7 @@ namespace SharpMap.Expressions
             get { return _queryType; }
         }
 
-        public Boolean HasIntersection(IGeometry geometry)
+        public Boolean Matches(IGeometry geometry)
         {
             switch (QueryType)
             {
@@ -102,7 +106,7 @@ namespace SharpMap.Expressions
                 && _queryType == other._queryType;
         }
 
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (ReferenceEquals(this, obj))
             {

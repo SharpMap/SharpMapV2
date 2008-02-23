@@ -309,37 +309,37 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -624,7 +624,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		}
 
 		/// <summary>
-		/// Returns the geometry corresponding to the Object ID
+		/// Returns the geometry corresponding to the object ID
 		/// </summary>
 		/// <param name="oid">Object ID</param>
 		/// <returns>geometry</returns>

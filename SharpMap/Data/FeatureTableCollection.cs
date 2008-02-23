@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -172,19 +172,19 @@ namespace SharpMap.Data
 
         #region Private helper methods
 
-        private void OnTablesChanged(CollectionChangeAction collectionChangeAction, object collection)
+        private void OnTablesChanged(CollectionChangeAction collectionChangeAction, Object collection)
         {
             CollectionChangeEventHandler e = CollectionChanged;
             fireEvent(collectionChangeAction, collection, e);
         }
 
-        private void OnTablesChanging(CollectionChangeAction collectionChangeAction, object collection)
+        private void OnTablesChanging(CollectionChangeAction collectionChangeAction, Object collection)
         {
             CollectionChangeEventHandler e = CollectionChanging;
             fireEvent(collectionChangeAction, collection, e);
         }
 
-        private void fireEvent(CollectionChangeAction collectionChangeAction, object collection,
+        private void fireEvent(CollectionChangeAction collectionChangeAction, Object collection,
                                CollectionChangeEventHandler e)
         {
             if (e != null)
@@ -194,12 +194,12 @@ namespace SharpMap.Data
             }
         }
 
-        private void tablesChanged(object sender, CollectionChangeEventArgs e)
+        private void tablesChanged(Object sender, CollectionChangeEventArgs e)
         {
             OnTablesChanged(e.Action, e.Element);
         }
 
-        private void tablesChanging(object sender, CollectionChangeEventArgs e)
+        private void tablesChanging(Object sender, CollectionChangeEventArgs e)
         {
             if (e.Action == CollectionChangeAction.Add)
             {

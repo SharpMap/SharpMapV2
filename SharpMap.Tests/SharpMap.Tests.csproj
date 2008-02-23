@@ -156,7 +156,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Presentation\ScreenHelper.cs" />
     <Compile Include="Presentation\ToolsPresenterTests.cs" />
-    <Compile Include="Data\Providers\ShapeFile\ShapeFileTests.cs" />
     <Compile Include="Rendering\BasicGeometryRenderer2DTests.cs" />
     <Compile Include="Rendering\GraphicsFigure2DTests.cs" />
     <Compile Include="Rendering\GraphicsPath2DTests.cs" />

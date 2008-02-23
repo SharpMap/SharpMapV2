@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -74,7 +74,7 @@ namespace SharpMap.Rendering.Rendering3D
             get { return _depth; }
         }
 
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (!(obj is Size3D))
             {
@@ -126,7 +126,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region ICloneable Members
 
-        public object Clone()
+        public Object Clone()
         {
             throw new NotImplementedException();
         }

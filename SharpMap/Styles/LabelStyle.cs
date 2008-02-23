@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -17,8 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using SharpMap.Data;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
@@ -28,9 +26,6 @@ namespace SharpMap.Styles
     /// </summary>
     public class LabelStyle : FeatureStyle
 	{
-		/// <summary>
-		/// 
-		/// </summary>
     	public enum CollisionTestType
     	{
     		None,
@@ -61,27 +56,12 @@ namespace SharpMap.Styles
         {
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="font"></param>
-		/// <param name="foreground"></param>
         public LabelStyle(StyleFont font, StyleBrush foreground)
             : this(font, foreground, new SolidStyleBrush(StyleColor.Transparent), 
                 Point2D.Empty, Size2D.Empty, HorizontalAlignment.Left, VerticalAlignment.Middle)
         {
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="font"></param>
-		/// <param name="foreground"></param>
-		/// <param name="background"></param>
-		/// <param name="offset"></param>
-		/// <param name="collisionBuffer"></param>
-		/// <param name="horizontalAlignment"></param>
-		/// <param name="verticalAlignment"></param>
         public LabelStyle(StyleFont font,
 						  StyleBrush foreground,
 						  StyleBrush background,
@@ -110,7 +90,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Font used to draw the label.
+        /// Gets or sets the <see cref="StyleFont"/> used to draw the label.
         /// </summary>
         public StyleFont Font
         {
@@ -119,7 +99,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Brush used to fill the font for the label.
+        /// Gets or sets the <see cref="StyleBrush"/> used to fill the 
+        /// font for the label.
         /// </summary>
         public StyleBrush Foreground
         {
@@ -128,7 +109,7 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// The background brush of the label. 
+        /// Gets or sets the background <see cref="StyleBrush"/> of the label. 
         /// </summary>
         /// <remarks>
         /// Set to transparent brush or null if background isn't needed.
@@ -140,7 +121,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Creates a halo around the text.
+        /// Gets or sets the <see cref="StylePen"/> which 
+        /// creates a halo around the text.
         /// </summary>
         public StylePen Halo
         {
@@ -149,7 +131,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Specifies relative position of labels with respect to object's label
+        /// Gets or sets a <see cref="Point2D"/> which 
+        /// specifies relative position of labels with respect to feature's label
         /// <see cref="SharpMap.Rendering.ILabel{TPoint, TSize, TRectangle, TPath}.Location"/>.
         /// </summary>
         public Point2D Offset
@@ -159,19 +142,19 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// Gets or sets whether collision detection is enabled for the labels.
+        /// Gets whether collision detection is enabled for the labels.
         /// If set to true, label collision will be applied.
         /// </summary>
         public Boolean CollisionDetection
         {
             get
             {
-				return _collisionTestType != LabelStyle.CollisionTestType.None;
+				return _collisionTestType != CollisionTestType.None;
 			}
         }
 
         /// <summary>
-        /// Distance around label where collision buffer is active.
+        /// Gets or sets the distance around label where collision buffer is active.
         /// </summary>
         public Size2D CollisionBuffer
         {
@@ -180,7 +163,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// The horizontal alignment of the text in relation to the label 
+        /// Gets or sets the <see cref="HorizontalAlignment"/> value
+        /// of the text in relation to the label 
         /// <see cref="SharpMap.Rendering.ILabel{TPoint, TSize, TRectangle, TPath}.Location"/>.
         /// </summary>
         public HorizontalAlignment HorizontalAlignment
@@ -190,7 +174,8 @@ namespace SharpMap.Styles
         }
 
         /// <summary>
-        /// The vertical alignment of the text in relation to the label
+        /// Gets or sets the <see cref="VerticalAlignment"/> value
+        /// of the text in relation to the label
         /// <see cref="SharpMap.Rendering.ILabel{TPoint, TSize, TRectangle, TPath}.Location"/>.
         /// </summary>
         public VerticalAlignment VerticalAlignment
@@ -199,9 +184,9 @@ namespace SharpMap.Styles
             set { _verticalAlignment = value; }
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
+        /// <summary>
+        /// Gets or sets the type of collision test performed.
+        /// </summary>
     	public CollisionTestType CollisionTest
     	{
     		get { return _collisionTestType; }

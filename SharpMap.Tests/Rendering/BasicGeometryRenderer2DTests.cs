@@ -158,7 +158,7 @@ namespace SharpMap.Tests.Rendering
             BasicGeometryRenderer2D<RenderObject> geometryRenderer =
                 new BasicGeometryRenderer2D<RenderObject>(vectorRenderer);
 
-            FeatureDataTable features = new FeatureDataTable();
+            FeatureDataTable features = new FeatureDataTable(_geoFactory);
             provider.ExecuteIntersectionQuery(provider.GetExtents(), features);
 
             foreach (FeatureDataRow feature in features)

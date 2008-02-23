@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -33,17 +33,17 @@ namespace SharpMap.Data
         IGeometry Geometry { get; }
 
         /// <summary>
-        /// Gets the Object ID for the record.
+        /// Gets the object ID for the record.
         /// </summary>
         /// <returns>
-        /// The Object ID for the record, or <see langword="null"/> 
+        /// The object ID for the record, or <see langword="null"/> 
         /// if <see cref="HasOid"/> is <see langword="false"/>.
         /// </returns>
-        object GetOid();
+        Object GetOid();
 
 	    /// <summary>
         /// Gets a value indicating if the feature record
-        /// has an Object Identifier (OID).
+        /// has an object Identifier (OID).
         /// </summary>
         Boolean HasOid { get; }
 
@@ -56,7 +56,7 @@ namespace SharpMap.Data
 	    Boolean IsFullyLoaded { get; }
 
 	    /// <summary>
-        /// Gets the <see cref="Type"/> of the Object ID.
+        /// Gets the <see cref="Type"/> of the object ID.
         /// </summary>
         /// <remarks>
         /// OidType gets a <see cref="Type"/> which can be used

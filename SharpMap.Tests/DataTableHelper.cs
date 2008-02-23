@@ -33,10 +33,10 @@ namespace SharpMap.Tests
                 Assert.AreEqual(lhs.Columns[i].Unique, rhs.Columns[i].Unique);
                 Assert.AreEqual(lhs.Columns[i].ExtendedProperties.Count, rhs.Columns[i].ExtendedProperties.Count);
 
-                object[] lhsProperties = new object[lhs.Columns[i].ExtendedProperties.Count];
+                Object[] lhsProperties = new Object[lhs.Columns[i].ExtendedProperties.Count];
                 lhs.Columns[i].ExtendedProperties.CopyTo(lhsProperties, 0);
 
-                object[] rhsProperties = new object[rhs.Columns[i].ExtendedProperties.Count];
+                Object[] rhsProperties = new Object[rhs.Columns[i].ExtendedProperties.Count];
                 rhs.Columns[i].ExtendedProperties.CopyTo(rhsProperties, 0);
 
                 Assert.AreEqual(lhsProperties.Length, rhsProperties.Length);
@@ -73,10 +73,10 @@ namespace SharpMap.Tests
                     Assert.AreEqual(lhs.PrimaryKey[i].ExtendedProperties.Count,
                                     rhs.PrimaryKey[i].ExtendedProperties.Count);
 
-                    object[] lhsProperties = new object[lhs.PrimaryKey[i].ExtendedProperties.Count];
+                    Object[] lhsProperties = new Object[lhs.PrimaryKey[i].ExtendedProperties.Count];
                     lhs.PrimaryKey[i].ExtendedProperties.CopyTo(lhsProperties, 0);
 
-                    object[] rhsProperties = new object[rhs.PrimaryKey[i].ExtendedProperties.Count];
+                    Object[] rhsProperties = new Object[rhs.PrimaryKey[i].ExtendedProperties.Count];
                     rhs.PrimaryKey[i].ExtendedProperties.CopyTo(rhsProperties, 0);
 
                     for (Int32 epIndex = 0; epIndex < lhsProperties.Length; epIndex++)
@@ -90,10 +90,10 @@ namespace SharpMap.Tests
             {
                 Assert.AreEqual(lhs.Constraints[i].ConstraintName, rhs.Constraints[i].ConstraintName);
 
-                object[] lhsProperties = new object[lhs.Constraints[i].ExtendedProperties.Count];
+                Object[] lhsProperties = new Object[lhs.Constraints[i].ExtendedProperties.Count];
                 lhs.Columns[i].ExtendedProperties.CopyTo(lhsProperties, 0);
 
-                object[] rhsProperties = new object[rhs.Constraints[i].ExtendedProperties.Count];
+                Object[] rhsProperties = new Object[rhs.Constraints[i].ExtendedProperties.Count];
                 rhs.Columns[i].ExtendedProperties.CopyTo(rhsProperties, 0);
 
                 for (Int32 epIndex = 0; epIndex < lhsProperties.Length; epIndex++)

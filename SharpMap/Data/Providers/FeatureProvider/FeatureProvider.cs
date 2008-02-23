@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -131,37 +131,37 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginGetFeatures(System.Collections.IEnumerable oids, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginGetFeatures(System.Collections.IEnumerable oids, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }

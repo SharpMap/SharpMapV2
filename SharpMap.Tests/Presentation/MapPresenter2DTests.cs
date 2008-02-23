@@ -49,9 +49,9 @@ namespace SharpMap.Tests.Presentation
         #endregion
 
         #region TestTextRenderer2D
-        private class TestTextRenderer2D : TextRenderer2D<object>
+        private class TestTextRenderer2D : TextRenderer2D<Object>
         {
-            public override IEnumerable<object> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle, Path2D flowPath, StyleBrush fontBrush, Matrix2D transform)
+            public override IEnumerable<Object> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle, Path2D flowPath, StyleBrush fontBrush, Matrix2D transform)
             {
                 throw new Exception("The method or operation is not implemented.");
             }
@@ -65,16 +65,16 @@ namespace SharpMap.Tests.Presentation
 
         #region TestVectorRenderer2D
 
-        private class TestVectorRenderer2D : VectorRenderer2D<object>
+        private class TestVectorRenderer2D : VectorRenderer2D<Object>
         {
-            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
+            public override IEnumerable<Object> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
                                                             StylePen highlightOutline, StylePen selectOutline,
                                                             RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
+            public override IEnumerable<Object> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
                                                             StyleBrush highlightFill, StyleBrush selectFill,
                                                             StylePen outline,
                                                             StylePen highlightOutline, StylePen selectOutline,
@@ -83,27 +83,27 @@ namespace SharpMap.Tests.Presentation
                 yield break;
             }
 
-            public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locatiosn, Symbol2D symbolData,
+            public override IEnumerable<Object> RenderSymbols(IEnumerable<Point2D> locatiosn, Symbol2D symbolData,
                                                               RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-            public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+            public override IEnumerable<Object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                               ColorMatrix highlight, ColorMatrix select,
                                                               RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-            public override IEnumerable<object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
+            public override IEnumerable<Object> RenderSymbols(IEnumerable<Point2D> locations, Symbol2D symbolData,
                                                               Symbol2D highlightSymbolData, Symbol2D selectSymbolData,
                                                               RenderState renderState)
             {
                 throw new NotImplementedException();
             }
 
-            public override IEnumerable<object> RenderPaths(IEnumerable<Path2D> paths, StylePen line,
+            public override IEnumerable<Object> RenderPaths(IEnumerable<Path2D> paths, StylePen line,
                                                             StylePen highlightLine, StylePen selectLine,
                                                             StylePen outline, StylePen highlightOutline,
                                                             StylePen selectOutline, RenderState renderState)
@@ -145,7 +145,7 @@ namespace SharpMap.Tests.Presentation
 
             protected override Type GetRenderObjectType()
             {
-                return typeof(object);
+                return typeof(Object);
             }
 
             #region Test accessible members

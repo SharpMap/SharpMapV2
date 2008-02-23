@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.Geometries;
 
 namespace SharpMap.SimpleGeometries
@@ -29,12 +30,12 @@ namespace SharpMap.SimpleGeometries
 	/// </summary>
     public class MultiPoint : GeometryCollection<Point>, IMultiPoint
 	{
-		/// <summary>
-		/// Initializes a new MultiPoint collection
-		/// </summary>
-		public MultiPoint() { }
+        /// <summary>
+        /// Initializes a new MultiPoint collection
+        /// </summary>
+        internal MultiPoint() { }
 
-		public MultiPoint(Int32 initialCapacity)
+		internal MultiPoint(Int32 initialCapacity)
             : base(initialCapacity) { }
 
 		/// <summary>
@@ -51,9 +52,10 @@ namespace SharpMap.SimpleGeometries
 		/// <returns>Copy of the MultiPoint.</returns>
 		public override Geometry Clone()
 		{
-			MultiPoint multiPoint = new MultiPoint();
+            MultiPoint multiPoint = FactoryInternal.CreateMultiPoint() as MultiPoint;
+		    Debug.Assert(multiPoint != null);
 
-			foreach (Point p in this)
+    			foreach (Point p in (IEnumerable<IPoint>)this)
 			{
 				multiPoint.Add(p.Clone() as Point);
 			}
@@ -116,7 +118,12 @@ namespace SharpMap.SimpleGeometries
 
         IEnumerator<IPoint> IEnumerable<IPoint>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            IEnumerator<Point> enumerator = GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
         }
 
         #endregion

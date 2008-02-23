@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -136,7 +136,7 @@ namespace SharpMap.Rendering
         #region Public properties
 
         /// <summary>
-        /// Gets or sets a <see cref="IAffineMatrixD"/> object used 
+        /// Gets or sets an <see cref="IAffineMatrixD"/> used 
         /// to transform this <see cref="IAffineMatrixD"/>.
         /// </summary>
         public IAffineMatrixD AffineTransform
@@ -349,7 +349,7 @@ namespace SharpMap.Rendering
         /// A duplicate of this <see cref="Symbol{TPoint,TSize}"/> 
         /// as an object reference.
         /// </returns>
-        object ICloneable.Clone()
+        Object ICloneable.Clone()
         {
             return Clone();
         }

@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("SharpMap Windows Presentation Foundation Rendering Components")]
-[assembly: AssemblyDescription("SharpMap v2.0 Beta 1")]
+[assembly: AssemblyDescription("SharpMap v2.0 Beta 2")]
 [assembly: AssemblyCompany("SharpMap.Net")]
 [assembly: AssemblyProduct("SharpMap")]
 [assembly: AssemblyCopyright("Copyright © 2005-2007 Morten Nielsen, Ricardo Stuven, Christian Gräfe, Rory Plaire")]

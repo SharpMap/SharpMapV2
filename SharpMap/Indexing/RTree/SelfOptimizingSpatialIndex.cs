@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -101,22 +101,22 @@ namespace SharpMap.Indexing.RTree
 			}
 		}
 
-		void _idleMonitor_MachineBusy(object sender, EventArgs e)
+		void _idleMonitor_MachineBusy(Object sender, EventArgs e)
 		{
 			throw new NotImplementedException();
 		}
 
-		void _idleMonitor_MachineIdle(object sender, EventArgs e)
+		void _idleMonitor_MachineIdle(Object sender, EventArgs e)
 		{
 			throw new NotImplementedException();
 		}
 
-		void _idleMonitor_UserBusy(object sender, EventArgs e)
+		void _idleMonitor_UserBusy(Object sender, EventArgs e)
 		{
 			throw new NotImplementedException();
 		}
 
-		void _idleMonitor_UserIdle(object sender, EventArgs e)
+		void _idleMonitor_UserIdle(Object sender, EventArgs e)
 		{
 			throw new NotImplementedException();
 		}

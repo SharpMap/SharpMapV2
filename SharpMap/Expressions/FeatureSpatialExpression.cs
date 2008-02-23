@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -23,11 +23,15 @@ namespace SharpMap.Expressions
 {
     public class FeatureSpatialExpression : SpatialExpression, IEquatable<FeatureSpatialExpression>
     {
+        private static readonly IEnumerable _emptyEnumeration = generateEmptyEnumeration();
         private readonly IEnumerable _oids;
         private readonly Boolean _hasOidFilter;
 
-        public FeatureSpatialExpression(IEnumerable oids)
-            : this(null, SpatialExpressionType.None, oids) { }
+        public FeatureSpatialExpression(IGeometry queryRegion, IEnumerable oids)
+            : this(queryRegion, SpatialExpressionType.None, oids) { }
+
+        public FeatureSpatialExpression(IGeometry queryRegion, SpatialExpressionType type)
+            : this(queryRegion, type, null) {}
 
         public FeatureSpatialExpression(IGeometry queryRegion, SpatialExpressionType type, IEnumerable oids)
             : base(queryRegion, type)
@@ -42,7 +46,7 @@ namespace SharpMap.Expressions
             {
                 if (!_hasOidFilter)
                 {
-                    return null;
+                    return _emptyEnumeration;
                 }
                 else
                 {
@@ -100,7 +104,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        public override Boolean Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (ReferenceEquals(this, obj))
             {
@@ -122,9 +126,14 @@ namespace SharpMap.Expressions
         public new FeatureSpatialExpression Clone()
         {
             FeatureSpatialExpression clone = new FeatureSpatialExpression(
-                QueryRegion == null ? null : QueryRegion.Clone(), QueryType, Oids);
+                QueryRegion.Clone(), QueryType, Oids);
 
             return clone;
+        }
+
+        private static IEnumerable generateEmptyEnumeration()
+        {
+            yield break;
         }
 
         private IEnumerable generateOidFilter()
@@ -134,7 +143,7 @@ namespace SharpMap.Expressions
                 yield break;
             }
 
-            foreach (object oid in _oids)
+            foreach (Object oid in _oids)
             {
                 yield return oid;
             }

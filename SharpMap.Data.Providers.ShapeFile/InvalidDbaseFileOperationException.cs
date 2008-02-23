@@ -1,4 +1,4 @@
-// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -19,16 +19,17 @@ using System;
 using System.Runtime.Serialization;
 
 namespace SharpMap.Data.Providers.ShapeFile
-{
+{    
     /// <summary>
-    /// Exception thrown when a geometry type exists in a shapefile which is not currently supported.
+    /// Exception thrown when the requested operation is 
+    /// invalid for the state of the reader.
     /// </summary>
-    public class ShapeFileUnsupportedGeometryException : ShapeFileException
+    public class InvalidDbaseFileOperationException : Exception
     {
-        public ShapeFileUnsupportedGeometryException() : base() { }
-        public ShapeFileUnsupportedGeometryException(String message) : base(message) { }
-        public ShapeFileUnsupportedGeometryException(String message, Exception inner) : base(message, inner) { }
-        public ShapeFileUnsupportedGeometryException(SerializationInfo info, StreamingContext context)
+        public InvalidDbaseFileOperationException() { }
+        public InvalidDbaseFileOperationException(String message) : base(message) { }
+        public InvalidDbaseFileOperationException(String message, Exception inner) : base(message, inner) { }
+        public InvalidDbaseFileOperationException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

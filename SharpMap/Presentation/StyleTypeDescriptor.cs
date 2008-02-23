@@ -1,4 +1,4 @@
-﻿// Copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -77,7 +77,7 @@ namespace SharpMap.Presentation
             return null;
         }
 
-        public object GetEditor(Type editorBaseType)
+        public Object GetEditor(Type editorBaseType)
         {
             return null;
         }
@@ -109,7 +109,7 @@ namespace SharpMap.Presentation
             throw new NotImplementedException();
         }
 
-        public object GetPropertyOwner(PropertyDescriptor pd)
+        public Object GetPropertyOwner(PropertyDescriptor pd)
         {
             return null;
         }

@@ -1,5 +1,5 @@
-// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -290,14 +290,14 @@ namespace SharpMap.Data
             return Convert.ToString(this[i]);
         }
 
-        public object GetValue(Int32 i)
+        public Object GetValue(Int32 i)
         {
             return this[i];
         }
 
-        public Int32 GetValues(object[] values)
+        public Int32 GetValues(Object[] values)
         {
-            object[] items = ItemArray;
+            Object[] items = ItemArray;
             Int32 elementsCopied = Math.Max(values.Length, items.Length);
             Array.Copy(items, values, elementsCopied);
             return elementsCopied;
@@ -317,7 +317,7 @@ namespace SharpMap.Data
 
         #region IFeatureDataRecord Members
 
-        public virtual object GetOid()
+        public virtual Object GetOid()
         {
             if (Table != null && HasOid)
             {

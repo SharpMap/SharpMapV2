@@ -1,5 +1,5 @@
-﻿// Portions copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
-// Portions copyright 2006, 2007 - Rory Plaire (codekaizen@gmail.com)
+﻿// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -285,7 +285,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Gets the feature at the specified Object ID
+        /// Gets the feature at the specified object ID
         /// </summary>
         /// <param name="oid">Row index. Zero-based.</param>
         /// <param name="table">The feature table containing the schema used to 
