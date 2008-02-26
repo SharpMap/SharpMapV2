@@ -395,6 +395,8 @@ namespace SharpMap
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
         private IExtents _extents;
+        private readonly IPoint _emptyPoint;
+        // TODO: 3D - change this initialization
         private MapTool _activeTool = StandardMapTools2D.None;
         private ICoordinateSystem _spatialReference;
         private Boolean _disposed;
@@ -411,6 +413,7 @@ namespace SharpMap
         public Map(IGeometryFactory geoFactory)
             : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory)
         {
+            _emptyPoint = geoFactory.CreatePoint();
             _defaultName = _featureDataSet.DataSetName;
         }
 
@@ -420,6 +423,7 @@ namespace SharpMap
         public Map(String title, IGeometryFactory geoFactory)
         {
             _geoFactory = geoFactory;
+            _emptyPoint = _geoFactory.CreatePoint();
             _layers = new LayerCollection(this);
             _layers.ListChanged += handleLayersChanged;
             _featureDataSet = new FeatureDataSet(title, geoFactory);
@@ -711,7 +715,15 @@ namespace SharpMap
         /// <returns>Full map extents.</returns>
         public IExtents Extents
         {
-            get { return _extents; }
+            get
+            {
+                if (_extents == null)
+                {
+                    _extents = _geoFactory.CreateExtents();
+                }
+
+                return _extents;
+            }
         }
 
         /// <summary>
@@ -1108,7 +1120,7 @@ namespace SharpMap
         /// </summary>
         public ICoordinate Center
         {
-            get { return _extents == null ? null : _extents.Center; }
+            get { return _extents == null ? _emptyPoint.Coordinate : _extents.Center; }
         }
 
         public IGeometryFactory GeometryFactory

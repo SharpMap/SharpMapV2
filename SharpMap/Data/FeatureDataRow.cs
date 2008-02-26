@@ -19,6 +19,7 @@
 using System;
 using System.Data;
 using System.Reflection.Emit;
+using GeoAPI.Indexing;
 using SharpMap.Data;
 using GeoAPI.Geometries;
 using System.Reflection;
@@ -30,7 +31,7 @@ namespace SharpMap.Data
     /// a row of data in a <see cref="FeatureDataTable"/>.
     /// </summary>
     [Serializable]
-    public class FeatureDataRow : DataRow, IFeatureDataRecord
+    public class FeatureDataRow : DataRow, IFeatureDataRecord, IBoundable<IExtents>
     {
         #region Nested types
         private delegate DataColumnCollection GetColumnsDelegate(DataRow row);
@@ -127,7 +128,7 @@ namespace SharpMap.Data
             get { return _currentGeometry; }
             set
             {
-                if (_currentGeometry == value)
+                if (Equals(_currentGeometry, value))
                 {
                     return;
                 }
@@ -345,6 +346,20 @@ namespace SharpMap.Data
         public virtual Type OidType
         {
             get { return HasOid ? Table.PrimaryKey[0].DataType : null; }
+        }
+
+        #endregion
+
+        #region IBoundable<IExtents> Members
+
+        IExtents IBoundable<IExtents>.Bounds
+        {
+            get { return Extents; }
+        }
+
+        Boolean IBoundable<IExtents>.Intersects(IExtents bounds)
+        {
+            return Extents.Intersects(bounds);
         }
 
         #endregion

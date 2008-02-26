@@ -7,13 +7,15 @@ using GeoAPI.Utilities;
 namespace SharpMap.Indexing.RTree
 {
     public class RTreeNode<TItem> : SpatialIndexNode<TItem>
+        where TItem : IBoundable<IExtents>
     {
-        public List<RTreeNode<TItem>> _children;
+        private List<RTreeNode<TItem>> _children;
 
-        protected internal RTreeNode(ISpatialIndex<IExtents, TItem> index, Func<TItem, IExtents> bounder)
-            : base(bounder)
+        protected internal RTreeNode(ISpatialIndex<IExtents, TItem> index, IExtents emptyBounds)
+            : base(emptyBounds)
         {
             Index = index;
+            Bounds = emptyBounds;
         }
 
         public override String ToString()
@@ -37,7 +39,11 @@ namespace SharpMap.Indexing.RTree
                 throw new ArgumentException("Parameter must be of type RTreeNode<TItem>.");
             }
 
+            ensureChildren();
+
             _children.Add(child as RTreeNode<TItem>);
+
+            Bounds = Bounds.Union(child.Bounds);
         }
 
         public override void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
@@ -45,7 +51,14 @@ namespace SharpMap.Indexing.RTree
             IEnumerable<RTreeNode<TItem>> nodes =
                 Enumerable.Downcast<RTreeNode<TItem>, ISpatialIndexNode<IExtents, TItem>>(children);
 
+            ensureChildren();
+
             _children.AddRange(nodes);
+
+            foreach (RTreeNode<TItem> child in nodes)
+            {
+                Bounds = Bounds.Union(child.Bounds);
+            }
         }
 
         public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children
@@ -71,7 +84,22 @@ namespace SharpMap.Indexing.RTree
                 throw new ArgumentException("Parameter must be of type RTreeNode<TItem>.");
             }
 
+            ensureChildren();
+
             return _children.Remove(child as RTreeNode<TItem>);
+        }
+
+        public override Int32 ChildCount
+        {
+            get { return _children == null ? 0 : _children.Count; }
+        }
+
+        private void ensureChildren()
+        {
+            if (_children == null)
+            {
+                _children = new List<RTreeNode<TItem>>();
+            }
         }
     }
 }

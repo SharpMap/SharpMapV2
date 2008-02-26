@@ -34,16 +34,17 @@ namespace SharpMap.Indexing.RTree
     /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
     /// </remarks>
     public class GuttmanQuadraticSplit<TItem> : INodeSplitStrategy<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
-        private readonly Func<TItem, IExtents> _bounder;
+        //private readonly Func<TItem, IExtents> _bounder;
         private readonly IGeometryFactory _geoFactory;
 
-        public GuttmanQuadraticSplit(IGeometryFactory geoFactory, Func<TItem, IExtents> bounder)
+        public GuttmanQuadraticSplit(IGeometryFactory geoFactory)
         {
-            _bounder = bounder;
+            //_bounder = bounder;
             _geoFactory = geoFactory;
         }
-        
+
         #region INodeSplitStrategy Members
 
         public ISpatialIndexNode<IExtents, TItem> SplitNode(ISpatialIndexNode<IExtents, TItem> node, IndexBalanceHeuristic heuristic)
@@ -73,9 +74,9 @@ namespace SharpMap.Indexing.RTree
             List<TItem> entries = new List<TItem>(node.Items);
             List<TItem> group1 = new List<TItem>();
             List<TItem> group2 = new List<TItem>();
-            
+
             pickSeeds(entries, group1, group2);
-            
+
             distribute(entries, group1, group2, heuristic);
 
             if (entries.Count > 0)
@@ -138,8 +139,8 @@ namespace SharpMap.Indexing.RTree
                         continue;
                     }
 
-                    IExtents entry1Bounds = _bounder(entry1);
-                    IExtents entry2Bounds = _bounder(entry2);
+                    IExtents entry1Bounds = entry1.Bounds; // _bounder(entry1);
+                    IExtents entry2Bounds = entry2.Bounds; // _bounder(entry2);
                     IExtents minBoundingRectangle = _geoFactory.CreateExtents(entry1Bounds, entry2Bounds);
                     IExtents intersection = entry1Bounds.Intersection(entry2Bounds);
 
@@ -147,7 +148,9 @@ namespace SharpMap.Indexing.RTree
                         minBoundingRectangle.GetSize(Ordinates.X, Ordinates.Y)
                         - entry1Bounds.GetSize(Ordinates.X, Ordinates.Y)
                         - entry2Bounds.GetSize(Ordinates.X, Ordinates.Y)
-                        + intersection.GetSize(Ordinates.X, Ordinates.Y);
+                        + (intersection.IsEmpty 
+                            ? 0
+                            : intersection.GetSize(Ordinates.X, Ordinates.Y));
 
                     if (group1.Count == 0 && group2.Count == 0)
                     {
@@ -188,9 +191,9 @@ namespace SharpMap.Indexing.RTree
 
                     IExtents intersection = node1.Bounds.Intersection(node2.Bounds);
 
-                    Double waste = 
-                        minBoundingRectangle.GetSize(Ordinates.X, Ordinates.Y) 
-                        - node1.Bounds.GetSize(Ordinates.X, Ordinates.Y) 
+                    Double waste =
+                        minBoundingRectangle.GetSize(Ordinates.X, Ordinates.Y)
+                        - node1.Bounds.GetSize(Ordinates.X, Ordinates.Y)
                         - node2.Bounds.GetSize(Ordinates.X, Ordinates.Y)
                         + intersection.GetSize(Ordinates.X, Ordinates.Y);
 
@@ -354,18 +357,18 @@ namespace SharpMap.Indexing.RTree
 
             foreach (TItem e in entries)
             {
-                IExtents bounds = _bounder(e);
+                IExtents bounds = e.Bounds; // _bounder(e);
                 IExtents group1Join = _geoFactory.CreateExtents(group1Box, bounds);
                 IExtents group2Join = _geoFactory.CreateExtents(group2Box, bounds);
 
                 Double arealDifferenceGroup1 = Math.Abs(
-                    group1Join.GetSize(Ordinates.X, Ordinates.Y) 
+                    group1Join.GetSize(Ordinates.X, Ordinates.Y)
                     - group1Box.GetSize(Ordinates.X, Ordinates.Y));
 
                 Double arealDifferenceGroup2 = Math.Abs(
-                    group2Join.GetSize(Ordinates.X, Ordinates.Y) 
+                    group2Join.GetSize(Ordinates.X, Ordinates.Y)
                     - group2Box.GetSize(Ordinates.X, Ordinates.Y));
-                
+
                 if (Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2) > maxArealDifference)
                 {
                     maxArealDifference = Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2);
@@ -399,13 +402,13 @@ namespace SharpMap.Indexing.RTree
                 IExtents group2Join = _geoFactory.CreateExtents(group2Box, node.Bounds);
 
                 Double arealDifferenceGroup1 = Math.Abs(
-                    group1Join.GetSize(Ordinates.X, Ordinates.Y) 
+                    group1Join.GetSize(Ordinates.X, Ordinates.Y)
                     - group1Box.GetSize(Ordinates.X, Ordinates.Y));
 
                 Double arealDifferenceGroup2 = Math.Abs(
-                    group2Join.GetSize(Ordinates.X, Ordinates.Y) 
+                    group2Join.GetSize(Ordinates.X, Ordinates.Y)
                     - group2Box.GetSize(Ordinates.X, Ordinates.Y));
-                
+
                 if (Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2) > maxArealDifference)
                 {
                     maxArealDifference = Math.Abs(arealDifferenceGroup1 - arealDifferenceGroup2);
@@ -434,11 +437,11 @@ namespace SharpMap.Indexing.RTree
             {
                 if (bounds == null)
                 {
-                    bounds = _bounder(entry);
+                    bounds = entry.Bounds;
                 }
                 else
                 {
-                    bounds.ExpandToInclude(_bounder(entry));
+                    bounds = bounds.Union(entry.Bounds);
                 }
             }
 

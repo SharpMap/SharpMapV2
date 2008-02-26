@@ -23,8 +23,10 @@ using GeoAPI.Indexing;
 namespace SharpMap.Indexing.QuadTree
 {
     public class QuadTreeNode<TItem> : SpatialIndexNode<TItem>
+        where TItem : IBoundable<IExtents>
     {
-        public QuadTreeNode(Func<TItem, IExtents> bounder) : base(bounder) {}
+        public QuadTreeNode(IExtents emptyBounds)
+         : base(emptyBounds) { }
 
         public override Boolean IsLeaf
         {
@@ -46,9 +48,14 @@ namespace SharpMap.Indexing.QuadTree
             throw new NotImplementedException();
         }
 
-        public override bool RemoveChild(ISpatialIndexNode<IExtents, TItem> child)
+        public override Boolean RemoveChild(ISpatialIndexNode<IExtents, TItem> child)
         {
             throw new NotImplementedException();
+        }
+
+        public override Int32 ChildCount
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }

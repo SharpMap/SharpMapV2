@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.Geometries;
 using GeoAPI.Utilities;
 using NPack;
@@ -528,6 +529,28 @@ namespace SharpMap.SimpleGeometries
         public override OgcGeometryType GeometryType
         {
             get { return OgcGeometryType.GeometryCollection; }
+        }
+
+        protected override bool EqualsInternal(IGeometry other)
+        {
+            GeometryCollection<TGeometry> g = other as GeometryCollection<TGeometry>;
+
+            Debug.Assert(g != null);
+
+            if (g.Count != Count)
+            {
+                return false;
+            }
+
+            for (Int32 i = 0; i < Count; i++)
+            {
+                if (!this[i].Equals(g))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

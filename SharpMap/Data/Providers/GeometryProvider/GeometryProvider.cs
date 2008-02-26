@@ -26,6 +26,7 @@ using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using System.Globalization;
 using System.Collections;
+using GeoAPI.Utilities;
 using NPack.Interfaces;
 using SharpMap.Expressions;
 
@@ -69,7 +70,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		private ICoordinateTransformation _coordinateTransformation;
 		private ICoordinateSystem _coordinateSystem;
         private readonly List<IGeometry> _geometries = new List<IGeometry>();
-		private Int32? _srid = null;
+		private Int32? _srid;
 		private Boolean _isDisposed;
 
 		#region Object Construction / Disposal
@@ -82,11 +83,16 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </param>
 		public GeometryProvider(IGeometry geometry)
 		{
-            _geometries = new List<IGeometry>();
-			_geometries.Add(geometry);
+		    if (geometry == null)
+		    {
+		        throw new ArgumentNullException("geometry");
+		    }
+
+		    _geoFactory = geometry.Factory;
+		    _geometries.Add(geometry);
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="GeometryProvider"/>.
 		/// </summary>
 		/// <param name="geometries">
@@ -94,6 +100,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </param>
         public GeometryProvider(IEnumerable<IGeometry> geometries)
 		{
+		    if (geometries == null)
+		    {
+		        throw new ArgumentNullException("geometries");
+		    }
+
+		    _geoFactory = Slice.GetFirst(geometries).Factory;
 			_geometries.AddRange(geometries);
 		}
 
@@ -105,11 +117,21 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </param>
 		public GeometryProvider(FeatureDataRow feature)
 		{
-            _geometries = new List<IGeometry>();
-			_geometries.Add(feature.Geometry);
+		    if (feature == null)
+		    {
+		        throw new ArgumentNullException("feature");
+		    }
+
+            if (feature.Geometry == null)
+            {
+                return;
+            }
+
+		    _geoFactory = feature.Geometry.Factory;
+		    _geometries.Add(feature.Geometry);
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="GeometryProvider"/>.
 		/// </summary>
 		/// <param name="features">
@@ -117,10 +139,18 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// </param>
 		public GeometryProvider(IEnumerable<FeatureDataRow> features)
 		{
-            _geometries = new List<IGeometry>();
-
 			foreach (FeatureDataRow row in features)
 			{
+                if (row.Geometry == null)
+                {
+                    continue;
+                }
+
+                if (_geoFactory == null)
+                {
+                    _geoFactory = row.Geometry.Factory;
+                }
+
 				_geometries.Add(row.Geometry);
 			}
 		}

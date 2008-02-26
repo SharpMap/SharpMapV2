@@ -27,20 +27,28 @@ namespace SharpMap.Indexing.RTree
     /// </summary>
     /// <typeparam name="TItem">The type of the value used in the entries.</typeparam>
     public abstract class RTree<TItem> : ISpatialIndex<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
         private ISpatialIndexNode<IExtents, TItem> _root;
+        private readonly IGeometryFactory _geoFactory;
         private Boolean _disposed;
         //private Int64 _nextNodeId = 0;
-        private readonly Func<TItem, IExtents> _bounder;
+        //private readonly Func<TItem, IExtents> _bounder;
 
         #region Object Construction/Destruction
 
         /// <summary>
         /// Creates a new instance of an RTree index.
         /// </summary>
-        protected RTree(Func<TItem, IExtents> bounder)
+        //protected RTree(Func<TItem, IExtents> bounder)
+        //{
+        //    _bounder = bounder;
+        //    initIndex();
+        //}
+
+        protected RTree(IGeometryFactory geoFactory)
         {
-            _bounder = bounder;
+            _geoFactory = geoFactory;
             initIndex();
         }
 
@@ -64,7 +72,7 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        protected virtual void Dispose(Boolean disposing) {}
+        protected virtual void Dispose(Boolean disposing) { }
 
         protected Boolean IsDisposed
         {
@@ -89,13 +97,18 @@ namespace SharpMap.Indexing.RTree
 
         public IExtents Bounds
         {
-            get { return _root == null ? null : _root.Bounds; }
+            get
+            {
+                return _root == null
+                    ? _geoFactory.CreateExtents()
+                    : _root.Bounds;
+            }
         }
 
-        protected Func<TItem, IExtents> Bounder
-        {
-            get { return _bounder; }
-        }
+        //protected Func<TItem, IExtents> Bounder
+        //{
+        //    get { return _bounder; }
+        //}
 
         #endregion
 
@@ -109,18 +122,8 @@ namespace SharpMap.Indexing.RTree
 
         #region ISpatialIndex<IExtents,TItem> Members
 
-        public abstract void Insert(IExtents bounds, TItem item);
-
-        public IEnumerable<TItem> Query(IExtents bounds, Predicate<TItem> predicate)
-        {
-            foreach (TItem item in IntersectTreeRecursive(bounds, Root as RTreeNode<TItem>))
-            {
-                if (predicate(item))
-                {
-                    yield return item;
-                }
-            }
-        }
+        //public abstract void Insert(IExtents bounds, TItem item);
+        public abstract void Insert(TItem item);
 
         /// <summary>
         /// Searches the tree and looks for intersections with the given
@@ -132,6 +135,22 @@ namespace SharpMap.Indexing.RTree
         public virtual IEnumerable<TItem> Query(IExtents bounds)
         {
             return IntersectTreeRecursive(bounds, Root as RTreeNode<TItem>);
+        }
+
+        public IEnumerable<TItem> Query(IExtents bounds, Predicate<TItem> predicate)
+        {
+            foreach (TItem item in IntersectTreeRecursive(bounds, Root as RTreeNode<TItem>))
+            {
+                if (predicate(item)) yield return item;
+            }
+        }
+
+        public IEnumerable<TResult> Query<TResult>(IExtents bounds, Func<TItem, TResult> selector)
+        {
+            foreach (TItem item in Query(bounds))
+            {
+                yield return selector(item);
+            }
         }
 
         /// <summary>
@@ -149,7 +168,8 @@ namespace SharpMap.Indexing.RTree
             foreach (TItem item in Query(geometry.Extents))
             {
                 // Hm, just what is the performance of this delegate call and intersect...
-                IExtents bounds = _bounder(item);
+                //IExtents bounds = _bounder(item);
+                IExtents bounds = item.Bounds;
 
                 if (geometry.Intersects(bounds.ToGeometry()))
                 {
@@ -168,7 +188,8 @@ namespace SharpMap.Indexing.RTree
         /// <returns>A new node for the R-Tree.</returns>
         protected internal virtual RTreeNode<TItem> CreateNode()
         {
-            RTreeNode<TItem> node = new RTreeNode<TItem>(this, _bounder);
+            //RTreeNode<TItem> node = new RTreeNode<TItem>(this, _bounder);
+            RTreeNode<TItem> node = new RTreeNode<TItem>(this, _geoFactory.CreateExtents());
             return node;
         }
 
@@ -210,7 +231,7 @@ namespace SharpMap.Indexing.RTree
             {
                 foreach (TItem item in node.Items)
                 {
-                    if (_bounder(item).Intersects(bounds))
+                    if (item.Intersects(bounds))
                     {
                         yield return item;
                     }

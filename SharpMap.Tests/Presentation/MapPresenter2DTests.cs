@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using NetTopologySuite.Coordinates;
 using NUnit.Framework;
@@ -788,7 +789,8 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
 
-            Assert.AreEqual(map.Center, mapPresenter.GeoCenter);
+            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter.Coordinate[Ordinates.X]);
+            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter.Coordinate[Ordinates.Y]);
             Assert.AreEqual(0, mapPresenter.WorldWidth);
             Assert.AreEqual(0, mapPresenter.WorldHeight);
             Assert.AreEqual(0, mapPresenter.WorldUnitsPerPixel);
@@ -1012,7 +1014,8 @@ namespace SharpMap.Tests.Presentation
 
             Map map = mapPresenter.Map;
 
-            Assert.AreEqual(map.Center, mapPresenter.GeoCenter);
+            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter.Coordinate[Ordinates.X]);
+            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter.Coordinate[Ordinates.Y]);
         }
 
         [Test]

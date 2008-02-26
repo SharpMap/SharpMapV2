@@ -29,25 +29,28 @@ namespace SharpMap.Indexing
     /// </summary>
     /// <typeparam name="TItem">Type of the index entry.</typeparam>
     public abstract class SpatialIndexNode<TItem> : ISpatialIndexNode<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
-        private readonly Func<TItem, IExtents> _bounder;
+        //private readonly Func<TItem, IExtents> _bounder;
         //private UInt32? _nodeId;
+        private readonly IExtents _emptyBounds;
         private IExtents _bounds;
         private readonly List<TItem> _items = new List<TItem>();
         private ISpatialIndex<IExtents, TItem> _index;
 
-        protected SpatialIndexNode(Func<TItem, IExtents> bounder)
+        protected SpatialIndexNode(IExtents emptyBounds)
         {
-            _bounder = bounder;
+            //_bounder = bounder;
+            _emptyBounds = emptyBounds;
         }
 
-        protected Func<TItem, IExtents> Bounder
-        {
-            get
-            {
-                return _bounder;
-            }
-        }
+        //protected Func<TItem, IExtents> Bounder
+        //{
+        //    get
+        //    {
+        //        return _bounder;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the extents for this node, which minimally bounds all items.
@@ -109,7 +112,7 @@ namespace SharpMap.Indexing
             }
 
             _items.Add(item);
-            Bounds = Bounds.Union(_bounder(item));
+            Bounds = Bounds.Union(item.Bounds);
 
             OnItemAdded(item);
         }
@@ -143,7 +146,7 @@ namespace SharpMap.Indexing
                 }
 
                 _items.Add(item);
-                Bounds = Bounds.Union(_bounder(item));
+                Bounds = Bounds.Union(item.Bounds);
                 OnItemAdded(item);
             }
         }
@@ -176,7 +179,7 @@ namespace SharpMap.Indexing
                 OnItemRemoved(item);
             }
 
-            IExtents itemBounds = _bounder(item);
+            IExtents itemBounds = item.Bounds;
 
             if (removed && Bounds.Borders(itemBounds))
             {
@@ -184,7 +187,7 @@ namespace SharpMap.Indexing
 
                 foreach (TItem keptItem in _items)
                 {
-                    Bounds = Bounds.Union(_bounder(keptItem));
+                    Bounds = Bounds.Union(keptItem.Bounds);
                 }
             }
 
@@ -192,7 +195,6 @@ namespace SharpMap.Indexing
         }
 
         public abstract Boolean RemoveChild(ISpatialIndexNode<IExtents, TItem> child);
-
 
         /// <summary>
         /// Removes all contained items and sets the 
@@ -203,7 +205,7 @@ namespace SharpMap.Indexing
         {
             Boolean cancel;
             OnClearing(out cancel);
-            Bounds = null;
+            Bounds = _emptyBounds;
             OnCleared();
         }
 
@@ -238,55 +240,130 @@ namespace SharpMap.Indexing
 
         #region ISpatialIndexNode<IExtents,TItem> Members
 
+        public abstract Int32 ChildCount { get; }
 
-        public int ChildCount
+        public Int32 ItemCount
         {
-            get { throw new NotImplementedException(); }
+            get { return _items.Count; }
         }
 
-        public int ItemCount
+        public Boolean IsEmpty
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                if (ItemCount > 0)
+                {
+                    return false;
+                }
+
+                if (HasChildren)
+                {
+                    foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                    {
+                        if (!child.IsEmpty)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
         }
 
-        public bool IsEmpty
+        public Boolean IsPrunable
         {
-            get { throw new NotImplementedException(); }
+            get { return !HasChildren && !HasItems; }
         }
 
-        public bool IsPrunable
+        public Boolean HasItems
         {
-            get { throw new NotImplementedException(); }
+            get { return ItemCount > 0; }
         }
 
-        public bool HasItems
+        public Boolean HasChildren
         {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool HasChildren
-        {
-            get { throw new NotImplementedException(); }
+            get { return ChildCount > 0; }
         }
 
         public IEnumerable<TItem> Query(IExtents query)
         {
-            throw new NotImplementedException();
+            if (HasItems)
+            {
+                foreach (TItem item in _items)
+                {
+                    if (item.Intersects(query))
+                    {
+                        yield return item;
+                    }
+                }
+            }
+
+            if (HasChildren)
+            {
+                foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                {
+                    foreach (TItem item in child.Query(query))
+                    {
+                        yield return item;
+                    }
+                }
+            }
         }
 
         public IEnumerable<TItem> Query(IExtents query, Predicate<TItem> predicate)
         {
-            throw new NotImplementedException();
+            foreach (TItem item in Query(query))
+            {
+                if (predicate(item))
+                {
+                    yield return item;
+                }
+            }
         }
 
-        public int TotalItems
+        public IEnumerable<TResult> Query<TResult>(IExtents query, Func<TItem, TResult> selector)
         {
-            get { throw new NotImplementedException(); }
+            foreach (TItem item in Query(query))
+            {
+                yield return selector(item);
+            }
         }
 
-        public int TotalNodes
+        public Int32 TotalItems
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                Int32 total = ItemCount;
+
+                if (HasChildren)
+                {
+                    foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                    {
+                        total += child.TotalItems;
+                    }
+                }
+
+                return total;
+            }
+        }
+
+        public Int32 TotalNodes
+        {
+            get
+            {
+                Int32 total = ChildCount;
+
+                if (HasChildren)
+                {
+                    foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                    {
+                        total += child.TotalNodes;
+                    }
+                }
+
+                return total;
+            }
         }
 
         #endregion
@@ -294,7 +371,7 @@ namespace SharpMap.Indexing
         #region IBoundable<IExtents> Members
 
 
-        public bool Intersects(IExtents bounds)
+        public Boolean Intersects(IExtents bounds)
         {
             throw new NotImplementedException();
         }

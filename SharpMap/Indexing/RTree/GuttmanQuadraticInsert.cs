@@ -32,6 +32,7 @@ namespace SharpMap.Indexing.RTree
     /// Proc. 1984 ACM SIGMOD International Conference on Management of Data, pp. 47-57.
     /// </remarks>
     public class GuttmanQuadraticInsert<TItem> : IItemInsertStrategy<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
         private IGeometryFactory _geoFactory;
 
@@ -42,10 +43,12 @@ namespace SharpMap.Indexing.RTree
 
         #region IItemInsertStrategy Members
 
-        public void Insert(IExtents bounds, TItem entry, ISpatialIndexNode<IExtents, TItem> node, 
-            INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, 
-            IndexBalanceHeuristic heuristic, 
-            out ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit)
+        public void Insert(IExtents bounds, 
+                           TItem entry, 
+                           ISpatialIndexNode<IExtents, TItem> node, 
+                           INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, 
+                           IndexBalanceHeuristic heuristic, 
+                           out ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit)
         {
             newSiblingFromSplit = null;
 

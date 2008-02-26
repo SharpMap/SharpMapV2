@@ -23,9 +23,10 @@ using GeoAPI.Indexing;
 namespace SharpMap.Indexing.QuadTree
 {
     public class QuadTree<TItem> : QuadTreeNode<TItem>, ISpatialIndex<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
-        public QuadTree(Func<TItem, IExtents> bounder) : base(bounder)
-        {}
+        public QuadTree(IGeometryFactory geoFactory)
+            : base(geoFactory.CreateExtents()) { }
 
         /// <summary>
         /// Adds a spatial item with an extent specified by the given
@@ -69,5 +70,14 @@ namespace SharpMap.Indexing.QuadTree
         {
             throw new NotImplementedException();
         }
+
+        #region ISpatialIndex<IExtents,TItem> Members
+
+        public void Insert(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -17,15 +17,17 @@
 
 using System;
 using GeoAPI.Geometries;
+using GeoAPI.Indexing;
 
 namespace SharpMap.Indexing.QuadTree
 {
     public class LinearDynamicQuadTree<TItem> : DynamicQuadTree<TItem>
+        where TItem : IBoundable<IExtents>
     {
-        public LinearDynamicQuadTree(Func<TItem, IExtents> bounder)
-            : base(new LinearQuadTreeEntryInsertStrategy<TItem>(), 
+        public LinearDynamicQuadTree(IGeometryFactory geoFactory)
+            : base(geoFactory, new LinearQuadTreeEntryInsertStrategy<TItem>(), 
             new LinearQuadTreeNodeSplitStrategy<TItem>(), 
-            new DynamicQuadTreeBalanceHeuristic(), bounder)
+            new DynamicQuadTreeBalanceHeuristic())
         {
         }
     }

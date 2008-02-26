@@ -22,6 +22,7 @@ using GeoAPI.Indexing;
 namespace SharpMap.Indexing.QuadTree
 {
     public class LinearQuadTreeNodeSplitStrategy<TItem> : INodeSplitStrategy<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
         #region INodeSplitStrategy Members
 

@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.Geometries;
 using NPack;
 using NPack.Interfaces;
@@ -1431,6 +1432,14 @@ namespace SharpMap.SimpleGeometries
         public override OgcGeometryType GeometryType
         {
             get { return OgcGeometryType.Point;}
+        }
+
+        protected override Boolean EqualsInternal(IGeometry other)
+        {
+            Point p = other as Point;
+            Debug.Assert(p != null);
+
+            return !p.Coordinate.Equals(p.Coordinate);
         }
     }
 }

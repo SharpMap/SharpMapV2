@@ -82,7 +82,7 @@ namespace SharpMap.SimpleGeometries
         internal Extents(GeometryFactory factory, ICoordinate2D lowerLeft, ICoordinate2D upperRight)
             : this(factory, 0, 0, 0, 0)
         {
-            if (lowerLeft == null || lowerLeft.IsEmpty 
+            if (lowerLeft == null || lowerLeft.IsEmpty
                 || upperRight == null || upperRight.IsEmpty)
             {
                 _hasValue = false;
@@ -1155,9 +1155,9 @@ namespace SharpMap.SimpleGeometries
             {
                 return new Extents(
                     _factory,
-                    Math.Min(Left, extents.Left), 
+                    Math.Min(Left, extents.Left),
                     Math.Min(Bottom, extents.Bottom),
-                    Math.Max(Right, extents.Right), 
+                    Math.Max(Right, extents.Right),
                     Math.Max(Top, extents.Top));
             }
         }
@@ -1363,7 +1363,7 @@ namespace SharpMap.SimpleGeometries
         /// <param name="coordinate"><see cref="ICoordinate"/> to enlarge extents to contain.</param>
         public void ExpandToInclude(ICoordinate coordinate)
         {
-            if(coordinate == null)
+            if (coordinate == null)
             {
                 return;
             }
@@ -1380,7 +1380,7 @@ namespace SharpMap.SimpleGeometries
             {
                 Bottom = y;
             }
-            
+
             if (x > Right || IsEmpty)
             {
                 Right = x;
@@ -1669,7 +1669,7 @@ namespace SharpMap.SimpleGeometries
             }
 
             return new Extents(
-                factory, 
+                factory,
                 b1.Left < b2.Left ? b2.Left : b1.Left,
                 b1.Bottom < b2.Bottom ? b2.Bottom : b1.Bottom,
                 b1.Right > b2.Right ? b2.Right : b1.Right,
@@ -1721,7 +1721,9 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                return (Min.Add(Max)).Divide(2);
+                return IsEmpty
+                    ? null
+                    : (Min.Add(Max)).Divide(2);
             }
         }
 
@@ -1869,9 +1871,33 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
-        public void TranslateRelative(params Double[] vector)
+        public void TranslateRelativeToWidth(params Double[] vector)
         {
-            throw new NotImplementedException();
+            if (vector.Length > 2)
+            {
+                throw new ArgumentOutOfRangeException("vector", vector.Length,
+                    "This extents only has 2 dimensions, "+
+                    "so only 2 or fewer translation values can be accepted.");
+            }
+
+            if (vector.Length == 0)
+            {
+                return;
+            }
+
+            Double xOffset = vector[0] * Width;
+            Double yOffset = 0;
+
+            if (vector.Length == 2)
+            {
+                yOffset = vector[1] * Height;
+            }
+
+            _xMin += xOffset;
+            _xMax += xOffset;
+
+            _yMin += yOffset;
+            _yMax += yOffset;
         }
 
         public IExtents Union(IExtents box)

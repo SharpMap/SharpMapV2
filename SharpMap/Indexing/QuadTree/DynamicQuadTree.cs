@@ -22,6 +22,7 @@ using GeoAPI.Indexing;
 namespace SharpMap.Indexing.QuadTree
 {
     public class DynamicQuadTree<TItem> : QuadTree<TItem>, IUpdatableSpatialIndex<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
         private readonly IItemInsertStrategy<IExtents, TItem> _insertStrategy;
         private readonly INodeSplitStrategy<IExtents, TItem> _nodeSplitStrategy;
@@ -33,8 +34,8 @@ namespace SharpMap.Indexing.QuadTree
         /// <param name="insertStrategy">Strategy used to insert new entries into the index.</param>
         /// <param name="nodeSplitStrategy">Strategy used to split nodes when they are full.</param>
         /// <param name="heuristic">Heuristics used to build the index and keep it balanced.</param>
-        public DynamicQuadTree(IItemInsertStrategy<IExtents, TItem> insertStrategy, INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, DynamicQuadTreeBalanceHeuristic heuristic, Func<TItem, IExtents> bounder)
-            :base(bounder)
+        public DynamicQuadTree(IGeometryFactory geoFactory, IItemInsertStrategy<IExtents, TItem> insertStrategy, INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, DynamicQuadTreeBalanceHeuristic heuristic)
+            : base(geoFactory)
         {
             _insertStrategy = insertStrategy;
             _nodeSplitStrategy = nodeSplitStrategy;
@@ -51,7 +52,7 @@ namespace SharpMap.Indexing.QuadTree
 
         #region IUpdatableSpatialIndex<IExtents,TItem> Members
 
-        public bool Remove(IExtents bounds, TItem item)
+        public Boolean Remove(TItem item)
         {
             throw new NotImplementedException();
         }

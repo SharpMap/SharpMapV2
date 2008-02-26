@@ -20,6 +20,7 @@ using GeoAPI.Indexing;
 namespace SharpMap.Indexing.RTree
 {
     public class NullRestructuringStrategy<TBounds, TItem> : IIndexRestructureStrategy<TBounds, TItem>
+        where TItem : IBoundable<TBounds>
     {
         #region IIndexRestructureStrategy<RTreeIndexEntry> Members
 

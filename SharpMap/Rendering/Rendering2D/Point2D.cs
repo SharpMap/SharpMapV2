@@ -261,7 +261,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public Point2D Subtract(Point2D b)
         {
-            throw new NotImplementedException();
+            return new Point2D(X - b.X, Y - b.Y);
         }
 
         #endregion
@@ -279,7 +279,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         public Point2D Add(Point2D b)
         {
-            throw new NotImplementedException();
+            return new Point2D(X + b.X, Y + b.Y);
         }
 
         #endregion

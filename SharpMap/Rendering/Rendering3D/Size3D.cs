@@ -547,7 +547,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IComparable<IMatrix<DoubleComponent>> Members
 
-        public int CompareTo(IMatrix<DoubleComponent> other)
+        public Int32 CompareTo(IMatrix<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }
@@ -690,7 +690,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IComparable<IVectorD> Members
 
-        public int CompareTo(IVectorD other)
+        public Int32 CompareTo(IVectorD other)
         {
             throw new NotImplementedException();
         }

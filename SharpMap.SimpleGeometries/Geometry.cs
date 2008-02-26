@@ -347,10 +347,27 @@ namespace SharpMap.SimpleGeometries
 
         public Boolean Equals(IGeometry other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+
+            if (GeometryType != other.GeometryType)
+            {
+                return false;
+            }
+
+            if (!ExtentsInternal.Equals(other.Extents))
+            {
+                return false;
+            }
+
+            return EqualsInternal(other);
         }
 
         #endregion
+
+        protected abstract Boolean EqualsInternal(IGeometry other);
 
         #region IEquatable<Geometry> Members
 

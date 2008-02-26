@@ -1073,7 +1073,7 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IComparable<IMatrix<DoubleComponent>> Members
 
-        public int CompareTo(IMatrix<DoubleComponent> other)
+        public Int32 CompareTo(IMatrix<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }
@@ -1096,22 +1096,22 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IBooleanComparable<IMatrix<DoubleComponent>> Members
 
-        public bool GreaterThan(IMatrix<DoubleComponent> value)
+        public Boolean GreaterThan(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
+        public Boolean GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThan(IMatrix<DoubleComponent> value)
+        public Boolean LessThan(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        public Boolean LessThanOrEqualTo(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }

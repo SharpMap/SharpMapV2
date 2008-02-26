@@ -173,9 +173,9 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         /// <summary>
-        /// Determines whether this <see cref="ViewRectangle3D"/> intersects another.
+        /// Determines whether this <see cref="Rectangle3D"/> intersects another.
         /// </summary>
-        /// <param name="rectangle"><see cref="ViewRectangle3D"/> to check intersection with.</param>
+        /// <param name="rectangle"><see cref="Rectangle3D"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
         public Boolean Intersects(Rectangle3D rectangle)
         {
@@ -190,13 +190,13 @@ namespace SharpMap.Rendering.Rendering3D
         #region IComparable<Rectangle> Members
 
         /// <summary>
-        /// Compares this <see cref="ViewRectangle3D"/> instance with another instance.
+        /// Compares this <see cref="Rectangle3D"/> instance with another instance.
         /// </summary>
         /// <remarks>
         /// </remarks>
         /// <param name="other">Rectangle to perform intersection test with.</param>
         /// <returns>
-        /// Returns 0 if the <see cref="ViewRectangle3D"/> instances intersect each other,
+        /// Returns 0 if the <see cref="Rectangle3D"/> instances intersect each other,
         /// 1 if this Rectangle is located to the right or down from the <paramref name="other"/>
         /// Rectange, and -1 if this Rectangle is located to the left or up from the other.
         /// </returns>
@@ -545,7 +545,7 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IComparable<IMatrix<DoubleComponent>> Members
 
-        public int CompareTo(IMatrix<DoubleComponent> other)
+        public Int32 CompareTo(IMatrix<DoubleComponent> other)
         {
             throw new NotImplementedException();
         }
@@ -568,22 +568,22 @@ namespace SharpMap.Rendering.Rendering3D
 
         #region IBooleanComparable<IMatrix<DoubleComponent>> Members
 
-        public bool GreaterThan(IMatrix<DoubleComponent> value)
+        public Boolean GreaterThan(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
+        public Boolean GreaterThanOrEqualTo(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThan(IMatrix<DoubleComponent> value)
+        public Boolean LessThan(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }
 
-        public bool LessThanOrEqualTo(IMatrix<DoubleComponent> value)
+        public Boolean LessThanOrEqualTo(IMatrix<DoubleComponent> value)
         {
             throw new NotImplementedException();
         }

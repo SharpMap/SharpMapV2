@@ -29,6 +29,7 @@ namespace SharpMap.Indexing.RTree
 	/// </summary>
 	/// <typeparam name="TItem">The type of the value used in the entries.</typeparam>
 	public sealed class SelfOptimizingDynamicSpatialIndex<TItem> : DynamicRTree<TItem>
+        where TItem : IBoundable<IExtents>
 	{
 		#region Instance fields
 		private readonly MersenneTwister _executionProbability = new MersenneTwister();
@@ -50,20 +51,21 @@ namespace SharpMap.Indexing.RTree
 		/// <summary>
 		/// Creates a new SelfOptimizingDynamicSpatialIndex.
 		/// </summary>
+		/// <param name="geoFactory">An <see cref="IGeometryFactory"/> instance.</param>
 		/// <param name="restructureStrategy">The strategy used to restructure the index.</param>
 		/// <param name="restructureHeuristic">The heuristic to control when the index is restructured.</param>
 		/// <param name="insertStrategy">The strategy used to insert entries into the index.</param>
 		/// <param name="nodeSplitStrategy">The strategy used to split index nodes.</param>
 		/// <param name="indexHeuristic">A heuristic used to balance the index for optimum efficiency.</param>
 		/// <param name="idleMonitor">A monitor to determine idle conditions on the executing machine.</param>
-		public SelfOptimizingDynamicSpatialIndex(IIndexRestructureStrategy<IExtents, TItem> restructureStrategy,
+		public SelfOptimizingDynamicSpatialIndex(IGeometryFactory geoFactory,
+                                                 IIndexRestructureStrategy<IExtents, TItem> restructureStrategy,
 												 RestructuringHuristic restructureHeuristic,
                                                  IItemInsertStrategy<IExtents, TItem> insertStrategy,
                                                  INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy,
 												 DynamicRTreeBalanceHeuristic indexHeuristic, 
-                                                 Func<TItem, IExtents> bounder,
                                                  IdleMonitor idleMonitor)
-			: base(insertStrategy, nodeSplitStrategy, indexHeuristic, bounder)
+            : base(geoFactory, insertStrategy, nodeSplitStrategy, indexHeuristic)
 		{
 			_periodMilliseconds = restructureHeuristic.WhenToRestructure == RestructureOpportunity.Periodic
 									? (Int32)(restructureHeuristic.Period / 1000.0)

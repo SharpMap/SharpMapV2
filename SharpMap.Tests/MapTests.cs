@@ -30,6 +30,7 @@ namespace SharpMap.Tests
 
             Map map = new Map(_geoFactory);
             IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
+            dataSource.GeometryFactory = _geoFactory;
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
@@ -60,6 +61,7 @@ namespace SharpMap.Tests
 
             Map map = new Map(_geoFactory);
             IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
+            dataSource.GeometryFactory = _geoFactory;
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3a", dataSource));
@@ -82,9 +84,10 @@ namespace SharpMap.Tests
         {
             Map map = new Map(_geoFactory);
             IExtents emptyExtents = _geoFactory.CreateExtents();
+            IPoint emptyPoint = _geoFactory.CreatePoint();
             Assert.AreEqual(emptyExtents, map.Extents);
             // changed to null from Point.Empty
-            Assert.AreEqual(null, map.Center);
+            Assert.AreEqual(emptyPoint.Coordinate, map.Center);
             Assert.IsNotNull(map.Layers);
             Assert.AreEqual(0, map.Layers.Count);
             Assert.AreEqual(StandardMapTools2D.None, map.ActiveTool);
@@ -96,7 +99,8 @@ namespace SharpMap.Tests
         {
             Map map = new Map(_geoFactory);
 
-            GeometryLayer vLayer = new GeometryLayer("Geom layer", DataSourceHelper.CreateGeometryDatasource(_geoFactory));
+            GeometryLayer vLayer = new GeometryLayer("Geom layer", 
+                DataSourceHelper.CreateGeometryDatasource(_geoFactory));
 
             map.AddLayer(vLayer);
             IExtents box = map.Extents;

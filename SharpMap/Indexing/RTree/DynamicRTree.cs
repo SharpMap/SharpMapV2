@@ -42,21 +42,25 @@ namespace SharpMap.Indexing.RTree
     /// </remarks>
     public class DynamicRTree<TItem>
         : RTree<TItem>, IUpdatableSpatialIndex<IExtents, TItem>, ISerializable
+            where TItem : IBoundable<IExtents>
     {
         #region Fields
 
         private static readonly BinaryFormatter _keyFormatter = new BinaryFormatter();
-        private DynamicRTreeBalanceHeuristic _heuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
         private readonly INodeSplitStrategy<IExtents, TItem> _nodeSplitStrategy;
         private readonly IItemInsertStrategy<IExtents, TItem> _insertStrategy;
+        private readonly DynamicRTreeBalanceHeuristic _heuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
 
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Creates a new updatable R-Tree instance
+        /// Creates a new updatable R-Tree instance.
         /// </summary>
+        /// <param name="geoFactory">
+        /// An <see cref="IGeometryFactory"/> for creating extent instances.
+        /// </param>
         /// <param name="insertStrategy">
         /// Strategy used to insert new entries into the index.
         /// </param>
@@ -67,11 +71,27 @@ namespace SharpMap.Indexing.RTree
         /// Heuristics used to build the index and keep it balanced.
         /// </param>
         public DynamicRTree(
+            IGeometryFactory geoFactory,
             IItemInsertStrategy<IExtents, TItem> insertStrategy,
             INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, 
-            DynamicRTreeBalanceHeuristic heuristic, Func<TItem, IExtents> bounder)
-            : base(bounder)
+            DynamicRTreeBalanceHeuristic heuristic)
+            : base(geoFactory)
         {
+            if (insertStrategy == null)
+            {
+                throw new ArgumentNullException("insertStrategy");
+            }
+
+            if (nodeSplitStrategy == null)
+            {
+                throw new ArgumentNullException("nodeSplitStrategy");
+            }
+
+            if (heuristic == null)
+            {
+                throw new ArgumentNullException("heuristic");
+            }
+
             _insertStrategy = insertStrategy;
             _nodeSplitStrategy = nodeSplitStrategy;
             _heuristic = heuristic;
@@ -81,10 +101,10 @@ namespace SharpMap.Indexing.RTree
         /// This constructor is used internally 
         /// for loading a tree from a stream.
         /// </summary>
-        protected DynamicRTree(Func<TItem, IExtents> bounder) : base(bounder) { }
+        protected DynamicRTree():base(null) { }
 
         protected DynamicRTree(SerializationInfo info, StreamingContext context)
-            : base(null)
+            : base(null) 
         {
             Byte[] data = (Byte[]) info.GetValue("data", typeof (Byte[]));
             MemoryStream buffer = new MemoryStream(data);
@@ -114,17 +134,22 @@ namespace SharpMap.Indexing.RTree
         /// <summary>
         /// Inserts a node into the tree using <see cref="ItemInsertStrategy"/>.
         /// </summary>
-        /// <param name="entry">The entry to insert into the index.</param>
-        public virtual void Insert(TItem entry)
+        /// <param name="item">The item to insert into the index.</param>
+        public override void Insert(TItem item)
         {
             ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit;
 
-            ItemInsertStrategy.Insert(Bounder(entry), entry, Root, _nodeSplitStrategy, Heuristic, out newSiblingFromSplit);
+            ItemInsertStrategy.Insert(item.Bounds, item, Root, _nodeSplitStrategy, Heuristic, out newSiblingFromSplit);
+
+            if (newSiblingFromSplit == null)
+            {
+                return;
+            }
 
             // Add the newly split sibling
             if (newSiblingFromSplit.IsLeaf)
             {
-                if (!Root.IsLeaf)
+                if (Root.IsLeaf)
                 {
                     RTreeNode<TItem> oldRoot = Root as RTreeNode<TItem>;
                     Root = CreateNode();
@@ -140,11 +165,6 @@ namespace SharpMap.Indexing.RTree
                 Root.AddChild(oldRoot);
                 Root.AddChild(newSiblingFromSplit);
             }
-        }
-
-        public override void Insert(IExtents bounds, TItem item)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -173,10 +193,10 @@ namespace SharpMap.Indexing.RTree
         /// A <see cref="DynamicRTree{TItem}"/> instance which had been 
         /// persisted to the <see cref="System.IO.Stream">stream</see>.
         /// </returns>
-        public static DynamicRTree<TItem> FromStream(Stream data, Func<TItem, IExtents> bounder, IGeometryFactory geoFactory)
+        public static DynamicRTree<TItem> FromStream(Stream data, IGeometryFactory geoFactory)
         {
             throw new NotImplementedException();
-            DynamicRTree<TItem> tree = new DynamicRTree<TItem>(bounder);
+            DynamicRTree<TItem> tree = new DynamicRTree<TItem>();
 
             using (BinaryReader br = new BinaryReader(data))
             {

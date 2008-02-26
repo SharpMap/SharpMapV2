@@ -311,7 +311,7 @@ namespace SharpMap.Tests.Data
 
             IExtents otherHalfBounds = _geoFactory.CreateExtents(
                 dataExtents.Min, dataExtents.Max);
-            otherHalfBounds.TranslateRelative(0.5, 0.5);
+            otherHalfBounds.TranslateRelativeToWidth(0.5, 0.5);
             otherHalfBounds.Scale(0.5);
 
             data.ExecuteIntersectionQuery(otherHalfBounds, table);
@@ -465,7 +465,7 @@ namespace SharpMap.Tests.Data
             FeatureDataView view = new FeatureDataView(table);
 
             IExtents otherHalfBounds = data.GetExtents();
-            otherHalfBounds.TranslateRelative(0.5, 0.5);
+            otherHalfBounds.TranslateRelativeToWidth(0.5, 0.5);
             otherHalfBounds.Scale(0.5);
 
             Assert.IsFalse(featuresRequested);

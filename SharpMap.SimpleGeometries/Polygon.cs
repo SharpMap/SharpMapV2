@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using NPack;
@@ -89,10 +90,10 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Gets or sets the interior rings of this Polygon
         /// </summary>
-        public List<LinearRing> InteriorRings
+        public IList<LinearRing> InteriorRings
         {
             get { return _interiorRings; }
-            set { _interiorRings = value; }
+            //set { _interiorRings = value; }
         }
 
         /// <summary>
@@ -438,7 +439,7 @@ namespace SharpMap.SimpleGeometries
         {
             get
             {
-                return InteriorRings.ConvertAll<ILineString>(
+                return _interiorRings.ConvertAll<ILineString>(
                     delegate(LinearRing l)
                     {
                         return l;
@@ -466,6 +467,32 @@ namespace SharpMap.SimpleGeometries
         public override OgcGeometryType GeometryType
         {
             get { return OgcGeometryType.Polygon; }
+        }
+
+        protected override Boolean EqualsInternal(IGeometry other)
+        {
+            Polygon p = other as Polygon;
+            Debug.Assert(p != null);
+
+            if (p.InteriorRingsCount != InteriorRingsCount)
+            {
+                return false;
+            }
+
+            if (!p.ExteriorRing.Equals(ExteriorRing))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < InteriorRingsCount; i++)
+            {
+                if (!p.InteriorRings[i].Equals(InteriorRings[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

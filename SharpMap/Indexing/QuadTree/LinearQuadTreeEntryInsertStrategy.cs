@@ -22,6 +22,7 @@ using GeoAPI.Indexing;
 namespace SharpMap.Indexing.QuadTree
 {
     public class LinearQuadTreeEntryInsertStrategy<TItem> : IItemInsertStrategy<IExtents, TItem>
+        where TItem : IBoundable<IExtents>
     {
         #region IEntryInsertStrategy<TItem> Members
 

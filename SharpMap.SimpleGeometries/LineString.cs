@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.Geometries;
 using GeoAPI.Utilities;
 using GeoAPI.Coordinates;
@@ -410,6 +411,27 @@ namespace SharpMap.SimpleGeometries
         public override OgcGeometryType GeometryType
         {
             get { return OgcGeometryType.LineString; }
+        }
+
+        protected override Boolean EqualsInternal(IGeometry other)
+        {
+            LineString l = other as LineString;
+            Debug.Assert(l != null);
+
+            if (PointCount != l.PointCount)
+            {
+                return false;
+            }
+
+            for (Int32 i = 0; i < PointCount; i++)
+            {
+                if (!_vertices[i].Equals(l._vertices[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

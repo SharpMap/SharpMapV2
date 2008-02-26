@@ -93,7 +93,7 @@ namespace SharpMap.Rendering.Rendering2D
 			return AdvancedCollisionTest(newLabel, 0);
 		}
 
-		private Boolean AdvancedCollisionTest(Label2D newLabel, int depth)
+		private Boolean AdvancedCollisionTest(Label2D newLabel, Int32 depth)
 		{
 			//newLabel.Style.Halo = new StylePen(newLabel.Style.Foreground, 1);
 
