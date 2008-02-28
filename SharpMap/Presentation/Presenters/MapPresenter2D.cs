@@ -185,7 +185,7 @@ namespace SharpMap.Presentation.Presenters
         /// <summary>
         /// Gets or sets center of map in world coordinates.
         /// </summary>
-        protected IPoint GeoCenterInternal
+        protected ICoordinate GeoCenterInternal
         {
             get
             {
@@ -202,16 +202,16 @@ namespace SharpMap.Presentation.Presenters
                     mapCenter[Ordinates.X] - _translationTransform.OffsetX,
                     mapCenter[Ordinates.Y] + _translationTransform.OffsetY);
 
-                return Map.GeometryFactory.CreatePoint(viewCenter);
+                return viewCenter;
             }
             set
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value");
+                        throw new ArgumentNullException("value");
                 }
 
-                setViewMetricsInternal(View.ViewSize, value.Coordinate, WorldWidthInternal);
+                setViewMetricsInternal(View.ViewSize, value, WorldWidthInternal);
             }
         }
 
@@ -524,7 +524,7 @@ namespace SharpMap.Presentation.Presenters
 
         #region Methods
         protected virtual void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor) { }
-        protected virtual void SetViewGeoCenter(IPoint fromGeoPoint, IPoint toGeoPoint) { }
+        protected virtual void SetViewGeoCenter(ICoordinate fromCoordinate, ICoordinate toCoordinate) { }
         protected virtual void SetViewEnvelope(IExtents2D fromEnvelope, IExtents2D toEnvelope) { }
         protected virtual void SetViewLocationInformation(String text) { }
         protected virtual void SetViewMaximumWorldWidth(Double fromMaxWidth, Double toMaxWidth) { }
@@ -532,7 +532,7 @@ namespace SharpMap.Presentation.Presenters
         //protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
         protected virtual void SetViewWorldAspectRatio(Double fromRatio, Double toRatio) { }
 
-        protected Point2D ToViewInternal(IPoint point)
+        protected Point2D ToViewInternal(ICoordinate point)
         {
             return worldToView(point);
         }
@@ -542,15 +542,15 @@ namespace SharpMap.Presentation.Presenters
             return ToViewTransformInternal.TransformVector(x, y);
         }
 
-        protected IPoint ToWorldInternal(Point2D point)
+        protected ICoordinate ToWorldInternal(Point2D point)
         {
             return viewToWorld(point);
         }
 
-        protected IPoint ToWorldInternal(Double x, Double y)
+        protected ICoordinate ToWorldInternal(Double x, Double y)
         {
             Point2D point = ToWorldTransformInternal.TransformVector(x, y);
-            return Map.GeometryFactory.CreatePoint(convertCoordinate(point));
+            return convertCoordinate(point);
         }
 
         protected IExtents2D ToWorldInternal(Rectangle2D bounds)
@@ -599,8 +599,8 @@ namespace SharpMap.Presentation.Presenters
             }
 
             IExtents2D worldBounds = Map.GeometryFactory.CreateExtents(
-                ToWorldInternal(viewBounds.LowerLeft).Coordinate,
-                ToWorldInternal(viewBounds.UpperRight).Coordinate) as IExtents2D;
+                ToWorldInternal(viewBounds.LowerLeft),
+                ToWorldInternal(viewBounds.UpperRight)) as IExtents2D;
 
             setViewEnvelopeInternal(worldBounds);
         }
@@ -636,7 +636,7 @@ namespace SharpMap.Presentation.Presenters
         /// </remarks>
         protected void ZoomToWorldWidthInternal(Double newWorldWidth)
         {
-            setViewMetricsInternal(View.ViewSize, GeoCenterInternal.Coordinate, newWorldWidth);
+            setViewMetricsInternal(View.ViewSize, GeoCenterInternal, newWorldWidth);
         }
 
         #endregion
@@ -939,14 +939,14 @@ namespace SharpMap.Presentation.Presenters
         {
             Size2D viewSize = View.ViewSize;
             Point2D newViewCenter = new Point2D(viewSize.Width / 2, viewSize.Height / 2) + e.RequestedValue;
-            IPoint newCenter = ToWorldInternal(newViewCenter);
+            ICoordinate newCenter = ToWorldInternal(newViewCenter);
             GeoCenterInternal = newCenter;
         }
 
         // Handles the size-change request from the view
         private void handleViewSizeChanged(Object sender, EventArgs e)
         {
-            setViewMetricsInternal(View.ViewSize, GeoCenterInternal.Coordinate, WorldWidthInternal);
+            setViewMetricsInternal(View.ViewSize, GeoCenterInternal, WorldWidthInternal);
         }
 
         private Point2D _previousActionPoint = Point2D.Empty;
@@ -994,7 +994,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Handles the geographic view center change request from the view
-        private void handleViewGeoCenterChangeRequested(Object sender, MapViewPropertyChangeEventArgs<IPoint> e)
+        private void handleViewGeoCenterChangeRequested(Object sender, MapViewPropertyChangeEventArgs<ICoordinate> e)
         {
             GeoCenterInternal = e.RequestedValue;
 
@@ -1179,7 +1179,7 @@ namespace SharpMap.Presentation.Presenters
         // of the world to show in the view by width.
         private void setViewMetricsInternal(Size2D newViewSize, ICoordinate newCenter, Double newWorldWidth)
         {
-            IPoint oldCenter = GeoCenterInternal;
+            ICoordinate oldCenter = GeoCenterInternal;
 
             // Flag to indicate world matrix needs to be recomputed
             Boolean viewMatrixChanged = false;
@@ -1293,7 +1293,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Computes the view space coordinates of a point in world space
-        private Point2D worldToView(IPoint worldPoint)
+        private Point2D worldToView(ICoordinate worldPoint)
         {
             if (ToViewTransformInternal == null)
             {
@@ -1307,7 +1307,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Computes the world space coordinates of a point in view space
-        private IPoint viewToWorld(Point2D viewPoint)
+        private ICoordinate viewToWorld(Point2D viewPoint)
         {
             if (ToWorldTransformInternal == null)
             {
@@ -1317,7 +1317,7 @@ namespace SharpMap.Presentation.Presenters
             else
             {
                 Point2D point = ToWorldTransformInternal.TransformVector(viewPoint.X, viewPoint.Y);
-                return Map.GeometryFactory.CreatePoint(convertCoordinate(point));
+                return convertCoordinate(point);
             }
         }
 

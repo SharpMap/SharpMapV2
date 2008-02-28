@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
@@ -185,7 +186,7 @@ namespace SharpMap.Tools
         private static void QueryQuery(ActionContext<IMapView2D, Point2D> context)
         {
             Point2D point = context.CurrentPoint;
-            IPoint worldPoint = context.MapView.ToWorld(point);
+            ICoordinate worldPoint = context.MapView.ToWorld(point);
             context.MapView.IdentifyLocation(worldPoint);
         }
 
@@ -228,8 +229,8 @@ namespace SharpMap.Tools
 
             // Create a BoundingBox for the view's selection using the map's world space
             IExtents worldBounds = context.Map.GeometryFactory.CreateExtents(
-                                        view.ToWorld(viewBounds.LowerLeft).Coordinate, 
-                                        view.ToWorld(viewBounds.UpperRight).Coordinate);
+                                        view.ToWorld(viewBounds.LowerLeft), 
+                                        view.ToWorld(viewBounds.UpperRight));
 
             // Apply the GeometryFilter derived from the view's selection
             for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)

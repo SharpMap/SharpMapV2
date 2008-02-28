@@ -183,7 +183,7 @@ namespace SharpMap.Indexing
 
             if (removed && Bounds.Borders(itemBounds))
             {
-                Bounds = null;
+                Bounds = _emptyBounds;
 
                 foreach (TItem keptItem in _items)
                 {

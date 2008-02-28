@@ -156,7 +156,7 @@ namespace SharpMap.Tests.Presentation
                 get { return BackgroundColorInternal; }
             }
 
-            internal IPoint GeoCenter
+            internal ICoordinate GeoCenter
             {
                 get { return GeoCenterInternal; }
                 set { GeoCenterInternal = value; }
@@ -245,7 +245,7 @@ namespace SharpMap.Tests.Presentation
                 ZoomToWorldWidthInternal(newWorldWidth);
             }
 
-            internal Point2D ToView(IPoint point)
+            internal Point2D ToView(ICoordinate point)
             {
                 return ToViewInternal(point);
             }
@@ -255,12 +255,12 @@ namespace SharpMap.Tests.Presentation
                 return ToViewInternal(x, y);
             }
 
-            internal IPoint ToWorld(Point2D point)
+            internal ICoordinate ToWorld(Point2D point)
             {
                 return ToWorldInternal(point);
             }
 
-            internal IPoint ToWorld(Double x, Double y)
+            internal ICoordinate ToWorld(Double x, Double y)
             {
                 return ToWorldInternal(x, y);
             }
@@ -271,7 +271,7 @@ namespace SharpMap.Tests.Presentation
             {
             }
 
-            protected override void SetViewGeoCenter(IPoint fromGeoPoint, IPoint toGeoPoint)
+            protected override void SetViewGeoCenter(ICoordinate fromCoordinate, ICoordinate toCoordinate)
             {
             }
 
@@ -340,7 +340,7 @@ namespace SharpMap.Tests.Presentation
             public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
             public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
             public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-            public event EventHandler<MapViewPropertyChangeEventArgs<IPoint>> GeoCenterChangeRequested;
+            public event EventHandler<MapViewPropertyChangeEventArgs<ICoordinate>> GeoCenterChangeRequested;
             public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
             public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
@@ -368,7 +368,7 @@ namespace SharpMap.Tests.Presentation
                 get { return ScreenHelper.Dpi; }
             }
 
-            public IPoint GeoCenter
+            public ICoordinate GeoCenter
             {
                 get { return _presenter.GeoCenter; }
                 set { OnRequestGeoCenterChange(GeoCenter, value); }
@@ -411,7 +411,7 @@ namespace SharpMap.Tests.Presentation
                 get { return _presenter.ToWorldTransform; }
             }
 
-            public Point2D ToView(IPoint point)
+            public Point2D ToView(ICoordinate point)
             {
                 return _presenter.ToView(point);
             }
@@ -421,12 +421,12 @@ namespace SharpMap.Tests.Presentation
                 return _presenter.ToView(x, y);
             }
 
-            public IPoint ToWorld(Point2D point)
+            public ICoordinate ToWorld(Point2D point)
             {
                 return _presenter.ToWorld(point);
             }
 
-            public IPoint ToWorld(Double x, Double y)
+            public ICoordinate ToWorld(Double x, Double y)
             {
                 return _presenter.ToWorld(x, y);
             }
@@ -475,7 +475,7 @@ namespace SharpMap.Tests.Presentation
 
             #region Methods
 
-            public void IdentifyLocation(IPoint worldPoint)
+            public void IdentifyLocation(ICoordinate worldPoint)
             {
                 throw new Exception("The method or operation is not implemented.");
             }
@@ -483,7 +483,7 @@ namespace SharpMap.Tests.Presentation
             public void Offset(Point2D offsetVector)
             {
                 Point2D viewCenter = _bounds.Center;
-                IPoint offsetGeoCenter = ToWorld(viewCenter + offsetVector);
+                ICoordinate offsetGeoCenter = ToWorld(viewCenter + offsetVector);
                 OnRequestGeoCenterChange(GeoCenter, offsetGeoCenter);
             }
 
@@ -611,14 +611,14 @@ namespace SharpMap.Tests.Presentation
                 }
             }
 
-            protected virtual void OnRequestGeoCenterChange(IPoint current, IPoint requested)
+            protected virtual void OnRequestGeoCenterChange(ICoordinate current, ICoordinate requested)
             {
-                EventHandler<MapViewPropertyChangeEventArgs<IPoint>> e = GeoCenterChangeRequested;
+                EventHandler<MapViewPropertyChangeEventArgs<ICoordinate>> e = GeoCenterChangeRequested;
 
                 if (e != null)
                 {
-                    MapViewPropertyChangeEventArgs<IPoint> args =
-                        new MapViewPropertyChangeEventArgs<IPoint>(current, requested);
+                    MapViewPropertyChangeEventArgs<ICoordinate> args =
+                        new MapViewPropertyChangeEventArgs<ICoordinate>(current, requested);
 
                     e(this, args);
                 }
@@ -767,7 +767,7 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(0, mapPresenter.PixelWorldHeight);
             Assert.AreEqual(null, mapPresenter.ToViewTransform);
             Assert.AreEqual(null, mapPresenter.ToWorldTransform);
-            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CreatePoint2D(50, 50)));
+            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CoordinateFactory.Create(50, 50)));
             // Changed to null from Point.Empty
             Assert.AreEqual(null, mapPresenter.ToWorld(new Point2D(100, 100)));
         }
@@ -789,8 +789,8 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
 
-            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter.Coordinate[Ordinates.X]);
-            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter.Coordinate[Ordinates.Y]);
+            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter[Ordinates.X]);
+            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter[Ordinates.Y]);
             Assert.AreEqual(0, mapPresenter.WorldWidth);
             Assert.AreEqual(0, mapPresenter.WorldHeight);
             Assert.AreEqual(0, mapPresenter.WorldUnitsPerPixel);
@@ -799,7 +799,7 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(0, mapPresenter.PixelWorldHeight);
             Assert.AreEqual(null, mapPresenter.ToViewTransform);
             Assert.AreEqual(null, mapPresenter.ToWorldTransform);
-            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CreatePoint2D(50, 50)));
+            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CoordinateFactory.Create(50, 50)));
             // Changed to null from Point.Empty
             Assert.AreEqual(null, mapPresenter.ToWorld(new Point2D(100, 100)));
         }
@@ -845,10 +845,12 @@ namespace SharpMap.Tests.Presentation
         [ExpectedException(typeof(InvalidOperationException))]
         public void PanWhenNoWorldBoundsThrowsException()
         {
-            TestView2D view;
-            TestPresenter2D mapPresenter = createPresenter(400, 500, out view);
+            Map map = new Map(_geoFactory);
+            map.AddLayer(DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory));
+            //map.AddLayer(DataSourceHelper.CreateGeometryFeatureLayer());
 
-            Map map = mapPresenter.Map;
+            TestView2D view = new TestView2D(map);
+
             map.ActiveTool = StandardMapTools2D.Pan;
 
             view.RaiseBegin(new Point2D(200, 250));
@@ -1014,8 +1016,8 @@ namespace SharpMap.Tests.Presentation
 
             Map map = mapPresenter.Map;
 
-            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter.Coordinate[Ordinates.X]);
-            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter.Coordinate[Ordinates.Y]);
+            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter[Ordinates.X]);
+            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter[Ordinates.Y]);
         }
 
         [Test]
@@ -1128,7 +1130,8 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
 
             mapPresenter.ZoomToViewBounds(new Rectangle2D(300, 300, 900, 900));
-            Assert.AreEqual(_geoFactory.CreatePoint2D(72, 38), mapPresenter.GeoCenter);
+            BufferedCoordinate2D expectedCoord = (BufferedCoordinate2D)_geoFactory.CoordinateFactory.Create(72, 38);
+            Assert.AreEqual(expectedCoord, mapPresenter.GeoCenter);
             Assert.AreEqual(72, mapPresenter.WorldWidth);
             Assert.AreEqual(72, mapPresenter.WorldHeight);
         }
@@ -1185,11 +1188,11 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
-            mapPresenter.GeoCenter = _geoFactory.CreatePoint2D(23, 34);
+            mapPresenter.GeoCenter = _geoFactory.CoordinateFactory.Create(23, 34);
             mapPresenter.ZoomToWorldWidth(2500);
 
             Point2D p1 = mapPresenter.ToView(8, 50);
-            Point2D p2 = mapPresenter.ToView(_geoFactory.CreatePoint2D(8, 50));
+            Point2D p2 = mapPresenter.ToView(_geoFactory.CoordinateFactory.Create(8, 50));
             Assert.AreEqual(new Point2D(494, 493.6), p1);
             Assert.AreEqual(p1, p2);
         }
@@ -1201,12 +1204,12 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = createPresenter(mocks, 500, 200);
 
-            mapPresenter.GeoCenter = _geoFactory.CreatePoint2D(23, 34);
+            mapPresenter.GeoCenter = _geoFactory.CoordinateFactory.Create(23, 34);
             mapPresenter.ZoomToWorldWidth(1000);
 
-            IPoint p1 = mapPresenter.ToWorld(242.5f, 92);
-            IPoint p2 = mapPresenter.ToWorld(new Point2D(242.5f, 92));
-            Assert.AreEqual(_geoFactory.CreatePoint2D(8, 50), p1);
+            ICoordinate p1 = mapPresenter.ToWorld(242.5f, 92);
+            ICoordinate p2 = mapPresenter.ToWorld(new Point2D(242.5f, 92));
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(8, 50), p1);
             Assert.AreEqual(p1, p2);
         }
 

@@ -1665,7 +1665,7 @@ namespace SharpMap.SimpleGeometries
         {
             if (!b1.Intersects(b2))
             {
-                return Empty;
+                return new Extents(factory);
             }
 
             return new Extents(
