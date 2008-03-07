@@ -33,9 +33,9 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Initializes a new MultiPoint collection
         /// </summary>
-        internal MultiPoint() { }
+        internal protected MultiPoint() { }
 
-		internal MultiPoint(Int32 initialCapacity)
+        internal protected MultiPoint(Int32 initialCapacity)
             : base(initialCapacity) { }
 
 		/// <summary>

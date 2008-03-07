@@ -40,6 +40,7 @@ using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GeoAPI.Geometries;
+using GeoAPI.Coordinates;
 
 namespace SharpMap.Presentation.WinForms
 {
@@ -139,12 +140,12 @@ namespace SharpMap.Presentation.WinForms
         public event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
         public event EventHandler<MapActionEventArgs<Point2D>> EndAction;
         public event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
-        public event EventHandler<MapViewPropertyChangeEventArgs<IPoint>> GeoCenterChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<ICoordinate>> GeoCenterChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
         public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
-        public event EventHandler SizeChanged;
+        new public event EventHandler SizeChanged;
         public event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ViewEnvelopeChangeRequested;
         public event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
         public event EventHandler ZoomToExtentsRequested;
@@ -182,7 +183,7 @@ namespace SharpMap.Presentation.WinForms
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IPoint GeoCenter
+        public ICoordinate GeoCenter
         {
             get { return _presenter.GeoCenter; }
             set { onRequestGeoCenterChange(GeoCenter, value); }
@@ -225,7 +226,7 @@ namespace SharpMap.Presentation.WinForms
             get { return _presenter.Selection; }
         }
 
-        public Point2D ToView(IPoint point)
+        public Point2D ToView(ICoordinate point)
         {
             return _presenter.ToView(point);
         }
@@ -242,12 +243,12 @@ namespace SharpMap.Presentation.WinForms
             get { return _presenter.ToViewTransform; }
         }
 
-        public IPoint ToWorld(Point2D point)
+        public ICoordinate ToWorld(Point2D point)
         {
             return _presenter.ToWorld(point);
         }
 
-        public IPoint ToWorld(Double x, Double y)
+        public ICoordinate ToWorld(Double x, Double y)
         {
             return _presenter.ToWorld(x, y);
         }
@@ -306,7 +307,7 @@ namespace SharpMap.Presentation.WinForms
         #endregion
 
         #region Methods
-        public void IdentifyLocation(IPoint location)
+        public void IdentifyLocation(ICoordinate location)
         {
             onRequestIdentifyLocation(location);
         }
@@ -830,14 +831,14 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestGeoCenterChange(IPoint current, IPoint requested)
+        private void onRequestGeoCenterChange(ICoordinate current, ICoordinate requested)
         {
-            EventHandler<MapViewPropertyChangeEventArgs<IPoint>> e = GeoCenterChangeRequested;
+            EventHandler<MapViewPropertyChangeEventArgs<ICoordinate>> e = GeoCenterChangeRequested;
 
             if (e != null)
             {
-                MapViewPropertyChangeEventArgs<IPoint> args =
-                    new MapViewPropertyChangeEventArgs<IPoint>(current, requested);
+                MapViewPropertyChangeEventArgs<ICoordinate> args =
+                    new MapViewPropertyChangeEventArgs<ICoordinate>(current, requested);
 
                 e(this, args);
             }
@@ -869,7 +870,7 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private void onRequestIdentifyLocation(IPoint location)
+        private void onRequestIdentifyLocation(ICoordinate location)
         {
             EventHandler<LocationEventArgs> e = IdentifyLocationRequested;
 

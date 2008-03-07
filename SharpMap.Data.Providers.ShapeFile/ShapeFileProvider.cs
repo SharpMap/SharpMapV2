@@ -32,7 +32,6 @@ using GeoAPI.Geometries;
 using GeoAPI.Indexing;
 using GeoAPI.IO.WellKnownText;
 using GeoAPI.Utilities;
-using SharpMap.Indexing;
 using SharpMap.Indexing.RTree;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
@@ -67,25 +66,63 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// </example>
     public class ShapeFileProvider : IWritableFeatureLayerProvider<UInt32>
     {
-        #region FilterMethod
+        //#region FilterMethod
 
-        /// <summary>
-        /// A delegate to a filter method for feature data.
-        /// </summary>
-        /// <remarks>
-        /// The FilterMethod delegate is used for applying a method that filters data from the dataset.
-        /// The method should return 'true' if the feature should be included and false if not.
-        /// <para>See the <see cref="FilterDelegate"/> property for more info</para>
-        /// </remarks>
-        /// <seealso cref="FilterDelegate"/>
-        /// <param name="dr"><see cref="FeatureDataRow"/> to test on</param>
-        /// <returns>true if this feature should be included, false if it should be filtered</returns>
-        public delegate Boolean FilterMethod(FeatureDataRow dr);
+        ///// <summary>
+        ///// A delegate to a filter method for feature data.
+        ///// </summary>
+        ///// <remarks>
+        ///// The FilterMethod delegate is used for applying a method that filters data from the dataset.
+        ///// The method should return 'true' if the feature should be included and false if not.
+        ///// <para>See the <see cref="FilterDelegate"/> property for more info</para>
+        ///// </remarks>
+        ///// <seealso cref="FilterDelegate"/>
+        ///// <param name="dr"><see cref="FeatureDataRow"/> to test on</param>
+        ///// <returns>true if this feature should be included, false if it should be filtered</returns>
+        //public delegate Boolean FilterMethod(FeatureDataRow dr);
 
+        //#endregion
+
+        #region IdBounds
+        struct IdBounds :IBoundable<IExtents>
+        {
+            private UInt32 _id;
+            private IExtents _extents;
+
+            public IdBounds(UInt32 id, IExtents extents)
+            {
+                _id = id;
+                _extents = extents;
+            }
+
+            public UInt32 Id
+            {
+                get { return _id; }
+            }
+
+            #region IBoundable<IExtents> Members
+
+            public IExtents Bounds
+            {
+                get { return _extents; }
+            }
+
+            public Boolean Intersects(IExtents bounds)
+            {
+                if (bounds == null)
+                {
+                    throw new ArgumentNullException("bounds");
+                }
+
+                return bounds.Intersects(_extents);
+            }
+
+            #endregion
+        }
         #endregion
 
         #region Instance fields
-        private FilterMethod _filterDelegate;
+        private Predicate<FeatureDataRow> _filterDelegate;
         private Int32? _srid;
         private readonly String _filename;
         private DbaseFile _dbaseFile;
@@ -95,14 +132,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly Boolean _hasFileBasedSpatialIndex;
         private Boolean _isOpen;
         private readonly Boolean _isIndexed = true;
-        private Boolean _coordsysReadFromFile = false;
+        private Boolean _coordsysReadFromFile;
         private ICoordinateSystem _coordinateSystem;
-        private Boolean _disposed = false;
-        private ISpatialIndex<IExtents, UInt32> _spatialIndex;
+        private Boolean _disposed;
+        private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
         private readonly ShapeFileHeader _header;
         private readonly ShapeFileIndex _shapeFileIndex;
         private ShapeFileDataReader _currentReader;
-        private readonly object _readerSync = new object();
+        private readonly Object _readerSync = new Object();
         private readonly Boolean _hasDbf;
         private IGeometryFactory _geoFactory;
         private ICoordinateSystemFactory _coordSysFactory;
@@ -513,8 +550,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </code>
         /// </example>
         /// </remarks>
-        /// <seealso cref="FilterMethod"/>
-        public FilterMethod FilterDelegate
+        public Predicate<FeatureDataRow> Filter
         {
             get { return _filterDelegate; }
             set { _filterDelegate = value; }
@@ -861,7 +897,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             // or enumerating all rows
             if (IsSpatiallyIndexed)
             {
-                IEnumerable<UInt32> keys = _spatialIndex.Query(extents);
+                IEnumerable<IdBounds> keys = _spatialIndex.Query(extents);
                 oidList = intersectFeatureGeometry(keys, query.QueryRegion);
             }
             else
@@ -882,7 +918,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     // TODO: Beta 2 - replace following line with:  if(fdr.Geometry.Intersects(bbox)). Currently always true.
                     if (fdr.Geometry.Intersects(extentGeometry))
                     {
-                        if (FilterDelegate == null || FilterDelegate(fdr))
+                        if (Filter == null || Filter(fdr))
                         {
                             result.AddRow(fdr);
                         }
@@ -1209,7 +1245,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             checkOpen();
 
-            if (FilterDelegate != null) //Apply filtering
+            if (Filter != null) //Apply filtering
             {
                 IFeatureDataRecord fdr = GetFeature(oid);
 
@@ -1243,7 +1279,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             checkOpen();
 
-            IEnumerable<UInt32> keys = _spatialIndex.Query(bounds);
+            IEnumerable<IdBounds> keys = _spatialIndex.Query(bounds);
 
             foreach (UInt32 id in intersectFeatureGeometry(keys, bounds.ToGeometry()))
             {
@@ -1320,7 +1356,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (_spatialIndex != null)
             {
-                _spatialIndex.Insert(featureExtents, id);
+                _spatialIndex.Insert(new IdBounds(id, featureExtents));
             }
 
             Int32 offset = _shapeFileIndex[id].Offset;
@@ -1382,7 +1418,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 if (_spatialIndex != null)
                 {
-                    _spatialIndex.Insert(featureExtents, id);
+                    _spatialIndex.Insert(new IdBounds(id, featureExtents));
                 }
 
                 feature[ShapeFileConstants.IdColumnName] = id;
@@ -1746,7 +1782,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             FeatureDataRow<UInt32> dr = HasDbf ? _dbaseFile.GetAttributes(oid, table) : table.NewRow(oid);
             dr.Geometry = readGeometry(oid);
 
-            if (FilterDelegate == null || FilterDelegate(dr))
+            if (Filter == null || Filter(dr))
             {
                 return dr;
             }
@@ -1840,15 +1876,15 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private IEnumerable<UInt32> intersectFeatureGeometry(IEnumerable<UInt32> keys, IGeometry query)
+        private IEnumerable<UInt32> intersectFeatureGeometry(IEnumerable<IdBounds> keys, IGeometry query)
         {
-            foreach (UInt32 key in keys)
+            foreach (IdBounds key in keys)
             {
-                IGeometry candidate = GetGeometryById(key);
+                IGeometry candidate = GetGeometryById(key.Id);
 
                 if (candidate.Intersects(query))
                 {
-                    yield return key;
+                    yield return key.Id;
                 }
             }
         }
@@ -1862,7 +1898,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="filename"></param>
         /// <returns>QuadTree index</returns>
-        private ISpatialIndex<IExtents, UInt32> createSpatialIndexFromFile(String filename)
+        private ISpatialIndex<IExtents, IdBounds> createSpatialIndexFromFile(String filename)
         {
             if (File.Exists(filename + ".sidx"))
             {
@@ -1875,7 +1911,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else
             {
-                ISpatialIndex<IExtents, UInt32> tree = createSpatialIndex();
+                ISpatialIndex<IExtents, IdBounds> tree = createSpatialIndex();
 
                 //using (FileStream indexStream =
                 //        new FileStream(filename + ".sidx", FileMode.Create, FileAccess.ReadWrite, FileShare.None))
@@ -1890,7 +1926,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// Generates a spatial index for a specified shape file.
         /// </summary>
-        private ISpatialIndex<IExtents, UInt32> createSpatialIndex()
+        private ISpatialIndex<IExtents, IdBounds> createSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
             Func<UInt32, IExtents> bounder = delegate(UInt32 item)
@@ -1899,18 +1935,20 @@ namespace SharpMap.Data.Providers.ShapeFile
             };
 
             // TODO: implement Post-optimization restructure strategy
-            IIndexRestructureStrategy<IExtents, UInt32> restructureStrategy = new NullRestructuringStrategy<IExtents, UInt32>();
+            IIndexRestructureStrategy<IExtents, IdBounds> restructureStrategy = new NullRestructuringStrategy<IExtents, IdBounds>();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IItemInsertStrategy<IExtents, UInt32> insertStrategy = new GuttmanQuadraticInsert<UInt32>(_geoFactory);
-            INodeSplitStrategy<IExtents, UInt32> nodeSplitStrategy = new GuttmanQuadraticSplit<UInt32>(_geoFactory, bounder);
+            IItemInsertStrategy<IExtents, IdBounds> insertStrategy = new GuttmanQuadraticInsert<IdBounds>(_geoFactory);
+            INodeSplitStrategy<IExtents, IdBounds> nodeSplitStrategy = new GuttmanQuadraticSplit<IdBounds>(_geoFactory);
             DynamicRTreeBalanceHeuristic indexHeuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue); 
             IdleMonitor idleMonitor = null;
 
-            DynamicRTree<UInt32> index = new SelfOptimizingDynamicSpatialIndex<UInt32>(restructureStrategy,
-                                                                                restructureHeuristic, insertStrategy,
+            DynamicRTree<IdBounds> index = new SelfOptimizingDynamicSpatialIndex<IdBounds>(
+                                                                                _geoFactory,
+                                                                                restructureStrategy,
+                                                                                restructureHeuristic, 
+                                                                                insertStrategy,
                                                                                 nodeSplitStrategy,
                                                                                 indexHeuristic,
-                                                                                bounder,
                                                                                 idleMonitor);
 
             for (UInt32 i = 0; i < (UInt32)GetFeatureCount(); i++)
@@ -1927,7 +1965,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (!Double.IsNaN(extents.GetMin(Ordinates.X)) && !Double.IsNaN(extents.GetMax(Ordinates.X)) &&
                     !Double.IsNaN(extents.GetMin(Ordinates.Y)) && !Double.IsNaN(extents.GetMax(Ordinates.Y)))
                 {
-                    index.Insert(extents, i);
+                    index.Insert(new IdBounds(i, extents));
                 }
             }
 

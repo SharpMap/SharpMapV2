@@ -46,7 +46,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
-        internal Point(GeometryFactory factory, Double x, Double y)
+        internal protected Point(GeometryFactory factory, Double x, Double y)
         {
             _coord = (ICoordinate2D)factory.CoordinateFactory.Create(x, y);
             Factory = factory;
@@ -57,7 +57,7 @@ namespace SharpMap.SimpleGeometries
         /// Initializes a new Point
         /// </summary>
         /// <param name="coordinate">The coordinate used to define the point.</param>
-        internal Point(ICoordinate coordinate)
+        internal protected Point(ICoordinate coordinate)
         {
             _coord = coordinate as ICoordinate2D;
             SetNotEmpty();
@@ -66,7 +66,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Initializes a new empty Point
         /// </summary>
-        public Point() { }
+        internal protected Point() { }
 
         /// <summary>
         /// Returns a point based on degrees, minutes and seconds notation.

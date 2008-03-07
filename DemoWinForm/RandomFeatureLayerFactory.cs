@@ -5,15 +5,14 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using DemoWinForm.Properties;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.Geometries;
+using SharpMap.SimpleGeometries;
 using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-using GeoPoint = SharpMap.Geometries.Point;
+using GeoPoint = SharpMap.SimpleGeometries.Point;
 
 namespace DemoWinForm
 {

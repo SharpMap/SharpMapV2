@@ -31,9 +31,9 @@ namespace SharpMap.SimpleGeometries
 		/// <summary>
 		/// Instantiates a MultiPolygon
 		/// </summary>
-		public MultiPolygon() { }
+        internal protected MultiPolygon() { }
 
-		public MultiPolygon(Int32 initialCapacity) :
+        internal protected MultiPolygon(Int32 initialCapacity) :
             base(initialCapacity) { }
 
         ///// <summary>

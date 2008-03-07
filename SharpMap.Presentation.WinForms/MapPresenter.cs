@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Coordinates;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Gdi;
@@ -115,7 +116,7 @@ namespace SharpMap.Presentation.WinForms
             get { return BackgroundColorInternal; }
         }
 
-        internal IPoint GeoCenter
+        internal ICoordinate GeoCenter
         {
             get { return GeoCenterInternal; }
         }
@@ -155,7 +156,7 @@ namespace SharpMap.Presentation.WinForms
             get { return ToWorldTransformInternal; }
         }
 
-        internal Point2D ToView(IPoint point)
+        internal Point2D ToView(ICoordinate point)
         {
             return ToViewInternal(point);
         }
@@ -165,12 +166,12 @@ namespace SharpMap.Presentation.WinForms
             return ToViewInternal(x, y);
         }
 
-        internal IPoint ToWorld(Point2D point)
+        internal ICoordinate ToWorld(Point2D point)
         {
             return ToWorldInternal(point);
         }
 
-        internal IPoint ToWorld(Double x, Double y)
+        internal ICoordinate ToWorld(Double x, Double y)
         {
             return ToWorldInternal(x, y);
         }

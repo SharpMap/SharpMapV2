@@ -39,7 +39,7 @@ namespace SharpMap.SimpleGeometries
         /// Initializes an instance of a LineString from a set of vertices.
         /// </summary>
         /// <param name="vertices"></param>
-        public LineString(IEnumerable<IPoint> vertices)
+        internal protected LineString(IEnumerable<IPoint> vertices)
         {
             foreach (IPoint p in vertices)
             {
@@ -51,7 +51,7 @@ namespace SharpMap.SimpleGeometries
         /// Initializes an instance of a LineString from a set of vertices.
         /// </summary>
         /// <param name="vertices"></param>
-        public LineString(IEnumerable<ICoordinate> vertices)
+        internal protected LineString(IEnumerable<ICoordinate> vertices)
         {
             foreach (ICoordinate p in vertices)
             {
@@ -62,7 +62,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Initializes an instance of a LineString.
         /// </summary>
-        public LineString()
+        internal protected LineString()
             : this(new ICoordinate[0])
         {
         }

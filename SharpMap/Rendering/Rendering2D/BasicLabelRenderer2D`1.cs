@@ -72,7 +72,7 @@ namespace SharpMap.Rendering.Rendering2D
             private set { _textRenderer = value; }
         }
 
-        #region ILabelRenderer<Point2D,ViewSize2D,Rectangle2D,TRenderObject> Members
+        #region ILabelRenderer<Point2D,Size2D,Rectangle2D,TRenderObject> Members
 
         public virtual IEnumerable<TRenderObject> RenderLabel(Label2D label)
         {
@@ -395,7 +395,7 @@ namespace SharpMap.Rendering.Rendering2D
         //private Label CreateLabel(Geometry feature, String text, Single rotation, LabelStyle style)
         //{
         //    LabelLayer layer = null;
-        //    ViewSize2D size = MeasureString(text, style.Font);
+        //    Size2D size = MeasureString(text, style.Font);
 
         //    Point2D position = ViewTransformer.WorldToView(feature.GetBoundingBox().GetCentroid());
         //    Double x = position.X - size.Width * (Int16)style.HorizontalAlignment * 0.5f;

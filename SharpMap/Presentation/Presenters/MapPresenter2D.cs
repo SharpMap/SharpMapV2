@@ -55,8 +55,6 @@ namespace SharpMap.Presentation.Presenters
         private Double _maximumWorldWidth = Double.PositiveInfinity;
         private Double _minimumWorldWidth;
 
-        // Offsets the origin of the spatial reference system so that the 
-        // center of the view coincides with the center of the extents of the map.
         private Boolean _viewIsEmpty = true;
 
         // The origin projection matrix reflects the coordinate system along
@@ -134,22 +132,7 @@ namespace SharpMap.Presentation.Presenters
             View.ZoomToWorldWidthRequested += handleViewZoomToWorldWidthRequested;
             _selection.SelectionChanged += handleSelectionChanged;
 
-            _originProjectionTransform.Scale(1, -1);
-
-            IExtents2D extents = Map.Extents as IExtents2D;
-
-            // Changed to null from BoundingBox.Empty
-            if (extents != null)
-            {
-                projectOrigin(extents);
-                setExtentsCenter(extents);
-            }
-
-            if (!View.ViewSize.IsEmpty)
-            {
-                _toViewCoordinates.OffsetY = View.ViewSize.Height;
-                setViewCenter(View.ViewSize);
-            }
+            initializeViewMatrixes();
         }
         #endregion
 
@@ -189,26 +172,14 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                ICoordinate mapCenter = Map.Center;
-
-                // changed from mapCenter.IsEmpty to null
-                if (mapCenter == null)
-                {
-                    // changed from Point.Empty to null
-                    return null;
-                }
-
-                ICoordinate viewCenter = Map.GeometryFactory.CoordinateFactory.Create(
-                    mapCenter[Ordinates.X] - _translationTransform.OffsetX,
-                    mapCenter[Ordinates.Y] + _translationTransform.OffsetY);
-
-                return viewCenter;
+                checkViewState();
+                return getGeoCenter();
             }
             set
             {
                 if (value == null)
                 {
-                        throw new ArgumentNullException("value");
+                    throw new ArgumentNullException("value");
                 }
 
                 setViewMetricsInternal(View.ViewSize, value, WorldWidthInternal);
@@ -350,7 +321,7 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                if (_viewIsEmpty)
+                if (!IsViewMatrixInitialized)
                 {
                     return null;
                 }
@@ -534,27 +505,37 @@ namespace SharpMap.Presentation.Presenters
 
         protected Point2D ToViewInternal(ICoordinate point)
         {
+            checkViewState();
+
             return worldToView(point);
         }
 
         protected Point2D ToViewInternal(Double x, Double y)
         {
+            checkViewState();
+
             return ToViewTransformInternal.TransformVector(x, y);
         }
 
         protected ICoordinate ToWorldInternal(Point2D point)
         {
+            checkViewState();
+
             return viewToWorld(point);
         }
 
         protected ICoordinate ToWorldInternal(Double x, Double y)
         {
+            checkViewState();
+
             Point2D point = ToWorldTransformInternal.TransformVector(x, y);
             return convertCoordinate(point);
         }
 
         protected IExtents2D ToWorldInternal(Rectangle2D bounds)
         {
+            checkViewState();
+
             if (ToWorldTransformInternal == null)
             {
                 // Changed to null from BoundingBox.Empty
@@ -593,10 +574,7 @@ namespace SharpMap.Presentation.Presenters
         /// </param>
         protected void ZoomToViewBoundsInternal(Rectangle2D viewBounds)
         {
-            if (_viewIsEmpty)
-            {
-                throw new InvalidOperationException("No visible region is set for this view.");
-            }
+            checkViewState();
 
             IExtents2D worldBounds = Map.GeometryFactory.CreateExtents(
                 ToWorldInternal(viewBounds.LowerLeft),
@@ -636,7 +614,7 @@ namespace SharpMap.Presentation.Presenters
         /// </remarks>
         protected void ZoomToWorldWidthInternal(Double newWorldWidth)
         {
-            setViewMetricsInternal(View.ViewSize, GeoCenterInternal, newWorldWidth);
+            setViewMetricsInternal(View.ViewSize, getGeoCenter(), newWorldWidth);
         }
 
         #endregion
@@ -946,7 +924,7 @@ namespace SharpMap.Presentation.Presenters
         // Handles the size-change request from the view
         private void handleViewSizeChanged(Object sender, EventArgs e)
         {
-            setViewMetricsInternal(View.ViewSize, GeoCenterInternal, WorldWidthInternal);
+            setViewMetricsInternal(View.ViewSize, getGeoCenter(), WorldWidthInternal);
         }
 
         private Point2D _previousActionPoint = Point2D.Empty;
@@ -1076,6 +1054,15 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Private helper methods
+
+        private void checkViewState()
+        {
+            if (_viewIsEmpty)
+            {
+                throw new InvalidOperationException("No visible region is set for this view.");
+            }
+        }
+
         private void wireupExistingLayers(IEnumerable<ILayer> layerCollection)
         {
             foreach (ILayer layer in layerCollection)
@@ -1132,6 +1119,50 @@ namespace SharpMap.Presentation.Presenters
             // TODO: create raster renderer
         }
 
+        private void initializeViewMatrixes()
+        {
+            // The following code basically special-cases the code in setViewMetricsInternal()
+            // Can it be moved out of the constructor and handled by setViewMetricsInternal, with
+            // some suitable flag or state-check which would get things off the ground?
+
+            // Offsets the origin of the spatial reference system so that the 
+            // center of the view coincides with the center of the extents of the map.
+            _originProjectionTransform.Scale(1, -1);
+
+            IExtents2D extents = Map.Extents as IExtents2D;
+
+            // Changed to null from BoundingBox.Empty
+            if (extents != null)
+            {
+                projectOrigin(extents);
+                setExtentsCenter(extents);
+            }
+
+            if (!View.ViewSize.IsEmpty)
+            {
+                _toViewCoordinates.OffsetY = View.ViewSize.Height;
+                setViewCenter(View.ViewSize);
+            }
+        }
+
+        private ICoordinate getGeoCenter()
+        {
+            ICoordinate mapCenter = Map.Center;
+
+            // changed from mapCenter.IsEmpty to null
+            if (mapCenter == null)
+            {
+                // changed from Point.Empty to null
+                return null;
+            }
+
+            ICoordinate viewCenter = Map.GeometryFactory.CoordinateFactory.Create(
+                mapCenter[Ordinates.X] - _translationTransform.OffsetX,
+                mapCenter[Ordinates.Y] + _translationTransform.OffsetY);
+
+            return viewCenter;
+        }
+
         // Performs computations to set the view metrics to the given envelope.
         private void setViewEnvelopeInternal(IExtents2D newEnvelope)
         {
@@ -1179,7 +1210,7 @@ namespace SharpMap.Presentation.Presenters
         // of the world to show in the view by width.
         private void setViewMetricsInternal(Size2D newViewSize, ICoordinate newCenter, Double newWorldWidth)
         {
-            ICoordinate oldCenter = GeoCenterInternal;
+            ICoordinate oldCenter = getGeoCenter();
 
             // Flag to indicate world matrix needs to be recomputed
             Boolean viewMatrixChanged = false;

@@ -54,7 +54,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Initializes a new GeometryCollection
         /// </summary>
-        public GeometryCollection()
+        internal protected GeometryCollection()
             : this(16)
         {
         }
@@ -62,7 +62,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Initializes a new GeometryCollection
         /// </summary>
-        public GeometryCollection(Int32 initialCapacity)
+        internal protected GeometryCollection(Int32 initialCapacity)
         {
             _geometries = new List<TGeometry>(initialCapacity);
         }

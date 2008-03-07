@@ -32,7 +32,7 @@ namespace SharpMap.Presentation
         /// <returns>A String which describes the <see cref="ViewSelection2D"/>.</returns>
         public override String ToString()
         {
-            return String.Format("[ViewSelection2D] Path: {0}", Path);
+            return String.Format("Path: {0}", Path);
         }
 
         /// <summary>

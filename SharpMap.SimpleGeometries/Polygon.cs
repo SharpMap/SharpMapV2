@@ -46,7 +46,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         /// <param name="exteriorRing">Exterior <see cref="LinearRing"/></param>
         /// <param name="interiorRings">Interior LinearRings</param>
-        public Polygon(LinearRing exteriorRing, IEnumerable<LinearRing> interiorRings)
+        internal protected Polygon(LinearRing exteriorRing, IEnumerable<LinearRing> interiorRings)
         {
             _exteriorRing = exteriorRing;
 
@@ -58,7 +58,7 @@ namespace SharpMap.SimpleGeometries
         /// Instatiates a polygon based on one exterior ring.
         /// </summary>
         /// <param name="exteriorRing">Exterior ring</param>
-        public Polygon(LinearRing exteriorRing)
+        internal protected Polygon(LinearRing exteriorRing)
             : this(exteriorRing, null)
         {
         }
@@ -66,13 +66,13 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Instatiates an empty polygon.
         /// </summary>
-        public Polygon(IEnumerable<ICoordinate> verticies)
+        internal protected Polygon(IEnumerable<ICoordinate> verticies)
             : this(new LinearRing(verticies)) { }
 
         /// <summary>
         /// Instatiates an empty polygon.
         /// </summary>
-        public Polygon()
+        internal protected Polygon()
             : this(new LinearRing()) { }
 
         /// <summary>

@@ -39,7 +39,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		/// <param name="x">X coordinate</param>
 		/// <param name="y">Y coordinate</param>
 		/// <param name="z">Z coordinate</param>
-		internal Point3D(GeometryFactory factory, Double x, Double y, Double z)
+        internal protected Point3D(GeometryFactory factory, Double x, Double y, Double z)
             : base(factory, x, y)
 		{
 			_z = z;
@@ -59,7 +59,7 @@ namespace SharpMap.SimpleGeometries.Geometries3D
 		/// <summary>
 		/// Initializes a new Point at (0,0)
 		/// </summary>
-		public Point3D()
+        internal protected Point3D()
 		{
 			SetEmpty();
 		}

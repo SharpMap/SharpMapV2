@@ -31,19 +31,19 @@ namespace SharpMap.SimpleGeometries
         /// Initializes an instance of a LinearRing from a set of vertices
         /// </summary>
         /// <param name="vertices"></param>
-        public LinearRing(IEnumerable<IPoint> vertices)
+        internal protected LinearRing(IEnumerable<IPoint> vertices)
             : base(vertices) { }
         /// <summary>
         /// Initializes an instance of a LinearRing from a set of vertices
         /// </summary>
         /// <param name="vertices"></param>
-        public LinearRing(IEnumerable<ICoordinate> vertices)
+        internal protected LinearRing(IEnumerable<ICoordinate> vertices)
             : base(vertices) { }
 
         /// <summary>
         /// Initializes an instance of a LinearRing
         /// </summary>
-        public LinearRing() { }
+        internal protected LinearRing() { }
 
         /// <summary>
         /// Creates a deep copy of the LinearRing.

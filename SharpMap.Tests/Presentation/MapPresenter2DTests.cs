@@ -757,8 +757,7 @@ namespace SharpMap.Tests.Presentation
             mocks.ReplayAll();
 
             TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
-            // Changed to null from Point.Empty
-            Assert.AreEqual(null, mapPresenter.GeoCenter);
+
             Assert.AreEqual(0, mapPresenter.WorldWidth);
             Assert.AreEqual(0, mapPresenter.WorldHeight);
             Assert.AreEqual(0, mapPresenter.WorldUnitsPerPixel);
@@ -767,9 +766,63 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(0, mapPresenter.PixelWorldHeight);
             Assert.AreEqual(null, mapPresenter.ToViewTransform);
             Assert.AreEqual(null, mapPresenter.ToWorldTransform);
-            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CoordinateFactory.Create(50, 50)));
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GettingGeoCenterOnUndefinedViewFails()
+        {
+            MockRepository mocks = new MockRepository();
+
+            Map map = new Map(_geoFactory);
+            IMapView2D mapView = mocks.Stub<IMapView2D>();
+
+            SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
+            mapView.ViewSize = new Size2D(200, 400);
+
+            mocks.ReplayAll();
+
+            TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
+
+            // Changed to null from Point.Empty
+            Assert.AreEqual(null, mapPresenter.GeoCenter);
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TransformingPointFromViewToWorldOnUndefinedViewFails()
+        {
+            MockRepository mocks = new MockRepository();
+
+            Map map = new Map(_geoFactory);
+            IMapView2D mapView = mocks.Stub<IMapView2D>();
+
+            SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
+            mapView.ViewSize = new Size2D(200, 400);
+
+            mocks.ReplayAll();
+
+            TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
             // Changed to null from Point.Empty
             Assert.AreEqual(null, mapPresenter.ToWorld(new Point2D(100, 100)));
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TransformingPointFromWorldToViewOnUndefinedViewFails()
+        {
+            MockRepository mocks = new MockRepository();
+
+            Map map = new Map(_geoFactory);
+            IMapView2D mapView = mocks.Stub<IMapView2D>();
+
+            SetupResult.For(mapView.Dpi).Return(ScreenHelper.Dpi);
+            mapView.ViewSize = new Size2D(200, 400);
+
+            mocks.ReplayAll();
+
+            TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
+            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CoordinateFactory.Create(50, 50)));
         }
 
         [Test]
@@ -789,8 +842,8 @@ namespace SharpMap.Tests.Presentation
 
             TestPresenter2D mapPresenter = new TestPresenter2D(map, mapView);
 
-            Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter[Ordinates.X]);
-            Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter[Ordinates.Y]);
+            //Assert.AreEqual(map.Center[Ordinates.X], mapPresenter.GeoCenter[Ordinates.X]);
+            //Assert.AreEqual(map.Center[Ordinates.Y], mapPresenter.GeoCenter[Ordinates.Y]);
             Assert.AreEqual(0, mapPresenter.WorldWidth);
             Assert.AreEqual(0, mapPresenter.WorldHeight);
             Assert.AreEqual(0, mapPresenter.WorldUnitsPerPixel);
@@ -799,9 +852,6 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(0, mapPresenter.PixelWorldHeight);
             Assert.AreEqual(null, mapPresenter.ToViewTransform);
             Assert.AreEqual(null, mapPresenter.ToWorldTransform);
-            Assert.AreEqual(Point2D.Empty, mapPresenter.ToView(_geoFactory.CoordinateFactory.Create(50, 50)));
-            // Changed to null from Point.Empty
-            Assert.AreEqual(null, mapPresenter.ToWorld(new Point2D(100, 100)));
         }
 
         [Test]
@@ -834,7 +884,7 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
             
             IExtents expected = _geoFactory.CreateExtents2D(0, 0, 120, 100);
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
             Assert.AreEqual(1, mapPresenter.WorldUnitsPerPixel);
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(100, mapPresenter.WorldHeight);
@@ -866,25 +916,27 @@ namespace SharpMap.Tests.Presentation
 
             mapPresenter.ZoomToExtents();
 
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
 
             Map map = mapPresenter.Map;
             map.ActiveTool = StandardMapTools2D.Pan;
 
             /*
-             * 
-             * |
-             * |     1 2
-             * |     * *
-             * |     ->
+             *  1
+             * |*. 
+             * |  `. 2
+             * |    `*
+             * |    
              * |____________
              * 
              */
 
             view.RaiseBegin(new Point2D(0, 0));
-            view.RaiseMoveTo(new Point2D(0, 0));
-            view.RaiseEnd(new Point2D(0, 0));
+            view.RaiseMoveTo(new Point2D(200, 400));
+            view.RaiseEnd(new Point2D(200, 400));
 
-            Assert.AreEqual(_geoFactory.CreatePoint2D(62.5, 50), mapPresenter.GeoCenter);
+            ICoordinate expected = _geoFactory.CoordinateFactory.Create(0, 170);
+            Assert.AreEqual(expected, mapPresenter.GeoCenter);
         }
 
         [Test]
@@ -960,7 +1012,7 @@ namespace SharpMap.Tests.Presentation
 
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(150, mapPresenter.WorldHeight);
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
 
             Map map = mapPresenter.Map;
 
@@ -973,13 +1025,13 @@ namespace SharpMap.Tests.Presentation
 
             Assert.AreEqual(100, mapPresenter.WorldWidth);
             Assert.AreEqual(125, mapPresenter.WorldHeight);
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
 
             mapPresenter.ZoomToExtents();
 
             Assert.AreEqual(120, mapPresenter.WorldWidth);
             Assert.AreEqual(150, mapPresenter.WorldHeight);
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
 
             // Zoom using selection
             view.RaiseBegin(new Point2D(100, 125));
@@ -988,7 +1040,7 @@ namespace SharpMap.Tests.Presentation
 
             Assert.AreEqual(60, mapPresenter.WorldWidth);
             Assert.AreEqual(75, mapPresenter.WorldHeight);
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
         }
 
         [Test]
@@ -1151,7 +1203,7 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(120, mapPresenter.WorldHeight);
             // Zoom to a 200x100 rectangle in view coordinates
             mapPresenter.ZoomToViewBounds(new Rectangle2D(100, 50, 300, 150));
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 50), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
             Assert.AreEqual(60, mapPresenter.WorldWidth);
             Assert.AreEqual(60, mapPresenter.WorldHeight);
         }
@@ -1164,7 +1216,7 @@ namespace SharpMap.Tests.Presentation
             TestPresenter2D mapPresenter = createPresenter(mocks, 1000, 1000);
 
             mapPresenter.ZoomToWorldBounds(_geoFactory.CreateExtents2D(20, 50, 100, 80));
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 65), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 65), mapPresenter.GeoCenter);
             Assert.AreEqual(80, mapPresenter.WorldWidth);
         }
 
@@ -1176,7 +1228,7 @@ namespace SharpMap.Tests.Presentation
             TestPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
             mapPresenter.WorldAspectRatio = 2;
             mapPresenter.ZoomToWorldBounds(_geoFactory.CreateExtents2D(20, 10, 100, 180));
-            Assert.AreEqual(_geoFactory.CreatePoint2D(60, 95), mapPresenter.GeoCenter);
+            Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 95), mapPresenter.GeoCenter);
             Assert.AreEqual(170, mapPresenter.WorldWidth);
             Assert.AreEqual(170, mapPresenter.WorldHeight);
         }

@@ -31,9 +31,9 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Initializes an instance of a MultiLineString
         /// </summary>
-        public MultiLineString() { }
+        internal protected MultiLineString() { }
 
-        public MultiLineString(Int32 initialCapacity)
+        internal protected MultiLineString(Int32 initialCapacity)
             : base(initialCapacity) { }
 
         ///// <summary>

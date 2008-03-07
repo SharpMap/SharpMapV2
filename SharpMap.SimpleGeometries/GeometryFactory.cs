@@ -310,9 +310,9 @@ namespace SharpMap.SimpleGeometries
 
         public IMultiLineString CreateMultiLineString()
         {
-            MultiLineString l = new MultiLineString();
-            l.Factory = this;
-            return l;
+            MultiLineString mls = new MultiLineString();
+            mls.Factory = this;
+            return mls;
         }
 
         public IMultiLineString CreateMultiLineString(IEnumerable<ILineString> lineStrings)
@@ -330,9 +330,9 @@ namespace SharpMap.SimpleGeometries
 
         public IMultiPolygon CreateMultiPolygon()
         {
-            MultiPolygon p = new MultiPolygon();
-            p.Factory = this;
-            return p;
+            MultiPolygon mp = new MultiPolygon();
+            mp.Factory = this;
+            return mp;
         }
 
         public IMultiPolygon CreateMultiPolygon(IEnumerable<IPolygon> polygons)

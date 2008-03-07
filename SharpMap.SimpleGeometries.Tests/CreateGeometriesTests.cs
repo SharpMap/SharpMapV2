@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GeoAPI.Geometries;
+﻿using GeoAPI.Geometries;
 using NetTopologySuite.Coordinates;
 using SharpMap.SimpleGeometries;
 using NUnit.Framework;
@@ -102,8 +99,7 @@ namespace SharpMap.SimpleGeometries.Tests
                 new BufferedCoordinate2DFactory(),
                 new BufferedCoordinate2DSequenceFactory());
 
-            IGeometryCollection g;// = factory.CreateGeometryCollection();
-            g = new GeometryCollection();
+            IGeometryCollection g = factory.CreateGeometryCollection();
             Assert.IsNotNull(g);
             Assert.IsTrue(g.IsEmpty);
         }

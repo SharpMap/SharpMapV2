@@ -16,20 +16,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using GeoAPI.Geometries;
+using GeoAPI.Coordinates;
 
 namespace SharpMap.Presentation
 {
     public class LocationEventArgs : EventArgs
     {
-        private readonly IPoint _point;
+        private readonly ICoordinate _point;
 
-        public LocationEventArgs(IPoint location)
+        public LocationEventArgs(ICoordinate location)
         {
             _point = location;
         }
 
-        public IPoint Point
+        public ICoordinate Point
         {
             get { return _point; }
         }

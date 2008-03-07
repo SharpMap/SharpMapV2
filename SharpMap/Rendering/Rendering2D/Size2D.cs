@@ -50,7 +50,9 @@ namespace SharpMap.Rendering.Rendering2D
         #region ToString
         public override String ToString()
         {
-            return String.Format("[ViewSize2D] Width: {0}, Height: {1}", Width, Height);
+            return IsEmpty 
+                ? "Empty"
+                : String.Format("Width: {0}, Height: {1}", Width, Height);
         }
         #endregion
 
