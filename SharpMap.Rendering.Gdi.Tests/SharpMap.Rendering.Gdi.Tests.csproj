@@ -101,6 +101,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj">
+      <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
+      <Name>ManagedBufferedCoordinate2D</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpMap.Rendering.Gdi\SharpMap.Rendering.Gdi.csproj">
       <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
       <Name>SharpMap.Rendering.Gdi</Name>

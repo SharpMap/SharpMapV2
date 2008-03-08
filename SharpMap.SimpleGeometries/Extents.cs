@@ -1763,6 +1763,11 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
+        public IGeometryFactory Factory
+        {
+            get { return _factory; }
+        }
+
         public Double GetMax(Ordinates ordinate)
         {
             return Max[ordinate];

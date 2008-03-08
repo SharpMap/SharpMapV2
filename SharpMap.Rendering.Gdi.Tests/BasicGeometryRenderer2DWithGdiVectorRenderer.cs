@@ -11,6 +11,7 @@ using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.SimpleGeometries;
 using SharpMap.Tests;
+using NetTopologySuite.Coordinates;
 
 namespace SharpMap.Rendering.Gdi.Tests
 {
@@ -18,7 +19,15 @@ namespace SharpMap.Rendering.Gdi.Tests
     public class BasicGeometryRenderer2DWithGdiVectorRenderer
     {
         private static readonly Single _e = 0.0001f;
-        private IGeometryFactory _geoFactory = new GeometryFactory();
+        private IGeometryFactory _geoFactory;
+
+        [SetUp]
+        public void Setup()
+        {
+            ICoordinateFactory coordFactory = new BufferedCoordinate2DFactory();
+            ICoordinateSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+        }
 
         [Test]
         public void CreatingBasicGeometryRenderer2DWithGdiVectorRendererSucceeds()
