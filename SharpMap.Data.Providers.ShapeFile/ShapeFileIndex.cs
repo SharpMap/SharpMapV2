@@ -36,14 +36,16 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#region Object Construction / Disposal
 		public ShapeFileIndex(ShapeFileProvider shapeFile)
-			: this(new FileInfo(shapeFile.IndexFilename)) 
+			: this(shapeFile, new FileInfo(shapeFile.IndexFilename)) 
 		{
-			_shapeFile = shapeFile;
 		}
 
-		private ShapeFileIndex(FileInfo file)
+		private ShapeFileIndex(ShapeFileProvider shapeFile, FileInfo file)
 		{
-			if (file == null) throw new ArgumentNullException("file");
+		    if (shapeFile == null) throw new ArgumentNullException("shapeFile");
+		    if (file == null) throw new ArgumentNullException("file");
+
+            _shapeFile = shapeFile;
 
 			if (String.Compare(file.Extension, ".shx", StringComparison.InvariantCultureIgnoreCase) != 0)
 			{
@@ -91,7 +93,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 			if (ContainsKey(id))
 			{
-				throw new ShapeFileInvalidOperationException("Cannot add a feature with the same id to the index more than once.");
+				throw new ShapeFileInvalidOperationException(
+                    "Cannot add a feature with the same id to the index more than once.");
 			}
 
             _header.Extents = _shapeFile.GeometryFactory.CreateExtents(
@@ -141,7 +144,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#region IDictionary<UInt32,IndexEntry> Members
 
-		void IDictionary<UInt32, IndexEntry>.Add(UInt32 key, ShapeFileIndex.IndexEntry value)
+		void IDictionary<UInt32, IndexEntry>.Add(UInt32 key, IndexEntry value)
 		{
 			_shapeIndex.Add(key, value);
 		}
@@ -161,17 +164,17 @@ namespace SharpMap.Data.Providers.ShapeFile
 			return _shapeIndex.Remove(key);
 		}
 
-		public Boolean TryGetValue(UInt32 key, out ShapeFileIndex.IndexEntry value)
+		public Boolean TryGetValue(UInt32 key, out IndexEntry value)
 		{
 			return _shapeIndex.TryGetValue(key, out value);
 		}
 
-		ICollection<ShapeFileIndex.IndexEntry> IDictionary<UInt32, IndexEntry>.Values
+		ICollection<IndexEntry> IDictionary<UInt32, IndexEntry>.Values
 		{
 			get { return _shapeIndex.Values; }
 		}
 
-		public ShapeFileIndex.IndexEntry this[UInt32 key]
+		public IndexEntry this[UInt32 key]
 		{
 			get
 			{

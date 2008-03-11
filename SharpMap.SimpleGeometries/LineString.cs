@@ -403,7 +403,7 @@ namespace SharpMap.SimpleGeometries
 
         public ILineString Reverse()
         {
-            return new LineString(Slice.Reverse(_vertices));
+            return new LineString(Enumerable.Reverse(_vertices));
         }
 
         #endregion

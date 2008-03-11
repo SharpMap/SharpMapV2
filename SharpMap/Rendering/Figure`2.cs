@@ -27,33 +27,31 @@ namespace SharpMap.Rendering
 {
     /// <summary>
     /// Represents a graphical figure, which is a portion of a 
-    /// <see cref="Path{TPoint,TViewBounds}"/>.
+    /// <see cref="Path{TPoint,TBounds}"/>.
     /// </summary>
     /// <typeparam name="TPoint">Type of point to use in the figure.</typeparam>
-    /// <typeparam name="TViewBounds">Type of rectilinear shape to bound this figure.</typeparam>
-    public abstract class Figure<TPoint, TViewBounds>
-        : ICloneable, IEnumerable<TPoint>, IEquatable<Figure<TPoint, TViewBounds>>
+    /// <typeparam name="TBounds">Type of rectilinear shape to bound this figure.</typeparam>
+    public abstract class Figure<TPoint, TBounds>
+        : ICloneable, IEnumerable<TPoint>, IEquatable<Figure<TPoint, TBounds>>
         where TPoint : IVectorD
-        where TViewBounds : IMatrixD
+        where TBounds : IMatrixD
     {
         private readonly List<TPoint> _points = new List<TPoint>();
         private Boolean _isClosed;
-        private TViewBounds _bounds;
+        private TBounds _bounds;
 
         #region Object Construction
 
         /// <summary>
-        /// Creates a new open <see cref="Figure{TPoint, TViewBounds}"/> 
+        /// Creates a new open <see cref="Figure{TPoint, TBounds}"/> 
         /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         public Figure(IEnumerable<TPoint> points)
-            : this(points, false)
-        {
-        }
+            : this(points, false) { }
 
         /// <summary>
-        /// Creates a new <see cref="Figure{TPoint, TViewBounds}"/> 
+        /// Creates a new <see cref="Figure{TPoint, TBounds}"/> 
         /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
@@ -106,13 +104,13 @@ namespace SharpMap.Rendering
 
         public override Boolean Equals(Object obj)
         {
-            Figure<TPoint, TViewBounds> other = obj as Figure<TPoint, TViewBounds>;
+            Figure<TPoint, TBounds> other = obj as Figure<TPoint, TBounds>;
             return Equals(other);
         }
 
         #region IEquatable<Path<TPoint>> Members
 
-        public Boolean Equals(Figure<TPoint, TViewBounds> other)
+        public Boolean Equals(Figure<TPoint, TBounds> other)
         {
             if (other == null)
             {
@@ -150,9 +148,9 @@ namespace SharpMap.Rendering
         /// Creates an exact copy of this figure.
         /// </summary>
         /// <returns>A point-by-point copy of this figure.</returns>
-        public Figure<TPoint, TViewBounds> Clone()
+        public Figure<TPoint, TBounds> Clone()
         {
-            Figure<TPoint, TViewBounds> figure = CreateFigure(Points, IsClosed);
+            Figure<TPoint, TBounds> figure = CreateFigure(Points, IsClosed);
             return figure;
         }
 
@@ -172,7 +170,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets the bounds of this figure.
         /// </summary>
-        public TViewBounds Bounds
+        public TBounds Bounds
         {
             get
             {
@@ -188,7 +186,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets a value indicating an empty bounds shape.
         /// </summary>
-        protected abstract TViewBounds EmptyBounds { get; }
+        protected abstract TBounds EmptyBounds { get; }
 
         /// <summary>
         /// Gets true if the figure is closed, false if open.
@@ -232,10 +230,10 @@ namespace SharpMap.Rendering
         /// Computes the minimum bounding rectilinear shape that contains this figure.
         /// </summary>
         /// <returns>
-        /// A <typeparamref name="TViewBounds"/> instance describing a minimally bounding 
+        /// A <typeparamref name="TBounds"/> instance describing a minimally bounding 
         /// rectilinear space which contains the figure.
         /// </returns>
-        protected abstract TViewBounds ComputeBounds();
+        protected abstract TBounds ComputeBounds();
 
         /// <summary>
         /// Creates a new figure with the given points, either open or closed.
@@ -243,7 +241,7 @@ namespace SharpMap.Rendering
         /// <param name="points">Points to use in sequence to create the figure.</param>
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new Figure instance.</returns>
-        protected abstract Figure<TPoint, TViewBounds> CreateFigure(IEnumerable<TPoint> points,
+        protected abstract Figure<TPoint, TBounds> CreateFigure(IEnumerable<TPoint> points,
                                                                                 Boolean isClosed);
 
         #endregion

@@ -506,7 +506,12 @@ namespace SharpMap.SimpleGeometries
 
         IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            IEnumerator<TGeometry> e = GetEnumerator();
+
+            while(e.MoveNext())
+            {
+                yield return e.Current;
+            }
         }
 
         #endregion

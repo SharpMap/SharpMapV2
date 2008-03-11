@@ -2301,7 +2301,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 else
                 {
                     return _geoFactory.CreatePolygon(
-                        Slice.GetFirst(rings), Slice.StartAt(rings, 1));
+                        Slice.GetFirst(rings), Enumerable.Skip(rings, 1));
                 }
             }
             else
@@ -2320,7 +2320,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     else
                     {
                         poly = _geoFactory.CreatePolygon(
-                            Slice.GetFirst(polyRings), Slice.StartAt(polyRings, 1));
+                            Slice.GetFirst(polyRings), Enumerable.Skip(polyRings, 1));
                     }
 
                     mpoly.Add(poly);
