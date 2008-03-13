@@ -66,7 +66,7 @@ namespace ProjNet.CoordinateSystems
             }
             else if (isIvfDefinitive)
             {
-                _semiMinorAxis = (1.0 - (1.0/_inverseFlattening))*semiMajorAxis;
+                _semiMinorAxis = (1.0 - (1.0 / _inverseFlattening)) * semiMajorAxis;
             }
             else
             {

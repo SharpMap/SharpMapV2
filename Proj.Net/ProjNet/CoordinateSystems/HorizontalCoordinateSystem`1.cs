@@ -57,7 +57,8 @@ namespace ProjNet.CoordinateSystems
 
             if (AxisInfo.Count != 2)
             {
-                throw new ArgumentException("Axis info should contain two axes for horizontal coordinate systems");
+                throw new ArgumentException(
+                    "Axis info should contain two axes for horizontal coordinate systems");
             }
         }
 

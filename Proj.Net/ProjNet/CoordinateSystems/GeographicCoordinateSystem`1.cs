@@ -74,24 +74,26 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Creates a decimal degrees geographic coordinate system based on the WGS84 ellipsoid, suitable for GPS measurements
         /// </summary>
-        public static GeographicCoordinateSystem<TCoordinate> Wgs84
+        public static GeographicCoordinateSystem<TCoordinate> GetWgs84(IGeometryFactory<TCoordinate> geoFactory)
         {
-            get
-            {
-                AxisInfo[] axes = new AxisInfo[]
-                    {
-                        new AxisInfo("Lon", AxisOrientation.East),
-                        new AxisInfo("Lat", AxisOrientation.North)
-                    };
+            AxisInfo[] axes = new AxisInfo[]
+                {
+                    new AxisInfo(AxisOrientation.East, "Lon"),
+                    new AxisInfo(AxisOrientation.North, "Lat")
+                };
 
-                // TODO: DefaultEnvelope should be (-180, 180; -90, 90)
-                return new GeographicCoordinateSystem<TCoordinate>(null,
-                                                                   CoordinateSystems.AngularUnit.Degrees,
-                                                                   CoordinateSystems.HorizontalDatum.Wgs84,
-                                                                   CoordinateSystems.PrimeMeridian.Greenwich, axes,
-                                                                   "WGS 84", "EPSG", 4326, String.Empty, String.Empty,
-                                                                   String.Empty);
-            }
+            IExtents<TCoordinate> defaultExtents =
+                (IExtents<TCoordinate>) geoFactory.CreateExtents2D(-180, -90, 180, 90);
+
+            // TODO: DefaultEnvelope should be (-180, 180; -90, 90)
+            return new GeographicCoordinateSystem<TCoordinate>(
+                                            defaultExtents, 
+                                            CoordinateSystems.AngularUnit.Degrees, 
+                                            CoordinateSystems.HorizontalDatum.Wgs84, 
+                                            CoordinateSystems.PrimeMeridian.Greenwich, 
+                                            axes, "WGS 84", "EPSG", 4326, String.Empty, 
+                                            String.Empty, String.Empty);
+        
         }
 
         #endregion
@@ -131,11 +133,6 @@ namespace ProjNet.CoordinateSystems
         public Int32 ConversionToWgs84Count
         {
             get { return _wgs84ConversionInfo.Count; }
-        }
-
-        internal List<Wgs84ConversionInfo> Wgs84ConversionInfo
-        {
-            get { return _wgs84ConversionInfo; }
         }
 
         /// <summary>
@@ -263,5 +260,10 @@ namespace ProjNet.CoordinateSystems
         }
 
         #endregion
+
+        internal List<Wgs84ConversionInfo> Wgs84ConversionInfo
+        {
+            get { return _wgs84ConversionInfo; }
+        }
     }
 }

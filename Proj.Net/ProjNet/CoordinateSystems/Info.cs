@@ -67,13 +67,8 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        internal Info(
-            String name,
-            String authority,
-            Int64 code,
-            String alias,
-            String abbreviation,
-            String remarks)
+        internal Info(String name, String authority, Int64 code, String alias,
+                      String abbreviation, String remarks)
         {
             _name = name;
             _authority = authority;

@@ -75,10 +75,17 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return new HorizontalDatum(CoordinateSystems.Ellipsoid.Wgs84,
-                                           null, DatumType.HorizontalGeocentric, "World Geodetic System 1984", "EPSG",
+                                           null, 
+                                           DatumType.HorizontalGeocentric, 
+                                           "World Geodetic System 1984", "EPSG",
                                            6326,
                                            String.Empty,
-                                           "EPSG's WGS 84 datum has been the then current realisation. No distinction is made between the original WGS 84 frame, WGS 84 (G730), WGS 84 (G873) and WGS 84 (G1150). Since 1997, WGS 84 has been maintained within 10cm of the then current ITRF.",
+                                           "EPSG's WGS 84 datum has been the then "+
+                                           "current realisation. No distinction is made "+
+                                           "between the original WGS 84 frame, "+
+                                           "WGS 84 (G730), WGS 84 (G873) and WGS 84 (G1150). "+
+                                           "Since 1997, WGS 84 has been maintained within 10cm "+
+                                           "of the then current ITRF.",
                                            String.Empty);
             }
         }
@@ -97,13 +104,20 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 Wgs84ConversionInfo wgsConversion = new Wgs84ConversionInfo(0, 0, 4.5, 0, 0, 0.554, 0.219);
-                HorizontalDatum datum =
-                    new HorizontalDatum(CoordinateSystems.Ellipsoid.Wgs72,
-                                        wgsConversion, DatumType.HorizontalGeocentric,
-                                        "World Geodetic System 1972", "EPSG", 6322, String.Empty,
-                                        "Used by GPS before 1987. For TRANSIT satellite positioning " +
-                                        "see also WGS 72BE. Datum code 6323 reserved for southern " +
-                                        "hemisphere projected coordinate systems.", String.Empty);
+                HorizontalDatum datum = new HorizontalDatum(
+                                                CoordinateSystems.Ellipsoid.Wgs72,
+                                                wgsConversion, 
+                                                DatumType.HorizontalGeocentric,
+                                                "World Geodetic System 1972", 
+                                                "EPSG", 
+                                                6322, 
+                                                String.Empty,
+                                                "Used by GPS before 1987. For TRANSIT "+
+                                                "satellite positioning " +
+                                                "see also WGS 72BE. Datum code 6323 reserved "+
+                                                "for southern hemisphere projected coordinate "+
+                                                "systems.", 
+                                                String.Empty);
                 return datum;
             }
         }

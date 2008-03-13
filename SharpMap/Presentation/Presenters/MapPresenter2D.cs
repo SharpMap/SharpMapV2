@@ -1291,8 +1291,8 @@ namespace SharpMap.Presentation.Presenters
         {
             if (!extents.IsEmpty)
             {
-                _originProjectionTransform.OffsetX = -extents.Left;
-                _originProjectionTransform.OffsetY = extents.Bottom;
+                _originProjectionTransform.OffsetX = -extents.XMin;
+                _originProjectionTransform.OffsetY = extents.YMin;
             }
         }
 

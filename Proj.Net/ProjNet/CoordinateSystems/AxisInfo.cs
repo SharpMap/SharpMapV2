@@ -25,6 +25,7 @@ namespace ProjNet.CoordinateSystems
     /// <summary>
     /// Details of axis. This is used to label axes, and indicate the orientation.
     /// </summary>
+    // TODO: why doesn't this implement IInfo?
     public class AxisInfo : IAxisInfo
     {
         private readonly String _name;
@@ -35,7 +36,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="name">Name of axis</param>
         /// <param name="orientation">Axis orientation</param>
-        public AxisInfo(String name, AxisOrientation orientation)
+        public AxisInfo(AxisOrientation orientation, String name)
         {
             _name = name;
             _orientation = orientation;

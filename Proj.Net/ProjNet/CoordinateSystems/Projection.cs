@@ -38,8 +38,8 @@ namespace ProjNet.CoordinateSystems
         private readonly String _className;
 
         internal Projection(String className, IEnumerable<ProjectionParameter> parameters,
-                            String name, String authority, long code, String alias,
-                            String remarks, String abbreviation)
+                            String name, String authority, Int64 code, String alias,
+                            String abbreviation, String remarks)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
             _parameters = new List<ProjectionParameter>(parameters);

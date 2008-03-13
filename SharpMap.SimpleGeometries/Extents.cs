@@ -286,7 +286,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Gets the left boundary.
         /// </summary>
-        public Double Left
+        public Double XMin
         {
             get { return _xMin; }
             private set { _xMin = value; }
@@ -295,7 +295,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Gets the right boundary.
         /// </summary>
-        public Double Right
+        public Double XMax
         {
             get { return _xMax; }
             private set { _xMax = value; }
@@ -304,7 +304,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Gets the top boundary.
         /// </summary>
-        public Double Top
+        public Double YMax
         {
             get { return _yMax; }
             private set { _yMax = value; }
@@ -313,7 +313,7 @@ namespace SharpMap.SimpleGeometries
         /// <summary>
         /// Gets the bottom boundary.
         /// </summary>
-        public Double Bottom
+        public Double YMin
         {
             get { return _yMin; }
             private set { _yMin = value; }
@@ -389,7 +389,7 @@ namespace SharpMap.SimpleGeometries
         /// </returns>
         public Boolean Borders(Extents extents, Tolerance tolerance)
         {
-            return Left == extents.Left || Bottom == extents.Bottom || Right == extents.Right || Top == extents.Top;
+            return XMin == extents.XMin || YMin == extents.YMin || XMax == extents.XMax || YMax == extents.YMax;
         }
 
         #endregion Borders
@@ -437,10 +437,10 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            return tolerance.LessOrEqual(Left, extents2D.Left) &&
-                   tolerance.GreaterOrEqual(Top, extents2D.Top) &&
-                   tolerance.GreaterOrEqual(Right, extents2D.Right) &&
-                   tolerance.LessOrEqual(Bottom, extents2D.Bottom);
+            return tolerance.LessOrEqual(XMin, extents2D.XMin) &&
+                   tolerance.GreaterOrEqual(YMax, extents2D.YMax) &&
+                   tolerance.GreaterOrEqual(XMax, extents2D.XMax) &&
+                   tolerance.LessOrEqual(YMin, extents2D.YMin);
         }
 
         /// <summary>
@@ -475,19 +475,19 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            if (tolerance.Less(Right, p.X))
+            if (tolerance.Less(XMax, p.X))
             {
                 return false;
             }
-            if (tolerance.Greater(Left, p.X))
+            if (tolerance.Greater(XMin, p.X))
             {
                 return false;
             }
-            if (tolerance.Less(Top, p.Y))
+            if (tolerance.Less(YMax, p.Y))
             {
                 return false;
             }
-            if (tolerance.Greater(Bottom, p.Y))
+            if (tolerance.Greater(YMin, p.Y))
             {
                 return false;
             }
@@ -674,10 +674,10 @@ namespace SharpMap.SimpleGeometries
             }
 
             return Contains(b) ||
-                   !(tolerance.GreaterOrEqual(b.GetMin(Ordinates.X), Right) ||
-                     tolerance.LessOrEqual(b.GetMax(Ordinates.X), Left) ||
-                     tolerance.LessOrEqual(b.GetMax(Ordinates.Y), Bottom) ||
-                     tolerance.GreaterOrEqual(b.GetMin(Ordinates.Y), Top));
+                   !(tolerance.GreaterOrEqual(b.GetMin(Ordinates.X), XMax) ||
+                     tolerance.LessOrEqual(b.GetMax(Ordinates.X), XMin) ||
+                     tolerance.LessOrEqual(b.GetMax(Ordinates.Y), YMin) ||
+                     tolerance.GreaterOrEqual(b.GetMin(Ordinates.Y), YMax));
         }
 
         /// <summary>
@@ -853,10 +853,10 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            return !(tolerance.Greater(extents2D.Left, Right) ||
-                     tolerance.Less(extents2D.Right, Left) ||
-                     tolerance.Less(extents2D.Top, Bottom) ||
-                     tolerance.Greater(extents2D.Bottom, Top));
+            return !(tolerance.Greater(extents2D.XMin, XMax) ||
+                     tolerance.Less(extents2D.XMax, XMin) ||
+                     tolerance.Less(extents2D.YMax, YMin) ||
+                     tolerance.Greater(extents2D.YMin, YMax));
         }
 
         /// <summary>
@@ -979,10 +979,10 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            return tolerance.LessOrEqual(Left, extents.GetMin(Ordinates.X)) &&
-                   tolerance.GreaterOrEqual(Top, extents.GetMax(Ordinates.Y)) &&
-                   tolerance.GreaterOrEqual(Right, extents.GetMax(Ordinates.X)) &&
-                   tolerance.LessOrEqual(Bottom, extents.GetMin(Ordinates.Y));
+            return tolerance.LessOrEqual(XMin, extents.GetMin(Ordinates.X)) &&
+                   tolerance.GreaterOrEqual(YMax, extents.GetMax(Ordinates.Y)) &&
+                   tolerance.GreaterOrEqual(XMax, extents.GetMax(Ordinates.X)) &&
+                   tolerance.LessOrEqual(YMin, extents.GetMin(Ordinates.Y));
         }
 
         /// <summary>
@@ -1027,19 +1027,19 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            if (tolerance.LessOrEqual(Right, p.X))
+            if (tolerance.LessOrEqual(XMax, p.X))
             {
                 return false;
             }
-            if (tolerance.GreaterOrEqual(Left, p.X))
+            if (tolerance.GreaterOrEqual(XMin, p.X))
             {
                 return false;
             }
-            if (tolerance.LessOrEqual(Top, p.Y))
+            if (tolerance.LessOrEqual(YMax, p.Y))
             {
                 return false;
             }
-            if (tolerance.GreaterOrEqual(Bottom, p.Y))
+            if (tolerance.GreaterOrEqual(YMin, p.Y))
             {
                 return false;
             }
@@ -1097,9 +1097,12 @@ namespace SharpMap.SimpleGeometries
         /// Returns the area of the <see cref="Extents"/>.
         /// </summary>
         /// <returns>Area of extents</returns>
-        public Double GetArea()
+        public Double Area
         {
-            return Width * Height;
+            get
+            {
+                return Width * Height;
+            }
         }
 
         /// <summary>
@@ -1129,7 +1132,7 @@ namespace SharpMap.SimpleGeometries
             //}
 
             return
-                (Math.Min(r.Right, Right) - Math.Max(r.Left, Left)) * (Math.Min(r.Top, Top) - Math.Max(r.Bottom, Bottom));
+                (Math.Min(r.XMax, XMax) - Math.Max(r.XMin, XMin)) * (Math.Min(r.YMax, YMax) - Math.Max(r.YMin, YMin));
         }
 
         #endregion
@@ -1155,10 +1158,10 @@ namespace SharpMap.SimpleGeometries
             {
                 return new Extents(
                     _factory,
-                    Math.Min(Left, extents.Left),
-                    Math.Min(Bottom, extents.Bottom),
-                    Math.Max(Right, extents.Right),
-                    Math.Max(Top, extents.Top));
+                    Math.Min(XMin, extents.XMin),
+                    Math.Min(YMin, extents.YMin),
+                    Math.Max(XMax, extents.XMax),
+                    Math.Max(YMax, extents.YMax));
             }
         }
 
@@ -1253,10 +1256,10 @@ namespace SharpMap.SimpleGeometries
         public Extents Grow(Double amountTop, Double amountRight, Double amountBottom, Double amountLeft)
         {
             Extents extents = this; // make a copy
-            extents.Left -= amountLeft;
-            extents.Bottom -= amountBottom;
-            extents.Right += amountRight;
-            extents.Top += amountTop;
+            extents.XMin -= amountLeft;
+            extents.YMin -= amountBottom;
+            extents.XMax += amountRight;
+            extents.YMax += amountTop;
             extents.checkMinMax();
             return extents;
         }
@@ -1294,21 +1297,21 @@ namespace SharpMap.SimpleGeometries
                     "Parameter must be a non-null IExtent2D instance.");
             }
 
-            if (extent2D.Left < Left || IsEmpty)
+            if (extent2D.XMin < XMin || IsEmpty)
             {
-                Left = extent2D.Left;
+                XMin = extent2D.XMin;
             }
-            if (extent2D.Bottom < Bottom || IsEmpty)
+            if (extent2D.YMin < YMin || IsEmpty)
             {
-                Bottom = extent2D.Bottom;
+                YMin = extent2D.YMin;
             }
-            if (extent2D.Right > Right || IsEmpty)
+            if (extent2D.XMax > XMax || IsEmpty)
             {
-                Right = extent2D.Right;
+                XMax = extent2D.XMax;
             }
-            if (extent2D.Top > Top || IsEmpty)
+            if (extent2D.YMax > YMax || IsEmpty)
             {
-                Top = extent2D.Top;
+                YMax = extent2D.YMax;
             }
 
             if (IsEmpty)
@@ -1324,21 +1327,21 @@ namespace SharpMap.SimpleGeometries
         /// <param name="extent"><see cref="Extents"/> to enlarge extents to contain.</param>
         public void ExpandToInclude(Extents extent)
         {
-            if (extent.Left < Left || IsEmpty)
+            if (extent.XMin < XMin || IsEmpty)
             {
-                Left = extent.Left;
+                XMin = extent.XMin;
             }
-            if (extent.Bottom < Bottom || IsEmpty)
+            if (extent.YMin < YMin || IsEmpty)
             {
-                Bottom = extent.Bottom;
+                YMin = extent.YMin;
             }
-            if (extent.Right > Right || IsEmpty)
+            if (extent.XMax > XMax || IsEmpty)
             {
-                Right = extent.Right;
+                XMax = extent.XMax;
             }
-            if (extent.Top > Top || IsEmpty)
+            if (extent.YMax > YMax || IsEmpty)
             {
-                Top = extent.Top;
+                YMax = extent.YMax;
             }
 
             // TODO: check if this is the right behavior... expanding by an empty makes the target empty?
@@ -1371,24 +1374,24 @@ namespace SharpMap.SimpleGeometries
             Double x = coordinate[Ordinates.X];
             Double y = coordinate[Ordinates.Y];
 
-            if (x < Left || IsEmpty)
+            if (x < XMin || IsEmpty)
             {
-                Left = x;
+                XMin = x;
             }
 
-            if (y < Bottom || IsEmpty)
+            if (y < YMin || IsEmpty)
             {
-                Bottom = y;
+                YMin = y;
             }
 
-            if (x > Right || IsEmpty)
+            if (x > XMax || IsEmpty)
             {
-                Right = x;
+                XMax = x;
             }
 
-            if (y > Top || IsEmpty)
+            if (y > YMax || IsEmpty)
             {
-                Top = y;
+                YMax = y;
             }
 
             // TODO: check if this is the right behavior... expanding by an empty makes the target empty?
@@ -1420,27 +1423,27 @@ namespace SharpMap.SimpleGeometries
 
             List<Extents> splits = new List<Extents>(4);
 
-            Extents b1 = new Extents(_factory, Left, point.Y, point.X, Top);
-            Extents b2 = new Extents(_factory, point.X, point.Y, Right, Top);
-            Extents b3 = new Extents(_factory, Left, Bottom, point.X, point.Y);
-            Extents b4 = new Extents(_factory, point.X, Bottom, Right, point.Y);
+            Extents b1 = new Extents(_factory, XMin, point.Y, point.X, YMax);
+            Extents b2 = new Extents(_factory, point.X, point.Y, XMax, YMax);
+            Extents b3 = new Extents(_factory, XMin, YMin, point.X, point.Y);
+            Extents b4 = new Extents(_factory, point.X, YMin, XMax, point.Y);
 
-            if (b1.GetArea() > 0)
+            if (b1.Area > 0)
             {
                 splits.Add(b1);
             }
 
-            if (b2.GetArea() > 0)
+            if (b2.Area > 0)
             {
                 splits.Add(b2);
             }
 
-            if (b3.GetArea() > 0)
+            if (b3.Area > 0)
             {
                 splits.Add(b3);
             }
 
-            if (b4.GetArea() > 0)
+            if (b4.Area > 0)
             {
                 splits.Add(b4);
             }
@@ -1473,8 +1476,8 @@ namespace SharpMap.SimpleGeometries
                 return ret;
             }
 
-            ret += extents.Right < Left ? Math.Pow(Left - extents.Right, 2) : Math.Pow(extents.Left - Right, 2);
-            ret += extents.Top < Bottom ? Math.Pow(Bottom - extents.Top, 2) : Math.Pow(extents.Bottom - Top, 2);
+            ret += extents.XMax < XMin ? Math.Pow(XMin - extents.XMax, 2) : Math.Pow(extents.XMin - XMax, 2);
+            ret += extents.YMax < YMin ? Math.Pow(YMin - extents.YMax, 2) : Math.Pow(extents.YMin - YMax, 2);
 
             //for (UInt32 cIndex = 0; cIndex < 2; cIndex++)
             //{
@@ -1580,10 +1583,10 @@ namespace SharpMap.SimpleGeometries
                 return false;
             }
 
-            return tolerance.Equal(Left, other.Left) &&
-                   tolerance.Equal(Right, other.Right) &&
-                   tolerance.Equal(Top, other.Top) &&
-                   tolerance.Equal(Bottom, other.Bottom);
+            return tolerance.Equal(XMin, other.XMin) &&
+                   tolerance.Equal(XMax, other.XMax) &&
+                   tolerance.Equal(YMax, other.YMax) &&
+                   tolerance.Equal(YMin, other.YMin);
         }
 
         #endregion Equality
@@ -1633,8 +1636,8 @@ namespace SharpMap.SimpleGeometries
 
             return
                 String.Format(CultureInfo.CurrentCulture,
-                              "[BoundingBox] Lower Left: ({0:N}, {1:N}) Upper Right: ({2:N}, {3:N})", Left, Bottom,
-                              Right, Top);
+                              "[BoundingBox] Lower Left: ({0:N}, {1:N}) Upper Right: ({2:N}, {3:N})", XMin, YMin,
+                              XMax, YMax);
         }
 
         #endregion Object Overrides
@@ -1670,10 +1673,10 @@ namespace SharpMap.SimpleGeometries
 
             return new Extents(
                 factory,
-                b1.Left < b2.Left ? b2.Left : b1.Left,
-                b1.Bottom < b2.Bottom ? b2.Bottom : b1.Bottom,
-                b1.Right > b2.Right ? b2.Right : b1.Right,
-                b1.Top > b2.Top ? b2.Top : b1.Top);
+                b1.XMin < b2.XMin ? b2.XMin : b1.XMin,
+                b1.YMin < b2.YMin ? b2.YMin : b1.YMin,
+                b1.XMax > b2.XMax ? b2.XMax : b1.XMax,
+                b1.YMax > b2.YMax ? b2.YMax : b1.YMax);
         }
 
         #endregion Intersection Static Method

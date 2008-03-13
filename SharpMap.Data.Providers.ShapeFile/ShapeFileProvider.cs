@@ -143,16 +143,38 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly Boolean _hasDbf;
         private IGeometryFactory _geoFactory;
         private ICoordinateSystemFactory _coordSysFactory;
+        private ICoordinateTransformation _coordTransform;
         #endregion
 
         #region Object construction and disposal
 
         /// <summary>
-        /// Initializes a ShapeFile data provider without a file-based spatial index.
+        /// Initializes a shapefile data provider.
         /// </summary>
         /// <param name="filename">Path to shapefile (.shp file).</param>
+        /// <param name="geoFactory">The geometry factory to use to create geometries.</param>
+        /// <remarks>
+        /// This constructor creates a <see cref="ShapeFileProvider"/>
+        /// with an in-memory spatial index.
+        /// </remarks>
         public ShapeFileProvider(String filename, IGeometryFactory geoFactory)
-            : this(filename, geoFactory, false) { }
+            : this(filename, geoFactory, null, false) { }
+
+        /// <summary>
+        /// Initializes a shapefile data provider.
+        /// </summary>
+        /// <param name="filename">Path to shapefile (.shp file).</param>
+        /// <param name="geoFactory">The geometry factory to use to create geometries.</param>
+        /// <param name="coordSysFactory">
+        /// The coordinate system factory to use to create spatial reference system objects.
+        /// </param>
+        /// <remarks>
+        /// This constructor creates a <see cref="ShapeFileProvider"/>
+        /// with an in-memory spatial index.
+        /// </remarks>
+        public ShapeFileProvider(String filename, IGeometryFactory geoFactory, 
+            ICoordinateSystemFactory coordSysFactory)
+            : this(filename, geoFactory, coordSysFactory, false) { }
 
         /// <summary>
         /// Initializes a ShapeFile data provider.
@@ -166,10 +188,12 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <param name="filename">Path to shapefile (.shp file).</param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-        public ShapeFileProvider(String filename, IGeometryFactory geoFactory, Boolean fileBasedIndex)
+        public ShapeFileProvider(String filename, IGeometryFactory geoFactory, 
+            ICoordinateSystemFactory coordSysFactory, Boolean fileBasedIndex)
         {
             _filename = filename;
             _geoFactory = geoFactory;
+            _coordSysFactory = coordSysFactory;
 
             if (!File.Exists(filename))
             {
@@ -275,8 +299,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <returns>A String with the Name, HasDbf, FeatureCount and Extents values.</returns>
         public override String ToString()
         {
-            return String.Format("[ShapeFile] Name: {0}; HasDbf: {1}; Features: {2}; Extents: {3}",
-                                 ConnectionId, HasDbf, GetFeatureCount(), GetExtents());
+            return String.Format("Name: {0}; HasDbf: {1}; "+
+                                 "Features: {2}; Extents: {3}",
+                                 ConnectionId, HasDbf, 
+                                 GetFeatureCount(), GetExtents());
         }
 
         #endregion
@@ -292,7 +318,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="layerName">Name of the shapefile.</param>
         /// <param name="type">Type of shape to store in the shapefile.</param>
         /// <returns>A ShapeFile instance.</returns>
-        public static ShapeFileProvider Create(String directory, String layerName, ShapeType type, IGeometryFactory geoFactory)
+        public static ShapeFileProvider Create(String directory, String layerName, 
+                                               ShapeType type, IGeometryFactory geoFactory)
         {
             return Create(directory, layerName, type, null, geoFactory);
         }
@@ -319,12 +346,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
-        public static ShapeFileProvider Create(String directory, String layerName, ShapeType type,
-                                               FeatureDataTable schema, IGeometryFactory geoFactory)
+        public static ShapeFileProvider Create(String directory, String layerName, 
+                                               ShapeType type, FeatureDataTable schema, 
+                                               IGeometryFactory geoFactory)
         {
             if (type == ShapeType.Null)
             {
-                throw new ShapeFileInvalidOperationException("Cannot create a shapefile with a null geometry type");
+                throw new ShapeFileInvalidOperationException(
+                    "Cannot create a shapefile with a null geometry type");
             }
 
             if (String.IsNullOrEmpty(directory) || directory.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
@@ -354,7 +383,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
-                                               ShapeType type, FeatureDataTable model, IGeometryFactory geoFactory)
+                                               ShapeType type, FeatureDataTable model, 
+                                               IGeometryFactory geoFactory)
         {
             CultureInfo culture = Thread.CurrentThread.CurrentCulture;
             Encoding encoding = Encoding.GetEncoding(culture.TextInfo.OEMCodePage);
@@ -384,8 +414,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
-        public static ShapeFileProvider Create(DirectoryInfo directory, String layerName, ShapeType type,
-                                               FeatureDataTable model, CultureInfo culture, Encoding encoding,
+        public static ShapeFileProvider Create(DirectoryInfo directory, String layerName, 
+                                               ShapeType type, FeatureDataTable model, 
+                                               CultureInfo culture, Encoding encoding,
                                                IGeometryFactory geoFactory)
         {
             if (String.IsNullOrEmpty(layerName))
@@ -662,8 +693,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public ICoordinateTransformation CoordinateTransformation
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return _coordTransform; }
+            set { _coordTransform = value; }
         }
 
         /// <summary>
@@ -2357,11 +2388,19 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         private void parseProjection()
         {
-            String projfile =
-                Path.Combine(Path.GetDirectoryName(Filename), Path.GetFileNameWithoutExtension(Filename) + ".prj");
+            String projfile = Path.Combine(
+                Path.GetDirectoryName(Filename), 
+                Path.GetFileNameWithoutExtension(Filename) + ".prj");
 
             if (File.Exists(projfile))
             {
+                if (_coordSysFactory == null)
+                {
+                    throw new InvalidOperationException(
+                        "A projection is defined for this shapefile," +
+                        " but no CoordinateSystemFactory was set.");
+                }
+
                 try
                 {
                     String wkt = File.ReadAllText(projfile);
@@ -2372,7 +2411,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 catch (ArgumentException ex)
                 {
                     Trace.TraceWarning("Coordinate system file '" + projfile
-                                       + "' found, but could not be parsed. WKT parser returned:" + ex.Message);
+                                       + "' found, but could not be parsed. "+
+                                       "WKT parser returned:" + ex.Message);
 
                     throw new ShapeFileIsInvalidException("Invalid .prj file", ex);
                 }

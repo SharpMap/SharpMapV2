@@ -52,7 +52,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         /// <param name="name">Name of unit</param>
         /// <param name="conversionFactor">Conversion factor to base unit</param>
-        protected internal Unit(String name, Double conversionFactor)
+        protected internal Unit(Double conversionFactor, String name)
             : this(conversionFactor, name, String.Empty, -1, String.Empty, String.Empty, String.Empty) {}
 
         /// <summary>

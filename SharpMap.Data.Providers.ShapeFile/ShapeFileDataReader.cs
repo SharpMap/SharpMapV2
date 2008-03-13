@@ -245,7 +245,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		public Int64 GetBytes(Int32 i, Int64 fieldOffset, Byte[] buffer, Int32 bufferoffset, Int32 length)
 		{
-			throw new NotImplementedException();
+            throw new NotSupportedException();
 		}
 
 		public Char GetChar(Int32 i)
@@ -258,7 +258,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		public Int64 GetChars(Int32 i, Int64 fieldoffset, Char[] buffer, Int32 bufferoffset, Int32 length)
 		{
-			throw new NotImplementedException();
+            throw new NotSupportedException();
 		}
 
 		public IDataReader GetData(Int32 i)
@@ -267,8 +267,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 
 		public String GetDataTypeName(Int32 i)
-		{
-			throw new NotImplementedException();
+        {
+            checkState();
+            checkIndex(i);
+
+		    return GetFieldType(i).Name;
 		}
 
 		public DateTime GetDateTime(Int32 i)
@@ -288,13 +291,19 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 
 		public Double GetDouble(Int32 i)
-		{
-			throw new NotImplementedException();
+        {
+            checkState();
+            checkIndex(i);
+
+            return Convert.ToDouble(_currentFeature[i]);
 		}
 
 		public Type GetFieldType(Int32 i)
-		{
-			throw new NotImplementedException();
+        {
+            checkState();
+            checkIndex(i);
+
+		    return _currentFeature[i].GetType();
 		}
 
 		public Single GetFloat(Int32 i)
@@ -306,8 +315,33 @@ namespace SharpMap.Data.Providers.ShapeFile
 		}
 
 		public Guid GetGuid(Int32 i)
-		{
-			throw new NotImplementedException();
+        {
+            checkState();
+            checkIndex(i);
+
+		    Object feature = _currentFeature[i];
+
+            if (feature is Guid)
+            {
+                return (Guid)feature;
+            }
+
+		    String featureAsString = feature as String;
+
+            if (featureAsString != null)
+            {
+                return new Guid(featureAsString);
+            }
+            
+            Byte[] featureAsBytes = feature as Byte[];
+
+            if (featureAsBytes != null)
+            {
+                return new Guid(featureAsBytes);
+            }
+
+		    throw new InvalidCastException(
+                String.Format("Invalid cast from '{0}' to 'Guid'", feature.GetType()));
 		}
 
 		public Int16 GetInt16(Int32 i)

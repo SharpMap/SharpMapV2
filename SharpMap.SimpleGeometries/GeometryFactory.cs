@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
+using GeoAPI.IO.WellKnownBinary;
+using GeoAPI.IO.WellKnownText;
 using GeoAPI.Utilities;
 using SharpMap.SimpleGeometries.Geometries3D;
 using GeoAPI.DataStructures;
@@ -16,6 +18,10 @@ namespace SharpMap.SimpleGeometries
         private Int32? _srid;
         private ICoordinateSystem _spatialReference;
         private BoundingBoxSpatialOperations _spatialOps;
+        private IWktGeometryEncoder _wktEncoder;
+        private IWktGeometryDecoder _wktDecoder;
+        private IWkbEncoder _wkbEncoder;
+        private IWkbDecoder _wkbDecoder;
 
         public GeometryFactory(ICoordinateFactory coordFactory, ICoordinateSequenceFactory sequenceFactory)
             : this(coordFactory, sequenceFactory, null, null) { }
@@ -30,6 +36,10 @@ namespace SharpMap.SimpleGeometries
             _srid = srid;
             _spatialReference = spatialReference;
             _spatialOps = new BoundingBoxSpatialOperations(this);
+            _wktEncoder = new WktEncoder();
+            _wktDecoder = new WktDecoder(this, null);
+            _wkbEncoder = new WkbEncoder();
+            _wkbDecoder = new WkbDecoder(this);
         }
 
         internal BoundingBoxSpatialOperations SpatialOps
@@ -428,11 +438,6 @@ namespace SharpMap.SimpleGeometries
             throw new NotSupportedException();
         }
 
-        #endregion
-
-        #region IGeometryFactory Members
-
-
         public IPolygon CreatePolygon(ICoordinateSequence coordinates)
         {
             throw new NotImplementedException();
@@ -443,6 +448,29 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
+        public IWktGeometryEncoder WktEncoder
+        {
+            get { return _wktEncoder; }
+            set { _wktEncoder = value; }
+        }
+
+        public IWktGeometryDecoder WktDecoder
+        {
+            get { return _wktDecoder; }
+            set { _wktDecoder = value; }
+        }
+
+        public IWkbEncoder WkbEncoder
+        {
+            get { return _wkbEncoder; }
+            set { _wkbEncoder = value; }
+        }
+
+        public IWkbDecoder WkbDecoder
+        {
+            get { return _wkbDecoder; }
+            set { _wkbDecoder = value; }
+        }
         #endregion
     }
 }

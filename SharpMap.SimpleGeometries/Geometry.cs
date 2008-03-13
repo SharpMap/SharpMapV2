@@ -235,11 +235,11 @@ namespace SharpMap.SimpleGeometries
 
         private IEnumerable<ICoordinate> getBoundCoordinates(Extents box)
         {
-            yield return Factory.CoordinateFactory.Create(box.Left, box.Bottom);    //minx miny
-            yield return Factory.CoordinateFactory.Create(box.Right, box.Bottom);   //maxx miny
-            yield return Factory.CoordinateFactory.Create(box.Right, box.Top);      //maxx maxy
-            yield return Factory.CoordinateFactory.Create(box.Left, box.Top);       //minx maxy
-            yield return Factory.CoordinateFactory.Create(box.Left, box.Bottom);    //close ring
+            yield return Factory.CoordinateFactory.Create(box.XMin, box.YMin);    //minx miny
+            yield return Factory.CoordinateFactory.Create(box.XMax, box.YMin);   //maxx miny
+            yield return Factory.CoordinateFactory.Create(box.XMax, box.YMax);      //maxx maxy
+            yield return Factory.CoordinateFactory.Create(box.XMin, box.YMax);       //minx maxy
+            yield return Factory.CoordinateFactory.Create(box.XMin, box.YMin);    //close ring
         }
 
         /// <summary>
