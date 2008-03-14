@@ -435,7 +435,7 @@ namespace SharpMap.SimpleGeometries
             get { return _interiorRings.Count; }
         }
 
-        IList<ILineString> IPolygon.InteriorRings
+        IEnumerable<ILineString> IPolygon.InteriorRings
         {
             get
             {

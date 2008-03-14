@@ -1726,7 +1726,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     /* NumPoints and NumParts integers */
                             +
                             4 *
-                            ((geometry as IPolygon).InteriorRings.Count + 1
+                            ((geometry as IPolygon).InteriorRingsCount + 1
                     /* Parts array of rings: count of interior + 1 for exterior ring */)
                             + 16 * pointCount;
             }
