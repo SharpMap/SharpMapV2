@@ -933,7 +933,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else
             {
-                throw new NotImplementedException("Allow shapefile provider to be created without an index. [workitem:13025]");
+                throw new NotImplementedException(
+                    "Allow shapefile provider to be created without an index. [workitem:13025]");
             }
 
             FeatureDataTable<UInt32> result = getNewTable();
@@ -942,16 +943,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             foreach (UInt32 oid in oidList)
             {
-                FeatureDataRow<UInt32> fdr = getFeature(oid, result);
+                FeatureDataRow<UInt32> feature = getFeature(oid, result);
 
-                if (fdr.Geometry != null)
+                if (feature.Geometry != null)
                 {
-                    // TODO: Beta 2 - replace following line with:  if(fdr.Geometry.Intersects(bbox)). Currently always true.
-                    if (fdr.Geometry.Intersects(extentGeometry))
+                    if (feature.Geometry.Intersects(extentGeometry))
                     {
-                        if (Filter == null || Filter(fdr))
+                        if (Filter == null || Filter(feature))
                         {
-                            result.AddRow(fdr);
+                            result.AddRow(feature);
                         }
                     }
                 }
@@ -987,7 +987,22 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table)
         {
-            throw new NotImplementedException();
+            if (geometry == null) throw new ArgumentNullException("geometry");
+
+            FeatureDataTable<UInt32> result = getNewTable();
+
+            foreach (IdBounds bounds in _spatialIndex.Query(geometry.Extents))
+            {
+                // not sure of the best way to do this: get geometry and check it 
+                // or get feature and check it. Need to measure.
+                if (geometry.Intersects(GetGeometryById(bounds.Id)))
+                {
+                    FeatureDataRow<UInt32> feature = getFeature(bounds.Id, result);
+                    result.AddRow(feature);
+                }
+            }
+
+            table.Merge(result, true);
         }
 
         public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table, QueryExecutionOptions options)
@@ -1960,12 +1975,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         private ISpatialIndex<IExtents, IdBounds> createSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
-            Func<UInt32, IExtents> bounder = delegate(UInt32 item)
-            {
-                return GetGeometryById(item).Extents;
-            };
-
-            // TODO: implement Post-optimization restructure strategy
             IIndexRestructureStrategy<IExtents, IdBounds> restructureStrategy = new NullRestructuringStrategy<IExtents, IdBounds>();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
             IItemInsertStrategy<IExtents, IdBounds> insertStrategy = new GuttmanQuadraticInsert<IdBounds>(_geoFactory);
@@ -1982,22 +1991,20 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                                                 indexHeuristic,
                                                                                 idleMonitor);
 
-            for (UInt32 i = 0; i < (UInt32)GetFeatureCount(); i++)
+            UInt32 featureCount = (UInt32) GetFeatureCount();
+
+            for (UInt32 i = 0; i < featureCount; i++)
             {
                 IGeometry geom = readGeometry(i);
 
-                if (geom == null)
+                if (geom == null || geom.IsEmpty)
                 {
                     continue;
                 }
 
                 IExtents extents = geom.Extents;
 
-                if (!Double.IsNaN(extents.GetMin(Ordinates.X)) && !Double.IsNaN(extents.GetMax(Ordinates.X)) &&
-                    !Double.IsNaN(extents.GetMin(Ordinates.Y)) && !Double.IsNaN(extents.GetMax(Ordinates.Y)))
-                {
-                    index.Insert(new IdBounds(i, extents));
-                }
+                index.Insert(new IdBounds(i, extents));
             }
 
             return index;

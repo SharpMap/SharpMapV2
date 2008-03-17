@@ -213,10 +213,11 @@ namespace ProjNet.CoordinateSystems
 
             for (Int32 i = 0; i < p.Dimension; i++)
             {
-                if (p.GetAxis(i).Orientation != GetAxis(i).Orientation)
+                if (p.AxisInfo[i].Orientation != AxisInfo[i].Orientation)
                 {
                     return false;
                 }
+
                 if (!p.GetUnits(i).EqualParams(GetUnits(i)))
                 {
                     return false;

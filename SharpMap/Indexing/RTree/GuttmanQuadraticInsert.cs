@@ -16,6 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
@@ -43,6 +45,7 @@ namespace SharpMap.Indexing.RTree
 
         #region IItemInsertStrategy Members
 
+        //private Int32 _tempSplitCount = 0;
         public void Insert(IExtents bounds, 
                            TItem entry, 
                            ISpatialIndexNode<IExtents, TItem> node, 
@@ -52,49 +55,50 @@ namespace SharpMap.Indexing.RTree
         {
             newSiblingFromSplit = null;
 
+            // Terminating case
             if (node.IsLeaf)
             {
                 node.AddItem(entry);
 
+                // Handle node overflow
                 if (node.ItemCount > heuristic.NodeItemMaximumCount)
                 {
+                    // Split the node using the given strategy
                     newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
+
+                    //if (++_tempSplitCount % 100 == 0)
+                    //{
+                    //    Debug.Print("Node split # {0}", _tempSplitCount);
+                    //}
                 }
             }
             else
             {
-                Double leastExpandedArea = Double.PositiveInfinity;
+                // NOTE: Descending the tree recursively here
+                // can make for a very expensive build of a tree, 
+                // even for moderate amounts of data.
 
-                ISpatialIndexNode<IExtents, TItem> leastExpandedChild = null;
+                Double leastExpandedArea = Double.MaxValue;
+                Double leastExpandedChildArea = Double.MaxValue;
 
-                foreach (ISpatialIndexNode<IExtents, TItem> child in node.Children)
-                {
-                    IExtents childBounds = child.Bounds;
-                    IExtents candidateRegion = _geoFactory.CreateExtents(childBounds, bounds);
-                   
-                    Double candidateRegionArea = candidateRegion.GetSize(Ordinates.X, Ordinates.Y);
-                    Double childArea = childBounds.GetSize(Ordinates.X, Ordinates.Y);
-                    Double expandedArea = candidateRegionArea - childArea;
+                ComputationExtents currentBounds = new ComputationExtents(bounds);
 
-                    if (expandedArea < leastExpandedArea)
-                    {
-                        leastExpandedChild = child;
-                        leastExpandedArea = expandedArea;
-                    }
-                    else if (leastExpandedChild == null || (expandedArea == leastExpandedArea
-                            && childArea < leastExpandedChild.Bounds.GetSize(Ordinates.X, Ordinates.Y)))
-                    {
-                        leastExpandedChild = child;
-                    }
-                }
+                ISpatialIndexNode<IExtents, TItem> leastExpandedChild;
+                leastExpandedChild = findLeastExpandedChild(node.Children, 
+                                                            currentBounds, 
+                                                            leastExpandedArea, 
+                                                            leastExpandedChildArea);
+
+                Debug.Assert(leastExpandedChild != null);
 
                 // Found least expanded child node - insert into it
-                Insert(bounds, entry, leastExpandedChild, nodeSplitStrategy, heuristic, out newSiblingFromSplit);
+                Insert(bounds, entry, leastExpandedChild, nodeSplitStrategy, 
+                    heuristic, out newSiblingFromSplit);
 
                 RTreeNode<TItem> rNode = node as RTreeNode<TItem>;
 
                 // Adjust this node...
-                rNode.Bounds = _geoFactory.CreateExtents(leastExpandedChild.Bounds, node.Bounds);
+                rNode.Bounds.ExpandToInclude(bounds);
                 
                 // Check for overflow and add to current node if it occured
                 if (newSiblingFromSplit != null)
@@ -103,7 +107,8 @@ namespace SharpMap.Indexing.RTree
                     node.AddChild(newSiblingFromSplit);
                     newSiblingFromSplit = null;
 
-                    // Split the current node, since the child count is too high, and return the split to the caller
+                    // Split the current node, since the child count is too high, 
+                    // and return the split to the caller
                     if (node.ItemCount > heuristic.NodeItemMaximumCount)
                     {
                         newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
@@ -111,6 +116,40 @@ namespace SharpMap.Indexing.RTree
                 }
             }
         }
+
+        private static ISpatialIndexNode<IExtents, TItem> findLeastExpandedChild(
+            IEnumerable<ISpatialIndexNode<IExtents, TItem>> children, 
+            ComputationExtents currentBounds, Double leastExpandedArea, 
+            Double leastExpandedChildArea) 
+        {
+            ISpatialIndexNode<IExtents, TItem> leastExpandedChild = null;
+
+            foreach (ISpatialIndexNode<IExtents, TItem> child in children)
+            {
+                ComputationExtents childBounds = new ComputationExtents(child.Bounds);
+                ComputationExtents candidateRegion = childBounds.Union(currentBounds);
+                   
+                Double candidateRegionArea = candidateRegion.Area;
+                Double childArea = childBounds.Area;
+                Double expandedArea = candidateRegionArea - childArea;
+
+                if (expandedArea < leastExpandedArea)
+                {
+                    leastExpandedChild = child;
+                    leastExpandedChildArea = childArea;
+                    leastExpandedArea = expandedArea;
+                }
+                else if (expandedArea == leastExpandedArea 
+                         && childArea < leastExpandedChildArea)
+                {
+                    leastExpandedChild = child;
+                    leastExpandedChildArea = childArea;
+                }
+            }
+
+            return leastExpandedChild;
+        }
+
         #endregion
 
     }

@@ -132,6 +132,7 @@
     <Compile Include="Expressions\FeatureSpatialExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialExpressionType.cs" />
+    <Compile Include="Indexing\RTree\ComputationExtents.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
     <Compile Include="Indexing\RTree\RTreeNode.cs" />

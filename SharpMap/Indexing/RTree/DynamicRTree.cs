@@ -22,7 +22,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
 
@@ -139,17 +138,23 @@ namespace SharpMap.Indexing.RTree
         {
             ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit;
 
-            ItemInsertStrategy.Insert(item.Bounds, item, Root, _nodeSplitStrategy, Heuristic, out newSiblingFromSplit);
+            //printItemCount();
+
+            ItemInsertStrategy.Insert(item.Bounds, item, Root, 
+                                      _nodeSplitStrategy, Heuristic, 
+                                      out newSiblingFromSplit);
 
             if (newSiblingFromSplit == null)
             {
                 return;
             }
 
+            //Debug.Print("Node was split.");
+
             // Add the newly split sibling
             if (newSiblingFromSplit.IsLeaf)
             {
-                if (Root.IsLeaf)
+                if (Root.IsLeaf)    // handle the first splitting of the root node.
                 {
                     RTreeNode<TItem> oldRoot = Root as RTreeNode<TItem>;
                     Root = CreateNode();
@@ -378,5 +383,15 @@ namespace SharpMap.Indexing.RTree
 
         #endregion
 
+        [Conditional("DEBUG")]
+        private void printItemCount()
+        {
+            Int32 count = Root.TotalItems;
+
+            if (count % 100 == 0)
+            {
+                Debug.Print("Inserting item # {0}", count);
+            }
+        }
     }
 }

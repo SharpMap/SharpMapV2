@@ -112,7 +112,7 @@ namespace SharpMap.Indexing
             }
 
             _items.Add(item);
-            Bounds = Bounds.Union(item.Bounds);
+            Bounds.ExpandToInclude(item.Bounds);
 
             OnItemAdded(item);
         }

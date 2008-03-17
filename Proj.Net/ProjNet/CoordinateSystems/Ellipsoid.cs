@@ -90,9 +90,14 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(6378137, 0, 298.257223563, true, LinearUnit.Meter, "WGS 84", "EPSG", 7030, "WGS84", "",
-                                  "Inverse flattening derived from four defining parameters (semi-major axis; C20 = -484.16685*10e-6; earth's angular velocity w = 7292115e11 rad/sec; gravitational constant GM = 3986005e8 m*m*m/s/s).");
+                return new Ellipsoid(6378137, 0, 298.257223563, 
+                                     true, LinearUnit.Meter, "WGS 84", 
+                                     "EPSG", 7030, "WGS84", String.Empty,
+                                     "Inverse flattening derived from four defining "+
+                                     "parameters (semi-major axis; "+
+                                     "C20 = -484.16685*10e-6; earth's angular velocity "+
+                                     "w = 7292115e11 rad/sec; gravitational constant "+
+                                     "GM = 3986005e8 m*m*m/s/s).");
             }
         }
 
@@ -103,9 +108,10 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(6378135.0, 0, 298.26, true, LinearUnit.Meter, "WGS 72", "EPSG", 7043, "WGS 72",
-                                  String.Empty, String.Empty);
+                return new Ellipsoid(6378135.0, 0, 298.26, 
+                                     true, LinearUnit.Meter, 
+                                     "WGS 72", "EPSG", 7043, "WGS 72",
+                                     String.Empty, String.Empty);
             }
         }
 
@@ -122,10 +128,15 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(6378137, 0, 298.257222101, true, LinearUnit.Meter, "GRS 1980", "EPSG", 7019,
-                                  "International 1979", "",
-                                  "Adopted by IUGG 1979 Canberra.  Inverse flattening is derived from geocentric gravitational constant GM = 3986005e8 m*m*m/s/s; dynamic form factor J2 = 108263e8 and Earth's angular velocity = 7292115e-11 rad/s.");
+                return new Ellipsoid(6378137, 0, 298.257222101,
+                                     true, LinearUnit.Meter,
+                                     "GRS 1980", "EPSG", 7019,
+                                     "International 1979", String.Empty,
+                                     "Adopted by IUGG 1979 Canberra.  " +
+                                     "Inverse flattening is derived from geocentric " +
+                                     "gravitational constant GM = 3986005e8 m*m*m/s/s; " +
+                                     "dynamic form factor J2 = 108263e8 and Earth's " +
+                                     "angular velocity = 7292115e-11 rad/s.");
             }
         }
 
@@ -141,10 +152,15 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(6378388, 0, 297, true, LinearUnit.Meter, "International 1924", "EPSG", 7022,
-                                  "Hayford 1909", String.Empty,
-                                  "Described as a=6378388 m. and b=6356909 m. from which 1/f derived to be 296.95926. The figure was adopted as the International ellipsoid in 1924 but with 1/f taken as 297 exactly from which b is derived as 6356911.946m.");
+                return new Ellipsoid(6378388, 0, 297,
+                                     true, LinearUnit.Meter,
+                                     "International 1924", "EPSG", 7022,
+                                     "Hayford 1909", String.Empty,
+                                     "Described as a=6378388 m. and b=6356909 m. " +
+                                     "from which 1/f derived to be 296.95926. The " +
+                                     "figure was adopted as the International ellipsoid " +
+                                     "in 1924 but with 1/f taken as 297 exactly from " +
+                                     "which b is derived as 6356911.946m.");
             }
         }
 
@@ -158,10 +174,13 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(20926202, 0, 297, true, LinearUnit.ClarkesFoot, "Clarke 1880", "EPSG", 7034,
-                                  "Clarke 1880", String.Empty,
-                                  "Clarke gave a and b and also 1/f=293.465 (to 3 decimal places).  1/f derived from a and b = 293.4663077…");
+                return new Ellipsoid(20926202, 0, 297,
+                                     true, LinearUnit.ClarkesFoot,
+                                     "Clarke 1880", "EPSG", 7034,
+                                     "Clarke 1880", String.Empty,
+                                     "Clarke gave a and b and also 1/f=293.465 " +
+                                     "(to 3 decimal places).  1/f derived from a " +
+                                     "and b = 293.4663077…");
             }
         }
 
@@ -175,10 +194,15 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity, false, LinearUnit.Meter, "Clarke 1866",
-                                  "EPSG", 7008, "Clarke 1866", String.Empty,
-                                  "Original definition a=20926062 and b=20855121 (British) feet. Uses Clarke's 1865 inch-metre ratio of 39.370432 to obtain metres. (Metric value then converted to US survey feet for use in the United States using 39.37 exactly giving a=20925832.16 ft US).");
+                return new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity,
+                                     false, LinearUnit.Meter, "Clarke 1866",
+                                     "EPSG", 7008, "Clarke 1866", String.Empty,
+                                     "Original definition a=20926062 and b=20855121 " +
+                                     "(British) feet. Uses Clarke's 1865 inch-metre " +
+                                     "ratio of 39.370432 to obtain metres. (Metric " +
+                                     "value then converted to US survey feet for " +
+                                     "use in the United States using 39.37 exactly " +
+                                     "giving a=20925832.16 ft US).");
             }
         }
 
@@ -193,10 +217,13 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity, false, LinearUnit.Meter,
-                                  "GRS 1980 Authalic Sphere", "EPSG", 7048, "Sphere", "",
-                                  "Authalic sphere derived from GRS 1980 ellipsoid (code 7019).  (An authalic sphere is one with a surface area equal to the surface area of the ellipsoid). 1/f is infinite.");
+                return new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity,
+                                     false, LinearUnit.Meter, "GRS 1980 Authalic Sphere",
+                                     "EPSG", 7048, "Sphere", String.Empty,
+                                     "Authalic sphere derived from GRS 1980 ellipsoid " +
+                                     "(code 7019).  (An authalic sphere is one with a " +
+                                     "surface area equal to the surface area of the " +
+                                     "ellipsoid). 1/f is infinite.");
             }
         }
 
@@ -256,8 +283,10 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 StringBuilder sb = new StringBuilder();
+
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
-                                "SPHEROID[\"{0}\", {1}, {2}", Name, SemiMajorAxis, InverseFlattening);
+                                "SPHEROID[\"{0}\", {1}, {2}", Name, SemiMajorAxis, 
+                                InverseFlattening);
 
                 if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
                 {
