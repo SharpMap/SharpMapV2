@@ -172,7 +172,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         }
 
         [Test]
-        public void NoPrjFileSetCoordinateSystemTest()
+        public void NoPrjFileThenSetCoordinateSystemGivesSpatialRefToGeometries()
         {
             //Layer name: BCROADSWithoutDbf
             //Geometry: Line String
@@ -428,8 +428,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
 
             IGeometry empty = _geoFactory.CreatePoint();
-            List<IGeometry> geometries =
-                new List<IGeometry>(shapeFile.ExecuteGeometryIntersectionQuery(empty));
+            new List<IGeometry>(shapeFile.ExecuteGeometryIntersectionQuery(empty));
         }
 
         [Test]
@@ -542,7 +541,6 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             Assert.AreEqual(0, shapeFile.Srid);
             shapeFile.Close();
 
-
             shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP", _geoFactory);
             shapeFile.Open();
             Assert.AreEqual(-1, shapeFile.Srid);
@@ -582,7 +580,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
 
             FeatureDataSet dataSet = new FeatureDataSet("ShapeFile test", _geoFactory);
 
-            shapeFile.ExecuteIntersectionQuery(_geoFactory.CreateExtents2D(1, 1, 1, 1), dataSet);
+            shapeFile.ExecuteIntersectionQuery(_geoFactory.CreateExtents2D(0.9, 0.9, 1, 1), dataSet);
 
             Assert.AreEqual(1, dataSet.Tables.Count);
             Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
@@ -695,7 +693,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             IEllipsoid grs80 = Ellipsoid.Grs80;
 
             IHorizontalDatum harn = factory.CreateHorizontalDatum(
-                DatumType.HorizontalClassic, grs80, null, "D_North_American_1983_HARN");
+                DatumType.HorizontalGeocentric, grs80, null, 
+                "D_North_American_1983_HARN");
 
             IPrimeMeridian greenwich = PrimeMeridian.Greenwich;
 

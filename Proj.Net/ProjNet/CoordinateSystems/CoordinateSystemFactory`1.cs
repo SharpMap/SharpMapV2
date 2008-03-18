@@ -290,14 +290,11 @@ namespace ProjNet.CoordinateSystems
                                                 ILinearUnit linearUnit,
                                                 String name)
         {
-            if (String.IsNullOrEmpty(name))
-            {
-                throw new ArgumentException("Invalid name");
-            }
 
-            return new Ellipsoid(semiMajorAxis, -1, inverseFlattening, true,
-                                 linearUnit, name, String.Empty, -1, String.Empty,
-                                 String.Empty, String.Empty);
+            return CreateFlattenedSphere(semiMajorAxis, inverseFlattening,
+                                         linearUnit, name, String.Empty, 
+                                         -1, String.Empty, String.Empty, 
+                                         String.Empty);
         }
 
         public IEllipsoid CreateFlattenedSphere(Double semiMajorAxis,
@@ -310,7 +307,12 @@ namespace ProjNet.CoordinateSystems
                                                 String abbreviation,
                                                 String remarks)
         {
-            return new Ellipsoid(semiMajorAxis, 0, inverseFlattening, false, linearUnit,
+            if (String.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Invalid name");
+            }
+
+            return new Ellipsoid(semiMajorAxis, 0, inverseFlattening, true, linearUnit,
                                  name, authority, authorityCode, alias, abbreviation,
                                  remarks);
         }
@@ -705,7 +707,6 @@ namespace ProjNet.CoordinateSystems
 
             List<ProjectionParameter> paramList
                 = new List<ProjectionParameter>(parameters);
-            paramList.AddRange(parameters);
 
             if (paramList.Count == 0)
             {

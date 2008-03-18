@@ -745,6 +745,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
 
                 _coordinateSystem = value;
+                _geoFactory.SpatialReference = value;
             }
         }
 
@@ -827,18 +828,21 @@ namespace SharpMap.Data.Providers.ShapeFile
         public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet,
                                                      AsyncCallback callback, object asyncState)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table,
                                                      AsyncCallback callback, object asyncState)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
                                                           AsyncCallback callback, object asyncState)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
@@ -846,12 +850,14 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                           QueryExecutionOptions options, AsyncCallback callback,
                                                           object asyncState)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
                                                           AsyncCallback callback, object asyncState)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
@@ -859,6 +865,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                           QueryExecutionOptions options, AsyncCallback callback,
                                                           object asyncState)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
@@ -884,6 +891,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
@@ -899,6 +907,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
         {
+            checkOpen();
             FeatureDataTable<UInt32> dt = HasDbf
                                             ? _dbaseFile.NewTable
                                             : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
@@ -922,14 +931,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             IExtents extents = query.QueryRegion.Extents;
 
-            IEnumerable<UInt32> oidList;
+            IEnumerable<IFeatureDataRecord> records;
 
             // Get candidates by intersecting the spatial index tree 
             // or enumerating all rows
             if (IsSpatiallyIndexed)
             {
                 IEnumerable<IdBounds> keys = _spatialIndex.Query(extents);
-                oidList = intersectFeatureGeometry(keys, query.QueryRegion);
+                records = intersectFeatureGeometry(keys, query.QueryRegion);
             }
             else
             {
@@ -939,21 +948,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             FeatureDataTable<UInt32> result = getNewTable();
 
-            IGeometry extentGeometry = extents.ToGeometry();
-
-            foreach (UInt32 oid in oidList)
+            foreach (IFeatureDataRecord record in records)
             {
-                FeatureDataRow<UInt32> feature = getFeature(oid, result);
+                FeatureDataRow<UInt32> feature = record as FeatureDataRow<UInt32>;
 
-                if (feature.Geometry != null)
+                Debug.Assert(feature != null);
+
+                if (Filter == null || Filter(feature))
                 {
-                    if (feature.Geometry.Intersects(extentGeometry))
-                    {
-                        if (Filter == null || Filter(feature))
-                        {
-                            result.AddRow(feature);
-                        }
-                    }
+                    result.AddRow(feature);
                 }
             }
 
@@ -962,31 +965,43 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IGeometry geometry)
         {
-            throw new NotImplementedException();
+            checkOpen();
+
+            IEnumerable<IdBounds> ids = _spatialIndex.Query(geometry.Extents);
+
+            foreach (IFeatureDataRecord feature in intersectFeatureGeometry(ids, geometry))
+            {
+                yield return feature.Geometry;
+            }
         }
 
         public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry, QueryExecutionOptions options)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet, QueryExecutionOptions options)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
         public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table)
         {
+            checkOpen();
             if (geometry == null) throw new ArgumentNullException("geometry");
 
             FeatureDataTable<UInt32> result = getNewTable();
@@ -1007,6 +1022,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table, QueryExecutionOptions options)
         {
+            checkOpen();
             throw new NotImplementedException();
         }
 
@@ -1037,7 +1053,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IExtents bounds)
         {
             checkOpen();
-            //enableReading();
 
             foreach (UInt32 oid in GetIntersectingObjectIds(bounds))
             {
@@ -1326,10 +1341,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
 
             IEnumerable<IdBounds> keys = _spatialIndex.Query(bounds);
+            IEnumerable<IFeatureDataRecord> features 
+                = intersectFeatureGeometry(keys, bounds.ToGeometry());
 
-            foreach (UInt32 id in intersectFeatureGeometry(keys, bounds.ToGeometry()))
+            foreach (IFeatureDataRecord feature in features)
             {
-                yield return id;
+                yield return (UInt32)feature.GetOid();
             }
         }
 
@@ -1922,15 +1939,16 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private IEnumerable<UInt32> intersectFeatureGeometry(IEnumerable<IdBounds> keys, IGeometry query)
+        private IEnumerable<IFeatureDataRecord> intersectFeatureGeometry(
+            IEnumerable<IdBounds> keys, IGeometry query)
         {
             foreach (IdBounds key in keys)
             {
-                IGeometry candidate = GetGeometryById(key.Id);
+                IFeatureDataRecord candidate = GetFeature(key.Id);
 
-                if (candidate.Intersects(query))
+                if (query.Intersects(candidate.Geometry))
                 {
-                    yield return key.Id;
+                    yield return candidate;
                 }
             }
         }
@@ -2089,9 +2107,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         private IGeometry readGeometry(UInt32 oid)
         {
             //enableReading();
-            _shapeFileReader.BaseStream.Seek(
-                _shapeFileIndex[oid].AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength,
-                SeekOrigin.Begin);
+            Int32 shapeOffset = _shapeFileIndex[oid].AbsoluteByteOffset 
+                                + ShapeFileConstants.ShapeRecordHeaderByteLength;
+
+            _shapeFileReader.BaseStream.Seek(shapeOffset, SeekOrigin.Begin);
 
             // Shape type is a common value to all geometry
             ShapeType type = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());

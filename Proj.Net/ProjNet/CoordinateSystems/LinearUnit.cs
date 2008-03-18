@@ -56,9 +56,8 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return
-                    new LinearUnit(1.0, "metre", "EPSG", 9001, "m", String.Empty,
-                                   "Also known as International metre. SI standard unit.");
+                return new LinearUnit(1.0, "metre", "EPSG", 9001, "m", String.Empty,
+                                      "Also known as International metre. SI standard unit.");
             }
         }
 

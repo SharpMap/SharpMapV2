@@ -1401,6 +1401,11 @@ namespace SharpMap.SimpleGeometries
             }
         }
 
+        public void ExpandToInclude(ICoordinateSequence sequence)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion ExpandToInclude
 
         #region Split
