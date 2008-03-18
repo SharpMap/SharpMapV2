@@ -58,7 +58,11 @@ namespace SharpMap.Rendering
         /// <param name="isClosed">True to close the path, false to keep it open.</param>
         public Figure(IEnumerable<TPoint> points, Boolean isClosed)
         {
-            _points.AddRange(points);
+            foreach (TPoint point in points)
+            {
+                _points.Add(point);
+            }
+
             IsClosed = isClosed;
         }
 

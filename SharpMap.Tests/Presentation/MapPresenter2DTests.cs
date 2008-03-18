@@ -912,6 +912,7 @@ namespace SharpMap.Tests.Presentation
         public void PanTest()
         {
             TestView2D view;
+            _geoFactory.CoordinateFactory.BitResolution = 24;
             TestPresenter2D mapPresenter = createPresenter(400, 800, out view);
 
             mapPresenter.ZoomToExtents();

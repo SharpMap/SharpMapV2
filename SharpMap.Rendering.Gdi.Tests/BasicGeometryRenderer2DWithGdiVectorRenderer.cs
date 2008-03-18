@@ -9,8 +9,8 @@ using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.SimpleGeometries;
 using SharpMap.Tests;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 
 namespace SharpMap.Rendering.Gdi.Tests
@@ -24,9 +24,9 @@ namespace SharpMap.Rendering.Gdi.Tests
         [SetUp]
         public void Setup()
         {
-            ICoordinateFactory coordFactory = new BufferedCoordinate2DFactory();
-            ICoordinateSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+            ICoordinateSequenceFactory<BufferedCoordinate2D> sequenceFactory 
+                = new BufferedCoordinate2DSequenceFactory();
+            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
         }
 
         [Test]
@@ -77,17 +77,17 @@ namespace SharpMap.Rendering.Gdi.Tests
                                     Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                 }
 
-                                for (Int32 interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
+                                foreach (ILineString interiorRing in p.InteriorRings)
                                 {
                                     iter.NextSubpath(out start, out end, out isClosed);
                                     Assert.IsTrue(isClosed);
-                                    Assert.AreEqual(p.InteriorRings[interiorIndex].Coordinates.Count, end - start + 1);
+                                    Assert.AreEqual(interiorRing.PointCount, end - start + 1);
 
                                     for (Int32 vertexIndex = 0;
-                                         vertexIndex < p.InteriorRings[interiorIndex].Coordinates.Count;
+                                         vertexIndex < interiorRing.PointCount;
                                          vertexIndex++)
                                     {
-                                        ICoordinate v = (ICoordinate)p.InteriorRings[interiorIndex].Coordinates[vertexIndex];
+                                        ICoordinate v = interiorRing.Coordinates[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
                                         Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
                                         Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
@@ -108,29 +108,28 @@ namespace SharpMap.Rendering.Gdi.Tests
                                     iter.NextSubpath(out start, out end, out isClosed);
 
                                     Assert.IsTrue(isClosed);
-                                    Assert.AreEqual(p.ExteriorRing.Coordinates.Count, end - start + 1);
+                                    Int32 exteriorPointCount = p.ExteriorRing.PointCount;
+                                    Assert.AreEqual(exteriorPointCount, end - start + 1);
 
-                                    for (Int32 vertexIndex = 0;
-                                         vertexIndex < p.ExteriorRing.Coordinates.Count;
-                                         vertexIndex++)
+                                    for (Int32 vertexIndex = 0; vertexIndex < exteriorPointCount; vertexIndex++)
                                     {
-                                        ICoordinate v = (ICoordinate)p.ExteriorRing.Coordinates[vertexIndex];
+                                        ICoordinate v = p.ExteriorRing.Coordinates[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
                                         Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
                                         Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);
                                     }
 
-                                    for (Int32 interiorIndex = 0; interiorIndex < p.InteriorRings.Count; interiorIndex++)
+                                    foreach (ILineString interiorRing in p.InteriorRings)
                                     {
                                         iter.NextSubpath(out start, out end, out isClosed);
                                         Assert.IsTrue(isClosed);
-                                        Assert.AreEqual(p.InteriorRings[interiorIndex].Coordinates.Count, end - start + 1);
+                                        Assert.AreEqual(interiorRing.PointCount, end - start + 1);
 
                                         for (Int32 vertexIndex = 0;
-                                             vertexIndex < p.InteriorRings[interiorIndex].Coordinates.Count;
+                                             vertexIndex < interiorRing.PointCount;
                                              vertexIndex++)
                                         {
-                                            ICoordinate v = (ICoordinate)p.InteriorRings[interiorIndex].Coordinates[vertexIndex];
+                                            ICoordinate v = interiorRing.Coordinates[vertexIndex];
                                             PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
                                             Assert.AreEqual(v[Ordinates.X], gdiPoint.X);
                                             Assert.AreEqual(v[Ordinates.Y], gdiPoint.Y);

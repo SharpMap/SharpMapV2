@@ -426,6 +426,7 @@ namespace SharpMap.Rendering.Rendering2D
 			return renderedObjects;
 		}
 
+        // TODO: these next two methods would benefit from handling TCoordinates
 		private static IEnumerable<Path2D> convertToPaths(IEnumerable<ILineString> lines)
         {
             Path2D gp = new Path2D();
