@@ -2510,7 +2510,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 case ShapeType.Null:
                 default:
                     throw new NotSupportedException(String.Format(
-                                                        "Writing geometry type {0} is not supported in the current version.",
+                                                        "Writing geometry type {0} "+
+                                                        "is not supported in the "+
+                                                        "current version.",
                                                         ShapeType));
             }
 
@@ -2549,7 +2551,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private void writePolySegments(IExtents extents, Int32[] parts, IEnumerable<ICoordinate> points, Int32 pointCount)
+        private void writePolySegments(IExtents extents, Int32[] parts, IEnumerable points, Int32 pointCount)
         {
             writeBoundingBox(extents);
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(parts.Length));
@@ -2560,7 +2562,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(partIndex));
             }
 
-            foreach (IPoint point in points)
+            foreach (ICoordinate point in points)
             {
                 writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
             }
@@ -2570,44 +2572,45 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.PolyLine));
             
-            writePolySegments(lineString.Extents, new Int32[] { 0 }, 
-                (IEnumerable<ICoordinate>)lineString.Coordinates, 
-                lineString.Coordinates.Count);
+            writePolySegments(lineString.Extents, 
+                              new Int32[] { 0 },
+                              lineString.Coordinates, 
+                              lineString.Coordinates.Count);
         }
 
         private void writeMultiLineString(IMultiLineString multiLineString)
         {
             Int32[] parts = new Int32[multiLineString.Count];
-            List<ICoordinate> allPoints = new List<ICoordinate>();
+            ArrayList allPoints = new ArrayList();
 
             Int32 currentPartsIndex = 0;
 
             foreach (ILineString line in (IEnumerable<ILineString>)multiLineString)
             {
                 parts[currentPartsIndex++] = allPoints.Count;
-                allPoints.AddRange((IEnumerable<ICoordinate>)line.Coordinates);
+                allPoints.AddRange(line.Coordinates);
             }
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.PolyLine));
-            writePolySegments(multiLineString.Extents, parts, allPoints.ToArray(), allPoints.Count);
+            writePolySegments(multiLineString.Extents, parts, allPoints, allPoints.Count);
         }
 
         private void writePolygon(IPolygon polygon)
         {
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
-            List<ICoordinate> allPoints = new List<ICoordinate>();
+            ArrayList allPoints = new ArrayList();
             Int32 currentPartsIndex = 0;
             parts[currentPartsIndex++] = 0;
-            allPoints.AddRange((IEnumerable<ICoordinate>)polygon.ExteriorRing.Coordinates);
+            allPoints.AddRange(polygon.ExteriorRing.Coordinates);
 
             foreach (ILinearRing ring in polygon.InteriorRings)
             {
                 parts[currentPartsIndex++] = allPoints.Count;
-                allPoints.AddRange((IEnumerable<ICoordinate>)ring.Coordinates);
+                allPoints.AddRange(ring.Coordinates);
             }
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.Polygon));
-            writePolySegments(polygon.Extents, parts, allPoints.ToArray(), allPoints.Count);
+            writePolySegments(polygon.Extents, parts, allPoints, allPoints.Count);
         }
 
         #endregion

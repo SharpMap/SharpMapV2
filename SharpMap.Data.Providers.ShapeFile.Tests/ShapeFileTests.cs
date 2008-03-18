@@ -806,7 +806,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         {
             ICoordinateFactory coordFactory = _geoFactory.CoordinateFactory;
 
-            Int32 pointCount = _rnd.Next(1, 100);
+            Int32 pointCount = _rnd.Next(3, 100);
 
             for (Int32 pointIndex = 0; pointIndex < pointCount; pointIndex++)
             {
