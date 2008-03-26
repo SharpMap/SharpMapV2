@@ -19,25 +19,29 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems
 {
     /// <summary>
-    /// The GeographicTransform class is implemented on geographic transformation objects and
-    /// implements datum transformations between geographic coordinate systems.
+    /// The GeographicTransform class is implemented on 
+    /// geographic transformation objects and implements 
+    /// datum transformations between geographic coordinate systems.
     /// </summary>
     public class GeographicTransform<TCoordinate> : Info, IGeographicTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, 
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly IGeographicCoordinateSystem<TCoordinate> _source;
         private readonly IGeographicCoordinateSystem<TCoordinate> _target;
 
-        internal GeographicTransform(
-            String name, String authority, long code, String alias, String remarks, String abbreviation,
-            IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
+        internal GeographicTransform(String name, String authority, 
+                                     Int64 code, String alias, 
+                                     String remarks, String abbreviation,
+                                     IGeographicCoordinateSystem<TCoordinate> source, 
+                                     IGeographicCoordinateSystem<TCoordinate> target)
             : base(name, authority, code, alias, abbreviation, remarks)
         {
             _source = source;
@@ -47,7 +51,8 @@ namespace ProjNet.CoordinateSystems
         #region IGeographicTransform Members
 
         /// <summary>
-        /// Gets or sets the source geographic coordinate system for the transformation.
+        /// Gets or sets the source geographic coordinate system 
+        /// for the transformation.
         /// </summary>
         public IGeographicCoordinateSystem<TCoordinate> Source
         {
@@ -55,7 +60,8 @@ namespace ProjNet.CoordinateSystems
         }
 
         /// <summary>
-        /// Gets or sets the target geographic coordinate system for the transformation.
+        /// Gets or sets the target geographic coordinate system 
+        /// for the transformation.
         /// </summary>
         public IGeographicCoordinateSystem<TCoordinate> Target
         {
@@ -63,7 +69,8 @@ namespace ProjNet.CoordinateSystems
         }
 
         /// <summary>
-        /// Returns an accessor interface to the parameters for this geographic transformation.
+        /// Returns an accessor interface to the parameters for 
+        /// this geographic transformation.
         /// </summary>
         public IParameterInfo ParameterInfo
         {
@@ -74,8 +81,12 @@ namespace ProjNet.CoordinateSystems
         /// Transforms an array of points from the source geographic coordinate
         /// system to the target geographic coordinate system.
         /// </summary>
-        /// <param name="points">On input points in the source geographic coordinate system</param>
-        /// <returns>Output points in the target geographic coordinate system</returns>
+        /// <param name="points">
+        /// On input points in the source geographic coordinate system
+        /// </param>
+        /// <returns>
+        /// Output points in the target geographic coordinate system
+        /// </returns>
         public IEnumerable<TCoordinate> Forward(IEnumerable<TCoordinate> points)
         {
             throw new NotImplementedException();
@@ -93,8 +104,12 @@ namespace ProjNet.CoordinateSystems
         /// Transforms an array of points from the target geographic coordinate
         /// system to the source geographic coordinate system.
         /// </summary>
-        /// <param name="points">Input points in the target geographic coordinate system,</param>
-        /// <returns>Output points in the source geographic coordinate system</returns>
+        /// <param name="points">
+        /// Input points in the target geographic coordinate system
+        /// </param>
+        /// <returns>
+        /// Output points in the source geographic coordinate system
+        /// </returns>
         public IEnumerable<TCoordinate> Inverse(IEnumerable<TCoordinate> points)
         {
             throw new NotImplementedException();
@@ -126,8 +141,8 @@ namespace ProjNet.CoordinateSystems
                 return false;
             }
 
-            return g.Source.EqualParams(Source)
-                   && g.Target.EqualParams(Target);
+            return g.Source.EqualParams(Source) && 
+                   g.Target.EqualParams(Target);
         }
 
         #endregion

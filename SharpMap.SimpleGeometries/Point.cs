@@ -32,7 +32,8 @@ namespace SharpMap.SimpleGeometries
     /// The boundary of a Point is the empty set.
     /// </summary>
     [Serializable]
-    public class Point : Geometry, IPoint2D, IComparable<Point>, IVector<DoubleComponent>
+    public class Point : Geometry, IPoint2D, IComparable<Point>, 
+                         IVector<DoubleComponent>
     {
         private static readonly Point _empty = new Point();
         //private static readonly Point _zero = new Point(0, 0);
@@ -1441,5 +1442,41 @@ namespace SharpMap.SimpleGeometries
 
             return !p.Coordinate.Equals(p.Coordinate);
         }
+
+        #region IAddable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IAddable<double,IPoint> Members
+
+        IPoint IAddable<double, IPoint>.Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,IPoint> Members
+
+        IPoint ISubtractable<double, IPoint>.Subtract(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

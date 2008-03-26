@@ -29,8 +29,9 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// operation on points. To transform points you must use a <see cref="MathTransform"/>.
     /// </summary>
     public class CoordinateTransformation<TCoordinate> : ICoordinateTransformation<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly ICoordinateSystem<TCoordinate> _source;
         private readonly ICoordinateSystem<TCoordinate> _target;

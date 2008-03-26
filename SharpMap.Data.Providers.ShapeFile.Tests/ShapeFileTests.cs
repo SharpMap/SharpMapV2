@@ -184,7 +184,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             shapeFile.Open();
             ICoordinateSystemFactory coordSysFactory = _coordSysFactory;
             String wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
-            IProjectedCoordinateSystem cs = WktDecoder.ToCoordinateSystemInfo(
+            IProjectedCoordinateSystem cs = WktReader.ToCoordinateSystemInfo(
                                                 wkt, coordSysFactory) 
                                             as IProjectedCoordinateSystem;
             shapeFile.SpatialReference = cs;

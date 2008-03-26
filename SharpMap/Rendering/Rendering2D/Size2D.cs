@@ -29,7 +29,8 @@ namespace SharpMap.Rendering.Rendering2D
     /// A 2 dimensional measure of size.
     /// </summary>
     [Serializable]
-    public struct Size2D : IVectorD, IHasEmpty, IComparable<Size2D>, IComputable<Double, Size2D>
+    public struct Size2D : IVectorD, IHasEmpty, IComparable<Size2D>, 
+                           IComputable<Double, Size2D>
     {
         private DoubleComponent _width, _height;
         private Boolean _hasValue;
@@ -986,6 +987,42 @@ namespace SharpMap.Rendering.Rendering2D
         #region IMultipliable<Double,IVector<DoubleComponent>> Members
 
         IVector<DoubleComponent> IMultipliable<Double, IVector<DoubleComponent>>.Multiply(Double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IAddable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IAddable<double,Size2D> Members
+
+        Size2D IAddable<double, Size2D>.Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,Size2D> Members
+
+        Size2D ISubtractable<double, Size2D>.Subtract(double b)
         {
             throw new NotImplementedException();
         }

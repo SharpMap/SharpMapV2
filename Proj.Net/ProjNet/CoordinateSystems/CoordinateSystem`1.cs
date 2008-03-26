@@ -43,9 +43,9 @@ namespace ProjNet.CoordinateSystems
     /// mapping from the mathematical space into real-world locations is called a Datum.</para>
     /// </remarks>		
     public abstract class CoordinateSystem<TCoordinate> : Info, ICoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly List<IAxisInfo> _axisInfo = new List<IAxisInfo>();
         private readonly IExtents<TCoordinate> _extents;

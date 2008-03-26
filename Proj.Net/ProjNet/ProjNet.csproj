@@ -69,7 +69,6 @@
     <Compile Include="CoordinateSystems\Ellipsoid.cs" />
     <Compile Include="CoordinateSystems\GeocentricCoordinateSystem`1.cs" />
     <Compile Include="CoordinateSystems\GeographicCoordinateSystem`1.cs" />
-    <Compile Include="CoordinateSystems\GeographicTransform`1.cs" />
     <Compile Include="CoordinateSystems\HorizontalCoordinateSystem`1.cs" />
     <Compile Include="CoordinateSystems\HorizontalDatum.cs" />
     <Compile Include="CoordinateSystems\Info.cs" />

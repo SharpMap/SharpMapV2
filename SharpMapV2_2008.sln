@@ -40,6 +40,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.ShapeFile.Tests", "SharpMap.Data.Providers.ShapeFile.Tests\SharpMap.Data.Providers.ShapeFile.Tests.csproj", "{67BAF5A4-9392-4A23-AE4E-0A3C197884C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySute.TestRunner", "..\NTS\NetTopologySuite.TestRunner\NetTopologySute.TestRunner.csproj", "{13669184-2446-404F-8894-5E20B6C3FCC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.Tests", "..\NTS\NetTopologySuite.Tests\NetTopologySuite.Tests.csproj", "{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.Samples.Console", "..\NTS\NetTopologySuite.Samples.Console\NetTopologySuite.Samples.Console.csproj", "{39E8A390-5304-4447-99E2-3810941824AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Net20|Any CPU = Debug_Net20|Any CPU
@@ -248,6 +254,42 @@ Global
 		{67BAF5A4-9392-4A23-AE4E-0A3C197884C3}.Release_Net35|Any CPU.Build.0 = Release_Net35|Any CPU
 		{67BAF5A4-9392-4A23-AE4E-0A3C197884C3}.Release|Any CPU.ActiveCfg = Release_Net35|Any CPU
 		{67BAF5A4-9392-4A23-AE4E-0A3C197884C3}.Release|Any CPU.Build.0 = Release_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Debug_Net20|Any CPU.ActiveCfg = Debug_Net20|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Debug_Net20|Any CPU.Build.0 = Debug_Net20|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Debug_Net35|Any CPU.ActiveCfg = Debug_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Debug_Net35|Any CPU.Build.0 = Debug_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Debug|Any CPU.ActiveCfg = Debug_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Debug|Any CPU.Build.0 = Debug_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Release_Net20|Any CPU.ActiveCfg = Release_Net20|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Release_Net20|Any CPU.Build.0 = Release_Net20|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Release_Net35|Any CPU.ActiveCfg = Release_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Release_Net35|Any CPU.Build.0 = Release_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Release|Any CPU.ActiveCfg = Release_Net35|Any CPU
+		{13669184-2446-404F-8894-5E20B6C3FCC6}.Release|Any CPU.Build.0 = Release_Net35|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Debug_Net20|Any CPU.ActiveCfg = Debug|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Debug_Net20|Any CPU.Build.0 = Debug|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Debug_Net35|Any CPU.ActiveCfg = Debug|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Debug_Net35|Any CPU.Build.0 = Debug|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Release_Net20|Any CPU.ActiveCfg = Release|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Release_Net20|Any CPU.Build.0 = Release|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Release_Net35|Any CPU.ActiveCfg = Release|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Release_Net35|Any CPU.Build.0 = Release|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Debug_Net20|Any CPU.ActiveCfg = Debug_Net20|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Debug_Net20|Any CPU.Build.0 = Debug_Net20|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Debug_Net35|Any CPU.ActiveCfg = Debug_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Debug_Net35|Any CPU.Build.0 = Debug_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Debug|Any CPU.ActiveCfg = Debug_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Debug|Any CPU.Build.0 = Debug_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Release_Net20|Any CPU.ActiveCfg = Release_Net20|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Release_Net20|Any CPU.Build.0 = Release_Net20|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Release_Net35|Any CPU.ActiveCfg = Release_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Release_Net35|Any CPU.Build.0 = Release_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Release|Any CPU.ActiveCfg = Release_Net35|Any CPU
+		{39E8A390-5304-4447-99E2-3810941824AD}.Release|Any CPU.Build.0 = Release_Net35|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

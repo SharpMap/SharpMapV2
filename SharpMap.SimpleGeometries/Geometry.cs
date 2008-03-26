@@ -248,7 +248,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public String AsText()
         {
-            return WktEncoder.ToWkt(this);
+            return WktWriter.ToWkt(this);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public Byte[] AsBinary()
         {
-            return WkbEncoder.ToWkb(this);
+            return WkbWriter.ToWkb(this);
         }
 
         /// <summary>

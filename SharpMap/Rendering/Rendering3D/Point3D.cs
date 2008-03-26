@@ -742,5 +742,23 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         #endregion
+
+        #region IAddable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -29,7 +29,8 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// 
     /// </summary>
     /// <remarks>
-    /// <para>Latitude, Longitude and ellipsoidal height in terms of a 3-dimensional geographic system
+    /// <para>
+    /// Latitude, Longitude and ellipsoidal height in terms of a 3-dimensional geographic system
     /// may by expressed in terms of a geocentric (earth centered) Cartesian coordinate reference system
     /// X, Y, Z with the Z axis corresponding to the earth's rotation axis positive northwards, the X
     /// axis through the intersection of the prime meridian and equator, and the Y axis through
@@ -44,9 +45,9 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// to metres.</para>
     /// </remarks>
     internal class GeocentricTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private const Double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */
         private const Double AD_C = 1.0026000; /* Toms region 1 constant */

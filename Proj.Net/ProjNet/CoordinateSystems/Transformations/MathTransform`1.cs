@@ -35,10 +35,11 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// <see cref="ICoordinateTransformation{TCoordinate}"/> interface, and use the contained 
     /// math transform object whenever it wishes to perform a transform.
     /// </remarks>
-    public abstract class MathTransform<TCoordinate> : MathTransform, IMathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+    public abstract class MathTransform<TCoordinate> : MathTransform,
+                                                       IMathTransform<TCoordinate>
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         protected MathTransform(IEnumerable<Parameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory,
                                 Boolean isInverse) 

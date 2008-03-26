@@ -92,7 +92,7 @@ namespace ProjNet.CoordinateSystems
         /// </returns>
         public ICoordinateSystem<TCoordinate> CreateFromWkt(String Wkt)
         {
-            return WktDecoder.ToCoordinateSystemInfo(Wkt, this)
+            return WktReader<TCoordinate>.ToCoordinateSystemInfo(Wkt, this)
                 as ICoordinateSystem<TCoordinate>;
         }
 

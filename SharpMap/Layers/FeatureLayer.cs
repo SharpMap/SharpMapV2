@@ -71,7 +71,8 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, Boolean handleFeatureDataRequest)
+        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, 
+                               Boolean handleFeatureDataRequest)
             : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest)
         {
         }
@@ -84,7 +85,8 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource)
+        protected FeatureLayer(String layername, VectorStyle style, 
+                               IFeatureLayerProvider dataSource)
             : this(layername, style, dataSource, true) {}
 
         /// <summary>
@@ -95,17 +97,20 @@ namespace SharpMap.Layers
         /// <param name="dataSource">Data source.</param>
         /// <param name="handleFeatureDataRequest">
         /// Value to indicate the layer should handle 
-        /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
-        /// table.
+        /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the 
+        /// <see cref="Features"/> table.
         /// </param>
-        protected FeatureLayer(String layername, VectorStyle style, IFeatureLayerProvider dataSource, Boolean handleFeatureDataRequest)
+        protected FeatureLayer(String layername, VectorStyle style, 
+                               IFeatureLayerProvider dataSource, 
+                               Boolean handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
             ShouldHandleFeaturesNotFoundEvent = handleFeatureDataRequest;
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-            _features = DataSource.CreateNewTable() ?? new FeatureDataTable(dataSource.GeometryFactory);
+            _features = DataSource.CreateNewTable() 
+                        ?? new FeatureDataTable(dataSource.GeometryFactory);
             _geoFactory = dataSource.GeometryFactory;
             DataSource.Close();
 
@@ -282,14 +287,16 @@ namespace SharpMap.Layers
 
         private void handleFeaturesRequested(Object sender, FeaturesNotFoundEventArgs e)
         {
-            IGeometry available = Extents.ToGeometry().Intersection(e.MissingForQuery.QueryRegion);
+            IGeometry layerExtents = Extents.ToGeometry();
+            IGeometry available = layerExtents.Intersection(e.Expression.QueryRegion);
 
-            Boolean hasIntersectionWithLayerData = !(available.IsEmpty || Features.Envelope.Contains(available)) &&
-                                                e.MissingForQuery.QueryType != SpatialExpressionType.Disjoint;
+            Boolean hasIntersectionWithLayerData = 
+                !(available.IsEmpty || Features.Envelope.Contains(available)) 
+                && e.Expression.QueryType != SpatialExpressionType.Disjoint;
 
-            if(hasIntersectionWithLayerData || e.MissingForQuery.Oids != null)
+            if(hasIntersectionWithLayerData || e.Expression.Oids != null)
             {
-                LoadLayerData(e.MissingForQuery);   
+                LoadLayerData(e.Expression);   
             }
         }
 

@@ -1332,8 +1332,13 @@ namespace SharpMap.Data
         {
             if (!geometry.IsEmpty && !Envelope.Contains(geometry))
             {
+                IGeometry queryGeometry = Envelope.IsEmpty
+                                              ? geometry
+                                              : geometry.Difference(Envelope);
+
                 FeatureSpatialExpression notFound = new FeatureSpatialExpression(
-                    geometry.Difference(Envelope), SpatialExpressionType.Intersects, null);
+                    queryGeometry, SpatialExpressionType.Intersects);
+
                 NotifyFeaturesNotFound(notFound);
             }
         }
@@ -1342,7 +1347,8 @@ namespace SharpMap.Data
         {
             if (source.Table.Columns.Count != target.Table.Columns.Count)
             {
-                throw new InvalidOperationException("Can't import a feature row with a different number of columns.");
+                throw new InvalidOperationException("Can't import a feature row with a different number "+
+                                                    "of columns.");
             }
 
             for (Int32 columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
@@ -1358,11 +1364,16 @@ namespace SharpMap.Data
         private void initializeSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
-            IIndexRestructureStrategy<IExtents, FeatureDataRow> restructureStrategy = new NullRestructuringStrategy<IExtents, FeatureDataRow>();
-            RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IItemInsertStrategy<IExtents, FeatureDataRow> insertStrategy = new GuttmanQuadraticInsert<FeatureDataRow>(_geoFactory);
-            INodeSplitStrategy<IExtents, FeatureDataRow> nodeSplitStrategy = new GuttmanQuadraticSplit<FeatureDataRow>(_geoFactory);
+            IIndexRestructureStrategy<IExtents, FeatureDataRow> restructureStrategy 
+                = new NullRestructuringStrategy<IExtents, FeatureDataRow>();
+            RestructuringHuristic restructureHeuristic 
+                = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
+            IItemInsertStrategy<IExtents, FeatureDataRow> insertStrategy 
+                = new GuttmanQuadraticInsert<FeatureDataRow>(_geoFactory);
+            INodeSplitStrategy<IExtents, FeatureDataRow> nodeSplitStrategy 
+                = new GuttmanQuadraticSplit<FeatureDataRow>(_geoFactory);
             IdleMonitor idleMonitor = null;
+
             _rTreeIndex = new SelfOptimizingDynamicSpatialIndex<FeatureDataRow>(_geoFactory,
                                                                                 restructureStrategy,
                                                                                 restructureHeuristic, insertStrategy,

@@ -871,5 +871,41 @@ namespace SharpMap.Rendering.Rendering3D
         }
 
         #endregion
+
+        #region IAddable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,IVector<DoubleComponent>> Members
+
+        public IVector<DoubleComponent> Subtract(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IAddable<double,Size3D> Members
+
+        Size3D IAddable<double, Size3D>.Add(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISubtractable<double,Size3D> Members
+
+        Size3D ISubtractable<double, Size3D>.Subtract(double b)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

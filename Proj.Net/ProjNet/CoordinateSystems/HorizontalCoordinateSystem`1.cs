@@ -29,8 +29,9 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public abstract class HorizontalCoordinateSystem<TCoordinate> : CoordinateSystem<TCoordinate>,
                                                                     IHorizontalCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly IHorizontalDatum _horizontalDatum;
 

@@ -31,9 +31,9 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public class GeocentricCoordinateSystem<TCoordinate> : CoordinateSystem<TCoordinate>,
                                                            IGeocentricCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly IHorizontalDatum _horizontalDatum;
         private readonly ILinearUnit _linearUnit;

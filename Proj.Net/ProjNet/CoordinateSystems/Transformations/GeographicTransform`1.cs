@@ -25,13 +25,14 @@ using NPack.Interfaces;
 namespace ProjNet.CoordinateSystems.Transformations
 {
     /// <summary>
-    /// The GeographicTransform class is implemented on geographic 
-    /// transformation objects and implements datum transformations 
-    /// between geographic coordinate systems.
+    /// The <see cref="GeographicTransform{TCoordinate}"/> class is 
+    /// implemented on geographic transformation objects and implements 
+    /// datum transformations between geographic coordinate systems.
     /// </summary>
     public class GeographicTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>, IConvertible
+        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         internal GeographicTransform(IGeographicCoordinateSystem<TCoordinate> source,
                                      IGeographicCoordinateSystem<TCoordinate> target,

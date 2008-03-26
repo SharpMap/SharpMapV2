@@ -15,21 +15,21 @@ namespace SharpMap.Tests
         internal static IFeatureLayerProvider CreateGeometryDatasource(IGeometryFactory geoFactory)
         {
             Collection<IGeometry> geoms = new Collection<IGeometry>();
-            geoms.Add(WktDecoder.ToGeometry("POINT EMPTY", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)", geoFactory));
+            geoms.Add(WktReader.ToGeometry("POINT EMPTY", geoFactory));
+            geoms.Add(WktReader.ToGeometry("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))", geoFactory));
+            geoms.Add(WktReader.ToGeometry("MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))", geoFactory));
+            geoms.Add(WktReader.ToGeometry("LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)", geoFactory));
             geoms.Add(
-                WktDecoder.ToGeometry("MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry(
+                WktReader.ToGeometry("MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))", geoFactory));
+            geoms.Add(WktReader.ToGeometry(
                           "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 29 21, 29 " +
                           "29, 21 29, 21 21), (23 23, 23 27, 27 27, 27 23, 23 23))", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("POINT (58.813841159 84.7561198972)", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("MULTIPOINT (20 100, 45 32, 120 54)", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("MULTIPOLYGON EMPTY", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("MULTILINESTRING EMPTY", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("MULTIPOINT EMPTY", geoFactory));
-            geoms.Add(WktDecoder.ToGeometry("LINESTRING EMPTY", geoFactory));
+            geoms.Add(WktReader.ToGeometry("POINT (58.813841159 84.7561198972)", geoFactory));
+            geoms.Add(WktReader.ToGeometry("MULTIPOINT (20 100, 45 32, 120 54)", geoFactory));
+            geoms.Add(WktReader.ToGeometry("MULTIPOLYGON EMPTY", geoFactory));
+            geoms.Add(WktReader.ToGeometry("MULTILINESTRING EMPTY", geoFactory));
+            geoms.Add(WktReader.ToGeometry("MULTIPOINT EMPTY", geoFactory));
+            geoms.Add(WktReader.ToGeometry("LINESTRING EMPTY", geoFactory));
             return new GeometryProvider(geoms);
         }
 
@@ -56,73 +56,73 @@ namespace SharpMap.Tests
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "An empty point";
-            row.Geometry = WktDecoder.ToGeometry("POINT EMPTY", geoFactory);
+            row.Geometry = WktReader.ToGeometry("POINT EMPTY", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A geometry collection";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))", 
                 geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multipolygon";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)), ((5 5, 7 5, 7 7, 5 7, 5 5)))", 
                 geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A linestring";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "LINESTRING (20 20, 20 30, 30 30, 30 20, 40 20)", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multilinestring";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "MULTILINESTRING ((10 10, 40 50), (20 20, 30 20), (20 20, 50 20, 50 60, 20 20))", 
                 geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A polygon";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "POLYGON ((20 20, 20 30, 30 30, 30 20, 20 20), (21 21, 29 21, 29 " +
                 "29, 21 29, 21 21), (23 23, 23 27, 27 27, 27 23, 23 23))", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A point";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "POINT (58.813841159 84.7561198972)", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "A multipoint";
-            row.Geometry = WktDecoder.ToGeometry(
+            row.Geometry = WktReader.ToGeometry(
                 "MULTIPOINT (20 100, 45 32, 120 54)", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "An empty multipolygon";
-            row.Geometry = WktDecoder.ToGeometry("MULTIPOLYGON EMPTY", geoFactory);
+            row.Geometry = WktReader.ToGeometry("MULTIPOLYGON EMPTY", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "An empty multilinestring";
-            row.Geometry = WktDecoder.ToGeometry("MULTILINESTRING EMPTY", geoFactory);
+            row.Geometry = WktReader.ToGeometry("MULTILINESTRING EMPTY", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "An empty multipoint";
-            row.Geometry = WktDecoder.ToGeometry("MULTIPOINT EMPTY", geoFactory);
+            row.Geometry = WktReader.ToGeometry("MULTIPOINT EMPTY", geoFactory);
             features.AddRow(row);
 
             row = features.NewRow(Guid.NewGuid());
             row["FeatureName"] = "An empty linestring";
-            row.Geometry = WktDecoder.ToGeometry("LINESTRING EMPTY", geoFactory);
+            row.Geometry = WktReader.ToGeometry("LINESTRING EMPTY", geoFactory);
             features.AddRow(row);
 
             provider.Insert(features);
