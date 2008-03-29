@@ -448,25 +448,25 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
-        public IWktGeometryWriter WktEncoder
+        public IWktGeometryWriter WktWriter
         {
             get { return _wktEncoder; }
             set { _wktEncoder = value; }
         }
 
-        public IWktGeometryReader WktDecoder
+        public IWktGeometryReader WktReader
         {
             get { return _wktDecoder; }
             set { _wktDecoder = value; }
         }
 
-        public IWkbWriter WkbEncoder
+        public IWkbWriter WkbWriter
         {
             get { return _wkbEncoder; }
             set { _wkbEncoder = value; }
         }
 
-        public IWkbReader WkbDecoder
+        public IWkbReader WkbReader
         {
             get { return _wkbDecoder; }
             set { _wkbDecoder = value; }

@@ -1,11 +1,11 @@
 using System;
 using System.Data;
 using GeoAPI.Geometries;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.SimpleGeometries;
 
 namespace SharpMap.Tests.Data
 {
@@ -17,9 +17,8 @@ namespace SharpMap.Tests.Data
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
             BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
         }
 
         [Test]

@@ -16,18 +16,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using GeoAPI.Coordinates;
-using GeoAPI.IO.WellKnownBinary;
-using GeoAPI.IO.WellKnownText;
+using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using System.Globalization;
-using System.Collections;
 using GeoAPI.Utilities;
-using NPack.Interfaces;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.GeometryProvider
@@ -163,7 +159,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// to add to this datasource.
 		/// </param>
 		public GeometryProvider(Byte[] wellKnownBinaryGeometry, IGeometryFactory factory)
-            : this(WkbReader.ToGeometry(wellKnownBinaryGeometry, factory))
+            : this(factory.WkbReader.Read(wellKnownBinaryGeometry))
 		{
 		}
 
@@ -175,7 +171,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 		/// to add to this datasource.
 		/// </param>
         public GeometryProvider(String wellKnownTextGeometry, IGeometryFactory factory)
-            : this(WktReader.ToGeometry(wellKnownTextGeometry, factory))
+            : this(factory.WktReader.Read(wellKnownTextGeometry))
 		{
 		}
 

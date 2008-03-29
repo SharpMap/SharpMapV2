@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -15,7 +16,6 @@ using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.SimpleGeometries;
 using SharpMap.Styles;
 using SharpMap.Tools;
 
@@ -29,9 +29,8 @@ namespace SharpMap.Tests.Presentation
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
             BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
         }
 
         #region Manual fakes

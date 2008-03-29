@@ -30,10 +30,9 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
-using GeoAPI.IO.WellKnownText;
 using GeoAPI.Utilities;
-using SharpMap.Indexing.RTree;
 using SharpMap.Expressions;
+using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
 using ByteEncoder = SharpMap.Utilities.ByteEncoder;
 
@@ -2283,7 +2282,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 lineId = 0; lineId < parts; lineId++)
             {
-                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create(2);
+                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create(CoordinateDimensions.Two);
 
                 for (Int32 i = segments[lineId]; i < segments[lineId + 1]; i++)
                 {
@@ -2322,7 +2321,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 ringId = 0; ringId < parts; ringId++)
             {
-                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create(2);
+                ICoordinateSequence coordinates = _geoFactory.CoordinateSequenceFactory.Create(CoordinateDimensions.Two);
 
                 for (Int32 i = segments[ringId]; i < segments[ringId + 1]; i++)
                 {
@@ -2430,7 +2429,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 try
                 {
                     String wkt = File.ReadAllText(projfile);
-                    _coordinateSystem = (ICoordinateSystem)WktReader.ToCoordinateSystemInfo(wkt, _coordSysFactory);
+                    _coordinateSystem = _coordSysFactory.CreateFromWkt(wkt);
                     _geoFactory.SpatialReference = _coordinateSystem;
                     _coordsysReadFromFile = true;
                 }

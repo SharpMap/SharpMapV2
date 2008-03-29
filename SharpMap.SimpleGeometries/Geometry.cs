@@ -318,6 +318,16 @@ namespace SharpMap.SimpleGeometries
             throw new NotImplementedException();
         }
 
+        public bool CoveredBy(IGeometry g)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CoveredBy(IGeometry g, Tolerance tolerance)
+        {
+            throw new NotImplementedException();
+        }
+
         public Boolean Crosses(IGeometry g, Tolerance tolerance)
         {
             throw new NotImplementedException();

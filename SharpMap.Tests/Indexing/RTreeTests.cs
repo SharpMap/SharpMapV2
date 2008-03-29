@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NPack;
 using NUnit.Framework;
 using SharpMap.Indexing.RTree;
-using SharpMap.SimpleGeometries;
 
 namespace SharpMap.Tests.Indexing
 {
@@ -45,9 +45,8 @@ namespace SharpMap.Tests.Indexing
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
             BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
         }
 
         [Test]

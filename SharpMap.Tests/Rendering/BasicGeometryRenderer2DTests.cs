@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.SimpleGeometries;
 using SharpMap.Styles;
-using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
-using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
-using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponent>;
 
 namespace SharpMap.Tests.Rendering
 {
@@ -24,9 +21,8 @@ namespace SharpMap.Tests.Rendering
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DFactory coordFactory = new BufferedCoordinate2DFactory();
             BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory(coordFactory, sequenceFactory);
+            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
         }
 
         #region Test stub types
