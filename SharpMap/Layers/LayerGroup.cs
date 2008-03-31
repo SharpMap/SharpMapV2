@@ -39,30 +39,30 @@ namespace SharpMap.Layers
     {
         private List<ILayer> _layers = new List<ILayer>();
         private Boolean _disposed;
-    	private ILayer _master;
+        private ILayer _master;
 
         #region Object Creation / Disposal
 
-		/// <summary>
-		/// Initializes a new group layer.
-		/// </summary>
-		public LayerGroup()
-		{
-		}
+        /// <summary>
+        /// Initializes a new group layer.
+        /// </summary>
+        public LayerGroup()
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new group layer.
-		/// </summary>
-		/// <param name="layers">The list of member layers</param>
-		/// <param name="master">A reference to the member of 'layers' which is to be the master layer ('layers' must contain 'master')</param>
-		public LayerGroup(List<ILayer> layers, ILayer master)
-		{
-			_layers = layers;
-        	_master = master;
-			if(layers != null && !layers.Contains(master))
-			{
-				throw new ArgumentException("The layers list must contain the master layer");
-			}
+        /// <summary>
+        /// Initializes a new group layer.
+        /// </summary>
+        /// <param name="layers">The list of member layers</param>
+        /// <param name="master">A reference to the member of 'layers' which is to be the master layer ('layers' must contain 'master')</param>
+        public LayerGroup(List<ILayer> layers, ILayer master)
+        {
+            _layers = layers;
+            _master = master;
+            if (layers != null && !layers.Contains(master))
+            {
+                throw new ArgumentException("The layers list must contain the master layer");
+            }
         }
 
         #region Dispose Pattern
@@ -113,7 +113,7 @@ namespace SharpMap.Layers
             {
                 if (layer is IDisposable)
                 {
-                    ((IDisposable) layer).Dispose();
+                    ((IDisposable)layer).Dispose();
                 }
             }
 
@@ -144,27 +144,27 @@ namespace SharpMap.Layers
         {
             get
             {
-            	return _layers;
+                return _layers;
             }
             set
             {
-            	_layers = new List<ILayer>(value);
-            	_master = null;
+                _layers = new List<ILayer>(value);
+                _master = null;
             }
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="layerName"></param>
-		/// <returns></returns>
-    	public ILayer this[String layerName]
-    	{
-    		get
-    		{
-    			return GetLayerByName(layerName);
-    		}
-    	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="layerName"></param>
+        /// <returns></returns>
+        public ILayer this[String layerName]
+        {
+            get
+            {
+                return GetLayerByName(layerName);
+            }
+        }
 
         /// <summary>
         /// Returns a layer by its name
@@ -184,29 +184,29 @@ namespace SharpMap.Layers
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-            	return MasterLayer.CoordinateSystem;
-			}
+                return MasterLayer.CoordinateSystem;
+            }
         }
 
         public ICoordinateTransformation CoordinateTransformation
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-            	return MasterLayer.CoordinateTransformation;
+                return MasterLayer.CoordinateTransformation;
             }
             set
             {
-            	throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -214,40 +214,40 @@ namespace SharpMap.Layers
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-            	return MasterLayer.DataSource;
-			}
+                return MasterLayer.DataSource;
+            }
         }
 
         public Boolean Enabled
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-            	return MasterLayer.Enabled;
+                return MasterLayer.Enabled;
             }
             set
             {
-            	if(MasterLayer == null)
-            	{
-					throw new NullReferenceException("MasterLayer is not set yet");
-            	}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-				if (MasterLayer.Enabled == value)
-				{
-					return;
-				}
-            	MasterLayer.Enabled = value;
+                if (MasterLayer.Enabled == value)
+                {
+                    return;
+                }
+                MasterLayer.Enabled = value;
 
-				OnPropertyChanged("Enabled");
+                OnPropertyChanged("Enabled");
             }
         }
 
@@ -270,7 +270,19 @@ namespace SharpMap.Layers
                     return bbox;
                 }
 
-                _layers.ForEach(delegate(ILayer layer) { bbox.ExpandToInclude(layer.Extents); });
+                _layers.ForEach(
+                        delegate(ILayer layer)
+                        {
+                            if (bbox == null)
+                            {
+                                bbox = layer.Extents.Clone() as IExtents;
+                            }
+                            else
+                            {
+                                bbox.ExpandToInclude(layer.Extents);
+                            }
+                        }
+                    );
 
                 return bbox;
             }
@@ -280,16 +292,16 @@ namespace SharpMap.Layers
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-				return MasterLayer.LayerName;
+                return MasterLayer.LayerName;
             }
             set
             {
-            	throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -297,12 +309,12 @@ namespace SharpMap.Layers
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-            	return MasterLayer.Srid;
+                return MasterLayer.Srid;
             }
         }
 
@@ -310,19 +322,19 @@ namespace SharpMap.Layers
         {
             get
             {
-				if (MasterLayer == null)
-				{
-					throw new NullReferenceException("MasterLayer is not set yet");
-				}
+                if (MasterLayer == null)
+                {
+                    throw new NullReferenceException("MasterLayer is not set yet");
+                }
 
-            	return MasterLayer.Style;
+                return MasterLayer.Style;
             }
             set
             {
-            	throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
-        
+
         public Boolean IsVisibleWhen(Predicate<ILayer> condition)
         {
             return condition(this);
@@ -361,112 +373,112 @@ namespace SharpMap.Layers
             set { throw new NotImplementedException(); }
         }
 
-    	public ILayer MasterLayer
-    	{
-    		get
-    		{
-    			return _master;
-    		}
-    		set
-    		{
-				if (Layers != null && !Layers.Contains(value))
-				{
-					throw new ArgumentException("Master layer must be a member of the LayerGroup");
-				}
+        public ILayer MasterLayer
+        {
+            get
+            {
+                return _master;
+            }
+            set
+            {
+                if (Layers != null && !Layers.Contains(value))
+                {
+                    throw new ArgumentException("Master layer must be a member of the LayerGroup");
+                }
 
-				_master = value;
-    		}
-    	}
+                _master = value;
+            }
+        }
 
-		/// <summary>
-		/// Whether we should show anything other than the master
-		/// </summary>
-    	public Boolean ShowChildren
-    	{
-    		get
-    		{
-				// Yes, if we find even one enabled child we say the children are all visible
-				foreach (ILayer layer in _layers)
-				{
-					if (layer != MasterLayer)
-					{
-						if(layer.Enabled)
-						{
-							return true;
-						}
-					}
-				}
-    			return false;
-			}
-    		set
-    		{
-    			Boolean valChanged = false;
+        /// <summary>
+        /// Whether we should show anything other than the master
+        /// </summary>
+        public Boolean ShowChildren
+        {
+            get
+            {
+                // Yes, if we find even one enabled child we say the children are all visible
+                foreach (ILayer layer in _layers)
+                {
+                    if (layer != MasterLayer)
+                    {
+                        if (layer.Enabled)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            set
+            {
+                Boolean valChanged = false;
 
-				foreach (ILayer layer in _layers)
-				{
-					if (layer != MasterLayer)
-					{
-						if(layer.Enabled != value)
-						{
-							layer.Enabled = value;
-							valChanged = true;
-						}
-					}
-				}
+                foreach (ILayer layer in _layers)
+                {
+                    if (layer != MasterLayer)
+                    {
+                        if (layer.Enabled != value)
+                        {
+                            layer.Enabled = value;
+                            valChanged = true;
+                        }
+                    }
+                }
 
-				if(valChanged)
-				{
-					OnPropertyChanged(Layer.ShowChildrenProperty.Name);
-				}
-			}
-    	}
+                if (valChanged)
+                {
+                    OnPropertyChanged(Layer.ShowChildrenProperty.Name);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Whether we should show anything other than the master
-		/// </summary>
-		public Boolean AreFeaturesSelectable
-		{
-			get
-			{
-				return MasterLayer.AreFeaturesSelectable;
-			}
-			set
-			{
-				if (value != MasterLayer.AreFeaturesSelectable)
-				{
-					MasterLayer.AreFeaturesSelectable = value;
+        /// <summary>
+        /// Whether we should show anything other than the master
+        /// </summary>
+        public Boolean AreFeaturesSelectable
+        {
+            get
+            {
+                return MasterLayer.AreFeaturesSelectable;
+            }
+            set
+            {
+                if (value != MasterLayer.AreFeaturesSelectable)
+                {
+                    MasterLayer.AreFeaturesSelectable = value;
 
-					// this double check is here because some layers may not have an impl for 
-					// that property setter, so the set may not have actually done anything
-					if (value == MasterLayer.AreFeaturesSelectable)
-					{
-						OnPropertyChanged(Layer.AreFeaturesSelectableProperty.Name);
-					}
-				}
-			}
-		}
+                    // this double check is here because some layers may not have an impl for 
+                    // that property setter, so the set may not have actually done anything
+                    if (value == MasterLayer.AreFeaturesSelectable)
+                    {
+                        OnPropertyChanged(Layer.AreFeaturesSelectableProperty.Name);
+                    }
+                }
+            }
+        }
 
-    	public event EventHandler LayerDataAvailable;
+        public event EventHandler LayerDataAvailable;
 
         #endregion
 
-		#region OnPropertyChanged
+        #region OnPropertyChanged
 
-		/// <summary>
-		/// Raises the <see cref="PropertyChanged"/> event.
-		/// </summary>
-		/// <param name="propertyName">Name of the property changed.</param>
-		protected virtual void OnPropertyChanged(String propertyName)
-		{
-			PropertyChangedEventHandler e = PropertyChanged;
+        /// <summary>
+        /// Raises the <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="propertyName">Name of the property changed.</param>
+        protected virtual void OnPropertyChanged(String propertyName)
+        {
+            PropertyChangedEventHandler e = PropertyChanged;
 
-			if (e != null)
-			{
-				PropertyChangedEventArgs args = new PropertyChangedEventArgs(propertyName);
-				e(this, args);
-			}
-		}
+            if (e != null)
+            {
+                PropertyChangedEventArgs args = new PropertyChangedEventArgs(propertyName);
+                e(this, args);
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
