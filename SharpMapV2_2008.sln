@@ -40,7 +40,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.ShapeFile.Tests", "SharpMap.Data.Providers.ShapeFile.Tests\SharpMap.Data.Providers.ShapeFile.Tests.csproj", "{67BAF5A4-9392-4A23-AE4E-0A3C197884C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySute.TestRunner", "..\NTS\NetTopologySuite.TestRunner\NetTopologySute.TestRunner.csproj", "{13669184-2446-404F-8894-5E20B6C3FCC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.TestRunner", "..\NTS\NetTopologySuite.TestRunner\NetTopologySuite.TestRunner.csproj", "{13669184-2446-404F-8894-5E20B6C3FCC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.Tests", "..\NTS\NetTopologySuite.Tests\NetTopologySuite.Tests.csproj", "{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}"
 EndProject

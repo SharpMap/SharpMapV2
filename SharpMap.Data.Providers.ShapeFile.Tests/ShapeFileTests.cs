@@ -182,11 +182,11 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
                                                 @"..\..\..\TestData\BCROADSWithoutDbf.SHP", 
                                                 _geoFactory);
             shapeFile.Open();
-            ICoordinateSystemFactory coordSysFactory = _coordSysFactory;
+            ICoordinateSystemFactory<BufferedCoordinate2D> coordSysFactory 
+                = _coordSysFactory;
             String wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
-            IProjectedCoordinateSystem cs = WktReader.ToCoordinateSystemInfo(
-                                                wkt, coordSysFactory) 
-                                            as IProjectedCoordinateSystem;
+            IProjectedCoordinateSystem cs = WktReader<BufferedCoordinate2D>
+                .ToCoordinateSystemInfo(wkt, coordSysFactory) as IProjectedCoordinateSystem;
             shapeFile.SpatialReference = cs;
             Assert.IsNotNull(shapeFile.SpatialReference);
 
