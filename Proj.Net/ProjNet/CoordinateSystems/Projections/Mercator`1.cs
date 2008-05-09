@@ -66,7 +66,7 @@ namespace ProjNet.CoordinateSystems.Projections
     /// </para>
     /// </remarks>
     internal class Mercator<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
             IComputable<Double, TCoordinate>,
             IConvertible
     {

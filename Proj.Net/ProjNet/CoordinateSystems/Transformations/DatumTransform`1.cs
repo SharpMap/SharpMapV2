@@ -30,28 +30,34 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// Transformation for applying 
     /// </summary>
     internal class DatumTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        protected IMathTransform<TCoordinate> _inverse;
+        private IMathTransform<TCoordinate> _inverse;
+        private readonly IMatrixFactory<DoubleComponent> _matrixFactory;
         private readonly Wgs84ConversionInfo _toWgs84;
-        private readonly ITransformMatrix<DoubleComponent> _transform;
-        private readonly ITransformMatrix<DoubleComponent> _inverseTransform;
+        private readonly IAffineTransformMatrix<DoubleComponent> _transform;
+        private readonly IAffineTransformMatrix<DoubleComponent> _inverseTransform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatumTransform{TCoordinate}"/> class.
         /// </summary>
-        public DatumTransform(Wgs84ConversionInfo towgs84, ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(towgs84, coordinateFactory, false) {}
+        public DatumTransform(Wgs84ConversionInfo towgs84, 
+                              ICoordinateFactory<TCoordinate> coordinateFactory,
+                              IMatrixFactory<DoubleComponent> matrixFactory)
+            : this(towgs84, coordinateFactory, matrixFactory, false) { }
 
-        private DatumTransform(Wgs84ConversionInfo towgs84, ICoordinateFactory<TCoordinate> coordinateFactory,
+        private DatumTransform(Wgs84ConversionInfo towgs84, 
+                               ICoordinateFactory<TCoordinate> coordinateFactory,
+                               IMatrixFactory<DoubleComponent> matrixFactory,
                                Boolean isInverse)
             : base(null, coordinateFactory, isInverse)
         {
             _toWgs84 = towgs84;
-            _transform = _toWgs84.GetAffineTransform();
-            _inverseTransform = _transform.Inverse as ITransformMatrix<DoubleComponent>;
+            _matrixFactory = matrixFactory;
+            _transform = _toWgs84.GetAffineTransform(matrixFactory);
+            _inverseTransform = _transform.Inverse;
             _isInverse = isInverse;
         }
 
@@ -83,7 +89,9 @@ namespace ProjNet.CoordinateSystems.Transformations
             if (_inverse == null)
             {
                 _inverse = new DatumTransform<TCoordinate>(_toWgs84,
-                                                           CoordinateFactory, !_isInverse);
+                                                           CoordinateFactory, 
+                                                           _matrixFactory, 
+                                                           !_isInverse);
             }
 
             return _inverse;
@@ -116,14 +124,9 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns></returns>
         public override TCoordinate Transform(TCoordinate point)
         {
-            if (!_isInverse)
-            {
-                return applyTransformToPoint(point);
-            }
-            else
-            {
-                return applyInvertedTransformToPoint(point);
-            }
+            return !_isInverse
+                       ? applyTransformToPoint(point)
+                       : applyInvertedTransformToPoint(point);
         }
 
         /// <summary>

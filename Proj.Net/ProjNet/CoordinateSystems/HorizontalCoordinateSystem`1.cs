@@ -29,7 +29,7 @@ namespace ProjNet.CoordinateSystems
     /// </summary>
     public abstract class HorizontalCoordinateSystem<TCoordinate> : CoordinateSystem<TCoordinate>,
                                                                     IHorizontalCoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {

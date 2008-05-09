@@ -27,7 +27,9 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// Encapsulates a label glyph on a map.
     /// </summary>
-    public class Label2D : ILabel<Point2D, Size2D, Rectangle2D, Path2D>, IComparable<Label2D>, IComparer<Label2D>
+    public class Label2D : ILabel<Point2D, Size2D, Rectangle2D, Path2D>, 
+                           IComparable<Label2D>, 
+                           IComparer<Label2D>
     {
         private String _text;
         private Point2D _location;
@@ -72,9 +74,9 @@ namespace SharpMap.Rendering.Rendering2D
             _collisionBuffer = collisionBuffer;
             _style = style ?? new LabelStyle();
 
-        	_collisionBuffer = _style.CollisionBuffer;
-        	_font = _style.Font;
-        	_offset = _style.Offset;
+            _collisionBuffer = _style.CollisionBuffer;
+            _font = _style.Font;
+            _offset = _style.Offset;
         }
 
         /// <summary>
@@ -83,9 +85,10 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A String which represents the label instance.</returns>
         public override String ToString()
         {
-            return String.Format(
-                "[{0}] Text: \"{1}\"; Location: {2}; Font: {3}; Rotation: {4:N}; Priority: {5}; Collision Buffer: {6}",
-                GetType(), Text, Location, Font, Rotation, Priority, CollisionBuffer);
+            return String.Format("[{0}] Text: \"{1}\"; Location: {2}; Font: {3}; " +
+                                 "Rotation: {4:N}; Priority: {5}; Collision Buffer: {6}",
+                                 GetType(), Text, Location, Font, Rotation,
+                                 Priority, CollisionBuffer);
         }
 
         /// <summary>
@@ -180,7 +183,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns></returns>
         public Int32 CompareTo(Label2D other)
         {
-			if (this == other || (_collisionBuffer == Size2D.Empty && other.CollisionBuffer == Size2D.Empty))
+            if (this == other || (_collisionBuffer == Size2D.Empty && other.CollisionBuffer == Size2D.Empty))
             {
                 return 0;
             }

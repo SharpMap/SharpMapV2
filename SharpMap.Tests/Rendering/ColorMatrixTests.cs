@@ -29,14 +29,14 @@ namespace SharpMap.Tests.Rendering
         {
 			ColorMatrix m1 = new ColorMatrix(0.5, 0.5, 0.5, 0.5, 10, 20, 30, 0);
             IMatrix<DoubleComponent> expected =
-                new Matrix<DoubleComponent>(MatrixFormat.RowMajor, new DoubleComponent[][]
-                                                                       {
-                                                                           new DoubleComponent[] {2, 0, 0, 0, 0},
-                                                                           new DoubleComponent[] {0, 2, 0, 0, 0},
-                                                                           new DoubleComponent[] {0, 0, 2, 0, 0},
-                                                                           new DoubleComponent[] {0, 0, 0, 2, 0},
-                                                                           new DoubleComponent[] {-20, -40, -60, 0, 1}
-                                                                       });
+                new Matrix(MatrixFormat.RowMajor, new DoubleComponent[][]
+                                               {
+                                                   new DoubleComponent[] {2, 0, 0, 0, 0},
+                                                   new DoubleComponent[] {0, 2, 0, 0, 0},
+                                                   new DoubleComponent[] {0, 0, 2, 0, 0},
+                                                   new DoubleComponent[] {0, 0, 0, 2, 0},
+                                                   new DoubleComponent[] {-20, -40, -60, 0, 1}
+                                               });
 
             IMatrix<DoubleComponent> m1Inverse = m1.Inverse;
 
@@ -87,7 +87,7 @@ namespace SharpMap.Tests.Rendering
             Assert.AreEqual(expected[2][2], m2[2, 2]);
 
             //m1.Elements = expected;
-            m1 = new ColorMatrix(new Matrix<DoubleComponent>(MatrixFormat.RowMajor, expected));
+            m1 = new ColorMatrix(new Matrix(MatrixFormat.RowMajor, expected));
             Assert.AreEqual(m1, m2);
             Assert.IsTrue(m1.Equals(m2 as IMatrix<DoubleComponent>));
         }

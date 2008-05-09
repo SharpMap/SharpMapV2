@@ -2,7 +2,6 @@ using System;
 using NPack;
 using NUnit.Framework;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.Rendering.Rendering3D;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponent>;
@@ -200,12 +199,13 @@ namespace SharpMap.Tests.Rendering
         }
 
         [Test]
+        [Ignore("Rendering3D moved...")]
         [ExpectedException(typeof (ArgumentException))]
         public void ScaleTest2()
         {
-            Size3D scaleSize = new Size3D(10, 10, 10);
-            Rectangle2D r2 = Rectangle2D.Zero;
-            r2.Scale(scaleSize);
+            //Size3D scaleSize = new Size3D(10, 10, 10);
+            //Rectangle2D r2 = Rectangle2D.Zero;
+            //r2.Scale(scaleSize);
         }
 
         [Test]
@@ -227,11 +227,12 @@ namespace SharpMap.Tests.Rendering
         }
 
         [Test]
+        [Ignore("Rendering3D moved...")]
         [ExpectedException(typeof (ArgumentException))]
         public void TranslateTest2()
         {
-            Rectangle2D r1 = Rectangle2D.Zero;
-            r1.Translate(new Point3D(3, 4, 5));
+            //Rectangle2D r1 = Rectangle2D.Zero;
+            //r1.Translate(new Point3D(3, 4, 5));
         }
 
         [Test]

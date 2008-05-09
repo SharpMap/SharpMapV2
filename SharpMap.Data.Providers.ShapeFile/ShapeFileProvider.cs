@@ -83,7 +83,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //#endregion
 
         #region IdBounds
-        struct IdBounds :IBoundable<IExtents>
+        struct IdBounds : IBoundable<IExtents>
         {
             private UInt32 _id;
             private IExtents _extents;
@@ -171,7 +171,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// This constructor creates a <see cref="ShapeFileProvider"/>
         /// with an in-memory spatial index.
         /// </remarks>
-        public ShapeFileProvider(String filename, IGeometryFactory geoFactory, 
+        public ShapeFileProvider(String filename, IGeometryFactory geoFactory,
             ICoordinateSystemFactory coordSysFactory)
             : this(filename, geoFactory, coordSysFactory, false) { }
 
@@ -187,7 +187,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <param name="filename">Path to shapefile (.shp file).</param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-        public ShapeFileProvider(String filename, IGeometryFactory geoFactory, 
+        public ShapeFileProvider(String filename, IGeometryFactory geoFactory,
             ICoordinateSystemFactory coordSysFactory, Boolean fileBasedIndex)
         {
             _filename = filename;
@@ -218,7 +218,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Finalizes the object
+        /// Finalizes the Object
         /// </summary>
         ~ShapeFileProvider()
         {
@@ -228,7 +228,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #region Dispose pattern
 
         /// <summary>
-        /// Disposes the object
+        /// Disposes the Object
         /// </summary>
         void IDisposable.Dispose()
         {
@@ -298,9 +298,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <returns>A String with the Name, HasDbf, FeatureCount and Extents values.</returns>
         public override String ToString()
         {
-            return String.Format("Name: {0}; HasDbf: {1}; "+
+            return String.Format("Name: {0}; HasDbf: {1}; " +
                                  "Features: {2}; Extents: {3}",
-                                 ConnectionId, HasDbf, 
+                                 ConnectionId, HasDbf,
                                  GetFeatureCount(), GetExtents());
         }
 
@@ -317,7 +317,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="layerName">Name of the shapefile.</param>
         /// <param name="type">Type of shape to store in the shapefile.</param>
         /// <returns>A ShapeFile instance.</returns>
-        public static ShapeFileProvider Create(String directory, String layerName, 
+        public static ShapeFileProvider Create(String directory, String layerName,
                                                ShapeType type, IGeometryFactory geoFactory)
         {
             return Create(directory, layerName, type, null, geoFactory);
@@ -345,8 +345,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
-        public static ShapeFileProvider Create(String directory, String layerName, 
-                                               ShapeType type, FeatureDataTable schema, 
+        public static ShapeFileProvider Create(String directory, String layerName,
+                                               ShapeType type, FeatureDataTable schema,
                                                IGeometryFactory geoFactory)
         {
             if (type == ShapeType.Null)
@@ -382,7 +382,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
-                                               ShapeType type, FeatureDataTable model, 
+                                               ShapeType type, FeatureDataTable model,
                                                IGeometryFactory geoFactory)
         {
             CultureInfo culture = Thread.CurrentThread.CurrentCulture;
@@ -413,8 +413,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentException">
         /// Thrown if <paramref name="layerName"/> has invalid path characters.
         /// </exception>
-        public static ShapeFileProvider Create(DirectoryInfo directory, String layerName, 
-                                               ShapeType type, FeatureDataTable model, 
+        public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
+                                               ShapeType type, FeatureDataTable model,
                                                CultureInfo culture, Encoding encoding,
                                                IGeometryFactory geoFactory)
         {
@@ -549,14 +549,16 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <remarks>
         /// <example>
-        /// Using an anonymous method for filtering all features where the NAME column starts with S:
+        /// Using an anonymous method for filtering all features 
+        /// where the NAME column starts with S:
         /// <code lang="C#">
         /// myShapeDataSource.FilterDelegate = new FilterMethod(delegate(FeatureDataRow row) 
         ///		{ return (!row["NAME"].ToString().StartsWith("S")); });
         /// </code>
         /// </example>
         /// <example>
-        /// Declaring a delegate method for filtering (multi)polygon-features whose area is larger than 5.
+        /// Declaring a delegate method for filtering (multi)polygon-features 
+        /// whose area is larger than 5.
         /// <code>
         /// using GeoAPI.Geometries;
         /// [...]
@@ -617,7 +619,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         public Boolean IsSpatiallyIndexed
         {
             get { return _isIndexed; }
-            set { throw new NotImplementedException("Allow shapefile provider to be created without an index. [workitem:13025]"); }
+            set
+            {
+                throw new NotImplementedException("Allow shapefile provider to be " +
+                                                  "created without an index. [workitem:13025]");
+            }
         }
 
         /// <summary>
@@ -824,22 +830,24 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet,
-                                                     AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query,
+                                                     FeatureDataSet dataSet,
+                                                     AsyncCallback callback,
+                                                     Object asyncState)
         {
             checkOpen();
             throw new NotImplementedException();
         }
 
         public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table,
-                                                     AsyncCallback callback, object asyncState)
+                                                     AsyncCallback callback, Object asyncState)
         {
             checkOpen();
             throw new NotImplementedException();
         }
 
         public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
-                                                          AsyncCallback callback, object asyncState)
+                                                          AsyncCallback callback, Object asyncState)
         {
             checkOpen();
             throw new NotImplementedException();
@@ -847,14 +855,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
                                                           QueryExecutionOptions options, AsyncCallback callback,
-                                                          object asyncState)
+                                                          Object asyncState)
         {
             checkOpen();
             throw new NotImplementedException();
         }
 
         public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
-                                                          AsyncCallback callback, object asyncState)
+                                                          AsyncCallback callback, Object asyncState)
         {
             checkOpen();
             throw new NotImplementedException();
@@ -862,13 +870,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
                                                           QueryExecutionOptions options, AsyncCallback callback,
-                                                          object asyncState)
+                                                          Object asyncState)
         {
             checkOpen();
             throw new NotImplementedException();
         }
 
-        public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, object asyncState)
+        public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, Object asyncState)
         {
             throw new NotImplementedException();
         }
@@ -1031,7 +1039,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <remarks>
         /// <para>
         /// Please note that this method doesn't guarantee that the geometries returned actually 
-        /// intersect <paramref name="bounds"/>, but only that their bounding box intersects <paramref name="bounds"/>.
+        /// intersect <paramref name="bounds"/>, but only that their 
+        /// bounding box intersects <paramref name="bounds"/>.
         /// </para>
         /// <para>
         /// This method is much faster than the QueryFeatures method, because intersection tests
@@ -1071,7 +1080,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
         /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
         /// </exception>
         public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds)
         {
@@ -1086,14 +1096,16 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="options">Options indicating which data to retrieve.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
         /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// Thrown when a value other than <see cref="QueryExecutionOptions.FullFeature"/> 
         /// is supplied for <paramref name="options"/>.
         /// </exception>
         /// <remarks>
-        /// Only <see cref="QueryExecutionOptions.FullFeature"/> is a supported value for <paramref name="options"/>.
+        /// Only <see cref="QueryExecutionOptions.FullFeature"/> is a 
+        /// supported value for <paramref name="options"/>.
         /// </remarks>
         public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options)
         {
@@ -1104,7 +1116,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (_currentReader != null)
                 {
                     throw new ShapeFileInvalidOperationException(
-                        "Can't open another ShapeFileDataReader on this ShapeFile, since another reader is already active.");
+                        "Can't open another ShapeFileDataReader on this ShapeFile, " +
+                        "since another reader is already active.");
                 }
 
                 //enableReading();
@@ -1122,7 +1135,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="dataSet">The <see cref="FeatureDataSet"/> to fill 
         /// with features within the <paramref name="bounds">view</paramref>.</param>
         /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="IsOpen"/> before calling.
         /// </exception>
         public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet)
         {
@@ -1294,7 +1308,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Returns the geometry corresponding to the object ID
+        /// Returns the geometry corresponding to the Object ID
         /// </summary>
         /// <param name="oid">Object ID</param>
         /// <returns><see cref="IGeometry"/></returns>
@@ -1325,11 +1339,11 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Returns geometry object IDs whose bounding box intersects <paramref name="bounds"/>.
+        /// Returns geometry Object IDs whose bounding box intersects <paramref name="bounds"/>.
         /// </summary>
         /// <param name="bounds">Bounds which to search for objects in.</param>
         /// <returns>
-        /// An enumeration of object ids which have geometries whose 
+        /// An enumeration of Object ids which have geometries whose 
         /// bounding box is intersected by <paramref name="bounds"/>.
         /// </returns>
         /// <exception cref="ShapeFileInvalidOperationException">
@@ -1340,7 +1354,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
 
             IEnumerable<IdBounds> keys = _spatialIndex.Query(bounds);
-            IEnumerable<IFeatureDataRecord> features 
+            IEnumerable<IFeatureDataRecord> features
                 = intersectFeatureGeometry(keys, bounds.ToGeometry());
 
             foreach (IFeatureDataRecord feature in features)
@@ -1787,7 +1801,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private static IEnumerable<UInt32> getUint32IdsFromObjects(IEnumerable oids)
         {
-            foreach (object oid in oids)
+            foreach (Object oid in oids)
             {
                 yield return (UInt32)oid;
             }
@@ -1816,12 +1830,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         /// <summary>
         /// Gets a row from the DBase attribute file which has the 
-        /// specified <paramref name="oid">object id</paramref> created from
+        /// specified <paramref name="oid">Object id</paramref> created from
         /// <paramref name="table"/>.
         /// </summary>
         /// <param name="oid">Object id to lookup.</param>
         /// <param name="table">DataTable with schema matching the feature to retrieve.</param>
-        /// <returns>Row corresponding to the object id.</returns>
+        /// <returns>Row corresponding to the Object id.</returns>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
@@ -1930,7 +1944,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    }
         //}
 
-        private void readerDisposed(object sender, EventArgs e)
+        private void readerDisposed(Object sender, EventArgs e)
         {
             lock (_readerSync)
             {
@@ -1996,19 +2010,19 @@ namespace SharpMap.Data.Providers.ShapeFile
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
             IItemInsertStrategy<IExtents, IdBounds> insertStrategy = new GuttmanQuadraticInsert<IdBounds>(_geoFactory);
             INodeSplitStrategy<IExtents, IdBounds> nodeSplitStrategy = new GuttmanQuadraticSplit<IdBounds>(_geoFactory);
-            DynamicRTreeBalanceHeuristic indexHeuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue); 
+            DynamicRTreeBalanceHeuristic indexHeuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
             IdleMonitor idleMonitor = null;
 
             DynamicRTree<IdBounds> index = new SelfOptimizingDynamicSpatialIndex<IdBounds>(
                                                                                 _geoFactory,
                                                                                 restructureStrategy,
-                                                                                restructureHeuristic, 
+                                                                                restructureHeuristic,
                                                                                 insertStrategy,
                                                                                 nodeSplitStrategy,
                                                                                 indexHeuristic,
                                                                                 idleMonitor);
 
-            UInt32 featureCount = (UInt32) GetFeatureCount();
+            UInt32 featureCount = (UInt32)GetFeatureCount();
 
             for (UInt32 i = 0; i < featureCount; i++)
             {
@@ -2106,7 +2120,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private IGeometry readGeometry(UInt32 oid)
         {
             //enableReading();
-            Int32 shapeOffset = _shapeFileIndex[oid].AbsoluteByteOffset 
+            Int32 shapeOffset = _shapeFileIndex[oid].AbsoluteByteOffset
                                 + ShapeFileConstants.ShapeRecordHeaderByteLength;
 
             _shapeFileReader.BaseStream.Seek(shapeOffset, SeekOrigin.Begin);
@@ -2114,7 +2128,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             // Shape type is a common value to all geometry
             ShapeType type = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
 
-            // Null geometries encode deleted lines, so object ids remain consistent
+            // Null geometries encode deleted lines, so Object ids remain consistent
             if (type == ShapeType.Null)
             {
                 return null;
@@ -2414,7 +2428,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private void parseProjection()
         {
             String projfile = Path.Combine(
-                Path.GetDirectoryName(Filename), 
+                Path.GetDirectoryName(Filename),
                 Path.GetFileNameWithoutExtension(Filename) + ".prj");
 
             if (File.Exists(projfile))
@@ -2436,7 +2450,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 catch (ArgumentException ex)
                 {
                     Trace.TraceWarning("Coordinate system file '" + projfile
-                                       + "' found, but could not be parsed. "+
+                                       + "' found, but could not be parsed. " +
                                        "WKT parser returned:" + ex.Message);
 
                     throw new ShapeFileIsInvalidException("Invalid .prj file", ex);
@@ -2509,8 +2523,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 case ShapeType.Null:
                 default:
                     throw new NotSupportedException(String.Format(
-                                                        "Writing geometry type {0} "+
-                                                        "is not supported in the "+
+                                                        "Writing geometry type {0} " +
+                                                        "is not supported in the " +
                                                         "current version.",
                                                         ShapeType));
             }
@@ -2570,10 +2584,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         private void writeLineString(ILineString lineString)
         {
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.PolyLine));
-            
-            writePolySegments(lineString.Extents, 
+
+            writePolySegments(lineString.Extents,
                               new Int32[] { 0 },
-                              lineString.Coordinates, 
+                              lineString.Coordinates,
                               lineString.Coordinates.Count);
         }
 

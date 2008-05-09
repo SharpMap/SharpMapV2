@@ -355,7 +355,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The sum.</returns>
         IMatrixD IAddable<IMatrixD>.Add(IMatrixD b)
         {
-            return MatrixProcessor.Add(this, b);
+            //return MatrixProcessor.Add(this, b);
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -370,7 +371,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The difference.</returns>
         IMatrixD ISubtractable<IMatrixD>.Subtract(IMatrixD b)
         {
-            return MatrixProcessor.Subtract(this, b);
+            //return MatrixProcessor.Subtract(this, b);
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -411,7 +413,8 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The product.</returns>
         IMatrixD IMultipliable<IMatrixD>.Multiply(IMatrixD b)
         {
-            return MatrixProcessor.Multiply(this, b);
+            //return MatrixProcessor.Multiply(this, b);
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -576,9 +579,9 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>The matrix with the rows as columns and columns as rows.</returns>
         IMatrixD IMatrixD.Transpose()
         {
-            return
-                new Matrix<DoubleComponent>((this as IMatrixD).Format,
-                    new DoubleComponent[][] { new DoubleComponent[] { _width }, new DoubleComponent[] { _height } });
+            //return new Matrix<DoubleComponent>((this as IMatrixD).Format,
+            //    new DoubleComponent[][] { new DoubleComponent[] { _width }, new DoubleComponent[] { _height } });
+            throw new NotImplementedException();
         }
 
         #endregion

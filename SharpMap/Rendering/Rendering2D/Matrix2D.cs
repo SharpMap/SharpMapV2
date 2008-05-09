@@ -17,7 +17,7 @@
 
 using System;
 using NPack;
-using SharpMap.Utilities;
+using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -31,7 +31,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// the translate components are in the 3rd row.
     /// </remarks>
     [Serializable]
-    public class Matrix2D : AffineMatrix<DoubleComponent>
+    public class Matrix2D : AffineMatrix
     {
         private static readonly Matrix2D _identity
             = new Matrix2D(1, 0, 0, 1, 0, 0);
@@ -148,7 +148,12 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Scale to apply to the Y dimension.</param>
         public void Scale(Double x, Double y)
         {
-            Scale(new Point2D(x, y));
+            Scale(new Vector(x, y));
+        }
+
+        public void Scale(Size2D size)
+        {
+            (this as ITransformMatrix<DoubleComponent>).Scale(size);
         }
 
         /// <summary>
@@ -158,7 +163,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Scale to apply to the Y dimension.</param>
         public void ScalePrepend(Double x, Double y)
         {
-            base.Scale(new Point2D(x, y), MatrixOperationOrder.Prepend);
+            base.Scale(new Vector(x, y), MatrixOperationOrder.Prepend);
         }
 
         /// <summary>
@@ -168,7 +173,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Y component of the translation vector.</param>
         public void Translate(Double x, Double y)
         {
-            Translate(new Point2D(x, y));
+            Translate(new Vector(x, y));
         }
 
         /// <summary>
@@ -178,7 +183,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Y component of the translation vector.</param>
         public void TranslatePrepend(Double x, Double y)
         {
-            Translate(new Point2D(x, y), MatrixOperationOrder.Prepend);
+            Translate(new Vector(x, y), MatrixOperationOrder.Prepend);
         }
 
         /// <summary>

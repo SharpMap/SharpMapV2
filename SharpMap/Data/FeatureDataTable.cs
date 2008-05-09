@@ -790,14 +790,9 @@ namespace SharpMap.Data
                 case DataRowAction.Add:
                     if (r.Geometry != null)
                     {
-                        if (_envelope == null)
-                        {
-                            _envelope = r.Geometry.Envelope;
-                        }
-                        else
-                        {
-                            _envelope = _envelope.Union(r.Geometry).Envelope;
-                        }
+                        _envelope = _envelope == null
+                                        ? r.Geometry.Envelope
+                                        : _envelope.Union(r.Geometry).Envelope;
 
                         if (IsSpatiallyIndexed)
                         {

@@ -43,7 +43,7 @@ namespace ProjNet.CoordinateSystems
     /// mapping from the mathematical space into real-world locations is called a Datum.</para>
     /// </remarks>		
     public abstract class CoordinateSystem<TCoordinate> : Info, ICoordinateSystem<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {

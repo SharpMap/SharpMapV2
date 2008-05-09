@@ -44,14 +44,9 @@ namespace SharpMap.Expressions
         {
             get 
             {
-                if (!_hasOidFilter)
-                {
-                    return _emptyEnumeration;
-                }
-                else
-                {
-                    return generateOidFilter();
-                }
+                return _hasOidFilter
+                           ? generateOidFilter()
+                           : _emptyEnumeration;
             }
         }
 

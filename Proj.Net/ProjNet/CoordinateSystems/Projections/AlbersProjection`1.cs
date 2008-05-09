@@ -61,7 +61,7 @@ namespace ProjNet.CoordinateSystems.Projections
     ///		direction, distance and shape somewhat.</para>
     /// </remarks>
     internal class AlbersProjection<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
             IComputable<Double, TCoordinate>,
             IConvertible
     {
@@ -319,10 +319,11 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override TCoordinate MetersToDegrees(TCoordinate p)
         {
-            Double theta = Math.Atan((p[0] * _metersPerUnit - _falseEasting)
+            Double p0 = (Double)p[0];
+            Double theta = Math.Atan((p0 * _metersPerUnit - _falseEasting)
                                      / (ro0 - (p[1].Multiply(_metersPerUnit) - _falseNorthing)));
 
-            Double ro = Math.Sqrt(Math.Pow(p[0] * _metersPerUnit - _falseEasting, 2)
+            Double ro = Math.Sqrt(Math.Pow(p0 * _metersPerUnit - _falseEasting, 2)
                                   + Math.Pow(ro0 - (p[1].Multiply(_metersPerUnit) - _falseNorthing), 2));
 
             Double q = (_c - Math.Pow(ro, 2) * Math.Pow(n, 2) / Math.Pow(SemiMajor, 2)) / n;

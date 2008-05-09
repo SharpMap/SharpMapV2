@@ -200,8 +200,12 @@
     <Compile Include="Presentation\StyleTypeDescriptor.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Rendering\AffineMatrix.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\ITextRenderer`3.cs" />
+    <Compile Include="Rendering\LinearFactory.cs" />
+    <Compile Include="Rendering\Matrix.cs" />
+    <Compile Include="Rendering\MatrixProcessor.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
@@ -209,10 +213,6 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering3D\Matrix3D.cs" />
-    <Compile Include="Rendering\Rendering3D\Point3D.cs" />
-    <Compile Include="Rendering\Rendering3D\Rectangle3D.cs" />
-    <Compile Include="Rendering\Rendering3D\Size3D.cs" />
     <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />
@@ -223,6 +223,7 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
+    <Compile Include="Rendering\Vector.cs" />
     <Compile Include="Styles\FeatureStyle.cs" />
     <Compile Include="Styles\HorizontalAlignment.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
@@ -304,7 +305,6 @@
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
-    <Compile Include="Utilities\MatrixProcessor.cs" />
     <Compile Include="Utilities\NondisposingStream.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
     <Compile Include="Utilities\SharpMapVersion.cs" />

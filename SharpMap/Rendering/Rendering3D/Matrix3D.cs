@@ -25,19 +25,17 @@ namespace SharpMap.Rendering.Rendering3D
     {
         public new static readonly Matrix3D Identity
             = new Matrix3D(1, 0, 0, 0,
-                               0, 1, 0, 0,
-                               0, 0, 1, 0,
-                               0, 0, 0, 1);
+                           0, 1, 0, 0,
+                           0, 0, 1, 0,
+                           0, 0, 0, 1);
 
         public Matrix3D()
-            : this(Identity)
-        {
-        }
+            : this(Identity) { }
 
         public Matrix3D(Double x1, Double x2, Double x3, Double x4,
-                            Double y1, Double y2, Double y3, Double y4,
-                            Double z1, Double z2, Double z3, Double z4,
-                            Double w1, Double w2, Double w3, Double w4)
+                        Double y1, Double y2, Double y3, Double y4,
+                        Double z1, Double z2, Double z3, Double z4,
+                        Double w1, Double w2, Double w3, Double w4)
             : base(MatrixFormat.RowMajor, 4)
         {
             X1 = x1;
@@ -61,19 +59,21 @@ namespace SharpMap.Rendering.Rendering3D
         public Matrix3D(IMatrixD matrixToCopy)
             : base(MatrixFormat.RowMajor, 4)
         {
-            if(matrixToCopy.ColumnCount != 4)
+            if (matrixToCopy.ColumnCount != 4)
             {
-                throw new  ArgumentException("Parameter has an incompatable number columns. A 3D affine matrix requires 4.", "matrixToCopy");
+                throw new ArgumentException("Parameter has an incompatable number columns. " +
+                                             "A 3D affine matrix requires 4.", "matrixToCopy");
             }
 
             if (matrixToCopy.RowCount != 4)
             {
-                throw new ArgumentException("Parameter has an incompatable number rows. A 3D affine matrix requires 4.", "matrixToCopy");
+                throw new ArgumentException("Parameter has an incompatable number rows. " +
+                                            "A 3D affine matrix requires 4.", "matrixToCopy");
             }
 
             for (Int32 i = 0; i < 4; i++)
             {
-                for(Int32 j = 0; j < 4; j++)
+                for (Int32 j = 0; j < 4; j++)
                 {
                     this[i, j] = matrixToCopy[i, j];
                 }

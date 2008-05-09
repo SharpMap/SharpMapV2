@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using NPack;
 using NPack.Interfaces;
 
-namespace SharpMap.Utilities
+namespace SharpMap.Rendering
 {
     /// <summary>
     /// Provides linear algebra processing methods
@@ -14,11 +14,11 @@ namespace SharpMap.Utilities
     {
         private static volatile MatrixProcessor _instance = null;
         private static readonly Object _initSync = new Object();
-        private readonly IMatrixOperations<DoubleComponent, IVector<DoubleComponent>, IMatrix<DoubleComponent>> _ops;
+        private readonly IMatrixOperations<DoubleComponent, Vector<DoubleComponent>, Matrix<DoubleComponent>> _ops;
 
         static MatrixProcessor() { }
 
-        private MatrixProcessor(IMatrixOperations<DoubleComponent, IVector<DoubleComponent>, IMatrix<DoubleComponent>> ops)
+        private MatrixProcessor(IMatrixOperations<DoubleComponent, Vector<DoubleComponent>, Matrix<DoubleComponent>> ops)
         {
             _ops = ops;
         }
@@ -39,8 +39,8 @@ namespace SharpMap.Utilities
                             // and this is where the configuration should go...
                             // but we hard code it for now.
                             LinearFactory<DoubleComponent> factory = new LinearFactory<DoubleComponent>();
-                            IMatrixOperations<DoubleComponent, IVector<DoubleComponent>, IMatrix<DoubleComponent>> ops
-                                = new ClrMatrixOperations<DoubleComponent, IVector<DoubleComponent>, IMatrix<DoubleComponent>>(factory);
+                            IMatrixOperations<DoubleComponent, Vector<DoubleComponent>, Matrix<DoubleComponent>> ops
+                                = new ClrMatrixOperations<DoubleComponent, Vector<DoubleComponent>, Matrix<DoubleComponent>>(factory);
 
                             _instance = new MatrixProcessor(ops);
                         }
@@ -54,7 +54,7 @@ namespace SharpMap.Utilities
         /// <summary>
         /// Gets the configured operations engine.
         /// </summary>
-        public IMatrixOperations<DoubleComponent, IVector<DoubleComponent>, IMatrix<DoubleComponent>> Operations
+        public IMatrixOperations<DoubleComponent, Vector<DoubleComponent>, Matrix<DoubleComponent>> Operations
         {
             get { return _ops; }
         }
@@ -149,22 +149,27 @@ namespace SharpMap.Utilities
             return Instance.Operations.Negate(matrix);
         }
 
-        public static void Rotate(IMatrix<DoubleComponent> matrix, IVector<DoubleComponent> axis, Double radians)
+        public static void Rotate(IMatrix<DoubleComponent> matrix, 
+                                  IVector<DoubleComponent> axis, 
+                                  Double radians)
         {
             Instance.Operations.Rotate(matrix, axis, radians);
         }
 
-        public static void Scale(IMatrix<DoubleComponent> matrix, IVector<DoubleComponent> scaleVector)
+        public static void Scale(IMatrix<DoubleComponent> matrix, 
+                                 IVector<DoubleComponent> scaleVector)
         {
             Instance.Operations.Scale(matrix, scaleVector);
         }
 
-        public static void Shear(IMatrix<DoubleComponent> matrix, IVector<DoubleComponent> shearVector)
+        public static void Shear(IMatrix<DoubleComponent> matrix, 
+                                 IVector<DoubleComponent> shearVector)
         {
             Instance.Operations.Shear(matrix, shearVector);
         }
 
-        public static void Translate(IMatrix<DoubleComponent> affineMatrix, IVector<DoubleComponent> translateVector)
+        public static void Translate(IMatrix<DoubleComponent> affineMatrix, 
+                                     IVector<DoubleComponent> translateVector)
         {
             Instance.Operations.Translate(affineMatrix, translateVector);
         }
@@ -209,12 +214,14 @@ namespace SharpMap.Utilities
             return Instance.Operations.FrobeniusNorm(matrix);
         }
 
-        public static IMatrix<DoubleComponent> Solve(IMatrix<DoubleComponent> a, IMatrix<DoubleComponent> b)
+        public static IMatrix<DoubleComponent> Solve(IMatrix<DoubleComponent> a, 
+                                                     IMatrix<DoubleComponent> b)
         {
             return Instance.Operations.Solve(a, b);
         }
 
-        public static IMatrix<DoubleComponent> SolveTranspose(IMatrix<DoubleComponent> a, IMatrix<DoubleComponent> b)
+        public static IMatrix<DoubleComponent> SolveTranspose(IMatrix<DoubleComponent> a, 
+                                                              IMatrix<DoubleComponent> b)
         {
             return Instance.Operations.SolveTranspose(a, b);
         }
@@ -224,32 +231,33 @@ namespace SharpMap.Utilities
             return Instance.Operations.Transpose(matrix);
         }
 
-        public static void SetMatrix(IMatrix<DoubleComponent> source, IMatrix<DoubleComponent> target)
+        public static void SetMatrix(IMatrix<DoubleComponent> source,   
+                                     IMatrix<DoubleComponent> target)
         {
             Instance.Operations.SetMatrix(source, target);
         }
 
-        public static ILUDecomposition<DoubleComponent, IMatrix<DoubleComponent>> GetLuDecomposition(IMatrix<DoubleComponent> matrix)
+        public static ILUDecomposition<DoubleComponent> GetLuDecomposition(IMatrix<DoubleComponent> matrix)
         {
             return Instance.Operations.GetLUDecomposition(matrix);
         }
 
-        public static IQRDecomposition<DoubleComponent, IMatrix<DoubleComponent>> GetQrDecomposition(IMatrix<DoubleComponent> matrix)
+        public static IQRDecomposition<DoubleComponent> GetQrDecomposition(IMatrix<DoubleComponent> matrix)
         {
             return Instance.Operations.GetQRDecomposition(matrix);
         }
 
-        public static ICholeskyDecomposition<DoubleComponent, IMatrix<DoubleComponent>> GetCholeskyDecomposition(IMatrix<DoubleComponent> matrix)
+        public static ICholeskyDecomposition<DoubleComponent> GetCholeskyDecomposition(IMatrix<DoubleComponent> matrix)
         {
             return Instance.Operations.GetCholeskyDecomposition(matrix);
         }
 
-        public static ISingularValueDecomposition<DoubleComponent, IMatrix<DoubleComponent>> GetSingularValueDecomposition(IMatrix<DoubleComponent> matrix)
+        public static ISingularValueDecomposition<DoubleComponent> GetSingularValueDecomposition(IMatrix<DoubleComponent> matrix)
         {
             return Instance.Operations.GetSingularValueDecomposition(matrix);
         }
 
-        public static IEigenvalueDecomposition<DoubleComponent, IMatrix<DoubleComponent>> GetEigenvalueDecomposition(IMatrix<DoubleComponent> matrix)
+        public static IEigenvalueDecomposition<DoubleComponent> GetEigenvalueDecomposition(IMatrix<DoubleComponent> matrix)
         {
             return Instance.Operations.GetEigenvalueDecomposition(matrix);
         }

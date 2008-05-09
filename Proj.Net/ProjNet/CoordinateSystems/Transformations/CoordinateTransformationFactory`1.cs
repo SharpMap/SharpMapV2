@@ -22,6 +22,7 @@ using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+using NPack;
 using NPack.Interfaces;
 using ProjNet.CoordinateSystems.Projections;
 
@@ -31,20 +32,22 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// Creates coordinate transformations.
     /// </summary>
     public class CoordinateTransformationFactory<TCoordinate> : ICoordinateTransformationFactory<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
         private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;
         private readonly IGeometryFactory<TCoordinate> _geometryFactory;
+        private readonly IMatrixFactory<DoubleComponent> _matrixFactory;
         private readonly IGeocentricCoordinateSystem<TCoordinate> _wgs84;
 
-        public CoordinateTransformationFactory(
-            ICoordinateFactory<TCoordinate> coordinateFactory,
-            IGeometryFactory<TCoordinate> geometryFactory)
+        public CoordinateTransformationFactory(ICoordinateFactory<TCoordinate> coordinateFactory,
+                                               IGeometryFactory<TCoordinate> geometryFactory,
+                                               IMatrixFactory<DoubleComponent> matrixFactory)
         {
             _coordinateFactory = coordinateFactory;
             _geometryFactory = geometryFactory;
+            _matrixFactory = matrixFactory;
 
             CoordinateSystemFactory<TCoordinate> coordSystemFactory
                 = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
@@ -141,28 +144,45 @@ namespace ProjNet.CoordinateSystems.Transformations
         #region Methods for converting between specific systems
 
         private ICoordinateTransformation<TCoordinate> geographicToGeocentric(
-            IGeographicCoordinateSystem<TCoordinate> source, IGeocentricCoordinateSystem<TCoordinate> target)
+                                                            IGeographicCoordinateSystem<TCoordinate> source,    
+                                                            IGeocentricCoordinateSystem<TCoordinate> target)
         {
             IMathTransform<TCoordinate> geocMathTransform = createCoordinateOperation(target);
-            return
-                new CoordinateTransformation<TCoordinate>(source, target, TransformType.Conversion, geocMathTransform,
-                                                          String.Empty, String.Empty, -1, String.Empty, String.Empty);
+            return new CoordinateTransformation<TCoordinate>(source, 
+                                                             target, 
+                                                             TransformType.Conversion, 
+                                                             geocMathTransform,
+                                                             String.Empty, 
+                                                             String.Empty, 
+                                                             -1, 
+                                                             String.Empty, 
+                                                             String.Empty);
         }
 
         private ICoordinateTransformation<TCoordinate> geocentricToGeographic(
-            IGeocentricCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
+                                                            IGeocentricCoordinateSystem<TCoordinate> source, 
+                                                            IGeographicCoordinateSystem<TCoordinate> target)
         {
             IMathTransform<TCoordinate> geocMathTransform = createCoordinateOperation(source).Inverse();
-            return new CoordinateTransformation<TCoordinate>(source, target, TransformType.Conversion,
-                                                             geocMathTransform, String.Empty, String.Empty, -1,
-                                                             String.Empty, String.Empty);
+            return new CoordinateTransformation<TCoordinate>(source, 
+                                                             target, 
+                                                             TransformType.Conversion,
+                                                             geocMathTransform, 
+                                                             String.Empty, 
+                                                             String.Empty, 
+                                                             -1,
+                                                             String.Empty, 
+                                                             String.Empty);
         }
 
         private ICoordinateTransformation<TCoordinate> projectedToProjected(
-            IProjectedCoordinateSystem<TCoordinate> source, IProjectedCoordinateSystem<TCoordinate> target)
+                                                            IProjectedCoordinateSystem<TCoordinate> source, 
+                                                            IProjectedCoordinateSystem<TCoordinate> target)
         {
             CoordinateTransformationFactory<TCoordinate> ctFac
-                = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+                = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, 
+                                                                   _geometryFactory, 
+                                                                   _matrixFactory);
 
             ICoordinateTransformation<TCoordinate>[] transforms
                 = new ICoordinateTransformation<TCoordinate>[]
@@ -180,27 +200,47 @@ namespace ProjNet.CoordinateSystems.Transformations
                 new ConcatenatedTransform<TCoordinate>(transforms, _coordinateFactory);
 
             return new CoordinateTransformation<TCoordinate>(source,
-                                                             target, TransformType.Transformation, ct,
-                                                             String.Empty, String.Empty, -1, String.Empty, String.Empty);
+                                                             target, 
+                                                             TransformType.Transformation, 
+                                                             ct,
+                                                             String.Empty, 
+                                                             String.Empty, 
+                                                             -1, 
+                                                             String.Empty, 
+                                                             String.Empty);
         }
 
         private ICoordinateTransformation<TCoordinate> geographicToProjected(
-            IGeographicCoordinateSystem<TCoordinate> source, IProjectedCoordinateSystem<TCoordinate> target)
+                                                            IGeographicCoordinateSystem<TCoordinate> source, 
+                                                            IProjectedCoordinateSystem<TCoordinate> target)
         {
             if (source.EqualParams(target.GeographicCoordinateSystem))
             {
-                IMathTransform<TCoordinate> mathTransform = createCoordinateOperation(
-                    target.Projection, target.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid, target.LinearUnit);
+                IProjection projection = target.Projection;
+                IEllipsoid ellipsoid = target.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid;
+                ILinearUnit linearUnit = target.LinearUnit;
 
-                return new CoordinateTransformation<TCoordinate>(source, target, TransformType.Transformation,
-                                                                 mathTransform, String.Empty, String.Empty, -1,
-                                                                 String.Empty, String.Empty);
+                IMathTransform<TCoordinate> mathTransform = createCoordinateOperation(projection, 
+                                                                                      ellipsoid, 
+                                                                                      linearUnit);
+
+                return new CoordinateTransformation<TCoordinate>(source, 
+                                                                 target, 
+                                                                 TransformType.Transformation,
+                                                                 mathTransform, 
+                                                                 String.Empty, 
+                                                                 String.Empty, 
+                                                                 -1,
+                                                                 String.Empty, 
+                                                                 String.Empty);
             }
             else
             {
                 // Geographic coordinate systems differ - create concatenated transform
                 CoordinateTransformationFactory<TCoordinate> ctFac
-                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, 
+                                                                       _geometryFactory,
+                                                                       _matrixFactory);
 
                 ICoordinateTransformation<TCoordinate>[] transforms = new ICoordinateTransformation<TCoordinate>[]
                     {
@@ -212,31 +252,50 @@ namespace ProjNet.CoordinateSystems.Transformations
                     new ConcatenatedTransform<TCoordinate>(transforms, _coordinateFactory);
 
                 return new CoordinateTransformation<TCoordinate>(source,
-                                                                 target, TransformType.Transformation, ct,
-                                                                 String.Empty, String.Empty, -1, String.Empty,
+                                                                 target, 
+                                                                 TransformType.Transformation, 
+                                                                 ct,
+                                                                 String.Empty, 
+                                                                 String.Empty, 
+                                                                 -1, 
+                                                                 String.Empty,
                                                                  String.Empty);
             }
         }
 
         private ICoordinateTransformation<TCoordinate> projectedToGeographic(
-            IProjectedCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
+                                                        IProjectedCoordinateSystem<TCoordinate> source, 
+                                                        IGeographicCoordinateSystem<TCoordinate> target)
         {
+            CoordinateTransformation<TCoordinate> transformation;
+
             if (source.GeographicCoordinateSystem.EqualParams(target))
             {
-                IMathTransform<TCoordinate> mathTransform =
-                    createCoordinateOperation(source.Projection,
-                                              source.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid,
-                                              source.LinearUnit).Inverse();
-                return
-                    new CoordinateTransformation<TCoordinate>(source, target, TransformType.Transformation,
-                                                              mathTransform,
-                                                              String.Empty, String.Empty, -1, String.Empty, String.Empty);
+                IProjection projection = source.Projection;
+                IEllipsoid ellipsoid = source.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid;
+                ILinearUnit linearUnit = source.LinearUnit;
+                IMathTransform<TCoordinate> mathTransform = createCoordinateOperation(projection, 
+                                                                                      ellipsoid, 
+                                                                                      linearUnit);
+                IMathTransform<TCoordinate> inverse = mathTransform.Inverse();
+
+                transformation = new CoordinateTransformation<TCoordinate>(source, 
+                                                                           target, 
+                                                                           TransformType.Transformation,
+                                                                           inverse,
+                                                                           String.Empty, 
+                                                                           String.Empty, 
+                                                                           -1, 
+                                                                           String.Empty, 
+                                                                           String.Empty);
             }
             else
             {
                 // Geographic coordinate systems differ - create concatenated transform
                 CoordinateTransformationFactory<TCoordinate> ctFac
-                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory,
+                                                                       _geometryFactory,
+                                                                       _matrixFactory);
 
                 ICoordinateTransformation<TCoordinate>[] transforms = new ICoordinateTransformation<TCoordinate>[]
                     {
@@ -247,24 +306,38 @@ namespace ProjNet.CoordinateSystems.Transformations
                 ConcatenatedTransform<TCoordinate> ct =
                     new ConcatenatedTransform<TCoordinate>(transforms, _coordinateFactory);
 
-                return new CoordinateTransformation<TCoordinate>(source,
-                                                                 target, TransformType.Transformation, ct,
-                                                                 String.Empty, String.Empty, -1, String.Empty,
-                                                                 String.Empty);
+                transformation = new CoordinateTransformation<TCoordinate>(source,
+                                                                           target, 
+                                                                           TransformType.Transformation, 
+                                                                           ct,
+                                                                           String.Empty, 
+                                                                           String.Empty, 
+                                                                           -1, 
+                                                                           String.Empty,
+                                                                           String.Empty);
             }
+
+            return transformation;
         }
 
         private ICoordinateTransformation<TCoordinate> createGeographicToGeographic(
-            IGeographicCoordinateSystem<TCoordinate> source, IGeographicCoordinateSystem<TCoordinate> target)
+                                                            IGeographicCoordinateSystem<TCoordinate> source, 
+                                                            IGeographicCoordinateSystem<TCoordinate> target)
         {
             if (source.HorizontalDatum.EqualParams(target.HorizontalDatum))
             {
+                GeographicTransform<TCoordinate> transform = new GeographicTransform<TCoordinate>(source, 
+                                                                                                  target, 
+                                                                                                  _coordinateFactory);
                 // No datum shift needed
                 return new CoordinateTransformation<TCoordinate>(source,
-                                                                 target, TransformType.Conversion,
-                                                                 new GeographicTransform<TCoordinate>(source, target,
-                                                                                                      _coordinateFactory),
-                                                                 String.Empty, String.Empty, -1, String.Empty,
+                                                                 target, 
+                                                                 TransformType.Conversion,
+                                                                 transform,
+                                                                 String.Empty, 
+                                                                 String.Empty, 
+                                                                 -1, 
+                                                                 String.Empty,
                                                                  String.Empty);
             }
             else
@@ -272,7 +345,9 @@ namespace ProjNet.CoordinateSystems.Transformations
                 // Create datum shift
                 // Convert to geocentric, perform shift and return to geographic
                 CoordinateTransformationFactory<TCoordinate> ctFac
-                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+                    = new CoordinateTransformationFactory<TCoordinate>(_coordinateFactory,
+                                                                       _geometryFactory,
+                                                                       _matrixFactory);
 
                 CoordinateSystemFactory<TCoordinate> cFac
                     = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
@@ -297,8 +372,13 @@ namespace ProjNet.CoordinateSystems.Transformations
                     new ConcatenatedTransform<TCoordinate>(transforms, _coordinateFactory);
 
                 return new CoordinateTransformation<TCoordinate>(source,
-                                                                 target, TransformType.Transformation, ct,
-                                                                 String.Empty, String.Empty, -1, String.Empty,
+                                                                 target, 
+                                                                 TransformType.Transformation, 
+                                                                 ct,
+                                                                 String.Empty, 
+                                                                 String.Empty, 
+                                                                 -1, 
+                                                                 String.Empty,
                                                                  String.Empty);
             }
         }
@@ -316,49 +396,79 @@ namespace ProjNet.CoordinateSystems.Transformations
                 !source.HorizontalDatum.Wgs84Parameters.HasZeroValuesOnly)
             {
                 IMathTransform<TCoordinate> dataumTransform =
-                    new DatumTransform<TCoordinate>(source.HorizontalDatum.Wgs84Parameters, _coordinateFactory);
+                    new DatumTransform<TCoordinate>(source.HorizontalDatum.Wgs84Parameters,
+                                                    _coordinateFactory,
+                                                    _matrixFactory);
 
                 target = target.HorizontalDatum.Wgs84Parameters == null ||
                          target.HorizontalDatum.Wgs84Parameters.HasZeroValuesOnly
                              ? target
                              : _wgs84;
 
-                transforms.Add(new CoordinateTransformation<TCoordinate>(target, source,
-                                                                         TransformType.Transformation, dataumTransform,
-                                                                         "", "", -1, "", ""));
+                transforms.Add(new CoordinateTransformation<TCoordinate>(target, 
+                                                                         source,
+                                                                         TransformType.Transformation, 
+                                                                         dataumTransform,
+                                                                         "", 
+                                                                         "", 
+                                                                         -1, 
+                                                                         "", 
+                                                                         ""));
             }
 
             //Does target has a datum different from WGS84 and is there a shift specified?
             if (target.HorizontalDatum.Wgs84Parameters != null &&
                 !target.HorizontalDatum.Wgs84Parameters.HasZeroValuesOnly)
             {
-                IMathTransform<TCoordinate> datumTransform =
-                    new DatumTransform<TCoordinate>(target.HorizontalDatum.Wgs84Parameters, _coordinateFactory).Inverse();
+                IMathTransform<TCoordinate> datumTransform = 
+                    new DatumTransform<TCoordinate>(target.HorizontalDatum.Wgs84Parameters,
+                                                    _coordinateFactory,
+                                                    _matrixFactory);
+
+                IMathTransform<TCoordinate> inverseDatumTransform = datumTransform.Inverse();
 
                 source = source.HorizontalDatum.Wgs84Parameters == null ||
                          source.HorizontalDatum.Wgs84Parameters.HasZeroValuesOnly
                              ? source
                              : _wgs84;
 
-                transforms.Add(new CoordinateTransformation<TCoordinate>(source, target,
-                                                                         TransformType.Transformation, datumTransform,
-                                                                         "", "", -1, "", ""));
+                transforms.Add(new CoordinateTransformation<TCoordinate>(source, 
+                                                                         target,
+                                                                         TransformType.Transformation, 
+                                                                         inverseDatumTransform,
+                                                                         "", 
+                                                                         "", 
+                                                                         -1, 
+                                                                         "", 
+                                                                         ""));
             }
 
             if (transforms.Count == 1) // Since we only have one shift, lets just return the datumshift from/to wgs84
             {
-                return new CoordinateTransformation<TCoordinate>(source, target,
+                return new CoordinateTransformation<TCoordinate>(source, 
+                                                                 target,
                                                                  TransformType.ConversionAndTransformation,
-                                                                 transforms[0].MathTransform, "", "", -1, "", "");
+                                                                 transforms[0].MathTransform, 
+                                                                 "", 
+                                                                 "", 
+                                                                 -1, 
+                                                                 "", 
+                                                                 "");
             }
             else
             {
                 ConcatenatedTransform<TCoordinate> ct =
                     new ConcatenatedTransform<TCoordinate>(transforms, _coordinateFactory);
 
-                return new CoordinateTransformation<TCoordinate>(source, target,
-                                                                 TransformType.ConversionAndTransformation, ct, "", "",
-                                                                 -1, "", "");
+                return new CoordinateTransformation<TCoordinate>(source, 
+                                                                 target,
+                                                                 TransformType.ConversionAndTransformation, 
+                                                                 ct, 
+                                                                 "", 
+                                                                 "",
+                                                                 -1, 
+                                                                 "", 
+                                                                 "");
             }
         }
 

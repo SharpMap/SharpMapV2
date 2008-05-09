@@ -32,7 +32,6 @@ using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
-using SharpMap.Layers;
 using GdiPoint = System.Drawing.Point;
 using GdiSize = System.Drawing.Size;
 using GdiRectangle = System.Drawing.Rectangle;
@@ -693,7 +692,7 @@ namespace SharpMap.Presentation.WinForms
 			// this transform goes from the underlying coordinates to 
 			// screen coordinates, but for some reason renders text upside down
 			// we cannot just scale by 1, -1 because offsets are affected also
-			Matrix m = g.Transform;
+			GdiMatrix m = g.Transform;
 			// used to scale text size for the current zoom level
 			float scale = Math.Abs(m.Elements[0]);
 
@@ -710,7 +709,7 @@ namespace SharpMap.Presentation.WinForms
 			m.TransformPoints(transformedPoints1);
 
 			// for labels, we're going to use an identity matrix and screen coordinates
-			Matrix newM = new Matrix();
+            GdiMatrix newM = new GdiMatrix();
 
 			Boolean scaleText = true;
 

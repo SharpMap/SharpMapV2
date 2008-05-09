@@ -56,7 +56,7 @@ namespace ProjNet.CoordinateSystems.Projections
     /// to one another in the projected domain.</para>
     /// </remarks>
     internal class LambertConformalConic2SP<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
             IComputable<Double, TCoordinate>,
             IConvertible
     {

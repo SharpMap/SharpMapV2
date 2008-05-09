@@ -22,7 +22,7 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public class ColorMatrix : AffineMatrix<DoubleComponent>, IEquatable<ColorMatrix>
+    public class ColorMatrix : AffineMatrix, IEquatable<ColorMatrix>
     {
         private readonly static ColorMatrix _identity
             = new ColorMatrix(1, 1, 1, 1, 0, 0, 0, 0);
@@ -64,14 +64,23 @@ namespace SharpMap.Rendering
 
         public override String ToString()
         {
-			return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}; dxR: {5}; dxG: {6}; dxB: {7}; dxA: {8}", GetType(), R, G, B, A, RedShift, GreenShift, BlueShift, AlphaShift);
+			return String.Format("[{0}] R: {1}; G: {2}; B: {3}; A: {4}; "+
+                                 "dxR: {5}; dxG: {6}; dxB: {7}; dxA: {8}", 
+                                 GetType(), R, G, B, A, 
+                                 RedShift, GreenShift, BlueShift, AlphaShift);
         }
 
         public override Int32 GetHashCode()
         {
-            return unchecked(R.GetHashCode() + 2352 ^ G.GetHashCode() + 235509 ^ B.GetHashCode() + 753 
-                ^ A.GetHashCode() + 89 ^ RedShift.GetHashCode() + 897210 ^ GreenShift.GetHashCode() + 78595 
-                ^ BlueShift.GetHashCode() + 9437143);
+            return unchecked(
+                R.GetHashCode() * 17 ^ 
+                G.GetHashCode() * 37 ^ 
+                B.GetHashCode() * 41 ^ 
+                A.GetHashCode() * 43 ^ 
+                RedShift.GetHashCode() * 47 ^ 
+                GreenShift.GetHashCode() * 53 ^
+                BlueShift.GetHashCode() * 59 ^
+                AlphaShift.GetHashCode() * 61);
         }
 
         #region Equality Computation

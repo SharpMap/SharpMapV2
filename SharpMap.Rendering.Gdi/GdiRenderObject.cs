@@ -19,7 +19,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
-using SharpMap.Layers;
+using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 
 namespace SharpMap.Rendering.Gdi
 {
@@ -62,8 +62,8 @@ namespace SharpMap.Rendering.Gdi
         /// The pen used to outline the path when the state is <see cref="RenderState.Selected"/>.
         /// </param>
         public GdiRenderObject(GraphicsPath path, Brush fill, Brush highlightFill, Brush selectFill, 
-            Pen line, Pen highlightLine, Pen selectLine,
-            Pen outline, Pen highlightOutline, Pen selectOutline)
+                               Pen line, Pen highlightLine, Pen selectLine,
+                               Pen outline, Pen highlightOutline, Pen selectOutline)
         {
 			_state = RenderState.Normal;
             GdiPath = path;
@@ -93,7 +93,7 @@ namespace SharpMap.Rendering.Gdi
         /// <param name="imageBounds">The location and size to draw the symbol.</param>
         /// <param name="transform">The affine transform applied to the symbol before drawing.</param>
         /// <param name="colorTransform">The color transform applied to the symbol before drawing.</param>
-        public GdiRenderObject(Bitmap image, RectangleF imageBounds, Matrix transform, GdiColorMatrix colorTransform)
+        public GdiRenderObject(Bitmap image, RectangleF imageBounds, GdiMatrix transform, GdiColorMatrix colorTransform)
         {
 			_state = RenderState.Normal;
             Image = image;
@@ -140,8 +140,9 @@ namespace SharpMap.Rendering.Gdi
         /// <param name="selectOutline">
         /// The pen used to outline the path when the state is <see cref="RenderState.Selected"/>.
         /// </param>
-        public GdiRenderObject(String text, Font font, RectangleF bounds, Brush fill, Brush highlightFill, Brush selectFill,
-            Pen outline, Pen highlightOutline, Pen selectOutline)
+        public GdiRenderObject(String text, Font font, RectangleF bounds, 
+                               Brush fill, Brush highlightFill, Brush selectFill,
+                               Pen outline, Pen highlightOutline, Pen selectOutline)
         {
 			_state = RenderState.Normal;
             GdiPath = null;
@@ -169,7 +170,7 @@ namespace SharpMap.Rendering.Gdi
         public readonly Font Font;
 
         /// <summary>
-        /// The symbol to draw when <see cref="Type"/> is <see cref="GdiRenderObjectType.Symbol"/>
+        /// The symbol to draw if render object is a symbol.
         /// </summary>
         public readonly Bitmap Image;
 
@@ -181,7 +182,7 @@ namespace SharpMap.Rendering.Gdi
         /// <summary>
         /// The affine transform applied to the symbol before drawing.
         /// </summary>
-        public readonly Matrix AffineTransform;
+        public readonly GdiMatrix AffineTransform;
 
         /// <summary>
         /// The color transform applied to the symbol before drawing.
@@ -189,7 +190,7 @@ namespace SharpMap.Rendering.Gdi
         public readonly GdiColorMatrix ColorTransform;
 
         /// <summary>
-        /// The path to draw when <see cref="Type"/> is <see cref="GdiRenderObjectType.Path"/>
+        /// The path to draw if render object is a path.
         /// </summary>
         public readonly GraphicsPath GdiPath;
 

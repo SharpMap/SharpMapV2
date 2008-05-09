@@ -52,7 +52,7 @@ namespace ProjNet.CoordinateSystems
     /// </para>
     /// </remarks>
     public class CoordinateSystemFactory<TCoordinate> : ICoordinateSystemFactory<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>, IComparable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
             IComputable<Double, TCoordinate>,
             IConvertible
     {

@@ -45,7 +45,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// to metres.</para>
     /// </remarks>
     internal class GeocentricTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
@@ -127,8 +127,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns>Transformed point in decimal degrees</returns>		
         private TCoordinate MetersToDegrees(TCoordinate pnt)
         {
-            Boolean At_Pole = false; // indicates whether location is in polar region */
-            Double Z = pnt.ComponentCount < 3
+            Boolean atPole = false; // indicates whether location is in polar region */
+            Double z = pnt.ComponentCount < 3
                            ? 0
                            : ((Double) pnt[2]).Equals(Double.NaN)
                                  ? 0
@@ -138,7 +138,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             Double lat = 0;
             Double Height;
 
-            if (pnt[0] != 0.0)
+            if ((Double)pnt[0] != 0.0)
             {
                 lon = Math.Atan2((Double) pnt[1], (Double) pnt[0]);
             }
@@ -154,14 +154,14 @@ namespace ProjNet.CoordinateSystems.Transformations
                 }
                 else
                 {
-                    At_Pole = true;
+                    atPole = true;
                     lon = 0.0;
-                    if (Z > 0.0)
+                    if (z > 0.0)
                     {
                         /* north pole */
                         lat = Math.PI*0.5;
                     }
-                    else if (Z < 0.0)
+                    else if (z < 0.0)
                     {
                         /* south pole */
                         lat = -Math.PI*0.5;
@@ -176,14 +176,14 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             Double semiMajor = SemiMajor;
 
-            Double W2 = pnt[0]*pnt[0] + (Double) pnt[1]*(Double) pnt[1]; // Square of distance from Z axis
+            Double W2 = (Double)pnt[0].Multiply(pnt[0]) + (Double) pnt[1]*(Double) pnt[1]; // Square of distance from Z axis
             Double W = Math.Sqrt(W2); // distance from Z axis
-            Double T0 = Z*AD_C; // initial estimate of vertical component
+            Double T0 = z*AD_C; // initial estimate of vertical component
             Double S0 = Math.Sqrt(T0*T0 + W2); //initial estimate of horizontal component
             Double Sin_B0 = T0/S0; //sin(B0), B0 is estimate of Bowring aux variable
             Double Cos_B0 = W/S0; //cos(B0)
             Double Sin3_B0 = Math.Pow(Sin_B0, 3);
-            Double T1 = Z + semiMajor*_ses*Sin3_B0; //corrected estimate of vertical component
+            Double T1 = z + semiMajor*_ses*Sin3_B0; //corrected estimate of vertical component
             Double Sum = W - semiMajor*E2*Cos_B0*Cos_B0*Cos_B0; //numerator of cos(phi1)
             Double S1 = Math.Sqrt(T1*T1 + Sum*Sum); //corrected estimate of horizontal component
             Double Sin_p1 = T1/S1; //sin(phi1), phi1 is estimated latitude
@@ -200,10 +200,10 @@ namespace ProjNet.CoordinateSystems.Transformations
             }
             else
             {
-                Height = Z/Sin_p1 + Rn*(E2 - 1.0);
+                Height = z/Sin_p1 + Rn*(E2 - 1.0);
             }
 
-            if (!At_Pole)
+            if (!atPole)
             {
                 lat = Math.Atan(Sin_p1/Cos_p1);
             }

@@ -30,7 +30,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// datum transformations between geographic coordinate systems.
     /// </summary>
     public class GeographicTransform<TCoordinate> : MathTransform<TCoordinate>
-        where TCoordinate : ICoordinate, IEquatable<TCoordinate>,
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
@@ -102,7 +102,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         public override TCoordinate Transform(TCoordinate point)
         {
-            Double value = point[0];
+            Double value = (Double)point[0];
 
             value /= Source.AngularUnit.RadiansPerUnit;
             value -= Source.PrimeMeridian.Longitude/Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
