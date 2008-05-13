@@ -23,7 +23,7 @@ namespace SharpMap.Data
 	/// <summary>
 	/// Interface for data providers with features having ID values.
 	/// </summary>
-    public interface IFeatureLayerProvider<TOid> : IFeatureLayerProvider
+    public interface IFeatureProvider<TOid> : IFeatureProvider
 	{
         /// <summary>
         /// Returns all objects whose <see cref="IExtents"/> 

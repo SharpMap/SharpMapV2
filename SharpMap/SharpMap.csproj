@@ -108,7 +108,8 @@
     <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />
-    <Compile Include="Data\IRasterLayerProvider.cs" />
+    <Compile Include="Data\IFeatureAdapter.cs" />
+    <Compile Include="Data\IRasterProvider.cs" />
     <Compile Include="Data\QueryExecutionOptions.cs" />
     <Compile Include="Data\RasterBand.cs" />
     <Compile Include="Data\RasterDataSet.cs" />
@@ -116,7 +117,7 @@
     <Compile Include="Data\SchemaMergeAction.cs" />
     <Compile Include="Data\SharpMapDataException.cs" />
     <Compile Include="Data\IFeatureDataReader.cs" />
-    <Compile Include="Data\IFeatureLayerProvider.cs" />
+    <Compile Include="Data\IFeatureProvider.cs" />
     <Compile Include="Data\LayerDataLoadException.cs" />
     <Compile Include="Data\Providers\ColumnPropertyComputationDelegates.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
@@ -145,9 +146,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
-    <Compile Include="Data\ILayerProvider.cs" />
-    <Compile Include="Data\IFeatureLayerProvider`1.cs" />
-    <Compile Include="Data\IWritableFeatureLayerProvider.cs" />
+    <Compile Include="Data\IProvider.cs" />
+    <Compile Include="Data\IFeatureProvider`1.cs" />
+    <Compile Include="Data\IWritableFeatureProvider`1.cs" />
     <Compile Include="Data\Providers\OgcEnumerations.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTreeNode.cs" />
     <Compile Include="Indexing\QuadTree\DynamicQuadTree.cs" />

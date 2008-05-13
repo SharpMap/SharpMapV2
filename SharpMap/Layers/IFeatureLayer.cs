@@ -31,7 +31,7 @@ namespace SharpMap.Layers
         /// Gets the data source for this layer as a more 
         /// strongly-typed IFeatureLayerProvider.
         /// </summary>
-		new IFeatureLayerProvider DataSource { get; }
+		new IFeatureProvider DataSource { get; }
 
         /// <summary>
         /// Gets a <see cref="FeatureDataTable"/> of cached features for the layer.

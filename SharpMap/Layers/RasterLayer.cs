@@ -32,7 +32,7 @@ namespace SharpMap.Layers
 	{
         private IGeometry _loadedRegion = null;
 
-		public RasterLayer(ILayerProvider dataSource)
+		public RasterLayer(IProvider dataSource)
 			: base(dataSource)
 		{
 		}
@@ -61,7 +61,7 @@ namespace SharpMap.Layers
 
 	    #region IRasterLayer Members
 
-	    public new IRasterLayerProvider DataSource
+	    public new IRasterProvider DataSource
         {
             get { throw new NotImplementedException(); }
         }

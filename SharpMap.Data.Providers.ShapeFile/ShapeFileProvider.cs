@@ -63,7 +63,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// myLayer.DataSource = new ShapeFile(@"C:\data\MyShapeData.shp");
     /// </code>
     /// </example>
-    public class ShapeFileProvider : IWritableFeatureLayerProvider<UInt32>
+    public class ShapeFileProvider : IWritableFeatureProvider<UInt32>
     {
         //#region FilterMethod
 
@@ -830,76 +830,86 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region IFeatureLayerProvider Members
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query,
-                                                     FeatureDataSet dataSet,
-                                                     AsyncCallback callback,
-                                                     Object asyncState)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query,
+        //                                             FeatureDataSet dataSet,
+        //                                             AsyncCallback callback,
+        //                                             Object asyncState)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table,
-                                                     AsyncCallback callback, Object asyncState)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table,
+        //                                             AsyncCallback callback, Object asyncState)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
-                                                          AsyncCallback callback, Object asyncState)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
+        //                                                  AsyncCallback callback, Object asyncState)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
-                                                          QueryExecutionOptions options, AsyncCallback callback,
-                                                          Object asyncState)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet,
+        //                                                  QueryExecutionOptions options, AsyncCallback callback,
+        //                                                  Object asyncState)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
-                                                          AsyncCallback callback, Object asyncState)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
+        //                                                  AsyncCallback callback, Object asyncState)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
-                                                          QueryExecutionOptions options, AsyncCallback callback,
-                                                          Object asyncState)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table,
+        //                                                  QueryExecutionOptions options, AsyncCallback callback,
+        //                                                  Object asyncState)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, Object asyncState)
-        {
-            throw new NotImplementedException();
-        }
+        //public IAsyncResult BeginGetFeatures(IEnumerable oids, AsyncCallback callback, Object asyncState)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public FeatureDataTable CreateNewTable()
         {
             return getNewTable();
         }
 
-        public IEnumerable<IFeatureDataRecord> EndGetFeatures(IAsyncResult asyncResult)
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerable<IFeatureDataRecord> EndGetFeatures(IAsyncResult asyncResult)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void EndExecuteFeatureQuery(IAsyncResult asyncResult)
-        {
-            throw new NotImplementedException();
-        }
+        //public void EndExecuteFeatureQuery(IAsyncResult asyncResult)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query)
         {
+            if (query == null) throw new ArgumentNullException("query");
             checkOpen();
-            throw new NotImplementedException();
+            if (query.QueryType != SpatialExpressionType.Intersects)
+            {
+                throw new NotImplementedException("Only intersections implemented");
+            }
+            if (query.Oids != null)
+            {
+                throw new NotImplementedException("Oid filter not implemented");
+            }
+            return ExecuteIntersectionQuery(query.QueryRegion.Extents,
+                                            QueryExecutionOptions.FullFeature);
         }
 
         /// <summary>
@@ -912,19 +922,19 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if method is called and the shapefile is closed. 
         /// Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
-        {
-            checkOpen();
-            FeatureDataTable<UInt32> dt = HasDbf
-                                            ? _dbaseFile.NewTable
-                                            : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
+        //public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataSet dataSet)
+        //{
+        //    checkOpen();
+        //    FeatureDataTable<UInt32> dt = HasDbf
+        //                                    ? _dbaseFile.NewTable
+        //                                    : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
 
-            dt.TableName = Path.GetFileNameWithoutExtension(Filename);
+        //    dt.TableName = Path.GetFileNameWithoutExtension(Filename);
 
-            ExecuteFeatureQuery(query, dt);
+        //    ExecuteFeatureQuery(query, dt);
 
-            dataSet.Tables.Add(dt);
-        }
+        //    dataSet.Tables.Add(dt);
+        //}
 
         /// <summary>
         /// Retrieves features into a <see cref="FeatureDataTable"/> that 
@@ -932,55 +942,55 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table)
-        {
-            checkOpen();
+        //public void ExecuteFeatureQuery(FeatureSpatialExpression query, FeatureDataTable table)
+        //{
+        //    checkOpen();
 
-            IExtents extents = query.QueryRegion.Extents;
+        //    IExtents extents = query.QueryRegion.Extents;
 
-            IEnumerable<IFeatureDataRecord> records;
+        //    IEnumerable<IFeatureDataRecord> records;
 
-            // Get candidates by intersecting the spatial index tree 
-            // or enumerating all rows
-            if (IsSpatiallyIndexed)
-            {
-                IEnumerable<IdBounds> keys = _spatialIndex.Query(extents);
-                records = intersectFeatureGeometry(keys, query.QueryRegion);
-            }
-            else
-            {
-                throw new NotImplementedException(
-                    "Allow shapefile provider to be created without an index. [workitem:13025]");
-            }
+        //    // Get candidates by intersecting the spatial index tree 
+        //    // or enumerating all rows
+        //    if (IsSpatiallyIndexed)
+        //    {
+        //        IEnumerable<IdBounds> keys = _spatialIndex.Query(extents);
+        //        records = intersectFeatureGeometry(keys, query.QueryRegion);
+        //    }
+        //    else
+        //    {
+        //        throw new NotImplementedException(
+        //            "Allow shapefile provider to be created without an index. [workitem:13025]");
+        //    }
 
-            FeatureDataTable<UInt32> result = getNewTable();
+        //    FeatureDataTable<UInt32> result = getNewTable();
 
-            foreach (IFeatureDataRecord record in records)
-            {
-                FeatureDataRow<UInt32> feature = record as FeatureDataRow<UInt32>;
+        //    foreach (IFeatureDataRecord record in records)
+        //    {
+        //        FeatureDataRow<UInt32> feature = record as FeatureDataRow<UInt32>;
 
-                Debug.Assert(feature != null);
+        //        Debug.Assert(feature != null);
 
-                if (Filter == null || Filter(feature))
-                {
-                    result.AddRow(feature);
-                }
-            }
+        //        if (Filter == null || Filter(feature))
+        //        {
+        //            result.AddRow(feature);
+        //        }
+        //    }
 
-            table.Merge(result, true);
-        }
+        //    table.Merge(result, true);
+        //}
 
-        public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IGeometry geometry)
-        {
-            checkOpen();
+        //public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IGeometry geometry)
+        //{
+        //    checkOpen();
 
-            IEnumerable<IdBounds> ids = _spatialIndex.Query(geometry.Extents);
+        //    IEnumerable<IdBounds> ids = _spatialIndex.Query(geometry.Extents);
 
-            foreach (IFeatureDataRecord feature in intersectFeatureGeometry(ids, geometry))
-            {
-                yield return feature.Geometry;
-            }
-        }
+        //    foreach (IFeatureDataRecord feature in intersectFeatureGeometry(ids, geometry))
+        //    {
+        //        yield return feature.Geometry;
+        //    }
+        //}
 
         public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry)
         {
@@ -994,44 +1004,44 @@ namespace SharpMap.Data.Providers.ShapeFile
             throw new NotImplementedException();
         }
 
-        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet, QueryExecutionOptions options)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataSet dataSet, QueryExecutionOptions options)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
-        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table)
-        {
-            checkOpen();
-            if (geometry == null) throw new ArgumentNullException("geometry");
+        //public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table)
+        //{
+        //    checkOpen();
+        //    if (geometry == null) throw new ArgumentNullException("geometry");
 
-            FeatureDataTable<UInt32> result = getNewTable();
+        //    FeatureDataTable<UInt32> result = getNewTable();
 
-            foreach (IdBounds bounds in _spatialIndex.Query(geometry.Extents))
-            {
-                // not sure of the best way to do this: get geometry and check it 
-                // or get feature and check it. Need to measure.
-                if (geometry.Intersects(GetGeometryById(bounds.Id)))
-                {
-                    FeatureDataRow<UInt32> feature = getFeature(bounds.Id, result);
-                    result.AddRow(feature);
-                }
-            }
+        //    foreach (IdBounds bounds in _spatialIndex.Query(geometry.Extents))
+        //    {
+        //        // not sure of the best way to do this: get geometry and check it 
+        //        // or get feature and check it. Need to measure.
+        //        if (geometry.Intersects(GetGeometryById(bounds.Id)))
+        //        {
+        //            FeatureDataRow<UInt32> feature = getFeature(bounds.Id, result);
+        //            result.AddRow(feature);
+        //        }
+        //    }
 
-            table.Merge(result, true);
-        }
+        //    table.Merge(result, true);
+        //}
 
-        public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table, QueryExecutionOptions options)
-        {
-            checkOpen();
-            throw new NotImplementedException();
-        }
+        //public void ExecuteIntersectionQuery(IGeometry geometry, FeatureDataTable table, QueryExecutionOptions options)
+        //{
+        //    checkOpen();
+        //    throw new NotImplementedException();
+        //}
 
         /// <summary>
         /// Returns geometries whose bounding box intersects <paramref name="bounds"/>.
@@ -1058,20 +1068,20 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if method is called and the 
         /// shapefile is closed. Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IExtents bounds)
-        {
-            checkOpen();
+        //public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IExtents bounds)
+        //{
+        //    checkOpen();
 
-            foreach (UInt32 oid in GetIntersectingObjectIds(bounds))
-            {
-                IGeometry g = GetGeometryById(oid);
+        //    foreach (UInt32 oid in GetIntersectingObjectIds(bounds))
+        //    {
+        //        IGeometry g = GetGeometryById(oid);
 
-                if (!ReferenceEquals(g, null))
-                {
-                    yield return g;
-                }
-            }
-        }
+        //        if (!ReferenceEquals(g, null))
+        //        {
+        //            yield return g;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
@@ -1138,10 +1148,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if method is called and the shapefile is closed. 
         /// Check <see cref="IsOpen"/> before calling.
         /// </exception>
-        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet)
-        {
-            ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.FullFeature);
-        }
+        //public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet)
+        //{
+        //    ExecuteIntersectionQuery(bounds, dataSet, QueryExecutionOptions.FullFeature);
+        //}
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -1160,17 +1170,17 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown when a value other than <see cref="QueryExecutionOptions.FullFeature"/> 
         /// is supplied for <paramref name="options"/>.
         /// </exception>
-        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options)
-        {
-            checkOpen();
+        //public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataSet dataSet, QueryExecutionOptions options)
+        //{
+        //    checkOpen();
 
-            // TODO: search the dataset for the table and merge results.
-            FeatureDataTable<UInt32> dt = getNewTable();
+        //    // TODO: search the dataset for the table and merge results.
+        //    FeatureDataTable<UInt32> dt = getNewTable();
 
-            ExecuteIntersectionQuery(bounds, dt, options);
+        //    ExecuteIntersectionQuery(bounds, dt, options);
 
-            dataSet.Tables.Add(dt);
-        }
+        //    dataSet.Tables.Add(dt);
+        //}
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -1178,10 +1188,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="bounds">BoundingBox to intersect with.</param>
         /// <param name="table">FeatureDataTable to fill data into.</param>
-        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table)
-        {
-            ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.FullFeature);
-        }
+        //public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table)
+        //{
+        //    ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.FullFeature);
+        //}
 
         /// <summary>
         /// Retrieves the data associated with all the features that 
@@ -1194,28 +1204,28 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown when a value other than <see cref="QueryExecutionOptions.FullFeature"/> 
         /// is supplied for <paramref name="options"/>.
         /// </exception>
-        public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options)
-        {
-            checkOpen();
+        //public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options)
+        //{
+        //    checkOpen();
 
-            if (options != QueryExecutionOptions.FullFeature)
-            {
-                throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
-            }
+        //    if (options != QueryExecutionOptions.FullFeature)
+        //    {
+        //        throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
+        //    }
 
-            if (!(table is FeatureDataTable<UInt32>))
-            {
-                throw new ArgumentException("Parameter 'table' must be of type FeatureDataTable<UInt32>.");
-            }
+        //    if (!(table is FeatureDataTable<UInt32>))
+        //    {
+        //        throw new ArgumentException("Parameter 'table' must be of type FeatureDataTable<UInt32>.");
+        //    }
 
-            FeatureDataTable<UInt32> keyedTable = table as FeatureDataTable<UInt32>;
+        //    FeatureDataTable<UInt32> keyedTable = table as FeatureDataTable<UInt32>;
 
-            SetTableSchema(keyedTable);
+        //    SetTableSchema(keyedTable);
 
-            IEnumerable<UInt32> objectsInQuery = GetIntersectingObjectIds(bounds);
+        //    IEnumerable<UInt32> objectsInQuery = GetIntersectingObjectIds(bounds);
 
-            keyedTable.Merge(getFeatureRecordsFromIds(objectsInQuery, keyedTable), GeometryFactory);
-        }
+        //    keyedTable.Merge(getFeatureRecordsFromIds(objectsInQuery, keyedTable), GeometryFactory);
+        //}
 
         public IGeometryFactory GeometryFactory
         {
@@ -1229,10 +1239,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids)
-        {
-            return GetFeatures(getUint32IdsFromObjects(oids));
-        }
+        //public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable oids)
+        //{
+        //    return GetFeatures(getUint32IdsFromObjects(oids));
+        //}
 
         /// <summary>
         /// Returns the number of features in the entire data source.
@@ -1252,8 +1262,32 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <returns>A DataTable that describes the column metadata.</returns>
         public DataTable GetSchemaTable()
         {
+            checkOpen();
             //enableReading();
-            return _dbaseFile.GetSchemaTable();
+            DataTable schemaTable = _dbaseFile.GetSchemaTable();
+
+            DataRow oidColumn = schemaTable.NewRow();
+            oidColumn[ProviderSchemaHelper.ColumnNameColumn] = "OID";
+            oidColumn[ProviderSchemaHelper.ColumnSizeColumn] = 0;
+            oidColumn[ProviderSchemaHelper.ColumnOrdinalColumn] = 0;
+            oidColumn[ProviderSchemaHelper.NumericPrecisionColumn] = 0;
+            oidColumn[ProviderSchemaHelper.NumericScaleColumn] = 0;
+            oidColumn[ProviderSchemaHelper.DataTypeColumn] = typeof (UInt32);
+            oidColumn[ProviderSchemaHelper.AllowDBNullColumn] = true;
+            oidColumn[ProviderSchemaHelper.IsReadOnlyColumn] = false;
+            oidColumn[ProviderSchemaHelper.IsUniqueColumn] = true;
+            oidColumn[ProviderSchemaHelper.IsRowVersionColumn] = false;
+            oidColumn[ProviderSchemaHelper.IsKeyColumn] = true;
+            oidColumn[ProviderSchemaHelper.IsAutoIncrementColumn] = false;
+            oidColumn[ProviderSchemaHelper.IsLongColumn] = false;
+            schemaTable.Rows.InsertAt(oidColumn, 0);
+
+            for (int i = 1; i < schemaTable.Rows.Count; i++)
+            {
+                schemaTable.Rows[i][ProviderSchemaHelper.ColumnOrdinalColumn] = i;
+            }
+
+            return schemaTable;
         }
 
         /// <summary>

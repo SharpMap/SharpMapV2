@@ -23,7 +23,7 @@ namespace SharpMap.Data
     /// <summary>
     /// Defines the interface to a provider of raster data.
     /// </summary>
-    public interface IRasterLayerProvider : ILayerProvider
+    public interface IRasterProvider : IProvider
     {
         /// <summary>
         /// Retrieves a <see cref="Stream"/> for the raster data that 

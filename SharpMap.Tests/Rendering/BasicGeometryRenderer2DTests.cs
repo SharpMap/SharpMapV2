@@ -5,6 +5,7 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -149,13 +150,15 @@ namespace SharpMap.Tests.Rendering
         [Ignore("Test not yet implemented")]
         public void RenderFeatureTest()
         {
-            IFeatureLayerProvider provider = DataSourceHelper.CreateGeometryDatasource(_geoFactory);
+            IFeatureProvider provider = DataSourceHelper.CreateGeometryDatasource(_geoFactory);
             TestVectorRenderer vectorRenderer = new TestVectorRenderer();
             BasicGeometryRenderer2D<RenderObject> geometryRenderer =
                 new BasicGeometryRenderer2D<RenderObject>(vectorRenderer);
 
             FeatureDataTable features = new FeatureDataTable(_geoFactory);
-            provider.ExecuteIntersectionQuery(provider.GetExtents(), features);
+            IExtents extents = provider.GetExtents();
+            features.Merge(provider.ExecuteIntersectionQuery(extents) as IEnumerable<IFeatureDataRecord>,
+                           provider.GeometryFactory);
 
             foreach (FeatureDataRow feature in features)
             {

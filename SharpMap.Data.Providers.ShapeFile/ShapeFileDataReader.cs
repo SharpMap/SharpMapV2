@@ -145,14 +145,18 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			get
 			{
-				checkState();
-				return true;
+                checkDisposed();
+                return true;
 			}
 		}
 
         public Boolean IsFullyLoaded
         {
-            get { return _options == QueryExecutionOptions.FullFeature; }
+            get
+            {
+                return (_options | QueryExecutionOptions.BoundingBoxes)
+                        == (QueryExecutionOptions.FullFeature | QueryExecutionOptions.BoundingBoxes);
+            }
         }
 
         public Type OidType
@@ -173,15 +177,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			get
 			{
-				checkState();
-				return 0;
+                checkDisposed();
+                return 0;
 			}
 		}
 
 		public DataTable GetSchemaTable()
 		{
-			checkState();
-			return _schemaTable.Copy();
+            checkDisposed();
+            return _schemaTable.Copy();
 		}
 
 		public Boolean IsClosed
@@ -197,7 +201,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		public Boolean Read()
 		{
-			checkState();
+            checkDisposed();
 
 			Boolean reading = _objectEnumerator.MoveNext();
 
@@ -222,12 +226,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			get
 			{
-				checkState();
-				return _schemaTable.Rows.Count;
+			    checkDisposed();
+			    return _schemaTable.Rows.Count;
 			}
 		}
 
-		public Boolean GetBoolean(Int32 i)
+        public Boolean GetBoolean(Int32 i)
 		{
 			checkState();
 			checkIndex(i);
@@ -302,8 +306,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             checkState();
             checkIndex(i);
-
-		    return _currentFeature[i].GetType();
+		    return _currentFeature.GetFieldType(i);
 		}
 
 		public Single GetFloat(Int32 i)
@@ -370,13 +373,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		public String GetName(Int32 i)
 		{
-			checkState();
-			return _schemaTable.Rows[i][0] as String;
+            checkDisposed();
+            return _schemaTable.Rows[i][0] as String;
 		}
 
 		public Int32 GetOrdinal(String name)
 		{
-			checkState();
+            checkDisposed();
 
 			if (name == null) throw new ArgumentNullException("name");
 
@@ -475,14 +478,19 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		private void checkState()
 		{
-			if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+			checkDisposed();
 			if (_currentFeature == null)
 			{
 				throw new InvalidOperationException("The Read method must be called before accessing values.");
 			}
 		}
 
-		#endregion
+        private void checkDisposed()
+        {
+            if (IsDisposed) throw new ObjectDisposedException(GetType().ToString());
+        }
+        
+        #endregion
 
 		#region IEnumerable<IFeatureDataRecord> Members
 

@@ -72,7 +72,7 @@ namespace SharpMap.Layers
 		/// </summary>
 		/// <param name="layerName">Name of the layer.</param>
 		/// <param name="dataSource">Data source provider for the layer.</param>
-		public LabelLayer(String layerName, IFeatureLayerProvider dataSource)
+		public LabelLayer(String layerName, IFeatureProvider dataSource)
 			: base(layerName, dataSource)
 		{
 			_multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;

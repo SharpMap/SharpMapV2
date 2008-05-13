@@ -124,7 +124,7 @@ namespace SharpMap.Layers
         private String _layerName;
         private IStyle _style;
         private Boolean _disposed;
-        private readonly ILayerProvider _dataSource;
+        private readonly IProvider _dataSource;
         private Boolean _asyncQuery = false;
         private Boolean _handleFeaturesNotFoundEvent = true;
         #endregion
@@ -138,7 +138,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(ILayerProvider dataSource) :
+        protected Layer(IProvider dataSource) :
             this(String.Empty, null, dataSource)
         {
         }
@@ -154,7 +154,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(String layerName, ILayerProvider dataSource) :
+        protected Layer(String layerName, IProvider dataSource) :
             this(layerName, null, dataSource)
         {
         }
@@ -175,7 +175,7 @@ namespace SharpMap.Layers
         /// The <see cref="ILayerProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(String layerName, IStyle style, ILayerProvider dataSource)
+        protected Layer(String layerName, IStyle style, IProvider dataSource)
         {
             LayerName = layerName;
             _dataSource = dataSource;
@@ -315,7 +315,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the data source used to create this layer.
         /// </summary>
-        public ILayerProvider DataSource
+        public IProvider DataSource
         {
             get { return _dataSource; }
         }

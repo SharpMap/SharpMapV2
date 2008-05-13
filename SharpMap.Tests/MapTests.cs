@@ -28,7 +28,7 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
             Map map = new Map(_geoFactory);
-            IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
+            IFeatureProvider dataSource = mocks.Stub<IFeatureProvider>();
             dataSource.GeometryFactory = _geoFactory;
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
@@ -45,7 +45,7 @@ namespace SharpMap.Tests
         public void DuplicateLayerNamesThrowsException()
         {
             Map map = new Map(_geoFactory);
-            IFeatureLayerProvider dataSource = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            IFeatureProvider dataSource = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
@@ -59,7 +59,7 @@ namespace SharpMap.Tests
             MockRepository mocks = new MockRepository();
 
             Map map = new Map(_geoFactory);
-            IFeatureLayerProvider dataSource = mocks.Stub<IFeatureLayerProvider>();
+            IFeatureProvider dataSource = mocks.Stub<IFeatureProvider>();
             dataSource.GeometryFactory = _geoFactory;
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));

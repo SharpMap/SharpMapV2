@@ -22,6 +22,6 @@ namespace SharpMap.Layers
 {
     public interface IRasterLayer : ILayer
     {
-        new IRasterLayerProvider DataSource { get; }
+        new IRasterProvider DataSource { get; }
     }
 }

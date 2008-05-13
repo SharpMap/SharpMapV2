@@ -248,7 +248,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public String AsText()
         {
-            return WktWriter.ToWkt(this);
+            return FactoryInternal.WktWriter.Write(this);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace SharpMap.SimpleGeometries
         /// </summary>
         public Byte[] AsBinary()
         {
-            return WkbWriter.ToWkb(this);
+            return FactoryInternal.WkbWriter.Write(this);
         }
 
         /// <summary>
@@ -349,6 +349,16 @@ namespace SharpMap.SimpleGeometries
         }
 
         public Boolean Equals(IGeometry g, Tolerance tolerance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool EqualsExact(IGeometry g)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool EqualsExact(IGeometry g, Tolerance tolerance)
         {
             throw new NotImplementedException();
         }

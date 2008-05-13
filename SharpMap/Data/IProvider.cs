@@ -26,7 +26,7 @@ namespace SharpMap.Data
     /// <summary>
     /// Interface for layer data providers.
     /// </summary>
-    public interface ILayerProvider : IDisposable
+    public interface IProvider : IDisposable
     {
         /// <summary>
         /// Applies a coordinate transformation to the geometries in 

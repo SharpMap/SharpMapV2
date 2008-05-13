@@ -25,7 +25,7 @@ namespace SharpMap.Data
     /// <typeparam name="TOid">
     /// Type of the value used for feature object identifiers.
     /// </typeparam>
-    public interface IWritableFeatureLayerProvider<TOid> : IFeatureLayerProvider<TOid>
+    public interface IWritableFeatureProvider<TOid> : IFeatureProvider<TOid>
     {
         /// <summary>
         /// Inserts a feature into the data source.

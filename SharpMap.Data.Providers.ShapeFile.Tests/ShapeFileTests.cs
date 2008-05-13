@@ -404,6 +404,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         }
 
         [Test]
+        [Ignore("Retarget or delete test; IEnumerable<IGeometry> method variations obsoleted in favor of returning IFeatureDataReader")]
         public void GetGeometriesInViewTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
@@ -411,24 +412,25 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             shapeFile.Open();
             List<IGeometry> geometries = new List<IGeometry>();
 
-            geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(shapeFile.GetExtents()));
+            //geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(shapeFile.GetExtents()));
             Assert.AreEqual(shapeFile.GetFeatureCount(), geometries.Count);
             geometries.Clear();
 
             IGeometry empty = _geoFactory.CreatePoint();
-            geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(empty));
+            //geometries.AddRange(shapeFile.ExecuteGeometryIntersectionQuery(empty));
             Assert.AreEqual(0, geometries.Count);
         }
 
         [Test]
-        [ExpectedException(typeof (ShapeFileInvalidOperationException))]
+        [Ignore("Retarget or delete test; IEnumerable<IGeometry> method variations obsoleted in favor of returning IFeatureDataReader")]
+        [ExpectedException(typeof(ShapeFileInvalidOperationException))]
         public void GetGeometriesInViewWhenClosedThrowsExceptionTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
 
             IGeometry empty = _geoFactory.CreatePoint();
-            new List<IGeometry>(shapeFile.ExecuteGeometryIntersectionQuery(empty));
+            //new List<IGeometry>(shapeFile.ExecuteGeometryIntersectionQuery(empty));
         }
 
         [Test]
@@ -437,10 +439,10 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             ShapeFileProvider shapeFile = new ShapeFileProvider(
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
             shapeFile.Open();
-            FeatureDataSet data = new FeatureDataSet("ShapeFile test", _geoFactory);
-            shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), data);
-            Assert.AreEqual(1, data.Tables.Count);
-            Assert.AreEqual(shapeFile.GetFeatureCount(), data.Tables[0].Rows.Count);
+            FeatureDataTable data = new FeatureDataTable("ShapeFile test", _geoFactory);
+            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents());
+            data.Load(reader, LoadOption.OverwriteChanges, null);
+            Assert.AreEqual(shapeFile.GetFeatureCount(), data.Rows.Count);
             shapeFile.Close();
         }
 
@@ -450,8 +452,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
-            FeatureDataSet data = new FeatureDataSet("ShapeFile test", _geoFactory);
-            shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), data);
+            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents());
         }
 
         [Test]
@@ -578,14 +579,13 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
 
             Assert.AreEqual(1, shapeFile.GetFeatureCount());
 
-            FeatureDataSet dataSet = new FeatureDataSet("ShapeFile test", _geoFactory);
+            FeatureDataTable dataTable = new FeatureDataTable("ShapeFile test", _geoFactory);
+            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(_geoFactory.CreateExtents2D(0.9, 0.9, 1, 1));
+            dataTable.Load(reader, LoadOption.OverwriteChanges, null);
 
-            shapeFile.ExecuteIntersectionQuery(_geoFactory.CreateExtents2D(0.9, 0.9, 1, 1), dataSet);
+            Assert.AreEqual(1, dataTable.Rows.Count);
 
-            Assert.AreEqual(1, dataSet.Tables.Count);
-            Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
-
-            FeatureDataRow<UInt32> newFeature = dataSet.Tables[0].Rows[0] as FeatureDataRow<UInt32>;
+            FeatureDataRow newFeature = dataTable.Rows[0] as FeatureDataRow;
             Assert.AreEqual(_geoFactory.CreatePoint2D(1, 1), newFeature.Geometry);
             Assert.AreEqual(newFeature["Name"], "Test feature");
             DateTime dateCreatedActual = (DateTime) newFeature["DateCreated"];
@@ -653,12 +653,11 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             Assert.AreEqual(10000, shapeFile.GetFeatureCount());
             Assert.AreEqual(computedBounds, shapeFile.GetExtents());
 
-            FeatureDataSet dataSet = new FeatureDataSet("ShapeFile test", _geoFactory);
+            FeatureDataTable dataTable = new FeatureDataTable("ShapeFile test", _geoFactory);
+            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents());
+            dataTable.Load(reader, LoadOption.OverwriteChanges, null);
 
-            shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents(), dataSet);
-
-            Assert.AreEqual(1, dataSet.Tables.Count);
-            Assert.AreEqual(10000, dataSet.Tables[0].Rows.Count);
+            Assert.AreEqual(10000, dataTable.Rows.Count);
         }
 
         [Test]
@@ -727,6 +726,28 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         }
 
         [Test]
+        [ExpectedException(typeof(ShapeFileInvalidOperationException))]
+        public void GetSchemaTableFailsifShapeFileNotOpen()
+        {
+            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+
+            DataTable schemaTable = shapeFile.GetSchemaTable();
+        }
+
+        [Test]
+        public void GetSchemaTableReturnsOid()
+        {
+            ShapeFileProvider shapeFile = new ShapeFileProvider(
+                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+            shapeFile.Open();
+
+            DataTable schemaTable = shapeFile.GetSchemaTable();
+
+            Assert.AreEqual(34, schemaTable.Rows.Count);
+            Assert.AreEqual("OID", schemaTable.Rows[0][ProviderSchemaHelper.ColumnNameColumn]);
+        }
+
+        [Test]
         [ExpectedException(typeof (ShapeFileInvalidOperationException))]
         public void SetTableSchemaShouldFailIfShapeFileNotOpen()
         {
@@ -743,8 +764,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID", _geoFactory);
-            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
+            FeatureDataTable<UInt32> queryTable = shapeFile.CreateNewTable() as FeatureDataTable<UInt32>;
 
             FeatureDataTable nonKeyedTable = new FeatureDataTable(_geoFactory);
             shapeFile.SetTableSchema(nonKeyedTable);
@@ -762,12 +782,9 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID", _geoFactory);
-            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
 
             FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("oid", _geoFactory);
             shapeFile.SetTableSchema(keyedTable);
-            DataTableHelper.AssertTableStructureIdentical(keyedTable, queryTable);
         }
 
         [Test]
@@ -778,8 +795,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID", _geoFactory);
-            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
+            FeatureDataTable<UInt32> queryTable = shapeFile.CreateNewTable() as FeatureDataTable<UInt32>;
+            // expecting a new FeatureDataTable<UInt32>("OID", _geoFactory);
 
             FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("oid", _geoFactory);
             shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.CaseInsensitive);
@@ -794,8 +811,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
-            FeatureDataTable<UInt32> queryTable = new FeatureDataTable<UInt32>("OID", _geoFactory);
-            shapeFile.ExecuteIntersectionQuery(empty, queryTable);
+            FeatureDataTable<UInt32> queryTable = shapeFile.CreateNewTable() as FeatureDataTable<UInt32>;
+            // expecting a new FeatureDataTable<UInt32>("OID", _geoFactory);
 
             FeatureDataTable<UInt32> keyedTable = new FeatureDataTable<UInt32>("FID", _geoFactory);
             shapeFile.SetTableSchema(keyedTable, SchemaMergeAction.KeyByType);

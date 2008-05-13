@@ -260,7 +260,19 @@ namespace SharpMap.Data
 
         internal void MergeSchema(FeatureDataTable source)
         {
-            _mergeSchema(_innerMerger, source);
+            try
+            {
+                _mergeSchema(_innerMerger, source);
+            }
+            catch (NullReferenceException ex)
+            {
+                if (source == null)
+                    throw;
+                if (source.PrimaryKey.Length > 0 && _targetDataTable.PrimaryKey.Length > 0)
+                {
+                    throw new DataException("Possible incompatible keys for merging schema", ex);
+                }
+            }
         }
 
         internal Boolean PreserveChanges

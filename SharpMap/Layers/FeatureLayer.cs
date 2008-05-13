@@ -45,7 +45,7 @@ namespace SharpMap.Layers
         /// which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
-        protected FeatureLayer(IFeatureLayerProvider dataSource)
+        protected FeatureLayer(IFeatureProvider dataSource)
             : this(String.Empty, dataSource)
         { }
 
@@ -56,7 +56,7 @@ namespace SharpMap.Layers
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource)
+        protected FeatureLayer(String layername, IFeatureProvider dataSource)
             : this(layername, new VectorStyle(), dataSource, true)
         {
         }
@@ -71,7 +71,7 @@ namespace SharpMap.Layers
         /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
         /// table.
         /// </param>
-        protected FeatureLayer(String layername, IFeatureLayerProvider dataSource, 
+        protected FeatureLayer(String layername, IFeatureProvider dataSource, 
                                Boolean handleFeatureDataRequest)
             : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest)
         {
@@ -86,7 +86,7 @@ namespace SharpMap.Layers
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
         protected FeatureLayer(String layername, VectorStyle style, 
-                               IFeatureLayerProvider dataSource)
+                               IFeatureProvider dataSource)
             : this(layername, style, dataSource, true) {}
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace SharpMap.Layers
         /// <see cref="Features"/> table.
         /// </param>
         protected FeatureLayer(String layername, VectorStyle style, 
-                               IFeatureLayerProvider dataSource, 
+                               IFeatureProvider dataSource, 
                                Boolean handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
@@ -141,9 +141,9 @@ namespace SharpMap.Layers
         /// Gets the data source for this layer as a more 
         /// strongly-typed IFeatureLayerProvider.
         /// </summary>
-        public new IFeatureLayerProvider DataSource
+        public new IFeatureProvider DataSource
         {
-            get { return base.DataSource as IFeatureLayerProvider; }
+            get { return base.DataSource as IFeatureProvider; }
         }
 
         /// <summary>
@@ -167,12 +167,15 @@ namespace SharpMap.Layers
         {
             if (!AsyncQuery)
             {
-                IEnumerable<IFeatureDataRecord> features = DataSource.GetFeatures(oids);
+                FeatureSpatialExpression query = new FeatureSpatialExpression(null,SpatialExpressionType.None, oids);
+                IEnumerable<IFeatureDataRecord> features = DataSource.ExecuteFeatureQuery(query);
                 MergeFeatures(features);
             }
             else
             {
-                DataSource.BeginGetFeatures(oids, getFeaturesCallback, null);
+                //DataSource.BeginGetFeatures(oids, getFeaturesCallback, null);
+                //Async moved; probably to adapter
+                throw new NotImplementedException("Asynchronous option not implemented");
             }
         }
 
@@ -263,14 +266,17 @@ namespace SharpMap.Layers
 
             if (!AsyncQuery)
             {
-                DataSource.ExecuteFeatureQuery(featureQuery, _features);
+                //DataSource.ExecuteFeatureQuery(featureQuery, _features);
+                MergeFeatures(DataSource.ExecuteFeatureQuery(featureQuery));
             }
             else
             {
-                FeatureDataTable featureCache = new FeatureDataTable(DataSource.GeometryFactory);
-                DataSource.SetTableSchema(featureCache);
-                DataSource.BeginExecuteFeatureQuery(featureQuery, featureCache,
-                    queryCallback, featureCache);
+                // Async implementation moved; probably to adapter
+                //FeatureDataTable featureCache = new FeatureDataTable(DataSource.GeometryFactory);
+                //DataSource.SetTableSchema(featureCache);
+                //DataSource.BeginExecuteFeatureQuery(featureQuery, featureCache,
+                //    queryCallback, featureCache);
+                throw new NotImplementedException("Asynchronous option not implemented");
             }
 
             base.LoadLayerData(query);
@@ -302,20 +308,24 @@ namespace SharpMap.Layers
 
         private void queryCallback(IAsyncResult result)
         {
-            FeatureDataTable features = result.AsyncState as FeatureDataTable;
+            // TODO: disabled until asynchronous interface shift completed
+            //FeatureDataTable features = result.AsyncState as FeatureDataTable;
 
-            if (features != null)
-            {
-                Features.Merge(features);
-            }
+            //if (features != null)
+            //{
+            //    Features.Merge(features);
+            //}
 
-            DataSource.EndExecuteFeatureQuery(result);
+            //DataSource.EndExecuteFeatureQuery(result);
+            throw new NotImplementedException("Asynchronous option not implemented");
         }
 
         private void getFeaturesCallback(IAsyncResult result)
         {
-            IEnumerable<IFeatureDataRecord> features = DataSource.EndGetFeatures(result);
-            MergeFeatures(features);
+            // TODO: disabled until asynchronous interface shift completed
+            //IEnumerable<IFeatureDataRecord> features = DataSource.EndGetFeatures(result);
+            //MergeFeatures(features);
+            throw new NotImplementedException("Asynchronous option not implemented");
         }
 
         #endregion

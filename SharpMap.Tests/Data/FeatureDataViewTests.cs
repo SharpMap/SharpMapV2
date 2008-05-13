@@ -31,7 +31,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
             Assert.IsInstanceOfType(typeof (FeatureDataTable), view.Table);
             Assert.AreSame(table, view.Table);
@@ -49,7 +50,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.Crosses, "", DataViewRowState.CurrentRows);
         }
@@ -62,7 +64,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.Contains, "", DataViewRowState.CurrentRows);
         }
@@ -75,7 +78,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.Equals, "", DataViewRowState.CurrentRows);
         }
@@ -88,7 +92,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.None, "", DataViewRowState.CurrentRows);
         }
@@ -101,7 +106,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.Overlaps, "", DataViewRowState.CurrentRows);
         }
@@ -114,7 +120,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.Touches, "", DataViewRowState.CurrentRows);
         }
@@ -127,7 +134,8 @@ namespace SharpMap.Tests.Data
 
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialExpressionType.Within, "", DataViewRowState.CurrentRows);
         }
@@ -143,7 +151,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Int32 expectedRowCount = 0;
@@ -171,7 +180,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean resetNotificationOccured = false;
@@ -259,7 +269,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean resetNotificationOccured = false;
@@ -294,7 +305,8 @@ namespace SharpMap.Tests.Data
                 dataExtents.Min, dataExtents.Max);
             halfBounds.Scale(0.5);
 
-            data.ExecuteIntersectionQuery(halfBounds, table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(halfBounds);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean addNotificationOccured = false;
@@ -312,7 +324,8 @@ namespace SharpMap.Tests.Data
             otherHalfBounds.TranslateRelativeToWidth(0.5, 0.5);
             otherHalfBounds.Scale(0.5);
 
-            data.ExecuteIntersectionQuery(otherHalfBounds, table);
+            reader = data.ExecuteIntersectionQuery(otherHalfBounds);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
 
             Assert.IsTrue(addNotificationOccured);
         }
@@ -330,7 +343,8 @@ namespace SharpMap.Tests.Data
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
 
-            data.ExecuteIntersectionQuery(halfBounds, table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(halfBounds);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean addNotificationOccured = false;
@@ -365,7 +379,8 @@ namespace SharpMap.Tests.Data
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
 
-            data.ExecuteIntersectionQuery(halfBounds, table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(halfBounds);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean addNotificationOccured = false;
@@ -397,7 +412,8 @@ namespace SharpMap.Tests.Data
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
 
-            data.ExecuteIntersectionQuery(halfBounds, table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(halfBounds);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean addNotificationOccured = false;
@@ -431,7 +447,8 @@ namespace SharpMap.Tests.Data
             IExtents halfBounds = data.GetExtents();
             halfBounds.Scale(0.5);
 
-            data.ExecuteIntersectionQuery(halfBounds, table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(halfBounds);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean addNotificationOccured = false;
@@ -482,7 +499,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid", _geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             Guid[] ids = new Guid[3];
             ids[0] = (table.Rows[1] as FeatureDataRow<Guid>).Id;
             ids[1] = (table.Rows[4] as FeatureDataRow<Guid>).Id;
@@ -509,7 +527,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid", _geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
 
             Boolean resetNotificationOccured = false;
@@ -555,7 +574,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataView view = new FeatureDataView(table);
             view.AddNew();
         }
@@ -569,7 +589,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             IGeometry filter = _geoFactory.CreateExtents2D(0, 0, 10, 10).ToGeometry();
             FeatureDataView view = new FeatureDataView(table, filter, "", DataViewRowState.CurrentRows);
             IGeometry filterCopy = filter.Clone();
@@ -588,7 +609,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             IGeometry filter = _geoFactory.CreateExtents2D(0, 0, 10, 10).ToGeometry();
             FeatureDataView view = new FeatureDataView(table, filter, "", DataViewRowState.CurrentRows);
             Assert.AreEqual(SpatialExpressionType.Intersects, view.GeometryFilterType);
@@ -604,7 +626,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            data.ExecuteIntersectionQuery(data.GetExtents(), table);
+            IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
+            table.Load(reader, LoadOption.OverwriteChanges, null);
             FeatureDataSet dataSet = new FeatureDataSet(_geoFactory);
             dataSet.Tables.Add(table);
             FeatureDataView view = dataSet.DefaultViewManager.CreateDataView(table);

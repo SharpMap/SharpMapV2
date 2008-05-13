@@ -11,7 +11,7 @@ namespace SharpMap.Tests
 {
     internal static class DataSourceHelper
     {
-        internal static IFeatureLayerProvider CreateGeometryDatasource(IGeometryFactory geoFactory)
+        internal static IFeatureProvider CreateGeometryDatasource(IGeometryFactory geoFactory)
         {
             Collection<IGeometry> geoms = new Collection<IGeometry>();
             geoms.Add(geoFactory.WktReader.Read("POINT EMPTY"));
