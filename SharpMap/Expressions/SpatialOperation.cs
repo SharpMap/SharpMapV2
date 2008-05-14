@@ -24,7 +24,7 @@ namespace SharpMap.Expressions
     /// See section 6.1.15 Relational operators in Open Geospatial Consortium's Simple Features Access 
     /// (reference number: OGC 06-103r3) for more careful definitions of these terms.
     /// </remarks>
-    public enum SpatialExpressionType
+    public enum SpatialOperation
     {
         /// <summary>
         /// No spatial relation. Returns an empty set.
