@@ -24,6 +24,7 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using GeoAPI.Geometries;
+using SharpMap.Data.Caching;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 
@@ -39,14 +40,19 @@ namespace SharpMap.Layers
     [Serializable]
     public abstract class Layer : ILayer, ICloneable
     {
-        private static readonly PropertyDescriptorCollection _properties;
+        private static readonly PropertyDescriptorCollection _layerTypeProperties;
 
         static Layer()
         {
-            _properties = TypeDescriptor.GetProperties(typeof(Layer));
+            _layerTypeProperties = TypeDescriptor.GetProperties(typeof(Layer));
         }
 
         #region PropertyDescriptors
+
+        protected PropertyDescriptorCollection LayerTypeProperties
+        {
+            get { return _layerTypeProperties; }
+        }
 
         // This pattern reminds me of DependencyProperties in WPF...
 
@@ -55,7 +61,7 @@ namespace SharpMap.Layers
         /// </summary>
         public static PropertyDescriptor AsyncQueryProperty
         {
-            get { return _properties.Find("AsyncQuery", false); }
+            get { return _layerTypeProperties.Find("AsyncQuery", false); }
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace SharpMap.Layers
         /// </summary>
         public static PropertyDescriptor CoordinateTransformationProperty
         {
-            get { return _properties.Find("CoordinateTransformation", false); }
+            get { return _layerTypeProperties.Find("CoordinateTransformation", false); }
         }
 
         /// <summary>
@@ -71,7 +77,7 @@ namespace SharpMap.Layers
         /// </summary>
         public static PropertyDescriptor EnabledProperty
         {
-            get { return _properties.Find("Enabled", false); }
+            get { return _layerTypeProperties.Find("Enabled", false); }
         }
 
         /// <summary>
@@ -79,24 +85,24 @@ namespace SharpMap.Layers
         /// </summary>
         public static PropertyDescriptor ExtentsProperty
         {
-            get { return _properties.Find("Extents", false); }
+            get { return _layerTypeProperties.Find("Extents", false); }
         }
 
-        /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="ShouldHandleDataCacheMissEvent"/> 
-        /// property.
-        /// </summary>
-        public static PropertyDescriptor ShouldHandleDataCacheMissEventProperty
-        {
-            get { return _properties.Find("ShouldHandleDataCacheMissEvent", false); }
-        }
+        ///// <summary>
+        ///// Gets a PropertyDescriptor for Layer's <see cref="ShouldHandleFeaturesNotFoundEvent"/> 
+        ///// property.
+        ///// </summary>
+        //public static PropertyDescriptor ShouldHandleFeaturesNotFoundEventProperty
+        //{
+        //    get { return _layerTypeProperties.Find("ShouldHandleFeaturesNotFoundEvent", false); }
+        //}
 
         /// <summary>
         /// Gets a PropertyDescriptor for Layer's <see cref="LayerName"/> property.
         /// </summary>
         public static PropertyDescriptor LayerNameProperty
         {
-            get { return _properties.Find("LayerName", false); }
+            get { return _layerTypeProperties.Find("LayerName", false); }
         }
 
         /// <summary>
@@ -104,18 +110,8 @@ namespace SharpMap.Layers
         /// </summary>
 		public static PropertyDescriptor StyleProperty
 		{
-			get { return _properties.Find("Style", false); }
-		}
-
-		public static PropertyDescriptor ShowChildrenProperty
-		{
-			get { return _properties.Find("ShowChildren", false); }
-		}
-
-		public static PropertyDescriptor AreFeaturesSelectableProperty
-		{
-			get { return _properties.Find("AreFeaturesSelectable", false); }
-		}
+			get { return _layerTypeProperties.Find("Style", false); }
+        }
 
         #endregion
 
@@ -124,9 +120,14 @@ namespace SharpMap.Layers
         private String _layerName;
         private IStyle _style;
         private Boolean _disposed;
-        private readonly IProvider _dataSource;
-        private Boolean _asyncQuery = false;
-        private Boolean _handleFeaturesNotFoundEvent = true;
+        private readonly IAsyncProvider _dataSource;
+        private Boolean _asyncQuery;
+        //private Boolean _handleFeaturesNotFoundEvent = true;
+        private IGeometry _loadedRegion;
+        private PropertyDescriptorCollection _customProperties;
+        private IGeometryFactory _geoFactory;
+        private IQueryCache _cache;
+        private IAsyncResult _loadAsyncResult;
         #endregion
 
         #region Object Creation / Disposal
@@ -135,7 +136,7 @@ namespace SharpMap.Layers
         /// Creates a new Layer instance with the given data source.
         /// </summary>
         /// <param name="dataSource">
-        /// The <see cref="ILayerProvider"/> which provides the data 
+        /// The <see cref="IProvider"/> which provides the data 
         /// for the layer.
         /// </param>
         protected Layer(IProvider dataSource) :
@@ -151,7 +152,7 @@ namespace SharpMap.Layers
         /// The name to uniquely identify the layer by.
         /// </param>
         /// <param name="dataSource">
-        /// The <see cref="ILayerProvider"/> which provides the data 
+        /// The <see cref="IProvider"/> which provides the data 
         /// for the layer.
         /// </param>
         protected Layer(String layerName, IProvider dataSource) :
@@ -159,6 +160,98 @@ namespace SharpMap.Layers
         {
         }
 
+        private class AsyncProviderAdapter : IAsyncProvider
+        {
+            public AsyncProviderAdapter(IProvider provider)
+            {
+                
+            }
+            #region IAsyncProvider Members
+
+            public IAsyncResult BeginExecuteQuery(Expression query, AsyncCallback callback)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object EndExecuteQuery(IAsyncResult asyncResult)
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
+
+            #region IProvider Members
+
+            public ICoordinateTransformation CoordinateTransformation
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public ICoordinateSystem SpatialReference
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public bool IsOpen
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public int? Srid
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public IExtents GetExtents()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string ConnectionId
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public void Open()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Close()
+            {
+                throw new NotImplementedException();
+            }
+
+            public object ExecuteQuery(Expression query)
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
+
+            #region IDisposable Members
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
+        }
 
         /// <summary>
         /// Creates a new Layer instance identified by the given name, with
@@ -172,14 +265,21 @@ namespace SharpMap.Layers
         /// The symbology used to style the layer.
         /// </param>
         /// <param name="dataSource">
-        /// The <see cref="ILayerProvider"/> which provides the data 
+        /// The <see cref="IProvider"/> which provides the data 
         /// for the layer.
         /// </param>
         protected Layer(String layerName, IStyle style, IProvider dataSource)
         {
+            if (layerName == null) throw new ArgumentNullException("layerName");
+            if (dataSource == null) throw new ArgumentNullException("dataSource");
+
             LayerName = layerName;
-            _dataSource = dataSource;
+
+            IAsyncProvider asyncProvider = dataSource as IAsyncProvider;
+            _dataSource = asyncProvider ?? new AsyncProviderAdapter(dataSource);
             Style = style;
+            // TODO: inject the cache type or instance...
+            _cache = new NullQueryCache();
         }
 
         #region Dispose Pattern
@@ -262,6 +362,20 @@ namespace SharpMap.Layers
 
         #endregion
 
+        public PropertyDescriptorCollection Properties
+        {
+            get
+            {
+                return _customProperties ?? _layerTypeProperties;
+            }
+        }
+
+        public Int32 AddProperty(PropertyDescriptor property)
+        {
+            initCustomPropsIfNeeded();
+            return _customProperties.Add(property);
+        }
+
         #region ILayer Members
         /// <summary>
         /// Gets or sets a value indicating that data is obtained asynchronously.
@@ -276,12 +390,8 @@ namespace SharpMap.Layers
                     return;
                 }
 
-#if !EXPERIMENTAL
-                throw new NotImplementedException("AsyncQuery not implemented in this release.");
-#else
                 _asyncQuery = value;
                 OnAsyncQueryChanged();
-#endif
             }
         }
 
@@ -312,6 +422,8 @@ namespace SharpMap.Layers
             }
         }
 
+        public event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
+
         /// <summary>
         /// Gets the data source used to create this layer.
         /// </summary>
@@ -332,7 +444,7 @@ namespace SharpMap.Layers
         /// object is created and assigned to the Style property, 
         /// and then the Style.Enabled property is set.
         /// </remarks>
-        public Boolean Enabled
+        public virtual Boolean Enabled
         {
             get { return Style.Enabled; }
             set
@@ -380,31 +492,54 @@ namespace SharpMap.Layers
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value which causes the layer to handle
-        /// an event from a data store indicating that the data is not cached
-        /// and must be read from <see cref="DataSource"/>.
-        /// </summary>
-        public Boolean ShouldHandleFeaturesNotFoundEvent
+        public IGeometryFactory GeometryFactory
         {
-            get { return _handleFeaturesNotFoundEvent; }
-            set
-            {
-                if (_handleFeaturesNotFoundEvent == value)
-                {
-                    return;
-                }
-
-                _handleFeaturesNotFoundEvent = value;
-
-                OnShouldHandleDataCacheMissEventChanged();
-            }
+            get { return _geoFactory; }
+            set { _geoFactory = value; }
         }
+
+        public Object GetProperty(PropertyDescriptor property)
+        {
+            if (property == null) { throw new ArgumentNullException("property"); }
+
+            return property.GetValue(this);
+        }
+
+        public Boolean IsLoadingData
+        {
+            get { return _loadAsyncResult != null; }
+        }
+
+        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
+        {
+            return condition(this);
+        }
+
+        ///// <summary>
+        ///// Gets or sets a value which causes the layer to handle
+        ///// an event from a data store indicating that the data is not cached
+        ///// and must be read from <see cref="DataSource"/>.
+        ///// </summary>
+        //public Boolean ShouldHandleFeaturesNotFoundEvent
+        //{
+        //    get { return _handleFeaturesNotFoundEvent; }
+        //    set
+        //    {
+        //        if (_handleFeaturesNotFoundEvent == value)
+        //        {
+        //            return;
+        //        }
+
+        //        _handleFeaturesNotFoundEvent = value;
+
+        //        OnShouldHandleDataCacheMissEventChanged();
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets the name of the layer.
         /// </summary>
-        public String LayerName
+        public virtual String LayerName
         {
             get { return _layerName; }
             set
@@ -424,6 +559,67 @@ namespace SharpMap.Layers
             }
         }
 
+        public IGeometry LoadedRegion
+        {
+            get
+            {
+                if (_loadedRegion == null)
+                {
+                    computeLoadedRegion();
+                }
+
+                return _loadedRegion;
+            }
+            protected set { _loadedRegion = value; }
+        }
+
+        public void LoadIntersectingLayerData(IExtents region)
+        {
+            if (region == null) throw new ArgumentNullException("region");
+
+            LoadIntersectingLayerData(region.ToGeometry());
+        }
+
+        public void LoadIntersectingLayerData(IGeometry region)
+        {
+            if (region == null) throw new ArgumentNullException("region");
+
+            SpatialQueryExpression query = new SpatialQueryExpression(new SpatialExpression(region),
+                                                                        SpatialOperation.Intersects,
+                                                                        new LayerExpression(this));
+            LoadLayerData(query);
+        }
+
+        public void LoadLayerData(SpatialQueryExpression query)
+        {
+            if (_asyncQuery)
+            {
+                LoadLayerDataAsync(query);
+            }
+            else
+            {
+                _loadAsyncResult = _dataSource.BeginExecuteQuery(query, null);
+                Object results = _dataSource.EndExecuteQuery(_loadAsyncResult);
+                endLoadInternal(query, results);
+            }
+        }
+
+        public void LoadLayerDataAsync(SpatialQueryExpression query)
+        {
+            AsyncCallback callback = completeLoadLayerData;
+
+            _loadAsyncResult = _dataSource.BeginExecuteQuery(query, callback);
+        }
+
+        public abstract IEnumerable Select(Expression query);
+
+        public void SetProperty(PropertyDescriptor property, Object value)
+        {
+            if (property == null) { throw new ArgumentNullException("property"); }
+
+            property.SetValue(this, value);
+        }
+
         /// <summary>
         /// Gets the spatial reference ID of the layer data source, if one is set.
         /// </summary>
@@ -433,8 +629,8 @@ namespace SharpMap.Layers
             {
                 if (DataSource == null)
                 {
-                    throw new InvalidOperationException(
-                        "DataSource property is null on layer '" + LayerName + "'");
+                    throw new InvalidOperationException("DataSource property is null on layer '" +
+                                                        LayerName + "'");
                 }
 
                 return DataSource.Srid;
@@ -444,7 +640,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets the style for the layer.
         /// </summary>
-        public IStyle Style
+        public virtual IStyle Style
         {
             get { return _style; }
             set
@@ -459,84 +655,34 @@ namespace SharpMap.Layers
             }
         }
 
-        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
-        {
-            return condition(this);
-        }
         #endregion
-
-        // TODO: refactor this to LayerGroup?
-        public virtual Boolean ShowChildren
-        {
-            get
-            {
-                return false;
-            }
-            set
-            {
-                ; // do nothing
-            }
-        }
-
-        // TODO: refactor this to FeatureLayer?
-        public virtual Boolean AreFeaturesSelectable
-        {
-            get
-            {
-                return false;
-            }
-            set
-            {
-                ; // do nothing
-            }
-        }
 
         #region Protected members
 
-        protected void AddLoadedRegion(IExtents region)
+        /// <summary>
+        /// Processes data from the <see cref="DataSource"/> which satisfies
+        /// the <see cref="Expression"/> sent to <see cref="LoadLayerData"/>
+        /// or <see cref="LoadLayerDataAsync"/>.
+        /// </summary>
+        /// <param name="results">
+        /// The results from loading the layer data from the DataSoruce.
+        /// </param>
+        protected abstract void ProcessLoadResults(Object results);
+
+        protected void AddLoadedResults(Expression expression, Object result)
         {
-            AddLoadedRegion(region.ToGeometry());
+            QueryCache.AddExpressionResult(expression, result);
         }
 
-        protected void AddLoadedRegion(IGeometry region)
+        protected IQueryCache QueryCache
         {
-            if (region == null)
-            {
-                return;
-            }
-
-            if (LoadedRegion == null)
-            {
-                LoadedRegion = region;
-            }
-            else
-            {
-                LoadedRegion = LoadedRegion.Union(region);
-            }
+            get { return _cache; }
+            set { _cache = value; }
         }
 
         protected virtual IStyle CreateStyle()
         {
             return new Style();
-        }
-
-        public abstract IGeometry LoadedRegion { get; protected set; }
-
-        public virtual void LoadIntersectingLayerData(IExtents region)
-        {
-            SpatialExpression query = new SpatialExpression(region.ToGeometry(), SpatialExpressionType.Intersects);
-            LoadLayerData(query);
-        }
-
-        public virtual void LoadIntersectingLayerData(IGeometry region)
-        {
-            SpatialExpression query = new SpatialExpression(region, SpatialExpressionType.Intersects);
-            LoadLayerData(query);
-        }
-
-        public virtual void LoadLayerData(SpatialExpression query)
-        {
-            AddLoadedRegion(query.QueryRegion);
         }
 
         protected virtual void OnAsyncQueryChanged()
@@ -554,10 +700,20 @@ namespace SharpMap.Layers
             OnPropertyChanged(EnabledProperty.Name);
         }
 
-        protected virtual void OnShouldHandleDataCacheMissEventChanged()
+        protected virtual void OnLayerDataLoaded(Expression expression, Object result)
         {
-            OnPropertyChanged(ShouldHandleDataCacheMissEventProperty.Name);
+            EventHandler<LayerDataLoadedEventArgs> e = DataLoaded;
+
+            if (e != null)
+            {
+                e(this, new LayerDataLoadedEventArgs(expression, result));
+            }
         }
+
+        //protected virtual void OnShouldHandleDataCacheMissEventChanged()
+        //{
+        //    OnPropertyChanged(ShouldHandleFeaturesNotFoundEventProperty.Name);
+        //}
 
         protected virtual void OnLayerNameChanged()
         {
@@ -604,5 +760,70 @@ namespace SharpMap.Layers
         }
 
         #endregion
+
+        #region Private helper methods
+
+        private void initCustomPropsIfNeeded()
+        {
+            if (_customProperties != null)
+            {
+                return;
+            }
+
+            PropertyDescriptor[] propArray = new PropertyDescriptor[_layerTypeProperties.Count];
+            _layerTypeProperties.CopyTo(propArray, 0);
+            _customProperties = new PropertyDescriptorCollection(propArray, false);
+        }
+
+        private void computeLoadedRegion()
+        {
+            foreach (IGeometry geometry in _cache)
+            {
+                if (geometry == null)
+                {
+                    continue;
+                }
+
+                // TODO: this is probably too costly... need to perform a 
+                // more intellegent merge, such as a binary merge or something
+                _loadedRegion = _loadedRegion == null ? geometry : _loadedRegion.Union(geometry);
+            }
+        }
+
+        private void completeLoadLayerData(IAsyncResult asyncResult)
+        {
+            if (asyncResult.IsCompleted)
+            {
+                return;
+            }
+
+            Object result = _dataSource.EndExecuteQuery(asyncResult);
+            endLoadInternal(asyncResult.AsyncState as Expression, result);
+        }
+
+        private void endLoadInternal(Expression expression, Object result) 
+        {
+            ProcessLoadResults(result);
+
+            if (expression != null)
+            {
+                AddLoadedResults(expression, result);
+            }
+
+            _loadAsyncResult = null;
+            _loadedRegion = null;
+            OnLayerDataLoaded(expression, result);
+        }
+
+        #endregion
+
+        //private IGeometry mergeRegions(IGeometry a, IGeometry b)
+        //{
+        //    Boolean anyGeometryCollection = a.GeometryType == OgcGeometryType.GeometryCollection ||
+        //                                    b.GeometryType == OgcGeometryType.GeometryCollection;
+        //    return anyGeometryCollection
+        //               ? GeometryFactory.CreateGeometryCollection(a, b)
+        //               : a.Union(b);
+        //}
     }
 }

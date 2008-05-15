@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
@@ -246,24 +247,25 @@ namespace SharpMap.Tools
 				return;
 			}
 
-			GeometryLayer filterLayer;
+			GeometryLayer filterLayer = layer as GeometryLayer;
 
-			if (layer is GeometryLayer)
+			if (filterLayer != null)
 			{
-				filterLayer = layer as GeometryLayer;
-
-				Debug.Assert(filterLayer.Style != null);
-
-				if (layer.Enabled && (filterLayer.Style.AreFeaturesSelectable) && layer.IsVisibleWhen(isInView(view.WorldWidth)))
+				if (layer.Enabled && 
+                    filterLayer.Style.AreFeaturesSelectable && 
+                    layer.IsVisibleWhen(isInView(view.WorldWidth)))
 				{
 					filterLayer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
 				}
 			}
-			else if (layer is LayerGroup)
+
+		    IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+            if (layers != null)
 			{
-				foreach (ILayer glayer in (layer as LayerGroup).Layers)
+				foreach (ILayer child in layers)
 				{
-					filterSelected(glayer, view, worldBounds);
+					filterSelected(child, view, worldBounds);
 				}
 			}
 		}

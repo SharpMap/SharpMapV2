@@ -896,7 +896,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    throw new NotImplementedException();
         //}
 
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query)
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
         {
             if (query == null) throw new ArgumentNullException("query");
             checkOpen();
@@ -998,7 +998,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             throw new NotImplementedException();
         }
 
-        public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry, QueryExecutionOptions options)
+        public IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry, FeatureQueryExecutionOptions options)
         {
             checkOpen();
             throw new NotImplementedException();
@@ -1095,7 +1095,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds)
         {
-            return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.FullFeature);
+            return ExecuteIntersectionQuery(bounds, FeatureQueryExecutionOptions.FullFeature);
         }
 
         /// <summary>
@@ -1117,7 +1117,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Only <see cref="QueryExecutionOptions.FullFeature"/> is a 
         /// supported value for <paramref name="options"/>.
         /// </remarks>
-        public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options)
+        public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, FeatureQueryExecutionOptions options)
         {
             checkOpen();
 

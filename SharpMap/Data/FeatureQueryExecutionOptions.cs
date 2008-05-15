@@ -20,10 +20,10 @@ using System;
 namespace SharpMap.Data
 {
     /// <summary>
-    /// Specifies which data is retrieved from the <see cref="IFeatureLayerProvider"/>.
+    /// Specifies which data is retrieved from the <see cref="IFeatureProvider"/>.
     /// </summary>
     [Flags]
-    public enum QueryExecutionOptions
+    public enum FeatureQueryExecutionOptions
     {
         /// <summary>
         /// Specifies that the keys should be retrieved.

@@ -27,6 +27,7 @@ using System.Reflection.Emit;
 using System.Threading;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
+using SharpMap.Data.Caching;
 using SharpMap.Indexing.RTree;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
@@ -37,8 +38,9 @@ namespace SharpMap.Data
     /// Represents one feature table of in-memory spatial data. 
     /// </summary>
     [Serializable]
-    public class FeatureDataTable
-        : DataTable, IEnumerable<FeatureDataRow>, IEnumerable<IFeatureDataRecord>
+    public class FeatureDataTable : DataTable,
+                                    IEnumerable<FeatureDataRow>,
+                                    IEnumerable<IFeatureDataRecord>
     {
         #region Nested types
 
@@ -121,9 +123,10 @@ namespace SharpMap.Data
 
         #region Instance fields
 
-        private IGeometryFactory _geoFactory;
+        private readonly IGeometryFactory _geoFactory;
         private IUpdatableSpatialIndex<IExtents, FeatureDataRow> _rTreeIndex;
-        private IGeometry _envelope;
+        //private IGeometry _loadedRegion;
+        private IExtents _extents;
         private IGeometry _empty;
 
         #endregion
@@ -138,10 +141,7 @@ namespace SharpMap.Data
         //{ }
 
         public FeatureDataTable(IGeometryFactory factory)
-            : this(String.Empty, factory)
-        {
-            Constraints.CollectionChanged += OnConstraintsChanged;
-        }
+            : this(String.Empty, factory) { }
 
         ///// <summary>
         ///// Initializes a new instance of the FeatureDataTable class with the given
@@ -156,8 +156,7 @@ namespace SharpMap.Data
         public FeatureDataTable(String tableName, IGeometryFactory factory)
             : base(tableName)
         {
-            _geoFactory = factory;
-            _empty = _geoFactory.CreatePoint();
+            GeometryFactory = factory;
             Constraints.CollectionChanged += OnConstraintsChanged;
         }
 
@@ -165,12 +164,10 @@ namespace SharpMap.Data
         /// Intitalizes a new instance of the FeatureDataTable class and
         /// copies the name and structure of the given <paramref name="table"/>.
         /// </summary>
-        /// <param name="table"></param>
         public FeatureDataTable(DataTable table, IGeometryFactory factory)
             : base(table.TableName)
         {
-            _geoFactory = factory;
-            _empty = _geoFactory.CreatePoint();
+            GeometryFactory = factory;
             Constraints.CollectionChanged += OnConstraintsChanged;
 
             if (table.DataSet == null || (table.CaseSensitive != table.DataSet.CaseSensitive))
@@ -223,21 +220,20 @@ namespace SharpMap.Data
 
         #region Properties
 
-        public IGeometry Envelope
-        {
-            get { return _envelope ?? _empty; }
-            internal set
-            {
-                _envelope = value;
-            }
-        }
-
         /// <summary>
         /// Gets the full extents of all features in the feature table.
         /// </summary>
         public IExtents Extents
         {
-            get { return Envelope.Extents; }
+            get
+            {
+                if (_extents == null)
+                {
+                    computeExtents();
+                }
+
+                return _extents;
+            }
         }
 
         /// <summary>
@@ -248,6 +244,24 @@ namespace SharpMap.Data
         {
             get { return base.Rows.Count; }
         }
+
+        //public IGeometry LoadedRegion
+        //{
+        //    get
+        //    {
+        //        if (_loadedRegion == null)
+        //        {
+        //            computeLoadedRegion();
+        //        }
+
+        //        return _loadedRegion ?? _empty;
+        //    }
+        //}
+
+        //private void computeLoadedRegion()
+        //{
+            
+        //}
 
         /// <summary>
         /// Gets the feature data row at the specified index.
@@ -284,6 +298,10 @@ namespace SharpMap.Data
         public IGeometryFactory GeometryFactory
         {
             get { return _geoFactory; }
+            private set
+            {
+                _empty = _geoFactory.CreatePoint();
+            }
         }
 
         #endregion
@@ -575,7 +593,7 @@ namespace SharpMap.Data
         {
             IGeometry boundsGeometry = bounds.ToGeometry();
 
-            notifyIfEnvelopeDoesNotContain(boundsGeometry);
+            //notifyIfCacheDoesNotContain(boundsGeometry);
 
             // TODO: handle async case...
 
@@ -614,7 +632,7 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(IGeometry geometry)
         {
-            notifyIfEnvelopeDoesNotContain(geometry);
+            //notifyIfCacheDoesNotContain(geometry);
 
             // TODO: handle async case...
 
@@ -684,27 +702,13 @@ namespace SharpMap.Data
 
                 if (defaultView == null)
                 {
-                    if (DataSet != null)
-                    {
-                        defaultView = DataSet.DefaultViewManager.CreateDataView(this);
-                    }
-                    else
-                    {
-                        defaultView = new FeatureDataView(this, true);
-                        // This call to SetIndex2 is actually performed in the DataView..ctor(DataTable)
-                        // constructor, but for some reason is left out of the DataView..ctor(DataTable, Boolean)
-                        // constructor. Since we call DataView..ctor(DataTable) in 
-                        // FeatureDataView..ctor(FeatureDataTable, Boolean), we don't need this here.
-                        //defaultView.SetIndex2("", DataViewRowState.CurrentRows, null, true);
-                    }
+                    defaultView = DataSet != null
+                                      ? DataSet.DefaultViewManager.CreateDataView(this)
+                                      : new FeatureDataView(this, true);
 
                     FeatureDataView baseDefaultView = _getDefaultView(this);
-                    defaultView = Interlocked.CompareExchange(ref baseDefaultView, defaultView, null);
-
-                    if (defaultView == null)
-                    {
-                        defaultView = baseDefaultView;
-                    }
+                    defaultView = Interlocked.CompareExchange(ref baseDefaultView, defaultView, null) ??
+                                  baseDefaultView;
                 }
 
                 return defaultView;
@@ -778,21 +782,19 @@ namespace SharpMap.Data
         /// <summary>
         /// Raises the FeatureDataRowChanged event. 
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">The event arguments.</param>
         protected override void OnRowChanged(DataRowChangeEventArgs e)
         {
             FeatureDataRow r = e.Row as FeatureDataRow;
-
             Debug.Assert(r != null);
+            IGeometry geometry = r.Geometry;
 
             switch (e.Action)
             {
                 case DataRowAction.Add:
-                    if (r.Geometry != null)
+                    if (geometry != null)
                     {
-                        _envelope = _envelope == null
-                                        ? r.Geometry.Envelope
-                                        : _envelope.Union(r.Geometry).Envelope;
+                        //_cache.AddExpressionResult(null, geometry);
 
                         if (IsSpatiallyIndexed)
                         {
@@ -806,9 +808,9 @@ namespace SharpMap.Data
                 case DataRowAction.ChangeOriginal:
                     throw new NotImplementedException("Geometry versioning not implemented.");
                 case DataRowAction.Delete:
-                    if (r.Geometry != null)
+                    if (geometry != null)
                     {
-                        _envelope = _envelope.Difference(r.Geometry).Envelope;
+                        //_cache.Expire(geometry);
 
                         if (IsSpatiallyIndexed)
                         {
@@ -816,16 +818,18 @@ namespace SharpMap.Data
                         }
                     }
                     break;
+                    /*
                 case DataRowAction.Commit:
                 case DataRowAction.Rollback:
                 case DataRowAction.Nothing:
+                     */
                 default:
                     break;
             }
 
             if ((FeatureDataRowChanged != null))
             {
-                FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowChanged(this, new FeatureDataRowChangeEventArgs(r, e.Action));
             }
 
             base.OnRowChanged(e);
@@ -841,7 +845,8 @@ namespace SharpMap.Data
 
             if ((FeatureDataRowChanging != null))
             {
-                FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowChanging(this, new FeatureDataRowChangeEventArgs((FeatureDataRow)e.Row, 
+                                                                               e.Action));
             }
         }
 
@@ -855,7 +860,8 @@ namespace SharpMap.Data
 
             if ((FeatureDataRowDeleted != null))
             {
-                FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowDeleted(this, new FeatureDataRowChangeEventArgs((FeatureDataRow)e.Row,
+                                                                              e.Action));
             }
         }
 
@@ -866,15 +872,43 @@ namespace SharpMap.Data
         protected override void OnRowDeleting(DataRowChangeEventArgs e)
         {
             base.OnRowDeleting(e);
+
             if ((FeatureDataRowDeleting != null))
             {
-                FeatureDataRowDeleting(this, new FeatureDataRowChangeEventArgs(((FeatureDataRow)(e.Row)), e.Action));
+                FeatureDataRowDeleting(this, new FeatureDataRowChangeEventArgs((FeatureDataRow)e.Row,
+                                                                               e.Action));
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable members
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable<IFeatureDataRecord> members
+
+        IEnumerator<IFeatureDataRecord> IEnumerable<IFeatureDataRecord>.GetEnumerator()
+        {
+            foreach (FeatureDataRow row in this)
+            {
+                yield return row;
             }
         }
 
         #endregion
 
         #region Internal helper methods and properties
+
+        //internal Boolean Contains(IGeometry geometry)
+        //{
+        //    return _cache.Contains(geometry);
+        //}
 
         internal FeatureDataView DefaultViewInternal
         {
@@ -908,16 +942,16 @@ namespace SharpMap.Data
             set { _setMergingData(this, value); }
         }
 
-        internal void NotifyFeaturesNotFound(FeatureSpatialExpression notFoundExpression)
-        {
-            EventHandler<FeaturesNotFoundEventArgs> e = FeaturesNotFound;
+        //internal void NotifyFeaturesNotFound(FeatureSpatialExpression notFoundExpression)
+        //{
+        //    EventHandler<FeaturesNotFoundEventArgs> e = FeaturesNotFound;
 
-            if (e != null)
-            {
-                FeaturesNotFoundEventArgs args = new FeaturesNotFoundEventArgs(notFoundExpression);
-                e(this, args);
-            }
-        }
+        //    if (e != null)
+        //    {
+        //        FeaturesNotFoundEventArgs args = new FeaturesNotFoundEventArgs(notFoundExpression);
+        //        e(this, args);
+        //    }
+        //}
 
         internal void RestoreIndexEvents(Boolean forceReset)
         {
@@ -932,16 +966,10 @@ namespace SharpMap.Data
                 _rTreeIndex.Insert(row);
             }
 
-            if (_envelope == null)
-            {
-                _envelope = row.Geometry.Envelope;
-            }
-            else
-            {
-#warning Must implement FeatureDataTable cached region management when geometry is changed.
-                //_cachedRegion = _cachedRegion.Difference(oldGeometry);
-                _envelope = _envelope.Union(row.Geometry).Envelope;
-            }
+            // TODO: how to update the cache when the row geometry changes?
+            // Replacing the geometry in the expression would break the expression
+            // What about adding a new expression (and perhaps a new expression type)?
+            //_cache.Expire(oldGeometry);
         }
 
         internal Boolean SuspendEnforceConstraints
@@ -980,9 +1008,8 @@ namespace SharpMap.Data
 
             ILGenerator il = get_EnforceConstraintsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo enforceConstraintsProperty =
-                typeof(DataTable).GetProperty("EnforceConstraints", flags);
+            PropertyInfo enforceConstraintsProperty = typeof(DataTable).GetProperty("EnforceConstraints", 
+                                                                                    nonPublicInstance);
             MethodInfo getMethod = enforceConstraintsProperty.GetGetMethod(true);
             il.Emit(OpCodes.Call, getMethod);
             il.Emit(OpCodes.Ret);
@@ -1004,9 +1031,8 @@ namespace SharpMap.Data
             ILGenerator il = set_EnforceConstraintsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo enforceConstraintsProperty =
-                typeof(DataTable).GetProperty("EnforceConstraints", flags);
+            PropertyInfo enforceConstraintsProperty = typeof(DataTable).GetProperty("EnforceConstraints", 
+                                                                                    nonPublicInstance);
             MethodInfo setMethod = enforceConstraintsProperty.GetSetMethod(true);
             il.Emit(OpCodes.Call, setMethod);
             il.Emit(OpCodes.Ret);
@@ -1028,9 +1054,9 @@ namespace SharpMap.Data
 
             ILGenerator il = evaluateExpressionsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
             MethodInfo evaluateExpressionsInfo = typeof(DataTable).GetMethod("EvaluateExpressions",
-                                                                              flags, null,
+                                                                              nonPublicInstance, 
+                                                                              null,
                                                                               Type.EmptyTypes,
                                                                               null);
             il.Emit(OpCodes.Call, evaluateExpressionsInfo);
@@ -1050,9 +1076,8 @@ namespace SharpMap.Data
 
             ILGenerator il = get_SuspendEnforceConstraintsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo suspendConstraintsProperty =
-                typeof(DataTable).GetProperty("SuspendEnforceConstraints", flags);
+            PropertyInfo suspendConstraintsProperty = typeof(DataTable).GetProperty("SuspendEnforceConstraints", 
+                                                                                    nonPublicInstance);
             MethodInfo getMethod = suspendConstraintsProperty.GetGetMethod(true);
             il.Emit(OpCodes.Call, getMethod);
             il.Emit(OpCodes.Ret);
@@ -1072,9 +1097,8 @@ namespace SharpMap.Data
             ILGenerator il = set_SuspendEnforceConstraintsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo suspendConstraintsProperty =
-                typeof(DataTable).GetProperty("SuspendEnforceConstraints", flags);
+            PropertyInfo suspendConstraintsProperty = typeof(DataTable).GetProperty("SuspendEnforceConstraints", 
+                                                                                    nonPublicInstance);
             MethodInfo setMethod = suspendConstraintsProperty.GetSetMethod(true);
             il.Emit(OpCodes.Call, setMethod);
             il.Emit(OpCodes.Ret);
@@ -1096,9 +1120,9 @@ namespace SharpMap.Data
 
             ILGenerator il = enableConstraintsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
             MethodInfo enableConstraintsInfo = typeof(DataTable).GetMethod("EnableConstraints",
-                                                                            flags, null,
+                                                                            nonPublicInstance, 
+                                                                            null,
                                                                             Type.EmptyTypes,
                                                                             null);
             il.Emit(OpCodes.Call, enableConstraintsInfo);
@@ -1108,6 +1132,7 @@ namespace SharpMap.Data
                    as EnableConstraintsDelegate;
         }
 
+        private const BindingFlags nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
         private static GetMergingDataDelegate generateGetMergingDataDelegate()
         {
             DynamicMethod get_MergingDataMethod = new DynamicMethod("FeatureDataTable_get_mergingData_DynamicMethod",
@@ -1117,8 +1142,7 @@ namespace SharpMap.Data
 
             ILGenerator il = get_MergingDataMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld,
-                    typeof(DataTable).GetField("mergingData", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ldfld, typeof(DataTable).GetField("mergingData", nonPublicInstance));
             il.Emit(OpCodes.Ret);
 
             return get_MergingDataMethod.CreateDelegate(typeof(GetMergingDataDelegate))
@@ -1135,8 +1159,7 @@ namespace SharpMap.Data
             ILGenerator il = set_MergingDataMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Stfld,
-                    typeof(DataTable).GetField("mergingData", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Stfld, typeof(DataTable).GetField("mergingData", nonPublicInstance));
             il.Emit(OpCodes.Ret);
 
             return set_MergingDataMethod.CreateDelegate(typeof(SetMergingDataDelegate))
@@ -1152,8 +1175,7 @@ namespace SharpMap.Data
 
             ILGenerator il = get_DefaultViewMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld,
-                    typeof(DataTable).GetField("defaultView", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ldfld, typeof(DataTable).GetField("defaultView", nonPublicInstance));
             il.Emit(OpCodes.Ret);
 
             return get_DefaultViewMethod.CreateDelegate(typeof(GetDefaultViewDelegate))
@@ -1175,9 +1197,10 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             MethodInfo restoreIndexEventsInfo = typeof(DataTable).GetMethod("RestoreIndexEvents",
-                                                                             BindingFlags.NonPublic |
-                                                                             BindingFlags.Instance, null,
-                                                                             new Type[] { typeof(Boolean) }, null);
+                                                                             nonPublicInstance, 
+                                                                             null,
+                                                                             new Type[] { typeof(Boolean) }, 
+                                                                             null);
             il.Emit(OpCodes.Call, restoreIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
@@ -1200,9 +1223,10 @@ namespace SharpMap.Data
             ILGenerator il = suspendIndexEventsMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             MethodInfo suspendIndexEventsInfo = typeof(DataTable).GetMethod("SuspendIndexEvents",
-                                                                             BindingFlags.NonPublic |
-                                                                             BindingFlags.Instance, null,
-                                                                             Type.EmptyTypes, null);
+                                                                             nonPublicInstance, 
+                                                                             null,
+                                                                             Type.EmptyTypes, 
+                                                                             null);
             il.Emit(OpCodes.Call, suspendIndexEventsInfo);
             il.Emit(OpCodes.Ret);
 
@@ -1229,8 +1253,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Ldarg_3);
-            MethodInfo cloneToInfo =
-                typeof(DataTable).GetMethod("CloneTo", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo cloneToInfo = typeof(DataTable).GetMethod("CloneTo", nonPublicInstance);
             il.Emit(OpCodes.Call, cloneToInfo);
             il.Emit(OpCodes.Ret);
 
@@ -1254,8 +1277,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ldarg_3);
             il.Emit(OpCodes.Castclass, AdoNetInternalTypes.IndexType);
-            MethodInfo findMergeTargetInfo =
-                typeof(DataTable).GetMethod("FindMergeTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo findMergeTargetInfo = typeof(DataTable).GetMethod("FindMergeTarget", nonPublicInstance);
             il.Emit(OpCodes.Call, findMergeTargetInfo);
             il.Emit(OpCodes.Ret);
 
@@ -1273,8 +1295,7 @@ namespace SharpMap.Data
 
             ILGenerator il = get_PrimaryKeyConstraintMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld,
-                    typeof(DataTable).GetField("primaryKey", BindingFlags.Instance | BindingFlags.NonPublic));
+            il.Emit(OpCodes.Ldfld, typeof(DataTable).GetField("primaryKey", nonPublicInstance));
             il.Emit(OpCodes.Ret);
 
             return get_PrimaryKeyConstraintMethod.CreateDelegate(typeof(GetPrimaryKeyConstraintDelegate))
@@ -1304,7 +1325,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Castclass, AdoNetInternalTypes.IndexType);
             MethodInfo mergeRowInfo = typeof(DataTable).GetMethod(
                 "MergeRow",
-                BindingFlags.Instance | BindingFlags.NonPublic,
+                nonPublicInstance,
                 null,
                 new Type[]
                     {
@@ -1323,27 +1344,30 @@ namespace SharpMap.Data
 
         #region Private helper methods
 
-        private void notifyIfEnvelopeDoesNotContain(IGeometry geometry)
+        private void computeExtents()
         {
-            if (!geometry.IsEmpty && !Envelope.Contains(geometry))
-            {
-                IGeometry queryGeometry = Envelope.IsEmpty
-                                              ? geometry
-                                              : geometry.Difference(Envelope);
-
-                FeatureSpatialExpression notFound = new FeatureSpatialExpression(
-                    queryGeometry, SpatialExpressionType.Intersects);
-
-                NotifyFeaturesNotFound(notFound);
-            }
+            throw new NotImplementedException();
         }
+
+        //private void notifyIfCacheDoesNotContain(IGeometry geometry)
+        //{
+        //    if (geometry.IsEmpty || _cache.Contains(geometry))
+        //    {
+        //        return;
+        //    }
+
+        //    FeatureSpatialExpression notFound = new FeatureSpatialExpression(geometry,
+        //                                                                     SpatialExpressionType.Intersects);
+
+        //    NotifyFeaturesNotFound(notFound);
+        //}
 
         private static void copyRow(FeatureDataRow source, FeatureDataRow target)
         {
             if (source.Table.Columns.Count != target.Table.Columns.Count)
             {
-                throw new InvalidOperationException("Can't import a feature row with a different number "+
-                                                    "of columns.");
+                throw new InvalidOperationException("Can't import a feature row with a different " +
+                                                    "number of columns.");
             }
 
             for (Int32 columnIndex = 0; columnIndex < source.Table.Columns.Count; columnIndex++)
@@ -1359,13 +1383,13 @@ namespace SharpMap.Data
         private void initializeSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
-            IIndexRestructureStrategy<IExtents, FeatureDataRow> restructureStrategy 
+            IIndexRestructureStrategy<IExtents, FeatureDataRow> restructureStrategy
                 = new NullRestructuringStrategy<IExtents, FeatureDataRow>();
-            RestructuringHuristic restructureHeuristic 
+            RestructuringHuristic restructureHeuristic
                 = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IItemInsertStrategy<IExtents, FeatureDataRow> insertStrategy 
+            IItemInsertStrategy<IExtents, FeatureDataRow> insertStrategy
                 = new GuttmanQuadraticInsert<FeatureDataRow>(_geoFactory);
-            INodeSplitStrategy<IExtents, FeatureDataRow> nodeSplitStrategy 
+            INodeSplitStrategy<IExtents, FeatureDataRow> nodeSplitStrategy
                 = new GuttmanQuadraticSplit<FeatureDataRow>(_geoFactory);
             IdleMonitor idleMonitor = null;
 
@@ -1375,27 +1399,6 @@ namespace SharpMap.Data
                                                                                 nodeSplitStrategy,
                                                                                 new DynamicRTreeBalanceHeuristic(),
                                                                                 idleMonitor);
-        }
-
-        #endregion
-
-        #region IEnumerable members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable<IFeatureDataRecord> members
-
-        IEnumerator<IFeatureDataRecord> IEnumerable<IFeatureDataRecord>.GetEnumerator()
-        {
-            foreach (FeatureDataRow row in this)
-            {
-                yield return row;
-            }
         }
 
         #endregion

@@ -90,17 +90,19 @@ namespace SharpMap.Presentation.Presenters
 					if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
 					{
 						ILayer layer = Map.Layers[e.NewIndex];
-						if(layer is LayerGroup)
+					    IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+						if(layers != null)
 						{
-							foreach(ILayer groupMember in ((LayerGroup) layer).Layers)
+							foreach(ILayer child in layers)
 							{
-								if(groupMember.Enabled)
+								if(child.Enabled)
 								{
-									View.EnableLayer(groupMember.LayerName);
+									View.EnableLayer(child.LayerName);
 								}
 								else
 								{
-									View.DisableLayer(groupMember.LayerName);
+									View.DisableLayer(child.LayerName);
 								}
 							}
 						}
@@ -113,10 +115,11 @@ namespace SharpMap.Presentation.Presenters
 							View.DisableLayer(layer.LayerName);
 						}
 					}
-					else if(e.PropertyDescriptor.Name == Layer.ShowChildrenProperty.Name)
+					else if(e.PropertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
 					{
 						ILayer layer = Map.Layers[e.NewIndex];
-						if(layer.ShowChildren)
+
+                        if ((Boolean)layer.GetProperty(LayerGroup.ShowChildrenProperty))
 						{
 							View.EnableChildLayers(layer.LayerName);
 						}
@@ -125,12 +128,12 @@ namespace SharpMap.Presentation.Presenters
 							View.DisableChildLayers(layer.LayerName);
 						}
 					}
-					else if(e.PropertyDescriptor.Name == Layer.AreFeaturesSelectableProperty.Name)
+					else if(e.PropertyDescriptor.Name == FeatureLayer.AreFeaturesSelectableProperty.Name)
 					{
 						ILayer layer = Map.Layers[e.NewIndex];
-						FeatureStyle fstyle = layer.Style as FeatureStyle;
+						FeatureStyle style = layer.Style as FeatureStyle;
 
-						if(fstyle != null && fstyle.AreFeaturesSelectable)
+						if(style != null && style.AreFeaturesSelectable)
 						{
 							View.SetFeaturesSelectable(layer.LayerName, true);
 						}
@@ -183,10 +186,11 @@ namespace SharpMap.Presentation.Presenters
 				case LayerAction.Disabled:
 					foreach(String layerName in e.Layers)
 					{
-						LayerGroup group = Map.Layers[layerName] as LayerGroup;
+                        LayerGroup group = Map.Layers[layerName] as LayerGroup;
+
 						if(group != null)
 						{
-							foreach(ILayer layer in group.Layers)
+							foreach(ILayer layer in group)
 							{
 								if(layer == group.MasterLayer)
 								{

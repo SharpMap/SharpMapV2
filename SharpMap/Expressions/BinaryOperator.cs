@@ -21,6 +21,13 @@ namespace SharpMap.Expressions
     public enum BinaryOperator
     {
         And,
-        Or
+        Or,
+        Like,
+        Equals,
+        NotEquals,
+        GreaterThan,
+        GreaterThanOrEqualTo,
+        LessThan,
+        LessThanOrEqualTo,
     }
 }

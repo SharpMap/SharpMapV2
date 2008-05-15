@@ -106,11 +106,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Data\AdoNetInternalTypes.cs" />
+    <Compile Include="Data\Caching\IQueryCache.cs" />
+    <Compile Include="Data\Caching\NullQueryCache.cs" />
     <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />
+    <Compile Include="Data\IAsyncProvider.cs" />
     <Compile Include="Data\IFeatureAdapter.cs" />
     <Compile Include="Data\IRasterProvider.cs" />
-    <Compile Include="Data\QueryExecutionOptions.cs" />
+    <Compile Include="Data\FeatureQueryExecutionOptions.cs" />
     <Compile Include="Data\RasterBand.cs" />
     <Compile Include="Data\RasterDataSet.cs" />
     <Compile Include="Data\RasterDataView.cs" />
@@ -130,9 +133,28 @@
     <Compile Include="Data\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Expressions\FeatureSpatialExpression.cs" />
+    <Compile Include="Expressions\AllAttributesExpression.cs" />
+    <Compile Include="Expressions\AttributeBinaryExpression.cs" />
+    <Compile Include="Expressions\AttributeExpression.cs" />
+    <Compile Include="Expressions\BinaryExpression.cs" />
+    <Compile Include="Expressions\BinaryExpressionBase.cs" />
+    <Compile Include="Expressions\BinaryOperator.cs" />
+    <Compile Include="Expressions\CollectionBinaryExpression.cs" />
+    <Compile Include="Expressions\CollectionExpression.cs" />
+    <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\FeatureQueryExpression.cs" />
+    <Compile Include="Expressions\CollectionOperator.cs" />
+    <Compile Include="Expressions\LayerExpression.cs" />
+    <Compile Include="Expressions\NumericExpression`1.cs" />
+    <Compile Include="Expressions\OidCollectionExpression.cs" />
+    <Compile Include="Expressions\OidExpression.cs" />
+    <Compile Include="Expressions\SpatialQueryExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
-    <Compile Include="Expressions\SpatialExpressionType.cs" />
+    <Compile Include="Expressions\SpatialOperation.cs" />
+    <Compile Include="Expressions\StringExpression.cs" />
+    <Compile Include="Expressions\UnaryExpression.cs" />
+    <Compile Include="Expressions\UnaryOperator.cs" />
+    <Compile Include="Expressions\ValueExpression.cs" />
     <Compile Include="Indexing\RTree\ComputationExtents.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
@@ -182,6 +204,7 @@
     </Compile>
     <Compile Include="Layers\Layer.cs">
     </Compile>
+    <Compile Include="Layers\LayerDataLoadedEventArgs.cs" />
     <Compile Include="Layers\LayerGroup.cs">
     </Compile>
     <Compile Include="Layers\MultipartGeometryLabelingBehavor.cs" />
@@ -309,6 +332,7 @@
     <Compile Include="Utilities\NondisposingStream.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
     <Compile Include="Utilities\SharpMapVersion.cs" />
+    <Compile Include="Utilities\StringEqualityComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />

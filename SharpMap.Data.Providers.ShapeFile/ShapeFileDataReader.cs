@@ -30,7 +30,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	{
         #region Instance fields
         private readonly ShapeFileProvider _shapeFile;
-        private readonly QueryExecutionOptions _options;
+        private readonly FeatureQueryExecutionOptions _options;
         private readonly DataTable _schemaTable;
         private IFeatureDataRecord _currentFeature;
         private Boolean _isDisposed;
@@ -39,9 +39,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#region Object Construction / Disposal
 
-        internal ShapeFileDataReader(ShapeFileProvider source, IExtents queryRegion, QueryExecutionOptions options)
+        internal ShapeFileDataReader(ShapeFileProvider source, IExtents queryRegion, FeatureQueryExecutionOptions options)
 		{
-            if (options != QueryExecutionOptions.FullFeature)
+            if (options != FeatureQueryExecutionOptions.FullFeature)
             {
                 throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
             }

@@ -17,8 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using GeoAPI.Geometries;
 using System.Globalization;
@@ -31,7 +29,6 @@ namespace SharpMap.Data
     /// </summary>
     public interface IFeatureProvider : IProvider
     {
-
         /// <summary>
         /// Creates a new <see cref="FeatureDataTable"/> from the data source's 
         /// schema.
@@ -42,49 +39,27 @@ namespace SharpMap.Data
         /// </returns>
         FeatureDataTable CreateNewTable();
 
-
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
         /// match the given <paramref name="query"/>.
         /// </summary>
         /// <param name="query">Spatial query to execute.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteFeatureQuery(FeatureSpatialExpression query);
+        IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query);
 
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        /// are intersected by <paramref name="bounds"/>.
+        /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="bounds"><see cref="IExtents" /> to intersect with.</param>
-        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds);
-
-        /// <summary>
-        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        /// are intersected by <paramref name="geometry"/>.
-        /// </summary>
-        /// <param name="geometry"><see cref="IGeometry"/> to intersect with.</param>
-        /// <returns>An <see cref="IFeatureDataReader"/> to iterate over the results.</returns>
-        IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry);
-
-        /// <summary>
-        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        /// are intersected by <paramref name="bounds"/>.
-        /// </summary>
-        /// <param name="bounds"><see cref="IExtents" /> to intersect with.</param>
+        /// <param name="query">Spatial query to execute.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options);
+        IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options);
 
         /// <summary>
-        /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        /// are intersected by <paramref name="geometry"/>.
+        /// Gets or sets the <see cref="IGeometryFactory"/> used
+        /// to construct <see cref="IGeometry"/> instances.
         /// </summary>
-        /// <param name="geometry"><see cref="IGeometry"/> to intersect with.</param>
-        /// <param name="options">Options indicating which data to retrieve.</param>
-        /// <returns>An <see cref="IFeatureDataReader"/> to iterate over the results.</returns>
-        IFeatureDataReader ExecuteIntersectionQuery(IGeometry geometry, QueryExecutionOptions options);
-
         IGeometryFactory GeometryFactory { get; set; }
 
         /// <summary>

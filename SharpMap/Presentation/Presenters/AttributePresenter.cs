@@ -77,18 +77,18 @@ namespace SharpMap.Presentation.Presenters
 
             Debug.Assert(layer != null);
 
-            FeatureSpatialExpression query;
+            FeatureQueryExpression query;
 
-            if (layer.HighlightedFeatures.ViewDefinition.QueryRegion.IsEmpty)
+            if (layer.HighlightedFeatures.ViewDefinition.QueryGeometry.IsEmpty)
             {
-                query = new FeatureSpatialExpression(null, // Changed to null from Point.Empty
-                                        SpatialExpressionType.Disjoint,
+                query = new FeatureQueryExpression(null, // Changed to null from Point.Empty
+                                        SpatialOperation.Disjoint,
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }
             else
             {
-                query = new FeatureSpatialExpression(layer.HighlightedFeatures.ViewDefinition.QueryRegion,
-                                        SpatialExpressionType.Intersects,
+                query = new FeatureQueryExpression(layer.HighlightedFeatures.ViewDefinition.QueryGeometry,
+                                        SpatialOperation.Intersects,
                                         getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
             }
 

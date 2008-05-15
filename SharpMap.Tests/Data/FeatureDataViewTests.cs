@@ -53,7 +53,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.Crosses, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.Crosses, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.Contains, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.Contains, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.Equals, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.Equals, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.None, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.None, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.Overlaps, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.Overlaps, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.Touches, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.Touches, "", DataViewRowState.CurrentRows);
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace SharpMap.Tests.Data
             IFeatureDataReader reader = data.ExecuteIntersectionQuery(data.GetExtents());
             table.Load(reader, LoadOption.OverwriteChanges, null);
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
-            new FeatureDataView(table, empty, SpatialExpressionType.Within, "", DataViewRowState.CurrentRows);
+            new FeatureDataView(table, empty, SpatialOperation.Within, "", DataViewRowState.CurrentRows);
         }
 
         #endregion
@@ -613,7 +613,7 @@ namespace SharpMap.Tests.Data
             table.Load(reader, LoadOption.OverwriteChanges, null);
             IGeometry filter = _geoFactory.CreateExtents2D(0, 0, 10, 10).ToGeometry();
             FeatureDataView view = new FeatureDataView(table, filter, "", DataViewRowState.CurrentRows);
-            Assert.AreEqual(SpatialExpressionType.Intersects, view.GeometryFilterType);
+            Assert.AreEqual(SpatialOperation.Intersects, view.GeometryFilterType);
         }
 
         #endregion

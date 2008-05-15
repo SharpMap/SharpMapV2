@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using GeoAPI.Geometries;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {
@@ -26,42 +27,35 @@ namespace SharpMap.Data
     public interface IFeatureProvider<TOid> : IFeatureProvider
 	{
         /// <summary>
-        /// Returns all objects whose <see cref="IExtents"/> 
-        /// intersects <paramref name="extents"/>.
+        /// Returns all object ids which match the given query.
         /// </summary>
-        /// <remarks>
-        /// This method is usually much faster than the ExecuteIntersectionQuery method, 
-        /// because intersection tests are performed on objects simplifed by 
-        /// their <see cref="IExtents"/>, often using
-        /// spatial indexing to retrieve the id values.
-        /// </remarks>
-        /// <param name="extents">BoundingBox that objects should intersect.</param>
-        /// <returns>An enumeration of all intersecting objects' ids.</returns>
-	    IEnumerable<TOid> GetIntersectingObjectIds(IExtents extents);
+        /// <param name="query">An expression which will match features in the data source.</param>
+        /// <returns>An enumeration of all matching features' object ids.</returns>
+	    IEnumerable<TOid> ExecuteOidQuery(Expression query);
 
 		/// <summary>
 		/// Returns the geometry corresponding to the object ID.
 		/// </summary>
 		/// <param name="oid">Object ID.</param>
 		/// <returns>The geometry corresponding to the <paramref name="oid"/>.</returns>
-		IGeometry GetGeometryById(TOid oid);
+		IGeometry GetGeometryByOid(TOid oid);
 
 		/// <summary>
         /// Returns a <see cref="FeatureDataRow"/> based on an object id (OID).
 		/// </summary>
 		/// <param name="oid">The object id (OID) of the feature.</param>
 		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
-        IFeatureDataRecord GetFeature(TOid oid);
+        IFeatureDataRecord GetFeatureByOid(TOid oid);
 
-        /// <summary>
-        /// Returns a <see cref="IFeatureDataReader"/> for obtaining features
-        /// from a set of feature object identifiers (oids).
-        /// </summary>
-        /// <param name="oids">A set of object ids (OIDs) of the features.</param>
-        /// <returns>
-        /// A set of features corresponding one-to-one to the given <paramref name="oids"/>.
-        /// </returns>
-        IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<TOid> oids);
+        ///// <summary>
+        ///// Returns a <see cref="IFeatureDataReader"/> for obtaining features
+        ///// from a set of feature object identifiers (oids).
+        ///// </summary>
+        ///// <param name="oids">A set of object ids (OIDs) of the features.</param>
+        ///// <returns>
+        ///// A set of features corresponding one-to-one to the given <paramref name="oids"/>.
+        ///// </returns>
+        //IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<TOid> oids);
 
         /// <summary>
         /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 

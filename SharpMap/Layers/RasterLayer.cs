@@ -16,8 +16,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using SharpMap.Data;
 using GeoAPI.Geometries;
+using SharpMap.Expressions;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -30,8 +32,6 @@ namespace SharpMap.Layers
 	/// </example>
 	public class RasterLayer : Layer, IRasterLayer
 	{
-        private IGeometry _loadedRegion = null;
-
 		public RasterLayer(IProvider dataSource)
 			: base(dataSource)
 		{
@@ -47,17 +47,15 @@ namespace SharpMap.Layers
             return new RasterStyle();
         }
 
-        public override IGeometry LoadedRegion
-        {
-            get
-            {
-                return _loadedRegion;
-            }
-            protected set
-            {
-                _loadedRegion = value;
-            }
-        }
+	    protected override void ProcessLoadResults(object results)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public override IEnumerable Select(Expression query)
+	    {
+	        throw new NotImplementedException();
+	    }
 
 	    #region IRasterLayer Members
 

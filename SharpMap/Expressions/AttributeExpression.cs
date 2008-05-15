@@ -15,13 +15,37 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Expressions
 {
-    public enum CollectionOperator
+    public class AttributeExpression : Expression
     {
-        Any,
-        All,
-        In,
-        Contains
+        private readonly String _attributeName;
+        
+        public AttributeExpression(String attributeName)
+        {
+            _attributeName = attributeName;
+        }
+
+        public string attributeName
+        {
+            get { return _attributeName; }
+        }
+
+        public override bool Matches(Expression other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Expression Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Equals(Expression other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

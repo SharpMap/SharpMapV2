@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using GeoAPI.Geometries;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.FeatureProvider
 {
@@ -30,7 +31,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
     {
         #region Instance fields
         private readonly FeatureDataTable _table;
-        private readonly QueryExecutionOptions _options;
+        private readonly FeatureQueryExecutionOptions _options;
         private DataTable _schemaTable;
         private readonly IExtents _queryRegion;
         private Int32 _currentRow = -1;
@@ -40,13 +41,17 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region Object Construction / Disposal
 
-        internal FeatureDataReader(IGeometryFactory factory, FeatureDataTable source, IExtents queryRegion, QueryExecutionOptions options)
+        internal FeatureDataReader(IGeometryFactory factory, 
+                                   FeatureDataTable source, 
+                                   FeatureQueryExpression query, 
+                                   FeatureQueryExecutionOptions options)
         {
             if (source == null) throw new ArgumentNullException("source");
 
-            if (options != QueryExecutionOptions.FullFeature)
+            if (options != FeatureQueryExecutionOptions.FullFeature)
             {
-                throw new ArgumentException("Only QueryExecutionOptions.All is supported.", "options");
+                throw new ArgumentException("Only QueryExecutionOptions.All is supported.", 
+                                            "options");
             }
 
             _factory = factory;

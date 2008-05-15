@@ -20,6 +20,7 @@ using System;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {
@@ -81,5 +82,7 @@ namespace SharpMap.Data
         /// Closes the datasource.
         /// </summary>
         void Close();
+
+        Object ExecuteQuery(Expression query);
     }
 }

@@ -17,11 +17,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.ComponentModel;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -80,10 +82,18 @@ namespace SharpMap.Layers
 		/// </summary>
 		IStyle Style { get; set; }
 
-		Boolean ShowChildren { get; set; }
+        IGeometry LoadedRegion { get; }
+        Boolean IsLoadingData { get; }
 
-		Boolean AreFeaturesSelectable { get; set; }
+        Boolean IsVisibleWhen(Predicate<ILayer> condition);
 
-		Boolean IsVisibleWhen(Predicate<ILayer> condition);
+        Object GetProperty(PropertyDescriptor property);
+        void SetProperty(PropertyDescriptor property, Object value);
+        event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
+        void LoadIntersectingLayerData(IExtents region);
+        void LoadIntersectingLayerData(IGeometry region);
+        void LoadLayerData(SpatialQueryExpression query);
+        void LoadLayerDataAsync(SpatialQueryExpression query);
+        IEnumerable Select(Expression query);
 	}
 }

@@ -25,8 +25,6 @@ namespace SharpMap.Layers
     /// <summary>
     /// A map layer of feature geometries.
     /// </summary>
-    /// <example>
-    /// </example>
     public class GeometryLayer : FeatureLayer, ILayer
     {
         #region Instance fields
@@ -110,7 +108,7 @@ namespace SharpMap.Layers
             get { return Style; }
             set
             {
-                if (!(value is VectorStyle))
+                if (value != null && !(value is VectorStyle))
                 {
                     throw new ArgumentException("Style value must be of type VectorStyle.", "value");
                 }

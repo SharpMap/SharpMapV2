@@ -341,7 +341,8 @@ namespace SharpMap.Data
                         if (getDataKeyHasValue(srcLookupKey))
                         {
                             Object rowLookupKey = getDataKeyFromUniqueConstraint(target.PrimaryKeyConstraint);
-                            DataViewRowState rowState = DataViewRowState.OriginalRows | DataViewRowState.Added;
+                            const DataViewRowState rowState = DataViewRowState.OriginalRows | 
+                                                              DataViewRowState.Added;
                             primaryKeyIndex = getDataKeySortIndex(rowLookupKey, rowState);
                         }
                     }
@@ -352,21 +353,23 @@ namespace SharpMap.Data
 
                         if (primaryKeyIndex != null)
                         {
-                            targetRow = target.FindMergeTarget(sourceRow, srcLookupKey, primaryKeyIndex);
+                            targetRow = target.FindMergeTarget(sourceRow, 
+                                                               srcLookupKey, 
+                                                               primaryKeyIndex);
                         }
 
                         //mergeFeature(target, sourceRow, targetRow, PreserveChanges);
-                        FeatureDataRow mergedRow = target.MergeRowInternal(sourceRow, targetRow, PreserveChanges, primaryKeyIndex);
+                        FeatureDataRow mergedRow = target.MergeRowInternal(sourceRow, 
+                                                                           targetRow, 
+                                                                           PreserveChanges, 
+                                                                           primaryKeyIndex);
 
                         // If we are adding the geometry to the row or if the geometry changed
-                        // then we set it here. Note that GetHashCode comparison could be a problem, 
-                        // since it is not guaranteed to be unique.
-#warning GetHashCode comparison not unique, but faster. Replace when coordinate storage improved in Beta 2.
-                        if (mergedRow.Geometry == null
-                            || mergedRow.Geometry.GetHashCode() != sourceRow.Geometry.GetHashCode())
+                        // then we set it here.
+                        if (mergedRow.Geometry == null || 
+                            mergedRow.Geometry.EqualsExact(sourceRow.Geometry))
                         {
                             mergedRow.Geometry = sourceRow.Geometry;
-                            target.Envelope = target.Envelope.Union(sourceRow.Geometry);
                         }
 
                         mergedRow.IsFullyLoaded = mergedRow.IsFullyLoaded || sourceRow.IsFullyLoaded;
@@ -381,17 +384,18 @@ namespace SharpMap.Data
             mergeExtendedProperties(source.ExtendedProperties, target.ExtendedProperties);
         }
 
-        private Object getDataKeySortIndex(Object rowLookupKey, DataViewRowState rowStateFilter)
+        private static Object getDataKeySortIndex(Object rowLookupKey, DataViewRowState rowStateFilter)
         {
             return _dataKeyGetSortIndex(rowLookupKey, rowStateFilter);
         }
 
-        private Boolean getDataKeyHasValue(Object srcKey)
+        private static Boolean getDataKeyHasValue(Object srcKey)
         {
             return _getDataKeyHasValue(srcKey);
         }
 
-        private Object getSourceKeyOrTargetKeyForSource(FeatureDataTable source, FeatureDataTable target)
+        private static Object getSourceKeyOrTargetKeyForSource(FeatureDataTable source, 
+                                                               FeatureDataTable target)
         {
             // TODO: check if there is code which already does this.
             if (source.PrimaryKeyConstraint != null)
@@ -418,7 +422,7 @@ namespace SharpMap.Data
             return createDataKey(columns, false);
         }
 
-        private DataColumn[] getDataKeyColumnReference(Object dataKey)
+        private static DataColumn[] getDataKeyColumnReference(Object dataKey)
         {
             return _getDataKeyColumnReference(dataKey);
         }

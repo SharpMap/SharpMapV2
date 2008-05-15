@@ -15,6 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections;
 using GeoAPI.Geometries;
 using SharpMap.Data;
@@ -29,7 +30,7 @@ namespace SharpMap.Layers
 	{
         /// <summary>
         /// Gets the data source for this layer as a more 
-        /// strongly-typed IFeatureLayerProvider.
+        /// strongly-typed <see cref="IFeatureProvider"/>.
         /// </summary>
 		new IFeatureProvider DataSource { get; }
 
@@ -44,7 +45,7 @@ namespace SharpMap.Layers
         /// </summary>
 		FeatureDataView HighlightedFeatures { get; }
 
-        void LoadFeaturesByOids(IEnumerable oids);
+        //void LoadFeaturesByOids(IEnumerable oids);
 
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text
@@ -59,5 +60,7 @@ namespace SharpMap.Layers
 		FeatureDataView SelectedFeatures { get; }
 
         IGeometryFactory GeometryFactory { get; set; }
+
+        Boolean AreFeaturesSelectable { get; set; }
 	}
 }

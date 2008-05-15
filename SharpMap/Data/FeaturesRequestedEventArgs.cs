@@ -23,14 +23,14 @@ namespace SharpMap.Data
     [Serializable]
     public class FeaturesNotFoundEventArgs : EventArgs
     {
-        private readonly FeatureSpatialExpression _expression;
+        private readonly FeatureQueryExpression _expression;
 
-        public FeaturesNotFoundEventArgs(FeatureSpatialExpression expression)
+        public FeaturesNotFoundEventArgs(FeatureQueryExpression expression)
         {
             _expression = expression;
         }
 
-        public FeatureSpatialExpression Expression
+        public FeatureQueryExpression Expression
         {
             get { return _expression; }
         }

@@ -17,11 +17,21 @@
 
 namespace SharpMap.Expressions
 {
-    public enum CollectionOperator
+    public class AllAttributesExpression : Expression
     {
-        Any,
-        All,
-        In,
-        Contains
+        public override bool Matches(Expression other)
+        {
+            return Equals(other);
+        }
+
+        public override Expression Clone()
+        {
+            return new AllAttributesExpression();
+        }
+
+        public override bool Equals(Expression other)
+        {
+            return other is AllAttributesExpression;
+        }
     }
 }

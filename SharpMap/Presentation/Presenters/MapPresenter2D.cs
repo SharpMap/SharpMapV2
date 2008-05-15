@@ -407,7 +407,7 @@ namespace SharpMap.Presentation.Presenters
                 Point2D lowerLeft = ToWorldTransformInternal.TransformVector(0, View.ViewSize.Height);
                 Point2D upperRight = ToWorldTransformInternal.TransformVector(View.ViewSize.Width, 0);
                 return Map.GeometryFactory.CreateExtents(
-                    convertCoordinate(lowerLeft), 
+                    convertCoordinate(lowerLeft),
                     convertCoordinate(upperRight)) as IExtents2D;
             }
             set { setViewEnvelopeInternal(value); }
@@ -634,8 +634,8 @@ namespace SharpMap.Presentation.Presenters
             Type basicLabelRendererType = typeof(BasicLabelRenderer2D<>);
             Type layerType = typeof(LabelLayer);
 
-			CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
-		}
+            CreateRendererForLayerType(basicLabelRendererType, renderObjectType, layerType, TextRenderer, VectorRenderer);
+        }
 
         protected void CreateRendererForLayerType(Type rendererType, Type renderObjectType, Type layerType, params Object[] constructorParams)
         {
@@ -643,7 +643,7 @@ namespace SharpMap.Presentation.Presenters
             Type constructedType = rendererType.MakeGenericType(renderObjectType);
             renderer = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
             Debug.Assert(renderer != null);
-			RegisterRendererForLayerType(layerType, renderer);
+            RegisterRendererForLayerType(layerType, renderer);
         }
 
         protected static TRenderer GetRenderer<TRenderer, TLayer>()
@@ -673,10 +673,10 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void OnViewMatrixChanged() { }
 
-		protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
-		{
-			LayerRendererRegistry.Instance.Register(layerType, renderer);
-		}
+        protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
+        {
+            LayerRendererRegistry.Instance.Register(layerType, renderer);
+        }
 
         protected void RenderSelection(ViewSelection2D selection)
         {
@@ -695,7 +695,7 @@ namespace SharpMap.Presentation.Presenters
                 renderer.RenderPaths(paths,
                     selection.FillBrush, null, null,
                     selection.OutlineStyle, null, null, RenderState.Normal);
-			
+
             View.ShowRenderedObjects(renderedSelection);
 
             OnRenderedSelection();
@@ -710,8 +710,8 @@ namespace SharpMap.Presentation.Presenters
             IEnumerable<FeatureDataRow> features
                 = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
 
-			Debug.Assert(layer.Style is FeatureStyle);
-			FeatureStyle style = layer.Style as FeatureStyle;
+            Debug.Assert(layer.Style is FeatureStyle);
+            FeatureStyle style = layer.Style as FeatureStyle;
 
             foreach (FeatureDataRow feature in features)
             {
@@ -737,7 +737,7 @@ namespace SharpMap.Presentation.Presenters
                 View.ShowRenderedObjects(renderedFeature);
             }
 
-			renderer.CleanUp();
+            renderer.CleanUp();
         }
 
         protected virtual void RenderRasterLayer(IRasterLayer layer)
@@ -766,23 +766,28 @@ namespace SharpMap.Presentation.Presenters
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
-                    if (Map.Layers[e.NewIndex] is IFeatureLayer)
                     {
-                        IFeatureLayer layer = Map.Layers[e.NewIndex] as IFeatureLayer;
-                        Debug.Assert(layer != null);
-                        wireupLayer(layer);
+                        ILayer layer = Map.Layers[e.NewIndex];
+
+                        IFeatureLayer featureLayer = layer as IFeatureLayer;
+
+                        if (featureLayer != null)
+                        {
+                            wireupLayer(featureLayer);
+                        }
+
+                        IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+                        if (layers != null)
+                        {
+                            foreach (IFeatureLayer child in layers)
+                            {
+                                wireupLayer(child);
+                            }
+                        }
+
+                        RenderLayer(layer);
                     }
-					else if (Map.Layers[e.NewIndex] is LayerGroup)
-					{
-						foreach(ILayer glayer in (Map.Layers[e.NewIndex] as LayerGroup).Layers)
-						{
-							if(glayer is IFeatureLayer)
-							{
-								wireupLayer(glayer as IFeatureLayer);
-							}
-						}
-					}
-                    RenderLayer(Map.Layers[e.NewIndex]);
                     break;
                 case ListChangedType.ItemDeleted:
                     // LayerCollection defines an e.NewIndex as -1 when an item is being 
@@ -793,23 +798,24 @@ namespace SharpMap.Presentation.Presenters
                     }
                     else
                     {
-                        IFeatureLayer layer = Map.Layers[e.OldIndex] as IFeatureLayer;
+                        ILayer layer = Map.Layers[e.OldIndex];
+                        IFeatureLayer featureLayer = layer as IFeatureLayer;
 
-                        if (layer != null)
+                        if (featureLayer != null)
                         {
-                            unwireLayer(layer);
+                            unwireLayer(featureLayer);
                         }
-						else if (Map.Layers[e.OldIndex] is LayerGroup)
-						{
-							foreach (ILayer glayer in (Map.Layers[e.OldIndex] as LayerGroup).Layers)
-							{
-								if (glayer is IFeatureLayer)
-								{
-									unwireLayer(glayer as IFeatureLayer);
-								}
-							}
-						}
-					}
+
+                        IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+                        if (layers != null)
+                        {
+                            foreach (IFeatureLayer child in layers)
+                            {
+                                unwireLayer(child);
+                            }
+                        }
+                    }
                     break;
                 case ListChangedType.ItemMoved:
                     RenderAllLayers();
@@ -820,7 +826,7 @@ namespace SharpMap.Presentation.Presenters
                     break;
                 case ListChangedType.ItemChanged:
                     if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name ||
-						e.PropertyDescriptor.Name == Layer.ShowChildrenProperty.Name)
+                        e.PropertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
                     {
                         RenderAllLayers();
                     }
@@ -846,17 +852,19 @@ namespace SharpMap.Presentation.Presenters
         {
             OnRenderingLayer(layer);
 
-			if(layer is LayerGroup && layer.Enabled)
-			{
-				foreach (ILayer groupMember in ((LayerGroup)layer).Layers)
-				{
-					RenderLayer(groupMember);
-				}
+            IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
 
-				OnRenderedLayer(layer);
+            if (layers != null && layer.Enabled)
+            {
+                foreach (ILayer groupMember in layers)
+                {
+                    RenderLayer(groupMember);
+                }
 
-				return;
-			}
+                OnRenderedLayer(layer);
+
+                return;
+            }
 
             if (!layer.Enabled ||
                 layer.Style.MinVisible > WorldWidthInternal ||
@@ -874,8 +882,8 @@ namespace SharpMap.Presentation.Presenters
                 RenderRasterLayer(layer as IRasterLayer);
             }
 
-			OnRenderedLayer(layer);
-		}
+            OnRenderedLayer(layer);
+        }
 
         private void handleMapPropertyChanged(Object sender, PropertyChangedEventArgs e)
         {
@@ -932,7 +940,7 @@ namespace SharpMap.Presentation.Presenters
         // Handles the hover request from the view
         private void handleViewHover(Object sender, MapActionEventArgs<Point2D> e)
         {
-            ActionContext<IMapView2D, Point2D> context 
+            ActionContext<IMapView2D, Point2D> context
                 = new ActionContext<IMapView2D, Point2D>(Map, View, _previousActionPoint, e.ActionPoint);
             Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(context);
             _previousActionPoint = e.ActionPoint;
@@ -1067,23 +1075,28 @@ namespace SharpMap.Presentation.Presenters
         {
             foreach (ILayer layer in layerCollection)
             {
-                if (layer is IFeatureLayer)
+                IFeatureLayer featureLayer = layer as IFeatureLayer;
+
+                if (featureLayer != null)
                 {
-                    IFeatureLayer featureLayer = layer as IFeatureLayer;
-                    Debug.Assert(featureLayer != null);
                     wireupLayer(featureLayer);
                 }
-				else if (layer is LayerGroup)
-				{
-					foreach (ILayer glayer in (layer as LayerGroup).Layers)
-					{
-						if (glayer is IFeatureLayer)
-						{
-							wireupLayer(glayer as IFeatureLayer);
-						}
-					}
-				}
-			}
+
+                IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+                if (layers != null)
+                {
+                    foreach (IFeatureLayer child in layers)
+                    {
+                        if (child != null)
+                        {
+                            wireupLayer(child);
+                        }
+                    }
+
+                    continue;
+                }
+            }
         }
 
         private void wireupLayer(IFeatureLayer layer)
@@ -1114,7 +1127,7 @@ namespace SharpMap.Presentation.Presenters
             CreateGeometryRenderer(renderObjectType);
 
             // Create renderer for label layers
-			CreateLabelRenderer(renderObjectType);
+            CreateLabelRenderer(renderObjectType);
 
             // TODO: create raster renderer
         }
@@ -1421,34 +1434,39 @@ namespace SharpMap.Presentation.Presenters
         {
             foreach (ILayer layer in Map.Layers)
             {
-				if (layer is IFeatureLayer)
-				{
-					FeatureDataView compareView = getSelectedView
-													  ? (layer as IFeatureLayer).SelectedFeatures
-													  : (layer as IFeatureLayer).HighlightedFeatures;
+                IFeatureLayer featureLayer = layer as IFeatureLayer;
 
-					if (ReferenceEquals(compareView, view))
-					{
-						return layer as IFeatureLayer;
-					}
-				}
-				else if (layer is LayerGroup)
-				{
-					foreach(ILayer glayer in (layer as LayerGroup).Layers)
-					{
-						if (glayer is IFeatureLayer)
-						{
-							FeatureDataView compareView = getSelectedView
-															  ? (glayer as IFeatureLayer).SelectedFeatures
-															  : (glayer as IFeatureLayer).HighlightedFeatures;
+                if (featureLayer != null)
+                {
+                    FeatureDataView compareView = getSelectedView
+                                                      ? featureLayer.SelectedFeatures
+                                                      : featureLayer.HighlightedFeatures;
 
-							if (ReferenceEquals(compareView, view))
-							{
-								return glayer as IFeatureLayer;
-							}
-						}
-					}
-				}
+                    if (ReferenceEquals(compareView, view))
+                    {
+                        return featureLayer;
+                    }
+                }
+
+                IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+                if (layers != null)
+                {
+                    foreach (IFeatureLayer child in layers)
+                    {
+                        if (child != null)
+                        {
+                            FeatureDataView compareView = getSelectedView
+                                                              ? child.SelectedFeatures
+                                                              : child.HighlightedFeatures;
+
+                            if (ReferenceEquals(compareView, view))
+                            {
+                                return child;
+                            }
+                        }
+                    }
+                }
             }
 
             return null;
