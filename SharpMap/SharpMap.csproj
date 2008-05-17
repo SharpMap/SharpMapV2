@@ -327,7 +327,6 @@
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Styles\VectorStyle.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
-    <Compile Include="Utilities\ByteEncoder.cs" />
     <Compile Include="Utilities\Hash.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
@@ -339,8 +338,7 @@
     <Compile Include="Utilities\IdleMonitor.cs" />
     <Compile Include="Utilities\NondisposingStream.cs" />
     <Compile Include="Utilities\QuickSort.cs" />
-    <Compile Include="Utilities\SharpMapVersion.cs" />
-    <Compile Include="Utilities\StringEqualityComparer.cs" />
+    <Compile Include="SharpMapVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />

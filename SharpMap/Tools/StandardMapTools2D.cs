@@ -17,9 +17,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
@@ -255,7 +255,10 @@ namespace SharpMap.Tools
                     filterLayer.Style.AreFeaturesSelectable && 
                     layer.IsVisibleWhen(isInView(view.WorldWidth)))
 				{
-					filterLayer.SelectedFeatures.GeometryFilter = worldBounds.ToGeometry();
+					filterLayer.SelectedFeatures.SpatialFilter 
+                        = new SpatialBinaryExpression(new FeaturesCollectionExpression(filterLayer.Features), 
+                                                      SpatialOperation.Intersects,
+                                                      new SpatialExpression(worldBounds.ToGeometry()));
 				}
 			}
 

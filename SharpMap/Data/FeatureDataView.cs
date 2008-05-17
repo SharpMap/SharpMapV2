@@ -222,8 +222,13 @@ namespace SharpMap.Data
                     return;
                 }
 
-                ViewDefinition = new FeatureQueryExpression(_viewDefinition.QueryGeometry,
-                                                            _viewDefinition.QueryType, value);
+                PredicateExpression predicate = _viewDefinition.SpatialPredicate == null
+                                                    ? (PredicateExpression)value
+                                                    : new BinaryExpression(value, 
+                                                                           BinaryOperator.And, 
+                                                                           _viewDefinition.SpatialPredicate);
+
+                ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection, predicate);
             }
         }
 
@@ -248,8 +253,8 @@ namespace SharpMap.Data
                     return;
                 }
 
-                ViewDefinition = new FeatureQueryExpression(_viewDefinition.QueryGeometry,
-                                                            _viewDefinition.QueryType, value);
+                // TODO: create new predicate based on existing predicate and new attribute filter
+                throw new NotImplementedException("Filtering by attribute value not yet supported.");
             } 
         }
 
@@ -277,44 +282,44 @@ namespace SharpMap.Data
             get { return _viewDefinition.Clone() as FeatureQueryExpression; }
             set
             {
-                if (_viewDefinition == value)
+                if (Equals(_viewDefinition, value))
                 {
                     return;
                 }
 
                 _viewDefinition = value;
 
-                // NOTE: changed Point.Empty to null
-                IGeometry missingGeometry;
-                ArrayList missingOids = new ArrayList();
+                //// NOTE: changed Point.Empty to null
+                //IGeometry missingGeometry;
+                //ArrayList missingOids = new ArrayList();
 
-                if (!_viewDefinition.QueryGeometry.IsEmpty &&
-                    !Table.Contains(_viewDefinition.QueryGeometry))
-                {
-                    missingGeometry = _viewDefinition.QueryGeometry; //.Difference(Table.LoadedRegion);
-                }
-                else
-                {
-                    missingGeometry = Table.GeometryFactory.CreatePoint();
-                }
+                //if (!_viewDefinition.QueryGeometry.IsEmpty &&
+                //    !Table.Contains(_viewDefinition.QueryGeometry))
+                //{
+                //    missingGeometry = _viewDefinition.QueryGeometry; //.Difference(Table.LoadedRegion);
+                //}
+                //else
+                //{
+                //    missingGeometry = Table.GeometryFactory.CreatePoint();
+                //}
 
-                foreach (Object oid in value.Oids)
-                {
-                    FeatureDataRow feature = Table.Find(oid);
+                //foreach (Object oid in value.Oids)
+                //{
+                //    FeatureDataRow feature = Table.Find(oid);
 
-                    if (feature == null || !feature.IsFullyLoaded)
-                    {
-                        missingOids.Add(oid);
-                    }
-                }
+                //    if (feature == null || !feature.IsFullyLoaded)
+                //    {
+                //        missingOids.Add(oid);
+                //    }
+                //}
 
-                if (!missingGeometry.IsEmpty || missingOids.Count > 0)
-                {
-                    FeatureQueryExpression notFound = new FeatureQueryExpression(missingGeometry,
-                                                                                 value.QueryType,
-                                                                                 missingOids);
-                    Table.NotifyFeaturesNotFound(notFound);
-                }
+                //if (!missingGeometry.IsEmpty || missingOids.Count > 0)
+                //{
+                //    FeatureQueryExpression notFound = new FeatureQueryExpression(missingGeometry,
+                //                                                                 value.QueryType,
+                //                                                                 missingOids);
+                //    Table.NotifyFeaturesNotFound(notFound);
+                //}
 
                 resetInternal();
             }
@@ -510,7 +515,12 @@ namespace SharpMap.Data
                 return false;
             }
 
-            if (!Slice.CountGreaterThan(_viewDefinition.Oids, 0))
+            // NOTE: This will get to be a performance problem due to the 
+            // poor structuring of the OID values. Consider creating a local,
+            // sorted index where a binary search can be performed.
+            IEnumerable oids = _viewDefinition.OidPredicate.OidValues;
+
+            if (!Slice.CountGreaterThan(oids, 0))
             {
                 return true;
             }
@@ -519,7 +529,7 @@ namespace SharpMap.Data
 
             Debug.Assert(featureOid != null);
 
-            foreach (Object oid in _viewDefinition.Oids)
+            foreach (Object oid in oids)
             {
                 if (featureOid.Equals(oid))
                 {
@@ -532,7 +542,7 @@ namespace SharpMap.Data
 
         private Boolean inAttributeFilter()
         {
-            // TODO: perhaps this is where we can execute the DataExpression filter
+            // TODO: convert the AttributePredicate to a DataExpression and set it here
             return true;
         }
 

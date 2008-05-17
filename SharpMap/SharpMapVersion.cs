@@ -18,20 +18,21 @@
 using System;
 using System.Reflection;
 
-namespace SharpMap.Utilities
+namespace SharpMap
 {
 	/// <summary>
-	/// Version information helper class
+	/// Version information helper class.
 	/// </summary>
-	public class SharpMapVersion
+	public static class SharpMapVersion
 	{
+        public static readonly Version _version = Assembly.GetExecutingAssembly().GetName().Version;
+
 		/// <summary>
-		/// Returns the current build version of SharpMap
+		/// Returns the current build version of SharpMap.
 		/// </summary>
-		/// <returns></returns>
-		public static Version GetCurrentVersion()
+		public static Version CurrentVersion
 		{
-			return Assembly.GetExecutingAssembly().GetName().Version;
+            get { return _version; }
 		}
 	}
 }

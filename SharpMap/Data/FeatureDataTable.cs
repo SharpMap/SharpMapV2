@@ -27,6 +27,7 @@ using System.Reflection.Emit;
 using System.Threading;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
+using SharpMap.Expressions;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
 
@@ -591,10 +592,6 @@ namespace SharpMap.Data
         {
             IGeometry boundsGeometry = bounds.ToGeometry();
 
-            //notifyIfCacheDoesNotContain(boundsGeometry);
-
-            // TODO: handle async case...
-
             if (IsSpatiallyIndexed)
             {
                 foreach (FeatureDataRow row in _rTreeIndex.Query(bounds))
@@ -630,10 +627,6 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(IGeometry geometry)
         {
-            //notifyIfCacheDoesNotContain(geometry);
-
-            // TODO: handle async case...
-
             if (IsSpatiallyIndexed)
             {
                 foreach (FeatureDataRow row in _rTreeIndex.Query(geometry.Extents))
@@ -654,6 +647,11 @@ namespace SharpMap.Data
                     }
                 }
             }
+        }
+
+        public IEnumerable<FeatureDataRow> Select(SpatialBinaryExpression query)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

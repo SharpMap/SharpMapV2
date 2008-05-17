@@ -7,5 +7,10 @@ namespace SharpMap.Expressions
     {
         public OidCollectionExpression(IEnumerable collection)
             : base(new OidExpression(), CollectionOperator.In, new CollectionExpression(collection)) { }
+
+        public IEnumerable OidValues
+        {
+            get { return Right.Collection; }
+        }
     }
 }

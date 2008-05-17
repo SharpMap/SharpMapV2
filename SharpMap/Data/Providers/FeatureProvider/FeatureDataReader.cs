@@ -33,7 +33,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         private readonly FeatureDataTable _table;
         private readonly FeatureQueryExecutionOptions _options;
         private DataTable _schemaTable;
-        private readonly IExtents _queryRegion;
+        private readonly FeatureQueryExpression _query;
         private Int32 _currentRow = -1;
         private Boolean _isDisposed;
         private IGeometryFactory _factory;
@@ -56,10 +56,10 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
             _factory = factory;
             _options = options;
+            _query = query;
             _table = source.Clone();
-            _queryRegion = factory.CreateExtents(queryRegion);
 
-            foreach (FeatureDataRow row in source.Select(_queryRegion))
+            foreach (FeatureDataRow row in source.Select(query.SpatialPredicate))
 			{
 				_table.ImportRow(row);
             }
