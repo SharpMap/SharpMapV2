@@ -22,8 +22,8 @@ using System.Data;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
-using GeoAPI.Utilities;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.GeometryProvider
@@ -502,7 +502,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             if (query == null) throw new ArgumentNullException("query");
 
-            SpatialQueryExpression sqe = query as SpatialQueryExpression;
+            SpatialBinaryExpression sqe = query as SpatialBinaryExpression;
 
             if (sqe == null)
             {
@@ -606,7 +606,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             IGeometry current = _geometries[index];
 
-            return SpatialQueryExpression.IsMatch(op, isLeft, filterGeometry, current);
+            return SpatialBinaryExpression.IsMatch(op, isLeft, filterGeometry, current);
         }
     }
 }

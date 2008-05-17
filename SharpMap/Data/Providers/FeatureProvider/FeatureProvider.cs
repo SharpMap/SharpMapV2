@@ -224,8 +224,9 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public Object ExecuteQuery(Expression query)
         {
-            FeatureDataReader reader = new FeatureDataReader(_geoFactory, _features, bounds, options);
-            return reader;
+            throw new NotImplementedException();
+            //FeatureDataReader reader = new FeatureDataReader(_geoFactory, _features, bounds, options);
+            //return reader;
         }
 
 		public IExtents GetExtents()

@@ -17,7 +17,7 @@
 
 namespace SharpMap.Expressions
 {
-    public class AllAttributesExpression : Expression
+    public class AllAttributesExpression : ProjectionExpression
     {
         public override bool Matches(Expression other)
         {

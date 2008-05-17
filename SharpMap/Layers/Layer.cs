@@ -584,13 +584,13 @@ namespace SharpMap.Layers
         {
             if (region == null) throw new ArgumentNullException("region");
 
-            SpatialQueryExpression query = new SpatialQueryExpression(new SpatialExpression(region),
+            SpatialBinaryExpression query = new SpatialBinaryExpression(new SpatialExpression(region),
                                                                         SpatialOperation.Intersects,
                                                                         new LayerExpression(this));
             LoadLayerData(query);
         }
 
-        public void LoadLayerData(SpatialQueryExpression query)
+        public void LoadLayerData(SpatialBinaryExpression query)
         {
             if (_asyncQuery)
             {
@@ -604,7 +604,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public void LoadLayerDataAsync(SpatialQueryExpression query)
+        public void LoadLayerDataAsync(SpatialBinaryExpression query)
         {
             AsyncCallback callback = completeLoadLayerData;
 

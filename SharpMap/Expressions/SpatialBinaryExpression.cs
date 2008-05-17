@@ -20,16 +20,16 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.Expressions
 {
-    public class SpatialQueryExpression : BinaryExpressionBase<SpatialOperation>,
-                                          IEquatable<SpatialQueryExpression>
+    public class SpatialBinaryExpression : BinaryExpressionBase<SpatialOperation>,
+                                           IEquatable<SpatialBinaryExpression>
     {
-        public SpatialQueryExpression(Expression left, SpatialOperation op, SpatialExpression right)
+        public SpatialBinaryExpression(Expression left, SpatialOperation op, SpatialExpression right)
             : base(left, op, right) { }
 
-        public SpatialQueryExpression(SpatialExpression left, SpatialOperation op, Expression right)
+        public SpatialBinaryExpression(SpatialExpression left, SpatialOperation op, Expression right)
             : base(left, op, right) { }
 
-        protected SpatialQueryExpression(Expression left, SpatialOperation op, Expression right)
+        protected SpatialBinaryExpression(Expression left, SpatialOperation op, Expression right)
             : base(left, op, right) { }
 
         public SpatialExpression SpatialExpression
@@ -93,7 +93,7 @@ namespace SharpMap.Expressions
             return matches;
         }
 
-        public Boolean Equals(SpatialQueryExpression other)
+        public Boolean Equals(SpatialBinaryExpression other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -107,12 +107,12 @@ namespace SharpMap.Expressions
 
         public override Boolean Equals(Expression other)
         {
-            return Equals(other as SpatialQueryExpression);
+            return Equals(other as SpatialBinaryExpression);
         }
 
         public override Boolean Equals(Object obj)
         {
-            return Equals(obj as SpatialQueryExpression);
+            return Equals(obj as SpatialBinaryExpression);
         }
 
         public override Int32 GetHashCode()
@@ -135,7 +135,7 @@ namespace SharpMap.Expressions
                                             "must be a SpatialExpression instance.");
             }
 
-            return new SpatialQueryExpression(left, op, right);
+            return new SpatialBinaryExpression(left, op, right);
         }
     }
 }

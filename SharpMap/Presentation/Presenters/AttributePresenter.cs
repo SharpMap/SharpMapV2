@@ -16,9 +16,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using GeoAPI.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
@@ -48,20 +50,17 @@ namespace SharpMap.Presentation.Presenters
 
         private void handleLayersChanged(Object sender, ListChangedEventArgs e)
         {
-            if (e.ListChangedType == ListChangedType.ItemAdded)
+            IFeatureLayer newLayer = Map.Layers[e.NewIndex] as IFeatureLayer;
+            IFeatureLayer oldLayer = Map.Layers[e.OldIndex] as IFeatureLayer;
+
+            if (newLayer != null && e.ListChangedType == ListChangedType.ItemAdded)
             {
-                if (Map.Layers[e.NewIndex] is IFeatureLayer)
-                {
-                    wireupFeatureLayer(Map.Layers[e.NewIndex] as IFeatureLayer);
-                }
+                wireupFeatureLayer(newLayer);
             }
 
-            if (e.ListChangedType == ListChangedType.ItemDeleted)
+            if (oldLayer != null && e.NewIndex < 0  && e.ListChangedType == ListChangedType.ItemDeleted)
             {
-                if (e.NewIndex < 0 && Map.Layers[e.OldIndex] is IFeatureLayer)
-                {
-                    unwireFeatureLayer(Map.Layers[e.OldIndex] as IFeatureLayer);
-                }
+                unwireFeatureLayer(oldLayer);
             }
         }
 
@@ -72,34 +71,48 @@ namespace SharpMap.Presentation.Presenters
                 return;
             }
 
-			// HACK: fix this Monday
-			IFeatureLayer layer = Map.Layers[e.LayerName] as IFeatureLayer ?? (Map.Layers[e.LayerName] as LayerGroup).MasterLayer as IFeatureLayer;
+            ILayer layer = Map.Layers[e.LayerName];
 
-            Debug.Assert(layer != null);
+            IFeatureLayer featureLayer = layer as IFeatureLayer;
 
-            FeatureQueryExpression query;
-
-            if (layer.HighlightedFeatures.ViewDefinition.QueryGeometry.IsEmpty)
+            if (featureLayer == null)
             {
-                query = new FeatureQueryExpression(null, // Changed to null from Point.Empty
-                                        SpatialOperation.Disjoint,
-                                        getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
+                LayerGroup group = layer as LayerGroup;
+
+                if (group != null)
+                {
+                    featureLayer = group.MasterLayer as IFeatureLayer;
+                }
+            }
+
+            Assert.IsNotNull(featureLayer);
+
+            FeatureQueryExpression viewDefinition = featureLayer.HighlightedFeatures.ViewDefinition;
+
+            IEnumerable oids = getFeatureIdsFromIndexes(featureLayer, e.HighlightedFeatures);
+            OidCollectionExpression oidExpression = new OidCollectionExpression(oids);
+            ProjectionExpression projection = viewDefinition.Projection;
+
+            if (viewDefinition.SpatialPredicate != null)
+            {
+                viewDefinition = new FeatureQueryExpression(projection, oidExpression);
             }
             else
             {
-                query = new FeatureQueryExpression(layer.HighlightedFeatures.ViewDefinition.QueryGeometry,
-                                        SpatialOperation.Intersects,
-                                        getFeatureIdsFromIndexes(layer, e.HighlightedFeatures));
+                PredicateExpression predicate = new BinaryExpression(viewDefinition.SpatialPredicate,
+                                                                     BinaryOperator.And,
+                                                                     oidExpression);
+                viewDefinition = new FeatureQueryExpression(projection, predicate);
             }
 
             _highlightUpdating = true;
-            layer.HighlightedFeatures.ViewDefinition = query;
+            featureLayer.HighlightedFeatures.ViewDefinition = viewDefinition;
             _highlightUpdating = false;
         }
 
         private void handleHighlightedFeaturesChanged(Object sender, ListChangedEventArgs e)
         {
-            if(_highlightUpdating)
+            if (_highlightUpdating)
             {
                 return;
             }
@@ -108,9 +121,17 @@ namespace SharpMap.Presentation.Presenters
 
             foreach (ILayer layer in Map.Layers)
             {
-				// HACK: fix this Monday
-				featureLayer = layer as IFeatureLayer ?? (layer as LayerGroup).MasterLayer as IFeatureLayer;
-				//featureLayer = layer as IFeatureLayer;
+                featureLayer = layer as IFeatureLayer;
+
+                if (featureLayer == null)
+                {
+                    LayerGroup group = layer as LayerGroup;
+
+                    if (group != null)
+                    {
+                        featureLayer = group.MasterLayer as IFeatureLayer;
+                    }
+                }
 
                 if (featureLayer == null)
                 {
@@ -122,13 +143,14 @@ namespace SharpMap.Presentation.Presenters
                     break;
                 }
             }
-            
-            Debug.Assert(featureLayer != null);
+
+            Assert.IsNotNull(featureLayer);
 
             // When the user selects features in the view, 
             // we need to highlight those features
             IEnumerable<Int32> indexes = getSelectedFeatureIndexesFromHighlighedFeatures(
-                featureLayer.SelectedFeatures, featureLayer.HighlightedFeatures);
+                                                                    featureLayer.SelectedFeatures,
+                                                                    featureLayer.HighlightedFeatures);
 
             _highlightUpdating = true;
             View.SetHighlightedFeatures(featureLayer.LayerName, indexes);
@@ -145,8 +167,8 @@ namespace SharpMap.Presentation.Presenters
             layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesChanged;
         }
 
-        private static IEnumerable<Object> getFeatureIdsFromIndexes(
-            IFeatureLayer layer, IEnumerable<Int32> indexes)
+        private static IEnumerable<Object> getFeatureIdsFromIndexes(IFeatureLayer layer, 
+                                                                    IEnumerable<Int32> indexes)
         {
             foreach (Int32 index in indexes)
             {
@@ -155,8 +177,8 @@ namespace SharpMap.Presentation.Presenters
 
                 if (!feature.HasOid)
                 {
-                    throw new InvalidOperationException(
-                        "Feature must have Object identifier in order to highlight.");
+                    throw new InvalidOperationException("Feature must have Object identifier " +
+                                                        "in order to highlight.");
                 }
 
                 yield return feature.GetOid();
@@ -164,7 +186,8 @@ namespace SharpMap.Presentation.Presenters
         }
 
         private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
-            FeatureDataView selectedFeatures, FeatureDataView highlightedFeatures)
+                                                                    FeatureDataView selectedFeatures, 
+                                                                    FeatureDataView highlightedFeatures)
         {
             foreach (FeatureDataRow feature in highlightedFeatures)
             {

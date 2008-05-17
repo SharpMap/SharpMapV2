@@ -16,50 +16,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 
 namespace SharpMap.Expressions
 {
-    public class ValueExpression<TValue> : Expression
+    public abstract class ValueExpression : Expression
     {
-        private readonly TValue _value;
-        private readonly IEqualityComparer<TValue> _comparer;
-
-        public ValueExpression(TValue value) 
-            : this(value, EqualityComparer<TValue>.Default) { }
-
-        public ValueExpression(TValue value, IEqualityComparer<TValue> comparer)
+        public Object Value
         {
-            _value = value;
-            _comparer = comparer;
+            get { return GetValue(); }
         }
 
-        public TValue Value
-        {
-            get { return _value; }
-        }
-
-        public IEqualityComparer<TValue> Comparer
-        {
-            get { return _comparer; }
-        }
-
-        public override Boolean Matches(Expression other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Expression Clone()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Boolean Equals(Expression other)
-        {
-            ValueExpression<TValue> valueExpression = other as ValueExpression<TValue>;
-
-            return valueExpression != null &&
-                   Comparer.Equals(_value, valueExpression._value);
-        }
+        protected abstract Object GetValue();
     }
 }

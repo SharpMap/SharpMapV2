@@ -17,29 +17,55 @@
 
 using System;
 using GeoAPI.Geometries;
+using SharpMap.Data;
 using SharpMap.Layers;
 
 namespace SharpMap.Expressions
 {
-    public class FeatureQueryExpression : BinaryExpression, IEquatable<FeatureQueryExpression>
+    public class FeatureQueryExpression : QueryExpression, IEquatable<FeatureQueryExpression>
     {
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
-            : base(
-                new SpatialQueryExpression(new SpatialExpression(geometry),
-                                           op,
-                                           new LayerExpression(layer)),
-                BinaryOperator.And,
-                new AllAttributesExpression()) { }
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
+                                                                              op,
+                                                                              new LayerExpression(layer))) { }
 
-        public FeatureQueryExpression(AttributeBinaryExpression attributeBinaryExpression)
-            : base(null, BinaryOperator.Or, attributeBinaryExpression) { }
+        public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, FeatureDataTable features)
+            : base(new AllAttributesExpression(),
+                   new SpatialBinaryExpression(new SpatialExpression(geometry),
+                                               op,
+                                               new FeaturesCollectionExpression(features))) { }
 
-        public SpatialQueryExpression SpatialQuery
+        public FeatureQueryExpression(AttributeBinaryExpression attributeFilter)
+            : base(new AllAttributesExpression(), attributeFilter) { }
+
+        public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter)
+            : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
+                                                                       BinaryOperator.And,
+                                                                       spatialFilter)) { }
+
+        public FeatureQueryExpression(AttributesProjectionExpression attributes,
+                                      AttributeBinaryExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter)
+            : base(attributes, new BinaryExpression(attributeFilter,
+                                                    BinaryOperator.And,
+                                                    spatialFilter)) { }
+
+        protected internal FeatureQueryExpression(ProjectionExpression projection, 
+                                                  PredicateExpression predicate)
+            : base(projection, predicate) { }
+
+        public SpatialBinaryExpression SpatialPredicate
         {
             get { throw new NotImplementedException(); }
         }
 
-        public AttributeBinaryExpression AttributeQuery
+        public AttributeBinaryExpression AttributePredicate
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public OidCollectionExpression OidPredicate
         {
             get { throw new NotImplementedException(); }
         }

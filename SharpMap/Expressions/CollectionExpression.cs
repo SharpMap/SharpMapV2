@@ -17,9 +17,7 @@
 
 using System;
 using System.Collections;
-#if !DOTNET35
-using GeoAPI.Utilities;
-#endif
+using GeoAPI.DataStructures;
 
 namespace SharpMap.Expressions
 {
@@ -57,7 +55,7 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            throw new NotImplementedException();
+            return new CollectionExpression(Enumerable.ToArray(_collection));
         }
     }
 }

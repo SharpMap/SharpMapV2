@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
-using GeoAPI.Utilities;
 
 namespace SharpMap.Indexing.RTree
 {

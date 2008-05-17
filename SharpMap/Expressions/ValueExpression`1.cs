@@ -17,39 +17,54 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Utilities;
 
 namespace SharpMap.Expressions
 {
-    public class StringExpression : ValueExpression<String>
+    public class ValueExpression<TValue> : ValueExpression
     {
-        private readonly StringComparison _comparison;
+        private readonly TValue _value;
+        private readonly IEqualityComparer<TValue> _comparer;
 
-        public StringExpression(String value)
-            : this(value, StringComparison.CurrentCultureIgnoreCase) { }
+        public ValueExpression(TValue value) 
+            : this(value, EqualityComparer<TValue>.Default) { }
 
-        public StringExpression(String value, StringComparison comparison)
-            : this(value, comparison, StringEqualityComparer.GetComparer(comparison)) { }
-        
-        private StringExpression(String value, StringComparison comparison, IEqualityComparer<String> comparer)
-            : base(value, comparer)
+        public ValueExpression(TValue value, IEqualityComparer<TValue> comparer)
         {
-            _comparison = comparison;   
+            _value = value;
+            _comparer = comparer;
         }
 
-        public StringComparison Comparison
+        public TValue Value
         {
-            get { return _comparison; }
+            get { return _value; }
+        }
+
+        public IEqualityComparer<TValue> Comparer
+        {
+            get { return _comparer; }
         }
 
         public override Boolean Matches(Expression other)
         {
-            return Equals(other);
+            throw new NotImplementedException();
         }
 
         public override Expression Clone()
         {
-            return new StringExpression(Value, _comparison, Comparer);
+            throw new NotImplementedException();
+        }
+
+        public override Boolean Equals(Expression other)
+        {
+            ValueExpression<TValue> valueExpression = other as ValueExpression<TValue>;
+
+            return valueExpression != null &&
+                   Comparer.Equals(_value, valueExpression._value);
+        }
+
+        protected override Object GetValue()
+        {
+            return _value;
         }
     }
 }

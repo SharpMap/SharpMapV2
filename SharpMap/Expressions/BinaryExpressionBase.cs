@@ -19,7 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public abstract class BinaryExpressionBase<TOperator> : Expression
+    public abstract class BinaryExpressionBase<TOperator> : PredicateExpression
     {
         private readonly Expression _left;
         private readonly TOperator _op;

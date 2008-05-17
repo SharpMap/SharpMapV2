@@ -27,9 +27,7 @@ using System.Reflection.Emit;
 using System.Threading;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
-using SharpMap.Data.Caching;
 using SharpMap.Indexing.RTree;
-using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Data

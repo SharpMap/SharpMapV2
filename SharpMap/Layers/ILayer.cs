@@ -92,8 +92,8 @@ namespace SharpMap.Layers
         event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
         void LoadIntersectingLayerData(IExtents region);
         void LoadIntersectingLayerData(IGeometry region);
-        void LoadLayerData(SpatialQueryExpression query);
-        void LoadLayerDataAsync(SpatialQueryExpression query);
+        void LoadLayerData(SpatialBinaryExpression query);
+        void LoadLayerDataAsync(SpatialBinaryExpression query);
         IEnumerable Select(Expression query);
 	}
 }

@@ -17,24 +17,29 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Utilities;
+using GeoAPI.DataStructures;
 
 namespace SharpMap.Expressions
 {
-    public class StringExpression : ValueExpression<String>
+    public class StringCollectionExpression : CollectionExpression<String>
     {
         private readonly StringComparison _comparison;
 
-        public StringExpression(String value)
-            : this(value, StringComparison.CurrentCultureIgnoreCase) { }
+        public StringCollectionExpression(IEnumerable<String> collection)
+            : this(collection, StringComparison.CurrentCultureIgnoreCase) { }
 
-        public StringExpression(String value, StringComparison comparison)
-            : this(value, comparison, StringEqualityComparer.GetComparer(comparison)) { }
-        
-        private StringExpression(String value, StringComparison comparison, IEqualityComparer<String> comparer)
-            : base(value, comparer)
+        public StringCollectionExpression(IEnumerable<String> collection, StringComparison comparison)
+            : base(collection)
         {
-            _comparison = comparison;   
+            _comparison = comparison;
+        }
+
+        private StringCollectionExpression(IEnumerable<String> collection, 
+                                           StringComparison comparison, 
+                                           IEqualityComparer<String> comparer)
+            : base(collection, comparer)
+        {
+            _comparison = comparison;
         }
 
         public StringComparison Comparison
@@ -49,7 +54,7 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new StringExpression(Value, _comparison, Comparer);
+            return new StringCollectionExpression(Enumerable.ToArray(Collection), _comparison, Comparer);
         }
     }
 }

@@ -23,8 +23,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
-using GeoAPI.Utilities;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data
@@ -89,9 +89,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="table">Table to create view on.</param>
         public FeatureDataView(FeatureDataTable table)
-            // NOTE: changed Point.Empty to null
-            : this(table, new FeatureQueryExpression(table.GeometryFactory.CreatePoint(), SpatialOperation.Disjoint), 
-                "", DataViewRowState.CurrentRows) { }
+            : this(table, (FeatureQueryExpression)null, "", DataViewRowState.CurrentRows) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -117,14 +115,14 @@ namespace SharpMap.Data
         /// <param name="query">
         /// Geometry used in building view to filter feature table rows.
         /// </param>
-        /// <param name="queryType">
+        /// <param name="op">
         /// Type of spatial relation which <paramref name="query"/> has to features.
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, IGeometry query, SpatialOperation queryType,
+        public FeatureDataView(FeatureDataTable table, IGeometry query, SpatialOperation op,
                                String sort, DataViewRowState rowState)
-            : this(table, new FeatureQueryExpression(query, queryType), sort, rowState) { }
+            : this(table, new FeatureQueryExpression(query, op, table), sort, rowState) { }
 
         /// <summary>
         /// Creates a new <see cref="FeatureDataView"/> on the given
@@ -140,20 +138,16 @@ namespace SharpMap.Data
         public FeatureDataView(FeatureDataTable table, FeatureQueryExpression definition,
                                String sort, DataViewRowState rowState)
             : base(
-                table, "",
-                String.IsNullOrEmpty(sort) ? table.PrimaryKey.Length == 1 ? table.PrimaryKey[0].ColumnName : "" : sort,
+                table,
+                "",
+                String.IsNullOrEmpty(sort)
+                            ? table.PrimaryKey.Length == 1
+                                    ? table.PrimaryKey[0].ColumnName
+                                    : ""
+                            : sort,
                 rowState)
         {
             if (definition == null) throw new ArgumentNullException("definition");
-
-            // TODO: Support all query types in FeatureDataView
-            if (definition.QueryType != SpatialOperation.Intersects &&
-                definition.QueryType != SpatialOperation.Disjoint)
-            {
-                throw new NotSupportedException(
-                    "Only query types of SpatialQueryType.Intersects and " +
-                    "SpatialQueryType.Disjoint are currently supported.");
-            }
 
             _viewDefinition = definition;
 
@@ -176,15 +170,14 @@ namespace SharpMap.Data
         #endregion
 
         /// <summary>
-        /// Gets or sets the <see cref="IGeometry"/> instance used
-        /// to filter the table data based on intersection.
+        /// Gets or sets the <see cref="SpatialBinaryExpression"/> instance used
+        /// to filter the table data based on a spatial relation.
         /// </summary>
-        public IGeometry GeometryFilter
+        public SpatialBinaryExpression SpatialFilter
         {
             get
             {
-                // NOTE: changed Point.Empty to null
-                return _viewDefinition.QueryGeometry.Clone();
+                return _viewDefinition.SpatialPredicate.Clone() as SpatialBinaryExpression;
             }
             set
             {
@@ -193,24 +186,19 @@ namespace SharpMap.Data
                     throw new ArgumentNullException("value");
                 }
 
-                // NOTE: changed Point.Empty to null
-                if (_viewDefinition.QueryGeometry == value)
+                // short-circuit if it is an equal query, since we don't want to have to 
+                // recompute all the indexes for nothing
+                if (Equals(_viewDefinition.SpatialPredicate, value))
                 {
                     return;
                 }
 
-                ViewDefinition = new FeatureQueryExpression(value,
-                    GeometryFilterType, _viewDefinition.Oids);
-            }
-        }
+                PredicateExpression predicate = new BinaryExpression(_viewDefinition.OidPredicate,
+                                                                     BinaryOperator.And,
+                                                                     value);
 
-        /// <summary>
-        /// Gets the type of spatial relation which <see cref="GeometryFilter"/>
-        /// has with features to include them in the view.
-        /// </summary>
-        public SpatialOperation GeometryFilterType
-        {
-            get { return _viewDefinition.QueryType; }
+                ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection, predicate);
+            }
         }
 
         /// <summary>
@@ -221,22 +209,48 @@ namespace SharpMap.Data
         /// A value of <see langword="null"/> clears the filter, and allows
         /// all features regardless of oid value.
         /// </remarks>
-        public IEnumerable OidFilter
+        public OidCollectionExpression OidFilter
         {
             get
             {
-                return _viewDefinition.Oids;
+                return _viewDefinition.OidPredicate;
             }
             set
             {
-                if (_viewDefinition.Oids == value)
+                if (Equals(_viewDefinition.OidPredicate, value))
                 {
                     return;
                 }
 
                 ViewDefinition = new FeatureQueryExpression(_viewDefinition.QueryGeometry,
-                                                          _viewDefinition.QueryType, value);
+                                                            _viewDefinition.QueryType, value);
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a set of feature identifiers (oids) used
+        /// to include or exclude features from the view. 
+        /// </summary>
+        /// <remarks>
+        /// A value of <see langword="null"/> clears the filter, and allows
+        /// all features regardless of oid value.
+        /// </remarks>
+        public AttributeBinaryExpression AttributeFilter
+        {
+            get
+            {
+                return _viewDefinition.AttributePredicate;
+            }
+            set
+            {
+                if (Equals(_viewDefinition.AttributePredicate, value))
+                {
+                    return;
+                }
+
+                ViewDefinition = new FeatureQueryExpression(_viewDefinition.QueryGeometry,
+                                                            _viewDefinition.QueryType, value);
+            } 
         }
 
         /// <summary>
@@ -260,7 +274,7 @@ namespace SharpMap.Data
 
         public FeatureQueryExpression ViewDefinition
         {
-            get { return _viewDefinition.Clone(); }
+            get { return _viewDefinition.Clone() as FeatureQueryExpression; }
             set
             {
                 if (_viewDefinition == value)
@@ -274,7 +288,7 @@ namespace SharpMap.Data
                 IGeometry missingGeometry;
                 ArrayList missingOids = new ArrayList();
 
-                if (!_viewDefinition.QueryGeometry.IsEmpty && 
+                if (!_viewDefinition.QueryGeometry.IsEmpty &&
                     !Table.Contains(_viewDefinition.QueryGeometry))
                 {
                     missingGeometry = _viewDefinition.QueryGeometry; //.Difference(Table.LoadedRegion);
@@ -296,9 +310,9 @@ namespace SharpMap.Data
 
                 if (!missingGeometry.IsEmpty || missingOids.Count > 0)
                 {
-                    FeatureQueryExpression notFound = new FeatureQueryExpression(missingGeometry, 
-                                                                                     value.QueryType, 
-                                                                                     missingOids);
+                    FeatureQueryExpression notFound = new FeatureQueryExpression(missingGeometry,
+                                                                                 value.QueryType,
+                                                                                 missingOids);
                     Table.NotifyFeaturesNotFound(notFound);
                 }
 
@@ -470,20 +484,20 @@ namespace SharpMap.Data
                 return false;
             }
 
-            return inGeometryFilter(feature) && 
-                   inOidFilter(feature) && 
+            return inGeometryFilter(feature) &&
+                   inOidFilter(feature) &&
                    inAttributeFilter();
         }
 
         private Boolean inGeometryFilter(FeatureDataRow feature)
         {
-            SpatialQueryExpression spatialQueryExpression = _viewDefinition.SpatialQuery;
+            SpatialBinaryExpression spatialQueryExpression = _viewDefinition.SpatialPredicate;
             SpatialOperation op = spatialQueryExpression.Op;
             IGeometry geometry = spatialQueryExpression.SpatialExpression.Geometry;
 
             // NOTE: changed Point.Empty to null
             return geometry == null ||
-                   SpatialQueryExpression.IsMatch(op,
+                   SpatialBinaryExpression.IsMatch(op,
                                                   spatialQueryExpression.IsSpatialExpressionLeft,
                                                   geometry,
                                                   feature.Geometry);
