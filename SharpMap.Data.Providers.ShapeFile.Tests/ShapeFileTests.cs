@@ -11,6 +11,7 @@ using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Tests;
 
 namespace SharpMap.Data.Providers.ShapeFile.Tests
@@ -190,7 +191,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             shapeFile.SpatialReference = cs;
             Assert.IsNotNull(shapeFile.SpatialReference);
 
-            IGeometry g = shapeFile.GetGeometryById(0);
+            IGeometry g = shapeFile.GetGeometryByOid(0);
 
             Assert.IsTrue(g.SpatialReference.EqualParams(createExpectedCoordinateSystem()));
 
@@ -440,7 +441,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
             shapeFile.Open();
             FeatureDataTable data = new FeatureDataTable("ShapeFile test", _geoFactory);
-            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(shapeFile.GetExtents());
+            IFeatureDataReader reader = shapeFile.ExecuteFeatureQuery(query);
             data.Load(reader, LoadOption.OverwriteChanges, null);
             Assert.AreEqual(shapeFile.GetFeatureCount(), data.Rows.Count);
             shapeFile.Close();
@@ -452,7 +454,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
-            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(shapeFile.GetExtents());
+            IFeatureDataReader reader = shapeFile.ExecuteFeatureQuery(query);
         }
 
         [Test]
@@ -509,7 +512,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             ShapeFileProvider shapeFile = new ShapeFileProvider(
                 @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
             shapeFile.Open();
-            FeatureDataRow<UInt32> feature = shapeFile.GetFeature(0) as FeatureDataRow<UInt32>;
+            FeatureDataRow<UInt32> feature = shapeFile.GetFeatureByOid(0) as FeatureDataRow<UInt32>;
             Assert.IsNotNull(feature);
             Assert.AreEqual(0, feature.Id);
             shapeFile.Close();
@@ -580,7 +583,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             Assert.AreEqual(1, shapeFile.GetFeatureCount());
 
             FeatureDataTable dataTable = new FeatureDataTable("ShapeFile test", _geoFactory);
-            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(_geoFactory.CreateExtents2D(0.9, 0.9, 1, 1));
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(_geoFactory.CreateExtents2D(0.9, 0.9, 1, 1));
+            IFeatureDataReader reader = shapeFile.ExecuteFeatureQuery(query);
             dataTable.Load(reader, LoadOption.OverwriteChanges, null);
 
             Assert.AreEqual(1, dataTable.Rows.Count);
@@ -654,7 +658,8 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             Assert.AreEqual(computedBounds, shapeFile.GetExtents());
 
             FeatureDataTable dataTable = new FeatureDataTable("ShapeFile test", _geoFactory);
-            IFeatureDataReader reader = shapeFile.ExecuteIntersectionQuery(shapeFile.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(shapeFile.GetExtents());
+            IFeatureDataReader reader = shapeFile.ExecuteFeatureQuery(query);
             dataTable.Load(reader, LoadOption.OverwriteChanges, null);
 
             Assert.AreEqual(10000, dataTable.Rows.Count);
