@@ -153,12 +153,14 @@
     <Compile Include="Expressions\OidCollectionExpression.cs" />
     <Compile Include="Expressions\OidExpression.cs" />
     <Compile Include="Expressions\ProjectionExpression.cs" />
+    <Compile Include="Expressions\ProviderExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
     <Compile Include="Expressions\SpatialBinaryExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialOperation.cs" />
     <Compile Include="Expressions\StringCollectionExpression.cs" />
     <Compile Include="Expressions\StringExpression.cs" />
+    <Compile Include="Expressions\ThisExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
     <Compile Include="Expressions\UnaryOperator.cs" />
     <Compile Include="Expressions\ValueExpression.cs" />

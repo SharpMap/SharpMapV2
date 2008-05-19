@@ -16,11 +16,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using SharpMap.Data;
 
 namespace SharpMap.Expressions
 {
-    public class OidExpression : Expression, IEquatable<OidExpression>
+    public class ProviderExpression : Expression
     {
+        private readonly IProvider _provider;
+
+        public ProviderExpression(IProvider provider)
+        {
+            _provider = provider;
+        }
+
+        public IProvider Provider
+        {
+            get { return _provider; }
+        }
+
         public override Boolean Matches(Expression other)
         {
             return Equals(other);
@@ -28,31 +41,15 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new OidExpression();
+            return new ProviderExpression(_provider);
         }
 
         public override Boolean Equals(Expression other)
         {
-            return other is OidExpression;
-        }
+            ProviderExpression otherProviderExpression = other as ProviderExpression;
 
-        #region IEquatable<OidExpression> Members
-
-        public Boolean Equals(OidExpression other)
-        {
-            return other != null;
-        }
-
-        #endregion
-
-        public override Boolean Equals(Object obj)
-        {
-            return Equals(obj as OidExpression);
-        }
-
-        public override Int32 GetHashCode()
-        {
-            return 7;
+            return otherProviderExpression != null &&
+                   Equals(otherProviderExpression._provider, _provider);
         }
     }
 }

@@ -19,7 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class OidExpression : Expression, IEquatable<OidExpression>
+    public class ThisExpression : Expression, IEquatable<ThisExpression>
     {
         public override Boolean Matches(Expression other)
         {
@@ -28,17 +28,17 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new OidExpression();
+            return new ThisExpression();
         }
 
         public override Boolean Equals(Expression other)
         {
-            return other is OidExpression;
+            return other is ThisExpression;
         }
 
-        #region IEquatable<OidExpression> Members
+        #region IEquatable<ThisExpression> Members
 
-        public Boolean Equals(OidExpression other)
+        public Boolean Equals(ThisExpression other)
         {
             return other != null;
         }
@@ -47,7 +47,7 @@ namespace SharpMap.Expressions
 
         public override Boolean Equals(Object obj)
         {
-            return Equals(obj as OidExpression);
+            return Equals(obj as ThisExpression);
         }
 
         public override Int32 GetHashCode()

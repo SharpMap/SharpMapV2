@@ -73,23 +73,8 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         protected FeatureLayer(String layername, IFeatureProvider dataSource)
-            : this(layername, new VectorStyle(), dataSource, true) { }
+            : this(layername, new VectorStyle(), dataSource) { }
 
-        /// <summary>
-        /// Initializes a new features layer with the given name and datasource.
-        /// </summary>
-        /// <param name="layername">Name of the layer.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="handleFeatureDataRequest">
-        /// Value to indicate the layer should handle 
-        /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the <see cref="Features"/>
-        /// table.
-        /// </param>
-        protected FeatureLayer(String layername,
-                               IFeatureProvider dataSource, 
-                               Boolean handleFeatureDataRequest)
-            : this(layername, new VectorStyle(), dataSource, handleFeatureDataRequest) { }
-        
         /// <summary>
         /// Initializes a new features layer with the given name, style and datasource
         /// and which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
@@ -101,30 +86,13 @@ namespace SharpMap.Layers
         protected FeatureLayer(String layername, 
                                VectorStyle style,
                                IFeatureProvider dataSource)
-            : this(layername, style, dataSource, true) { }
-
-        /// <summary>
-        /// Initializes a new features layer with the given name, style and datasource.
-        /// </summary>
-        /// <param name="layername">Name of the layer.</param>
-        /// <param name="style">Style to apply to the layer.</param>
-        /// <param name="dataSource">Data source.</param>
-        /// <param name="handleFeatureDataRequest">
-        /// Value to indicate the layer should handle 
-        /// <see cref="FeatureDataTable.FeaturesNotFound"/> events from the 
-        /// <see cref="Features"/> table.
-        /// </param>
-        protected FeatureLayer(String layername, 
-                               VectorStyle style,
-                               IFeatureProvider dataSource, 
-                               Boolean handleFeatureDataRequest)
             : base(layername, style, dataSource)
         {
             //ShouldHandleFeaturesNotFoundEvent = handleFeatureDataRequest;
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-            _features = DataSource.CreateNewTable() 
+            _features = DataSource.CreateNewTable()
                         ?? new FeatureDataTable(dataSource.GeometryFactory);
             GeometryFactory = dataSource.GeometryFactory;
             DataSource.Close();
@@ -133,22 +101,79 @@ namespace SharpMap.Layers
             _features.IsSpatiallyIndexed = true;
 
             IGeometry empty = dataSource.GeometryFactory.CreatePoint();
-            
+
             FeatureQueryExpression selectedExpression
                 = new FeatureQueryExpression(empty, SpatialOperation.Intersects, this);
 
-            _selectedFeatures = new FeatureDataView(_features, 
+            _selectedFeatures = new FeatureDataView(_features,
                                                     selectedExpression,
-                                                    "", 
+                                                    "",
                                                     DataViewRowState.CurrentRows);
 
-            FeatureQueryExpression highlightExpression 
+            FeatureQueryExpression highlightExpression
                 = new FeatureQueryExpression(empty, SpatialOperation.Intersects, this);
 
             _highlightedFeatures = new FeatureDataView(_features,
-                                                       highlightExpression, 
-                                                       "", 
+                                                       highlightExpression,
+                                                       "",
                                                        DataViewRowState.CurrentRows);
+        }
+
+        internal class AsyncFeatureProviderAdapter : AsyncProviderAdapter, IFeatureProvider
+        {
+            public AsyncFeatureProviderAdapter(IFeatureProvider provider) 
+                : base(provider) { }
+
+            IFeatureProvider FeatureProvider
+            {
+                get { return Provider as IFeatureProvider; }
+            }
+
+            #region IFeatureProvider Members
+
+            public FeatureDataTable CreateNewTable()
+            {
+                return FeatureProvider.CreateNewTable();
+            }
+
+            public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query,
+                                                          FeatureQueryExecutionOptions options)
+            {
+                return FeatureProvider.ExecuteFeatureQuery(query, options);
+            }
+
+            public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
+            {
+                return FeatureProvider.ExecuteFeatureQuery(query);
+            }
+
+            public IGeometryFactory GeometryFactory
+            {
+                get { return FeatureProvider.GeometryFactory; }
+                set { FeatureProvider.GeometryFactory = value; }
+            }
+
+            public Int32 GetFeatureCount()
+            {
+                return FeatureProvider.GetFeatureCount();
+            }
+
+            public DataTable GetSchemaTable()
+            {
+                return FeatureProvider.GetSchemaTable();
+            }
+
+            public CultureInfo Locale
+            {
+                get { return FeatureProvider.Locale; }
+            }
+
+            public void SetTableSchema(FeatureDataTable table)
+            {
+                FeatureProvider.SetTableSchema(table);
+            }
+
+            #endregion
         }
 
         #region IFeatureLayer Members
@@ -178,19 +203,6 @@ namespace SharpMap.Layers
         {
             get { return _highlightedFeatures; }
         }
-
-        //public void LoadFeaturesByOids(IEnumerable oids)
-        //{
-        //    if (!AsyncQuery)
-        //    {
-        //        IEnumerable<IFeatureDataRecord> features = DataSource.GetFeatures(oids);
-        //        MergeFeatures(features);
-        //    }
-        //    else
-        //    {
-        //        DataSource.BeginGetFeatures(oids, getFeaturesCallback, null);
-        //    }
-        //}
 
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text
@@ -254,42 +266,17 @@ namespace SharpMap.Layers
             _features.Merge(features, GeometryFactory);
         }
 
-        #region Private helper methods
+        protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
+        {
+            IFeatureProvider featureProvider = dataSource as IFeatureProvider;
 
-        //private void handleFeaturesRequested(Object sender, FeaturesNotFoundEventArgs e)
-        //{
-        //    IGeometry layerExtents = Extents.ToGeometry();
-        //    IGeometry available = layerExtents.Intersection(e.Expression.QueryGeometry);
+            if (featureProvider == null)
+            {
+                throw new ArgumentException(
+                    "The data source must be an IFeatureProvider for a FeatureLayer.");
+            }
 
-        //    Boolean hasIntersectionWithLayerData = 
-        //        !(available.IsEmpty || Features.Envelope.Contains(available)) && 
-        //        e.Expression.QueryType != SpatialExpressionType.Disjoint;
-
-        //    if(hasIntersectionWithLayerData || e.Expression.Oids != null)
-        //    {
-        //        LoadLayerData(e.Expression);   
-        //    }
-        //}
-
-        //private void queryCallback(IAsyncResult result)
-        //{
-        //    FeatureDataTable features = result.AsyncState as FeatureDataTable;
-
-        //    if (features != null)
-        //    {
-        //        Features.Merge(features);
-        //    }
-
-        //    DataSource.EndExecuteFeatureQuery(result);
-        //}
-
-        //private void getFeaturesCallback(IAsyncResult result)
-        //{
-        //    IEnumerable<IFeatureDataRecord> features = DataSource.EndGetFeatures(result);
-        //    MergeFeatures(features);
-        //}
-
-        #endregion
-
+            return new AsyncFeatureProviderAdapter(featureProvider);
+        }
     }
 }

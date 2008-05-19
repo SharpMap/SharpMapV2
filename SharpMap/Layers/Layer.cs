@@ -108,9 +108,9 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets a PropertyDescriptor for Layer's <see cref="Style"/> property.
         /// </summary>
-		public static PropertyDescriptor StyleProperty
-		{
-			get { return _layerTypeProperties.Find("Style", false); }
+        public static PropertyDescriptor StyleProperty
+        {
+            get { return _layerTypeProperties.Find("Style", false); }
         }
 
         #endregion
@@ -140,9 +140,7 @@ namespace SharpMap.Layers
         /// for the layer.
         /// </param>
         protected Layer(IProvider dataSource) :
-            this(String.Empty, null, dataSource)
-        {
-        }
+            this(String.Empty, null, dataSource) { }
 
         /// <summary>
         /// Creates a new Layer instance identified by the given name and
@@ -156,101 +154,84 @@ namespace SharpMap.Layers
         /// for the layer.
         /// </param>
         protected Layer(String layerName, IProvider dataSource) :
-            this(layerName, null, dataSource)
-        {
-        }
+            this(layerName, null, dataSource) { }
 
-        private class AsyncProviderAdapter : IAsyncProvider
+        internal class AsyncProviderAdapter : IAsyncProvider
         {
+            private readonly IProvider _provider;
+
             public AsyncProviderAdapter(IProvider provider)
             {
-                
+                if (provider == null) throw new ArgumentNullException("provider");
+                _provider = provider;
             }
-            #region IAsyncProvider Members
+
+            protected IProvider Provider
+            {
+                get { return _provider; }
+            }
+
+            public void Dispose()
+            {
+                _provider.Dispose();
+            }
+
+            public void Close()
+            {
+                _provider.Close();
+            }
+
+            public String ConnectionId
+            {
+                get { return _provider.ConnectionId; }
+            }
+
+            public ICoordinateTransformation CoordinateTransformation
+            {
+                get { return _provider.CoordinateTransformation; }
+                set { _provider.CoordinateTransformation = value; }
+            }
+
+            public object ExecuteQuery(Expression query)
+            {
+                return _provider.ExecuteQuery(query);
+            }
+
+            public IExtents GetExtents()
+            {
+                return _provider.GetExtents();
+            }
+
+            public Boolean IsOpen
+            {
+                get { return _provider.IsOpen; }
+            }
+
+            public void Open()
+            {
+                _provider.Open();
+            }
+
+            public ICoordinateSystem SpatialReference
+            {
+                get { return _provider.SpatialReference; }
+            }
+
+            public Int32? Srid
+            {
+                get { return _provider.Srid; }
+                set { _provider.Srid = value; }
+            }
 
             public IAsyncResult BeginExecuteQuery(Expression query, AsyncCallback callback)
             {
                 throw new NotImplementedException();
             }
 
-            public object EndExecuteQuery(IAsyncResult asyncResult)
+            public Object EndExecuteQuery(IAsyncResult asyncResult)
             {
                 throw new NotImplementedException();
             }
-
-            #endregion
-
-            #region IProvider Members
-
-            public ICoordinateTransformation CoordinateTransformation
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public ICoordinateSystem SpatialReference
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public bool IsOpen
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public int? Srid
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public IExtents GetExtents()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string ConnectionId
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public void Open()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Close()
-            {
-                throw new NotImplementedException();
-            }
-
-            public object ExecuteQuery(Expression query)
-            {
-                throw new NotImplementedException();
-            }
-
-            #endregion
-
-            #region IDisposable Members
-
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
-
-            #endregion
         }
 
         /// <summary>
@@ -276,7 +257,7 @@ namespace SharpMap.Layers
             LayerName = layerName;
 
             IAsyncProvider asyncProvider = dataSource as IAsyncProvider;
-            _dataSource = asyncProvider ?? new AsyncProviderAdapter(dataSource);
+            _dataSource = asyncProvider ?? CreateAsyncProvider(dataSource);
             Style = style;
             // TODO: inject the cache type or instance...
             _cache = new NullQueryCache();
@@ -659,6 +640,11 @@ namespace SharpMap.Layers
 
         #region Protected members
 
+        protected virtual IAsyncProvider CreateAsyncProvider(IProvider dataSource)
+        {
+            return new AsyncProviderAdapter(dataSource);
+        }
+
         /// <summary>
         /// Processes data from the <see cref="DataSource"/> which satisfies
         /// the <see cref="Expression"/> sent to <see cref="LoadLayerData"/>
@@ -801,7 +787,7 @@ namespace SharpMap.Layers
             endLoadInternal(asyncResult.AsyncState as Expression, result);
         }
 
-        private void endLoadInternal(Expression expression, Object result) 
+        private void endLoadInternal(Expression expression, Object result)
         {
             ProcessLoadResults(result);
 

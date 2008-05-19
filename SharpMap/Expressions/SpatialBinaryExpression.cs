@@ -23,6 +23,20 @@ namespace SharpMap.Expressions
     public class SpatialBinaryExpression : BinaryExpressionBase<SpatialOperation>,
                                            IEquatable<SpatialBinaryExpression>
     {
+        public static SpatialBinaryExpression Intersects(IGeometry geometry)
+        {
+            return new SpatialBinaryExpression(new SpatialExpression(geometry), 
+                                               SpatialOperation.Intersects, 
+                                               new ThisExpression());
+        }
+
+        public static SpatialBinaryExpression Intersects(IExtents extents)
+        {
+            return new SpatialBinaryExpression(new SpatialExpression(extents),
+                                               SpatialOperation.Intersects,
+                                               new ThisExpression());
+        }
+
         public SpatialBinaryExpression(Expression left, SpatialOperation op, SpatialExpression right)
             : base(left, op, right) { }
 

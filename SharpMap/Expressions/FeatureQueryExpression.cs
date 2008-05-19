@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Layers;
@@ -24,12 +25,46 @@ namespace SharpMap.Expressions
 {
     public class FeatureQueryExpression : QueryExpression, IEquatable<FeatureQueryExpression>
     {
+        public static FeatureQueryExpression Intersects(IExtents extents)
+        {
+            return new FeatureQueryExpression(extents, SpatialOperation.Intersects);
+        }
+
+        public static FeatureQueryExpression Intersects(IGeometry geometry)
+        {
+            return new FeatureQueryExpression(geometry, SpatialOperation.Intersects);
+        }
+
+        public FeatureQueryExpression(IExtents extents, SpatialOperation op)
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(extents),
+                                                                              op,
+                                                                              new ThisExpression())) { }
+
+        public FeatureQueryExpression(IGeometry geometry, SpatialOperation op)
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
+                                                                              op,
+                                                                              new ThisExpression())) { }
+
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
                                                                               op,
                                                                               new LayerExpression(layer))) { }
 
-        public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, FeatureDataTable features)
+        public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, IFeatureProvider provider)
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
+                                                                              op,
+                                                                              new ProviderExpression(provider))) { }
+        public FeatureQueryExpression(IExtents extents,
+                                      SpatialOperation op,
+                                      IEnumerable<IFeatureDataRecord> features)
+            : base(new AllAttributesExpression(),
+                   new SpatialBinaryExpression(new SpatialExpression(extents),
+                                               op,
+                                               new FeaturesCollectionExpression(features))) { }
+
+        public FeatureQueryExpression(IGeometry geometry,
+                                      SpatialOperation op,
+                                      IEnumerable<IFeatureDataRecord> features)
             : base(new AllAttributesExpression(),
                    new SpatialBinaryExpression(new SpatialExpression(geometry),
                                                op,
@@ -51,7 +86,7 @@ namespace SharpMap.Expressions
                                                     BinaryOperator.And,
                                                     spatialFilter)) { }
 
-        protected internal FeatureQueryExpression(ProjectionExpression projection, 
+        protected internal FeatureQueryExpression(ProjectionExpression projection,
                                                   PredicateExpression predicate)
             : base(projection, predicate) { }
 

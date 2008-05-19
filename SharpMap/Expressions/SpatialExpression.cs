@@ -6,7 +6,14 @@ namespace SharpMap.Expressions
     public class SpatialExpression : Expression, IEquatable<SpatialExpression>
     {
         private readonly IGeometry _geometry;
-        
+
+        public SpatialExpression(IExtents extents)
+        {
+            if (extents == null) throw new ArgumentNullException("extents");
+
+            _geometry = extents.ToGeometry();
+        }
+
         public SpatialExpression(IGeometry geometry)
         {
             _geometry = geometry;

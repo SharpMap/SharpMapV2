@@ -37,9 +37,7 @@ namespace SharpMap.Layers
         /// Initializes a new, empty vector layer.
         /// </summary>
         public GeometryLayer(IFeatureProvider dataSource)
-            : this(String.Empty, dataSource)
-        {
-        }
+            : this(String.Empty, dataSource) { }
 
         /// <summary>
         /// Initializes a new layer with the given name and datasource.
@@ -47,9 +45,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public GeometryLayer(String layername, IFeatureProvider dataSource)
-            : this(layername, new VectorStyle(), dataSource)
-        {
-        }
+            : this(layername, new VectorStyle(), dataSource) { }
 
         /// <summary>
         /// Initializes a new layer with the given name, style and datasource.
@@ -58,9 +54,7 @@ namespace SharpMap.Layers
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public GeometryLayer(String layername, VectorStyle style, IFeatureProvider dataSource)
-            : base(layername, style, dataSource)
-        {
-        }
+            : base(layername, style, dataSource) { }
 
         #region IDisposable Members
 

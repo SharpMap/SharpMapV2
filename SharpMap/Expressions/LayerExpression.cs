@@ -36,12 +36,12 @@ namespace SharpMap.Expressions
 
         public override Boolean Matches(Expression other)
         {
-            throw new NotImplementedException();
+            return Equals(other);
         }
 
         public override Expression Clone()
         {
-            throw new NotImplementedException();
+            return new LayerExpression(_layer);
         }
 
         public override Boolean Equals(Expression other)
