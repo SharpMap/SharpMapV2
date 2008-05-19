@@ -42,9 +42,9 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
-using GeoAPI.Utilities;
 using NPack.Interfaces;
 using ProjNet.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 
 namespace ProjNet.CoordinateSystems.Projections
 {

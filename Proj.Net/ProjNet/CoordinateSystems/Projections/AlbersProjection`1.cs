@@ -40,8 +40,8 @@ using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.Utilities;
 using NPack.Interfaces;
+using GeoAPI.DataStructures;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
