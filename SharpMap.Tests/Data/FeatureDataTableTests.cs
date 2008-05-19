@@ -6,6 +6,7 @@ using NetTopologySuite.Coordinates;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Expressions;
 
 namespace SharpMap.Tests.Data
 {
@@ -104,8 +105,8 @@ namespace SharpMap.Tests.Data
             Assert.AreSame(table, view.Table);
             FeatureDataView featureView = view as FeatureDataView;
             Assert.IsNotNull(featureView);
-            IGeometry g = _geoFactory.CreatePoint();
-            Assert.AreEqual(g, featureView.GeometryFilter);
+            IGeometry empty = _geoFactory.CreatePoint();
+            Assert.AreEqual(empty, featureView.SpatialFilter.SpatialExpression.Geometry);
             Assert.AreEqual(DataViewRowState.CurrentRows, view.RowStateFilter);
         }
 
@@ -114,7 +115,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            table.Load(provider.ExecuteIntersectionQuery(provider.GetExtents()));
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
+            table.Load(provider.ExecuteFeatureQuery(query));
         }
 
         [Test]
@@ -122,7 +124,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            IFeatureDataReader reader = provider.ExecuteIntersectionQuery(provider.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
+            IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
             FeatureDataTable clone = new FeatureDataTable(_geoFactory);
@@ -137,7 +140,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            IFeatureDataReader reader = provider.ExecuteIntersectionQuery(provider.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
+            IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
             FeatureDataTable target = new FeatureDataTable(_geoFactory);
@@ -151,11 +155,12 @@ namespace SharpMap.Tests.Data
         {
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            IFeatureDataReader reader = provider.ExecuteIntersectionQuery(provider.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
+            IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
             FeatureDataTable target = new FeatureDataTable(_geoFactory);
-            reader = provider.ExecuteIntersectionQuery(provider.GetExtents());
+            reader = provider.ExecuteFeatureQuery(query);
             target.Load(reader, LoadOption.OverwriteChanges, null);
 
             table.MergeSchema(target);
@@ -168,7 +173,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            IFeatureDataReader reader = provider.ExecuteIntersectionQuery(provider.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
+            IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
             FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("Oid", _geoFactory);
@@ -184,7 +190,8 @@ namespace SharpMap.Tests.Data
         {
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
             FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            IFeatureDataReader reader = provider.ExecuteIntersectionQuery(provider.GetExtents());
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
+            IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
             FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("GID", _geoFactory);

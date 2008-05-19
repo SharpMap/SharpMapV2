@@ -157,7 +157,10 @@ namespace SharpMap.Tests.Rendering
 
             FeatureDataTable features = new FeatureDataTable(_geoFactory);
             IExtents extents = provider.GetExtents();
-            features.Merge(provider.ExecuteIntersectionQuery(extents) as IEnumerable<IFeatureDataRecord>,
+            FeatureQueryExpression query = new FeatureQueryExpression(extents.ToGeometry(),
+                                                                      SpatialOperation.Intersects,
+                                                                      provider);
+            features.Merge(provider.ExecuteFeatureQuery(query) as IEnumerable<IFeatureDataRecord>,
                            provider.GeometryFactory);
 
             foreach (FeatureDataRow feature in features)

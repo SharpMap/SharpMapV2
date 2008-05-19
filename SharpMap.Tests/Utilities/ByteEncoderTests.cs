@@ -1,6 +1,6 @@
 using System;
+using GeoAPI.DataStructures;
 using NUnit.Framework;
-using SharpMap.Utilities;
 
 namespace SharpMap.Tests.Utilities
 {
