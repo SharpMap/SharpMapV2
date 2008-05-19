@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
+using GeoAPI.DataStructures;
 using SharpMap.Utilities;
 using System.IO;
 using GeoAPI.Geometries;

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using GeoAPI.Geometries;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -39,7 +40,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		#region Object Construction / Disposal
 
-        internal ShapeFileDataReader(ShapeFileProvider source, IExtents queryRegion, FeatureQueryExecutionOptions options)
+        internal ShapeFileDataReader(ShapeFileProvider source, 
+                                     FeatureQueryExpression query, 
+                                     FeatureQueryExecutionOptions options)
 		{
             if (options != FeatureQueryExecutionOptions.FullFeature)
             {
@@ -50,8 +53,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 		    _options = options;
 			_schemaTable = source.GetSchemaTable();
 
-			// Use the spatial index to get a list of features whose BoundingBox intersects query bounds.
-			_objectEnumerator = source.GetIntersectingObjectIds(queryRegion).GetEnumerator();
+            // TODO: now that we are accessing the geometry each time, perhaps a feature
+            // query here would save a disk access
+			_objectEnumerator = source.ExecuteOidQuery(query.SpatialPredicate).GetEnumerator();
 		}
 
 		#region Dispose Pattern
@@ -122,16 +126,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 		{
 			get
 			{
-				checkState();
+			    checkState();
 
-				if (_currentFeature.Geometry == null)
-				{
-					return null;
-				}
-				else
-				{
-					return _currentFeature.Geometry.Clone();
-				}
+			    return _currentFeature.Geometry == null
+			               ? null
+			               : _currentFeature.Geometry.Clone();
 			}
 		}
 
@@ -154,8 +153,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             get
             {
-                return (_options | QueryExecutionOptions.BoundingBoxes)
-                        == (QueryExecutionOptions.FullFeature | QueryExecutionOptions.BoundingBoxes);
+                return (_options | FeatureQueryExecutionOptions.BoundingBoxes) == 
+                       (FeatureQueryExecutionOptions.FullFeature | FeatureQueryExecutionOptions.BoundingBoxes);
             }
         }
 
@@ -207,7 +206,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 			if (reading)
 			{
-				_currentFeature = _shapeFile.GetFeature(_objectEnumerator.Current);
+				_currentFeature = _shapeFile.GetFeatureByOid(_objectEnumerator.Current);
 			}
 
 			return reading;
