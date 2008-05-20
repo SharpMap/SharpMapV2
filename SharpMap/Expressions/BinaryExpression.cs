@@ -29,5 +29,15 @@ namespace SharpMap.Expressions
         {
             return new BinaryExpression(left, op, right);
         }
+
+        public new Expression Left
+        {
+            get { return base.Left; }
+        }
+
+        public new Expression Right
+        {
+            get { return base.Right; }
+        }
     }
 }

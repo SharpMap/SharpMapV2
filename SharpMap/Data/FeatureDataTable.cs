@@ -649,7 +649,55 @@ namespace SharpMap.Data
 
         public IEnumerable<FeatureDataRow> Select(SpatialBinaryExpression query)
         {
-            throw new NotImplementedException();
+            if (query == null) throw new ArgumentNullException("query");
+
+            SpatialExpression spatialExpression = query.SpatialExpression;
+
+            if (spatialExpression == null)
+            {
+                throw new ArgumentException("The SpatialQueryExpression must have " +
+                                            "a non-null SpatialExpression.");
+            }
+
+            if (query.Expression != null &&
+                (!(query.Expression is ThisExpression) &&
+                ((query.Expression is FeaturesCollectionExpression) &&
+                (query.Expression as FeaturesCollectionExpression).Collection != this)))
+            {
+                throw new ArgumentException("The Expression value of the query cannot be evaluated.");
+            }
+
+            IGeometry filterGeometry = spatialExpression.Geometry;
+            Boolean isLeft = query.IsSpatialExpressionLeft;
+            SpatialOperation op = query.Op;
+
+            IEnumerable<FeatureDataRow> features = IsSpatiallyIndexed
+                                                       ? _rTreeIndex.Query(filterGeometry.Extents)
+                                                       : this;
+
+            foreach (FeatureDataRow row in features)
+            {
+                if (SpatialBinaryExpression.IsMatch(op, isLeft, filterGeometry, row.Geometry))
+                {
+                    yield return row;
+                }
+            }
+
+            // Handle the case where we are asking for disjoint geometries
+            // but used an index intersection to narrow the candidates. All
+            // geometries which have an extent which doesn't intersect is disjoint.
+            if (op == SpatialOperation.Disjoint && IsSpatiallyIndexed)
+            {
+                IExtents filterExtents = filterGeometry.Extents;
+
+                foreach (FeatureDataRow row in _rTreeIndex.Query(_rTreeIndex.Bounds))
+                {
+                    if (!row.Extents.Intersects(filterExtents))
+                    {
+                        yield return row;
+                    }
+                }
+            }
         }
 
         #endregion

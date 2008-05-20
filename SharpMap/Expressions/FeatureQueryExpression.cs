@@ -92,7 +92,34 @@ namespace SharpMap.Expressions
 
         public SpatialBinaryExpression SpatialPredicate
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                SpatialBinaryExpression spatialBinaryExpression =
+                    Predicate as SpatialBinaryExpression;
+
+                if (spatialBinaryExpression != null)
+                {
+                    return spatialBinaryExpression;
+                }
+
+                BinaryExpression binaryExpression = Predicate as BinaryExpression;
+
+                if (binaryExpression == null)
+                {
+                    return null;
+                }
+
+                spatialBinaryExpression = binaryExpression.Left as SpatialBinaryExpression;
+
+                if (spatialBinaryExpression != null)
+                {
+                    return spatialBinaryExpression;
+                }
+
+                spatialBinaryExpression = binaryExpression.Right as SpatialBinaryExpression;
+
+                return spatialBinaryExpression;
+            }
         }
 
         public AttributeBinaryExpression AttributePredicate
