@@ -31,7 +31,7 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="query">An expression which will match features in the data source.</param>
         /// <returns>An enumeration of all matching features' object ids.</returns>
-	    IEnumerable<TOid> ExecuteOidQuery(Expression query);
+	    IEnumerable<TOid> ExecuteOidQuery(SpatialBinaryExpression query);
 
 		/// <summary>
 		/// Returns the geometry corresponding to the object ID.

@@ -31,35 +31,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
     /// <summary>
     /// Datasource for storing a limited set of geometries.
     /// </summary>
-    /// <remarks>
-    /// <para>The GeometryProvider doesn’t utilize performance optimizations of spatial indexing,
-    /// and thus is primarily meant for rendering a limited set of Geometries.</para>
-    /// <para>A common use of the GeometryProvider is for highlighting a set of selected features.</para>
-    /// <example>
-    /// The following example gets data within a BoundingBox of another datasource and adds it to the map.
-    /// <code lang="C#">
-    /// List{Geometry} geometries = myMap.Layers[0].DataSource.GetGeometriesInView(myBox);
-    /// FeatureLayer laySelected = new FeatureLayer("Selected Features");
-    /// laySelected.DataSource = new GeometryProvider(geometries);
-    /// laySelected.Style.Outline = new Pen(Color.Magenta, 3f);
-    /// laySelected.Style.EnableOutline = true;
-    /// myMap.Layers.Add(laySelected);
-    /// </code>
-    /// </example>
-    /// <example>
-    /// Adding points of interest to the map. This is useful for vehicle tracking etc.
-    /// <code lang="C#">
-    /// List{SharpMap.Geometries.Geometry} geometries = new List{SharpMap.Geometries.Geometry}();
-    /// //Add two points
-    /// geometries.Add(new SharpMap.Geometries.Point(23.345,64.325));
-    /// geometries.Add(new SharpMap.Geometries.Point(23.879,64.194));
-    /// SharpMap.Layers.FeatureLayer layerVehicles = new SharpMap.Layers.FeatureLayer("Vechicles");
-    /// layerVehicles.DataSource = new SharpMap.Data.Providers.GeometryProvider(geometries);
-    /// layerVehicles.Style.Symbol = Bitmap.FromFile(@"C:\data\car.gif");
-    /// myMap.Layers.Add(layerVehicles);
-    /// </code>
-    /// </example>
-    /// </remarks>
     public class GeometryProvider : IFeatureProvider<UInt32>
     {
         private IGeometryFactory _geoFactory;
@@ -80,10 +51,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// </param>
         public GeometryProvider(IGeometry geometry)
         {
-            if (geometry == null)
-            {
-                throw new ArgumentNullException("geometry");
-            }
+            if (geometry == null) throw new ArgumentNullException("geometry");
 
             _geoFactory = geometry.Factory;
             _geometries.Add(geometry);
@@ -97,10 +65,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// </param>
         public GeometryProvider(IEnumerable<IGeometry> geometries)
         {
-            if (geometries == null)
-            {
-                throw new ArgumentNullException("geometries");
-            }
+            if (geometries == null) throw new ArgumentNullException("geometries");
 
             _geoFactory = Slice.GetFirst(geometries).Factory;
             _geometries.AddRange(geometries);
@@ -114,10 +79,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// </param>
         public GeometryProvider(FeatureDataRow feature)
         {
-            if (feature == null)
-            {
-                throw new ArgumentNullException("feature");
-            }
+            if (feature == null) throw new ArgumentNullException("feature");
 
             if (feature.Geometry == null)
             {
@@ -372,103 +334,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
             throw new NotSupportedException();
         }
 
-        ///// <summary>
-        ///// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        ///// are intersected by <paramref name="bounds"/>.
-        ///// </summary>
-        ///// <param name="bounds">BoundingBox to intersect with.</param>
-        ///// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        //public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds)
-        //{
-        //    return ExecuteIntersectionQuery(bounds, QueryExecutionOptions.Geometries);
-        //}
-
-        ///// <summary>
-        ///// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
-        ///// are intersected by <paramref name="bounds"/>.
-        ///// </summary>
-        ///// <param name="bounds">BoundingBox to intersect with.</param>
-        ///// <returns>An IFeatureDataReader to iterate over the results.</returns>
-        ///// <param name="options">Options indicating which data to retrieve.</param>
-        //public IFeatureDataReader ExecuteIntersectionQuery(IExtents bounds, QueryExecutionOptions options)
-        //{
-        //    return new GeometryDataReader(this, bounds);
-        //}
-
-
-        ///// <summary>
-        ///// Retrieves the data associated with all the features that 
-        ///// are intersected by <paramref name="bounds"/>.
-        ///// </summary>
-        ///// <param name="bounds">BoundingBox to intersect with.</param>
-        ///// <param name="table">FeatureDataTable to fill data into.</param>
-        //public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table)
-        //{
-        //    ExecuteIntersectionQuery(bounds, table, QueryExecutionOptions.Geometries);
-        //}
-
-        ///// <summary>
-        ///// Retrieves the data associated with all the features that 
-        ///// are intersected by <paramref name="bounds"/>.
-        ///// </summary>
-        ///// <param name="bounds">BoundingBox to intersect with.</param>
-        ///// <param name="table">FeatureDataTable to fill data into.</param>
-        ///// <param name="options">Options indicating which data to retrieve.</param>
-        //public void ExecuteIntersectionQuery(IExtents bounds, FeatureDataTable table, QueryExecutionOptions options)
-        //{
-        //    if (table == null) throw new ArgumentNullException("table");
-
-        //    List<IGeometry> intersection = new List<IGeometry>();
-
-        //    foreach (IGeometry geometry in Geometries)
-        //    {
-        //        if (bounds.Intersects(geometry.Extents))
-        //        {
-        //            intersection.Add(geometry);
-        //        }
-        //    }
-
-        //    foreach (FeatureDataRow row in table)
-        //    {
-        //        if (intersection.Exists(delegate(IGeometry match) { return match.Equals(row.Geometry); }))
-        //        {
-        //            intersection.Remove(row.Geometry);
-        //        }
-        //    }
-
-        //    foreach (IGeometry geometry in intersection)
-        //    {
-        //        FeatureDataRow row = table.NewRow();
-        //        row.Geometry = geometry;
-        //        table.AddRow(row);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Returns features within the specified bounding bounds.
-        ///// </summary>
-        ///// <param name="bounds">The bounding bounds to intersect with.</param>
-        ///// <returns>An enumeration of all geometries which intersect <paramref name="bounds"/>.</returns>
-        //public IEnumerable<IGeometry> ExecuteGeometryIntersectionQuery(IExtents bounds)
-        //{
-        //    List<IGeometry> list = new List<IGeometry>();
-
-        //    IGeometry boxGeom = bounds.ToGeometry();
-
-        //    foreach (IGeometry g in _geometries)
-        //    {
-        //        if (!g.IsEmpty)
-        //        {
-        //            if (g.Intersects(boxGeom))
-        //            {
-        //                list.Add(g);
-        //            }
-        //        }
-        //    }
-
-        //    return list.AsReadOnly();
-        //}
-
         public IGeometryFactory GeometryFactory
         {
             get { return _geoFactory; }
@@ -498,19 +363,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureProvider<UInt32> Members
 
-        public IEnumerable<UInt32> ExecuteOidQuery(Expression query)
+        public IEnumerable<UInt32> ExecuteOidQuery(SpatialBinaryExpression query)
         {
             if (query == null) throw new ArgumentNullException("query");
 
-            SpatialBinaryExpression sqe = query as SpatialBinaryExpression;
-
-            if (sqe == null)
-            {
-                throw new NotSupportedException("Expression type not supported: " +
-                                                query.GetType());
-            }
-
-            SpatialExpression spatialExpression = sqe.SpatialExpression;
+            SpatialExpression spatialExpression = query.SpatialExpression;
 
             if (spatialExpression == null)
             {
@@ -518,17 +375,17 @@ namespace SharpMap.Data.Providers.GeometryProvider
                                             "a non-null SpatialExpression.");
             }
 
-            if (sqe.Expression == null)
+            if (query.Expression == null)
             {
                 throw new ArgumentException("The SpatialQueryExpression must have " +
                                             "a non-null Expression.");
             }
 
             IGeometry filterGeometry = spatialExpression.Geometry;
-            Boolean isLeft = sqe.IsSpatialExpressionLeft;
-            SpatialOperation op = sqe.Op;
+            Boolean isLeft = query.IsSpatialExpressionLeft;
+            SpatialOperation op = query.Op;
 
-            LayerExpression layerExpression = sqe.Expression as LayerExpression;
+            LayerExpression layerExpression = query.Expression as LayerExpression;
 
             if (layerExpression != null)
             {
@@ -543,13 +400,14 @@ namespace SharpMap.Data.Providers.GeometryProvider
                 yield break;
             }
 
-            OidCollectionExpression oidsCollection = sqe.Expression as OidCollectionExpression;
+            OidCollectionExpression oidsCollection = query.Expression as OidCollectionExpression;
 
             if (oidsCollection != null)
             {
                 if (oidsCollection.Right == null)
                 {
-                    throw new ArgumentException("The OidCollectionExpression in the query has a null collection");
+                    throw new ArgumentException("The OidCollectionExpression in the query " +
+                                                "has a null collection");
                 }
 
                 IEnumerable oids = oidsCollection.Right.Collection;

@@ -126,7 +126,7 @@ namespace SharpMap.Data
         private IUpdatableSpatialIndex<IExtents, FeatureDataRow> _rTreeIndex;
         //private IGeometry _loadedRegion;
         private IExtents _extents;
-        private IGeometry _empty;
+        //private IGeometry _empty;
 
         #endregion
 
@@ -155,7 +155,8 @@ namespace SharpMap.Data
         public FeatureDataTable(String tableName, IGeometryFactory factory)
             : base(tableName)
         {
-            GeometryFactory = factory;
+            _geoFactory = factory;
+            //_empty = _geoFactory.CreatePoint();
             Constraints.CollectionChanged += OnConstraintsChanged;
         }
 
@@ -166,7 +167,8 @@ namespace SharpMap.Data
         public FeatureDataTable(DataTable table, IGeometryFactory factory)
             : base(table.TableName)
         {
-            GeometryFactory = factory;
+            _geoFactory = factory;
+            //_empty = _geoFactory.CreatePoint();
             Constraints.CollectionChanged += OnConstraintsChanged;
 
             if (table.DataSet == null || (table.CaseSensitive != table.DataSet.CaseSensitive))
@@ -297,10 +299,6 @@ namespace SharpMap.Data
         public IGeometryFactory GeometryFactory
         {
             get { return _geoFactory; }
-            private set
-            {
-                _empty = _geoFactory.CreatePoint();
-            }
         }
 
         #endregion
@@ -1342,7 +1340,17 @@ namespace SharpMap.Data
 
         private void computeExtents()
         {
-            throw new NotImplementedException();
+            foreach (FeatureDataRow row in this)
+            {
+                if (_extents == null)
+                {
+                    _extents = _geoFactory.CreateExtents(row.Extents);
+                }
+                else
+                {
+                    _extents.ExpandToInclude(row.Extents);
+                }
+            }
         }
 
         //private void notifyIfCacheDoesNotContain(IGeometry geometry)

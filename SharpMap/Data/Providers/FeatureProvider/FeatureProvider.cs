@@ -97,7 +97,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
 		#region IFeatureProvider<Guid> Members
 
-        public IEnumerable<Guid> ExecuteOidQuery(Expression query)
+        public IEnumerable<Guid> ExecuteOidQuery(SpatialBinaryExpression query)
 		{
 			throw new NotImplementedException();
 		}

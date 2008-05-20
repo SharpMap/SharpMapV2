@@ -102,8 +102,10 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, IGeometry intersectionFilter,
-                               String sort, DataViewRowState rowState)
+        public FeatureDataView(FeatureDataTable table, 
+                               IGeometry intersectionFilter,
+                               String sort, 
+                               DataViewRowState rowState)
             : this(table, intersectionFilter, SpatialOperation.Intersects, sort, rowState) { }
 
         /// <summary>
@@ -120,8 +122,11 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, IGeometry query, SpatialOperation op,
-                               String sort, DataViewRowState rowState)
+        public FeatureDataView(FeatureDataTable table, 
+                               IGeometry query, 
+                               SpatialOperation op,
+                               String sort, 
+                               DataViewRowState rowState)
             : this(table, new FeatureQueryExpression(query, op, table), sort, rowState) { }
 
         /// <summary>
@@ -135,8 +140,10 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, FeatureQueryExpression definition,
-                               String sort, DataViewRowState rowState)
+        public FeatureDataView(FeatureDataTable table, 
+                               FeatureQueryExpression definition,
+                               String sort, 
+                               DataViewRowState rowState)
             : base(
                 table,
                 "",
@@ -147,8 +154,6 @@ namespace SharpMap.Data
                             : sort,
                 rowState)
         {
-            if (definition == null) throw new ArgumentNullException("definition");
-
             _viewDefinition = definition;
 
             // This call rebuilds the index which was just built with 
@@ -177,7 +182,9 @@ namespace SharpMap.Data
         {
             get
             {
-                return _viewDefinition.SpatialPredicate.Clone() as SpatialBinaryExpression;
+                return _viewDefinition == null 
+                            ? null
+                            : _viewDefinition.SpatialPredicate.Clone() as SpatialBinaryExpression;
             }
             set
             {
