@@ -23,19 +23,28 @@ namespace SharpMap.Expressions
             get { return _predicate; }
         }
 
-        public override bool Matches(Expression other)
+        public override Boolean Matches(Expression other)
         {
-            throw new NotImplementedException();
+            QueryExpression otherQuery = other as QueryExpression;
+
+            return otherQuery != null &&
+                   Matches(otherQuery.Predicate, Predicate) &&
+                   Matches(otherQuery.Projection, Projection);
         }
 
         public override Expression Clone()
         {
-            throw new NotImplementedException();
+            return new QueryExpression((ProjectionExpression)_projection.Clone(), 
+                                       (PredicateExpression)_predicate.Clone());
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
-            throw new NotImplementedException();
+            QueryExpression otherQuery = other as QueryExpression;
+
+            return otherQuery != null &&
+                   Equals(otherQuery.Predicate, Predicate) &&
+                   Equals(otherQuery.Projection, Projection);
         }
     }
 }

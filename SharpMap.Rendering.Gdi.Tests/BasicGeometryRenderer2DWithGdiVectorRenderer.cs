@@ -8,6 +8,7 @@ using GeoAPI.Geometries;
 using NUnit.Framework;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Expressions;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Tests;
 using GisSharpBlog.NetTopologySuite.Geometries;
@@ -49,9 +50,13 @@ namespace SharpMap.Rendering.Gdi.Tests
 
                 FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
-                foreach (IFeatureDataRecord record in provider.ExecuteIntersectionQuery(provider.GetExtents()))
+                FeatureQueryExpression query 
+                    = FeatureQueryExpression.Intersects(provider.GetExtents());
+
+                foreach (IFeatureDataRecord record in provider.ExecuteFeatureQuery(query))
                 {
-                    IEnumerable<GdiRenderObject> renderedObjects = geometryRenderer.RenderFeature(record);
+                    IEnumerable<GdiRenderObject> renderedObjects 
+                        = geometryRenderer.RenderFeature(record);
 
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
@@ -69,7 +74,9 @@ namespace SharpMap.Rendering.Gdi.Tests
                                 Assert.IsTrue(isClosed);
                                 Assert.AreEqual(p.ExteriorRing.Coordinates.Count, end - start + 1);
 
-                                for (Int32 vertexIndex = 0; vertexIndex < p.ExteriorRing.Coordinates.Count; vertexIndex++)
+                                for (Int32 vertexIndex = 0; 
+                                     vertexIndex < p.ExteriorRing.Coordinates.Count; 
+                                     vertexIndex++)
                                 {
                                     ICoordinate v = (ICoordinate)p.ExteriorRing.Coordinates[vertexIndex];
                                     PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
@@ -111,7 +118,9 @@ namespace SharpMap.Rendering.Gdi.Tests
                                     Int32 exteriorPointCount = p.ExteriorRing.PointCount;
                                     Assert.AreEqual(exteriorPointCount, end - start + 1);
 
-                                    for (Int32 vertexIndex = 0; vertexIndex < exteriorPointCount; vertexIndex++)
+                                    for (Int32 vertexIndex = 0; 
+                                         vertexIndex < exteriorPointCount; 
+                                         vertexIndex++)
                                     {
                                         ICoordinate v = p.ExteriorRing.Coordinates[vertexIndex];
                                         PointF gdiPoint = ro.GdiPath.PathPoints[vertexIndex + start];
@@ -153,7 +162,10 @@ namespace SharpMap.Rendering.Gdi.Tests
 
                 FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
-                foreach (IFeatureDataRecord record in provider.ExecuteIntersectionQuery(provider.GetExtents()))
+                FeatureQueryExpression query
+                    = FeatureQueryExpression.Intersects(provider.GetExtents());
+
+                foreach (IFeatureDataRecord record in provider.ExecuteFeatureQuery(query))
                 {
                     IEnumerable<GdiRenderObject> renderedObjects = geometryRenderer.RenderFeature(record);
 
@@ -215,11 +227,15 @@ namespace SharpMap.Rendering.Gdi.Tests
 
                 FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
 
-                foreach (IFeatureDataRecord record in provider.ExecuteIntersectionQuery(provider.GetExtents()))
+                FeatureQueryExpression query
+                    = FeatureQueryExpression.Intersects(provider.GetExtents());
+
+                foreach (IFeatureDataRecord record in provider.ExecuteFeatureQuery(query))
                 {
                     IEnumerable<GdiRenderObject> renderedObjects = geometryRenderer.RenderFeature(record);
 
                     Int32 geoIndex = 0;
+
                     foreach (GdiRenderObject ro in renderedObjects)
                     {
                         IGeometry g = record.Geometry;

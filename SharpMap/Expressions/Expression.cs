@@ -21,6 +21,21 @@ namespace SharpMap.Expressions
 {
     public abstract class Expression : IEquatable<Expression>
     {
+        public static Boolean Matches(Expression a, Expression b)
+        {
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+            {
+                return false;
+            }
+
+            return a.Matches(b);
+        }
+
         public abstract Boolean Matches(Expression other);
 
         public abstract Expression Clone();

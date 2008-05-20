@@ -152,12 +152,14 @@ namespace SharpMap.Rendering
 
         public static void Rotate(Matrix matrix, Vector axis, Double radians)
         {
-            Instance.Operations.Rotate(matrix, axis, radians);
+            Matrix result = Instance.Operations.Rotate(matrix, axis, radians);
+            SetMatrix(result, matrix);
         }
 
         public static void Scale(Matrix matrix, Vector scaleVector)
         {
-            Instance.Operations.Scale(matrix, scaleVector);
+            Matrix result = Instance.Operations.Scale(matrix, scaleVector);
+            SetMatrix(result, matrix);
         }
 
         public static void Shear(Matrix matrix, Vector shearVector)
@@ -167,7 +169,8 @@ namespace SharpMap.Rendering
 
         public static void Translate(Matrix affineMatrix, Vector translateVector)
         {
-            Instance.Operations.Translate(affineMatrix, translateVector);
+            Matrix result = Instance.Operations.Translate(affineMatrix, translateVector);
+            SetMatrix(result, affineMatrix);
         }
 
         public static Double FrobeniusNorm(Matrix matrix)

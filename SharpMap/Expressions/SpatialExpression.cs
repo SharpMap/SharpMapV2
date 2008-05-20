@@ -51,7 +51,7 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            throw new NotImplementedException();
+            return new SpatialExpression(_geometry.Clone());
         }
     }
 }

@@ -102,9 +102,9 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, 
+        public FeatureDataView(FeatureDataTable table,
                                IGeometry intersectionFilter,
-                               String sort, 
+                               String sort,
                                DataViewRowState rowState)
             : this(table, intersectionFilter, SpatialOperation.Intersects, sort, rowState) { }
 
@@ -122,10 +122,10 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, 
-                               IGeometry query, 
+        public FeatureDataView(FeatureDataTable table,
+                               IGeometry query,
                                SpatialOperation op,
-                               String sort, 
+                               String sort,
                                DataViewRowState rowState)
             : this(table, new FeatureQueryExpression(query, op, table), sort, rowState) { }
 
@@ -140,9 +140,9 @@ namespace SharpMap.Data
         /// </param>
         /// <param name="sort">Sort expression to order view by.</param>
         /// <param name="rowState">Filter on the state of the rows to view.</param>
-        public FeatureDataView(FeatureDataTable table, 
+        public FeatureDataView(FeatureDataTable table,
                                FeatureQueryExpression definition,
-                               String sort, 
+                               String sort,
                                DataViewRowState rowState)
             : base(
                 table,
@@ -182,29 +182,37 @@ namespace SharpMap.Data
         {
             get
             {
-                return _viewDefinition == null 
+                return _viewDefinition == null
                             ? null
                             : _viewDefinition.SpatialPredicate.Clone() as SpatialBinaryExpression;
             }
             set
             {
-                if (value == null)
+                if (_viewDefinition == null)
                 {
-                    throw new ArgumentNullException("value");
+                    if (value != null)
+                    {
+                        ViewDefinition = new FeatureQueryExpression(new AllAttributesExpression(), value);
+                    }
                 }
-
-                // short-circuit if it is an equal query, since we don't want to have to 
-                // recompute all the indexes for nothing
-                if (Equals(_viewDefinition.SpatialPredicate, value))
+                else
                 {
-                    return;
+                    // short-circuit if it is an equal query, since we don't want to have to 
+                    // recompute all the indexes for nothing
+                    if (Equals(_viewDefinition.SpatialPredicate, value))
+                    {
+                        return;
+                    }
+
+                    PredicateExpression predicate = _viewDefinition.Predicate == null
+                                                        ? (PredicateExpression)value
+                                                        : new BinaryExpression(_viewDefinition.Predicate,
+                                                                               BinaryOperator.And,
+                                                                               value);
+
+                    ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection, 
+                                                                predicate);
                 }
-
-                PredicateExpression predicate = new BinaryExpression(_viewDefinition.OidPredicate,
-                                                                     BinaryOperator.And,
-                                                                     value);
-
-                ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection, predicate);
             }
         }
 
@@ -224,18 +232,29 @@ namespace SharpMap.Data
             }
             set
             {
-                if (Equals(_viewDefinition.OidPredicate, value))
+                if (_viewDefinition == null)
                 {
-                    return;
+                    if (value != null)
+                    {
+                        ViewDefinition = new FeatureQueryExpression(new AllAttributesExpression(), value);
+                    }
                 }
+                else
+                {
+                    if (Equals(_viewDefinition.OidPredicate, value))
+                    {
+                        return;
+                    }
 
-                PredicateExpression predicate = _viewDefinition.SpatialPredicate == null
-                                                    ? (PredicateExpression)value
-                                                    : new BinaryExpression(value, 
-                                                                           BinaryOperator.And, 
-                                                                           _viewDefinition.SpatialPredicate);
+                    PredicateExpression predicate = _viewDefinition.Predicate == null
+                                                        ? (PredicateExpression)value
+                                                        : new BinaryExpression(value,
+                                                                               BinaryOperator.And,
+                                                                               _viewDefinition.SpatialPredicate);
 
-                ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection, predicate);
+                    ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection,
+                                                                predicate);
+                }
             }
         }
 
@@ -262,7 +281,7 @@ namespace SharpMap.Data
 
                 // TODO: create new predicate based on existing predicate and new attribute filter
                 throw new NotImplementedException("Filtering by attribute value not yet supported.");
-            } 
+            }
         }
 
         /// <summary>
@@ -503,6 +522,11 @@ namespace SharpMap.Data
 
         private Boolean inGeometryFilter(FeatureDataRow feature)
         {
+            if (_viewDefinition == null || _viewDefinition.SpatialPredicate == null)
+            {
+                return true;
+            }
+
             SpatialBinaryExpression spatialQueryExpression = _viewDefinition.SpatialPredicate;
             SpatialOperation op = spatialQueryExpression.Op;
             IGeometry geometry = spatialQueryExpression.SpatialExpression.Geometry;
@@ -520,6 +544,11 @@ namespace SharpMap.Data
             if (!feature.HasOid)
             {
                 return false;
+            }
+
+            if (_viewDefinition == null || _viewDefinition.OidPredicate == null)
+            {
+                return true;
             }
 
             // NOTE: This will get to be a performance problem due to the 

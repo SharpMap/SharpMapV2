@@ -41,11 +41,8 @@ namespace SharpMap.Tests.Data
 
         #endregion
 
-        #region CreatingDataViewWithSpatialQueryTypeOtherThanIntersectsNotSupported
-
         [Test]
-        [ExpectedException(typeof (NotSupportedException))]
-        public void CreatingDataViewWithCrossesSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithCrossesSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -59,8 +56,7 @@ namespace SharpMap.Tests.Data
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void CreatingDataViewWithContainsSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithContainsSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -74,8 +70,7 @@ namespace SharpMap.Tests.Data
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void CreatingDataViewWithEqualsSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithEqualsSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -89,8 +84,7 @@ namespace SharpMap.Tests.Data
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void CreatingDataViewWithNoneSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithNoneSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -104,8 +98,7 @@ namespace SharpMap.Tests.Data
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void CreatingDataViewWithOverlapsSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithOverlapsSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -119,8 +112,7 @@ namespace SharpMap.Tests.Data
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void CreatingDataViewWithTouchesSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithTouchesSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -134,8 +126,7 @@ namespace SharpMap.Tests.Data
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void CreatingDataViewWithWithinSpatialExpressionTypeNotSupported()
+        public void CreatingDataViewWithWithinSpatialExpressionSucceeds()
         {
             // This test is here so that when it is supported, the test breaks and is rewritten
 
@@ -147,8 +138,6 @@ namespace SharpMap.Tests.Data
             Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
             new FeatureDataView(table, empty, SpatialOperation.Within, "", DataViewRowState.CurrentRows);
         }
-
-        #endregion
 
         #region ChangeViewAttributeFilterReturnsOnlyFilteredRows
 
@@ -493,6 +482,7 @@ namespace SharpMap.Tests.Data
         #region SettingViewFilterToIncludeRowsNotPresentInTableCausesFeaturesRequestNotification
 
         [Test]
+        [Ignore("Notifications now happen at a Layer level.")]
         public void SettingViewFilterToIncludeRowsNotPresentInTableCausesFeaturesRequestNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);

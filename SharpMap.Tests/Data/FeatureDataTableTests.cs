@@ -105,8 +105,7 @@ namespace SharpMap.Tests.Data
             Assert.AreSame(table, view.Table);
             FeatureDataView featureView = view as FeatureDataView;
             Assert.IsNotNull(featureView);
-            IGeometry empty = _geoFactory.CreatePoint();
-            Assert.AreEqual(empty, featureView.SpatialFilter.SpatialExpression.Geometry);
+            Assert.IsNull(featureView.SpatialFilter);
             Assert.AreEqual(DataViewRowState.CurrentRows, view.RowStateFilter);
         }
 

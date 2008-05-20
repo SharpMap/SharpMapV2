@@ -124,12 +124,66 @@ namespace SharpMap.Expressions
 
         public AttributeBinaryExpression AttributePredicate
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                AttributeBinaryExpression attributesExpression =
+                    Predicate as AttributeBinaryExpression;
+
+                if (attributesExpression != null)
+                {
+                    return attributesExpression;
+                }
+
+                BinaryExpression binaryExpression = Predicate as BinaryExpression;
+
+                if (binaryExpression == null)
+                {
+                    return null;
+                }
+
+                attributesExpression = binaryExpression.Left as AttributeBinaryExpression;
+
+                if (attributesExpression != null)
+                {
+                    return attributesExpression;
+                }
+
+                attributesExpression = binaryExpression.Right as AttributeBinaryExpression;
+
+                return attributesExpression;
+            }
         }
 
         public OidCollectionExpression OidPredicate
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                OidCollectionExpression oidsExpression =
+                    Predicate as OidCollectionExpression;
+
+                if (oidsExpression != null)
+                {
+                    return oidsExpression;
+                }
+
+                BinaryExpression binaryExpression = Predicate as BinaryExpression;
+
+                if (binaryExpression == null)
+                {
+                    return null;
+                }
+
+                oidsExpression = binaryExpression.Left as OidCollectionExpression;
+
+                if (oidsExpression != null)
+                {
+                    return oidsExpression;
+                }
+
+                oidsExpression = binaryExpression.Right as OidCollectionExpression;
+
+                return oidsExpression;
+            }
         }
 
         public Boolean Equals(FeatureQueryExpression other)
