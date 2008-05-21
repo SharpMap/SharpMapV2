@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 
@@ -185,6 +186,12 @@ namespace SharpMap.Data
             : base(table, factory)
         {
             setIdColumn(idColumnName);
+        }
+
+        protected FeatureDataTable(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            // Put extra stuff to serialize here...
         }
         #endregion
 

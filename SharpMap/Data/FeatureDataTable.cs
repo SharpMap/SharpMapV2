@@ -24,6 +24,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.Serialization;
 using System.Threading;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
@@ -189,6 +190,12 @@ namespace SharpMap.Data
             Prefix = table.Prefix;
             MinimumCapacity = table.MinimumCapacity;
             DisplayExpression = table.DisplayExpression;
+        }
+
+        protected FeatureDataTable(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            // Put extra stuff to serialize here...
         }
 
         #endregion
