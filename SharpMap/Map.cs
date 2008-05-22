@@ -720,6 +720,11 @@ namespace SharpMap
                 if (_extents == null)
                 {
                     _extents = _geoFactory.CreateExtents();
+
+                    foreach (ILayer layer in _layers)
+                    {
+                        _extents.ExpandToInclude(layer.Extents);
+                    }
                 }
 
                 return _extents;
@@ -1317,7 +1322,7 @@ namespace SharpMap
 
                     if(_extents == null)
                     {
-                        _extents = layer.Extents;
+                        _extents = _geoFactory.CreateExtents(layer.Extents);
                     }
                     else
                     {

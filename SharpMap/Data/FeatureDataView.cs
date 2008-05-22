@@ -556,7 +556,9 @@ namespace SharpMap.Data
             // sorted index where a binary search can be performed.
             IEnumerable oids = _viewDefinition.OidPredicate.OidValues;
 
-            if (!Slice.CountGreaterThan(oids, 0))
+            Int32 count = 0;
+
+            if(Enumerable.FirstOrDefault(oids) == null)
             {
                 return true;
             }

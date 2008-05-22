@@ -23,9 +23,13 @@ using System.Data;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
+#if DOTNET35
+using Enumerable = System.Linq.Enumerable;
+#else
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+#endif
 
 namespace SharpMap.Data.Providers.GeometryProvider
 {
@@ -68,7 +72,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             if (geometries == null) throw new ArgumentNullException("geometries");
 
-            _geoFactory = Slice.GetFirst(geometries).Factory;
+            _geoFactory = Enumerable.First(geometries).Factory;
             _geometries.AddRange(geometries);
         }
 

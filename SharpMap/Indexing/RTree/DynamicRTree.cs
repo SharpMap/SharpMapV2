@@ -39,8 +39,9 @@ namespace SharpMap.Indexing.RTree
     /// the instance could be one of a number of various R-Tree 
     /// variants, such as R*Tree or R+Tree.
     /// </remarks>
-    public class DynamicRTree<TItem>
-        : RTree<TItem>, IUpdatableSpatialIndex<IExtents, TItem>, ISerializable
+    public class DynamicRTree<TItem> : RTree<TItem>, 
+                                       IUpdatableSpatialIndex<IExtents, TItem>, 
+                                       ISerializable
             where TItem : IBoundable<IExtents>
     {
         #region Fields

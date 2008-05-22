@@ -1,7 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using GeoAPI.DataStructures;
+#if DOTNET35
+using Enumerable = System.Linq.Enumerable;
+#else
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+#endif
 
 namespace SharpMap.Expressions
 {
@@ -61,7 +65,8 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new CollectionExpression(Enumerable.ToArray(Collection));
+            IEnumerable<TValue> values = Collection;
+            return new CollectionExpression(Enumerable.ToArray(values));
         }
     }
 }

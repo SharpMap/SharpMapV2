@@ -91,6 +91,30 @@ namespace SharpMap.Expressions
                                                     BinaryOperator.And,
                                                     spatialFilter)) { }
 
+        public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter,
+                                      OidCollectionExpression oidFilter)
+            // TODO: Well, this is crazy. We need an init function, and perhaps some more static creator methods.
+            : base(new AllAttributesExpression(), 
+                   attributeFilter == null
+                        ? spatialFilter == null
+                                ? oidFilter
+                                : oidFilter == null
+                                    ? (PredicateExpression)spatialFilter
+                                    : new BinaryExpression(spatialFilter, BinaryOperator.And, oidFilter)
+                        : spatialFilter == null
+                                ? oidFilter == null
+                                    ? attributeFilter
+                                    : new BinaryExpression(attributeFilter, BinaryOperator.And, oidFilter)
+                                : oidFilter == null
+                                    ? new BinaryExpression(attributeFilter, BinaryOperator.And, spatialFilter)
+                                    : new BinaryExpression(attributeFilter,
+                                                           BinaryOperator.And,
+                                                           new BinaryExpression(oidFilter,
+                                                                                BinaryOperator.And,
+                                                                                spatialFilter))) { }
+
+
         protected internal FeatureQueryExpression(ProjectionExpression projection,
                                                   PredicateExpression predicate)
             : base(projection, predicate) { }
