@@ -26,6 +26,11 @@ namespace SharpMap.Data
     public enum FeatureQueryExecutionOptions
     {
         /// <summary>
+        /// Specifies that nothing should be retrieved. Used as a flag for unspecified options.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
         /// Specifies that the keys should be retrieved.
         /// </summary>
         Keys = 1,

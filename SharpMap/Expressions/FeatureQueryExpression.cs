@@ -35,6 +35,11 @@ namespace SharpMap.Expressions
             return new FeatureQueryExpression(geometry, SpatialOperation.Intersects);
         }
 
+        public static FeatureQueryExpression Create(IGeometry geometry, SpatialOperation op)
+        {
+            return new FeatureQueryExpression(geometry, op);
+        }
+
         public FeatureQueryExpression(IExtents extents, SpatialOperation op)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(extents),
                                                                               op,
