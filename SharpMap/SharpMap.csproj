@@ -114,6 +114,11 @@
     <Compile Include="Data\IFeatureAdapter.cs" />
     <Compile Include="Data\IRasterProvider.cs" />
     <Compile Include="Data\FeatureQueryExecutionOptions.cs" />
+    <Compile Include="Data\Providers\AsyncFeatureProviderAdapter.cs" />
+    <Compile Include="Data\Providers\AsyncProviderAdapter.cs" />
+    <Compile Include="Data\Providers\AsyncRasterProviderAdapter.cs" />
+    <Compile Include="Data\Providers\AsyncResult.cs" />
+    <Compile Include="Data\Providers\AsyncResult`1.cs" />
     <Compile Include="Data\RasterBand.cs" />
     <Compile Include="Data\RasterDataSet.cs" />
     <Compile Include="Data\RasterDataView.cs" />
@@ -134,6 +139,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Expressions\AllAttributesExpression.cs" />
+    <Compile Include="Expressions\AllBandsExpression.cs" />
     <Compile Include="Expressions\AttributeBinaryExpression.cs" />
     <Compile Include="Expressions\AttributeExpression.cs" />
     <Compile Include="Expressions\AttributesProjectionExpression.cs" />
@@ -155,6 +161,7 @@
     <Compile Include="Expressions\ProjectionExpression.cs" />
     <Compile Include="Expressions\ProviderExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
+    <Compile Include="Expressions\RasterQueryExpression.cs" />
     <Compile Include="Expressions\SpatialBinaryExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialOperation.cs" />

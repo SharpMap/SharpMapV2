@@ -23,6 +23,7 @@ using System.Data;
 using System.Globalization;
 using GeoAPI.Geometries;
 using SharpMap.Data;
+using SharpMap.Data.Providers;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 using System.Collections.Generic;
@@ -117,63 +118,6 @@ namespace SharpMap.Layers
                                                        highlightExpression,
                                                        "",
                                                        DataViewRowState.CurrentRows);
-        }
-
-        internal class AsyncFeatureProviderAdapter : AsyncProviderAdapter, IFeatureProvider
-        {
-            public AsyncFeatureProviderAdapter(IFeatureProvider provider) 
-                : base(provider) { }
-
-            IFeatureProvider FeatureProvider
-            {
-                get { return Provider as IFeatureProvider; }
-            }
-
-            #region IFeatureProvider Members
-
-            public FeatureDataTable CreateNewTable()
-            {
-                return FeatureProvider.CreateNewTable();
-            }
-
-            public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query,
-                                                          FeatureQueryExecutionOptions options)
-            {
-                return FeatureProvider.ExecuteFeatureQuery(query, options);
-            }
-
-            public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
-            {
-                return FeatureProvider.ExecuteFeatureQuery(query);
-            }
-
-            public IGeometryFactory GeometryFactory
-            {
-                get { return FeatureProvider.GeometryFactory; }
-                set { FeatureProvider.GeometryFactory = value; }
-            }
-
-            public Int32 GetFeatureCount()
-            {
-                return FeatureProvider.GetFeatureCount();
-            }
-
-            public DataTable GetSchemaTable()
-            {
-                return FeatureProvider.GetSchemaTable();
-            }
-
-            public CultureInfo Locale
-            {
-                get { return FeatureProvider.Locale; }
-            }
-
-            public void SetTableSchema(FeatureDataTable table)
-            {
-                FeatureProvider.SetTableSchema(table);
-            }
-
-            #endregion
         }
 
         #region IFeatureLayer Members

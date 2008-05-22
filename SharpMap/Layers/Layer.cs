@@ -156,84 +156,6 @@ namespace SharpMap.Layers
         protected Layer(String layerName, IProvider dataSource) :
             this(layerName, null, dataSource) { }
 
-        internal class AsyncProviderAdapter : IAsyncProvider
-        {
-            private readonly IProvider _provider;
-
-            public AsyncProviderAdapter(IProvider provider)
-            {
-                if (provider == null) throw new ArgumentNullException("provider");
-                _provider = provider;
-            }
-
-            protected IProvider Provider
-            {
-                get { return _provider; }
-            }
-
-            public void Dispose()
-            {
-                _provider.Dispose();
-            }
-
-            public void Close()
-            {
-                _provider.Close();
-            }
-
-            public String ConnectionId
-            {
-                get { return _provider.ConnectionId; }
-            }
-
-            public ICoordinateTransformation CoordinateTransformation
-            {
-                get { return _provider.CoordinateTransformation; }
-                set { _provider.CoordinateTransformation = value; }
-            }
-
-            public object ExecuteQuery(Expression query)
-            {
-                return _provider.ExecuteQuery(query);
-            }
-
-            public IExtents GetExtents()
-            {
-                return _provider.GetExtents();
-            }
-
-            public Boolean IsOpen
-            {
-                get { return _provider.IsOpen; }
-            }
-
-            public void Open()
-            {
-                _provider.Open();
-            }
-
-            public ICoordinateSystem SpatialReference
-            {
-                get { return _provider.SpatialReference; }
-            }
-
-            public Int32? Srid
-            {
-                get { return _provider.Srid; }
-                set { _provider.Srid = value; }
-            }
-
-            public IAsyncResult BeginExecuteQuery(Expression query, AsyncCallback callback)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Object EndExecuteQuery(IAsyncResult asyncResult)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         /// <summary>
         /// Creates a new Layer instance identified by the given name, with
         /// symbology described by <paramref name="style"/> and
@@ -640,10 +562,8 @@ namespace SharpMap.Layers
 
         #region Protected members
 
-        protected virtual IAsyncProvider CreateAsyncProvider(IProvider dataSource)
-        {
-            return new AsyncProviderAdapter(dataSource);
-        }
+        protected abstract IAsyncProvider CreateAsyncProvider(IProvider dataSource);
+        //{ return new Async<Feature/Raster>ProviderAdapter(dataSource); }
 
         /// <summary>
         /// Processes data from the <see cref="DataSource"/> which satisfies

@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using SharpMap.Data;
 using GeoAPI.Geometries;
+using SharpMap.Data.Providers;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 
@@ -65,5 +66,10 @@ namespace SharpMap.Layers
         }
 
 	    #endregion
+
+	    protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
+	    {
+	        return new AsyncRasterProviderAdapter(dataSource as IRasterProvider);
+	    }
 	}
 }

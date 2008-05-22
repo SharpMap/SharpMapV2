@@ -134,6 +134,13 @@
   <ItemGroup>
     <Compile Include="DataSourceHelper.cs" />
     <Compile Include="DataTableHelper.cs" />
+    <Compile Include="Data\Providers\AsyncFeatureProviderAdapterTests.cs" />
+    <Compile Include="Data\Providers\AsynchronousTask.cs" />
+    <Compile Include="Data\Providers\AsyncRasterProviderAdapterTests.cs" />
+    <Compile Include="Data\Providers\AsyncResultTest.cs" />
+    <Compile Include="Data\Providers\CallBackHelper.cs" />
+    <Compile Include="Data\Providers\AsynchronousTask`1.cs" />
+    <Compile Include="Data\Providers\AsyncResultGenericTest.cs" />
     <Compile Include="Data\Providers\FeatureProvider\FeatureProviderTests.cs" />
     <Compile Include="Data\FeatureDataViewTests.cs" />
     <Compile Include="Indexing\BinaryTreeTests.cs" />

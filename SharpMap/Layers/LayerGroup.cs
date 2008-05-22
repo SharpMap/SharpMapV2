@@ -386,5 +386,10 @@ namespace SharpMap.Layers
             }
         } 
         #endregion
+
+        protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

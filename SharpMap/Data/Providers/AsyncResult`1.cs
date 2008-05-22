@@ -1,4 +1,4 @@
-﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2008: Ron Emmert (justsome.handle@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,23 +15,28 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using GeoAPI.Geometries;
-using System.IO;
-using SharpMap.Expressions;
+using System;
 
-namespace SharpMap.Data
+namespace SharpMap.Data.Providers
 {
-    /// <summary>
-    /// Defines the interface to a provider of raster data.
-    /// </summary>
-    public interface IRasterProvider : IProvider
+    public class AsyncResult<TResult> : AsyncResult
     {
-        /// <summary>
-        /// Retrieves a <see cref="Stream"/> for the raster data that 
-        /// are selected by <paramref name="query"/>.
-        /// </summary>
-        /// <param name="query">Query select with.</param>
-        /// <returns>A Stream to access the raster data of the result.</returns>
-        Stream ExecuteRasterQuery(RasterQueryExpression query);
+        private TResult _result;
+
+        public AsyncResult(AsyncCallback asyncCallback, Object state) 
+            : base(asyncCallback, state) { }
+
+        public void SetComplete(TResult result, Boolean completedSynchronously)
+        {
+            _result = result;
+
+            SetComplete(completedSynchronously, null);
+        }
+
+        new public TResult EndInvoke()
+        {
+            base.EndInvoke();
+            return _result;
+        }
     }
 }
