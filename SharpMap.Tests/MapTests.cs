@@ -79,7 +79,7 @@ namespace SharpMap.Tests
         }
 
         [Test]
-        public void EmptyMap_Defaults()
+        public void EmptyMapDefaultsAreCorrect()
         {
             Map map = new Map(_geoFactory);
             IExtents emptyExtents = _geoFactory.CreateExtents();
@@ -94,16 +94,29 @@ namespace SharpMap.Tests
         }
 
         [Test]
-        public void GetExtents_ValidDatasource()
+        public void MapExtentsReflectTheUnderlyingLayersCorrectlyWhenUsingAddLayer()
         {
             Map map = new Map(_geoFactory);
 
-            GeometryLayer vLayer = new GeometryLayer("Geom layer", 
-                DataSourceHelper.CreateGeometryDatasource(_geoFactory));
+            GeometryLayer layer = new GeometryLayer("Geom layer", 
+                                                     DataSourceHelper.CreateGeometryDatasource(_geoFactory));
 
-            map.AddLayer(vLayer);
+            map.AddLayer(layer);
             IExtents box = map.Extents;
             Assert.AreEqual(_geoFactory.CreateExtents2D(0, 0, 120, 100), box);
+        }
+
+        [Test]
+        public void MapExtentsReflectTheUnderlyingLayersCorrectlyWhenUsingLayersAdd()
+        {
+            Map map = new Map(_geoFactory);
+
+            GeometryLayer layer = new GeometryLayer("Geom layer",
+                                                     DataSourceHelper.CreateGeometryDatasource(_geoFactory));
+
+            map.Layers.Add(layer);
+            IExtents box = map.Extents;
+            Assert.AreEqual(_geoFactory.CreateExtents2D(0, 0, 120, 100), box);   
         }
     }
 }

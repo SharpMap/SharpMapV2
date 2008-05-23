@@ -36,6 +36,12 @@ using SharpMap.Expressions;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
 
+#if DOTNET35
+using Enumerable = System.Linq.Enumerable;
+#else
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+#endif
+
 namespace SharpMap.Data.Providers.ShapeFile
 {
     /// <summary>
@@ -627,8 +633,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             try
             {
                 //enableReading();
-                _shapeFileStream = new FileStream(Filename, FileMode.OpenOrCreate, FileAccess.ReadWrite,
-                                                  exclusive ? FileShare.None : FileShare.Read, 4096,
+                _shapeFileStream = new FileStream(Filename, 
+                                                  FileMode.OpenOrCreate, 
+                                                  FileAccess.ReadWrite,
+                                                  exclusive ? FileShare.None : FileShare.Read, 
+                                                  4096,
                                                   FileOptions.None);
 
                 _shapeFileReader = new BinaryReader(_shapeFileStream);
@@ -1987,7 +1996,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 else
                 {
                     return _geoFactory.CreatePolygon(
-                        Slice.GetFirst(rings), Enumerable.Skip(rings, 1));
+                        Enumerable.First(rings), Enumerable.Skip(rings, 1));
                 }
             }
             else
@@ -2001,12 +2010,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     if (polyRings.Count == 1)
                     {
-                        poly = _geoFactory.CreatePolygon(Slice.GetFirst(polyRings));
+                        poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings));
                     }
                     else
                     {
-                        poly = _geoFactory.CreatePolygon(
-                            Slice.GetFirst(polyRings), Enumerable.Skip(polyRings, 1));
+                        poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings), 
+                                                         Enumerable.Skip(polyRings, 1));
                     }
 
                     mpoly.Add(poly);
