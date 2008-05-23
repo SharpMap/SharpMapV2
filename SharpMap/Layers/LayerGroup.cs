@@ -70,7 +70,8 @@ namespace SharpMap.Layers
         /// Parameter <paramref name="layers"/> contains layers and <paramref name="master"/>
         /// is not a member of the enumeration.
         /// </exception>
-        public LayerGroup(IEnumerable<ILayer> layers, ILayer master) : base(master.DataSource)
+        public LayerGroup(IEnumerable<ILayer> layers, ILayer master) 
+            : base(String.Empty, null, master.DataSource)
         {
             _layers.AddRange(layers);
             _master = master;
@@ -339,11 +340,13 @@ namespace SharpMap.Layers
             get
             {
                 checkState();
-                return base.LayerName ?? MasterLayer.LayerName;
+                return String.IsNullOrEmpty(base.LayerName)
+                           ? MasterLayer.LayerName
+                           : base.LayerName;
             }
             set
             {
-                throw new NotImplementedException();
+                base.LayerName = value;
             }
         }
 
@@ -356,7 +359,7 @@ namespace SharpMap.Layers
             }
             set
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException("Set the style on the master layer instead.");
             }
         }
 

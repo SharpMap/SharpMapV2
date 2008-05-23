@@ -176,11 +176,12 @@ namespace SharpMap.Layers
             if (layerName == null) throw new ArgumentNullException("layerName");
             if (dataSource == null) throw new ArgumentNullException("dataSource");
 
-            LayerName = layerName;
+            _layerName = layerName;
 
             IAsyncProvider asyncProvider = dataSource as IAsyncProvider;
             _dataSource = asyncProvider ?? CreateAsyncProvider(dataSource);
-            Style = style;
+
+            _style = style;
             // TODO: inject the cache type or instance...
             _cache = new NullQueryCache();
         }
