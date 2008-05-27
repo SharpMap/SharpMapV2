@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Threading;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using SharpMap.Data;
@@ -128,6 +129,7 @@ namespace SharpMap.Layers
         private IGeometryFactory _geoFactory;
         private IQueryCache _cache;
         private IAsyncResult _loadAsyncResult;
+        private readonly Object _loadCompletionSync = new Object();
         #endregion
 
         #region Object Creation / Disposal
@@ -419,27 +421,6 @@ namespace SharpMap.Layers
             return condition(this);
         }
 
-        ///// <summary>
-        ///// Gets or sets a value which causes the layer to handle
-        ///// an event from a data store indicating that the data is not cached
-        ///// and must be read from <see cref="DataSource"/>.
-        ///// </summary>
-        //public Boolean ShouldHandleFeaturesNotFoundEvent
-        //{
-        //    get { return _handleFeaturesNotFoundEvent; }
-        //    set
-        //    {
-        //        if (_handleFeaturesNotFoundEvent == value)
-        //        {
-        //            return;
-        //        }
-
-        //        _handleFeaturesNotFoundEvent = value;
-
-        //        OnShouldHandleDataCacheMissEventChanged();
-        //    }
-        //}
-
         /// <summary>
         /// Gets or sets the name of the layer.
         /// </summary>
@@ -502,9 +483,14 @@ namespace SharpMap.Layers
             }
             else
             {
-                _loadAsyncResult = _dataSource.BeginExecuteQuery(query, null);
-                Object results = _dataSource.EndExecuteQuery(_loadAsyncResult);
-                endLoadInternal(query, results);
+                _loadAsyncResult = _dataSource.BeginExecuteQuery(query, completeLoadLayerData);
+
+                lock (_loadCompletionSync)
+                {
+
+                    Object results = _dataSource.EndExecuteQuery(_loadAsyncResult);
+                    endLoadInternal(query, results);
+                }
             }
         }
 
@@ -699,13 +685,22 @@ namespace SharpMap.Layers
 
         private void completeLoadLayerData(IAsyncResult asyncResult)
         {
+            // The lock is already held, so the calling thread will handle
+            // the load synchronously
+            if(!Monitor.TryEnter(_loadCompletionSync))
+            {
+                return;    
+            }
+
             if (asyncResult.IsCompleted)
             {
+                Monitor.Exit(_loadCompletionSync);
                 return;
             }
 
             Object result = _dataSource.EndExecuteQuery(asyncResult);
             endLoadInternal(asyncResult.AsyncState as Expression, result);
+            Monitor.Exit(_loadCompletionSync);
         }
 
         private void endLoadInternal(Expression expression, Object result)
@@ -731,6 +726,27 @@ namespace SharpMap.Layers
         //    return anyGeometryCollection
         //               ? GeometryFactory.CreateGeometryCollection(a, b)
         //               : a.Union(b);
+        //}
+
+        ///// <summary>
+        ///// Gets or sets a value which causes the layer to handle
+        ///// an event from a data store indicating that the data is not cached
+        ///// and must be read from <see cref="DataSource"/>.
+        ///// </summary>
+        //public Boolean ShouldHandleFeaturesNotFoundEvent
+        //{
+        //    get { return _handleFeaturesNotFoundEvent; }
+        //    set
+        //    {
+        //        if (_handleFeaturesNotFoundEvent == value)
+        //        {
+        //            return;
+        //        }
+
+        //        _handleFeaturesNotFoundEvent = value;
+
+        //        OnShouldHandleDataCacheMissEventChanged();
+        //    }
         //}
     }
 }

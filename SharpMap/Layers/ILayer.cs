@@ -82,18 +82,101 @@ namespace SharpMap.Layers
 		/// </summary>
 		IStyle Style { get; set; }
 
+        /// <summary>
+        /// Gets an <see cref="IGeometry"/> instance describing the region which has been
+        /// loaded from the layer <see cref="DataSource"/>.
+        /// </summary>
         IGeometry LoadedRegion { get; }
+
+        /// <summary>
+        /// Gets a value indicating if the layer is loading data from its <see cref="DataSource"/>.
+        /// </summary>
         Boolean IsLoadingData { get; }
 
+        /// <summary>
+        /// Computes the visibility of the layer based on a given <paramref name="condition"/>.
+        /// </summary>
+        /// <param name="condition">The predicate to use to compute layer visibility.</param>
+        /// <returns>
+        /// <see langword="true"/> if the layer is visible given <paramref name="condition"/>.
+        /// </returns>
         Boolean IsVisibleWhen(Predicate<ILayer> condition);
 
+        /// <summary>
+        /// Gets the value of the property indicated by the given <see cref="PropertyDescriptor"/>.
+        /// </summary>
+        /// <param name="property">
+        /// The property to get the value of, or <see langword="null"/> if the layer doesn't
+        /// have <paramref name="property"/>.
+        /// </param>
+        /// <returns>
+        /// The value of <paramref name="property"/> or <see langword="null"/> if the layer doesn't
+        /// have the property.
+        /// </returns>
         Object GetProperty(PropertyDescriptor property);
+
+        /// <summary>
+        /// Sets the value of the property indicated by the given <see cref="PropertyDescriptor"/>,
+        /// adding it if it doesn't exist.
+        /// </summary>
+        /// <param name="property">
+        /// The property to set the value of.
+        /// </param>
+        /// <param name="value">
+        /// The value to set <paramref name="property"/> to.
+        /// </param>
         void SetProperty(PropertyDescriptor property, Object value);
+
+        /// <summary>
+        /// Event fired when layer data is loaded.
+        /// </summary>
         event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
+
+        /// <summary>
+        /// Loads the data contained in the layer where it intersects <paramref name="region"/>.
+        /// </summary>
+        /// <param name="region">The region to load the data in.</param>
         void LoadIntersectingLayerData(IExtents region);
+
+        /// <summary>
+        /// Loads the data contained in the layer where it intersects <paramref name="region"/>.
+        /// </summary>
+        /// <param name="region">The region to load the data in.</param>
         void LoadIntersectingLayerData(IGeometry region);
+
+        /// <summary>
+        /// Loads the data contained in the layer where satisfies
+        /// the <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// The expression to match layer data to.
+        /// </param>
+        /// <remarks>
+        /// Loads the data either synchronously or asynchronously depending
+        /// on <see cref="AsyncQuery"/>.
+        /// </remarks>
         void LoadLayerData(SpatialBinaryExpression query);
+
+        /// <summary>
+        /// Loads the data contained in the layer where satisfies
+        /// the <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">
+        /// The expression to match layer data to.
+        /// </param>
+        /// <remarks>
+        /// Loads the data asynchronously.
+        /// </remarks>
         void LoadLayerDataAsync(SpatialBinaryExpression query);
+
+        /// <summary>
+        /// Evaluates the given <paramref name="query"/> and retrieves data in the 
+        /// layer which satisfies it.
+        /// </summary>
+        /// <param name="query">The query to evaluate against the layer.</param>
+        /// <returns>
+        /// Any data which the layer contains which satisfies the <paramref name="query"/>.
+        /// </returns>
         IEnumerable Select(Expression query);
 	}
 }

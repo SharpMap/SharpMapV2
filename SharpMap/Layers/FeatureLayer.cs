@@ -60,7 +60,7 @@ namespace SharpMap.Layers
 
         /// <summary>
         /// Initializes a new, empty features layer
-        /// which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
+        /// which handles <see cref="FeatureDataTable.SelectRequested"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
         protected FeatureLayer(IFeatureProvider dataSource)
@@ -68,7 +68,7 @@ namespace SharpMap.Layers
 
         /// <summary>
         /// Initializes a new features layer with the given name and datasource
-        /// and which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
+        /// and which handles <see cref="FeatureDataTable.SelectRequested"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
@@ -78,13 +78,13 @@ namespace SharpMap.Layers
 
         /// <summary>
         /// Initializes a new features layer with the given name, style and datasource
-        /// and which handles <see cref="FeatureDataTable.FeaturesNotFound"/> 
+        /// and which handles <see cref="FeatureDataTable.SelectRequested"/> 
         /// events from <see cref="Features"/>.
         /// </summary>
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(String layername, 
+        protected FeatureLayer(String layername,
                                VectorStyle style,
                                IFeatureProvider dataSource)
             : base(layername, style, dataSource)
@@ -100,6 +100,8 @@ namespace SharpMap.Layers
 
             // We generally want spatial indexing on the feature table...
             _features.IsSpatiallyIndexed = true;
+
+            _features.SelectRequested += handleFeaturesSelectRequested;
 
             IGeometry empty = dataSource.GeometryFactory.CreatePoint();
 
@@ -166,7 +168,10 @@ namespace SharpMap.Layers
             get { return _selectedFeatures; }
         }
 
-
+        /// <summary>
+        /// Gets or sets a value which allows features in the layer to be selected
+        /// or not.
+        /// </summary>
         public Boolean AreFeaturesSelectable
         {
             get
@@ -216,11 +221,29 @@ namespace SharpMap.Layers
 
             if (featureProvider == null)
             {
-                throw new ArgumentException(
-                    "The data source must be an IFeatureProvider for a FeatureLayer.");
+                throw new ArgumentException("The data source must be an " +
+                                            "IFeatureProvider for a FeatureLayer.");
             }
 
             return new AsyncFeatureProviderAdapter(featureProvider);
         }
+
+        #region Event handlers
+
+        void handleFeaturesSelectRequested(Object sender, SelectRequestedEventArgs e)
+        {
+            if (IsLoadingData)
+            {
+                return;
+            }
+
+            SpatialBinaryExpression query = e.Query;
+
+            if(!QueryCache.Contains(query))
+            {
+                LoadLayerData(query);
+            }
+        } 
+        #endregion
     }
 }

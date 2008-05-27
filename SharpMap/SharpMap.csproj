@@ -109,7 +109,7 @@
     <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
-    <Compile Include="Data\FeaturesRequestedEventArgs.cs" />
+    <Compile Include="Data\SelectRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />
     <Compile Include="Data\IAsyncProvider.cs" />
     <Compile Include="Data\IFeatureAdapter.cs" />

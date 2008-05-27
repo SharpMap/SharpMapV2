@@ -489,7 +489,7 @@ namespace SharpMap.Tests.Data
             FeatureDataTable table = new FeatureDataTable(_geoFactory);
 
             Boolean featuresRequested = false;
-            table.FeaturesNotFound += delegate { featuresRequested = true; };
+            //table.FeaturesNotFound += delegate { featuresRequested = true; };
 
             FeatureDataView view = new FeatureDataView(table);
 

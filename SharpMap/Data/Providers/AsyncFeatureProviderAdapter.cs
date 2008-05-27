@@ -19,6 +19,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using System.Threading;
+using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 
@@ -40,14 +41,18 @@ namespace SharpMap.Data.Providers
 
         public override IAsyncResult BeginExecuteQuery(Expression query, AsyncCallback callback)
         {
-            FeatureQueryExpression featureQuery = query as FeatureQueryExpression;
+            Expression featureQuery = query as FeatureQueryExpression ??
+                                      (Expression)(query as SpatialBinaryExpression);
+
             if (featureQuery == null)
             {
-                throw new ArgumentException("query must be non-null and of type FeatureQueryExpression.", "query");
+                throw new ArgumentException("Query must be non-null " +
+                                            "and of type FeatureQueryExpression " +
+                                            "or SpatialBinaryExpression.", "query");
             }
-            
+
             AsyncResult<IFeatureDataReader> asyncResult = new AsyncResult<IFeatureDataReader>(callback, query);
-            ThreadPool.QueueUserWorkItem(QueueableBeginQuery, asyncResult);
+            ThreadPool.QueueUserWorkItem(queueableBeginQuery, asyncResult);
             return asyncResult;
         }
 
@@ -61,11 +66,24 @@ namespace SharpMap.Data.Providers
 
             return typedAsyncResult.EndInvoke();
         }
-        
-        private void QueueableBeginQuery(Object asyncResult)
+
+        private void queueableBeginQuery(Object asyncResult)
         {
             AsyncResult<IFeatureDataReader> typedAsyncResult = asyncResult as AsyncResult<IFeatureDataReader>;
+            Assert.IsNotNull(typedAsyncResult);
             FeatureQueryExpression query = typedAsyncResult.AsyncState as FeatureQueryExpression;
+
+            if (query == null)
+            {
+                SpatialBinaryExpression spatialBinaryExpression 
+                    = typedAsyncResult.AsyncState as SpatialBinaryExpression;
+
+                if (spatialBinaryExpression != null)
+                {
+                    query = new FeatureQueryExpression(new AllAttributesExpression(), 
+                                                       spatialBinaryExpression);
+                }
+            }
 
             try
             {

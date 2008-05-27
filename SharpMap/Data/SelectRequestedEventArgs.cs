@@ -21,18 +21,18 @@ using SharpMap.Expressions;
 namespace SharpMap.Data
 {
     [Serializable]
-    public class FeaturesNotFoundEventArgs : EventArgs
+    public class SelectRequestedEventArgs : EventArgs
     {
-        private readonly FeatureQueryExpression _expression;
+        private readonly SpatialBinaryExpression _query;
 
-        public FeaturesNotFoundEventArgs(FeatureQueryExpression expression)
+        public SelectRequestedEventArgs(SpatialBinaryExpression query)
         {
-            _expression = expression;
+            _query = query;
         }
 
-        public FeatureQueryExpression Expression
+        public SpatialBinaryExpression Query
         {
-            get { return _expression; }
+            get { return _query; }
         }
     }
 }
