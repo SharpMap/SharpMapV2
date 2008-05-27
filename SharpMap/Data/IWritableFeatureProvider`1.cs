@@ -25,6 +25,41 @@ namespace SharpMap.Data
     /// <typeparam name="TOid">
     /// Type of the value used for feature object identifiers.
     /// </typeparam>
+    /// <remarks>
+    /// <para>
+    /// NOTICE: The writeable interface is not stable yet.
+    /// </para>
+    /// <para>
+    /// The current definition suffices for short term simple use cases, but
+    /// leaves many details to the discretion of the provider.  Things that
+    /// may be addressed in the future include but are not limited to:
+    /// <list type="bullet">
+    /// <item>some level of transaction control</item>
+    /// <item>replace FeatureDataRow{TOid} argument types with IFeatureDataRecord</item>
+    /// <item>add Delete overloads to accept a single OID, or enumeration of OIDs</item>
+    /// <item>notification of provider capabilities</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// The current philosophy of the provider interface is to provide  
+    /// primitives operations for updating the data source.  Optimization
+    /// of the process is left to the calling code based on the the current 
+    /// use case.  If the provider is told to update a feature with a 
+    /// particular OID, it may assume the feature exists and update it.
+    /// <para>
+    /// </para>
+    /// Some providers may accept an Oid pre-populated in the Insert methods
+    /// while others will always assign an Oid of their own choosing to the inserted
+    /// features.  If an Oid is supplied by the provider, and with the current
+    /// FeatureDataRow{TOid} implementation, it is good form to update the Oid 
+    /// in the FeatureDataRow with the value actually used.
+    /// </para>
+    /// <para>
+    /// Transaction control is currently left up to the provider, but
+    /// obviously it is a good idea to leave the datasource in a consistent 
+    /// and predictable state based on the success or failure of the operation.
+    /// </para>
+    /// </remarks>
     public interface IWritableFeatureProvider<TOid> : IFeatureProvider<TOid>
     {
         /// <summary>
