@@ -9,7 +9,8 @@ namespace SharpMap.Expressions
         private readonly CollectionExpression _attributes;
 
         public AttributesProjectionExpression(IEnumerable<String> attributes)
-            : this(Enumerable.Transform(attributes, delegate(String name)
+            // The explicit cast is needed when compiling under ToolsVersion=2.0
+            : this(Enumerable.Transform(attributes, (Func<String, AttributeExpression>)delegate(String name)
                                                     {
                                                         return new AttributeExpression(name);
                                                     })) { }
