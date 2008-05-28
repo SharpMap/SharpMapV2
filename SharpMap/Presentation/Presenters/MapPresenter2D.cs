@@ -1390,15 +1390,10 @@ namespace SharpMap.Presentation.Presenters
         // Computes the view space coordinates of a point in world space
         private Point2D worldToView(ICoordinate worldPoint)
         {
-            if (ToViewTransformInternal == null)
-            {
-                return Point2D.Empty;
-            }
-            else
-            {
-                return ToViewTransformInternal.TransformVector(
-                    worldPoint[Ordinates.X], worldPoint[Ordinates.Y]);
-            }
+            return ToViewTransformInternal == null
+                       ? Point2D.Empty
+                       : ToViewTransformInternal.TransformVector(
+                             worldPoint[Ordinates.X], worldPoint[Ordinates.Y]);
         }
 
         // Computes the world space coordinates of a point in view space
@@ -1409,11 +1404,9 @@ namespace SharpMap.Presentation.Presenters
                 // Changed to null from Point.Empty
                 return null;
             }
-            else
-            {
-                Point2D point = ToWorldTransformInternal.TransformVector(viewPoint.X, viewPoint.Y);
-                return convertCoordinate(point);
-            }
+
+            Point2D point = ToWorldTransformInternal.TransformVector(viewPoint.X, viewPoint.Y);
+            return convertCoordinate(point);
         }
 
         private ICoordinate convertCoordinate(Point2D point)

@@ -151,6 +151,11 @@ namespace SharpMap.Rendering.Rendering2D
             Scale(new Vector(x, y));
         }
 
+        /// <summary>
+        /// Scales the values of this matrix by the given <see cref="Size2D"/>,
+        /// appending the scale factor.
+        /// </summary>
+        /// <param name="size">The size to scale the <see cref="Matrix2D"/> by.</param>
         public void Scale(Size2D size)
         {
             (this as ITransformMatrix<DoubleComponent>).Scale(size);
@@ -227,15 +232,51 @@ namespace SharpMap.Rendering.Rendering2D
         }
 
         #region IEquatable<Matrix2D> Members
-
+        /// <summary>
+        /// Computes whether the <see cref="Matrix2D"/> instance
+        /// is equal to some <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">
+        /// The other <see cref="Matrix2D"/> to test for equality.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if they are equal; <see langword="false"/> otherwise.
+        /// </returns>
         public Boolean Equals(Matrix2D other)
         {
-            return M11 == other.M11 &&
-                   M21 == other.M21 &&
-                   OffsetX == other.OffsetX &&
-                   M12 == other.M12 &&
-                   M22 == other.M22 &&
-                   OffsetY == other.OffsetY;
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            Int32 length = _elements.Length;
+
+            DoubleComponent[] x = _elements;
+            DoubleComponent[] y = other._elements;
+
+            for (Int32 i = 0; i < length; i += 3)
+            {
+                DoubleComponent x1 = x[i];
+                DoubleComponent y1 = y[i];
+
+                DoubleComponent x2 = x[i + 1];
+                DoubleComponent y2 = y[i + 1];
+
+                DoubleComponent x3 = x[i + 2];
+                DoubleComponent y3 = y[i + 2];
+
+                if (!x1.Equals(y1) || !x2.Equals(y2) || !x3.Equals(y3))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         #endregion
