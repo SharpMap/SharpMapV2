@@ -90,9 +90,21 @@
     <Compile Include="ShapeFileLayerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPINoTFS.csproj">
+    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-      <Name>GeoAPINoTFS</Name>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj">
+      <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
+      <Name>ManagedBufferedCoordinate2D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
+      <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
+      <Name>NetTopologySuite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMap.Data.Providers.ShapeFile\SharpMap.Data.Providers.ShapeFile.csproj">
+      <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
+      <Name>SharpMap.Data.Providers.ShapeFile</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharpMap.Presentation.WinForms\SharpMap.Presentation.WinForms.csproj">
       <Project>{E7E3A53F-6B4D-423B-A10E-F0580B87FB81}</Project>
@@ -101,10 +113,6 @@
     <ProjectReference Include="..\SharpMap.Rendering.Gdi\SharpMap.Rendering.Gdi.csproj">
       <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
       <Name>SharpMap.Rendering.Gdi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SharpMap.SimpleGeometries\SharpMap.SimpleGeometries.csproj">
-      <Project>{7F258589-6452-4B7B-8884-8965A42C1D9E}</Project>
-      <Name>SharpMap.SimpleGeometries</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>

@@ -6,13 +6,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using DemoWinForm.Properties;
+using GeoAPI.Coordinates;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.SimpleGeometries;
 using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-using GeoPoint = SharpMap.SimpleGeometries.Point;
 
 namespace DemoWinForm
 {
@@ -25,7 +25,7 @@ namespace DemoWinForm
             public Dictionary<DataColumn, StreamReader> AttributeCache;
         }
 
-        private static readonly string[] _availableLayers = new string[]
+        private static readonly String[] _availableLayers = new String[]
             {
                 "Marshland", "Robot Tracks", "Roads", "Fires",
                 "Treasures", "Nice Views", "Fault Lines", "Contamination",
@@ -33,36 +33,44 @@ namespace DemoWinForm
                 "Measures", "Contacts", "Prospects"
             };
 
-        private static Dictionary<string, LayerResources> _configuredLayers
-            = new Dictionary<string, LayerResources>();
+        private static Dictionary<String, LayerResources> _configuredLayers
+            = new Dictionary<String, LayerResources>();
 
         private static List<DataColumn> _attributePool = new List<DataColumn>();
-        private static readonly Dictionary<string, StyleColor> _colorTable
+        private static readonly Dictionary<String, StyleColor> _colorTable
             = StyleColor.PredefinedColors;
 
-        private static readonly Random _rnd = new Random();
+        private static readonly Random _rnd = new NPack.MersenneTwister();
 
         private readonly StreamReader _givenNamesFemale;
         private readonly StreamReader _familyNames;
         private readonly StreamReader _placeNames;
+
+        private readonly IGeometryFactory _geometryFactory;
 
         static RandomFeatureLayerFactory()
         {
             initialize();
         }
 
-        public RandomFeatureLayerFactory()
+        public RandomFeatureLayerFactory(IGeometryFactory geometryFactory)
         {
+            _geometryFactory = geometryFactory;
         }
 
         #region ILayerFactory Members
 
-        public ILayer Create(string layerName, string connectionInfo)
+        public ILayer Create(String layerName, String connectionInfo)
         {
             throw new NotImplementedException();
         }
 
         #endregion
+
+        internal static void GetLayerNameAndInfo(out String layerName, out String connectionInfo)
+        {
+            throw new NotImplementedException();
+        }
 
         private static Stream getStreamFromImage(Image bitmap)
         {
@@ -75,24 +83,24 @@ namespace DemoWinForm
         {
             _attributePool.AddRange(new DataColumn[]
                                         {
-                                            new DataColumn("Name", typeof (string)),
-                                            new DataColumn("Rank", typeof (int)),
-                                            new DataColumn("YearsKnown", typeof (float)),
+                                            new DataColumn("Name", typeof (String)),
+                                            new DataColumn("Rank", typeof (Int32)),
+                                            new DataColumn("YearsKnown", typeof (Single)),
                                             new DataColumn("LastVisited", typeof (DateTime)),
-                                            new DataColumn("Criticality", typeof(double)),
-                                            new DataColumn("Health", typeof(double)),
-                                            new DataColumn("Risk", typeof(double)),
-                                            new DataColumn("Urgency", typeof(double)),
-                                            new DataColumn("Strength", typeof(int)),
-                                            new DataColumn("Priority", typeof(int)),
+                                            new DataColumn("Criticality", typeof(Double)),
+                                            new DataColumn("Health", typeof(Double)),
+                                            new DataColumn("Risk", typeof(Double)),
+                                            new DataColumn("Urgency", typeof(Double)),
+                                            new DataColumn("Strength", typeof(Int32)),
+                                            new DataColumn("Priority", typeof(Int32)),
                                             new DataColumn("Available", typeof(bool)),
                                             new DataColumn("Price", typeof(Decimal)),
-                                            new DataColumn("Square Meterage", typeof(double)),
-                                            new DataColumn("Expiration Data", typeof(DateTime)),
-                                            new DataColumn("Description", typeof(string))
+                                            new DataColumn("Square Meterage", typeof(Double)),
+                                            new DataColumn("Expiration Date", typeof(DateTime)),
+                                            new DataColumn("Description", typeof(String))
                                         });
 
-            foreach (string layer in _availableLayers)
+            foreach (String layer in _availableLayers)
             {
                 LayerResources resources = new LayerResources();
                 resources.LayerName = layer;
@@ -101,7 +109,7 @@ namespace DemoWinForm
             }
         }
 
-        private static Dictionary<DataColumn, StreamReader> generateAttributes(string layer)
+        private static Dictionary<DataColumn, StreamReader> generateAttributes(String layer)
         {
             Dictionary<DataColumn, StreamReader> attributes = new Dictionary<DataColumn, StreamReader>();
 
@@ -109,7 +117,8 @@ namespace DemoWinForm
             switch (layer)
             {
                 case "Marshland":
-                    if (_rnd.NextDouble() > 0.5) attributes.Add(clone(_attributePool[0]), );
+                    if (_rnd.NextDouble() > 0.5) attributes.Add(clone(_attributePool[0]));
+                    break;
                 case "Robot Tracks":
                 case "Roads":
                 case "Fires":
@@ -127,9 +136,11 @@ namespace DemoWinForm
                 default:
                     break;
             }
+
+            return attributes;
         }
 
-        private static VectorStyle generateStyle(string layer)
+        private static VectorStyle generateStyle(String layer)
         {
             VectorStyle style = new VectorStyle();
             style.Enabled = true;
@@ -137,48 +148,13 @@ namespace DemoWinForm
             switch (layer)
             {
                 case "Marshland":
-                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    break;
                 case "Robot Tracks":
                 case "Roads":
                 case "Fires":
-                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    break;
                 case "Treasures":
-                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    break;
                 case "Nice Views":
-                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    break;
                 case "Fault Lines":
                 case "Contamination":
-                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
-                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
-                    break;
                 case "Notices":
                 case "Radioactive Fuel Rods":
                 case "Bases":
@@ -187,53 +163,68 @@ namespace DemoWinForm
                 case "Contacts":
                 case "Prospects":
                 default:
+                    style.Fill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.HighlightFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.SelectFill = new SolidStyleBrush(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value);
+                    style.Outline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.HighlightOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
+                    style.SelectOutline = new StylePen(getColorEntry(_rnd.Next(0, _colorTable.Count)).Value, _rnd.NextDouble() * 6);
                     break;
             }
+
+            return style;
         }
 
 
         private void registerSymbols()
         {
             _symbolTable["Notices"] = new Symbol2D(getStreamFromImage(Resources.Chat),
-                                                   new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                   new Size2D(Resources.Chat.Height, 
+                                                              Resources.Chat.Width));
             _symbolTable["Radioactive Fuel Rods"] = new Symbol2D(getStreamFromImage(Resources.DATABASE),
-                                                                 new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                                 new Size2D(Resources.DATABASE.Height, 
+                                                                            Resources.DATABASE.Width));
             _symbolTable["Bases"] = new Symbol2D(getStreamFromImage(Resources.Flag),
-                                                 new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                 new Size2D(Resources.Flag.Height, 
+                                                            Resources.Flag.Width));
             _symbolTable["Houses"] = new Symbol2D(getStreamFromImage(Resources.Home),
-                                                  new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                  new Size2D(Resources.Home.Height, 
+                                                             Resources.Home.Width));
             _symbolTable["Measures"] = new Symbol2D(getStreamFromImage(Resources.PIE_DIAGRAM),
-                                                    new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                    new Size2D(Resources.PIE_DIAGRAM.Height, 
+                                                               Resources.PIE_DIAGRAM.Width));
             _symbolTable["Contacts"] = new Symbol2D(getStreamFromImage(Resources.Women),
-                                                    new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                    new Size2D(Resources.Women.Height, 
+                                                               Resources.Women.Width));
             _symbolTable["Prospects"] = new Symbol2D(getStreamFromImage(Resources.Women_1),
-                                                     new Size2D(Resources.Chat.Height, Resources.Chat.Width));
+                                                     new Size2D(Resources.Women_1.Height, 
+                                                                Resources.Women_1.Width));
         }
 
         private ILayer generateFeatureLayer()
         {
             VectorStyle style = new VectorStyle();
-            string layerName;
+            String layerName;
 
             switch (_rnd.Next(3))
             {
                 case 0:
                     {
-                        KeyValuePair<string, Symbol2D> symbolEntry = getSymbolEntry(_rnd.Next(_symbolTable.Count));
+                        KeyValuePair<String, Symbol2D> symbolEntry = getSymbolEntry(_rnd.Next(_symbolTable.Count));
                         style.Symbol = symbolEntry.Value;
                         layerName = symbolEntry.Key;
                     }
                     break;
                 case 1:
                     {
-                        KeyValuePair<string, StyleColor> colorEntry = getColorEntry(_rnd.Next(_colorTable.Count));
+                        KeyValuePair<String, StyleColor> colorEntry = getColorEntry(_rnd.Next(_colorTable.Count));
                         style.Line = new StylePen(colorEntry.Value, _rnd.NextDouble() * 3);
                         layerName = String.Format("{0} lines", colorEntry.Key);
                     }
                     break;
                 case 2:
                     {
-                        KeyValuePair<string, StyleColor> colorEntry = getColorEntry(_rnd.Next(_colorTable.Count));
+                        KeyValuePair<String, StyleColor> colorEntry = getColorEntry(_rnd.Next(_colorTable.Count));
                         style.Fill = new SolidStyleBrush(colorEntry.Value);
                         layerName = String.Format("{0} squares", colorEntry.Key);
                     }
@@ -246,28 +237,28 @@ namespace DemoWinForm
             return layer;
         }
 
-        private IFeatureLayerProvider generateFeatureDataSource()
+        private IFeatureProvider generateFeatureDataSource()
         {
             List<DataColumn> featureAttributes = new List<DataColumn>(generateAttributeSchema());
-            FeatureProvider provider = new FeatureProvider(featureAttributes.ToArray());
+            FeatureProvider provider = new FeatureProvider(_geometryFactory, featureAttributes.ToArray());
             generateFeatures(provider);
             return provider;
         }
 
         private void generateFeatures(FeatureProvider provider)
         {
-            Collection<Geometry> geometry = new Collection<Geometry>();
+            Collection<IGeometry> geometry = new Collection<IGeometry>();
 
             switch (_rnd.Next(3))
             {
                 case 0:
-                    generatePoints(geometry, _rnd);
+                    generatePoints(_geometryFactory, geometry, _rnd);
                     break;
                 case 1:
-                    generateLines(geometry, _rnd);
+                    generateLines(_geometryFactory, geometry, _rnd);
                     break;
                 case 2:
-                    generatePolygons(geometry, _rnd);
+                    generatePolygons(_geometryFactory, geometry, _rnd);
                     break;
                 default:
                     throw new NotSupportedException();
@@ -276,7 +267,7 @@ namespace DemoWinForm
 
         private IEnumerable<DataColumn> generateAttributeSchema()
         {
-            double threshold = 3 / _attributePool.Count;
+            Double threshold = 3 / _attributePool.Count;
             foreach (DataColumn column in _attributePool)
             {
                 if (_rnd.NextDouble() <= threshold)
@@ -286,9 +277,9 @@ namespace DemoWinForm
             }
         }
 
-        private KeyValuePair<string, Symbol2D> getSymbolEntry(int index)
+        private KeyValuePair<String, Symbol2D> getSymbolEntry(Int32 index)
         {
-            foreach (KeyValuePair<string, Symbol2D> entry in _symbolTable)
+            foreach (KeyValuePair<String, Symbol2D> entry in _symbolTable)
             {
                 if (index-- == 0)
                 {
@@ -299,9 +290,9 @@ namespace DemoWinForm
             throw new InvalidOperationException();
         }
 
-        private static KeyValuePair<string, StyleColor> getColorEntry(int index)
+        private static KeyValuePair<String, StyleColor> getColorEntry(Int32 index)
         {
-            foreach (KeyValuePair<string, StyleColor> entry in _colorTable)
+            foreach (KeyValuePair<String, StyleColor> entry in _colorTable)
             {
                 if (index-- == 0)
                 {
@@ -312,70 +303,82 @@ namespace DemoWinForm
             throw new InvalidOperationException();
         }
 
-        private static void generatePolygons(ICollection<Geometry> geometry, Random rndGen)
+        private static void generatePolygons(IGeometryFactory geometryFactory,
+                                             ICollection<IGeometry> geometry, 
+                                             Random rndGen)
         {
-            int numPolygons = rndGen.Next(10, 100);
-            for (int polyIndex = 0; polyIndex < numPolygons; polyIndex++)
+            ICoordinateSequenceFactory coordinateSequenceFactory =
+                geometryFactory.CoordinateSequenceFactory;
+            ICoordinateFactory coordinateFactory = geometryFactory.CoordinateFactory;
+            ICoordinateSequence coords = coordinateSequenceFactory.Create(CoordinateDimensions.Two);
+
+            Int32 polyCount = rndGen.Next(10, 100);
+
+            for (Int32 polyIndex = 0; polyIndex < polyCount; polyIndex++)
             {
-                Polygon polygon = new Polygon();
-                Collection<GeoPoint> verticies = new Collection<GeoPoint>();
-                GeoPoint upperLeft = new GeoPoint(rndGen.NextDouble() * 1000, rndGen.NextDouble() * 1000);
-                double sideLength = rndGen.NextDouble() * 50;
+                ICoordinate upperLeft = coordinateFactory.Create(rndGen.NextDouble() * 1000,
+                                                                  rndGen.NextDouble() * 1000);
+
+                Double sideLength = rndGen.NextDouble() * 50;
 
                 // Make a square
-                verticies.Add(upperLeft);
-                verticies.Add(new GeoPoint(upperLeft.X + sideLength, upperLeft.Y));
-                verticies.Add(new GeoPoint(upperLeft.X + sideLength, upperLeft.Y - sideLength));
-                verticies.Add(new GeoPoint(upperLeft.X, upperLeft.Y - sideLength));
-                polygon.ExteriorRing = new LinearRing(verticies);
+                coords.Add(upperLeft);
+                coords.Add(coordinateFactory.Create(upperLeft[Ordinates.X] + sideLength,
+                                                    upperLeft[Ordinates.Y]));
+                coords.Add(coordinateFactory.Create(upperLeft[Ordinates.X] + sideLength,
+                                                    upperLeft[Ordinates.Y] - sideLength));
+                coords.Add(coordinateFactory.Create(upperLeft[Ordinates.X],
+                                                    upperLeft[Ordinates.Y] - sideLength));
 
+                IPolygon polygon = geometryFactory.CreatePolygon(coords);
                 geometry.Add(polygon);
             }
         }
 
-        private static void generateLines(Collection<Geometry> geometry, Random rndGen)
+        private static void generateLines(IGeometryFactory geometryFactory,
+                                          ICollection<IGeometry> geometry,
+                                          Random rndGen)
         {
-            int numLines = rndGen.Next(10, 100);
-            for (int lineIndex = 0; lineIndex < numLines; lineIndex++)
+            ICoordinateSequenceFactory coordinateSequenceFactory =
+                geometryFactory.CoordinateSequenceFactory;
+            ICoordinateFactory coordinateFactory = geometryFactory.CoordinateFactory;
+            ICoordinateSequence coords = coordinateSequenceFactory.Create(CoordinateDimensions.Two);
+
+            Int32 lineCount = rndGen.Next(10, 100);
+
+            for (Int32 lineIndex = 0; lineIndex < lineCount; lineIndex++)
             {
-                LineString line = new LineString();
-                Collection<GeoPoint> vertexes = new Collection<GeoPoint>();
+                Int32 vertexCount = rndGen.Next(4, 15);
 
-                int numVerticies = rndGen.Next(4, 15);
+                ICoordinate coordinate = coordinateFactory.Create(rndGen.NextDouble() * 1000,
+                                                                  rndGen.NextDouble() * 1000);
+                coords.Add(coordinate);
 
-                GeoPoint lastPoint = new GeoPoint(rndGen.NextDouble() * 1000, rndGen.NextDouble() * 1000);
-                vertexes.Add(lastPoint);
-
-                for (int vertexIndex = 0; vertexIndex < numVerticies; vertexIndex++)
+                for (Int32 vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
                 {
-                    GeoPoint nextPoint =
-                        new GeoPoint(lastPoint.X + rndGen.Next(-50, 50), lastPoint.Y + rndGen.Next(-50, 50));
-                    vertexes.Add(nextPoint);
-                    lastPoint = nextPoint;
+                    ICoordinate next = coordinateFactory.Create(coordinate[Ordinates.X] + rndGen.Next(-50, 50), 
+                                                                coordinate[Ordinates.Y] + rndGen.Next(-50, 50));
+                    coords.Add(next);
+                    coordinate = next;
                 }
 
-                foreach (GeoPoint point in vertexes)
-                {
-                    line.Vertices.Add(point);
-                }
+                ILineString line = geometryFactory.CreateLineString(coords);
 
                 geometry.Add(line);
             }
         }
 
-        private static void generatePoints(Collection<Geometry> geometry, Random rndGen)
+        private static void generatePoints(IGeometryFactory geometryFactory,
+                                           ICollection<IGeometry> geometry,
+                                           Random rndGen)
         {
-            int numPoints = rndGen.Next(10, 100);
-            for (int pointIndex = 0; pointIndex < numPoints; pointIndex++)
+            Int32 numPoints = rndGen.Next(10, 100);
+
+            for (Int32 pointIndex = 0; pointIndex < numPoints; pointIndex++)
             {
-                GeoPoint point = new GeoPoint(rndGen.NextDouble() * 1000, rndGen.NextDouble() * 1000);
+                IPoint point = geometryFactory.CreatePoint2D(rndGen.NextDouble() * 1000, rndGen.NextDouble() * 1000);
                 geometry.Add(point);
             }
-        }
-
-        internal static void GetLayerNameAndInfo(out string layerName, out string connectionInfo)
-        {
-            throw new NotImplementedException();
         }
     }
 }

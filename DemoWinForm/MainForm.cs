@@ -20,6 +20,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using DemoWinForm.Properties;
+using GeoAPI.Coordinates;
+using GeoAPI.Geometries;
+using GisSharpBlog.NetTopologySuite.Geometries;
+using NetTopologySuite.Coordinates;
 using SharpMap;
 using SharpMap.Layers;
 using SharpMap.Tools;
@@ -28,16 +32,21 @@ namespace DemoWinForm
 {
     public partial class MainForm : Form
     {
-        private const string RandomLayerTypeKey = "random";
-        private const string ShapeFileLayerTypeKey = ".shp";
+        private const String RandomLayerTypeKey = "random";
+        private const String ShapeFileLayerTypeKey = ".shp";
 
-        private readonly Dictionary<string, ILayerFactory> _layerFactoryCatalog
-            = new Dictionary<string, ILayerFactory>();
-        private readonly Map _map = new Map();
+        private readonly Dictionary<String, ILayerFactory> _layerFactoryCatalog
+            = new Dictionary<String, ILayerFactory>();
+        private readonly IGeometryFactory<BufferedCoordinate2D> _geometryFactory;
+        private readonly Map _map;
 
         public MainForm()
         {
             InitializeComponent();
+            ICoordinateSequenceFactory<BufferedCoordinate2D> coordSeqFactory =
+                new BufferedCoordinate2DSequenceFactory();
+            _geometryFactory = new GeometryFactory<BufferedCoordinate2D>(coordSeqFactory);
+            _map = new Map(_geometryFactory);
             registerLayerFactories();
             mapViewControl1.Map = _map;
         }
@@ -45,8 +54,8 @@ namespace DemoWinForm
         private void registerLayerFactories()
         {
             //ConfigurationManager.GetSection("LayerFactories");
-            _layerFactoryCatalog[ShapeFileLayerTypeKey] = new ShapeFileLayerFactory();
-            _layerFactoryCatalog[RandomLayerTypeKey] = new RandomFeatureLayerFactory();
+            _layerFactoryCatalog[ShapeFileLayerTypeKey] = new ShapeFileLayerFactory(_geometryFactory);
+            _layerFactoryCatalog[RandomLayerTypeKey] = new RandomFeatureLayerFactory(_geometryFactory);
         }
 
         private void addLayer(ILayer layer)
@@ -61,9 +70,9 @@ namespace DemoWinForm
 
             if (result == DialogResult.OK)
             {
-                foreach (string fileName in AddLayerDialog.FileNames)
+                foreach (String fileName in AddLayerDialog.FileNames)
                 {
-                    string extension = Path.GetExtension(fileName).ToLower();
+                    String extension = Path.GetExtension(fileName).ToLower();
                     ILayerFactory layerFactory;
 
                     if (!_layerFactoryCatalog.TryGetValue(extension, out layerFactory))
@@ -71,7 +80,7 @@ namespace DemoWinForm
                         continue;
                     }
 
-                    string layerName = Path.GetFileNameWithoutExtension(fileName);
+                    String layerName = Path.GetFileNameWithoutExtension(fileName);
                     ILayer layer = layerFactory.Create(layerName, fileName);
                     addLayer(layer);
                 }
@@ -87,7 +96,7 @@ namespace DemoWinForm
                 return;
             }
 
-            string layerName = LayersDataGridView.SelectedRows[0].Cells[2].Value as string;
+            String layerName = LayersDataGridView.SelectedRows[0].Cells[2].Value as String;
 
             ILayer layerToRemove = null;
 
@@ -127,7 +136,7 @@ namespace DemoWinForm
         private void changeUIOnLayerSelectionChange()
         {
             bool isLayerSelected = false;
-            int layerIndex = -1;
+            Int32 layerIndex = -1;
 
             if (LayersDataGridView.SelectedRows.Count > 0)
             {
@@ -152,33 +161,19 @@ namespace DemoWinForm
                 LayerContextMenuSeparator.Visible = true;
             }
 
-            if (layerIndex == 0)
-            {
-                MoveUpToolStripMenuItem.Enabled = false;
-            }
-            else
-            {
-                MoveUpToolStripMenuItem.Enabled = true;
-            }
+            MoveUpToolStripMenuItem.Enabled = layerIndex != 0;
 
-            if (layerIndex == LayersDataGridView.Rows.Count - 1)
-            {
-                MoveDownToolStripMenuItem.Enabled = false;
-            }
-            else
-            {
-                MoveDownToolStripMenuItem.Enabled = true;
-            }
+            MoveDownToolStripMenuItem.Enabled = layerIndex != LayersDataGridView.Rows.Count - 1;
         }
 
         private void AddLayerToolStripButton_Click(object sender, EventArgs e)
         {
-            BeginInvoke((MethodInvoker)delegate() { loadLayer(); });
+            BeginInvoke((MethodInvoker)loadLayer);
         }
 
         private void RemoveLayerToolStripButton_Click(object sender, EventArgs e)
         {
-            BeginInvoke((MethodInvoker)delegate() { removeLayer(); });
+            BeginInvoke((MethodInvoker)removeLayer);
         }
 
         private void AddLayerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -188,12 +183,12 @@ namespace DemoWinForm
 
         private void RemoveLayerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BeginInvoke((MethodInvoker)delegate() { removeLayer(); });
+            BeginInvoke((MethodInvoker)removeLayer);
         }
 
         private void ZoomToExtentsToolStripButton_Click(object sender, EventArgs e)
         {
-            BeginInvoke((MethodInvoker)delegate() { zoomToExtents(); });
+            BeginInvoke((MethodInvoker)zoomToExtents);
         }
 
         private void PanToolStripButton_Click(object sender, EventArgs e)
@@ -228,12 +223,12 @@ namespace DemoWinForm
                 return;
             }
 
-            int rowIndex = LayersDataGridView.SelectedRows[0].Index;
+            Int32 rowIndex = LayersDataGridView.SelectedRows[0].Index;
             DataGridViewRow row = LayersDataGridView.Rows[rowIndex];
             LayersDataGridView.Rows.RemoveAt(rowIndex);
             LayersDataGridView.Rows.Insert(rowIndex - 1, row);
 
-            int layerIndex = _map.Layers.Count - rowIndex - 1;
+            Int32 layerIndex = _map.Layers.Count - rowIndex - 1;
             ILayer layer = _map.Layers[layerIndex];
             _map.Layers.RemoveAt(layerIndex);
             _map.Layers.Insert(layerIndex + 1, layer);
@@ -251,12 +246,12 @@ namespace DemoWinForm
                 return;
             }
 
-            int rowIndex = LayersDataGridView.SelectedRows[0].Index;
+            Int32 rowIndex = LayersDataGridView.SelectedRows[0].Index;
             DataGridViewRow row = LayersDataGridView.Rows[rowIndex];
             LayersDataGridView.Rows.RemoveAt(rowIndex);
             LayersDataGridView.Rows.Insert(rowIndex + 1, row);
 
-            int layerIndex = _map.Layers.Count - rowIndex - 1;
+            Int32 layerIndex = _map.Layers.Count - rowIndex - 1;
             ILayer layer = _map.Layers[layerIndex];
             _map.Layers.RemoveAt(layerIndex);
             _map.Layers.Insert(layerIndex - 1, layer);
@@ -275,15 +270,15 @@ namespace DemoWinForm
                                         });
         }
 
-        //private void MainMapImage_MouseMove(GeoPoint WorldPos, MouseEventArgs ImagePos)
+        //private void MainMapImage_MouseMove(IPoint WorldPos, MouseEventArgs ImagePos)
         //{
         //    CoordinatesLabel.Text = String.Format("Coordinates: {0:N5}, {1:N5}", WorldPos.X, WorldPos.Y);
         //}
 
         private void AddNewRandomGeometryLayer_Click(object sender, EventArgs e)
         {
-            string layerName;
-            string connectionInfo;
+            String layerName;
+            String connectionInfo;
             RandomFeatureLayerFactory.GetLayerNameAndInfo(out layerName, out connectionInfo);
             addLayer(_layerFactoryCatalog[RandomLayerTypeKey].Create(layerName, connectionInfo));
         }

@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using GeoAPI.Geometries;
 using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Layers;
 
@@ -22,11 +24,18 @@ namespace DemoWinForm
 {
     public class ShapeFileLayerFactory : ILayerFactory
     {
+        private readonly IGeometryFactory _geometryFactory;
+
+        public ShapeFileLayerFactory(IGeometryFactory geometryFactory)
+        {
+            _geometryFactory = geometryFactory;    
+        }
+
         #region ILayerFactory Members
 
-        public ILayer Create(string layerName, string connectionInfo)
+        public ILayer Create(String layerName, String connectionInfo)
         {
-            ShapeFileProvider shapeFileData = new ShapeFileProvider(connectionInfo);
+            ShapeFileProvider shapeFileData = new ShapeFileProvider(connectionInfo, _geometryFactory);
             GeometryLayer shapeFileLayer = new GeometryLayer(layerName, shapeFileData);
             return shapeFileLayer;
         }

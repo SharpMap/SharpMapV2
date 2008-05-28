@@ -156,7 +156,7 @@ namespace SharpMap.Tests.Indexing
             // Man, I can't wait.
             resultsList.AddRange(rTree.Query(searchExtents, x => x.Value));
 #else
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item)
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
                                                             {
                                                                 return item.Value;
                                                             }));
@@ -167,7 +167,7 @@ namespace SharpMap.Tests.Indexing
 
             searchExtents = _geoFactory.CreateExtents2D(0, 0, 100, 100);
 
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item)
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
             {
                 return item.Value;
             }));
@@ -191,14 +191,14 @@ namespace SharpMap.Tests.Indexing
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(1500, 1500, 1500, 1500);
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
             Assert.AreEqual(2, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 4; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 5; }));
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(100, 100, 100, 100);
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
             Assert.AreEqual(4, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 1; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 2; }));
@@ -225,7 +225,7 @@ namespace SharpMap.Tests.Indexing
 
             IExtents searchExtents = _geoFactory.CreateExtents2D(-100, -100, 5928.57523425, 3252.50803582);
 
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item)
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
             {
                 return item.Value;
             }));
@@ -236,7 +236,7 @@ namespace SharpMap.Tests.Indexing
 
             searchExtents = _geoFactory.CreateExtents2D(0, 0, 100, 100);
 
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item)
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
             {
                 return item.Value;
             }));
@@ -251,14 +251,14 @@ namespace SharpMap.Tests.Indexing
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(1500, 1500, 1500, 1500);
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
             Assert.AreEqual(2, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 4; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 5; }));
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(100, 100, 100, 100);
-            resultsList.AddRange(rTree.Query(searchExtents, delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
             Assert.AreEqual(7, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 1; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 2; }));
@@ -308,7 +308,7 @@ namespace SharpMap.Tests.Indexing
             s.Position = 0;
             DynamicRTree<BoundedInt32> rTree2 = DynamicRTree<BoundedInt32>.FromStream(s, _geoFactory);
             List<Int32> results = new List<Int32>();
-            results.AddRange(rTree2.Query(rTree2.Root.Bounds, delegate(BoundedInt32 item) { return item.Value; }));
+            results.AddRange(rTree2.Query(rTree2.Root.Bounds, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
             Assert.AreEqual(99990, results.Count);
         }
 
