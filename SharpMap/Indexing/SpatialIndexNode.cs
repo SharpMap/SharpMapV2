@@ -33,16 +33,16 @@ namespace SharpMap.Indexing
     {
         //private readonly Func<TItem, IExtents> _bounder;
         //private UInt32? _nodeId;
-        private readonly IExtents _emptyBounds;
+        //private readonly IExtents _emptyBounds;
         private IExtents _bounds;
-        private readonly List<TItem> _items = new List<TItem>();
+        private IList<TItem> _items;
         private ISpatialIndex<IExtents, TItem> _index;
 
-        protected SpatialIndexNode(IExtents emptyBounds)
-        {
-            //_bounder = bounder;
-            _emptyBounds = emptyBounds;
-        }
+        //protected SpatialIndexNode(IExtents emptyBounds)
+        //{
+        //    //_bounder = bounder;
+        //    _emptyBounds = emptyBounds;
+        //}
 
         //protected Func<TItem, IExtents> Bounder
         //{
@@ -112,7 +112,15 @@ namespace SharpMap.Indexing
             }
 
             _items.Add(item);
-            Bounds.ExpandToInclude(item.Bounds);
+
+            if (Bounds == null || Bounds.IsEmpty)
+            {
+                Bounds = item.Bounds.Clone() as IExtents;
+            }
+            else
+            {
+                Bounds.ExpandToInclude(item.Bounds);
+            }
 
             OnItemAdded(item);
         }
@@ -145,8 +153,19 @@ namespace SharpMap.Indexing
                     continue;
                 }
 
+                ensureList();
+
                 _items.Add(item);
-                Bounds = Bounds.Union(item.Bounds);
+
+                if (Bounds == null || Bounds.IsEmpty)
+                {
+                    Bounds = item.Bounds.Clone() as IExtents;
+                }
+                else
+                {
+                    Bounds.ExpandToInclude(item.Bounds);   
+                }
+
                 OnItemAdded(item);
             }
         }
@@ -181,13 +200,20 @@ namespace SharpMap.Indexing
 
             IExtents itemBounds = item.Bounds;
 
-            if (removed && Bounds.Borders(itemBounds))
+            if (removed && Bounds.Intersects(itemBounds))
             {
-                Bounds = _emptyBounds;
+                Bounds = null;
 
                 foreach (TItem keptItem in _items)
                 {
-                    Bounds = Bounds.Union(keptItem.Bounds);
+                    if (Bounds == null || Bounds.IsEmpty)
+                    {
+                        Bounds = keptItem.Bounds.Clone() as IExtents;
+                    }
+                    else
+                    {
+                        Bounds.ExpandToInclude(keptItem.Bounds);
+                    }
                 }
             }
 
@@ -205,7 +231,14 @@ namespace SharpMap.Indexing
         {
             Boolean cancel;
             OnClearing(out cancel);
-            Bounds = _emptyBounds;
+            
+            if (cancel)
+            {
+                return;
+            }
+
+            _items.Clear();
+            Bounds = null;
             OnCleared();
         }
 
@@ -218,7 +251,6 @@ namespace SharpMap.Indexing
 
         protected virtual void OnClearing(out Boolean cancel)
         {
-            _items.Clear();
             cancel = false;
         }
 
@@ -244,7 +276,7 @@ namespace SharpMap.Indexing
 
         public Int32 ItemCount
         {
-            get { return _items.Count; }
+            get { return _items == null ? 0 : _items.Count; }
         }
 
         public Boolean IsEmpty
@@ -368,6 +400,11 @@ namespace SharpMap.Indexing
 
         #endregion
 
+        protected virtual IList<TItem> CreateItemList()
+        {
+            return new List<TItem>();
+        }
+
         #region IBoundable<IExtents> Members
 
 
@@ -377,5 +414,14 @@ namespace SharpMap.Indexing
         }
 
         #endregion
+
+        private void ensureList()
+        {
+            if (_items == null)
+            {
+                _items = CreateItemList();   
+            }
+        }
+
     }
 }
