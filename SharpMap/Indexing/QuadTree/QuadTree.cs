@@ -25,8 +25,12 @@ namespace SharpMap.Indexing.QuadTree
     public class QuadTree<TItem> : QuadTreeNode<TItem>, ISpatialIndex<IExtents, TItem>
         where TItem : IBoundable<IExtents>
     {
+        private readonly IGeometryFactory _geoFactory;
+
         public QuadTree(IGeometryFactory geoFactory)
-            : base(geoFactory.CreateExtents()) { }
+        {
+            _geoFactory = geoFactory;
+        }
 
         /// <summary>
         /// Adds a spatial item with an extent specified by the given

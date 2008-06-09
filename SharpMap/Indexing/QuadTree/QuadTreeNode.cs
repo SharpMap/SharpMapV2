@@ -25,9 +25,6 @@ namespace SharpMap.Indexing.QuadTree
     public class QuadTreeNode<TItem> : SpatialIndexNode<TItem>
         where TItem : IBoundable<IExtents>
     {
-        public QuadTreeNode(IExtents emptyBounds)
-         : base(emptyBounds) { }
-
         public override Boolean IsLeaf
         {
             get { return ItemCount == 0; }
