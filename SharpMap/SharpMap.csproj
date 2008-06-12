@@ -269,7 +269,7 @@
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
-    <Compile Include="Styles\CollisionTestType.cs" />
+    <Compile Include="Styles\CollisionDetectionType.cs" />
     <Compile Include="Styles\FeatureStyle.cs" />
     <Compile Include="Styles\HorizontalAlignment.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
