@@ -1,57 +1,36 @@
-﻿using System;
-using GeoAPI.Geometries;
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
 
 namespace SharpMap.Expressions
 {
-    public class SpatialExpression : Expression, IEquatable<SpatialExpression>
+    public abstract class SpatialExpression : Expression, IEquatable<SpatialExpression>
     {
-        private readonly IGeometry _geometry;
+        public abstract Boolean Equals(SpatialExpression other);
 
-        public SpatialExpression(IExtents extents)
+        public abstract Boolean IsNull { get; }
+        public abstract Boolean IsEmpty { get; }
+
+        public static Boolean IsNullOrEmpty(SpatialExpression spatialExpression)
         {
-            if (extents == null) throw new ArgumentNullException("extents");
-
-            _geometry = extents.ToGeometry();
-        }
-
-        public SpatialExpression(IGeometry geometry)
-        {
-            _geometry = geometry;
-        }
-
-        public IGeometry Geometry
-        {
-            get { return _geometry; }
-        }
-
-        public override Boolean Matches(Expression other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Boolean Equals(Expression other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Boolean Equals(SpatialExpression other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-                return (_geometry != null
-                            ? _geometry.GetHashCode()
-                            : 0x1fd3b) ^ 29;
-            }
-        }
-
-        public override Expression Clone()
-        {
-            return new SpatialExpression(_geometry.Clone());
+            return spatialExpression == null || 
+                   spatialExpression.IsEmpty || 
+                   spatialExpression.IsNull;
         }
     }
 }

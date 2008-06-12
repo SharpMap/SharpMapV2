@@ -179,7 +179,39 @@ namespace SharpMap.Indexing.RTree
         /// <param name="item">The item to remove.</param>
         public virtual Boolean Remove(TItem item)
         {
-            return Root.RemoveItem(item);
+            ISpatialIndexNode<IExtents, TItem> itemNode = findNodeForItem(item, Root);
+
+            return itemNode != null && itemNode.RemoveItem(item);
+        }
+
+        private static ISpatialIndexNode<IExtents, TItem> findNodeForItem(TItem item, 
+                                                                          ISpatialIndexNode<IExtents, TItem> node)
+        {
+            foreach (TItem nodeItem in node.Items)
+            {
+                if (item.Equals(nodeItem))
+                {
+                    return node;
+                }
+            }
+
+            IExtents itemBounds = item.Bounds;
+
+            // TODO: I think a breadth-first search would be more efficient here
+            foreach (ISpatialIndexNode<IExtents, TItem> child in node.Children)
+            {
+                if (child.Intersects(itemBounds))
+                {
+                    ISpatialIndexNode<IExtents, TItem> found = findNodeForItem(item, child);
+
+                    if (found != null)
+                    {
+                        return found;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public Boolean Remove(IExtents bounds, TItem item)
@@ -387,7 +419,7 @@ namespace SharpMap.Indexing.RTree
         [Conditional("DEBUG")]
         private void printItemCount()
         {
-            Int32 count = Root.TotalItems;
+            Int32 count = Root.TotalItemCount;
 
             if (count % 100 == 0)
             {

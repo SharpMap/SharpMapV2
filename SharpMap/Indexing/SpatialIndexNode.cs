@@ -86,7 +86,18 @@ namespace SharpMap.Indexing
         /// </summary>
         public IEnumerable<TItem> Items
         {
-            get { return _items; }
+            get
+            {
+                if (_items == null)
+                {
+                    yield break;
+                }
+
+                foreach (TItem item in _items)
+                {
+                    yield return item;
+                }
+            }
         }
 
         public abstract IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children { get; }
@@ -110,6 +121,8 @@ namespace SharpMap.Indexing
             {
                 return;
             }
+
+            ensureList();
 
             _items.Add(item);
 
@@ -187,6 +200,11 @@ namespace SharpMap.Indexing
             OnItemRemoving(item, out cancel);
 
             if (cancel)
+            {
+                return false;
+            }
+
+            if (_items == null)
             {
                 return false;
             }
@@ -362,7 +380,7 @@ namespace SharpMap.Indexing
             }
         }
 
-        public Int32 TotalItems
+        public Int32 TotalItemCount
         {
             get
             {
@@ -372,7 +390,7 @@ namespace SharpMap.Indexing
                 {
                     foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
                     {
-                        total += child.TotalItems;
+                        total += child.TotalItemCount;
                     }
                 }
 
@@ -380,7 +398,7 @@ namespace SharpMap.Indexing
             }
         }
 
-        public Int32 TotalNodes
+        public Int32 TotalNodeCount
         {
             get
             {
@@ -390,7 +408,7 @@ namespace SharpMap.Indexing
                 {
                     foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
                     {
-                        total += child.TotalNodes;
+                        total += child.TotalNodeCount;
                     }
                 }
 
@@ -410,7 +428,7 @@ namespace SharpMap.Indexing
 
         public Boolean Intersects(IExtents bounds)
         {
-            throw new NotImplementedException();
+            return bounds != null && _bounds != null && _bounds.Intersects(bounds);
         }
 
         #endregion

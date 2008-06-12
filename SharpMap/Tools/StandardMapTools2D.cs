@@ -247,18 +247,17 @@ namespace SharpMap.Tools
 				return;
 			}
 
-			GeometryLayer filterLayer = layer as GeometryLayer;
+            FeatureLayer filterLayer = layer as FeatureLayer;
 
 			if (filterLayer != null)
 			{
 				if (layer.Enabled && 
-                    filterLayer.Style.AreFeaturesSelectable && 
+                    filterLayer.AreFeaturesSelectable && 
                     layer.IsVisibleWhen(isInView(view.WorldWidth)))
 				{
-					filterLayer.SelectedFeatures.SpatialFilter 
-                        = new SpatialBinaryExpression(new FeaturesCollectionExpression(filterLayer.Features), 
-                                                      SpatialOperation.Intersects,
-                                                      new SpatialExpression(worldBounds.ToGeometry()));
+					filterLayer.SelectedFeatures.SpatialFilter
+                        = SpatialBinaryExpression.Intersects(new FeaturesCollectionExpression(filterLayer.Features),
+                                                             new ExtentsExpression(worldBounds));
 				}
 			}
 

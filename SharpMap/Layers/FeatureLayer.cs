@@ -58,23 +58,23 @@ namespace SharpMap.Layers
         private readonly FeatureDataView _highlightedFeatures;
         #endregion
 
-        /// <summary>
-        /// Initializes a new, empty features layer
-        /// which handles <see cref="FeatureDataTable.SelectRequested"/> 
-        /// events from <see cref="Features"/>.
-        /// </summary>
-        protected FeatureLayer(IFeatureProvider dataSource)
-            : this(String.Empty, dataSource) { }
+        ///// <summary>
+        ///// Initializes a new, empty features layer
+        ///// which handles <see cref="FeatureDataTable.SelectRequested"/> 
+        ///// events from <see cref="Features"/>.
+        ///// </summary>
+        //protected FeatureLayer(IFeatureProvider dataSource)
+        //    : this(String.Empty, dataSource) { }
 
-        /// <summary>
-        /// Initializes a new features layer with the given name and datasource
-        /// and which handles <see cref="FeatureDataTable.SelectRequested"/> 
-        /// events from <see cref="Features"/>.
-        /// </summary>
-        /// <param name="layername">Name of the layer.</param>
-        /// <param name="dataSource">Data source.</param>
-        protected FeatureLayer(String layername, IFeatureProvider dataSource)
-            : this(layername, new VectorStyle(), dataSource) { }
+        ///// <summary>
+        ///// Initializes a new features layer with the given name and datasource
+        ///// and which handles <see cref="FeatureDataTable.SelectRequested"/> 
+        ///// events from <see cref="Features"/>.
+        ///// </summary>
+        ///// <param name="layername">Name of the layer.</param>
+        ///// <param name="dataSource">Data source.</param>
+        //protected FeatureLayer(String layername, IFeatureProvider dataSource)
+        //    : this(layername, new FeatureStyle(), dataSource) { }
 
         /// <summary>
         /// Initializes a new features layer with the given name, style and datasource
@@ -85,7 +85,7 @@ namespace SharpMap.Layers
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
         protected FeatureLayer(String layername,
-                               VectorStyle style,
+                               FeatureStyle style,
                                IFeatureProvider dataSource)
             : base(layername, style, dataSource)
         {
@@ -169,6 +169,15 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
+        /// Gets or sets the layer style as a VectorStyle.
+        /// </summary>
+        public new FeatureStyle Style
+        {
+            get { return base.Style as GeometryStyle; }
+            set { base.Style = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value which allows features in the layer to be selected
         /// or not.
         /// </summary>
@@ -176,16 +185,21 @@ namespace SharpMap.Layers
         {
             get
             {
-                FeatureStyle fstyle = Style as FeatureStyle;
-                return fstyle != null && fstyle.AreFeaturesSelectable;
+                FeatureStyle style = Style;
+                return style != null && style.AreFeaturesSelectable;
             }
             set
             {
-                FeatureStyle fstyle = Style as FeatureStyle;
-
-                if (fstyle != null)
+                if (value == AreFeaturesSelectable)
                 {
-                    fstyle.AreFeaturesSelectable = value;
+                    return;
+                }
+
+                FeatureStyle style = Style;
+
+                if (style != null)
+                {
+                    style.AreFeaturesSelectable = value;
                 }
             }
         }

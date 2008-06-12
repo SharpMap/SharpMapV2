@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Layers;
@@ -41,29 +42,29 @@ namespace SharpMap.Expressions
         }
 
         public FeatureQueryExpression(IExtents extents, SpatialOperation op)
-            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(extents),
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                                               op,
                                                                               new ThisExpression())) { }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op)
-            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
                                                                               new ThisExpression())) { }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
-            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
                                                                               new LayerExpression(layer))) { }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, IFeatureProvider provider)
-            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
+            : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
                                                                               new ProviderExpression(provider))) { }
         public FeatureQueryExpression(IExtents extents,
                                       SpatialOperation op,
                                       IEnumerable<IFeatureDataRecord> features)
             : base(new AllAttributesExpression(),
-                   new SpatialBinaryExpression(new SpatialExpression(extents),
+                   new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                op,
                                                new FeaturesCollectionExpression(features))) { }
 
@@ -71,7 +72,7 @@ namespace SharpMap.Expressions
                                       SpatialOperation op,
                                       IEnumerable<IFeatureDataRecord> features)
             : base(new AllAttributesExpression(),
-                   new SpatialBinaryExpression(new SpatialExpression(geometry),
+                   new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                op,
                                                new FeaturesCollectionExpression(features))) { }
 
@@ -212,6 +213,35 @@ namespace SharpMap.Expressions
                 oidsExpression = binaryExpression.Right as OidCollectionExpression;
 
                 return oidsExpression;
+            }
+        }
+
+        public Boolean IsSpatialPredicateNonEmpty
+        {
+            get
+            {
+                return SpatialPredicate != null &&
+                       SpatialPredicate.SpatialExpression != null &&
+                       !SpatialExpression.IsNullOrEmpty(SpatialPredicate.SpatialExpression);
+            }
+        }
+
+        public Boolean IsOidPredicateNonEmpty
+        {
+            get
+            {
+                return OidPredicate != null &&
+                       !Slice.IsEmpty(OidPredicate.OidValues);
+            }
+        }
+
+        public Boolean IsAttributePredicateNonEmpty
+        {
+            get
+            {
+                return AttributePredicate != null &&
+                       (AttributePredicate.HasCollectionValueExpression ||
+                        AttributePredicate.HasSingleValueExpression);
             }
         }
 

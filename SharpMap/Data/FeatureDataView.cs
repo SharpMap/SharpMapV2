@@ -210,7 +210,7 @@ namespace SharpMap.Data
                                                                                BinaryOperator.And,
                                                                                value);
 
-                    ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection, 
+                    ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection,
                                                                 predicate);
                 }
             }
@@ -441,18 +441,16 @@ namespace SharpMap.Data
             base.IndexListChanged(sender, e);
         }
 
+#if DEBUG
         protected override void OnListChanged(ListChangedEventArgs e)
         {
             base.OnListChanged(e);
         }
+#endif
 
         protected override void UpdateIndex(Boolean force)
         {
-            if (!ReindexingEnabled)
-            {
-                return;
-            }
-            else
+            if (ReindexingEnabled)
             {
                 base.UpdateIndex(force);
             }
@@ -529,14 +527,29 @@ namespace SharpMap.Data
 
             SpatialBinaryExpression spatialQueryExpression = _viewDefinition.SpatialPredicate;
             SpatialOperation op = spatialQueryExpression.Op;
-            IGeometry geometry = spatialQueryExpression.SpatialExpression.Geometry;
 
-            // NOTE: changed Point.Empty to null
-            return geometry == null ||
-                   SpatialBinaryExpression.IsMatch(op,
-                                                  spatialQueryExpression.IsSpatialExpressionLeft,
-                                                  geometry,
-                                                  feature.Geometry);
+            GeometryExpression geometryExpression
+                = spatialQueryExpression.SpatialExpression as GeometryExpression;
+            ExtentsExpression extentsExpression 
+                = spatialQueryExpression.SpatialExpression as ExtentsExpression;
+
+            if (SpatialExpression.IsNullOrEmpty(geometryExpression))
+            {
+                return SpatialBinaryExpression.IsMatch(op,
+                                                       spatialQueryExpression.IsSpatialExpressionLeft,
+                                                       geometryExpression.Geometry,
+                                                       feature.Geometry);
+            }
+
+            if (SpatialExpression.IsNullOrEmpty(extentsExpression))
+            {
+                return SpatialBinaryExpression.IsMatch(op,
+                                                       spatialQueryExpression.IsSpatialExpressionLeft,
+                                                       extentsExpression.Extents,
+                                                       feature.Extents);   
+            }
+
+            return true;
         }
 
         private Boolean inOidFilter(FeatureDataRow feature)
@@ -558,7 +571,7 @@ namespace SharpMap.Data
 
             Int32 count = 0;
 
-            if(Enumerable.FirstOrDefault(oids) == null)
+            if (Enumerable.FirstOrDefault(oids) == null)
             {
                 return true;
             }

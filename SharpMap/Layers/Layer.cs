@@ -462,14 +462,17 @@ namespace SharpMap.Layers
         {
             if (region == null) throw new ArgumentNullException("region");
 
-            LoadIntersectingLayerData(region.ToGeometry());
+            SpatialBinaryExpression query = new SpatialBinaryExpression(new ExtentsExpression(region),
+                                                                        SpatialOperation.Intersects,
+                                                                        new LayerExpression(this));
+            LoadLayerData(query);
         }
 
         public void LoadIntersectingLayerData(IGeometry region)
         {
             if (region == null) throw new ArgumentNullException("region");
 
-            SpatialBinaryExpression query = new SpatialBinaryExpression(new SpatialExpression(region),
+            SpatialBinaryExpression query = new SpatialBinaryExpression(new GeometryExpression(region),
                                                                         SpatialOperation.Intersects,
                                                                         new LayerExpression(this));
             LoadLayerData(query);

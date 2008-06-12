@@ -110,20 +110,23 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord inFeature, LabelStyle style,
-                                                                      RenderState renderState, ILayer inLayer)
+        protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord inFeature,
+                                                                      LabelStyle style,
+                                                                      RenderState renderState,
+                                                                      ILayer inLayer)
         {
             FeatureDataRow feature = inFeature as FeatureDataRow;
             LabelLayer layer = inLayer as LabelLayer;
 
             if (style == null)
             {
-                throw new ArgumentNullException("style", "LabelStyle is a required argument to properly render the label");
+                throw new ArgumentNullException("style", "LabelStyle is a required argument " +
+                                                         "to properly render the label");
             }
 
             Label2D newLabel = null;
             LabelLayer.LabelTextFormatter formatter = null;
-            LabelCollisionDetection2D collisionDetector = null;
+            LabelCollisionDetection2D collisionDetector;
 
             if (layer != null)
             {
@@ -131,6 +134,7 @@ namespace SharpMap.Rendering.Rendering2D
                 {
                     formatter = layer.TextFormatter;
                 }
+
                 collisionDetector = layer.CollisionDetector;
                 collisionDetector.TextRenderer = TextRenderer;
             }
@@ -139,9 +143,9 @@ namespace SharpMap.Rendering.Rendering2D
                 if (!textFormatters.TryGetValue(style, out formatter))
                 {
                     // setup formatter based on style.LabelFormatExpression
-                    formatter = delegate(FeatureDataRow feature2)
+                    formatter = delegate(FeatureDataRow row)
                                     {
-                                        return feature2[style.LabelFormatExpression].ToString();
+                                        return row.Evaluate(style.LabelExpression);
                                     };
 
                     textFormatters.Add(style, formatter);
@@ -166,22 +170,28 @@ namespace SharpMap.Rendering.Rendering2D
                 {
                     Size2D size = TextRenderer.MeasureString(labelText, style.Font);
 
-                    if (style.HorizontalAlignment == HorizontalAlignment.Center)
+                    switch (style.HorizontalAlignment)
                     {
-                        x -= (Int32)(size.Width / 2.0f);
-                    }
-                    else if (style.HorizontalAlignment == HorizontalAlignment.Left)
-                    {
-                        x -= size.Width;
+                        case HorizontalAlignment.Center:
+                            x -= (Int32)(size.Width / 2.0f);
+                            break;
+                        case HorizontalAlignment.Left:
+                            x -= size.Width;
+                            break;
+                        default:
+                            break;
                     }
 
-                    if (style.VerticalAlignment == VerticalAlignment.Middle)
+                    switch (style.VerticalAlignment)
                     {
-                        y += (Int32)(size.Height / 2.0f);
-                    }
-                    else if (style.VerticalAlignment == VerticalAlignment.Top)
-                    {
-                        y += size.Height;
+                        case VerticalAlignment.Middle:
+                            y += (Int32)(size.Height / 2.0f);
+                            break;
+                        case VerticalAlignment.Top:
+                            y += size.Height;
+                            break;
+                        default:
+                            break;
                     }
                 }
 
@@ -194,9 +204,9 @@ namespace SharpMap.Rendering.Rendering2D
             }
 
             // now find out if we even need to render this label...
-            if (style.CollisionTest != LabelStyle.CollisionTestType.None)
+            if (style.CollisionDetectionType != CollisionDetectionType.None)
             {
-                if (style.CollisionTest == LabelStyle.CollisionTestType.Simple)
+                if (style.CollisionDetectionType == CollisionDetectionType.Simple)
                 {
                     if (collisionDetector.SimpleCollisionTest(newLabel))
                     {
@@ -205,10 +215,11 @@ namespace SharpMap.Rendering.Rendering2D
                         {
                             layer.RenderCache.Remove(newLabel);
                         }
+
                         yield break;
                     }
                 }
-                else if (style.CollisionTest == LabelStyle.CollisionTestType.Advanced)
+                else if (style.CollisionDetectionType == CollisionDetectionType.Advanced)
                 {
                     if (collisionDetector.AdvancedCollisionTest(newLabel))
                     {
@@ -217,6 +228,7 @@ namespace SharpMap.Rendering.Rendering2D
                         {
                             layer.RenderCache.Remove(newLabel);
                         }
+
                         yield break;
                     }
                 }
@@ -447,10 +459,10 @@ namespace SharpMap.Rendering.Rendering2D
 
             if (line.Coordinates.Count > 2)
             {
-                dx = line.Coordinates[midPoint + 1, Ordinates.X] 
+                dx = line.Coordinates[midPoint + 1, Ordinates.X]
                     - line.Coordinates[midPoint, Ordinates.X];
 
-                dy = line.Coordinates[midPoint + 1, Ordinates.Y] 
+                dy = line.Coordinates[midPoint + 1, Ordinates.Y]
                     - line.Coordinates[midPoint, Ordinates.Y];
             }
             else

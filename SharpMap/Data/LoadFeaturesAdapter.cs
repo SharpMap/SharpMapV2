@@ -26,7 +26,7 @@ namespace SharpMap.Data
 {
     internal sealed class LoadFeaturesAdapter : DataAdapter
     {
-        private IGeometryFactory _factory;
+        private readonly IGeometryFactory _factory;
 
         public LoadFeaturesAdapter(IGeometryFactory factory)
         {

@@ -23,6 +23,7 @@ using System.Data;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 #if DOTNET35
@@ -374,10 +375,9 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
             SpatialExpression spatialExpression = query.SpatialExpression;
 
-            if (spatialExpression == null)
+            if (SpatialExpression.IsNullOrEmpty(spatialExpression))
             {
-                throw new ArgumentException("The SpatialQueryExpression must have " +
-                                            "a non-null SpatialExpression.");
+                yield break;
             }
 
             if (query.Expression == null)
@@ -386,7 +386,18 @@ namespace SharpMap.Data.Providers.GeometryProvider
                                             "a non-null Expression.");
             }
 
-            IGeometry filterGeometry = spatialExpression.Geometry;
+            ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
+            GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
+
+            IExtents filterExtents = extentsExpression != null
+                                         ? extentsExpression.Extents
+                                         : null;
+            IGeometry filterGeometry = geometryExpression != null
+                                           ? geometryExpression.Geometry
+                                           : null;
+
+            Assert.IsTrue(filterExtents != null || filterGeometry != null);
+
             Boolean isLeft = query.IsSpatialExpressionLeft;
             SpatialOperation op = query.Op;
 

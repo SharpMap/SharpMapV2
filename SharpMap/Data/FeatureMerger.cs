@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Reflection.Emit;
 using System.Reflection;
 using GeoAPI.Geometries;
@@ -116,7 +115,8 @@ namespace SharpMap.Data
         {
             if (record == null) throw new ArgumentNullException("record");
 
-            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
+            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 &&
+                                    (_targetDataTable.PrimaryKey.Length > 0);
 
             mergeSchemaIfNeeded(record, factory);
 
@@ -162,12 +162,14 @@ namespace SharpMap.Data
 
             if (_targetDataSet != null)
             {
-                if ((source.DataSet == null) || (source.DataSet.Namespace != _targetDataSet.Namespace))
+                if ((source.DataSet == null) ||
+                    (source.DataSet.Namespace != _targetDataSet.Namespace))
                 {
                     _ignoreNamespaceForTableLookup = true;
                 }
             }
-            else if (((_targetDataTable.DataSet == null) || (source.DataSet == null)) || (source.DataSet.Namespace != _targetDataTable.DataSet.Namespace))
+            else if (((_targetDataTable.DataSet == null) || (source.DataSet == null)) ||
+                     (source.DataSet.Namespace != _targetDataTable.DataSet.Namespace))
             {
                 _ignoreNamespaceForTableLookup = true;
             }
@@ -179,14 +181,9 @@ namespace SharpMap.Data
 
             if (targetTable == null)
             {
-                if (_ignoreNamespaceForTableLookup)
-                {
-                    targetTable = _targetDataSet.Tables[source.TableName];
-                }
-                else
-                {
-                    targetTable = _targetDataSet.Tables[source.TableName, source.Namespace];
-                }
+                targetTable = _ignoreNamespaceForTableLookup
+                                  ? _targetDataSet.Tables[source.TableName]
+                                  : _targetDataSet.Tables[source.TableName, source.Namespace];
             }
 
             if (targetTable != null)
@@ -222,14 +219,16 @@ namespace SharpMap.Data
         }
 
         // TODO: MergeFeatures(FeatureDataTable) and MergeFeatures(IEnumerable<IFeatureDataRecord>) seem to overlap... try refactor
-        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> sourceFeatures, IGeometryFactory factory)
+        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> sourceFeatures,
+                                    IGeometryFactory factory)
         {
             if (sourceFeatures == null) throw new ArgumentNullException("sourceFeatures");
 
             _targetDataTable.SuspendIndexEvents();
 
             Boolean checkedSchema = false;
-            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 && (_targetDataTable.PrimaryKey.Length > 0);
+            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 &&
+                                     (_targetDataTable.PrimaryKey.Length > 0);
 
             try
             {
@@ -266,8 +265,8 @@ namespace SharpMap.Data
             }
             catch (NullReferenceException ex)
             {
-                if (source == null)
-                    throw;
+                if (source == null) throw;
+
                 if (source.PrimaryKey.Length > 0 && _targetDataTable.PrimaryKey.Length > 0)
                 {
                     throw new DataException("Possible incompatible keys for merging schema", ex);
@@ -341,7 +340,7 @@ namespace SharpMap.Data
                         if (getDataKeyHasValue(srcLookupKey))
                         {
                             Object rowLookupKey = getDataKeyFromUniqueConstraint(target.PrimaryKeyConstraint);
-                            const DataViewRowState rowState = DataViewRowState.OriginalRows | 
+                            const DataViewRowState rowState = DataViewRowState.OriginalRows |
                                                               DataViewRowState.Added;
                             primaryKeyIndex = getDataKeySortIndex(rowLookupKey, rowState);
                         }
@@ -353,20 +352,20 @@ namespace SharpMap.Data
 
                         if (primaryKeyIndex != null)
                         {
-                            targetRow = target.FindMergeTarget(sourceRow, 
-                                                               srcLookupKey, 
+                            targetRow = target.FindMergeTarget(sourceRow,
+                                                               srcLookupKey,
                                                                primaryKeyIndex);
                         }
 
                         //mergeFeature(target, sourceRow, targetRow, PreserveChanges);
-                        FeatureDataRow mergedRow = target.MergeRowInternal(sourceRow, 
-                                                                           targetRow, 
-                                                                           PreserveChanges, 
+                        FeatureDataRow mergedRow = target.MergeRowInternal(sourceRow,
+                                                                           targetRow,
+                                                                           PreserveChanges,
                                                                            primaryKeyIndex);
 
                         // If we are adding the geometry to the row or if the geometry changed
                         // then we set it here.
-                        if (mergedRow.Geometry == null || 
+                        if (mergedRow.Geometry == null ||
                             mergedRow.Geometry.EqualsExact(sourceRow.Geometry))
                         {
                             mergedRow.Geometry = sourceRow.Geometry;
@@ -394,7 +393,7 @@ namespace SharpMap.Data
             return _getDataKeyHasValue(srcKey);
         }
 
-        private static Object getSourceKeyOrTargetKeyForSource(FeatureDataTable source, 
+        private static Object getSourceKeyOrTargetKeyForSource(FeatureDataTable source,
                                                                FeatureDataTable target)
         {
             // TODO: check if there is code which already does this.
@@ -458,9 +457,11 @@ namespace SharpMap.Data
         #endregion
 
         #region Private static helpers
-        private static FeatureDataTable createModelFromFeature(IFeatureDataRecord srcFeature, IGeometryFactory factory)
+        private static FeatureDataTable createModelFromFeature(IFeatureDataRecord srcFeature,
+                                                               IGeometryFactory factory)
         {
             FeatureDataTable schemaModel = new FeatureDataTable(factory);
+
             for (Int32 fieldIndex = 0; fieldIndex < srcFeature.FieldCount; fieldIndex++)
             {
                 schemaModel.Columns.Add(srcFeature.GetName(fieldIndex),
@@ -470,7 +471,10 @@ namespace SharpMap.Data
             return schemaModel;
         }
 
-        private static void mergeFeature(FeatureDataTable target, IFeatureDataRecord srcFeature, FeatureDataRow targetFeature, Boolean preserveChanges)
+        private static void mergeFeature(FeatureDataTable target,
+                                         IFeatureDataRecord srcFeature,
+                                         FeatureDataRow targetFeature,
+                                         Boolean preserveChanges)
         {
             if (targetFeature == null)
             {
@@ -482,16 +486,16 @@ namespace SharpMap.Data
             {
                 if (preserveChanges && targetFeature.RowState == DataRowState.Modified)
                 {
-                    throw new NotImplementedException("Merging updates to original features state not yet implemented.");
+                    throw new NotImplementedException("Merging updates to original features " +
+                                                      "state not yet implemented.");
                 }
-                else
-                {
-                    setFeatureRowFromIFeatureDataRecord(srcFeature, targetFeature);
-                }
+
+                setFeatureRowFromIFeatureDataRecord(srcFeature, targetFeature);
             }
         }
 
-        private static void setFeatureRowFromIFeatureDataRecord(IFeatureDataRecord srcFeature, FeatureDataRow targetFeature)
+        private static void setFeatureRowFromIFeatureDataRecord(IFeatureDataRecord srcFeature, 
+                                                                FeatureDataRow targetFeature)
         {
             for (Int32 i = 0; i < srcFeature.FieldCount; i++)
             {
@@ -504,7 +508,9 @@ namespace SharpMap.Data
             targetFeature.IsFullyLoaded = targetFeature.IsFullyLoaded || srcFeature.IsFullyLoaded;
         }
 
-        private static Object createInnerMerger(DataTable target, Boolean preserveChanges, SchemaMergeAction schemaMergeAction)
+        private static Object createInnerMerger(DataTable target, 
+                                                Boolean preserveChanges, 
+                                                SchemaMergeAction schemaMergeAction)
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
@@ -521,17 +527,25 @@ namespace SharpMap.Data
             return _createMerger(target, preserveChanges, missingSchemaAction);
         }
 
-        private static Object getKeyIndex(FeatureDataTable table)
-        {
-            return _getKeyIndex(table);
-        }
+        //private static Object getKeyIndex(FeatureDataTable table)
+        //{
+        //    return _getKeyIndex(table);
+        //}
 
+        private const MethodAttributes PublicStaticMethod = MethodAttributes.Public | 
+                                                            MethodAttributes.Static;
+        private const BindingFlags NonPublicInstance = BindingFlags.NonPublic | 
+                                                       BindingFlags.Instance;
         private static CreateMergerDelegate generateCreateMergerDelegate()
         {
-            Type[] ctorParams = new Type[] { typeof(DataTable), typeof(Boolean), typeof(MissingSchemaAction) };
+            Type[] ctorParams = new Type[] { 
+                                             typeof(DataTable), 
+                                             typeof(Boolean), 
+                                             typeof(MissingSchemaAction) 
+                                           };
 
             DynamicMethod createMergerMethod = new DynamicMethod("Merger_Create",
-                                                                 MethodAttributes.Public | MethodAttributes.Static,
+                                                                 PublicStaticMethod,
                                                                  CallingConventions.Standard,
                                                                  typeof(Object),
                                                                  ctorParams,
@@ -542,21 +556,23 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldarg_2);
-            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
-            ConstructorInfo ctor = AdoNetInternalTypes.MergerType
-                .GetConstructor(flags, null, ctorParams, null);
+            ConstructorInfo ctor = AdoNetInternalTypes.MergerType.GetConstructor(NonPublicInstance, 
+                                                                                 null, 
+                                                                                 ctorParams, 
+                                                                                 null);
             il.Emit(OpCodes.Newobj, ctor);
             il.Emit(OpCodes.Isinst, typeof(Object));
             il.Emit(OpCodes.Ret);
 
-            CreateMergerDelegate d = (CreateMergerDelegate)createMergerMethod.CreateDelegate(typeof(CreateMergerDelegate));
+            CreateMergerDelegate d 
+                = (CreateMergerDelegate)createMergerMethod.CreateDelegate(typeof(CreateMergerDelegate));
             return d;
         }
 
         private static MergeSchemaDelegate generateMergeSchemaDelegate()
         {
             DynamicMethod mergeSchemaMethod = new DynamicMethod("Merger_MergeSchema",
-                                                                MethodAttributes.Public | MethodAttributes.Static,
+                                                                PublicStaticMethod,
                                                                 CallingConventions.Standard,
                                                                 typeof(DataTable),
                                                                 new Type[] { typeof(Object), typeof(DataTable) },
@@ -567,12 +583,13 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Castclass, AdoNetInternalTypes.MergerType);
             il.Emit(OpCodes.Ldarg_1);
-            MethodInfo mergeSchemaInfo = AdoNetInternalTypes.MergerType.GetMethod("MergeSchema",
-                                                          BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo mergeSchemaInfo = AdoNetInternalTypes.MergerType.GetMethod("MergeSchema", 
+                                                                                  NonPublicInstance);
             il.Emit(OpCodes.Call, mergeSchemaInfo);
             il.Emit(OpCodes.Ret);
 
-            MergeSchemaDelegate d = (MergeSchemaDelegate)mergeSchemaMethod.CreateDelegate(typeof(MergeSchemaDelegate));
+            MergeSchemaDelegate d 
+                = (MergeSchemaDelegate)mergeSchemaMethod.CreateDelegate(typeof(MergeSchemaDelegate));
             return d;
         }
 
@@ -584,8 +601,9 @@ namespace SharpMap.Data
 
         private static GetDataKeyFromUniqueConstraintDelegate generateGetDataKeyFromUniqueConstraintDelegate()
         {
-            DynamicMethod getDataKeyFromUniqueConstraintMethod = new DynamicMethod("FeatureMerger_GetDataKeyFromUniqueConstraint",
-                                                                MethodAttributes.Public | MethodAttributes.Static,
+            DynamicMethod getDataKeyFromUniqueConstraintMethod = new DynamicMethod(
+                                                                "FeatureMerger_GetDataKeyFromUniqueConstraint",
+                                                                PublicStaticMethod,
                                                                 CallingConventions.Standard,
                                                                 typeof(Object),
                                                                 new Type[] { typeof(UniqueConstraint) },
@@ -594,14 +612,14 @@ namespace SharpMap.Data
 
             ILGenerator il = getDataKeyFromUniqueConstraintMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo keyInfo = typeof(UniqueConstraint).GetProperty("Key", flags);
+            PropertyInfo keyInfo = typeof(UniqueConstraint).GetProperty("Key", NonPublicInstance);
             il.Emit(OpCodes.Call, keyInfo.GetGetMethod(true));
             il.Emit(OpCodes.Box, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ret);
 
-            GetDataKeyFromUniqueConstraintDelegate d = getDataKeyFromUniqueConstraintMethod
-                .CreateDelegate(typeof(GetDataKeyFromUniqueConstraintDelegate)) as GetDataKeyFromUniqueConstraintDelegate;
+            GetDataKeyFromUniqueConstraintDelegate d 
+                = getDataKeyFromUniqueConstraintMethod.CreateDelegate(typeof(GetDataKeyFromUniqueConstraintDelegate)) 
+                    as GetDataKeyFromUniqueConstraintDelegate;
 
             return d;
         }
@@ -609,7 +627,7 @@ namespace SharpMap.Data
         private static CreateEmptyDataKeyDelegate generateCreateEmptyDataKeyDelegate()
         {
             DynamicMethod createEmptyDataKeyMethod = new DynamicMethod("FeatureMerger_CreateEmptyDataKey",
-                                                                 MethodAttributes.Public | MethodAttributes.Static,
+                                                                 PublicStaticMethod,
                                                                  CallingConventions.Standard,
                                                                  typeof(Object),
                                                                  null,
@@ -624,16 +642,17 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Box, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ret);
 
-            CreateEmptyDataKeyDelegate d = createEmptyDataKeyMethod
-                .CreateDelegate(typeof(CreateEmptyDataKeyDelegate)) as CreateEmptyDataKeyDelegate;
-            
+            CreateEmptyDataKeyDelegate d 
+                = createEmptyDataKeyMethod.CreateDelegate(typeof(CreateEmptyDataKeyDelegate)) 
+                    as CreateEmptyDataKeyDelegate;
+
             return d;
         }
 
         private static CreateDataKeyDelegate generateCreateDataKeyDelegate()
         {
             DynamicMethod createDataKeyMethod = new DynamicMethod("FeatureMerger_CreateDataKey",
-                                                                 MethodAttributes.Public | MethodAttributes.Static,
+                                                                 PublicStaticMethod,
                                                                  CallingConventions.Standard,
                                                                  typeof(Object),
                                                                  new Type[] { typeof(DataColumn[]), typeof(Boolean) },
@@ -645,24 +664,28 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldloca_S, newDataKey);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
-            ConstructorInfo ctor = AdoNetInternalTypes.DataKeyType
-                .GetConstructor(flags, null, new Type[] { typeof(DataColumn[]), typeof(Boolean) }, null);
+            Type[] ctorParams = new Type[] {typeof (DataColumn[]), typeof (Boolean)};
+            ConstructorInfo ctor = AdoNetInternalTypes.DataKeyType.GetConstructor(NonPublicInstance, 
+                                                                                  null, 
+                                                                                  ctorParams, 
+                                                                                  null);
             il.Emit(OpCodes.Call, ctor);
             il.Emit(OpCodes.Ldloc_0);
             il.Emit(OpCodes.Box, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ret);
 
-            CreateDataKeyDelegate d = createDataKeyMethod
-                .CreateDelegate(typeof(CreateDataKeyDelegate)) as CreateDataKeyDelegate;
+            CreateDataKeyDelegate d 
+                = createDataKeyMethod.CreateDelegate(typeof(CreateDataKeyDelegate)) 
+                    as CreateDataKeyDelegate;
 
             return d;
         }
 
         private static GetDataKeyColumnReferenceDelegate generateGetDataKeyColumnReferenceDelegate()
         {
-            DynamicMethod getDataKeyColumnReferenceMethod = new DynamicMethod("FeatureMerger_GetDataKeyColumnReference",
-                                                                MethodAttributes.Public | MethodAttributes.Static,
+            DynamicMethod getDataKeyColumnReferenceMethod = new DynamicMethod(
+                                                                "FeatureMerger_GetDataKeyColumnReference",
+                                                                PublicStaticMethod,
                                                                 CallingConventions.Standard,
                                                                 typeof(DataColumn[]),
                                                                 new Type[] { typeof(Object) },
@@ -672,16 +695,16 @@ namespace SharpMap.Data
             ILGenerator il = getDataKeyColumnReferenceMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo columnsReferenceInfo = AdoNetInternalTypes.DataKeyType
-                .GetProperty("ColumnsReference", flags);
+            PropertyInfo columnsReferenceInfo = AdoNetInternalTypes.DataKeyType.GetProperty("ColumnsReference", 
+                                                                                            NonPublicInstance);
             MethodInfo getMethod = columnsReferenceInfo.GetGetMethod(true);
             il.Emit(OpCodes.Call, getMethod);
             il.Emit(OpCodes.Isinst, typeof(Object));
             il.Emit(OpCodes.Ret);
 
-            GetDataKeyColumnReferenceDelegate d = getDataKeyColumnReferenceMethod
-                .CreateDelegate(typeof(GetDataKeyColumnReferenceDelegate)) as GetDataKeyColumnReferenceDelegate;
+            GetDataKeyColumnReferenceDelegate d 
+                = getDataKeyColumnReferenceMethod.CreateDelegate(typeof(GetDataKeyColumnReferenceDelegate)) 
+                    as GetDataKeyColumnReferenceDelegate;
 
             return d;
         }
@@ -689,7 +712,7 @@ namespace SharpMap.Data
         private static DataKeyGetSortIndex generateDataKeyGetSortIndex()
         {
             DynamicMethod dataKeyGetSortIndex = new DynamicMethod("FeatureMerger_DataKeyGetSortIndex_DynamicMethod",
-                                                                MethodAttributes.Public | MethodAttributes.Static,
+                                                                PublicStaticMethod,
                                                                 CallingConventions.Standard,
                                                                 typeof(Object),
                                                                 new Type[] { typeof(Object), typeof(DataViewRowState) },
@@ -701,45 +724,52 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Stloc_0);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            MethodInfo getSortIndexInfo = AdoNetInternalTypes.DataKeyType
-                .GetMethod("GetSortIndex", flags, null, new Type[] { typeof(DataViewRowState)}, null);
+            Type[] methodParams = new Type[] {typeof (DataViewRowState)};
+            MethodInfo getSortIndexInfo = AdoNetInternalTypes.DataKeyType.GetMethod("GetSortIndex", 
+                                                                                    NonPublicInstance, 
+                                                                                    null, 
+                                                                                    methodParams, 
+                                                                                    null);
             il.Emit(OpCodes.Ldloca_S, localKey);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Call, getSortIndexInfo);
             il.Emit(OpCodes.Isinst, typeof(Object));
             il.Emit(OpCodes.Ret);
 
-            DataKeyGetSortIndex d = dataKeyGetSortIndex
-                .CreateDelegate(typeof(DataKeyGetSortIndex)) as DataKeyGetSortIndex;
+            DataKeyGetSortIndex d = dataKeyGetSortIndex.CreateDelegate(typeof(DataKeyGetSortIndex)) 
+                as DataKeyGetSortIndex;
 
             return d;
         }
 
         private static GetDataKeyHasValue generateGetDataKeyHasValue()
         {
-            DynamicMethod getDataKeyHasValue = new DynamicMethod("FeatureMerger_DataKey_get_HasValue_DynamicMethod",
-                                                                MethodAttributes.Public | MethodAttributes.Static,
-                                                                CallingConventions.Standard,
-                                                                typeof(Boolean),
-                                                                new Type[] { typeof(Object) },
-                                                                AdoNetInternalTypes.DataKeyType,
-                                                                false);
+            DynamicMethod getDataKeyHasValue = new DynamicMethod(
+                                                            "FeatureMerger_DataKey_get_HasValue_DynamicMethod",
+                                                            PublicStaticMethod,
+                                                            CallingConventions.Standard,
+                                                            typeof(Boolean),
+                                                            new Type[] { typeof(Object) },
+                                                            AdoNetInternalTypes.DataKeyType,
+                                                            false);
 
             ILGenerator il = getDataKeyHasValue.GetILGenerator();
             LocalBuilder localKey = il.DeclareLocal(AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Stloc_0);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            PropertyInfo hasValueInfo = AdoNetInternalTypes.DataKeyType
-                .GetProperty("HasValue", flags, null, typeof(Boolean), Type.EmptyTypes, null);
+            PropertyInfo hasValueInfo = AdoNetInternalTypes.DataKeyType.GetProperty("HasValue", 
+                                                                                    NonPublicInstance, 
+                                                                                    null, 
+                                                                                    typeof(Boolean), 
+                                                                                    Type.EmptyTypes, 
+                                                                                    null);
             il.Emit(OpCodes.Ldloca_S, localKey);
             il.Emit(OpCodes.Call, hasValueInfo.GetGetMethod(true));
             il.Emit(OpCodes.Ret);
 
-            GetDataKeyHasValue d = getDataKeyHasValue
-                .CreateDelegate(typeof(GetDataKeyHasValue)) as GetDataKeyHasValue;
+            GetDataKeyHasValue d = getDataKeyHasValue.CreateDelegate(typeof(GetDataKeyHasValue)) 
+                as GetDataKeyHasValue;
 
             return d;
         }

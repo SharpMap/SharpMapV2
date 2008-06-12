@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
+using SharpMap.Expressions;
 
 namespace SharpMap.Indexing.RTree
 {
@@ -124,6 +125,24 @@ namespace SharpMap.Indexing.RTree
 
         //public abstract void Insert(IExtents bounds, TItem item);
         public abstract void Insert(TItem item);
+
+        public virtual IEnumerable<TItem> Query(SpatialExpression spatialExpression)
+        {
+            GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
+            ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
+
+            IGeometry geometry = geometryExpression != null
+                                     ? geometryExpression.Geometry
+                                     : null;
+
+            IExtents extents = extentsExpression != null
+                                   ? extentsExpression.Extents
+                                   : geometry.Extents;
+
+            return geometry == null
+                       ? Query(extents)
+                       : Query(geometry);
+        }
 
         /// <summary>
         /// Searches the tree and looks for intersections with the given

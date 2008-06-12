@@ -45,7 +45,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public GeometryLayer(String layername, IFeatureProvider dataSource)
-            : this(layername, new VectorStyle(), dataSource) { }
+            : this(layername, new GeometryStyle(), dataSource) { }
 
         /// <summary>
         /// Initializes a new layer with the given name, style and datasource.
@@ -53,7 +53,7 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
-        public GeometryLayer(String layername, VectorStyle style, IFeatureProvider dataSource)
+        public GeometryLayer(String layername, GeometryStyle style, IFeatureProvider dataSource)
             : base(layername, style, dataSource) { }
 
         #region IDisposable Members
@@ -84,9 +84,9 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets the layer style as a VectorStyle.
         /// </summary>
-        public new VectorStyle Style
+        public new GeometryStyle Style
         {
-            get { return base.Style as VectorStyle; }
+            get { return base.Style as GeometryStyle; }
             set { base.Style = value; }
         }
         #endregion
@@ -94,7 +94,7 @@ namespace SharpMap.Layers
         #region Layer Overrides
         protected override IStyle CreateStyle()
         {
-            return new VectorStyle();
+            return new GeometryStyle();
         }
 
         IStyle ILayer.Style
@@ -102,12 +102,12 @@ namespace SharpMap.Layers
             get { return Style; }
             set
             {
-                if (value != null && !(value is VectorStyle))
+                if (value != null && !(value is GeometryStyle))
                 {
                     throw new ArgumentException("Style value must be of type VectorStyle.", "value");
                 }
 
-                Style = value as VectorStyle;
+                Style = value as GeometryStyle;
             }
         }
 

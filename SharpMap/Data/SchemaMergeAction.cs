@@ -20,8 +20,8 @@ using System;
 namespace SharpMap.Data
 {
     /// <summary>
-    /// Specifies how to merge schema when FeatureDataTable instances or
-    /// FeatureDataSet instances are merged.
+    /// Specifies how to merge schema when <see cref="FeatureDataTable"/> instances or
+    /// <see cref="FeatureDataSet"/> instances are merged.
     /// </summary>
     [Flags]
 	public enum SchemaMergeAction

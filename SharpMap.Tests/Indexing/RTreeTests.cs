@@ -97,18 +97,15 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void InsertingItemsUnderMaxNodeItemsSucceeds()
         {
-            DynamicRTreeBalanceHeuristic balanceHeuristic = new DynamicRTreeBalanceHeuristic();
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
 
-            DynamicRTree<BoundedInt32> rTree = new DynamicRTree<BoundedInt32>(
-                                                            _geoFactory,
-                                                            new GuttmanQuadraticInsert<BoundedInt32>(_geoFactory),
-                                                            new GuttmanQuadraticSplit<BoundedInt32>(_geoFactory),
-                                                            balanceHeuristic);
+            addEntries(rTree, null, nodeItemMax - 2);
 
-            addEntries(rTree, balanceHeuristic.NodeItemMaximumCount - 2);
-
-            IExtents expected = _geoFactory.CreateExtents2D(
-                -100, -100, 5928.57523425, 3252.50803582);
+            IExtents expected = _geoFactory.CreateExtents2D(-100, 
+                                                            -100, 
+                                                            5928.57523425, 
+                                                            3252.50803582);
 
             Assert.AreEqual(expected, rTree.Root.Bounds);
 
@@ -118,18 +115,15 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void InsertingItemsOverMaxNodeItemsSucceeds()
         {
-            DynamicRTreeBalanceHeuristic balanceHeuristic = new DynamicRTreeBalanceHeuristic();
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
 
-            DynamicRTree<BoundedInt32> rTree = new DynamicRTree<BoundedInt32>(
-                                                            _geoFactory,
-                                                            new GuttmanQuadraticInsert<BoundedInt32>(_geoFactory),
-                                                            new GuttmanQuadraticSplit<BoundedInt32>(_geoFactory),
-                                                            balanceHeuristic);
+            addEntries(rTree, null, nodeItemMax + 1);
 
-            addEntries(rTree, balanceHeuristic.NodeItemMaximumCount + 1);
-
-            IExtents expected = _geoFactory.CreateExtents2D(
-                -100, -100, 5928.57523425, 3252.50803582);
+            IExtents expected = _geoFactory.CreateExtents2D(-100,
+                                                            -100,
+                                                            5928.57523425,
+                                                            3252.50803582);
 
             Assert.AreEqual(expected, rTree.Root.Bounds);
 
@@ -139,19 +133,17 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void SearchingInIndexWithLessThanMaxNodeItemsSucceeds()
         {
-            DynamicRTreeBalanceHeuristic balanceHeuristic = new DynamicRTreeBalanceHeuristic();
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
 
-            DynamicRTree<BoundedInt32> rTree = new DynamicRTree<BoundedInt32>(
-                                                            _geoFactory,
-                                                            new GuttmanQuadraticInsert<BoundedInt32>(_geoFactory),
-                                                            new GuttmanQuadraticSplit<BoundedInt32>(_geoFactory),
-                                                            balanceHeuristic);
-
-            addEntries(rTree, balanceHeuristic.NodeItemMaximumCount - 2);
+            addEntries(rTree, null, nodeItemMax - 2);
 
             List<Int32> resultsList = new List<Int32>();
 
-            IExtents searchExtents = _geoFactory.CreateExtents2D(-100, -100, 5928.57523425, 3252.50803582);
+            IExtents searchExtents = _geoFactory.CreateExtents2D(-100,
+                                                            -100,
+                                                            5928.57523425,
+                                                            3252.50803582);
 #if DOTNET35
             // Man, I can't wait.
             resultsList.AddRange(rTree.Query(searchExtents, x => x.Value));
@@ -191,14 +183,20 @@ namespace SharpMap.Tests.Indexing
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(1500, 1500, 1500, 1500);
-            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
+                                                                                       {
+                                                                                           return item.Value;
+                                                                                       }));
             Assert.AreEqual(2, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 4; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 5; }));
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(100, 100, 100, 100);
-            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
+                                                                                       {
+                                                                                           return item.Value;
+                                                                                       }));
             Assert.AreEqual(4, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 1; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 2; }));
@@ -211,15 +209,10 @@ namespace SharpMap.Tests.Indexing
         [Test]
         public void SearchingInIndexWithMoreThanMaxNodeItemsSucceeds()
         {
-            DynamicRTreeBalanceHeuristic balanceHeuristic = new DynamicRTreeBalanceHeuristic();
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
 
-            DynamicRTree<BoundedInt32> rTree = new DynamicRTree<BoundedInt32>(
-                                                            _geoFactory,
-                                                            new GuttmanQuadraticInsert<BoundedInt32>(_geoFactory),
-                                                            new GuttmanQuadraticSplit<BoundedInt32>(_geoFactory),
-                                                            balanceHeuristic);
-
-            addEntries(rTree, balanceHeuristic.NodeItemMaximumCount + 1);
+            addEntries(rTree, null, nodeItemMax + 1);
 
             List<Int32> resultsList = new List<Int32>();
 
@@ -251,14 +244,20 @@ namespace SharpMap.Tests.Indexing
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(1500, 1500, 1500, 1500);
-            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
+                                                                                       {
+                                                                                           return item.Value;
+                                                                                       }));
             Assert.AreEqual(2, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 4; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 5; }));
             resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(100, 100, 100, 100);
-            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
+            resultsList.AddRange(rTree.Query(searchExtents, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
+                                                                                       {
+                                                                                           return item.Value;
+                                                                                       }));
             Assert.AreEqual(7, resultsList.Count);
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 1; }));
             Assert.IsTrue(resultsList.Exists(delegate(Int32 match) { return match == 2; }));
@@ -272,16 +271,25 @@ namespace SharpMap.Tests.Indexing
         }
 
         [Test]
+        public void RemovingItemSucceeds()
+        {
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
+
+            List<BoundedInt32> entries = new List<BoundedInt32>();
+            addEntries(rTree, entries, nodeItemMax + 1);
+
+            rTree.Remove(entries[0]);
+
+            Assert.AreEqual(entries.Count - 1, rTree.Root.TotalItemCount);
+        }
+
+        [Test]
         [Ignore]
         public void LoadingWith100000ObjectsCompletesAndDoesntCrash()
         {
-            DynamicRTreeBalanceHeuristic balanceHeuristic = new DynamicRTreeBalanceHeuristic();
-
-            DynamicRTree<BoundedInt32> rTree = new DynamicRTree<BoundedInt32>(
-                                                            _geoFactory,
-                                                            new GuttmanQuadraticInsert<BoundedInt32>(_geoFactory),
-                                                            new GuttmanQuadraticSplit<BoundedInt32>(_geoFactory),
-                                                            balanceHeuristic);
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
 
             List<Int32> resultsList = new List<Int32>();
 
@@ -308,66 +316,92 @@ namespace SharpMap.Tests.Indexing
             s.Position = 0;
             DynamicRTree<BoundedInt32> rTree2 = DynamicRTree<BoundedInt32>.FromStream(s, _geoFactory);
             List<Int32> results = new List<Int32>();
-            results.AddRange(rTree2.Query(rTree2.Root.Bounds, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item) { return item.Value; }));
+            results.AddRange(rTree2.Query(rTree2.Root.Bounds, (Func<BoundedInt32, Int32>)delegate(BoundedInt32 item)
+                                                                                         {
+                                                                                             return item.Value;
+                                                                                         }));
             Assert.AreEqual(99990, results.Count);
         }
 
-        private void addEntries(ISpatialIndex<IExtents, BoundedInt32> rTree, Int32 items)
+        private void addEntries(ISpatialIndex<IExtents, BoundedInt32> rTree, IList<BoundedInt32> entries, Int32 itemCount)
         {
-            if (items > 0)
+            BoundedInt32 entry;
+
+            if (itemCount > 0)
             {
-                rTree.Insert(new BoundedInt32(1, _geoFactory.CreateExtents2D(0, 0, 100, 100)));
+                entry = new BoundedInt32(1, _geoFactory.CreateExtents2D(0, 0, 100, 100));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 1)
+            if (itemCount > 1)
             {
-                rTree.Insert(new BoundedInt32(2, _geoFactory.CreateExtents2D(50, 50, 150, 150)));
+                entry = new BoundedInt32(2, _geoFactory.CreateExtents2D(50, 50, 150, 150));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 2)
+            if (itemCount > 2)
             {
-                rTree.Insert(new BoundedInt32(3, _geoFactory.CreateExtents2D(-100, -100, 0, 0)));
+                entry = new BoundedInt32(3, _geoFactory.CreateExtents2D(-100, -100, 0, 0));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 3)
+            if (itemCount > 3)
             {
-                rTree.Insert(new BoundedInt32(4, _geoFactory.CreateExtents2D(1000, 1000, 2000, 2000)));
+                entry = new BoundedInt32(4, _geoFactory.CreateExtents2D(1000, 1000, 2000, 2000));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 4)
+            if (itemCount > 4)
             {
-                rTree.Insert(new BoundedInt32(5, _geoFactory.CreateExtents2D(346.23975, 424.5720832, 5928.57523425, 3252.50803582)));
+                entry = new BoundedInt32(5, _geoFactory.CreateExtents2D(346.23975, 424.5720832, 5928.57523425, 3252.50803582));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 5)
+            if (itemCount > 5)
             {
-                rTree.Insert(new BoundedInt32(6, _geoFactory.CreateExtents2D(0, 0, 0, 0)));
+                entry = new BoundedInt32(6, _geoFactory.CreateExtents2D(0, 0, 0, 0));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 6)
+            if (itemCount > 6)
             {
-                rTree.Insert(new BoundedInt32(7, _geoFactory.CreateExtents2D(100, 100, 100, 100)));
+                entry = new BoundedInt32(7, _geoFactory.CreateExtents2D(100, 100, 100, 100));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 7)
+            if (itemCount > 7)
             {
-                rTree.Insert(new BoundedInt32(8, _geoFactory.CreateExtents2D(0, 0, 100, 100)));
+                entry = new BoundedInt32(8, _geoFactory.CreateExtents2D(0, 0, 100, 100));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 8)
+            if (itemCount > 8)
             {
-                rTree.Insert(new BoundedInt32(9, _geoFactory.CreateExtents2D(0, 0, 100, 100)));
+                entry = new BoundedInt32(9, _geoFactory.CreateExtents2D(0, 0, 100, 100));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 9)
+            if (itemCount > 9)
             {
-                rTree.Insert(new BoundedInt32(10, _geoFactory.CreateExtents2D(0, 0, 100, 100)));
+                entry = new BoundedInt32(10, _geoFactory.CreateExtents2D(0, 0, 100, 100));
+                addEntry(entries, entry, rTree);
             }
 
-            if (items > 10)
+            if (itemCount > 10)
             {
-                rTree.Insert(new BoundedInt32(11, _geoFactory.CreateExtents2D(0, 0, 100, 100)));
+                entry = new BoundedInt32(11, _geoFactory.CreateExtents2D(0, 0, 100, 100));
+                addEntry(entries, entry, rTree);
             }
+        }
+
+        private static void addEntry(IList<BoundedInt32> entries, BoundedInt32 entry, ISpatialIndex<IExtents, BoundedInt32> rTree) 
+        {
+            if (entries != null)
+            {
+                entries.Add(entry);    
+            }
+
+            rTree.Insert(entry);
         }
 
         private void addRandomEntries(ISpatialIndex<IExtents, BoundedInt32> rTree)
@@ -384,6 +418,19 @@ namespace SharpMap.Tests.Indexing
                 IExtents bounds = _geoFactory.CreateExtents2D(xMin, yMin, xMax, yMax);
                 rTree.Insert(new BoundedInt32(i, bounds));
             }
+        }
+
+        private DynamicRTree<BoundedInt32> createNewRTree(out Int32 nodeItemMax)
+        {
+            DynamicRTreeBalanceHeuristic balanceHeuristic = new DynamicRTreeBalanceHeuristic();
+
+            nodeItemMax = balanceHeuristic.NodeItemMaximumCount;
+
+            return new DynamicRTree<BoundedInt32>(
+                _geoFactory,
+                new GuttmanQuadraticInsert<BoundedInt32>(_geoFactory),
+                new GuttmanQuadraticSplit<BoundedInt32>(_geoFactory),
+                balanceHeuristic);
         }
     }
 }

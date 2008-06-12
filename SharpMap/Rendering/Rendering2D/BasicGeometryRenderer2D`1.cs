@@ -36,7 +36,7 @@ namespace SharpMap.Rendering.Rendering2D
 	/// </summary>
 	/// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
 	public class BasicGeometryRenderer2D<TRenderObject> 
-        : FeatureRenderer2D<VectorStyle, TRenderObject>, IGeometryRenderer<Symbol2D, TRenderObject>
+        : FeatureRenderer2D<GeometryStyle, TRenderObject>, IGeometryRenderer<Symbol2D, TRenderObject>
 	{
 		#region Type Members
 		private static Object _defaultSymbol;
@@ -79,9 +79,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// A vector renderer.
         /// </param>
         public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
-            : this(vectorRenderer, new VectorStyle())
-        {
-        }
+            : this(vectorRenderer, new GeometryStyle()) { } 
 
 		/// <summary>
 		/// Creates a new BasicGeometryRenderer2D with the given VectorRenderer2D instance.
@@ -92,7 +90,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="defaultStyle"> 
 		/// The default style to apply to a feature's geometry.
 		/// </param>
-		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, VectorStyle defaultStyle)
+		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, GeometryStyle defaultStyle)
 			: base(vectorRenderer)
 		{
             DefaultStyle = defaultStyle;
@@ -115,7 +113,7 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
-		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, VectorStyle style, RenderState renderState, ILayer layer)
+		protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, GeometryStyle style, RenderState renderState, ILayer layer)
 		{
 			if (feature == null) throw new ArgumentNullException("feature");
 			if (style == null) throw new ArgumentNullException("style");
@@ -282,7 +280,7 @@ namespace SharpMap.Rendering.Rendering2D
 
 	    #region Private helper methods
 		private IEnumerable<TRenderObject> renderGeometry(
-            IGeometry geometry, VectorStyle style, RenderState renderState)
+            IGeometry geometry, GeometryStyle style, RenderState renderState)
 		{
 			if (geometry is IPolygon)
 			{
@@ -349,7 +347,7 @@ namespace SharpMap.Rendering.Rendering2D
 		}
 
         private IEnumerable<TRenderObject> enumerateGeoCollection(
-            IGeometryCollection collection, VectorStyle style, RenderState renderState)
+            IGeometryCollection collection, GeometryStyle style, RenderState renderState)
         {
             foreach (IGeometry geometry in collection)
             {

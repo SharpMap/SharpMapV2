@@ -19,10 +19,12 @@
 using System;
 using System.Data;
 using System.Reflection.Emit;
+using GeoAPI.DataStructures;
 using GeoAPI.Indexing;
 using SharpMap.Data;
 using GeoAPI.Geometries;
 using System.Reflection;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {
@@ -38,7 +40,7 @@ namespace SharpMap.Data
         #endregion
 
         #region Type fields
-        private static readonly GetColumnsDelegate _getColumns; 
+        private static readonly GetColumnsDelegate _getColumns;
         #endregion
 
         #region Static constructor
@@ -48,8 +50,8 @@ namespace SharpMap.Data
                                                                MethodAttributes.Static | MethodAttributes.Public,
                                                                CallingConventions.Standard,
                                                                typeof(DataColumnCollection),		// return type
-                                                               new Type[] { typeof(DataRow)},		// one parameter of type DataRow
-                                                               typeof(DataRow),					// owning type
+                                                               new Type[] { typeof(DataRow) },		// one parameter of type DataRow
+                                                               typeof(DataRow),					    // owning type
                                                                false);								// don't skip JIT visibility checks
 
             ILGenerator il = getColumnsMethod.GetILGenerator();
@@ -59,7 +61,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             _getColumns = (GetColumnsDelegate)getColumnsMethod.CreateDelegate(typeof(GetColumnsDelegate));
-        } 
+        }
         #endregion
 
         #region Instance fields
@@ -76,7 +78,7 @@ namespace SharpMap.Data
         internal FeatureDataRow(DataRowBuilder rb)
             : base(rb)
         {
-        } 
+        }
         #endregion
 
         /// <summary>
@@ -87,6 +89,11 @@ namespace SharpMap.Data
         {
             base.AcceptChanges();
             _isGeometryModified = false;
+        }
+
+        public String Evaluate(Expression expression)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -100,18 +107,13 @@ namespace SharpMap.Data
         {
             get
             {
-                if (Geometry != null)
-                {
-                    return Geometry.Extents;
-                }
-                else
-                {
-                    return _extents;
-                }
+                return Geometry != null
+                           ? Geometry.Extents
+                           : _extents;
             }
             set
             {
-                if(Geometry != null)
+                if (Geometry != null)
                 {
                     throw new InvalidOperationException("Geometry is not null - cannot set extents.");
                 }
@@ -128,7 +130,7 @@ namespace SharpMap.Data
             get { return _currentGeometry; }
             set
             {
-                if (Equals(_currentGeometry, value))
+                if (ReferenceEquals(_currentGeometry, value))
                 {
                     return;
                 }
@@ -330,14 +332,14 @@ namespace SharpMap.Data
 
         public virtual TOid GetOid<TOid>()
         {
-            throw new NotSupportedException(
-                "GetOid<TOid> is not supported for weakly typed FeatureDataRow. " +
-                "Use FeatureDataRow<TOid> instead.");
+            throw new NotSupportedException("GetOid<TOid> is not supported " +
+                                            "for weakly typed FeatureDataRow. " +
+                                            "Use FeatureDataRow<TOid> instead.");
         }
 
         public virtual Boolean HasOid
         {
-            get 
+            get
             {
                 return Table == null ? false : Table.PrimaryKey.Length == 1;
             }
@@ -357,7 +359,7 @@ namespace SharpMap.Data
             get { return Extents; }
         }
 
-        Boolean IBoundable<IExtents>.Intersects(IExtents bounds)
+        Boolean IIntersectable<IExtents>.Intersects(IExtents bounds)
         {
             return Extents.Intersects(bounds);
         }

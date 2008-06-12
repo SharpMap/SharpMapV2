@@ -86,7 +86,6 @@ namespace SharpMap.Data.Providers
         public Int32? Srid
         {
             get { return _innerProvider.Srid; }
-            set { _innerProvider.Srid = value; }
         }
 
         #endregion

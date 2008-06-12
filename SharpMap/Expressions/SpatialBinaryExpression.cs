@@ -25,16 +25,24 @@ namespace SharpMap.Expressions
     {
         public static SpatialBinaryExpression Intersects(IGeometry geometry)
         {
-            return new SpatialBinaryExpression(new SpatialExpression(geometry), 
+            return new SpatialBinaryExpression(new GeometryExpression(geometry), 
                                                SpatialOperation.Intersects, 
                                                new ThisExpression());
         }
 
         public static SpatialBinaryExpression Intersects(IExtents extents)
         {
-            return new SpatialBinaryExpression(new SpatialExpression(extents),
+            return new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                SpatialOperation.Intersects,
                                                new ThisExpression());
+        }
+
+        public static SpatialBinaryExpression Intersects(Expression expression, 
+                                                         SpatialExpression spatialExpression)
+        {
+            return new SpatialBinaryExpression(expression, 
+                                               SpatialOperation.Intersects, 
+                                               spatialExpression);
         }
 
         public SpatialBinaryExpression(Expression left, SpatialOperation op, SpatialExpression right)
@@ -66,7 +74,45 @@ namespace SharpMap.Expressions
             throw new NotImplementedException();
         }
 
-        public static bool IsMatch(SpatialOperation op, Boolean aIsLeft, IGeometry a, IGeometry b)
+        public static Boolean IsMatch(SpatialOperation op, Boolean aIsLeft, IExtents a, IExtents b)
+        {
+            Boolean matches;
+
+            switch (op)
+            {
+                case SpatialOperation.Contains:
+                    matches = (aIsLeft && a.Contains(b)) ||
+                              b.Contains(a);
+                    break;
+                case SpatialOperation.Disjoint:
+                    matches = !b.Intersects(a);
+                    break;
+                case SpatialOperation.Equals:
+                    matches = b.Equals(a);
+                    break;
+                case SpatialOperation.Crosses:
+                case SpatialOperation.Intersects:
+                    matches = b.Intersects(a);
+                    break;
+                case SpatialOperation.Overlaps:
+                    matches = b.Overlaps(a);
+                    break;
+                case SpatialOperation.Touches:
+                    matches = b.Touches(a);
+                    break;
+                case SpatialOperation.Within:
+                    matches = (aIsLeft && a.Within(b)) ||
+                              b.Within(a);
+                    break;
+                default:
+                    matches = false;
+                    break;
+            }
+
+            return matches;
+        }
+
+        public static Boolean IsMatch(SpatialOperation op, Boolean aIsLeft, IGeometry a, IGeometry b)
         {
             Boolean matches;
 

@@ -76,7 +76,7 @@ namespace SharpMap.Tests.Data.Providers
                 adapted.Open();
                 Expect.Call(adapted.SpatialReference)
                     .Return(coordinateSystemStub);
-                adapted.Srid = 1;
+                //adapted.Srid = 1;
                 Expect.Call(adapted.Srid)
                     .Return(2);
             }
@@ -92,7 +92,7 @@ namespace SharpMap.Tests.Data.Providers
             Assert.IsTrue(adapter.IsOpen);
             adapter.Open();
             Assert.AreSame(coordinateSystemStub, adapter.SpatialReference);
-            adapter.Srid = 1;
+            //adapter.Srid = 1;
             Assert.AreEqual(2, adapter.Srid);
 
             mocks.VerifyAll();

@@ -47,9 +47,10 @@ namespace SharpMap.Data
         Boolean IsOpen { get; }
 
         /// <summary>
-        /// The spatial reference ID for the provider.
+        /// Gets the spatial reference ID for the provider's <see cref="SpatialReference"/>,
+        /// if one exists; <see langword="null"/> otherwise.
         /// </summary>
-        Int32? Srid { get; set; }
+        Int32? Srid { get; }
 
         /// <summary>
         /// Geometric extent of the entire dataset.

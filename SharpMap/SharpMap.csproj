@@ -151,15 +151,18 @@
     <Compile Include="Expressions\CollectionExpression.cs" />
     <Compile Include="Expressions\CollectionExpression`1.cs" />
     <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\ExtentsExpression.cs" />
     <Compile Include="Expressions\FeatureQueryExpression.cs" />
     <Compile Include="Expressions\CollectionOperator.cs" />
     <Compile Include="Expressions\FeaturesCollectionExpression.cs" />
+    <Compile Include="Expressions\GeometryExpression.cs" />
     <Compile Include="Expressions\PredicateExpression.cs" />
     <Compile Include="Expressions\LayerExpression.cs" />
     <Compile Include="Expressions\NumericExpression`1.cs" />
     <Compile Include="Expressions\OidCollectionExpression.cs" />
     <Compile Include="Expressions\OidExpression.cs" />
     <Compile Include="Expressions\ProjectionExpression.cs" />
+    <Compile Include="Expressions\PropertyNameExpression.cs" />
     <Compile Include="Expressions\ProviderExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
     <Compile Include="Expressions\RasterQueryExpression.cs" />
@@ -266,6 +269,7 @@
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
+    <Compile Include="Styles\CollisionTestType.cs" />
     <Compile Include="Styles\FeatureStyle.cs" />
     <Compile Include="Styles\HorizontalAlignment.cs" />
     <Compile Include="Styles\IFeatureLayerStyle.cs" />
@@ -335,7 +339,7 @@
     <Compile Include="Styles\StyleRenderingMode.cs" />
     <Compile Include="Styles\Style.cs" />
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
-    <Compile Include="Styles\VectorStyle.cs" />
+    <Compile Include="Styles\GeometryStyle.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
     <Compile Include="Utilities\Hash.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />

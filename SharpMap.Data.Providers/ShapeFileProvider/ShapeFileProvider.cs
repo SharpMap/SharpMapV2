@@ -157,7 +157,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// This constructor creates a <see cref="ShapeFileProvider"/>
         /// with an in-memory spatial index.
         /// </remarks>
-        public ShapeFileProvider(String filename, 
+        public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory)
             : this(filename, geoFactory, coordSysFactory, false) { }
@@ -178,9 +178,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// The coordinate system factory to use to create spatial reference system objects.
         /// </param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-        public ShapeFileProvider(String filename, 
+        public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
-                                 ICoordinateSystemFactory coordSysFactory, 
+                                 ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex)
         {
             _filename = filename;
@@ -633,10 +633,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             try
             {
                 //enableReading();
-                _shapeFileStream = new FileStream(Filename, 
-                                                  FileMode.OpenOrCreate, 
+                _shapeFileStream = new FileStream(Filename,
+                                                  FileMode.OpenOrCreate,
                                                   FileAccess.ReadWrite,
-                                                  exclusive ? FileShare.None : FileShare.Read, 
+                                                  exclusive ? FileShare.None : FileShare.Read,
                                                   4096,
                                                   FileOptions.None);
 
@@ -763,13 +763,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        /// <summary>
-        /// Gets or sets the spatial reference ID.
-        /// </summary>
         public Int32? Srid
         {
             get { return _srid; }
-            set { _srid = value; }
+            //set { _srid = value; }
         }
 
         #region Methods
@@ -1017,11 +1014,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             checkOpen();
 
-            IGeometry geometry = query.SpatialExpression.Geometry;
-            IExtents bounds = geometry.Extents;
             Boolean isQueryLeft = query.IsSpatialExpressionLeft;
-
-            IEnumerable<IdBounds> keys = _spatialIndex.Query(bounds);
+            IEnumerable<IdBounds> keys = queryIndex(query.SpatialExpression);
 
             IDictionary<UInt32, Object> idsInBounds = null;
 
@@ -1037,7 +1031,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 UInt32 id = key.Id;
                 IGeometry candidate = GetGeometryByOid(id);
 
-                if (SpatialBinaryExpression.IsMatch(queryOp, isQueryLeft, geometry, candidate))
+                if (isMatch(queryOp, isQueryLeft, candidate, query.SpatialExpression))
                 {
                     yield return id;
                 }
@@ -1482,6 +1476,28 @@ namespace SharpMap.Data.Providers.ShapeFile
             return byteCount / 2; // number of 16-bit words
         }
 
+        private static Boolean isMatch(SpatialOperation op,
+                                       Boolean isQueryLeft,
+                                       IGeometry geometry,
+                                       SpatialExpression spatialExpression)
+        {
+            GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
+
+            if (geometryExpression != null)
+            {
+                return SpatialBinaryExpression.IsMatch(op, isQueryLeft, geometry, geometryExpression.Geometry);
+            }
+
+            ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
+
+            if (extentsExpression != null)
+            {
+                return SpatialBinaryExpression.IsMatch(op, isQueryLeft, geometry.Extents, extentsExpression.Extents);
+            }
+
+            return true;
+        }
+
         private void checkOpen()
         {
             if (!IsOpen)
@@ -1594,6 +1610,24 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         #region Spatial indexing helper functions
+
+        private IEnumerable<IdBounds> queryIndex(SpatialExpression spatialExpression)
+        {
+            GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
+            ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
+
+            Assert.IsTrue(geometryExpression != null || extentsExpression != null);
+
+            IGeometry geometry = geometryExpression != null
+                                     ? geometryExpression.Geometry
+                                     : null;
+
+            IExtents extents = extentsExpression != null
+                                   ? extentsExpression.Extents
+                                   : geometry.Extents;
+
+            return _spatialIndex.Query(extents);
+        }
 
         /// <summary>
         /// Loads a spatial index from a file. If it doesn't exist, one is created and saved
@@ -2014,7 +2048,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     }
                     else
                     {
-                        poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings), 
+                        poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings),
                                                          Enumerable.Skip(polyRings, 1));
                     }
 

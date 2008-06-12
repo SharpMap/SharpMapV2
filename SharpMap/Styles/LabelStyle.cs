@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using SharpMap.Expressions;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
@@ -26,14 +27,7 @@ namespace SharpMap.Styles
     /// </summary>
     public class LabelStyle : FeatureStyle
 	{
-    	public enum CollisionTestType
-    	{
-    		None,
-    		Simple,
-    		Advanced
-    	}
-
-		#region private fields
+		#region Private instance fields
 
 		private HorizontalAlignment _horizontalAlignment;
         private VerticalAlignment _verticalAlignment;
@@ -44,7 +38,9 @@ namespace SharpMap.Styles
         private StyleFont _font;
         private StyleBrush _foreground;
         private StyleBrush _background;
-    	private CollisionTestType _collisionTestType;
+        private CollisionDetectionType _collisionTestType;
+        private Expression _labelExpression;
+        private Expression _geometryExpression;
 
 		#endregion
 
@@ -52,15 +48,21 @@ namespace SharpMap.Styles
         /// Initializes a new <see cref="LabelStyle"/>.
         /// </summary>
         public LabelStyle()
-            : this(new StyleFont(new StyleFontFamily("Arial"), new Size2D(12, 12), StyleFontStyle.Regular), new SolidStyleBrush(StyleColor.Black))
+            : this(new StyleFont(new StyleFontFamily("Arial"), 
+                                 new Size2D(12, 12), 
+                                 StyleFontStyle.Regular), 
+                                 new SolidStyleBrush(StyleColor.Black))
         {
         }
 
         public LabelStyle(StyleFont font, StyleBrush foreground)
-            : this(font, foreground, new SolidStyleBrush(StyleColor.Transparent), 
-                Point2D.Empty, Size2D.Empty, HorizontalAlignment.Left, VerticalAlignment.Middle)
-        {
-        }
+            : this(font, 
+                   foreground, 
+                   new SolidStyleBrush(StyleColor.Transparent), 
+                   Point2D.Empty, 
+                   Size2D.Empty, 
+                   HorizontalAlignment.Left, 
+                   VerticalAlignment.Middle) { }
 
         public LabelStyle(StyleFont font,
 						  StyleBrush foreground,
@@ -77,7 +79,6 @@ namespace SharpMap.Styles
             _offset = offset;
             _horizontalAlignment = horizontalAlignment;
             _verticalAlignment = verticalAlignment;
-			AreFeaturesSelectable = false;
         }
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace SharpMap.Styles
         {
             get
             {
-				return _collisionTestType != CollisionTestType.None;
+				return _collisionTestType != CollisionDetectionType.None;
 			}
         }
 
@@ -187,10 +188,22 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the type of collision test performed.
         /// </summary>
-    	public CollisionTestType CollisionTest
+    	public CollisionDetectionType CollisionDetectionType
     	{
     		get { return _collisionTestType; }
     		set { _collisionTestType = value; }
-    	}
+        }
+
+        public Expression LabelExpression
+        {
+            get { return _labelExpression; }
+            set { _labelExpression = value; }
+        }
+
+        public Expression GeometryExpression
+        {
+            get { return _labelExpression; }
+            set { _labelExpression = value; }
+        }
 	}
 }

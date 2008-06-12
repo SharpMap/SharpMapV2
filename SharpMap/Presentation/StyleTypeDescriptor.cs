@@ -54,7 +54,7 @@ namespace SharpMap.Presentation
 
         public String GetClassName()
         {
-            return typeof (VectorStyle).Name;
+            return typeof (GeometryStyle).Name;
         }
 
         public String GetComponentName()

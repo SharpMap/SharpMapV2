@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Threading;
+using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
 using SharpMap.Expressions;
@@ -646,10 +647,9 @@ namespace SharpMap.Data
 
             SpatialExpression spatialExpression = query.SpatialExpression;
 
-            if (spatialExpression == null)
+            if (SpatialExpression.IsNullOrEmpty(spatialExpression))
             {
-                throw new ArgumentException("The SpatialQueryExpression must have " +
-                                            "a non-null SpatialExpression.");
+                yield break;
             }
 
             if (query.Expression != null &&
@@ -662,19 +662,45 @@ namespace SharpMap.Data
 
             OnSelectRequested(query);
 
-            IGeometry filterGeometry = spatialExpression.Geometry;
+            ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
+            GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
+
+            IExtents filterExtents = extentsExpression != null
+                                         ? extentsExpression.Extents
+                                         : null;
+            IGeometry filterGeometry = geometryExpression != null
+                                           ? geometryExpression.Geometry
+                                           : null;
+
+            Assert.IsTrue(filterExtents != null || filterGeometry != null);
+
+            if (filterExtents == null)
+            {
+                filterExtents = filterGeometry.Extents;
+            }
+
             Boolean isLeft = query.IsSpatialExpressionLeft;
             SpatialOperation op = query.Op;
 
             IEnumerable<FeatureDataRow> features = IsSpatiallyIndexed
-                                                       ? _rTreeIndex.Query(filterGeometry.Extents)
+                                                       ? _rTreeIndex.Query(filterExtents)
                                                        : this;
 
             foreach (FeatureDataRow row in features)
             {
-                if (SpatialBinaryExpression.IsMatch(op, isLeft, filterGeometry, row.Geometry))
+                if (filterExtents != null)
                 {
-                    yield return row;
+                    if (SpatialBinaryExpression.IsMatch(op, isLeft, filterExtents, row.Geometry.Extents))
+                    {
+                        yield return row;
+                    }   
+                }
+                else
+                {
+                    if (SpatialBinaryExpression.IsMatch(op, isLeft, filterGeometry, row.Geometry))
+                    {
+                        yield return row;
+                    }
                 }
             }
 
@@ -683,8 +709,6 @@ namespace SharpMap.Data
             // geometries which have an extent which doesn't intersect is disjoint.
             if (op == SpatialOperation.Disjoint && IsSpatiallyIndexed)
             {
-                IExtents filterExtents = filterGeometry.Extents;
-
                 foreach (FeatureDataRow row in _rTreeIndex.Query(_rTreeIndex.Bounds))
                 {
                     if (!row.Extents.Intersects(filterExtents))

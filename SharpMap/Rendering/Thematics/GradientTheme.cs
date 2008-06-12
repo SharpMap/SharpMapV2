@@ -182,7 +182,7 @@ namespace SharpMap.Rendering.Thematics
             _max = maxValue;
             _maxStyle = maxStyle;
             _minStyle = minStyle;
-            _styleTypeFunctionTable[typeof (VectorStyle).TypeHandle] = calculateVectorStyle;
+            _styleTypeFunctionTable[typeof (GeometryStyle).TypeHandle] = calculateVectorStyle;
             _styleTypeFunctionTable[typeof (LabelStyle).TypeHandle] = calculateLabelStyle;
         }
 
@@ -327,15 +327,15 @@ namespace SharpMap.Rendering.Thematics
 
         private IStyle calculateVectorStyle(IStyle min, IStyle max, Double value)
         {
-            if (!(min is VectorStyle && max is VectorStyle))
+            if (!(min is GeometryStyle && max is GeometryStyle))
             {
                 throw new ArgumentException(
                     "Both min style and max style must be vector styles to compute a gradient vector style");
             }
 
-            VectorStyle style = new VectorStyle();
-            VectorStyle vectorMin = min as VectorStyle;
-            VectorStyle vectorMax = max as VectorStyle;
+            GeometryStyle style = new GeometryStyle();
+            GeometryStyle vectorMin = min as GeometryStyle;
+            GeometryStyle vectorMax = max as GeometryStyle;
 
             Double dFrac = fraction(value);
             Single fFrac = Convert.ToSingle(dFrac);
@@ -387,7 +387,7 @@ namespace SharpMap.Rendering.Thematics
             LabelStyle labelMin = min as LabelStyle;
             LabelStyle labelMax = max as LabelStyle;
 
-			style.CollisionTest = labelMin.CollisionTest;
+			style.CollisionDetectionType = labelMin.CollisionDetectionType;
             style.Enabled = interpolateBool(min.Enabled, max.Enabled, value);
 
             Double fontSize = interpolateDouble(labelMin.Font.Size.Width, labelMax.Font.Size.Width, value);

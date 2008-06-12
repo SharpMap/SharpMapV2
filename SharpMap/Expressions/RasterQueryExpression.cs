@@ -18,33 +18,33 @@ namespace SharpMap.Expressions
         }
 
         public RasterQueryExpression(IExtents extents, SpatialOperation op)
-            : base(new AllBandsExpression(), new SpatialBinaryExpression(new SpatialExpression(extents),
-                                                                              op,
-                                                                              new ThisExpression()))
+            : base(new AllBandsExpression(), new SpatialBinaryExpression(new ExtentsExpression(extents),
+                                                                         op,
+                                                                         new ThisExpression()))
         {
             checkOp(op);
         }
 
         public RasterQueryExpression(IGeometry geometry, SpatialOperation op)
-            : base(new AllBandsExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
-                                                                              op,
-                                                                              new ThisExpression()))
+            : base(new AllBandsExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
+                                                                         op,
+                                                                         new ThisExpression()))
         {
             checkOp(op);
         }
 
         public RasterQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
-            : base(new AllBandsExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
-                                                                              op,
-                                                                              new LayerExpression(layer)))
+            : base(new AllBandsExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
+                                                                         op,
+                                                                         new LayerExpression(layer)))
         {
             checkOp(op);
         }
 
         public RasterQueryExpression(IGeometry geometry, SpatialOperation op, IRasterProvider provider)
-            : base(new AllBandsExpression(), new SpatialBinaryExpression(new SpatialExpression(geometry),
-                                                                              op,
-                                                                              new ProviderExpression(provider)))
+            : base(new AllBandsExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
+                                                                         op,
+                                                                         new ProviderExpression(provider)))
         {
             checkOp(op);
         }

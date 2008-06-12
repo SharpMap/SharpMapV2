@@ -73,7 +73,7 @@ namespace SharpMap.Layers
 		/// <param name="layerName">Name of the layer.</param>
 		/// <param name="dataSource">Data source provider for the layer.</param>
 		public LabelLayer(String layerName, IFeatureProvider dataSource)
-			: base(layerName, dataSource)
+			: base(layerName, new LabelStyle(), dataSource)
 		{
 			_multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
 		}
@@ -115,7 +115,7 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Data column from where the label rotation is derived.
+        /// Gets or sets the name of the data column from where the label rotation is derived.
         /// If this is empty, rotation will be zero, or aligned to a linestring.
         /// Rotation are in degrees (positive = clockwise).
         /// </summary>
@@ -126,7 +126,8 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// A value indication the priority of the label in cases of label-collision detection.
+        /// Gets or sets a value indication the priority of the 
+        /// label in cases of label-collision detection.
         /// </summary>
         public Int32 Priority
         {
@@ -134,6 +135,7 @@ namespace SharpMap.Layers
             set { _priority = value; }
         }
 
+        // TODO: remove collision detection to a separate class 
     	public Dictionary<Object, Label2D> RenderCache
     	{
     		get
@@ -142,6 +144,7 @@ namespace SharpMap.Layers
 				{
 					_renderCache = new Dictionary<Object, Label2D>();
 				}
+
     			return _renderCache;
     		}
     	}
@@ -170,10 +173,10 @@ namespace SharpMap.Layers
 						throw new NotImplementedException("Style must be set before getting the TextFormatter");
 					}
 
-					textFormatter = delegate(FeatureDataRow feature2)
-					{
-						return feature2[((LabelStyle)Style).LabelFormatExpression].ToString();
-					};
+					textFormatter = delegate(FeatureDataRow feature)
+					                        {
+                                                return feature.Evaluate(((LabelStyle)Style).LabelExpression);
+					                        };
 				}
 
     			return textFormatter;
@@ -181,12 +184,15 @@ namespace SharpMap.Layers
     	}
 
     	/// <summary>
-        /// Clones the object
+        /// Clones the object.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A new <see cref="LabelLayer"/> with the same <see cref="LabelLayer.LayerName"/>
+        /// and <see cref="FeatureLayer.DataSource"/>.
+        /// </returns>
         public override Object Clone()
         {
-            throw new NotImplementedException();
+    	    return new LabelLayer(LayerName, DataSource);
         }
 
         protected override IStyle CreateStyle()
