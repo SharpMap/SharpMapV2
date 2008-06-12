@@ -86,12 +86,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         #endregion
 
-        /// <summary>
-        /// Creates the inverse transform of this object.
-        /// </summary>
-        /// <remarks>This method may fail if the transform is not one to one. However, all cartographic projections should succeed.</remarks>
-        /// <returns></returns>
-        public override IMathTransform<TCoordinate> Inverse()
+        protected override IMathTransform GetInverseInternal()
         {
             throw new NotImplementedException();
         }
@@ -105,8 +100,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             Double value = (Double)point[0];
 
             value /= Source.AngularUnit.RadiansPerUnit;
-            value -= Source.PrimeMeridian.Longitude/Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
-            value += Target.PrimeMeridian.Longitude/Target.PrimeMeridian.AngularUnit.RadiansPerUnit;
+            value -= Source.PrimeMeridian.Longitude / Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
+            value += Target.PrimeMeridian.Longitude / Target.PrimeMeridian.AngularUnit.RadiansPerUnit;
             value *= Source.AngularUnit.RadiansPerUnit;
 
             Int32 componentCount = point.ComponentCount;

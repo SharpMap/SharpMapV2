@@ -65,8 +65,8 @@ namespace ProjNet.CoordinateSystems
 
         /// <summary>
         /// Returns the HorizontalDatum. The horizontal datum is used to determine where
-        /// the centre of the Earth is considered to be. All coordinate points will be 
-        /// measured from the centre of the Earth, and not the surface.
+        /// the center of the Earth is considered to be. All coordinate points will be 
+        /// measured from the center of the Earth, and not the surface.
         /// </summary>
         public IHorizontalDatum HorizontalDatum
         {

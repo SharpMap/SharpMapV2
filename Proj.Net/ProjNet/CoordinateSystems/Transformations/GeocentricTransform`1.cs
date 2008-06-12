@@ -22,11 +22,12 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
 using NPack.Interfaces;
+using GeoAPI.Units;
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
     /// <summary>
-    /// 
+    /// Implements a geocentric transformation.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -35,14 +36,17 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// X, Y, Z with the Z axis corresponding to the earth's rotation axis positive northwards, the X
     /// axis through the intersection of the prime meridian and equator, and the Y axis through
     /// the intersection of the equator with longitude 90 degrees east. The geographic and geocentric
-    /// systems are based on the same geodetic datum.</para>
-    /// <para>Geocentric coordinate reference systems are conventionally taken to be defined with the X
+    /// systems are based on the same geodetic datum.
+    /// </para>
+    /// <para>
+    /// Geocentric coordinate reference systems are conventionally taken to be defined with the X
     /// axis through the intersection of the Greenwich meridian and equator. This requires that the equivalent
     /// geographic coordinate reference systems based on a non-Greenwich prime meridian should first be
     /// transformed to their Greenwich equivalent. Geocentric coordinates X, Y and Z take their units from
     /// the units of the ellipsoid axes (a and b). As it is conventional for X, Y and Z to be in metres,
     /// if the ellipsoid axis dimensions are given in another linear unit they should first be converted
-    /// to metres.</para>
+    /// to metres.
+    /// </para>
     /// </remarks>
     internal class GeocentricTransform<TCoordinate> : MathTransform<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
@@ -52,11 +56,9 @@ namespace ProjNet.CoordinateSystems.Transformations
         private const Double COS_67P5 = 0.38268343236508977; /* cosine of 67.5 degrees */
         private const Double AD_C = 1.0026000; /* Toms region 1 constant */
 
-        private Double _ses; // Second eccentricity squared : (a^2 - b^2)/b^2
+        private readonly Double _ses; // Second eccentricity squared : (a^2 - b^2)/b^2
         //private Double ab; // Semi_major / semi_minor
         //private Double ba; // Semi_minor / semi_major
-
-        protected MathTransform<TCoordinate> _inverse;
 
         /// <summary>
         /// Initializes a geocentric projection object
@@ -68,7 +70,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory, isInverse)
         {
             Double semiMinor = SemiMinor;
-            _ses = (Math.Pow(SemiMajor, 2) - Math.Pow(semiMinor, 2))/Math.Pow(semiMinor, 2);
+            _ses = (Math.Pow(SemiMajor, 2) - Math.Pow(semiMinor, 2)) / Math.Pow(semiMinor, 2);
             //ba = _semiMinor / _semiMajor;
             //ab = _semiMajor / _semiMinor;
         }
@@ -79,23 +81,21 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <param name="parameters">List of parameters to initialize the projection.</param>
         internal GeocentricTransform(IEnumerable<ProjectionParameter> parameters,
                                      ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) {}
+            : this(parameters, coordinateFactory, false) { }
 
 
         /// <summary>
         /// Returns the inverse of this conversion.
         /// </summary>
         /// <returns>IMathTransform that is the reverse of the current conversion.</returns>
-        public override IMathTransform<TCoordinate> Inverse()
+        protected override IMathTransform GetInverseInternal()
         {
-            if (_inverse == null)
-            {
-                _inverse = new GeocentricTransform<TCoordinate>(
-                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters),
-                    CoordinateFactory, !_isInverse);
-            }
+            IEnumerable<ProjectionParameter> parameters =
+                Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return _inverse;
+            return new GeocentricTransform<TCoordinate>(parameters,
+                                                        CoordinateFactory,
+                                                        !_isInverse);
         }
 
         /// <summary>
@@ -105,18 +105,19 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns>Point in projected meters</returns>
         private TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            Double lon = DegreesToRadians((Double) lonlat[0]);
-            Double lat = DegreesToRadians((Double) lonlat[1]);
+            Double lon = (Radians)new Degrees((Double)lonlat[0]);
+            Double lat = (Radians)new Degrees((Double)lonlat[1]);
             Double h = lonlat.ComponentCount < 3
                            ? 0
-                           : ((Double) lonlat[2]).Equals(Double.NaN)
+                           : ((Double)lonlat[2]).Equals(Double.NaN)
                                  ? 0
-                                 : (Double) lonlat[2];
+                                 : (Double)lonlat[2];
 
-            Double v = SemiMajor/Math.Sqrt(1 - E2*Math.Pow(Math.Sin(lat), 2));
-            Double x = (v + h)*Math.Cos(lat)*Math.Cos(lon);
-            Double y = (v + h)*Math.Cos(lat)*Math.Sin(lon);
-            Double z = ((1 - E2)*v + h)*Math.Sin(lat);
+            Double e2 = E2;
+            Double v = SemiMajor / Math.Sqrt(1 - e2 * Math.Pow(Math.Sin(lat), 2));
+            Double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
+            Double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
+            Double z = ((1 - e2) * v + h) * Math.Sin(lat);
             return CreateCoordinate(x, y, z);
         }
 
@@ -130,120 +131,116 @@ namespace ProjNet.CoordinateSystems.Transformations
             Boolean atPole = false; // indicates whether location is in polar region */
             Double z = pnt.ComponentCount < 3
                            ? 0
-                           : ((Double) pnt[2]).Equals(Double.NaN)
+                           : ((Double)pnt[2]).Equals(Double.NaN)
                                  ? 0
-                                 : (Double) pnt[2];
+                                 : (Double)pnt[2];
 
-            Double lon;
-            Double lat = 0;
-            Double Height;
+            Radians lon;
+            Radians lat = new Radians(0);
+            Double height;
 
-            if ((Double)pnt[0] != 0.0)
+            const Double HalfPI = Math.PI * 0.5;
+
+            Double x = (Double) pnt[0];
+            Double y = (Double) pnt[1];
+
+            if (x != 0.0)
             {
-                lon = Math.Atan2((Double) pnt[1], (Double) pnt[0]);
+                lon = new Radians(Math.Atan2(y, x));
             }
             else
             {
-                if ((Double) pnt[1] > 0)
+                if (y > 0)
                 {
-                    lon = Math.PI/2;
+                    lon = new Radians(HalfPI);
                 }
-                else if ((Double) pnt[1] < 0)
+                else if (y < 0)
                 {
-                    lon = -Math.PI*0.5;
+                    lon = new Radians(-HalfPI);
                 }
                 else
                 {
                     atPole = true;
-                    lon = 0.0;
+                    lon = new Radians(0);
+
                     if (z > 0.0)
                     {
                         /* north pole */
-                        lat = Math.PI*0.5;
+                        lat = new Radians(HalfPI);
                     }
                     else if (z < 0.0)
                     {
                         /* south pole */
-                        lat = -Math.PI*0.5;
+                        lat = new Radians(-HalfPI);
                     }
                     else
                     {
                         /* center of earth */
-                        return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(Math.PI*0.5), -SemiMajor);
+                        return CreateCoordinate(new Degrees(lon), 
+                                                (Degrees)new Radians(HalfPI), 
+                                                -SemiMajor);
                     }
                 }
             }
 
             Double semiMajor = SemiMajor;
 
-            Double W2 = (Double)pnt[0].Multiply(pnt[0]) + (Double) pnt[1]*(Double) pnt[1]; // Square of distance from Z axis
-            Double W = Math.Sqrt(W2); // distance from Z axis
-            Double T0 = z*AD_C; // initial estimate of vertical component
-            Double S0 = Math.Sqrt(T0*T0 + W2); //initial estimate of horizontal component
-            Double Sin_B0 = T0/S0; //sin(B0), B0 is estimate of Bowring aux variable
-            Double Cos_B0 = W/S0; //cos(B0)
-            Double Sin3_B0 = Math.Pow(Sin_B0, 3);
-            Double T1 = z + semiMajor*_ses*Sin3_B0; //corrected estimate of vertical component
-            Double Sum = W - semiMajor*E2*Cos_B0*Cos_B0*Cos_B0; //numerator of cos(phi1)
-            Double S1 = Math.Sqrt(T1*T1 + Sum*Sum); //corrected estimate of horizontal component
-            Double Sin_p1 = T1/S1; //sin(phi1), phi1 is estimated latitude
-            Double Cos_p1 = Sum/S1; //cos(phi1)
-            Double Rn = semiMajor/Math.Sqrt(1.0 - E2*Sin_p1*Sin_p1); //Earth radius at location
+            Double w2 = x * x + y * y; // Square of distance from Z axis
+            Double w = Math.Sqrt(w2); // distance from Z axis
+            Double t0 = z * AD_C; // initial estimate of vertical component
+            Double s0 = Math.Sqrt(t0 * t0 + w2); //initial estimate of horizontal component
+            Double sinB0 = t0 / s0; //sin(B0), B0 is estimate of Bowring aux variable
+            Double cosB0 = w / s0; //cos(B0)
+            Double sin3B0 = Math.Pow(sinB0, 3);
+            Double t1 = z + semiMajor * _ses * sin3B0; //corrected estimate of vertical component
+            Double sum = w - semiMajor * E2 * cosB0 * cosB0 * cosB0; //numerator of cos(phi1)
+            Double s1 = Math.Sqrt(t1 * t1 + sum * sum); //corrected estimate of horizontal component
+            Double sinP1 = t1 / s1; //sin(phi1), phi1 is estimated latitude
+            Double cosP1 = sum / s1; //cos(phi1)
+            Double rn = semiMajor / Math.Sqrt(1.0 - E2 * sinP1 * sinP1); //Earth radius at location
 
-            if (Cos_p1 >= COS_67P5)
+            if (cosP1 >= COS_67P5)
             {
-                Height = W/Cos_p1 - Rn;
+                height = w / cosP1 - rn;
             }
-            else if (Cos_p1 <= -COS_67P5)
+            else if (cosP1 <= -COS_67P5)
             {
-                Height = W/-Cos_p1 - Rn;
+                height = w / -cosP1 - rn;
             }
             else
             {
-                Height = z/Sin_p1 + Rn*(E2 - 1.0);
+                height = z / sinP1 + rn * (E2 - 1.0);
             }
 
             if (!atPole)
             {
-                lat = Math.Atan(Sin_p1/Cos_p1);
+                lat = new Radians(Math.Atan(sinP1 / cosP1));
             }
 
-            return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(lat), Height);
+            return CreateCoordinate((Degrees)lon, (Degrees)lat, height);
         }
 
         /// <summary>
         /// Transforms a coordinate point. The passed parameter point should not be modified.
         /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
+        /// <param name="point">The coordinate to transform.</param>
+        /// <returns>
+        /// A new <typeparamref name="TCoordinate"/> which represents the transformed coordinate.
+        /// </returns>
         public override TCoordinate Transform(TCoordinate point)
         {
-            if (!_isInverse)
-            {
-                return DegreesToMeters(point);
-            }
-            else
-            {
-                return MetersToDegrees(point);
-            }
+            return !_isInverse
+                       ? DegreesToMeters(point)
+                       : MetersToDegrees(point);
         }
 
         /// <summary>
-        /// Transforms a list of coordinate point ordinal values.
+        /// Transforms a set of coordinates.
         /// </summary>
         /// <param name="points"></param>
-        /// <returns></returns>
+        /// <returns>The enumeration of coordinate values after tranformation.</returns>
         /// <remarks>
-        /// This method is provided for efficiently transforming many points. The supplied array
-        /// of ordinal values will contain packed ordinal values. For example, if the source
-        /// dimension is 3, then the ordinals will be packed in this order (x0,y0,z0,x1,y1,z1 ...).
-        /// The size of the passed array must be an integer multiple of DimSource. The returned
-        /// ordinal values are packed in a similar way. In some DCPs. the ordinals may be
-        /// transformed in-place, and the returned array may be the same as the passed array.
-        /// So any client code should not attempt to reuse the passed ordinal values (although
-        /// they can certainly reuse the passed array). If there is any problem then the server
-        /// implementation will throw an exception. If this happens then the client should not
-        /// make any assumptions about the state of the ordinal values.
+        /// This method is provided for efficiently transforming many points.
         /// </remarks>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {

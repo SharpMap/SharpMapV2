@@ -218,7 +218,9 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                             IGeocentricCoordinateSystem<TCoordinate> source,
                                                             IGeographicCoordinateSystem<TCoordinate> target)
         {
-            IMathTransform<TCoordinate> geocMathTransform = createCoordinateOperation(source).Inverse();
+            IMathTransform<TCoordinate> geocMathTransform 
+                = createCoordinateOperation(source).Inverse;
+
             return new CoordinateTransformation<TCoordinate>(source,
                                                              target,
                                                              TransformType.Conversion,
@@ -332,7 +334,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 IMathTransform<TCoordinate> mathTransform = createCoordinateOperation(projection,
                                                                                       ellipsoid,
                                                                                       linearUnit);
-                IMathTransform<TCoordinate> inverse = mathTransform.Inverse();
+                IMathTransform<TCoordinate> inverse = mathTransform.Inverse;
 
                 transformation = new CoordinateTransformation<TCoordinate>(source,
                                                                            target,
@@ -480,7 +482,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                     _coordinateFactory,
                                                     _matrixFactory);
 
-                IMathTransform<TCoordinate> inverseDatumTransform = datumTransform.Inverse();
+                IMathTransform<TCoordinate> inverseDatumTransform = datumTransform.Inverse;
 
                 source = source.HorizontalDatum.Wgs84Parameters == null ||
                          source.HorizontalDatum.Wgs84Parameters.HasZeroValuesOnly

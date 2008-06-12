@@ -42,6 +42,7 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.Units;
 using NPack.Interfaces;
 using ProjNet.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
@@ -49,15 +50,14 @@ using GeoAPI.DataStructures;
 namespace ProjNet.CoordinateSystems.Projections
 {
     /// <summary>
-    /// Projections inherit from this abstract class to get access to useful mathematical functions.
+    /// Base class for concrete map projections.
     /// </summary>
     internal abstract class MapProjection<TCoordinate> : MathTransform<TCoordinate>, IProjection
-        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        protected Double _metersPerUnit;
-        protected MathTransform<TCoordinate> _inverse;
+        private readonly Double _metersPerUnit;
 
         // TODO: can these fields / properties get factored out and shared with CoordinateTransformation<TCoordinate>?
         private String _abbreviation;
@@ -68,12 +68,14 @@ namespace ProjNet.CoordinateSystems.Projections
         private String _remarks;
 
         protected MapProjection(IEnumerable<ProjectionParameter> parameters,
-                                ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+                                ICoordinateFactory<TCoordinate> coordinateFactory,
+                                Boolean isInverse)
             : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters),
-                   coordinateFactory, isInverse)
+                   coordinateFactory,
+                   isInverse)
         {
             ProjectionParameter unit = GetParameter("unit");
-            _metersPerUnit = unit.Value;
+            _metersPerUnit = unit != null ? unit.Value : 1.0;
         }
 
         #region IProjection Members
@@ -279,19 +281,19 @@ namespace ProjNet.CoordinateSystems.Projections
             get { return _isInverse; }
         }
 
+        protected internal Double MetersPerUnit
+        {
+            get { return _metersPerUnit; }
+        }
+
         /// <summary>
         /// Transforms the given point.
         /// </summary>
         public override TCoordinate Transform(TCoordinate point)
         {
-            if (!_isInverse)
-            {
-                return DegreesToMeters(point);
-            }
-            else
-            {
-                return MetersToDegrees(point);
-            }
+            return !_isInverse
+                       ? DegreesToMeters(point)
+                       : MetersToDegrees(point);
         }
 
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> ord)
@@ -340,12 +342,7 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
             }
 
-            if (IsInverse != m.IsInverse)
-            {
-                return false;
-            }
-
-            return true;
+            return IsInverse == m.IsInverse;
         }
 
         #endregion
@@ -405,12 +402,12 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// π * 0.5 
         /// </summary>
-        protected const Double HalfPI = (PI*0.5);
+        protected const Double HalfPI = (PI * 0.5);
 
         /// <summary>
         /// π * 2
         /// </summary>
-        protected const Double TwoPI = (PI*2.0);
+        protected const Double TwoPI = (PI * 2.0);
 
         /// <summary>
         /// The smallest tolerable difference between two real numbers. Differences
@@ -443,7 +440,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Returns the cube of a number.
         /// </summary>
-        /// <param name="x"> </param>
+        /// <param name="x">The number to raise to the power of 3.</param>
         protected static Double Cube(Double x)
         {
             return Math.Pow(x, 3); /* x^3 */
@@ -452,7 +449,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Returns the quad of a number.
         /// </summary>
-        /// <param name="x"> </param>
+        /// <param name="x">The number to raise to the power of 4.</param>
         protected static Double Quad(Double x)
         {
             return Math.Pow(x, 4); /* x^4 */
@@ -472,7 +469,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         protected static Double IMod(Double a, Double b)
         {
-            return (a) - (((a)/(b))*(b)); /* Integer mod function */
+            return (a) - (((a) / (b)) * (b)); /* Integer mod function */
         }
 
         /// <summary>
@@ -480,14 +477,9 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         protected static Double Sign(Double x)
         {
-            if (x < 0.0)
-            {
-                return (-1);
-            }
-            else
-            {
-                return (1);
-            }
+            return x < 0.0
+                       ? -1
+                       : 1;
         }
 
         protected static Double AdjustLongitude(Double x)
@@ -496,25 +488,25 @@ namespace ProjNet.CoordinateSystems.Projections
 
             while (count <= MaxIterationCount && Math.Abs(x) > PI)
             {
-                if (((long) Math.Abs(x/Math.PI)) < 2)
+                if (((Int64)Math.Abs(x / Math.PI)) < 2)
                 {
-                    x = x - (Sign(x)*TwoPI);
+                    x = x - (Sign(x) * TwoPI);
                 }
-                else if (((long) Math.Abs(x/TwoPI)) < MaxInt32)
+                else if (((Int64)Math.Abs(x / TwoPI)) < MaxInt32)
                 {
-                    x = x - (((long) (x/TwoPI))*TwoPI);
+                    x = x - (((Int64)(x / TwoPI)) * TwoPI);
                 }
-                else if (((long) Math.Abs(x/(MaxInt32*TwoPI))) < MaxInt32)
+                else if (((Int64)Math.Abs(x / (MaxInt32 * TwoPI))) < MaxInt32)
                 {
-                    x = x - (((long) (x/(MaxInt32*TwoPI)))*(TwoPI*MaxInt32));
+                    x = x - (((Int64)(x / (MaxInt32 * TwoPI))) * (TwoPI * MaxInt32));
                 }
-                else if (((long) Math.Abs(x/(HalfMaxInt64*TwoPI))) < MaxInt32)
+                else if (((Int64)Math.Abs(x / (HalfMaxInt64 * TwoPI))) < MaxInt32)
                 {
-                    x = x - (((long) (x/(HalfMaxInt64*TwoPI)))*(TwoPI*HalfMaxInt64));
+                    x = x - (((Int64)(x / (HalfMaxInt64 * TwoPI))) * (TwoPI * HalfMaxInt64));
                 }
                 else
                 {
-                    x = x - (Sign(x)*TwoPI);
+                    x = x - (Sign(x) * TwoPI);
                 }
 
                 count++;
@@ -529,11 +521,9 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         protected static Double ComputeSmallM(Double eccentricity, Double sinPhi, Double cosPhi)
         {
-            Double con;
+            Double con = eccentricity * sinPhi;
 
-            con = eccentricity*sinPhi;
-
-            return ((cosPhi/(Math.Sqrt(1.0 - con*con))));
+            return ((cosPhi / (Math.Sqrt(1.0 - con * con))));
         }
 
         /// <summary>
@@ -542,19 +532,23 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         protected static Double ComputeSmallQ(Double eccentricity, Double sinPhi)
         {
+            Double q;
+
             if (eccentricity > 1.0e-7)
             {
-                Double con;
-                con = eccentricity*sinPhi;
+                Double con = eccentricity * sinPhi;
 
-                return ((1.0 - eccentricity*eccentricity)
-                        *(sinPhi/(1.0 - con*con) - (.5/eccentricity)
-                                                   *Math.Log((1.0 - con)/(1.0 + con))));
+                q = (1.0 - eccentricity * eccentricity) *
+                    (sinPhi / (1.0 - con * con) -
+                    (0.5 / eccentricity) *
+                    Math.Log((1.0 - con) / (1.0 + con)));
             }
             else
             {
-                return 2.0*sinPhi;
+                q = 2.0 * sinPhi;
             }
+
+            return q;
         }
 
         /// <summary>
@@ -589,12 +583,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         protected static Double ComputeSmallT(Double eccentricity, Double phi, Double sinphi)
         {
-            Double con;
-            Double com;
-            con = eccentricity*sinphi;
-            com = .5*eccentricity;
-            con = Math.Pow(((1.0 - con)/(1.0 + con)), com);
-            return (Math.Tan(.5*(HalfPI - phi))/con);
+            Double con = eccentricity * sinphi;
+            Double com = 0.5 * eccentricity;
+            con = Math.Pow(((1.0 - con) / (1.0 + con)), com);
+            return Math.Tan(0.5 * (HalfPI - phi)) / con;
         }
 
         /// <summary>
@@ -611,32 +603,27 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>The inverse of the Albers Conical Equal-Area projection</returns>
         protected static Double ComputePhi1(Double eccentricity, Double qs)
         {
-            Double eccnts;
-            Double phi;
-            long i;
+            Int64 i;
 
-            phi = Asin(.5*qs);
+            Double phi = Asin(0.5 * qs);
 
             if (eccentricity < Epsilon)
             {
                 return phi;
             }
 
-            eccnts = eccentricity*eccentricity;
+            Double e2 = eccentricity * eccentricity;
 
             for (i = 1; i <= MaxIterationCount; i++)
             {
-                Double dphi;
-                Double con;
-                Double com;
                 Double sinpi;
                 Double cospi;
 
                 SinCos(phi, out sinpi, out cospi);
-                con = eccentricity*sinpi;
-                com = 1.0 - con*con;
-                dphi = .5*com*com/cospi*(qs/(1.0 - eccnts) - sinpi/com +
-                                         .5/eccentricity*Math.Log((1.0 - con)/(1.0 + con)));
+                Double con = eccentricity * sinpi;
+                Double com = 1.0 - con * con;
+                Double dphi = 0.5 * com * com / cospi * (qs / (1.0 - e2) - sinpi / com +
+                                                         0.5 / eccentricity * Math.Log((1.0 - con) / (1.0 + con)));
                 phi = phi + dphi;
 
                 if (Math.Abs(dphi) <= 1e-7)
@@ -645,8 +632,7 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
             }
 
-            throw new ComputationConvergenceException(
-                String.Format("Failed to converge after {0} iterations.", MaxIterationCount));
+            throw ComputationalConvergenceError();
         }
 
         /// <summary>
@@ -666,7 +652,7 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
             }
 
-            return (Math.Asin(con));
+            return Math.Asin(con);
         }
 
         /// <summary>
@@ -683,10 +669,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </remarks>
         protected static Double ComputePhi2(Double eccentricity, Double ts)
         {
-            long i;
+            Int64 i;
 
-            Double eccnth = .5*eccentricity;
-            Double chi = HalfPI - 2*Math.Atan(ts);
+            Double halfEccentricity = 0.5 * eccentricity;
+            Double chi = HalfPI - 2 * Math.Atan(ts);
 
             for (i = 0; i <= MaxIterationCount; i++)
             {
@@ -694,8 +680,11 @@ namespace ProjNet.CoordinateSystems.Projections
                 Double dphi;
                 Double sinpi;
                 sinpi = Math.Sin(chi);
-                con = eccentricity*sinpi;
-                dphi = HalfPI - 2*Math.Atan(ts*(Math.Pow(((1.0 - con)/(1.0 + con)), eccnth))) - chi;
+                con = eccentricity * sinpi;
+                dphi = HalfPI - 2 *
+                       Math.Atan(ts * Math.Pow(((1.0 - con) / (1.0 + con)), halfEccentricity)) -
+                       chi;
+
                 chi += dphi;
 
                 if (Math.Abs(dphi) <= .0000000001)
@@ -704,8 +693,7 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
             }
 
-            throw new ComputationConvergenceException(
-                String.Format("Failed to converge after {0} iterations.", MaxIterationCount));
+            throw ComputationalConvergenceError();
         }
 
         // Functions to compute the constants e0, e1, e2, and e3 which are used
@@ -719,7 +707,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE0(Double eccSquared)
         {
-            return (1.0 - 0.25*eccSquared*(1.0 + eccSquared/16.0*(3.0 + 1.25*eccSquared)));
+            return (1.0 - 0.25 * eccSquared * (1.0 + eccSquared / 16.0 * (3.0 + 1.25 * eccSquared)));
         }
 
         /// <summary>
@@ -731,7 +719,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE1(Double eccSquared)
         {
-            return (0.375*eccSquared*(1.0 + 0.25*eccSquared*(1.0 + 0.46875*eccSquared)));
+            return (0.375 * eccSquared * (1.0 + 0.25 * eccSquared * (1.0 + 0.46875 * eccSquared)));
         }
 
         /// <summary>
@@ -743,7 +731,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE2(Double eccSquared)
         {
-            return (0.05859375*eccSquared*eccSquared*(1.0 + 0.75*eccSquared));
+            return (0.05859375 * eccSquared * eccSquared * (1.0 + 0.75 * eccSquared));
         }
 
         /// <summary>
@@ -755,7 +743,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         protected static Double ComputeE3(Double eccSquared)
         {
-            return (eccSquared*eccSquared*eccSquared*(35.0/3072.0));
+            return (eccSquared * eccSquared * eccSquared * (35.0 / 3072.0));
         }
 
         /// <summary>
@@ -765,11 +753,9 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         protected static Double ComputeE4(Double x)
         {
-            Double con;
-            Double com;
-            con = 1.0 + x;
-            com = 1.0 - x;
-            return (Math.Sqrt((Math.Pow(con, con))*(Math.Pow(com, com))));
+            Double con = 1.0 + x;
+            Double com = 1.0 - x;
+            return (Math.Sqrt((Math.Pow(con, con)) * (Math.Pow(com, com))));
         }
 
         /// <summary>
@@ -783,7 +769,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="phi">The measure of the latitude to measure to, in radians.</param>
         protected static Double MeridianLength(Double e0, Double e1, Double e2, Double e3, Double phi)
         {
-            return (e0*phi - e1*Math.Sin(2.0*phi) + e2*Math.Sin(4.0*phi) - e3*Math.Sin(6.0*phi));
+            return e0 * phi -
+                   e1 * Math.Sin(2.0 * phi) +
+                   e2 * Math.Sin(4.0 * phi) -
+                   e3 * Math.Sin(6.0 * phi);
         }
 
         /// <summary>
@@ -792,7 +781,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="degreesLongitude">Longitude to find UTM zone for in degrees.</param>
         protected static long UtmZoneFromDegreesLongitude(Double degreesLongitude)
         {
-            return ((long) (((degreesLongitude + 180.0)/6.0) + 1.0));
+            return (Int64)(((degreesLongitude + 180.0) / 6.0) + 1.0);
         }
 
         #endregion
@@ -805,34 +794,40 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="x">The value in degrees to convert to radians.</param>
         /// <param name="edge">If true, -180 and +180 are valid, otherwise they are considered out of range.</param>
         /// <returns></returns>
-        protected static Double LongitudeToRadians(Double x, Boolean edge)
+        protected static Radians LongitudeToRadians(Degrees x, Boolean edge)
         {
-            if (edge ? (x >= -180 && x <= 180) : (x > -180 && x < 180))
+            if (edge ? ((Double)x >= -180 && (Double)x <= 180) : ((Double)x > -180 && (Double)x < 180))
             {
-                return DegreesToRadians(x);
+                return (Radians)x;
             }
-            throw new ArgumentOutOfRangeException("x",
-                                                  x.ToString(CultureInfo.InvariantCulture) +
-                                                  " not a valid longitude in degrees.");
+
+            throw new ArgumentOutOfRangeException("x", x, "Not a valid longitude in degrees.");
         }
 
         /// <summary>
         /// Converts a latitude value in degrees to radians.
         /// </summary>
         /// <param name="y">The value in degrees to to radians.</param>
-        /// <param name="edge">If true, -90 and +90 are valid, otherwise they are considered out of range.</param>
+        /// <param name="edge">
+        /// If true, -90 and +90 are valid, otherwise they are considered out of range.
+        /// </param>
         /// <returns></returns>
-        protected static Double LatitudeToRadians(Double y, Boolean edge)
+        protected static Radians LatitudeToRadians(Degrees y, Boolean edge)
         {
-            if (edge ? (y >= -90 && y <= 90) : (y > -90 && y < 90))
+            if (edge ? ((Double)y >= -90 && (Double)y <= 90) : ((Double)y > -90 && (Double)y < 90))
             {
-                return DegreesToRadians(y);
+                return (Radians)y;
             }
-            throw new ArgumentOutOfRangeException("y",
-                                                  y.ToString(CultureInfo.InvariantCulture) +
-                                                  " not a valid latitude in degrees.");
+
+            throw new ArgumentOutOfRangeException("y", y, "Not a valid longitude in degrees.");
         }
 
+        protected static Exception ComputationalConvergenceError()
+        {
+            return new ComputationConvergenceException(String.Format("Failed to converge " +
+                                                                     "after {0} iterations.",
+                                                                     MaxIterationCount));
+        }
         #endregion
 
         #region IEnumerable Members

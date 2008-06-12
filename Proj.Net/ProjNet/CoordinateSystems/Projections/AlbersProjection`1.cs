@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Units;
 using NPack.Interfaces;
 using GeoAPI.DataStructures;
 
@@ -61,27 +62,32 @@ namespace ProjNet.CoordinateSystems.Projections
     ///		direction, distance and shape somewhat.</para>
     /// </remarks>
     internal class AlbersProjection<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly Double _falseEasting;
         private readonly Double _falseNorthing;
         private readonly Double _c; //constant c
-        private readonly Double ro0;
-        private readonly Double n;
-        private readonly Double lon_center; //center longitude   
+        private readonly Double _ro0;
+        private readonly Double _n;
+        private readonly Radians _centerLongitude; //center longitude   
 
         #region Constructors
 
         /// <summary>
-        /// Creates an instance of an Albers projection object.
+        /// Initializes a <see cref="AlbersProjection{TCoordinate}"/> projection 
+        /// with the specified parameters. 
         /// </summary>
-        /// <param name="parameters">List of parameters to initialize the projection.</param>
+        /// <param name="parameters">Parameters of the projection.</param>
+        /// <param name="coordinateFactory">Coordinate factory to use.</param>
         /// <remarks>
         /// <para>The parameters this projection expects are listed below.</para>
         /// <list type="table">
-        /// <listheader><term>Items</term><description>Descriptions</description></listheader>
+        ///     <listheader>
+        ///      <term>Parameter</term>
+        ///      <description>Description</description>
+        ///    </listheader>
         /// <item>
         ///     <term>latitude_of_false_origin</term>
         ///     <description>
@@ -127,12 +133,20 @@ namespace ProjNet.CoordinateSystems.Projections
             : this(parameters, coordinateFactory, false) { }
 
         /// <summary>
-        /// Creates an instance of an Albers projection object.
+        /// Initializes a <see cref="AlbersProjection{TCoordinate}"/> projection 
+        /// with the specified parameters. 
         /// </summary>
+        /// <param name="parameters">Parameters of the projection.</param>
+        /// <param name="coordinateFactory">Coordinate factory to use.</param>
+        /// <param name="isInverse">
+        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
+        /// </param>
         /// <remarks>
-        /// <para>The parameters this projection expects are listed below.</para>
         /// <list type="table">
-        /// <listheader><term>Items</term><description>Descriptions</description></listheader>
+        ///     <listheader>
+        ///      <term>Parameter</term>
+        ///      <description>Description</description>
+        ///    </listheader>
         /// <item>
         ///     <term>latitude_of_false_origin</term>
         ///     <description>
@@ -173,74 +187,68 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </item>
         /// </list>
         /// </remarks>
-        /// <param name="parameters">List of parameters to initialize the projection.</param>
-        /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
         public AlbersProjection(IEnumerable<ProjectionParameter> parameters,
-                                ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+                                ICoordinateFactory<TCoordinate> coordinateFactory,
+                                Boolean isInverse)
             : base(parameters, coordinateFactory, isInverse)
         {
             Name = "Albers_Conic_Equal_Area";
 
             //Retrieve parameters
-            ProjectionParameter longitude_of_center = GetParameter("longitude_of_center");
-            ProjectionParameter latitude_of_center = GetParameter("latitude_of_center");
-            ProjectionParameter standard_parallel_1 = GetParameter("standard_parallel_1");
-            ProjectionParameter standard_parallel_2 = GetParameter("standard_parallel_2");
-            ProjectionParameter false_easting = GetParameter("false_easting");
-            ProjectionParameter false_northing = GetParameter("false_northing");
+            ProjectionParameter longitudeOfCenter = GetParameter("longitude_of_center");
+            ProjectionParameter latitudeOfCenter = GetParameter("latitude_of_center");
+            ProjectionParameter standardParallel1 = GetParameter("standard_parallel_1");
+            ProjectionParameter standardParallel2 = GetParameter("standard_parallel_2");
+            ProjectionParameter falseEasting = GetParameter("false_easting");
+            ProjectionParameter falseNorthing = GetParameter("false_northing");
 
             //Check for missing parameters
-            if (longitude_of_center == null)
+            if (longitudeOfCenter == null)
             {
-                longitude_of_center = GetParameter("central_meridian"); //Allow for altenative name
-                if (longitude_of_center == null)
+                longitudeOfCenter = GetParameter("central_meridian"); //Allow for altenative name
+
+                if (longitudeOfCenter == null)
                 {
-                    throw new ArgumentException(
-                        "Missing projection parameter 'longitude_of_center'");
+                    throw new ArgumentException("Missing projection parameter 'longitude_of_center'");
                 }
             }
 
-            if (latitude_of_center == null)
+            if (latitudeOfCenter == null)
             {
-                latitude_of_center = GetParameter("latitude_of_origin"); //Allow for altenative name
+                latitudeOfCenter = GetParameter("latitude_of_origin"); //Allow for altenative name
 
-                if (latitude_of_center == null)
+                if (latitudeOfCenter == null)
                 {
-                    throw new ArgumentException(
-                        "Missing projection parameter 'latitude_of_center'");
+                    throw new ArgumentException("Missing projection parameter 'latitude_of_center'");
                 }
             }
 
-            if (standard_parallel_1 == null)
+            if (standardParallel1 == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'standard_parallel_1'");
+                throw new ArgumentException("Missing projection parameter 'standard_parallel_1'");
             }
 
-            if (standard_parallel_2 == null)
+            if (standardParallel2 == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'standard_parallel_2'");
+                throw new ArgumentException("Missing projection parameter 'standard_parallel_2'");
             }
 
-            if (false_easting == null)
+            if (falseEasting == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'false_easting'");
+                throw new ArgumentException("Missing projection parameter 'false_easting'");
             }
 
-            if (false_northing == null)
+            if (falseNorthing == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'false_northing'");
+                throw new ArgumentException("Missing projection parameter 'false_northing'");
             }
 
-            lon_center = DegreesToRadians(longitude_of_center.Value);
-            Double lat0 = DegreesToRadians(latitude_of_center.Value);
-            Double lat1 = DegreesToRadians(standard_parallel_1.Value);
-            Double lat2 = DegreesToRadians(standard_parallel_2.Value);
-            _falseEasting = false_easting.Value * _metersPerUnit;
-            _falseNorthing = false_northing.Value * _metersPerUnit;
+            _centerLongitude = (Radians)new Degrees(longitudeOfCenter.Value);
+            Radians lat0 = (Radians)new Degrees(latitudeOfCenter.Value);
+            Radians lat1 = (Radians)new Degrees(standardParallel1.Value);
+            Radians lat2 = (Radians)new Degrees(standardParallel2.Value);
+            _falseEasting = falseEasting.Value * MetersPerUnit;
+            _falseNorthing = falseNorthing.Value * MetersPerUnit;
 
             if (Math.Abs(lat1 + lat2) < Double.Epsilon)
             {
@@ -253,10 +261,10 @@ namespace ProjNet.CoordinateSystems.Projections
             Double m1 = Math.Cos(lat1) / Math.Sqrt(1 - E2 * Math.Pow(Math.Sin(lat1), 2));
             Double m2 = Math.Cos(lat2) / Math.Sqrt(1 - E2 * Math.Pow(Math.Sin(lat2), 2));
 
-            n = (Math.Pow(m1, 2) - Math.Pow(m2, 2)) / (alpha2 - alpha1);
-            _c = Math.Pow(m1, 2) + (n * alpha1);
+            _n = (Math.Pow(m1, 2) - Math.Pow(m2, 2)) / (alpha2 - alpha1);
+            _c = Math.Pow(m1, 2) + (_n * alpha1);
 
-            ro0 = computeRo(computeAlpha(lat0));
+            _ro0 = computeRho(computeAlpha(lat0));
             /*
             Double sin_p0 = Math.Sin(lat0);
             Double cos_p0 = Math.Cos(lat0);
@@ -293,23 +301,18 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            Double dLongitude = DegreesToRadians((Double)lonlat[0]);
-            Double dLatitude = DegreesToRadians((Double)lonlat[1]);
+            Radians lon = (Radians)new Degrees((Double)lonlat[0]);
+            Radians lat = (Radians)new Degrees((Double)lonlat[1]);
 
-            Double a = computeAlpha(dLatitude);
-            Double ro = computeRo(a);
-            Double theta = n * (dLongitude - lon_center);
-            dLongitude = _falseEasting + ro * Math.Sin(theta);
-            dLatitude = _falseNorthing + ro0 - (ro * Math.Cos(theta));
+            Double a = computeAlpha(lat);
+            Double rho = computeRho(a);
+            Double theta = _n * (lon - _centerLongitude);
+            lon = (Radians)(_falseEasting + rho * Math.Sin(theta));
+            lat = (Radians)(_falseNorthing + _ro0 - (rho * Math.Cos(theta)));
 
-            if (lonlat.ComponentCount == 2)
-            {
-                return CreateCoordinate(dLongitude / _metersPerUnit, dLatitude / _metersPerUnit);
-            }
-            else
-            {
-                return CreateCoordinate(dLongitude / _metersPerUnit, dLatitude / _metersPerUnit, (Double)lonlat[2]);
-            }
+            return lonlat.ComponentCount == 2
+                       ? CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit)
+                       : CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit, (Double)lonlat[2]);
         }
 
         /// <summary>
@@ -320,13 +323,13 @@ namespace ProjNet.CoordinateSystems.Projections
         public override TCoordinate MetersToDegrees(TCoordinate p)
         {
             Double p0 = (Double)p[0];
-            Double theta = Math.Atan((p0 * _metersPerUnit - _falseEasting)
-                                     / (ro0 - (p[1].Multiply(_metersPerUnit) - _falseNorthing)));
+            Double theta = Math.Atan((p0 * MetersPerUnit - _falseEasting) /
+                                     (_ro0 - (p[1].Multiply(MetersPerUnit) - _falseNorthing)));
 
-            Double ro = Math.Sqrt(Math.Pow(p0 * _metersPerUnit - _falseEasting, 2)
-                                  + Math.Pow(ro0 - (p[1].Multiply(_metersPerUnit) - _falseNorthing), 2));
+            Double rho = Math.Sqrt(Math.Pow(p0 * MetersPerUnit - _falseEasting, 2) +
+                                   Math.Pow(_ro0 - (p[1].Multiply(MetersPerUnit) - _falseNorthing), 2));
 
-            Double q = (_c - Math.Pow(ro, 2) * Math.Pow(n, 2) / Math.Pow(SemiMajor, 2)) / n;
+            Double q = (_c - Math.Pow(rho, 2) * Math.Pow(_n, 2) / Math.Pow(SemiMajor, 2)) / _n;
             //Double b = Math.Sin(q / (1 - ((1 - e_sq) / (2 * e)) * Math.Log((1 - e) / (1 + e))));
 
             Double lat = Math.Asin(q * 0.5);
@@ -347,38 +350,23 @@ namespace ProjNet.CoordinateSystems.Projections
 
                 if (iterationCounter > 25)
                 {
-                    throw new ComputationConvergenceException(
-                        "Transformation failed to converge in Albers " +
-                        "backwards transformation.");
+                    throw new ComputationConvergenceException("Transformation failed to converge " +
+                                                              "in Albers backwards transformation.");
                 }
             }
 
-            Double lon = lon_center + (theta / n);
+            Double lon = _centerLongitude + (theta / _n);
 
-            if (p.ComponentCount == 2)
-            {
-                return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(lat));
-            }
-            else
-            {
-                return CreateCoordinate(RadiansToDegrees(lon), RadiansToDegrees(lat), (Double)p[2]);
-            }
+            return p.ComponentCount == 2
+                       ? CreateCoordinate((Degrees)lon, (Degrees)lat)
+                       : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
 
-        /// <summary>
-        /// Returns the inverse of this projection.
-        /// </summary>
-        /// <returns>IMathTransform that is the reverse of the current projection.</returns>
-        public override IMathTransform<TCoordinate> Inverse()
+        protected override IMathTransform GetInverseInternal()
         {
-            if (_inverse == null)
-            {
-                _inverse = new AlbersProjection<TCoordinate>(
-                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters),
-                    CoordinateFactory, !_isInverse);
-            }
-
-            return _inverse;
+            IEnumerable<ProjectionParameter> parameters =
+                Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters);
+            return new AlbersProjection<TCoordinate>(parameters, CoordinateFactory, !_isInverse);
         }
 
         #endregion
@@ -405,9 +393,9 @@ namespace ProjNet.CoordinateSystems.Projections
                                                      / (2 * E) * Math.Log((1 - E * sin) / (1 + E * sin))));
         }
 
-        private Double computeRo(Double a)
+        private Double computeRho(Double a)
         {
-            return SemiMajor * Math.Sqrt((_c - n * a)) / n;
+            return SemiMajor * Math.Sqrt((_c - _n * a)) / _n;
         }
 
         #endregion

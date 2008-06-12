@@ -99,14 +99,19 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Creates the inverse transform of this object.
+        /// Creates the inverse of this transform.
         /// </summary>
         /// <remarks>
         /// This method may fail if the transform is not one to one. 
         /// However, all cartographic projections should succeed.
         /// </remarks>
-        /// <returns></returns>
-        public new abstract IMathTransform<TCoordinate> Inverse();
+        /// <returns>
+        /// A <see cref="IMathTransform{TCoordinate}"/> that is the inverse of the transform.
+        /// </returns>
+        public new IMathTransform<TCoordinate> Inverse
+        {
+            get { return (IMathTransform<TCoordinate>)base.Inverse;  }
+        }
 
         /// <summary>
         /// Transforms a coordinate point. The passed parameter point should not be modified.

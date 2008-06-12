@@ -79,22 +79,12 @@ namespace ProjNet.CoordinateSystems.Transformations
             get { throw new NotImplementedException(); }
         }
 
-        /// <summary>
-        /// Creates the inverse transform of this object.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>This method may fail if the transform is not one to one. However, all cartographic projections should succeed.</remarks>
-        public override IMathTransform<TCoordinate> Inverse()
+        protected override IMathTransform GetInverseInternal()
         {
-            if (_inverse == null)
-            {
-                _inverse = new DatumTransform<TCoordinate>(_toWgs84,
-                                                           CoordinateFactory, 
-                                                           _matrixFactory, 
-                                                           !_isInverse);
-            }
-
-            return _inverse;
+            return new DatumTransform<TCoordinate>(_toWgs84, 
+                                                   CoordinateFactory, 
+                                                   _matrixFactory, 
+                                                   !_isInverse);
         }
 
         private TCoordinate applyTransformToPoint(TCoordinate p)

@@ -84,15 +84,13 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Returns the inverse of this conversion.
         /// </summary>
         /// <returns>IMathTransform that is the reverse of the current conversion.</returns>
-        public override IMathTransform<TCoordinate> Inverse()
+        protected override IMathTransform GetInverseInternal()
         {
-            if (_inverse == null)
-            {
-                _inverse = new ConcatenatedTransform<TCoordinate>(_transforms, CoordinateFactory);
-                _inverse.Invert();
-            }
+            IMathTransform inverse = new ConcatenatedTransform<TCoordinate>(_transforms, 
+                                                                            CoordinateFactory);
+            inverse.Invert();
 
-            return _inverse;
+            return inverse;
         }
 
         /// <summary>

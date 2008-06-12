@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 using NPack;
 using NPack.Interfaces;
 
@@ -10,15 +11,17 @@ namespace ProjNet.CoordinateSystems.Transformations
 {
     public abstract class MathTransform : IMathTransform
     {
-        protected Boolean _isInverse = false;
+        protected Boolean _isInverse;
         private readonly Double _e;
         private readonly Double _e2;
         private readonly Double _semiMajor;
         private readonly Double _semiMinor;
         private readonly List<Parameter> _parameters;
         private readonly ICoordinateFactory _coordinateFactory;
+        private IMathTransform _inverse;
 
-        protected MathTransform(IEnumerable<Parameter> parameters, ICoordinateFactory coordinateFactory,
+        protected MathTransform(IEnumerable<Parameter> parameters, 
+                                ICoordinateFactory coordinateFactory,
                                 Boolean isInverse)
         {
             _isInverse = isInverse;
@@ -147,6 +150,14 @@ namespace ProjNet.CoordinateSystems.Transformations
             return null;
         }
 
+        /// <summary>
+        /// Returns the inverse of the concrete transformation.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IMathTransform"/> that is the inverse of the transformation, if one exists.
+        /// </returns>
+        protected abstract IMathTransform GetInverseInternal();
+
         #region IMathTransform Members
 
         /// <summary>
@@ -199,9 +210,17 @@ namespace ProjNet.CoordinateSystems.Transformations
             throw new NotImplementedException();
         }
 
-        public IMathTransform Inverse()
+        public IMathTransform Inverse
         {
-            throw new NotImplementedException();
+            get
+            {
+                if (_inverse == null)
+                {
+                    _inverse = GetInverseInternal();
+                }
+
+                return _inverse;
+            }
         }
 
         public ICoordinate Transform(ICoordinate coordinate)
@@ -224,42 +243,42 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         #endregion
 
-        /// <summary>
-        /// Number of degrees per radian.
-        /// </summary>
-        protected const Double DegreesPerRadian = 180 / Math.PI;
+        ///// <summary>
+        ///// Number of degrees per radian.
+        ///// </summary>
+        //protected const Double DegreesPerRadian = 180 / Math.PI;
 
-        /// <summary>
-        /// Number of radians per degree.
-        /// </summary>
-        protected const Double RadiansPerDegree = Math.PI / 180;
+        ///// <summary>
+        ///// Number of radians per degree.
+        ///// </summary>
+        //protected const Double RadiansPerDegree = Math.PI / 180;
 
-        /// <summary>
-        /// Converts an angular measure in degrees into an equivilant measure
-        /// in radians.
-        /// </summary>
-        /// <param name="degrees">The measure in degrees to convert.</param>
-        /// <returns>
-        /// The number of radians for the given <paramref name="degrees"/>
-        /// measure.
-        /// </returns>
-        protected static Double DegreesToRadians(Double degrees)
-        {
-            return RadiansPerDegree * degrees;
-        }
+        ///// <summary>
+        ///// Converts an angular measure in degrees into an equivilant measure
+        ///// in radians.
+        ///// </summary>
+        ///// <param name="degrees">The measure in degrees to convert.</param>
+        ///// <returns>
+        ///// The number of radians for the given <paramref name="degrees"/>
+        ///// measure.
+        ///// </returns>
+        //protected static Double DegreesToRadians(Double degrees)
+        //{
+        //    return RadiansPerDegree * degrees;
+        //}
 
-        /// <summary>
-        /// Converts an angular measure in radians into an equivilant measure
-        /// in degrees.
-        /// </summary>
-        /// <param name="radians">The measure in radians to convert.</param>
-        /// <returns>
-        /// The number of radians for the given <paramref name="radians"/>
-        /// measure.
-        /// </returns>
-        protected static Double RadiansToDegrees(Double radians)
-        {
-            return DegreesPerRadian * radians;
-        }
+        ///// <summary>
+        ///// Converts an angular measure in radians into an equivilant measure
+        ///// in degrees.
+        ///// </summary>
+        ///// <param name="radians">The measure in radians to convert.</param>
+        ///// <returns>
+        ///// The number of radians for the given <paramref name="radians"/>
+        ///// measure.
+        ///// </returns>
+        //protected static Double RadiansToDegrees(Double radians)
+        //{
+        //    return DegreesPerRadian * radians;
+        //}
     }
 }

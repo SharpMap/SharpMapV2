@@ -42,6 +42,7 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
 using NPack.Interfaces;
+using GeoAPI.Units;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
@@ -56,27 +57,33 @@ namespace ProjNet.CoordinateSystems.Projections
     /// to one another in the projected domain.</para>
     /// </remarks>
     internal class LambertConformalConic2SP<TCoordinate> : MapProjection<TCoordinate>
-        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>, IComparable<TCoordinate>,
-            IComputable<Double, TCoordinate>,
-            IConvertible
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly Double _falseEasting;
         private readonly Double _falseNorthing;
-        private readonly Double center_lon = 0; /* center longituted            */
-        private readonly Double center_lat = 0; /* cetner latitude              */
-        private readonly Double ns = 0; /* ratio of angle between meridian*/
-        private readonly Double f0 = 0; /* flattening of ellipsoid      */
-        private readonly Double rh = 0; /* height above ellipsoid       */
+        private readonly Radians _centerLon; /* center longituted            */
+        private readonly Radians _centerLat; /* cetner latitude              */
+        private readonly Double _ns; /* ratio of angle between meridian*/
+        private readonly Double _f0; /* flattening of ellipsoid      */
+        private readonly Double _rh; /* height above ellipsoid       */
 
         #region Constructors
 
         /// <summary>
-        /// Creates an instance of an LambertConformalConic2SPProjection projection object.
+        /// Initializes a <see cref="LambertConformalConic2SP{TCoordinate}"/> projection 
+        /// with the specified parameters. 
         /// </summary>
+        /// <param name="parameters">Parameters of the projection.</param>
+        /// <param name="coordinateFactory">Coordinate factory to use.</param>
         /// <remarks>
         /// <para>The parameters this projection expects are listed below.</para>
         /// <list type="table">
-        /// <listheader><term>Items</term><description>Descriptions</description></listheader>
+        ///     <listheader>
+        ///      <term>Parameter</term>
+        ///      <description>Description</description>
+        ///    </listheader>
         /// <item><term>latitude_of_false_origin</term><description>The latitude of the point which is not the natural origin and at which grid coordinate values false easting and false northing are defined.</description></item>
         /// <item><term>longitude_of_false_origin</term><description>The longitude of the point which is not the natural origin and at which grid coordinate values false easting and false northing are defined.</description></item>
         /// <item><term>latitude_of_1st_standard_parallel</term><description>For a conic projection with two standard parallels, this is the latitude of intersection of the cone with the ellipsoid that is nearest the pole.  Scale is true along this parallel.</description></item>
@@ -85,14 +92,19 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <item><term>northing_at_false_origin</term><description>The northing value assigned to the false origin.</description></item>
         /// </list>
         /// </remarks>
-        /// <param name="parameters">List of parameters to initialize the projection.</param>
         public LambertConformalConic2SP(IEnumerable<ProjectionParameter> parameters,
                                         ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) {}
+            : this(parameters, coordinateFactory, false) { }
 
         /// <summary>
-        /// Creates an instance of an Albers projection object.
+        /// Initializes a <see cref="LambertConformalConic2SP{TCoordinate}"/> projection 
+        /// with the specified parameters. 
         /// </summary>
+        /// <param name="parameters">Parameters of the projection.</param>
+        /// <param name="coordinateFactory">Coordinate factory to use.</param>
+        /// <param name="isInverse">
+        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
+        /// </param>
         /// <remarks>
         /// <para>The parameters this projection expects are listed below.</para>
         /// <list type="table">
@@ -105,69 +117,62 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <item><term>false_northing</term><description>The northing value assigned to the false origin.</description></item>
         /// </list>
         /// </remarks>
-        /// <param name="parameters">List of parameters to initialize the projection.</param>
-        /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
         public LambertConformalConic2SP(IEnumerable<ProjectionParameter> parameters,
-                                        ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
+                                        ICoordinateFactory<TCoordinate> coordinateFactory,
+                                        Boolean isInverse)
             : base(parameters, coordinateFactory, isInverse)
         {
             Name = "Lambert_Conformal_Conic_2SP";
             Authority = "EPSG";
             AuthorityCode = 9802;
 
-            ProjectionParameter latitude_of_origin = GetParameter("latitude_of_origin");
-            ProjectionParameter central_meridian = GetParameter("central_meridian");
-            ProjectionParameter standard_parallel_1 = GetParameter("standard_parallel_1");
-            ProjectionParameter standard_parallel_2 = GetParameter("standard_parallel_2");
-            ProjectionParameter false_easting = GetParameter("false_easting");
-            ProjectionParameter false_northing = GetParameter("false_northing");
+            ProjectionParameter latitudeOfOrigin = GetParameter("latitude_of_origin");
+            ProjectionParameter centralMeridian = GetParameter("central_meridian");
+            ProjectionParameter standardParallel1 = GetParameter("standard_parallel_1");
+            ProjectionParameter standardParallel2 = GetParameter("standard_parallel_2");
+            ProjectionParameter falseEasting = GetParameter("false_easting");
+            ProjectionParameter falseNorthing = GetParameter("false_northing");
 
             //Check for missing parameters
-            if (latitude_of_origin == null)
+            if (latitudeOfOrigin == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'latitude_of_origin'");
+                throw new ArgumentException("Missing projection parameter 'latitude_of_origin'");
             }
 
-            if (central_meridian == null)
+            if (centralMeridian == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'central_meridian'");
+                throw new ArgumentException("Missing projection parameter 'central_meridian'");
             }
 
-            if (standard_parallel_1 == null)
+            if (standardParallel1 == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'standard_parallel_1'");
+                throw new ArgumentException("Missing projection parameter 'standard_parallel_1'");
             }
 
-            if (standard_parallel_2 == null)
+            if (standardParallel2 == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'standard_parallel_2'");
+                throw new ArgumentException("Missing projection parameter 'standard_parallel_2'");
             }
 
-            if (false_easting == null)
+            if (falseEasting == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'false_easting'");
+                throw new ArgumentException("Missing projection parameter 'false_easting'");
             }
 
-            if (false_northing == null)
+            if (falseNorthing == null)
             {
-                throw new ArgumentException(
-                    "Missing projection parameter 'false_northing'");
+                throw new ArgumentException("Missing projection parameter 'false_northing'");
             }
 
-            Double c_lat = DegreesToRadians(latitude_of_origin.Value);
-            Double c_lon = DegreesToRadians(central_meridian.Value);
-            Double lat1 = DegreesToRadians(standard_parallel_1.Value);
-            Double lat2 = DegreesToRadians(standard_parallel_2.Value);
-            _falseEasting = false_easting.Value*_metersPerUnit;
-            _falseNorthing = false_northing.Value*_metersPerUnit;
+            Radians centralLat = (Radians)new Degrees(latitudeOfOrigin.Value);
+            Radians centralLon = (Radians)new Degrees(centralMeridian.Value);
+            Radians lat1 = (Radians)new Degrees(standardParallel1.Value);
+            Radians lat2 = (Radians)new Degrees(standardParallel2.Value);
+            _falseEasting = falseEasting.Value * MetersPerUnit;
+            _falseNorthing = falseNorthing.Value * MetersPerUnit;
 
-            Double sin_po; /* sin value                            */
-            Double cos_po; /* cos value                            */
+            Double sinPo; /* sin value                            */
+            Double cosPo; /* cos value                            */
             Double con; /* temporary variable                   */
             Double ms1; /* small m 1                            */
             Double ms2; /* small m 2                            */
@@ -180,35 +185,33 @@ namespace ProjNet.CoordinateSystems.Projections
             ------------------------------------------------------------------------*/
             if (Math.Abs(lat1 + lat2) < Epsilon)
             {
-                //Debug.Assert(true,"LambertConformalConic:LambertConformalConic() - Equal Latitiudes for St. Parallels on opposite sides of equator");
-                throw new ArgumentException(
-                    "Equal latitudes for St. Parallels on opposite sides " +
-                    "of equator.");
+                throw new ArgumentException("Latitudes for standard parallels cannot be equal " +
+                                            "and on opposite sides of equator.");
             }
 
-            center_lon = c_lon;
-            center_lat = c_lat;
-            SinCos(lat1, out sin_po, out cos_po);
-            con = sin_po;
-            ms1 = ComputeSmallM(E, sin_po, cos_po);
-            ts1 = ComputeSmallT(E, lat1, sin_po);
-            SinCos(lat2, out sin_po, out cos_po);
-            ms2 = ComputeSmallM(E, sin_po, cos_po);
-            ts2 = ComputeSmallT(E, lat2, sin_po);
-            sin_po = Math.Sin(center_lat);
-            ts0 = ComputeSmallT(E, center_lat, sin_po);
+            _centerLon = centralLon;
+            _centerLat = centralLat;
+            SinCos(lat1, out sinPo, out cosPo);
+            con = sinPo;
+            ms1 = ComputeSmallM(E, sinPo, cosPo);
+            ts1 = ComputeSmallT(E, lat1, sinPo);
+            SinCos(lat2, out sinPo, out cosPo);
+            ms2 = ComputeSmallM(E, sinPo, cosPo);
+            ts2 = ComputeSmallT(E, lat2, sinPo);
+            sinPo = Math.Sin(_centerLat);
+            ts0 = ComputeSmallT(E, _centerLat, sinPo);
 
             if (Math.Abs(lat1 - lat2) > Epsilon)
             {
-                ns = Math.Log(ms1/ms2)/Math.Log(ts1/ts2);
+                _ns = Math.Log(ms1 / ms2) / Math.Log(ts1 / ts2);
             }
             else
             {
-                ns = con;
+                _ns = con;
             }
 
-            f0 = ms1/(ns*Math.Pow(ts1, ns));
-            rh = SemiMajor*f0*Math.Pow(ts0, ns);
+            _f0 = ms1 / (_ns * Math.Pow(ts1, _ns));
+            _rh = SemiMajor * _f0 * Math.Pow(ts0, _ns);
         }
 
         #endregion
@@ -220,48 +223,40 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            Double dLongitude = DegreesToRadians((Double) lonlat[0]);
-            Double dLatitude = DegreesToRadians((Double) lonlat[1]);
+            Radians lon = (Radians)new Degrees((Double)lonlat[0]);
+            Radians lat = (Radians)new Degrees((Double)lonlat[1]);
 
-            Double con; /* temporary angle variable             */
             Double rh1; /* height above ellipsoid               */
-            Double theta; /* angle                                */
 
-            con = Math.Abs(Math.Abs(dLatitude) - HalfPI);
+            Double con = Math.Abs(Math.Abs(lat) - HalfPI);
 
             if (con > Epsilon)
             {
-                Double sinphi; /* sin value                            */
-                Double ts; /* small value t                        */
-
-                sinphi = Math.Sin(dLatitude);
-                ts = ComputeSmallT(E, dLatitude, sinphi);
-                rh1 = SemiMajor*f0*Math.Pow(ts, ns);
+                Double sinPhi = Math.Sin(lat);
+                Double smallT = ComputeSmallT(E, lat, sinPhi);
+                rh1 = SemiMajor * _f0 * Math.Pow(smallT, _ns);
             }
             else
             {
-                con = dLatitude*ns;
+                con = lat * _ns;
 
                 if (con <= 0)
                 {
-                    throw new ApplicationException();
+                    throw new ArgumentOutOfRangeException("lonlat", 
+                                                          lonlat,
+                                                          "Latitude must be less than 90°.");
                 }
 
                 rh1 = 0;
             }
 
-            theta = ns*AdjustLongitude(dLongitude - center_lon);
-            dLongitude = rh1*Math.Sin(theta) + _falseEasting;
-            dLatitude = rh - rh1*Math.Cos(theta) + _falseNorthing;
+            Double theta = _ns * AdjustLongitude(lon - _centerLon);
+            lon = (Radians)(rh1 * Math.Sin(theta) + _falseEasting);
+            lat = (Radians)(_rh - rh1 * Math.Cos(theta) + _falseNorthing);
 
-            if (lonlat.ComponentCount == 2)
-            {
-                return CreateCoordinate(dLongitude/_metersPerUnit, dLatitude/_metersPerUnit);
-            }
-            else
-            {
-                return CreateCoordinate(dLongitude/_metersPerUnit, dLatitude/_metersPerUnit, (Double) lonlat[2]);
-            }
+            return lonlat.ComponentCount == 2
+                       ? CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit)
+                       : CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit, (Double)lonlat[2]);
         }
 
         /// <summary>
@@ -271,72 +266,58 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override TCoordinate MetersToDegrees(TCoordinate p)
         {
-            Double dLongitude;
-            Double dLatitude;
+            Radians lat;
 
             Double rh1; /* height above ellipsoid	*/
             Double con; /* sign variable		    */
-            Double theta; /* angle			        */
 
-            Double dX = ((Double) p[0])*_metersPerUnit - _falseEasting;
-            Double dY = rh - ((Double) p[1])*_metersPerUnit + _falseNorthing;
+            Double dX = ((Double)p[0]) * MetersPerUnit - _falseEasting;
+            Double dY = _rh - ((Double)p[1]) * MetersPerUnit + _falseNorthing;
 
-            if (ns > 0)
+            if (_ns > 0)
             {
-                rh1 = Math.Sqrt(dX*dX + dY*dY);
+                rh1 = Math.Sqrt(dX * dX + dY * dY);
                 con = 1.0;
             }
             else
             {
-                rh1 = -Math.Sqrt(dX*dX + dY*dY);
+                rh1 = -Math.Sqrt(dX * dX + dY * dY);
                 con = -1.0;
             }
 
-            theta = 0.0;
+            Double theta = 0.0;
 
             if (rh1 != 0)
             {
-                theta = Math.Atan2((con*dX), (con*dY));
+                theta = Math.Atan2((con * dX), (con * dY));
             }
 
-            if ((rh1 != 0) || (ns > 0.0))
+            if ((rh1 != 0) || (_ns > 0.0))
             {
-                Double ts; /* small t			        */
-                con = 1.0/ns;
-                ts = Math.Pow((rh1/(SemiMajor*f0)), con);
-                dLatitude = ComputePhi2(E, ts);
+                con = 1.0 / _ns;
+                Double smallT = Math.Pow((rh1 / (SemiMajor * _f0)), con);
+                lat = (Radians)ComputePhi2(E, smallT);
             }
             else
             {
-                dLatitude = -HalfPI;
+                lat = new Radians(-HalfPI);
             }
 
-            dLongitude = AdjustLongitude(theta/ns + center_lon);
+            Radians lon = new Radians(AdjustLongitude(theta / _ns + _centerLon));
 
-            if (p.ComponentCount == 2)
-            {
-                return CreateCoordinate(RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude));
-            }
-            else
-            {
-                return CreateCoordinate(RadiansToDegrees(dLongitude), RadiansToDegrees(dLatitude), (Double) p[2]);
-            }
+            return p.ComponentCount == 2
+                       ? CreateCoordinate((Degrees)lon, (Degrees)lat)
+                       : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
 
-        /// <summary>
-        /// Returns the inverse of this projection.
-        /// </summary>
-        /// <returns>IMathTransform that is the reverse of the current projection.</returns>
-        public override IMathTransform<TCoordinate> Inverse()
+        protected override IMathTransform GetInverseInternal()
         {
-            if (_inverse == null)
-            {
-                _inverse = new LambertConformalConic2SP<TCoordinate>(
-                    Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters),
-                    CoordinateFactory, !_isInverse);
-            }
+            IEnumerable<ProjectionParameter> parameters =
+                Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return _inverse;
+            return new LambertConformalConic2SP<TCoordinate>(parameters,
+                                                             CoordinateFactory,
+                                                             !_isInverse);
         }
     }
 }

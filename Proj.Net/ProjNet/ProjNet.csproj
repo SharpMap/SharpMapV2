@@ -80,6 +80,7 @@
     <Compile Include="CoordinateSystems\Projections\LambertConformalConic`1.cs" />
     <Compile Include="CoordinateSystems\Projections\MapProjection`1.cs" />
     <Compile Include="CoordinateSystems\Projections\Mercator`1.cs" />
+    <Compile Include="CoordinateSystems\Projections\Orthographic`1.cs" />
     <Compile Include="CoordinateSystems\Projections\TransverseMercator`1.cs" />
     <Compile Include="CoordinateSystems\ProjNetException.cs" />
     <Compile Include="CoordinateSystems\Transformations\ConcatenatedTransform`1.cs" />
