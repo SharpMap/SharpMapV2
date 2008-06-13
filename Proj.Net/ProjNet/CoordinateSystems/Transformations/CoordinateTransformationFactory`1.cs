@@ -42,7 +42,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly IGeocentricCoordinateSystem<TCoordinate> _wgs84;
 
         public CoordinateTransformationFactory(ICoordinateFactory<TCoordinate> coordinateFactory,
-                                               IGeometryFactory<TCoordinate> geometryFactory,
+             IGeometryFactory<TCoordinate> geometryFactory,
                                                IMatrixFactory<DoubleComponent> matrixFactory)
         {
             _coordinateFactory = coordinateFactory;
@@ -52,8 +52,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             CoordinateSystemFactory<TCoordinate> coordSystemFactory
                 = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
-            _wgs84 = coordSystemFactory.CreateWgs84CoordinateSystem();
-        }
+			_wgs84 = coordSystemFactory.CreateWgs84CoordinateSystem();
+		}
 
         #region ICoordinateTransformationFactory Members
 
@@ -193,6 +193,11 @@ namespace ProjNet.CoordinateSystems.Transformations
             throw new NotSupportedException("No support for transforming between " +
                                             "the two specified coordinate systems");
         }
+
+		ICoordinateTransformation<TCoordinate> ICoordinateTransformationFactory<TCoordinate>.CreateFromCoordinateSystems(ICoordinateSystem<TCoordinate> source, ICoordinateSystem<TCoordinate> target)
+		{
+			return CreateFromCoordinateSystems(source, target);
+		}
 
         #endregion
 
@@ -585,5 +590,5 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         #endregion
-    }
+	}
 }
