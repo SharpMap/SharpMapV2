@@ -257,6 +257,11 @@ namespace SharpMap.Expressions
             }
         }
 
+        public override Expression Clone()
+        {
+            return new FeatureQueryExpression(Projection, Predicate);
+        }
+
         public Boolean Equals(FeatureQueryExpression other)
         {
             return !ReferenceEquals(other, null) && base.Equals(other);
