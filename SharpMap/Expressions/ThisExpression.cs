@@ -21,7 +21,7 @@ namespace SharpMap.Expressions
 {
     public class ThisExpression : Expression, IEquatable<ThisExpression>
     {
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }

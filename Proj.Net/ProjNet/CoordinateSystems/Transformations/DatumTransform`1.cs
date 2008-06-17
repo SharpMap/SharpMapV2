@@ -34,7 +34,6 @@ namespace ProjNet.CoordinateSystems.Transformations
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private IMathTransform<TCoordinate> _inverse;
         private readonly IMatrixFactory<DoubleComponent> _matrixFactory;
         private readonly Wgs84ConversionInfo _toWgs84;
         private readonly IAffineTransformMatrix<DoubleComponent> _transform;

@@ -2,7 +2,7 @@ namespace SharpMap.Expressions
 {
     public class AllBandsExpression : ProjectionExpression
     {
-        public override bool Matches(Expression other)
+        public override bool Contains(Expression other)
         {
             return Equals(other);
         }

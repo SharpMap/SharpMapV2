@@ -19,33 +19,20 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class AttributeExpression : Expression
+    public abstract class LiteralExpression : Expression
     {
-        private readonly String _attributeName;
-        
-        public AttributeExpression(String attributeName)
+        public Object Value
         {
-            _attributeName = attributeName;
+            get { return GetValue(); }
         }
 
-        public string attributeName
+        public override string ToString()
         {
-            get { return _attributeName; }
+            return Value == null
+                       ? "<null>"
+                       : Value.ToString();
         }
 
-        public override bool Contains(Expression other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Expression Clone()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool Equals(Expression other)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract Object GetValue();
     }
 }

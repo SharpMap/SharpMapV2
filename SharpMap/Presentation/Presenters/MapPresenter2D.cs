@@ -55,6 +55,7 @@ namespace SharpMap.Presentation.Presenters
         private Double _maximumWorldWidth = Double.PositiveInfinity;
         private Double _minimumWorldWidth;
         private Boolean _viewIsEmpty = true;
+        private RenderPhase _currentRenderPhase = RenderPhase.None;
 
         // The origin projection matrix reflects the coordinate system along
         // the x-axis, and translates the lower left corner of Map.Extents
@@ -698,6 +699,76 @@ namespace SharpMap.Presentation.Presenters
             LayerRendererRegistry.Instance.Register(layerType, renderer);
         }
 
+        protected void RenderAllLayers()
+        {
+            OnRenderingAllLayers();
+            RenderAllLayers(RenderPhase.Normal);
+            RenderAllLayers(RenderPhase.Selected);
+            RenderAllLayers(RenderPhase.Highlighted);
+            _currentRenderPhase = RenderPhase.None;
+            OnRenderedAllLayers();
+        }
+
+        protected void RenderLayer(ILayer layer)
+        {
+            OnRenderingLayer();
+            RenderLayer(layer, RenderPhase.Normal);
+            RenderLayer(layer, RenderPhase.Selected);
+            RenderLayer(layer, RenderPhase.Highlighted);
+            _currentRenderPhase = RenderPhase.None;
+            OnRenderedLayer();
+        }
+
+        protected void RenderAllLayers(RenderPhase phase)
+        {
+            OnRenderingAllLayersPhase(phase);
+
+            for (Int32 i = Map.Layers.Count - 1; i >= 0; i--)
+            {
+                RenderLayer(Map.Layers[i], phase);
+            }
+
+            OnRenderedAllLayersPhase(phase);
+        }
+
+        protected void RenderLayer(ILayer layer, RenderPhase phase)
+        {
+            _currentRenderPhase = phase;
+
+            OnRenderingLayerPhase(layer, phase);
+
+            if (!layer.Enabled ||
+                layer.Style.MinVisible > WorldWidthInternal ||
+                layer.Style.MaxVisible < WorldWidthInternal)
+            {
+                return;
+            }
+
+            // Handle layer groups
+            IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+
+            if (layers != null)
+            {
+                foreach (ILayer groupMember in layers)
+                {
+                    RenderLayer(groupMember, phase);
+                }
+            }
+            else // render the individual layer
+            {
+                if (layer is IFeatureLayer)
+                {
+                    RenderFeatureLayer(layer as IFeatureLayer, phase);
+                }
+                else if (layer is IRasterLayer)
+                {
+                    RenderRasterLayer(layer as IRasterLayer, phase);
+                }
+            }
+
+            OnRenderedLayerPhase(layer, phase);
+        }
+
         protected void RenderSelection(ViewSelection2D selection)
         {
             OnRenderingSelection();
@@ -711,62 +782,76 @@ namespace SharpMap.Presentation.Presenters
             path.TransformPoints(ToWorldTransformInternal);
             IEnumerable<Path2D> paths = new Path2D[] { path };
 
-            IEnumerable renderedSelection =
-                renderer.RenderPaths(paths,
-                    selection.FillBrush, null, null,
-                    selection.OutlineStyle, null, null, RenderState.Normal);
+            IEnumerable renderedSelection = renderer.RenderPaths(paths, 
+                                                                 selection.FillBrush,
+                                                                 null, 
+                                                                 null,
+                                                                 selection.OutlineStyle, 
+                                                                 null, 
+                                                                 null, 
+                                                                 RenderState.Normal);
 
             View.ShowRenderedObjects(renderedSelection);
 
             OnRenderedSelection();
         }
 
-        protected virtual void RenderFeatureLayer(IFeatureLayer layer)
+        protected virtual void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
         {
             IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
 
             Debug.Assert(renderer != null);
 
-            IEnumerable<FeatureDataRow> features
-                = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
-
             Debug.Assert(layer.Style is FeatureStyle);
             FeatureStyle style = layer.Style as FeatureStyle;
 
-            foreach (FeatureDataRow feature in features)
+            switch (phase)
             {
-                IEnumerable renderedFeature;
+                case RenderPhase.Normal:
+                    IEnumerable<FeatureDataRow> features
+                        = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
 
-                renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal, layer);
-                View.ShowRenderedObjects(renderedFeature);
-            }
+                    foreach (FeatureDataRow feature in features)
+                    {
+                        IEnumerable renderedFeature = renderer.RenderFeature(feature,
+                                                                             style,
+                                                                             RenderState.Normal,
+                                                                             layer);
+                        View.ShowRenderedObjects(renderedFeature);
+                    }
+                    break;
+                case RenderPhase.Selected:
+                    IEnumerable<FeatureDataRow> selectedRows = layer.SelectedFeatures;
 
-            IEnumerable<FeatureDataRow> selectedRows = layer.SelectedFeatures;
+                    foreach (FeatureDataRow selectedFeature in selectedRows)
+                    {
+                        IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
+                                                                             style,
+                                                                             RenderState.Selected,
+                                                                             layer);
+                        View.ShowRenderedObjects(renderedFeature);
+                    }
+                    break;
+                case RenderPhase.Highlighted:
+                    IEnumerable<FeatureDataRow> highlightedRows = layer.HighlightedFeatures;
 
-            foreach (FeatureDataRow selectedFeature in selectedRows)
-            {
-                IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
-                                                                     style,
-                                                                     RenderState.Selected,
-                                                                     layer);
-                View.ShowRenderedObjects(renderedFeature);
-            }
-
-            IEnumerable<FeatureDataRow> highlightedRows = layer.HighlightedFeatures;
-
-            foreach (FeatureDataRow highlightedFeature in highlightedRows)
-            {
-                IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
-                                                                     style,
-                                                                     RenderState.Highlighted,
-                                                                     layer);
-                View.ShowRenderedObjects(renderedFeature);
+                    foreach (FeatureDataRow highlightedFeature in highlightedRows)
+                    {
+                        IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
+                                                                             style,
+                                                                             RenderState.Highlighted,
+                                                                             layer);
+                        View.ShowRenderedObjects(renderedFeature);
+                    }
+                    break;
+                default:
+                    break;
             }
 
             renderer.CleanUp();
         }
 
-        protected virtual void RenderRasterLayer(IRasterLayer layer)
+        protected virtual void RenderRasterLayer(IRasterLayer layer, RenderPhase phase)
         {
             throw new NotImplementedException();
         }
@@ -775,9 +860,17 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void OnRenderedAllLayers() { }
 
-        protected virtual void OnRenderingLayer(ILayer layer) { }
+        protected virtual void OnRenderingLayer() { }
 
-        protected virtual void OnRenderedLayer(ILayer layer) { }
+        protected virtual void OnRenderedLayer() { }
+
+        protected virtual void OnRenderingAllLayersPhase(RenderPhase phase) { }
+
+        protected virtual void OnRenderedAllLayersPhase(RenderPhase phase) { }
+
+        protected virtual void OnRenderingLayerPhase(ILayer layer, RenderPhase phase) { }
+
+        protected virtual void OnRenderedLayerPhase(ILayer layer, RenderPhase phase) { }
 
         protected virtual void OnRenderingSelection() { }
 
@@ -860,55 +953,6 @@ namespace SharpMap.Presentation.Presenters
                 default:
                     break;
             }
-        }
-
-        protected void RenderAllLayers()
-        {
-            OnRenderingAllLayers();
-
-            for (Int32 i = Map.Layers.Count - 1; i >= 0; i--)
-            {
-                RenderLayer(Map.Layers[i]);
-            }
-
-            OnRenderedAllLayers();
-        }
-
-        protected void RenderLayer(ILayer layer)
-        {
-            OnRenderingLayer(layer);
-
-            IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
-
-            if (layers != null && layer.Enabled)
-            {
-                foreach (ILayer groupMember in layers)
-                {
-                    RenderLayer(groupMember);
-                }
-
-                OnRenderedLayer(layer);
-
-                return;
-            }
-
-            if (!layer.Enabled ||
-                layer.Style.MinVisible > WorldWidthInternal ||
-                layer.Style.MaxVisible < WorldWidthInternal)
-            {
-                return;
-            }
-
-            if (layer is IFeatureLayer)
-            {
-                RenderFeatureLayer(layer as IFeatureLayer);
-            }
-            else if (layer is IRasterLayer)
-            {
-                RenderRasterLayer(layer as IRasterLayer);
-            }
-
-            OnRenderedLayer(layer);
         }
 
         private void handleMapPropertyChanged(Object sender, PropertyChangedEventArgs e)
@@ -1416,48 +1460,46 @@ namespace SharpMap.Presentation.Presenters
 
         private void handleSelectedFeaturesListChanged(Object sender, ListChangedEventArgs e)
         {
-            IFeatureLayer featureLayer = getLayerFromSelectedView(sender);
-
-            if (featureLayer == null)
+            if (_currentRenderPhase != RenderPhase.None)
             {
                 return;
             }
 
-            switch (e.ListChangedType)
-            {
-                case ListChangedType.ItemAdded:
-                    RenderFeatureLayer(featureLayer);
-                    break;
-                case ListChangedType.Reset:
-                    //if (featureLayer.SelectedFeatures.Count > 0)
-                    {
-                        RenderFeatureLayer(featureLayer);
-                    }
-                    break;
-                default:
-                    break;
-            }
+            RenderPhase phaseToRender = RenderPhase.Selected;
+            IFeatureLayer featureLayer = getLayerFromSelectedView(sender);
+            ListChangedType layerChangeType = e.ListChangedType;
+
+            renderChangedLayer(featureLayer, layerChangeType, phaseToRender);
         }
 
         private void handleHighlightedFeaturesListChanged(Object sender, ListChangedEventArgs e)
         {
-            IFeatureLayer featureLayer = getLayerFromHighlightView(sender);
+            if (_currentRenderPhase != RenderPhase.None)
+            {
+                return;
+            }
 
+            RenderPhase phaseToRender = RenderPhase.Highlighted;
+            IFeatureLayer featureLayer = getLayerFromHighlightView(sender);
+            ListChangedType layerChangeType = e.ListChangedType;
+
+            renderChangedLayer(featureLayer, layerChangeType, phaseToRender);
+        }
+
+        private void renderChangedLayer(IFeatureLayer featureLayer,
+                                        ListChangedType layerChangeType,
+                                        RenderPhase phaseToRender)
+        {
             if (featureLayer == null)
             {
                 return;
             }
 
-            switch (e.ListChangedType)
+            switch (layerChangeType)
             {
                 case ListChangedType.ItemAdded:
-                    RenderFeatureLayer(featureLayer);
-                    break;
                 case ListChangedType.Reset:
-                    //if (featureLayer.HighlightedFeatures.Count > 0)
-                    {
-                        RenderFeatureLayer(featureLayer);
-                    }
+                    RenderLayer(featureLayer, phaseToRender);
                     break;
                 default:
                     break;

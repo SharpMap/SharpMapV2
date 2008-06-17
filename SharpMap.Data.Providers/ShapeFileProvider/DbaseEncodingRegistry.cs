@@ -187,9 +187,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 				// These encodings are duplicated. When a dBase file is created by
 				// the DbaseFile.Create method, these will not be used in the LDID
 				// since it would result in an ambiguous lookup.
-				if (item.Key == 1 || item.Key == 2 || item.Key == 3 || item.Key == 0x26
-					|| item.Key == 0x6C || item.Key == 0x78 || item.Key == 0x79 || item.Key == 0x7B 
-					|| item.Key == 0x7C || item.Key == 0x86 || item.Key == 0x88)
+                if (item.Key == 0x01 || item.Key == 0x02 || item.Key == 0x03 || item.Key == 0x26 || 
+                    item.Key == 0x6C || item.Key == 0x78 || item.Key == 0x79 || item.Key == 0x7B || 
+                    item.Key == 0x7C || item.Key == 0x86 || item.Key == 0x88)
 				{
 					continue;
 				}
@@ -212,20 +212,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <paramref name="dBaseEncoding"/> by default.
 		/// </returns>
         public static CultureInfo GetCulture(Byte dBaseEncoding)
-        {
-            CultureWithEncoding pair;
+		{
+		    CultureWithEncoding pair;
 
-            if (_dbaseToEncoding.TryGetValue(dBaseEncoding, out pair))
-            {
-                return pair.CultureInfo;
-            }
-            else
-            {
-                return CultureInfo.InvariantCulture;
-            }
-        }
+		    return _dbaseToEncoding.TryGetValue(dBaseEncoding, out pair)
+		               ? pair.CultureInfo
+		               : CultureInfo.InvariantCulture;
+		}
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the <see cref="Encoding"/> which matches the 
 		/// given dBase LDID.
 		/// </summary>
@@ -237,20 +232,15 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// <paramref name="dBaseEncoding"/> code established by ESRI.
 		/// </returns>
         public static Encoding GetEncoding(Byte dBaseEncoding)
-        {
-            CultureWithEncoding pair;
+	    {
+	        CultureWithEncoding pair;
 
-            if (_dbaseToEncoding.TryGetValue(dBaseEncoding, out pair))
-            {
-                return pair.Encoding;
-            }
-            else
-            {
-                return Encoding.ASCII;
-            }
-        }
+	        return _dbaseToEncoding.TryGetValue(dBaseEncoding, out pair)
+	                   ? pair.Encoding
+	                   : Encoding.ASCII;
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the language driver id (LDID) for a given pair of <see cref="CultureInfo"/>
 		/// and <see cref="Encoding"/>.
 		/// </summary>
@@ -264,14 +254,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             Byte driverCode;
             KeyValuePair<Int32, Int32> key = new KeyValuePair<Int32, Int32>(info.LCID, encoding.CodePage);
 
-            if (_encodingToDbase.TryGetValue(key, out driverCode))
-            {
-                return driverCode;
-            }
-            else
-            {
-                return 0x1;
-            }
+	        return _encodingToDbase.TryGetValue(key, out driverCode)
+	                   ? driverCode
+	                   : (Byte) 0x1;
         }
     }
 }

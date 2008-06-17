@@ -25,20 +25,22 @@ namespace SharpMap.Expressions
     public abstract class Expression : IEquatable<Expression>
     {
         /// <summary>
-        /// Determines if <see cref="Expression"/> <paramref name="a"/> matches
-        /// <see cref="Expression"/> <paramref name="b"/>. "Matches" means that
-        /// the two expressions produce the same result given a set of input. Matching
-        /// in general is not transitive, so <c>a.Matches(b)</c> is not the same
-        /// as <c>b.Matches(a)</c>.
+        /// Determines if <see cref="Expression"/> <paramref name="a"/> contains
+        /// <see cref="Expression"/> <paramref name="b"/>. "Contains" means that
+        /// the two expressions produce the same result given a set of input. Containment
+        /// in general is not transitive, so <c>a.Contains(b)</c> is not the same
+        /// as <c>b.Contains(a)</c>.
         /// </summary>
         /// <param name="a">
-        /// The <see cref="Expression"/> to determine results matching to <paramref name="b"/>.
+        /// The <see cref="Expression"/> to determine containment of <paramref name="b"/>.
         /// </param>
-        /// <param name="b">The <see cref="Expression"/> to match.</param>
+        /// <param name="b">
+        /// The <see cref="Expression"/> to test containment of by <paramref name="a"/>.
+        /// </param>
         /// <returns>
-        /// <see langword="true"/> if <c>a.Matches(b)</c>; <see langword="false"/> otherwise.
+        /// <see langword="true"/> if <c>a.Contains(b)</c>; <see langword="false"/> otherwise.
         /// </returns>
-        public static Boolean Matches(Expression a, Expression b)
+        public static Boolean Contains(Expression a, Expression b)
         {
             if (ReferenceEquals(a, b))
             {
@@ -50,17 +52,18 @@ namespace SharpMap.Expressions
                 return false;
             }
 
-            return a.Matches(b);
+            return a.Contains(b);
         }
 
         /// <summary>
-        /// Determines if the given <see cref="Expression"/> matches
-        /// this expression. "Matches" means that
-        /// the two expressions produce the same result given a set of input. Matching
-        /// in general is not transitive, so <c>this.Matches(other)</c> is not the same
-        /// as <c>other.Matches(this)</c>, unless the expressions are equivalant.
+        /// Determines if the given <see cref="Expression"/> contains
+        /// this expression. "Contains" means that
+        /// the expression will provide at least the same result set when applied to a given 
+        /// input set, and perhaps more. Containment in general is not transitive, 
+        /// so <c>this.Contains(other)</c> is not the same as <c>other.Contains(this)</c>, 
+        /// unless the expressions are equivalant.
         /// </summary>
-        public abstract Boolean Matches(Expression other);
+        public abstract Boolean Contains(Expression other);
 
         /// <summary>
         /// Makes a duplicate of the expression.

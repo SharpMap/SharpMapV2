@@ -21,7 +21,7 @@ using GeoAPI.DataStructures;
 
 namespace SharpMap.Expressions
 {
-    public class StringExpression : ValueExpression<String>
+    public class StringExpression : LiteralExpression<String>
     {
         private readonly StringComparison _comparison;
 
@@ -42,7 +42,7 @@ namespace SharpMap.Expressions
             get { return _comparison; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }

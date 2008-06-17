@@ -15,17 +15,14 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 
-namespace SharpMap.Expressions
+namespace SharpMap.Presentation
 {
-    public abstract class ValueExpression : Expression
+    public enum RenderPhase
     {
-        public Object Value
-        {
-            get { return GetValue(); }
-        }
-
-        protected abstract Object GetValue();
+        None,
+        Normal,
+        Selected,
+        Highlighted
     }
 }

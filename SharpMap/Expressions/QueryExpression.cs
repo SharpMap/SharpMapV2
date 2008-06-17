@@ -23,13 +23,13 @@ namespace SharpMap.Expressions
             get { return _predicate; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             QueryExpression otherQuery = other as QueryExpression;
 
             return otherQuery != null &&
-                   Matches(otherQuery.Predicate, Predicate) &&
-                   Matches(otherQuery.Projection, Projection);
+                   Contains(otherQuery.Predicate, Predicate) &&
+                   Contains(otherQuery.Projection, Projection);
         }
 
         public override Expression Clone()

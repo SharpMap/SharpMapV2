@@ -35,7 +35,7 @@ namespace SharpMap.Expressions
             get { return _collection; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             CollectionExpression ce = other as CollectionExpression;
 

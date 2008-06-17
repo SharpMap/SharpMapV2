@@ -22,9 +22,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using GeoAPI.Diagnostics;
 using SharpMap.Data;
+using SharpMap.Diagnostics;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Expressions;
+using Trace = GeoAPI.Diagnostics.Trace;
 
 namespace SharpMap.Presentation.Presenters
 {
@@ -43,6 +45,7 @@ namespace SharpMap.Presentation.Presenters
         public AttributePresenter(Map map, IAttributeView view)
             : base(map, view)
         {
+            Trace.Info(TraceCategories.Presentation, "Creating AttributePresenter");
             Map.Layers.ListChanged += handleLayersChanged;
             View.FeaturesHighlightedChanged += handleViewFeaturesHighlightedChanged;
             View.Layers = Map.Layers;
@@ -50,6 +53,10 @@ namespace SharpMap.Presentation.Presenters
 
         private void handleLayersChanged(Object sender, ListChangedEventArgs e)
         {
+            Trace.Info(TraceCategories.Presentation, "AttributePresenter handling " +
+                                                     "layer collection changed");
+            Trace.Debug(TraceCategories.Presentation, "Layer collection change: " +
+                                                      e.ListChangedType);
             IFeatureLayer newLayer = Map.Layers[e.NewIndex] as IFeatureLayer;
             IFeatureLayer oldLayer = Map.Layers[e.OldIndex] as IFeatureLayer;
 
@@ -58,14 +65,26 @@ namespace SharpMap.Presentation.Presenters
                 wireupFeatureLayer(newLayer);
             }
 
-            if (oldLayer != null && e.NewIndex < 0  && e.ListChangedType == ListChangedType.ItemDeleted)
+            if (oldLayer != null &&
+                e.NewIndex < 0 &&
+                e.ListChangedType == ListChangedType.ItemDeleted)
             {
                 unwireFeatureLayer(oldLayer);
             }
         }
 
-        private void handleViewFeaturesHighlightedChanged(Object sender, FeaturesHighlightedChangedEventArgs e)
+        private void handleViewFeaturesHighlightedChanged(Object sender,
+                                                          FeaturesHighlightedChangedEventArgs e)
         {
+            Trace.Info(TraceCategories.Presentation, "AttributePresenter handling " +
+                                                     "view features highlighted changed");
+#if DEBUG
+            Trace.Debug(TraceCategories.Presentation, "Layer on which highlight change: " +
+                                                      e.LayerName);
+            Trace.Debug(TraceCategories.Presentation, "Highlighted features: " +
+                                                      EnumerablePrinter.Print(e.HighlightedFeatures));
+#endif
+
             if (_highlightUpdating)
             {
                 return;
@@ -87,26 +106,35 @@ namespace SharpMap.Presentation.Presenters
 
             Assert.IsNotNull(featureLayer);
 
-            FeatureQueryExpression viewDefinition = featureLayer.HighlightedFeatures.ViewDefinition;
+            FeatureQueryExpression viewDefinition = featureLayer.HighlightedFilter;
 
             IEnumerable oids = getFeatureIdsFromIndexes(featureLayer, e.HighlightedFeatures);
             OidCollectionExpression oidExpression = new OidCollectionExpression(oids);
-            ProjectionExpression projection = viewDefinition.Projection;
 
-            if (viewDefinition.SpatialPredicate != null)
+            if (viewDefinition == null)
             {
-                viewDefinition = new FeatureQueryExpression(projection, oidExpression);
+                viewDefinition = new FeatureQueryExpression(new AllAttributesExpression(),
+                                                            oidExpression);
             }
             else
             {
-                PredicateExpression predicate = new BinaryExpression(viewDefinition.SpatialPredicate,
-                                                                     BinaryOperator.And,
-                                                                     oidExpression);
-                viewDefinition = new FeatureQueryExpression(projection, predicate);
+                ProjectionExpression projection = viewDefinition.Projection;
+
+                if (viewDefinition.SpatialPredicate == null)
+                {
+                    viewDefinition = new FeatureQueryExpression(projection, oidExpression);
+                }
+                else
+                {
+                    PredicateExpression predicate = new BinaryExpression(viewDefinition.SpatialPredicate,
+                                                                         BinaryOperator.And,
+                                                                         oidExpression);
+                    viewDefinition = new FeatureQueryExpression(projection, predicate);
+                }
             }
 
             _highlightUpdating = true;
-            featureLayer.HighlightedFeatures.ViewDefinition = viewDefinition;
+            featureLayer.HighlightedFilter = viewDefinition;
             _highlightUpdating = false;
         }
 
@@ -167,7 +195,7 @@ namespace SharpMap.Presentation.Presenters
             layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesChanged;
         }
 
-        private static IEnumerable<Object> getFeatureIdsFromIndexes(IFeatureLayer layer, 
+        private static IEnumerable<Object> getFeatureIdsFromIndexes(IFeatureLayer layer,
                                                                     IEnumerable<Int32> indexes)
         {
             foreach (Int32 index in indexes)
@@ -186,7 +214,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
-                                                                    FeatureDataView selectedFeatures, 
+                                                                    FeatureDataView selectedFeatures,
                                                                     FeatureDataView highlightedFeatures)
         {
             foreach (FeatureDataRow feature in highlightedFeatures)

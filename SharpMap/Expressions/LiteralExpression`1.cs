@@ -20,15 +20,15 @@ using System.Collections.Generic;
 
 namespace SharpMap.Expressions
 {
-    public class ValueExpression<TValue> : ValueExpression
+    public class LiteralExpression<TValue> : LiteralExpression
     {
         private readonly TValue _value;
         private readonly IEqualityComparer<TValue> _comparer;
 
-        public ValueExpression(TValue value) 
+        public LiteralExpression(TValue value) 
             : this(value, EqualityComparer<TValue>.Default) { }
 
-        public ValueExpression(TValue value, IEqualityComparer<TValue> comparer)
+        public LiteralExpression(TValue value, IEqualityComparer<TValue> comparer)
         {
             _value = value;
             _comparer = comparer;
@@ -44,19 +44,19 @@ namespace SharpMap.Expressions
             get { return _comparer; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
-            throw new NotImplementedException();
+            return Equals(other);
         }
 
         public override Expression Clone()
         {
-            throw new NotImplementedException();
+            return new LiteralExpression<TValue>(_value, _comparer);
         }
 
         public override Boolean Equals(Expression other)
         {
-            ValueExpression<TValue> valueExpression = other as ValueExpression<TValue>;
+            LiteralExpression<TValue> valueExpression = other as LiteralExpression<TValue>;
 
             return valueExpression != null &&
                    Comparer.Equals(_value, valueExpression._value);

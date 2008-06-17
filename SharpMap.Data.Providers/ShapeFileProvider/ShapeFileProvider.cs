@@ -35,6 +35,7 @@ using GeoAPI.Indexing;
 using SharpMap.Expressions;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
+using Trace = GeoAPI.Diagnostics.Trace;
 
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
@@ -2108,9 +2109,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
                 catch (ArgumentException ex)
                 {
-                    Trace.TraceWarning("Coordinate system file '" + projfile
-                                       + "' found, but could not be parsed. " +
-                                       "WKT parser returned:" + ex.Message);
+                    Trace.Warning("Coordinate system file '" + projfile + 
+                                  "' found, but could not be parsed. " +
+                                  "WKT parser returned:" + ex.Message);
 
                     throw new ShapeFileIsInvalidException("Invalid .prj file", ex);
                 }

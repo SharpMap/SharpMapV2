@@ -51,7 +51,7 @@ namespace SharpMap.Expressions
             get { return _comparison; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }

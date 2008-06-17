@@ -33,12 +33,17 @@ namespace SharpMap.Expressions
             _geometry = geometry;
         }
 
+        public override string ToString()
+        {
+            return Geometry.ToString();
+        }
+
         public IGeometry Geometry
         {
             get { return _geometry; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }

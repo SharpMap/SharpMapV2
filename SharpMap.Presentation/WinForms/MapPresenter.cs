@@ -29,13 +29,11 @@ namespace SharpMap.Presentation.WinForms
 {
     internal class MapPresenter : MapPresenter2D
     {
-        private Boolean _isRenderingSelection = false;
-        private Boolean _isRenderingAll = false;
+        private Boolean _isRenderingSelection;
+        private Boolean _isRenderingAll;
 
         internal MapPresenter(Map map, MapViewControl mapView)
-            : base(map, mapView)
-        {
-        }
+            : base(map, mapView) { }
 
         internal MapViewControl ViewControl
         {
@@ -68,6 +66,12 @@ namespace SharpMap.Presentation.WinForms
             base.OnRenderingAllLayers();
         }
 
+        protected override void OnRenderingAllLayersPhase(RenderPhase phase)
+        {
+            _isRenderingAll = true;
+            base.OnRenderingAllLayersPhase(phase);
+        }
+
         protected override void OnRenderedAllLayers()
         {
             base.OnRenderedAllLayers();
@@ -92,15 +96,15 @@ namespace SharpMap.Presentation.WinForms
 			_isRenderingSelection = false;
 		}
 
-        protected override void RenderFeatureLayer(IFeatureLayer layer)
+        protected override void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
         {
             if (_isRenderingAll)
             {
-                base.RenderFeatureLayer(layer);
+                base.RenderFeatureLayer(layer, phase);
             }
             else
             {
-                RenderAllLayers();
+                RenderAllLayers(phase);
             }
         }
 

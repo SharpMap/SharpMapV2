@@ -12,7 +12,7 @@ using SharpMap.Indexing.RTree;
 namespace SharpMap.Tests.Indexing
 {
     [TestFixture]
-    public class RTreeTests
+    public class DynamicRTreeTests
     {
         class BoundedInt32 : IBoundable<IExtents>
         {
@@ -102,9 +102,9 @@ namespace SharpMap.Tests.Indexing
 
             addEntries(rTree, null, nodeItemMax - 2);
 
-            IExtents expected = _geoFactory.CreateExtents2D(-100, 
-                                                            -100, 
-                                                            5928.57523425, 
+            IExtents expected = _geoFactory.CreateExtents2D(-100,
+                                                            -100,
+                                                            5928.57523425,
                                                             3252.50803582);
 
             Assert.AreEqual(expected, rTree.Root.Bounds);
@@ -155,7 +155,7 @@ namespace SharpMap.Tests.Indexing
 #endif
             Assert.AreEqual(8, resultsList.Count);
 
-            resultsList.Clear();    
+            resultsList.Clear();
 
             searchExtents = _geoFactory.CreateExtents2D(0, 0, 100, 100);
 
@@ -285,6 +285,24 @@ namespace SharpMap.Tests.Indexing
         }
 
         [Test]
+        public void InsertingAndRemovingItemsSucceeds()
+        {
+            Int32 nodeItemMax;
+            DynamicRTree<BoundedInt32> rTree = createNewRTree(out nodeItemMax);
+
+            List<BoundedInt32> entries = new List<BoundedInt32>();
+            addEntries(rTree, entries, nodeItemMax + 1);
+
+            for (Int32 i = entries.Count - 1; i >= 0; i--)
+            {
+                rTree.Remove(entries[i]);
+            }
+
+            Assert.AreEqual(0, rTree.Root.TotalItemCount);
+            Assert.AreEqual(0, rTree.Root.TotalNodeCount);
+        }
+
+        [Test]
         [Ignore]
         public void LoadingWith100000ObjectsCompletesAndDoesntCrash()
         {
@@ -394,11 +412,11 @@ namespace SharpMap.Tests.Indexing
             }
         }
 
-        private static void addEntry(IList<BoundedInt32> entries, BoundedInt32 entry, ISpatialIndex<IExtents, BoundedInt32> rTree) 
+        private static void addEntry(IList<BoundedInt32> entries, BoundedInt32 entry, ISpatialIndex<IExtents, BoundedInt32> rTree)
         {
             if (entries != null)
             {
-                entries.Add(entry);    
+                entries.Add(entry);
             }
 
             rTree.Insert(entry);

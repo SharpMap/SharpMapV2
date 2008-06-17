@@ -255,9 +255,12 @@ namespace SharpMap.Tools
                     filterLayer.AreFeaturesSelectable && 
                     layer.IsVisibleWhen(isInView(view.WorldWidth)))
 				{
-					filterLayer.SelectedFeatures.SpatialFilter
+                    SpatialBinaryExpression spatialExpression 
                         = SpatialBinaryExpression.Intersects(new FeaturesCollectionExpression(filterLayer.Features),
-                                                             new ExtentsExpression(worldBounds));
+				                                             new ExtentsExpression(worldBounds));
+					filterLayer.SelectedFilter = filterLayer.SelectedFilter == null 
+                        ? new FeatureQueryExpression(new AllAttributesExpression(), spatialExpression)
+                        : new FeatureQueryExpression(filterLayer.SelectedFilter, spatialExpression);
 				}
 			}
 

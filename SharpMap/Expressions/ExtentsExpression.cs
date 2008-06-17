@@ -35,12 +35,17 @@ namespace SharpMap.Expressions
             _extents = extents;
         }
 
+        public override string ToString()
+        {
+            return Extents.ToString();
+        }
+
         public IExtents Extents
         {
             get { return _extents; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }
@@ -62,12 +67,12 @@ namespace SharpMap.Expressions
             return extentsExpression != null && Equals(_extents, extentsExpression._extents);
         }
 
-        public override bool IsNull
+        public override Boolean IsNull
         {
             get { return _extents == null; }
         }
 
-        public override bool IsEmpty
+        public override Boolean IsEmpty
         {
             get { return _extents != null && _extents.IsEmpty; }
         }

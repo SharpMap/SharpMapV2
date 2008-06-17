@@ -33,7 +33,7 @@ namespace SharpMap.Expressions
             get { return _propertyName; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }

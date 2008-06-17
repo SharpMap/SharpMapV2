@@ -101,25 +101,21 @@ namespace SharpMap.Layers
             // We generally want spatial indexing on the feature table...
             _features.IsSpatiallyIndexed = true;
 
+            // handle the request on the feature data table for features
             _features.SelectRequested += handleFeaturesSelectRequested;
 
-            IGeometry empty = dataSource.GeometryFactory.CreatePoint();
-
-            FeatureQueryExpression selectedExpression
-                = new FeatureQueryExpression(empty, SpatialOperation.Intersects, this);
-
+            // setup selected and highlighted views
             _selectedFeatures = new FeatureDataView(_features,
-                                                    selectedExpression,
+                                                    (FeatureQueryExpression)null,
                                                     "",
                                                     DataViewRowState.CurrentRows);
-
-            FeatureQueryExpression highlightExpression
-                = new FeatureQueryExpression(empty, SpatialOperation.Intersects, this);
+            _selectedFeatures.IsFilterExclusive = true;
 
             _highlightedFeatures = new FeatureDataView(_features,
-                                                       highlightExpression,
+                                                       (FeatureQueryExpression)null,
                                                        "",
                                                        DataViewRowState.CurrentRows);
+            _highlightedFeatures.IsFilterExclusive = true;
         }
 
         #region IFeatureLayer Members
@@ -150,6 +146,28 @@ namespace SharpMap.Layers
             get { return _highlightedFeatures; }
         }
 
+        public FeatureQueryExpression HighlightedFilter
+        {
+            get { return _highlightedFeatures.ViewDefinition; }
+            set
+            {
+                _highlightedFeatures.ReindexingEnabled = false;
+
+                if (value == null)
+                {
+                    _highlightedFeatures.IsFilterExclusive = true;
+                    _highlightedFeatures.ViewDefinition = null;
+                }
+                else
+                {
+                    _highlightedFeatures.IsFilterExclusive = false;
+                    _highlightedFeatures.ViewDefinition = value;
+                }
+
+                _highlightedFeatures.ReindexingEnabled = true;
+            }
+        }
+
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text
         /// and format numbers for this layer.
@@ -166,6 +184,28 @@ namespace SharpMap.Layers
         public FeatureDataView SelectedFeatures
         {
             get { return _selectedFeatures; }
+        }
+
+        public FeatureQueryExpression SelectedFilter
+        {
+            get { return _selectedFeatures.ViewDefinition; }
+            set
+            {
+                _selectedFeatures.ReindexingEnabled = false;
+
+                if (value == null)
+                {
+                    _selectedFeatures.IsFilterExclusive = true;
+                    _selectedFeatures.ViewDefinition = null;
+                }
+                else
+                {
+                    _selectedFeatures.IsFilterExclusive = false;
+                    _selectedFeatures.ViewDefinition = value;
+                }
+
+                _selectedFeatures.ReindexingEnabled = true;
+            }
         }
 
         /// <summary>

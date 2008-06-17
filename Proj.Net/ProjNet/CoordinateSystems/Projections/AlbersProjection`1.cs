@@ -69,7 +69,7 @@ namespace ProjNet.CoordinateSystems.Projections
         private readonly Double _falseEasting;
         private readonly Double _falseNorthing;
         private readonly Double _c; //constant c
-        private readonly Double _ro0;
+        private readonly Double _rho0;
         private readonly Double _n;
         private readonly Radians _centerLongitude; //center longitude   
 
@@ -264,7 +264,7 @@ namespace ProjNet.CoordinateSystems.Projections
             _n = (Math.Pow(m1, 2) - Math.Pow(m2, 2)) / (alpha2 - alpha1);
             _c = Math.Pow(m1, 2) + (_n * alpha1);
 
-            _ro0 = computeRho(computeAlpha(lat0));
+            _rho0 = computeRho(computeAlpha(lat0));
             /*
             Double sin_p0 = Math.Sin(lat0);
             Double cos_p0 = Math.Cos(lat0);
@@ -308,7 +308,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Double rho = computeRho(a);
             Double theta = _n * (lon - _centerLongitude);
             lon = (Radians)(_falseEasting + rho * Math.Sin(theta));
-            lat = (Radians)(_falseNorthing + _ro0 - (rho * Math.Cos(theta)));
+            lat = (Radians)(_falseNorthing + _rho0 - (rho * Math.Cos(theta)));
 
             return lonlat.ComponentCount == 2
                        ? CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit)
@@ -324,10 +324,10 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             Double p0 = (Double)p[0];
             Double theta = Math.Atan((p0 * MetersPerUnit - _falseEasting) /
-                                     (_ro0 - (p[1].Multiply(MetersPerUnit) - _falseNorthing)));
+                                     (_rho0 - (p[1].Multiply(MetersPerUnit) - _falseNorthing)));
 
             Double rho = Math.Sqrt(Math.Pow(p0 * MetersPerUnit - _falseEasting, 2) +
-                                   Math.Pow(_ro0 - (p[1].Multiply(MetersPerUnit) - _falseNorthing), 2));
+                                   Math.Pow(_rho0 - (p[1].Multiply(MetersPerUnit) - _falseNorthing), 2));
 
             Double q = (_c - Math.Pow(rho, 2) * Math.Pow(_n, 2) / Math.Pow(SemiMajor, 2)) / _n;
             //Double b = Math.Sin(q / (1 - ((1 - e_sq) / (2 * e)) * Math.Log((1 - e) / (1 + e))));

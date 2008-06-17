@@ -19,6 +19,7 @@ using System;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using System.Globalization;
+using SharpMap.Expressions;
 
 namespace SharpMap.Layers
 {
@@ -44,7 +45,7 @@ namespace SharpMap.Layers
         /// </summary>
 		FeatureDataView HighlightedFeatures { get; }
 
-        //void LoadFeaturesByOids(IEnumerable oids);
+        FeatureQueryExpression HighlightedFilter { get; set; }
 
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text
@@ -56,7 +57,9 @@ namespace SharpMap.Layers
         /// Gets a <see cref="FeatureDataView"/> of features which have been 
         /// selected.
         /// </summary>
-		FeatureDataView SelectedFeatures { get; }
+        FeatureDataView SelectedFeatures { get; }
+
+        FeatureQueryExpression SelectedFilter { get; set; }
 
         IGeometryFactory GeometryFactory { get; set; }
 

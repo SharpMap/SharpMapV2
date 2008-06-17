@@ -95,8 +95,14 @@ namespace SharpMap.Expressions
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
-            // TODO: Well, this is crazy. We need an init function, and perhaps some more static creator methods.
-            : base(new AllAttributesExpression(), 
+            : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter) { }
+
+        public FeatureQueryExpression(ProjectionExpression projectionExpression,
+                                      AttributeBinaryExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter,
+                                      OidCollectionExpression oidFilter)
+            // TODO: Well, this is crazy. We need an init() function, and perhaps some more static creator methods.
+            : base(projectionExpression, 
                    attributeFilter == null
                         ? spatialFilter == null
                                 ? oidFilter
@@ -115,6 +121,12 @@ namespace SharpMap.Expressions
                                                                                 BinaryOperator.And,
                                                                                 spatialFilter))) { }
 
+        public FeatureQueryExpression(FeatureQueryExpression expressionToCopy, 
+                                      SpatialBinaryExpression replacementSpatialExpression)
+            : this(expressionToCopy.Projection, 
+                   expressionToCopy.AttributePredicate, 
+                   replacementSpatialExpression, 
+                   expressionToCopy.OidPredicate) { }
 
         protected internal FeatureQueryExpression(ProjectionExpression projection,
                                                   PredicateExpression predicate)

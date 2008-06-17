@@ -541,12 +541,9 @@ namespace SharpMap.Tests.Data
         [Test]
         public void ChangingOidFilterTriggersNotification()
         {
-            FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
-            FeatureDataTable<Guid> table = new FeatureDataTable<Guid>("Oid", _geoFactory);
-            FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
-            IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
-            table.Load(reader, LoadOption.OverwriteChanges, null);
-            FeatureDataView view = new FeatureDataView(table);
+            FeatureDataTable<Guid> table;
+            FeatureDataView view;
+            createDataViewOnNewTable(out view, out table, false);
 
             Boolean resetNotificationOccured = false;
 
@@ -572,9 +569,43 @@ namespace SharpMap.Tests.Data
         #endregion
 
         [Test]
-        [Ignore("Test not complete")]
-        public void CombiningGeometryFilterAndOidFilterAllowsOnlyFeaturesMatchingBothFilters()
+        public void SettingSpatialPredicateOfFilterChangesViewToMatchFilter()
         {
+            FeatureDataTable<Guid> table;
+            FeatureDataView view;
+            createDataViewOnNewTable(out view, out table, false);
+
+            Assert.AreEqual(table.Rows.Count, view.Count);
+
+            view.SpatialFilter = SpatialBinaryExpression.Intersects(table.Extents);
+                
+            Assert.AreEqual(table.Rows.Count, view.Count);
+
+            view.SpatialFilter = new SpatialBinaryExpression(new ThisExpression(), 
+                                                             SpatialOperation.Disjoint, 
+                                                             new ExtentsExpression(table.Extents));
+
+            Assert.AreEqual(0, view.Count);
+
+            view.SpatialFilter = SpatialBinaryExpression.Intersects(_geoFactory.CreatePoint2D(0, 0));
+
+            Assert.AreEqual(1, view.Count);
+        }
+
+        [Test]
+        public void ChangingFilterIsExclusivePropertyInvertsFilterMatch()
+        {
+            FeatureDataTable<Guid> table;
+            FeatureDataView view;
+            createDataViewOnNewTable(out view, out table, false);
+
+            Assert.AreEqual(table.Rows.Count, view.Count);
+            Assert.IsFalse(view.IsFilterExclusive);
+
+            view.IsFilterExclusive = !view.IsFilterExclusive;
+
+            Assert.IsTrue(view.IsFilterExclusive);
+            Assert.AreEqual(0, view.Count); 
         }
 
         [Test]
@@ -659,5 +690,18 @@ namespace SharpMap.Tests.Data
         }
 
         #endregion
+
+        private void createDataViewOnNewTable(out FeatureDataView view, 
+                                              out FeatureDataTable<Guid> table,
+                                              Boolean includeGeometryCollections)
+        {
+            FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory,
+                                                                            includeGeometryCollections);
+            table = new FeatureDataTable<Guid>("Oid", _geoFactory);
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
+            IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
+            table.Load(reader, LoadOption.OverwriteChanges, null);
+            view = new FeatureDataView(table);
+        }
     }
 }

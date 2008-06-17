@@ -69,7 +69,7 @@ namespace SharpMap.Expressions
             get { return Left is SpatialExpression; }
         }
 
-        public override Boolean Matches(Expression expression)
+        public override Boolean Contains(Expression expression)
         {
             throw new NotImplementedException();
         }

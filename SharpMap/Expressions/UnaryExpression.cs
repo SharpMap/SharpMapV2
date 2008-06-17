@@ -23,7 +23,7 @@ namespace SharpMap.Expressions
             get { return _operand; }
         }
 
-        public override Boolean Matches(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new NotImplementedException();
         }

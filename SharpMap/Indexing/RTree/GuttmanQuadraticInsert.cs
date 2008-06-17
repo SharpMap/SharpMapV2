@@ -46,11 +46,11 @@ namespace SharpMap.Indexing.RTree
         #region IItemInsertStrategy Members
 
         //private Int32 _tempSplitCount = 0;
-        public void Insert(IExtents bounds, 
-                           TItem entry, 
-                           ISpatialIndexNode<IExtents, TItem> node, 
-                           INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, 
-                           IndexBalanceHeuristic heuristic, 
+        public void Insert(IExtents bounds,
+                           TItem entry,
+                           ISpatialIndexNode<IExtents, TItem> node,
+                           INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy,
+                           IndexBalanceHeuristic heuristic,
                            out ISpatialIndexNode<IExtents, TItem> newSiblingFromSplit)
         {
             newSiblingFromSplit = null;
@@ -84,22 +84,22 @@ namespace SharpMap.Indexing.RTree
                 ComputationExtents currentBounds = new ComputationExtents(bounds);
 
                 ISpatialIndexNode<IExtents, TItem> leastExpandedChild;
-                leastExpandedChild = findLeastExpandedChild(node.Children, 
-                                                            currentBounds, 
-                                                            leastExpandedArea, 
+                leastExpandedChild = findLeastExpandedChild(node.Children,
+                                                            currentBounds,
+                                                            leastExpandedArea,
                                                             leastExpandedChildArea);
 
                 Debug.Assert(leastExpandedChild != null);
 
                 // Found least expanded child node - insert into it
-                Insert(bounds, entry, leastExpandedChild, nodeSplitStrategy, 
+                Insert(bounds, entry, leastExpandedChild, nodeSplitStrategy,
                     heuristic, out newSiblingFromSplit);
 
                 RTreeNode<TItem> rNode = node as RTreeNode<TItem>;
 
                 // Adjust this node...
                 rNode.Bounds.ExpandToInclude(bounds);
-                
+
                 // Check for overflow and add to current node if it occured
                 if (newSiblingFromSplit != null)
                 {
@@ -118,17 +118,20 @@ namespace SharpMap.Indexing.RTree
         }
 
         private static ISpatialIndexNode<IExtents, TItem> findLeastExpandedChild(
-            IEnumerable<ISpatialIndexNode<IExtents, TItem>> children, 
-            ComputationExtents currentBounds, Double leastExpandedArea, 
-            Double leastExpandedChildArea) 
+                                                IEnumerable<ISpatialIndexNode<IExtents, TItem>> children,
+                                                ComputationExtents currentBounds,
+                                                Double leastExpandedArea,
+                                                Double leastExpandedChildArea)
         {
             ISpatialIndexNode<IExtents, TItem> leastExpandedChild = null;
 
             foreach (ISpatialIndexNode<IExtents, TItem> child in children)
             {
-                ComputationExtents childBounds = new ComputationExtents(child.Bounds);
+                ComputationExtents childBounds = child.Bounds != null
+                                                        ? new ComputationExtents(child.Bounds)
+                                                        : new ComputationExtents();
                 ComputationExtents candidateRegion = childBounds.Union(currentBounds);
-                   
+
                 Double candidateRegionArea = candidateRegion.Area;
                 Double childArea = childBounds.Area;
                 Double expandedArea = candidateRegionArea - childArea;
@@ -139,7 +142,7 @@ namespace SharpMap.Indexing.RTree
                     leastExpandedChildArea = childArea;
                     leastExpandedArea = expandedArea;
                 }
-                else if (expandedArea == leastExpandedArea 
+                else if (expandedArea == leastExpandedArea
                          && childArea < leastExpandedChildArea)
                 {
                     leastExpandedChild = child;

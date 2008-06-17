@@ -139,10 +139,11 @@
     <Compile Include="Data\LoadFeaturesAdapter.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Diagnostics\EnumerablePrinter.cs" />
+    <Compile Include="Diagnostics\TraceCategories.cs" />
     <Compile Include="Expressions\AllAttributesExpression.cs" />
     <Compile Include="Expressions\AllBandsExpression.cs" />
     <Compile Include="Expressions\AttributeBinaryExpression.cs" />
-    <Compile Include="Expressions\AttributeExpression.cs" />
     <Compile Include="Expressions\AttributesProjectionExpression.cs" />
     <Compile Include="Expressions\BinaryExpression.cs" />
     <Compile Include="Expressions\BinaryExpressionBase.cs" />
@@ -174,8 +175,8 @@
     <Compile Include="Expressions\ThisExpression.cs" />
     <Compile Include="Expressions\UnaryExpression.cs" />
     <Compile Include="Expressions\UnaryOperator.cs" />
-    <Compile Include="Expressions\ValueExpression.cs" />
-    <Compile Include="Expressions\ValueExpression`1.cs" />
+    <Compile Include="Expressions\LiteralExpression.cs" />
+    <Compile Include="Expressions\LiteralExpression`1.cs" />
     <Compile Include="Indexing\RTree\ComputationExtents.cs" />
     <Compile Include="Indexing\RTree\RestructureOpportunity.cs" />
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Presentation\MapActionEventArgs`1.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\AttributePresenter.cs" />
+    <Compile Include="Presentation\RenderPhase.cs" />
     <Compile Include="Presentation\StyleTypeDescriptor.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
