@@ -19,6 +19,11 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
     [TestFixture]
     public class ShapeFileTests
     {
+        const String TestDataFolder = @"..\..\..\..\..\TestData";
+        const String BcRoadsShapeFile = @"..\..\..\..\..\TestData\BCROADS.SHP";
+        const String BcRoadsSpatialIndex = @"..\..\..\..\..\TestData\BCROADS.shp.sidx";
+        const String BcRoadsPrjFile = @"..\..\..\..\..\TestData\BCROADS.prj";
+        const String BcRoadsWithOutDbfShapeFile = @"..\..\..\..\..\TestData\BCROADSWithoutDbf.SHP";
         private static readonly Random _rnd = new Random();
 
         private IGeometryFactory<BufferedCoordinate2D> _geoFactory;
@@ -96,7 +101,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void NewWithoutFileBasedSpatialIndexTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             Assert.IsNotNull(shapeFile);
             shapeFile.Close();
         }
@@ -105,19 +110,19 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Ignore("File based spatial indexing not working.")]
         public void NewWithFileBasedSpatialIndexTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory, true);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory, _coordSysFactory, true);
             Assert.IsNotNull(shapeFile);
             shapeFile.Open();
-            Assert.IsTrue(File.Exists(@"..\..\..\TestData\BCROADS.shp.sidx"));
+            Assert.IsTrue(File.Exists(BcRoadsSpatialIndex));
             shapeFile.Close();
-            File.Delete(@"..\..\..\TestData\BCROADS.shp.sidx");
+            File.Delete(BcRoadsSpatialIndex);
         }
 
         [Test]
         [ExpectedException(typeof (ShapeFileInvalidOperationException))]
         public void RebuildSpatialIndexWhenClosedThrowsExceptionTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             shapeFile.RebuildSpatialIndex();
             shapeFile.Close();
         }
@@ -126,19 +131,19 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Ignore]
         public void RebuildSpatialIndexTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory, false);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory, _coordSysFactory, false);
             shapeFile.Open();
-            File.Delete(@"..\..\..\TestData\BCROADS.shp.sidx");
+            File.Delete(BcRoadsSpatialIndex);
             shapeFile.RebuildSpatialIndex();
-            Assert.IsTrue(File.Exists(@"..\..\..\TestData\BCROADS.shp.sidx"));
+            Assert.IsTrue(File.Exists(BcRoadsSpatialIndex));
             shapeFile.Close();
-            File.Delete(@"..\..\..\TestData\BCROADS.shp.sidx");
+            File.Delete(BcRoadsSpatialIndex);
         }
 
         [Test]
         public void GetCoordinateSystemHavingPrjFileTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             Assert.IsNotNull(shapeFile.SpatialReference);
             Assert.IsInstanceOfType(typeof (IProjectedCoordinateSystem), shapeFile.SpatialReference);
@@ -156,7 +161,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void NoPrjFileImpliesCoordinateSystemIsNullTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsWithOutDbfShapeFile, _geoFactory);
             shapeFile.Open();
             Assert.IsNull(shapeFile.SpatialReference);
             shapeFile.Close();
@@ -166,7 +171,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [ExpectedException(typeof (ShapeFileInvalidOperationException))]
         public void SetCoordinateSystemWithPrjFileThrowsExceptionTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IProjectedCoordinateSystem cs = createExpectedCoordinateSystem();
             shapeFile.SpatialReference = cs;
@@ -180,12 +185,12 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
             //Feature Count: 7291
             //Extent: (7332083.212797, 236823.718672) - (7538428.618000, 405610.346926)
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                                                @"..\..\..\TestData\BCROADSWithoutDbf.SHP", 
+                                                BcRoadsWithOutDbfShapeFile, 
                                                 _geoFactory);
             shapeFile.Open();
             ICoordinateSystemFactory<BufferedCoordinate2D> coordSysFactory 
                 = _coordSysFactory;
-            String wkt = File.ReadAllText(@"..\..\..\TestData\BCROADS.prj");
+            String wkt = File.ReadAllText(BcRoadsPrjFile);
             IProjectedCoordinateSystem cs = WktReader<BufferedCoordinate2D>
                 .ToCoordinateSystemInfo(wkt, coordSysFactory) as IProjectedCoordinateSystem;
             shapeFile.SpatialReference = cs;
@@ -202,7 +207,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetShapeTypeTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                                                @"..\..\..\TestData\BCROADSWithoutDbf.SHP", 
+                                                BcRoadsWithOutDbfShapeFile, 
                                                 _geoFactory);
             shapeFile.Open();
             Assert.AreEqual(ShapeType.PolyLine, shapeFile.ShapeType);
@@ -214,7 +219,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetShapeTypeWhenClosedThrowsExceptionTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                                                @"..\..\..\TestData\BCROADSWithoutDbf.SHP",
+                                                BcRoadsWithOutDbfShapeFile,
                                                 _geoFactory);
             Assert.AreEqual(ShapeType.PolyLine, shapeFile.ShapeType);
         }
@@ -223,9 +228,9 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetFilenameTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                                                @"..\..\..\TestData\BCROADSWithoutDbf.SHP", 
+                                                BcRoadsWithOutDbfShapeFile, 
                                                 _geoFactory);
-            Assert.AreEqual(@"..\..\..\TestData\BCROADSWithoutDbf.SHP", shapeFile.Filename);
+            Assert.AreEqual(BcRoadsWithOutDbfShapeFile, shapeFile.Filename);
         }
 
         //[Test]
@@ -238,7 +243,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         //    if (File.Exists(@"UnitTestData\NewBCROADS.SBX")) File.Delete(@"UnitTestData\NewBCROADS.SBX");
         //    if (File.Exists(@"UnitTestData\NewBCROADS.PRJ")) File.Delete(@"UnitTestData\NewBCROADS.PRJ");
 
-        //    File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
+        //    File.Copy(BcRoadsShapeFile, @"UnitTestData\BCROADSCopy.SHP", true);
         //    File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
         //    File.Copy(@"..\..\..\TestData\BCROADS.DBF", @"UnitTestData\BCROADSCopy.DBF", true);
         //    File.Copy(@"..\..\..\TestData\BCROADS.SBN", @"UnitTestData\BCROADSCopy.SBN", true);
@@ -278,7 +283,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         //[ExpectedException(typeof (ShapeFileInvalidOperationException))]
         //public void SetFilenameWhenOpenThrowsExceptionTest()
         //{
-        //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+        //    ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
         //    shapeFile.Open();
         //    shapeFile.Filename = @"UnitTestData\NewBCROADS.SHP";
         //}
@@ -287,9 +292,9 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         //[ExpectedException(typeof (ShapeFileInvalidOperationException))]
         //public void SetFilenameWhenFileExistsThrowsExceptionTest()
         //{
-        //    File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\BCROADSCopy.SHP", true);
+        //    File.Copy(BcRoadsShapeFile, @"UnitTestData\BCROADSCopy.SHP", true);
         //    File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\BCROADSCopy.SHX", true);
-        //    File.Copy(@"..\..\..\TestData\BCROADS.SHP", @"UnitTestData\NewBCROADS.SHP", true);
+        //    File.Copy(BcRoadsShapeFile, @"UnitTestData\NewBCROADS.SHP", true);
         //    File.Copy(@"..\..\..\TestData\BCROADS.SHX", @"UnitTestData\NewBCROADS.SHX", true);
 
         //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"UnitTestData\BCROADSCopy.SHP");
@@ -300,16 +305,16 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         //[ExpectedException(typeof (ShapeFileIsInvalidException))]
         //public void SetFilenameToNonShpExtensionThrowsExceptionTest()
         //{
-        //    ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+        //    ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
         //    shapeFile.Filename = @"UnitTestData\NewBCROADS.abc";
         //}
 
         [Test]
         public void GetIndexFilenameTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             Assert.AreEqual(0, String.Compare(
-                                   Path.Combine(new DirectoryInfo(@"..\..\..\TestData").FullName, "BCROADS.SHX"),
+                                   Path.Combine(new DirectoryInfo(TestDataFolder).FullName, "BCROADS.SHX"),
                                    shapeFile.IndexFilename,
                                    true));
             shapeFile.Close();
@@ -318,9 +323,9 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void GetDbfFilenameTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             Assert.AreEqual(0, String.Compare(
-                                   Path.Combine(new DirectoryInfo(@"..\..\..\TestData").FullName, "BCROADS.DBF"),
+                                   Path.Combine(new DirectoryInfo(TestDataFolder).FullName, "BCROADS.DBF"),
                                    shapeFile.DbfFilename,
                                    true));
             shapeFile.Close();
@@ -329,7 +334,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void HasDbfWithDbfFileIsTrueTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             Assert.IsTrue(shapeFile.HasDbf);
             shapeFile.Close();
         }
@@ -337,7 +342,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void HasDbfWithoutDbfFileIsFalseTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsWithOutDbfShapeFile, _geoFactory);
             Assert.IsFalse(shapeFile.HasDbf);
             shapeFile.Close();
         }
@@ -376,7 +381,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void IsOpenTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             Assert.IsFalse(shapeFile.IsOpen);
             shapeFile.Open();
             Assert.IsTrue(shapeFile.IsOpen);
@@ -389,19 +394,19 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void OpenExclusiveTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open(true);
-            File.OpenRead(@"..\..\..\TestData\BCROADS.SHP");
+            File.OpenRead(BcRoadsShapeFile);
         }
 
         [Test]
         public void CloseExclusiveTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open(true);
             shapeFile.Close();
-            File.OpenRead(@"..\..\..\TestData\BCROADS.SHP").Close();
+            File.OpenRead(BcRoadsShapeFile).Close();
         }
 
         [Test]
@@ -409,7 +414,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetGeometriesInViewTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             List<IGeometry> geometries = new List<IGeometry>();
 
@@ -428,7 +433,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetGeometriesInViewWhenClosedThrowsExceptionTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
 
             IGeometry empty = _geoFactory.CreatePoint();
             //new List<IGeometry>(shapeFile.ExecuteGeometryIntersectionQuery(empty));
@@ -438,7 +443,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void ExecuteIntersectionQueryByBoundingBoxTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             FeatureDataTable data = new FeatureDataTable("ShapeFile test", _geoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(shapeFile.GetExtents());
@@ -453,7 +458,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void ExecuteIntersectionQueryByBoundingBoxWhenClosedThrowsExceptionTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(shapeFile.GetExtents());
             IFeatureDataReader reader = shapeFile.ExecuteFeatureQuery(query);
         }
@@ -500,7 +505,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void GetFeatureCountTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             Int32 expected = 7291;
             Int32 actual = shapeFile.GetFeatureCount();
             Assert.AreEqual(expected, actual);
@@ -510,7 +515,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetFeatureTest()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             FeatureDataRow<UInt32> feature = shapeFile.GetFeatureByOid(0) as FeatureDataRow<UInt32>;
             Assert.IsNotNull(feature);
@@ -521,7 +526,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void GetExtentsTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             IExtents expected =_geoFactory.CreateExtents2D(
                 7332083.2127965018, 236823.71867240831, 
                 7538428.618, 405610.34692560317);
@@ -532,20 +537,20 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [Test]
         public void ConnectionIdTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
-            Assert.AreEqual(@"..\..\..\TestData\BCROADS.SHP", shapeFile.ConnectionId);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
+            Assert.AreEqual(BcRoadsShapeFile, shapeFile.ConnectionId);
         }
 
         [Test]
         [Ignore("Srid is broken and not well thought out.")]
         public void SridTest()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             shapeFile.Open();
             Assert.AreEqual(0, shapeFile.Srid);
             shapeFile.Close();
 
-            shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADSWithoutDbf.SHP", _geoFactory);
+            shapeFile = new ShapeFileProvider(BcRoadsWithOutDbfShapeFile, _geoFactory);
             shapeFile.Open();
             Assert.AreEqual(-1, shapeFile.Srid);
             shapeFile.Close();
@@ -734,7 +739,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [ExpectedException(typeof(ShapeFileInvalidOperationException))]
         public void GetSchemaTableFailsifShapeFileNotOpen()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
 
             DataTable schemaTable = shapeFile.GetSchemaTable();
         }
@@ -743,7 +748,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void GetSchemaTableReturnsOid()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
 
             DataTable schemaTable = shapeFile.GetSchemaTable();
@@ -756,7 +761,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [ExpectedException(typeof (ShapeFileInvalidOperationException))]
         public void SetTableSchemaShouldFailIfShapeFileNotOpen()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
 
             FeatureDataTable nonKeyedTable = new FeatureDataTable(_geoFactory);
             shapeFile.SetTableSchema(nonKeyedTable);
@@ -766,7 +771,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void SetTableSchemaShouldMatchShapeFileSchema()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = shapeFile.CreateNewTable() as FeatureDataTable<UInt32>;
@@ -784,7 +789,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         [ExpectedException(typeof (InvalidOperationException))]
         public void SetTableSchemaWithDifferentKeyCase()
         {
-            ShapeFileProvider shapeFile = new ShapeFileProvider(@"..\..\..\TestData\BCROADS.SHP", _geoFactory);
+            ShapeFileProvider shapeFile = new ShapeFileProvider(BcRoadsShapeFile, _geoFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
 
@@ -797,7 +802,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void SetTableSchemaWithDifferentKeyCaseAndSchemaMergeAction()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = shapeFile.CreateNewTable() as FeatureDataTable<UInt32>;
@@ -813,7 +818,7 @@ namespace SharpMap.Data.Providers.ShapeFile.Tests
         public void SetTableSchemaWithDifferentKeyNameAndSchemaMergeAction()
         {
             ShapeFileProvider shapeFile = new ShapeFileProvider(
-                @"..\..\..\TestData\BCROADS.SHP", _geoFactory, _coordSysFactory);
+                BcRoadsShapeFile, _geoFactory, _coordSysFactory);
             shapeFile.Open();
             IGeometry empty = _geoFactory.CreatePoint();
             FeatureDataTable<UInt32> queryTable = shapeFile.CreateNewTable() as FeatureDataTable<UInt32>;

@@ -592,6 +592,7 @@ namespace SharpMap.Tests.Data
             Assert.AreEqual(1, view.Count);
         }
 
+
         [Test]
         public void ChangingFilterIsExclusivePropertyInvertsFilterMatch()
         {
@@ -606,6 +607,95 @@ namespace SharpMap.Tests.Data
 
             Assert.IsTrue(view.IsFilterExclusive);
             Assert.AreEqual(0, view.Count); 
+        }
+
+
+        [Test]
+        public void VariousFilteringCombinationTestSequence()
+        {
+            // this horrendous sequence is what I had time alloted for
+            // takes some better setup to factor into tests that test 1 thing
+            FeatureDataTable<Guid> table;
+            FeatureDataView view;
+            createDataViewOnNewTable(out view, out table, false);
+
+            Assert.AreEqual(table.Rows.Count, view.Count);
+
+            SpatialBinaryExpression spatialFilter = 
+                SpatialBinaryExpression.Intersects(_geoFactory.WktReader.Read("POLYGON ((19 19, 21 19, 20 21, 19 19))"));
+
+            // test basic spatial filter
+            view.SpatialFilter = spatialFilter;
+
+            Assert.AreEqual(3, view.Count);
+
+            // setup for combination tests
+            List<Guid> oidsInSpatialFilter = new List<Guid>(3);
+            foreach (FeatureDataRow row in (IEnumerable<FeatureDataRow>)view)
+            {
+                oidsInSpatialFilter.Add((Guid)row.GetOid());
+            }
+
+            List<Guid> oidsNotInSpatialFilter = new List<Guid>(table.Rows.Count - 3);
+            foreach (FeatureDataRow<Guid> row in table)
+            {
+                if (!oidsNotInSpatialFilter.Contains(row.Id))
+                {
+                    oidsNotInSpatialFilter.Add(row.Id);
+                }
+            }
+
+            List<Guid> twoOidsFromEachList = new List<Guid>(4);
+            twoOidsFromEachList.AddRange(oidFilterSource(oidsInSpatialFilter, 2));
+            twoOidsFromEachList.AddRange(oidFilterSource(oidsNotInSpatialFilter, 2));
+
+            // test spatial filter and oid filter
+            OidCollectionExpression spanningOids = new OidCollectionExpression(twoOidsFromEachList);
+            view.OidFilter = spanningOids;
+
+            Assert.AreEqual(2, view.Count);
+
+            // test clearing spatial component
+            view.SpatialFilter = null;
+
+            Assert.AreEqual(4, view.Count);
+
+            // test inverting oid filter
+            view.IsFilterExclusive = true;
+
+            Assert.AreEqual(table.Rows.Count - 4, view.Count);
+
+            // test both components with inversion
+            view.SpatialFilter = spatialFilter;
+
+            Assert.AreEqual(table.Rows.Count - 2, view.Count);
+
+            // test clearing OidFilter
+            view.OidFilter = null;
+
+            Assert.AreEqual(table.Rows.Count - 3, view.Count);
+
+            // test clearing inversion
+            view.IsFilterExclusive = false;
+
+            Assert.AreEqual(3, view.Count);
+
+            // test clearing everything
+            view.SpatialFilter = null;
+
+            Assert.AreEqual(table.Rows.Count, view.Count);
+        }
+
+        private IEnumerable<Guid> oidFilterSource(IEnumerable<Guid> source, Int32 maxCount)
+        {
+            Int32 count = 0;
+            foreach (Guid guid in source)
+            {
+                if (count >= maxCount)
+                    yield break;
+                count ++;
+                yield return guid;
+            }
         }
 
         [Test]
