@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using GeoAPI.Coordinates;
@@ -10,62 +11,70 @@ using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate2D;
 using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DFactory;
 using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DSequenceFactory;
 
-namespace ProjNet.UnitTests
+namespace ProjNet.Tests
 {
-    internal class SRIDReader
+    internal class SridReader
     {
-        private const string filename = @"..\..\SRID.csv";
+        private const String filename = @"..\..\SRID.csv";
 
-        public struct WKTstring {
+        public struct WktString
+        {
             /// <summary>
             /// Well-known ID
             /// </summary>
-            public int WKID;
+            public Int32 Wkid;
+
             /// <summary>
             /// Well-known Text
             /// </summary>
-            public string WKT;
+            public String Wkt;
         }
 
         /// <summary>
         /// Enumerates all SRID's in the SRID.csv file.
         /// </summary>
         /// <returns>Enumerator</returns>
-        public static IEnumerable<WKTstring> GetSRIDs()
+        public static IEnumerable<WktString> GetSrids()
         {
             using (StreamReader sr = File.OpenText(filename))
             {
                 while (!sr.EndOfStream)
                 {
-                    string line = sr.ReadLine();
-                    int split = line.IndexOf(';');
+                    String line = sr.ReadLine();
+                    Int32 split = line.IndexOf(';');
+
                     if (split > -1)
                     {
-                        WKTstring wkt = new WKTstring();
-                        wkt.WKID = int.Parse(line.Substring(0, split));
-                        wkt.WKT = line.Substring(split + 1);
+                        WktString wkt = new WktString();
+                        wkt.Wkid = Int32.Parse(line.Substring(0, split));
+                        wkt.Wkt = line.Substring(split + 1);
                         yield return wkt;
                     }
                 }
                 sr.Close();
             }
         }
+
         /// <summary>
         /// Gets a coordinate system from the SRID.csv file
         /// </summary>
         /// <param name="id">EPSG ID</param>
         /// <returns>Coordinate system, or null if SRID was not found.</returns>
-		public static ICoordinateSystem<Coordinate2D> GetCSbyID(int id)
+        public static ICoordinateSystem<Coordinate2D> GetCSbyID(Int32 id)
         {
-			ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
-			IGeometryFactory<Coordinate2D> gf = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
-			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
-			
-			foreach (WKTstring wkt in GetSRIDs())
+            ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
+            IGeometryFactory<Coordinate2D> gf =
+                new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+            CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(
+                cf, gf);
+
+            foreach (WktString wkt in GetSrids())
             {
-                if (wkt.WKID == id)
+                if (wkt.Wkid == id)
                 {
-					return WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt.WKT, fac) as ICoordinateSystem<Coordinate2D>;
+                    return
+                        WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt.Wkt, fac) as
+                        ICoordinateSystem<Coordinate2D>;
                 }
             }
             return null;

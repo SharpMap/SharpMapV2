@@ -787,8 +787,8 @@ namespace SharpMap.Presentation.WinForms
 
                             //max = Math.Min(max, _presenter.MaximumWorldWidth);
                             max = Math.Min(max, Map.Extents.Width);
-                            //double pct = (max - _presenter.WorldWidth) / (max - min);
-                            double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
+                            //Double pct = (max - _presenter.WorldWidth) / (max - min);
+                            Double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
 
                             if (scaleMult > 1)
                             {

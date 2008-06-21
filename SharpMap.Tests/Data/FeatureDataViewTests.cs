@@ -661,7 +661,7 @@ namespace SharpMap.Tests.Data
             Assert.AreEqual(4, view.Count);
 
             // test inverting oid filter
-            view.IsFilterExclusive = true;
+            view.IsViewDefinitionExclusive = true;
 
             Assert.AreEqual(table.Rows.Count - 4, view.Count);
 
@@ -676,7 +676,7 @@ namespace SharpMap.Tests.Data
             Assert.AreEqual(table.Rows.Count - 3, view.Count);
 
             // test clearing inversion
-            view.IsFilterExclusive = false;
+            view.IsViewDefinitionExclusive = false;
 
             Assert.AreEqual(3, view.Count);
 
@@ -689,10 +689,14 @@ namespace SharpMap.Tests.Data
         private IEnumerable<Guid> oidFilterSource(IEnumerable<Guid> source, Int32 maxCount)
         {
             Int32 count = 0;
+
             foreach (Guid guid in source)
             {
                 if (count >= maxCount)
+                {
                     yield break;
+                }
+
                 count ++;
                 yield return guid;
             }

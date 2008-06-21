@@ -999,36 +999,36 @@ namespace SharpMap.Rendering.Rendering2D
 
         #endregion
 
-        #region IAddable<double,IVector<DoubleComponent>> Members
+        #region IAddable<Double,IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Add(double b)
+        public IVector<DoubleComponent> Add(Double b)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region ISubtractable<double,IVector<DoubleComponent>> Members
+        #region ISubtractable<Double,IVector<DoubleComponent>> Members
 
-        public IVector<DoubleComponent> Subtract(double b)
+        public IVector<DoubleComponent> Subtract(Double b)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region IAddable<double,Point2D> Members
+        #region IAddable<Double,Point2D> Members
 
-        Point2D IAddable<double, Point2D>.Add(double b)
+        Point2D IAddable<Double, Point2D>.Add(Double b)
         {
             throw new NotImplementedException();
         }
 
         #endregion
 
-        #region ISubtractable<double,Point2D> Members
+        #region ISubtractable<Double,Point2D> Members
 
-        Point2D ISubtractable<double, Point2D>.Subtract(double b)
+        Point2D ISubtractable<Double, Point2D>.Subtract(Double b)
         {
             throw new NotImplementedException();
         }

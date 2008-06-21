@@ -1087,7 +1087,7 @@ namespace SharpMap.Rendering.Rendering2D
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Set(double value)
+        public IMatrix<DoubleComponent> Set(Double value)
         {
             throw new NotImplementedException();
         }
@@ -1130,12 +1130,12 @@ namespace SharpMap.Rendering.Rendering2D
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Log(double newBase)
+        public IMatrix<DoubleComponent> Log(Double newBase)
         {
             throw new NotImplementedException();
         }
 
-        public IMatrix<DoubleComponent> Power(double exponent)
+        public IMatrix<DoubleComponent> Power(Double exponent)
         {
             throw new NotImplementedException();
         }

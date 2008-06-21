@@ -11,12 +11,13 @@ using NPack.Interfaces;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
+using ProjNet.Tests;
 using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate2D;
 using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DFactory;
 using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DSequenceFactory;
-using MatrixFactory = ProjNet.UnitTests.FakeMatrixFactory;
+using MatrixFactory = ProjNet.Tests.FakeMatrixFactory;
 
-namespace ProjNet.UnitTests.Converters.WKT
+namespace ProjNet.Tests.Converters.Wkt
 {
 	[TestFixture]
 	public class WKTCoordSysParserTests
@@ -73,7 +74,7 @@ namespace ProjNet.UnitTests.Converters.WKT
 			IGeometryFactory<Coordinate2D> gf = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
 			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
 
-			string wkt = "PROJCS[\"NAD83(HARN) / Texas Central (ftUS)\", GEOGCS[\"NAD83(HARN)\", DATUM[\"NAD83_High_Accuracy_Regional_Network\", SPHEROID[\"GRS 1980\", 6378137, 298.257222101, AUTHORITY[\"EPSG\", \"7019\"]], TOWGS84[725, 685, 536, 0, 0, 0, 0], AUTHORITY[\"EPSG\", \"6152\"]], PRIMEM[\"Greenwich\", 0, AUTHORITY[\"EPSG\", \"8901\"]], UNIT[\"degree\", 0.0174532925199433, AUTHORITY[\"EPSG\", \"9122\"]], AUTHORITY[\"EPSG\", \"4152\"]], PROJECTION[\"Lambert_Conformal_Conic_2SP\"], PARAMETER[\"standard_parallel_1\", 31.883333333333], PARAMETER[\"standard_parallel_2\", 30.1166666667], PARAMETER[\"latitude_of_origin\", 29.6666666667], PARAMETER[\"central_meridian\", -100.333333333333], PARAMETER[\"false_easting\", 2296583.333], PARAMETER[\"false_northing\", 9842500], UNIT[\"US survey foot\", 0.304800609601219, AUTHORITY[\"EPSG\", \"9003\"]], AUTHORITY[\"EPSG\", \"2918\"]]";
+			String wkt = "PROJCS[\"NAD83(HARN) / Texas Central (ftUS)\", GEOGCS[\"NAD83(HARN)\", DATUM[\"NAD83_High_Accuracy_Regional_Network\", SPHEROID[\"GRS 1980\", 6378137, 298.257222101, AUTHORITY[\"EPSG\", \"7019\"]], TOWGS84[725, 685, 536, 0, 0, 0, 0], AUTHORITY[\"EPSG\", \"6152\"]], PRIMEM[\"Greenwich\", 0, AUTHORITY[\"EPSG\", \"8901\"]], UNIT[\"degree\", 0.0174532925199433, AUTHORITY[\"EPSG\", \"9122\"]], AUTHORITY[\"EPSG\", \"4152\"]], PROJECTION[\"Lambert_Conformal_Conic_2SP\"], PARAMETER[\"standard_parallel_1\", 31.883333333333], PARAMETER[\"standard_parallel_2\", 30.1166666667], PARAMETER[\"latitude_of_origin\", 29.6666666667], PARAMETER[\"central_meridian\", -100.333333333333], PARAMETER[\"false_easting\", 2296583.333], PARAMETER[\"false_northing\", 9842500], UNIT[\"US survey foot\", 0.304800609601219, AUTHORITY[\"EPSG\", \"9003\"]], AUTHORITY[\"EPSG\", \"2918\"]]";
 
 			ProjectedCoordinateSystem<Coordinate2D> pcs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt, fac) as ProjectedCoordinateSystem<Coordinate2D>;
 			Assert.IsNotNull(pcs, "Could not parse WKT: " + wkt);
@@ -133,16 +134,16 @@ namespace ProjNet.UnitTests.Converters.WKT
 		/// and tries to parse them.
 		/// </summary>
 		[Test]
-		public void ParseAllWKTs()
+		public void ParseAllWkts()
 		{
 			ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
 			IGeometryFactory<Coordinate2D> gf = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
 			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
 
-			int parsecount = 0;
-            foreach (SRIDReader.WKTstring wkt in SRIDReader.GetSRIDs())
+			Int32 parsecount = 0;
+            foreach (SridReader.WktString wkt in SridReader.GetSrids())
             {
-                ICoordinateSystem cs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt.WKT, fac) as ICoordinateSystem;
+                ICoordinateSystem cs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt.Wkt, fac) as ICoordinateSystem;
                 Assert.IsNotNull(cs, "Could not parse WKT: " + wkt);
                 parsecount++;
             }
@@ -154,7 +155,7 @@ namespace ProjNet.UnitTests.Converters.WKT
 		/// and tries to create a transformation with them.
 		/// </summary>
 		[Test]
-		public void TestTransformAllWKTs()
+		public void TestTransformAllWkts()
 		{
 			//GeographicCoordinateSystem.WGS84
 	
@@ -163,19 +164,22 @@ namespace ProjNet.UnitTests.Converters.WKT
 			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
 			CoordinateTransformationFactory<Coordinate2D> fact = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, new MatrixFactory());
 
-			int parsecount = 0;
+			Int32 parsecount = 0;
 			StreamReader sr = File.OpenText(@"..\..\SRID.csv");
-			string line = "";
+			String line = "";
 			while (!sr.EndOfStream)
 			{
 				line = sr.ReadLine();
-				int split = line.IndexOf(';');
+				Int32 split = line.IndexOf(';');
+
 				if (split > -1)
 				{
-					string srid = line.Substring(0, split);
-					string wkt = line.Substring(split + 1);
+					String srid = line.Substring(0, split);
+					String wkt = line.Substring(split + 1);
 					ICoordinateSystem cs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt, fac) as ICoordinateSystem;
+
 					if (cs == null) continue; //We check this in another test.
+
 					if (cs is IProjectedCoordinateSystem)
 					{
 						switch ((cs as IProjectedCoordinateSystem).Projection.ClassName)
@@ -212,7 +216,9 @@ namespace ProjNet.UnitTests.Converters.WKT
 					parsecount++;
 				}
 			}
+
 			sr.Close();
+
 			Assert.AreEqual(parsecount, 2536, "Not all WKT was processed");
 		}
 	}
