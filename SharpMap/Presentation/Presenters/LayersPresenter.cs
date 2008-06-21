@@ -29,13 +29,13 @@ namespace SharpMap.Presentation.Presenters
 	/// </summary>
 	public class LayersPresenter : BasePresenter<ILayersView>
 	{
-		private EventHandler<LayerActionEventArgs> _layersChildrenVisibleChangeRequestedDelegate;
-		private EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
-		private EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
-		private EventHandler<LayerActionEventArgs> _layerSelectabilityChangeRequestedDelegate;
+		private readonly EventHandler<LayerActionEventArgs> _layersChildrenVisibleChangeRequestedDelegate;
+        private readonly EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
+        private readonly EventHandler<LayerActionEventArgs> _visibleLayersChangeRequestedDelegate;
+        private readonly EventHandler<LayerActionEventArgs> _layerSelectabilityChangeRequestedDelegate;
 
 		/// <summary>
-		/// Creates a new instance of a LayersPresenter with the given <see cref="Map"/>
+        /// Creates a new instance of a <see cref="LayersPresenter"/> with the given <see cref="Map"/>
 		/// instance and the given concrete <see cref="ILayersView"/> implementation.
 		/// </summary>
 		/// <param name="map">Map to present.</param>
@@ -74,7 +74,7 @@ namespace SharpMap.Presentation.Presenters
 
 		#region Private helper functions
 
-		private IEnumerable<String> generateLayerNames(IEnumerable<ILayer> layers)
+		private static IEnumerable<String> generateLayerNames(IEnumerable<ILayer> layers)
 		{
 			foreach(ILayer layer in layers)
 			{
@@ -119,7 +119,7 @@ namespace SharpMap.Presentation.Presenters
 					{
 						ILayer layer = Map.Layers[e.NewIndex];
 
-                        if ((Boolean)layer.GetProperty(LayerGroup.ShowChildrenProperty))
+                        if ((Boolean)layer.GetPropertyValue(LayerGroup.ShowChildrenProperty))
 						{
 							View.EnableChildLayers(layer.LayerName);
 						}
@@ -144,9 +144,9 @@ namespace SharpMap.Presentation.Presenters
 					}
 					break;
 					// The following are taken care of by data binding:
-				case ListChangedType.ItemMoved:
-				case ListChangedType.ItemAdded:
-				case ListChangedType.ItemDeleted:
+                //case ListChangedType.ItemMoved:
+                //case ListChangedType.ItemAdded:
+                //case ListChangedType.ItemDeleted:
 				default:
 					break;
 			}

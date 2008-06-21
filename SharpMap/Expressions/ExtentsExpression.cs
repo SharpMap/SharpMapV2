@@ -40,7 +40,7 @@ namespace SharpMap.Expressions
             return Extents.ToString();
         }
 
-        public IExtents Extents
+        public override IExtents Extents
         {
             get { return _extents; }
         }

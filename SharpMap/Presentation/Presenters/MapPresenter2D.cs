@@ -106,7 +106,6 @@ namespace SharpMap.Presentation.Presenters
         {
             createRenderers();
 
-            //_selection = ViewSelection2D.CreateRectangluarSelection(Point2D.Zero, Size2D.Zero);
             _selection = new ViewSelection2D();
 
             wireupExistingLayers(Map.Layers);
@@ -660,31 +659,66 @@ namespace SharpMap.Presentation.Presenters
                                                   Type layerType,
                                                   params Object[] constructorParams)
         {
-            IRenderer renderer;
             Type constructedType = rendererType.MakeGenericType(renderObjectType);
-            renderer = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
+            IRenderer renderer 
+                = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
             Debug.Assert(renderer != null);
             RegisterRendererForLayerType(layerType, renderer);
         }
 
+        /// <summary>
+        /// Gets the registered renderer for the given layer type.
+        /// </summary>
+        /// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
+        /// <typeparam name="TLayer">The type of the layer to retrieve the layer for.</typeparam>
+        /// <returns>
+        /// The renderer registered for the layer type <typeparamref name="TLayer"/>.
+        /// </returns>
         protected static TRenderer GetRenderer<TRenderer, TLayer>()
             where TRenderer : class, IRenderer
         {
             return LayerRendererRegistry.Instance.Get<TRenderer, TLayer>();
         }
 
+        /// <summary>
+        /// Gets the registered renderer for the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">
+        /// The name under which the desired renderer has previously been registered.
+        /// </param>
+        /// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
+        /// <returns>
+        /// The renderer registered by <paramref name="name"/>.
+        /// </returns>
         protected static TRenderer GetRenderer<TRenderer>(String name)
             where TRenderer : class, IRenderer
         {
             return LayerRendererRegistry.Instance.Get<TRenderer>(name);
         }
 
+        /// <summary>
+        /// Gets the registered renderer for the given <paramref name="layer"/>.
+        /// </summary>
+        /// <param name="layer">
+        /// The specific layer instance for which the desired renderer has previously been registered.
+        /// </param>
+        /// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
+        /// <returns>
+        /// The renderer registered for <paramref name="layer"/>.
+        /// </returns>
         protected static TRenderer GetRenderer<TRenderer>(ILayer layer)
             where TRenderer : class, IRenderer
         {
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
 
+        /// <summary>
+        /// Gets a value indicating if all the parameters needed to compute a view
+        /// have been set and the world-to-view matrix has been initilized.
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
         protected Boolean IsViewMatrixInitialized
         {
             get { return !_viewIsEmpty; }
@@ -694,11 +728,19 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void OnViewMatrixChanged() { }
 
+        /// <summary>
+        /// Registers a renderer for a given layer type.
+        /// </summary>
+        /// <param name="layerType">Type of the layer to register a renderer for.</param>
+        /// <param name="renderer">The <see cref="IRenderer"/> instance to register.</param>
         protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
         {
             LayerRendererRegistry.Instance.Register(layerType, renderer);
         }
 
+        /// <summary>
+        /// Renders all layers and displays the result on the view.
+        /// </summary>
         protected void RenderAllLayers()
         {
             OnRenderingAllLayers();
@@ -1460,30 +1502,18 @@ namespace SharpMap.Presentation.Presenters
 
         private void handleSelectedFeaturesListChanged(Object sender, ListChangedEventArgs e)
         {
-            if (_currentRenderPhase != RenderPhase.None)
-            {
-                return;
-            }
-
-            RenderPhase phaseToRender = RenderPhase.Selected;
             IFeatureLayer featureLayer = getLayerFromSelectedView(sender);
             ListChangedType layerChangeType = e.ListChangedType;
 
-            renderChangedLayer(featureLayer, layerChangeType, phaseToRender);
+            renderChangedLayer(featureLayer, layerChangeType, RenderPhase.Selected);
         }
 
         private void handleHighlightedFeaturesListChanged(Object sender, ListChangedEventArgs e)
         {
-            if (_currentRenderPhase != RenderPhase.None)
-            {
-                return;
-            }
-
-            RenderPhase phaseToRender = RenderPhase.Highlighted;
             IFeatureLayer featureLayer = getLayerFromHighlightView(sender);
             ListChangedType layerChangeType = e.ListChangedType;
 
-            renderChangedLayer(featureLayer, layerChangeType, phaseToRender);
+            renderChangedLayer(featureLayer, layerChangeType, RenderPhase.Highlighted);
         }
 
         private void renderChangedLayer(IFeatureLayer featureLayer,
@@ -1491,6 +1521,15 @@ namespace SharpMap.Presentation.Presenters
                                         RenderPhase phaseToRender)
         {
             if (featureLayer == null)
+            {
+                return;
+            }
+
+            // Do nothing if rendering in progress (and rendering in hey, HEY!),
+            // which is true when the _currentRenderPhase is something other than RenderPhase.None,
+            // since the current render operation will take care of the state change that occured
+            // resulting in this method being called.
+            if (_currentRenderPhase != RenderPhase.None)
             {
                 return;
             }

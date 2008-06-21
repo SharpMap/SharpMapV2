@@ -31,8 +31,11 @@ namespace SharpMap.Layers
     /// <summary>
     /// Interface for map layers.
     /// </summary>
-	public interface ILayer : INotifyPropertyChanged, IDisposable
+	public interface ILayer : INotifyPropertyChanged, ICustomTypeDescriptor, IDisposable
 	{
+        Int32 AddProperty(PropertyDescriptor property);
+        Int32 AddProperty<TValue>(PropertyDescriptor property, TValue value);
+
 		/// <summary>
 		/// Gets or sets a value indicating that data is obtained asynchronously.
 		/// </summary>
@@ -113,7 +116,9 @@ namespace SharpMap.Layers
         /// The value of <paramref name="property"/> or <see langword="null"/> if the layer doesn't
         /// have the property.
         /// </returns>
-        Object GetProperty(PropertyDescriptor property);
+        Object GetPropertyValue(PropertyDescriptor property);
+
+        TValue GetPropertyValue<TValue>(PropertyDescriptor property);
 
         /// <summary>
         /// Sets the value of the property indicated by the given <see cref="PropertyDescriptor"/>,
@@ -125,7 +130,9 @@ namespace SharpMap.Layers
         /// <param name="value">
         /// The value to set <paramref name="property"/> to.
         /// </param>
-        void SetProperty(PropertyDescriptor property, Object value);
+        void SetPropertyValue(PropertyDescriptor property, Object value);
+
+        void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value);
 
         /// <summary>
         /// Event fired when layer data is loaded.

@@ -38,7 +38,7 @@ namespace SharpMap.Presentation.Presenters
         private Boolean _highlightUpdating;
 
         /// <summary>
-        /// Creates a new AttributePresenter with the given map and view.
+        /// Creates a new <see cref="AttributePresenter"/> with the given map and view.
         /// </summary>
         /// <param name="map">The map model to observe and control.</param>
         /// <param name="view">The view to use to display attribute data.</param>

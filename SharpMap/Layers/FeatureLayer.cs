@@ -109,13 +109,13 @@ namespace SharpMap.Layers
                                                     (FeatureQueryExpression)null,
                                                     "",
                                                     DataViewRowState.CurrentRows);
-            _selectedFeatures.IsFilterExclusive = true;
+            _selectedFeatures.IsViewDefinitionExclusive = true;
 
             _highlightedFeatures = new FeatureDataView(_features,
                                                        (FeatureQueryExpression)null,
                                                        "",
                                                        DataViewRowState.CurrentRows);
-            _highlightedFeatures.IsFilterExclusive = true;
+            _highlightedFeatures.IsViewDefinitionExclusive = true;
         }
 
         #region IFeatureLayer Members
@@ -151,20 +151,20 @@ namespace SharpMap.Layers
             get { return _highlightedFeatures.ViewDefinition; }
             set
             {
-                _highlightedFeatures.ReindexingEnabled = false;
+                _highlightedFeatures.AutoIndexingEnabled = false;
 
                 if (value == null)
                 {
-                    _highlightedFeatures.IsFilterExclusive = true;
+                    _highlightedFeatures.IsViewDefinitionExclusive = true;
                     _highlightedFeatures.ViewDefinition = null;
                 }
                 else
                 {
-                    _highlightedFeatures.IsFilterExclusive = false;
+                    _highlightedFeatures.IsViewDefinitionExclusive = false;
                     _highlightedFeatures.ViewDefinition = value;
                 }
 
-                _highlightedFeatures.ReindexingEnabled = true;
+                _highlightedFeatures.AutoIndexingEnabled = true;
             }
         }
 
@@ -191,20 +191,22 @@ namespace SharpMap.Layers
             get { return _selectedFeatures.ViewDefinition; }
             set
             {
-                _selectedFeatures.ReindexingEnabled = false;
+                _selectedFeatures.AutoIndexingEnabled = false;
 
                 if (value == null)
                 {
-                    _selectedFeatures.IsFilterExclusive = true;
+                    _selectedFeatures.IsViewDefinitionExclusive = true;
                     _selectedFeatures.ViewDefinition = null;
+
+                    HighlightedFilter = null;
                 }
                 else
                 {
-                    _selectedFeatures.IsFilterExclusive = false;
+                    _selectedFeatures.IsViewDefinitionExclusive = false;
                     _selectedFeatures.ViewDefinition = value;
                 }
 
-                _selectedFeatures.ReindexingEnabled = true;
+                _selectedFeatures.AutoIndexingEnabled = true;
             }
         }
 

@@ -601,11 +601,11 @@ namespace SharpMap.Tests.Data
             createDataViewOnNewTable(out view, out table, false);
 
             Assert.AreEqual(table.Rows.Count, view.Count);
-            Assert.IsFalse(view.IsFilterExclusive);
+            Assert.IsFalse(view.IsViewDefinitionExclusive);
 
-            view.IsFilterExclusive = !view.IsFilterExclusive;
+            view.IsViewDefinitionExclusive = !view.IsViewDefinitionExclusive;
 
-            Assert.IsTrue(view.IsFilterExclusive);
+            Assert.IsTrue(view.IsViewDefinitionExclusive);
             Assert.AreEqual(0, view.Count); 
         }
 

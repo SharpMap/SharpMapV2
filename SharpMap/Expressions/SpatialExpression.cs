@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Expressions
 {
@@ -25,6 +26,8 @@ namespace SharpMap.Expressions
 
         public abstract Boolean IsNull { get; }
         public abstract Boolean IsEmpty { get; }
+
+        public abstract IExtents Extents { get; }
 
         public static Boolean IsNullOrEmpty(SpatialExpression spatialExpression)
         {

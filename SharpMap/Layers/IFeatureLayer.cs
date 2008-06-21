@@ -64,5 +64,5 @@ namespace SharpMap.Layers
         IGeometryFactory GeometryFactory { get; set; }
 
         Boolean AreFeaturesSelectable { get; set; }
-	}
+    }
 }

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using GeoAPI.CoordinateSystems;
@@ -39,7 +40,7 @@ namespace SharpMap.Layers
     /// obtain basic layer functionality.
     /// </remarks>
     [Serializable]
-    public abstract class Layer : ILayer, ICloneable
+    public abstract class Layer : CustomTypeDescriptor, ILayer, ICloneable
     {
         private static readonly PropertyDescriptorCollection _layerTypeProperties;
 
@@ -89,15 +90,6 @@ namespace SharpMap.Layers
             get { return _layerTypeProperties.Find("Extents", false); }
         }
 
-        ///// <summary>
-        ///// Gets a PropertyDescriptor for Layer's <see cref="ShouldHandleFeaturesNotFoundEvent"/> 
-        ///// property.
-        ///// </summary>
-        //public static PropertyDescriptor ShouldHandleFeaturesNotFoundEventProperty
-        //{
-        //    get { return _layerTypeProperties.Find("ShouldHandleFeaturesNotFoundEvent", false); }
-        //}
-
         /// <summary>
         /// Gets a PropertyDescriptor for Layer's <see cref="LayerName"/> property.
         /// </summary>
@@ -117,6 +109,8 @@ namespace SharpMap.Layers
         #endregion
 
         #region Instance fields
+
+        private readonly ILayer _parent;
         private ICoordinateTransformation _coordinateTransform;
         private String _layerName;
         private IStyle _style;
@@ -125,11 +119,12 @@ namespace SharpMap.Layers
         private Boolean _asyncQuery;
         //private Boolean _handleFeaturesNotFoundEvent = true;
         private IGeometry _loadedRegion;
-        private PropertyDescriptorCollection _customProperties;
+        private PropertyDescriptorCollection _instanceProperties;
         private IGeometryFactory _geoFactory;
         private IQueryCache _cache;
         private IAsyncResult _loadAsyncResult;
         private readonly Object _loadCompletionSync = new Object();
+        private Dictionary<PropertyDescriptor, Object> _propertyValues;
         #endregion
 
         #region Object Creation / Disposal
@@ -174,11 +169,31 @@ namespace SharpMap.Layers
         /// for the layer.
         /// </param>
         protected Layer(String layerName, IStyle style, IProvider dataSource)
+            : this(layerName, style, dataSource, null, null) { }
+
+        protected Layer(String layerName,
+                        IStyle style,
+                        IProvider dataSource,
+                        IGeometryFactory geometryFactory,
+                        ILayer parent)
+            : base(parent)
         {
             if (layerName == null) throw new ArgumentNullException("layerName");
             if (dataSource == null) throw new ArgumentNullException("dataSource");
 
             _layerName = layerName;
+            _parent = parent;
+
+            if (parent != null)
+            {
+                _asyncQuery = parent.AsyncQuery;
+                _geoFactory = geometryFactory;
+                _coordinateTransform = parent.CoordinateTransformation;
+                dataSource = parent.DataSource as IAsyncProvider ??
+                             CreateAsyncProvider(parent.DataSource);
+                _loadedRegion = parent.LoadedRegion;
+                style = parent.Style;
+            }
 
             IAsyncProvider asyncProvider = dataSource as IAsyncProvider;
             _dataSource = asyncProvider ?? CreateAsyncProvider(dataSource);
@@ -268,18 +283,32 @@ namespace SharpMap.Layers
 
         #endregion
 
-        public PropertyDescriptorCollection Properties
+        public override PropertyDescriptorCollection GetProperties()
         {
-            get
+            if (_instanceProperties != null)
             {
-                return _customProperties ?? _layerTypeProperties;
+                return _instanceProperties;
             }
+
+            PropertyDescriptorCollection parentProperties = base.GetProperties();
+
+            return parentProperties != PropertyDescriptorCollection.Empty
+                       ? parentProperties
+                       : _layerTypeProperties;
         }
 
         public Int32 AddProperty(PropertyDescriptor property)
         {
-            initCustomPropsIfNeeded();
-            return _customProperties.Add(property);
+            ensureInstanceProperties();
+            return _instanceProperties.Add(property);
+        }
+
+        public Int32 AddProperty<TValue>(PropertyDescriptor property, TValue value)
+        {
+            ensureInstanceProperties();
+            Int32 index = _instanceProperties.Add(property);
+            SetPropertyValueInternal<TValue>(property, value);
+            return index;
         }
 
         #region ILayer Members
@@ -288,9 +317,14 @@ namespace SharpMap.Layers
         /// </summary>
         public Boolean AsyncQuery
         {
-            get { return _asyncQuery; }
+            get
+            {
+                return _asyncQuery;
+            }
             set
             {
+                checkParent();
+
                 if (_asyncQuery == value)
                 {
                     return;
@@ -318,6 +352,8 @@ namespace SharpMap.Layers
             get { return _coordinateTransform; }
             set
             {
+                checkParent();
+
                 if (_coordinateTransform == value)
                 {
                     return;
@@ -352,13 +388,13 @@ namespace SharpMap.Layers
         /// </remarks>
         public virtual Boolean Enabled
         {
-            get { return Style.Enabled; }
+            get
+            {
+                return Style.Enabled;
+            }
             set
             {
-                if (Style == null)
-                {
-                    Style = CreateStyle();
-                }
+                checkParent();
 
                 if (Enabled == value)
                 {
@@ -401,14 +437,29 @@ namespace SharpMap.Layers
         public IGeometryFactory GeometryFactory
         {
             get { return _geoFactory; }
-            set { _geoFactory = value; }
+            set
+            {
+                checkParent();
+                _geoFactory = value;
+            }
         }
-
-        public Object GetProperty(PropertyDescriptor property)
+        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
         {
             if (property == null) { throw new ArgumentNullException("property"); }
 
-            return property.GetValue(this);
+            return GetPropertyValueInternal<TValue>(property);
+        }
+
+        public Object GetPropertyValue(PropertyDescriptor property)
+        {
+            if (property == null) { throw new ArgumentNullException("property"); }
+
+            return GetPropertyValueInternal(property);
+        }
+
+        public override Object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            return base.GetPropertyOwner(pd) ?? (HasProperty(pd) ? this : null);
         }
 
         public Boolean IsLoadingData
@@ -455,7 +506,11 @@ namespace SharpMap.Layers
 
                 return _loadedRegion;
             }
-            protected set { _loadedRegion = value; }
+            protected set
+            {
+                checkParent();
+                _loadedRegion = value;
+            }
         }
 
         public void LoadIntersectingLayerData(IExtents region)
@@ -506,11 +561,24 @@ namespace SharpMap.Layers
 
         public abstract IEnumerable Select(Expression query);
 
-        public void SetProperty(PropertyDescriptor property, Object value)
+        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
         {
-            if (property == null) { throw new ArgumentNullException("property"); }
+            checkSetValueType<TValue>(property);
+            checkPropertyParameter(property);
+            SetPropertyValueInternal(property, value);
+        }
 
-            property.SetValue(this, value);
+        public void SetPropertyValue(PropertyDescriptor property, Object value)
+        {
+            checkPropertyParameter(property);
+            SetPropertyValueInternal(property, value);
+        }
+
+        public virtual Boolean HasProperty(PropertyDescriptor property)
+        {
+            PropertyDescriptorCollection properties = _instanceProperties ?? _layerTypeProperties;
+            return properties.Contains(property) || (_propertyValues != null &&
+                                                     _propertyValues.ContainsKey(property));
         }
 
         /// <summary>
@@ -535,9 +603,19 @@ namespace SharpMap.Layers
         /// </summary>
         public virtual IStyle Style
         {
-            get { return _style; }
+            get
+            {
+                if (_style == null)
+                {
+                    _style = CreateStyle();
+                }
+
+                return _style;
+            }
             set
             {
+                checkParent();
+
                 if (_style == value)
                 {
                     return;
@@ -573,7 +651,11 @@ namespace SharpMap.Layers
         protected IQueryCache QueryCache
         {
             get { return _cache; }
-            set { _cache = value; }
+            set
+            {
+                checkParent();
+                _cache = value;
+            }
         }
 
         protected virtual IStyle CreateStyle()
@@ -631,10 +713,13 @@ namespace SharpMap.Layers
         #region ICloneable Members
 
         /// <summary>
-        /// Clones the layer
+        /// Clones the layer.
         /// </summary>
-        /// <returns>cloned object</returns>
-        public abstract Object Clone();
+        /// <returns>A memberwise-duplicated layer instance.</returns>
+        public virtual Object Clone()
+        {
+            return MemberwiseClone();
+        }
 
         #endregion
 
@@ -657,18 +742,142 @@ namespace SharpMap.Layers
 
         #endregion
 
+        #region Protected virtual members
+
+        protected virtual TValue GetPropertyValueInternal<TValue>(PropertyDescriptor property)
+        {
+            checkGetValueType<TValue>(property);
+
+            return (TValue)GetPropertyValueInternal(property);
+        }
+
+        protected virtual Object GetPropertyValueInternal(PropertyDescriptor property)
+        {
+            if (_layerTypeProperties.Contains(property))
+            {
+                String propertyName = property.Name;
+
+                if (LayerNameProperty.Name.Equals(propertyName))
+                {
+                    return _layerName;
+                }
+
+                if (CoordinateTransformationProperty.Name.Equals(propertyName))
+                {
+                    return CoordinateTransformation;
+                }
+
+                if (AsyncQueryProperty.Name.Equals(propertyName))
+                {
+                    return AsyncQuery;
+                }
+
+                if (EnabledProperty.Name.Equals(propertyName))
+                {
+                    return Enabled;
+                }
+
+                if (StyleProperty.Name.Equals(propertyName))
+                {
+                    return Style;
+                }
+            }
+
+            if (_instanceProperties.Contains(property))
+            {
+                Object value;
+
+                return _propertyValues != null && _propertyValues.TryGetValue(property, out value)
+                           ? value
+                           : null;
+            }
+
+            throw new InvalidOperationException("Property doesn't exist on this layer: " +
+                                                property.Name);
+        }
+
+        protected virtual void SetPropertyValueInternal<TValue>(PropertyDescriptor property, TValue value)
+        {
+            checkSetValueType<TValue>(property);
+
+            SetPropertyValueInternal(property, (Object)value);
+        }
+
+        protected virtual void SetPropertyValueInternal(PropertyDescriptor property, Object value)
+        {
+            if (_layerTypeProperties.Contains(property))
+            {
+                String propertyName = property.Name;
+
+                if (LayerNameProperty.Name.Equals(propertyName))
+                {
+                    _layerName = value as String;
+                }
+                else if (CoordinateTransformationProperty.Name.Equals(propertyName))
+                {
+                    CoordinateTransformation = value as ICoordinateTransformation;
+                }
+                else if (AsyncQueryProperty.Name.Equals(propertyName))
+                {
+                    AsyncQuery = (Boolean)value;
+                }
+                else if (EnabledProperty.Name.Equals(propertyName))
+                {
+                    Enabled = (Boolean)value;
+                }
+                else if (StyleProperty.Name.Equals(propertyName))
+                {
+                    Style = value as Style;
+                }
+            }
+            else if (_instanceProperties.Contains(property))
+            {
+                if (_propertyValues == null)
+                {
+                    _propertyValues = new Dictionary<PropertyDescriptor, Object>();
+                }
+
+                _propertyValues[property] = value;
+            }
+            else
+            {
+                throw new InvalidOperationException("Property doesn't exist on this layer: " +
+                                                    property.Name);
+            }
+        }
+
+        #endregion
+
         #region Private helper methods
 
-        private void initCustomPropsIfNeeded()
+        private static void checkGetValueType<TValue>(PropertyDescriptor property)
         {
-            if (_customProperties != null)
+            if (!typeof(TValue).IsAssignableFrom(property.PropertyType))
+            {
+                throw new ArgumentException("The type of the property isn't " +
+                                            "assignable to the value variable.");
+            }
+        }
+
+        private static void checkSetValueType<TValue>(PropertyDescriptor property)
+        {
+            if (!property.PropertyType.IsAssignableFrom(typeof(TValue)))
+            {
+                throw new ArgumentException("The type of the value isn't " +
+                                            "assignable to the property.");
+            }
+        }
+
+        private void ensureInstanceProperties()
+        {
+            if (_instanceProperties != null)
             {
                 return;
             }
 
             PropertyDescriptor[] propArray = new PropertyDescriptor[_layerTypeProperties.Count];
             _layerTypeProperties.CopyTo(propArray, 0);
-            _customProperties = new PropertyDescriptorCollection(propArray, false);
+            _instanceProperties = new PropertyDescriptorCollection(propArray, false);
         }
 
         private void computeLoadedRegion()
@@ -690,9 +899,9 @@ namespace SharpMap.Layers
         {
             // The lock is already held, so the calling thread will handle
             // the load synchronously
-            if(!Monitor.TryEnter(_loadCompletionSync))
+            if (!Monitor.TryEnter(_loadCompletionSync))
             {
-                return;    
+                return;
             }
 
             if (asyncResult.IsCompleted)
@@ -718,6 +927,33 @@ namespace SharpMap.Layers
             _loadAsyncResult = null;
             _loadedRegion = null;
             OnLayerDataLoaded(expression, result);
+        }
+
+        private void checkParent()
+        {
+            if (_parent != null)
+            {
+                throw new InvalidOperationException("A child layer cannot have properties " +
+                                                    "set directly. Set properties on the " +
+                                                    "parent layer: " + _parent.LayerName);
+            }
+        }
+
+        private void checkPropertyParameter(PropertyDescriptor property)
+        {
+            if (property == null) { throw new ArgumentNullException("property"); }
+
+            if (!HasProperty(property))
+            {
+                throw new InvalidOperationException("Property doesn't exist for layer " +
+                                                    LayerName);
+            }
+
+            if (property.IsReadOnly)
+            {
+                throw new InvalidOperationException(String.Format("Property {0} is read only.",
+                                                                  property.Name));
+            }
         }
 
         #endregion

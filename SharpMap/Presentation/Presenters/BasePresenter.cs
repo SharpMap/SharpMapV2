@@ -30,7 +30,7 @@ namespace SharpMap.Presentation.Presenters
     {
         private readonly Map _map;
         private readonly TView _view;
-        private Boolean _disposed = false;
+        private Boolean _disposed;
 
         #region Object Construction/Destruction
 

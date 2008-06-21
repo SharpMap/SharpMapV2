@@ -79,7 +79,7 @@ namespace SharpMap.Data
         private Boolean _reindexingEnabled = true;
         private Boolean _shouldReindex;
         private IExtents _extents;
-        private Boolean _isFilterExlcusive;
+        private Boolean _isViewDefinitionExlcusive;
         #endregion
 
         #region Object constructors
@@ -175,17 +175,22 @@ namespace SharpMap.Data
 
         #endregion
 
-        public Boolean IsFilterExclusive
+        /// <summary>
+        /// Gets or sets a value indicating that the <see cref="ViewDefinition"/>
+        /// filter is inclusive of the <see cref="Table"/>'s rows (<see langword="true"/>),
+        /// or exclusive (<see langword="false"/>).
+        /// </summary>
+        public Boolean IsViewDefinitionExclusive
         {
-            get { return _isFilterExlcusive; }
+            get { return _isViewDefinitionExlcusive; }
             set
             {
-                if (value == _isFilterExlcusive)
+                if (value == _isViewDefinitionExlcusive)
                 {
                     return;
                 }
 
-                _isFilterExlcusive = value;
+                _isViewDefinitionExlcusive = value;
                 resetInternal();
             }
         }
@@ -217,7 +222,7 @@ namespace SharpMap.Data
                     // recompute all the indexes for nothing
                     if (Equals(_viewDefinition.SpatialPredicate, value))
                     {
-                        return; 
+                        return;
                     }
 
                     ViewDefinition = new FeatureQueryExpression(_viewDefinition, value);
@@ -316,12 +321,17 @@ namespace SharpMap.Data
             //}
         }
 
+        /// <summary>
+        /// Gets or sets a <see cref="FeatureQueryExpression"/> which defines the 
+        /// set of columns as well as which rows are included in the view based on the 
+        /// underlying <see cref="Table"/>.
+        /// </summary>
         public FeatureQueryExpression ViewDefinition
         {
             get
             {
-                return _viewDefinition == null 
-                    ? null 
+                return _viewDefinition == null
+                    ? null
                     : _viewDefinition.Clone() as FeatureQueryExpression;
             }
             set
@@ -384,7 +394,17 @@ namespace SharpMap.Data
             get { return base.DataViewManager as FeatureDataViewManager; }
         }
 
-        public Boolean ReindexingEnabled
+        /// <summary>
+        /// Gets or sets a value which enables (<see langword="true"/>)
+        /// or disables (<see langword="false"/>) the automatic indexing of the view
+        /// based on the <see cref="ViewDefinition"/> used.
+        /// </summary>
+        /// <remarks>
+        /// If <see cref="AutoIndexingEnabled"/> is set to <see langword="false"/>
+        /// and a new <see cref="ViewDefinition"/> is set, the new columnset and/or 
+        /// rowset will not be computed until 
+        /// </remarks>
+        public Boolean AutoIndexingEnabled
         {
             get { return _reindexingEnabled; }
             set
@@ -404,13 +424,34 @@ namespace SharpMap.Data
             }
         }
 
+        /// <summary>
+        /// Causes the internal index to be rebuilt, and the current columnset and rowset
+        /// to be updated, even if <see cref="AutoIndexingEnabled"/> is <see langword="false"/>.
+        /// </summary>
+        public void ForceIndexRebuild()
+        {
+            Reset();
+        }
+
+        /// <summary>
+        /// RowFilter expressions not supported at this time. 
+        /// Use the ViewDefinition property instead.
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         public override String RowFilter
         {
-            get { return ""; }
+            // TODO: parse/serialize ViewDefinition?
+            get
+            {
+                throw new NotSupportedException("RowFilter expressions not supported " +
+                                                "at this time. Use the ViewDefinition property " +
+                                                "instead.");
+            }
             set
             {
-                throw new NotSupportedException(
-                    "RowFilter expressions not supported at this time.");
+                throw new NotSupportedException("RowFilter expressions not supported " +
+                                                "at this time. Use the ViewDefinition property " +
+                                                "instead.");
             }
         }
 
@@ -468,7 +509,7 @@ namespace SharpMap.Data
 
         protected override void UpdateIndex(Boolean force)
         {
-            if (ReindexingEnabled)
+            if (AutoIndexingEnabled)
             {
                 base.UpdateIndex(force);
             }
@@ -533,9 +574,9 @@ namespace SharpMap.Data
 
             Boolean matches = inGeometryFilter(feature) &&
                               inOidFilter(feature) &&
-                              inAttributeFilter();
+                              inAttributeFilter(feature);
 
-            return _isFilterExlcusive
+            return _isViewDefinitionExlcusive
                        ? !matches
                        : matches;
         }
@@ -613,7 +654,7 @@ namespace SharpMap.Data
             return false;
         }
 
-        private Boolean inAttributeFilter()
+        private Boolean inAttributeFilter(FeatureDataRow feature)
         {
             // TODO: convert the AttributePredicate to a DataExpression and set it here
             return true;
@@ -624,7 +665,7 @@ namespace SharpMap.Data
             // TODO: Perhaps resetting the entire index is a bit drastic... 
             // Reconsider how to enlist and retire rows incrementally, 
             // perhaps doing RTree diffs.
-            if (ReindexingEnabled)
+            if (AutoIndexingEnabled)
             {
                 Reset();
             }

@@ -38,6 +38,11 @@ namespace SharpMap.Expressions
             return Geometry.ToString();
         }
 
+        public override IExtents Extents
+        {
+            get { return _geometry == null ? null : _geometry.Extents; }
+        }
+
         public IGeometry Geometry
         {
             get { return _geometry; }
