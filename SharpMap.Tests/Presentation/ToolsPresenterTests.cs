@@ -40,28 +40,28 @@ namespace SharpMap.Tests.Presentation
             Assert.IsNotEmpty((ICollection) view.Tools);
         }
 
-        [Test]
-        public void ViewInitiatesToolSelectionChangeRequest()
-        {
-            MockRepository mocks = new MockRepository();
+        //[Test]
+        //public void ViewInitiatesToolSelectionChangeRequest()
+        //{
+        //    MockRepository mocks = new MockRepository();
 
-            IToolsView view = mocks.Stub<IToolsView>();
+        //    IToolsView view = mocks.Stub<IToolsView>();
 
-            view.ToolChangeRequested += null;
-            IEventRaiser toolChangeRequest = LastCall.IgnoreArguments().GetEventRaiser();
+        //    view.ToolChangeRequested += null;
+        //    IEventRaiser toolChangeRequest = LastCall.IgnoreArguments().GetEventRaiser();
 
-            mocks.ReplayAll();
+        //    mocks.ReplayAll();
 
-            Map map = new Map(_geoFactory);
-            ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
+        //    Map map = new Map(_geoFactory);
+        //    ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
-            Random rnd = new Random();
-            Int32 toolIndex = rnd.Next(0, view.Tools.Count - 1);
+        //    Random rnd = new Random();
+        //    Int32 toolIndex = rnd.Next(0, view.Tools.Count - 1);
 
-            ToolChangeRequestedEventArgs requestArgs = new ToolChangeRequestedEventArgs(view.Tools[toolIndex]);
-            toolChangeRequest.Raise(view, requestArgs);
+        //    ToolChangeRequestedEventArgs requestArgs = new ToolChangeRequestedEventArgs(view.Tools[toolIndex]);
+        //    toolChangeRequest.Raise(view, requestArgs);
 
-            Assert.AreSame(view.SelectedTool, view.Tools[toolIndex]);
-        }
+        //    Assert.AreSame(view.SelectedTool, view.Tools[toolIndex]);
+        //}
     }
 }

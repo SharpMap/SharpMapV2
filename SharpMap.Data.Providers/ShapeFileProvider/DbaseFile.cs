@@ -26,7 +26,7 @@ using System.Data;
 using System.IO;
 using System.Globalization;
 using GeoAPI.Geometries;
-using SharpMap.Utilities;
+using GeoAPI.IO;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {

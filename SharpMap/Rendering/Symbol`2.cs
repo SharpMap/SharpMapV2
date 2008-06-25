@@ -18,7 +18,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
-using SharpMap.Utilities;
+using GeoAPI.Algorithms;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IAffineMatrixD = NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;

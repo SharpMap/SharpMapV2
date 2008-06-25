@@ -226,6 +226,7 @@
     </Compile>
     <Compile Include="Layers\Layer.cs">
     </Compile>
+    <Compile Include="Layers\LayerCollection.cs" />
     <Compile Include="Layers\LayerDataLoadedEventArgs.cs" />
     <Compile Include="Layers\LayerGroup.cs">
     </Compile>
@@ -243,9 +244,11 @@
     <Compile Include="Presentation\MapActionEventArgs`1.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\AttributePresenter.cs" />
+    <Compile Include="Presentation\Presenters\MapToolPresenter.cs" />
     <Compile Include="Presentation\RenderPhase.cs" />
     <Compile Include="Presentation\StyleTypeDescriptor.cs" />
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
+    <Compile Include="Presentation\Views\IMapToolView.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
     <Compile Include="Rendering\AffineMatrix.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
@@ -307,8 +310,13 @@
     <Compile Include="Rendering\Rendering2D\BasicLabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
+    <Compile Include="Tools\IMapTool.cs" />
+    <Compile Include="Tools\IMapToolSet.cs" />
     <Compile Include="Tools\IMapTool`1.cs" />
     <Compile Include="Tools\MapTool.cs" />
+    <Compile Include="Tools\MapToolSet.cs" />
+    <Compile Include="Tools\MapToolSetChange.cs" />
+    <Compile Include="Tools\MapToolSetChangedEventArgs.cs" />
     <Compile Include="Tools\MapTool`1.cs" />
     <Compile Include="Rendering\Rendering2D\Symbol2D.cs" />
     <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
@@ -343,7 +351,6 @@
     <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Styles\GeometryStyle.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
-    <Compile Include="Utilities\Hash.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticSplit.cs" />
@@ -352,8 +359,6 @@
     <Compile Include="Indexing\RTree\SelfOptimizingSpatialIndex.cs" />
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
-    <Compile Include="Utilities\NondisposingStream.cs" />
-    <Compile Include="Utilities\QuickSort.cs" />
     <Compile Include="SharpMapVersion.cs" />
   </ItemGroup>
   <ItemGroup>

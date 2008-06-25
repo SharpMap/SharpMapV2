@@ -8,6 +8,7 @@ using System.IO;
 using DemoWinForm.Properties;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack;
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Layers;
@@ -21,7 +22,7 @@ namespace DemoWinForm
         private class LayerResources
         {
             public String LayerName;
-            public VectorStyle Style;
+            public GeometryStyle Style;
             public Dictionary<DataColumn, StreamReader> AttributeCache;
         }
 
@@ -40,7 +41,7 @@ namespace DemoWinForm
         private static readonly Dictionary<String, StyleColor> _colorTable
             = StyleColor.PredefinedColors;
 
-        private static readonly Random _rnd = new NPack.MersenneTwister();
+        private static readonly Random _rnd = new MersenneTwister();
 
         private readonly StreamReader _givenNamesFemale;
         private readonly StreamReader _familyNames;
@@ -140,9 +141,9 @@ namespace DemoWinForm
             return attributes;
         }
 
-        private static VectorStyle generateStyle(String layer)
+        private static GeometryStyle generateStyle(String layer)
         {
-            VectorStyle style = new VectorStyle();
+            GeometryStyle style = new GeometryStyle();
             style.Enabled = true;
 
             switch (layer)

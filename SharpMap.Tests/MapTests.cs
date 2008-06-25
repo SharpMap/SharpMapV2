@@ -89,7 +89,7 @@ namespace SharpMap.Tests
             Assert.AreEqual(emptyPoint.Coordinate, map.Center);
             Assert.IsNotNull(map.Layers);
             Assert.AreEqual(0, map.Layers.Count);
-            Assert.AreEqual(StandardMapTools2D.None, map.ActiveTool);
+            Assert.AreEqual(StandardMapView2DMapTools.None, map.ActiveTool);
             Assert.IsNotNull(map.SelectedLayers);
         }
 

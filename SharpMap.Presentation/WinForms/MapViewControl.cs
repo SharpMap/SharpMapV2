@@ -48,6 +48,7 @@ namespace SharpMap.Presentation.WinForms
     /// </summary>
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
+        private IMapTool _selectedTool;
         private readonly Double _dpi;
         private Boolean _dragging;
         private GdiPoint _mouseDownLocation = GdiPoint.Empty;
@@ -55,7 +56,7 @@ namespace SharpMap.Presentation.WinForms
         private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
         private readonly Queue<GdiRenderObject> _renderObjectQueue = new Queue<GdiRenderObject>();
         private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
-        private List<MapTool> _tools;
+        private MapToolSet _tools;
         private MapPresenter _presenter;
         private GdiMatrix _gdiViewMatrix;
         private readonly StringFormat _format;
@@ -95,6 +96,21 @@ namespace SharpMap.Presentation.WinForms
                                                   base.BackColor.B);
 
             Controls.Add(_infoLabel);
+        }
+
+        protected override void Dispose(Boolean disposing)
+        {
+            if (disposing)
+            {
+                Map.Dispose();
+
+                if (_bufferedMapImage != null)
+                {
+                    _bufferedMapImage.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -395,38 +411,35 @@ namespace SharpMap.Presentation.WinForms
 
         #region IToolsView Members
 
-        public event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
-
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IList<MapTool> Tools
+        public IMapToolSet Tools
         {
             get { return _tools; }
             set
             {
                 if (_tools == null)
                 {
-                    _tools = new List<MapTool>();
+                    _tools = new MapToolSet("Map View Control Toolset", value);
                 }
+                else
+                {
+                    _tools.Clear();
 
-                _tools.Clear();
-                _tools.AddRange(value);
+                    foreach (IMapTool mapTool in value)
+                    {
+                        _tools.Add(mapTool);
+                    }
+                }
             }
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MapTool SelectedTool
+        public IMapTool SelectedTool
         {
-            get { return Map.ActiveTool; }
-            set
-            {
-                if (Map.ActiveTool != value)
-                {
-                    Map.ActiveTool = value;
-                    onSelectedToolChangeRequest(value);
-                }
-            }
+            get { return _selectedTool; }
+            set { _selectedTool = value; }
         }
 
         #endregion
@@ -1037,18 +1050,6 @@ namespace SharpMap.Presentation.WinForms
                 MapViewPropertyChangeEventArgs<Double> args =
                     new MapViewPropertyChangeEventArgs<Double>(WorldWidth, newWorldWidth);
 
-                e(this, args);
-            }
-        }
-
-        private void onSelectedToolChangeRequest(MapTool requestedTool)
-        {
-            EventHandler<ToolChangeRequestedEventArgs> e = ToolChangeRequested;
-
-            ToolChangeRequestedEventArgs args = new ToolChangeRequestedEventArgs(requestedTool);
-
-            if (e != null)
-            {
                 e(this, args);
             }
         }

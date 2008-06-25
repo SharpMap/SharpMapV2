@@ -27,25 +27,25 @@ namespace SharpMap.Presentation
     /// </summary>
     public sealed class ToolChangeRequestedEventArgs : EventArgs
     {
-        private readonly MapTool _requestedTool;
+        private readonly IMapTool _requestedTool;
 
         /// <summary>
         /// Creates a new instance of a <see cref="ToolChangeRequestedEventArgs"/>
-        /// with the given <see cref="MapTool"/>.
+        /// with the given <see cref="IMapTool"/>.
         /// </summary>
         /// <param name="requestedTool">
-        /// The <see cref="MapTool"/> to request change to.
+        /// The <see cref="IMapTool"/> to request change to.
         /// </param>
-        public ToolChangeRequestedEventArgs(MapTool requestedTool)
+        public ToolChangeRequestedEventArgs(IMapTool requestedTool)
         {
             _requestedTool = requestedTool;
         }
 
         /// <summary>
-        /// Gets the <see cref="MapTool"/> which the request is to change
+        /// Gets the <see cref="IMapTool"/> which the request is to change
         /// to.
         /// </summary>
-        public MapTool RequestedTool
+        public IMapTool RequestedTool
         {
             get { return _requestedTool; }
         }

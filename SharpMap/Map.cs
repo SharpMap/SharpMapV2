@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Globalization;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using NPack;
 using NPack.Interfaces;
@@ -31,13 +32,13 @@ using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Styles;
 using SharpMap.Tools;
-using SharpMap.Utilities;
 
 namespace SharpMap
 {
     /// <summary>
     /// A map is a collection of <see cref="Layer">layers</see> 
-    /// composed into a single frame of spatial reference.
+    /// composed into a single frame of spatial reference, and a set
+    /// of <see cref="IMapTool"/>s for interacting with them.
     /// </summary>
     [DesignTimeVisible(false)]
     public class Map : INotifyPropertyChanged, IDisposable
@@ -46,7 +47,7 @@ namespace SharpMap
 
         static Map()
         {
-            _properties = TypeDescriptor.GetProperties(typeof (Map));
+            _properties = TypeDescriptor.GetProperties(typeof(Map));
         }
 
         #region PropertyDescriptors
@@ -93,311 +94,19 @@ namespace SharpMap
 
         #endregion
 
-        #region Nested types
-
-        #region LayerCollection type
-
-        /// <summary>
-        /// Represents an ordered collection of layers of geospatial features
-        ///  which are composed into a map.
-        /// </summary>
-        public class LayerCollection : BindingList<ILayer>, ITypedList
-        {
-            private readonly Map _map;
-            private Boolean? _sortedAscending = null;
-            private readonly Object _collectionChangeSync = new Object();
-            private PropertyDescriptor _sortProperty;
-            private static readonly PropertyDescriptorCollection _layerProperties;
-            internal readonly Object LayersChangeSync = new Object();
-
-            static LayerCollection()
-            {
-				PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(ILayer));
-				PropertyDescriptor[] propsArray = new PropertyDescriptor[props.Count];
-                props.CopyTo(propsArray, 0);
-
-                _layerProperties = new PropertyDescriptorCollection(propsArray, true);
-            }
-
-            internal LayerCollection(Map map)
-            {
-                _map = map;
-                base.AllowNew = false;
-            }
-
-            internal void AddRange(IEnumerable<ILayer> layers)
-            {
-                RaiseListChangedEvents = false;
-
-                foreach (ILayer layer in layers)
-                {
-                    Add(layer);
-                }
-
-                RaiseListChangedEvents = true;
-                ResetBindings();
-            }
-
-            internal Boolean Exists(Predicate<ILayer> predicate)
-            {
-                foreach (ILayer layer in this)
-                {
-                    if (predicate(layer))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            /// <summary>
-            /// Gets a layer by its name, or <see langword="null"/> if the layer isn't found.
-            /// </summary>
-            /// <remarks>
-            /// Performs culture-specific, case-insensitive search.
-            /// </remarks>
-            /// <param name="layerName">Name of layer.</param>
-            /// <returns>
-            /// Layer with <see cref="ILayer.LayerName"/> of <paramref name="layerName"/>.
-            /// </returns>
-            public ILayer this[String layerName]
-            {
-                get { return _map.GetLayerByName(layerName); }
-            }
-
-            #region AddNew support
-
-            protected override Object AddNewCore()
-            {
-                throw new InvalidOperationException();
-            }
-
-            /// <summary>
-            /// Adding new layers through LayerCollection is not supported. Always gets
-            /// <see langword="false"/> and throws an exception if set.
-            /// </summary>
-            /// <exception cref="NotSupportedException">Thrown if set.</exception>
-            public new Boolean AllowNew
-            {
-                get { return false; }
-                set { throw new NotSupportedException(); }
-            }
-
-            protected override void OnAddingNew(AddingNewEventArgs e)
-            {
-                base.OnAddingNew(e);
-            }
-
-            public override void CancelNew(Int32 itemIndex)
-            {
-                base.CancelNew(itemIndex);
-            }
-
-            public override void EndNew(Int32 itemIndex)
-            {
-                base.EndNew(itemIndex);
-            }
-
-            #endregion
-
-            #region Sorting support
-
-            protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
-            {
-                lock (_collectionChangeSync)
-                {
-                    try
-                    {
-                        RaiseListChangedEvents = false;
-
-                        if (prop.Name == "LayerName")
-                        {
-                            Int32 sortDirValue = (direction == ListSortDirection.Ascending ? 1 : -1);
-                            Comparison<ILayer> comparison = delegate(ILayer lhs, ILayer rhs)
-                                                            {
-                                                                return sortDirValue*
-                                                                       String.Compare(lhs.LayerName, rhs.LayerName,
-                                                                                      StringComparison.
-                                                                                          CurrentCultureIgnoreCase);
-                                                            };
-
-                            QuickSort.Sort(this, comparison);
-                        }
-
-                        _sortedAscending = (direction == ListSortDirection.Ascending);
-                        _sortProperty = prop;
-                    }
-                    finally
-                    {
-                        RaiseListChangedEvents = true;
-                        ResetBindings();
-                    }
-                }
-            }
-
-            protected override void RemoveSortCore()
-            {
-                _sortedAscending = null;
-            }
-
-            protected override Boolean SupportsSortingCore
-            {
-                get { return true; }
-            }
-
-            protected override Boolean IsSortedCore
-            {
-                get { return _sortedAscending.HasValue; }
-            }
-
-            protected override ListSortDirection SortDirectionCore
-            {
-                get
-                {
-                    if (!_sortedAscending.HasValue)
-                    {
-                        throw new InvalidOperationException("List is not sorted.");
-                    }
-
-                    return ((Boolean) _sortedAscending)
-                               ? ListSortDirection.Ascending
-                               : ListSortDirection.Descending;
-                }
-            }
-
-            protected override PropertyDescriptor SortPropertyCore
-            {
-                get { return _sortProperty; }
-            }
-
-            #endregion
-
-            #region Searching support
-
-            protected override Int32 FindCore(PropertyDescriptor prop, Object key)
-            {
-                if (prop.Name == "LayerName")
-                {
-                    String layerName = key as String;
-
-                    if (String.IsNullOrEmpty(layerName))
-                    {
-                        throw new ArgumentException(
-                            "Layer name must be a non-null, non-empty String.");
-                    }
-
-                    foreach (ILayer layer in this)
-                    {
-                        if (String.Compare(layerName, layer.LayerName, StringComparison.CurrentCultureIgnoreCase) == 0)
-                        {
-                            return IndexOf(layer);
-                        }
-                    }
-
-                    return -1;
-                }
-                else
-                {
-                    throw new NotSupportedException(
-                        "Only sorting on the layer name is currently supported.");
-                }
-            }
-
-            protected override Boolean SupportsSearchingCore
-            {
-                get { return true; }
-            }
-
-            #endregion
-
-            protected override void ClearItems()
-            {
-                base.ClearItems();
-            }
-
-            protected override void InsertItem(Int32 index, ILayer item)
-            {
-                base.InsertItem(index, item);
-            }
-
-            protected override void RemoveItem(Int32 index)
-            {
-                // This defines the missing "OnDeleting" functionality:
-                // having a ListChangedEventArgs.NewIndex == -1 and
-                // the index of the item pending removal to be 
-                // ListChangedEventArgs.OldIndex.
-                ListChangedEventArgs args
-                    = new ListChangedEventArgs(ListChangedType.ItemDeleted, -1, index);
-
-                OnListChanged(args);
-
-                base.RemoveItem(index);
-            }
-
-            protected override void SetItem(Int32 index, ILayer item)
-            {
-                base.SetItem(index, item);
-            }
-
-            protected override void OnListChanged(ListChangedEventArgs e)
-            {
-                base.OnListChanged(e);
-            }
-
-            protected override Boolean SupportsChangeNotificationCore
-            {
-                get { return true; }
-            }
-
-            #region ITypedList Members
-
-            public PropertyDescriptorCollection GetItemProperties(PropertyDescriptor[] listAccessors)
-            {
-                if (listAccessors != null)
-                {
-                    throw new NotSupportedException(
-                        "Child lists not supported in LayersCollection.");
-                }
-
-                return _layerProperties;
-            }
-
-            /// <summary>
-            /// Returns the name of the list.
-            /// </summary>
-            /// <param name="listAccessors">
-            /// An array of <see cref="PropertyDescriptor"/> objects, 
-            /// for which the list name is returned. This can be <see langword="null"/>.
-            /// </param>
-            /// <returns>The name of the list.</returns>
-            /// <remarks>
-            /// From the MSDN docs: This method is used only in the design-time framework 
-            /// and by the obsolete DataGrid control.
-            /// </remarks>
-            public String GetListName(PropertyDescriptor[] listAccessors)
-            {
-                return "LayerCollection";
-            }
-
-            #endregion
-        }
-
-        #endregion LayerCollection
-
-        #endregion Nested Types
-
         #region Fields
 
-        private readonly Object _activeToolSync = new Object();
         private readonly IGeometryFactory _geoFactory;
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
         private IExtents _extents;
         private readonly IPoint _emptyPoint;
-        // TODO: 3D - change this initialization
-        private MapTool _activeTool = StandardMapTools2D.None;
+        // 3D_UNSAFE: - change this initialization
+        private IMapTool _activeTool = StandardMapView2DMapTools.None;
+
+        // I18N_UNSAFE
+        private IMapToolSet _mapTools = new MapToolSet("All Tools");
         private ICoordinateSystem _spatialReference;
         private Boolean _disposed;
         private readonly String _defaultName;
@@ -411,10 +120,23 @@ namespace SharpMap
         /// when the map was created.
         /// </summary>
         public Map(IGeometryFactory geoFactory)
+            // I18N_UNSAFE
             : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory)
         {
             _emptyPoint = geoFactory.CreatePoint();
             _defaultName = _featureDataSet.DataSetName;
+
+            // TODO: tool configuration should come from a config file and / or reflection
+            IMapTool[] mapTools = new IMapTool[]
+                    {
+                        StandardMapView2DMapTools.Pan, 
+                        StandardMapView2DMapTools.Query, 
+                        StandardMapView2DMapTools.ZoomIn,
+                        StandardMapView2DMapTools.ZoomOut
+                    };
+
+            // I18N_UNSAFE
+            Tools = new MapToolSet("Standard Map View Tools", mapTools);
         }
 
         /// <summary>
@@ -475,6 +197,7 @@ namespace SharpMap
                 }
 
                 _layers.Clear();
+                unwireTools(Tools);
             }
         }
 
@@ -785,18 +508,18 @@ namespace SharpMap
 
                 if (index < 0)
                 {
-                	foreach (ILayer layer in _layers)
-                	{
-                		if(layer is LayerGroup)
-                		{
-                			ILayer groupMember = (layer as LayerGroup)[name];
+                    foreach (ILayer layer in _layers)
+                    {
+                        if (layer is LayerGroup)
+                        {
+                            ILayer groupMember = (layer as LayerGroup)[name];
 
-                			if(groupMember != null)
-                			{
-                				return groupMember;
-                			}
-                		}
-                	}
+                            if (groupMember != null)
+                            {
+                                return groupMember;
+                            }
+                        }
+                    }
                     return null;
                 }
 
@@ -840,7 +563,7 @@ namespace SharpMap
         {
             lock (Layers.LayersChangeSync)
             {
-                SelectLayers(new Int32[] {index});
+                SelectLayers(new Int32[] { index });
             }
         }
 
@@ -855,7 +578,7 @@ namespace SharpMap
         {
             lock (Layers.LayersChangeSync)
             {
-                SelectLayers(new String[] {name});
+                SelectLayers(new String[] { name });
             }
         }
 
@@ -870,7 +593,7 @@ namespace SharpMap
         {
             lock (Layers.LayersChangeSync)
             {
-                SelectLayers(new ILayer[] {layer});
+                SelectLayers(new ILayer[] { layer });
             }
         }
 
@@ -985,7 +708,7 @@ namespace SharpMap
         /// </exception>
         public void DeselectLayer(Int32 index)
         {
-            DeselectLayers(new Int32[] {index});
+            DeselectLayers(new Int32[] { index });
         }
 
         /// <summary>
@@ -998,7 +721,7 @@ namespace SharpMap
         /// </exception>
         public void DeselectLayer(String name)
         {
-            DeselectLayers(new String[] {name});
+            DeselectLayers(new String[] { name });
         }
 
         /// <summary>
@@ -1011,7 +734,7 @@ namespace SharpMap
         /// </exception>
         public void DeselectLayer(ILayer layer)
         {
-            DeselectLayers(new ILayer[] {layer});
+            DeselectLayers(new ILayer[] { layer });
         }
 
         /// <summary>
@@ -1087,18 +810,41 @@ namespace SharpMap
 
         #region Properties
 
+        public IMapToolSet Tools
+        {
+            get { return _mapTools; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                if (ReferenceEquals(_mapTools, value))
+                {
+                    return;
+                }
+
+                if (_mapTools != null)
+                {
+                    unwireTools(_mapTools);
+                }
+
+                _mapTools = value;
+
+                wireupTools(_mapTools);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the currently active tool used to
         /// interact with the map.
         /// </summary>
-        public MapTool ActiveTool
+        public IMapTool ActiveTool
         {
             get
             {
-                lock (_activeToolSync)
-                {
-                    return _activeTool;
-                }
+                return _activeTool;
             }
             set
             {
@@ -1112,11 +858,8 @@ namespace SharpMap
                     return;
                 }
 
-                lock (_activeToolSync)
-                {
-                    _activeTool = value;
-                    onActiveToolChanged();
-                }
+                _activeTool = value;
+                onActiveToolChanged();
             }
         }
 
@@ -1187,10 +930,11 @@ namespace SharpMap
                 {
                     if (!Layers.Contains(layer))
                     {
-                        throw new ArgumentException(
-                            "The set of layers contains a layer {0} which is not " +
-                            "currently part of the map. Please add the layer to " +
-                            "the map before selecting it.");
+                        // I18N_UNSAFE
+                        throw new ArgumentException("The set of layers contains a layer {0} which " +
+                                                    "is not currently part of the map. " +
+                                                    "Please add the layer to the map " +
+                                                    "before selecting it.");
                     }
                 }
 
@@ -1227,37 +971,13 @@ namespace SharpMap
         }
 
         /// <summary>
-        /// Gets a FeatureDataSet containing all the loaded 
+        /// Gets a <see cref="FeatureDataSet"/> containing all the loaded 
         /// features in all the enabled layers in the map.
         /// </summary>
         public FeatureDataSet Features
         {
             get { throw new NotImplementedException(); }
         }
-
-        ///// <summary>
-        ///// Gets or sets the current visible envelope of the map.
-        ///// </summary>
-        //public BoundingBox VisibleRegion
-        //{
-        //    get { return _visibleEnvelope; }
-        //    set
-        //    {
-        //        if (_visibleEnvelope == value)
-        //        {
-        //            return;
-        //        }
-
-        //        _visibleEnvelope = value;
-
-        //        foreach (ILayer layer in Layers)
-        //        {
-        //            layer.VisibleRegion = value;
-        //        }
-
-        //        onVisibleRegionChanged();
-        //    }
-        //}
 
         #endregion
 
@@ -1312,24 +1032,46 @@ namespace SharpMap
             }
         }
 
+        private void handleToolsChanged(Object sender, MapToolSetChangedEventArgs args)
+        {
+            switch (args.Change)
+            {
+                case MapToolSetChange.ToolAdded:
+                    wireupTool(args.Tool);
+                    break;
+                case MapToolSetChange.ToolRemoved:
+                    unwireTool(args.Tool);
+                    break;
+                default:
+                    throw Assert.ShouldNeverReachHereException();
+            }
+        }
+
+        private void handleToolSelectedChanged(Object sender, EventArgs args)
+        {
+            IMapTool selected = sender as IMapTool;
+            Assert.IsNotNull(selected);
+            ActiveTool = selected;
+        }
+
         private void handleLayersChanged(Object sender, ListChangedEventArgs args)
         {
             switch (args.ListChangedType)
             {
                 case ListChangedType.ItemAdded:
-                {
-                    ILayer layer = _layers[args.NewIndex];
+                    {
+                        ILayer layer = _layers[args.NewIndex];
 
-                    if(_extents == null)
-                    {
-                        _extents = _geoFactory.CreateExtents(layer.Extents);
+                        if (_extents == null)
+                        {
+                            _extents = _geoFactory.CreateExtents(layer.Extents);
+                        }
+                        else
+                        {
+                            _extents.ExpandToInclude(layer.Extents);
+                        }
                     }
-                    else
-                    {
-                        _extents.ExpandToInclude(layer.Extents);
-                    }
-                }
-                break;
+                    break;
                 case ListChangedType.ItemChanged:
                     if (args.PropertyDescriptor.Name == Layer.ExtentsProperty.Name)
                     {
@@ -1400,11 +1142,12 @@ namespace SharpMap
 
             foreach (ILayer layer in layers)
             {
+                const StringComparison ignoreCase = StringComparison.CurrentCultureIgnoreCase;
                 Predicate<ILayer> findDuplicate = delegate(ILayer match)
                                                   {
-                                                      return String.Compare(layer.LayerName, match.LayerName,
-                                                                            StringComparison.CurrentCultureIgnoreCase) ==
-                                                             0;
+                                                      return String.Compare(layer.LayerName, 
+                                                                            match.LayerName,
+                                                                            ignoreCase) == 0;
                                                   };
 
                 if (!_selectedLayers.Exists(findDuplicate))
@@ -1467,9 +1210,57 @@ namespace SharpMap
         {
             if (_layers.Count == 0)
             {
-                throw new InvalidOperationException(
-                    "No layers are present in the map, so layer operation cannot be performed");
+                throw new InvalidOperationException("No layers are present in the map, " +
+                                                    "so layer operation cannot be performed");
             }
+        }
+
+        private void wireupTools(IMapToolSet mapTools)
+        {
+            foreach (IMapTool mapTool in mapTools)
+            {
+                IMapToolSet set = mapTool as IMapToolSet;
+
+                if (set != null)
+                {
+                    mapTools.ToolAdded += handleToolsChanged;
+                    mapTools.ToolRemoved += handleToolsChanged;
+                    wireupTools(set);
+                }
+                else
+                {
+                    wireupTool(mapTool);
+                }
+            }
+        }
+
+        private void unwireTools(IMapToolSet mapTools)
+        {
+            foreach (IMapTool mapTool in mapTools)
+            {
+                IMapToolSet set = mapTool as IMapToolSet;
+
+                if (set != null)
+                {
+                    mapTools.ToolAdded -= handleToolsChanged;
+                    mapTools.ToolRemoved -= handleToolsChanged;
+                    unwireTools(set);
+                }
+                else
+                {
+                    unwireTool(mapTool);
+                }
+            }
+        }
+
+        private void wireupTool(IMapTool mapTool)
+        {
+            mapTool.SelectedChanged += handleToolSelectedChanged;
+        }
+
+        private void unwireTool(IMapTool mapTool)
+        {
+            mapTool.SelectedChanged -= handleToolSelectedChanged;
         }
 
         #endregion

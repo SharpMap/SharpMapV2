@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Tools;
 
@@ -24,24 +23,18 @@ namespace SharpMap.Presentation.Views
 {
     /// <summary>
     /// Provides the interface for a view to display the 
-    /// <see cref="MapTool"/> instances available to act on the <see cref="Map"/>.
+    /// <see cref="IMapTool"/> instances available to act on the <see cref="Map"/>.
     /// </summary>
     public interface IToolsView : IView
     {
         /// <summary>
         /// Gets or sets the currently selected tool.
         /// </summary>
-        MapTool SelectedTool { get; set; }
+        IMapTool SelectedTool { get; set; }
 
         /// <summary>
-        /// Gets or sets a list of <see cref="MapTool"/> objects to display.
+        /// Gets or sets a <see cref="IMapToolSet"/> to display.
         /// </summary>
-        IList<MapTool> Tools { get; set; }
-
-        /// <summary>
-        /// Event which requests the <see cref="ToolsPresenter"/>
-        /// to change the <see cref="Map.ActiveTool"/>.
-        /// </summary>
-        event EventHandler<ToolChangeRequestedEventArgs> ToolChangeRequested;
+        IMapToolSet Tools { get; set; }
     }
 }

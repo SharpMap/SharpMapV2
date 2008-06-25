@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
 using SharpMap.Tools;
@@ -24,7 +23,8 @@ using SharpMap.Tools;
 namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
-    /// The presenter for managing a <see cref="MapTool">view</see> of <see cref="IToolsView"/> instances.
+    /// The presenter for managing a <see cref="MapTool">view</see> of 
+    /// <see cref="IToolsView"/> instances.
     /// </summary>
     public class ToolsPresenter : BasePresenter<IToolsView>
     {
@@ -32,50 +32,21 @@ namespace SharpMap.Presentation.Presenters
         /// Creates a new instance of a <see cref="ToolsPresenter"/> with the given model and view.
         /// </summary>
         /// <param name="map">The map model to present.</param>
-        /// <param name="toolsView">The view to accept input from and keep synchronized with the model.</param>
+        /// <param name="toolsView">
+        /// The view to accept input from and keep synchronized with the model.
+        /// </param>
         public ToolsPresenter(Map map, IToolsView toolsView)
             : base(map, toolsView)
         {
-            View.ToolChangeRequested += handleToolChangeRequested;
-
-            // TODO: tool configuration should come from a config file and / or reflection
-            List<MapTool> mapTools = new List<MapTool>(
-                new MapTool[]
-                    {
-                        StandardMapTools2D.Pan, 
-                        StandardMapTools2D.Query, 
-                        StandardMapTools2D.ZoomIn,
-                        StandardMapTools2D.ZoomOut
-                    });
-
-            View.Tools = mapTools;
+            View.Tools = map.Tools;
         }
 
         protected override void OnMapPropertyChanged(String propertyName)
         {
-            if (propertyName == Map.SelectedLayersProperty.Name)
-            {
-                View.SelectedTool = Map.ActiveTool;
-            }
-
             if (propertyName == Map.ActiveToolProperty.Name)
             {
                 View.SelectedTool = Map.ActiveTool;
             }
-
-            if (propertyName == Map.SpatialReferenceProperty.Name)
-            {
-            }
-        }
-
-        private void handleToolChangeRequested(Object sender, ToolChangeRequestedEventArgs e)
-        {
-            if(e.RequestedTool == Map.ActiveTool)
-            {
-                return;
-            }
-
-            Map.ActiveTool = e.RequestedTool;
         }
     }
 }

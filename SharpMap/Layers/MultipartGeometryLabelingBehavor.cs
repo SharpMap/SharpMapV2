@@ -39,7 +39,7 @@ namespace SharpMap.Layers
         /// Place label on object which the greatest length or area.
         /// </summary>
         /// <remarks>
-        /// <see cref="MultiPoint"/> geometries, since they are zero-dimensional,
+        /// <see cref="IMultiPoint"/> geometries, since they are zero-dimensional,
         /// will default to <see cref="First"/>.
         /// </remarks>
         Largest,

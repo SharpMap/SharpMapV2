@@ -15,18 +15,24 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using NPack;
-using NPack.Interfaces;
+using SharpMap.Presentation.Views;
+using SharpMap.Tools;
 
-namespace SharpMap.Tools
+namespace SharpMap.Presentation.Presenters
 {
-	public interface IMapTool<TMapView, TPoint> : IMapTool
-		where TPoint : IVector<DoubleComponent>
-	{
-		Action<ActionContext<TMapView, TPoint>> QueryAction { get; }
-		Action<ActionContext<TMapView, TPoint>> BeginAction { get; }
-		Action<ActionContext<TMapView, TPoint>> ExtendAction { get; }
-		Action<ActionContext<TMapView, TPoint>> EndAction { get; }
-	}
+    public class MapToolPresenter : BasePresenter<IMapToolView>
+    {
+        private readonly IMapTool _mapTool;
+
+        public MapToolPresenter(Map map, IMapTool mapTool, IMapToolView view)
+            : base(map, view)
+        {
+            _mapTool = mapTool;
+        }
+
+        public IMapTool MapTool
+        {
+            get { return _mapTool; }
+        }
+    }
 }

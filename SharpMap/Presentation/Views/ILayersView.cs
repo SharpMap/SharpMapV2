@@ -26,7 +26,7 @@ namespace SharpMap.Presentation.Views
 {
     /// <summary>
     /// Provides the interface for a view to display the 
-    /// <see cref="Map.LayerCollection"/> in a <see cref="Map"/>.
+    /// <see cref="LayerCollection"/> in a <see cref="Map"/>.
     /// </summary>
     public interface ILayersView : IView
     {

@@ -900,7 +900,7 @@ namespace SharpMap.Tests.Presentation
 
             TestView2D view = new TestView2D(map);
 
-            map.ActiveTool = StandardMapTools2D.Pan;
+            map.ActiveTool = StandardMapView2DMapTools.Pan;
 
             view.RaiseBegin(new Point2D(200, 250));
             view.RaiseMoveTo(new Point2D(250, 250));
@@ -919,7 +919,7 @@ namespace SharpMap.Tests.Presentation
             Assert.AreEqual(_geoFactory.CoordinateFactory.Create(60, 50), mapPresenter.GeoCenter);
 
             Map map = mapPresenter.Map;
-            map.ActiveTool = StandardMapTools2D.Pan;
+            map.ActiveTool = StandardMapView2DMapTools.Pan;
 
             /*
              *  1
@@ -948,7 +948,7 @@ namespace SharpMap.Tests.Presentation
 
             Map map = mapPresenter.Map;
 
-            map.ActiveTool = StandardMapTools2D.ZoomIn;
+            map.ActiveTool = StandardMapView2DMapTools.ZoomIn;
 
             view.RaiseBegin(new Point2D(100, 125));
             view.RaiseMoveTo(new Point2D(300, 375));

@@ -16,17 +16,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using NPack;
-using NPack.Interfaces;
+using System.Collections.Generic;
 
 namespace SharpMap.Tools
 {
-	public interface IMapTool<TMapView, TPoint> : IMapTool
-		where TPoint : IVector<DoubleComponent>
-	{
-		Action<ActionContext<TMapView, TPoint>> QueryAction { get; }
-		Action<ActionContext<TMapView, TPoint>> BeginAction { get; }
-		Action<ActionContext<TMapView, TPoint>> ExtendAction { get; }
-		Action<ActionContext<TMapView, TPoint>> EndAction { get; }
-	}
+    public interface IMapToolSet : IMapTool, IList<IMapTool>
+    {
+        void Remove(String name);
+        IMapTool this[String name] { get; }
+        event EventHandler<MapToolSetChangedEventArgs> ToolAdded;
+        event EventHandler<MapToolSetChangedEventArgs> ToolRemoved;
+    }
 }

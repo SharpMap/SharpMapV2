@@ -57,14 +57,27 @@ namespace SharpMap.Presentation.Presenters
                                                      "layer collection changed");
             Trace.Debug(TraceCategories.Presentation, "Layer collection change: " +
                                                       e.ListChangedType);
-            IFeatureLayer newLayer = Map.Layers[e.NewIndex] as IFeatureLayer;
-            IFeatureLayer oldLayer = Map.Layers[e.OldIndex] as IFeatureLayer;
+            IFeatureLayer newLayer = null;
+            IFeatureLayer oldLayer = null;
+
+            if (e.NewIndex >= 0 && e.NewIndex < Map.Layers.Count)
+            {
+                newLayer = Map.Layers[e.NewIndex] as IFeatureLayer;
+            }
+
+            if (e.OldIndex >= 0 && e.OldIndex < Map.Layers.Count && _highlightUpdating)
+            {
+                oldLayer = Map.Layers[e.OldIndex] as IFeatureLayer;
+            }
 
             if (newLayer != null && e.ListChangedType == ListChangedType.ItemAdded)
             {
                 wireupFeatureLayer(newLayer);
             }
 
+            // BUG: this shouldn't work... e.OldIndex won't be the old layer
+            // index if it was deleted...
+            // TODO: make unit test which confirms or refutes the above bug
             if (oldLayer != null &&
                 e.NewIndex < 0 &&
                 e.ListChangedType == ListChangedType.ItemDeleted)

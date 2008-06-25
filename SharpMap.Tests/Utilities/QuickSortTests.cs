@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeoAPI.Algorithms;
 using NUnit.Framework;
-using SharpMap.Utilities;
 
 namespace SharpMap.Tests.Utilities
 {
@@ -18,7 +18,15 @@ namespace SharpMap.Tests.Utilities
                 list.Add(rnd.NextDouble());
             }
 
-            QuickSort.Sort(list, delegate(Double lhs, Double rhs) { return lhs < rhs ? -1 : lhs > rhs ? 1 : 0; });
+            QuickSort.Sort(list,
+                           delegate(Double lhs, Double rhs)
+                           {
+                               return lhs < rhs
+                                          ? -1
+                                          : lhs > rhs
+                                                ? 1
+                                                : 0;
+                           });
 
             for (Int32 i = 1; i < list.Count; i++)
             {
@@ -36,7 +44,15 @@ namespace SharpMap.Tests.Utilities
                 list.Add(rnd.NextDouble());
             }
 
-            QuickSort.Sort(list, delegate(Double lhs, Double rhs) { return lhs < rhs ? -1 : lhs > rhs ? 1 : 0; });
+            QuickSort.Sort(list,
+                           delegate(Double lhs, Double rhs)
+                           {
+                               return lhs < rhs
+                                          ? -1
+                                          : lhs > rhs
+                                                ? 1
+                                                : 0;
+                           });
 
             for (Int32 i = 1; i < list.Count; i++)
             {

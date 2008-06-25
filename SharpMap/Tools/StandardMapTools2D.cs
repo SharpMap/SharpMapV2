@@ -27,9 +27,9 @@ using SharpMap.Rendering.Rendering2D;
 namespace SharpMap.Tools
 {
     /// <summary>
-    /// Provides a set of standard tools to use on a map.
+    /// Provides a set of standard tools to use on an <see cref="IMapView2D"/>.
     /// </summary>
-    public static class StandardMapTools2D
+    public static class StandardMapView2DMapTools
     {
         /// <summary>
         /// No active tool
@@ -77,25 +77,37 @@ namespace SharpMap.Tools
         public static readonly MapTool<IMapView2D, Point2D> FeatureRemove;
 
 
-        static StandardMapTools2D()
+        static StandardMapView2DMapTools()
         {
             None = new MapTool<IMapView2D, Point2D>(String.Empty, DoNothing, DoNothing, DoNothing, DoNothing);
             Pan = new MapTool<IMapView2D, Point2D>("Pan", QueryPan, BeginPan, ContinuePan, EndPan);
             ZoomIn = new MapTool<IMapView2D, Point2D>("ZoomIn", QueryZoomIn, BeginZoomIn, ContinueZoomIn, EndZoomIn);
-            ZoomOut =
-                new MapTool<IMapView2D, Point2D>("ZoomOut", QueryZoomOut, BeginZoomOut, ContinueZoomOut, EndZoomOut);
+            ZoomOut = new MapTool<IMapView2D, Point2D>("ZoomOut", 
+                                                       QueryZoomOut, 
+                                                       BeginZoomOut, 
+                                                       ContinueZoomOut, 
+                                                       EndZoomOut);
             Query = new MapTool<IMapView2D, Point2D>("Query", QueryQuery, BeginQuery, ContinueQuery, EndQuery);
-            QueryAdd =
-                new MapTool<IMapView2D, Point2D>("QueryAdd", QueryQueryAdd, BeginQueryAdd, ContinueQueryAdd, EndQueryAdd);
-            QueryRemove =
-                new MapTool<IMapView2D, Point2D>("QueryRemove", QueryQueryRemove, BeginQueryRemove, ContinueQueryRemove,
-                                                 EndQueryRemove);
-            FeatureAdd =
-                new MapTool<IMapView2D, Point2D>("FeatureAdd", QueryFeatureAdd, BeginFeatureAdd, ContinueFeatureAdd,
-                                                 EndFeatureAdd);
-            FeatureRemove =
-                new MapTool<IMapView2D, Point2D>("FeatureRemove", QueryFeatureRemove, BeginFeatureRemove,
-                                                 ContinueFeatureRemove, EndFeatureRemove);
+            QueryAdd = new MapTool<IMapView2D, Point2D>("QueryAdd", 
+                                                        QueryQueryAdd, 
+                                                        BeginQueryAdd, 
+                                                        ContinueQueryAdd, 
+                                                        EndQueryAdd);
+            QueryRemove = new MapTool<IMapView2D, Point2D>("QueryRemove", 
+                                                           QueryQueryRemove, 
+                                                           BeginQueryRemove, 
+                                                           ContinueQueryRemove,
+                                                           EndQueryRemove);
+            FeatureAdd = new MapTool<IMapView2D, Point2D>("FeatureAdd", 
+                                                          QueryFeatureAdd, 
+                                                          BeginFeatureAdd, 
+                                                          ContinueFeatureAdd,
+                                                          EndFeatureAdd);
+            FeatureRemove = new MapTool<IMapView2D, Point2D>("FeatureRemove", 
+                                                             QueryFeatureRemove, 
+                                                             BeginFeatureRemove,
+                                                             ContinueFeatureRemove, 
+                                                             EndFeatureRemove);
         }
 
         private static void DoNothing(ActionContext<IMapView2D, Point2D> context) { }
