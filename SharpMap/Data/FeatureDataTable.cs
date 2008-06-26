@@ -477,16 +477,45 @@ namespace SharpMap.Data
             }
         }
 
+        /// <summary>
+        /// Merges the features of <paramref name="features"/> into the 
+        /// <see cref="FeatureDataTable"/>, overwriting any changes.
+        /// </summary>
+        /// <param name="features">
+        /// The <see cref="FeatureDataTable"/> source from which features are merged.
+        /// </param>
         public void Merge(FeatureDataTable features)
         {
             Merge(features, false, MissingSchemaAction.Add);
         }
 
+        /// <summary>
+        /// Merges the features of <paramref name="features"/> into the 
+        /// <see cref="FeatureDataTable"/>, indicating whether current feature changes
+        /// should be preserved or not.
+        /// </summary>
+        /// <param name="features">
+        /// The <see cref="FeatureDataTable"/> source from which features are merged.
+        /// </param>
+        /// <param name="preserveChanges">
+        /// Determines whether changes in the current <see cref="FeatureDataTable"/> are preserved:
+        /// <see langword="true"/> preserves them, <see langword="false"/> overwrites them.</param>
         public void Merge(FeatureDataTable features, Boolean preserveChanges)
         {
             Merge(features, preserveChanges, SchemaMergeAction.Add);
         }
 
+        /// <summary>
+        /// Merges the features of <paramref name="features"/> into the 
+        /// <see cref="FeatureDataTable"/>, indicating whether current feature changes
+        /// should be preserved or not.
+        /// </summary>
+        /// <param name="features">
+        /// The <see cref="FeatureDataTable"/> source from which features are merged.
+        /// </param>
+        /// <param name="preserveChanges">
+        /// Determines whether changes in the current <see cref="FeatureDataTable"/> are preserved:
+        /// <see langword="true"/> preserves them, <see langword="false"/> overwrites them.</param>
         public void Merge(FeatureDataTable features,
                           Boolean preserveChanges,
                           SchemaMergeAction schemaMergeAction)
@@ -617,7 +646,7 @@ namespace SharpMap.Data
         /// </returns>
         public IEnumerable<FeatureDataRow> Select(IGeometry geometry)
         {
-            OnSelectRequested(SpatialBinaryExpression.Intersects(geometry));
+            OnSelectRequested(FeatureQueryExpression.Intersects(GetAttributesExpression(), geometry));
 
             if (IsSpatiallyIndexed)
             {
@@ -660,7 +689,7 @@ namespace SharpMap.Data
                 throw new ArgumentException("The Expression value of the query cannot be evaluated.");
             }
 
-            OnSelectRequested(query);
+            OnSelectRequested(new FeatureQueryExpression(GetAttributesExpression(), query));
 
             ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
             GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
@@ -721,7 +750,13 @@ namespace SharpMap.Data
 
         #endregion
 
-        #region Protected virtual members
+        #region Protected members
+
+        protected ProjectionExpression GetAttributesExpression()
+        {
+            // TODO: compute correct attribute expression
+            return new AllAttributesExpression();
+        }
 
         protected virtual void OnConstraintsChanged(Object sender, CollectionChangeEventArgs args)
         {
@@ -740,7 +775,7 @@ namespace SharpMap.Data
             }
         }
 
-        protected virtual void OnSelectRequested(SpatialBinaryExpression query)
+        protected virtual void OnSelectRequested(FeatureQueryExpression query)
         {
             EventHandler<SelectRequestedEventArgs> e = SelectRequested;
 

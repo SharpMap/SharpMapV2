@@ -517,9 +517,12 @@ namespace SharpMap.Layers
         {
             if (region == null) throw new ArgumentNullException("region");
 
-            SpatialBinaryExpression query = new SpatialBinaryExpression(new ExtentsExpression(region),
-                                                                        SpatialOperation.Intersects,
-                                                                        new LayerExpression(this));
+            SpatialBinaryExpression exp = new SpatialBinaryExpression(new ExtentsExpression(region),
+                                                                      SpatialOperation.Intersects,
+                                                                      new LayerExpression(this));
+
+            QueryExpression query = GetQueryFromSpatialBinaryExpression(exp);
+
             LoadLayerData(query);
         }
 
@@ -527,13 +530,16 @@ namespace SharpMap.Layers
         {
             if (region == null) throw new ArgumentNullException("region");
 
-            SpatialBinaryExpression query = new SpatialBinaryExpression(new GeometryExpression(region),
-                                                                        SpatialOperation.Intersects,
-                                                                        new LayerExpression(this));
+            SpatialBinaryExpression exp = new SpatialBinaryExpression(new GeometryExpression(region),
+                                                                      SpatialOperation.Intersects,
+                                                                      new LayerExpression(this));
+
+            QueryExpression query = GetQueryFromSpatialBinaryExpression(exp);
+
             LoadLayerData(query);
         }
 
-        public void LoadLayerData(SpatialBinaryExpression query)
+        public void LoadLayerData(QueryExpression query)
         {
             if (_asyncQuery)
             {
@@ -552,7 +558,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public void LoadLayerDataAsync(SpatialBinaryExpression query)
+        public void LoadLayerDataAsync(QueryExpression query)
         {
             AsyncCallback callback = completeLoadLayerData;
 
@@ -641,14 +647,27 @@ namespace SharpMap.Layers
         /// <param name="results">
         /// The results from loading the layer data from the DataSoruce.
         /// </param>
+        // DESIGN_NOTE: ProcessLoadResults(IEnumerable results)
         protected abstract void ProcessLoadResults(Object results);
 
-        protected void AddLoadedResults(Expression expression, Object result)
+        // DESIGN_NOTE: AddLoadedResults(Expression expression, IEnumerable results)
+        protected void AddLoadedResults(Expression expression, Object results)
         {
-            QueryCache.AddExpressionResult(expression, result);
+            // BUG: this will fail when we have a single result and it implements IEnumerable
+            // To solve this, we should always wrap the result in an IEnumerable wrapper
+            IEnumerable enumerable = results as IEnumerable;
+
+            if (enumerable == null)
+            {
+                QueryCache.AddExpressionResult(expression, results);   
+            }
+            else
+            {
+                QueryCache.AddExpressionResults(expression, enumerable);   
+            }
         }
 
-        protected IQueryCache QueryCache
+        public IQueryCache QueryCache
         {
             get { return _cache; }
             set
@@ -796,6 +815,8 @@ namespace SharpMap.Layers
                                                 property.Name);
         }
 
+        protected abstract QueryExpression GetQueryFromSpatialBinaryExpression(SpatialBinaryExpression exp);
+
         protected virtual void SetPropertyValueInternal<TValue>(PropertyDescriptor property, TValue value)
         {
             checkSetValueType<TValue>(property);
@@ -910,23 +931,24 @@ namespace SharpMap.Layers
                 return;
             }
 
-            Object result = _dataSource.EndExecuteQuery(asyncResult);
-            endLoadInternal(asyncResult.AsyncState as Expression, result);
+            Object results = _dataSource.EndExecuteQuery(asyncResult);
+            endLoadInternal(asyncResult.AsyncState as Expression, results);
             Monitor.Exit(_loadCompletionSync);
         }
 
-        private void endLoadInternal(Expression expression, Object result)
+        // DESIGN_NOTE: this should probably change to endLoadInternal(Expression expression, IEnumerable results)
+        private void endLoadInternal(Expression expression, Object results)
         {
-            ProcessLoadResults(result);
+            ProcessLoadResults(results);
 
             if (expression != null)
             {
-                AddLoadedResults(expression, result);
+                AddLoadedResults(expression, results);
             }
 
             _loadAsyncResult = null;
             _loadedRegion = null;
-            OnLayerDataLoaded(expression, result);
+            OnLayerDataLoaded(expression, results);
         }
 
         private void checkParent()

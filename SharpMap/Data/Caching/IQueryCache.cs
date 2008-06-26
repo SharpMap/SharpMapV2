@@ -6,6 +6,7 @@ namespace SharpMap.Data.Caching
 {
     public interface IQueryCache : IEnumerable
     {
+        // DESIGN_NOTE: should these parameters be QueryExpression?
         void AddExpressionResult(Expression expression, Object result);
         void AddExpressionResults(Expression expression, IEnumerable result);
         Boolean Contains(Expression expression);
@@ -15,5 +16,7 @@ namespace SharpMap.Data.Caching
         void Expire(Object item);
         void Expire(IEnumerable items);
         IEnumerable Retrieve(Expression expression);
+
+        QueryExpression FilterQuery(QueryExpression query);
     }
 }

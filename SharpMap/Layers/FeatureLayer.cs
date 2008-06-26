@@ -21,7 +21,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
@@ -250,9 +249,9 @@ namespace SharpMap.Layers
 
         #region Layer overrides
 
-        public override IEnumerable Select(Expression query)
+        protected override QueryExpression GetQueryFromSpatialBinaryExpression(SpatialBinaryExpression exp)
         {
-            throw new NotImplementedException();
+            return new FeatureQueryExpression(exp);
         }
 
         protected override void ProcessLoadResults(Object results)
@@ -263,6 +262,11 @@ namespace SharpMap.Layers
             MergeFeatures(features);
 
             _features.RestoreIndexEvents(true);
+        }
+
+        public override IEnumerable Select(Expression query)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -293,10 +297,11 @@ namespace SharpMap.Layers
                 return;
             }
 
-            SpatialBinaryExpression query = e.Query;
+            QueryExpression query = e.Query;
 
             if(!QueryCache.Contains(query))
             {
+                query = QueryCache.FilterQuery(query);
                 LoadLayerData(query);
             }
         } 

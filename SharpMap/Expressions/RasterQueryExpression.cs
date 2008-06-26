@@ -49,6 +49,9 @@ namespace SharpMap.Expressions
             checkOp(op);
         }
 
+        public RasterQueryExpression(SpatialBinaryExpression spatialFilter)
+            : base(new AllBandsExpression(), spatialFilter) { }
+
         protected internal RasterQueryExpression(ProjectionExpression projection,
                                                  PredicateExpression predicate)
             : base(projection, predicate) { }

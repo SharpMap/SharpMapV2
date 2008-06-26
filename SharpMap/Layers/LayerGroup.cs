@@ -148,7 +148,7 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Whether we should show anything other than the master
+        /// Gets or sets whether child layers should be shown or only the <see cref="MasterLayer"/>.
         /// </summary>
         public Boolean ShowChildren
         {
@@ -394,6 +394,11 @@ namespace SharpMap.Layers
         protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
         {
             throw new NotImplementedException();
+        }
+
+        protected override QueryExpression GetQueryFromSpatialBinaryExpression(SpatialBinaryExpression exp)
+        {
+            throw new NotSupportedException("Query type should determined by individual layers in group.");
         }
     }
 }

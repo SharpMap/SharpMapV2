@@ -18,9 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using SharpMap.Data;
-using SharpMap.Rendering;
+using SharpMap.Expressions;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
@@ -33,7 +32,7 @@ namespace SharpMap.Layers
     /// Creates a new label layer and sets the label text to the 
     /// "Name" column in the FeatureDataTable of the datasource
     /// <code lang="C#">
-    /// //Set up a label layer
+    /// // TODO: redo example
     /// </code>
     /// </example>
     public class LabelLayer : FeatureLayer

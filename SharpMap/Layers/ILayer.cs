@@ -23,6 +23,7 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Data;
+using SharpMap.Data.Caching;
 using SharpMap.Expressions;
 using SharpMap.Styles;
 
@@ -162,7 +163,7 @@ namespace SharpMap.Layers
         /// Loads the data either synchronously or asynchronously depending
         /// on <see cref="AsyncQuery"/>.
         /// </remarks>
-        void LoadLayerData(SpatialBinaryExpression query);
+        void LoadLayerData(QueryExpression query);
 
         /// <summary>
         /// Loads the data contained in the layer where satisfies
@@ -174,7 +175,7 @@ namespace SharpMap.Layers
         /// <remarks>
         /// Loads the data asynchronously.
         /// </remarks>
-        void LoadLayerDataAsync(SpatialBinaryExpression query);
+        void LoadLayerDataAsync(QueryExpression query);
 
         /// <summary>
         /// Evaluates the given <paramref name="query"/> and retrieves data in the 
@@ -185,5 +186,13 @@ namespace SharpMap.Layers
         /// Any data which the layer contains which satisfies the <paramref name="query"/>.
         /// </returns>
         IEnumerable Select(Expression query);
+
+        /// <summary>
+        /// Gets or sets an <see cref="IQueryCache"/> instance for the layer.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="IQueryCache"/> is used to cache data on a layer-by-layer basis.
+        /// </remarks>
+        IQueryCache QueryCache { get; set; }
 	}
 }

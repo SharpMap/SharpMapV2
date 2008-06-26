@@ -41,6 +41,8 @@ namespace SharpMap.Data.Providers
 
         public override IAsyncResult BeginExecuteQuery(Expression query, AsyncCallback callback)
         {
+            // TODO: should we really accept SpatialBinaryExpression here? It makes it more flexible,
+            // but could also make it hard to find problems
             Expression featureQuery = query as FeatureQueryExpression ??
                                       (Expression)(query as SpatialBinaryExpression);
 

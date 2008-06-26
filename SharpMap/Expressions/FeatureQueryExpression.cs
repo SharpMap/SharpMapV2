@@ -36,6 +36,22 @@ namespace SharpMap.Expressions
             return new FeatureQueryExpression(geometry, SpatialOperation.Intersects);
         }
 
+        public static FeatureQueryExpression Intersects(ProjectionExpression projection, IExtents extents)
+        {
+            return new FeatureQueryExpression(projection, 
+                                              null, 
+                                              SpatialBinaryExpression.Intersects(extents), 
+                                              null);
+        }
+
+        public static FeatureQueryExpression Intersects(ProjectionExpression projection, IGeometry geometry)
+        {
+            return new FeatureQueryExpression(projection,
+                                              null,
+                                              SpatialBinaryExpression.Intersects(geometry),
+                                              null);
+        }
+
         public static FeatureQueryExpression Create(IGeometry geometry, SpatialOperation op)
         {
             return new FeatureQueryExpression(geometry, op);
@@ -78,6 +94,9 @@ namespace SharpMap.Expressions
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter)
             : base(new AllAttributesExpression(), attributeFilter) { }
+
+        public FeatureQueryExpression(SpatialBinaryExpression spatialFilter)
+            : base(new AllAttributesExpression(), spatialFilter) { }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)

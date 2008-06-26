@@ -26,7 +26,7 @@ namespace SharpMap.Data.Caching
             return false;
         }
 
-        public Boolean Contains(object item)
+        public Boolean Contains(Object item)
         {
             return false;
         }
@@ -38,6 +38,11 @@ namespace SharpMap.Data.Caching
         public void Expire(Object item) { }
 
         public void Expire(IEnumerable items) { }
+
+        public QueryExpression FilterQuery(QueryExpression query)
+        {
+            return query;
+        }
 
         #endregion
 

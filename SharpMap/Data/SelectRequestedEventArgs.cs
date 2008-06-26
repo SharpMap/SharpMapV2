@@ -23,14 +23,14 @@ namespace SharpMap.Data
     [Serializable]
     public class SelectRequestedEventArgs : EventArgs
     {
-        private readonly SpatialBinaryExpression _query;
+        private readonly QueryExpression _query;
 
-        public SelectRequestedEventArgs(SpatialBinaryExpression query)
+        public SelectRequestedEventArgs(QueryExpression query)
         {
             _query = query;
         }
 
-        public SpatialBinaryExpression Query
+        public QueryExpression Query
         {
             get { return _query; }
         }

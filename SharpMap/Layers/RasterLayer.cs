@@ -71,5 +71,10 @@ namespace SharpMap.Layers
 	    {
 	        return new AsyncRasterProviderAdapter(dataSource as IRasterProvider);
 	    }
+
+        protected override QueryExpression GetQueryFromSpatialBinaryExpression(SpatialBinaryExpression exp)
+        {
+            return new RasterQueryExpression(exp);
+        }
 	}
 }

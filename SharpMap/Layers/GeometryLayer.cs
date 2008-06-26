@@ -18,6 +18,7 @@
 
 using System;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -110,7 +111,6 @@ namespace SharpMap.Layers
                 Style = value as GeometryStyle;
             }
         }
-
         #endregion
 
         #region ICloneable Members
