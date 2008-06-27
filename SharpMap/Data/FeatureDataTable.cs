@@ -717,19 +717,19 @@ namespace SharpMap.Data
 
             foreach (FeatureDataRow row in features)
             {
-                if (filterExtents != null)
-                {
-                    if (SpatialBinaryExpression.IsMatch(op, isLeft, filterExtents, row.Geometry.Extents))
-                    {
-                        yield return row;
-                    }   
-                }
-                else
+                if (filterGeometry != null)
                 {
                     if (SpatialBinaryExpression.IsMatch(op, isLeft, filterGeometry, row.Geometry))
                     {
                         yield return row;
                     }
+                }
+                else
+                {
+                    if (SpatialBinaryExpression.IsMatch(op, isLeft, filterExtents, row.Geometry.Extents))
+                    {
+                        yield return row;
+                    }   
                 }
             }
 

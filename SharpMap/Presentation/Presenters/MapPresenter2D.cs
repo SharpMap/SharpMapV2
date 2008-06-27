@@ -24,6 +24,7 @@ using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
@@ -660,7 +661,7 @@ namespace SharpMap.Presentation.Presenters
                                                   params Object[] constructorParams)
         {
             Type constructedType = rendererType.MakeGenericType(renderObjectType);
-            IRenderer renderer 
+            IRenderer renderer
                 = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
             Debug.Assert(renderer != null);
             RegisterRendererForLayerType(layerType, renderer);
@@ -824,13 +825,13 @@ namespace SharpMap.Presentation.Presenters
             path.TransformPoints(ToWorldTransformInternal);
             IEnumerable<Path2D> paths = new Path2D[] { path };
 
-            IEnumerable renderedSelection = renderer.RenderPaths(paths, 
+            IEnumerable renderedSelection = renderer.RenderPaths(paths,
                                                                  selection.FillBrush,
-                                                                 null, 
                                                                  null,
-                                                                 selection.OutlineStyle, 
-                                                                 null, 
-                                                                 null, 
+                                                                 null,
+                                                                 selection.OutlineStyle,
+                                                                 null,
+                                                                 null,
                                                                  RenderState.Normal);
 
             View.ShowRenderedObjects(renderedSelection);
@@ -850,8 +851,9 @@ namespace SharpMap.Presentation.Presenters
             switch (phase)
             {
                 case RenderPhase.Normal:
-                    IEnumerable<FeatureDataRow> features
-                        = layer.Features.Select(ViewEnvelopeInternal.ToGeometry());
+                    SpatialBinaryExpression query 
+                        = SpatialBinaryExpression.Intersects(ViewEnvelopeInternal);
+                    IEnumerable<FeatureDataRow> features = layer.Features.Select(query);
 
                     foreach (FeatureDataRow feature in features)
                     {
