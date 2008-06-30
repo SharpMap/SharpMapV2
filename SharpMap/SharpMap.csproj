@@ -250,6 +250,11 @@
     <Compile Include="Presentation\ToolChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\Views\IMapToolView.cs" />
     <Compile Include="Presentation\Views\IView.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Rendering\AffineMatrix.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\ITextRenderer`3.cs" />
@@ -362,6 +367,10 @@
     <Compile Include="SharpMapVersion.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
