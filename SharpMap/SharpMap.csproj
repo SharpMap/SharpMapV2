@@ -370,6 +370,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
@@ -382,10 +383,11 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Target Name="BeforeBuild">
+    <GenerateResource Sources=".\Properties\Resources.resx" PublicClass="true" StronglyTypedLanguage="C#" StronglyTypedFilename=".\Properties\Resources.Designer.cs" StronglyTypedClassName="Resources" StronglyTypedNamespace="$(RootNamespace).Properties" UseSourcePath="true" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
