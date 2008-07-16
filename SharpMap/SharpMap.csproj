@@ -244,6 +244,8 @@
     <Compile Include="Presentation\MapActionEventArgs`1.cs" />
     <Compile Include="Presentation\Presenters\BasePresenter.cs" />
     <Compile Include="Presentation\Presenters\AttributePresenter.cs" />
+    <Compile Include="Presentation\Presenters\FeatureLayersListenerPresenter.cs" />
+    <Compile Include="Presentation\Presenters\MapLayersListenerPresenter.cs" />
     <Compile Include="Presentation\Presenters\MapToolPresenter.cs" />
     <Compile Include="Presentation\RenderPhase.cs" />
     <Compile Include="Presentation\StyleTypeDescriptor.cs" />

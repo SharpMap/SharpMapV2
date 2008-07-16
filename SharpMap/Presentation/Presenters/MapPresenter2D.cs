@@ -39,7 +39,7 @@ namespace SharpMap.Presentation.Presenters
     /// <summary>
     /// Provides the input-handling and view-updating logic for a 2D map view.
     /// </summary>
-    public abstract class MapPresenter2D : BasePresenter<IMapView2D>
+    public abstract class MapPresenter2D : FeatureLayersListenerPresenter<IMapView2D>
     {
         #region Private static fields
         private static readonly Object _rendererInitSync = new Object();
@@ -51,7 +51,6 @@ namespace SharpMap.Presentation.Presenters
         #region Private instance fields
         private readonly ViewSelection2D _selection;
         private StyleColor _backgroundColor;
-        private readonly List<IFeatureLayer> _wiredLayers = new List<IFeatureLayer>();
         private Size2D _oldViewSize = Size2D.Empty;
         private Double _maximumWorldWidth = Double.PositiveInfinity;
         private Double _minimumWorldWidth;
@@ -108,10 +107,6 @@ namespace SharpMap.Presentation.Presenters
             createRenderers();
 
             _selection = new ViewSelection2D();
-
-            wireupExistingLayers(Map.Layers);
-            Map.Layers.ListChanged += handleLayersChanged;
-            Map.PropertyChanged += handleMapPropertyChanged;
 
             View.Hover += handleViewHover;
             View.BeginAction += handleViewBeginAction;
@@ -630,6 +625,85 @@ namespace SharpMap.Presentation.Presenters
 
         #endregion
 
+        #region Protected Overrides
+
+        protected override void OnMapPropertyChanged(string propertyName)
+        {
+            if (propertyName == Map.SpatialReferenceProperty.Name)
+            {
+                //throw new NotImplementedException();
+            }
+
+            if (propertyName == Map.SelectedLayersProperty.Name)
+            {
+                //throw new NotImplementedException();
+            }
+
+            if (propertyName == Map.ActiveToolProperty.Name)
+            {
+                //throw new NotImplementedException();
+            }
+
+            if (propertyName == Map.ExtentsProperty.Name)
+            {
+                IExtents2D extents = Map.Extents as IExtents2D;
+                projectOrigin(extents);
+                setExtentsCenter(extents);
+            }
+
+            base.OnMapPropertyChanged(propertyName);
+        }
+
+        protected override void NotifyLayersChanged(ListChangedType listChangedType,
+                                                    Int32 oldIndex,
+                                                    Int32 newIndex,
+                                                    PropertyDescriptor propertyDescriptor)
+        {
+            switch (listChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                    {
+                        ILayer layer = Map.Layers[newIndex];
+                        RenderLayer(layer);
+                    }
+                    break;
+                case ListChangedType.ItemDeleted:
+                    // LayerCollection defines an e.NewIndex as -1 when an item is being 
+                    // deleted and not yet removed from the collection.
+                    if (newIndex >= 0)
+                    {
+                        RenderAllLayers();
+                    }
+                    break;
+                case ListChangedType.ItemMoved:
+                    RenderAllLayers();
+                    break;
+                case ListChangedType.Reset:
+                    RenderAllLayers();
+                    break;
+                case ListChangedType.ItemChanged:
+                    if (propertyDescriptor.Name == Layer.EnabledProperty.Name ||
+                        propertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
+                    {
+                        RenderAllLayers();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        protected override ListChangedEventHandler GetHighlightedChangedEventHandler()
+        {
+            return handleHighlightedFeaturesListChanged;
+        }
+
+        protected override ListChangedEventHandler GetSelectedChangedEventHandler()
+        {
+            return handleSelectedFeaturesListChanged;
+        }
+        #endregion
+
         #region Protected members
 
         protected virtual void CreateGeometryRenderer(Type renderObjectType)
@@ -924,105 +998,6 @@ namespace SharpMap.Presentation.Presenters
         #region Event handlers
 
         #region Map events
-        private void handleLayersChanged(Object sender, ListChangedEventArgs e)
-        {
-            switch (e.ListChangedType)
-            {
-                case ListChangedType.ItemAdded:
-                    {
-                        ILayer layer = Map.Layers[e.NewIndex];
-
-                        IFeatureLayer featureLayer = layer as IFeatureLayer;
-
-                        if (featureLayer != null)
-                        {
-                            wireupLayer(featureLayer);
-                        }
-
-                        IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
-
-                        if (layers != null)
-                        {
-                            foreach (IFeatureLayer child in layers)
-                            {
-                                wireupLayer(child);
-                            }
-                        }
-
-                        RenderLayer(layer);
-                    }
-                    break;
-                case ListChangedType.ItemDeleted:
-                    // LayerCollection defines an e.NewIndex as -1 when an item is being 
-                    // deleted and not yet removed from the collection.
-                    if (e.NewIndex >= 0)
-                    {
-                        RenderAllLayers();
-                    }
-                    else
-                    {
-                        ILayer layer = Map.Layers[e.OldIndex];
-                        IFeatureLayer featureLayer = layer as IFeatureLayer;
-
-                        if (featureLayer != null)
-                        {
-                            unwireLayer(featureLayer);
-                        }
-
-                        IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
-
-                        if (layers != null)
-                        {
-                            foreach (IFeatureLayer child in layers)
-                            {
-                                unwireLayer(child);
-                            }
-                        }
-                    }
-                    break;
-                case ListChangedType.ItemMoved:
-                    RenderAllLayers();
-                    break;
-                case ListChangedType.Reset:
-                    wireupExistingLayers(Map.Layers);
-                    RenderAllLayers();
-                    break;
-                case ListChangedType.ItemChanged:
-                    if (e.PropertyDescriptor.Name == Layer.EnabledProperty.Name ||
-                        e.PropertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
-                    {
-                        RenderAllLayers();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void handleMapPropertyChanged(Object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == Map.SpatialReferenceProperty.Name)
-            {
-                //throw new NotImplementedException();
-            }
-
-            if (e.PropertyName == Map.SelectedLayersProperty.Name)
-            {
-                //throw new NotImplementedException();
-            }
-
-            if (e.PropertyName == Map.ActiveToolProperty.Name)
-            {
-                //throw new NotImplementedException();
-            }
-
-            if (e.PropertyName == Map.ExtentsProperty.Name)
-            {
-                IExtents2D extents = Map.Extents as IExtents2D;
-                projectOrigin(extents);
-                setExtentsCenter(extents);
-            }
-        }
 
         #endregion
 
@@ -1208,53 +1183,25 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void wireupExistingLayers(IEnumerable<ILayer> layerCollection)
-        {
-            foreach (ILayer layer in layerCollection)
-            {
-                IFeatureLayer featureLayer = layer as IFeatureLayer;
+        //private void wireupLayer(IFeatureLayer layer)
+        //{
+        //    if (!_wiredLayers.Contains(layer))
+        //    {
+        //        _wiredLayers.Add(layer);
+        //        layer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
+        //        layer.HighlightedFeatures.ListChanged += handleHighlightedFeaturesListChanged;
+        //    }
+        //}
 
-                if (featureLayer != null)
-                {
-                    wireupLayer(featureLayer);
-                }
-
-                IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
-
-                if (layers != null)
-                {
-                    foreach (IFeatureLayer child in layers)
-                    {
-                        if (child != null)
-                        {
-                            wireupLayer(child);
-                        }
-                    }
-
-                    continue;
-                }
-            }
-        }
-
-        private void wireupLayer(IFeatureLayer layer)
-        {
-            if (!_wiredLayers.Contains(layer))
-            {
-                _wiredLayers.Add(layer);
-                layer.SelectedFeatures.ListChanged += handleSelectedFeaturesListChanged;
-                layer.HighlightedFeatures.ListChanged += handleHighlightedFeaturesListChanged;
-            }
-        }
-
-        private void unwireLayer(IFeatureLayer layer)
-        {
-            if (_wiredLayers.Contains(layer))
-            {
-                _wiredLayers.Remove(layer);
-                layer.SelectedFeatures.ListChanged -= handleSelectedFeaturesListChanged;
-                layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesListChanged;
-            }
-        }
+        //private void unwireLayer(IFeatureLayer layer)
+        //{
+        //    if (_wiredLayers.Contains(layer))
+        //    {
+        //        _wiredLayers.Remove(layer);
+        //        layer.SelectedFeatures.ListChanged -= handleSelectedFeaturesListChanged;
+        //        layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesListChanged;
+        //    }
+        //}
 
         private void createRenderers()
         {

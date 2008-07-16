@@ -37,7 +37,7 @@ namespace SharpMap.Tests.Presentation
             ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
             Assert.IsNotNull(view.Tools);
-            Assert.IsNotEmpty((ICollection) view.Tools);
+            Assert.AreNotEqual(0, view.Tools.Count);
         }
 
         //[Test]

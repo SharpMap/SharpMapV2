@@ -165,18 +165,16 @@ namespace SharpMap
         /// </summary>
         public void Dispose()
         {
-            if (!IsDisposed)
+            if (IsDisposed)
             {
-                Dispose(true);
-                _disposed = true;
-                GC.SuppressFinalize(this);
-
-                EventHandler e = Disposed;
-                if (e != null)
-                {
-                    e(this, EventArgs.Empty);
-                }
+                return;
             }
+
+            Dispose(true);
+            _disposed = true;
+            GC.SuppressFinalize(this);
+
+            OnDisposed();
         }
 
         #endregion
@@ -188,6 +186,8 @@ namespace SharpMap
         {
             if (disposing)
             {
+                _layers.ListChanged -= handleLayersChanged;
+
                 foreach (ILayer layer in Layers)
                 {
                     if (layer != null)
@@ -979,6 +979,19 @@ namespace SharpMap
             get { throw new NotImplementedException(); }
         }
 
+        #endregion
+
+        #region Protected virtual members
+
+        protected virtual void OnDisposed()
+        {
+            EventHandler e = Disposed;
+
+            if (e != null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
         #endregion
 
         #region Private helper methods

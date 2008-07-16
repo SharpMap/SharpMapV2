@@ -33,10 +33,13 @@ namespace SharpMap.Presentation.Presenters
     /// <summary>
     /// Manages views of attribute data and coordinates layer attribute interaction.
     /// </summary>
-    public class AttributePresenter : BasePresenter<IAttributeView>
+    public class AttributePresenter : FeatureLayersListenerPresenter<IAttributeView>
     {
+        #region Private instance fields
         private Boolean _highlightUpdating;
+        #endregion
 
+        #region Object construction / disposal
         /// <summary>
         /// Creates a new <see cref="AttributePresenter"/> with the given map and view.
         /// </summary>
@@ -46,45 +49,78 @@ namespace SharpMap.Presentation.Presenters
             : base(map, view)
         {
             Trace.Info(TraceCategories.Presentation, "Creating AttributePresenter");
-            Map.Layers.ListChanged += handleLayersChanged;
             View.FeaturesHighlightedChanged += handleViewFeaturesHighlightedChanged;
             View.Layers = Map.Layers;
         }
+        #endregion
 
-        private void handleLayersChanged(Object sender, ListChangedEventArgs e)
+        #region Private helper methods
+
+        private static IEnumerable<Object> getFeatureIdsFromIndexes(IFeatureLayer layer,
+                                                                    IEnumerable<Int32> indexes)
         {
-            Trace.Info(TraceCategories.Presentation, "AttributePresenter handling " +
-                                                     "layer collection changed");
-            Trace.Debug(TraceCategories.Presentation, "Layer collection change: " +
-                                                      e.ListChangedType);
-            IFeatureLayer newLayer = null;
-            IFeatureLayer oldLayer = null;
-
-            if (e.NewIndex >= 0 && e.NewIndex < Map.Layers.Count)
+            foreach (Int32 index in indexes)
             {
-                newLayer = Map.Layers[e.NewIndex] as IFeatureLayer;
-            }
+                FeatureDataRow feature = layer.SelectedFeatures[index].Row as FeatureDataRow;
+                Debug.Assert(feature != null);
 
-            if (e.OldIndex >= 0 && e.OldIndex < Map.Layers.Count && _highlightUpdating)
-            {
-                oldLayer = Map.Layers[e.OldIndex] as IFeatureLayer;
-            }
+                if (!feature.HasOid)
+                {
+                    throw new InvalidOperationException("Feature must have Object identifier " +
+                                                        "in order to highlight.");
+                }
 
-            if (newLayer != null && e.ListChangedType == ListChangedType.ItemAdded)
-            {
-                wireupFeatureLayer(newLayer);
-            }
-
-            // BUG: this shouldn't work... e.OldIndex won't be the old layer
-            // index if it was deleted...
-            // TODO: make unit test which confirms or refutes the above bug
-            if (oldLayer != null &&
-                e.NewIndex < 0 &&
-                e.ListChangedType == ListChangedType.ItemDeleted)
-            {
-                unwireFeatureLayer(oldLayer);
+                yield return feature.GetOid();
             }
         }
+
+        private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
+                                                                    FeatureDataView selectedFeatures,
+                                                                    FeatureDataView highlightedFeatures)
+        {
+            foreach (FeatureDataRow feature in highlightedFeatures)
+            {
+                yield return selectedFeatures.Find(feature);
+            }
+        }
+        #endregion
+
+        protected override ListChangedEventHandler GetHighlightedChangedEventHandler()
+        {
+            return handleHighlightedFeaturesChanged;
+        }
+
+        #region Event handlers
+        //private void handleLayersChanged(Object sender, ListChangedEventArgs e)
+        //{
+        //    IFeatureLayer newLayer = null;
+        //    IFeatureLayer oldLayer = null;
+
+        //    if (e.NewIndex >= 0 && e.NewIndex < Map.Layers.Count)
+        //    {
+        //        newLayer = Map.Layers[e.NewIndex] as IFeatureLayer;
+        //    }
+
+        //    if (e.OldIndex >= 0 && e.OldIndex < Map.Layers.Count && _highlightUpdating)
+        //    {
+        //        oldLayer = Map.Layers[e.OldIndex] as IFeatureLayer;
+        //    }
+
+        //    if (newLayer != null && e.ListChangedType == ListChangedType.ItemAdded)
+        //    {
+        //        wireupFeatureLayer(newLayer);
+        //    }
+
+        //    // BUG: this shouldn't work... e.OldIndex won't be the old layer
+        //    // index if it was deleted...
+        //    // TODO: make unit test which confirms or refutes the above bug
+        //    if (oldLayer != null &&
+        //        e.NewIndex < 0 &&
+        //        e.ListChangedType == ListChangedType.ItemDeleted)
+        //    {
+        //        unwireFeatureLayer(oldLayer);
+        //    }
+        //}
 
         private void handleViewFeaturesHighlightedChanged(Object sender,
                                                           FeaturesHighlightedChangedEventArgs e)
@@ -197,43 +233,6 @@ namespace SharpMap.Presentation.Presenters
             View.SetHighlightedFeatures(featureLayer.LayerName, indexes);
             _highlightUpdating = false;
         }
-
-        private void wireupFeatureLayer(IFeatureLayer layer)
-        {
-            layer.HighlightedFeatures.ListChanged += handleHighlightedFeaturesChanged;
-        }
-
-        private void unwireFeatureLayer(IFeatureLayer layer)
-        {
-            layer.HighlightedFeatures.ListChanged -= handleHighlightedFeaturesChanged;
-        }
-
-        private static IEnumerable<Object> getFeatureIdsFromIndexes(IFeatureLayer layer,
-                                                                    IEnumerable<Int32> indexes)
-        {
-            foreach (Int32 index in indexes)
-            {
-                FeatureDataRow feature = layer.SelectedFeatures[index].Row as FeatureDataRow;
-                Debug.Assert(feature != null);
-
-                if (!feature.HasOid)
-                {
-                    throw new InvalidOperationException("Feature must have Object identifier " +
-                                                        "in order to highlight.");
-                }
-
-                yield return feature.GetOid();
-            }
-        }
-
-        private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
-                                                                    FeatureDataView selectedFeatures,
-                                                                    FeatureDataView highlightedFeatures)
-        {
-            foreach (FeatureDataRow feature in highlightedFeatures)
-            {
-                yield return selectedFeatures.Find(feature);
-            }
-        }
+        #endregion
     }
 }

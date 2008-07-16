@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using GeoAPI.Coordinates;
@@ -875,6 +876,28 @@ namespace SharpMap.Tests.Presentation
         }
 
         [Test]
+        public void DisposingPresenterUnwiresAllEvents()
+        {
+            MockRepository mocks = new MockRepository();
+
+            TestPresenter2D mapPresenter = createPresenter(mocks, 400, 200);
+            Map map = mapPresenter.Map;
+
+            mapPresenter.Dispose();
+
+            FieldInfo listChangedField = typeof(BindingList<ILayer>).GetField("onListChanged",
+                                                                               BindingFlags.NonPublic |
+                                                                               BindingFlags.Instance);
+            Delegate listChanged = listChangedField.GetValue(map.Layers) as Delegate;
+            Assert.IsNotNull(listChanged);
+
+            Delegate[] listeners = listChanged.GetInvocationList();
+            // the only listener should be the map
+            Assert.AreEqual(1, listeners.Length);
+            Assert.AreSame(map, listeners[0].Target);
+        }
+
+        [Test]
         public void ViewEnvelopeMeasuresCorrectly()
         {
             TestView2D view;
@@ -953,53 +976,6 @@ namespace SharpMap.Tests.Presentation
             view.RaiseBegin(new Point2D(100, 125));
             view.RaiseMoveTo(new Point2D(300, 375));
             view.RaiseEnd(new Point2D(300, 375));
-        }
-
-        private void nullAction(ActionContext<IMapView2D, Point2D> context) { }
-
-        private void testBeginZoomIn(ActionContext<IMapView2D, Point2D> context)
-        {
-            IMapView2D view = context.MapView;
-            view.Selection.Clear();
-            view.Selection.AddPoint(context.CurrentPoint);
-        }
-
-        private void testContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
-        {
-            context.MapView.Selection.AddPoint(context.CurrentPoint);
-        }
-
-        private void testEndZoomIn(ActionContext<IMapView2D, Point2D> context)
-        {
-            IMapView2D view = context.MapView;
-
-            if (view.Selection.Path.Points.Count == 1)
-            {
-				zoomByFactor(view, context.CurrentPoint, 1.2);	// 0.83333333333333337
-            }
-            else
-            {
-                view.Selection.Close();
-                context.MapView.ZoomToViewBounds(view.Selection.Path.Bounds);
-            }
-        }
-
-		private static void zoomByFactor(IMapView2D view, Point2D zoomCenter, Double zoomFactor)
-        {
-            zoomFactor = 1 / zoomFactor;
-
-            Size2D viewSize = view.ViewSize;
-            Point2D viewCenter = new Point2D((viewSize.Width / 2), (viewSize.Height / 2));
-            Point2D viewDifference = zoomCenter - viewCenter;
-
-			Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
-			Double widthDifference = zoomBoundsSize.Width - viewSize.Width;
-			Double heightDifference = zoomBoundsSize.Height - viewSize.Height;
-			Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor - widthDifference / 2, 
-				viewDifference.Y * zoomFactor - heightDifference / 2);
-            Rectangle2D zoomViewBounds = new Rectangle2D(zoomUpperLeft, zoomBoundsSize);
-
-            view.ZoomToViewBounds(zoomViewBounds);
         }
 
         [Test]
@@ -1304,6 +1280,53 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
 
             map.Dispose();
+        }
+
+        private void nullAction(ActionContext<IMapView2D, Point2D> context) { }
+
+        private void testBeginZoomIn(ActionContext<IMapView2D, Point2D> context)
+        {
+            IMapView2D view = context.MapView;
+            view.Selection.Clear();
+            view.Selection.AddPoint(context.CurrentPoint);
+        }
+
+        private void testContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
+        {
+            context.MapView.Selection.AddPoint(context.CurrentPoint);
+        }
+
+        private void testEndZoomIn(ActionContext<IMapView2D, Point2D> context)
+        {
+            IMapView2D view = context.MapView;
+
+            if (view.Selection.Path.Points.Count == 1)
+            {
+                zoomByFactor(view, context.CurrentPoint, 1.2);	// 0.83333333333333337
+            }
+            else
+            {
+                view.Selection.Close();
+                context.MapView.ZoomToViewBounds(view.Selection.Path.Bounds);
+            }
+        }
+
+        private static void zoomByFactor(IMapView2D view, Point2D zoomCenter, Double zoomFactor)
+        {
+            zoomFactor = 1 / zoomFactor;
+
+            Size2D viewSize = view.ViewSize;
+            Point2D viewCenter = new Point2D((viewSize.Width / 2), (viewSize.Height / 2));
+            Point2D viewDifference = zoomCenter - viewCenter;
+
+            Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
+            Double widthDifference = zoomBoundsSize.Width - viewSize.Width;
+            Double heightDifference = zoomBoundsSize.Height - viewSize.Height;
+            Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor - widthDifference / 2,
+                viewDifference.Y * zoomFactor - heightDifference / 2);
+            Rectangle2D zoomViewBounds = new Rectangle2D(zoomUpperLeft, zoomBoundsSize);
+
+            view.ZoomToViewBounds(zoomViewBounds);
         }
 
         private TestPresenter2D createPresenter(MockRepository mocks, Double width, Double height)

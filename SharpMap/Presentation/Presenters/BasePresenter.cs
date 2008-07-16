@@ -89,6 +89,8 @@ namespace SharpMap.Presentation.Presenters
             {
                 return;
             }
+
+            Map.PropertyChanged -= handleMapPropertyChanged;
         }
 
         /// <summary>
