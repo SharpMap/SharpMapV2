@@ -93,6 +93,11 @@ namespace SharpMap.Data
 
         public String Evaluate(Expression expression)
         {
+            PropertyNameExpression property = expression as PropertyNameExpression;
+            if (property != null)
+            {
+                return this[property.PropertyName].ToString();
+            }
             throw new NotImplementedException();
         }
 
