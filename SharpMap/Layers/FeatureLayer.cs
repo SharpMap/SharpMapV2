@@ -210,11 +210,11 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets or sets the layer style as a VectorStyle.
+        /// Gets or sets the layer style as a <see cref="FeatureStyle"/>.
         /// </summary>
         public new FeatureStyle Style
         {
-            get { return base.Style as GeometryStyle; }
+            get { return base.Style as FeatureStyle; }
             set { base.Style = value; }
         }
 
