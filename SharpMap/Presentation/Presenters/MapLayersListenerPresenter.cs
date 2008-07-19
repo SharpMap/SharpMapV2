@@ -5,6 +5,10 @@ using SharpMap.Diagnostics;
 
 namespace SharpMap.Presentation.Presenters
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TView">Type of view to manage.</typeparam>
     public abstract class MapLayersListenerPresenter<TView> : BasePresenter<TView>
         where TView : class
     {

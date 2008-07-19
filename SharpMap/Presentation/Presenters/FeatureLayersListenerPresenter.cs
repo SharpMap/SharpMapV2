@@ -5,6 +5,11 @@ using SharpMap.Layers;
 
 namespace SharpMap.Presentation.Presenters
 {
+    /// <summary>
+    /// Provides functionality for a presenter which listens to <see cref="IBindingList.ListChanged"/>
+    /// events from <see cref="FeatureLayer.SelectedFeatures"/> and <see cref="FeatureLayer.HighlightedFeatures"/>.
+    /// </summary>
+    /// <typeparam name="TView">Type of view to manage.</typeparam>
     public abstract class FeatureLayersListenerPresenter<TView> : MapLayersListenerPresenter<TView>
         where TView : class
     {

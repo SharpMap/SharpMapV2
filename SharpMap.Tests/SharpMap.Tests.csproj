@@ -174,8 +174,6 @@
     <Compile Include="Rendering\ThematicsTests.cs" />
     <Compile Include="Rendering\VectorRenderer2DTests.cs" />
     <Compile Include="TestConstants.cs" />
-    <Compile Include="Utilities\ByteEncoderTests.cs" />
-    <Compile Include="Utilities\QuickSortTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SRID.csv">

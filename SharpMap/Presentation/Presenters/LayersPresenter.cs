@@ -27,7 +27,7 @@ namespace SharpMap.Presentation.Presenters
 	/// <summary>
 	/// Provides a presenter for the layers of a <see cref="Map"/>.
 	/// </summary>
-	public class LayersPresenter : BasePresenter<ILayersView>
+	public class LayersPresenter : MapLayersListenerPresenter<ILayersView>
 	{
 		private readonly EventHandler<LayerActionEventArgs> _layersChildrenVisibleChangeRequestedDelegate;
         private readonly EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
@@ -47,8 +47,6 @@ namespace SharpMap.Presentation.Presenters
 			_visibleLayersChangeRequestedDelegate = handleVisibleLayersChangeRequested;
 			_layersChildrenVisibleChangeRequestedDelegate = handleLayerChildrenVisibleChangeRequested;
 			_layerSelectabilityChangeRequestedDelegate = handleLayerSelectabilityChangeRequested;
-
-			Map.Layers.ListChanged += handleLayersCollectionChanged;
 
 			View.LayersSelectionChangeRequested += _selectedLayersChangeRequestedDelegate;
 			View.LayersEnabledChangeRequested += _visibleLayersChangeRequestedDelegate;
@@ -82,75 +80,77 @@ namespace SharpMap.Presentation.Presenters
 			}
 		}
 
-		private void handleLayersCollectionChanged(Object sender, ListChangedEventArgs e)
-		{
-			switch(e.ListChangedType)
-			{
-				case ListChangedType.ItemChanged:
-					if(e.PropertyDescriptor.Name == Layer.EnabledProperty.Name)
-					{
-						ILayer layer = Map.Layers[e.NewIndex];
-					    IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+        protected override void NotifyLayersChanged(ListChangedType listChangedType, int oldIndex, int newIndex, PropertyDescriptor propertyDescriptor)
+        {
+            switch (listChangedType)
+            {
+                case ListChangedType.ItemChanged:
+                    if (propertyDescriptor.Name == Layer.EnabledProperty.Name)
+                    {
+                        ILayer layer = Map.Layers[newIndex];
+                        IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
 
-						if(layers != null)
-						{
-							foreach(ILayer child in layers)
-							{
-								if(child.Enabled)
-								{
-									View.EnableLayer(child.LayerName);
-								}
-								else
-								{
-									View.DisableLayer(child.LayerName);
-								}
-							}
-						}
-						else if(layer.Enabled)
-						{
-							View.EnableLayer(layer.LayerName);
-						}
-						else
-						{
-							View.DisableLayer(layer.LayerName);
-						}
-					}
-					else if(e.PropertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
-					{
-						ILayer layer = Map.Layers[e.NewIndex];
+                        if (layers != null)
+                        {
+                            foreach (ILayer child in layers)
+                            {
+                                if (child.Enabled)
+                                {
+                                    View.EnableLayer(child.LayerName);
+                                }
+                                else
+                                {
+                                    View.DisableLayer(child.LayerName);
+                                }
+                            }
+                        }
+                        else if (layer.Enabled)
+                        {
+                            View.EnableLayer(layer.LayerName);
+                        }
+                        else
+                        {
+                            View.DisableLayer(layer.LayerName);
+                        }
+                    }
+                    else if (propertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
+                    {
+                        ILayer layer = Map.Layers[newIndex];
 
                         if ((Boolean)layer.GetPropertyValue(LayerGroup.ShowChildrenProperty))
-						{
-							View.EnableChildLayers(layer.LayerName);
-						}
-						else
-						{
-							View.DisableChildLayers(layer.LayerName);
-						}
-					}
-					else if(e.PropertyDescriptor.Name == FeatureLayer.AreFeaturesSelectableProperty.Name)
-					{
-						ILayer layer = Map.Layers[e.NewIndex];
-						FeatureStyle style = layer.Style as FeatureStyle;
+                        {
+                            View.EnableChildLayers(layer.LayerName);
+                        }
+                        else
+                        {
+                            View.DisableChildLayers(layer.LayerName);
+                        }
+                    }
+                    else if (propertyDescriptor.Name == FeatureLayer.AreFeaturesSelectableProperty.Name)
+                    {
+                        ILayer layer = Map.Layers[newIndex];
+                        FeatureStyle style = layer.Style as FeatureStyle;
 
-						if(style != null && style.AreFeaturesSelectable)
-						{
-							View.SetFeaturesSelectable(layer.LayerName, true);
-						}
-						else
-						{
-							View.SetFeaturesSelectable(layer.LayerName, false);
-						}
-					}
-					break;
-					// The following are taken care of by data binding:
+                        if (style != null && style.AreFeaturesSelectable)
+                        {
+                            View.SetFeaturesSelectable(layer.LayerName, true);
+                        }
+                        else
+                        {
+                            View.SetFeaturesSelectable(layer.LayerName, false);
+                        }
+                    }
+                    break;
+                // The following are taken care of by data binding:
                 //case ListChangedType.ItemMoved:
                 //case ListChangedType.ItemAdded:
                 //case ListChangedType.ItemDeleted:
-				default:
-					break;
-			}
-		}
+                default:
+                    break;
+            }
+
+            base.NotifyLayersChanged(listChangedType, oldIndex, newIndex, propertyDescriptor);
+        }
 
 		private void handleVisibleLayersChangeRequested(Object sender, LayerActionEventArgs e)
 		{

@@ -143,7 +143,7 @@ namespace SharpMap.Tests.Data
 
         [Test]
         [ExpectedException(typeof (NotSupportedException),
-            ExpectedMessage = "RowFilter expressions not supported at this time.")]
+            ExpectedMessage = "RowFilter expressions not supported at this time. Use the ViewDefinition property instead.")]
         public void ChangeViewAttributeFilterReturnsOnlyFilteredRows()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
@@ -173,7 +173,7 @@ namespace SharpMap.Tests.Data
 
         [Test]
         [ExpectedException(typeof (NotSupportedException),
-            ExpectedMessage = "RowFilter expressions not supported at this time.")]
+            ExpectedMessage = "RowFilter expressions not supported at this time. Use the ViewDefinition property instead.")]
         public void ChangeViewAttributeFilterTriggersNotification()
         {
             FeatureProvider data = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
