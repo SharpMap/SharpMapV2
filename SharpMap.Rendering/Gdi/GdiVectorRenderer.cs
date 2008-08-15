@@ -206,7 +206,7 @@ namespace SharpMap.Rendering.Gdi
 
         #region Nested types
 
-        private struct SymbolLookupKey : IEquatable<SymbolLookupKey>
+        protected struct SymbolLookupKey : IEquatable<SymbolLookupKey>
         {
             public readonly Int32 SymbolId;
 
