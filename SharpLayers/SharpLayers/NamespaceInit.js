@@ -1,0 +1,1 @@
+﻿Type.registerNamespace("OpenLayers");

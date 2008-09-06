@@ -1,0 +1,180 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B29EB233-D12A-413F-BE10-6B7F911E8050}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DemoSelector</RootNamespace>
+    <AssemblyName>DemoSelector</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DemoSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DemoSelector.Designer.cs">
+      <DependentUpon>DemoSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DemoSelector.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DemoSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\..\NPack\branches\AGG_Work\NPack-branch\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\NPackMathsUtilities\NPackMathsUtilities.csproj">
+      <Project>{711A537B-BAE4-41CC-9B46-80DD0741D9D6}</Project>
+      <Name>NPackMathsUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\agg\AGG.csproj">
+      <Project>{657DBC6D-C3EA-4398-A3FA-DDB73C14F71B}</Project>
+      <Name>AGG</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\agg_3d\agg_3d.csproj">
+      <Project>{545B6912-77FF-4B34-BA76-6C3D6A32BE6A}</Project>
+      <Name>agg_3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\agg_gui\agg_gui.csproj">
+      <Project>{05C9C197-E811-451E-8562-ADB3526667D9}</Project>
+      <Name>agg_gui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\agg_platform_win32\agg_platform_win32.csproj">
+      <Project>{670BDDFF-927B-425D-9DD1-22ACB14356EB}</Project>
+      <Name>agg_platform_win32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\NeuralNet\NeuralNet.csproj">
+      <Project>{636B92E8-D491-4066-BDD2-7954E8B0BE1A}</Project>
+      <Name>NeuralNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Reflexive\Reflexive.csproj">
+      <Project>{79741A18-3523-41BE-93DB-EECBEF515591}</Project>
+      <Name>Reflexive</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tesselate\Tesselate.csproj">
+      <Project>{AE37DE1F-22F7-49EE-8732-FC6BC8DC58D9}</Project>
+      <Name>Tesselate</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\RockBlaster\RockBlaster.csproj">
+      <Project>{43254794-FC6F-4B7C-A840-64261F736C82}</Project>
+      <Name>RockBlaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\alpha_mask2\alpha_mask2.csproj">
+      <Project>{D933EF7C-9219-4C28-931C-95EB3C8494D6}</Project>
+      <Name>alpha_mask2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\blur\blur.csproj">
+      <Project>{D0B56F16-6191-4337-8DA1-9B0A59708C7F}</Project>
+      <Name>blur</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\component_rendering\component_rendering.csproj">
+      <Project>{1FE9CE87-30B0-44A1-A8D4-4FCB80F81F34}</Project>
+      <Name>component_rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\gouraud\gouraud.csproj">
+      <Project>{DC6AEC82-D343-48C3-972B-88F608E5597D}</Project>
+      <Name>gouraud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\gradients\gradients.csproj">
+      <Project>{D1562E89-00E2-44D6-BC1E-9B017E0212B4}</Project>
+      <Name>gradients</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\image1\image1.csproj">
+      <Project>{25D8987B-5449-4A31-B444-BCDF9E52D561}</Project>
+      <Name>image1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\image_filters\image_filters.csproj">
+      <Project>{74BA5082-FD08-4BB9-8B30-39D9E80D2C8F}</Project>
+      <Name>image_filters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\image_resample\image_resample.csproj">
+      <Project>{C804A351-7E6F-4D93-8E4C-3AA8183D1608}</Project>
+      <Name>image_resample</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lion\lion.csproj">
+      <Project>{3BEFA755-A647-4A16-A73C-0ACF18211EBD}</Project>
+      <Name>lion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lion_outline\lion_outline.csproj">
+      <Project>{3E06C55C-4CF1-4CC3-86F4-E4DA1FAFFB06}</Project>
+      <Name>lion_outline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NeHeLesson5\NeHeLesson5.csproj">
+      <Project>{80825CFE-64FE-4417-948B-7F8E5A858E87}</Project>
+      <Name>NeHeLesson5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\perspective\perspective.csproj">
+      <Project>{EB8AE3D1-E17F-47D6-A7F3-3B670A65A702}</Project>
+      <Name>perspective</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\rounded_rect\rounded_rect.csproj">
+      <Project>{DA8EBDD6-0E11-422D-82E9-B2BA487D106D}</Project>
+      <Name>rounded_rect</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SmartSweepers\SmartSweepers.csproj">
+      <Project>{F237AE63-0021-4873-AC36-5B75C5F4DD1A}</Project>
+      <Name>SmartSweepers</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
