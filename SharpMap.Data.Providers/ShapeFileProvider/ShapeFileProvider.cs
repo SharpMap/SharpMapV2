@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
@@ -27,7 +28,6 @@ using System.Text;
 using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
-using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
@@ -61,7 +61,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// </para>
     /// </remarks>
     /// <example>
-    /// Adding a datasource to a layer:
+    /// Adding a data source to a layer:
     /// <code lang="C#">
     /// using SharpMap.Layers;
     /// using SharpMap.Data.Providers.ShapeFile;
@@ -70,7 +70,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// myLayer.DataSource = new ShapeFile(@"C:\data\MyShapeData.shp");
     /// </code>
     /// </example>
-    public class ShapeFileProvider : IWritableFeatureProvider<UInt32>
+    public class ShapeFileProvider : ProviderBase, IWritableFeatureProvider<UInt32>
     {
         #region IdBounds
         struct IdBounds : IBoundable<IExtents>
@@ -116,11 +116,10 @@ namespace SharpMap.Data.Providers.ShapeFile
         private BinaryReader _shapeFileReader;
         private BinaryWriter _shapeFileWriter;
         private readonly Boolean _hasFileBasedSpatialIndex;
-        private Boolean _isOpen;
+        //private Boolean _isOpen;
         private readonly Boolean _isIndexed = true;
         private Boolean _coordsysReadFromFile;
         private ICoordinateSystem _coordinateSystem;
-        private Boolean _disposed;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
         private readonly ShapeFileHeader _header;
         private readonly ShapeFileIndex _shapeFileIndex;
@@ -129,7 +128,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly Boolean _hasDbf;
         private IGeometryFactory _geoFactory;
         private readonly ICoordinateSystemFactory _coordSysFactory;
-        private ICoordinateTransformation _coordTransform;
         #endregion
 
         #region Object construction and disposal
@@ -211,32 +209,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        /// <summary>
-        /// Finalizes the Object
-        /// </summary>
-        ~ShapeFileProvider()
-        {
-            dispose(false);
-        }
-
         #region Dispose pattern
 
-        /// <summary>
-        /// Disposes the Object
-        /// </summary>
-        void IDisposable.Dispose()
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            dispose(true);
-            IsDisposed = true;
-            GC.SuppressFinalize(this);
-        }
-
-        private void dispose(Boolean disposing)
+        protected override void Dispose(Boolean disposing)
         {
             if (disposing)
             {
@@ -271,13 +246,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
             }
 
-            _isOpen = false;
-        }
-
-        protected internal Boolean IsDisposed
-        {
-            get { return _disposed; }
-            private set { _disposed = value; }
+            base.Close();
         }
 
         #endregion
@@ -593,7 +562,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <remarks>
         /// <para>
-        /// The property isn't set until the first time the datasource has been opened,
+        /// The property isn't set until the first time the data source has been opened,
         /// and will throw an exception if this property has been called since initialization. 
         /// </para>
         /// <para>
@@ -644,7 +613,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _shapeFileReader = new BinaryReader(_shapeFileStream);
                 _shapeFileWriter = new BinaryWriter(_shapeFileStream);
 
-                _isOpen = true;
+                base.Open();
 
                 // Read projection file
                 parseProjection();
@@ -660,7 +629,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             catch (Exception)
             {
-                _isOpen = false;
+                base.Close();
                 throw;
             }
         }
@@ -699,42 +668,36 @@ namespace SharpMap.Data.Providers.ShapeFile
         #region IProvider Members
 
         /// <summary>
-        /// Gets the connection ID of the datasource.
+        /// Gets the connection ID of the data source.
         /// </summary>
         /// <remarks>
         /// The connection ID of a shapefile is its filename.
         /// </remarks>
-        public String ConnectionId
+        public override String ConnectionId
         {
             get { return _filename; }
-        }
-
-        public ICoordinateTransformation CoordinateTransformation
-        {
-            get { return _coordTransform; }
-            set { _coordTransform = value; }
         }
 
         /// <summary>
         /// Computes the extents of the data source.
         /// </summary>
         /// <returns>
-        /// A BoundingBox instance describing the extents of the entire data source.
+        /// An <see cref="IExtents"/> instance describing the extents of the entire data source.
         /// </returns>
-        public IExtents GetExtents()
+        public override IExtents GetExtents()
         {
             return _spatialIndex != null
                        ? _spatialIndex.Bounds
                        : _header.Extents;
         }
 
-        /// <summary>
-        /// Returns true if the datasource is currently open
-        /// </summary>		
-        public Boolean IsOpen
-        {
-            get { return _isOpen; }
-        }
+        ///// <summary>
+        ///// Returns true if the data source is currently open
+        ///// </summary>		
+        //public Boolean IsOpen
+        //{
+        //    get { return _isOpen; }
+        //}
 
         /// <summary>
         /// Gets or sets the coordinate system of the ShapeFile. 
@@ -747,24 +710,25 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if property is set and the coordinate system is read from file.
         /// </exception>
-        public ICoordinateSystem SpatialReference
+        public override ICoordinateSystem SpatialReference
         {
             get { return _coordinateSystem; }
-            set
-            {
-                //checkOpen();
-                if (_coordsysReadFromFile)
-                {
-                    throw new ShapeFileInvalidOperationException(
-                        "Coordinate system is specified in projection file and is read only");
-                }
-
-                _coordinateSystem = value;
-                _geoFactory.SpatialReference = value;
-            }
         }
 
-        public Int32? Srid
+        private void initSpatialReference(ICoordinateSystem coordinateSystem)
+        {
+            //checkOpen();
+            if (_coordsysReadFromFile)
+            {
+                throw new ShapeFileInvalidOperationException("Coordinate system is specified in "+
+                                                             "projection file and is read only");
+            }
+
+            _coordinateSystem = coordinateSystem;
+            _geoFactory.SpatialReference = coordinateSystem;
+        }
+
+        public override Int32? Srid
         {
             get { return _srid; }
             //set { _srid = value; }
@@ -773,14 +737,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         #region Methods
 
         /// <summary>
-        /// Closes the datasource
+        /// Closes the data source
         /// </summary>
-        public void Close()
+        public override void Close()
         {
             (this as IDisposable).Dispose();
         }
 
-        Object IProvider.ExecuteQuery(Expression query)
+        public override object ExecuteQuery(Expression query)
         {
             FeatureQueryExpression featureQuery = query as FeatureQueryExpression;
 
@@ -792,10 +756,15 @@ namespace SharpMap.Data.Providers.ShapeFile
             return ExecuteFeatureQuery(featureQuery);
         }
 
+        protected override PropertyDescriptorCollection GetClassProperties()
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
-        /// Opens the datasource
+        /// Opens the data source
         /// </summary>
-        public void Open()
+        public override void Open()
         {
             Open(false);
         }
@@ -931,7 +900,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #region IFeatureLayerProvider<UInt32> Members
 
         /// <summary>
-        /// Gets a feature row from the datasource with the specified id.
+        /// Gets a feature row from the data source with the specified id.
         /// </summary>
         /// <param name="oid">Id of the feautre to return.</param>
         /// <returns>
@@ -1503,7 +1472,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (!IsOpen)
             {
-                throw new ShapeFileInvalidOperationException("An attempt was made to access a closed datasource.");
+                throw new ShapeFileInvalidOperationException("An attempt was made to access a closed data source.");
             }
         }
 

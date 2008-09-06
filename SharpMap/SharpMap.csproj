@@ -110,6 +110,7 @@
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
+    <Compile Include="Data\Providers\ProviderBase.cs" />
     <Compile Include="Data\SelectRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />
     <Compile Include="Data\IAsyncProvider.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Expressions\CollectionOperator.cs" />
     <Compile Include="Expressions\FeaturesCollectionExpression.cs" />
     <Compile Include="Expressions\GeometryExpression.cs" />
+    <Compile Include="Expressions\IHasDynamicProperties.cs" />
     <Compile Include="Expressions\PredicateExpression.cs" />
     <Compile Include="Expressions\LayerExpression.cs" />
     <Compile Include="Expressions\NumericExpression`1.cs" />

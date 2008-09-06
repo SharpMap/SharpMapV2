@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections;
-using System.ComponentModel;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
@@ -32,11 +31,8 @@ namespace SharpMap.Layers
     /// <summary>
     /// Interface for map layers.
     /// </summary>
-	public interface ILayer : INotifyPropertyChanged, ICustomTypeDescriptor, IDisposable
+    public interface ILayer : IHasDynamicProperties, IDisposable
 	{
-        Int32 AddProperty(PropertyDescriptor property);
-        Int32 AddProperty<TValue>(PropertyDescriptor property, TValue value);
-
 		/// <summary>
 		/// Gets or sets a value indicating that data is obtained asynchronously.
 		/// </summary>
@@ -105,35 +101,6 @@ namespace SharpMap.Layers
         /// <see langword="true"/> if the layer is visible given <paramref name="condition"/>.
         /// </returns>
         Boolean IsVisibleWhen(Predicate<ILayer> condition);
-
-        /// <summary>
-        /// Gets the value of the property indicated by the given <see cref="PropertyDescriptor"/>.
-        /// </summary>
-        /// <param name="property">
-        /// The property to get the value of, or <see langword="null"/> if the layer doesn't
-        /// have <paramref name="property"/>.
-        /// </param>
-        /// <returns>
-        /// The value of <paramref name="property"/> or <see langword="null"/> if the layer doesn't
-        /// have the property.
-        /// </returns>
-        Object GetPropertyValue(PropertyDescriptor property);
-
-        TValue GetPropertyValue<TValue>(PropertyDescriptor property);
-
-        /// <summary>
-        /// Sets the value of the property indicated by the given <see cref="PropertyDescriptor"/>,
-        /// adding it if it doesn't exist.
-        /// </summary>
-        /// <param name="property">
-        /// The property to set the value of.
-        /// </param>
-        /// <param name="value">
-        /// The value to set <paramref name="property"/> to.
-        /// </param>
-        void SetPropertyValue(PropertyDescriptor property, Object value);
-
-        void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value);
 
         /// <summary>
         /// Event fired when layer data is loaded.

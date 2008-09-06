@@ -17,11 +17,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using System.Globalization;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.FeatureProvider
@@ -29,24 +30,54 @@ namespace SharpMap.Data.Providers.FeatureProvider
     /// <summary>
     /// In-memory provider for arbitrary feature data.
     /// </summary>
-	public class FeatureProvider : IWritableFeatureProvider<Guid>
-	{
-        internal readonly static String OidColumnName = "Oid";
-        private FeatureDataTable<Guid> _features;
-		private ICoordinateTransformation _transform;
-        private ICoordinateSystem _spatialReference;
-        private IGeometryFactory _geoFactory;
+    public class FeatureProvider : ProviderBase, IWritableFeatureProvider<Guid>
+    {
+        private static readonly PropertyDescriptorCollection _featureProviderTypeProperties;
+
+        static FeatureProvider()
+        {
+            _featureProviderTypeProperties = TypeDescriptor.GetProperties(typeof(FeatureProvider));
+        }
 
         /// <summary>
-        /// Creates a new FeatureProvider with the given columns as a schema.
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="GeometryProvider"/>'s <see cref="GeometryFactory"/> property.
         /// </summary>
-        /// <param name="columns">
-        /// The schema to create the FeatureProvider with.
+        public static PropertyDescriptor GeometryFactoryProperty
+        {
+            get { return _featureProviderTypeProperties.Find("GeometryFactory", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="GeometryProvider"/>'s <see cref="Locale"/> property.
+        /// </summary>
+        public static PropertyDescriptor LocaleProperty
+        {
+            get { return _featureProviderTypeProperties.Find("Locale", false); }
+        }
+
+        internal static readonly String OidColumnName = "Oid";
+        private FeatureDataTable<Guid> _features;
+        private readonly ICoordinateSystem _spatialReference;
+        private IGeometryFactory _geoFactory;
+        private readonly Int32? _srid;
+
+        /// <summary>
+        /// Creates a new <see cref="FeatureProvider"/> with the given columns as a schema.
+        /// </summary>
+        /// <param name="factory">
+        /// An <see cref="IGeometryFactory"/> instance to create geometry.
         /// </param>
-		public FeatureProvider(IGeometryFactory factory, params DataColumn[] columns)
-		{
+        /// <param name="columns">
+        /// The feature schema to create the <see cref="FeatureProvider"/> with.
+        /// </param>
+        public FeatureProvider(IGeometryFactory factory, params DataColumn[] columns)
+        {
             _geoFactory = factory;
             _features = new FeatureDataTable<Guid>(OidColumnName, GeometryFactory);
+            _srid = _geoFactory.Srid;
+            _spatialReference = _geoFactory.SpatialReference;
 
             foreach (DataColumn column in columns)
             {
@@ -56,65 +87,65 @@ namespace SharpMap.Data.Providers.FeatureProvider
                     _features.Columns.Add(column);
                 }
             }
-		}
-
-		#region IWritableFeatureProvider<Guid> Members
-
-		public void Insert(FeatureDataRow<Guid> feature)
-		{
-			_features.ImportRow(feature);
-		}
-
-		public void Insert(IEnumerable<FeatureDataRow<Guid>> features)
-		{
-			foreach (FeatureDataRow<Guid> feature in features)
-			{
-				Insert(feature);
-			}
-		}
-
-		public void Update(FeatureDataRow<Guid> feature)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Update(IEnumerable<FeatureDataRow<Guid>> features)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Delete(FeatureDataRow<Guid> feature)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Delete(IEnumerable<FeatureDataRow<Guid>> features)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
-
-		#region IFeatureProvider<Guid> Members
-
-        public IEnumerable<Guid> ExecuteOidQuery(SpatialBinaryExpression query)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IGeometry GetGeometryByOid(Guid oid)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IFeatureDataRecord GetFeatureByOid(Guid oid)
-		{
-			throw new NotImplementedException();
         }
 
-		public void SetTableSchema(FeatureDataTable<Guid> table)
-		{
-			throw new NotImplementedException();
+        #region IWritableFeatureProvider<Guid> Members
+
+        public void Insert(FeatureDataRow<Guid> feature)
+        {
+            _features.ImportRow(feature);
+        }
+
+        public void Insert(IEnumerable<FeatureDataRow<Guid>> features)
+        {
+            foreach (FeatureDataRow<Guid> feature in features)
+            {
+                Insert(feature);
+            }
+        }
+
+        public void Update(FeatureDataRow<Guid> feature)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(IEnumerable<FeatureDataRow<Guid>> features)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(FeatureDataRow<Guid> feature)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(IEnumerable<FeatureDataRow<Guid>> features)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IFeatureProvider<Guid> Members
+
+        public IEnumerable<Guid> ExecuteOidQuery(SpatialBinaryExpression query)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IGeometry GetGeometryByOid(Guid oid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeatureDataRecord GetFeatureByOid(Guid oid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetTableSchema(FeatureDataTable<Guid> table)
+        {
+            throw new NotImplementedException();
         }
 
         public void SetTableSchema(FeatureDataTable<Guid> table, SchemaMergeAction schemaMergeAction)
@@ -122,7 +153,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             _features.MergeSchema(table, schemaMergeAction);
         }
 
-		#endregion
+        #endregion
 
         #region IFeatureProvider Members
 
@@ -142,15 +173,15 @@ namespace SharpMap.Data.Providers.FeatureProvider
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
         {
             if (query == null) throw new ArgumentNullException("query");
-            
-            FeatureDataReader reader = new FeatureDataReader(_geoFactory, 
+
+            FeatureDataReader reader = new FeatureDataReader(_geoFactory,
                                                              _features,
                                                              query,
                                                              FeatureQueryExecutionOptions.FullFeature);
             return reader;
         }
 
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression bounds, 
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression bounds,
                                                       FeatureQueryExecutionOptions options)
         {
             FeatureDataReader reader = new FeatureDataReader(_geoFactory, _features, bounds, options);
@@ -167,9 +198,9 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// Returns the number of features in the entire dataset.
         /// </summary>
         /// <returns>Count of the features in the entire dataset.</returns>
-	    public Int32 GetFeatureCount()
-		{
-			return _features.FeatureCount;
+        public Int32 GetFeatureCount()
+        {
+            return _features.FeatureCount;
         }
 
         /// <summary>
@@ -179,95 +210,127 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// </summary>
         /// <seealso cref="IDataReader.GetSchemaTable"/>
         /// <returns>A DataTable that describes the column metadata.</returns>
-	    public DataTable GetSchemaTable()
-	    {
-	        throw new NotImplementedException();
-	    }
+        public DataTable GetSchemaTable()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Gets the locale of the data as a CultureInfo.
         /// </summary>
-	    public CultureInfo Locale
-	    {
-	        get { throw new NotImplementedException(); }
-	    }
+        public CultureInfo Locale
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         /// <summary>
         /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 
         /// present in the IProvider with the given connection.
         /// </summary>
         /// <param name="table">The FeatureDataTable to configure the schema of.</param>
-	    public void SetTableSchema(FeatureDataTable table)
-		{
-			_features.MergeSchema(table);
+        public void SetTableSchema(FeatureDataTable table)
+        {
+            _features.MergeSchema(table);
         }
 
-		#endregion
+        #endregion
 
-		#region IProvider Members
+        #region IProvider Members
 
-		public void Close()
-		{
-			// Do nothing...
-		}
-
-		public String ConnectionId
-		{
-			get { return String.Empty; }
-		}
-
-		public ICoordinateTransformation CoordinateTransformation
-		{
-			get { return _transform; }
-			set { _transform = value; }
+        public override void Close()
+        {
+            // Do nothing...
         }
 
-        public Object ExecuteQuery(Expression query)
+        public override String ConnectionId
+        {
+            get { return String.Empty; }
+        }
+
+        public override Object ExecuteQuery(Expression query)
         {
             throw new NotImplementedException();
             //FeatureDataReader reader = new FeatureDataReader(_geoFactory, _features, bounds, options);
             //return reader;
         }
 
-		public IExtents GetExtents()
-		{
-			return _features.Extents;
-		}
+        public override IExtents GetExtents()
+        {
+            return _features.Extents;
+        }
 
-		public Boolean IsOpen
-		{
-			get { return true; }
-		}
+        public override Boolean IsOpen
+        {
+            get { return true; }
+        }
 
-		public void Open()
-		{
-			// Do nothing...
-		}
+        public override void Open()
+        {
+            // Do nothing...
+        }
 
-		public ICoordinateSystem SpatialReference
-		{
-			get { return _spatialReference;  }
-		}
+        public override ICoordinateSystem SpatialReference
+        {
+            get { return _spatialReference; }
+        }
 
-		public Int32? Srid
-		{
-			get { return null; }
-			set {  }
-		}
+        public override Int32? Srid
+        {
+            get { return _srid; }
+            //set { }
+        }
 
-		#endregion
+        #endregion
 
-		#region IDisposable Members
+        #region IDisposable Members
 
-		public void Dispose()
-		{
-			if(_features != null)
-			{
-				_features.Dispose();
-				_features = null;
-			}
-		}
+        protected override void Dispose(Boolean disposing)
+        {
+            if (disposing && _features != null)
+            {
+                _features.Dispose();
+                _features = null;
+            }
+        }
 
-		#endregion
+        #endregion
+
+        protected override PropertyDescriptorCollection GetClassProperties()
+        {
+            return _featureProviderTypeProperties;
+        }
+
+        protected override void SetObjectProperty(string propertyName, object value)
+        {
+            if (propertyName.Equals(LocaleProperty.Name))
+            {
+                throw new InvalidOperationException("The property '" + propertyName + "' is read-only.");
+            }
+
+            if (propertyName.Equals(GeometryFactoryProperty.Name))
+            {
+                GeometryFactory = value as IGeometryFactory;
+            }
+            else
+            {
+                base.SetObjectProperty(propertyName, value);
+            }
+        }
+
+        protected override Object GetObjectProperty(string propertyName)
+        {
+            if (propertyName.Equals(GeometryFactoryProperty.Name))
+            {
+                return GeometryFactory;
+            }
+
+            if (propertyName.Equals(LocaleProperty.Name))
+            {
+                return Locale;
+            }
+
+            return base.GetObjectProperty(propertyName);
+        }
+
     }
 }
