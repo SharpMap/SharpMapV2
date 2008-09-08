@@ -27,7 +27,8 @@ namespace SharpMap.Data.Providers.Db
             return new SqlConnection(connectionString);
         }
 
-        public IDataParameter CreateParameter(string parameterName, object parameterValue,
+        public IDataParameter CreateParameter(string parameterName, 
+                                              object parameterValue,
                                               ParameterDirection paramDirection)
         {
             var p = new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, parameterValue);

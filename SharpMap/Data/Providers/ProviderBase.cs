@@ -14,7 +14,10 @@ namespace SharpMap.Data.Providers
 
         static ProviderBase()
         {
-            _providerBaseTypeProperties = TypeDescriptor.GetProperties(typeof(ProviderBase));
+            PropertyDescriptorCollection propertyCollection = TypeDescriptor.GetProperties(typeof(ProviderBase));
+            PropertyDescriptor[] properties = new PropertyDescriptor[propertyCollection.Count];
+            propertyCollection.CopyTo(properties, 0);
+            _providerBaseTypeProperties = new PropertyDescriptorCollection(properties, false);
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public static PropertyDescriptor ConnectionIdProperty
         {
-            get { return _providerBaseTypeProperties.Find("ConnectionId", false); }
+            get { return ProviderStaticProperties.Find("ConnectionId", false); }
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public static PropertyDescriptor CoordinateTransformationProperty
         {
-            get { return _providerBaseTypeProperties.Find("CoordinateTransformation", false); }
+            get { return ProviderStaticProperties.Find("CoordinateTransformation", false); }
         }
 
         /// <summary>
@@ -41,7 +44,7 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public static PropertyDescriptor IsOpenProperty
         {
-            get { return _providerBaseTypeProperties.Find("IsOpen", false); }
+            get { return ProviderStaticProperties.Find("IsOpen", false); }
         }
 
         /// <summary>
@@ -50,7 +53,7 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public static PropertyDescriptor SpatialReferenceProperty
         {
-            get { return _providerBaseTypeProperties.Find("SpatialReference", false); }
+            get { return ProviderStaticProperties.Find("SpatialReference", false); }
         }
 
         /// <summary>
@@ -59,20 +62,25 @@ namespace SharpMap.Data.Providers
         /// </summary>
         public static PropertyDescriptor SridProperty
         {
-            get { return _providerBaseTypeProperties.Find("Srid", false); }
+            get { return ProviderStaticProperties.Find("Srid", false); }
         }
 
         private readonly ICustomTypeDescriptor _descriptor;
         private Boolean _isDisposed;
         private Boolean _isOpen;
         private ICoordinateTransformation _coordinateTransform;
+        private readonly ICoordinateSystem _spatialReference;
+        private readonly Int32? _srid;
         private PropertyDescriptorCollection _instanceProperties;
         private Dictionary<PropertyDescriptor, Object> _propertyValues;
 
-        protected ProviderBase() : this(null) { }
+        protected ProviderBase(ICoordinateSystem spatialReference, Int32? srid) 
+            : this(spatialReference, srid, null) { }
 
-        protected ProviderBase(ICustomTypeDescriptor descriptor)
+        protected ProviderBase(ICoordinateSystem spatialReference, Int32? srid, ICustomTypeDescriptor descriptor)
         {
+            _spatialReference = spatialReference;
+            _srid = srid;
             _descriptor = descriptor;
         }
 
@@ -247,7 +255,10 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public abstract ICoordinateSystem SpatialReference { get; }
+        /// <summary>
+        /// Gets or sets the coordinate system of the data source. 
+        /// </summary>
+        public ICoordinateSystem SpatialReference { get { return _spatialReference;  } }
 
         public virtual Boolean IsOpen
         {
@@ -259,7 +270,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public abstract Int32? Srid { get; }
+        public Int32? Srid { get { return _srid; } }
 
         public abstract IExtents GetExtents();
 
@@ -279,7 +290,31 @@ namespace SharpMap.Data.Providers
 
         #endregion
 
-        protected abstract PropertyDescriptorCollection GetClassProperties();
+        protected static PropertyDescriptorCollection ProviderStaticProperties
+        {
+            get { return _providerBaseTypeProperties; }
+        }
+
+        protected static void AddDerivedProperties(Type derivedType)
+        {
+            if (typeof(ProviderBase).IsAssignableFrom(derivedType))
+            {
+                PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(derivedType);
+
+                foreach (PropertyDescriptor property in properties)
+                {
+                    if (!ProviderStaticProperties.Contains(property))
+                    {
+                        ProviderStaticProperties.Add(property);
+                    }
+                }
+            }
+        }
+
+        protected virtual PropertyDescriptorCollection GetClassProperties()
+        {
+            return ProviderStaticProperties;
+        }
 
         protected virtual TValue GetPropertyValueInternal<TValue>(PropertyDescriptor property)
         {

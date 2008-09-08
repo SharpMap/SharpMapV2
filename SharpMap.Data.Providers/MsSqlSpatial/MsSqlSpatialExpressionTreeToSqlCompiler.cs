@@ -37,9 +37,15 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
                                                        string oidColumnName,
                                                        string geometryColumnName,
                                                        int? srid)
-            : base(
-                dbUtility, selectStarDelegate, geometryColumnFormatString, query, tableSchema, tableName, oidColumnName,
-                geometryColumnName, srid)
+            : base(dbUtility, 
+                   selectStarDelegate, 
+                   geometryColumnFormatString, 
+                   query, 
+                   tableSchema, 
+                   tableName, 
+                   oidColumnName,
+                   geometryColumnName, 
+                   srid)
         {
             if (!string.IsNullOrEmpty(spatialSchema))
                 SpatialSchema = spatialSchema;

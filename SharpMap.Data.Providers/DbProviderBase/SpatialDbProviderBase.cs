@@ -13,6 +13,7 @@
  * 
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,6 +30,83 @@ namespace SharpMap.Data.Providers.Db
     public abstract class SpatialDbProviderBase<TOid>
         : ProviderBase, IWritableFeatureProvider<TOid>
     {
+        static SpatialDbProviderBase()
+        {
+            AddDerivedProperties(typeof(SpatialDbProviderBase<TOid>));
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="ConnectionString"/> property.
+        /// </summary>
+        public static PropertyDescriptor ConnectionStringProperty
+        {
+            get { return ProviderStaticProperties.Find("ConnectionString", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="DefinitionQuery"/> property.
+        /// </summary>
+        public static PropertyDescriptor DefinitionQueryProperty
+        {
+            get { return ProviderStaticProperties.Find("DefinitionQuery", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="GeometryColumn"/> property.
+        /// </summary>
+        public static PropertyDescriptor GeometryColumnProperty
+        {
+            get { return ProviderStaticProperties.Find("GeometryColumn", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="GeometryColumnConversionFormatString"/> property.
+        /// </summary>
+        public static PropertyDescriptor GeometryColumnConversionFormatStringProperty
+        {
+            get { return ProviderStaticProperties.Find("GeometryColumnConversionFormatString", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="Locale"/> property.
+        /// </summary>
+        public static PropertyDescriptor LocaleProperty
+        {
+            get { return ProviderStaticProperties.Find("Locale", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="OidColumn"/> property.
+        /// </summary>
+        public static PropertyDescriptor OidColumnProperty
+        {
+            get { return ProviderStaticProperties.Find("OidColumn", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="Table"/> property.
+        /// </summary>
+        public static PropertyDescriptor TableProperty
+        {
+            get { return ProviderStaticProperties.Find("Table", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="SpatialDbProviderBase{TOid}"/>'s <see cref="TableSchema"/> property.
+        /// </summary>
+        public static PropertyDescriptor TableSchemaProperty
+        {
+            get { return ProviderStaticProperties.Find("TableSchema", false); }
+        }
+
         private String _geometryColumn = "Wkb_Geometry";
         private String _oidColumn = "Oid";
         private String _tableSchema = "dbo";
@@ -40,6 +118,7 @@ namespace SharpMap.Data.Providers.Db
                                         String tableName,
                                         String oidColumn,
                                         String geometryColumn)
+            : base(geometryFactory.SpatialReference, geometryFactory.Srid)
         {
             DbUtility = dbUtility;
             GeometryFactory = geometryFactory;
@@ -68,16 +147,6 @@ namespace SharpMap.Data.Providers.Db
             {
                 Table = tableName;
             }
-        }
-
-        public override ICoordinateSystem SpatialReference
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override Int32? Srid
-        {
-            get { throw new System.NotImplementedException(); }
         }
 
         public String ConnectionString { get; set; }
@@ -320,17 +389,15 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        protected override PropertyDescriptorCollection GetClassProperties()
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected virtual IEnumerable<String> SelectAllColumnNames()
         {
             foreach (DataColumn col in GetSchemaTable().Columns)
             {
-                yield return String.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
-                                 ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col.ColumnName,
+                yield return String.Equals(col.ColumnName, 
+                                           GeometryColumn, 
+                                           StringComparison.InvariantCultureIgnoreCase)
+                                 ? String.Format(GeometryColumnConversionFormatString + " AS {1}", 
+                                                 col.ColumnName,
                                                  GeometryColumn)
                                  : col.ColumnName;
             }

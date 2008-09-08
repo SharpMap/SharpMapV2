@@ -198,9 +198,9 @@ namespace SharpMap.Data.Providers.Db
             if (value is IGeometry)
                 paramValue = ((IGeometry) value).AsBinary();
 
-            IDataParameter p
-                = DbUtility.CreateParameter(
-                    string.Format("iparam{0}", ParameterCache.Count), paramValue, ParameterDirection.Input);
+            IDataParameter p = DbUtility.CreateParameter(string.Format("iparam{0}", ParameterCache.Count), 
+                                                         paramValue, 
+                                                         ParameterDirection.Input);
 
             ParameterCache.Add(value, p);
 

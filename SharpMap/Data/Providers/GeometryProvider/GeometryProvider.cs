@@ -22,8 +22,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using GeoAPI.CoordinateSystems;
-using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
@@ -75,9 +73,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
 
         private IGeometryFactory _geoFactory;
-        private readonly ICoordinateSystem _coordinateSystem;
         private readonly List<IGeometry> _geometries = new List<IGeometry>();
-        private readonly Int32? _srid;
         private IExtents _extents;
 
         #region Object Construction / Disposal
@@ -89,12 +85,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Geometry to be added to this data source.
         /// </param>
         public GeometryProvider(IGeometry geometry)
+            : base(geometry.SpatialReference, geometry.Srid)
         {
             if (geometry == null) throw new ArgumentNullException("geometry");
 
             _geoFactory = geometry.Factory;
-            _srid = _geoFactory.Srid;
-            _coordinateSystem = _geoFactory.SpatialReference;
             _geometries.Add(geometry);
         }
 
@@ -105,12 +100,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Set of geometries to add to this data source.
         /// </param>
         public GeometryProvider(IEnumerable<IGeometry> geometries)
+            : base(Enumerable.First(geometries).SpatialReference, Enumerable.First(geometries).Srid)
         {
             if (geometries == null) throw new ArgumentNullException("geometries");
 
             _geoFactory = Enumerable.First(geometries).Factory;
-            _srid = _geoFactory.Srid;
-            _coordinateSystem = _geoFactory.SpatialReference;
             _geometries.AddRange(geometries);
         }
 
@@ -121,6 +115,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Feature which has geometry to be used in this data source.
         /// </param>
         public GeometryProvider(FeatureDataRow feature)
+            : base(feature.Geometry.SpatialReference, feature.Geometry.Srid)
         {
             if (feature == null) throw new ArgumentNullException("feature");
 
@@ -130,8 +125,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
 
             _geoFactory = feature.Geometry.Factory;
-            _srid = _geoFactory.Srid;
-            _coordinateSystem = _geoFactory.SpatialReference;
             _geometries.Add(feature.Geometry);
         }
 
@@ -142,6 +135,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Features which have geometry to be used in this data source.
         /// </param>
         public GeometryProvider(IEnumerable<FeatureDataRow> features)
+            : base(Enumerable.First(features).Geometry.SpatialReference, Enumerable.First(features).Geometry.Srid)
         {
             foreach (FeatureDataRow row in features)
             {
@@ -304,21 +298,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
         public override void Open()
         {
             //Do nothing;
-        }
-
-        public override ICoordinateSystem SpatialReference
-        {
-            get { return _coordinateSystem; }
-            //set { _coordinateSystem = value; }
-        }
-
-        /// <summary>
-        /// The spatial reference ID.
-        /// </summary>
-        public override Int32? Srid
-        {
-            get { return _srid; }
-            //set { _srid = value; }
         }
 
         #endregion

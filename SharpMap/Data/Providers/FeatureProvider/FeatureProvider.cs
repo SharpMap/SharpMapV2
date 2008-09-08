@@ -59,7 +59,6 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         internal static readonly String OidColumnName = "Oid";
         private FeatureDataTable<Guid> _features;
-        private readonly ICoordinateSystem _spatialReference;
         private IGeometryFactory _geoFactory;
         private readonly Int32? _srid;
 
@@ -73,11 +72,10 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// The feature schema to create the <see cref="FeatureProvider"/> with.
         /// </param>
         public FeatureProvider(IGeometryFactory factory, params DataColumn[] columns)
+            : base(factory.SpatialReference, factory.Srid)
         {
             _geoFactory = factory;
             _features = new FeatureDataTable<Guid>(OidColumnName, GeometryFactory);
-            _srid = _geoFactory.Srid;
-            _spatialReference = _geoFactory.SpatialReference;
 
             foreach (DataColumn column in columns)
             {
@@ -267,17 +265,6 @@ namespace SharpMap.Data.Providers.FeatureProvider
         public override void Open()
         {
             // Do nothing...
-        }
-
-        public override ICoordinateSystem SpatialReference
-        {
-            get { return _spatialReference; }
-        }
-
-        public override Int32? Srid
-        {
-            get { return _srid; }
-            //set { }
         }
 
         #endregion

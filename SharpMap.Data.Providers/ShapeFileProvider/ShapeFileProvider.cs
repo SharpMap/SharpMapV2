@@ -181,6 +181,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex)
+            : 
         {
             _filename = filename;
             _geoFactory = geoFactory;
@@ -699,21 +700,21 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    get { return _isOpen; }
         //}
 
-        /// <summary>
-        /// Gets or sets the coordinate system of the ShapeFile. 
-        /// </summary>
-        /// <remarks>
-        /// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
-        /// description of the coordinate system this will automatically be read.
-        /// If this is not the case, the coordinate system will default to null.
-        /// </remarks>
-        /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if property is set and the coordinate system is read from file.
-        /// </exception>
-        public override ICoordinateSystem SpatialReference
-        {
-            get { return _coordinateSystem; }
-        }
+        ///// <summary>
+        ///// Gets or sets the coordinate system of the ShapeFile. 
+        ///// </summary>
+        ///// <remarks>
+        ///// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
+        ///// description of the coordinate system this will automatically be read.
+        ///// If this is not the case, the coordinate system will default to null.
+        ///// </remarks>
+        ///// <exception cref="ShapeFileInvalidOperationException">
+        ///// Thrown if property is set and the coordinate system is read from file.
+        ///// </exception>
+        //public override ICoordinateSystem SpatialReference
+        //{
+        //    get { return _coordinateSystem; }
+        //}
 
         private void initSpatialReference(ICoordinateSystem coordinateSystem)
         {
@@ -728,11 +729,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             _geoFactory.SpatialReference = coordinateSystem;
         }
 
-        public override Int32? Srid
-        {
-            get { return _srid; }
-            //set { _srid = value; }
-        }
+        //public override Int32? Srid
+        //{
+        //    get { return _srid; }
+        //    //set { _srid = value; }
+        //}
 
         #region Methods
 
