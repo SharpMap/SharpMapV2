@@ -114,19 +114,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Math\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\..\..\..\Math\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Presentation.AspNet\SharpMap.Presentation.AspNet.csproj">
+    <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj">
       <Project>{1677C565-FA87-419F-B925-02A5CAA97E8D}</Project>
       <Name>SharpMap.Presentation.AspNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Rendering.GeoJSON\SharpMap.Rendering.GeoJson.csproj">
+    <ProjectReference Include="..\GeoJSON\SharpMap.Rendering.GeoJson.csproj">
       <Project>{019FE8B5-5822-4272-B75C-8BDDAB479284}</Project>
       <Name>SharpMap.Rendering.GeoJson</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap\SharpMap\SharpMap.csproj">
+    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>

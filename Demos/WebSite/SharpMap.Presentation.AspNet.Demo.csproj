@@ -151,63 +151,63 @@
     <Compile Include="Wms\DemoWmsMapHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpMap.Data.Providers.Db\SharpMap.Data.Providers.Db.csproj">
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
       <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
       <Name>SharpMap.Data.Providers.Db</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Data.Providers.MsSqlServer2008\SharpMap.Data.Providers.MsSqlServer2008.csproj">
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\MsSqlServer2008\SharpMap.Data.Providers.MsSqlServer2008.csproj">
       <Project>{184C9D40-7999-46E4-8407-AD6480F75D87}</Project>
       <Name>SharpMap.Data.Providers.MsSqlServer2008</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Data.Providers.MsSqlSpatial\SharpMap.Data.Providers.MsSqlSpatial.csproj">
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\MsSqlSpatial\SharpMap.Data.Providers.MsSqlSpatial.csproj">
       <Project>{CEADC931-47FB-483C-A849-8B890FD6F0E1}</Project>
       <Name>SharpMap.Data.Providers.MsSqlSpatial</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Presentation.AspNet.WmsServer\SharpMap.Presentation.AspNet.WmsServer.csproj">
+    <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\WmsServer\SharpMap.Presentation.AspNet.WmsServer.csproj">
       <Project>{952DAB9D-38D8-45E6-A089-84AB5A3D8A62}</Project>
       <Name>SharpMap.Presentation.AspNet.WmsServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Presentation.AspNet\SharpMap.Presentation.AspNet.csproj">
+    <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj">
       <Project>{1677C565-FA87-419F-B925-02A5CAA97E8D}</Project>
       <Name>SharpMap.Presentation.AspNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Rendering.GeoJSON\SharpMap.Rendering.GeoJson.csproj">
+    <ProjectReference Include="..\..\SharpMap.Rendering\GeoJSON\SharpMap.Rendering.GeoJson.csproj">
       <Project>{019FE8B5-5822-4272-B75C-8BDDAB479284}</Project>
       <Name>SharpMap.Rendering.GeoJson</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Rendering.Web.Gdi\SharpMap.Rendering.Web.Gdi.csproj">
+    <ProjectReference Include="..\..\SharpMap.Rendering\Web.Gdi\SharpMap.Rendering.Web.Gdi.csproj">
       <Project>{E49D450A-86DA-4CDE-8FC7-5A645165B615}</Project>
       <Name>SharpMap.Rendering.Web.Gdi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+    <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj">
+    <ProjectReference Include="..\..\..\NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj">
       <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
       <Name>ManagedBufferedCoordinate2D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
+    <ProjectReference Include="..\..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
       <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
       <Name>NetTopologySuite</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap.Rendering.Web.GeoJson\SharpMap.Rendering.Web.GeoJson.csproj">
+    <ProjectReference Include="..\..\SharpMap.Rendering\Web.GeoJson\SharpMap.Rendering.Web.GeoJson.csproj">
       <Project>{B60BBA75-4204-4202-84B0-BCE771E02A9F}</Project>
       <Name>SharpMap.Rendering.Web.GeoJson</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap\Proj.Net\ProjNet\ProjNet.csproj">
+    <ProjectReference Include="..\..\Proj.Net\ProjNet\ProjNet.csproj">
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap\SharpMap.Rendering\Gdi\SharpMap.Rendering.Gdi.csproj">
+    <ProjectReference Include="..\..\SharpMap.Rendering\Gdi\SharpMap.Rendering.Gdi.csproj">
       <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
       <Name>SharpMap.Rendering.Gdi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap\SharpMap\SharpMap.csproj">
+    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>

@@ -3,11 +3,11 @@
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E49D450A-86DA-4CDE-8FC7-5A645165B615}</ProjectGuid>
+    <ProjectGuid>{CEADC931-47FB-483C-A849-8B890FD6F0E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharpMap.Rendering.Web.Gdi</RootNamespace>
-    <AssemblyName>SharpMap.Rendering.Web.Gdi</AssemblyName>
+    <RootNamespace>SharpMap.Data.Providers.MsSqlSpatial</RootNamespace>
+    <AssemblyName>SharpMap.Data.Providers.MsSqlSpatial</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -53,75 +53,27 @@
     <ErrorReport>prompt</ErrorReport>
     <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Debug_Net35'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\ExternalReferences\Debug_Net35\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net35'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\ExternalReferences\Release_Net35\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net20'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\ExternalReferences\Release_Net20\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Debug_Net20'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GdiImageRenderer.cs" />
+    <Compile Include="MsSqlSpatialExpressionTreeToSqlCompiler.cs" />
+    <Compile Include="MsSqlSpatialProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Math\NPack\NPack\NPack.csproj">
-      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
-      <Name>NPack</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj">
-      <Project>{1677C565-FA87-419F-B925-02A5CAA97E8D}</Project>
-      <Name>SharpMap.Presentation.AspNet</Name>
+    <ProjectReference Include="..\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
+      <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
+      <Name>SharpMap.Data.Providers.Db</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gdi\SharpMap.Rendering.Gdi.csproj">
-      <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
-      <Name>SharpMap.Rendering.Gdi</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
