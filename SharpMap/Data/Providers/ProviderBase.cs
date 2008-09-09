@@ -69,18 +69,15 @@ namespace SharpMap.Data.Providers
         private Boolean _isDisposed;
         private Boolean _isOpen;
         private ICoordinateTransformation _coordinateTransform;
-        private readonly ICoordinateSystem _spatialReference;
-        private readonly Int32? _srid;
+        private ICoordinateSystem _spatialReference;
+        private Int32? _srid;
         private PropertyDescriptorCollection _instanceProperties;
         private Dictionary<PropertyDescriptor, Object> _propertyValues;
 
-        protected ProviderBase(ICoordinateSystem spatialReference, Int32? srid) 
-            : this(spatialReference, srid, null) { }
+        protected ProviderBase() : this(null) { }
 
-        protected ProviderBase(ICoordinateSystem spatialReference, Int32? srid, ICustomTypeDescriptor descriptor)
+        protected ProviderBase(ICustomTypeDescriptor descriptor)
         {
-            _spatialReference = spatialReference;
-            _srid = srid;
             _descriptor = descriptor;
         }
 
@@ -258,7 +255,11 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// Gets or sets the coordinate system of the data source. 
         /// </summary>
-        public ICoordinateSystem SpatialReference { get { return _spatialReference;  } }
+        public ICoordinateSystem SpatialReference
+        {
+            get { return _spatialReference;  }
+            protected set { _spatialReference = value; }
+        }
 
         public virtual Boolean IsOpen
         {
@@ -270,7 +271,11 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public Int32? Srid { get { return _srid; } }
+        public Int32? Srid
+        {
+            get { return _srid; }
+            protected set { _srid = value; }
+        }
 
         public abstract IExtents GetExtents();
 

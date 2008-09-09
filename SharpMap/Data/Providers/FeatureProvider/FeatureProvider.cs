@@ -20,8 +20,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using GeoAPI.CoordinateSystems;
-using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 
@@ -33,6 +31,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
     public class FeatureProvider : ProviderBase, IWritableFeatureProvider<Guid>
     {
         private static readonly PropertyDescriptorCollection _featureProviderTypeProperties;
+
+        internal static readonly String OidColumnName = "Oid";
 
         static FeatureProvider()
         {
@@ -57,10 +57,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
             get { return _featureProviderTypeProperties.Find("Locale", false); }
         }
 
-        internal static readonly String OidColumnName = "Oid";
         private FeatureDataTable<Guid> _features;
         private IGeometryFactory _geoFactory;
-        private readonly Int32? _srid;
 
         /// <summary>
         /// Creates a new <see cref="FeatureProvider"/> with the given columns as a schema.
@@ -72,14 +70,17 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// The feature schema to create the <see cref="FeatureProvider"/> with.
         /// </param>
         public FeatureProvider(IGeometryFactory factory, params DataColumn[] columns)
-            : base(factory.SpatialReference, factory.Srid)
         {
+            if (factory == null) throw new ArgumentNullException("factory");
+            SpatialReference = factory.SpatialReference;
+            Srid = factory.Srid;
             _geoFactory = factory;
             _features = new FeatureDataTable<Guid>(OidColumnName, GeometryFactory);
 
             foreach (DataColumn column in columns)
             {
                 String keyColumnName = _features.PrimaryKey[0].ColumnName;
+
                 if (String.Compare(keyColumnName, column.ColumnName) != 0)
                 {
                     _features.Columns.Add(column);
@@ -287,7 +288,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             return _featureProviderTypeProperties;
         }
 
-        protected override void SetObjectProperty(string propertyName, object value)
+        protected override void SetObjectProperty(String propertyName, Object value)
         {
             if (propertyName.Equals(LocaleProperty.Name))
             {
@@ -304,7 +305,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
             }
         }
 
-        protected override Object GetObjectProperty(string propertyName)
+        protected override Object GetObjectProperty(String propertyName)
         {
             if (propertyName.Equals(GeometryFactoryProperty.Name))
             {

@@ -13,13 +13,11 @@
  * 
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
-using GeoAPI.CoordinateSystems;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Database;
@@ -118,10 +116,11 @@ namespace SharpMap.Data.Providers.Db
                                         String tableName,
                                         String oidColumn,
                                         String geometryColumn)
-            : base(geometryFactory.SpatialReference, geometryFactory.Srid)
         {
             DbUtility = dbUtility;
             GeometryFactory = geometryFactory;
+            SpatialReference = GeometryFactory == null ? null : GeometryFactory.SpatialReference;
+            Srid = GeometryFactory == null ? null : GeometryFactory.Srid;
 
             if (!String.IsNullOrEmpty(connectionString))
             {
@@ -321,6 +320,7 @@ namespace SharpMap.Data.Providers.Db
         public Int32 GetFeatureCount()
         {
             var attrs = new AttributesProjectionExpression(new[] {"Count(*)"});
+
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
                 using (

@@ -85,10 +85,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Geometry to be added to this data source.
         /// </param>
         public GeometryProvider(IGeometry geometry)
-            : base(geometry.SpatialReference, geometry.Srid)
         {
             if (geometry == null) throw new ArgumentNullException("geometry");
 
+            SpatialReference = geometry.SpatialReference;
+            Srid = geometry.Srid;
             _geoFactory = geometry.Factory;
             _geometries.Add(geometry);
         }
@@ -100,11 +101,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Set of geometries to add to this data source.
         /// </param>
         public GeometryProvider(IEnumerable<IGeometry> geometries)
-            : base(Enumerable.First(geometries).SpatialReference, Enumerable.First(geometries).Srid)
         {
             if (geometries == null) throw new ArgumentNullException("geometries");
 
             _geoFactory = Enumerable.First(geometries).Factory;
+            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            Srid = _geoFactory == null ? null : _geoFactory.Srid;
             _geometries.AddRange(geometries);
         }
 
@@ -115,7 +117,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Feature which has geometry to be used in this data source.
         /// </param>
         public GeometryProvider(FeatureDataRow feature)
-            : base(feature.Geometry.SpatialReference, feature.Geometry.Srid)
         {
             if (feature == null) throw new ArgumentNullException("feature");
 
@@ -125,6 +126,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
 
             _geoFactory = feature.Geometry.Factory;
+            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            Srid = _geoFactory == null ? null : _geoFactory.Srid;
             _geometries.Add(feature.Geometry);
         }
 
@@ -135,7 +138,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Features which have geometry to be used in this data source.
         /// </param>
         public GeometryProvider(IEnumerable<FeatureDataRow> features)
-            : base(Enumerable.First(features).Geometry.SpatialReference, Enumerable.First(features).Geometry.Srid)
         {
             foreach (FeatureDataRow row in features)
             {
@@ -147,6 +149,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
                 if (_geoFactory == null)
                 {
                     _geoFactory = row.Geometry.Factory;
+                    SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+                    Srid = _geoFactory == null ? null : _geoFactory.Srid;
                 }
 
                 _geometries.Add(row.Geometry);

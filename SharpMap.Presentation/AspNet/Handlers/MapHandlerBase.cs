@@ -231,8 +231,8 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
                 RaiseBeforeMapRender();
 
-
                 s = MapView.Render(out mimeType);
+                
                 if (s == null)
                     return null;
 

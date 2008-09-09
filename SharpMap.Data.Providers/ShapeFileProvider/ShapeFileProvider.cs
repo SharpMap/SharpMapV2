@@ -181,10 +181,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex)
-            : 
         {
             _filename = filename;
             _geoFactory = geoFactory;
+            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            Srid = _geoFactory == null ? null : _geoFactory.Srid;
             _coordSysFactory = coordSysFactory;
 
             if (!File.Exists(filename))
