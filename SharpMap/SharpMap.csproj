@@ -1,14 +1,14 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <PropertyGroup Condition="Exists('$(ProjectDir)..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
+  <PropertyGroup Condition="Exists('$(ProjectDir)..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
     <GeoAPIProjectReference>true</GeoAPIProjectReference>
   </PropertyGroup>
-  <PropertyGroup Condition="!Exists('$(ProjectDir)..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
+  <PropertyGroup Condition="!Exists('$(ProjectDir)..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
     <GeoAPIProjectReference>false</GeoAPIProjectReference>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(ProjectDir)..\..\NPack\NPack\NPack.csproj')">
+  <PropertyGroup Condition="Exists('$(ProjectDir)..\NPack\NPack\NPack.csproj')">
     <NPackProjectReference>true</NPackProjectReference>
   </PropertyGroup>
-  <PropertyGroup Condition="!Exists('$(ProjectDir)..\..\NPack\NPack\NPack.csproj')">
+  <PropertyGroup Condition="!Exists('$(ProjectDir)..\NPack\NPack\NPack.csproj')">
     <NPackProjectReference>false</NPackProjectReference>
   </PropertyGroup>
   <PropertyGroup>

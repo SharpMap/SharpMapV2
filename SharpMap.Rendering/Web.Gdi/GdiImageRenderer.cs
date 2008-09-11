@@ -29,7 +29,7 @@ using SharpMap.Rendering.Rendering2D;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 #if DOTNET35
-
+using System.Windows.Threading;
 #endif
 
 namespace SharpMap.Rendering.Web
@@ -96,12 +96,12 @@ namespace SharpMap.Rendering.Web
 
         public int Width
         {
-            get { return (int) MapView.ViewSize.Width; }
+            get { return (int)MapView.ViewSize.Width; }
         }
 
         public int Height
         {
-            get { return (int) MapView.ViewSize.Height; }
+            get { return (int)MapView.ViewSize.Height; }
         }
 
         private Bitmap Bmp
@@ -152,7 +152,7 @@ namespace SharpMap.Rendering.Web
             DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal, f);
 
             op.Wait();
-            b = (Bitmap) op.Result;
+            b = (Bitmap)op.Result;
 #else
             b = Bmp;
 #endif
@@ -183,7 +183,7 @@ namespace SharpMap.Rendering.Web
 
         public Type GetRenderObjectType()
         {
-            return typeof (GdiRenderObject);
+            return typeof(GdiRenderObject);
         }
 
         public void ClearRenderQueue()
@@ -195,7 +195,7 @@ namespace SharpMap.Rendering.Web
 
         public void EnqueueRenderObject(object o)
         {
-            _renderQ.Enqueue((GdiRenderObject) o);
+            _renderQ.Enqueue((GdiRenderObject)o);
         }
 
         public event EventHandler RenderDone;
@@ -405,28 +405,28 @@ namespace SharpMap.Rendering.Web
             Matrix2D viewMatrix = MapView.ToViewTransform ?? new Matrix2D();
             Single[] gdiElements = _gdiViewMatrix.Elements;
 
-            if (gdiElements[0] != (Single) viewMatrix.M11
-                || gdiElements[1] != (Single) viewMatrix.M12
-                || gdiElements[2] != (Single) viewMatrix.M21
-                || gdiElements[3] != (Single) viewMatrix.M22
-                || gdiElements[4] != (Single) viewMatrix.OffsetX
-                || gdiElements[5] != (Single) viewMatrix.OffsetY)
+            if (gdiElements[0] != (Single)viewMatrix.M11
+                || gdiElements[1] != (Single)viewMatrix.M12
+                || gdiElements[2] != (Single)viewMatrix.M21
+                || gdiElements[3] != (Single)viewMatrix.M22
+                || gdiElements[4] != (Single)viewMatrix.OffsetX
+                || gdiElements[5] != (Single)viewMatrix.OffsetY)
             {
                 Debug.WriteLine(
                     String.Format(
                         "Disposing GDI matrix on values: {0} : {1}; {2} : {3}; {4} : {5}; {6} : {7}; {8} : {9}; {10} : {11}",
                         gdiElements[0],
-                        (Single) viewMatrix.M11,
+                        (Single)viewMatrix.M11,
                         gdiElements[1],
-                        (Single) viewMatrix.M12,
+                        (Single)viewMatrix.M12,
                         gdiElements[2],
-                        (Single) viewMatrix.M21,
+                        (Single)viewMatrix.M21,
                         gdiElements[3],
-                        (Single) viewMatrix.M22,
+                        (Single)viewMatrix.M22,
                         gdiElements[4],
-                        (Single) viewMatrix.OffsetX,
+                        (Single)viewMatrix.OffsetX,
                         gdiElements[5],
-                        (Single) viewMatrix.OffsetY));
+                        (Single)viewMatrix.OffsetY));
 
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(MapView.ToViewTransform);
@@ -460,9 +460,9 @@ namespace SharpMap.Rendering.Web
             float scale = Math.Abs(m.Elements[0]);
 
             // get the bounds of the label in the underlying coordinate space
-            var ll = new Point((Int32) ro.Bounds.X, (Int32) ro.Bounds.Y);
-            var ur = new Point((Int32) (ro.Bounds.X + ro.Bounds.Width),
-                               (Int32) (ro.Bounds.Y + ro.Bounds.Height));
+            var ll = new Point((Int32)ro.Bounds.X, (Int32)ro.Bounds.Y);
+            var ur = new Point((Int32)(ro.Bounds.X + ro.Bounds.Width),
+                               (Int32)(ro.Bounds.Y + ro.Bounds.Height));
 
             Point[] transformedPoints1 =
                 {
@@ -516,8 +516,8 @@ namespace SharpMap.Rendering.Web
             // if we're scaling text, then x,y position will get multiplied by our 
             // scale, so adjust for it here so that we can use actual pixel x,y
             // Also center our label on the coordinate instead of putting the label origin on the coordinate
-            var newBounds = new RectangleF(transformedPoints1[0].X/scale,
-                                           (transformedPoints1[0].Y/scale) - pixelHeight,
+            var newBounds = new RectangleF(transformedPoints1[0].X / scale,
+                                           (transformedPoints1[0].Y / scale) - pixelHeight,
                                            pixelWidth,
                                            pixelHeight);
             //RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
@@ -626,8 +626,8 @@ namespace SharpMap.Rendering.Web
 
                     using (var reader = new BinaryReader(new NondisposingStream(symbol2D.SymbolData)))
                     {
-                        data.Write(reader.ReadBytes((Int32) symbol2D.SymbolData.Length), 0,
-                                   (Int32) symbol2D.SymbolData.Length);
+                        data.Write(reader.ReadBytes((Int32)symbol2D.SymbolData.Length), 0,
+                                   (Int32)symbol2D.SymbolData.Length);
                     }
 
                     symbol = new Bitmap(data);
