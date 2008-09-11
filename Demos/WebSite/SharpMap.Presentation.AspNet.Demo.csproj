@@ -151,6 +151,14 @@
     <Compile Include="Wms\DemoWmsMapHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
       <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
       <Name>SharpMap.Data.Providers.Db</Name>
@@ -178,18 +186,6 @@
     <ProjectReference Include="..\..\SharpMap.Rendering\Web.Gdi\SharpMap.Rendering.Web.Gdi.csproj">
       <Project>{E49D450A-86DA-4CDE-8FC7-5A645165B615}</Project>
       <Name>SharpMap.Rendering.Web.Gdi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
-      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-      <Name>GeoAPI.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj">
-      <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
-      <Name>ManagedBufferedCoordinate2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
-      <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
-      <Name>NetTopologySuite</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Rendering\Web.GeoJson\SharpMap.Rendering.Web.GeoJson.csproj">
       <Project>{B60BBA75-4204-4202-84B0-BCE771E02A9F}</Project>

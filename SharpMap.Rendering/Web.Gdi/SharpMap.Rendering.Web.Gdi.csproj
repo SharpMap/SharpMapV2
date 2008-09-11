@@ -107,17 +107,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Math\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj">
       <Project>{1677C565-FA87-419F-B925-02A5CAA97E8D}</Project>
       <Name>SharpMap.Presentation.AspNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
-      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-      <Name>GeoAPI.Net</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gdi\SharpMap.Rendering.Gdi.csproj">
       <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
