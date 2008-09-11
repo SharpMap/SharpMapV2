@@ -11,6 +11,7 @@
  *  Author: John Diss 2008
  * 
  */
+
 using System;
 using System.Collections;
 using System.IO;
@@ -25,12 +26,10 @@ namespace SharpMap.Presentation.AspNet.MVP
     public class WebMapView : IMapView2D, IDisposable
     {
         private readonly IWebMap _webMap;
-        private bool _enabled = true;
+        private Boolean _enabled = true;
         private MapPresenter _presenter;
-
-
-        private bool _visible = true;
-        private bool disposed;
+        private Boolean _visible = true;
+        private Boolean _disposed;
 
         public WebMapView(IWebMap webMap)
         {
@@ -50,13 +49,18 @@ namespace SharpMap.Presentation.AspNet.MVP
             set
             {
                 if (_presenter != null)
+                {
                     _presenter.Dispose();
+                }
+
                 if (value != null)
+                {
                     _presenter = new MapPresenter(value, this);
+                }
             }
         }
 
-        public bool ClientDisconnected
+        public Boolean ClientDisconnected
         {
             get { return !_webMap.Context.Response.IsClientConnected; }
         }
@@ -102,9 +106,9 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         public event EventHandler<MapViewPropertyChangeEventArgs<ICoordinate>> GeoCenterChangeRequested;
 
-        public event EventHandler<MapViewPropertyChangeEventArgs<double>> MaximumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
 
-        public event EventHandler<MapViewPropertyChangeEventArgs<double>> MinimumWorldWidthChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
 
         public event EventHandler<LocationEventArgs> IdentifyLocationRequested;
 
@@ -112,7 +116,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         public event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ViewEnvelopeChangeRequested;
 
-        public event EventHandler<MapViewPropertyChangeEventArgs<double>> WorldAspectRatioChangeRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
 
         public event EventHandler ZoomToExtentsRequested;
 
@@ -120,7 +124,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         public event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ZoomToWorldBoundsRequested;
 
-        public event EventHandler<MapViewPropertyChangeEventArgs<double>> ZoomToWorldWidthRequested;
+        public event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
 
         public StyleColor BackgroundColor
         {
@@ -128,7 +132,7 @@ namespace SharpMap.Presentation.AspNet.MVP
             set { onRequestBackgroundColorChange(BackgroundColor, value); }
         }
 
-        public double Dpi
+        public Double Dpi
         {
             get { return WebMapRenderer.Dpi; }
         }
@@ -144,13 +148,13 @@ namespace SharpMap.Presentation.AspNet.MVP
             onRequestIdentifyLocation(worldPoint);
         }
 
-        public double MaximumWorldWidth
+        public Double MaximumWorldWidth
         {
             get { return _presenter.MaximumWorldWidth; }
             set { onRequestMaximumWorldWidthChange(MaximumWorldWidth, value); }
         }
 
-        public double MinimumWorldWidth
+        public Double MinimumWorldWidth
         {
             get { return _presenter.MinimumWorldWidth; }
             set { onRequestMinimumWorldWidthChange(MinimumWorldWidth, value); }
@@ -161,12 +165,12 @@ namespace SharpMap.Presentation.AspNet.MVP
             onRequestOffset(offsetVector);
         }
 
-        public double PixelWorldHeight
+        public Double PixelWorldHeight
         {
             get { return _presenter.PixelWorldHeight; }
         }
 
-        public double PixelWorldWidth
+        public Double PixelWorldWidth
         {
             get { return _presenter.PixelWorldWidth; }
         }
@@ -179,8 +183,10 @@ namespace SharpMap.Presentation.AspNet.MVP
         public void ShowRenderedObjects(IEnumerable renderedObjects)
         {
             //WebMapRenderer.ClearRenderQueue();
-            foreach (object o in renderedObjects)
+            foreach (Object o in renderedObjects)
+            {
                 WebMapRenderer.EnqueueRenderObject(o);
+            }
         }
 
         public Matrix2D ToViewTransform
@@ -198,7 +204,7 @@ namespace SharpMap.Presentation.AspNet.MVP
             return _presenter.ToView(point);
         }
 
-        public Point2D ToView(double x, double y)
+        public Point2D ToView(Double x, Double y)
         {
             return _presenter.ToView(x, y);
         }
@@ -208,7 +214,7 @@ namespace SharpMap.Presentation.AspNet.MVP
             return _presenter.ToWorld(point);
         }
 
-        public ICoordinate ToWorld(double x, double y)
+        public ICoordinate ToWorld(Double x, Double y)
         {
             return _presenter.ToWorld(x, y);
         }
@@ -222,23 +228,23 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         public Size2D ViewSize { get; set; }
 
-        public double WorldAspectRatio
+        public Double WorldAspectRatio
         {
             get { return _presenter.WorldAspectRatio; }
             set { onRequestWorldAspectRatioChange(WorldAspectRatio, value); }
         }
 
-        public double WorldHeight
+        public Double WorldHeight
         {
             get { return _presenter.WorldHeight; }
         }
 
-        public double WorldWidth
+        public Double WorldWidth
         {
             get { return _presenter.WorldWidth; }
         }
 
-        public double WorldUnitsPerPixel
+        public Double WorldUnitsPerPixel
         {
             get { return _presenter.WorldUnitsPerPixel; }
         }
@@ -258,28 +264,26 @@ namespace SharpMap.Presentation.AspNet.MVP
             onRequestZoomToWorldBounds(zoomBox);
         }
 
-        public void ZoomToWorldWidth(double newWorldWidth)
+        public void ZoomToWorldWidth(Double newWorldWidth)
         {
             onRequestZoomToWorldWidth(newWorldWidth);
         }
 
-        public bool Visible
+        public Boolean Visible
         {
             get { return _visible; }
             set
             {
                 _visible = value;
-                ;
             }
         }
 
-        public bool Enabled
+        public Boolean Enabled
         {
             get { return _enabled; }
             set
             {
                 _enabled = value;
-                ;
             }
         }
 
@@ -293,7 +297,7 @@ namespace SharpMap.Presentation.AspNet.MVP
             Visible = true;
         }
 
-        public string Title { get; set; }
+        public String Title { get; set; }
 
         #endregion
 
@@ -302,7 +306,9 @@ namespace SharpMap.Presentation.AspNet.MVP
             EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> e = BackgroundColorChangeRequested;
 
             if (e != null)
+            {
                 e(this, new MapViewPropertyChangeEventArgs<StyleColor>(current, requested));
+            }
         }
 
         private void onRequestGeoCenterChange(ICoordinate current, ICoordinate requested)
@@ -399,7 +405,9 @@ namespace SharpMap.Presentation.AspNet.MVP
             EventHandler e = ZoomToExtentsRequested;
 
             if (e != null)
+            {
                 e(this, EventArgs.Empty);
+            }
         }
 
         private void onRequestZoomToViewBounds(Rectangle2D viewBounds)
@@ -443,7 +451,7 @@ namespace SharpMap.Presentation.AspNet.MVP
         }
 
 
-        public Stream Render(out string mimeType)
+        public Stream Render(out String mimeType)
         {
             return (WebMapRenderer).Render(this, out mimeType);
         }
@@ -453,16 +461,19 @@ namespace SharpMap.Presentation.AspNet.MVP
             Dispose(false);
         }
 
-        private void Dispose(bool disposing)
+        private void Dispose(Boolean disposing)
         {
-            if (!disposed)
+            if (!_disposed && disposing)
             {
                 WebMapRenderer = null;
-                if (_presenter != null)
-                    _presenter.Dispose();
-                _presenter = null;
 
-                disposed = true;
+                if (_presenter != null)
+                {
+                    _presenter.Dispose();
+                }
+
+                _presenter = null;
+                _disposed = true;
             }
         }
     }

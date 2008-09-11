@@ -34,7 +34,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
         private IMapRequestConfigFactory _configFactory;
         private IWebMapRenderer _renderer;
         private IMapRendererConfig _rendererConfig;
-        private bool disposed;
+        private Boolean disposed;
         private WebMapView mapView;
 
 
@@ -54,9 +54,11 @@ namespace SharpMap.Presentation.AspNet.Handlers
             Context = context;
             context.Response.Clear();
             Stream s = null;
+
             try
             {
-                string mime;
+                String mime;
+
                 using (s = Render(out mime))
                 {
                     if (s != null && context.Response.IsClientConnected)
@@ -64,10 +66,14 @@ namespace SharpMap.Presentation.AspNet.Handlers
                         context.Response.ContentType = mime;
                         SetCacheability(context.Response);
                         s.Position = 0;
+
                         using (var br = new BinaryReader(s))
                         {
                             using (var outStream = new BinaryWriter(context.Response.OutputStream))
-                                outStream.Write(br.ReadBytes((int)s.Length), 0, (int)s.Length);
+                            {
+                                outStream.Write(br.ReadBytes((Int32) s.Length), 0, (Int32) s.Length);
+                            }
+
                             br.Close();
                         }
                     }
@@ -79,7 +85,11 @@ namespace SharpMap.Presentation.AspNet.Handlers
             }
             catch (XmlFormatableExceptionBase ex)
             {
-                Debug.WriteLine(string.Format("{0}\n{1}", ex.InnerException.Message, ex.StackTrace));
+                Debug.WriteLine(String.Format("{0}\n{1}", 
+                                              ex.InnerException == null 
+                                                    ? ex.Message 
+                                                    : ex.InnerException.Message, 
+                                              ex.StackTrace));
 
                 if (context.Response.IsClientConnected)
                 {
@@ -89,7 +99,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
                     context.Response.StatusDescription = "An error occured.";
                     context.Response.ContentType = "text/xml";
                     using (var sw = new StreamWriter(context.Response.OutputStream))
+                    {
                         sw.Write(ex.XmlExceptionString);
+                    }
                 }
             }
             finally
@@ -97,25 +109,33 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 try
                 {
                     if (s != null)
+                    {
                         s.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     WriteException(ex);
                 }
+
                 try
                 {
                     if (Context.Response.OutputStream != null)
+                    {
                         Context.Response.OutputStream.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     WriteException(ex);
                 }
+
                 try
                 {
                     if (_renderer != null)
+                    {
                         _renderer.ClearRenderQueue();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +146,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             }
         }
 
-        public bool IsReusable
+        public Boolean IsReusable
         {
             get { return true; }
         }
@@ -147,6 +167,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 EnsureCacheProvider();
                 return _cacheProvider;
             }
+
             set { _cacheProvider = value; }
         }
 
@@ -158,6 +179,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 EnsureRenderer();
                 return _renderer;
             }
+
             set { _renderer = value; }
         }
 
@@ -189,17 +211,16 @@ namespace SharpMap.Presentation.AspNet.Handlers
         public event EventHandler BeforeMapRender;
         public event EventHandler MapRenderDone;
 
-
         public void ConfigureMapView()
         {
             MapView = new WebMapView(this);
             MapRequestConfig.ConfigureMapView(MapView);
         }
 
-
-        public virtual Stream Render(out string mimeType)
+        public virtual Stream Render(out String mimeType)
         {
             Stream s = null;
+
             if (CacheProvider.ExistsInCache(MapRequestConfig))
             {
                 mimeType = MapRequestConfig.MimeType;
@@ -207,6 +228,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 s.Position = 0;
                 return s;
             }
+
             try
             {
                 RaiseBeforeInitializeMap();
@@ -232,13 +254,15 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 RaiseBeforeMapRender();
 
                 s = MapView.Render(out mimeType);
-                
+
                 if (s == null)
+                {
                     return null;
+                }
 
                 try
                 {
-                    if (string.Compare(mimeType, MapRequestConfig.MimeType, true) == 0)
+                    if (String.Compare(mimeType, MapRequestConfig.MimeType, true) == 0)
                     {
                         ///don't cache it if there is a mime type mismatch.
                         ///perhaps we should raise an exception?
@@ -246,6 +270,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                         CacheProvider.SaveToCache(MapRequestConfig, s);
                         s.Position = 0;
                     }
+
                     RaiseMapRenderDone();
                     return s;
                 }
@@ -258,28 +283,34 @@ namespace SharpMap.Presentation.AspNet.Handlers
             catch (ClientDisconnectedException)
             {
                 if (s != null)
+                {
                     s.Close();
+                }
 
                 throw;
             }
             catch (XmlFormatableExceptionBase)
             {
                 if (s != null)
+                {
                     s.Close();
+                }
 
                 throw;
             }
             catch (Exception ex)
             {
                 if (s != null)
+                {
                     s.Close();
+                }
 
                 throw new XmlFormatableExceptionWrapper(ex);
             }
         }
 
         /// <summary>
-        /// Create or retrieve a Map object.
+        /// Create or retrieve a Map Object.
         /// You can add layers here if you wish.
         /// </summary>
         public virtual void InitMap()
@@ -307,7 +338,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
         {
             IMapRendererConfig config = RendererConfig;
             if (config != null)
+            {
                 config.ConfigureRenderer(MapRequestConfig, MapRenderer);
+            }
         }
 
         /// <summary>
@@ -360,13 +393,15 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
         private static void WriteException(Exception ex)
         {
-            Debug.WriteLine(string.Format("{0}\n{1}", ex.Message, ex.StackTrace));
+            Debug.WriteLine(String.Format("{0}\n{1}", ex.Message, ex.StackTrace));
         }
 
         private void EnsureRendererConfig()
         {
             if (Equals(null, _rendererConfig))
+            {
                 CreateRendererConfig();
+            }
         }
 
         protected virtual void CreateRendererConfig()
@@ -379,12 +414,20 @@ namespace SharpMap.Presentation.AspNet.Handlers
         /// </summary>
         protected void AssignMonitorToDataProviders()
         {
-            Action monitor = () => { if (MapView.ClientDisconnected) throw new ClientDisconnectedException(); };
+            Action monitor = () =>
+                                 {
+                                     if (MapView.ClientDisconnected)
+                                     {
+                                         throw new ClientDisconnectedException();
+                                     }
+                                 };
 
             foreach (ILayer l in Map.Layers)
             {
                 if ((l.DataSource is AppStateMonitoringFeatureProvider))
-                    ((AppStateMonitoringFeatureProvider)l.DataSource).Monitor = monitor;
+                {
+                    ((AppStateMonitoringFeatureProvider) l.DataSource).Monitor = monitor;
+                }
                 else if (l.DataSource is AsyncFeatureProviderAdapter)
                 {
                     if (l.DataSource.HasProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor))
@@ -408,61 +451,81 @@ namespace SharpMap.Presentation.AspNet.Handlers
         protected void RaiseCreateMapRequestConfig()
         {
             if (BeforeCreateMapRequestConfig != null)
+            {
                 BeforeCreateMapRequestConfig(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseMapRequestConfigCreated()
         {
             if (MapRequestConfigCreated != null)
+            {
                 MapRequestConfigCreated(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseBeforeInitializeMap()
         {
             if (BeforeInitMap != null)
+            {
                 BeforeInitMap(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseMapInitialized()
         {
             if (MapInitDone != null)
+            {
                 MapInitDone(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseBeforeLoadLayers()
         {
             if (BeforeLoadLayers != null)
+            {
                 BeforeLoadLayers(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseLayersLoaded()
         {
             if (LayersLoaded != null)
+            {
                 LayersLoaded(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseBeforeLoadMapState()
         {
             if (BeforeLoadMapState != null)
+            {
                 BeforeLoadMapState(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseMapStateLoaded()
         {
             if (MapStateLoaded != null)
+            {
                 MapStateLoaded(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseBeforeMapRender()
         {
             if (BeforeMapRender != null)
+            {
                 BeforeMapRender(this, EventArgs.Empty);
+            }
         }
 
         protected void RaiseMapRenderDone()
         {
             if (MapRenderDone != null)
+            {
                 MapRenderDone(this, EventArgs.Empty);
+            }
         }
 
 
@@ -482,7 +545,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
         private void EnsureRenderer()
         {
             if (_renderer == null)
+            {
                 _renderer = CreateMapRenderer();
+            }
         }
 
         private void EnsureMapConfiguration()
@@ -498,14 +563,18 @@ namespace SharpMap.Presentation.AspNet.Handlers
         private void EnsureConfigFactory()
         {
             if (_configFactory == null)
+            {
                 _configFactory = CreateConfigFactory();
+            }
         }
 
 
         private void EnsureCacheProvider()
         {
             if (_cacheProvider == null)
+            {
                 _cacheProvider = CreateCacheProvider();
+            }
         }
 
         protected abstract IMapCacheProvider CreateCacheProvider();
@@ -525,7 +594,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
              * with Dispatcher.CurrentDispatcher (Gdi Renderer in net3.5 mode) 
              * when the finalizer is called when shutting down the process */
             if (_renderer != null)
+            {
                 _renderer.Dispose();
+            }
             _renderer = null;
 
             if (MapView != null)
@@ -536,7 +607,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
             MapView = null;
 
             if (Map != null)
+            {
                 Map.Dispose();
+            }
 
             Map = null;
 
@@ -545,7 +618,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             _renderer = null;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (!disposed)
             {
