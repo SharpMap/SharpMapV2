@@ -80,25 +80,25 @@ namespace TestSharpLayers
                                    };
 
 
-            var tms = new TmsLayer
-                          {
-                              Id = "tms",
-                              Name = "My TMS Layer",
-                              Options = new TmsLayerOptions
-                                            {
-                                                LayerName = "OS",
-                                                DisplayInLayerSwitcher = true,
-                                                IsBaseLayer = true,
-                                                Visibility = true,
-                                                WrapDateLine = false,
-                                                Units = MapUnits.m,
-                                                TileSize = Map1.Options.TileSize,
-                                                MaxExtent = Map1.Options.MaxExtent,
-                                                ImageExtension = "png",
-                                                Attribution = "&copy; John Diss 2008"
-                                            },
-                              Urls = ConfigurationManager.AppSettings["TmsServerUrl"].Split(',')
-                          };
+            //var tms = new TmsLayer
+            //              {
+            //                  Id = "tms",
+            //                  Name = "My TMS Layer",
+            //                  Options = new TmsLayerOptions
+            //                                {
+            //                                    LayerName = "OS",
+            //                                    DisplayInLayerSwitcher = true,
+            //                                    IsBaseLayer = true,
+            //                                    Visibility = true,
+            //                                    WrapDateLine = false,
+            //                                    Units = MapUnits.m,
+            //                                    TileSize = Map1.Options.TileSize,
+            //                                    MaxExtent = Map1.Options.MaxExtent,
+            //                                    ImageExtension = "png",
+            //                                    Attribution = "&copy; John Diss 2008"
+            //                                },
+            //                  Urls = ConfigurationManager.AppSettings["TmsServerUrl"].Split(',')
+            //              };
 
 
             var wms = new WmsLayer
@@ -131,17 +131,17 @@ namespace TestSharpLayers
                                             },
                           };
 
-            var vectorLayer = new VectorLayer
-                                  {
-                                      Id = "vector1",
-                                      Name = "my Vector Layer",
-                                      Options = new VectorLayerOptions
-                                                    {
-                                                        Attribution = "You!",
-                                                        DisplayInLayerSwitcher = true,
-                                                        MaxExtent = Map1.Options.MaxExtent
-                                                    }
-                                  };
+            //var vectorLayer = new VectorLayer
+            //                      {
+            //                          Id = "vector1",
+            //                          Name = "my Vector Layer",
+            //                          Options = new VectorLayerOptions
+            //                                        {
+            //                                            Attribution = "You!",
+            //                                            DisplayInLayerSwitcher = true,
+            //                                            MaxExtent = Map1.Options.MaxExtent
+            //                                        }
+            //                      };
 
             var layerSwitcher = new LayerSwitcher
                                     {
@@ -165,14 +165,14 @@ namespace TestSharpLayers
                                                     }
                                   };
 
-            var editingToolbar = new EditingToolbar
-                                     {
-                                         EditableLayerId = vectorLayer.Id,
-                                         Options = new ControlOptions
-                                                       {
-                                                           TargetDivId = "navtoolbar1"
-                                                       }
-                                     };
+            //var editingToolbar = new EditingToolbar
+            //                         {
+            //                             EditableLayerId = vectorLayer.Id,
+            //                             Options = new ControlOptions
+            //                                           {
+            //                                               TargetDivId = "navtoolbar1"
+            //                                           }
+            //                         };
 
             var keyboardDefaults = new KeyboardDefaults
                                        {
@@ -197,65 +197,65 @@ namespace TestSharpLayers
              *Markers don't work just yet... 
              * 
              */
-            var marker = new Marker
-                             {
-                                 Id = "myMarker",
-                                 LonLat = new OLLonLat
-                                              {
-                                                  Lon = (Map1.Options.MaxExtent.Left + Map1.Options.MaxExtent.Right) / 2,
-                                                  Lat = (Map1.Options.MaxExtent.Bottom + Map1.Options.MaxExtent.Top) / 2
-                                              },
-                                 Icon = new OLIcon
-                                            {
-                                                Offset = new OLPixel
-                                                             {
-                                                                 X = 0,
-                                                                 Y = 0
-                                                             },
-                                                Url = "img/marker-blue.png",
-                                                Size = new OLSize
-                                                           {
-                                                               Height = 25,
-                                                               Width = 25
-                                                           }
-                                            }
-                             };
+            //var marker = new Marker
+            //                 {
+            //                     Id = "myMarker",
+            //                     LonLat = new OLLonLat
+            //                                  {
+            //                                      Lon = (Map1.Options.MaxExtent.Left + Map1.Options.MaxExtent.Right) / 2,
+            //                                      Lat = (Map1.Options.MaxExtent.Bottom + Map1.Options.MaxExtent.Top) / 2
+            //                                  },
+            //                     Icon = new OLIcon
+            //                                {
+            //                                    Offset = new OLPixel
+            //                                                 {
+            //                                                     X = 0,
+            //                                                     Y = 0
+            //                                                 },
+            //                                    Url = "img/marker-blue.png",
+            //                                    Size = new OLSize
+            //                                               {
+            //                                                   Height = 25,
+            //                                                   Width = 25
+            //                                               }
+            //                                }
+            //                 };
 
 
-            var markerLayer = new MarkerLayer
-                                  {
-                                      Id = "myMarkers",
-                                      Name = "myMarkers",
-                                      Markers = new[] { marker },
-                                      Options = new MarkerLayerOptions
-                                                    {
-                                                        MaxExtent = Map1.Options.MaxExtent,
-                                                        DisplayInLayerSwitcher = true,
-                                                        Attribution = "Just Me 2008",
-                                                        Visibility = true
-                                                    }
-                                  };
+            //var markerLayer = new MarkerLayer
+            //                      {
+            //                          Id = "myMarkers",
+            //                          Name = "myMarkers",
+            //                          Markers = new[] { marker },
+            //                          Options = new MarkerLayerOptions
+            //                                        {
+            //                                            MaxExtent = Map1.Options.MaxExtent,
+            //                                            DisplayInLayerSwitcher = true,
+            //                                            Attribution = "Just Me 2008",
+            //                                            Visibility = true
+            //                                        }
+            //                      };
 
             //Map1.Layers.Add(g);
 
 
-            Map1.Layers.Add(tms);
+            //Map1.Layers.Add(tms);
 
             Map1.Layers.Add(wms);
 
-            Map1.Layers.Add(vectorLayer);
+            //Map1.Layers.Add(vectorLayer);
 
             //Map1.Layers.Add(markerLayer);
 
-            Map1.BaseLayerId = tms.Id;
+            Map1.BaseLayerId = wms.Id;
 
-            //Map1.OLControls.Add(panZoomBar);
+            Map1.OLControls.Add(panZoomBar);
             Map1.OLControls.Add(scaleControl);
             Map1.OLControls.Add(layerSwitcher);
             Map1.OLControls.Add(mousePosition);
             Map1.OLControls.Add(attribution);
             Map1.OLControls.Add(keyboardDefaults);
-            Map1.OLControls.Add(editingToolbar);
+            //Map1.OLControls.Add(editingToolbar);
         }
     }
 }
