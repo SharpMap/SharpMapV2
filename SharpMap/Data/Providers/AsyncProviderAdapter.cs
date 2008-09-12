@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.ComponentModel;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
@@ -25,11 +26,11 @@ namespace SharpMap.Data.Providers
 {
     public abstract class AsyncProviderAdapter : IAsyncProvider
     {
+
         /// <summary>
         /// IProvider providing actual services
         /// </summary>
         protected readonly IProvider _innerProvider;
-
 
         protected AsyncProviderAdapter(IProvider provider)
         {
@@ -40,7 +41,107 @@ namespace SharpMap.Data.Providers
             _innerProvider = provider;
         }
 
-        #region wrapped IProvider methods and properties
+        #region Wrapped IProvider methods and properties
+        public Boolean HasProperty(PropertyDescriptor property)
+        {
+            return _innerProvider.HasProperty(property);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged
+        {
+            add { _innerProvider.PropertyChanged += value; }
+            remove { _innerProvider.PropertyChanged -= value; }
+        }
+
+        public AttributeCollection GetAttributes()
+        {
+            return _innerProvider.GetAttributes();
+        }
+
+        public String GetClassName()
+        {
+            return _innerProvider.GetClassName();
+        }
+
+        public String GetComponentName()
+        {
+            return _innerProvider.GetComponentName();
+        }
+
+        public TypeConverter GetConverter()
+        {
+            return _innerProvider.GetConverter();
+        }
+
+        public EventDescriptor GetDefaultEvent()
+        {
+            return _innerProvider.GetDefaultEvent();
+        }
+
+        public PropertyDescriptor GetDefaultProperty()
+        {
+            return _innerProvider.GetDefaultProperty();
+        }
+
+        public Object GetEditor(Type editorBaseType)
+        {
+            return _innerProvider.GetEditor(editorBaseType);
+        }
+
+        public EventDescriptorCollection GetEvents()
+        {
+            return _innerProvider.GetEvents();
+        }
+
+        public EventDescriptorCollection GetEvents(Attribute[] attributes)
+        {
+            return _innerProvider.GetEvents(attributes);
+        }
+
+        public PropertyDescriptorCollection GetProperties()
+        {
+            return _innerProvider.GetProperties();
+        }
+
+        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+        {
+            return _innerProvider.GetProperties(attributes);
+        }
+
+        public Object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            return _innerProvider.GetPropertyOwner(pd);
+        }
+
+        public Int32 AddProperty(PropertyDescriptor property)
+        {
+            return _innerProvider.AddProperty(property);
+        }
+
+        public Int32 AddProperty<TValue>(PropertyDescriptor property, TValue value)
+        {
+            return _innerProvider.AddProperty(property, value);
+        }
+
+        public Object GetPropertyValue(PropertyDescriptor property)
+        {
+            return _innerProvider.GetPropertyValue(property);
+        }
+
+        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
+        {
+            return _innerProvider.GetPropertyValue<TValue>(property);
+        }
+
+        public void SetPropertyValue(PropertyDescriptor property, Object value)
+        {
+            _innerProvider.SetPropertyValue(property, value);
+        }
+
+        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
+        {
+            _innerProvider.SetPropertyValue(property, value);
+        }
 
         public void Close()
         {

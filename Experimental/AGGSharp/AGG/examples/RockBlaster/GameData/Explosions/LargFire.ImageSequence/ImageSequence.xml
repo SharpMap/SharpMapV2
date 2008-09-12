@@ -1,0 +1,4 @@
+﻿<RootObject Assembly="Reflexive" Type="Reflexive.Graphics.ImageSequence">
+  <FramesPerSecond Type="System.Double, mscorlib">30</FramesPerSecond>
+  <AnimationIsLooping Type="System.Boolean, mscorlib">true</AnimationIsLooping>
+</RootObject>

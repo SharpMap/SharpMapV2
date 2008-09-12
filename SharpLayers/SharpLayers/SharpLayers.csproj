@@ -1,0 +1,268 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{55D8CA16-5284-45F3-8B6D-55DE4901D133}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpLayers</RootNamespace>
+    <AssemblyName>SharpLayers</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\Attribution.cs" />
+    <Compile Include="Controls\ControlBase.cs" />
+    <Compile Include="Controls\EditingToolbar.cs" />
+    <Compile Include="Controls\KeyboardDefaults.cs" />
+    <Compile Include="Controls\LayerSwitcher.cs" />
+    <Compile Include="Controls\LayerSwitcherOptions.cs" />
+    <Compile Include="Controls\MousePosition.cs" />
+    <Compile Include="Controls\NavToolbar.cs" />
+    <Compile Include="Controls\PanZoomBar.cs" />
+    <Compile Include="Controls\PanZoomBarOptions.cs" />
+    <Compile Include="IOlJsNewable.cs" />
+    <Compile Include="Layers\GoogleLayer.cs" />
+    <Compile Include="Layers\GoogleLayerOptions.cs" />
+    <Compile Include="Controls\IControl.cs" />
+    <Compile Include="Controls\IControlOptions.cs" />
+    <Compile Include="Controls\IHaveControlOptions.cs" />
+    <Compile Include="IOLClass.cs" />
+    <Compile Include="Layers\IFixedResolutionLayerOptions.cs" />
+    <Compile Include="Layers\IGridBasedLayerOptions.cs" />
+    <Compile Include="Layers\IHaveLayerOptions.cs" />
+    <Compile Include="Layers\ILayer.cs" />
+    <Compile Include="Layers\ILayerOptions.cs" />
+    <Compile Include="ISerializeOLJson.cs" />
+    <Compile Include="Controls\Map.cs" />
+    <Compile Include="Controls\MapOptions.cs" />
+    <Compile Include="Layers\LayerBase.cs" />
+    <Compile Include="Layers\LayerOptionsBase.cs" />
+    <Compile Include="Layers\MarkerLayer.cs" />
+    <Compile Include="Layers\MarkerLayerOptions.cs" />
+    <Compile Include="Layers\TmsLayer.cs" />
+    <Compile Include="Layers\TmsLayerOptions.cs" />
+    <Compile Include="Layers\TransitionEffects.cs" />
+    <Compile Include="Layers\VectorLayer.cs" />
+    <Compile Include="Layers\VectorLayerOptions.cs" />
+    <Compile Include="Layers\WmsLayer.cs" />
+    <Compile Include="Layers\WmsLayerOptions.cs" />
+    <Compile Include="Layers\WmsParameters.cs" />
+    <Compile Include="MapUnits.cs" />
+    <Compile Include="Marker\Marker.cs" />
+    <Compile Include="OLBounds.cs" />
+    <Compile Include="OLIcon.cs" />
+    <Compile Include="OLJsonSerializationAttribute.cs" />
+    <Compile Include="OLJsonSerializer.cs" />
+    <Compile Include="OLLonLat.cs" />
+    <Compile Include="OLPixel.cs" />
+    <Compile Include="OLSerializationFlags.cs" />
+    <Compile Include="OLSize.cs" />
+    <Compile Include="OpenLayersScripts.cs" />
+    <Compile Include="Controls\ScaleControl.cs" />
+    <Compile Include="Controls\ControlOptions.cs" />
+    <Compile Include="ScriptResources.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Firebug\errorIcon.png" />
+    <EmbeddedResource Include="Firebug\firebug.css" />
+    <EmbeddedResource Include="Firebug\firebug.html" />
+    <EmbeddedResource Include="Firebug\firebug.js" />
+    <EmbeddedResource Include="Firebug\firebugx.js" />
+    <EmbeddedResource Include="Firebug\infoIcon.png" />
+    <EmbeddedResource Include="Firebug\license.txt" />
+    <EmbeddedResource Include="Firebug\readme.txt" />
+    <EmbeddedResource Include="Firebug\warningIcon.png" />
+    <EmbeddedResource Include="OpenLayers.js" />
+    <EmbeddedResource Include="OpenLayers\Ajax.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes\Bounds.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes\Class.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes\Element.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes\LonLat.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes\Pixel.js" />
+    <EmbeddedResource Include="OpenLayers\BaseTypes\Size.js" />
+    <EmbeddedResource Include="OpenLayers\Console.js" />
+    <EmbeddedResource Include="OpenLayers\Control.js" />
+    <EmbeddedResource Include="OpenLayers\Control\ArgParser.js" />
+    <EmbeddedResource Include="OpenLayers\Control\Attribution.js" />
+    <EmbeddedResource Include="OpenLayers\Control\DragFeature.js" />
+    <EmbeddedResource Include="OpenLayers\Control\DragPan.js" />
+    <EmbeddedResource Include="OpenLayers\Control\DrawFeature.js" />
+    <EmbeddedResource Include="OpenLayers\Control\EditingToolbar.js" />
+    <EmbeddedResource Include="OpenLayers\Control\KeyboardDefaults.js" />
+    <EmbeddedResource Include="OpenLayers\Control\LayerSwitcher.js" />
+    <EmbeddedResource Include="OpenLayers\Control\ModifyFeature.js" />
+    <EmbeddedResource Include="OpenLayers\Control\MouseDefaults.js" />
+    <EmbeddedResource Include="OpenLayers\Control\MousePosition.js" />
+    <EmbeddedResource Include="OpenLayers\Control\MouseToolbar.js" />
+    <EmbeddedResource Include="OpenLayers\Control\Navigation.js" />
+    <EmbeddedResource Include="OpenLayers\Control\NavToolbar.js" />
+    <EmbeddedResource Include="OpenLayers\Control\OverviewMap.js" />
+    <EmbeddedResource Include="OpenLayers\Control\Panel.js" />
+    <EmbeddedResource Include="OpenLayers\Control\PanZoom.js" />
+    <EmbeddedResource Include="OpenLayers\Control\PanZoomBar.js" />
+    <EmbeddedResource Include="OpenLayers\Control\Permalink.js" />
+    <EmbeddedResource Include="OpenLayers\Control\Scale.js" />
+    <EmbeddedResource Include="OpenLayers\Control\SelectFeature.js" />
+    <EmbeddedResource Include="OpenLayers\Control\ZoomBox.js" />
+    <EmbeddedResource Include="OpenLayers\Control\ZoomToMaxExtent.js" />
+    <EmbeddedResource Include="OpenLayers\Events.js" />
+    <EmbeddedResource Include="OpenLayers\Feature.js" />
+    <EmbeddedResource Include="OpenLayers\Feature\Vector.js" />
+    <EmbeddedResource Include="OpenLayers\Feature\WFS.js" />
+    <EmbeddedResource Include="OpenLayers\Format.js" />
+    <EmbeddedResource Include="OpenLayers\Format\GeoJSON.js" />
+    <EmbeddedResource Include="OpenLayers\Format\GeoRSS.js" />
+    <EmbeddedResource Include="OpenLayers\Format\GML.js" />
+    <EmbeddedResource Include="OpenLayers\Format\JSON.js" />
+    <EmbeddedResource Include="OpenLayers\Format\KML.js" />
+    <EmbeddedResource Include="OpenLayers\Format\WFS.js" />
+    <EmbeddedResource Include="OpenLayers\Format\WKT.js" />
+    <EmbeddedResource Include="OpenLayers\Format\XML.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\Collection.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\Curve.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\LinearRing.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\LineString.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\MultiLineString.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\MultiPoint.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\MultiPolygon.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\Point.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\Polygon.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\Rectangle.js" />
+    <EmbeddedResource Include="OpenLayers\Geometry\Surface.js" />
+    <EmbeddedResource Include="OpenLayers\Handler.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Box.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Drag.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Feature.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Keyboard.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\MouseWheel.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Path.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Point.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Polygon.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\RegularPolygon.js" />
+    <EmbeddedResource Include="OpenLayers\Icon.js" />
+    <EmbeddedResource Include="OpenLayers\Layer.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Boxes.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\EventPane.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\FixedZoomLevels.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\GeoRSS.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\GML.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Google.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Grid.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\HTTPRequest.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Image.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\KaMap.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\MapServer.js" />
+    <EmbeddedResource Include="NamespaceInit.js" />
+    <EmbeddedResource Include="OpenLayers\Control\Button.js" />
+    <EmbeddedResource Include="OpenLayers\Control\NavigationHistory.js" />
+    <EmbeddedResource Include="OpenLayers\Control\ScaleLine.js" />
+    <EmbeddedResource Include="OpenLayers\Filter.js" />
+    <EmbeddedResource Include="OpenLayers\Filter\Comparison.js" />
+    <EmbeddedResource Include="OpenLayers\Filter\FeatureId.js" />
+    <EmbeddedResource Include="OpenLayers\Filter\Logical.js" />
+    <EmbeddedResource Include="OpenLayers\Format\OSM.js" />
+    <EmbeddedResource Include="OpenLayers\Format\SLD.js" />
+    <EmbeddedResource Include="OpenLayers\Format\SLD\v1.js" />
+    <EmbeddedResource Include="OpenLayers\Format\SLD\v1_0_0.js" />
+    <EmbeddedResource Include="OpenLayers\Format\Text.js" />
+    <EmbeddedResource Include="OpenLayers\Format\WMC.js" />
+    <EmbeddedResource Include="OpenLayers\Format\WMC\v1.js" />
+    <EmbeddedResource Include="OpenLayers\Format\WMC\v1_0_0.js" />
+    <EmbeddedResource Include="OpenLayers\Format\WMC\v1_1_0.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Click.js" />
+    <EmbeddedResource Include="OpenLayers\Handler\Hover.js" />
+    <EmbeddedResource Include="OpenLayers\Lang.js" />
+    <EmbeddedResource Include="OpenLayers\Lang\cs-CZ.js" />
+    <EmbeddedResource Include="OpenLayers\Lang\de.js" />
+    <EmbeddedResource Include="OpenLayers\Lang\en-CA.js" />
+    <EmbeddedResource Include="OpenLayers\Lang\en.js" />
+    <EmbeddedResource Include="OpenLayers\Lang\fr.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\MapGuide.js" />
+    <Content Include="OpenLayers\Layer\MapServer\Untiled.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Markers.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\MultiMap.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\SphericalMercator.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Text.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\TileCache.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\TMS.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Vector.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\VirtualEarth.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\WFS.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\WMS.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\PointTrack.js" />
+    <Content Include="OpenLayers\Layer\WMS\Untiled.js" />
+    <EmbeddedResource Include="OpenLayers\Popup\Framed.js" />
+    <EmbeddedResource Include="OpenLayers\Popup\FramedCloud.js" />
+    <EmbeddedResource Include="OpenLayers\Projection.js" />
+    <EmbeddedResource Include="OpenLayers\Rule.js" />
+    <EmbeddedResource Include="OpenLayers\Style.js" />
+    <EmbeddedResource Include="OpenLayers\StyleMap.js" />
+    <EmbeddedResource Include="OpenLayers\Tween.js" />
+    <Content Include="README.txt" />
+    <EmbeddedResource Include="OpenLayers\Layer\WorldWind.js" />
+    <EmbeddedResource Include="OpenLayers\Layer\Yahoo.js" />
+    <EmbeddedResource Include="OpenLayers\Map.js" />
+    <EmbeddedResource Include="OpenLayers\Marker.js" />
+    <EmbeddedResource Include="OpenLayers\Marker\Box.js" />
+    <EmbeddedResource Include="OpenLayers\Popup.js" />
+    <EmbeddedResource Include="OpenLayers\Popup\Anchored.js" />
+    <EmbeddedResource Include="OpenLayers\Popup\AnchoredBubble.js" />
+    <EmbeddedResource Include="OpenLayers\Renderer.js" />
+    <EmbeddedResource Include="OpenLayers\Renderer\Elements.js" />
+    <EmbeddedResource Include="OpenLayers\Renderer\SVG.js" />
+    <EmbeddedResource Include="OpenLayers\Renderer\VML.js" />
+    <EmbeddedResource Include="OpenLayers\SingleFile.js" />
+    <EmbeddedResource Include="OpenLayers\Tile.js" />
+    <EmbeddedResource Include="OpenLayers\Tile\Image.js" />
+    <EmbeddedResource Include="OpenLayers\Tile\WFS.js" />
+    <EmbeddedResource Include="OpenLayers\Util.js" />
+    <EmbeddedResource Include="Rico\Color.js" />
+    <EmbeddedResource Include="Rico\Corner.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

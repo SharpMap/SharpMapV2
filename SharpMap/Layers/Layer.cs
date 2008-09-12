@@ -59,7 +59,8 @@ namespace SharpMap.Layers
         // This pattern reminds me of DependencyProperties in WPF...
 
         /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="AsyncQuery"/> property.
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="AsyncQuery"/> property.
         /// </summary>
         public static PropertyDescriptor AsyncQueryProperty
         {
@@ -67,7 +68,8 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="Enabled"/> property.
+        /// Gets a  <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="CoordinateTransformation"/> property.
         /// </summary>
         public static PropertyDescriptor CoordinateTransformationProperty
         {
@@ -75,7 +77,8 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="Enabled"/> property.
+        /// Gets a  <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="Enabled"/> property.
         /// </summary>
         public static PropertyDescriptor EnabledProperty
         {
@@ -83,7 +86,8 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="Extents"/> property.
+        /// Gets a  <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="Extents"/> property.
         /// </summary>
         public static PropertyDescriptor ExtentsProperty
         {
@@ -91,7 +95,8 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="LayerName"/> property.
+        /// Gets a  <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="LayerName"/> property.
         /// </summary>
         public static PropertyDescriptor LayerNameProperty
         {
@@ -99,7 +104,8 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a PropertyDescriptor for Layer's <see cref="Style"/> property.
+        /// Gets a  <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="Style"/> property.
         /// </summary>
         public static PropertyDescriptor StyleProperty
         {
@@ -283,6 +289,31 @@ namespace SharpMap.Layers
 
         #endregion
 
+        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
+        {
+            checkSetValueType<TValue>(property);
+            checkPropertyParameter(property);
+            SetPropertyValueInternal(property, value);
+        }
+
+        public void SetPropertyValue(PropertyDescriptor property, Object value)
+        {
+            checkPropertyParameter(property);
+            SetPropertyValueInternal(property, value);
+        }
+
+        public virtual Boolean HasProperty(PropertyDescriptor property)
+        {
+            PropertyDescriptorCollection properties = _instanceProperties ?? _layerTypeProperties;
+            return properties.Contains(property) || (_propertyValues != null &&
+                                                     _propertyValues.ContainsKey(property));
+        }
+
+        public override Object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            return base.GetPropertyOwner(pd) ?? (HasProperty(pd) ? this : null);
+        }
+
         public override PropertyDescriptorCollection GetProperties()
         {
             if (_instanceProperties != null)
@@ -307,8 +338,22 @@ namespace SharpMap.Layers
         {
             ensureInstanceProperties();
             Int32 index = _instanceProperties.Add(property);
-            SetPropertyValueInternal<TValue>(property, value);
+            SetPropertyValueInternal(property, value);
             return index;
+        }
+
+        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
+        {
+            if (property == null) { throw new ArgumentNullException("property"); }
+
+            return GetPropertyValueInternal<TValue>(property);
+        }
+
+        public Object GetPropertyValue(PropertyDescriptor property)
+        {
+            if (property == null) { throw new ArgumentNullException("property"); }
+
+            return GetPropertyValueInternal(property);
         }
 
         #region ILayer Members
@@ -443,24 +488,6 @@ namespace SharpMap.Layers
                 _geoFactory = value;
             }
         }
-        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
-        {
-            if (property == null) { throw new ArgumentNullException("property"); }
-
-            return GetPropertyValueInternal<TValue>(property);
-        }
-
-        public Object GetPropertyValue(PropertyDescriptor property)
-        {
-            if (property == null) { throw new ArgumentNullException("property"); }
-
-            return GetPropertyValueInternal(property);
-        }
-
-        public override Object GetPropertyOwner(PropertyDescriptor pd)
-        {
-            return base.GetPropertyOwner(pd) ?? (HasProperty(pd) ? this : null);
-        }
 
         public Boolean IsLoadingData
         {
@@ -566,26 +593,6 @@ namespace SharpMap.Layers
         }
 
         public abstract IEnumerable Select(Expression query);
-
-        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
-        {
-            checkSetValueType<TValue>(property);
-            checkPropertyParameter(property);
-            SetPropertyValueInternal(property, value);
-        }
-
-        public void SetPropertyValue(PropertyDescriptor property, Object value)
-        {
-            checkPropertyParameter(property);
-            SetPropertyValueInternal(property, value);
-        }
-
-        public virtual Boolean HasProperty(PropertyDescriptor property)
-        {
-            PropertyDescriptorCollection properties = _instanceProperties ?? _layerTypeProperties;
-            return properties.Contains(property) || (_propertyValues != null &&
-                                                     _propertyValues.ContainsKey(property));
-        }
 
         /// <summary>
         /// Gets the spatial reference ID of the layer data source, if one is set.

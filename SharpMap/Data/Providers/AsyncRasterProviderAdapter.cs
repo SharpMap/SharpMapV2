@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using SharpMap.Expressions;
@@ -31,7 +32,8 @@ namespace SharpMap.Data.Providers
 
         public AsyncRasterProviderAdapter(IRasterProvider provider)
             : base(provider)
-        { }
+        {
+        }
 
         #region IAsyncProvider implementation
 
@@ -90,6 +92,110 @@ namespace SharpMap.Data.Providers
         public Stream ExecuteRasterQuery(RasterQueryExpression query)
         {
             return InnerRasterProvider.ExecuteRasterQuery(query);
+        }
+
+        #endregion
+
+        #region IHasDynamicProperties Members
+
+        public int AddProperty(PropertyDescriptor property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int AddProperty<TValue>(PropertyDescriptor property, TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Object GetPropertyValue(PropertyDescriptor property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetPropertyValue(PropertyDescriptor property, Object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region ICustomTypeDescriptor Members
+
+        public AttributeCollection GetAttributes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetClassName()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetComponentName()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TypeConverter GetConverter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public EventDescriptor GetDefaultEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public PropertyDescriptor GetDefaultProperty()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Object GetEditor(Type editorBaseType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EventDescriptorCollection GetEvents(Attribute[] attributes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EventDescriptorCollection GetEvents()
+        {
+            throw new NotImplementedException();
+        }
+
+        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PropertyDescriptorCollection GetProperties()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

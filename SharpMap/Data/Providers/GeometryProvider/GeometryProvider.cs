@@ -19,10 +19,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using GeoAPI.CoordinateSystems;
-using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
@@ -35,16 +34,46 @@ using Enumerable = GeoAPI.DataStructures.Enumerable;
 namespace SharpMap.Data.Providers.GeometryProvider
 {
     /// <summary>
-    /// Datasource for storing a limited set of geometries.
+    /// Data source for storing a set of geometries in memory.
     /// </summary>
-    public class GeometryProvider : IFeatureProvider<UInt32>
+    public class GeometryProvider : ProviderBase, IFeatureProvider<UInt32>
     {
+        private static readonly PropertyDescriptorCollection _geometryProviderTypeProperties;
+
+        static GeometryProvider()
+        {
+            _geometryProviderTypeProperties = TypeDescriptor.GetProperties(typeof(GeometryProvider));
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="GeometryProvider"/>'s <see cref="Geometries"/> property.
+        /// </summary>
+        public static PropertyDescriptor GeometriesProperty
+        {
+            get { return _geometryProviderTypeProperties.Find("Geometries", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="GeometryProvider"/>'s <see cref="GeometryFactory"/> property.
+        /// </summary>
+        public static PropertyDescriptor GeometryFactoryProperty
+        {
+            get { return _geometryProviderTypeProperties.Find("GeometryFactory", false); }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="GeometryProvider"/>'s <see cref="Locale"/> property.
+        /// </summary>
+        public static PropertyDescriptor LocaleProperty
+        {
+            get { return _geometryProviderTypeProperties.Find("Locale", false); }
+        }
+
         private IGeometryFactory _geoFactory;
-        private ICoordinateTransformation _coordinateTransformation;
-        private ICoordinateSystem _coordinateSystem;
         private readonly List<IGeometry> _geometries = new List<IGeometry>();
-        private Int32? _srid;
-        private Boolean _isDisposed;
         private IExtents _extents;
 
         #region Object Construction / Disposal
@@ -53,12 +82,14 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Initializes a new instance of the <see cref="GeometryProvider"/>.
         /// </summary>
         /// <param name="geometry">
-        /// Geometry to be added to this datasource.
+        /// Geometry to be added to this data source.
         /// </param>
         public GeometryProvider(IGeometry geometry)
         {
             if (geometry == null) throw new ArgumentNullException("geometry");
 
+            SpatialReference = geometry.SpatialReference;
+            Srid = geometry.Srid;
             _geoFactory = geometry.Factory;
             _geometries.Add(geometry);
         }
@@ -67,13 +98,15 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Initializes a new instance of the <see cref="GeometryProvider"/>.
         /// </summary>
         /// <param name="geometries">
-        /// Set of geometries to add to this datasource.
+        /// Set of geometries to add to this data source.
         /// </param>
         public GeometryProvider(IEnumerable<IGeometry> geometries)
         {
             if (geometries == null) throw new ArgumentNullException("geometries");
 
             _geoFactory = Enumerable.First(geometries).Factory;
+            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            Srid = _geoFactory == null ? null : _geoFactory.Srid;
             _geometries.AddRange(geometries);
         }
 
@@ -81,7 +114,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Initializes a new instance of the <see cref="GeometryProvider"/>.
         /// </summary>
         /// <param name="feature">
-        /// Feature which has geometry to be used in this datasource.
+        /// Feature which has geometry to be used in this data source.
         /// </param>
         public GeometryProvider(FeatureDataRow feature)
         {
@@ -93,6 +126,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
 
             _geoFactory = feature.Geometry.Factory;
+            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            Srid = _geoFactory == null ? null : _geoFactory.Srid;
             _geometries.Add(feature.Geometry);
         }
 
@@ -100,7 +135,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Initializes a new instance of the <see cref="GeometryProvider"/>.
         /// </summary>
         /// <param name="features">
-        /// Features which have geometry to be used in this datasource.
+        /// Features which have geometry to be used in this data source.
         /// </param>
         public GeometryProvider(IEnumerable<FeatureDataRow> features)
         {
@@ -114,6 +149,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
                 if (_geoFactory == null)
                 {
                     _geoFactory = row.Geometry.Factory;
+                    SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+                    Srid = _geoFactory == null ? null : _geoFactory.Srid;
                 }
 
                 _geometries.Add(row.Geometry);
@@ -124,58 +161,31 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// Initializes a new instance of the <see cref="GeometryProvider"/>.
         /// </summary>
         /// <param name="wellKnownBinaryGeometry">
-        /// An <see cref="GeoAPI.Geometries.IGeometry"/> instance as Well-Known Binary 
-        /// to add to this datasource.
+        /// An <see cref="IGeometry"/> instance as Well-Known Binary 
+        /// to add to this data source.
+        /// </param>
+        /// <param name="factory">
+        /// An <see cref="IGeometryFactory"/> instance to generate <see cref="IGeometry"/> instances.
         /// </param>
         public GeometryProvider(Byte[] wellKnownBinaryGeometry, IGeometryFactory factory)
-            : this(factory.WkbReader.Read(wellKnownBinaryGeometry))
-        {
-        }
+            : this(factory.WkbReader.Read(wellKnownBinaryGeometry)) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GeometryProvider"/>
         /// </summary>
         /// <param name="wellKnownTextGeometry">
-        /// An <see cref="GeoAPI.Geometries.IGeometry"/> instance as Well-Known Text 
-        /// to add to this datasource.
+        /// An <see cref="IGeometry"/> instance as Well-Known Text 
+        /// to add to this data source.
+        /// </param>
+        /// <param name="factory">
+        /// An <see cref="IGeometryFactory"/> instance to generate <see cref="IGeometry"/> instances.
         /// </param>
         public GeometryProvider(String wellKnownTextGeometry, IGeometryFactory factory)
-            : this(factory.WktReader.Read(wellKnownTextGeometry))
-        {
-        }
+            : this(factory.WktReader.Read(wellKnownTextGeometry)) { }
 
         #region Dispose Pattern
 
-        ~GeometryProvider()
-        {
-            Dispose(false);
-        }
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Disposes the object
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            IsDisposed = true;
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Gets a value indicating whether <see cref="Dispose"/> 
-        /// has been called on the instance.
-        /// </summary>
-        public Boolean IsDisposed
-        {
-            get { return _isDisposed; }
-            private set { _isDisposed = value; }
-        }
-
-        protected void Dispose(Boolean disposing)
+        protected override void Dispose(Boolean disposing)
         {
             if (IsDisposed)
             {
@@ -194,7 +204,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region Geometries Collection
         /// <summary>
-        /// Gets or sets the geometries this datasource contains.
+        /// Gets or sets the geometries this data source contains.
         /// </summary>
         public IList<IGeometry> Geometries
         {
@@ -210,35 +220,29 @@ namespace SharpMap.Data.Providers.GeometryProvider
         #region IProvider Members
 
         /// <summary>
-        /// Closes the datasource
+        /// Closes the data source
         /// </summary>
-        public void Close()
+        public override void Close()
         {
             //Do nothing;
         }
 
         /// <summary>
-        /// Gets the connection ID of the datasource
+        /// Gets the connection ID of the data source
         /// </summary>
         /// <remarks>
-        /// The ConnectionId is meant for Connection Pooling which doesn't apply to this datasource. Instead
-        /// <c>String.Empty</c> is returned.
+        /// The connection ID is meant for connection pooling which doesn't apply to this data source. Instead
+        /// <see cref="String.Empty"/> is returned.
         /// </remarks>
-        public String ConnectionId
+        public override String ConnectionId
         {
             get { return String.Empty; }
-        }
-
-        public ICoordinateTransformation CoordinateTransformation
-        {
-            get { return _coordinateTransformation; }
-            set { _coordinateTransformation = value; }
         }
 
         /// <summary>
         /// Throws a <see cref="NotImplementedException"/>. 
         /// </summary>
-        public Object ExecuteQuery(Expression query)
+        public override Object ExecuteQuery(Expression query)
         {
             throw new NotImplementedException();
         }
@@ -250,7 +254,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// An <see cref="IExtents"/> instance describing the extents of the 
         /// data available in the data source.
         /// </returns>
-        public IExtents GetExtents()
+        public override IExtents GetExtents()
         {
             if (_extents != null)
             {
@@ -285,34 +289,19 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
 
         /// <summary>
-        /// Returns true if the datasource is currently open
+        /// Returns <see langword="true"/> if the data source is currently open.
         /// </summary>
-        public Boolean IsOpen
+        public override Boolean IsOpen
         {
             get { return true; }
         }
 
         /// <summary>
-        /// Opens the datasource
+        /// Opens the data source.
         /// </summary>
-        public void Open()
+        public override void Open()
         {
             //Do nothing;
-        }
-
-        public ICoordinateSystem SpatialReference
-        {
-            get { return _coordinateSystem; }
-            set { _coordinateSystem = value; }
-        }
-
-        /// <summary>
-        /// The spatial reference ID.
-        /// </summary>
-        public Int32? Srid
-        {
-            get { return _srid; }
-            set { _srid = value; }
         }
 
         #endregion
@@ -475,6 +464,52 @@ namespace SharpMap.Data.Providers.GeometryProvider
             table.Clear();
         }
         #endregion
+
+        protected override PropertyDescriptorCollection GetClassProperties()
+        {
+            return _geometryProviderTypeProperties;
+        }
+
+        protected override void SetObjectProperty(String propertyName, Object value)
+        {
+            if (propertyName.Equals(LocaleProperty.Name))
+            {
+                throw new InvalidOperationException("The property '" + propertyName + "' is read-only.");
+            }
+
+            if (propertyName.Equals(GeometriesProperty.Name))
+            {
+                Geometries = value as IList<IGeometry>;
+            }
+            else if (propertyName.Equals(GeometryFactoryProperty.Name))
+            {
+                GeometryFactory = value as IGeometryFactory;
+            }
+            else
+            {
+                base.SetObjectProperty(propertyName, value);
+            }
+        }
+
+        protected override object GetObjectProperty(string propertyName)
+        {
+            if (propertyName.Equals(GeometriesProperty.Name))
+            {
+                return Geometries;
+            }
+
+            if (propertyName.Equals(GeometryFactoryProperty.Name))
+            {
+                return GeometryFactory;
+            }
+
+            if (propertyName.Equals(LocaleProperty.Name))
+            {
+                return Locale;
+            }
+
+            return base.GetObjectProperty(propertyName);
+        }
 
         private Boolean isGeometryAtIndexAMatch(Int32 index, SpatialOperation op, Boolean isLeft, IGeometry filterGeometry)
         {
