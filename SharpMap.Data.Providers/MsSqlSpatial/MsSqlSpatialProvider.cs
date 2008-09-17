@@ -72,8 +72,8 @@ namespace SharpMap.Data.Providers
                 cmd.Connection = conn;
                 cmd.CommandText =
                     string.Format(
-                        "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2}",
-                        GeometryColumn, TableSchema, Table);
+                        "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
+                        GeometryColumn, TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
                 cmd.CommandType = CommandType.Text;
                 double xmin, ymin, xmax, ymax;
                 conn.Open();

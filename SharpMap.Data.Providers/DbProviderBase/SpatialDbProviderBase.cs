@@ -337,7 +337,7 @@ namespace SharpMap.Data.Providers.Db
         }
 
         // Note: maybe need to cache the results of this? It could get called pretty often
-        public DataTable GetSchemaTable()
+        public virtual DataTable GetSchemaTable()
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
@@ -447,5 +447,7 @@ namespace SharpMap.Data.Providers.Db
         }
 
         protected abstract ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression);
+
+
     }
 }

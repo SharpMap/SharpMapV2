@@ -24,6 +24,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
     public class MsSqlServer2008ExpressionTreeToSqlCompiler
         : ExpressionTreeToSqlCompilerBase
     {
+
         public MsSqlServer2008ExpressionTreeToSqlCompiler(
             IDbUtility dbUtility,
             Func<IEnumerable<string>> selectStarDelegate,
