@@ -64,6 +64,16 @@ namespace SharpMap.Data.Providers
             get { return SpatialSchema + ".AsBinary({0})"; }
         }
 
+        public override string GeomFromWkbFormatString
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override DataTable GetSchemaTable()
+        {
+            return base.GetSchemaTable(true);
+        }
+
         public override IExtents GetExtents()
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
@@ -140,11 +150,6 @@ namespace SharpMap.Data.Providers
                 cmd.Parameters.Add(p);
 
             return cmd;
-        }
-
-        public override string GeomFromWkbFormatString
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 }

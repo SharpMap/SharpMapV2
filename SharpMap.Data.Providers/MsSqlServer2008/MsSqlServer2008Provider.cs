@@ -23,9 +23,8 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers
 {
-    public enum ExtentsMode
+    public enum SqlServer2008ExtentsMode
     {
-
         /// <summary>
         /// Requires no additional components but can be very slow for large datasets
         /// </summary>
@@ -37,6 +36,7 @@ namespace SharpMap.Data.Providers
 
         /// <summary>
         /// Requires no additional components but does require additional columns in the form of [GeomColumnName]_Envelope_MinX, [GeomColumnName]_Envelope_MinY, [GeomColumnName]_Envelope_MaxX, [GeomColumnName]_Envelope_MaxY
+        /// Initial tests seem to show this is the fastest.
         /// </summary>
         UseEnvelopeColumns = 2
     }
@@ -44,22 +44,52 @@ namespace SharpMap.Data.Providers
     public class MsSqlServer2008Provider<TOid>
         : SpatialDbProviderBase<TOid>
     {
-
-
-        private ExtentsMode _extentsMode = ExtentsMode.QueryIndividualFeatures;
-
-        public ExtentsMode ExtentsCalculationMode
-        {
-            get { return _extentsMode; }
-            set { _extentsMode = value; }
-        }
+        #region Delegates
 
         public delegate string IndexNameGenerator(MsSqlServer2008Provider<TOid> provider);
 
+        #endregion
+
+        private SqlServer2008ExtentsMode _sqlServer2008ExtentsMode = SqlServer2008ExtentsMode.QueryIndividualFeatures;
+
         private IndexNameGenerator _indexNameGenerator = o => string.Format("sidx_{0}_{1}", o.Table,
                                                                             o.GeometryColumn);
+
+        public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
+                                       String connectionString,
+                                       String tableName)
+            : this(
+                geometryFactory, connectionString, null, tableName, null, null, false,
+                SqlServer2008ExtentsMode.QueryIndividualFeatures)
+        {
+        }
+
+        public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
+                                       String connectionString,
+                                       String tableSchema,
+                                       String tableName,
+                                       String oidColumn,
+                                       String geometryColumn, Boolean withNoLock, SqlServer2008ExtentsMode sqlServer2008ExtentsCalculationMode)
+            : base(new SqlServerDbUtility(),
+                   geometryFactory,
+                   connectionString,
+                   tableSchema,
+                   tableName,
+                   oidColumn,
+                   geometryColumn)
+        {
+            WithNoLock = withNoLock;
+            SqlServer2008ExtentsCalculationMode = sqlServer2008ExtentsCalculationMode;
+        }
+
+        public SqlServer2008ExtentsMode SqlServer2008ExtentsCalculationMode
+        {
+            get { return _sqlServer2008ExtentsMode; }
+            set { _sqlServer2008ExtentsMode = value; }
+        }
+
         /// <summary>
-        /// a delegate which takes in this provider and uses it to create the spatial index name.
+        /// a delegate which takes in this provider and uses it to create the index name. (or a comma seperated list of index names)
         /// The default is sidx_[tablename]_[geometrycolumnname]
         /// use in conjunction with ForceIndex. Note: the index does not need to be a spatial one but must exist on the table. 
         /// </summary>
@@ -76,49 +106,30 @@ namespace SharpMap.Data.Providers
 
         public bool WithNoLock { get; set; }
 
-        public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
-                                       String connectionString,
-                                       String tableName)
-            : this(geometryFactory, connectionString, null, tableName, null, null, false, ExtentsMode.QueryIndividualFeatures) { }
-
-        public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
-                                       String connectionString,
-                                       String tableSchema,
-                                       String tableName,
-                                       String oidColumn,
-                                       String geometryColumn, Boolean withNoLock, ExtentsMode extentsCalculationMode)
-            : base(new SqlServerDbUtility(),
-                   geometryFactory,
-                   connectionString,
-                   tableSchema,
-                   tableName,
-                   oidColumn,
-                   geometryColumn)
-        {
-            WithNoLock = withNoLock;
-            ExtentsCalculationMode = extentsCalculationMode;
-        }
-
 
         public override String GeometryColumnConversionFormatString
         {
             get { return "{0}.STAsBinary()"; }
         }
 
+        public override string GeomFromWkbFormatString
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public override IExtents GetExtents()
         {
-
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             using (IDbCommand cmd = DbUtility.CreateCommand())
             {
                 cmd.Connection = conn;
-                switch (ExtentsCalculationMode)
+                switch (SqlServer2008ExtentsCalculationMode)
                 {
-                    case ExtentsMode.UseSqlSpatialTools:
+                    case SqlServer2008ExtentsMode.UseSqlSpatialTools:
                         {
                             cmd.CommandText =
                                 string.Format(
-                                      @"
+                                    @"
     declare @envelope Geometry
     select @envelope = dbo.GeometryEnvelopeAggregate(Geom) from {0}.{1} {2}
     select 
@@ -126,14 +137,14 @@ namespace SharpMap.Data.Providers
         @envelope.STPointN(1).STY as MinY, 
         @envelope.STPointN(3).STX as MaxX, 
         @envelope.STPointN(3).STY as MaxY",
-                                          TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+                                    TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
                             break;
                         }
-                    case ExtentsMode.UseEnvelopeColumns:
+                    case SqlServer2008ExtentsMode.UseEnvelopeColumns:
                         {
                             cmd.CommandText = string.Format(
-                        "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
-                        GeometryColumn, TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+                                "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
+                                GeometryColumn, TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
                             break;
                         }
                     default:
@@ -149,7 +160,6 @@ namespace SharpMap.Data.Providers
                                     TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
                             break;
                         }
-
                 }
 
                 cmd.CommandType = CommandType.Text;
@@ -226,13 +236,9 @@ namespace SharpMap.Data.Providers
         public override DataTable GetSchemaTable()
         {
             DataTable dt = base.GetSchemaTable(true);
-            dt.Columns[GeometryColumn].DataType = typeof(byte[]); //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
+            dt.Columns[GeometryColumn].DataType = typeof (byte[]);
+                //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
             return dt;
-        }
-
-        public override string GeomFromWkbFormatString
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 }

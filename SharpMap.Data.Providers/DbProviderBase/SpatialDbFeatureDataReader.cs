@@ -31,15 +31,15 @@ namespace SharpMap.Data.Providers.Database
     public class SpatialDbFeatureDataReader : IFeatureDataReader
     {
         private readonly int _geomColumnIndex;
+        private readonly string _geometryColumn;
         private readonly IGeometryFactory _geomFactory;
         protected readonly IDataReader _internalReader;
         private readonly string _oidColumn;
 
         private readonly int _oidColumnIndex;
-        private string _geometryColumn;
 
-        internal protected SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
-                                          string geometryColumn, string oidColumn)
+        protected internal SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
+                                                      string geometryColumn, string oidColumn)
         {
             _geomFactory = geomFactory;
             _internalReader = internalReader;
@@ -51,13 +51,15 @@ namespace SharpMap.Data.Providers.Database
         }
 
         #region private helper
+
         protected Int32 recomputeIndex(Int32 index)
         {
             if (_geomColumnIndex > -1 && index >= _geomColumnIndex)
                 return index + 1;
-            else
-                return index;
+
+            return index;
         }
+
         #endregion
 
         #region IFeatureDataReader Members
@@ -76,7 +78,7 @@ namespace SharpMap.Data.Providers.Database
         {
             DataTable dt = _internalReader.GetSchemaTable();
             if (_geomColumnIndex > -1) dt.Rows.RemoveAt(_geomColumnIndex);
-            return dt; //_internalReader.GetSchemaTable();
+            return dt;
         }
 
         public bool IsClosed
@@ -108,9 +110,11 @@ namespace SharpMap.Data.Providers.Database
         {
             get
             {
-                return _geomColumnIndex > -1 ?
-                  _internalReader.FieldCount - 1 :
-                  _internalReader.FieldCount;
+                return _geomColumnIndex > -1
+                           ?
+                               _internalReader.FieldCount - 1
+                           :
+                               _internalReader.FieldCount;
             }
         }
 
@@ -208,6 +212,7 @@ namespace SharpMap.Data.Providers.Database
         {
             return _internalReader.GetString(recomputeIndex(i));
         }
+
         public object GetValue(int i)
         {
             return _internalReader.GetValue(recomputeIndex(i));
@@ -228,7 +233,7 @@ namespace SharpMap.Data.Providers.Database
             get
             {
                 if (name == _geometryColumn)
-                    throw new System.Data.DataException("Cannot retrieve geometry column. Use Geometry property");
+                    throw new DataException("Cannot retrieve geometry column. Use Geometry property");
                 return _internalReader[name];
             }
         }
@@ -243,7 +248,7 @@ namespace SharpMap.Data.Providers.Database
             get
             {
                 if (_geomColumnIndex > -1)
-                    return _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+                    return _geomFactory.WkbReader.Read((byte[]) _internalReader[_geomColumnIndex]);
 
                 return null;
             }
@@ -268,7 +273,7 @@ namespace SharpMap.Data.Providers.Database
 
         public Type OidType
         {
-            get { return typeof(long); }
+            get { return typeof (long); }
         }
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
