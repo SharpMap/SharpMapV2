@@ -12,6 +12,14 @@
  *  Author: John Diss 2008
  * 
  */
+
+/*
+ * Portions by Felix Obermaier
+ * Ingenieurgruppe IVV GmbH & Co. KG
+ * www.ivv-aachen.de
+ * 
+ */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,17 +28,17 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.Database
 {
-    internal class SpatialDbFeatureDataReader : IFeatureDataReader
+    public class SpatialDbFeatureDataReader : IFeatureDataReader
     {
         private readonly int _geomColumnIndex;
         private readonly IGeometryFactory _geomFactory;
-        private readonly IDataReader _internalReader;
+        protected readonly IDataReader _internalReader;
         private readonly string _oidColumn;
 
         private readonly int _oidColumnIndex;
         private string _geometryColumn;
 
-        public SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
+        internal protected SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
                                           string geometryColumn, string oidColumn)
         {
             _geomFactory = geomFactory;
@@ -41,6 +49,16 @@ namespace SharpMap.Data.Providers.Database
             _geomColumnIndex = GetOrdinal(geometryColumn);
             _oidColumnIndex = GetOrdinal(oidColumn);
         }
+
+        #region private helper
+        protected Int32 recomputeIndex(Int32 index)
+        {
+            if (_geomColumnIndex > -1 && index >= _geomColumnIndex)
+                return index + 1;
+            else
+                return index;
+        }
+        #endregion
 
         #region IFeatureDataReader Members
 
@@ -56,7 +74,9 @@ namespace SharpMap.Data.Providers.Database
 
         public DataTable GetSchemaTable()
         {
-            return _internalReader.GetSchemaTable();
+            DataTable dt = _internalReader.GetSchemaTable();
+            if (_geomColumnIndex > -1) dt.Rows.RemoveAt(_geomColumnIndex);
+            return dt; //_internalReader.GetSchemaTable();
         }
 
         public bool IsClosed
@@ -86,92 +106,97 @@ namespace SharpMap.Data.Providers.Database
 
         public int FieldCount
         {
-            get { return _internalReader.FieldCount; }
+            get
+            {
+                return _geomColumnIndex > -1 ?
+                  _internalReader.FieldCount - 1 :
+                  _internalReader.FieldCount;
+            }
         }
 
         public bool GetBoolean(int i)
         {
-            return _internalReader.GetBoolean(i);
+            return _internalReader.GetBoolean(recomputeIndex(i));
         }
 
         public byte GetByte(int i)
         {
-            return _internalReader.GetByte(i);
+            return _internalReader.GetByte(recomputeIndex(i));
         }
 
         public long GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
         {
-            return _internalReader.GetBytes(i, fieldOffset, buffer, bufferoffset, length);
+            return _internalReader.GetBytes(recomputeIndex(i), fieldOffset, buffer, bufferoffset, length);
         }
 
         public char GetChar(int i)
         {
-            return _internalReader.GetChar(i);
+            return _internalReader.GetChar(recomputeIndex(i));
         }
 
         public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
         {
-            return _internalReader.GetChars(i, fieldoffset, buffer, bufferoffset, length);
+            return _internalReader.GetChars(recomputeIndex(i), fieldoffset, buffer, bufferoffset, length);
         }
 
         public IDataReader GetData(int i)
         {
-            return _internalReader.GetData(i);
+            return _internalReader.GetData(recomputeIndex(i));
         }
 
         public string GetDataTypeName(int i)
         {
-            return _internalReader.GetDataTypeName(i);
+            return _internalReader.GetDataTypeName(recomputeIndex(i));
         }
 
         public DateTime GetDateTime(int i)
         {
-            return _internalReader.GetDateTime(i);
+            return _internalReader.GetDateTime(recomputeIndex(i));
         }
 
         public decimal GetDecimal(int i)
         {
-            return _internalReader.GetDecimal(i);
+            return _internalReader.GetDecimal(recomputeIndex(i));
         }
 
         public double GetDouble(int i)
         {
-            return _internalReader.GetDouble(i);
+            return _internalReader.GetDouble(recomputeIndex(i));
         }
 
-        public Type GetFieldType(int i)
+        public virtual Type GetFieldType(int i)
         {
-            return _internalReader.GetFieldType(i);
+            return _internalReader.GetFieldType(recomputeIndex(i));
         }
 
         public float GetFloat(int i)
         {
-            return _internalReader.GetFloat(i);
+            return _internalReader.GetFloat(recomputeIndex(i));
         }
 
         public Guid GetGuid(int i)
         {
-            return _internalReader.GetGuid(i);
+            return _internalReader.GetGuid(recomputeIndex(i));
         }
 
         public short GetInt16(int i)
         {
-            return _internalReader.GetInt16(i);
+            return _internalReader.GetInt16(recomputeIndex(i));
         }
 
         public int GetInt32(int i)
         {
-            return _internalReader.GetInt32(i);
+            return _internalReader.GetInt32(recomputeIndex(i));
         }
 
         public long GetInt64(int i)
         {
-            return _internalReader.GetInt64(i);
+            return _internalReader.GetInt64(recomputeIndex(i));
         }
 
         public string GetName(int i)
         {
-            return _internalReader.GetName(i);
+            return _internalReader.GetName(recomputeIndex(i));
         }
 
         public int GetOrdinal(string name)
@@ -181,12 +206,11 @@ namespace SharpMap.Data.Providers.Database
 
         public string GetString(int i)
         {
-            return _internalReader.GetString(i);
+            return _internalReader.GetString(recomputeIndex(i));
         }
-
         public object GetValue(int i)
         {
-            return _internalReader.GetValue(i);
+            return _internalReader.GetValue(recomputeIndex(i));
         }
 
         public int GetValues(object[] values)
@@ -196,25 +220,30 @@ namespace SharpMap.Data.Providers.Database
 
         public bool IsDBNull(int i)
         {
-            return _internalReader.IsDBNull(i);
+            return _internalReader.IsDBNull(recomputeIndex(i));
         }
 
         public object this[string name]
         {
-            get { return _internalReader[name]; }
+            get
+            {
+                if (name == _geometryColumn)
+                    throw new System.Data.DataException("Cannot retrieve geometry column. Use Geometry property");
+                return _internalReader[name];
+            }
         }
 
         public object this[int i]
         {
-            get { return _internalReader[i]; }
+            get { return _internalReader[recomputeIndex(i)]; }
         }
 
-        public IGeometry Geometry
+        public virtual IGeometry Geometry
         {
             get
             {
                 if (_geomColumnIndex > -1)
-                    return _geomFactory.WkbReader.Read((byte[]) this[_geomColumnIndex]);
+                    return _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
 
                 return null;
             }
@@ -239,20 +268,13 @@ namespace SharpMap.Data.Providers.Database
 
         public Type OidType
         {
-            get { return typeof (long); }
+            get { return typeof(long); }
         }
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
         {
-            try
-            {
-                while (_internalReader.Read())
-                    yield return this;
-            }
-            finally
-            {
-                _internalReader.Close();
-            }
+            while (_internalReader.Read())
+                yield return this;
         }
 
         IEnumerator IEnumerable.GetEnumerator()

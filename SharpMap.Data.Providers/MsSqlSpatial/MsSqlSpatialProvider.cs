@@ -141,5 +141,10 @@ namespace SharpMap.Data.Providers
 
             return cmd;
         }
+
+        public override string GeomFromWkbFormatString
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

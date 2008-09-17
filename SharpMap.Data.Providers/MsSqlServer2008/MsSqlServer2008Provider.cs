@@ -225,9 +225,14 @@ namespace SharpMap.Data.Providers
 
         public override DataTable GetSchemaTable()
         {
-            DataTable dt = base.GetSchemaTable();
+            DataTable dt = base.GetSchemaTable(true);
             dt.Columns[GeometryColumn].DataType = typeof(byte[]); //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
             return dt;
+        }
+
+        public override string GeomFromWkbFormatString
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }
