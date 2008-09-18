@@ -20,7 +20,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading;
 using GeoAPI.IO;
 using SharpMap.Presentation.AspNet;
 using SharpMap.Presentation.AspNet.MVP;
@@ -28,9 +27,6 @@ using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
-#if DOTNET35
-using System.Windows.Threading;
-#endif
 
 namespace SharpMap.Rendering.Web
 {
@@ -38,31 +34,12 @@ namespace SharpMap.Rendering.Web
         : IWebMapRenderer<Image>
     {
         private static ImageCodecInfo _defaultCodec;
-#if DOTNET35
-        private readonly Dispatcher _dispatcher;
-#endif
         private readonly RenderQueue _renderQ = new RenderQueue();
-        private Bitmap _bmp;
         private GdiMatrix _gdiViewMatrix;
         private Graphics _graphics;
 
         private ImageCodecInfo _imageCodecInfo;
-        private long _isRendering;
         private bool disposed;
-
-        public GdiImageRenderer()
-        {
-            _renderQ.ItemQueued += renderQ_ItemQueued;
-#if DOTNET35
-            _dispatcher = Dispatcher.CurrentDispatcher; /* Warning : this causes an exception when the */
-#endif
-        }
-
-        private bool IsRendering
-        {
-            get { return Interlocked.Read(ref _isRendering) == 1; }
-            set { Interlocked.Exchange(ref _isRendering, value ? 1 : 0); }
-        }
 
         public ImageCodecInfo ImageCodec
         {
@@ -104,40 +81,6 @@ namespace SharpMap.Rendering.Web
             get { return (int)MapView.ViewSize.Height; }
         }
 
-        private Bitmap Bmp
-        {
-            get
-            {
-                if (_bmp == null)
-                {
-                    _bmp = new Bitmap(Width, Height);
-                }
-                return _bmp;
-            }
-        }
-
-        private Graphics Graphics
-        {
-            get
-            {
-                if (_graphics == null)
-                {
-                    _graphics = Graphics.FromImage(Bmp);
-                    _graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    _graphics.Transform = GetGdiViewTransform();
-                    if (!MapView.Presenter.IsRenderingSelection)
-                        _graphics.Clear(ViewConverter.Convert(MapView.BackgroundColor));
-                }
-                return _graphics;
-            }
-        }
-
-#if DOTNET35
-        protected internal Dispatcher Dispatcher
-        {
-            get { return _dispatcher; }
-        }
-#endif
 
         #region IWebMapRenderer<Image> Members
 
@@ -145,22 +88,24 @@ namespace SharpMap.Rendering.Web
 
         public Image Render(WebMapView mapView, out string mimeType)
         {
-            Bitmap b;
-#if DOTNET35
-            Func<Image> f = () => Bmp;
 
-            DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal, f);
+            Bitmap bmp = new Bitmap(Width, Height);
+            Graphics g = Graphics.FromImage(bmp);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.Transform = GetGdiViewTransform();
+            if (!MapView.Presenter.IsRenderingSelection)
+                g.Clear(ViewConverter.Convert(MapView.BackgroundColor));
 
-            op.Wait();
-            b = (Bitmap)op.Result;
-#else
-            b = Bmp;
-#endif
-            _bmp = null;
-            DisposeGraphics();
+
+            while (_renderQ.Count > 0)
+            {
+                RenderObject(_renderQ.Dequeue(), g);
+            }
+
+            g.Dispose();
 
             mimeType = "image/bmp";
-            return b;
+            return bmp;
         }
 
 
@@ -189,8 +134,6 @@ namespace SharpMap.Rendering.Web
         public void ClearRenderQueue()
         {
             _renderQ.Clear();
-            DisposeGraphics();
-            _bmp = null;
         }
 
         public void EnqueueRenderObject(object o)
@@ -224,31 +167,9 @@ namespace SharpMap.Rendering.Web
 
         #endregion
 
-        private void renderQ_ItemQueued(object sender, EventArgs e)
-        {
-#if DOTNET35
-            Dispatcher.BeginInvoke(
-                DispatcherPriority.Normal,
-                new Action(ProcessQ)
-                );
-#else
-            ProcessQ();
-#endif
-        }
 
-        private void ProcessQ()
+        private void RenderObject(GdiRenderObject ro, Graphics g)
         {
-            if (IsRendering)
-                return;
-            IsRendering = true;
-            while (_renderQ.Count > 0)
-                RenderObject(_renderQ.Dequeue());
-            IsRendering = false;
-        }
-
-        private void RenderObject(GdiRenderObject ro)
-        {
-            Graphics g = Graphics;
 
             if (ro.State == RenderState.Unknown)
                 return;
@@ -335,12 +256,14 @@ namespace SharpMap.Rendering.Web
                         g.Transform = GetGdiViewTransform();
                     }
                     break;
-                case RenderState.Unknown:
                 default:
                     break;
             }
 
-            if (ro.Image == null) return;
+            if (ro.Image == null)
+            {
+                return;
+            }
 
             ImageAttributes imageAttributes = null;
 
@@ -534,32 +457,12 @@ namespace SharpMap.Rendering.Web
         {
             if (!disposed)
             {
-                _renderQ.ItemQueued -= renderQ_ItemQueued;
 
-                if (_bmp != null)
-                    _bmp.Dispose();
 
-                DisposeGraphics();
-                _bmp = null;
                 disposed = true;
             }
         }
 
-        private void DisposeGraphics()
-        {
-            if (_graphics != null)
-                _graphics.Dispose();
-            _graphics = null;
-        }
-
-        //private void DisposeGraphics()
-        //{
-        //    foreach (var p in _graphicsObjects)
-        //    {
-        //        p.Value.Dispose();
-        //    }
-        //    _graphicsObjects.Clear();
-        //}
 
         #region Nested type: RenderQueue
 
