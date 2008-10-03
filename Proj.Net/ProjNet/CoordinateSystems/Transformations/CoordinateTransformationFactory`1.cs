@@ -31,10 +31,12 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// <summary>
     /// Creates coordinate transformations.
     /// </summary>
-    public class CoordinateTransformationFactory<TCoordinate> : ICoordinateTransformationFactory<TCoordinate>
+    public class CoordinateTransformationFactory<TCoordinate/*, TMatrix */> : ICoordinateTransformationFactory<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
+        //where TMatrix : IMatrix<DoubleComponent, TMatrix>, IEquatable<TMatrix>,
+        //                IComparable<TMatrix>, IComputable<TMatrix>
     {
         private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;
         private readonly IGeometryFactory<TCoordinate> _geometryFactory;
@@ -42,7 +44,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly IGeocentricCoordinateSystem<TCoordinate> _wgs84;
 
         public CoordinateTransformationFactory(ICoordinateFactory<TCoordinate> coordinateFactory,
-             IGeometryFactory<TCoordinate> geometryFactory,
+                                               IGeometryFactory<TCoordinate> geometryFactory,
                                                IMatrixFactory<DoubleComponent> matrixFactory)
         {
             _coordinateFactory = coordinateFactory;

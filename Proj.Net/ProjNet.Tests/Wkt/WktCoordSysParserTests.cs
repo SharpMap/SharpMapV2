@@ -7,15 +7,13 @@ using GeoAPI.Geometries;
 using GeoAPI.IO.WellKnownText;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NPack;
-using NPack.Interfaces;
+using NPack.Matrix;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
-using ProjNet.Tests;
 using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate2D;
 using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DFactory;
 using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DSequenceFactory;
-using MatrixFactory = ProjNet.Tests.FakeMatrixFactory;
 
 namespace ProjNet.Tests.Converters.Wkt
 {
@@ -71,12 +69,37 @@ namespace ProjNet.Tests.Converters.Wkt
 		public void ParseCoordSys()
 		{
 			ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
-			IGeometryFactory<Coordinate2D> gf = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
-			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
+			IGeometryFactory<Coordinate2D> gf 
+                = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+			CoordinateSystemFactory<Coordinate2D> fac 
+                = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
 
-			String wkt = "PROJCS[\"NAD83(HARN) / Texas Central (ftUS)\", GEOGCS[\"NAD83(HARN)\", DATUM[\"NAD83_High_Accuracy_Regional_Network\", SPHEROID[\"GRS 1980\", 6378137, 298.257222101, AUTHORITY[\"EPSG\", \"7019\"]], TOWGS84[725, 685, 536, 0, 0, 0, 0], AUTHORITY[\"EPSG\", \"6152\"]], PRIMEM[\"Greenwich\", 0, AUTHORITY[\"EPSG\", \"8901\"]], UNIT[\"degree\", 0.0174532925199433, AUTHORITY[\"EPSG\", \"9122\"]], AUTHORITY[\"EPSG\", \"4152\"]], PROJECTION[\"Lambert_Conformal_Conic_2SP\"], PARAMETER[\"standard_parallel_1\", 31.883333333333], PARAMETER[\"standard_parallel_2\", 30.1166666667], PARAMETER[\"latitude_of_origin\", 29.6666666667], PARAMETER[\"central_meridian\", -100.333333333333], PARAMETER[\"false_easting\", 2296583.333], PARAMETER[\"false_northing\", 9842500], UNIT[\"US survey foot\", 0.304800609601219, AUTHORITY[\"EPSG\", \"9003\"]], AUTHORITY[\"EPSG\", \"2918\"]]";
+			String wkt = @"PROJCS[""NAD83(HARN) / Texas Central (ftUS)"", 
+                                GEOGCS[""NAD83(HARN)"", 
+                                    DATUM[""NAD83_High_Accuracy_Regional_Network"", 
+                                        SPHEROID[""GRS 1980"", 6378137, 298.257222101, 
+                                            AUTHORITY[""EPSG"", ""7019""]], 
+                                        TOWGS84[725, 685, 536, 0, 0, 0, 0], 
+                                        AUTHORITY[""EPSG"", ""6152""]], 
+                                    PRIMEM[""Greenwich"", 0, 
+                                        AUTHORITY[""EPSG"", ""8901""]], 
+                                    UNIT[""degree"", 0.0174532925199433, 
+                                        AUTHORITY[""EPSG"", ""9122""]], 
+                                    AUTHORITY[""EPSG"", ""4152""]], 
+                                PROJECTION[""Lambert_Conformal_Conic_2SP""], 
+                                PARAMETER[""standard_parallel_1"", 31.883333333333], 
+                                PARAMETER[""standard_parallel_2"", 30.1166666667], 
+                                PARAMETER[""latitude_of_origin"", 29.6666666667], 
+                                PARAMETER[""central_meridian"", -100.333333333333], 
+                                PARAMETER[""false_easting"", 2296583.333], 
+                                PARAMETER[""false_northing"", 9842500], 
+                                UNIT[""US survey foot"", 0.304800609601219, 
+                                    AUTHORITY[""EPSG"", ""9003""]], 
+                                AUTHORITY[""EPSG"", ""2918""]]";
 
-			ProjectedCoordinateSystem<Coordinate2D> pcs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt, fac) as ProjectedCoordinateSystem<Coordinate2D>;
+			ProjectedCoordinateSystem<Coordinate2D> pcs 
+                = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt, fac) 
+                    as ProjectedCoordinateSystem<Coordinate2D>;
 			Assert.IsNotNull(pcs, "Could not parse WKT: " + wkt);
 
 			Assert.AreEqual("NAD83(HARN) / Texas Central (ftUS)", pcs.Name);
@@ -137,16 +160,21 @@ namespace ProjNet.Tests.Converters.Wkt
 		public void ParseAllWkts()
 		{
 			ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
-			IGeometryFactory<Coordinate2D> gf = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
-			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
+			IGeometryFactory<Coordinate2D> gf 
+                = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+			CoordinateSystemFactory<Coordinate2D> fac 
+                = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
 
 			Int32 parsecount = 0;
+
             foreach (SridReader.WktString wkt in SridReader.GetSrids())
             {
-                ICoordinateSystem cs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt.Wkt, fac) as ICoordinateSystem;
+                ICoordinateSystem cs
+                    = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt.Wkt, fac) as ICoordinateSystem;
                 Assert.IsNotNull(cs, "Could not parse WKT: " + wkt);
                 parsecount++;
             }
+
 			Assert.AreEqual(parsecount, 2671, "Not all WKT was parsed");
 		}
 
@@ -160,13 +188,18 @@ namespace ProjNet.Tests.Converters.Wkt
 			//GeographicCoordinateSystem.WGS84
 	
 			ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
-			IGeometryFactory<Coordinate2D> gf = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
-			CoordinateSystemFactory<Coordinate2D> fac = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
-			CoordinateTransformationFactory<Coordinate2D> fact = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, new MatrixFactory());
+			IGeometryFactory<Coordinate2D> gf 
+                = new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+			CoordinateSystemFactory<Coordinate2D> fac 
+                = new CoordinateSystemFactory<Coordinate2D>(cf, gf);
+            LinearFactory<DoubleComponent> factory = new LinearFactory<DoubleComponent>();
+			CoordinateTransformationFactory<Coordinate2D> fact 
+                = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, factory);
 
 			Int32 parsecount = 0;
 			StreamReader sr = File.OpenText(@"..\..\SRID.csv");
 			String line = "";
+
 			while (!sr.EndOfStream)
 			{
 				line = sr.ReadLine();
@@ -176,7 +209,8 @@ namespace ProjNet.Tests.Converters.Wkt
 				{
 					String srid = line.Substring(0, split);
 					String wkt = line.Substring(split + 1);
-					ICoordinateSystem cs = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt, fac) as ICoordinateSystem;
+					ICoordinateSystem cs 
+                        = WktReader<Coordinate2D>.ToCoordinateSystemInfo(wkt, fac) as ICoordinateSystem;
 
 					if (cs == null) continue; //We check this in another test.
 
@@ -201,6 +235,7 @@ namespace ProjNet.Tests.Converters.Wkt
 							default: break;
 						}
 					}
+
 					try
 					{
 						ICoordinateSystem<Coordinate2D> wgs84 = GeographicCoordinateSystem<Coordinate2D>.GetWgs84(gf);
@@ -209,10 +244,23 @@ namespace ProjNet.Tests.Converters.Wkt
 					catch (Exception ex)
 					{
 						if (cs is IProjectedCoordinateSystem)
-							Assert.Fail("Could not create transformation from:\r\n" + wkt + "\r\n" + ex.Message + "\r\nClass name:" + (cs as IProjectedCoordinateSystem).Projection.ClassName);
+						{
+						    Assert.Fail("Could not create transformation from:\r\n" + 
+                                        wkt + 
+                                        "\r\n" + 
+                                        ex.Message + 
+                                        "\r\nClass name:" + 
+                                        (cs as IProjectedCoordinateSystem).Projection.ClassName);
+						}
 						else
-							Assert.Fail("Could not create transformation from:\r\n" + wkt + "\r\n" + ex.Message);						
+						{
+						    Assert.Fail("Could not create transformation from:\r\n" + 
+                                        wkt + 
+                                        "\r\n" + 
+                                        ex.Message);
+						}						
 					}
+
 					parsecount++;
 				}
 			}

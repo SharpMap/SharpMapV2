@@ -304,6 +304,31 @@ namespace ProjNet.CoordinateSystems.Projections
             }
         }
 
+        /// <summary>
+        /// Transforms the specified <see cref="ICoordinate"/> according 
+        /// to the specific projection.
+        /// </summary>
+        /// <param name="coordinate">The coordinate to transform.</param>
+        /// <returns>
+        /// A new <see cref="ICoordinate{t}"/> which results from transforming
+        /// the given <paramref name="coordinate"/> with this algorithm.
+        /// </returns>
+        public override ICoordinate Transform(ICoordinate coordinate)
+        {
+            if (!IsInverse)
+            {
+                return DegreesToMeters(CoordinateFactory.Create3D(coordinate.ColumnCount));
+            }
+            {
+                return MetersToDegrees(CoordinateFactory.Create3D(coordinate.ColumnCount));
+            }
+        }
+
+        public IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new NotImplementedException();
+        }
+
         public Boolean EqualParams(IInfo obj)
         {
             MapProjection<TCoordinate> m = obj as MapProjection<TCoordinate>;

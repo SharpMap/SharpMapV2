@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures;
 using NPack;
 using NPack.Interfaces;
 
@@ -223,12 +222,12 @@ namespace ProjNet.CoordinateSystems.Transformations
             }
         }
 
-        public ICoordinate Transform(ICoordinate coordinate)
+        public virtual ICoordinate Transform(ICoordinate coordinate)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        public virtual IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
         {
             throw new NotImplementedException();
         }
