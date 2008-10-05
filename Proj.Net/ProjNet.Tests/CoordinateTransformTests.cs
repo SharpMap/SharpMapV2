@@ -10,9 +10,9 @@ using NPack.Matrix;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
-using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate2D;
-using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DFactory;
-using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DSequenceFactory;
+using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate;
+using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinateFactory;
+using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinateSequenceFactory;
 
 namespace ProjNet.Tests
 {

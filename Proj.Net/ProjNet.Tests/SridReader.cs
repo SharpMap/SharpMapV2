@@ -7,9 +7,9 @@ using GeoAPI.Geometries;
 using GeoAPI.IO.WellKnownText;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using ProjNet.CoordinateSystems;
-using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate2D;
-using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DFactory;
-using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinate2DSequenceFactory;
+using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate;
+using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinateFactory;
+using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinateSequenceFactory;
 
 namespace ProjNet.Tests
 {

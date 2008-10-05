@@ -47,19 +47,22 @@ using GeoAPI.DataStructures;
 namespace ProjNet.CoordinateSystems.Projections
 {
     /// <summary>
-    ///		Implements the Albers projection.
+    ///	Implements the Albers projection.
     /// </summary>
     /// <remarks>
-    /// 	<para>Implements the Albers projection. The Albers projection is most commonly
-    /// 	used to project the United States of America. It gives the northern
-    /// 	border with Canada a curved appearance.</para>
-    /// 	
-    ///		<para>The <a href="http://www.geog.mcgill.ca/courses/geo201/mapproj/naaeana.gif">Albers Equal Area</a>
-    ///		projection has the property that the area bounded
-    ///		by any pair of parallels and meridians is exactly reproduced between the 
-    ///		image of those parallels and meridians in the projected domain, that is,
-    ///		the projection preserves the correct area of the earth though distorts
-    ///		direction, distance and shape somewhat.</para>
+    /// <para>
+    /// Implements the Albers projection. The Albers projection is most commonly
+    /// used to project the United States of America. It gives the northern
+    /// border with Canada a curved appearance.
+    /// </para>
+    ///	<para>
+    /// The <a href="http://www.geog.mcgill.ca/courses/geo201/mapproj/naaeana.gif">
+    /// Albers Equal Area</a> projection has the property that the area bounded
+    ///	by any pair of parallels and meridians is exactly reproduced between the 
+    ///	image of those parallels and meridians in the projected domain, that is,
+    ///	the projection preserves the correct area of the earth though distorts
+    ///	direction, distance and shape somewhat.
+    /// </para>
     /// </remarks>
     internal class AlbersProjection<TCoordinate> : MapProjection<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
