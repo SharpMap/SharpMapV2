@@ -220,7 +220,7 @@ namespace SharpMap.Data.Providers
             return cmd;
         }
 
-        private object GetWithClause()
+        protected string GetWithClause()
         {
             if (!WithNoLock && !ForceIndex)
                 return "";

@@ -163,6 +163,7 @@
     <Compile Include="Expressions\AllBandsExpression.cs" />
     <Compile Include="Expressions\AttributeBinaryExpression.cs" />
     <Compile Include="Expressions\AttributesProjectionExpression.cs" />
+    <Compile Include="Expressions\AttributeBinaryStringExpression.cs" />
     <Compile Include="Expressions\BinaryExpression.cs" />
     <Compile Include="Expressions\BinaryExpressionBase.cs" />
     <Compile Include="Expressions\BinaryOperator.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Expressions\SpatialBinaryExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialOperation.cs" />
+    <Compile Include="Expressions\BinaryStringOperator.cs" />
     <Compile Include="Expressions\StringCollectionExpression.cs" />
     <Compile Include="Expressions\StringExpression.cs" />
     <Compile Include="Expressions\ThisExpression.cs" />
