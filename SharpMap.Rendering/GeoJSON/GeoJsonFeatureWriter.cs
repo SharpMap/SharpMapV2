@@ -165,7 +165,7 @@ namespace SharpMap.Rendering.GeoJson
         private static void WriteExtents(StringBuilder sb, IExtents extents)
         {
             sb.Append("[");
-            sb.AppendFormat(string.Format("{0:E},{1:E},{2:E},{3:E}", extents.Min[Ordinates.X], extents.Min[Ordinates.Y],
+            sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, string.Format("{0},{1},{2},{3}", extents.Min[Ordinates.X], extents.Min[Ordinates.Y],
                                           extents.Max[Ordinates.X], extents.Max[Ordinates.Y]));
 
             sb.Append("]");
