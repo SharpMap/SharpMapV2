@@ -80,15 +80,15 @@ namespace SharpMap.Presentation.AspNet
 
             internal InternalFactoryService()
             {
-                _coordinateFactory = new BufferedCoordinate2DFactory();
+                _coordinateFactory = new BufferedCoordinateFactory();
                 _coordinateSequenceFactory =
-                    new BufferedCoordinate2DSequenceFactory((BufferedCoordinate2DFactory) _coordinateFactory);
+                    new BufferedCoordinateSequenceFactory((BufferedCoordinateFactory)_coordinateFactory);
                 _geometryFactory =
-                    new GeometryFactory<BufferedCoordinate2D>(
-                        (BufferedCoordinate2DSequenceFactory) _coordinateSequenceFactory);
+                    new GeometryFactory<BufferedCoordinate>(
+                        (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
                 _coordinateSystemFactory =
-                    new CoordinateSystemFactory<BufferedCoordinate2D>((BufferedCoordinate2DFactory) _coordinateFactory,
-                                                                      (GeometryFactory<BufferedCoordinate2D>)
+                    new CoordinateSystemFactory<BufferedCoordinate>((BufferedCoordinateFactory)_coordinateFactory,
+                                                                      (GeometryFactory<BufferedCoordinate>)
                                                                       _geometryFactory);
 
                 ///TODO: Projection is not yet ready. Fill out when it is
@@ -117,9 +117,9 @@ namespace SharpMap.Presentation.AspNet
                         if (!_sridAwareGeometryFactories.ContainsKey(srid.Value))
                         {
                             _sridAwareGeometryFactories.Add(srid.Value,
-                                                            new GeometryFactory<BufferedCoordinate2D>(
-                                                                (BufferedCoordinate2DSequenceFactory)
-                                                                _coordinateSequenceFactory, srid.Value));
+                                                            new GeometryFactory<BufferedCoordinate>(srid.Value,
+                                                                (BufferedCoordinateSequenceFactory)
+                                                                _coordinateSequenceFactory));
                         }
 
                     return _sridAwareGeometryFactories[srid.Value];
