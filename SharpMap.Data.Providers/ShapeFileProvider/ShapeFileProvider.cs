@@ -471,7 +471,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if property is read or set and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
+        /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="ShapeFileIsInvalidException">
         /// Thrown if set and there is no DBase file with this shapefile.
@@ -495,7 +495,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is executed and the shapefile is open or 
         /// if set and the specified filename already exists.
-        /// Check <see cref="IsOpen"/> before calling.
+        /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="FileNotFoundException">
         /// </exception>
@@ -574,7 +574,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if property is read and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
+        /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
         public ShapeType ShapeType
         {
@@ -583,6 +583,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                 checkOpen();
                 return _header.ShapeType;
             }
+        }
+
+        public DbaseHeader DbaseHeader
+        {
+            get { return _dbaseFile.Header; }
         }
         #endregion
 
@@ -644,7 +649,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is executed and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
+        /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
         public void RebuildSpatialIndex()
         {
@@ -664,6 +669,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 _spatialIndex = createSpatialIndex();
             }
+        }
+
+        public IFeatureDataReader GetReader()
+        {
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(GetExtents());
+            return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
         }
         #endregion
 
@@ -722,7 +733,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             //checkOpen();
             if (_coordsysReadFromFile)
             {
-                throw new ShapeFileInvalidOperationException("Coordinate system is specified in "+
+                throw new ShapeFileInvalidOperationException("Coordinate system is specified in " +
                                                              "projection file and is read only");
             }
 
@@ -796,7 +807,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <returns>An IFeatureDataReader to iterate over the results.</returns>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. 
-        /// Check <see cref="IsOpen"/> before calling.
+        /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// Thrown when a value other than <see cref="FeatureQueryExecutionOptions.FullFeature"/> 
@@ -806,7 +817,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Only <see cref="FeatureQueryExecutionOptions.FullFeature"/> is a 
         /// supported value for <paramref name="options"/>.
         /// </remarks>
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
+        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, 
+                                                      FeatureQueryExecutionOptions options)
         {
             if (query == null) throw new ArgumentNullException("query");
 
@@ -816,9 +828,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (_currentReader != null)
                 {
-                    throw new ShapeFileInvalidOperationException(
-                        "Can't open another ShapeFileDataReader on this ShapeFile, " +
-                        "since another reader is already active.");
+                    throw new ShapeFileInvalidOperationException("Can't open another ShapeFileDataReader " +
+                                                                 "on this ShapeFile, since another reader " +
+                                                                 "is already active.");
                 }
 
                 _currentReader = new ShapeFileDataReader(this, query, options);
@@ -2080,7 +2092,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
                 catch (ArgumentException ex)
                 {
-                    Trace.Warning("Coordinate system file '" + projfile + 
+                    Trace.Warning("Coordinate system file '" + projfile +
                                   "' found, but could not be parsed. " +
                                   "WKT parser returned:" + ex.Message);
 

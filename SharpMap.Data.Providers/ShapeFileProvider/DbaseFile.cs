@@ -134,7 +134,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #region Columns Property
         public ICollection<DbaseField> Columns
         {
-            get { return _header == null ? null : _header.Columns; }
+            get { return Header == null ? null : Header.Columns; }
             //set
             //{
             //    if (_header != null)
@@ -153,7 +153,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get
             {
                 checkState();
-                return DbaseLocaleRegistry.GetCulture(_header.LanguageDriver);
+                return DbaseLocaleRegistry.GetCulture(Header.LanguageDriver);
             }
         }
 
@@ -179,7 +179,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get
             {
                 checkState();
-                return DbaseLocaleRegistry.GetEncoding(_header.LanguageDriver);
+                return DbaseLocaleRegistry.GetEncoding(Header.LanguageDriver);
             }
         }
 
@@ -200,7 +200,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get
             {
                 checkState();
-                return _header.RecordCount;
+                return Header.RecordCount;
             }
         } 
         #endregion
@@ -212,7 +212,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             DbaseFile file = new DbaseFile(fileName, geoFactory, false);
             Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
-            file._header.Columns = DbaseSchema.GetFields(schema, file._header);
+            file.Header.Columns = DbaseSchema.GetFields(schema, file.Header);
         	file._headerIsParsed = true;
 			file.Open();
 			file.Save();
@@ -222,7 +222,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         internal void Save()
         {
             _writer.BeginWrite();
-            _writer.WriteFullHeader(_header);
+            _writer.WriteFullHeader(Header);
             _writer.EndWrite();
         }
 
@@ -230,14 +230,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            DataStream.Seek((Int32)ComputeByteOffsetToRecord(_header.RecordCount), 
+            DataStream.Seek((Int32)ComputeByteOffsetToRecord(Header.RecordCount), 
                 SeekOrigin.Begin);
 
             _writer.BeginWrite();
             _writer.WriteRow(row);
-            _header.LastUpdate = DateTime.Now;
-            _header.RecordCount++;
-            _writer.UpdateHeader(_header);
+            Header.LastUpdate = DateTime.Now;
+            Header.RecordCount++;
+            _writer.UpdateHeader(Header);
             _writer.EndWrite();
         }
 
@@ -250,11 +250,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             foreach (DataRow row in table.Rows)
             {
                 _writer.WriteRow(row);
-                _header.RecordCount++;
+                Header.RecordCount++;
             }
 
-            _header.LastUpdate = DateTime.Now;
-            _writer.UpdateHeader(_header);
+            Header.LastUpdate = DateTime.Now;
+            _writer.UpdateHeader(Header);
             _writer.EndWrite();
         }
 
@@ -275,7 +275,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         internal Int64 ComputeByteOffsetToRecord(UInt32 row)
         {
-            return _header.HeaderLength + (row * _header.RecordLength);
+            return Header.HeaderLength + (row * Header.RecordLength);
         }
 
         internal void DeleteRow(UInt32 rowIndex)
@@ -330,7 +330,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             FeatureDataRow<UInt32> dr = table.NewRow(oid);
 
-            foreach (DbaseField field in _header.Columns)
+            foreach (DbaseField field in Header.Columns)
             {
                 try
                 {
@@ -349,7 +349,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         internal DataTable GetSchemaTable()
         {
             checkState();
-            return _header.GetSchemaTable();
+            return Header.GetSchemaTable();
         }
 
 		internal void SetTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
@@ -370,7 +370,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        /// <summary>
+	    public DbaseHeader Header
+	    {
+	        get { return _header; }
+	    }
+
+	    /// <summary>
         /// Opens the <see cref="DbaseReader"/> on the file 
         /// specified in the constructor.
         /// </summary>
@@ -406,7 +411,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (!_headerIsParsed) //Don't read the header if it's already parsed
             {
 				_header = DbaseHeader.ParseDbfHeader(new NondisposingStream(DataStream));
-                _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns, _geoFactory);
+                _baseTable = DbaseSchema.GetFeatureTableForFields(Header.Columns, _geoFactory);
                 _headerIsParsed = true;
             }
 
@@ -418,7 +423,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            if (rowIndex < 0 || rowIndex >= _header.RecordCount)
+            if (rowIndex < 0 || rowIndex >= Header.RecordCount)
             {
                 throw new ArgumentOutOfRangeException("rowIndex");
             }
@@ -426,8 +431,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             DataStream.Seek(ComputeByteOffsetToRecord(rowIndex), SeekOrigin.Begin);
             _writer.BeginWrite();
             _writer.WriteRow(row);
-            _header.LastUpdate = DateTime.Now;
-            _writer.UpdateHeader(_header);
+            Header.LastUpdate = DateTime.Now;
+            _writer.UpdateHeader(Header);
             _writer.EndWrite();
         }
         #endregion

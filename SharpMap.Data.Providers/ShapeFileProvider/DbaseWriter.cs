@@ -160,7 +160,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 _binaryWriter.Write(DbaseConstants.NotDeletedIndicator);
 
-                DbaseHeader header = _dbaseFile._header;
+                DbaseHeader header = _dbaseFile.Header;
 
                 foreach (DbaseField column in header.Columns)
                 {

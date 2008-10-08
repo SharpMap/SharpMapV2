@@ -140,7 +140,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 checkState();
 
-                DbaseHeader header = _dbaseFile._header;
+                DbaseHeader header = _dbaseFile.Header;
 
                 if (!_dbaseFile.IsOpen)
                 {

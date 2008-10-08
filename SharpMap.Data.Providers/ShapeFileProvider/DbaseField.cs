@@ -23,7 +23,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	/// <summary>
 	/// Represents a field in a DBase file.
 	/// </summary>
-	internal class DbaseField : IEquatable<DbaseField>
+    public class DbaseField : IEquatable<DbaseField>
 	{
 		private readonly String _columnName;
 		private readonly Type _dataType;

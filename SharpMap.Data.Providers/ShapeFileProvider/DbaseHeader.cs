@@ -26,7 +26,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// <summary>
     /// Represents the header of an xBase file.
     /// </summary>
-    internal class DbaseHeader
+    public class DbaseHeader
     {
         private DateTime _lastUpdate = DateTime.Now;
         private UInt32 _numberOfRecords;
@@ -47,24 +47,24 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Gets a value which indicates which code page text data is 
         /// stored in.
         /// </summary>
-        internal Byte LanguageDriver
+        public Byte LanguageDriver
         {
             get { return _languageDriver; }
         }
 
-        internal DateTime LastUpdate
+        public DateTime LastUpdate
         {
             get { return _lastUpdate; }
             set { _lastUpdate = value; }
         }
 
-        internal UInt32 RecordCount
+        public UInt32 RecordCount
         {
             get { return _numberOfRecords; }
             set { _numberOfRecords = value; }
         }
 
-        internal ICollection<DbaseField> Columns
+        public ICollection<DbaseField> Columns
         {
             get { return _dbaseColumns.Values; }
             set
@@ -84,19 +84,19 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        internal Int16 HeaderLength
+        public Int16 HeaderLength
         {
             get { return _headerLength; }
             private set { _headerLength = value; }
         }
 
-        internal Int16 RecordLength
+        public Int16 RecordLength
         {
             get { return _recordLength; }
             private set { _recordLength = value; }
         }
 
-        internal Encoding FileEncoding
+        public Encoding FileEncoding
         {
             get { return DbaseLocaleRegistry.GetEncoding(LanguageDriver); }
         }
