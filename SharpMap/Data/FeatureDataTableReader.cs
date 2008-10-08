@@ -43,6 +43,11 @@ namespace SharpMap.Data
             get { throw new NotImplementedException(); }
         }
 
+        public IExtents Extents
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public Object GetOid()
         {
             throw new NotImplementedException();

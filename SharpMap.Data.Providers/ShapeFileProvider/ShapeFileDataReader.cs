@@ -132,7 +132,19 @@ namespace SharpMap.Data.Providers.ShapeFile
 			               ? null
 			               : _currentFeature.Geometry.Clone();
 			}
-		}
+        }
+
+        public IExtents Extents
+        {
+            get
+            {
+                checkState();
+
+                return _currentFeature.Extents == null
+                           ? null
+                           : _currentFeature.Extents.Clone() as IExtents;
+            }
+        }
 
 		public object GetOid()
 		{

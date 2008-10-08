@@ -17,7 +17,11 @@
 
 using System;
 using System.Collections;
+#if DOTNET35
+using System.Linq;
+#else
 using GeoAPI.DataStructures;
+#endif
 
 namespace SharpMap.Expressions
 {

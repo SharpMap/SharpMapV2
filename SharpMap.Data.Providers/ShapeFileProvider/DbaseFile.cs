@@ -30,9 +30,9 @@ using GeoAPI.IO;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
-	/// <summary>
-	/// Represents a dBase file used to store attribute data in a Shapefile.
-	/// </summary>
+    /// <summary>
+    /// Represents a dBase file used to store attribute data in a Shapefile.
+    /// </summary>
     internal partial class DbaseFile : IDisposable
     {
         #region Instance fields
@@ -46,7 +46,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FileStream _dbaseFileStream;
         private Boolean _isDisposed;
         private Boolean _isOpen;
-	    private readonly IGeometryFactory _geoFactory;
+        private readonly IGeometryFactory _geoFactory;
+        private readonly Object _headerParseSync = new Object();
 
         #endregion
 
@@ -202,7 +203,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 checkState();
                 return Header.RecordCount;
             }
-        } 
+        }
         #endregion
 
         #region Methods
@@ -213,9 +214,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
             file.Header.Columns = DbaseSchema.GetFields(schema, file.Header);
-        	file._headerIsParsed = true;
-			file.Open();
-			file.Save();
+            file._headerIsParsed = true;
+            file.Open();
+            file.Save();
             return file;
         }
 
@@ -230,8 +231,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            DataStream.Seek((Int32)ComputeByteOffsetToRecord(Header.RecordCount), 
-                SeekOrigin.Begin);
+            DataStream.Seek((Int32)ComputeByteOffsetToRecord(Header.RecordCount),
+                            SeekOrigin.Begin);
 
             _writer.BeginWrite();
             _writer.WriteRow(row);
@@ -275,7 +276,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         internal Int64 ComputeByteOffsetToRecord(UInt32 row)
         {
-            return Header.HeaderLength + (row * Header.RecordLength);
+            return Header.HeaderLength + ((row - 1) * Header.RecordLength);
         }
 
         internal void DeleteRow(UInt32 rowIndex)
@@ -307,14 +308,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (!_isOpen)
             {
-                throw new InvalidDbaseFileOperationException(
-                    "An attempt was made to read from a closed dBase file");
+                throw new InvalidDbaseFileOperationException("An attempt was made to read " +
+                                                             "from a closed dBase file");
             }
 
-            if (oid < 0 || oid >= RecordCount)
+            if (oid <= 0 || oid > RecordCount)
             {
-                throw new ArgumentOutOfRangeException(
-                    "Invalid DataRow requested at index " + oid);
+                throw new ArgumentOutOfRangeException("Invalid DataRow requested " +
+                                                      "at index " + oid);
             }
 
             if (ReferenceEquals(table, null))
@@ -322,8 +323,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ArgumentNullException("table");
             }
 
-
-            if (_reader.IsRowDeleted(oid)) //is record marked deleted?
+            if (_reader.IsRowDeleted(oid)) // is record marked deleted?
             {
                 return null;
             }
@@ -338,8 +338,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
                 catch (NotSupportedException)
                 {
-                    throw new InvalidDbaseFileOperationException(
-                        String.Format("Column type {0} is not supported.", field.DataType));
+                    String message = String.Format("Column type {0} is not supported.", 
+                                                   field.DataType);
+                    throw new InvalidDbaseFileOperationException(message);
                 }
             }
 
@@ -352,10 +353,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             return Header.GetSchemaTable();
         }
 
-		internal void SetTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
-		{
-			_baseTable.MergeSchema(target, mergeAction);
-		}
+        internal void SetTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
+        {
+            _baseTable.MergeSchema(target, mergeAction);
+        }
 
         /// <summary>
         /// Returns an empty <see cref="FeatureDataTable"/> 
@@ -370,12 +371,21 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-	    public DbaseHeader Header
-	    {
-	        get { return _header; }
-	    }
+        public DbaseHeader Header
+        {
+            get
+            {
+                if (!_headerIsParsed && !_isOpen)
+                {
+                    Stream dbfStream = openDbfFileStream(true);
+                    syncReadHeader(dbfStream);
+                }
 
-	    /// <summary>
+                return _header;
+            }
+        }
+
+        /// <summary>
         /// Opens the <see cref="DbaseReader"/> on the file 
         /// specified in the constructor.
         /// </summary>
@@ -403,20 +413,14 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkState();
 
             // TODO: implement asynchronous access
-			_dbaseFileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, 
-				exclusive ? FileShare.None : FileShare.Read, 4096, FileOptions.None);
+            _dbaseFileStream = openDbfFileStream(exclusive);
 
             _isOpen = true;
 
-            if (!_headerIsParsed) //Don't read the header if it's already parsed
-            {
-				_header = DbaseHeader.ParseDbfHeader(new NondisposingStream(DataStream));
-                _baseTable = DbaseSchema.GetFeatureTableForFields(Header.Columns, _geoFactory);
-                _headerIsParsed = true;
-            }
+            syncReadHeader(DataStream);
 
-			_writer = new DbaseWriter(this);
-			_reader = new DbaseReader(this);
+            _writer = new DbaseWriter(this);
+            _reader = new DbaseReader(this);
         }
 
         internal void UpdateRow(UInt32 rowIndex, DataRow row)
@@ -448,36 +452,69 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-//            // Binary Tree not working yet on Mono 
-//            // see bug: http://bugzilla.ximian.com/show_bug.cgi?id=78502
-//#if !MONO
-//            /// <summary>
-//            /// Indexes a DBF column in a binary tree (B-Tree) [NOT COMPLETE]
-//            /// </summary>
-//            /// <typeparam name="TValue">datatype to be indexed</typeparam>
-//            /// <param name="columnId">Column to index</param>
-//            /// <returns>A <see cref="SharpMap.Indexing.BinaryTree.BinaryTree{T, UInt32}"/> data 
-//            /// structure indexing values in a column to a row index</returns>
-//            /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
-//            /// object has been disposed</exception>
-//            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(Int32 columnId) where TValue : IComparable<TValue>
-//            {
-//                if (_isDisposed)
-//                {
-//                    throw new ObjectDisposedException(
-//                        "Attempt to access a disposed DbaseReader object");
-//                }
+        private FileStream openDbfFileStream(Boolean exclusive)
+        {
+            return new FileStream(_filename,
+                                  FileMode.OpenOrCreate,
+                                  FileAccess.ReadWrite,
+                                  exclusive ? FileShare.None : FileShare.Read,
+                                  4096,
+                                  FileOptions.None);
+        }
 
-//                BinaryTree<UInt32, TValue> tree = new BinaryTree<UInt32, TValue>();
+        private void syncReadHeader(Stream dbfStream)
+        {
+            if (_headerIsParsed)
+            {
+                return;
+            }
 
-//                for (UInt32 i = 0; i < _header.RecordCount; i++)
-//                {
-//                    tree.Add(new BinaryTree<UInt32, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
-//                }
+            lock (_headerParseSync)
+            {
+                if (!_headerIsParsed)
+                {
+                    parseHeader(dbfStream);
+                }
+            }
+        }
 
-//                return tree;
-//            }
-//#endif
+        private void parseHeader(Stream dbfStream)
+        {
+            _header = DbaseHeader.ParseDbfHeader(new NondisposingStream(dbfStream));
+            _baseTable = DbaseSchema.GetFeatureTableForFields(_header.Columns, _geoFactory);
+            _headerIsParsed = true;
+        }
+
+        //            // Binary Tree not working yet on Mono 
+        //            // see bug: http://bugzilla.ximian.com/show_bug.cgi?id=78502
+        //#if !MONO
+        //            /// <summary>
+        //            /// Indexes a DBF column in a binary tree (B-Tree) [NOT COMPLETE]
+        //            /// </summary>
+        //            /// <typeparam name="TValue">datatype to be indexed</typeparam>
+        //            /// <param name="columnId">Column to index</param>
+        //            /// <returns>A <see cref="SharpMap.Indexing.BinaryTree.BinaryTree{T, UInt32}"/> data 
+        //            /// structure indexing values in a column to a row index</returns>
+        //            /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
+        //            /// object has been disposed</exception>
+        //            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(Int32 columnId) where TValue : IComparable<TValue>
+        //            {
+        //                if (_isDisposed)
+        //                {
+        //                    throw new ObjectDisposedException(
+        //                        "Attempt to access a disposed DbaseReader object");
+        //                }
+
+        //                BinaryTree<UInt32, TValue> tree = new BinaryTree<UInt32, TValue>();
+
+        //                for (UInt32 i = 0; i < _header.RecordCount; i++)
+        //                {
+        //                    tree.Add(new BinaryTree<UInt32, TValue>.ItemValue(i, (TValue)GetValue(i, columnId)));
+        //                }
+
+        //                return tree;
+        //            }
+        //#endif
 
         //    #region Lucene Indexing (EXPERIMENTAL)
 

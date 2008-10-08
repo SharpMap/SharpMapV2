@@ -33,6 +33,11 @@ namespace SharpMap.Data
         IGeometry Geometry { get; }
 
         /// <summary>
+        /// Gets the extents for the current position in the reader.
+        /// </summary>
+        IExtents Extents { get; }
+
+        /// <summary>
         /// Gets the object ID for the record.
         /// </summary>
         /// <returns>

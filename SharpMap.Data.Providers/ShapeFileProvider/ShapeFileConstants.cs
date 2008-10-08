@@ -44,7 +44,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// The number of bytes in a shapefile record header 
 		/// (per-record preamble).
 		/// </summary>
-		public const Int32 ShapeRecordHeaderByteLength = 8;
+        public const Int32 ShapeRecordHeaderByteLength = 8;
+
+        /// <summary>
+        /// The number of bytes in a shapefile record header 
+        /// (per-record preamble) Content Length field.
+        /// </summary>
+        public const Int32 ShapeRecordContentLengthByteLength = 4;
 
 		/// <summary>
 		/// The number of bytes in a record header (per-record preamble)
@@ -53,10 +59,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 		public const Int32 IndexRecordByteLength = 8;
 
 		/// <summary>
-		/// The number of bytes used to store the BoundingBox, or 
-		/// extents for the shapefile.
+		/// The number of bytes used to store the bounding box, or 
+		/// extents, for the shapefile.
 		/// </summary>
-		public const Int32 BoundingBoxFieldByteLength = 32;
+        public const Int32 BoundingBoxFieldByteLength = 32;
 
 		/// <summary>
 		/// The name given to the row identifier in a ShapeFileProvider.

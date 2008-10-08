@@ -96,7 +96,16 @@ namespace SharpMap.Data.Providers.GeometryProvider
 				checkState();
 				return _provider.Geometries[_currentIndex].Clone();
 			}
-		}
+        }
+
+        public IExtents Extents
+        {
+            get
+            {
+                checkState();
+                return _provider.Geometries[_currentIndex].Extents.Clone() as IExtents;
+            }
+        }
 
         public Boolean IsFullyLoaded
         {

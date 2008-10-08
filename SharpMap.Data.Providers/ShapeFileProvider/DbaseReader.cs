@@ -30,7 +30,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             #region Instance fields
             private readonly DbaseFile _dbaseFile;
             private BinaryReader _dbaseReader;
-            private Boolean _isDisposed = false;
+            private Boolean _isDisposed;
 
             #endregion
 
@@ -38,9 +38,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             /// <summary>
             /// Creates a new instance of a <see cref="DbaseReader"/> for the
-			/// <paramref name="file" />.
+            /// <paramref name="file" />.
             /// </summary>
-			/// <param name="file">The controlling DbaseFile instance.</param>
+            /// <param name="file">The controlling DbaseFile instance.</param>
             public DbaseReader(DbaseFile file)
             {
                 _dbaseFile = file;
@@ -133,7 +133,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             /// unsupported type.
             /// </exception>
             /// <exception cref="ArgumentOutOfRangeException">
-			/// Thrown if <paramref name="row"/> is 
+            /// Thrown if <paramref name="row"/> is 
             /// less than 0 or greater than <see cref="RecordCount"/> - 1.
             /// </exception>
             internal object GetValue(UInt32 row, DbaseField column)
@@ -144,18 +144,18 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 if (!_dbaseFile.IsOpen)
                 {
-                    throw new InvalidDbaseFileOperationException(
-                        "An attempt was made to read from a closed DBF file");
+                    throw new InvalidDbaseFileOperationException("An attempt was made to read " +
+                                                                 "from a closed DBF file");
                 }
 
-                if (row < 0 || row >= header.RecordCount)
+                if (row <= 0 || row > header.RecordCount)
                 {
-                    throw new ArgumentOutOfRangeException(
-                        "Invalid row requested at index " + row);
+                    throw new ArgumentOutOfRangeException("Invalid row requested " +
+                                                          "at index " + row);
                 }
 
                 // Compute the position in the file stream for the requested row and column
-                Int64 offset = header.HeaderLength + (row * header.RecordLength);
+                Int64 offset = header.HeaderLength + ((row - 1) * header.RecordLength);
                 offset += column.Offset;
 
                 // Seek to the computed offset
@@ -167,8 +167,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
                 catch (NotSupportedException)
                 {
-                    throw new InvalidDbaseFileOperationException(
-                        String.Format("Column type {0} is not supported.", column.DataType));
+                    String message = String.Format("Column type {0} is not supported.",
+                                                   column.DataType);
+                    throw new InvalidDbaseFileOperationException(message);
                 }
             }
 
@@ -178,8 +179,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (_isDisposed)
                 {
-                    throw new ObjectDisposedException(
-                        "Attempt to access a disposed DbaseReader object");
+                    throw new ObjectDisposedException("Attempt to access a disposed " +
+                                                      "DbaseReader object");
                 }
             }
 
@@ -200,16 +201,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                         DateTime date;
                         // Mono has not yet implemented DateTime.TryParseExact
 #if !MONO
-                        if (DateTime.TryParseExact(Encoding.UTF8.GetString((_dbaseReader.ReadBytes(8))),
-                                                   "yyyyMMdd", DbaseConstants.StorageNumberFormat, 
-                                                   DateTimeStyles.None, out date))
-                        {
-                            return date;
-                        }
-                        else
-                        {
-                            return DBNull.Value;
-                        }
+                        return DateTime.TryParseExact(Encoding.UTF8.GetString((_dbaseReader.ReadBytes(8))),
+                                                      "yyyyMMdd", DbaseConstants.StorageNumberFormat,
+                                                      DateTimeStyles.None, out date)
+                                   ? (object)date
+                                   : DBNull.Value;
 #else
 					    try 
 					    {
@@ -227,69 +223,44 @@ namespace SharpMap.Data.Providers.ShapeFile
                         String temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
                         Double dbl;
 
-                        if (Double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl))
-                        {
-                            return dbl;
-                        }
-                        else
-                        {
-                            return DBNull.Value;
-                        }
+                        return Double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl)
+                                   ? (object)dbl
+                                   : DBNull.Value;
 
                     case TypeCode.Int16:
                         String temp16 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int16 i16;
 
-                        if (Int16.TryParse(temp16, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i16))
-                        {
-                            return i16;
-                        }
-                        else
-                        {
-                            return DBNull.Value;
-                        }
+                        return Int16.TryParse(temp16, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i16)
+                                   ? (object)i16
+                                   : DBNull.Value;
 
                     case TypeCode.Int32:
                         String temp32 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int32 i32;
 
-                        if (Int32.TryParse(temp32, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i32))
-                        {
-                            return i32;
-                        }
-                        else
-                        {
-                            return DBNull.Value;
-                        }
+                        return Int32.TryParse(temp32, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i32)
+                                   ? (object)i32
+                                   : DBNull.Value;
 
                     case TypeCode.Int64:
                         String temp64 =
                             Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
                         Int64 i64 = 0;
 
-                        if (Int64.TryParse(temp64, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i64))
-                        {
-                            return i64;
-                        }
-                        else
-                        {
-                            return DBNull.Value;
-                        }
+                        return Int64.TryParse(temp64, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i64)
+                                   ? (object)i64
+                                   : DBNull.Value;
 
                     case TypeCode.Single:
                         String temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
                         Single f = 0;
 
-                        if (Single.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f))
-                        {
-                            return f;
-                        }
-                        else
-                        {
-                            return DBNull.Value;
-                        }
+                        return Single.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f)
+                                   ? (object)f
+                                   : DBNull.Value;
 
                     case TypeCode.String:
                         {
@@ -310,7 +281,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                     case TypeCode.Decimal:
                     default:
                         throw new NotSupportedException("Cannot parse DBase field '"
-                                                        + dbf.ColumnName + "' of type '" + dbf.DataType + "'");
+                                                        + dbf.ColumnName + "' of type '" +
+                                                        dbf.DataType + "'");
                 }
             }
             #endregion

@@ -27,7 +27,7 @@ namespace SharpMap.Expressions
 
         public AttributesProjectionExpression(IEnumerable<String> attributes)
             // The explicit cast is needed when compiling under ToolsVersion=2.0
-            : this(Enumerable.Transform(attributes, (Func<String, PropertyNameExpression>)delegate(String name)
+            : this(Processor.Transform(attributes, (Func<String, PropertyNameExpression>)delegate(String name)
                                                     {
                                                         return new PropertyNameExpression(name);
                                                     })) { }

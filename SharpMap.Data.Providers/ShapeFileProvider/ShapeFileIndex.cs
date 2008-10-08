@@ -76,7 +76,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 					Int32 length = ByteEncoder.GetBigEndian(reader.ReadInt32());
 
 					IndexEntry entry = new IndexEntry(length, offset);
-					_shapeIndex.Add((UInt32)id, entry);
+                    // Record numbers begin at 1. (Shapefile: p. 5)
+					_shapeIndex.Add((UInt32)id + 1, entry);
 				}
 			}
 		}

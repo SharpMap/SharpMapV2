@@ -120,6 +120,16 @@ namespace SharpMap.Data.Providers.FeatureProvider
 			}
         }
 
+        public IExtents Extents
+        {
+            get
+            {
+                checkDisposed();
+                checkReadState();
+                return _table[_currentRow].Extents.Clone() as IExtents;
+            }
+        }
+
         public Object GetOid()
         {
             checkDisposed();
