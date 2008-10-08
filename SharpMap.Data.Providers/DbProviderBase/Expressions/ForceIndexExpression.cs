@@ -22,5 +22,10 @@ namespace SharpMap.Data.Providers.Db.Expressions
             : base("ForceIndex", forceIndex)
         {
         }
+
+        public override Expression Clone()
+        {
+            return new ForceIndexExpression(PropertyValueExpression.Value);
+        }
     }
 }

@@ -248,7 +248,7 @@ namespace SharpMap.Data.Providers.Database
             get
             {
                 if (_geomColumnIndex > -1)
-                    return _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+                    return _geomFactory.WkbReader.Read((byte[]) _internalReader[_geomColumnIndex]);
 
                 return null;
             }
@@ -273,7 +273,7 @@ namespace SharpMap.Data.Providers.Database
 
         public Type OidType
         {
-            get { return typeof(long); }
+            get { return typeof (long); }
         }
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
@@ -293,11 +293,6 @@ namespace SharpMap.Data.Providers.Database
         {
             return GetEnumerator();
         }
-
-        #endregion
-
-        #region IFeatureDataRecord Members
-
 
         public IExtents Extents
         {

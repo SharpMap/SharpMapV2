@@ -18,6 +18,7 @@ using System.Data;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.MsSqlSpatial;
 using SharpMap.Expressions;
 
@@ -27,30 +28,19 @@ namespace SharpMap.Data.Providers
         : SpatialDbProviderBase<long>
     {
         private string _spatialSchema = "ST";
-        private bool _withNoLock = true;
 
         public MsSqlSpatialProvider(IGeometryFactory geometryFactory, string connectionString, string tableName)
-            : this(geometryFactory, connectionString, null, null, tableName, null, null, true)
+            : this(geometryFactory, connectionString, string.Empty, string.Empty, tableName, string.Empty, string.Empty)
         {
         }
 
         public MsSqlSpatialProvider(IGeometryFactory geometryFactory, string connectionString, string spatialSchema,
-                                    string tableSchema, string tableName, string oidColumn, string geometryColumn,
-                                    bool withNoLock)
-            : base(
-                new SqlServerDbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn,
-                geometryColumn)
+                                    string tableSchema, string tableName, string oidColumn, string geometryColumn)
+            : base(new SqlServerDbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn)
         {
             if (!string.IsNullOrEmpty(spatialSchema))
                 SpatialSchema = spatialSchema;
 
-            WithNoLock = withNoLock;
-        }
-
-        public bool WithNoLock
-        {
-            get { return _withNoLock; }
-            set { _withNoLock = value; }
         }
 
         public string SpatialSchema
@@ -83,7 +73,7 @@ namespace SharpMap.Data.Providers
                 cmd.CommandText =
                     string.Format(
                         "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
-                        GeometryColumn, TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+                        GeometryColumn, TableSchema, Table, BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
                 cmd.CommandType = CommandType.Text;
                 double xmin, ymin, xmax, ymax;
                 conn.Open();
@@ -102,6 +92,15 @@ namespace SharpMap.Data.Providers
             }
         }
 
+        protected string BuildWithStatement(IEnumerable<ProviderPropertyExpression> providerPropertyExpressions)
+        {
+            bool withNoLock =
+                GetPropertyExpression(providerPropertyExpressions, new WithNoLockExpression(false)).
+                    PropertyValueExpression.Value;
+
+            return withNoLock ? " WITH(NOLOCK) " : "";
+        }
+
         protected override IEnumerable<string> SelectAllColumnNames()
         {
             foreach (DataColumn col in GetSchemaTable().Columns)
@@ -115,41 +114,29 @@ namespace SharpMap.Data.Providers
 
         protected override ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression)
         {
-            return new MsSqlSpatialExpressionTreeToSqlCompiler(DbUtility, WithNoLock, SelectAllColumnNames,
+            bool withNoLock = GetPropertyExpression(DefaultProviderProperties.ProviderProperties.Collection,
+                                                    new WithNoLockExpression(false)).PropertyValueExpression.Value;
+
+
+            return new MsSqlSpatialExpressionTreeToSqlCompiler(DbUtility, withNoLock, SelectAllColumnNames,
                                                                GeometryColumnConversionFormatString, expression,
                                                                SpatialSchema, TableSchema, Table,
                                                                OidColumn, GeometryColumn, Srid);
         }
 
-
-        protected override IDbCommand PrepareCommand(Expression query)
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
+                                              ExpressionTreeToSqlCompilerBase compiler)
         {
-            Expression exp = query;
-
-            if (DefinitionQuery != null)
-                exp = new BinaryExpression(query, BinaryOperator.And, DefinitionQuery);
-
-            ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(exp);
-
-            string sql = string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
-                                       compiler.SqlParamDeclarations,
-                                       string.IsNullOrEmpty(compiler.SqlColumns)
-                                           ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                           : compiler.SqlColumns,
-                                       compiler.QualifiedTableName,
-                                       compiler.SqlJoinClauses,
-                                       string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
-                                       compiler.SqlWhereClause,
-                                       WithNoLock ? " WITH(NOLOCK) " : "");
-
-            IDbCommand cmd = DbUtility.CreateCommand();
-            cmd.CommandText = sql;
-            cmd.CommandType = CommandType.Text;
-
-            foreach (IDataParameter p in compiler.ParameterCache.Values)
-                cmd.Parameters.Add(p);
-
-            return cmd;
+            return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
+                                 compiler.SqlParamDeclarations,
+                                 string.IsNullOrEmpty(compiler.SqlColumns)
+                                     ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
+                                     : compiler.SqlColumns,
+                                 compiler.QualifiedTableName,
+                                 compiler.SqlJoinClauses,
+                                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                                 compiler.SqlWhereClause,
+                                 BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
         }
     }
 }

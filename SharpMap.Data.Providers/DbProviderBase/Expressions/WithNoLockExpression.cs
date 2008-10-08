@@ -22,5 +22,10 @@ namespace SharpMap.Data.Providers.Db.Expressions
             : base("WithNoLock", value)
         {
         }
+
+        public override Expression Clone()
+        {
+            return new WithNoLockExpression(PropertyValueExpression.Value);
+        }
     }
 }

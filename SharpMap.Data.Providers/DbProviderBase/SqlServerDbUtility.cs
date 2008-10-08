@@ -28,12 +28,15 @@ namespace SharpMap.Data.Providers.Db
         }
 
         public IDataParameter CreateParameter<TValue>(string parameterName,
-                                              TValue parameterValue,
-                                              ParameterDirection paramDirection)
+                                                      TValue parameterValue,
+                                                      ParameterDirection paramDirection)
         {
-            SqlParameter p = Equals(null, parameterValue) 
-                                 ? new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, DBNull.Value) 
-                                 : new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, parameterValue);
+            SqlParameter p = Equals(null, parameterValue)
+                                 ? new SqlParameter(
+                                       parameterName.StartsWith("@") ? parameterName : "@" + parameterName, DBNull.Value)
+                                 : new SqlParameter(
+                                       parameterName.StartsWith("@") ? parameterName : "@" + parameterName,
+                                       parameterValue);
             p.Direction = paramDirection;
             return p;
         }
@@ -45,7 +48,7 @@ namespace SharpMap.Data.Providers.Db
 
         public string FormatValue<T>(T value)
         {
-            return string.Format(GetSqlFormatString(typeof(T)), value);
+            return string.Format(GetSqlFormatString(typeof (T)), value);
         }
 
         public string FormatValue(object value)
@@ -55,7 +58,7 @@ namespace SharpMap.Data.Providers.Db
 
         public string GetSqlFormatString(Type t)
         {
-            if (t == typeof(string))
+            if (t == typeof (string))
                 return "'{0}'";
 
             return "{0}";
@@ -63,7 +66,7 @@ namespace SharpMap.Data.Providers.Db
 
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
-            return new SqlDataAdapter((SqlCommand)cmd);
+            return new SqlDataAdapter((SqlCommand) cmd);
         }
 
         #endregion

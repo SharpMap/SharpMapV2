@@ -14,11 +14,14 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.MsSqlServer2008;
+using SharpMap.Data.Providers.MsSqlServer2008.Expressions;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers
@@ -44,23 +47,10 @@ namespace SharpMap.Data.Providers
     public class MsSqlServer2008Provider<TOid>
         : SpatialDbProviderBase<TOid>
     {
-        #region Delegates
-
-        public delegate string IndexNameGenerator(MsSqlServer2008Provider<TOid> provider);
-
-        #endregion
-
-        private SqlServer2008ExtentsMode _sqlServer2008ExtentsMode = SqlServer2008ExtentsMode.QueryIndividualFeatures;
-
-        private IndexNameGenerator _indexNameGenerator = o => string.Format("sidx_{0}_{1}", o.Table,
-                                                                            o.GeometryColumn);
-
         public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
-                                       String connectionString,
-                                       String tableName)
-            : this(
-                geometryFactory, connectionString, null, tableName, null, null, false,
-                SqlServer2008ExtentsMode.QueryIndividualFeatures)
+                                              String connectionString,
+                                              String tableName)
+            : this(geometryFactory, connectionString, null, tableName, null, null)
         {
         }
 
@@ -69,7 +59,7 @@ namespace SharpMap.Data.Providers
                                        String tableSchema,
                                        String tableName,
                                        String oidColumn,
-                                       String geometryColumn, Boolean withNoLock, SqlServer2008ExtentsMode sqlServer2008ExtentsCalculationMode)
+                                       String geometryColumn)
             : base(new SqlServerDbUtility(),
                    geometryFactory,
                    connectionString,
@@ -78,34 +68,7 @@ namespace SharpMap.Data.Providers
                    oidColumn,
                    geometryColumn)
         {
-            WithNoLock = withNoLock;
-            SqlServer2008ExtentsCalculationMode = sqlServer2008ExtentsCalculationMode;
         }
-
-        public SqlServer2008ExtentsMode SqlServer2008ExtentsCalculationMode
-        {
-            get { return _sqlServer2008ExtentsMode; }
-            set { _sqlServer2008ExtentsMode = value; }
-        }
-
-        /// <summary>
-        /// a delegate which takes in this provider and uses it to create the index name. (or a comma seperated list of index names)
-        /// The default is sidx_[tablename]_[geometrycolumnname]
-        /// use in conjunction with ForceIndex. Note: the index does not need to be a spatial one but must exist on the table. 
-        /// </summary>
-        public IndexNameGenerator IndexName
-        {
-            get { return _indexNameGenerator; }
-            set { _indexNameGenerator = value; }
-        }
-
-        /// <summary>
-        /// Set this to true to force Sql Server to use an index. Often it will not by default. 
-        /// </summary>
-        public bool ForceIndex { get; set; }
-
-        public bool WithNoLock { get; set; }
-
 
         public override String GeometryColumnConversionFormatString
         {
@@ -119,11 +82,17 @@ namespace SharpMap.Data.Providers
 
         public override IExtents GetExtents()
         {
+            SqlServer2008ExtentsMode server2008ExtentsCalculationMode =
+                GetPropertyExpression(DefaultProviderProperties.ProviderProperties.Collection,
+                                      new MsSqlServer2008ExtentsModeExpression(
+                                          SqlServer2008ExtentsMode.QueryIndividualFeatures)).PropertyValueExpression.
+                    Value;
+
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             using (IDbCommand cmd = DbUtility.CreateCommand())
             {
                 cmd.Connection = conn;
-                switch (SqlServer2008ExtentsCalculationMode)
+                switch (server2008ExtentsCalculationMode)
                 {
                     case SqlServer2008ExtentsMode.UseSqlSpatialTools:
                         {
@@ -137,14 +106,16 @@ namespace SharpMap.Data.Providers
         @envelope.STPointN(2).STY as MinY, 
         @envelope.STPointN(4).STX as MaxX, 
         @envelope.STPointN(4).STY as MaxY",
-                                   GeometryColumn , TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+                                    GeometryColumn, TableSchema, Table,
+                                    GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
                             break;
                         }
                     case SqlServer2008ExtentsMode.UseEnvelopeColumns:
                         {
                             cmd.CommandText = string.Format(
                                 "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
-                                GeometryColumn, TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+                                GeometryColumn, TableSchema, Table,
+                                GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
                             break;
                         }
                     default:
@@ -157,7 +128,8 @@ namespace SharpMap.Data.Providers
 	    Min(Geom.STEnvelope().STPointN(1).STY) as MinY,  
 	    Max(Geom.STEnvelope().STPointN(3).STX) as MaxX, 
 	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY from {0}.{1} {2}",
-                                    TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+                                    TableSchema, Table,
+                                    GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
                             break;
                         }
                 }
@@ -190,54 +162,56 @@ namespace SharpMap.Data.Providers
         }
 
 
-        protected override IDbCommand PrepareCommand(Expression query)
+        /* TODO: Add paging, order by etc from ProviderPropertyExpression */
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
+                                              ExpressionTreeToSqlCompilerBase compiler)
         {
-            Expression exp = query;
-
-            if (DefinitionQuery != null)
-                exp = new BinaryExpression(query, BinaryOperator.And, DefinitionQuery);
-
-            ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(exp);
-
-            string sql = string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
-                                       compiler.SqlParamDeclarations,
-                                       string.IsNullOrEmpty(compiler.SqlColumns)
-                                           ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                           : compiler.SqlColumns,
-                                       compiler.QualifiedTableName,
-                                       compiler.SqlJoinClauses,
-                                       string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
-                                       compiler.SqlWhereClause,
-                                       GetWithClause());
-
-            IDbCommand cmd = DbUtility.CreateCommand();
-            cmd.CommandText = sql;
-            cmd.CommandType = CommandType.Text;
-
-            foreach (IDataParameter p in compiler.ParameterCache.Values)
-                cmd.Parameters.Add(p);
-
-            return cmd;
+            return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
+                                 compiler.SqlParamDeclarations,
+                                 string.IsNullOrEmpty(compiler.SqlColumns)
+                                     ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
+                                     : compiler.SqlColumns,
+                                 compiler.QualifiedTableName,
+                                 compiler.SqlJoinClauses,
+                                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                                 compiler.SqlWhereClause,
+                                 GetWithClause(properties));
         }
 
-        protected string GetWithClause()
+        protected string GetWithClause(IEnumerable<ProviderPropertyExpression> properties)
         {
-            if (!WithNoLock && !ForceIndex)
+            WithNoLockExpression withNoLockExpression = GetPropertyExpression(properties,
+                                                                              new WithNoLockExpression(false));
+
+            ForceIndexExpression forceIndexExpression = GetPropertyExpression(properties,
+                                                                              new ForceIndexExpression(false));
+
+            IndexNamesExpression indexNamesExpression = GetPropertyExpression(properties,
+                                                                              new IndexNamesExpression(new string[] { }));
+
+            bool withNoLock = withNoLockExpression.PropertyValueExpression.Value;
+            IEnumerable<string> indexNames = indexNamesExpression.PropertyValueExpression.Value;
+
+            bool forceIndex = forceIndexExpression.PropertyValueExpression.Value && Enumerable.Count(indexNames) > 0;
+
+            if (!withNoLock && !forceIndex)
                 return "";
 
-            if (WithNoLock && !ForceIndex)
+            if (withNoLock && !forceIndex)
                 return " WITH(NOLOCK) ";
-            if (ForceIndex && !WithNoLock)
-                return string.Format(" WITH(INDEX({0})) ", IndexName(this));
 
-            return string.Format(" WITH(NOLOCK,INDEX({0})) ", IndexName(this));
+            if (forceIndex && !withNoLock)
+                return string.Format(" WITH(INDEX({0})) ", string.Join(",", Enumerable.ToArray(indexNames)));
+
+            return string.Format(" WITH(NOLOCK,INDEX({0})) ", string.Join(",", Enumerable.ToArray(indexNames)));
         }
+
 
         public override DataTable GetSchemaTable()
         {
             DataTable dt = base.GetSchemaTable(true);
-            dt.Columns[GeometryColumn].DataType = typeof (byte[]);
-                //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
+            dt.Columns[GeometryColumn].DataType = typeof(byte[]);
+            //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
             return dt;
         }
     }

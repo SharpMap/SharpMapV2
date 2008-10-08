@@ -246,8 +246,9 @@ namespace SharpMap.Data.Providers.Db
         {
             if (exp == null)
                 return;
-
-            if (exp is ProviderPropertiesExpression)
+            if (exp is ProviderQueryExpression)
+                VisitProviderQueryExpression(builder, (ProviderQueryExpression) exp);
+            else if (exp is ProviderPropertiesExpression)
                 VisitProviderPropertiesExpression(builder, (ProviderPropertiesExpression) exp);
             else if (exp is ProviderPropertyExpression)
                 VisitProviderPropertyExpression(builder, (ProviderPropertyExpression) exp);
@@ -273,6 +274,13 @@ namespace SharpMap.Data.Providers.Db
                 VisitCollectionExpression(builder, (CollectionExpression) exp);
             else
                 throw new NotImplementedException(string.Format("Unknown Expression Type {0}", exp.GetType()));
+        }
+
+        private void VisitProviderQueryExpression(StringBuilder builder, ProviderQueryExpression expression)
+        {
+            VisitExpression(builder, expression.ProviderProperties);
+            VisitExpression(builder, expression.Projection);
+            VisitExpression(builder, expression.Predicate);
         }
 
         private void VisitProviderPropertyExpression(StringBuilder builder, ProviderPropertyExpression exp)

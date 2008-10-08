@@ -1,5 +1,5 @@
 ﻿/*
- *  The attached / following is part of SharpMap.Data.Providers.Db
+ *  The attached / following is part of SharpMap.Data.Providers.MsSqlServer2008
  *  SharpMap.Data.Providers.Db is free software © 2008 Newgrove Consultants Limited, 
  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
@@ -12,21 +12,21 @@
  *  Author: John Diss 2008
  * 
  */
-using System.Collections.Generic;
 using SharpMap.Expressions;
 
-namespace SharpMap.Data.Providers.Db.Expressions
+namespace SharpMap.Data.Providers.MsSqlServer2008.Expressions
 {
-    public class IndexNamesExpression : ProviderPropertyExpression<IEnumerable<string>>
+    public class MsSqlServer2008ExtentsModeExpression
+        : ProviderPropertyExpression<SqlServer2008ExtentsMode>
     {
-        public IndexNamesExpression(IEnumerable<string> indexNames)
-            : base("IndexNames", indexNames)
+        public MsSqlServer2008ExtentsModeExpression(SqlServer2008ExtentsMode value)
+            : base("SqlServer2008ExtentsMode", value)
         {
         }
 
         public override Expression Clone()
         {
-            return new IndexNamesExpression(PropertyValueExpression.Value);
+            return new MsSqlServer2008ExtentsModeExpression(PropertyValueExpression.Value);
         }
     }
 }

@@ -24,5 +24,10 @@ namespace SharpMap.Data.Providers.Db.Expressions
             : base("OrderBy", orderBy)
         {
         }
+
+        public override Expression Clone()
+        {
+            return new OrderByExpression(PropertyValueExpression.Value);
+        }
     }
 }

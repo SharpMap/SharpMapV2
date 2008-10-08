@@ -15,6 +15,7 @@
 using System.Configuration;
 using System.Web;
 using SharpMap.Data.Providers;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
@@ -100,15 +101,22 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             //Array.Reverse(layernames);
 
             var labelprovider = new AppStateMonitoringFeatureProvider(
- new MsSqlServer2008Provider<long>(
-     new GeometryServices()[27700],
-     ConfigurationManager.ConnectionStrings["db"].ConnectionString,
-     "dbo",
-     "STREETS",
-     "oid",
-     "Geom",
-     true,
-     SqlServer2008ExtentsMode.UseEnvelopeColumns) { ForceIndex = true });
+                new MsSqlServer2008Provider<long>(
+                    new GeometryServices()[27700],
+                    ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+                    "dbo",
+                    "STREETS",
+                    "oid",
+                    "Geom")
+                    {
+                        DefaultProviderProperties
+                            = new ProviderPropertiesExpression(
+                            new ProviderPropertyExpression[]
+                                {
+                                    new WithNoLockExpression(true),
+                                    new ForceIndexExpression(true)
+                                })
+                    });
 
 
             var labellayer = new LabelLayer("streetslabel", labelprovider)
@@ -145,9 +153,16 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                         "dbo",
                         tbl,
                         "oid",
-                        col,
-                        true,
-                        SqlServer2008ExtentsMode.UseEnvelopeColumns) { ForceIndex = true });
+                        col)
+                    {
+                        DefaultProviderProperties
+                            = new ProviderPropertiesExpression(
+                            new ProviderPropertyExpression[]
+                                {
+                                    new WithNoLockExpression(true),
+                                    new ForceIndexExpression(true)
+                                })
+                    });
 
                 //string col = "WKB_Geometry";
                 //var provider = new AppStateMonitoringFeatureProvider(

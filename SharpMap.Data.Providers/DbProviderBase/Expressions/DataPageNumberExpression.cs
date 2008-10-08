@@ -22,5 +22,10 @@ namespace SharpMap.Data.Providers.Db.Expressions
             : base("DataPageNumber", pageNumber)
         {
         }
+
+        public override Expression Clone()
+        {
+            return new DataPageNumberExpression(PropertyValueExpression.Value);
+        }
     }
 }

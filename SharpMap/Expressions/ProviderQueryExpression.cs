@@ -7,7 +7,7 @@ namespace SharpMap.Expressions
     public class ProviderQueryExpression : QueryExpression
     {
         private ProviderPropertiesExpression _providerPropertiesExpression;
-        public ProviderPropertiesExpression ProviderPropertiesExpression
+        public ProviderPropertiesExpression ProviderProperties
         {
             get { return _providerPropertiesExpression; }
         }

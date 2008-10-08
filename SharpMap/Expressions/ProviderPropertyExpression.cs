@@ -40,7 +40,7 @@ namespace SharpMap.Expressions
         }
     }
 
-    public class ProviderPropertyExpression<TValue> : ProviderPropertyExpression
+    public abstract class ProviderPropertyExpression<TValue> : ProviderPropertyExpression
     {
         public ProviderPropertyExpression(PropertyNameExpression propertyNameExpression,
                                            LiteralExpression<TValue> value)
@@ -57,12 +57,6 @@ namespace SharpMap.Expressions
         public new LiteralExpression<TValue> PropertyValueExpression
         {
             get { return (LiteralExpression<TValue>)base.PropertyValueExpression; }
-        }
-
-        public override Expression Clone()
-        {
-            return new ProviderPropertyExpression<TValue>((PropertyNameExpression)PropertyNameExpression.Clone(),
-                                                          (LiteralExpression<TValue>)PropertyValueExpression.Clone());
         }
 
         public override bool Equals(Expression other)

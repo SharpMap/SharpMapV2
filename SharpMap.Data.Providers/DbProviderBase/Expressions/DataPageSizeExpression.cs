@@ -22,5 +22,10 @@ namespace SharpMap.Data.Providers.Db.Expressions
             : base("DataPageSize", pageSize)
         {
         }
+
+        public override Expression Clone()
+        {
+            return new DataPageSizeExpression(PropertyValueExpression.Value);
+        }
     }
 }

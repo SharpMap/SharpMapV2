@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
 
@@ -68,8 +69,16 @@ namespace SharpMap.Data.Providers.Db.Test
 
             var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
                                                  ConfigurationManager.ConnectionStrings["db"].ConnectionString, "dbo",
-                                                 "vw_iMARS_BRANCH", "ACSId", "Geom", true,
-                                                 SqlServer2008ExtentsMode.UseEnvelopeColumns);
+                                                 "vw_iMARS_BRANCH", "ACSId", "Geom")
+                    {
+                        DefaultProviderProperties
+                            = new ProviderPropertiesExpression(
+                            new ProviderPropertyExpression[]
+                                {
+                                    new WithNoLockExpression(true),
+                                    new ForceIndexExpression(true)
+                                })
+                    };
             //DataTable dt = search.TableSchema;
 
             var binaryExpression =
@@ -77,7 +86,21 @@ namespace SharpMap.Data.Providers.Db.Test
                                      BinaryOperator.GreaterThan,
                                      new PropertyNameExpression("Market Sector"));
 
-            object obj = search.ExecuteQuery(binaryExpression);
+            var providerProps =
+                new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                        {
+                            new WithNoLockExpression(true), 
+                            new OrderByExpression(new []{"PostCode"} ),
+                            new ForceIndexExpression( true), 
+                            new IndexNamesExpression(new[]{"Index1","Index2"} )
+                            
+                        });
+
+
+            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+
+            object obj = search.ExecuteQuery(prov);
 
             Assert.IsNotNull(obj);
         }

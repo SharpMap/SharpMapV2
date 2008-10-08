@@ -201,6 +201,8 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
+        public ProviderPropertiesExpression DefaultProviderProperties { get; set; }
+
         #region IWritableFeatureProvider<TOid> Members
 
         public void Insert(FeatureDataRow<TOid> feature)
@@ -385,6 +387,34 @@ namespace SharpMap.Data.Providers.Db
 
         #endregion
 
+        protected virtual IEnumerable<ProviderPropertyExpression> MergeProviderProperties(
+            IEnumerable<ProviderPropertyExpression> other)
+        {
+            if (Equals(null, DefaultProviderProperties))
+                return other;
+            if (Equals(null, other))
+                return DefaultProviderProperties.ProviderProperties.Collection;
+
+            var list = new List<ProviderPropertyExpression>();
+
+            Func<ProviderPropertyExpression, ProviderPropertyExpression, bool> predicate
+                = (prop1, prop2) => prop1.GetType() == prop2.GetType();
+
+            foreach (ProviderPropertyExpression prop in other)
+                AddToList(list, prop, predicate);
+
+            foreach (ProviderPropertyExpression prop in DefaultProviderProperties.ProviderProperties.Collection)
+                AddToList(list, prop, predicate);
+
+            return list;
+        }
+
+        private void AddToList<T>(IList<T> storage, T item, Func<T, T, bool> filter)
+        {
+            if (Enumerable.Count(Enumerable.Select(storage, i => filter(i, item))) == 0)
+                storage.Add(item);
+        }
+
         public virtual DataTable GetSchemaTable(Boolean withGeometryColumn)
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
@@ -535,29 +565,34 @@ namespace SharpMap.Data.Providers.Db
                                                   GeometryColumn, OidColumn);
         }
 
+        protected virtual Expression MergeQueries(Expression expr1, Expression expr2)
+        {
+            if (Equals(null, expr1))
+                return expr2;
+            if (Equals(null, expr2))
+                return expr1;
+
+            if (expr1 is QueryExpression && expr2 is QueryExpression)
+                return new BinaryExpression(expr1, BinaryOperator.And, expr2);
+
+            throw new NotImplementedException(string.Format("No merge routine for Expressions of Types {0} and {1}",
+                                                            expr1.GetType(),
+                                                            expr2.GetType()));
+        }
+
         protected virtual IDbCommand PrepareCommand(Expression query)
         {
             Expression exp = query;
 
-            if (DefinitionQuery != null)
-            {
-                exp = new BinaryExpression(query, BinaryOperator.And, DefinitionQuery);
-            }
+            MergeQueries(query, DefinitionQuery);
 
             ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(exp);
 
-            String sql = String.Format(" {0} SELECT {1} FROM {2} {3} {4} {5}",
-                                       compiler.SqlParamDeclarations,
-                                       String.IsNullOrEmpty(compiler.SqlColumns)
-                                           ? String.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                           : compiler.SqlColumns,
-                                       compiler.QualifiedTableName,
-                                       compiler.SqlJoinClauses,
-                                       String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
-                                       compiler.SqlWhereClause);
+            var props =
+                new List<ProviderPropertyExpression>(MergeProviderProperties(compiler.ProviderProperties));
 
             IDbCommand cmd = DbUtility.CreateCommand();
-            cmd.CommandText = sql;
+            cmd.CommandText = GenerateSql(props, compiler);
             cmd.CommandType = CommandType.Text;
 
             foreach (IDataParameter p in compiler.ParameterCache.Values)
@@ -566,6 +601,32 @@ namespace SharpMap.Data.Providers.Db
             }
 
             return cmd;
+        }
+
+        /* TODO: Add order by from ProviderPropertyExpression */
+
+        protected virtual string GenerateSql(IList<ProviderPropertyExpression> properties,
+                                             ExpressionTreeToSqlCompilerBase compiler)
+        {
+            return String.Format(" {0} SELECT {1} FROM {2} {3} {4} {5}",
+                                 compiler.SqlParamDeclarations,
+                                 String.IsNullOrEmpty(compiler.SqlColumns)
+                                     ? String.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
+                                     : compiler.SqlColumns,
+                                 compiler.QualifiedTableName,
+                                 compiler.SqlJoinClauses,
+                                 String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                                 compiler.SqlWhereClause);
+        }
+
+        protected TExpression GetPropertyExpression<TExpression>(
+            IEnumerable<ProviderPropertyExpression> expressions, TExpression defaultValue)
+            where TExpression : ProviderPropertyExpression
+        {
+            foreach (ProviderPropertyExpression propertyExpression in expressions)
+                if (propertyExpression is TExpression)
+                    return (TExpression) propertyExpression;
+            return defaultValue;
         }
 
         protected abstract ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression);
