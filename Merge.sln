@@ -35,9 +35,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLayers", "SharpLayers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite", "NTS\NetTopologySuite\NetTopologySuite.csproj", "{5770DAA9-84E5-4770-AF43-F6B815894368}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBufferedCoordinate2D", "NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj", "{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBufferedCoordinate", "NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.csproj", "{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBufferedCoordinate2DTests", "NTS\ManagedBufferedCoordinate2DTests\ManagedBufferedCoordinate2DTests.csproj", "{66EF7231-2966-4FCA-8113-D1B2686447FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedBufferedCoordinateTests", "NTS\ManagedBufferedCoordinateTests\ManagedBufferedCoordinateTests.csproj", "{66EF7231-2966-4FCA-8113-D1B2686447FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.Tests", "NTS\NetTopologySuite.Tests\NetTopologySuite.Tests.csproj", "{595A5015-A2FC-41C9-8ED4-FE1B72C235B6}"
 EndProject
