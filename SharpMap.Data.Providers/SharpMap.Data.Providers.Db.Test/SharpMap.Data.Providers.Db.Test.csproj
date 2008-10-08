@@ -78,6 +78,10 @@
       <Project>{CEADC931-47FB-483C-A849-8B890FD6F0E1}</Project>
       <Name>SharpMap.Data.Providers.MsSqlSpatial</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharpMap.Data.Providers.SpatialLite2\SharpMap.Data.Providers.SpatiaLite2.csproj">
+      <Project>{1BDB6244-385F-4482-8AE7-CECE83508DE1}</Project>
+      <Name>SharpMap.Data.Providers.SpatiaLite2</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

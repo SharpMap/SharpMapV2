@@ -1,7 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
@@ -15,32 +12,14 @@ namespace SharpMap.Data.Providers.Db.Test
     [TestClass]
     public class UnitTest1
     {
-        public UnitTest1()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
-
-        private TestContext testContextInstance;
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
         ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
+        public TestContext TestContext { get; set; }
 
         #region Additional test attributes
+
         //
         // You can use the following additional attributes as you write your tests:
         //
@@ -60,26 +39,27 @@ namespace SharpMap.Data.Providers.Db.Test
         // [TestCleanup()]
         // public void MyTestCleanup() { }
         //
+
         #endregion
 
         [TestMethod]
-        public void TestMethod1()
+        public void TestSqlServer2008()
         {
             var services = new GeometryServices();
 
             var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
-                                                 ConfigurationManager.ConnectionStrings["db"].ConnectionString, "dbo",
-                                                 "vw_iMARS_BRANCH", "ACSId", "Geom")
-                    {
-                        DefaultProviderProperties
-                            = new ProviderPropertiesExpression(
-                            new ProviderPropertyExpression[]
-                                {
-                                    new WithNoLockExpression(true),
-                                    new ForceIndexExpression(true)
-                                })
-                    };
-            //DataTable dt = search.TableSchema;
+                                                           ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+                                                           "dbo",
+                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
+                             {
+                                 DefaultProviderProperties
+                                     = new ProviderPropertiesExpression(
+                                     new ProviderPropertyExpression[]
+                                         {
+                                             new WithNoLockExpression(true),
+                                             new ForceIndexExpression(true)
+                                         })
+                             };
 
             var binaryExpression =
                 new BinaryExpression(new PropertyNameExpression("PostCode"),
@@ -90,12 +70,37 @@ namespace SharpMap.Data.Providers.Db.Test
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
-                            new WithNoLockExpression(true), 
-                            new OrderByExpression(new []{"PostCode"} ),
-                            new ForceIndexExpression( true), 
-                            new IndexNamesExpression(new[]{"Index1","Index2"} )
-                            
+                            new WithNoLockExpression(true),
+                            new OrderByExpression(new[] {"PostCode"}),
+                            new ForceIndexExpression(true),
+                            new IndexNamesExpression(new[] {"Index1", "Index2"})
                         });
+
+
+            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+
+            object obj = search.ExecuteQuery(prov);
+
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void TestSqLite()
+        {
+            var services = new GeometryServices();
+
+            var search = new SpatiaLite2_Provider(services.DefaultGeometryFactory,
+                                                  ConfigurationManager.ConnectionStrings["sqLite"].ConnectionString, "dbo",
+                                                  "regions", "OID", "XGeometryX");
+            search.SpatiaLiteIndexType = SpatiaLite2_IndexType.MBRCache; 
+
+            var binaryExpression =
+                new BinaryExpression(new PropertyNameExpression("VHG5"),
+                                     BinaryOperator.GreaterThan, new LiteralExpression<int>(6));
+
+            var providerProps =
+                new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[] { });
 
 
             var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);

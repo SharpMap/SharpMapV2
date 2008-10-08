@@ -484,7 +484,7 @@ namespace SharpMap.Data.Providers.Db
             Update(IEnumerableOfDataRowCollection(features));
         }
 
-        public void Update(IEnumerable<FeatureDataRow> features)
+        public virtual void Update(IEnumerable<FeatureDataRow> features)
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
@@ -619,13 +619,13 @@ namespace SharpMap.Data.Providers.Db
                                  compiler.SqlWhereClause);
         }
 
-        protected TExpression GetPropertyExpression<TExpression>(
-            IEnumerable<ProviderPropertyExpression> expressions, TExpression defaultValue)
-            where TExpression : ProviderPropertyExpression
+        protected TValue GetProviderPropertyValue<TExpression,TValue>(
+            IEnumerable<ProviderPropertyExpression> expressions, TValue defaultValue)
+            where TExpression : ProviderPropertyExpression<TValue>
         {
             foreach (ProviderPropertyExpression propertyExpression in expressions)
                 if (propertyExpression is TExpression)
-                    return (TExpression) propertyExpression;
+                    return ((TExpression) propertyExpression).PropertyValueExpression.Value;
             return defaultValue;
         }
 

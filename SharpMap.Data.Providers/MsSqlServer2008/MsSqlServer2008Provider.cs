@@ -48,8 +48,8 @@ namespace SharpMap.Data.Providers
         : SpatialDbProviderBase<TOid>
     {
         public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
-                                              String connectionString,
-                                              String tableName)
+                                       String connectionString,
+                                       String tableName)
             : this(geometryFactory, connectionString, null, tableName, null, null)
         {
         }
@@ -83,10 +83,9 @@ namespace SharpMap.Data.Providers
         public override IExtents GetExtents()
         {
             SqlServer2008ExtentsMode server2008ExtentsCalculationMode =
-                GetPropertyExpression(DefaultProviderProperties.ProviderProperties.Collection,
-                                      new MsSqlServer2008ExtentsModeExpression(
-                                          SqlServer2008ExtentsMode.QueryIndividualFeatures)).PropertyValueExpression.
-                    Value;
+                GetProviderPropertyValue<MsSqlServer2008ExtentsModeExpression, SqlServer2008ExtentsMode>(
+                    DefaultProviderProperties.ProviderProperties.Collection,
+                    SqlServer2008ExtentsMode.QueryIndividualFeatures);
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             using (IDbCommand cmd = DbUtility.CreateCommand())
@@ -163,6 +162,7 @@ namespace SharpMap.Data.Providers
 
 
         /* TODO: Add paging, order by etc from ProviderPropertyExpression */
+
         protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
                                               ExpressionTreeToSqlCompilerBase compiler)
         {
@@ -180,19 +180,15 @@ namespace SharpMap.Data.Providers
 
         protected string GetWithClause(IEnumerable<ProviderPropertyExpression> properties)
         {
-            WithNoLockExpression withNoLockExpression = GetPropertyExpression(properties,
-                                                                              new WithNoLockExpression(false));
+            bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
-            ForceIndexExpression forceIndexExpression = GetPropertyExpression(properties,
-                                                                              new ForceIndexExpression(false));
+            IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
+                properties, new string[] {});
 
-            IndexNamesExpression indexNamesExpression = GetPropertyExpression(properties,
-                                                                              new IndexNamesExpression(new string[] { }));
 
-            bool withNoLock = withNoLockExpression.PropertyValueExpression.Value;
-            IEnumerable<string> indexNames = indexNamesExpression.PropertyValueExpression.Value;
-
-            bool forceIndex = forceIndexExpression.PropertyValueExpression.Value && Enumerable.Count(indexNames) > 0;
+            bool forceIndex = Enumerable.Count(indexNames) > 0 &&
+                              GetProviderPropertyValue<ForceIndexExpression, bool>(properties, false);
+            ;
 
             if (!withNoLock && !forceIndex)
                 return "";
@@ -210,7 +206,7 @@ namespace SharpMap.Data.Providers
         public override DataTable GetSchemaTable()
         {
             DataTable dt = base.GetSchemaTable(true);
-            dt.Columns[GeometryColumn].DataType = typeof(byte[]);
+            dt.Columns[GeometryColumn].DataType = typeof (byte[]);
             //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
             return dt;
         }

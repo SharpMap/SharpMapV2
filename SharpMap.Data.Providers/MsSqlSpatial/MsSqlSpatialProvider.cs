@@ -36,11 +36,12 @@ namespace SharpMap.Data.Providers
 
         public MsSqlSpatialProvider(IGeometryFactory geometryFactory, string connectionString, string spatialSchema,
                                     string tableSchema, string tableName, string oidColumn, string geometryColumn)
-            : base(new SqlServerDbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn)
+            : base(
+                new SqlServerDbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn,
+                geometryColumn)
         {
             if (!string.IsNullOrEmpty(spatialSchema))
                 SpatialSchema = spatialSchema;
-
         }
 
         public string SpatialSchema
@@ -73,7 +74,8 @@ namespace SharpMap.Data.Providers
                 cmd.CommandText =
                     string.Format(
                         "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
-                        GeometryColumn, TableSchema, Table, BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
+                        GeometryColumn, TableSchema, Table,
+                        BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
                 cmd.CommandType = CommandType.Text;
                 double xmin, ymin, xmax, ymax;
                 conn.Open();
@@ -95,8 +97,7 @@ namespace SharpMap.Data.Providers
         protected string BuildWithStatement(IEnumerable<ProviderPropertyExpression> providerPropertyExpressions)
         {
             bool withNoLock =
-                GetPropertyExpression(providerPropertyExpressions, new WithNoLockExpression(false)).
-                    PropertyValueExpression.Value;
+                GetProviderPropertyValue<WithNoLockExpression, bool>(providerPropertyExpressions, false);
 
             return withNoLock ? " WITH(NOLOCK) " : "";
         }
@@ -114,8 +115,10 @@ namespace SharpMap.Data.Providers
 
         protected override ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression)
         {
-            bool withNoLock = GetPropertyExpression(DefaultProviderProperties.ProviderProperties.Collection,
-                                                    new WithNoLockExpression(false)).PropertyValueExpression.Value;
+            bool withNoLock =
+                GetProviderPropertyValue<WithNoLockExpression, bool>(
+                    DefaultProviderProperties.ProviderProperties.Collection,
+                    false);
 
 
             return new MsSqlSpatialExpressionTreeToSqlCompiler(DbUtility, withNoLock, SelectAllColumnNames,
