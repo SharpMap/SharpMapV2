@@ -295,5 +295,15 @@ namespace SharpMap.Data.Providers.Database
         }
 
         #endregion
+
+        #region IFeatureDataRecord Members
+
+
+        public IExtents Extents
+        {
+            get { return Geometry.Extents; }
+        }
+
+        #endregion
     }
 }

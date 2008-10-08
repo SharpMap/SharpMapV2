@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.Utilities;
 
 namespace SharpMap.Presentation.AspNet.Demo.GeoJson
 {

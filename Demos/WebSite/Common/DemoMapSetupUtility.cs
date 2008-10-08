@@ -13,49 +13,18 @@
  * 
  */
 using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
 using System.Web;
 using SharpMap.Data.Providers;
+using SharpMap.Expressions;
 using SharpMap.Layers;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
+using SharpMap.Utilities;
 
 namespace SharpMap.Presentation.AspNet.Demo.Common
 {
     public static class DemoMapSetupUtility
     {
-        private static DataTable _mssqlTables;
-
-
-        public static DataTable MsSqlSpatialTables
-        {
-            get
-            {
-                _mssqlTables = _mssqlTables ?? GetTables();
-                return _mssqlTables;
-            }
-        }
-
-        private static DataTable GetTables()
-        {
-            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["db"].ConnectionString))
-            using (
-                var da =
-                    new SqlDataAdapter(
-                        "SELECT GC.*, ZIndex FROM  ST.GEOMETRY_COLUMNS GC INNER JOIN LayerStackingOrder lso on GC.id = lso.id order by ZIndex desc",
-                        conn)
-                )
-            {
-                conn.Open();
-
-                var dt = new DataTable();
-                da.Fill(dt);
-                dt.DefaultView.Sort = "ZIndex DESC";
-                return dt;
-            }
-        }
-
-
         /// <summary>
         /// little util wich just adds one vector layer to the map and assigns it a random theme.
         /// </summary>
@@ -63,29 +32,142 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         /// <param name="m"></param>
         public static void SetupMap(HttpContext context, Map m)
         {
-            foreach (DataRowView r in MsSqlSpatialTables.DefaultView)
+            var layernames = new[]
+                                 {
+                                     "Capital",
+                                     "Cemeteries",
+                                     "ConventionExhibition",
+                                     "Government",
+                                     "Historical",
+                                     "Hospitals",
+                                     "MajorTowns",
+                                     "MidTowns",
+                                     "NamedPlaces",
+                                     "Airports",
+                                     "ParkCity",
+                                     "ParkLeisure",
+                                     "Retail",
+                                     "Shops",
+                                     "SmallPlaces",
+                                     "SportsLandmark",
+                                     "Sports",
+                                     "TopTowns",
+                                     "Tourist",
+                                     "Universities",
+                                     "Villages",
+                                     "Woodland",
+                                     "Motorways",
+                                     "ARoads",
+                                     "UnclassifiedRoads",
+                                     "BRoads",
+                                     "Streets",
+                                     "Rivers",
+                                     "ROIBoundary",
+                                     "PrimaryRoads",
+                                     "Transportation",
+                                     "Ferries",
+                                     "AircraftRoads",
+                                     "Canals",
+                                     "Cultural",
+                                     "Medical",
+                                     "Lakes",
+                                     "IndustrialAreas",
+                                     "Education",
+                                     "Districts",
+                                     "Counties",
+                                     "BusinessCommerce",
+                                     "CanalAreas",
+                                     "RiverAreas",
+                                     "TownSprawl",
+                                     "ParkMonument",
+                                     "Elevation1000To1500m",
+                                     "Elevation900m",
+                                     "Elevation800m",
+                                     "Elevation700m",
+                                     "Elevation600m",
+                                     "Elevation500m",
+                                     "Elevation400m",
+                                     "Elevation300m",
+                                     "Elevation200m",
+                                     "Elevation100m",
+                                     "Bays",
+                                     "Country",
+                                     "Golf",
+                                     "Islands",
+                                     "Oceans"
+                                 };
+
+            //Array.Reverse(layernames);
+
+            var labelprovider = new AppStateMonitoringFeatureProvider(
+ new MsSqlServer2008Provider<long>(
+     new GeometryServices()[27700],
+     ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+     "dbo",
+     "STREETS",
+     "oid",
+     "Geom",
+     true,
+     SqlServer2008ExtentsMode.UseEnvelopeColumns) { ForceIndex = true });
+
+
+            var labellayer = new LabelLayer("streetslabel", labelprovider)
             {
-                string tbl = string.Format("{0}", r["F_TABLE_NAME"]);
-                var col = (string)r["F_GEOMETRY_COLUMN"];
+                CollisionDetector = new LabelCollisionDetection2D(),
+
+            };
+            labellayer.Enabled = true;
+            labellayer.Features.IsSpatiallyIndexed = false;
+            labellayer.MultipartGeometryLabelingBehaviour = MultipartGeometryLabelingBehavior.Largest;
+
+            LabelStyle lblstyle =
+                new LabelStyle(new StyleFont(new StyleFontFamily("Arial"), new Size2D(10, 10), StyleFontStyle.Bold),
+                                RandomStyle.RandomBrush());
+            lblstyle.Enabled = true;
+
+            lblstyle.LabelExpression = new PropertyNameExpression("NAME");
+            lblstyle.MaxVisible = 100000;
+
+            labellayer.Style = lblstyle;
+
+            m.AddLayer(labellayer);
+
+
+            foreach (string lyrname in layernames)
+            {
+                string tbl = lyrname;
+                string col = "Geom";
 
                 var provider = new AppStateMonitoringFeatureProvider(
-                    new MsSqlSpatialProvider(
-                        new GeometryServices().DefaultGeometryFactory,
+                    new MsSqlServer2008Provider<long>(
+                        new GeometryServices()[27700],
                         ConfigurationManager.ConnectionStrings["db"].ConnectionString,
-                        "ST",
                         "dbo",
                         tbl,
                         "oid",
                         col,
-                        true
-                        ));
-                GeoJsonGeometryStyle style = new GeoJsonGeometryStyle(); ;
+                        true,
+                        SqlServer2008ExtentsMode.UseEnvelopeColumns) { ForceIndex = true });
+
+                //string col = "WKB_Geometry";
+                //var provider = new AppStateMonitoringFeatureProvider(
+                //    new MsSqlSpatialProvider(
+                //        new GeometryServices()[27700],
+                //        ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+                //        "ST",
+                //        "dbo",
+                //        tbl,
+                //        "oid",
+                //        col,
+                //        true));
+
+                var style = new GeoJsonGeometryStyle();
+                ;
 
                 switch (tbl)
                 {
                     case "ARoads":
                         {
-
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(126, 120, 119, 255));
                             var pen = new StylePen(brush, 9);
                             style.EnableOutline = true;
@@ -341,6 +423,9 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
                 m.AddLayer(layer);
             }
+
+
+
         }
     }
 }

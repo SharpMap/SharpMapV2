@@ -131,13 +131,13 @@ namespace SharpMap.Data.Providers
                                 string.Format(
                                     @"
     declare @envelope Geometry
-    select @envelope = dbo.GeometryEnvelopeAggregate(Geom) from {0}.{1} {2}
+    select @envelope = dbo.GeometryEnvelopeAggregate({0}) from {1}.{2} {3}
     select 
-        @envelope.STPointN(1).STX as MinX, 
-        @envelope.STPointN(1).STY as MinY, 
-        @envelope.STPointN(3).STX as MaxX, 
-        @envelope.STPointN(3).STY as MaxY",
-                                    TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
+        @envelope.STPointN(2).STX as MinX, 
+        @envelope.STPointN(2).STY as MinY, 
+        @envelope.STPointN(4).STX as MaxX, 
+        @envelope.STPointN(4).STY as MaxY",
+                                   GeometryColumn , TableSchema, Table, WithNoLock ? " WITH(NOLOCK) " : "");
                             break;
                         }
                     case SqlServer2008ExtentsMode.UseEnvelopeColumns:

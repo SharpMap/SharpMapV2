@@ -18,7 +18,8 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.DataStructures;
-
+///todo :remove this alias 
+using Processor = GeoAPI.DataStructures.Enumerable;  
 namespace SharpMap.Expressions
 {
     public class AttributesProjectionExpression : ProjectionExpression

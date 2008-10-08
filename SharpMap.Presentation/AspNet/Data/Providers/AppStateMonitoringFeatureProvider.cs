@@ -429,6 +429,16 @@ namespace SharpMap.Data.Providers
             }
 
             #endregion
+
+            #region IFeatureDataRecord Members
+
+
+            public IExtents Extents
+            {
+                get { return InnerReader.Extents; }
+            }
+
+            #endregion
         }
 
         #endregion

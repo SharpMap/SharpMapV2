@@ -116,7 +116,7 @@ namespace TestSharpLayers
                                                                             ConfigurationManager.AppSettings[
                                                                             "LayerNames"].Split(','),
                                                                         WmsVersion = "1.3.0",
-                                                                        Crs = "EPSG:"
+                                                                        Crs = "EPSG:27700"
                                                                     },
                                                 TileSize = Map1.Options.TileSize,
                                                 MaxExtent = Map1.Options.MaxExtent,

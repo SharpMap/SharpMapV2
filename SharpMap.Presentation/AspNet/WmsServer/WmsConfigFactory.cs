@@ -19,6 +19,7 @@ using System.Web;
 using SharpMap.Presentation.AspNet.Utility;
 using SharpMap.Rendering.Gdi;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.Utilities;
 
 namespace SharpMap.Presentation.AspNet.WmsServer
 {

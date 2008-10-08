@@ -81,7 +81,7 @@
       <ItemGroup>
         <ProjectReference Include="..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
           <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-          <Name>GeoAPI.Net Project</Name>
+          <Name>GeoAPI.Net</Name>
         </ProjectReference>
       </ItemGroup>
     </Otherwise>
@@ -99,7 +99,7 @@
       <ItemGroup>
         <ProjectReference Include="..\NPack\NPack\NPack.csproj">
           <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
-          <Name>NPack Project</Name>
+          <Name>NPack</Name>
         </ProjectReference>
       </ItemGroup>
     </Otherwise>
@@ -171,6 +171,8 @@
     <Compile Include="Expressions\CollectionExpression.cs" />
     <Compile Include="Expressions\CollectionExpression`1.cs" />
     <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\ProviderPropertiesExpression.cs" />
+    <Compile Include="Expressions\ProviderQueryExpression.cs" />
     <Compile Include="Expressions\ExtentsExpression.cs" />
     <Compile Include="Expressions\FeatureQueryExpression.cs" />
     <Compile Include="Expressions\CollectionOperator.cs" />
@@ -185,6 +187,7 @@
     <Compile Include="Expressions\ProjectionExpression.cs" />
     <Compile Include="Expressions\PropertyNameExpression.cs" />
     <Compile Include="Expressions\ProviderExpression.cs" />
+    <Compile Include="Expressions\ProviderPropertyExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
     <Compile Include="Expressions\RasterQueryExpression.cs" />
     <Compile Include="Expressions\SpatialBinaryExpression.cs" />

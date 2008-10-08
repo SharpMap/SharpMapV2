@@ -92,7 +92,7 @@ namespace SharpMap.Presentation.AspNet.Demo
 
         private static Symbol2D RandomSymbol()
         {
-            return Symbols[random.Next(19)];
+            return (Symbol2D)Symbols[random.Next(19)].Clone();
         }
 
 

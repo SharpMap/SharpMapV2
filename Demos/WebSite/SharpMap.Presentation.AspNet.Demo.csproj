@@ -163,7 +163,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.csproj">
       <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
-      <Name>ManagedBufferedCoordinate2D</Name>
+      <Name>ManagedBufferedCoordinate</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
       <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
@@ -208,6 +208,10 @@
     <ProjectReference Include="..\..\SharpMap.Rendering\Gdi\SharpMap.Rendering.Gdi.csproj">
       <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
       <Name>SharpMap.Rendering.Gdi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
+      <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
+      <Name>SharpMap.Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>

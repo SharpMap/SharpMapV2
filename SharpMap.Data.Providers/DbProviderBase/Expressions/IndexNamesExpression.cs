@@ -1,6 +1,6 @@
 ﻿/*
- *  The attached / following is part of SharpMap
- *  this file © 2008 Newgrove Consultants Limited, 
+ *  The attached / following is part of SharpMap.Data.Providers.Db
+ *  SharpMap.Data.Providers.Db is free software © 2008 Newgrove Consultants Limited, 
  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
  *  available from the Free Software Foundation, Inc., 
@@ -12,14 +12,16 @@
  *  Author: John Diss 2008
  * 
  */
-namespace SharpMap.Expressions
+using System.Collections.Generic;
+using SharpMap.Expressions;
+
+namespace SharpMap.Data.Providers.Db.Expressions
 {
-    public enum BinaryStringOperator
+    public class IndexNamesExpression : ProviderPropertyExpression<IEnumerable<string>>
     {
-        StartsWith,
-        Contains,
-        EndsWith,
-        Equals,
-        NotEquals
+        public IndexNamesExpression(IEnumerable<string> indexNames)
+            : base("IndexNames", indexNames)
+        {
+        }
     }
 }

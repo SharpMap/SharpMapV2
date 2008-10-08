@@ -61,11 +61,48 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'">
+    <When Condition="'$(GeoAPIProjectReference)' == 'false'">
+      <ItemGroup>
+        <Reference Include="GeoAPI, Version=2.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+          <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+          <Name>GeoAPI.Net</Name>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(NPackProjectReference)' == 'false'">
+      <ItemGroup>
+        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
+          <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+          <Name>NPack</Name>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition=" '$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35' ">
       <ItemGroup>
         <Reference Include="System" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
         <Reference Include="System.Core" />
-        <Reference Include="System.Xml.Linq" />
       </ItemGroup>
     </When>
     <Otherwise>
@@ -76,52 +113,7 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Debug_Net35'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\V2Layout\GeoAPI\ExternalReferences\Debug_Net35\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net35'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\V2Layout\GeoAPI\ExternalReferences\Release_Net35\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net20'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\V2Layout\GeoAPI\ExternalReferences\Release_Net20\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Debug_Net20'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\V2Layout\GeoAPI\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <ItemGroup>
-    <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SharpMap\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
@@ -175,31 +167,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeoAPI\branches\v2.0\src\GeoAPI\GeoAPI.Net.csproj">
-      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-      <Name>GeoAPI.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NTS\ManagedBufferedCoordinate2D\ManagedBufferedCoordinate2D.csproj">
+    <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.csproj">
       <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
-      <Name>ManagedBufferedCoordinate2D</Name>
+      <Name>ManagedBufferedCoordinate</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NTS\NetTopologySuite\NetTopologySuite.csproj">
+    <ProjectReference Include="..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
       <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
       <Name>NetTopologySuite</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap\Proj.Net\ProjNet\ProjNet.csproj">
+    <ProjectReference Include="..\..\Proj.Net\ProjNet\ProjNet.csproj">
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap\SharpMap.Presentation\WinForms\SharpMap.Presentation.WinForms.csproj">
+    <ProjectReference Include="..\..\SharpMap.Presentation\WinForms\SharpMap.Presentation.WinForms.csproj">
       <Project>{E7E3A53F-6B4D-423B-A10E-F0580B87FB81}</Project>
       <Name>SharpMap.Presentation.WinForms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpMap\SharpMap\SharpMap.csproj">
+    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>

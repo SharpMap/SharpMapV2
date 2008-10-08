@@ -80,18 +80,18 @@ namespace MapViewer
 
         private void InitMap()
         {
-            CoordinateFactory = new BufferedCoordinate2DFactory();
+            CoordinateFactory = new BufferedCoordinateFactory();
 
-            CoordinateSequenceFactory = new BufferedCoordinate2DSequenceFactory(
-                (BufferedCoordinate2DFactory) CoordinateFactory);
+            CoordinateSequenceFactory = new BufferedCoordinateSequenceFactory(
+                (BufferedCoordinateFactory) CoordinateFactory);
 
-            GeometryFactory = new GeometryFactory<BufferedCoordinate2D>(
-                (ICoordinateSequenceFactory<BufferedCoordinate2D>) CoordinateSequenceFactory);
+            GeometryFactory = new GeometryFactory<BufferedCoordinate>(
+                (ICoordinateSequenceFactory<BufferedCoordinate>) CoordinateSequenceFactory);
 
 
-            CoordinateSystemFactory = new CoordinateSystemFactory<BufferedCoordinate2D>(
-                (ICoordinateFactory<BufferedCoordinate2D>) CoordinateFactory,
-                (IGeometryFactory<BufferedCoordinate2D>) GeometryFactory);
+            CoordinateSystemFactory = new CoordinateSystemFactory<BufferedCoordinate>(
+                (ICoordinateFactory<BufferedCoordinate>) CoordinateFactory,
+                (IGeometryFactory<BufferedCoordinate>) GeometryFactory);
 
 
             mapViewControl1.SuspendLayout();

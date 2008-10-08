@@ -20,7 +20,7 @@ namespace SharpMap.Data.Providers.Db
     public interface IDbUtility
     {
         IDbConnection CreateConnection(string connectionString);
-        IDataParameter CreateParameter(string parameterName, object parameterValue, ParameterDirection paramDirection);
+        IDataParameter CreateParameter<TValue>(string parameterName, TValue parameterValue, ParameterDirection paramDirection);
         IDbCommand CreateCommand();
         IDbDataAdapter CreateAdapter(IDbCommand cmd);
         string FormatValue<T>(T value);

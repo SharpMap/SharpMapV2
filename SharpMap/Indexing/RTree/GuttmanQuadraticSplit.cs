@@ -21,7 +21,7 @@ using System.Diagnostics;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
 using NPack;
-//using GeoAPIEnumerable = GeoAPI.DataStructures.Enumerable;
+using GeoAPIEnumerable = GeoAPI.DataStructures.Enumerable;
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
 #else

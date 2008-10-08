@@ -21,6 +21,7 @@ using System.Web;
 using SharpMap.Data.Providers;
 using SharpMap.Layers;
 using SharpMap.Presentation.AspNet.MVP;
+using SharpMap.Utilities;
 
 namespace SharpMap.Presentation.AspNet.Handlers
 {

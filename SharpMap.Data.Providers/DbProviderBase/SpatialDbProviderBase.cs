@@ -195,7 +195,7 @@ namespace SharpMap.Data.Providers.Db
             get
             {
                 if (string.IsNullOrEmpty(TableSchema))
-                    return string.Format("[0]", Table);
+                    return string.Format("[{0}]", Table);
 
                 return string.Format("[{0}].[{1}]", TableSchema, Table);
             }
@@ -243,9 +243,8 @@ namespace SharpMap.Data.Providers.Db
                     cmd.Connection = conn;
                     cmd.CommandText =
                         String.Format(
-                            "DELETE FROM {0}.{1} WHERE {2} in ({3})",
-                            TableSchema,
-                            Table,
+                            "DELETE FROM {0} WHERE {1} in ({2})",
+                            QualifiedTableName,
                             OidColumn,
                             String.Join(",",
                                         Enumerable.ToArray(Enumerable.Transform<TOid, String>(featureIds,
@@ -391,7 +390,7 @@ namespace SharpMap.Data.Providers.Db
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             using (IDbCommand cmd = DbUtility.CreateCommand())
             {
-                cmd.CommandText = string.Format("SELECT * FROM {0} ", Table);
+                cmd.CommandText = string.Format("SELECT * FROM {0} ", QualifiedTableName);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
                 //conn.Open();

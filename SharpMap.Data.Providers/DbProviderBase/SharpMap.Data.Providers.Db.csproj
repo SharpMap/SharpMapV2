@@ -72,7 +72,7 @@
       <ItemGroup>
         <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
           <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-          <Name>GeoAPI.Net Project</Name>
+          <Name>GeoAPI.Net</Name>
         </ProjectReference>
       </ItemGroup>
     </Otherwise>
@@ -86,6 +86,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Expressions\DataPageNumberExpression.cs" />
+    <Compile Include="Expressions\DataPageSizeExpression.cs" />
+    <Compile Include="Expressions\ForceIndexExpression.cs" />
+    <Compile Include="Expressions\IndexNamesExpression.cs" />
+    <Compile Include="Expressions\OrderByExpression.cs" />
+    <Compile Include="Expressions\WithNoLockExpression.cs" />
     <Compile Include="ExpressionTreeToSqlCompilerBase.cs" />
     <Compile Include="IDbUtility.cs" />
     <Compile Include="SpatialDbProviderBase.cs" />
