@@ -67,7 +67,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
         public GeocentricTransform(IEnumerable<ProjectionParameter> parameters,
                                    ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
-            : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory, isInverse)
+            : base(Caster.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory, isInverse)
         {
             Double semiMinor = SemiMinor;
             _ses = (Math.Pow(SemiMajor, 2) - Math.Pow(semiMinor, 2)) / Math.Pow(semiMinor, 2);
@@ -91,7 +91,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         protected override IMathTransform GetInverseInternal()
         {
             IEnumerable<ProjectionParameter> parameters =
-                Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters);
+                Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
             return new GeocentricTransform<TCoordinate>(parameters,
                                                         CoordinateFactory,

@@ -368,7 +368,7 @@ namespace ProjNet.CoordinateSystems.Projections
         protected override IMathTransform GetInverseInternal()
         {
             IEnumerable<ProjectionParameter> parameters =
-                Enumerable.Downcast<ProjectionParameter, Parameter>(Parameters);
+                Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
             return new AlbersProjection<TCoordinate>(parameters, CoordinateFactory, !_isInverse);
         }
 

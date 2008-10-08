@@ -38,7 +38,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
@@ -70,7 +69,7 @@ namespace ProjNet.CoordinateSystems.Projections
         protected MapProjection(IEnumerable<ProjectionParameter> parameters,
                                 ICoordinateFactory<TCoordinate> coordinateFactory,
                                 Boolean isInverse)
-            : base(Enumerable.Upcast<Parameter, ProjectionParameter>(parameters),
+            : base(Caster.Upcast<Parameter, ProjectionParameter>(parameters),
                    coordinateFactory,
                    isInverse)
         {
