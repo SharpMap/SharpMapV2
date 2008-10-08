@@ -18,10 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
 using NPack;
-using GeoAPIEnumerable = GeoAPI.DataStructures.Enumerable;
+
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
 #else
@@ -77,8 +78,8 @@ namespace SharpMap.Indexing.RTree
 
             IEnumerable<IBoundable<IExtents>> boundables =
                isLeaf
-               ? GeoAPIEnumerable.Upcast<IBoundable<IExtents>, TItem>(node.Items)
-               : GeoAPIEnumerable.Upcast<IBoundable<IExtents>, ISpatialIndexNode<IExtents, TItem>>(node.Children);
+               ? Caster.Upcast<IBoundable<IExtents>, TItem>(node.Items)
+               : Caster.Upcast<IBoundable<IExtents>, ISpatialIndexNode<IExtents, TItem>>(node.Children);
            
             Int32 boundablesCount = isLeaf ? node.ItemCount : node.ChildCount;
 
@@ -115,20 +116,20 @@ namespace SharpMap.Indexing.RTree
 
             if (isLeaf)
             {
-                IEnumerable<TItem> g1Cast = GeoAPIEnumerable.Downcast<TItem, IBoundable<IExtents>>(g1Sized);
+                IEnumerable<TItem> g1Cast = Caster.Downcast<TItem, IBoundable<IExtents>>(g1Sized);
                 node.AddItems(g1Cast);
 
-                IEnumerable<TItem> g2Cast = GeoAPIEnumerable.Downcast<TItem, IBoundable<IExtents>>(g2Sized);
+                IEnumerable<TItem> g2Cast = Caster.Downcast<TItem, IBoundable<IExtents>>(g2Sized);
                 sibling.AddItems(g2Cast);
             }
             else
             {
                 IEnumerable<ISpatialIndexNode<IExtents, TItem>> g1Cast
-                    = GeoAPIEnumerable.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g1Sized);
+                    = Caster.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g1Sized);
                 node.AddChildren(g1Cast);
 
                 IEnumerable<ISpatialIndexNode<IExtents, TItem>> g2Cast
-                    = GeoAPIEnumerable.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g2Sized);
+                    = Caster.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g2Sized);
                 sibling.AddChildren(g2Cast);
             }
 

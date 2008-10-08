@@ -64,7 +64,7 @@ namespace SharpMap.Indexing.RTree
         public override void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
         {
             IEnumerable<RTreeNode<TItem>> nodes =
-                Enumerable.Downcast<RTreeNode<TItem>, ISpatialIndexNode<IExtents, TItem>>(children);
+                Caster.Downcast<RTreeNode<TItem>, ISpatialIndexNode<IExtents, TItem>>(children);
 
             ensureChildren();
 
