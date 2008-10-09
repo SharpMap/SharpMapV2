@@ -48,7 +48,7 @@ namespace SharpMap.Data.Providers.Db.Test
             var services = new GeometryServices();
 
             var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
-                                                           ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+                                                           ConfigurationManager.ConnectionStrings["sql2008"].ConnectionString,
                                                            "dbo",
                                                            "vw_iMARS_BRANCH", "ACSId", "Geom")
                              {
@@ -88,7 +88,7 @@ namespace SharpMap.Data.Providers.Db.Test
             var services = new GeometryServices();
 
             var search = new SpatiaLite2_Provider(services.DefaultGeometryFactory,
-                                                  ConfigurationManager.ConnectionStrings["sqLite"].ConnectionString, "dbo",
+                                                  ConfigurationManager.ConnectionStrings["sqLite"].ConnectionString, "main",
                                                   "regions", "OID", "XGeometryX");
             search.SpatiaLiteIndexType = SpatiaLite2_IndexType.MBRCache;
 

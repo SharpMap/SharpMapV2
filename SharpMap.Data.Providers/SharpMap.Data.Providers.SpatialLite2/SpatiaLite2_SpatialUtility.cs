@@ -36,73 +36,76 @@
 using System;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
+using System.Reflection;
 using SharpMap.Data.Providers.Db;
 
 namespace SharpMap.Data.Providers.SpatiaLite2
 {
-  public class SpatiaLite2_Utility : IDbUtility
-  {
-    #region IDbUtility Members
-
-    public IDbConnection CreateConnection(string connectionString)
+    public class SpatiaLite2_Utility : IDbUtility
     {
-      //load spatialite-extension
-      SQLiteConnection cn = new SQLiteConnection(connectionString);
-      cn.Open();
-      object ret = new SQLiteCommand("SELECT load_extension('libspatialite-2.dll');", cn).ExecuteScalar();
-      //cn.Close();
+        #region IDbUtility Members
 
-      return cn;
-    }
+        public IDbConnection CreateConnection(string connectionString)
+        {
+            //load spatialite-extension
+            SQLiteConnection cn = new SQLiteConnection(connectionString);
+            cn.Open();
+            object ret = new SQLiteCommand(
+                "SELECT load_extension('libspatialite-2.dll');", cn).ExecuteScalar();
+            //cn.Close();
 
-    public IDataParameter CreateParameter<TValue>(string parameterName, TValue parameterValue,
+            return cn;
+        }
+
+        public IDataParameter CreateParameter<TValue>(string parameterName, TValue parameterValue,
+                                              ParameterDirection paramDirection)
+        {
+            SQLiteParameter p = new SQLiteParameter(string.Format("@{0}", parameterName), parameterValue);
+            p.Direction = paramDirection;
+            return p;
+        }
+
+        public IDataParameter CreateParameterByType(string parameterName, DbType parameterType,
                                           ParameterDirection paramDirection)
-    {
-      SQLiteParameter p = new SQLiteParameter(string.Format("@{0}", parameterName), parameterValue);
-      p.Direction = paramDirection;
-      return p;
+        {
+            if (!parameterName.StartsWith("@"))
+                parameterName = "@" + parameterName;
+            SQLiteParameter p = new SQLiteParameter(parameterName, parameterType);
+            p.Direction = paramDirection;
+            return p;
+        }
+
+        public IDbCommand CreateCommand()
+        {
+            return new SQLiteCommand();
+        }
+
+
+        //public string FormatValue<T>(T value)
+        //{
+        //  return string.Format(GetSqlFormatString(typeof(T)), value);
+        //}
+
+        //public string FormatValue(object value)
+        //{
+        //  return string.Format(GetSqlFormatString(value.GetType()), value);
+        //}
+
+        //public string GetSqlFormatString(Type t)
+        //{
+        //  if (t == typeof(string))
+        //    return "'{0}'";
+
+        //  return "{0}";
+        //}
+
+        public IDbDataAdapter CreateAdapter(IDbCommand cmd)
+        {
+            return new SQLiteDataAdapter((SQLiteCommand)cmd);
+        }
+
+        #endregion
+
     }
-
-    public IDataParameter CreateParameterByType(string parameterName, DbType parameterType,
-                                      ParameterDirection paramDirection)
-    {
-      if (!parameterName.StartsWith("@"))
-        parameterName = "@" + parameterName;
-      SQLiteParameter p = new SQLiteParameter( parameterName, parameterType);
-      p.Direction = paramDirection;
-      return p;
-    }
-
-    public IDbCommand CreateCommand()
-    {
-      return new SQLiteCommand();
-    }
-
-
-    //public string FormatValue<T>(T value)
-    //{
-    //  return string.Format(GetSqlFormatString(typeof(T)), value);
-    //}
-
-    //public string FormatValue(object value)
-    //{
-    //  return string.Format(GetSqlFormatString(value.GetType()), value);
-    //}
-
-    //public string GetSqlFormatString(Type t)
-    //{
-    //  if (t == typeof(string))
-    //    return "'{0}'";
-
-    //  return "{0}";
-    //}
-
-    public IDbDataAdapter CreateAdapter(IDbCommand cmd)
-    {
-      return new SQLiteDataAdapter((SQLiteCommand)cmd);
-    }
-
-    #endregion
-
-  }
 }

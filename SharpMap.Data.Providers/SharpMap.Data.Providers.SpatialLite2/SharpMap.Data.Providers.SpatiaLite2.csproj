@@ -133,9 +133,7 @@
       <Name>SharpMap.Data.Providers.Db</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="PROJ4.csv" />
-  </ItemGroup>
+
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -169,25 +167,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="libgeos-3-0-0.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libgeos_c-1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libiconv2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libproj-0.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libspatialite-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libsqlite3-1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content  Include="SQLite\libgeos-3-0-0.dll" />
+    <Content Include="SQLite\libgeos_c-1.dll" />
+    <Content Include="SQLite\libiconv2.dll" />
+    <Content Include="SQLite\libproj-0.dll" />
+    <Content Include="SQLite\libspatialite-2.dll" />
+    <Content Include="SQLite\libsqlite3-1.dll" />
+    <Content Include="SQLite\PROJ4.csv" />
   </ItemGroup>
+  
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
@@ -195,8 +183,8 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
+  </Target>-->
   <Target Name="AfterBuild">
+    <Copy ContinueOnError="false" DestinationFolder="$(TargetDir)" SourceFiles="SQLite\libgeos-3-0-0.dll;SQLite\libgeos_c-1.dll;SQLite\libiconv2.dll;SQLite\libproj-0.dll;SQLite\libspatialite-2.dll;SQLite\libsqlite3-1.dll;SQLite\PROJ4.csv" />
   </Target>
-  -->
 </Project>

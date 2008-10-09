@@ -46,24 +46,6 @@ namespace SharpMap.Data.Providers.Db
             return new SqlCommand();
         }
 
-        //public string FormatValue<T>(T value)
-        //{
-        //    return string.Format(GetSqlFormatString(typeof (T)), value);
-        //}
-
-        //public string FormatValue(object value)
-        //{
-        //    return string.Format(GetSqlFormatString(value.GetType()), value);
-        //}
-
-        //public string GetSqlFormatString(Type t)
-        //{
-        //    if (t == typeof (string))
-        //        return "'{0}'";
-
-        //    return "{0}";
-        //}
-
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
             return new SqlDataAdapter((SqlCommand) cmd);
