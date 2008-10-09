@@ -206,7 +206,7 @@ namespace SharpMap.Data.Providers.Db
         public virtual IDataParameter CreateParameter<TValue>(TValue value)
         {
             ///if TValue is System.Object we need to expand it to generate the correct parameter type
-            if (typeof(TValue) == typeof(object))
+            if (typeof(TValue) == typeof(object) && value.GetType() != typeof(object))
                 return CreateParameterFromObject(value);
 
             object key = value;
@@ -264,7 +264,10 @@ namespace SharpMap.Data.Providers.Db
                     generator.Emit(OpCodes.Ldarg_0);
                     // load the first argument onto the stack - equivalent to 'this' within the method
                     generator.Emit(OpCodes.Ldarg_1); // load the first argument (the value) onto the stack 
-                    generator.Emit(OpCodes.Castclass, tValue); //cast it to the correct arg type
+                    if (tValue.IsValueType)
+                        generator.Emit(OpCodes.Unbox_Any, tValue);
+                    else
+                        generator.Emit(OpCodes.Castclass, tValue); //cast it to the correct arg type
                     generator.EmitCall(OpCodes.Callvirt, mig, null); // call the method passing in the param
                     generator.Emit(OpCodes.Ret); //return the value
 

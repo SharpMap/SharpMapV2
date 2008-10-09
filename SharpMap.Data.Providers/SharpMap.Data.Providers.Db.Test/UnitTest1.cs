@@ -62,7 +62,7 @@ namespace SharpMap.Data.Providers.Db.Test
                              };
 
             var binaryExpression =
-                new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { "AB", "AC", "AD", "AE" }));
+                new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { 3, 4, 5, 6 }));
 
             var providerProps =
                 new ProviderPropertiesExpression(
