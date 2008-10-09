@@ -92,7 +92,7 @@
     <Reference Include="System.XML" />
     <Reference Include="System.Data.SQLite, Version=1.0.59.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\SQLite.NET\bin\System.Data.SQLite.DLL</HintPath>
+      <HintPath>C:\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.DLL</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

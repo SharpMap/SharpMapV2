@@ -16,6 +16,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
@@ -137,6 +139,9 @@ namespace SharpMap.Data.Providers.Db
 
         #region database info
 
+        protected readonly Dictionary<Type, Func<object, object, IDataParameter>> _CreateParameterDelegateTypeMap =
+            new Dictionary<Type, Func<object, object, IDataParameter>>();
+
         /// <summary>
         /// The Database schema to which the Table belongs
         /// </summary>
@@ -179,7 +184,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected void GuardValueNotNull<T>(T value, string name)
         {
-            if (Equals(value, default(T)) || (typeof (T) == typeof (string)
+            if (Equals(value, default(T)) || (typeof(T) == typeof(string)
                                               && string.IsNullOrEmpty(value as string)))
                 throw new InvalidOperationException(string.Format("{0} cannot be null.", name));
         }
@@ -198,8 +203,12 @@ namespace SharpMap.Data.Providers.Db
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        protected virtual IDataParameter CreateParameter<TValue>(TValue value)
+        public virtual IDataParameter CreateParameter<TValue>(TValue value)
         {
+            ///if TValue is System.Object we need to expand it to generate the correct parameter type
+            if (typeof(TValue) == typeof(object))
+                return CreateParameterFromObject(value);
+
             object key = value;
             if (Equals(null, value))
                 key = new NullValue<TValue>();
@@ -210,7 +219,7 @@ namespace SharpMap.Data.Providers.Db
             IDataParameter p;
             if (value is IGeometry)
                 p = DbUtility.CreateParameter(string.Format("iparam{0}", ParameterCache.Count),
-                                              ((IGeometry) value).AsBinary(),
+                                              ((IGeometry)value).AsBinary(),
                                               ParameterDirection.Input);
 
 
@@ -222,6 +231,53 @@ namespace SharpMap.Data.Providers.Db
             ParameterCache.Add(key, p);
 
             return p;
+        }
+
+        protected IDataParameter CreateParameterFromObject(object value)
+        {
+            Func<object, object, IDataParameter> dlgt;
+            ///method sig for our delegate method. The method is static and requires the first parameter to be a reference to the calling class
+            Type tValue = value.GetType();
+
+            if (!_CreateParameterDelegateTypeMap.TryGetValue(tValue, out dlgt))
+            //see if we have already created this method.
+            {
+                lock (_CreateParameterDelegateTypeMap)
+                {
+                    //We havent so we build one
+                    var m = new DynamicMethod(string.Format("CreateParam_{0}", tValue),
+                                              MethodAttributes.Public | MethodAttributes.Static,
+                                              CallingConventions.Standard, typeof(IDataParameter),
+                                              new[] { typeof(object), typeof(object) }, GetType(), true);
+
+                    Type classType = GetType();
+
+                    ///get the method info for the method we want to call
+                    MethodInfo mi = classType.GetMethod("CreateParameter",
+                                                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+
+                    //construct a generic method with the same type argument as the value
+                    MethodInfo mig = mi.MakeGenericMethod(tValue);
+
+                    //create our ILGenerator
+                    ILGenerator generator = m.GetILGenerator();
+                    generator.Emit(OpCodes.Ldarg_0);
+                    // load the first argument onto the stack - equivalent to 'this' within the method
+                    generator.Emit(OpCodes.Ldarg_1); // load the first argument (the value) onto the stack 
+                    generator.Emit(OpCodes.Castclass, tValue); //cast it to the correct arg type
+                    generator.EmitCall(OpCodes.Callvirt, mig, null); // call the method passing in the param
+                    generator.Emit(OpCodes.Ret); //return the value
+
+                    //Put it all together into a callable method
+                    dlgt =
+                        (Func<object, object, IDataParameter>)
+                        m.CreateDelegate(typeof(Func<object, object, IDataParameter>));
+
+                    _CreateParameterDelegateTypeMap.Add(tValue, dlgt);
+                }
+            }
+
+            return dlgt(this, value);
         }
 
         #endregion
@@ -247,31 +303,31 @@ namespace SharpMap.Data.Providers.Db
             if (exp == null)
                 return;
             if (exp is ProviderQueryExpression)
-                VisitProviderQueryExpression(builder, (ProviderQueryExpression) exp);
+                VisitProviderQueryExpression(builder, (ProviderQueryExpression)exp);
             else if (exp is ProviderPropertiesExpression)
-                VisitProviderPropertiesExpression(builder, (ProviderPropertiesExpression) exp);
+                VisitProviderPropertiesExpression(builder, (ProviderPropertiesExpression)exp);
             else if (exp is ProviderPropertyExpression)
-                VisitProviderPropertyExpression(builder, (ProviderPropertyExpression) exp);
+                VisitProviderPropertyExpression(builder, (ProviderPropertyExpression)exp);
             else if (exp is ProjectionExpression)
-                VisitProjectionExpression((ProjectionExpression) exp);
+                VisitProjectionExpression((ProjectionExpression)exp);
             else if (exp is SpatialBinaryExpression)
-                VisitSpatialBinaryExpression(builder, (SpatialBinaryExpression) exp);
+                VisitSpatialBinaryExpression(builder, (SpatialBinaryExpression)exp);
             else if (exp is FeatureQueryExpression)
-                VisitFeatureQueryExpression(builder, (FeatureQueryExpression) exp);
+                VisitFeatureQueryExpression(builder, (FeatureQueryExpression)exp);
             else if (exp is QueryExpression)
-                VisitQueryExpression(builder, (QueryExpression) exp);
+                VisitQueryExpression(builder, (QueryExpression)exp);
             else if (exp is CollectionBinaryExpression)
-                VisitCollectionBinaryExpression(builder, (CollectionBinaryExpression) exp);
+                VisitCollectionBinaryExpression(builder, (CollectionBinaryExpression)exp);
             else if (exp is BinaryExpression)
-                VisitBinaryExpression(builder, (BinaryExpression) exp);
+                VisitBinaryExpression(builder, (BinaryExpression)exp);
             else if (exp is AttributeBinaryStringExpression)
-                VisitBinaryStringExpression(builder, (AttributeBinaryStringExpression) exp);
+                VisitBinaryStringExpression(builder, (AttributeBinaryStringExpression)exp);
             else if (exp is LiteralExpression)
-                VisitValueExpression(builder, (LiteralExpression) exp);
+                VisitValueExpression(builder, (LiteralExpression)exp);
             else if (exp is PropertyNameExpression)
-                VisitAttributeExpression(builder, (PropertyNameExpression) exp);
+                VisitAttributeExpression(builder, (PropertyNameExpression)exp);
             else if (exp is CollectionExpression)
-                VisitCollectionExpression(builder, (CollectionExpression) exp);
+                VisitCollectionExpression(builder, (CollectionExpression)exp);
             else
                 throw new NotImplementedException(string.Format("Unknown Expression Type {0}", exp.GetType()));
         }
@@ -318,7 +374,7 @@ namespace SharpMap.Data.Providers.Db
             }
 
             else if (exp is AttributesProjectionExpression)
-                VisitAttributeProjectionExpression((AttributesProjectionExpression) exp);
+                VisitAttributeProjectionExpression((AttributesProjectionExpression)exp);
         }
 
         protected virtual void VisitAttributeProjectionExpression(AttributesProjectionExpression exp)
@@ -338,7 +394,7 @@ namespace SharpMap.Data.Providers.Db
         private IEnumerable<string> EnumerableConverter(IEnumerable enu)
         {
             foreach (object o in enu)
-                yield return DbUtility.FormatValue(o);
+                yield return CreateParameter(o).ParameterName;
         }
 
         protected virtual void VisitCollectionExpression(StringBuilder builder, CollectionExpression exp)
@@ -443,7 +499,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp.SpatialExpression is ExtentsExpression)
                 WriteSpatialExtentsExpressionSql(builder, exp.Op, (exp.SpatialExpression).Extents);
             else if (exp.SpatialExpression is GeometryExpression)
-                WriteSpatialGeometryExpressionSql(builder, exp.Op, ((GeometryExpression) exp.SpatialExpression).Geometry);
+                WriteSpatialGeometryExpressionSql(builder, exp.Op, ((GeometryExpression)exp.SpatialExpression).Geometry);
             else
                 throw new NotImplementedException(string.Format("{0} is not implemented", exp.GetType()));
         }
@@ -518,7 +574,7 @@ namespace SharpMap.Data.Providers.Db
         protected virtual string GetBinaryStringExpressionString(BinaryStringOperator binaryStringOperator,
                                                                  Expression right)
         {
-            if (right is LiteralExpression && Equals(null, ((LiteralExpression) right).Value))
+            if (right is LiteralExpression && Equals(null, ((LiteralExpression)right).Value))
             {
                 switch (binaryStringOperator)
                 {
@@ -542,7 +598,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected virtual string GetBinaryExpressionString(BinaryOperator binaryOperator, Expression right)
         {
-            if (right is LiteralExpression && Equals(null, ((LiteralExpression) right).Value))
+            if (right is LiteralExpression && Equals(null, ((LiteralExpression)right).Value))
             {
                 switch (binaryOperator)
                 {

@@ -42,7 +42,7 @@ namespace SharpMap.Data.Providers.Db
 
         static SpatialDbProviderBase()
         {
-            AddDerivedProperties(typeof (SpatialDbProviderBase<TOid>));
+            AddDerivedProperties(typeof(SpatialDbProviderBase<TOid>));
         }
 
         protected SpatialDbProviderBase(IDbUtility dbUtility,
@@ -207,27 +207,27 @@ namespace SharpMap.Data.Providers.Db
 
         public void Insert(FeatureDataRow<TOid> feature)
         {
-            Insert((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
+            Insert((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
         }
 
         public void Insert(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            Insert((IEnumerable<FeatureDataRow>) features);
+            Insert((IEnumerable<FeatureDataRow>)features);
         }
 
         public void Update(FeatureDataRow<TOid> feature)
         {
-            Update((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
+            Update((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
         }
 
         public void Update(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            Update((IEnumerable<FeatureDataRow>) features);
+            Update((IEnumerable<FeatureDataRow>)features);
         }
 
         public void Delete(FeatureDataRow<TOid> feature)
         {
-            Delete(new[] {feature});
+            Delete(new[] { feature });
         }
 
         public void Delete(IEnumerable<FeatureDataRow<TOid>> features)
@@ -238,6 +238,7 @@ namespace SharpMap.Data.Providers.Db
                 featureIds.Add(fdr.Id);
             }
 
+            ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(null);
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
                 using (IDbCommand cmd = DbUtility.CreateCommand())
@@ -249,10 +250,18 @@ namespace SharpMap.Data.Providers.Db
                             QualifiedTableName,
                             OidColumn,
                             String.Join(",",
-                                        Enumerable.ToArray(Enumerable.Transform<TOid, String>(featureIds,
-                                                                                              DbUtility.FormatValue)))
+                                        Enumerable.ToArray(
+                                            Processor.Transform(featureIds,
+                                                                   delegate(TOid o)
+                                                                       {
+                                                                           return
+                                                                               compiler.CreateParameter(o).ParameterName;
+                                                                       })))
                             );
                     conn.Open();
+                    foreach (IDataParameter p in compiler.ParameterCache.Values)
+                        cmd.Parameters.Add(p); 
+
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -262,10 +271,10 @@ namespace SharpMap.Data.Providers.Db
         {
             foreach (IFeatureDataRecord fdr in
                 ExecuteFeatureDataReader(
-                    PrepareCommand(new FeatureQueryExpression(new AttributesProjectionExpression(new[] {OidColumn}),
+                    PrepareCommand(new FeatureQueryExpression(new AttributesProjectionExpression(new[] { OidColumn }),
                                                               null, query))))
             {
-                yield return (TOid) fdr.GetOid();
+                yield return (TOid)fdr.GetOid();
             }
         }
 
@@ -340,19 +349,19 @@ namespace SharpMap.Data.Providers.Db
 
         public Int32 GetFeatureCount()
         {
-            var attrs = new AttributesProjectionExpression(new[] {"Count(*)"});
+            var attrs = new AttributesProjectionExpression(new[] { "Count(*)" });
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
                 using (
                     IDbCommand cmd =
                         PrepareCommand(DefinitionQuery == null
-                                           ? (Expression) attrs
+                                           ? (Expression)attrs
                                            : new QueryExpression(attrs, DefinitionQuery)))
                 {
                     cmd.Connection = conn;
                     conn.Open();
-                    return (Int32) cmd.ExecuteScalar();
+                    return (Int32)cmd.ExecuteScalar();
                 }
             }
         }
@@ -464,9 +473,9 @@ namespace SharpMap.Data.Providers.Db
                         foreach (FeatureDataRow row in features)
                         {
                             for (int i = 0; i < cmd.Parameters.Count - 1; i++)
-                                ((IDataParameter) cmd.Parameters[i]).Value = row[i];
+                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
 
-                            ((IDataParameter) cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
                             if (geometryType == OgcGeometryType.Unknown)
                                 geometryType = row.Geometry.GeometryType;
 
@@ -506,10 +515,10 @@ namespace SharpMap.Data.Providers.Db
                         foreach (FeatureDataRow row in features)
                         {
                             for (int i = 0; i < cmd.Parameters.Count - 2; i++)
-                                ((IDataParameter) cmd.Parameters[i]).Value = row[i];
+                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
 
-                            ((IDataParameter) cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
-                            ((IDataParameter) cmd.Parameters["@POldOid"]).Value =
+                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            ((IDataParameter)cmd.Parameters["@POldOid"]).Value =
                                 row[OidColumn, DataRowVersion.Original];
 
                             try
@@ -619,13 +628,13 @@ namespace SharpMap.Data.Providers.Db
                                  compiler.SqlWhereClause);
         }
 
-        protected TValue GetProviderPropertyValue<TExpression,TValue>(
+        protected TValue GetProviderPropertyValue<TExpression, TValue>(
             IEnumerable<ProviderPropertyExpression> expressions, TValue defaultValue)
             where TExpression : ProviderPropertyExpression<TValue>
         {
             foreach (ProviderPropertyExpression propertyExpression in expressions)
                 if (propertyExpression is TExpression)
-                    return ((TExpression) propertyExpression).PropertyValueExpression.Value;
+                    return ((TExpression)propertyExpression).PropertyValueExpression.Value;
             return defaultValue;
         }
 
@@ -725,7 +734,7 @@ namespace SharpMap.Data.Providers.Db
 
             //Geometry
             sets.Add(string.Format("{0}", string.Format(GeomFromWkbFormatString, "@PGeo")));
-            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof (byte[])), ParameterDirection.Input));
+            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof(byte[])), ParameterDirection.Input));
 
             return String.Format("{0} VALUES({1})", columNames, string.Join(",", sets.ToArray()).Trim());
         }
@@ -745,7 +754,7 @@ namespace SharpMap.Data.Providers.Db
                 string.Format("[{0}]={1}",
                               GeometryColumn,
                               string.Format(GeomFromWkbFormatString, "@PGeo")));
-            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof (byte[])), ParameterDirection.Input));
+            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof(byte[])), ParameterDirection.Input));
 
             return String.Join(",", sets.ToArray()).Trim();
         }

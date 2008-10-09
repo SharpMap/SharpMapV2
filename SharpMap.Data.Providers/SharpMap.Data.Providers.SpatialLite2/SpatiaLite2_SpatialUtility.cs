@@ -78,23 +78,24 @@ namespace SharpMap.Data.Providers.SpatiaLite2
       return new SQLiteCommand();
     }
 
-    public string FormatValue<T>(T value)
-    {
-      return string.Format(GetSqlFormatString(typeof(T)), value);
-    }
 
-    public string FormatValue(object value)
-    {
-      return string.Format(GetSqlFormatString(value.GetType()), value);
-    }
+    //public string FormatValue<T>(T value)
+    //{
+    //  return string.Format(GetSqlFormatString(typeof(T)), value);
+    //}
 
-    public string GetSqlFormatString(Type t)
-    {
-      if (t == typeof(string))
-        return "'{0}'";
+    //public string FormatValue(object value)
+    //{
+    //  return string.Format(GetSqlFormatString(value.GetType()), value);
+    //}
 
-      return "{0}";
-    }
+    //public string GetSqlFormatString(Type t)
+    //{
+    //  if (t == typeof(string))
+    //    return "'{0}'";
+
+    //  return "{0}";
+    //}
 
     public IDbDataAdapter CreateAdapter(IDbCommand cmd)
     {

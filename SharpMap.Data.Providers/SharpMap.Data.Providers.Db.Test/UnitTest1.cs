@@ -62,9 +62,7 @@ namespace SharpMap.Data.Providers.Db.Test
                              };
 
             var binaryExpression =
-                new BinaryExpression(new PropertyNameExpression("PostCode"),
-                                     BinaryOperator.GreaterThan,
-                                     new PropertyNameExpression("Market Sector"));
+                new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { "AB", "AC", "AD", "AE" }));
 
             var providerProps =
                 new ProviderPropertiesExpression(
@@ -92,7 +90,7 @@ namespace SharpMap.Data.Providers.Db.Test
             var search = new SpatiaLite2_Provider(services.DefaultGeometryFactory,
                                                   ConfigurationManager.ConnectionStrings["sqLite"].ConnectionString, "dbo",
                                                   "regions", "OID", "XGeometryX");
-            search.SpatiaLiteIndexType = SpatiaLite2_IndexType.MBRCache; 
+            search.SpatiaLiteIndexType = SpatiaLite2_IndexType.MBRCache;
 
             var binaryExpression =
                 new BinaryExpression(new PropertyNameExpression("VHG5"),

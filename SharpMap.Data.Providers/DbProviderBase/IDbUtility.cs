@@ -26,8 +26,10 @@ namespace SharpMap.Data.Providers.Db
 
         IDbCommand CreateCommand();
         IDbDataAdapter CreateAdapter(IDbCommand cmd);
-        string FormatValue<T>(T value);
-        string FormatValue(object value);
-        string GetSqlFormatString(Type t);
+
+
+        //string FormatValue<T>(T value);
+        //string FormatValue(object value);
+        //string GetSqlFormatString(Type t);
     }
 }
