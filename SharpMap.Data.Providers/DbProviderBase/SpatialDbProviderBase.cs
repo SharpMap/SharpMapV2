@@ -29,6 +29,7 @@ using System.Globalization;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Database;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.Db
@@ -253,14 +254,14 @@ namespace SharpMap.Data.Providers.Db
                                         Enumerable.ToArray(
                                             Processor.Transform(featureIds,
                                                                    delegate(TOid o)
-                                                                       {
-                                                                           return
-                                                                               compiler.CreateParameter(o).ParameterName;
-                                                                       })))
+                                                                   {
+                                                                       return
+                                                                           compiler.CreateParameter(o).ParameterName;
+                                                                   })))
                             );
                     conn.Open();
                     foreach (IDataParameter p in compiler.ParameterCache.Values)
-                        cmd.Parameters.Add(p); 
+                        cmd.Parameters.Add(p);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -397,22 +398,22 @@ namespace SharpMap.Data.Providers.Db
         #endregion
 
         protected virtual IEnumerable<ProviderPropertyExpression> MergeProviderProperties(
-            IEnumerable<ProviderPropertyExpression> other)
+            IEnumerable<ProviderPropertyExpression> primary, IEnumerable<ProviderPropertyExpression> secondary)
         {
-            if (Equals(null, DefaultProviderProperties))
-                return other;
-            if (Equals(null, other))
-                return DefaultProviderProperties.ProviderProperties.Collection;
+            if (Equals(null, secondary))
+                return primary;
+            if (Equals(null, primary))
+                return secondary;
 
             var list = new List<ProviderPropertyExpression>();
 
             Func<ProviderPropertyExpression, ProviderPropertyExpression, bool> predicate
                 = (prop1, prop2) => prop1.GetType() == prop2.GetType();
 
-            foreach (ProviderPropertyExpression prop in other)
+            foreach (ProviderPropertyExpression prop in primary)
                 AddToList(list, prop, predicate);
 
-            foreach (ProviderPropertyExpression prop in DefaultProviderProperties.ProviderProperties.Collection)
+            foreach (ProviderPropertyExpression prop in secondary)
                 AddToList(list, prop, predicate);
 
             return list;
@@ -598,7 +599,9 @@ namespace SharpMap.Data.Providers.Db
             ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(exp);
 
             var props =
-                new List<ProviderPropertyExpression>(MergeProviderProperties(compiler.ProviderProperties));
+                new List<ProviderPropertyExpression>(
+                    MergeProviderProperties(
+                        compiler.ProviderProperties, DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection));
 
             IDbCommand cmd = DbUtility.CreateCommand();
             cmd.CommandText = GenerateSql(props, compiler);
@@ -617,6 +620,14 @@ namespace SharpMap.Data.Providers.Db
         protected virtual string GenerateSql(IList<ProviderPropertyExpression> properties,
                                              ExpressionTreeToSqlCompilerBase compiler)
         {
+            int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
+            int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
+
+            if (pageSize > 0 && pageNumber > -1)
+                return GenerateSql(properties, compiler, pageSize, pageNumber);
+
+
+
             return String.Format(" {0} SELECT {1} FROM {2} {3} {4} {5}",
                                  compiler.SqlParamDeclarations,
                                  String.IsNullOrEmpty(compiler.SqlColumns)
@@ -627,6 +638,10 @@ namespace SharpMap.Data.Providers.Db
                                  String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                                  compiler.SqlWhereClause);
         }
+
+        protected abstract string GenerateSql(IList<ProviderPropertyExpression> properties,
+                                       ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber);
+
 
         protected TValue GetProviderPropertyValue<TExpression, TValue>(
             IEnumerable<ProviderPropertyExpression> expressions, TValue defaultValue)

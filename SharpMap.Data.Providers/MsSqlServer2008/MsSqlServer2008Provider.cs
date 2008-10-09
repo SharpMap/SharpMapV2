@@ -161,11 +161,15 @@ namespace SharpMap.Data.Providers
         }
 
 
-        /* TODO: Add paging, order by etc from ProviderPropertyExpression */
-
         protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
                                               ExpressionTreeToSqlCompilerBase compiler)
         {
+            int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
+            int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
+
+            if (pageSize > 0 && pageNumber > -1)
+                return GenerateSql(properties, compiler, pageSize, pageNumber);
+
             return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
                                  compiler.SqlParamDeclarations,
                                  string.IsNullOrEmpty(compiler.SqlColumns)
@@ -178,12 +182,43 @@ namespace SharpMap.Data.Providers
                                  GetWithClause(properties));
         }
 
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber)
+        {
+            string orderByCols = string.Join(",",
+                                             Enumerable.ToArray(
+                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                                     properties, new string[] { })));
+
+            orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
+            int startRecord = pageNumber * pageSize;
+            int endRecord = startRecord + pageSize;
+
+            string columns = string.IsNullOrEmpty(compiler.SqlColumns)
+                                 ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
+                                 : compiler.SqlColumns;
+
+            return string.Format(" {0}; WITH CTE(rownumber, {8}) AS (SELECT ROW_NUMBER() OVER(ORDER BY {7} DESC) AS rownumber, {1}  FROM {2}{6} {3} {4} {5} ) SELECT {8} FROM CTE WHERE rownumber between {9} AND {10} ",
+                                 compiler.SqlParamDeclarations,
+                                 columns,
+                                 compiler.QualifiedTableName,
+                                 compiler.SqlJoinClauses,
+                                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                                 compiler.SqlWhereClause,
+                                 GetWithClause(properties),
+                                 orderByCols,
+                                 columns.Replace(string.Format(GeometryColumnConversionFormatString + " AS Geom", GeometryColumn), GeometryColumn),
+                                 compiler.CreateParameter(startRecord).ParameterName,
+                                 compiler.CreateParameter(endRecord).ParameterName);
+
+
+        }
+
         protected string GetWithClause(IEnumerable<ProviderPropertyExpression> properties)
         {
             bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
             IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
-                properties, new string[] {});
+                properties, new string[] { });
 
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
@@ -206,7 +241,7 @@ namespace SharpMap.Data.Providers
         public override DataTable GetSchemaTable()
         {
             DataTable dt = base.GetSchemaTable(true);
-            dt.Columns[GeometryColumn].DataType = typeof (byte[]);
+            dt.Columns[GeometryColumn].DataType = typeof(byte[]);
             //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
             return dt;
         }

@@ -18,7 +18,7 @@ namespace SharpMap.Data.Providers.Db.Expressions
 {
     public class DataPageNumberExpression : ProviderPropertyExpression<int>
     {
-        private DataPageNumberExpression(int pageNumber)
+        public DataPageNumberExpression(int pageNumber)
             : base("DataPageNumber", pageNumber)
         {
         }

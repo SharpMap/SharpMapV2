@@ -141,5 +141,10 @@ namespace SharpMap.Data.Providers
                                  compiler.SqlWhereClause,
                                  BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
         }
+
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

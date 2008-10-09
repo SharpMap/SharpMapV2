@@ -56,18 +56,18 @@ namespace SharpMap.Data.Providers
         /// No valid spatial Index
         /// </summary>
         None = 0,
-        
+
         /// <summary>
         /// RTree Index
         /// </summary>
         RTree = 1,
-        
+
         /// <summary>
         /// In-Memory cache of Minimum Bounding Rectangles (MBR)
         /// </summary>
         MBRCache = 2
     }
-    
+
     public class SpatiaLite2_Provider
         : SpatialDbProviderBase<Int64>
     {
@@ -162,12 +162,12 @@ namespace SharpMap.Data.Providers
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                Int64 numTables = 
-                    (Int64)new SQLiteCommand( String.Format(
+                Int64 numTables =
+                    (Int64)new SQLiteCommand(String.Format(
                         "SELECT COUNT(*) FROM [{0}].[sqlite_master] " +
                         "WHERE([tbl_name]='spatial_ref_sys' OR [tbl_name]='geometry_columns');", "main")
                         , conn).ExecuteScalar();
-                
+
                 if (numTables >= 2)
                 {
                     Int64 numRefSys =
@@ -201,23 +201,23 @@ namespace SharpMap.Data.Providers
                     SQLiteDataReader dr = new SQLiteCommand(selectClause, cn).ExecuteReader();
                     if (dr.HasRows)
                     {
-                        
+
                         dr.Read();
                         //valid geometry type
-                        _validGeometryType = parseGeometryType( dr.GetString(0) );
-                        
+                        _validGeometryType = parseGeometryType(dr.GetString(0));
+
                         //Srid
                         Srid = (Int32)dr.GetInt64(1);
                         if (geometryFactory.Srid == null)
                             geometryFactory.Srid = Srid;
                         else
-                        { 
+                        {
                             //geometryFactory.SpatialReference
                         }
 
                         //SpatiaLite Index
                         switch (dr.GetInt64(2))
-                        { 
+                        {
                             case 0:
                                 throw new SpatiaLite2_Exception("Spatial index type must not be 'None'");
                             case 1:
@@ -240,8 +240,8 @@ namespace SharpMap.Data.Providers
 
         private OgcGeometryType parseGeometryType(String geometryString)
         {
-            if ( String.IsNullOrEmpty( geometryString ) )
-                throw new SpatiaLite2_Exception( "Geometry type not specified!");
+            if (String.IsNullOrEmpty(geometryString))
+                throw new SpatiaLite2_Exception("Geometry type not specified!");
 
             switch (geometryString.ToUpper())
             {
@@ -252,8 +252,8 @@ namespace SharpMap.Data.Providers
                 case "MULTILINESTRING": return OgcGeometryType.MultiLineString;
                 case "MULTIPOLYGON": return OgcGeometryType.MultiPolygon;
                 case "GEOMETRYCOLLECTION": return OgcGeometryType.GeometryCollection;
-                default: 
-                    throw new SpatiaLite2_Exception(string.Format("Invalid geometry type '{0}'", geometryString ));
+                default:
+                    throw new SpatiaLite2_Exception(string.Format("Invalid geometry type '{0}'", geometryString));
             }
         }
 
@@ -288,7 +288,7 @@ namespace SharpMap.Data.Providers
 
                     case SpatiaLite2_IndexType.MBRCache:
                         cmd.CommandText = string.Format(
-                            "SELECT MIN(MbrMinX({0})) as xmin, MIN(MbrMinY({0})) as ymin, MAX(MbrMaxX({0})) as xmax, MAX(MbrMaxY({0})) as maxy from {1};", 
+                            "SELECT MIN(MbrMinX({0})) as xmin, MIN(MbrMinY({0})) as ymin, MAX(MbrMaxX({0})) as xmax, MAX(MbrMaxY({0})) as maxy from {1};",
                             GeometryColumn, QualifiedTableName);
                         break;
                 }
@@ -343,7 +343,7 @@ namespace SharpMap.Data.Providers
                     {
                         //First disable current spatial index
                         ret = new SQLiteCommand(string.Format("SELECT DisableSpatialIndex( '{0}', '{1}' )", Table, GeometryColumn), cn).ExecuteScalar();
-                        
+
                         if (value == SpatiaLite2_IndexType.RTree)
                             ret = new SQLiteCommand(string.Format("SELECT CreateSpatialIndex( '{0}', '{1}' );", Table, GeometryColumn), cn).ExecuteScalar();
                         if (value == SpatiaLite2_IndexType.MBRCache)
@@ -378,7 +378,7 @@ namespace SharpMap.Data.Providers
 
                     if (dt.Columns[i].DataType == typeof(System.Object))
                         dt.Columns[i].DataType = typeof(Byte[]);
-                        //replaceObjectDataColumn(dt, dt.Columns[i]);
+                    //replaceObjectDataColumn(dt, dt.Columns[i]);
 
                 }
 
@@ -431,7 +431,7 @@ namespace SharpMap.Data.Providers
             return new SpatiaLite2_ExpressionTreeToSqlCompiler(DbUtility, SelectAllColumnNames,
                                                                GeometryColumnConversionFormatString, expression,
                                                                TableSchema, Table,
-                                                               OidColumn, GeometryColumn, Srid, _spatialLiteIndexType );
+                                                               OidColumn, GeometryColumn, Srid, _spatialLiteIndexType);
         }
 
         //protected override IFeatureDataReader ExecuteFeatureDataReader(IDbCommand cmd)
@@ -470,7 +470,7 @@ namespace SharpMap.Data.Providers
         private static SQLiteConnection initSpatialMetaData(String connectionString)
         {
             //Test whether database is spatially enabled
-            if (IsSpatiallyEnabled(connectionString)) return new SQLiteConnection( connectionString );
+            if (IsSpatiallyEnabled(connectionString)) return new SQLiteConnection(connectionString);
 
             SQLiteConnection conn = new SQLiteConnection(connectionString);
 
@@ -511,17 +511,17 @@ namespace SharpMap.Data.Providers
         {
             CreateDataTable(featureDataTable, tableName, connectionString, DefaultGeometryColumnName, DefaultSpatiaLiteIndexType);
         }
-        
+
         public static void CreateDataTable(
-            SharpMap.Data.FeatureDataTable featureDataTable, 
-            String tableName, 
-            String connectionString, 
+            SharpMap.Data.FeatureDataTable featureDataTable,
+            String tableName,
+            String connectionString,
             String geometryColumnName,
-            SpatiaLite2_IndexType spatialIndexType )
+            SpatiaLite2_IndexType spatialIndexType)
         {
-            if ( spatialIndexType == SpatiaLite2_IndexType.None )
+            if (spatialIndexType == SpatiaLite2_IndexType.None)
                 spatialIndexType = DefaultSpatiaLiteIndexType;
-            
+
             OgcGeometryType geometryType;
 
             SQLiteConnection conn = initSpatialMetaData(connectionString);
@@ -696,6 +696,11 @@ namespace SharpMap.Data.Providers
                 default:
                     throw (new NotSupportedException("Unsupported datatype '" + dotNetType.Name + "' found in datasource"));
             }
+        }
+
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber)
+        {
+            throw new NotImplementedException();
         }
     }
 }
