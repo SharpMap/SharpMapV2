@@ -75,7 +75,7 @@ namespace SharpMap.Data.Providers
                     string.Format(
                         "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
                         GeometryColumn, TableSchema, Table,
-                        BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
+                        GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
                 cmd.CommandType = CommandType.Text;
                 double xmin, ymin, xmax, ymax;
                 conn.Open();
@@ -94,7 +94,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        protected string BuildWithStatement(IEnumerable<ProviderPropertyExpression> providerPropertyExpressions)
+        protected string GetWithClause(IEnumerable<ProviderPropertyExpression> providerPropertyExpressions)
         {
             bool withNoLock =
                 GetProviderPropertyValue<WithNoLockExpression, bool>(providerPropertyExpressions, false);
@@ -102,18 +102,18 @@ namespace SharpMap.Data.Providers
             return withNoLock ? " WITH(NOLOCK) " : "";
         }
 
-        protected override IEnumerable<string> SelectAllColumnNames()
-        {
-            foreach (DataColumn col in GetSchemaTable().Columns)
-            {
-                yield return string.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
-                                 ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col.ColumnName,
-                                                 GeometryColumn)
-                                 : string.Format("{0}.{1}", Table, col.ColumnName);
-            }
-        }
+        //protected override IEnumerable<string> SelectAllColumnNames(bool formatGeometryColumn, bool qualifyColumnNames)
+        //{
+        //    foreach (DataColumn col in GetSchemaTable().Columns)
+        //    {
+        //        yield return string.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
+        //                        && formatGeometryColumn ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col.ColumnName,
+        //                                         GeometryColumn)
+        //                                         : qualifyColumnNames ? string.Format("{0}.[{1}]", QualifiedTableName, col.ColumnName) : string.Format("[{0}]", col.ColumnName);
+        //    }
+        //}
 
-        protected override ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression)
+        protected override ExpressionTreeToSqlCompilerBase<long> CreateSqlCompiler(Expression expression)
         {
             bool withNoLock =
                 GetProviderPropertyValue<WithNoLockExpression, bool>(
@@ -121,30 +121,89 @@ namespace SharpMap.Data.Providers
                     false);
 
 
-            return new MsSqlSpatialExpressionTreeToSqlCompiler(DbUtility, withNoLock, SelectAllColumnNames,
+            return new MsSqlSpatialExpressionTreeToSqlCompiler(DbUtility, withNoLock, this,
                                                                GeometryColumnConversionFormatString, expression,
                                                                SpatialSchema, TableSchema, Table,
                                                                OidColumn, GeometryColumn, Srid);
         }
 
         protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase compiler)
+                                              ExpressionTreeToSqlCompilerBase<long> compiler)
         {
-            return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
+            int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
+            int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
+
+            if (pageSize > 0 && pageNumber > -1)
+                return GenerateSql(properties, compiler, pageSize, pageNumber);
+
+
+            string orderByCols = String.Join(",",
+                                 Enumerable.ToArray(
+                                     GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                         properties, new string[] { })));
+
+            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
+                              ? FormatColumnNames(true, true, compiler.ProjectedColumns)
+                              : SelectAllColumnNames(true, true)));
+
+            return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5} {7}",
                                  compiler.SqlParamDeclarations,
-                                 string.IsNullOrEmpty(compiler.SqlColumns)
-                                     ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                     : compiler.SqlColumns,
+                                 mainQueryColumns,
                                  compiler.QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                                  compiler.SqlWhereClause,
-                                 BuildWithStatement(DefaultProviderProperties.ProviderProperties.Collection));
+                                 GetWithClause(properties),
+                                 orderByClause);
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber)
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
         {
-            throw new NotImplementedException();
+
+
+            string orderByCols = string.Join(",",
+                                            Enumerable.ToArray(
+                                                GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                                    properties, new string[] { })));
+
+            orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
+            int startRecord = (pageNumber * pageSize) + 1;
+            int endRecord = (pageNumber + 1) * pageSize;
+
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
+                             ? FormatColumnNames(true, true, compiler.ProjectedColumns)
+                             : SelectAllColumnNames(true, true)));
+
+            string subQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
+                                         ? FormatColumnNames(false, false, compiler.ProjectedColumns)
+                                         : SelectAllColumnNames(false, false)));
+
+
+
+            return string.Format(
+@" {0};
+WITH CTE(rownumber, {8}) 
+    AS 
+    (   SELECT ROW_NUMBER() OVER(ORDER BY {7} ASC) AS rownumber, {1}  
+        FROM {2}{6} 
+        {3} {4} {5} 
+    ) 
+SELECT {8} 
+FROM CTE 
+WHERE rownumber BETWEEN {9} AND {10} ",
+                           compiler.SqlParamDeclarations,
+                           mainQueryColumns,
+                           compiler.QualifiedTableName,
+                           compiler.SqlJoinClauses,
+                           string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                           compiler.SqlWhereClause,
+                           GetWithClause(properties),
+                           orderByCols,
+                           subQueryColumns,
+                           compiler.CreateParameter(startRecord).ParameterName,
+                           compiler.CreateParameter(endRecord).ParameterName);
         }
     }
 }

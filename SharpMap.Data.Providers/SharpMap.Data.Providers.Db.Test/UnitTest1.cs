@@ -130,6 +130,54 @@ namespace SharpMap.Data.Providers.Db.Test
         }
 
         [TestMethod]
+        public void TestMsSqlSpatialPaged()
+        {
+            var services = new GeometryServices();
+
+            var search = new MsSqlSpatialProvider(services.DefaultGeometryFactory,
+                                                           ConfigurationManager.ConnectionStrings["mssqlspatial"].ConnectionString,
+                                                           "ST",
+                                                           "dbo",
+                                                           "BRoads", "OID", "the_geom")
+            {
+                DefaultProviderProperties
+                    = new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                                         {
+                                             new WithNoLockExpression(true),
+                                             new ForceIndexExpression(true)
+                                         })
+            };
+
+            //var binaryExpression =
+            //    new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { 3, 4, 5, 6 }));
+
+
+            var binaryExpression = new AttributeBinaryStringExpression("NAME", BinaryStringOperator.StartsWith, "W");
+
+
+            var providerProps =
+                new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                        {
+                            new WithNoLockExpression(true),
+                            new OrderByExpression(new[] {"NAME"}),
+                            new ForceIndexExpression(true),
+                            new IndexNamesExpression(new[] {"Index1", "Index2"}),
+                            new DataPageSizeExpression(10),
+                            new DataPageNumberExpression(5) 
+
+                        });
+
+
+            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+
+            object obj = search.ExecuteQuery(prov);
+
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
         public void TestSqLite()
         {
             var services = new GeometryServices();

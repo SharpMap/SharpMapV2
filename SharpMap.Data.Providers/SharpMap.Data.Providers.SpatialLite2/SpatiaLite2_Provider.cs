@@ -415,20 +415,20 @@ namespace SharpMap.Data.Providers
             dcOld = null;
         }
 
-        protected override IEnumerable<String> SelectAllColumnNames()
-        {
-            foreach (DataColumn col in GetSchemaTable(true).Columns)
-            {
-                yield return string.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
-                                 ? String.Format(GeometryColumnConversionFormatString + " AS [{1}]", col.ColumnName,
-                                                 GeometryColumn)
-                                 : string.Format("[{0}].[{1}]", Table, col.ColumnName);
-            }
-        }
+        //public override IEnumerable<string> SelectAllColumnNames(bool formatGeometryColumn, bool qualifyColumnNames)
+        //{
+        //    foreach (DataColumn col in GetSchemaTable(true).Columns)
+        //    {
+        //        yield return string.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
+        //                         ? String.Format(GeometryColumnConversionFormatString + " AS [{1}]", col.ColumnName,
+        //                                         GeometryColumn)
+        //                         : string.Format("[{0}].[{1}]", Table, col.ColumnName);
+        //    }
+        //}
 
-        protected override ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression)
+        protected override ExpressionTreeToSqlCompilerBase<long> CreateSqlCompiler(Expression expression)
         {
-            return new SpatiaLite2_ExpressionTreeToSqlCompiler(DbUtility, SelectAllColumnNames,
+            return new SpatiaLite2_ExpressionTreeToSqlCompiler(DbUtility, this,
                                                                GeometryColumnConversionFormatString, expression,
                                                                TableSchema, Table,
                                                                OidColumn, GeometryColumn, Srid, _spatialLiteIndexType);
@@ -698,7 +698,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber)
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
         {
             throw new NotImplementedException();
         }

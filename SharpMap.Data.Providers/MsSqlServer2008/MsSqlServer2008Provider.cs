@@ -152,9 +152,9 @@ namespace SharpMap.Data.Providers
             return GeometryFactory.CreateExtents();
         }
 
-        protected override ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression)
+        protected override ExpressionTreeToSqlCompilerBase<TOid> CreateSqlCompiler(Expression expression)
         {
-            return new MsSqlServer2008ExpressionTreeToSqlCompiler(DbUtility, SelectAllColumnNames,
+            return new MsSqlServer2008ExpressionTreeToSqlCompiler<TOid>(DbUtility, this,
                                                                   GeometryColumnConversionFormatString, expression,
                                                                   TableSchema, Table, OidColumn,
                                                                   GeometryColumn, Srid);
@@ -162,7 +162,7 @@ namespace SharpMap.Data.Providers
 
 
         protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase compiler)
+                                              ExpressionTreeToSqlCompilerBase<TOid> compiler)
         {
             int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
             int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
@@ -170,19 +170,30 @@ namespace SharpMap.Data.Providers
             if (pageSize > 0 && pageNumber > -1)
                 return GenerateSql(properties, compiler, pageSize, pageNumber);
 
-            return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5}",
+            string orderByCols = String.Join(",",
+                                             Enumerable.ToArray(
+                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                                     properties, new string[] { })));
+
+            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
+                                          ? FormatColumnNames(true, true, compiler.ProjectedColumns)
+                                          : SelectAllColumnNames(true, true)));
+
+            return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5} {7}",
                                  compiler.SqlParamDeclarations,
-                                 string.IsNullOrEmpty(compiler.SqlColumns)
-                                     ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                     : compiler.SqlColumns,
+                                 mainQueryColumns,
                                  compiler.QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                                  compiler.SqlWhereClause,
-                                 GetWithClause(properties));
+                                 GetWithClause(properties),
+                                 orderByClause);
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber)
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
+                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize, int pageNumber)
         {
             string orderByCols = string.Join(",",
                                              Enumerable.ToArray(
@@ -190,27 +201,39 @@ namespace SharpMap.Data.Providers
                                                      properties, new string[] { })));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
-            int startRecord = pageNumber * pageSize;
-            int endRecord = startRecord + pageSize;
+            int startRecord = (pageNumber * pageSize) + 1;
+            int endRecord = (pageNumber + 1) * pageSize;
 
-            string columns = string.IsNullOrEmpty(compiler.SqlColumns)
-                                 ? string.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                 : compiler.SqlColumns;
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
+                                          ? FormatColumnNames(true, true, compiler.ProjectedColumns)
+                                          : SelectAllColumnNames(true, true)));
 
-            return string.Format(" {0}; WITH CTE(rownumber, {8}) AS (SELECT ROW_NUMBER() OVER(ORDER BY {7} DESC) AS rownumber, {1}  FROM {2}{6} {3} {4} {5} ) SELECT {8} FROM CTE WHERE rownumber between {9} AND {10} ",
-                                 compiler.SqlParamDeclarations,
-                                 columns,
-                                 compiler.QualifiedTableName,
-                                 compiler.SqlJoinClauses,
-                                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
-                                 compiler.SqlWhereClause,
-                                 GetWithClause(properties),
-                                 orderByCols,
-                                 columns.Replace(string.Format(GeometryColumnConversionFormatString + " AS Geom", GeometryColumn), GeometryColumn),
-                                 compiler.CreateParameter(startRecord).ParameterName,
-                                 compiler.CreateParameter(endRecord).ParameterName);
+            string subQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
+                                         ? FormatColumnNames(false, false, compiler.ProjectedColumns)
+                                         : SelectAllColumnNames(false, false)));
 
-
+            return string.Format(
+@" {0};
+WITH CTE(rownumber, {8}) 
+    AS 
+    (   SELECT ROW_NUMBER() OVER(ORDER BY {7} ASC) AS rownumber, {1}  
+        FROM {2}{6} 
+        {3} {4} {5} 
+    ) 
+SELECT {8} 
+FROM CTE 
+WHERE rownumber BETWEEN {9} AND {10} ",
+                compiler.SqlParamDeclarations,
+                mainQueryColumns,
+                compiler.QualifiedTableName,
+                compiler.SqlJoinClauses,
+                string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                compiler.SqlWhereClause,
+                GetWithClause(properties),
+                orderByCols,
+                subQueryColumns,
+                compiler.CreateParameter(startRecord).ParameterName,
+                compiler.CreateParameter(endRecord).ParameterName);
         }
 
         protected string GetWithClause(IEnumerable<ProviderPropertyExpression> properties)

@@ -21,12 +21,12 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.MsSqlServer2008
 {
-    public class MsSqlServer2008ExpressionTreeToSqlCompiler
-        : ExpressionTreeToSqlCompilerBase
+    public class MsSqlServer2008ExpressionTreeToSqlCompiler<TOId>
+        : ExpressionTreeToSqlCompilerBase<TOId>
     {
         public MsSqlServer2008ExpressionTreeToSqlCompiler(
             IDbUtility dbUtility,
-            Func<IEnumerable<string>> selectStarDelegate,
+            MsSqlServer2008Provider<TOId> provider,
             string geometryColumnFormatString,
             Expression exp,
             string tableSchema,
@@ -35,7 +35,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
             string geometryColumn,
             int? srid)
             : base(
-                dbUtility, selectStarDelegate, geometryColumnFormatString, exp, tableSchema, table, oidColumn,
+                dbUtility, provider, geometryColumnFormatString, exp, tableSchema, table, oidColumn,
                 geometryColumn, srid)
         {
         }
@@ -65,7 +65,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
 
         private static string GetSpatialMethodName(SpatialOperation op)
         {
-            return string.Format("ST{0}", Enum.GetName(typeof (SpatialOperation), op));
+            return string.Format("ST{0}", Enum.GetName(typeof(SpatialOperation), op));
         }
 
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,

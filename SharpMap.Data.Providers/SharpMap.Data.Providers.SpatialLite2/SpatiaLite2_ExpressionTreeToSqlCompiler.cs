@@ -43,13 +43,13 @@ using SharpMap.Expressions;
 namespace SharpMap.Data.Providers.SpatiaLite2
 {
     public class SpatiaLite2_ExpressionTreeToSqlCompiler
-        : ExpressionTreeToSqlCompilerBase
+        : ExpressionTreeToSqlCompilerBase<long>
     {
 
         private SpatiaLite2_IndexType _spatialIndexType;
 
         public SpatiaLite2_ExpressionTreeToSqlCompiler(IDbUtility dbUtility,
-                                                       Func<IEnumerable<string>> selectStarDelegate,
+                                                       SpatialDbProviderBase<long> provider,
                                                        string geometryColumnnFormatString,
                                                        Expression query,
                                                        string tableSchema,
@@ -58,14 +58,14 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                                                        string geometryColumnName,
                                                        int? srid,
                                                        SpatiaLite2_IndexType indexType)
-          
-          : base(
-                dbUtility, selectStarDelegate, geometryColumnnFormatString, query, tableSchema, tableName, oidColumnName,
-                geometryColumnName, srid)
+
+            : base(
+                  dbUtility, provider, geometryColumnnFormatString, query, tableSchema, tableName, oidColumnName,
+                  geometryColumnName, srid)
         {
 
             switch (indexType)
-            { 
+            {
                 case SpatiaLite2_IndexType.None:
                     throw new SpatiaLite2_Exception("indexType must not be 'None'");
                 default:
@@ -79,16 +79,16 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                                                                   IGeometry geom)
         {
 
-          if (op != SpatialOperation.None)
-          {
-            builder.Append(string.Format(" {0}( GeomFromWKB({1}), {2} )",
-              Enum.GetName(typeof(SpatialOperation), op),
-              CreateParameter(geom).ParameterName,
-              CreateParameter(GeometryColumn).ParameterName));
-            
-              builder.Append(" AND");
-              WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
-          }
+            if (op != SpatialOperation.None)
+            {
+                builder.Append(string.Format(" {0}( GeomFromWKB({1}), {2} )",
+                  Enum.GetName(typeof(SpatialOperation), op),
+                  CreateParameter(geom).ParameterName,
+                  CreateParameter(GeometryColumn).ParameterName));
+
+                builder.Append(" AND");
+                WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
+            }
 
         }
 

@@ -239,7 +239,7 @@ namespace SharpMap.Data.Providers.Db
                 featureIds.Add(fdr.Id);
             }
 
-            ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(null);
+            ExpressionTreeToSqlCompilerBase<TOid> compiler = CreateSqlCompiler(null);
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
                 using (IDbCommand cmd = DbUtility.CreateCommand())
@@ -253,11 +253,11 @@ namespace SharpMap.Data.Providers.Db
                             String.Join(",",
                                         Enumerable.ToArray(
                                             Processor.Transform(featureIds,
-                                                                   delegate(TOid o)
-                                                                   {
-                                                                       return
-                                                                           compiler.CreateParameter(o).ParameterName;
-                                                                   })))
+                                                                delegate(TOid o)
+                                                                {
+                                                                    return
+                                                                        compiler.CreateParameter(o).ParameterName;
+                                                                })))
                             );
                     conn.Open();
                     foreach (IDataParameter p in compiler.ParameterCache.Values)
@@ -551,17 +551,29 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        protected virtual IEnumerable<String> SelectAllColumnNames()
+        public virtual IEnumerable<string> SelectAllColumnNames(bool formatGeometryColumn, bool qualifyColumnNames)
         {
-            foreach (DataColumn col in GetSchemaTable().Columns)
+            var colNames = new List<string>();
+
+            foreach (DataColumn c in GetSchemaTable().Columns)
+                colNames.Add(c.ColumnName);
+
+            return colNames;
+            //return FormatColumnNames(formatGeometryColumn, qualifyColumnNames, colNames);
+        }
+
+        public virtual IEnumerable<string> FormatColumnNames(bool formatGeometryColumn,
+                                                                bool qualifyColumnNames, IEnumerable<string> names)
+        {
+            foreach (string col in names)
             {
-                yield return String.Equals(col.ColumnName,
-                                           GeometryColumn,
-                                           StringComparison.InvariantCultureIgnoreCase)
-                                 ? String.Format(GeometryColumnConversionFormatString + " AS {1}",
-                                                 col.ColumnName,
-                                                 GeometryColumn)
-                                 : String.Format("[{0}]", col.ColumnName);
+                yield return
+                    formatGeometryColumn &&
+                    String.Equals(col, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
+                        ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col, GeometryColumn)
+                        : qualifyColumnNames
+                              ? String.Format("{0}.[{1}]", QualifiedTableName, col)
+                              : string.Format("[{0}]", col);
             }
         }
 
@@ -596,12 +608,15 @@ namespace SharpMap.Data.Providers.Db
 
             MergeQueries(query, DefinitionQuery);
 
-            ExpressionTreeToSqlCompilerBase compiler = CreateSqlCompiler(exp);
+            ExpressionTreeToSqlCompilerBase<TOid> compiler = CreateSqlCompiler(exp);
 
             var props =
                 new List<ProviderPropertyExpression>(
                     MergeProviderProperties(
-                        compiler.ProviderProperties, DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection));
+                        compiler.ProviderProperties,
+                        DefaultProviderProperties == null
+                            ? null
+                            : DefaultProviderProperties.ProviderProperties.Collection));
 
             IDbCommand cmd = DbUtility.CreateCommand();
             cmd.CommandText = GenerateSql(props, compiler);
@@ -618,7 +633,7 @@ namespace SharpMap.Data.Providers.Db
         /* TODO: Add order by from ProviderPropertyExpression */
 
         protected virtual string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                             ExpressionTreeToSqlCompilerBase compiler)
+                                             ExpressionTreeToSqlCompilerBase<TOid> compiler)
         {
             int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
             int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
@@ -627,20 +642,28 @@ namespace SharpMap.Data.Providers.Db
                 return GenerateSql(properties, compiler, pageSize, pageNumber);
 
 
+            string orderByCols = String.Join(",",
+                                             Enumerable.ToArray(
+                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                                     properties, new string[] { })));
 
-            return String.Format(" {0} SELECT {1} FROM {2} {3} {4} {5}",
+            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+
+
+            return String.Format(" {0} SELECT {1} FROM {2} {3} {4} {5} {6}",
                                  compiler.SqlParamDeclarations,
                                  String.IsNullOrEmpty(compiler.SqlColumns)
-                                     ? String.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
+                                     ? String.Join(",", Enumerable.ToArray(SelectAllColumnNames(true, true)))
                                      : compiler.SqlColumns,
                                  compiler.QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
-                                 compiler.SqlWhereClause);
+                                 compiler.SqlWhereClause,
+                                 orderByClause);
         }
 
         protected abstract string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                       ExpressionTreeToSqlCompilerBase compiler, int pageSize, int pageNumber);
+                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize, int pageNumber);
 
 
         protected TValue GetProviderPropertyValue<TExpression, TValue>(
@@ -653,7 +676,7 @@ namespace SharpMap.Data.Providers.Db
             return defaultValue;
         }
 
-        protected abstract ExpressionTreeToSqlCompilerBase CreateSqlCompiler(Expression expression);
+        protected abstract ExpressionTreeToSqlCompilerBase<TOid> CreateSqlCompiler(Expression expression);
 
         /// <summary>
         /// Converts DataRowCollection to IEnumerable of FeatureDataRow

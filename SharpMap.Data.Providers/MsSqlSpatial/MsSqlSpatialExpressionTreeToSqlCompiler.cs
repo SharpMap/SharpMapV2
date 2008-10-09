@@ -22,13 +22,13 @@ using SharpMap.Expressions;
 namespace SharpMap.Data.Providers.MsSqlSpatial
 {
     public class MsSqlSpatialExpressionTreeToSqlCompiler
-        : ExpressionTreeToSqlCompilerBase
+        : ExpressionTreeToSqlCompilerBase<long>
     {
         private string _spSchema = "ST";
 
         public MsSqlSpatialExpressionTreeToSqlCompiler(IDbUtility dbUtility,
                                                        bool withNoLock,
-                                                       Func<IEnumerable<string>> selectStarDelegate,
+                                                       MsSqlSpatialProvider provider,
                                                        string geometryColumnFormatString,
                                                        Expression query,
                                                        string spatialSchema,
@@ -38,7 +38,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
                                                        string geometryColumnName,
                                                        int? srid)
             : base(dbUtility,
-                   selectStarDelegate,
+                   provider,
                    geometryColumnFormatString,
                    query,
                    tableSchema,
@@ -92,7 +92,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
                                         CreateParameter(Table).ParameterName,
                                         CreateParameter(GeometryColumn).ParameterName,
                                         CreateParameter(geom).ParameterName,
-                                        CreateParameter(Enum.GetName(typeof (SpatialOperation), op)).ParameterName,
+                                        CreateParameter(Enum.GetName(typeof(SpatialOperation), op)).ParameterName,
                                         TableJoinStrings.Count,
                                         QualifyColumnName(OidColumn),
                                         OidColumn,
@@ -104,7 +104,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
-            var exts = (IExtents2D) ext;
+            var exts = (IExtents2D)ext;
             switch (spatialOperation)
             {
                 case SpatialOperation.Intersects:
