@@ -35,8 +35,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
-        //where TMatrix : IMatrix<DoubleComponent, TMatrix>, IEquatable<TMatrix>,
-        //                IComparable<TMatrix>, IComputable<TMatrix>
+    //where TMatrix : IMatrix<DoubleComponent, TMatrix>, IEquatable<TMatrix>,
+    //                IComparable<TMatrix>, IComputable<TMatrix>
     {
         private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;
         private readonly IGeometryFactory<TCoordinate> _geometryFactory;
@@ -54,8 +54,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             CoordinateSystemFactory<TCoordinate> coordSystemFactory
                 = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
-			_wgs84 = coordSystemFactory.CreateWgs84GeocentricCoordinateSystem();
-		}
+            _wgs84 = coordSystemFactory.CreateWgs84GeocentricCoordinateSystem();
+        }
 
         #region ICoordinateTransformationFactory Members
 
@@ -196,10 +196,10 @@ namespace ProjNet.CoordinateSystems.Transformations
                                             "the two specified coordinate systems");
         }
 
-		ICoordinateTransformation<TCoordinate> ICoordinateTransformationFactory<TCoordinate>.CreateFromCoordinateSystems(ICoordinateSystem<TCoordinate> source, ICoordinateSystem<TCoordinate> target)
-		{
-			return CreateFromCoordinateSystems(source, target);
-		}
+        ICoordinateTransformation<TCoordinate> ICoordinateTransformationFactory<TCoordinate>.CreateFromCoordinateSystems(ICoordinateSystem<TCoordinate> source, ICoordinateSystem<TCoordinate> target)
+        {
+            return CreateFromCoordinateSystems(source, target);
+        }
 
         #endregion
 
@@ -225,7 +225,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                             IGeocentricCoordinateSystem<TCoordinate> source,
                                                             IGeographicCoordinateSystem<TCoordinate> target)
         {
-            IMathTransform<TCoordinate> geocMathTransform 
+            IMathTransform<TCoordinate> geocMathTransform
                 = createCoordinateOperation(source).Inverse;
 
             return new CoordinateTransformation<TCoordinate>(source,
@@ -553,7 +553,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         private IMathTransform<TCoordinate> createCoordinateOperation(IProjection projection,
-                                                                      IEllipsoid ellipsoid, ILinearUnit unit)
+                                                                      IEllipsoid ellipsoid, 
+                                                                      ILinearUnit unit)
         {
             List<ProjectionParameter> parameterList = new List<ProjectionParameter>(projection);
 
@@ -563,34 +564,38 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             IMathTransform<TCoordinate> transform;
 
-            switch (projection.ClassName.ToLower(CultureInfo.InvariantCulture).Replace(' ', '_'))
+            String className = projection.ClassName.ToLower(CultureInfo.InvariantCulture);
+            className = className.Replace(" ", "");
+            className = className.Replace("_", "");
+
+            switch (className)
             {
                 case "mercator":
-                case "mercator_1sp":
-                case "mercator_2sp":
-                    //1SP
+                case "mercator1sp":
+                case "mercator2sp":
                     transform = new Mercator<TCoordinate>(parameterList, _coordinateFactory);
                     break;
-                case "transverse_mercator":
+                case "transversemercator":
                     transform = new TransverseMercator<TCoordinate>(parameterList, _coordinateFactory);
                     break;
                 case "albers":
-                case "albers_conic_equal_area":
+                case "albersconicequalarea":
                     transform = new AlbersProjection<TCoordinate>(parameterList, _coordinateFactory);
                     break;
-                case "lambert_conformal_conic":
-                case "lambert_conformal_conic_2sp":
-                case "lambert_conic_conformal_(2sp)":
+                case "lambertconformalconic":
+                case "lambertconformalconic2sp":
+                case "lambertconicconformal(2sp)":
                     transform = new LambertConformalConic2SP<TCoordinate>(parameterList, _coordinateFactory);
                     break;
                 default:
-                    throw new NotSupportedException(
-                        String.Format("Projection {0} is not supported.", projection.ClassName));
+                    String message = 
+                        String.Format("Projection {0} is not supported.", projection.ClassName);
+                    throw new NotSupportedException(message);
             }
 
             return transform;
         }
 
         #endregion
-	}
+    }
 }
