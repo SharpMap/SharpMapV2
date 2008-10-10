@@ -13,7 +13,6 @@
  * 
  */
 using System;
-using System.Collections.Generic;
 using System.Text;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
@@ -24,19 +23,8 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
     public class MsSqlServer2008ExpressionTreeToSqlCompiler<TOId>
         : ExpressionTreeToSqlCompilerBase<TOId>
     {
-        public MsSqlServer2008ExpressionTreeToSqlCompiler(
-            IDbUtility dbUtility,
-            MsSqlServer2008Provider<TOId> provider,
-            string geometryColumnFormatString,
-            Expression exp,
-            string tableSchema,
-            string table,
-            string oidColumn,
-            string geometryColumn,
-            int? srid)
-            : base(
-                dbUtility, provider, geometryColumnFormatString, exp, tableSchema, table, oidColumn,
-                geometryColumn, srid)
+        public MsSqlServer2008ExpressionTreeToSqlCompiler(MsSqlServer2008Provider<TOId> provider, Expression exp)
+            : base(provider, exp)
         {
         }
 
@@ -52,13 +40,13 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
                               geom.Srid.HasValue && geom.Srid.Value > 0
                                   ?
                                       geom.Srid.Value
-                                  : !Srid.HasValue || Srid < 0
+                                  : !Provider.Srid.HasValue || Provider.Srid < 0
                                         ? 0
-                                        : Srid));
+                                        : Provider.Srid));
 
             builder.AppendFormat(" {0}.{1}.{2}({3}) = 1 ",
-                                 Table,
-                                 GeometryColumn,
+                                 Provider.Table,
+                                 Provider.GeometryColumn,
                                  GetSpatialMethodName(op),
                                  declaredParamName);
         }

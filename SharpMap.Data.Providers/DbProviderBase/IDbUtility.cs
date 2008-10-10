@@ -12,7 +12,6 @@
  *  Author: John Diss 2008
  * 
  */
-using System;
 using System.Data;
 
 namespace SharpMap.Data.Providers.Db
@@ -27,9 +26,5 @@ namespace SharpMap.Data.Providers.Db
         IDbCommand CreateCommand();
         IDbDataAdapter CreateAdapter(IDbCommand cmd);
 
-
-        //string FormatValue<T>(T value);
-        //string FormatValue(object value);
-        //string GetSqlFormatString(Type t);
     }
 }

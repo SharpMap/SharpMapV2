@@ -187,7 +187,7 @@ namespace SharpMap.Data.Providers.Db
         /// </summary>
         public PredicateExpression DefinitionQuery { get; set; }
 
-        protected IDbUtility DbUtility { get; set; }
+        public IDbUtility DbUtility { get; protected set; }
         public abstract String GeometryColumnConversionFormatString { get; }
         public abstract String GeomFromWkbFormatString { get; }
 
@@ -201,6 +201,7 @@ namespace SharpMap.Data.Providers.Db
                 return string.Format("[{0}].[{1}]", TableSchema, Table);
             }
         }
+
 
         public ProviderPropertiesExpression DefaultProviderProperties { get; set; }
 
@@ -397,7 +398,22 @@ namespace SharpMap.Data.Providers.Db
 
         #endregion
 
-        protected virtual IEnumerable<ProviderPropertyExpression> MergeProviderProperties(
+        public virtual string QualifyColumnName(string columnName)
+        {
+            GuardValueNotNull(Table, "Table");
+            GuardValueNotNull(columnName, "ColumnName");
+
+            return string.Format("{0}.[{1}]", QualifiedTableName, columnName);
+        }
+
+        protected void GuardValueNotNull<T>(T value, string name)
+        {
+            if (Equals(value, default(T)) || (typeof(T) == typeof(string)
+                                              && string.IsNullOrEmpty(value as string)))
+                throw new InvalidOperationException(string.Format("{0} cannot be null.", name));
+        }
+
+        public static IEnumerable<ProviderPropertyExpression> MergeProviderProperties(
             IEnumerable<ProviderPropertyExpression> primary, IEnumerable<ProviderPropertyExpression> secondary)
         {
             if (Equals(null, secondary))
@@ -419,7 +435,7 @@ namespace SharpMap.Data.Providers.Db
             return list;
         }
 
-        private void AddToList<T>(IList<T> storage, T item, Func<T, T, bool> filter)
+        private static void AddToList<T>(IList<T> storage, T item, Func<T, T, bool> filter)
         {
             if (Enumerable.Count(Enumerable.Select(storage, i => filter(i, item))) == 0)
                 storage.Add(item);
@@ -563,7 +579,7 @@ namespace SharpMap.Data.Providers.Db
         }
 
         public virtual IEnumerable<string> FormatColumnNames(bool formatGeometryColumn,
-                                                                bool qualifyColumnNames, IEnumerable<string> names)
+                                                             bool qualifyColumnNames, IEnumerable<string> names)
         {
             foreach (string col in names)
             {
@@ -655,7 +671,7 @@ namespace SharpMap.Data.Providers.Db
                                  String.IsNullOrEmpty(compiler.SqlColumns)
                                      ? String.Join(",", Enumerable.ToArray(SelectAllColumnNames(true, true)))
                                      : compiler.SqlColumns,
-                                 compiler.QualifiedTableName,
+                                 QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                                  compiler.SqlWhereClause,
@@ -663,10 +679,11 @@ namespace SharpMap.Data.Providers.Db
         }
 
         protected abstract string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize, int pageNumber);
+                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
+                                              int pageNumber);
 
 
-        protected TValue GetProviderPropertyValue<TExpression, TValue>(
+        public static TValue GetProviderPropertyValue<TExpression, TValue>(
             IEnumerable<ProviderPropertyExpression> expressions, TValue defaultValue)
             where TExpression : ProviderPropertyExpression<TValue>
         {

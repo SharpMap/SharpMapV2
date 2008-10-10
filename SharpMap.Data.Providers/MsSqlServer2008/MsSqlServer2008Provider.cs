@@ -154,10 +154,7 @@ namespace SharpMap.Data.Providers
 
         protected override ExpressionTreeToSqlCompilerBase<TOid> CreateSqlCompiler(Expression expression)
         {
-            return new MsSqlServer2008ExpressionTreeToSqlCompiler<TOid>(DbUtility, this,
-                                                                  GeometryColumnConversionFormatString, expression,
-                                                                  TableSchema, Table, OidColumn,
-                                                                  GeometryColumn, Srid);
+            return new MsSqlServer2008ExpressionTreeToSqlCompiler<TOid>(this, expression);
         }
 
 
@@ -178,13 +175,15 @@ namespace SharpMap.Data.Providers
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                          ? FormatColumnNames(true, true, compiler.ProjectedColumns)
-                                          : SelectAllColumnNames(true, true)));
+                                                                              ? FormatColumnNames(true, true,
+                                                                                                  compiler.
+                                                                                                      ProjectedColumns)
+                                                                              : SelectAllColumnNames(true, true)));
 
             return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5} {7}",
                                  compiler.SqlParamDeclarations,
                                  mainQueryColumns,
-                                 compiler.QualifiedTableName,
+                                 QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                                  compiler.SqlWhereClause,
@@ -193,7 +192,8 @@ namespace SharpMap.Data.Providers
         }
 
         protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize, int pageNumber)
+                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
+                                              int pageNumber)
         {
             string orderByCols = string.Join(",",
                                              Enumerable.ToArray(
@@ -205,15 +205,19 @@ namespace SharpMap.Data.Providers
             int endRecord = (pageNumber + 1) * pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                          ? FormatColumnNames(true, true, compiler.ProjectedColumns)
-                                          : SelectAllColumnNames(true, true)));
+                                                                              ? FormatColumnNames(true, true,
+                                                                                                  compiler.
+                                                                                                      ProjectedColumns)
+                                                                              : SelectAllColumnNames(true, true)));
 
             string subQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                         ? FormatColumnNames(false, false, compiler.ProjectedColumns)
-                                         : SelectAllColumnNames(false, false)));
+                                                                             ? FormatColumnNames(false, false,
+                                                                                                 compiler.
+                                                                                                     ProjectedColumns)
+                                                                             : SelectAllColumnNames(false, false)));
 
             return string.Format(
-@" {0};
+                @" {0};
 WITH CTE(rownumber, {8}) 
     AS 
     (   SELECT ROW_NUMBER() OVER(ORDER BY {7} ASC) AS rownumber, {1}  
@@ -225,7 +229,7 @@ FROM CTE
 WHERE rownumber BETWEEN {9} AND {10} ",
                 compiler.SqlParamDeclarations,
                 mainQueryColumns,
-                compiler.QualifiedTableName,
+                QualifiedTableName,
                 compiler.SqlJoinClauses,
                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                 compiler.SqlWhereClause,

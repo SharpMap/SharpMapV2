@@ -48,20 +48,11 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         private SpatiaLite2_IndexType _spatialIndexType;
 
-        public SpatiaLite2_ExpressionTreeToSqlCompiler(IDbUtility dbUtility,
-                                                       SpatialDbProviderBase<long> provider,
-                                                       string geometryColumnnFormatString,
+        public SpatiaLite2_ExpressionTreeToSqlCompiler(SpatialDbProviderBase<long> provider,
                                                        Expression query,
-                                                       string tableSchema,
-                                                       string tableName,
-                                                       string oidColumnName,
-                                                       string geometryColumnName,
-                                                       int? srid,
                                                        SpatiaLite2_IndexType indexType)
 
-            : base(
-                  dbUtility, provider, geometryColumnnFormatString, query, tableSchema, tableName, oidColumnName,
-                  geometryColumnName, srid)
+            : base(provider, query)
         {
 
             switch (indexType)
@@ -84,7 +75,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                 builder.Append(string.Format(" {0}( GeomFromWKB({1}), {2} )",
                   Enum.GetName(typeof(SpatialOperation), op),
                   CreateParameter(geom).ParameterName,
-                  CreateParameter(GeometryColumn).ParameterName));
+                  CreateParameter(Provider.GeometryColumn).ParameterName));
 
                 builder.Append(" AND");
                 WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
@@ -123,7 +114,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     }
                     if (String.IsNullOrEmpty(criteriaClause)) break;
 
-                    whereClause = string.Format("[{0}].ROWID in (SELECT pkid FROM idx_{0}_{1} WHERE {2})", Table, GeometryColumn, criteriaClause);
+                    whereClause = string.Format("[{0}].ROWID in (SELECT pkid FROM idx_{0}_{1} WHERE {2})", Provider.Table, Provider.GeometryColumn, criteriaClause);
                     break;
 
                 case SpatiaLite2_IndexType.MBRCache:
@@ -149,8 +140,8 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     if (String.IsNullOrEmpty(criteriaClause)) break;
 
                     whereClause = String.Format(" [{0}].ROWID in (SELECT ROWID FROM cache_{0}_{1} WHERE mbr={2})",
-                        Table,
-                        GeometryColumn,
+                        Provider.Table,
+                        Provider.GeometryColumn,
                         criteriaClause);
 
                     break;

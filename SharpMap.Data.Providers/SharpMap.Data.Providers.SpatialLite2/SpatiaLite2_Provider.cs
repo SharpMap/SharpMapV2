@@ -415,34 +415,13 @@ namespace SharpMap.Data.Providers
             dcOld = null;
         }
 
-        //public override IEnumerable<string> SelectAllColumnNames(bool formatGeometryColumn, bool qualifyColumnNames)
-        //{
-        //    foreach (DataColumn col in GetSchemaTable(true).Columns)
-        //    {
-        //        yield return string.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
-        //                         ? String.Format(GeometryColumnConversionFormatString + " AS [{1}]", col.ColumnName,
-        //                                         GeometryColumn)
-        //                         : string.Format("[{0}].[{1}]", Table, col.ColumnName);
-        //    }
-        //}
 
         protected override ExpressionTreeToSqlCompilerBase<long> CreateSqlCompiler(Expression expression)
         {
-            return new SpatiaLite2_ExpressionTreeToSqlCompiler(DbUtility, this,
-                                                               GeometryColumnConversionFormatString, expression,
-                                                               TableSchema, Table,
-                                                               OidColumn, GeometryColumn, Srid, _spatialLiteIndexType);
+            return new SpatiaLite2_ExpressionTreeToSqlCompiler(this,
+                                                               expression,
+                                                                _spatialLiteIndexType);
         }
-
-        //protected override IFeatureDataReader ExecuteFeatureDataReader(IDbCommand cmd)
-        //{
-        //  System.Diagnostics.Debug.WriteLine(string.Format("executing sql : {0}", cmd.CommandText));
-        //  IDbConnection conn = DbUtility.CreateConnection(ConnectionString);
-        //  cmd.Connection = conn;
-        //  if (conn.State == ConnectionState.Closed) conn.Open();
-        //  return new SpatiaLiteFeatureDataReader(GeometryFactory, cmd.ExecuteReader(CommandBehavior.CloseConnection),
-        //                                        GeometryColumn, OidColumn);
-        //}
 
         public void Vacuum()
         {

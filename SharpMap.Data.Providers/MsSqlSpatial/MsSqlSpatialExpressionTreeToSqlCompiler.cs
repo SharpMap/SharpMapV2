@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Text;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.MsSqlSpatial
@@ -24,45 +25,26 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
     public class MsSqlSpatialExpressionTreeToSqlCompiler
         : ExpressionTreeToSqlCompilerBase<long>
     {
-        private string _spSchema = "ST";
-
-        public MsSqlSpatialExpressionTreeToSqlCompiler(IDbUtility dbUtility,
-                                                       bool withNoLock,
-                                                       MsSqlSpatialProvider provider,
-                                                       string geometryColumnFormatString,
-                                                       Expression query,
-                                                       string spatialSchema,
-                                                       string tableSchema,
-                                                       string tableName,
-                                                       string oidColumnName,
-                                                       string geometryColumnName,
-                                                       int? srid)
-            : base(dbUtility,
-                   provider,
-                   geometryColumnFormatString,
-                   query,
-                   tableSchema,
-                   tableName,
-                   oidColumnName,
-                   geometryColumnName,
-                   srid)
+        public MsSqlSpatialExpressionTreeToSqlCompiler(MsSqlSpatialProvider provider, Expression query)
+            : base(provider, query)
         {
-            if (!string.IsNullOrEmpty(spatialSchema))
-                SpatialSchema = spatialSchema;
-
-            WithNoLock = withNoLock;
         }
 
-        public bool WithNoLock { get; protected set; }
-
-        /// <summary>
-        /// The schema to which the spatial functions belong
-        /// e.g default for MsSqlSpatial would be "ST"
-        /// </summary>
-        public string SpatialSchema
+        protected new MsSqlSpatialProvider Provider
         {
-            get { return _spSchema; }
-            set { _spSchema = value; }
+            get { return (MsSqlSpatialProvider)base.Provider; }
+        }
+
+        public bool WithNoLock
+        {
+            get
+            {
+                var props = new List<ProviderPropertyExpression>();
+                SpatialDbProviderBase<long>.MergeProviderProperties(ProviderProperties,
+                                                                    Provider.DefaultProviderProperties.
+                                                                        ProviderProperties.Collection);
+                return SpatialDbProviderBase<long>.GetProviderPropertyValue<WithNoLockExpression, bool>(props, false);
+            }
         }
 
 
@@ -88,14 +70,14 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
 
 
             string join = string.Format(" INNER JOIN {0}.RelateQuery({1},{2},{3},{4}) Tbl_{5} ON {6} = Tbl_{5}.{7}{8}",
-                                        SpatialSchema,
-                                        CreateParameter(Table).ParameterName,
-                                        CreateParameter(GeometryColumn).ParameterName,
+                                        Provider.SpatialSchema,
+                                        CreateParameter(Provider.Table).ParameterName,
+                                        CreateParameter(Provider.GeometryColumn).ParameterName,
                                         CreateParameter(geom).ParameterName,
                                         CreateParameter(Enum.GetName(typeof(SpatialOperation), op)).ParameterName,
                                         TableJoinStrings.Count,
-                                        QualifyColumnName(OidColumn),
-                                        OidColumn,
+                                        Provider.QualifyColumnName(Provider.OidColumn),
+                                        Provider.OidColumn,
                                         WithNoLock ? " WITH(NOLOCK) " : "");
 
             TableJoinStrings.Add(join);
@@ -111,8 +93,8 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
                     {
                         builder.AppendFormat(
                             " {0}.{1}_Envelope_MinX < {2} AND {0}.{1}_Envelope_MinY < {3} AND {0}.{1}_Envelope_MaxX > {4} AND {0}.{1}_Envelope_MaxY > {5}",
-                            Table,
-                            GeometryColumn,
+                            Provider.Table,
+                            Provider.GeometryColumn,
                             CreateParameter(exts.XMax).ParameterName,
                             CreateParameter(exts.YMax).ParameterName,
                             CreateParameter(exts.XMin).ParameterName,

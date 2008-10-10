@@ -102,29 +102,9 @@ namespace SharpMap.Data.Providers
             return withNoLock ? " WITH(NOLOCK) " : "";
         }
 
-        //protected override IEnumerable<string> SelectAllColumnNames(bool formatGeometryColumn, bool qualifyColumnNames)
-        //{
-        //    foreach (DataColumn col in GetSchemaTable().Columns)
-        //    {
-        //        yield return string.Equals(col.ColumnName, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
-        //                        && formatGeometryColumn ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col.ColumnName,
-        //                                         GeometryColumn)
-        //                                         : qualifyColumnNames ? string.Format("{0}.[{1}]", QualifiedTableName, col.ColumnName) : string.Format("[{0}]", col.ColumnName);
-        //    }
-        //}
-
         protected override ExpressionTreeToSqlCompilerBase<long> CreateSqlCompiler(Expression expression)
         {
-            bool withNoLock =
-                GetProviderPropertyValue<WithNoLockExpression, bool>(
-                    DefaultProviderProperties.ProviderProperties.Collection,
-                    false);
-
-
-            return new MsSqlSpatialExpressionTreeToSqlCompiler(DbUtility, withNoLock, this,
-                                                               GeometryColumnConversionFormatString, expression,
-                                                               SpatialSchema, TableSchema, Table,
-                                                               OidColumn, GeometryColumn, Srid);
+            return new MsSqlSpatialExpressionTreeToSqlCompiler(this, expression);
         }
 
         protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
@@ -138,20 +118,22 @@ namespace SharpMap.Data.Providers
 
 
             string orderByCols = String.Join(",",
-                                 Enumerable.ToArray(
-                                     GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                         properties, new string[] { })));
+                                             Enumerable.ToArray(
+                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                                     properties, new string[] { })));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                              ? FormatColumnNames(true, true, compiler.ProjectedColumns)
-                              : SelectAllColumnNames(true, true)));
+                                                                              ? FormatColumnNames(true, true,
+                                                                                                  compiler.
+                                                                                                      ProjectedColumns)
+                                                                              : SelectAllColumnNames(true, true)));
 
             return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5} {7}",
                                  compiler.SqlParamDeclarations,
                                  mainQueryColumns,
-                                 compiler.QualifiedTableName,
+                                 QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
                                  compiler.SqlWhereClause,
@@ -159,31 +141,34 @@ namespace SharpMap.Data.Providers
                                  orderByClause);
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
+        protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
+                                              ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize,
+                                              int pageNumber)
         {
-
-
             string orderByCols = string.Join(",",
-                                            Enumerable.ToArray(
-                                                GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                                    properties, new string[] { })));
+                                             Enumerable.ToArray(
+                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
+                                                     properties, new string[] { })));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
             int startRecord = (pageNumber * pageSize) + 1;
             int endRecord = (pageNumber + 1) * pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                             ? FormatColumnNames(true, true, compiler.ProjectedColumns)
-                             : SelectAllColumnNames(true, true)));
+                                                                              ? FormatColumnNames(true, true,
+                                                                                                  compiler.
+                                                                                                      ProjectedColumns)
+                                                                              : SelectAllColumnNames(true, true)));
 
             string subQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                         ? FormatColumnNames(false, false, compiler.ProjectedColumns)
-                                         : SelectAllColumnNames(false, false)));
-
+                                                                             ? FormatColumnNames(false, false,
+                                                                                                 compiler.
+                                                                                                     ProjectedColumns)
+                                                                             : SelectAllColumnNames(false, false)));
 
 
             return string.Format(
-@" {0};
+                @" {0};
 WITH CTE(rownumber, {8}) 
     AS 
     (   SELECT ROW_NUMBER() OVER(ORDER BY {7} ASC) AS rownumber, {1}  
@@ -193,17 +178,17 @@ WITH CTE(rownumber, {8})
 SELECT {8} 
 FROM CTE 
 WHERE rownumber BETWEEN {9} AND {10} ",
-                           compiler.SqlParamDeclarations,
-                           mainQueryColumns,
-                           compiler.QualifiedTableName,
-                           compiler.SqlJoinClauses,
-                           string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
-                           compiler.SqlWhereClause,
-                           GetWithClause(properties),
-                           orderByCols,
-                           subQueryColumns,
-                           compiler.CreateParameter(startRecord).ParameterName,
-                           compiler.CreateParameter(endRecord).ParameterName);
+                compiler.SqlParamDeclarations,
+                mainQueryColumns,
+                QualifiedTableName,
+                compiler.SqlJoinClauses,
+                string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                compiler.SqlWhereClause,
+                GetWithClause(properties),
+                orderByCols,
+                subQueryColumns,
+                compiler.CreateParameter(startRecord).ParameterName,
+                compiler.CreateParameter(endRecord).ParameterName);
         }
     }
 }
