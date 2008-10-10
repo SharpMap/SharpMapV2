@@ -677,7 +677,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
+        protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
         {
             throw new NotImplementedException();
         }

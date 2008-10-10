@@ -192,7 +192,7 @@ namespace SharpMap.Data.Providers.Db
 
                     Type classType = GetType();
 
-                    ///get the method info for the method we want to call
+                    ///get the method info for the method we want to call e.g CreateParameter<classType>(classType val)
                     MethodInfo mi = classType.GetMethod("CreateParameter",
                                                         BindingFlags.NonPublic | BindingFlags.Public |
                                                         BindingFlags.Instance);
@@ -208,7 +208,7 @@ namespace SharpMap.Data.Providers.Db
                     if (tValue.IsValueType)
                         generator.Emit(OpCodes.Unbox_Any, tValue); //unbox value types
                     else
-                        generator.Emit(OpCodes.Castclass, tValue); //cast it to the correct arg type
+                        generator.Emit(OpCodes.Castclass, tValue); //cast ref types to the correct arg type
                     generator.EmitCall(OpCodes.Callvirt, mig, null); // call the method passing in the param
                     generator.Emit(OpCodes.Ret); //return the value
 
@@ -313,7 +313,7 @@ namespace SharpMap.Data.Providers.Db
 
             if (exp is AllAttributesExpression)
             {
-                foreach (string s in Provider.SelectAllColumnNames(false, false))
+                foreach (string s in Provider.SelectAllColumnNames())
                     InternalProjectedColumns.Add(s);
             }
 
@@ -328,16 +328,17 @@ namespace SharpMap.Data.Providers.Db
 
             foreach (PropertyNameExpression pn in exp.Attributes.Collection)
             {
-                InternalProjectedColumns.Add(
-                    string.Compare(pn.PropertyName, Provider.GeometryColumn, StringComparison.InvariantCultureIgnoreCase) ==
-                    0
-                        ? string.Format(Provider.GeometryColumnConversionFormatString,
-                                        Provider.QualifyColumnName(pn.PropertyName))
-                        : Provider.QualifyColumnName(pn.PropertyName));
+                InternalProjectedColumns.Add(pn.PropertyName);
+                //InternalProjectedColumns.Add(
+                //    string.Compare(pn.PropertyName, Provider.GeometryColumn, StringComparison.InvariantCultureIgnoreCase) ==
+                //    0
+                //        ? string.Format(Provider.GeometryColumnConversionFormatString,
+                //                        Provider.QualifyColumnName(pn.PropertyName))
+                //        : Provider.QualifyColumnName(pn.PropertyName));
             }
         }
 
-        private IEnumerable<string> EnumerableConverter(IEnumerable enu)
+        private IEnumerable<string> EnumerableToParameterConverter(IEnumerable enu)
         {
             foreach (object o in enu)
                 yield return CreateParameter(o).ParameterName;
@@ -351,7 +352,7 @@ namespace SharpMap.Data.Providers.Db
             var sb = new StringBuilder();
 
             sb.Append(string.Join(", ",
-                                  Enumerable.ToArray(EnumerableConverter(exp.Collection))));
+                                  Enumerable.ToArray(EnumerableToParameterConverter(exp.Collection))));
 
             if (sb.Length > 0)
                 builder.AppendFormat("({0})", sb);
@@ -377,6 +378,10 @@ namespace SharpMap.Data.Providers.Db
             {
                 case CollectionOperator.In:
                     return " IN ";
+                case CollectionOperator.NotIn:
+                    return " NOT IN ";
+                case CollectionOperator.All:
+                case CollectionOperator.Any:
                 default:
                     throw new NotImplementedException();
             }
@@ -532,6 +537,11 @@ namespace SharpMap.Data.Providers.Db
                         return " IS ";
                     case BinaryStringOperator.NotEquals:
                         return " IS NOT ";
+                    case BinaryStringOperator.Contains:
+                    case BinaryStringOperator.EndsWith :
+                    case BinaryStringOperator.StartsWith :
+                        default:
+                        break;
                 }
             }
 
@@ -541,6 +551,9 @@ namespace SharpMap.Data.Providers.Db
                     return " = ";
                 case BinaryStringOperator.NotEquals:
                     return " <> ";
+                case BinaryStringOperator.Contains:
+                case BinaryStringOperator.EndsWith:
+                case BinaryStringOperator.StartsWith:
                 default:
                     return " LIKE ";
             }
@@ -580,7 +593,7 @@ namespace SharpMap.Data.Providers.Db
                 case BinaryOperator.Or:
                     return " OR ";
                 default:
-                    throw new ArgumentException("Unknown binary operator");
+                    throw new ArgumentException(string.Format("Unknown binary operator {0}", binaryOperator));
             }
         }
 

@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.Web;
 using SharpMap.Presentation.AspNet.MVP;
+using SharpMap.Utilities;
 
 namespace SharpMap.Presentation.AspNet
 {

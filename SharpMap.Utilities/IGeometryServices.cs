@@ -17,7 +17,7 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 
-namespace SharpMap.Presentation.AspNet
+namespace SharpMap.Utilities
 {
     public interface IGeometryServices
     {

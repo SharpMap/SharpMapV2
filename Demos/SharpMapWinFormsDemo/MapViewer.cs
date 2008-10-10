@@ -27,6 +27,7 @@ using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Styles;
+using SharpMap.Utilities;
 
 namespace MapViewer
 {
@@ -64,39 +65,20 @@ namespace MapViewer
             get { return mapViewControl1; }
         }
 
-        public IGeometryFactory GeometryFactory { get; set; }
-
-        public ICoordinateFactory CoordinateFactory { get; set; }
-
-        public ICoordinateSequenceFactory CoordinateSequenceFactory { get; set; }
-
-        public ICoordinateSystemFactory CoordinateSystemFactory { get; set; }
 
         private bool HasLayers
         {
             get { return Map.Layers.Count > 0; }
         }
 
+        private readonly IGeometryServices GeometryServices = new GeometryServices();
 
         private void InitMap()
         {
-            CoordinateFactory = new BufferedCoordinateFactory();
-
-            CoordinateSequenceFactory = new BufferedCoordinateSequenceFactory(
-                (BufferedCoordinateFactory) CoordinateFactory);
-
-            GeometryFactory = new GeometryFactory<BufferedCoordinate>(
-                (ICoordinateSequenceFactory<BufferedCoordinate>) CoordinateSequenceFactory);
-
-
-            CoordinateSystemFactory = new CoordinateSystemFactory<BufferedCoordinate>(
-                (ICoordinateFactory<BufferedCoordinate>) CoordinateFactory,
-                (IGeometryFactory<BufferedCoordinate>) GeometryFactory);
-
 
             mapViewControl1.SuspendLayout();
             mapViewControl1.Size = splitVertical.Panel2.ClientSize;
-            Map = new Map(GeometryFactory);
+            Map = new Map(GeometryServices.DefaultGeometryFactory);
             mapViewControl1.ResumeLayout(false);
         }
 
@@ -254,7 +236,7 @@ namespace MapViewer
         private void ZoomLayerExtent(CommandEventArgs<ILayer> layerArgs)
         {
             if (layerArgs.Value != null)
-                MapView.ZoomToWorldBounds((IExtents2D) layerArgs.Value.Extents);
+                MapView.ZoomToWorldBounds((IExtents2D)layerArgs.Value.Extents);
         }
 
         private void EditLayerSymbology(CommandEventArgs<ILayer> layerArgs)
@@ -274,7 +256,7 @@ namespace MapViewer
         {
             if (OpenFileDialog("Shapefiles|*.shp") == DialogResult.OK)
             {
-                var shp = new ShapeFileProvider(openFileDlg.FileName, GeometryFactory, CoordinateSystemFactory);
+                var shp = new ShapeFileProvider(openFileDlg.FileName, GeometryServices.DefaultGeometryFactory, GeometryServices.CoordinateSystemFactory);
 
                 var lyr = new GeometryLayer(Guid.NewGuid().ToString(), shp);
                 shp.Open(false);

@@ -23,9 +23,14 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
+
+#if DOTNET35
+using Enumerable = System.Linq.Enumerable;
+#else
+    using Enumerable= GeoAPI.DataStructures.Enumerable;
+#endif
 
 namespace SharpMap.Data
 {
@@ -631,7 +636,7 @@ namespace SharpMap.Data
             // poor structuring of the OID values. Consider creating a local,
             // sorted index where a binary search can be performed.
             IEnumerable oids = _viewDefinition.OidPredicate.OidValues;
-
+  
             Int32 count = 0;
 
             if (Enumerable.FirstOrDefault(oids) == null)

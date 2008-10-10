@@ -187,6 +187,10 @@
       <Project>{E7E3A53F-6B4D-423B-A10E-F0580B87FB81}</Project>
       <Name>SharpMap.Presentation.WinForms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
+      <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
+      <Name>SharpMap.Utilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>

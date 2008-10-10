@@ -404,6 +404,7 @@
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="SharpMap.cd" />
     <None Include="Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />
     <None Include="SharpMap.snk" />

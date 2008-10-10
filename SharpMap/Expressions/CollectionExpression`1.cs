@@ -43,9 +43,9 @@ namespace SharpMap.Expressions
 
             IEnumerable<TValue> collection = ce.Collection;
             
-            return Enumerable.All(collection, delegate(TValue item)
+            return Enumerable.All<TValue>(collection, delegate(TValue item)
                    {
-                       return Enumerable.Contains(collection, item, _comparer);
+                       return Enumerable.Contains<TValue>(collection, item, _comparer);
                    });
         }
 

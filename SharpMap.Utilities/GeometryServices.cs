@@ -21,7 +21,6 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
-using SharpMap.Presentation.AspNet;
 
 namespace SharpMap.Utilities
 {
@@ -93,11 +92,10 @@ namespace SharpMap.Utilities
                                                                     (GeometryFactory<BufferedCoordinate>)
                                                                     _geometryFactory);
 
-                ///TODO: Projection is not yet ready. Fill out when it is
-                _coordinateTransformationFactory = null;
-                /* new CoordinateTransformationFactory<BufferedCoordinate>(
-                     (BufferedCoordinateFactory)_coordinateFactory,
-                     (GeometryFactory<BufferedCoordinate>)_geometryFactory, null);*/
+                _coordinateTransformationFactory = new CoordinateTransformationFactory<BufferedCoordinate>(
+                      (BufferedCoordinateFactory)_coordinateFactory,
+                      (GeometryFactory<BufferedCoordinate>)_geometryFactory, null);
+
             }
 
             public ICoordinateSequenceFactory CoordinateSequenceFactory
@@ -114,16 +112,21 @@ namespace SharpMap.Utilities
                     if (!srid.HasValue)
                         return DefaultGeometryFactory;
 
-                    lock (_sridAwareGeometryFactories)
-                        if (!_sridAwareGeometryFactories.ContainsKey(srid.Value))
-                        {
-                            _sridAwareGeometryFactories.Add(srid.Value,
-                                                            new GeometryFactory<BufferedCoordinate>(srid.Value,
-                                                                                                    (BufferedCoordinateSequenceFactory)
-                                                                                                    _coordinateSequenceFactory));
-                        }
+                    IGeometryFactory factory;
 
-                    return _sridAwareGeometryFactories[srid.Value];
+
+
+                    if (!_sridAwareGeometryFactories.TryGetValue(srid.Value, out factory))
+                    {
+                        factory = new GeometryFactory<BufferedCoordinate>(srid.Value,
+                            (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
+                        lock (_sridAwareGeometryFactories)
+                            if (!_sridAwareGeometryFactories.ContainsKey(srid.Value))
+                                _sridAwareGeometryFactories.Add(srid.Value, factory);
+
+                    }
+
+                    return factory;
                 }
             }
 

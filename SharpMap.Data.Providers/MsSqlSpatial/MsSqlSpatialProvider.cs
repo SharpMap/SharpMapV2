@@ -77,16 +77,15 @@ namespace SharpMap.Data.Providers
                         GeometryColumn, TableSchema, Table,
                         GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
                 cmd.CommandType = CommandType.Text;
-                double xmin, ymin, xmax, ymax;
                 conn.Open();
                 using (IDataReader r = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (r.Read())
                     {
-                        xmin = r.GetDouble(0);
-                        ymin = r.GetDouble(1);
-                        xmax = r.GetDouble(2);
-                        ymax = r.GetDouble(3);
+                        double xmin = r.GetDouble(0);
+                        double ymin = r.GetDouble(1);
+                        double xmax = r.GetDouble(2);
+                        double ymax = r.GetDouble(3);
                         return GeometryFactory.CreateExtents2D(xmin, ymin, xmax, ymax);
                     }
                 }
@@ -107,28 +106,29 @@ namespace SharpMap.Data.Providers
             return new MsSqlSpatialExpressionTreeToSqlCompiler(this, expression);
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase<long> compiler)
+        protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties,
+                                                    ExpressionTreeToSqlCompilerBase<long> compiler)
         {
             int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
             int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
 
             if (pageSize > 0 && pageNumber > -1)
-                return GenerateSql(properties, compiler, pageSize, pageNumber);
+                return GenerateSelectSql(properties, compiler, pageSize, pageNumber);
 
 
             string orderByCols = String.Join(",",
                                              Enumerable.ToArray(
                                                  GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                                     properties, new string[] { })));
+                                                     properties, new string[] {})));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
-            string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                                                              ? FormatColumnNames(true, true,
-                                                                                                  compiler.
-                                                                                                      ProjectedColumns)
-                                                                              : SelectAllColumnNames(true, true)));
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                           FormatColumnNames(true, true,
+                                                                             compiler.ProjectedColumns.Count > 0
+                                                                                 ? compiler.ProjectedColumns
+                                                                                 : SelectAllColumnNames()
+                                                               )));
 
             return string.Format(" {0} SELECT {1}  FROM {2}{6} {3} {4} {5} {7}",
                                  compiler.SqlParamDeclarations,
@@ -141,30 +141,33 @@ namespace SharpMap.Data.Providers
                                  orderByClause);
         }
 
-        protected override string GenerateSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize,
-                                              int pageNumber)
+        protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties,
+                                                    ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize,
+                                                    int pageNumber)
         {
             string orderByCols = string.Join(",",
                                              Enumerable.ToArray(
                                                  GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                                     properties, new string[] { })));
+                                                     properties, new string[] {})));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
-            int startRecord = (pageNumber * pageSize) + 1;
-            int endRecord = (pageNumber + 1) * pageSize;
 
-            string mainQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                                                              ? FormatColumnNames(true, true,
-                                                                                                  compiler.
-                                                                                                      ProjectedColumns)
-                                                                              : SelectAllColumnNames(true, true)));
+            int startRecord = (pageNumber*pageSize) + 1;
+            int endRecord = (pageNumber + 1)*pageSize;
 
-            string subQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-                                                                             ? FormatColumnNames(false, false,
-                                                                                                 compiler.
-                                                                                                     ProjectedColumns)
-                                                                             : SelectAllColumnNames(false, false)));
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                           FormatColumnNames(true, true,
+                                                                             compiler.ProjectedColumns.Count > 0
+                                                                                 ? compiler.ProjectedColumns
+                                                                                 : SelectAllColumnNames()
+                                                               )));
+
+            string subQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                          FormatColumnNames(false, false,
+                                                                            compiler.ProjectedColumns.Count > 0
+                                                                                ? compiler.ProjectedColumns
+                                                                                : SelectAllColumnNames()
+                                                              )));
 
 
             return string.Format(
