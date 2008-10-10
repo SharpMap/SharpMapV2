@@ -23,7 +23,7 @@ namespace SharpMap.Expressions
 {
     public class AttributesProjectionExpression : ProjectionExpression
     {
-        private readonly CollectionExpression _attributes;
+        private readonly CollectionExpression<PropertyNameExpression> _attributes;
 
         public AttributesProjectionExpression(IEnumerable<String> attributes)
             // The explicit cast is needed when compiling under ToolsVersion=2.0
@@ -33,14 +33,14 @@ namespace SharpMap.Expressions
                                                     })) { }
 
         public AttributesProjectionExpression(IEnumerable<PropertyNameExpression> attributes)
-            : this(new CollectionExpression(attributes)) { }
+            : this(new CollectionExpression<PropertyNameExpression>(attributes)) { }
 
-        public AttributesProjectionExpression(CollectionExpression attributes)
+        public AttributesProjectionExpression(CollectionExpression<PropertyNameExpression> attributes)
         {
             _attributes = attributes;
         }
 
-        public CollectionExpression Attributes
+        public CollectionExpression<PropertyNameExpression> Attributes
         {
             get { return _attributes; }
         }

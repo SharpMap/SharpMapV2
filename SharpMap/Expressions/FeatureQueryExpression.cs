@@ -95,10 +95,19 @@ namespace SharpMap.Expressions
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter)
             : base(new AllAttributesExpression(), attributeFilter) { }
 
+        public FeatureQueryExpression(AttributesPredicateExpression attributeFilter)
+            : base(new AllAttributesExpression(), attributeFilter) { }
+
         public FeatureQueryExpression(SpatialBinaryExpression spatialFilter)
             : base(new AllAttributesExpression(), spatialFilter) { }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter)
+            : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
+                                                                       BinaryOperator.And,
+                                                                       spatialFilter)) { }
+
+        public FeatureQueryExpression(AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
                                                                        BinaryOperator.And,
@@ -111,13 +120,25 @@ namespace SharpMap.Expressions
                                                     BinaryOperator.And,
                                                     spatialFilter)) { }
 
+        public FeatureQueryExpression(AttributesProjectionExpression attributes,
+                                      AttributesPredicateExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter)
+            : base(attributes, new BinaryExpression(attributeFilter,
+                                                    BinaryOperator.And,
+                                                    spatialFilter)) { }
+
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
             : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter) { }
 
+        public FeatureQueryExpression(AttributesPredicateExpression attributeFilter,
+                                      SpatialBinaryExpression spatialFilter,
+                                      OidCollectionExpression oidFilter)
+            : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter) { }
+
         public FeatureQueryExpression(ProjectionExpression projectionExpression,
-                                      AttributeBinaryExpression attributeFilter,
+                                      BinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
             // TODO: Well, this is crazy. We need an init() function, and perhaps some more static creator methods.
@@ -143,7 +164,7 @@ namespace SharpMap.Expressions
         public FeatureQueryExpression(FeatureQueryExpression expressionToCopy, 
                                       SpatialBinaryExpression replacementSpatialExpression)
             : this(expressionToCopy.Projection, 
-                   expressionToCopy.AttributePredicate, 
+                   expressionToCopy.SingleAttributePredicate, 
                    replacementSpatialExpression, 
                    expressionToCopy.OidPredicate) { }
 
@@ -183,7 +204,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        public AttributeBinaryExpression AttributePredicate
+        public AttributeBinaryExpression SingleAttributePredicate
         {
             get
             {
@@ -197,21 +218,25 @@ namespace SharpMap.Expressions
 
                 BinaryExpression binaryExpression = Predicate as BinaryExpression;
 
-                if (binaryExpression == null)
-                {
-                    return null;
-                }
+                return findExpressionType<AttributeBinaryExpression>(binaryExpression);
+            }
+        }
 
-                attributesExpression = binaryExpression.Left as AttributeBinaryExpression;
+        public AttributesPredicateExpression MultiAttributePredicate
+        {
+            get
+            {
+                AttributesPredicateExpression attributesExpression =
+                    Predicate as AttributesPredicateExpression;
 
                 if (attributesExpression != null)
                 {
                     return attributesExpression;
                 }
 
-                attributesExpression = binaryExpression.Right as AttributeBinaryExpression;
+                BinaryExpression binaryExpression = Predicate as BinaryExpression;
 
-                return attributesExpression;
+                return findExpressionType<AttributesPredicateExpression>(binaryExpression);
             }
         }
 
@@ -266,13 +291,21 @@ namespace SharpMap.Expressions
             }
         }
 
-        public Boolean IsAttributePredicateNonEmpty
+        public Boolean IsSingleAttributePredicateNonEmpty
         {
             get
             {
-                return AttributePredicate != null &&
-                       (AttributePredicate.HasCollectionValueExpression ||
-                        AttributePredicate.HasSingleValueExpression);
+                return SingleAttributePredicate != null &&
+                       (SingleAttributePredicate.HasCollectionValueExpression ||
+                        SingleAttributePredicate.HasSingleValueExpression);
+            }
+        }
+
+        public Boolean IsMultiAttributePredicateNonEmpty
+        {
+            get
+            {
+                return MultiAttributePredicate != null;
             }
         }
 
@@ -297,6 +330,33 @@ namespace SharpMap.Expressions
             {
                 return base.GetHashCode() ^ 131;
             }
+        }
+
+        private static TExpression findExpressionType<TExpression>(BinaryExpression binaryExpression)
+            where TExpression : BinaryExpression
+        {
+            if (binaryExpression == null)
+            {
+                return null;
+            }
+
+            TExpression tExpression = binaryExpression as TExpression;
+
+            if (tExpression != null)
+            {
+                return tExpression;
+            }
+
+            tExpression = findExpressionType<TExpression>(binaryExpression.Left as BinaryExpression);
+
+            if (tExpression != null)
+            {
+                return tExpression;
+            }
+
+            tExpression = findExpressionType<TExpression>(binaryExpression.Right as BinaryExpression);
+
+            return tExpression;
         }
     }
 }

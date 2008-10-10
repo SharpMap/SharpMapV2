@@ -72,6 +72,8 @@ namespace SharpMap.Data.Providers.ShapeFile
     /// </example>
     public class ShapeFileProvider : ProviderBase, IWritableFeatureProvider<UInt32>
     {
+        private const String SharpMapShapeFileIndexFileExtension = ".#index-shp";
+
         #region IdBounds
         struct IdBounds : IBoundable<IExtents>
         {
@@ -119,14 +121,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         //private Boolean _isOpen;
         private Boolean _isIndexed = true;
         private Boolean _coordsysReadFromFile;
-        private ICoordinateSystem _coordinateSystem;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
         private readonly ShapeFileHeader _header;
         private readonly ShapeFileIndex _shapeFileIndex;
         private ShapeFileDataReader _currentReader;
         private readonly Object _readerSync = new Object();
         private readonly Boolean _hasDbf;
-        private IGeometryFactory _geoFactory;
+        private readonly IGeometryFactory _geoFactory;
         private readonly ICoordinateSystemFactory _coordSysFactory;
         #endregion
 
@@ -183,9 +184,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                                  Boolean fileBasedIndex)
         {
             _filename = filename;
-            _geoFactory = geoFactory;
-            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
-            Srid = _geoFactory == null ? null : _geoFactory.Srid;
+            _geoFactory = geoFactory.Clone();
+            SpatialReference = _geoFactory.SpatialReference;
+            Srid = _geoFactory.Srid;
             _coordSysFactory = coordSysFactory;
 
             if (!File.Exists(filename))
@@ -673,9 +674,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (_hasFileBasedSpatialIndex)
             {
-                if (File.Exists(_filename + ".sidx"))
+                if (File.Exists(_filename + SharpMapShapeFileIndexFileExtension))
                 {
-                    File.Delete(_filename + ".sidx");
+                    File.Delete(_filename + SharpMapShapeFileIndexFileExtension);
                 }
 
                 _spatialIndex = createSpatialIndexFromFile(_filename);
@@ -719,30 +720,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                        : _header.Extents;
         }
 
-        ///// <summary>
-        ///// Returns true if the data source is currently open
-        ///// </summary>		
-        //public Boolean IsOpen
-        //{
-        //    get { return _isOpen; }
-        //}
-
-        ///// <summary>
-        ///// Gets or sets the coordinate system of the ShapeFile. 
-        ///// </summary>
-        ///// <remarks>
-        ///// If a shapefile has a corresponding [filename].prj file containing a Well-Known Text 
-        ///// description of the coordinate system this will automatically be read.
-        ///// If this is not the case, the coordinate system will default to null.
-        ///// </remarks>
-        ///// <exception cref="ShapeFileInvalidOperationException">
-        ///// Thrown if property is set and the coordinate system is read from file.
-        ///// </exception>
-        //public override ICoordinateSystem SpatialReference
-        //{
-        //    get { return _coordinateSystem; }
-        //}
-
         private void initSpatialReference(ICoordinateSystem coordinateSystem)
         {
             //checkOpen();
@@ -752,15 +729,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                              "projection file and is read only");
             }
 
-            _coordinateSystem = coordinateSystem;
-            _geoFactory.SpatialReference = coordinateSystem;
+            SpatialReference = coordinateSystem;
+            Srid = coordinateSystem.AuthorityCode > 0 ? (Int32?)coordinateSystem.AuthorityCode : null;
+            _geoFactory.SpatialReference = SpatialReference;
+            _geoFactory.Srid = Srid;
         }
-
-        //public override Int32? Srid
-        //{
-        //    get { return _srid; }
-        //    //set { _srid = value; }
-        //}
 
         #region Methods
 
@@ -1650,7 +1623,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <returns>QuadTree index</returns>
         private ISpatialIndex<IExtents, IdBounds> createSpatialIndexFromFile(String filename)
         {
-            if (File.Exists(filename + ".sidx"))
+            if (File.Exists(filename + SharpMapShapeFileIndexFileExtension))
             {
                 throw new NotImplementedException();
                 //using(FileStream indexStream =
@@ -2143,24 +2116,22 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         private void parseProjection()
         {
-            String projfile = Path.Combine(
-                Path.GetDirectoryName(Filename),
-                Path.GetFileNameWithoutExtension(Filename) + ".prj");
+            String projfile = Path.Combine(Path.GetDirectoryName(Filename),
+                                           Path.GetFileNameWithoutExtension(Filename) + ".prj");
 
             if (File.Exists(projfile))
             {
                 if (_coordSysFactory == null)
                 {
-                    throw new InvalidOperationException(
-                        "A projection is defined for this shapefile," +
-                        " but no CoordinateSystemFactory was set.");
+                    throw new InvalidOperationException("A projection is defined for this shapefile," +
+                                                        " but no CoordinateSystemFactory was set.");
                 }
 
                 try
                 {
                     String wkt = File.ReadAllText(projfile);
-                    _coordinateSystem = _coordSysFactory.CreateFromWkt(wkt);
-                    _geoFactory.SpatialReference = _coordinateSystem;
+                    ICoordinateSystem coordinateSystem = _coordSysFactory.CreateFromWkt(wkt);
+                    initSpatialReference(coordinateSystem);
                     _coordsysReadFromFile = true;
                 }
                 catch (ArgumentException ex)

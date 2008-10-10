@@ -54,7 +54,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             CoordinateSystemFactory<TCoordinate> coordSystemFactory
                 = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
-			_wgs84 = coordSystemFactory.CreateWgs84CoordinateSystem();
+			_wgs84 = coordSystemFactory.CreateWgs84GeocentricCoordinateSystem();
 		}
 
         #region ICoordinateTransformationFactory Members

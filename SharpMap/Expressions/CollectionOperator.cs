@@ -22,6 +22,8 @@ namespace SharpMap.Expressions
         Any,
         All,
         In,
-        Contains
+        Contains = In,
+        NotIn,
+        DoesNotContain = NotIn
     }
 }

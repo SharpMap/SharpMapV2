@@ -255,7 +255,7 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// Gets or sets the coordinate system of the data source. 
         /// </summary>
-        public ICoordinateSystem SpatialReference
+        public virtual ICoordinateSystem SpatialReference
         {
             get { return _spatialReference;  }
             protected set { _spatialReference = value; }

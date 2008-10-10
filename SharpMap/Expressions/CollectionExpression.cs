@@ -25,7 +25,7 @@ using GeoAPI.DataStructures;
 
 namespace SharpMap.Expressions
 {
-    public class CollectionExpression : Expression
+    public class CollectionExpression : Expression, IEnumerable
     {
         private readonly IEnumerable _collection;
 
@@ -61,5 +61,14 @@ namespace SharpMap.Expressions
         {
             return new CollectionExpression(Enumerable.ToArray(_collection));
         }
+
+        #region IEnumerable Members
+
+        public IEnumerator GetEnumerator()
+        {
+            return _collection.GetEnumerator();
+        }
+
+        #endregion
     }
 }

@@ -9,7 +9,7 @@ using Enumerable = GeoAPI.DataStructures.Enumerable;
 
 namespace SharpMap.Expressions
 {
-    public class CollectionExpression<TValue> : CollectionExpression
+    public class CollectionExpression<TValue> : CollectionExpression, IEnumerable<TValue>
     {
         private readonly IEqualityComparer<TValue> _comparer;
 
@@ -68,5 +68,14 @@ namespace SharpMap.Expressions
             IEnumerable<TValue> values = Collection;
             return new CollectionExpression(Enumerable.ToArray(values));
         }
+
+        #region IEnumerable<TValue> Members
+
+        public new IEnumerator<TValue> GetEnumerator()
+        {
+            return Collection.GetEnumerator();
+        }
+
+        #endregion
     }
 }

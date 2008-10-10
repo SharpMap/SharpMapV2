@@ -102,7 +102,10 @@ namespace SharpMap.Presentation.WinForms
         {
             if (disposing)
             {
-                Map.Dispose();
+                if (Map != null)
+                {
+                    Map.Dispose();
+                }
 
                 if (_bufferedMapImage != null)
                 {
@@ -118,7 +121,7 @@ namespace SharpMap.Presentation.WinForms
         /// </summary>
         public Map Map
         {
-            private get { return _presenter.Map; }
+            private get { return _presenter == null ? null : _presenter.Map; }
             set { _presenter = new MapPresenter(value, this); }
         }
 
@@ -547,7 +550,7 @@ namespace SharpMap.Presentation.WinForms
             //base.OnMouseWheel(e);
 
             // **************** Using the tool path...
-            
+
             //SelectedTool = e.Delta > 0 ? StandardMapTools2D.ZoomIn : StandardMapTools2D.ZoomOut;
 
             //Rectangle2D selectBox = computeBoxFromWheelDelta(e.Location, e.Delta);

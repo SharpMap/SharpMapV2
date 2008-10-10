@@ -19,17 +19,9 @@ using System.Collections;
 
 namespace SharpMap.Expressions
 {
-    public class OidCollectionExpression : CollectionBinaryExpression
+    public class ExcludedOidCollectionExpression : OidCollectionExpression
     {
-        public OidCollectionExpression(IEnumerable collection)
-            : this(collection, CollectionOperator.In) { }
-
-        protected OidCollectionExpression(IEnumerable collection, CollectionOperator op)
-            : base(new OidExpression(), op, new CollectionExpression(collection)) { }
-
-        public IEnumerable OidValues
-        {
-            get { return Right.Collection; }
-        }
+        public ExcludedOidCollectionExpression(IEnumerable collection)
+            : base(collection, CollectionOperator.NotIn) { }
     }
 }

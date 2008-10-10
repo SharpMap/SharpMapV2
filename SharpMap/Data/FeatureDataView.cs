@@ -286,13 +286,13 @@ namespace SharpMap.Data
         {
             get
             {
-                return _viewDefinition == null || _viewDefinition.AttributePredicate == null
+                return _viewDefinition == null || _viewDefinition.SingleAttributePredicate == null
                             ? null
-                            : _viewDefinition.AttributePredicate.Clone() as AttributeBinaryExpression;
+                            : _viewDefinition.SingleAttributePredicate.Clone() as AttributeBinaryExpression;
             }
             set
             {
-                if (Equals(_viewDefinition.AttributePredicate, value))
+                if (Equals(_viewDefinition.SingleAttributePredicate, value))
                 {
                     return;
                 }

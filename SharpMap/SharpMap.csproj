@@ -162,6 +162,7 @@
     <Compile Include="Expressions\AllAttributesExpression.cs" />
     <Compile Include="Expressions\AllBandsExpression.cs" />
     <Compile Include="Expressions\AttributeBinaryExpression.cs" />
+    <Compile Include="Expressions\AttributesPredicateExpression.cs" />
     <Compile Include="Expressions\AttributesProjectionExpression.cs" />
     <Compile Include="Expressions\AttributeBinaryStringExpression.cs" />
     <Compile Include="Expressions\BinaryExpression.cs" />
@@ -170,7 +171,9 @@
     <Compile Include="Expressions\CollectionBinaryExpression.cs" />
     <Compile Include="Expressions\CollectionExpression.cs" />
     <Compile Include="Expressions\CollectionExpression`1.cs" />
+    <Compile Include="Expressions\ExcludedOidCollectionExpression.cs" />
     <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\ExpressionParseException.cs" />
     <Compile Include="Expressions\ProviderPropertiesExpression.cs" />
     <Compile Include="Expressions\ProviderQueryExpression.cs" />
     <Compile Include="Expressions\ExtentsExpression.cs" />

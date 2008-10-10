@@ -789,7 +789,7 @@ namespace ProjNet.CoordinateSystems
             throw new NotImplementedException();
         }
 
-        public IGeocentricCoordinateSystem<TCoordinate> CreateWgs84CoordinateSystem()
+        public IGeocentricCoordinateSystem<TCoordinate> CreateWgs84GeocentricCoordinateSystem()
         {
             IEllipsoid wgs84Ellipsoid = HorizontalDatum.Wgs84.Ellipsoid;
             Double semiMajor = wgs84Ellipsoid.SemiMajorAxis;
@@ -803,6 +803,21 @@ namespace ProjNet.CoordinateSystems
                                                     LinearUnit.Meter,
                                                     PrimeMeridian.Greenwich,
                                                     "WGS84 Geocentric");
+        }
+
+        public IGeographicCoordinateSystem<TCoordinate> CreateWgs84GeographicCoordinateSystem()
+        {
+            TCoordinate min = _coordFactory.Create(-180, -90);
+            TCoordinate max = _coordFactory.Create(180, 90);
+            IExtents<TCoordinate> wgs84Extents = _geometryFactory.CreateExtents(min, max);
+
+            return CreateGeographicCoordinateSystem(wgs84Extents, 
+                                                    AngularUnit.Degrees, 
+                                                    HorizontalDatum.Wgs84,
+                                                    PrimeMeridian.Greenwich,
+                                                    new AxisInfo(AxisOrientation.East, "Lon"),
+                                                    new AxisInfo(AxisOrientation.North, "Lat"),
+                                                    "WGS 84");
         }
 
         //==================================================================================
