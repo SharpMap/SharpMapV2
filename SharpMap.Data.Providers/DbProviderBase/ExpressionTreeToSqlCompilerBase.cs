@@ -333,6 +333,8 @@ namespace SharpMap.Data.Providers.Db
                 VisitCollectionBinaryExpression(builder, (CollectionBinaryExpression)exp);
             else if (exp is BinaryExpression)
                 VisitBinaryExpression(builder, (BinaryExpression)exp);
+            //else if (exp is AttributesPredicateExpression)
+            //    VisitAttributesPredicateExpression(builder, (AttributesPredicateExpression)exp);
             else if (exp is AttributeBinaryStringExpression)
                 VisitBinaryStringExpression(builder, (AttributeBinaryStringExpression)exp);
             else if (exp is LiteralExpression)
@@ -344,6 +346,15 @@ namespace SharpMap.Data.Providers.Db
             else
                 throw new NotImplementedException(string.Format("Unknown Expression Type {0}", exp.GetType()));
         }
+
+        //private void VisitAttributesPredicateExpression(StringBuilder builder, AttributesPredicateExpression exp)
+        //{
+        //    builder.Append("(");
+        //    VisitExpression(builder, exp.Left);
+        //    builder.Append(GetBinaryExpressionString(exp.Op, exp.Right));
+        //    VisitExpression(builder, exp.Right);
+        //    builder.Append(")");
+        //}
 
         private void VisitProviderQueryExpression(StringBuilder builder, ProviderQueryExpression expression)
         {
@@ -484,8 +495,10 @@ namespace SharpMap.Data.Providers.Db
 
             var sb = new StringBuilder();
 
-            if (exp.AttributePredicate != null)
-                VisitExpression(sb, exp.AttributePredicate);
+            if (exp.IsMultiAttributePredicateNonEmpty)
+                VisitExpression(sb, exp.MultiAttributePredicate);
+            else if (exp.IsSingleAttributePredicateNonEmpty)
+                VisitExpression(sb, exp.SingleAttributePredicate);
 
             if (exp.OidPredicate != null)
             {

@@ -273,7 +273,7 @@ namespace SharpMap.Data.Providers.Db
             foreach (IFeatureDataRecord fdr in
                 ExecuteFeatureDataReader(
                     PrepareCommand(new FeatureQueryExpression(new AttributesProjectionExpression(new[] { OidColumn }),
-                                                              null, query))))
+                                                              (AttributeBinaryExpression)null, query))))
             {
                 yield return (TOid)fdr.GetOid();
             }
