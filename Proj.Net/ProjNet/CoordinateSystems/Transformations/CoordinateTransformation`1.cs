@@ -19,6 +19,7 @@ using System;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Geometries;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Transformations
@@ -56,9 +57,14 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <param name="areaOfUse">Area of use</param>
         /// <param name="remarks">Remarks</param>
         internal CoordinateTransformation(ICoordinateSystem<TCoordinate> source,
-                                          ICoordinateSystem<TCoordinate> target, TransformType transformType,
-                                          IMathTransform<TCoordinate> mathTransform, String name, String authority,
-                                          Int64 authorityCode, String areaOfUse, String remarks)
+                                          ICoordinateSystem<TCoordinate> target, 
+                                          TransformType transformType,
+                                          IMathTransform<TCoordinate> mathTransform, 
+                                          String name, 
+                                          String authority,
+                                          Int64 authorityCode, 
+                                          String areaOfUse, 
+                                          String remarks)
         {
             _target = target;
             _source = source;
@@ -85,7 +91,10 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Authority which defined transformation and parameter values.
         /// </summary>
         /// <remarks>
-        /// An Authority is an organization that maintains definitions of Authority Codes. For example the European Petroleum Survey Group (EPSG) maintains a database of coordinate systems, and other spatial referencing objects, where each object has a code number ID. For example, the EPSG code for a WGS84 Lat/Lon coordinate system is ‘4326’
+        /// An authority is an organization that maintains definitions of 
+        /// authority codes. One authority is the European Petroleum Survey Group 
+        /// (EPSG) which maintains a database of coordinate systems, and other 
+        /// spatial referencing objects.
         /// </remarks>
         public String Authority
         {
@@ -93,16 +102,24 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Code used by authority to identify transformation. An empty String is used for no code.
+        /// Code used by authority to identify transformation. 
+        /// <see langword="null"/> is used for no code.
         /// </summary>
-        /// <remarks>The AuthorityCode is a compact String defined by an Authority to reference a particular spatial reference object. For example, the European Survey Group (EPSG) authority uses 32 bit integers to reference coordinate systems, so all their code strings will consist of a few digits. The EPSG code for WGS84 Lat/Lon is ‘4326’.</remarks>
-        public Int64 AuthorityCode
+        /// <remarks>
+        /// The authority code is a <see cref="Nullable{Int64}"/> 
+        /// defined by an authority to reference a particular spatial 
+        /// reference object. For example, the European Survey Group (EPSG) 
+        /// authority uses 32 bit integers to reference coordinate systems, 
+        /// so all their code strings will consist of a few digits. 
+        /// The EPSG code for WGS84 Lat/Lon is 4326.
+        /// </remarks>
+        public Int64? AuthorityCode
         {
             get { return _authorityCode; }
         }
 
         /// <summary>
-        /// Gets math transform.
+        /// Gets the math transform.
         /// </summary>
         public IMathTransform<TCoordinate> MathTransform
         {
@@ -110,7 +127,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Name of transformation.
+        /// Gets the name of transformation.
         /// </summary>
         public String Name
         {
@@ -126,7 +143,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Source coordinate system.
+        /// Gets the source coordinate system.
         /// </summary>
         public ICoordinateSystem<TCoordinate> Source
         {
@@ -134,19 +151,61 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         /// <summary>
-        /// Target coordinate system.
+        /// Gets the target coordinate system.
         /// </summary>
         public ICoordinateSystem<TCoordinate> Target
         {
             get { return _target; }
         }
 
+        public IExtents<TCoordinate> Transform(IExtents<TCoordinate> extents, IGeometryFactory<TCoordinate> factory)
+        {
+            TCoordinate min = MathTransform.Transform(extents.Min);
+            TCoordinate max = MathTransform.Transform(extents.Max);
+            return factory.CreateExtents(min, max);
+        }
+
+        public IGeometry<TCoordinate> Transform(IGeometry<TCoordinate> geometry, IGeometryFactory<TCoordinate> factory)
+        {
+            ICoordinateSequence<TCoordinate> coordinates = MathTransform.Transform(geometry.Coordinates);
+
+            IGeometry<TCoordinate> result = factory.CreateGeometry(coordinates, geometry.GeometryType);
+            return result;
+        }
+
+        public IPoint<TCoordinate> Transform(IPoint<TCoordinate> point, IGeometryFactory<TCoordinate> factory)
+        {
+            TCoordinate coordinate = MathTransform.Transform(point.Coordinate);
+            return factory.CreatePoint(coordinate);
+        }
+
         /// <summary>
-        /// Semantic type of transform. For example, a datum transformation or a coordinate conversion.
+        /// Gets the semantic type of transform. For example, a datum transformation or a coordinate conversion.
         /// </summary>
         public TransformType TransformType
         {
             get { return _transformType; }
+        }
+
+        public IExtents Transform(IExtents extents, IGeometryFactory factory)
+        {
+            ICoordinate min = MathTransform.Transform(extents.Min);
+            ICoordinate max = MathTransform.Transform(extents.Max);
+            return factory.CreateExtents(min, max);
+        }
+
+        public IGeometry Transform(IGeometry geometry, IGeometryFactory factory)
+        {
+            ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
+
+            IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
+            return result;
+        }
+
+        public IPoint Transform(IPoint point, IGeometryFactory factory)
+        {
+            ICoordinate coordinate = MathTransform.Transform(point.Coordinate);
+            return factory.CreatePoint(coordinate);
         }
 
         #endregion

@@ -51,7 +51,7 @@ namespace ProjNet.CoordinateSystems.Projections
     /// <summary>
     /// Base class for concrete map projections.
     /// </summary>
-    internal abstract class MapProjection<TCoordinate> : MathTransform<TCoordinate>, IProjection
+    internal abstract class MapProjection<TCoordinate> : GeoMathTransform<TCoordinate>, IProjection
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
@@ -321,11 +321,6 @@ namespace ProjNet.CoordinateSystems.Projections
             {
                 return MetersToDegrees(CoordinateFactory.Create3D(coordinate.ColumnCount));
             }
-        }
-
-        public IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new NotImplementedException();
         }
 
         public Boolean EqualParams(IInfo obj)

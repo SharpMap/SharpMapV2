@@ -48,7 +48,7 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// to metres.
     /// </para>
     /// </remarks>
-    internal class GeocentricTransform<TCoordinate> : MathTransform<TCoordinate>
+    internal class GeocentricTransform<TCoordinate> : GeoMathTransform<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>

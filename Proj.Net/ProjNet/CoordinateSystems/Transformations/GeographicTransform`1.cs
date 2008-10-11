@@ -108,33 +108,14 @@ namespace ProjNet.CoordinateSystems.Transformations
             Double[] coordValues = new Double[componentCount];
             coordValues[0] = value;
 
-            if (point is ICoordinate3D)
-            {
-                return CreateCoordinate(point[Ordinates.X], point[Ordinates.Y], point[Ordinates.Z]);
-            }
-            else
-            {
-                return CreateCoordinate(point[Ordinates.X], point[Ordinates.Y]);
-            }
+            return point is ICoordinate3D
+                       ? CreateCoordinate(point[Ordinates.X], point[Ordinates.Y], point[Ordinates.Z])
+                       : CreateCoordinate(point[Ordinates.X], point[Ordinates.Y]);
         }
 
         /// <summary>
-        /// Transforms a list of coordinate point ordinal values.
+        /// Transforms a list of coordinates.
         /// </summary>
-        /// <remarks>
-        /// This method is provided for efficiently transforming many points. The supplied array 
-        /// of ordinal values will contain packed ordinal values. For example, if the source 
-        /// dimension is 3, then the ordinals will be packed in this order (x0,y0,z0,x1,y1,z1 ...).
-        /// The size of the passed array must be an integer multiple of DimSource. The returned 
-        /// ordinal values are packed in a similar way. In some DCPs. the ordinals may be 
-        /// transformed in-place, and the returned array may be the same as the passed array.
-        /// So any client code should not attempt to reuse the passed ordinal values (although
-        /// they can certainly reuse the passed array). If there is any problem then the server
-        /// implementation will throw an exception. If this happens then the client should not
-        /// make any assumptions about the state of the ordinal values.
-        /// </remarks>
-        /// <param name="points"></param>
-        /// <returns></returns>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
             foreach (TCoordinate point in points)

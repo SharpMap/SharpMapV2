@@ -112,6 +112,8 @@
     <Otherwise>
       <ItemGroup>
         <Reference Include="System" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -146,6 +148,7 @@
     <Compile Include="CoordinateSystems\Transformations\DatumTransform`1.cs" />
     <Compile Include="CoordinateSystems\Transformations\GeocentricTransform`1.cs" />
     <Compile Include="CoordinateSystems\Transformations\GeographicTransform`1.cs" />
+    <Compile Include="CoordinateSystems\Transformations\GeoMathTransform.cs" />
     <Compile Include="CoordinateSystems\Transformations\MathTransform.cs" />
     <Compile Include="CoordinateSystems\Transformations\MathTransform`1.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />

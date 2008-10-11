@@ -31,12 +31,10 @@ namespace ProjNet.CoordinateSystems.Transformations
     /// <summary>
     /// Creates coordinate transformations.
     /// </summary>
-    public class CoordinateTransformationFactory<TCoordinate/*, TMatrix */> : ICoordinateTransformationFactory<TCoordinate>
+    public class CoordinateTransformationFactory<TCoordinate> : ICoordinateTransformationFactory<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
-    //where TMatrix : IMatrix<DoubleComponent, TMatrix>, IEquatable<TMatrix>,
-    //                IComparable<TMatrix>, IComputable<TMatrix>
     {
         private readonly ICoordinateFactory<TCoordinate> _coordinateFactory;
         private readonly IGeometryFactory<TCoordinate> _geometryFactory;
@@ -51,8 +49,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             _geometryFactory = geometryFactory;
             _matrixFactory = matrixFactory;
 
-            CoordinateSystemFactory<TCoordinate> coordSystemFactory
-                = new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
+            CoordinateSystemFactory<TCoordinate> coordSystemFactory = 
+                new CoordinateSystemFactory<TCoordinate>(_coordinateFactory, _geometryFactory);
 
             _wgs84 = coordSystemFactory.CreateWgs84GeocentricCoordinateSystem();
         }
@@ -587,6 +585,11 @@ namespace ProjNet.CoordinateSystems.Transformations
                 case "lambertconicconformal(2sp)":
                     transform = new LambertConformalConic2SP<TCoordinate>(parameterList, _coordinateFactory);
                     break;
+                case "affine":
+                case "abridgedmolodenski":
+                case "geocentrictoellipsoid":
+                case "ellipsoidtogeocentric":
+                case "longituderotation":
                 default:
                     String message = 
                         String.Format("Projection {0} is not supported.", projection.ClassName);

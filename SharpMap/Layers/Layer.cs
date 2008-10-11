@@ -464,18 +464,9 @@ namespace SharpMap.Layers
             {
                 IExtents fullExtents = DataSource.GetExtents();
 
-                if (CoordinateTransformation != null)
-                {
-                    throw new NotImplementedException();
-
-                    // TODO: This needs to be supported in GeoAPI
-                    //return GeometryTransform.TransformBox(
-                    //    fullExtents, CoordinateTransformation.MathTransform);
-                }
-                else
-                {
-                    return fullExtents;
-                }
+                return CoordinateTransformation != null 
+                    ? CoordinateTransformation.Transform(fullExtents, GeometryFactory) 
+                    : fullExtents;
             }
         }
 

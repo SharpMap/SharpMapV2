@@ -1,4 +1,22 @@
-﻿using System;
+﻿// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of GeoAPI.Net.
+// GeoAPI.Net is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// GeoAPI.Net is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with GeoAPI.Net; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
@@ -11,10 +29,6 @@ namespace ProjNet.CoordinateSystems.Transformations
     public abstract class MathTransform : IMathTransform
     {
         protected Boolean _isInverse;
-        private readonly Double _e;
-        private readonly Double _e2;
-        private readonly Double _semiMajor;
-        private readonly Double _semiMinor;
         private readonly List<Parameter> _parameters;
         private readonly ICoordinateFactory _coordinateFactory;
         private IMathTransform _inverse;
@@ -26,41 +40,6 @@ namespace ProjNet.CoordinateSystems.Transformations
             _isInverse = isInverse;
             _parameters = new List<Parameter>(parameters ?? new Parameter[0]);
             _coordinateFactory = coordinateFactory;
-
-            Parameter semiMajorParam = null, semiMinorParam = null;
-
-            foreach (Parameter p in _parameters)
-            {
-                String name = p.Name;
-
-                if (name.Equals("semi_major", StringComparison.OrdinalIgnoreCase))
-                {
-                    semiMajorParam = p;
-                }
-
-                if (name.Equals("semi_minor", StringComparison.OrdinalIgnoreCase))
-                {
-                    semiMinorParam = p;
-                }
-            }
-
-            if (ReferenceEquals(semiMajorParam, null))
-            {
-                throw new ArgumentException(
-                    "Missing projection parameter 'semi_major'.");
-            }
-
-            if (ReferenceEquals(semiMinorParam, null))
-            {
-                throw new ArgumentException(
-                    "Missing projection parameter 'semi_minor'.");
-            }
-
-            _semiMajor = semiMajorParam.Value;
-            _semiMinor = semiMinorParam.Value;
-
-            _e2 = 1.0 - Math.Pow(_semiMinor / _semiMajor, 2);
-            _e = Math.Sqrt(_e2);
         }
 
         public Int32 ParameterCount
@@ -68,34 +47,24 @@ namespace ProjNet.CoordinateSystems.Transformations
             get { return _parameters.Count; }
         }
 
-        public Double SemiMajor
-        {
-            get { return _semiMajor; }
-        }
-
-        public Double SemiMinor
-        {
-            get { return _semiMinor; }
-        }
-
-        protected Double E
-        {
-            get { return _e; }
-        }
-
-        protected Double E2
-        {
-            get { return _e2; }
-        }
-
         protected ICoordinate CreateCoordinate(Double x, Double y)
         {
             return _coordinateFactory.Create(x, y);
         }
 
-        protected ICoordinate CreateCoordinate(Double x, Double y, Double z)
+        protected ICoordinate CreateCoordinate(Double x, Double y, Double w)
+        {
+            return _coordinateFactory.Create(x, y, w);
+        }
+
+        protected ICoordinate CreateCoordinate3D(Double x, Double y, Double z)
         {
             return _coordinateFactory.Create3D(x, y, z);
+        }
+
+        protected ICoordinate CreateCoordinate3D(Double x, Double y, Double z, Double w)
+        {
+            return _coordinateFactory.Create3D(x, y, z, w);
         }
 
         protected ICoordinateFactory CoordinateFactory
@@ -123,7 +92,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             if (index < 0 || index >= _parameters.Count)
             {
-                throw new ArgumentOutOfRangeException("index", index,
+                throw new ArgumentOutOfRangeException("index", 
+                                                      index,
                                                       "Parameter index out of range.");
             }
 
@@ -162,27 +132,18 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Gets the dimension of input points.
         /// </summary>
-        public virtual Int32 SourceDimension
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract Int32 SourceDimension { get; }
 
         /// <summary>
         /// Gets the dimension of output points.
         /// </summary>
-        public virtual Int32 TargetDimension
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract Int32 TargetDimension { get; }
 
         /// <summary>
         /// Tests whether this transform does not move any points.
         /// </summary>
         /// <returns></returns>
-        public virtual Boolean IsIdentity
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract Boolean IsIdentity { get; }
 
         /// <summary>
         /// Gets a Well-Known Text representation of this object.
@@ -194,20 +155,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         public abstract String Xml { get; }
 
-        public IMatrix<DoubleComponent> Derivative(ICoordinate point)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IMatrix<DoubleComponent> Derivative(ICoordinate point);
 
-        public IEnumerable<ICoordinate> GetCodomainConvexHull(IEnumerable<ICoordinate> points)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IEnumerable<ICoordinate> GetCodomainConvexHull(IEnumerable<ICoordinate> points);
 
-        public DomainFlags GetDomainFlags(IEnumerable<ICoordinate> points)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract DomainFlags GetDomainFlags(IEnumerable<ICoordinate> points);
 
         public IMathTransform Inverse
         {
@@ -222,15 +174,11 @@ namespace ProjNet.CoordinateSystems.Transformations
             }
         }
 
-        public virtual ICoordinate Transform(ICoordinate coordinate)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract ICoordinate Transform(ICoordinate coordinate);
 
-        public virtual IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points);
+
+        public abstract ICoordinateSequence Transform(ICoordinateSequence points);
 
         /// <summary>
         /// Reverses the transformation
@@ -241,43 +189,5 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         #endregion
-
-        ///// <summary>
-        ///// Number of degrees per radian.
-        ///// </summary>
-        //protected const Double DegreesPerRadian = 180 / Math.PI;
-
-        ///// <summary>
-        ///// Number of radians per degree.
-        ///// </summary>
-        //protected const Double RadiansPerDegree = Math.PI / 180;
-
-        ///// <summary>
-        ///// Converts an angular measure in degrees into an equivilant measure
-        ///// in radians.
-        ///// </summary>
-        ///// <param name="degrees">The measure in degrees to convert.</param>
-        ///// <returns>
-        ///// The number of radians for the given <paramref name="degrees"/>
-        ///// measure.
-        ///// </returns>
-        //protected static Double DegreesToRadians(Double degrees)
-        //{
-        //    return RadiansPerDegree * degrees;
-        //}
-
-        ///// <summary>
-        ///// Converts an angular measure in radians into an equivilant measure
-        ///// in degrees.
-        ///// </summary>
-        ///// <param name="radians">The measure in radians to convert.</param>
-        ///// <returns>
-        ///// The number of radians for the given <paramref name="radians"/>
-        ///// measure.
-        ///// </returns>
-        //protected static Double RadiansToDegrees(Double radians)
-        //{
-        //    return DegreesPerRadian * radians;
-        //}
     }
 }
