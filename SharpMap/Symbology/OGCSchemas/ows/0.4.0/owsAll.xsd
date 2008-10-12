@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:ows="http://www.opengeospatial.net/ows" xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.opengeospatial.net/ows" elementFormDefault="qualified" version="0.4.0" xml:lang="en">
+	<annotation>
+		<appinfo>owsAll.xsd 2005-01-25</appinfo>
+		<documentation>
+			<description>This XML Schema includes and imports, directly and indirectly, all the XML Schemas defined by the OWS Common Implemetation Specification. </description>
+			<copyright>Copyright (c) Open Geospatial Consortium (2005) </copyright>
+		</documentation>
+	</annotation>
+	<!-- ==============================================================
+		includes and imports
+	============================================================== -->
+	<include schemaLocation="owsGetCapabilities.xsd"/>
+	<include schemaLocation="owsExceptionReport.xsd"/>
+</schema>
