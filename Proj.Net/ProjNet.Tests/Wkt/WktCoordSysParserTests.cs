@@ -123,7 +123,7 @@ namespace ProjNet.Tests.Converters.Wkt
 			Assert.AreEqual(9122, pcs.GeographicCoordinateSystem.AngularUnit.AuthorityCode);
 			Assert.AreEqual("EPSG", pcs.GeographicCoordinateSystem.Authority);
 			Assert.AreEqual(4152, pcs.GeographicCoordinateSystem.AuthorityCode, 4152);
-			Assert.AreEqual("Lambert_Conformal_Conic_2SP", pcs.Projection.ClassName, "Projection Classname");
+			Assert.AreEqual("Lambert_Conformal_Conic_2SP", pcs.Projection.ProjectionClassName, "Projection Classname");
 
 			ProjectionParameter latitude_of_origin = pcs.Projection["latitude_of_origin"];
 			Assert.IsNotNull(latitude_of_origin);
@@ -216,7 +216,7 @@ namespace ProjNet.Tests.Converters.Wkt
 
 					if (cs is IProjectedCoordinateSystem)
 					{
-						switch ((cs as IProjectedCoordinateSystem).Projection.ClassName)
+						switch ((cs as IProjectedCoordinateSystem).Projection.ProjectionClassName)
 						{
 							//Skip not supported projections
 							case "Oblique_Stereographic": 
@@ -250,7 +250,7 @@ namespace ProjNet.Tests.Converters.Wkt
                                         "\r\n" + 
                                         ex.Message + 
                                         "\r\nClass name:" + 
-                                        (cs as IProjectedCoordinateSystem).Projection.ClassName);
+                                        (cs as IProjectedCoordinateSystem).Projection.ProjectionClassName);
 						}
 						else
 						{

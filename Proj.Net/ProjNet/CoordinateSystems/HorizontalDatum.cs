@@ -1,18 +1,19 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of Proj.Net.
-// Proj.Net is free software; you can redistribute it and/or modify
+// This file is part of GeoAPI.Net.
+// GeoAPI.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// Proj.Net is distributed in the hope that it will be useful,
+// GeoAPI.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with Proj.Net; if not, write to the Free Software
+// along with GeoAPI.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -38,7 +39,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="type">Datum type</param>
         /// <param name="name">Name</param>
         /// <param name="authority">Authority name</param>
-        /// <param name="code">Authority-specific identification code.</param>
+        /// <param name="authorityCode">Authority-specific identification code.</param>
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
@@ -47,11 +48,11 @@ namespace ProjNet.CoordinateSystems
                                  DatumType type,
                                  String name, 
                                  String authority, 
-                                 Int64 code, 
+                                 String authorityCode, 
                                  String alias, 
                                  String remarks, 
                                  String abbreviation)
-            : base(type, name, authority, code, alias, remarks, abbreviation)
+            : base(type, name, authority, authorityCode, alias, remarks, abbreviation)
         {
             _ellipsoid = ellipsoid;
             _wgs84ConversionInfo = toWgs84;
@@ -85,7 +86,7 @@ namespace ProjNet.CoordinateSystems
                                            null, 
                                            DatumType.HorizontalGeocentric, 
                                            "World Geodetic System 1984", "EPSG",
-                                           6326,
+                                           "6326",
                                            String.Empty,
                                            "EPSG's WGS 84 datum has been the then "+
                                            "current realisation. No distinction is made "+
@@ -121,7 +122,7 @@ namespace ProjNet.CoordinateSystems
                                                             DatumType.HorizontalGeocentric,
                                                             "World Geodetic System 1972", 
                                                             "EPSG", 
-                                                            6322, 
+                                                            "6322", 
                                                             String.Empty,
                                                             "Used by GPS before 1987. For TRANSIT "+
                                                             "satellite positioning " +
@@ -164,7 +165,7 @@ namespace ProjNet.CoordinateSystems
                                                             DatumType.HorizontalGeocentric,
                                                             "European Terrestrial Reference System 1989",
                                                             "EPSG", 
-                                                            6258, 
+                                                            "6258", 
                                                             "ETRF89",
                                                             "The distinction in usage between ETRF89 and ETRS89 is confused: " +
                                                             "although in principle conceptually different in practice both are " +
@@ -201,7 +202,7 @@ namespace ProjNet.CoordinateSystems
                                         DatumType.HorizontalClassic, 
                                         "European Datum 1950",
                                         "EPSG", 
-                                        6230, 
+                                        "6230", 
                                         "ED50", 
                                         String.Empty, 
                                         String.Empty);
@@ -245,7 +246,7 @@ namespace ProjNet.CoordinateSystems
                     sb.AppendFormat(", {0}", _wgs84ConversionInfo.Wkt);
                 }
 
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

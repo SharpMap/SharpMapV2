@@ -1,18 +1,19 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of Proj.Net.
-// Proj.Net is free software; you can redistribute it and/or modify
+// This file is part of GeoAPI.Net.
+// GeoAPI.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// Proj.Net is distributed in the hope that it will be useful,
+// GeoAPI.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with Proj.Net; if not, write to the Free Software
+// along with GeoAPI.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -214,7 +215,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                              geocMathTransform,
                                                              String.Empty,
                                                              String.Empty,
-                                                             -1,
+                                                             null,
                                                              String.Empty,
                                                              String.Empty);
         }
@@ -232,7 +233,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                              geocMathTransform,
                                                              String.Empty,
                                                              String.Empty,
-                                                             -1,
+                                                             null,
                                                              String.Empty,
                                                              String.Empty);
         }
@@ -267,7 +268,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                              ct,
                                                              String.Empty,
                                                              String.Empty,
-                                                             -1,
+                                                             null,
                                                              String.Empty,
                                                              String.Empty);
         }
@@ -292,7 +293,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                  mathTransform,
                                                                  String.Empty,
                                                                  String.Empty,
-                                                                 -1,
+                                                                 null,
                                                                  String.Empty,
                                                                  String.Empty);
             }
@@ -319,7 +320,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                  ct,
                                                                  String.Empty,
                                                                  String.Empty,
-                                                                 -1,
+                                                                 null,
                                                                  String.Empty,
                                                                  String.Empty);
             }
@@ -347,7 +348,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                            inverse,
                                                                            String.Empty,
                                                                            String.Empty,
-                                                                           -1,
+                                                                           null,
                                                                            String.Empty,
                                                                            String.Empty);
             }
@@ -374,7 +375,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                            ct,
                                                                            String.Empty,
                                                                            String.Empty,
-                                                                           -1,
+                                                                           null,
                                                                            String.Empty,
                                                                            String.Empty);
             }
@@ -398,7 +399,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                  transform,
                                                                  String.Empty,
                                                                  String.Empty,
-                                                                 -1,
+                                                                 null,
                                                                  String.Empty,
                                                                  String.Empty);
             }
@@ -439,7 +440,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                  ct,
                                                                  String.Empty,
                                                                  String.Empty,
-                                                                 -1,
+                                                                 null,
                                                                  String.Empty,
                                                                  String.Empty);
             }
@@ -473,7 +474,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                          dataumTransform,
                                                                          "",
                                                                          "",
-                                                                         -1,
+                                                                         null,
                                                                          "",
                                                                          ""));
             }
@@ -500,7 +501,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                          inverseDatumTransform,
                                                                          "",
                                                                          "",
-                                                                         -1,
+                                                                         null,
                                                                          "",
                                                                          ""));
             }
@@ -513,7 +514,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                  transforms[0].MathTransform,
                                                                  "",
                                                                  "",
-                                                                 -1,
+                                                                 null,
                                                                  "",
                                                                  "");
             }
@@ -528,7 +529,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                                                                  ct,
                                                                  "",
                                                                  "",
-                                                                 -1,
+                                                                 null,
                                                                  "",
                                                                  "");
             }
@@ -562,7 +563,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             IMathTransform<TCoordinate> transform;
 
-            String className = projection.ClassName.ToLower(CultureInfo.InvariantCulture);
+            String className = projection.ProjectionClassName.ToLower(CultureInfo.InvariantCulture);
             className = className.Replace(" ", "");
             className = className.Replace("_", "");
 
@@ -592,7 +593,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 case "longituderotation":
                 default:
                     String message = 
-                        String.Format("Projection {0} is not supported.", projection.ClassName);
+                        String.Format("Projection {0} is not supported.", projection.ProjectionClassName);
                     throw new NotSupportedException(message);
             }
 

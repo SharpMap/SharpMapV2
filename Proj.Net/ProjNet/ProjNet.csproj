@@ -151,11 +151,11 @@
     <Compile Include="CoordinateSystems\Transformations\GeoMathTransform.cs" />
     <Compile Include="CoordinateSystems\Transformations\MathTransform.cs" />
     <Compile Include="CoordinateSystems\Transformations\MathTransform`1.cs" />
+    <Compile Include="CoordinateSystems\Transformations\TransformException.cs" />
     <Compile Include="CoordinateSystems\Unit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="projnetkey.snk" />
   </ItemGroup>
   <ItemGroup>

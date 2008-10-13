@@ -342,7 +342,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
 
-        protected override IMathTransform GetInverseInternal()
+        protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);

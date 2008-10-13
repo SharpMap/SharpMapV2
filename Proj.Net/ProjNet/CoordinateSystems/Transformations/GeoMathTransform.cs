@@ -35,9 +35,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly Double _semiMinor;
 
         protected GeoMathTransform(IEnumerable<Parameter> parameters,
-                                   ICoordinateFactory<TCoordinate> coordinateFactory,
-                                   Boolean isInverse)
-            : base(parameters, coordinateFactory, isInverse)
+                                   ICoordinateFactory<TCoordinate> coordinateFactory)
+            : base(parameters, coordinateFactory)
         {
 
             Parameter semiMajorParam = null, semiMinorParam = null;

@@ -203,8 +203,8 @@ namespace ProjNet.CoordinateSystems.Projections
             _falseNorthing = false_northing.Value * MetersPerUnit;
             _radius = radius.Value * MetersPerUnit;
 
-            _cosLatOrigin = Math.Cos((Double)_lat_origin);
-            _sinLatOrigin = Math.Sin((Double)_lat_origin);
+            _cosLatOrigin = Math.Cos(_lat_origin);
+            _sinLatOrigin = Math.Sin(_lat_origin);
 
             _zero = coordinateFactory.Create(0, 0);
 
@@ -219,8 +219,8 @@ namespace ProjNet.CoordinateSystems.Projections
             Double sinLat = Math.Sin(lat);
             Double cosLat = Math.Cos(lat);
 
-            Double sinDeltaLon = Math.Sin(lon - (Double)_lon_center);
-            Double cosDeltaLon = Math.Cos(lon - (Double)_lon_center);
+            Double sinDeltaLon = Math.Sin(lon - _lon_center);
+            Double cosDeltaLon = Math.Cos(lon - _lon_center);
 
             Double x = _radius * cosLat * sinDeltaLon;
             Double y = _radius * (_cosLatOrigin * sinLat - _sinLatOrigin * cosLat * cosDeltaLon);
@@ -238,8 +238,8 @@ namespace ProjNet.CoordinateSystems.Projections
             Double rho = coordinate.Distance(_zero);
             Double c = Math.Asin(rho / _radius);
 
-            Double x = (Double)(Radians)new Degrees(coordinate[Ordinates.X]);
-            Double y = (Double)(Radians)new Degrees(coordinate[Ordinates.Y]);
+            Double x = (Radians)new Degrees(coordinate[Ordinates.X]);
+            Double y = (Radians)new Degrees(coordinate[Ordinates.Y]);
 
             Double cosC = Math.Cos(c);
             Double sinC = Math.Sin(c);
@@ -257,14 +257,14 @@ namespace ProjNet.CoordinateSystems.Projections
             }
             else
             {
-                lon = (Double)_lon_center +
+                lon = _lon_center +
                       Math.Atan2(x * sinC, (rho * _cosLatOrigin * cosC) - (y * _sinLatOrigin * sinC));
             }
 
             return CoordinateFactory.Create(lon, lat);
         }
 
-        protected override IMathTransform GetInverseInternal()
+        protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);

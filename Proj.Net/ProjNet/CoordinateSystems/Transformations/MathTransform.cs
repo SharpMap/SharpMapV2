@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
@@ -28,16 +29,14 @@ namespace ProjNet.CoordinateSystems.Transformations
 {
     public abstract class MathTransform : IMathTransform
     {
-        protected Boolean _isInverse;
         private readonly List<Parameter> _parameters;
         private readonly ICoordinateFactory _coordinateFactory;
         private IMathTransform _inverse;
+        private Boolean _isInverse;
 
         protected MathTransform(IEnumerable<Parameter> parameters, 
-                                ICoordinateFactory coordinateFactory,
-                                Boolean isInverse)
+                                ICoordinateFactory coordinateFactory)
         {
-            _isInverse = isInverse;
             _parameters = new List<Parameter>(parameters ?? new Parameter[0]);
             _coordinateFactory = coordinateFactory;
         }
@@ -46,6 +45,136 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             get { return _parameters.Count; }
         }
+
+        #region IMathTransform Members
+
+        public abstract Int32 SourceDimension { get; }
+
+        public abstract Int32 TargetDimension { get; }
+
+        public virtual Boolean IsIdentity { get { return false; } }
+
+        public Boolean IsInverse
+        {
+            get { return _isInverse; }
+        }
+
+        /// <summary>
+        /// Returns the Well-Known Text for this object
+        /// as defined in the simple features specification.
+        /// </summary>
+        public virtual String Wkt
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+
+                if (_isInverse)
+                {
+                    sb.Append("INVERSE_MT[");
+                }
+
+                sb.AppendFormat("PARAM_MT[\"{0}\"", Name);
+
+                foreach (Parameter parameter in Parameters)
+                {
+                    sb.AppendFormat(", {0}", parameter.Wkt);
+                }
+
+                sb.Append("]");
+
+                if (_isInverse)
+                {
+                    sb.Append("]");
+                }
+
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets an XML representation of this object
+        /// </summary>
+        public virtual String Xml
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<CT_MathTransform>");
+
+                if (_isInverse)
+                {
+                    sb.AppendFormat("<CT_InverseTransform Name=\"{0}\">", ClassName);
+                }
+                else
+                {
+                    sb.AppendFormat("<CT_ParameterizedMathTransform Name=\"{0}\">", ClassName);
+                }
+
+                foreach (Parameter parameter in Parameters)
+                {
+                    sb.Append(parameter.Xml);
+                }
+
+                if (_isInverse)
+                {
+                    sb.Append("</CT_InverseTransform>");
+                }
+                else
+                {
+                    sb.Append("</CT_ParameterizedMathTransform>");
+                }
+
+                sb.Append("</CT_MathTransform>");
+                return sb.ToString();
+            }
+        }
+
+        public virtual IMatrix<DoubleComponent> Derivative(ICoordinate point)
+        {
+            throw new TransformException("Can't compute derivative.");
+        }
+
+        public virtual IEnumerable<ICoordinate> GetCodomainConvexHull(IEnumerable<ICoordinate> points)
+        {
+            throw new TransformException("Can't compute co-domain convex hull.");
+        }
+
+        public virtual DomainFlags GetDomainFlags(IEnumerable<ICoordinate> points)
+        {
+            throw new TransformException("Can't compute domain flags for convex hull.");
+        }
+
+        public IMathTransform Inverse
+        {
+            get
+            {
+                if (_inverse == null)
+                {
+                    _inverse = ComputeInverse(this);
+                }
+
+                return _inverse;
+            }
+            protected set
+            {
+                if (_inverse != null)
+                {
+                    throw new InvalidOperationException("Inverse can only be set once.");
+                }
+
+                _inverse = value;
+                _isInverse = true;
+            }
+        }
+
+        public abstract ICoordinate Transform(ICoordinate coordinate);
+
+        public abstract IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points);
+
+        public abstract ICoordinateSequence Transform(ICoordinateSequence points);
+
+        #endregion
 
         protected ICoordinate CreateCoordinate(Double x, Double y)
         {
@@ -125,69 +254,6 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns>
         /// The <see cref="IMathTransform"/> that is the inverse of the transformation, if one exists.
         /// </returns>
-        protected abstract IMathTransform GetInverseInternal();
-
-        #region IMathTransform Members
-
-        /// <summary>
-        /// Gets the dimension of input points.
-        /// </summary>
-        public abstract Int32 SourceDimension { get; }
-
-        /// <summary>
-        /// Gets the dimension of output points.
-        /// </summary>
-        public abstract Int32 TargetDimension { get; }
-
-        /// <summary>
-        /// Tests whether this transform does not move any points.
-        /// </summary>
-        /// <returns></returns>
-        public abstract Boolean IsIdentity { get; }
-
-        /// <summary>
-        /// Gets a Well-Known Text representation of this object.
-        /// </summary>
-        public abstract String Wkt { get; }
-
-        /// <summary>
-        /// Gets an XML representation of this object.
-        /// </summary>
-        public abstract String Xml { get; }
-
-        public abstract IMatrix<DoubleComponent> Derivative(ICoordinate point);
-
-        public abstract IEnumerable<ICoordinate> GetCodomainConvexHull(IEnumerable<ICoordinate> points);
-
-        public abstract DomainFlags GetDomainFlags(IEnumerable<ICoordinate> points);
-
-        public IMathTransform Inverse
-        {
-            get
-            {
-                if (_inverse == null)
-                {
-                    _inverse = GetInverseInternal();
-                }
-
-                return _inverse;
-            }
-        }
-
-        public abstract ICoordinate Transform(ICoordinate coordinate);
-
-        public abstract IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points);
-
-        public abstract ICoordinateSequence Transform(ICoordinateSequence points);
-
-        /// <summary>
-        /// Reverses the transformation
-        /// </summary>
-        public virtual void Invert()
-        {
-            _isInverse = !_isInverse;
-        }
-
-        #endregion
+        protected abstract IMathTransform ComputeInverse(IMathTransform setAsInverse);
     }
 }

@@ -1,18 +1,19 @@
-// Copyright 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of Proj.Net.
-// Proj.Net is free software; you can redistribute it and/or modify
+// This file is part of GeoAPI.Net.
+// GeoAPI.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// Proj.Net is distributed in the hope that it will be useful,
+// GeoAPI.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with Proj.Net; if not, write to the Free Software
+// along with GeoAPI.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -26,9 +27,6 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
-    /// <summary>
-    /// Transformation for applying 
-    /// </summary>
     internal class DatumTransform<TCoordinate> : MathTransform<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
@@ -42,16 +40,10 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Initializes a new instance of the <see cref="DatumTransform{TCoordinate}"/> class.
         /// </summary>
-        public DatumTransform(Wgs84ConversionInfo towgs84, 
-                              ICoordinateFactory<TCoordinate> coordinateFactory,
-                              IMatrixFactory<DoubleComponent> matrixFactory)
-            : this(towgs84, coordinateFactory, matrixFactory, false) { }
-
         private DatumTransform(Wgs84ConversionInfo towgs84, 
                                ICoordinateFactory<TCoordinate> coordinateFactory,
-                               IMatrixFactory<DoubleComponent> matrixFactory,
-                               Boolean isInverse)
-            : base(null, coordinateFactory, isInverse)
+                               IMatrixFactory<DoubleComponent> matrixFactory)
+            : base(null, coordinateFactory)
         {
             _toWgs84 = towgs84;
             _matrixFactory = matrixFactory;
@@ -78,7 +70,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             get { throw new NotImplementedException(); }
         }
 
-        protected override IMathTransform GetInverseInternal()
+        protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             return new DatumTransform<TCoordinate>(_toWgs84, 
                                                    CoordinateFactory, 

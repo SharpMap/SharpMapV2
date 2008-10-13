@@ -38,7 +38,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Units;
@@ -62,16 +61,14 @@ namespace ProjNet.CoordinateSystems.Projections
         private String _abbreviation;
         private String _alias;
         private String _authority;
-        private Int64 _code;
+        private String _authorityCode;
         private String _name;
         private String _remarks;
 
         protected MapProjection(IEnumerable<ProjectionParameter> parameters,
-                                ICoordinateFactory<TCoordinate> coordinateFactory,
-                                Boolean isInverse)
+                                ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(Caster.Upcast<Parameter, ProjectionParameter>(parameters),
-                   coordinateFactory,
-                   isInverse)
+                   coordinateFactory)
         {
             ProjectionParameter unit = GetParameter("unit");
             _metersPerUnit = unit != null ? unit.Value : 1.0;
@@ -88,6 +85,8 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return GetParameter(name); }
         }
+
+        public abstract String ProjectionClassName { get; }
 
         /// <summary>
         /// Gets an named parameter of the projection.
@@ -112,16 +111,11 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// Thrown if <paramref name="index"/> is less than 0 or greater than
-        /// or equal to <see cref="ParameterCount"/>.
+        /// or equal to <see cref="MathTransform.ParameterCount"/>.
         /// </exception>
         public ProjectionParameter GetParameter(Int32 index)
         {
             return GetParameterInternal(index) as ProjectionParameter;
-        }
-
-        public String ClassName
-        {
-            get { return ClassName; }
         }
 
         /// <summary>
@@ -156,10 +150,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <summary>
         /// Gets or sets the authority specific identification code of the object.
         /// </summary>
-        public long AuthorityCode
+        public String AuthorityCode
         {
-            get { return _code; }
-            set { _code = value; }
+            get { return _authorityCode; }
+            set { _authorityCode = value; }
         }
 
         /// <summary>
@@ -180,77 +174,6 @@ namespace ProjNet.CoordinateSystems.Projections
             set { _remarks = value; }
         }
 
-        /// <summary>
-        /// Returns the Well-Known Text for this object
-        /// as defined in the simple features specification.
-        /// </summary>
-        public override String Wkt
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-
-                if (_isInverse)
-                {
-                    sb.Append("INVERSE_MT[");
-                }
-
-                sb.AppendFormat("PARAM_MT[\"{0}\"", Name);
-
-                foreach (ProjectionParameter parameter in this)
-                {
-                    sb.AppendFormat(", {0}", parameter.Wkt);
-                }
-
-                sb.Append("]");
-
-                if (_isInverse)
-                {
-                    sb.Append("]");
-                }
-
-                return sb.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Gets an XML representation of this object
-        /// </summary>
-        public override String Xml
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<CT_MathTransform>");
-
-                if (_isInverse)
-                {
-                    sb.AppendFormat("<CT_InverseTransform Name=\"{0}\">", ClassName);
-                }
-                else
-                {
-                    sb.AppendFormat("<CT_ParameterizedMathTransform Name=\"{0}\">", ClassName);
-                }
-
-                foreach (ProjectionParameter parameter in this)
-                {
-                    sb.Append(parameter.Xml);
-                }
-
-                if (_isInverse)
-                {
-                    sb.Append("</CT_InverseTransform>");
-                }
-                else
-                {
-                    sb.Append("</CT_ParameterizedMathTransform>");
-                }
-
-                sb.Append("</CT_MathTransform>");
-                return sb.ToString();
-            }
-        }
-
         #endregion
 
         #region IEnumerable<ProjectionParameter> Members
@@ -269,16 +192,6 @@ namespace ProjNet.CoordinateSystems.Projections
         public abstract TCoordinate DegreesToMeters(TCoordinate coordinate);
 
         #region IMathTransform
-
-        /// <summary>
-        /// Returns true if this projection is inverted.
-        /// Most map projections define forward projection as "from geographic to projection", and backwards
-        /// as "from projection to geographic". If this projection is inverted, this will be the other way around.
-        /// </summary>
-        internal Boolean IsInverse
-        {
-            get { return _isInverse; }
-        }
 
         protected internal Double MetersPerUnit
         {

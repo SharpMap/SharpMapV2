@@ -1,18 +1,19 @@
-// Copyright 2005, 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of Proj.Net.
-// Proj.Net is free software; you can redistribute it and/or modify
+// This file is part of GeoAPI.Net.
+// GeoAPI.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// Proj.Net is distributed in the hope that it will be useful,
+// GeoAPI.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with Proj.Net; if not, write to the Free Software
+// along with GeoAPI.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -64,31 +65,19 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// Initializes a geocentric projection object
         /// </summary>
         /// <param name="parameters">List of parameters to initialize the projection.</param>
-        /// <param name="isInverse">Indicates whether the projection forward (meters to degrees or degrees to meters).</param>
         public GeocentricTransform(IEnumerable<ProjectionParameter> parameters,
-                                   ICoordinateFactory<TCoordinate> coordinateFactory, Boolean isInverse)
-            : base(Caster.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory, isInverse)
+                                   ICoordinateFactory<TCoordinate> coordinateFactory)
+            : base(Caster.Upcast<Parameter, ProjectionParameter>(parameters), coordinateFactory)
         {
             Double semiMinor = SemiMinor;
             _ses = (Math.Pow(SemiMajor, 2) - Math.Pow(semiMinor, 2)) / Math.Pow(semiMinor, 2);
-            //ba = _semiMinor / _semiMajor;
-            //ab = _semiMajor / _semiMinor;
         }
-
-        /// <summary>
-        /// Initializes a geocentric projection object
-        /// </summary>
-        /// <param name="parameters">List of parameters to initialize the projection.</param>
-        internal GeocentricTransform(IEnumerable<ProjectionParameter> parameters,
-                                     ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
-
 
         /// <summary>
         /// Returns the inverse of this conversion.
         /// </summary>
         /// <returns>IMathTransform that is the reverse of the current conversion.</returns>
-        protected override IMathTransform GetInverseInternal()
+        protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
@@ -103,7 +92,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="lonlat">The point in decimal degrees.</param>
         /// <returns>Point in projected meters</returns>
-        private TCoordinate DegreesToMeters(TCoordinate lonlat)
+        private TCoordinate degreesToMeters(TCoordinate lonlat)
         {
             Double lon = (Radians)new Degrees((Double)lonlat[0]);
             Double lat = (Radians)new Degrees((Double)lonlat[1]);
@@ -126,7 +115,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         /// <param name="pnt">Point in meters</param>
         /// <returns>Transformed point in decimal degrees</returns>		
-        private TCoordinate MetersToDegrees(TCoordinate pnt)
+        private TCoordinate metersToDegrees(TCoordinate pnt)
         {
             Boolean atPole = false; // indicates whether location is in polar region */
             Double z = pnt.ComponentCount < 3
@@ -230,8 +219,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         public override TCoordinate Transform(TCoordinate point)
         {
             return !_isInverse
-                       ? DegreesToMeters(point)
-                       : MetersToDegrees(point);
+                       ? degreesToMeters(point)
+                       : metersToDegrees(point);
         }
 
         /// <summary>

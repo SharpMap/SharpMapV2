@@ -102,7 +102,7 @@ namespace ProjNet.CoordinateSystems
         /// <summary>
         /// Gets the projection classification name (e.g. "Transverse_Mercator").
         /// </summary>
-        public String ClassName
+        public String ProjectionClassName
         {
             get { return _className; }
         }
@@ -138,7 +138,7 @@ namespace ProjNet.CoordinateSystems
                 StringBuilder sb = new StringBuilder();
 
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat,
-                                "<CS_Projection Classname=\"{0}\">{1}", ClassName, InfoXml);
+                                "<CS_Projection Classname=\"{0}\">{1}", ProjectionClassName, InfoXml);
 
                 foreach (ProjectionParameter param in Parameters)
                 {

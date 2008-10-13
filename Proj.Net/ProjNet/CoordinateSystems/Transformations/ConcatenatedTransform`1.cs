@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems.Transformations;
-using NPack;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Transformations
@@ -29,43 +28,29 @@ namespace ProjNet.CoordinateSystems.Transformations
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private IMathTransform<TCoordinate> _inverse;
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;
-
-        public ConcatenatedTransform(ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(new ICoordinateTransformation<TCoordinate>[0], coordinateFactory) {}
 
         public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms,
                                      ICoordinateFactory<TCoordinate> coordinateFactory)
-            : base(null, coordinateFactory, false)
+            : base(null, coordinateFactory)
         {
             _transforms = new List<ICoordinateTransformation<TCoordinate>>(transforms);
+        }
+
+        public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms,
+                                     ICoordinateFactory<TCoordinate> coordinateFactory,
+                                     IMathTransform<TCoordinate> inverse)
+            : this(transforms, coordinateFactory)
+        {
+            if (inverse == null) throw new ArgumentNullException("inverse");
+
+            Invert();
+            Inverse = inverse;
         }
 
         public IEnumerable<ICoordinateTransformation<TCoordinate>> Transforms
         {
             get { return _transforms; }
-            set
-            {
-                _transforms.Clear();
-                _transforms.AddRange(value);
-                _inverse = null;
-            }
-        }
-
-        public override IMatrix<DoubleComponent> Derivative(TCoordinate point)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override IEnumerable<TCoordinate> GetCodomainConvexHull(IEnumerable<TCoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override DomainFlags GetDomainFlags(IEnumerable<TCoordinate> points)
-        {
-            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -107,55 +92,31 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns>
         /// <see cref="IMathTransform"/> that is the reverse of the current conversion.
         /// </returns>
-        protected override IMathTransform GetInverseInternal()
+        protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
+            IMathTransform<TCoordinate> typedInverse = setAsInverse as IMathTransform<TCoordinate>;
             IMathTransform inverse = new ConcatenatedTransform<TCoordinate>(_transforms, 
-                                                                            CoordinateFactory);
-            inverse.Invert();
-
+                                                                            CoordinateFactory,
+                                                                            typedInverse);
             return inverse;
-        }
-
-        public override int SourceDimension
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override int TargetDimension
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override bool IsIdentity
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override ICoordinate Transform(ICoordinate coordinate)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override ICoordinateSequence Transform(ICoordinateSequence points)
-        {
-            throw new System.NotImplementedException();
         }
 
         /// <summary>
         /// Reverses the transformation
         /// </summary>
-        public override void Invert()
+        private void Invert()
         {
-            _transforms.Reverse();
+            List<ICoordinateTransformation<TCoordinate>> reversed =
+                new List<ICoordinateTransformation<TCoordinate>>(_transforms);
 
-            foreach (ICoordinateTransformation<TCoordinate> transformation in _transforms)
+            _transforms.Clear();
+            reversed.Reverse();
+
+            foreach (ICoordinateTransformation<TCoordinate> transformation in reversed)
             {
-                transformation.MathTransform.Invert();
+                ICoordinateTransformation<TCoordinate> inverse =
+                    transformation.MathTransform.Inverse as ICoordinateTransformation<TCoordinate>;
+                _transforms.Add(inverse);
             }
         }
 
@@ -175,21 +136,6 @@ namespace ProjNet.CoordinateSystems.Transformations
         public override String Xml
         {
             get { throw new NotImplementedException(); }
-        }
-
-        public override IMatrix<DoubleComponent> Derivative(ICoordinate point)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override IEnumerable<ICoordinate> GetCodomainConvexHull(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override DomainFlags GetDomainFlags(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

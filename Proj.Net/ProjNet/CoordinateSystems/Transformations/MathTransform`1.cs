@@ -43,9 +43,8 @@ namespace ProjNet.CoordinateSystems.Transformations
                             IComputable<Double, TCoordinate>
     {
         protected MathTransform(IEnumerable<Parameter> parameters, 
-                                ICoordinateFactory<TCoordinate> coordinateFactory,
-                                Boolean isInverse) 
-            : base(parameters, coordinateFactory, isInverse) { }
+                                ICoordinateFactory<TCoordinate> coordinateFactory) 
+            : base(parameters, coordinateFactory) { }
 
         protected TCoordinate CreateCoordinate(Double x, Double y)
         {
@@ -82,24 +81,20 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         #region IMathTransform<TCoordinate> Members
 
-        public abstract IMatrix<DoubleComponent> Derivative(TCoordinate point);
+        public virtual IMatrix<DoubleComponent> Derivative(TCoordinate point)
+        {
+            throw new TransformException("Can't compute derivative.");
+        }
 
-        /// <summary>
-        /// Gets flags classifying domain points within a convex hull.
-        /// </summary>
-        /// <remarks>
-        /// The supplied ordinates are interpreted as a sequence of points, which 
-        /// generates a convex hull in the source space. Conceptually, each of the 
-        /// (usually infinite) points inside the convex hull is then tested against
-        /// the source domain. The flags of all these tests are then combined. In 
-        /// practice, implementations of different transforms will use different 
-        /// short-cuts to avoid doing an infinite number of tests.
-        /// </remarks>
-        /// <param name="points"></param>
-        /// <returns></returns>
-        public abstract DomainFlags GetDomainFlags(IEnumerable<TCoordinate> points);
+        public virtual DomainFlags GetDomainFlags(IEnumerable<TCoordinate> points)
+        {
+            throw new TransformException("Can't compute convex hull properties.");
+        }
 
-        public abstract IEnumerable<TCoordinate> GetCodomainConvexHull(IEnumerable<TCoordinate> points);
+        public virtual IEnumerable<TCoordinate> GetCodomainConvexHull(IEnumerable<TCoordinate> points)
+        {
+            throw new TransformException("Can't compute co-domain convex hull.");
+        }
 
         /// <summary>
         /// Creates the inverse of this transform.
@@ -113,7 +108,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </returns>
         public new IMathTransform<TCoordinate> Inverse
         {
-            get { return (IMathTransform<TCoordinate>)base.Inverse;  }
+            get { return (IMathTransform<TCoordinate>)base.Inverse; }
+            protected set { base.Inverse = value; }
         }
 
         /// <summary>

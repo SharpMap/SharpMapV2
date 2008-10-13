@@ -300,7 +300,7 @@ namespace ProjNet.CoordinateSystems.Projections
             return transformed;
         }
 
-        protected override IMathTransform GetInverseInternal()
+        protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
