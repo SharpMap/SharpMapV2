@@ -184,7 +184,7 @@ namespace SharpMap.Data.Providers
             get { return _innerProvider.SpatialReference; }
         }
 
-        public Int32? Srid
+        public String Srid
         {
             get { return _innerProvider.Srid; }
         }

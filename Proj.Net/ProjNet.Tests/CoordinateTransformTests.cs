@@ -605,7 +605,7 @@ namespace ProjNet.Tests
                     ),
                 "European Datum 1950",
                 "EPSG",
-                6230,
+                "6230",
                 "ED50",
                 String.Empty,
                 String.Empty

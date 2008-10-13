@@ -70,7 +70,7 @@ namespace SharpMap.Data.Providers
         private Boolean _isOpen;
         private ICoordinateTransformation _coordinateTransform;
         private ICoordinateSystem _spatialReference;
-        private Int32? _srid;
+        private String _srid;
         private PropertyDescriptorCollection _instanceProperties;
         private Dictionary<PropertyDescriptor, Object> _propertyValues;
 
@@ -271,7 +271,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public Int32? Srid
+        public String Srid
         {
             get { return _srid; }
             protected set { _srid = value; }

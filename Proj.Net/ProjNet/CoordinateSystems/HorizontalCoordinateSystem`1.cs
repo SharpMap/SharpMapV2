@@ -42,15 +42,15 @@ namespace ProjNet.CoordinateSystems
         /// <param name="axisInfo">Axis information</param>
         /// <param name="name">Name</param>
         /// <param name="authority">Authority name</param>
-        /// <param name="code">Authority-specific identification code.</param>
+        /// <param name="authorityCode">Authority-specific identification code.</param>
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
         protected internal HorizontalCoordinateSystem(IExtents<TCoordinate> extents,
                                                       IHorizontalDatum datum, IEnumerable<IAxisInfo> axisInfo,
-                                                      String name, String authority, long code, String alias,
+                                                      String name, String authority, String authorityCode, String alias,
                                                       String remarks, String abbreviation)
-            : base(extents, name, authority, code, alias, abbreviation, remarks)
+            : base(extents, name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _horizontalDatum = datum;
 
@@ -58,8 +58,8 @@ namespace ProjNet.CoordinateSystems
 
             if (AxisInfo.Count != 2)
             {
-                throw new ArgumentException(
-                    "Axis info should contain two axes for horizontal coordinate systems");
+                throw new ArgumentException("Axis info should contain two axes " +
+                                            "for horizontal coordinate systems");
             }
         }
 

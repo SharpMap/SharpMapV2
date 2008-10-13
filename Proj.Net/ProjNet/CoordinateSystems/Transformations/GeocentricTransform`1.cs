@@ -1,19 +1,19 @@
 // Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
 // Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of GeoAPI.Net.
-// GeoAPI.Net is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// GeoAPI.Net is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GeoAPI.Net; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -27,6 +27,40 @@ using GeoAPI.Units;
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
+    internal class InverseGeocentricTransform<TCoordinate> : GeocentricTransform<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        /// <summary>
+        /// Initializes an inverse geocentric projection object
+        /// </summary>
+        /// <param name="parameters">List of parameters to initialize the projection.</param>
+        public InverseGeocentricTransform(IEnumerable<ProjectionParameter> parameters,
+                                          ICoordinateFactory<TCoordinate> coordinateFactory,
+                                          GeocentricTransform<TCoordinate> transform)
+            : base(parameters, coordinateFactory)
+        {
+            Inverse = transform;
+        }
+
+        protected override string Name
+        {
+            get
+            {
+                return "Inverse Geocentric";
+            }
+        }
+
+        public override bool IsInverse
+        {
+            get
+            {
+                return true;
+            }
+        }
+    }
+
     /// <summary>
     /// Implements a geocentric transformation.
     /// </summary>
@@ -82,9 +116,9 @@ namespace ProjNet.CoordinateSystems.Transformations
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new GeocentricTransform<TCoordinate>(parameters,
-                                                        CoordinateFactory,
-                                                        !_isInverse);
+            return new InverseGeocentricTransform<TCoordinate>(parameters,
+                                                               CoordinateFactory,
+                                                               this);
         }
 
         /// <summary>
@@ -218,7 +252,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </returns>
         public override TCoordinate Transform(TCoordinate point)
         {
-            return !_isInverse
+            return !IsInverse
                        ? degreesToMeters(point)
                        : metersToDegrees(point);
         }
@@ -237,6 +271,41 @@ namespace ProjNet.CoordinateSystems.Transformations
             {
                 yield return Transform(point);
             }
+        }
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override ICoordinate Transform(ICoordinate coordinate)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Boolean IsInverse
+        {
+            get { throw new System.NotImplementedException(); }
         }
 
         /// <summary>

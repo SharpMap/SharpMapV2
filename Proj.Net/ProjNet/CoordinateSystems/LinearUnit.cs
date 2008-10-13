@@ -39,7 +39,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
-        public LinearUnit(Double metersPerUnit, String name, String authority, long authorityCode, String alias,
+        public LinearUnit(Double metersPerUnit, String name, String authority, String authorityCode, String alias,
                           String abbreviation, String remarks)
             : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
@@ -56,7 +56,7 @@ namespace ProjNet.CoordinateSystems
         {
             get
             {
-                return new LinearUnit(1.0, "metre", "EPSG", 9001, "m", String.Empty,
+                return new LinearUnit(1.0, "metre", "EPSG", "9001", "m", String.Empty,
                                       "Also known as International metre. SI standard unit.");
             }
         }
@@ -66,7 +66,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         public static ILinearUnit Foot
         {
-            get { return new LinearUnit(0.3048, "foot", "EPSG", 9002, "ft", String.Empty, String.Empty); }
+            get { return new LinearUnit(0.3048, "foot", "EPSG", "9002", "ft", String.Empty, String.Empty); }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new LinearUnit(0.304800609601219, "US survey foot", "EPSG", 9003, "American foot", "ftUS",
+                    new LinearUnit(0.304800609601219, "US survey foot", "EPSG", "9003", "American foot", "ftUS",
                                    "Used in USA.");
             }
         }
@@ -87,7 +87,7 @@ namespace ProjNet.CoordinateSystems
         /// </summary>
         public static ILinearUnit NauticalMile
         {
-            get { return new LinearUnit(1852, "nautical mile", "EPSG", 9030, "NM", String.Empty, String.Empty); }
+            get { return new LinearUnit(1852, "nautical mile", "EPSG", "9030", "NM", String.Empty, String.Empty); }
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new LinearUnit(0.3047972654, "Clarke's foot", "EPSG", 9005, "Clarke's foot", String.Empty,
+                    new LinearUnit(0.3047972654, "Clarke's foot", "EPSG", "9005", "Clarke's foot", String.Empty,
                                    "Assumes Clarke's 1865 ratio of 1 British foot = 0.3047972654 French legal metres applies to the international metre. Used in older Australian, southern African & British West Indian mapping.");
             }
         }
@@ -129,7 +129,7 @@ namespace ProjNet.CoordinateSystems
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, "UNIT[\"{0}\", {1}", Name, MetersPerUnit);
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

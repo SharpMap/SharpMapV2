@@ -46,6 +46,25 @@ using GeoAPI.Units;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
+    internal class InverseLambertConformalConic2SP<TCoordinate> : LambertConformalConic2SP<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        public InverseLambertConformalConic2SP(IEnumerable<ProjectionParameter> parameters,
+                                               ICoordinateFactory<TCoordinate> coordinateFactory,
+                                               LambertConformalConic2SP<TCoordinate> transform)
+            : base(parameters, coordinateFactory)
+        {
+            Inverse = transform;
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return true; }
+        }
+    }
+
     /// <summary>
     /// Implemetns the Lambert Conformal Conic 2SP Projection.
     /// </summary>
@@ -80,34 +99,6 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <remarks>
         /// <para>The parameters this projection expects are listed below.</para>
         /// <list type="table">
-        ///     <listheader>
-        ///      <term>Parameter</term>
-        ///      <description>Description</description>
-        ///    </listheader>
-        /// <item><term>latitude_of_false_origin</term><description>The latitude of the point which is not the natural origin and at which grid coordinate values false easting and false northing are defined.</description></item>
-        /// <item><term>longitude_of_false_origin</term><description>The longitude of the point which is not the natural origin and at which grid coordinate values false easting and false northing are defined.</description></item>
-        /// <item><term>latitude_of_1st_standard_parallel</term><description>For a conic projection with two standard parallels, this is the latitude of intersection of the cone with the ellipsoid that is nearest the pole.  Scale is true along this parallel.</description></item>
-        /// <item><term>latitude_of_2nd_standard_parallel</term><description>For a conic projection with two standard parallels, this is the latitude of intersection of the cone with the ellipsoid that is furthest from the pole.  Scale is true along this parallel.</description></item>
-        /// <item><term>easting_at_false_origin</term><description>The easting value assigned to the false origin.</description></item>
-        /// <item><term>northing_at_false_origin</term><description>The northing value assigned to the false origin.</description></item>
-        /// </list>
-        /// </remarks>
-        public LambertConformalConic2SP(IEnumerable<ProjectionParameter> parameters,
-                                        ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
-
-        /// <summary>
-        /// Initializes a <see cref="LambertConformalConic2SP{TCoordinate}"/> projection 
-        /// with the specified parameters. 
-        /// </summary>
-        /// <param name="parameters">Parameters of the projection.</param>
-        /// <param name="coordinateFactory">Coordinate factory to use.</param>
-        /// <param name="isInverse">
-        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
-        /// </param>
-        /// <remarks>
-        /// <para>The parameters this projection expects are listed below.</para>
-        /// <list type="table">
         /// <listheader><term>Parameter</term><description>Description</description></listheader>
         /// <item><term>latitude_of_origin</term><description>The latitude of the point which is not the natural origin and at which grid coordinate values false easting and false northing are defined.</description></item>
         /// <item><term>central_meridian</term><description>The longitude of the point which is not the natural origin and at which grid coordinate values false easting and false northing are defined.</description></item>
@@ -118,13 +109,11 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </list>
         /// </remarks>
         public LambertConformalConic2SP(IEnumerable<ProjectionParameter> parameters,
-                                        ICoordinateFactory<TCoordinate> coordinateFactory,
-                                        Boolean isInverse)
-            : base(parameters, coordinateFactory, isInverse)
+                                        ICoordinateFactory<TCoordinate> coordinateFactory)
+            : base(parameters, coordinateFactory)
         {
-            Name = "Lambert_Conformal_Conic_2SP";
             Authority = "EPSG";
-            AuthorityCode = 9802;
+            AuthorityCode = "9802";
 
             ProjectionParameter latitudeOfOrigin = GetParameter("latitude_of_origin");
             ProjectionParameter centralMeridian = GetParameter("central_meridian");
@@ -242,7 +231,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
                 if (con <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("lonlat", 
+                    throw new ArgumentOutOfRangeException("lonlat",
                                                           lonlat,
                                                           "Latitude must be less than 90°.");
                 }
@@ -257,6 +246,16 @@ namespace ProjNet.CoordinateSystems.Projections
             return lonlat.ComponentCount == 2
                        ? CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit)
                        : CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit, (Double)lonlat[2]);
+        }
+
+        public override string ProjectionClassName
+        {
+            get { return "Lambert_Conformal_Conic_2SP"; }
+        }
+
+        public override string Name
+        {
+            get { return "Lambert_Conformal_Conic_2SP"; }
         }
 
         /// <summary>
@@ -310,14 +309,48 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
 
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return false; }
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new LambertConformalConic2SP<TCoordinate>(parameters,
-                                                             CoordinateFactory,
-                                                             !_isInverse);
+            return new InverseLambertConformalConic2SP<TCoordinate>(parameters,
+                                                                    CoordinateFactory,
+                                                                    this);
         }
+
+        #region Overrides of MathTransform<TCoordinate>
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

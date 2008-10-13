@@ -71,6 +71,7 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
+        private String _name;
         private readonly Double _falseEasting;
         private readonly Double _falseNorthing;
         private readonly Radians _lon_center; //Center longitude (projection center)
@@ -141,77 +142,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </remarks>
         public Mercator(IEnumerable<ProjectionParameter> parameters,
                         ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
-
-        /// <summary>
-        /// Initializes a <see cref="Mercator{TCoordinate}"/> projection 
-        /// with the specified parameters. 
-        /// </summary>
-        /// <param name="parameters">Parameters of the projection.</param>
-        /// <param name="coordinateFactory">Coordinate factory to use.</param>
-        /// <param name="isInverse">
-        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
-        /// </param>
-        /// <remarks>
-        ///   <para>The parameters this projection expects are listed below.</para>
-        ///   <list type="table">
-        ///     <listheader>
-        ///      <term>Parameter</term>
-        ///      <description>Description</description>
-        ///    </listheader>
-        ///     <item>
-        ///      <term>central_meridian</term>
-        ///      <description>
-        ///         The longitude of the point from which the values of both the 
-        ///         geographical coordinates on the ellipsoid and the grid coordinates 
-        ///         on the projection are deemed to increment or decrement for computational purposes. 
-        ///         Alternatively it may be considered as the longitude of the point which in the 
-        ///         absence of application of false coordinates has grid coordinates of (0, 0).
-        ///       </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>latitude_of_origin</term>
-        ///      <description>
-        ///         The latitude of the point from which the values of both the 
-        ///         geographical coordinates on the ellipsoid and the grid coordinates 
-        ///         on the projection are deemed to increment or decrement for computational purposes. 
-        ///         Alternatively it may be considered as the latitude of the point which in the 
-        ///         absence of application of false coordinates has grid coordinates of (0, 0). 
-        ///      </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>scale_factor</term>
-        ///      <description>
-        ///         The factor by which the map grid is reduced or enlarged during the projection process, 
-        ///         defined by its value at the natural origin.
-        ///      </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>false_easting</term>
-        ///      <description>
-        ///         Since the natural origin may be at or near the center of the projection and under 
-        ///         normal coordinate circumstances would thus give rise to negative coordinates over 
-        ///         parts of the mapped area, this origin is usually given false coordinates which are 
-        ///         large enough to avoid this inconvenience. The False Easting, FE, is the easting 
-        ///         value assigned to the abscissa (east).
-        ///      </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>false_northing</term>
-        ///      <description>
-        ///         Since the natural origin may be at or near the center of the projection and under 
-        ///         normal coordinate circumstances would thus give rise to negative coordinates over 
-        ///         parts of the mapped area, this origin is usually given false coordinates which are 
-        ///         large enough to avoid this inconvenience. The False Northing, FN, is the northing 
-        ///         value assigned to the ordinate.
-        ///      </description>
-        ///    </item>
-        ///  </list>
-        ///</remarks>
-        public Mercator(IEnumerable<ProjectionParameter> parameters,
-                        ICoordinateFactory<TCoordinate> coordinateFactory,
-                        Boolean isInverse)
-            : base(parameters, coordinateFactory, isInverse)
+            : base(parameters, coordinateFactory)
         {
             ProjectionParameter central_meridian = GetParameter("central_meridian");
             ProjectionParameter latitude_of_origin = GetParameter("latitude_of_origin");
@@ -247,17 +178,17 @@ namespace ProjNet.CoordinateSystems.Projections
 
             if (scale_factor == null) // This is a two standard parallel Mercator projection (2SP)
             {
-                _k0 = Math.Cos((Double)_lat_origin) /
+                _k0 = Math.Cos(_lat_origin) /
                       Math.Sqrt(1.0 - E2 *
-                                Math.Sin((Double)_lat_origin) *
-                                Math.Sin((Double)_lat_origin));
-                AuthorityCode = 9805;
-                Name = "Mercator_2SP";
+                                Math.Sin(_lat_origin) *
+                                Math.Sin(_lat_origin));
+                AuthorityCode = "9805";
+                _name = "Mercator_2SP";
             }
             else // This is a one standard parallel Mercator projection (1SP)
             {
                 _k0 = scale_factor.Value;
-                Name = "Mercator_1SP";
+                _name = "Mercator_1SP";
             }
 
             Authority = "EPSG";
@@ -309,6 +240,16 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit, (Double)lonlat[2]);
         }
 
+        public override string ProjectionClassName
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override string Name
+        {
+            get { return _name; }
+        }
+
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -342,12 +283,46 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
 
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new Mercator<TCoordinate>(parameters, CoordinateFactory, !_isInverse);
+            return new Mercator<TCoordinate>(parameters, CoordinateFactory);
         }
+
+        #region Overrides of MathTransform<TCoordinate>
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

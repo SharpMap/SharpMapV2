@@ -61,7 +61,7 @@ namespace ProjNet.CoordinateSystems
         protected internal GeographicCoordinateSystem(IExtents<TCoordinate> extents,
                                                       IAngularUnit angularUnit, IHorizontalDatum horizontalDatum,
                                                       IPrimeMeridian primeMeridian, IEnumerable<IAxisInfo> axisInfo,
-                                                      String name, String authority, Int64 authorityCode, String alias,
+                                                      String name, String authority, String authorityCode, String alias,
                                                       String abbreviation, String remarks)
             : base(extents, horizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
         {
@@ -91,7 +91,7 @@ namespace ProjNet.CoordinateSystems
                                             CoordinateSystems.AngularUnit.Degrees, 
                                             CoordinateSystems.HorizontalDatum.Wgs84, 
                                             CoordinateSystems.PrimeMeridian.Greenwich, 
-                                            axes, "WGS 84", "EPSG", 4326, String.Empty, 
+                                            axes, "WGS 84", "EPSG", "4326", String.Empty, 
                                             String.Empty, String.Empty);
         
         }
@@ -165,7 +165,7 @@ namespace ProjNet.CoordinateSystems
                     }
                 }
 
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

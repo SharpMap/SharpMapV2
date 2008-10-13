@@ -38,9 +38,9 @@ namespace ProjNet.CoordinateSystems
         private readonly String _className;
 
         internal Projection(String className, IEnumerable<ProjectionParameter> parameters,
-                            String name, String authority, Int64 code, String alias,
+                            String name, String authority, String authorityCode, String alias,
                             String abbreviation, String remarks)
-            : base(name, authority, code, alias, abbreviation, remarks)
+            : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _parameters = new List<ProjectionParameter>(parameters);
             _className = className;
@@ -118,7 +118,7 @@ namespace ProjNet.CoordinateSystems
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat("PROJECTION[\"{0}\"", Name);
 
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

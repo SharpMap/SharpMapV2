@@ -39,7 +39,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="alias">Alias.</param>
         /// <param name="abbreviation">Abbreviation.</param>
         /// <param name="remarks">Provider-supplied remarks.</param>
-        protected internal Unit(Double conversionFactor, String name, String authority, Int64 authorityCode,
+        protected internal Unit(Double conversionFactor, String name, String authority, String authorityCode,
                                 String alias,
                                 String abbreviation, String remarks)
             : base(name, authority, authorityCode, alias, abbreviation, remarks)
@@ -53,7 +53,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="name">Name of unit</param>
         /// <param name="conversionFactor">Conversion factor to base unit</param>
         protected internal Unit(Double conversionFactor, String name)
-            : this(conversionFactor, name, String.Empty, -1, String.Empty, String.Empty, String.Empty) {}
+            : this(conversionFactor, name, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty) {}
 
         /// <summary>
         /// Gets or sets the number of units per base-unit.
@@ -73,10 +73,12 @@ namespace ProjNet.CoordinateSystems
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, "UNIT[\"{0}\", {1}", Name, _conversionFactor);
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }
+                
                 sb.Append("]");
                 return sb.ToString();
             }

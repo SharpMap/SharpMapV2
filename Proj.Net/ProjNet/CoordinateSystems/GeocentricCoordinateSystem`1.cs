@@ -43,8 +43,8 @@ namespace ProjNet.CoordinateSystems
                                                       IHorizontalDatum datum, ILinearUnit linearUnit,
                                                       IPrimeMeridian primeMeridian,
                                                       IEnumerable<IAxisInfo> axisinfo, String name, String authority,
-                                                      Int64 code, String alias, String remarks, String abbreviation)
-            : base(extents, name, authority, code, alias, abbreviation, remarks)
+                                                      String authorityCode, String alias, String remarks, String abbreviation)
+            : base(extents, name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _horizontalDatum = datum;
             _linearUnit = linearUnit;
@@ -124,7 +124,7 @@ namespace ProjNet.CoordinateSystems
                     }
                 }
 
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

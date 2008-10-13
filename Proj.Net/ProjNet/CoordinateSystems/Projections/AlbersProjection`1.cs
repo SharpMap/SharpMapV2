@@ -46,6 +46,26 @@ using GeoAPI.DataStructures;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
+    internal class InverseAlbersProjection<TCoordinate> : AlbersProjection<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+
+        public InverseAlbersProjection(IEnumerable<ProjectionParameter> parameters,
+                                       ICoordinateFactory<TCoordinate> coordinateFactory,
+                                       AlbersProjection<TCoordinate> transform)
+            : base(parameters, coordinateFactory)
+        {
+            Inverse = transform;
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return true; }
+        }
+    }
+
     /// <summary>
     ///	Implements the Albers projection.
     /// </summary>
@@ -77,7 +97,6 @@ namespace ProjNet.CoordinateSystems.Projections
         private readonly Radians _centerLongitude; //center longitude   
 
         #region Constructors
-
         /// <summary>
         /// Initializes a <see cref="AlbersProjection{TCoordinate}"/> projection 
         /// with the specified parameters. 
@@ -85,7 +104,6 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <param name="parameters">Parameters of the projection.</param>
         /// <param name="coordinateFactory">Coordinate factory to use.</param>
         /// <remarks>
-        /// <para>The parameters this projection expects are listed below.</para>
         /// <list type="table">
         ///     <listheader>
         ///      <term>Parameter</term>
@@ -133,70 +151,8 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </remarks>
         public AlbersProjection(IEnumerable<ProjectionParameter> parameters,
                                 ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
-
-        /// <summary>
-        /// Initializes a <see cref="AlbersProjection{TCoordinate}"/> projection 
-        /// with the specified parameters. 
-        /// </summary>
-        /// <param name="parameters">Parameters of the projection.</param>
-        /// <param name="coordinateFactory">Coordinate factory to use.</param>
-        /// <param name="isInverse">
-        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
-        /// </param>
-        /// <remarks>
-        /// <list type="table">
-        ///     <listheader>
-        ///      <term>Parameter</term>
-        ///      <description>Description</description>
-        ///    </listheader>
-        /// <item>
-        ///     <term>latitude_of_false_origin</term>
-        ///     <description>
-        ///         The latitude of the point which is not the natural origin and 
-        ///         at which grid coordinate values false easting and false northing are defined.
-        ///     </description>
-        /// </item>
-        /// <item>
-        ///     <term>longitude_of_false_origin</term>
-        ///     <description>
-        ///         The longitude of the point which is not the natural origin and at 
-        ///         which grid coordinate values false easting and false northing are defined.
-        ///     </description>
-        /// </item>
-        /// <item>
-        ///     <term>latitude_of_1st_standard_parallel</term>
-        ///     <description>
-        ///         For a conic projection with two standard parallels, this is the latitude of 
-        ///         intersection of the cone with the ellipsoid that is nearest the pole.  
-        ///         Scale is true along this parallel.
-        ///     </description>
-        /// </item>
-        /// <item>
-        ///     <term>latitude_of_2nd_standard_parallel</term>
-        ///     <description>
-        ///         For a conic projection with two standard parallels, this is the latitude of 
-        ///         intersection of the cone with the ellipsoid that is furthest from the pole.  
-        ///         Scale is true along this parallel.
-        ///     </description>
-        /// </item>
-        /// <item>
-        ///     <term>easting_at_false_origin</term>
-        ///     <description>The easting value assigned to the false origin.</description>
-        /// </item>
-        /// <item>
-        ///     <term>northing_at_false_origin</term>
-        ///     <description>The northing value assigned to the false origin.</description>
-        /// </item>
-        /// </list>
-        /// </remarks>
-        public AlbersProjection(IEnumerable<ProjectionParameter> parameters,
-                                ICoordinateFactory<TCoordinate> coordinateFactory,
-                                Boolean isInverse)
-            : base(parameters, coordinateFactory, isInverse)
+            : base(parameters, coordinateFactory)
         {
-            Name = "Albers_Conic_Equal_Area";
-
             //Retrieve parameters
             ProjectionParameter longitudeOfCenter = GetParameter("longitude_of_center");
             ProjectionParameter latitudeOfCenter = GetParameter("latitude_of_center");
@@ -318,6 +274,16 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit, (Double)lonlat[2]);
         }
 
+        public override string ProjectionClassName
+        {
+            get { return "Albers_Conic_Equal_Area"; }
+        }
+
+        public override string Name
+        {
+            get { return "Albers_Conic_Equal_Area"; }
+        }
+
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -365,11 +331,36 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
 
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return false; }
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
-            return new AlbersProjection<TCoordinate>(parameters, CoordinateFactory, !_isInverse);
+            return new InverseAlbersProjection<TCoordinate>(parameters, CoordinateFactory, this);
         }
 
         #endregion
@@ -399,6 +390,15 @@ namespace ProjNet.CoordinateSystems.Projections
         private Double computeRho(Double a)
         {
             return SemiMajor * Math.Sqrt((_c - _n * a)) / _n;
+        }
+
+        #endregion
+
+        #region Overrides of MathTransform<TCoordinate>
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

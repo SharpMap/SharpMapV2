@@ -42,7 +42,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
         internal PrimeMeridian(Double longitude, IAngularUnit angularUnit, String name, String authority,
-                               long authorityCode, String alias, String abbreviation, String remarks)
+                               String authorityCode, String alias, String abbreviation, String remarks)
             :
                 base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
@@ -60,7 +60,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(0.0, CoordinateSystems.AngularUnit.Degrees, "Greenwich", "EPSG", 8901,
+                    new PrimeMeridian(0.0, CoordinateSystems.AngularUnit.Degrees, "Greenwich", "EPSG", "8901",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -73,7 +73,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(-9.0754862, CoordinateSystems.AngularUnit.Degrees, "Lisbon", "EPSG", 8902,
+                    new PrimeMeridian(-9.0754862, CoordinateSystems.AngularUnit.Degrees, "Lisbon", "EPSG", "8902",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -87,7 +87,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(2.5969213, CoordinateSystems.AngularUnit.Degrees, "Paris", "EPSG", 8903,
+                    new PrimeMeridian(2.5969213, CoordinateSystems.AngularUnit.Degrees, "Paris", "EPSG", "8903",
                                       String.Empty, String.Empty,
                                       "Value adopted by IGN (Paris) in 1936. Equivalent to 2 deg 20min 14.025sec. Preferred by EPSG to earlier value of 2deg 20min 13.95sec (2.596898 grads) used by RGS London.");
             }
@@ -101,7 +101,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(-74.04513, CoordinateSystems.AngularUnit.Degrees, "Bogota", "EPSG", 8904,
+                    new PrimeMeridian(-74.04513, CoordinateSystems.AngularUnit.Degrees, "Bogota", "EPSG", "8904",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -114,7 +114,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(-3.411658, CoordinateSystems.AngularUnit.Degrees, "Madrid", "EPSG", 8905,
+                    new PrimeMeridian(-3.411658, CoordinateSystems.AngularUnit.Degrees, "Madrid", "EPSG", "8905",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -127,7 +127,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(12.27084, CoordinateSystems.AngularUnit.Degrees, "Rome", "EPSG", 8906,
+                    new PrimeMeridian(12.27084, CoordinateSystems.AngularUnit.Degrees, "Rome", "EPSG", "8906",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -141,7 +141,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(7.26225, CoordinateSystems.AngularUnit.Degrees, "Bern", "EPSG", 8907, String.Empty,
+                    new PrimeMeridian(7.26225, CoordinateSystems.AngularUnit.Degrees, "Bern", "EPSG", "8907", String.Empty,
                                       String.Empty,
                                       "1895 value. Newer value of 7 deg 26 min 22.335 sec E determined in 1938.");
             }
@@ -155,7 +155,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(106.482779, CoordinateSystems.AngularUnit.Degrees, "Jakarta", "EPSG", 8908,
+                    new PrimeMeridian(106.482779, CoordinateSystems.AngularUnit.Degrees, "Jakarta", "EPSG", "8908",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -169,7 +169,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(-17.4, CoordinateSystems.AngularUnit.Degrees, "Ferro", "EPSG", 8909, String.Empty,
+                    new PrimeMeridian(-17.4, CoordinateSystems.AngularUnit.Degrees, "Ferro", "EPSG", "8909", String.Empty,
                                       String.Empty, "Used in Austria and former Czechoslovakia.");
             }
         }
@@ -182,7 +182,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(4.220471, CoordinateSystems.AngularUnit.Degrees, "Brussels", "EPSG", 8910,
+                    new PrimeMeridian(4.220471, CoordinateSystems.AngularUnit.Degrees, "Brussels", "EPSG", "8910",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -195,7 +195,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(18.03298, CoordinateSystems.AngularUnit.Degrees, "Stockholm", "EPSG", 8911,
+                    new PrimeMeridian(18.03298, CoordinateSystems.AngularUnit.Degrees, "Stockholm", "EPSG", "8911",
                                       String.Empty, String.Empty, String.Empty);
             }
         }
@@ -209,7 +209,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(23.4258815, CoordinateSystems.AngularUnit.Degrees, "Athens", "EPSG", 8912,
+                    new PrimeMeridian(23.4258815, CoordinateSystems.AngularUnit.Degrees, "Athens", "EPSG", "8912",
                                       String.Empty, String.Empty,
                                       "Used in Greece for older mapping based on Hatt projection.");
             }
@@ -224,7 +224,7 @@ namespace ProjNet.CoordinateSystems
             get
             {
                 return
-                    new PrimeMeridian(10.43225, CoordinateSystems.AngularUnit.Degrees, "Oslo", "EPSG", 8913,
+                    new PrimeMeridian(10.43225, CoordinateSystems.AngularUnit.Degrees, "Oslo", "EPSG", "8913",
                                       String.Empty, String.Empty, "Formerly known as Kristiania or Christiania.");
             }
         }
@@ -259,7 +259,7 @@ namespace ProjNet.CoordinateSystems
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, "PRIMEM[\"{0}\", {1}", Name, Longitude);
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

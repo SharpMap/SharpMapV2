@@ -26,6 +26,29 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
+    internal class InverseOrthographic<TCoordinate> : Orthographic<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        public InverseOrthographic(IEnumerable<ProjectionParameter> parameters,
+                            ICoordinateFactory<TCoordinate> coordinateFactory)
+            : base(parameters, coordinateFactory)
+        {
+
+        }
+
+        public override string Name
+        {
+            get { return "Inverse Orthographic"; }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return true; }
+        }
+    }
+
     internal class Orthographic<TCoordinate> : MapProjection<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
@@ -97,73 +120,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </remarks>
         public Orthographic(IEnumerable<ProjectionParameter> parameters,
                             ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
-
-        /// <summary>
-        /// Initializes the MercatorProjection object with the specified parameters.
-        /// </summary>
-        /// <param name="parameters">Parameters of the projection.</param>
-        /// <param name="coordinateFactory">Coordinate factory to use.</param>
-        /// <param name="isInverse">
-        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
-        /// </param>
-        /// <remarks>
-        ///   <para>The parameters this projection expects are listed below.</para>
-        ///   <list type="table">
-        ///     <listheader>
-        ///      <term>Parameter</term>
-        ///      <description>Description</description>
-        ///    </listheader>
-        ///     <item>
-        ///      <term>central_meridian</term>
-        ///      <description>
-        ///         The longitude of the point from which the values of both the 
-        ///         geographical coordinates on the ellipsoid and the grid coordinates 
-        ///         on the projection are deemed to increment or decrement for computational purposes. 
-        ///         Alternatively it may be considered as the longitude of the point which in the 
-        ///         absence of application of false coordinates has grid coordinates of (0, 0).
-        ///       </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>latitude_of_origin</term>
-        ///      <description>
-        ///         The latitude of the point from which the values of both the 
-        ///         geographical coordinates on the ellipsoid and the grid coordinates 
-        ///         on the projection are deemed to increment or decrement for computational purposes. 
-        ///         Alternatively it may be considered as the latitude of the point which in the 
-        ///         absence of application of false coordinates has grid coordinates of (0, 0). 
-        ///      </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>false_easting</term>
-        ///      <description>
-        ///         Since the natural origin may be at or near the center of the projection and under 
-        ///         normal coordinate circumstances would thus give rise to negative coordinates over 
-        ///         parts of the mapped area, this origin is usually given false coordinates which are 
-        ///         large enough to avoid this inconvenience. The False Easting, FE, is the easting 
-        ///         value assigned to the abscissa (east).
-        ///      </description>
-        ///    </item>
-        ///     <item>
-        ///      <term>false_northing</term>
-        ///      <description>
-        ///         Since the natural origin may be at or near the center of the projection and under 
-        ///         normal coordinate circumstances would thus give rise to negative coordinates over 
-        ///         parts of the mapped area, this origin is usually given false coordinates which are 
-        ///         large enough to avoid this inconvenience. The False Northing, FN, is the northing 
-        ///         value assigned to the ordinate.
-        ///      </description>
-        ///    </item>
-        ///    <item>
-        ///         <term>radius</term>
-        ///         <description>The radius of the sphere to use to compute the projection.</description>
-        ///    </item>
-        ///  </list>
-        ///</remarks>
-        public Orthographic(IEnumerable<ProjectionParameter> parameters,
-                            ICoordinateFactory<TCoordinate> coordinateFactory,
-                            Boolean isInverse)
-            : base(parameters, coordinateFactory, isInverse)
+            : base(parameters, coordinateFactory)
         {
             ProjectionParameter central_meridian = GetParameter("central_meridian");
             ProjectionParameter latitude_of_origin = GetParameter("latitude_of_origin");
@@ -207,8 +164,16 @@ namespace ProjNet.CoordinateSystems.Projections
             _sinLatOrigin = Math.Sin(_lat_origin);
 
             _zero = coordinateFactory.Create(0, 0);
+        }
 
-            Name = "Orthographic";
+        public override string Name
+        {
+            get { return "Orthographic"; }
+        }
+
+        public override string ProjectionClassName
+        {
+            get { throw new System.NotImplementedException(); }
         }
 
         public override TCoordinate MetersToDegrees(TCoordinate coordinate)
@@ -264,12 +229,48 @@ namespace ProjNet.CoordinateSystems.Projections
             return CoordinateFactory.Create(lon, lat);
         }
 
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return false; }
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new Mercator<TCoordinate>(parameters, CoordinateFactory, !_isInverse);
+            return this is InverseOrthographic<TCoordinate>
+                       ? new Orthographic<TCoordinate>(parameters, CoordinateFactory)
+                       : new InverseOrthographic<TCoordinate>(parameters, CoordinateFactory);
         }
+
+        #region Overrides of MathTransform<TCoordinate>
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

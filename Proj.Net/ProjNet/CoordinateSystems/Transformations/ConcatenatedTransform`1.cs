@@ -1,4 +1,5 @@
-// Copyright 2006 - Morten Nielsen (www.iter.dk)
+// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
+// Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of Proj.Net.
 // Proj.Net is free software; you can redistribute it and/or modify
@@ -29,6 +30,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                             IComputable<Double, TCoordinate>
     {
         private readonly List<ICoordinateTransformation<TCoordinate>> _transforms;
+        private readonly Boolean _isInverse;
 
         public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms,
                                      ICoordinateFactory<TCoordinate> coordinateFactory)
@@ -46,6 +48,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             Invert();
             Inverse = inverse;
+            _isInverse = true;
         }
 
         public IEnumerable<ICoordinateTransformation<TCoordinate>> Transforms
@@ -118,6 +121,36 @@ namespace ProjNet.CoordinateSystems.Transformations
                     transformation.MathTransform.Inverse as ICoordinateTransformation<TCoordinate>;
                 _transforms.Add(inverse);
             }
+        }
+
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override ICoordinate Transform(ICoordinate coordinate)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return _isInverse; }
         }
 
         /// <summary>

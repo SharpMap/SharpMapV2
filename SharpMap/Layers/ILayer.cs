@@ -75,7 +75,7 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// The spatial reference ID of the layer data source.
 		/// </summary>
-		Int32? Srid { get; }
+		String Srid { get; }
 
 		/// <summary>
 		/// The style for the layer.

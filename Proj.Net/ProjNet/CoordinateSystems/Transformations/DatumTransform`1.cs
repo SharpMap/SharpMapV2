@@ -1,19 +1,19 @@
 // Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
 // Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of GeoAPI.Net.
-// GeoAPI.Net is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// GeoAPI.Net is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GeoAPI.Net; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -27,6 +27,29 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
+    internal class InverseDatumTransform<TCoordinate> : DatumTransform<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InverseDatumTransform{TCoordinate}"/> class.
+        /// </summary>
+        protected internal InverseDatumTransform(Wgs84ConversionInfo towgs84, 
+                                                 ICoordinateFactory<TCoordinate> coordinateFactory,
+                                                 IMatrixFactory<DoubleComponent> matrixFactory,
+                                                 DatumTransform<TCoordinate> transform)
+            : base(towgs84, coordinateFactory, matrixFactory)
+        {
+            Inverse = transform;
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return true; }
+        }
+    }
+
     internal class DatumTransform<TCoordinate> : MathTransform<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
@@ -40,16 +63,45 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Initializes a new instance of the <see cref="DatumTransform{TCoordinate}"/> class.
         /// </summary>
-        private DatumTransform(Wgs84ConversionInfo towgs84, 
-                               ICoordinateFactory<TCoordinate> coordinateFactory,
-                               IMatrixFactory<DoubleComponent> matrixFactory)
+        protected internal DatumTransform(Wgs84ConversionInfo towgs84, 
+                                          ICoordinateFactory<TCoordinate> coordinateFactory,
+                                          IMatrixFactory<DoubleComponent> matrixFactory)
             : base(null, coordinateFactory)
         {
             _toWgs84 = towgs84;
             _matrixFactory = matrixFactory;
             _transform = _toWgs84.GetAffineTransform(matrixFactory);
             _inverseTransform = _transform.Inverse;
-            _isInverse = isInverse;
+        }
+
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override ICoordinate Transform(ICoordinate coordinate)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return false; }
         }
 
         /// <summary>
@@ -72,10 +124,10 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
-            return new DatumTransform<TCoordinate>(_toWgs84, 
-                                                   CoordinateFactory, 
-                                                   _matrixFactory, 
-                                                   !_isInverse);
+            return new InverseDatumTransform<TCoordinate>(_toWgs84, 
+                                                          CoordinateFactory, 
+                                                          _matrixFactory, 
+                                                          this);
         }
 
         private TCoordinate applyTransformToPoint(TCoordinate p)
@@ -105,7 +157,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <returns></returns>
         public override TCoordinate Transform(TCoordinate point)
         {
-            return !_isInverse
+            return !IsInverse
                        ? applyTransformToPoint(point)
                        : applyInvertedTransformToPoint(point);
         }
@@ -129,6 +181,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             return Caster.Downcast<TCoordinate, IVector<DoubleComponent>>(
                 _transform.TransformVectors(Caster.Upcast<IVector<DoubleComponent>, TCoordinate>(points)));
+        }
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

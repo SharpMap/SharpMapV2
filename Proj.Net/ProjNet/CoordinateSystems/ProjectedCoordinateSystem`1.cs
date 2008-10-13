@@ -47,17 +47,16 @@ namespace ProjNet.CoordinateSystems
         /// <param name="axisInfo">Axis info</param>
         /// <param name="name">Name</param>
         /// <param name="authority">Authority name</param>
-        /// <param name="code">Authority-specific identification code.</param>
+        /// <param name="authorityCode">Authority-specific identification code.</param>
         /// <param name="alias">Alias</param>
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
         internal ProjectedCoordinateSystem(IGeographicCoordinateSystem<TCoordinate> gcs,
                                            IProjection projection, ILinearUnit linearUnit,
                                            IEnumerable<IAxisInfo> axisInfo,
-                                           String name, String authority, Int64 code, String alias,
+                                           String name, String authority, String authorityCode, String alias,
                                            String remarks, String abbreviation)
-            : base(
-                gcs.DefaultEnvelope, gcs.HorizontalDatum, axisInfo, name, authority, code, alias, abbreviation, remarks)
+            : base(gcs.DefaultEnvelope, gcs.HorizontalDatum, axisInfo, name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _geographicCoordinateSystem = gcs;
             _linearUnit = linearUnit;
@@ -163,7 +162,7 @@ namespace ProjNet.CoordinateSystems
                     }
                 }
 
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

@@ -730,7 +730,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             SpatialReference = coordinateSystem;
-            Srid = coordinateSystem.AuthorityCode > 0 ? (Int32?)coordinateSystem.AuthorityCode : null;
+            Srid = coordinateSystem.AuthorityCode;
             _geoFactory.SpatialReference = SpatialReference;
             _geoFactory.Srid = Srid;
         }

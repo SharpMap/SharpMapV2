@@ -1,19 +1,19 @@
 ﻿// Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
 // Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
-// This file is part of GeoAPI.Net.
-// GeoAPI.Net is free software; you can redistribute it and/or modify
+// This file is part of Proj.Net.
+// Proj.Net is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 // 
-// GeoAPI.Net is distributed in the hope that it will be useful,
+// Proj.Net is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 
 // You should have received a copy of the GNU Lesser General Public License
-// along with GeoAPI.Net; if not, write to the Free Software
+// along with Proj.Net; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
@@ -32,7 +32,6 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly List<Parameter> _parameters;
         private readonly ICoordinateFactory _coordinateFactory;
         private IMathTransform _inverse;
-        private Boolean _isInverse;
 
         protected MathTransform(IEnumerable<Parameter> parameters, 
                                 ICoordinateFactory coordinateFactory)
@@ -54,10 +53,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public virtual Boolean IsIdentity { get { return false; } }
 
-        public Boolean IsInverse
-        {
-            get { return _isInverse; }
-        }
+        public abstract Boolean IsInverse { get; }
 
         /// <summary>
         /// Returns the Well-Known Text for this object
@@ -69,7 +65,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             {
                 StringBuilder sb = new StringBuilder();
 
-                if (_isInverse)
+                if (IsInverse)
                 {
                     sb.Append("INVERSE_MT[");
                 }
@@ -83,7 +79,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
                 sb.Append("]");
 
-                if (_isInverse)
+                if (IsInverse)
                 {
                     sb.Append("]");
                 }
@@ -102,7 +98,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 StringBuilder sb = new StringBuilder();
                 sb.Append("<CT_MathTransform>");
 
-                if (_isInverse)
+                if (IsInverse)
                 {
                     sb.AppendFormat("<CT_InverseTransform Name=\"{0}\">", ClassName);
                 }
@@ -116,7 +112,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                     sb.Append(parameter.Xml);
                 }
 
-                if (_isInverse)
+                if (IsInverse)
                 {
                     sb.Append("</CT_InverseTransform>");
                 }
@@ -128,6 +124,16 @@ namespace ProjNet.CoordinateSystems.Transformations
                 sb.Append("</CT_MathTransform>");
                 return sb.ToString();
             }
+        }
+
+        protected virtual String Name
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        protected virtual String ClassName
+        {
+            get { throw new NotImplementedException(); }
         }
 
         public virtual IMatrix<DoubleComponent> Derivative(ICoordinate point)
@@ -164,7 +170,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 }
 
                 _inverse = value;
-                _isInverse = true;
+                //_isInverse = true;
             }
         }
 

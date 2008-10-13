@@ -46,14 +46,14 @@ namespace ProjNet.CoordinateSystems
         /// <param name="axisUnit">Axis unit.</param>
         /// <param name="name">Name of the ellipsoid.</param>
         /// <param name="authority">Authority name.</param>
-        /// <param name="code">Authority-specific identification code.</param>
+        /// <param name="authorityCode">Authority-specific identification code.</param>
         /// <param name="alias">Alias.</param>
         /// <param name="abbreviation">Abbreviation.</param>
         /// <param name="remarks">Provider-supplied remarks.</param>
         internal Ellipsoid(Double semiMajorAxis, Double semiMinorAxis, Double inverseFlattening,
                            Boolean isIvfDefinitive, ILinearUnit axisUnit, String name, String authority,
-                           Int64 code, String alias, String abbreviation, String remarks)
-            : base(name, authority, code, alias, abbreviation, remarks)
+                           String authorityCode, String alias, String abbreviation, String remarks)
+            : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {
             _semiMajorAxis = semiMajorAxis;
             _inverseFlattening = inverseFlattening;
@@ -92,7 +92,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(6378137, 0, 298.257223563, 
                                      true, LinearUnit.Meter, "WGS 84", 
-                                     "EPSG", 7030, "WGS84", String.Empty,
+                                     "EPSG", "7030", "WGS84", String.Empty,
                                      "Inverse flattening derived from four defining "+
                                      "parameters (semi-major axis; "+
                                      "C20 = -484.16685*10e-6; earth's angular velocity "+
@@ -110,7 +110,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(6378135.0, 0, 298.26, 
                                      true, LinearUnit.Meter, 
-                                     "WGS 72", "EPSG", 7043, "WGS 72",
+                                     "WGS 72", "EPSG", "7043", "WGS 72",
                                      String.Empty, String.Empty);
             }
         }
@@ -130,7 +130,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(6378137, 0, 298.257222101,
                                      true, LinearUnit.Meter,
-                                     "GRS 1980", "EPSG", 7019,
+                                     "GRS 1980", "EPSG", "7019",
                                      "International 1979", String.Empty,
                                      "Adopted by IUGG 1979 Canberra.  " +
                                      "Inverse flattening is derived from geocentric " +
@@ -154,7 +154,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(6378388, 0, 297,
                                      true, LinearUnit.Meter,
-                                     "International 1924", "EPSG", 7022,
+                                     "International 1924", "EPSG", "7022",
                                      "Hayford 1909", String.Empty,
                                      "Described as a=6378388 m. and b=6356909 m. " +
                                      "from which 1/f derived to be 296.95926. The " +
@@ -176,7 +176,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(20926202, 0, 297,
                                      true, LinearUnit.ClarkesFoot,
-                                     "Clarke 1880", "EPSG", 7034,
+                                     "Clarke 1880", "EPSG", "7034",
                                      "Clarke 1880", String.Empty,
                                      "Clarke gave a and b and also 1/f=293.465 " +
                                      "(to 3 decimal places).  1/f derived from a " +
@@ -196,7 +196,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(6378206.4, 6356583.8, Double.PositiveInfinity,
                                      false, LinearUnit.Meter, "Clarke 1866",
-                                     "EPSG", 7008, "Clarke 1866", String.Empty,
+                                     "EPSG", "7008", "Clarke 1866", String.Empty,
                                      "Original definition a=20926062 and b=20855121 " +
                                      "(British) feet. Uses Clarke's 1865 inch-metre " +
                                      "ratio of 39.370432 to obtain metres. (Metric " +
@@ -219,7 +219,7 @@ namespace ProjNet.CoordinateSystems
             {
                 return new Ellipsoid(6370997.0, 6370997.0, Double.PositiveInfinity,
                                      false, LinearUnit.Meter, "GRS 1980 Authalic Sphere",
-                                     "EPSG", 7048, "Sphere", String.Empty,
+                                     "EPSG", "7048", "Sphere", String.Empty,
                                      "Authalic sphere derived from GRS 1980 ellipsoid " +
                                      "(code 7019).  (An authalic sphere is one with a " +
                                      "surface area equal to the surface area of the " +
@@ -288,7 +288,7 @@ namespace ProjNet.CoordinateSystems
                                 "SPHEROID[\"{0}\", {1}, {2}", Name, SemiMajorAxis, 
                                 InverseFlattening);
 
-                if (!String.IsNullOrEmpty(Authority) && AuthorityCode > 0)
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

@@ -46,6 +46,28 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
+    internal class InverseTransverseMercator<TCoordinate> : TransverseMercator<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        public InverseTransverseMercator(IEnumerable<ProjectionParameter> parameters,
+                                         ICoordinateFactory<TCoordinate> coordinateFactory,
+                                         TransverseMercator<TCoordinate> transform)
+            : base(parameters, coordinateFactory)
+        {
+            Inverse = transform;
+        }
+
+        public override Boolean IsInverse
+        {
+            get
+            {
+                return true;
+            }
+        }
+    }
+
     /// <summary>
     /// Implements the Universal (UTM) and Modified (MTM) Transverses Mercator projections. 
     /// </summary>
@@ -84,19 +106,6 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         /// <param name="parameters">Parameters of the projection.</param>
         /// <param name="coordinateFactory">Coordinate factory to use.</param>
-        public TransverseMercator(IEnumerable<ProjectionParameter> parameters,
-                                  ICoordinateFactory<TCoordinate> coordinateFactory)
-            : this(parameters, coordinateFactory, false) { }
-
-        /// <summary>
-        /// Initializes a <see cref="TransverseMercator{TCoordinate}"/> projection 
-        /// with the specified parameters. 
-        /// </summary>
-        /// <param name="parameters">Parameters of the projection.</param>
-        /// <param name="coordinateFactory">Coordinate factory to use.</param>
-        /// <param name="isInverse">
-        /// Indicates whether the projection is inverse (meters to degrees vs. degrees to meters).
-        /// </param>
         /// <remarks>
         /// <list type="table">
         ///     <listheader>
@@ -113,13 +122,11 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </list>
         /// </remarks>
         public TransverseMercator(IEnumerable<ProjectionParameter> parameters,
-                                  ICoordinateFactory<TCoordinate> coordinateFactory,
-                                  Boolean isInverse)
-            : base(parameters, coordinateFactory, isInverse)
+                                  ICoordinateFactory<TCoordinate> coordinateFactory)
+            : base(parameters, coordinateFactory)
         {
-            Name = "Transverse_Mercator";
             Authority = "EPSG";
-            AuthorityCode = 9807;
+            AuthorityCode = "9807";
 
             ProjectionParameter scaleFactor = GetParameter("scale_factor");
             ProjectionParameter centralMeridian = GetParameter("central_meridian");
@@ -212,6 +219,16 @@ namespace ProjNet.CoordinateSystems.Projections
                        : CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit, (Double)lonlat[2]);
         }
 
+        public override string ProjectionClassName
+        {
+            get { return "Transverse_Mercator"; }
+        }
+
+        public override string Name
+        {
+            get { return "Transverse_Mercator"; }
+        }
+
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -267,17 +284,17 @@ namespace ProjNet.CoordinateSystems.Projections
                 Double d = x / (n * _scaleFactor);
                 Double ds = Math.Pow(d, 2);
 
-                Radians lat = (Radians)(phi - 
-                                        (n * tanPhi * ds / r) * 
-                                        (0.5 - ds / 24.0 * 
-                                            (5.0 + 3.0 * t + 10.0 * c - 4.0 * cs - 9.0 * _esp - ds / 30.0 * 
+                Radians lat = (Radians)(phi -
+                                        (n * tanPhi * ds / r) *
+                                        (0.5 - ds / 24.0 *
+                                            (5.0 + 3.0 * t + 10.0 * c - 4.0 * cs - 9.0 * _esp - ds / 30.0 *
                                                 (61.0 + 90.0 * t + 298.0 * c + 45.0 * ts - 252.0 * _esp - 3.0 * cs))));
 
-                Radians lon = (Radians)AdjustLongitude(_centralMeridian + 
-                                                       (d * 
-                                                            (1.0 - ds / 6.0 * 
-                                                                (1.0 + 2.0 * t + c - ds / 20.0 * 
-                                                                    (5.0 - 2.0 * c + 28.0 * t - 
+                Radians lon = (Radians)AdjustLongitude(_centralMeridian +
+                                                       (d *
+                                                            (1.0 - ds / 6.0 *
+                                                                (1.0 + 2.0 * t + c - ds / 20.0 *
+                                                                    (5.0 - 2.0 * c + 28.0 * t -
                                                                      3.0 * cs + 8.0 * _esp + 24.0 * ts))) / cosPhi));
 
                 transformed = p.ComponentCount < 3
@@ -300,11 +317,45 @@ namespace ProjNet.CoordinateSystems.Projections
             return transformed;
         }
 
+        public override Int32 SourceDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Int32 TargetDimension
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return false; }
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
-            return new TransverseMercator<TCoordinate>(parameters, CoordinateFactory, !_isInverse);
+            return new InverseTransverseMercator<TCoordinate>(parameters, CoordinateFactory, this);
         }
+
+        #region Overrides of MathTransform<TCoordinate>
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -157,13 +157,9 @@ namespace ProjNet.CoordinateSystems.Projections
         }
 
         /// <summary>
-        /// Gets or sets the name of the object.
+        /// Gets the name of the object.
         /// </summary>
-        public String Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public abstract String Name { get; }
 
         /// <summary>
         /// Gets or sets the provider-supplied remarks for the object.
@@ -203,7 +199,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         public override TCoordinate Transform(TCoordinate point)
         {
-            return !_isInverse
+            return !IsInverse
                        ? DegreesToMeters(point)
                        : MetersToDegrees(point);
         }

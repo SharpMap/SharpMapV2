@@ -588,7 +588,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the spatial reference ID of the layer data source, if one is set.
         /// </summary>
-        public virtual Int32? Srid
+        public virtual String Srid
         {
             get
             {

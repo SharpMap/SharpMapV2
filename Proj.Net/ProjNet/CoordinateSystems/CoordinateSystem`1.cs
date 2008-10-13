@@ -60,7 +60,7 @@ namespace ProjNet.CoordinateSystems
         /// <param name="abbreviation">Abbreviation</param>
         /// <param name="remarks">Provider-supplied remarks</param>
         protected internal CoordinateSystem(IExtents<TCoordinate> extents,
-                                            String name, String authority, Int64 authorityCode, String alias,
+                                            String name, String authority, String authorityCode, String alias,
                                             String abbreviation, String remarks)
             : base(name, authority, authorityCode, alias, abbreviation, remarks)
         {

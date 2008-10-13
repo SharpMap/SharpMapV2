@@ -50,7 +50,7 @@ namespace SharpMap.Data
         /// Gets the spatial reference ID for the provider's <see cref="SpatialReference"/>,
         /// if one exists; <see langword="null"/> otherwise.
         /// </summary>
-        Int32? Srid { get; }
+        String Srid { get; }
 
         /// <summary>
         /// Geometric extent of the entire dataset.
