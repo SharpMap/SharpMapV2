@@ -62,8 +62,7 @@ namespace SharpMap.Data.Providers.Db
                                               ParameterDirection parameterDirection)
         {
             var p = new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName,
-                                     dbType, GetDbSize(dbType));
-            p.Direction = parameterDirection;
+                                     dbType, GetDbSize(dbType)) {Direction = parameterDirection};
             return p;
         }
 

@@ -84,8 +84,8 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         public IDataParameter CreateParameter(string parameterName, DbType dbType, ParameterDirection parameterDirection)
         {
-            var p = new SQLiteParameter(ParameterNameForQueries(parameterName), dbType, GetDbSize(dbType));
-            p.Direction = parameterDirection;
+            var p = new SQLiteParameter(ParameterNameForQueries(parameterName), dbType, GetDbSize(dbType))
+                        {Direction = parameterDirection};
             return p;
         }
 

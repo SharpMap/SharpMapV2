@@ -84,7 +84,9 @@ namespace SharpMap.Data.Providers.PostGis
 
         public IDataParameter CreateParameter(string parameterName, DbType dbType, ParameterDirection parameterDirection)
         {
-            return new NpgsqlParameter(parameterName, dbType, GetDbSize(dbType));
+            IDataParameter p= new NpgsqlParameter(parameterName, dbType, GetDbSize(dbType))
+                                  {Direction = parameterDirection};
+            return p;
         }
 
         public static string GetTypeString(DbType dbType)
