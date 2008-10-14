@@ -59,13 +59,13 @@ namespace SharpMap.Rendering.GeoJson
              * have anywhere where we can group features by layer. 
              * It still complies with the spec but will be considerably more verbose */
 
-            if (g.SpatialReference != null || g.Srid.HasValue)
+            if (g.SpatialReference != null || !string.IsNullOrEmpty(g.Srid))
             {
                 sb.Append("\"crs\":");
                 WriteNamedCrs(sb,
                               g.SpatialReference != null
                                   ? g.SpatialReference.Name
-                                  : "EPSG:" + g.Srid.Value);
+                                  : "EPSG:" + g.Srid);
                 sb.Append(",");
             }
 
