@@ -36,7 +36,7 @@ namespace SharpMap.Utilities
 
         #region IGeometryServices Members
 
-        public IGeometryFactory this[int? srid]
+        public IGeometryFactory this[string srid]
         {
             get { return _internalFactoryService[srid]; }
         }
@@ -76,8 +76,8 @@ namespace SharpMap.Utilities
 
             private readonly IGeometryFactory _geometryFactory;
 
-            private readonly Dictionary<int, IGeometryFactory> _sridAwareGeometryFactories =
-                new Dictionary<int, IGeometryFactory>();
+            private readonly Dictionary<string, IGeometryFactory> _sridAwareGeometryFactories =
+                new Dictionary<string, IGeometryFactory>();
 
             internal InternalFactoryService()
             {
@@ -105,24 +105,24 @@ namespace SharpMap.Utilities
 
             #region IGeometryServices Members
 
-            public IGeometryFactory this[int? srid]
+            public IGeometryFactory this[string srid]
             {
                 get
                 {
-                    if (!srid.HasValue)
+                    if (!string.IsNullOrEmpty(srid))
                         return DefaultGeometryFactory;
 
                     IGeometryFactory factory;
 
 
 
-                    if (!_sridAwareGeometryFactories.TryGetValue(srid.Value, out factory))
+                    if (!_sridAwareGeometryFactories.TryGetValue(srid, out factory))
                     {
-                        factory = new GeometryFactory<BufferedCoordinate>(srid.Value,
+                        factory = new GeometryFactory<BufferedCoordinate>(srid,
                             (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
                         lock (_sridAwareGeometryFactories)
-                            if (!_sridAwareGeometryFactories.ContainsKey(srid.Value))
-                                _sridAwareGeometryFactories.Add(srid.Value, factory);
+                            if (!_sridAwareGeometryFactories.ContainsKey(srid))
+                                _sridAwareGeometryFactories.Add(srid, factory);
 
                     }
 

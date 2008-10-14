@@ -25,6 +25,6 @@ namespace SharpMap.Utilities
         ICoordinateSystemFactory CoordinateSystemFactory { get; }
         ICoordinateTransformationFactory CoordinateTransformationFactory { get; }
         IGeometryFactory DefaultGeometryFactory { get; }
-        IGeometryFactory this[int? srid] { get; }
+        IGeometryFactory this[string srid] { get; }
     }
 }
