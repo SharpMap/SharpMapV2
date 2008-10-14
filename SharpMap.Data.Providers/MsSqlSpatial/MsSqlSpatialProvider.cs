@@ -127,7 +127,7 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     o => o.ToString())));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -161,13 +161,13 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new[] { new OrderByExpression(OidColumn), })),
                                                                     o => o.ToString())));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
-            int startRecord = (pageNumber*pageSize) + 1;
-            int endRecord = (pageNumber + 1)*pageSize;
+            int startRecord = (pageNumber * pageSize) + 1;
+            int endRecord = (pageNumber + 1) * pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,

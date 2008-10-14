@@ -646,6 +646,7 @@ namespace SharpMap.Data.Providers.Db
         }
 
 
+        //TODO: enhance to remove possible "EPSG:" etc
         public int? ParseSrid(string sridText)
         {
             int s;
