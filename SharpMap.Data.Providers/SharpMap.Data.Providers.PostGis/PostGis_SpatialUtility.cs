@@ -158,7 +158,8 @@ namespace SharpMap.Data.Providers.PostGis
 
         public static int GetDbSize(DbType dbType)
         {
-            throw new NotImplementedException();
+            return 0;
+            //throw new NotImplementedException();
         }
 
         public string ParameterNameForQueries(string parameterName)

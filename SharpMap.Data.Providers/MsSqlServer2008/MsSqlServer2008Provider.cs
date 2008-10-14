@@ -86,6 +86,10 @@ namespace SharpMap.Data.Providers
 
         public override IExtents GetExtents()
         {
+
+            bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(DefaultProviderProperties.ProviderProperties.Collection,
+                                     false);
+
             SqlServer2008ExtentsMode server2008ExtentsCalculationMode =
                 GetProviderPropertyValue<MsSqlServer2008ExtentsModeExpression, SqlServer2008ExtentsMode>(
                     DefaultProviderProperties.ProviderProperties.Collection,
@@ -110,15 +114,16 @@ namespace SharpMap.Data.Providers
         @envelope.STPointN(4).STX as MaxX, 
         @envelope.STPointN(4).STY as MaxY",
                                     GeometryColumn, TableSchema, Table,
-                                    GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
+                                    withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                     case SqlServer2008ExtentsMode.UseEnvelopeColumns:
                         {
+
                             cmd.CommandText = string.Format(
                                 "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
                                 GeometryColumn, TableSchema, Table,
-                                GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
+                                withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                     default:
@@ -131,8 +136,7 @@ namespace SharpMap.Data.Providers
 	    Min(Geom.STEnvelope().STPointN(1).STY) as MinY,  
 	    Max(Geom.STEnvelope().STPointN(3).STX) as MaxX, 
 	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY from {0}.{1} {2}",
-                                    TableSchema, Table,
-                                    GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
+                                                                        TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                 }
@@ -178,7 +182,7 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     o => o.ToString())));
 
 
@@ -213,14 +217,14 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     o => o.ToString())));
 
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
-            int startRecord = (pageNumber*pageSize) + 1;
-            int endRecord = (pageNumber + 1)*pageSize;
+            int startRecord = (pageNumber * pageSize) + 1;
+            int endRecord = (pageNumber + 1) * pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -266,7 +270,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
             IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
-                properties, new string[] {});
+                properties, new string[] { });
 
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
@@ -289,7 +293,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         public override DataTable GetSchemaTable()
         {
             DataTable dt = base.GetSchemaTable(true);
-            dt.Columns[GeometryColumn].DataType = typeof (byte[]);
+            dt.Columns[GeometryColumn].DataType = typeof(byte[]);
             //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
             return dt;
         }

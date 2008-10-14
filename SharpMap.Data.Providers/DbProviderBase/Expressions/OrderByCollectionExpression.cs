@@ -79,5 +79,11 @@ namespace SharpMap.Data.Providers.Db.Expressions
         {
             return PropertyNameExpression.PropertyName + (Direction == SortOrder.Descending ? " DESC " : " ASC ");
         }
+
+        public string ToString(string formatString)
+        {
+            return string.Format(formatString, PropertyNameExpression.PropertyName) + 
+                (Direction == SortOrder.Descending ? " DESC " : " ASC ");
+        }
     }
 }

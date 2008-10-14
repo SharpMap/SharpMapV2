@@ -1512,8 +1512,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private FeatureDataTable<UInt32> getNewTable()
         {
-            return HasDbf 
-                ? _dbaseFile.NewTable 
+            return HasDbf
+                ? _dbaseFile.NewTable
                 : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory);
         }
 
@@ -1535,8 +1535,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (table == null)
             {
-                table = !HasDbf 
-                    ? FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory) 
+                table = !HasDbf
+                    ? FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory)
                     : _dbaseFile.NewTable;
             }
 
@@ -1583,7 +1583,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (queryExtents.Intersects(featureExtents))
                 {
                     yield return new IdBounds(oid, featureExtents);
-                }   
+                }
             }
         }
 
@@ -1672,7 +1672,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (UInt32 i = 0; i < featureCount; i++)
             {
-                IGeometry geom = readGeometry(i);
+                IGeometry geom = readGeometry(i + 1); //jd: shapefiles have 1 based index
 
                 if (geom == null || geom.IsEmpty)
                 {
@@ -1681,7 +1681,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 IExtents extents = geom.Extents;
 
-                index.Insert(new IdBounds(i, extents));
+                index.Insert(new IdBounds(i + 1, extents));
             }
 
             return index;
@@ -2072,6 +2072,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                     IPolygon poly;
                     List<ILinearRing> polyRings = getPolyRings(rings, isCounterClockWise, ref i);
 
+                    if (polyRings.Count == 0)// we reached the next outer shell (i has been decremented so carry on)
+                    {
+                        continue;
+                    }
                     if (polyRings.Count == 1)
                     {
                         poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings));
@@ -2094,11 +2098,16 @@ namespace SharpMap.Data.Providers.ShapeFile
             List<ILinearRing> singlePoly = new List<ILinearRing>();
 
             // make sure the first ring is an exterior ring
-            Debug.Assert(isCounterClockWise[i] == false);
+            //Debug.Assert(isCounterClockWise[i] == false); //jd: this line fails for the second outer shell of a multipolygon
+            if (isCounterClockWise[i]) // we have reached the next outer shell
+            {
+                i--;//decrement i
+                return singlePoly; //return the empty list.
+            }
 
             singlePoly.Add(rings[i++]);
 
-            while (isCounterClockWise[i])
+            while (i < isCounterClockWise.Length && isCounterClockWise[i])
             {
                 singlePoly.Add(rings[i]);
                 i++;

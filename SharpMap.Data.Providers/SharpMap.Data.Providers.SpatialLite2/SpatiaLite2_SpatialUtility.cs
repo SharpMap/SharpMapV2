@@ -84,8 +84,8 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         public IDataParameter CreateParameter(string parameterName, DbType dbType, ParameterDirection parameterDirection)
         {
-            var p = new SQLiteParameter(ParameterNameForQueries(parameterName), dbType, GetDbSize(dbType))
-                        {Direction = parameterDirection};
+            var p = new SQLiteParameter(ParameterNameForQueries(parameterName), dbType, GetDbSize(dbType)) 
+                        { Direction = parameterDirection };
             return p;
         }
 
@@ -126,7 +126,6 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             return GetDbType(typeof (TValue));
         }
 
-
         public static DbType GetDbType(Type netType)
         {
             switch (netType.ToString())
@@ -153,6 +152,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     return DbType.String;
                 default:
                     throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
+
             }
         }
 
@@ -167,7 +167,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         public static int GetDbSize(DbType dbType)
         {
-            throw new NotImplementedException();
+            return 0;
         }
 
         public static string GetTypeString(DbType dbType)

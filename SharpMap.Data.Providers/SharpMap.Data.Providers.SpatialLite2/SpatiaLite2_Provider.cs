@@ -363,6 +363,11 @@ namespace SharpMap.Data.Providers
             }
         }
 
+        public override DataTable GetSchemaTable()
+        {
+            return GetSchemaTable(false);
+        }
+
         public override DataTable GetSchemaTable(Boolean withGeometryColumn)
         {
             DataTable dt = null;
@@ -664,7 +669,7 @@ namespace SharpMap.Data.Providers
                 string orderByCols = String.Join(",",
                                                  Enumerable.ToArray(Processor.Transform(
                                                      GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
-                                                         properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString())));
+                                                         properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString("[{0}]"))));
 
                 string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
@@ -704,9 +709,9 @@ namespace SharpMap.Data.Providers
             string orderByCols = String.Join(",",
                                   Enumerable.ToArray(Processor.Transform(
                                       GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
-                                          properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString())));
+                                          properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString("[{0}]"))));
 
-            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "ROWID" : " ORDER BY " + orderByCols;
 
             int startRecord = (pageNumber * pageSize);
             int endRecord = (pageNumber + 1) * pageSize - 1;
@@ -735,21 +740,16 @@ namespace SharpMap.Data.Providers
                 String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ", compiler.SqlWhereClause,
                 orderByClause,
                 subQueryColumns,
-                startRecord, endRecord);
+                compiler.CreateParameter(startRecord).ParameterName,
+                compiler.CreateParameter(endRecord).ParameterName);
 
             return sql;
         }
 
-        protected IEnumerable<String> ToEnumerableOfDataColumnName(DataColumnCollection dcc)
-        {
-            foreach (DataColumn dc in dcc)
-                yield return dc.ColumnName;
-        }
-
         public override IEnumerable<String> SelectAllColumnNames()
         {
-            return
-                ToEnumerableOfDataColumnName(GetSchemaTable(true).Columns);
+            foreach (DataColumn dc in GetSchemaTable(true).Columns)
+                yield return dc.ColumnName;
         }
 
         #region ISpatialDbProvider<SpatiaLite2_Utility> Members

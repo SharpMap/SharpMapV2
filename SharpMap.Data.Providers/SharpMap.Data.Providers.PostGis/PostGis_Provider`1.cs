@@ -257,6 +257,11 @@ namespace SharpMap.Data.Providers
             }
         }
 
+        public override DataTable GetSchemaTable()
+        {
+            return GetSchemaTable(false);
+        }
+
         public override DataTable GetSchemaTable(Boolean withGeometryColumn)
         {
             DataTable dt = null;
@@ -418,7 +423,7 @@ namespace SharpMap.Data.Providers
                 string orderByCols = String.Join(",",
                                                  Enumerable.ToArray(Processor.Transform(
                                                      GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
-                                                         properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString())));
+                                                         properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString( "\"{0}\"" ))));
 
 
                 string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -429,7 +434,7 @@ namespace SharpMap.Data.Providers
                                                                                      ? compiler.ProjectedColumns
                                                                                      : SelectAllColumnNames())));
 
-                sql = String.Format("SELECT {0} FROM {1} {2} {3} {4} {5}",
+                sql = String.Format("\nSELECT {0}\nFROM {1}\n{2}\n{3} {4}\n{5};",
                                      mainQueryColumns,
                                      QualifiedTableName,
                                      compiler.SqlJoinClauses,
@@ -461,16 +466,16 @@ namespace SharpMap.Data.Providers
         protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties,
                                               ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize, int pageNumber)
         {
-            string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Transform(
+            
+            string orderByCols = String.Join(",", 
+                                                Enumerable.ToArray(Processor.Transform(
                                                  GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
-                                                     properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString())));
+                                                     properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString("\"{0}\""))));
 
 
-            orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
+            orderByCols = string.IsNullOrEmpty(orderByCols) ? QualifyColumnName(OidColumn) : orderByCols;
 
             Int64 startRecord = (pageNumber * pageSize) + 1;
-            Int64 endRecord = (pageNumber + 2) * pageSize; //sequence fn seems to be called twice
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -478,27 +483,28 @@ namespace SharpMap.Data.Providers
                                                                                  ? compiler.ProjectedColumns
                                                                                  : SelectAllColumnNames())));
 
-            //string subQueryColumns = string.Join(",", Enumerable.ToArray(compiler.ProjectedColumns.Count > 0
-            //                             ? FormatColumnNames(false, false, compiler.ProjectedColumns)
-            //                             : SelectAllColumnNames(false, false)));
-
-            string sqlWhereClause = String.Format(@" WHERE (nextval('sharpmap') BETWEEN {0} AND {1})",
-                    compiler.CreateParameter(startRecord).ParameterName,
-                    compiler.CreateParameter(endRecord).ParameterName);
+            string sqlWhereClause = String.Format(@" WHERE (nextval('sharpmap') > {0})",
+                    compiler.CreateParameter(startRecord).ParameterName);//,
 
             if (!String.IsNullOrEmpty(compiler.SqlWhereClause))
                 sqlWhereClause += " AND " + compiler.SqlWhereClause;
 
             return string.Format(
-@"DROP SEQUENCE IF EXISTS ""sharpmap"";
+@"
+DROP SEQUENCE IF EXISTS ""sharpmap"";
 CREATE TEMPORARY SEQUENCE ""sharpmap"" INCREMENT BY 1;
-SELECT {0} FROM {1} {2} {3} ORDER BY {4};",
+SELECT {0}
+FROM {1}
+{2}
+{3}
+ORDER BY {4}
+LIMIT {5};",
                 mainQueryColumns,
                 QualifiedTableName,
                 compiler.SqlJoinClauses,
                 sqlWhereClause,
-                orderByCols
-                );
+                orderByCols,
+                compiler.CreateParameter(pageSize).ParameterName);
 
         }
 
@@ -517,6 +523,12 @@ SELECT {0} FROM {1} {2} {3} ORDER BY {4};",
             }
         }
 
+        public override IEnumerable<string> SelectAllColumnNames()
+        {
+            foreach (DataColumn dc in GetSchemaTable(true).Columns)
+                yield return dc.ColumnName;
+        }
+
         public override string QualifyColumnName(string column)
         {
             if (String.IsNullOrEmpty(column))
@@ -524,8 +536,6 @@ SELECT {0} FROM {1} {2} {3} ORDER BY {4};",
 
             return String.Format("\"{0}\".\"{1}\"", Table, column);
         }
-
-
 
         #region ISpatialDbProvider<PostGis_Utility> Members
 
