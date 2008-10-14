@@ -138,7 +138,7 @@ namespace SharpMap.Data.Providers.Db.Test
                                                            ConfigurationManager.ConnectionStrings["mssqlspatial"].ConnectionString,
                                                            "ST",
                                                            "dbo",
-                                                           "BRoads", "OID", "WKB_Geometry")
+                                                           "BRoads", "OID", "the_geom")
             {
                 DefaultProviderProperties
                     = new ProviderPropertiesExpression(
