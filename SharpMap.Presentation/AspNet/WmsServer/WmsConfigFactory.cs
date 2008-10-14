@@ -50,7 +50,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
                     WmsException.ThrowWmsException("Only version 1.3.0 supported");
             }
             else
-                //Version is mandatory if REQUEST!=GetCapabilities. Check if this is a capabilities request, since VERSION is null
+            //Version is mandatory if REQUEST!=GetCapabilities. Check if this is a capabilities request, since VERSION is null
             {
                 if (String.Compare(context.Request.Params["REQUEST"], "GetCapabilities", ignorecase) != 0)
                     WmsException.ThrowWmsException("VERSION parameter not supplied");
@@ -152,7 +152,8 @@ namespace SharpMap.Presentation.AspNet.WmsServer
                 if (int.TryParse(config.Crs.Substring(5), out tsrid))
                     srid = tsrid;
 
-            config.RealWorldBounds = UrlUtility.ParseExtents(new GeometryServices()[srid],
+            //todo: ensure that this yields correct results. may need to use the whole crs string as srid
+            config.RealWorldBounds = UrlUtility.ParseExtents(new GeometryServices()[srid.ToString()],
                                                              context.Request.Params["BBOX"]);
 
 

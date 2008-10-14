@@ -165,7 +165,7 @@ namespace SharpMap.Data.Providers
             get { return InnerProvider.IsOpen; }
         }
 
-        public Int32? Srid
+        public String Srid
         {
             get { return InnerProvider.Srid; }
         }

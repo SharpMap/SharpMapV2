@@ -50,7 +50,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
         }
 
         public static XmlDocument GetCapabilities(HttpContext context, Map map, WmsServiceDescription serviceDescription)
-            ///John Diss: added context param. this is required when calling from an async http handler
+        ///John Diss: added context param. this is required when calling from an async http handler
         {
             var capabilities = new XmlDocument();
 
@@ -187,7 +187,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
             LayerRootNode.AppendChild(CreateElement("Title", "SharpMap", capabilities, false, wmsNamespaceURI));
             LayerRootNode.AppendChild(CreateElement("CRS", "EPSG:" + map.Layers[0].Srid, capabilities, false,
                                                     wmsNamespaceURI)); //TODO
-            LayerRootNode.AppendChild(GenerateBoundingBoxElement((IExtents2D) map.Extents, map.Layers[0].Srid,
+            LayerRootNode.AppendChild(GenerateBoundingBoxElement((IExtents2D)map.Extents, map.Layers[0].Srid,
                                                                  capabilities));
             //This should be changed when Transformation library is complete
             XmlElement geoBox = capabilities.CreateElement("EX_GeographicBoundingBox", wmsNamespaceURI);
@@ -309,18 +309,18 @@ namespace SharpMap.Presentation.AspNet.WmsServer
             LayerNode.AppendChild(CreateElement("Name", layer.LayerName, doc, false, wmsNamespaceURI));
             LayerNode.AppendChild(CreateElement("Title", layer.LayerName, doc, false, wmsNamespaceURI));
             //If this is a grouplayer, add childlayers recursively
-            if (layer.GetType() == typeof (LayerGroup))
+            if (layer.GetType() == typeof(LayerGroup))
             {
-                foreach (ILayer childlayer in ((LayerGroup) layer))
+                foreach (ILayer childlayer in ((LayerGroup)layer))
                     LayerNode.AppendChild(GetWmsLayerNode(childlayer, doc));
             }
 
-            LayerNode.AppendChild(GenerateBoundingBoxElement((IExtents2D) layer.Extents, layer.Srid, doc));
+            LayerNode.AppendChild(GenerateBoundingBoxElement((IExtents2D)layer.Extents, layer.Srid, doc));
 
             return LayerNode;
         }
 
-        private static XmlElement GenerateBoundingBoxElement(IExtents2D bbox, int? Srid,
+        private static XmlElement GenerateBoundingBoxElement(IExtents2D bbox, string Srid,
                                                              XmlDocument doc)
         {
             XmlElement xmlBbox = doc.CreateElement("BoundingBox", wmsNamespaceURI);
