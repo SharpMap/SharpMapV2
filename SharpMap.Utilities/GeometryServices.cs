@@ -109,7 +109,7 @@ namespace SharpMap.Utilities
             {
                 get
                 {
-                    if (!string.IsNullOrEmpty(srid))
+                    if (string.IsNullOrEmpty(srid))
                         return DefaultGeometryFactory;
 
                     IGeometryFactory factory;
@@ -120,6 +120,7 @@ namespace SharpMap.Utilities
                     {
                         factory = new GeometryFactory<BufferedCoordinate>(srid,
                             (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
+                        factory.Srid = srid;
                         lock (_sridAwareGeometryFactories)
                             if (!_sridAwareGeometryFactories.ContainsKey(srid))
                                 _sridAwareGeometryFactories.Add(srid, factory);
