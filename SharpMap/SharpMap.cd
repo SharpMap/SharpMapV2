@@ -1,0 +1,1848 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SharpMap.Data.AdoNetInternalTypes" Collapsed="true">
+    <Position X="59.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAEAAgAAAAAAAIA=</HashCode>
+      <FileName>Data\AdoNetInternalTypes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.DataSourcePassThroughPropertyDescriptor" Collapsed="true">
+    <Position X="66.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAJAAQAgQQQAAAAAAAAAAAAAQAAAACAAAAAAA=</HashCode>
+      <FileName>Data\DataSourcePassThroughPropertyDescriptor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataRow" Collapsed="true">
+    <Position X="3.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DACSAOAoMCgQAAAAAEAAdkIAEAJEAAwQIBUQAFAApEA=</HashCode>
+      <FileName>Data\FeatureDataRow.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataRow&lt;TOid&gt;" Collapsed="true">
+    <Position X="3.5" Y="27" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\FeatureDataRow`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataRowChangeEventArgs" Collapsed="true">
+    <Position X="66.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAIAAAAAAAAAAAgAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Data\FeatureDataRowChangeEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataSet" Collapsed="true">
+    <Position X="68.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gQAAAAAIUiAAQAIAAAAAUACABFAAABAAAAAAAAARBBA=</HashCode>
+      <FileName>Data\FeatureDataSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataTable" Collapsed="true">
+    <Position X="24.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEKT5gAJDCAAQNGxTCBBRAaBGAqJKQWk1okAUhCCAD0=</HashCode>
+      <FileName>Data\FeatureDataTable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataTable&lt;TOid&gt;" Collapsed="true">
+    <Position X="24.5" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAgAhAACAAEIAAAAAAIAAAAkIAEUAAAgBA=</HashCode>
+      <FileName>Data\FeatureDataTable`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataTableReader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="70" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BCCQAAAoMCgQAhABCAAAJCYgAAJEAEQwIBQAAECApEA=</HashCode>
+      <FileName>Data\FeatureDataTableReader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="71.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BgIAIBAJEECBAUIAEAEQYIACAAQACABoAYEAAQABIQA=</HashCode>
+      <FileName>Data\FeatureDataView.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.FeatureDataViewManager" Collapsed="true">
+    <Position X="59.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Data\FeatureDataViewManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.FeatureMerger" Collapsed="true">
+    <Position X="61.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GABQAGQsCIwALAiAgJAARAgAHAgAACCgQkADCAoIIBE=</HashCode>
+      <FileName>Data\FeatureMerger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.FeatureTableCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="64.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUIAEAAAABAACBAUSIAAhAQAAAAAACAECAAAAABQIAA=</HashCode>
+      <FileName>Data\FeatureTableCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.FeatureUniqueConstraint" Collapsed="true">
+    <Position X="66.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\FeatureUniqueConstraint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.LayerDataLoadException" Collapsed="true">
+    <Position X="24.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAQAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\LayerDataLoadException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.LoadFeaturesAdapter" Collapsed="true">
+    <Position X="66.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAACAAAAAAA=</HashCode>
+      <FileName>Data\LoadFeaturesAdapter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.RasterBand" Collapsed="true">
+    <Position X="59.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\RasterBand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.RasterDataSet" Collapsed="true">
+    <Position X="61.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\RasterDataSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.RasterDataView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="63" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAQBAgGAAAAABgAAAAAAAAAAAAAAEIACA=</HashCode>
+      <FileName>Data\RasterDataView.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.SelectRequestedEventArgs" Collapsed="true">
+    <Position X="68.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\SelectRequestedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.SharpMapDataException" Collapsed="true">
+    <Position X="24.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\SharpMapDataException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.Caching.NullQueryCache" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="64.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAACAAABQAAAAQAAAAAAAAAAAAAAAIAAAQAAA=</HashCode>
+      <FileName>Data\Caching\NullQueryCache.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.AsyncFeatureProviderAdapter" Collapsed="true">
+    <Position X="10.5" Y="24.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACACAAABCAAAAAAAaAAABAAAAAAgAAACAAAAg=</HashCode>
+      <FileName>Data\Providers\AsyncFeatureProviderAdapter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.AsyncProviderAdapter" Collapsed="true">
+    <Position X="11.75" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAACAAACDAAIAAgAAAAAEMAgBAkICGIAkRAAACCCAA=</HashCode>
+      <FileName>Data\Providers\AsyncProviderAdapter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.AsyncRasterProviderAdapter" Collapsed="true">
+    <Position X="12.75" Y="24.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAgACDAAAgAgAAAAAAoAgBAEIAEIAkRAAAAACAA=</HashCode>
+      <FileName>Data\Providers\AsyncRasterProviderAdapter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.AsyncResult" Collapsed="true">
+    <Position X="0.5" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAAAABAAAAAAEAwEAAAAADAQAwAAAAAAAAA=</HashCode>
+      <FileName>Data\Providers\AsyncResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.AsyncResult&lt;TResult&gt;" Collapsed="true">
+    <Position X="0.5" Y="25.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAABACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Providers\AsyncResult`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.Providers.ProviderBase" Collapsed="true">
+    <Position X="23.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>pCQCCAAgCDAAICAgIAAAANOgwhAkMCHIgGRBEhSACAI=</HashCode>
+      <FileName>Data\Providers\ProviderBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.ProviderSchemaHelper" Collapsed="true">
+    <Position X="70" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABQAAIAQAAAAAAAEhIAAAhAAAAgCAAgAIBIAAABAQA=</HashCode>
+      <FileName>Data\Providers\ProviderSchemaHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Data.Providers.FeatureProvider.FeatureDataReader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="64.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BCGQAAAoMSgQChAhCAAAJDagAAJEAEQwIBQCAEiApEg=</HashCode>
+      <FileName>Data\Providers\FeatureProvider\FeatureDataReader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.FeatureProvider.FeatureProvider" Collapsed="true">
+    <Position X="24.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>pAQAAEAEICAAIBCgAAAAEEagAgFAAACABAAAKCCAAAg=</HashCode>
+      <FileName>Data\Providers\FeatureProvider\FeatureProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.GeometryProvider.GeometryDataReader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="68.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BCCSAAAoMCgQAJABGAAAJCagAAJEAkQwIBQAAEiApEA=</HashCode>
+      <FileName>Data\Providers\GeometryProvider\GeometryDataReader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Data.Providers.GeometryProvider.GeometryProvider" Collapsed="true">
+    <Position X="22.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oAgAAAAEICAAIBKgAAQAEEagAgBEAECAAAEACCCEAAg=</HashCode>
+      <FileName>Data\Providers\GeometryProvider\GeometryProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Diagnostics.EnumerablePrinter" Collapsed="true">
+    <Position X="59.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Diagnostics\EnumerablePrinter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Diagnostics.TraceCategories" Collapsed="true">
+    <Position X="70" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAACAAAAAACAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Diagnostics\TraceCategories.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.AllAttributesExpression" Collapsed="true">
+    <Position X="16.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\AllAttributesExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.AllBandsExpression" Collapsed="true">
+    <Position X="18.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\AllBandsExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.AttributeBinaryExpression" Collapsed="true">
+    <Position X="5.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAIAACAAAAAAAAAAAAAAAAQAAAIAAgAIAAAAA=</HashCode>
+      <FileName>Expressions\AttributeBinaryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.AttributeBinaryStringExpression" Collapsed="true">
+    <Position X="3" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAACACAAAAAAAA=</HashCode>
+      <FileName>Expressions\AttributeBinaryStringExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.AttributesPredicateExpression" Collapsed="true">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAEAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\AttributesPredicateExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.AttributesProjectionExpression" Collapsed="true">
+    <Position X="21" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACgAAAAAAQAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\AttributesProjectionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.BinaryExpression" Collapsed="true">
+    <Position X="6.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAACACAAAAAAAA=</HashCode>
+      <FileName>Expressions\BinaryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.BinaryExpressionBase&lt;TOperator&gt;" Collapsed="true">
+    <Position X="7.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAEUgACACAAAAQCBA=</HashCode>
+      <FileName>Expressions\BinaryExpressionBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.CollectionBinaryExpression" Collapsed="true">
+    <Position X="12" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAACACAAAAAAAA=</HashCode>
+      <FileName>Expressions\CollectionBinaryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.CollectionExpression" Collapsed="true">
+    <Position X="51.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQFAAgAAAAAAAAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\CollectionExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.CollectionExpression&lt;TValue&gt;" Collapsed="true">
+    <Position X="50.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQBAAgAAAABAAAAAAAAAAAAAAAAAQARA=</HashCode>
+      <FileName>Expressions\CollectionExpression`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.ExcludedOidCollectionExpression" Collapsed="true">
+    <Position X="12" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\ExcludedOidCollectionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.Expression" Collapsed="true">
+    <Position X="30" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\Expression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.ExpressionParseException" Collapsed="true">
+    <Position X="61.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\ExpressionParseException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ExtentsExpression" Collapsed="true">
+    <Position X="43.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAIAAAAAAAEgAAAAAAAAAAAAAAIAAEAAAAQABA=</HashCode>
+      <FileName>Expressions\ExtentsExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.FeatureQueryExpression" Collapsed="true">
+    <Position X="32.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAgEAAAAAAAAAgAAAAEAAAAAAAMAAEACEAAEAEJA=</HashCode>
+      <FileName>Expressions\FeatureQueryExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.FeaturesCollectionExpression" Collapsed="true">
+    <Position X="52.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\FeaturesCollectionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.GeometryExpression" Collapsed="true">
+    <Position X="45.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAIAAAAAAAEgEAAAAAAAAAAAIAIAAAAAAAQgBA=</HashCode>
+      <FileName>Expressions\GeometryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.LayerExpression" Collapsed="true">
+    <Position X="39" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAIAAAAAAAAEAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\LayerExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.LiteralExpression" Collapsed="true">
+    <Position X="41.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Expressions\LiteralExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.LiteralExpression&lt;TValue&gt;" Collapsed="true">
+    <Position X="41.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAIAAAAAAAgAAAABAAAAAAAAAAAAAgAAAQARA=</HashCode>
+      <FileName>Expressions\LiteralExpression`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.NumericExpression&lt;TNumber&gt;" Collapsed="true">
+    <Position X="48" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAgAAAAAAAAAAAACAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\NumericExpression`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.OidCollectionExpression" Collapsed="true">
+    <Position X="12" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Expressions\OidCollectionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.OidExpression" Collapsed="true">
+    <Position X="54.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\OidExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.PredicateExpression" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\PredicateExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ProjectionExpression" Collapsed="true">
+    <Position X="18.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\ProjectionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.PropertyNameExpression" Collapsed="true">
+    <Position X="23.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABQABA=</HashCode>
+      <FileName>Expressions\PropertyNameExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ProviderExpression" Collapsed="true">
+    <Position X="25.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAEAAAAgAAAAAAAAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\ProviderExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ProviderPropertiesExpression" Collapsed="true">
+    <Position X="27.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\ProviderPropertiesExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ProviderPropertyExpression" Collapsed="true">
+    <Position X="30" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAACAABAAQAAA=</HashCode>
+      <FileName>Expressions\ProviderPropertyExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ProviderPropertyExpression&lt;TValue&gt;" Collapsed="true">
+    <Position X="30" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABAAQAAA=</HashCode>
+      <FileName>Expressions\ProviderPropertyExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ProviderQueryExpression" Collapsed="true">
+    <Position X="34.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\ProviderQueryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.QueryExpression" Collapsed="true">
+    <Position X="34.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAgAAAAAAAAAAAAIQAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\QueryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.RasterQueryExpression" Collapsed="true">
+    <Position X="36.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAgAAAAEAAAAAAAIAAAAAAAAAAAIA=</HashCode>
+      <FileName>Expressions\RasterQueryExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.SpatialBinaryExpression" Collapsed="true">
+    <Position X="9.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAQAAAMAQAAAACAAQAIA=</HashCode>
+      <FileName>Expressions\SpatialBinaryExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.SpatialExpression" Collapsed="true">
+    <Position X="44.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAIAAAAAAAAgAAAAAAAAAAAAAAIAAAABAAAAAA=</HashCode>
+      <FileName>Expressions\SpatialExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.StringCollectionExpression" Collapsed="true">
+    <Position X="50.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAJA=</HashCode>
+      <FileName>Expressions\StringCollectionExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.StringExpression" Collapsed="true">
+    <Position X="41.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAJA=</HashCode>
+      <FileName>Expressions\StringExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Expressions.ThisExpression" Collapsed="true">
+    <Position X="57" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAAAAQABA=</HashCode>
+      <FileName>Expressions\ThisExpression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Expressions.UnaryExpression" Collapsed="true">
+    <Position X="14.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAIEAAAAAAAAAEQCBA=</HashCode>
+      <FileName>Expressions\UnaryExpression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.BinaryTree.BinaryTree&lt;TKey, TValue&gt;" Collapsed="true">
+    <Position X="61.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAKAAAACAASAAAEAAAAgAAAAAAAIAEgAAAAAIAAAgAA=</HashCode>
+      <FileName>Indexing\BinaryTree\BinaryTree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.BinaryTree.BinaryTreeNode&lt;TKey, TValue&gt;" Collapsed="true">
+    <Position X="63" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAACBAgAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\BinaryTree\BinaryTreeNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.ObsoleteIndexFileFormatException" Collapsed="true">
+    <Position X="68.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAEAAAAAAAAQAQAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Indexing\ObsoleteIndexFileFormatException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.SpatialIndexNode&lt;TItem&gt;" Collapsed="true">
+    <Position X="23.75" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAgAkAAEgIGKAIAQAkEACAgDMABAoEAAUAAABAAoE=</HashCode>
+      <FileName>Indexing\SpatialIndexNode.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.DynamicQuadTree&lt;TItem&gt;" Collapsed="true">
+    <Position X="24.75" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAYAAAAAAAAAAABAAAQAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\DynamicQuadTree.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.DynamicQuadTreeBalanceHeuristic" Collapsed="true">
+    <Position X="70" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\DynamicQuadTreeBalanceHeuristic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.LinearDynamicQuadTree&lt;TItem&gt;" Collapsed="true">
+    <Position X="24.75" Y="28" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\LinearDynamicQuadTree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.LinearQuadTreeEntryInsertStrategy&lt;TItem&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="63" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\LinearQuadTreeEntryInsertStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.QuadTreeIndexInsertOverflowException" Collapsed="true">
+    <Position X="71.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\LinearQuadTreeEntryInsertStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.LinearQuadTreeNodeSplitStrategy&lt;TItem&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="64.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Indexing\QuadTree\LinearQuadTreeNodeSplitStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.QuadTree&lt;TItem&gt;" Collapsed="true">
+    <Position X="24.75" Y="25.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAAAAAAAAAAACAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\QuadTree.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Indexing.QuadTree.QuadTreeNode&lt;TItem&gt;" Collapsed="true">
+    <Position X="24.75" Y="23.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAIEAAAAAAEEAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\QuadTree\QuadTreeNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.DynamicRTree&lt;TItem&gt;" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAEAAYIAAAAACAAFABAAgQAABEAAAAABAAAAAAAA=</HashCode>
+      <FileName>Indexing\RTree\DynamicRTree.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.DynamicRTreeBalanceHeuristic" Collapsed="true">
+    <Position X="71.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\RTree\DynamicRTreeBalanceHeuristic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.GuttmanQuadraticInsert&lt;TItem&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="71.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAEAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\RTree\GuttmanQuadraticInsert.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.GuttmanQuadraticSplit&lt;TItem&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CBAAQAAAAAAIAAAAAAAAAACAAAAAABAAAACAAAAAgAE=</HashCode>
+      <FileName>Indexing\RTree\GuttmanQuadraticSplit.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.NullRestructuringStrategy&lt;TBounds, TItem&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="66.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\RTree\NullRestructuringStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.RTree&lt;TItem&gt;" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEIAACAUACAAAAEAABCAAAAAAAgAAAAAAABAAgA=</HashCode>
+      <FileName>Indexing\RTree\RTree.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.RTreeNode&lt;TItem&gt;" Collapsed="true">
+    <Position X="22.5" Y="23.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAgAAAAIEAAEAAAEEAAAAAIAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Indexing\RTree\RTreeNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Indexing.RTree.SelfOptimizingDynamicSpatialIndex&lt;TItem&gt;" Collapsed="true">
+    <Position X="0.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgEAEEQJGAAAAIIAAAGAAAAAgAAAAAAEBAAoAAgACA=</HashCode>
+      <FileName>Indexing\RTree\SelfOptimizingSpatialIndex.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Layers.DuplicateLayerException" Collapsed="true">
+    <Position X="68.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Layers\DuplicateLayerException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Layers.FeatureLayer" Collapsed="true">
+    <Position X="6.25" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hAAABEICEAAAAgBIAAABAgACAEBAAAAABAiAYAAAAAA=</HashCode>
+      <FileName>Layers\FeatureLayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Layers.GeometryLayer" Collapsed="true">
+    <Position X="5.25" Y="24.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAgAAAABAAAAAAAAABAAAAAAAABA=</HashCode>
+      <FileName>Layers\GeometryLayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Layers.LabelLayer" Collapsed="true">
+    <Position X="7.5" Y="24.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAABACAAACAkABAAAAhQEAAgAAAIAAAAACAAABA=</HashCode>
+      <FileName>Layers\LabelLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Layers.Layer" Collapsed="true">
+    <Position X="4" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>pzJAiAAICLGkBpBENECCAJfQgEAgEDeMhIQgUDwGABA=</HashCode>
+      <FileName>Layers\Layer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Layers.LayerCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="68.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgBAAAAABECACIAQYCBAQCEIAAiEIkIAAAEEEAA=</HashCode>
+      <FileName>Layers\LayerCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Layers.LayerDataLoadedEventArgs" Collapsed="true">
+    <Position X="70" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAQAAAAAAAAQAAAAgAAAAAA=</HashCode>
+      <FileName>Layers\LayerDataLoadedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Layers.LayerGroup" Collapsed="true">
+    <Position X="0.75" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gMIAAEgAACCAAJBQCAEABCWCAEAAAhAEDAAAQABQMBA=</HashCode>
+      <FileName>Layers\LayerGroup.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Layers.RasterLayer" Collapsed="true">
+    <Position X="3" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAgBAAAAAAABAAEAAAAAAAAAAQAAAABA=</HashCode>
+      <FileName>Layers\RasterLayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Map" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="70" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAgEAIADQGElgIoALDARCixABZQMSGwTcBAAKqEAg=</HashCode>
+      <FileName>Map.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.SharpMapVersion" Collapsed="true">
+    <Position X="70" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>SharpMapVersion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.FeatureChangeRequestEventArgs" Collapsed="true">
+    <Position X="63" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Presentation\FeatureChangeRequestEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.FeaturesHighlightedChangedEventArgs" Collapsed="true">
+    <Position X="63" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAABAAAAgAAAACAAA=</HashCode>
+      <FileName>Presentation\FeaturesSelectionChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.LayerActionEventArgs" Collapsed="true">
+    <Position X="66.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAEAAIEAA=</HashCode>
+      <FileName>Presentation\LayerActionEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.LayerStyleChangeRequestEventArgs" Collapsed="true">
+    <Position X="59.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAAA=</HashCode>
+      <FileName>Presentation\LayerStyleChangeRequestEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.LocationEventArgs" Collapsed="true">
+    <Position X="68.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Presentation\LocationEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.MapActionEventArgs&lt;TPoint&gt;" Collapsed="true">
+    <Position X="71.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\MapActionEventArgs`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.MapViewPropertyChangeEventArgs&lt;TParam&gt;" Collapsed="true">
+    <Position X="61.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAgAAAAAAAAEAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Presentation\MapViewPropertyChangeEventArgs`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.StyleTypeDescriptor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="66.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAACAAAAAAgAAAAAAAAABAEIAAAAETAgAAACAA=</HashCode>
+      <FileName>Presentation\StyleTypeDescriptor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Presentation.ToolChangeRequestedEventArgs" Collapsed="true">
+    <Position X="68.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\ToolChangeRequestEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.ViewSelection&lt;TPoint, TSize, TViewRegion&gt;" Collapsed="true">
+    <Position X="15.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQhQEgAAiAESIAIAACAKAAIAAAAAAEAAAIAAQADCIAA=</HashCode>
+      <FileName>Presentation\ViewSelection`3.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Presentation.ViewSelection2D" Collapsed="true">
+    <Position X="15.5" Y="23.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAIEAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\ViewSelection2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.AttributePresenter" Collapsed="true">
+    <Position X="9.25" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAkAAAACgAAAAAACAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Presenters\AttributePresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.BasePresenter&lt;TView&gt;" Collapsed="true">
+    <Position X="12.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAADAEAAAAAAAAABAAAAABQAAAAHAAAAACAAA=</HashCode>
+      <FileName>Presentation\Presenters\BasePresenter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.FeatureLayersListenerPresenter&lt;TView&gt;" Collapsed="true">
+    <Position X="10.25" Y="17.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAwAACAAABAAgAAEIAAAAAAIAAAAAAIAAAAAIAA=</HashCode>
+      <FileName>Presentation\Presenters\FeatureLayersListenerPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.LayersPresenter" Collapsed="true">
+    <Position X="13.75" Y="17.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AYAAAAACAAACAAAgAAEEBAAAAAAQAAAAABAAAACAAAA=</HashCode>
+      <FileName>Presentation\Presenters\LayersPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.LayerStylePresenter" Collapsed="true">
+    <Position X="7" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Presenters\LayerStylePresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.MapLayersListenerPresenter&lt;TView&gt;" Collapsed="true">
+    <Position X="11.5" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAEAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Presenters\MapLayersListenerPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.MapPresenter2D" Collapsed="true">
+    <Position X="11.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>F2Z7eAgwgjP8LfQICgElcCJOzEkI7CVnIBJEGaoimFU=</HashCode>
+      <FileName>Presentation\Presenters\MapPresenter2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.MapToolPresenter" Collapsed="true">
+    <Position X="16" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Presentation\Presenters\MapToolPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Presentation.Presenters.ToolsPresenter" Collapsed="true">
+    <Position X="18.25" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Presenters\ToolsPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Properties.Resources" Collapsed="true">
+    <Position X="66.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.AffineMatrix" Collapsed="true">
+    <Position X="20.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICMDAEhAARAAJQRBrAMDKBEA0QAAAAgIQAAkaAiACPA=</HashCode>
+      <FileName>Rendering\AffineMatrix.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.ColorMatrix" Collapsed="true">
+    <Position X="19.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAAAAAAAIAAAEAkKAECARA=</HashCode>
+      <FileName>Rendering\ColorMatrix.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Figure&lt;TPoint, TBounds&gt;" Collapsed="true">
+    <Position X="14.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAIAAAAAAAAAgJAMgAAAAAAAAAAAANAEAAAQIADAAhA=</HashCode>
+      <FileName>Rendering\Figure`2.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.LayerRendererRegistry" Collapsed="true">
+    <Position X="71.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAQBAAAAAAAAAAAABAAAAQAAAAAAAACA=</HashCode>
+      <FileName>Rendering\LayerRendererRegistry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.LinearFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="61.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Rendering\LinearFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Matrix" Collapsed="true">
+    <Position X="20.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICdHAE5ATZAABUZk7gMTKAEAyQwAAKgJCkAkaCiACvQ=</HashCode>
+      <FileName>Rendering\Matrix.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.MatrixProcessor" Collapsed="true">
+    <Position X="63" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIFAlACBACAAQAggAIDEACIEAAIADAAQAAEAIggABg=</HashCode>
+      <FileName>Rendering\MatrixProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Path&lt;TPoint, TViewBounds&gt;" Collapsed="true">
+    <Position X="15.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAgAAQgJAMghACAAAAAAABAJAEAAAQAADAAhA=</HashCode>
+      <FileName>Rendering\Path`2.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.RenderException" Collapsed="true">
+    <Position X="64.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\RenderExceptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Symbol&lt;TPoint, TSize&gt;" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAgAAAAACYUgIgIgAKgEhAgBAEAGAAAEAAACAIAghA=</HashCode>
+      <FileName>Rendering\Symbol`2.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Vector" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="71.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IGMbSkhEhVAMVZRErIFTIBEISy0QAwgNBADmLBCjDPg=</HashCode>
+      <FileName>Rendering\Vector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.BasicGeometryRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="0.75" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ApaAAAAAAAAAAIAAQAAACAAAAAgABAgIAACAAoAACAI=</HashCode>
+      <FileName>Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.BasicLabelRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="3" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQACAAgAAEAAAgAAAAAAAAAAAAgAABAAAAgAEAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\BasicLabelRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.FeatureRenderer2D&lt;TStyle, TRenderObject&gt;" Collapsed="true">
+    <Position X="2" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABwgCAAAACAAAIAQACAAAiAAAAAAAAhAAAEAAEAAAIg=</HashCode>
+      <FileName>Rendering\Rendering2D\FeatureRenderer2D`2.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.Figure2D" Collapsed="true">
+    <Position X="14.5" Y="19.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAABAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\Figure2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.Label2D" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="63" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUAAAAAAQAAAAIQUIgIAAAQAIACAAAAIBCBICCQCgBA=</HashCode>
+      <FileName>Rendering\Rendering2D\Label2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.LabelCollisionDetection2D" Collapsed="true">
+    <Position X="64.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAEAAAAAAAAAAAAAAAAAABAAAAAAAkAAABA=</HashCode>
+      <FileName>Rendering\Rendering2D\LabelCollisionDetection2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.Matrix2D" Collapsed="true">
+    <Position X="21.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAACAAEgAIAACAAEAAAAJDAAEAEQAAAABA=</HashCode>
+      <FileName>Rendering\Rendering2D\Matrix2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.Path2D" Collapsed="true">
+    <Position X="15.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAgAAAAAAAAAAAAAAAAAAgABAAAAAQAABAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\Path2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.RasterRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="9.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAgAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\RasterRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.Renderer2D" Collapsed="true">
+    <Position X="5.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAUCAAQAAAAAACABCAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\Renderer2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.Symbol2D" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAIgEgAIAAgAABAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Rendering\Rendering2D\Symbol2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.TextRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="5.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAEAAAAACAAAAAAAAAAQIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\TextRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Rendering2D.VectorRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="7.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAEIAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\VectorRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Thematics.CustomTheme" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="64.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAQAAAAAAAAAAAAAAAAAABAQAAAAAAAAIA=</HashCode>
+      <FileName>Rendering\Thematics\CustomTheme.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Rendering.Thematics.GradientTheme2D" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="70" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUIAgQCAABABIAgAMBBAAABAAwAAAQBAEIBAAQAAAAI=</HashCode>
+      <FileName>Rendering\Thematics\GradientTheme.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharpMap.Styles.FeatureStyle" Collapsed="true">
+    <Position X="4" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAEAAQAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Styles\FeatureStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.GeometryStyle" Collapsed="true">
+    <Position X="3" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAIAAAAAAABAAIQIIABAACYAECCEAAYAAAABBGAA=</HashCode>
+      <FileName>Styles\GeometryStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.LabelStyle" Collapsed="true">
+    <Position X="5.25" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAEAACEgQBAAACACoAQAAAAAIICAAAABAAAoAQUSgAA=</HashCode>
+      <FileName>Styles\LabelStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.LinearGradientStyleBrush" Collapsed="true">
+    <Position X="23.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAQAAAQEAQAQAAQAAAAAAAQAQAAAAAAAAAA=</HashCode>
+      <FileName>Styles\LinearGradientStyleBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.RasterStyle" Collapsed="true">
+    <Position X="0.75" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\RasterStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.SolidStyleBrush" Collapsed="true">
+    <Position X="21.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\SolidStyleBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.Style" Collapsed="true">
+    <Position X="3" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAIAACAAAAAAKAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\Style.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Styles.StyleBrush" Collapsed="true">
+    <Position X="22.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAIAAAAAAgAAAAAA=</HashCode>
+      <FileName>Styles\StyleBrush.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.StyleColorBlend" Collapsed="true">
+    <Position X="59.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgIAgEAAAAggAAAAAAAAAgAQACAAIAAgBAgCAA=</HashCode>
+      <FileName>Styles\StyleColorBlend.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.StyleFont" Collapsed="true">
+    <Position X="61.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAEAgAAEAAAAAAAAAAAAAIAABAAAACIAAAA=</HashCode>
+      <FileName>Styles\StyleFont.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.StyleFontFamily" Collapsed="true">
+    <Position X="63" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\StyleFontFamily.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Styles.StylePen" Collapsed="true">
+    <Position X="64.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIiAAwAMKAACAAIFAXAAAEQgJRAgQYAQACAgAAgAAgA=</HashCode>
+      <FileName>Styles\StylePen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Tools.MapTool" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgEEIAAABAAAAIJAAEAAAAQAAQABAAEYAAAAAQAAAAI=</HashCode>
+      <FileName>Tools\MapTool.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Tools.MapTool&lt;TMapView, TPoint&gt;" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAgACCAAAAEYAEAAAAAAAAIAA=</HashCode>
+      <FileName>Tools\MapTool`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Tools.MapToolSet" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGIAAEAAAgBAABAQCAgQBAQAAAAAAACACAAAAABQIAA=</HashCode>
+      <FileName>Tools\MapToolSet.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharpMap.Tools.MapToolSetChangedEventArgs" Collapsed="true">
+    <Position X="59.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tools\MapToolSetChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Tools.StandardMapView2DMapTools" Collapsed="true">
+    <Position X="71.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>KACAYCIDYgUAYyACFGAAQgAGAAAAAYiVZgAIBMEAAgA=</HashCode>
+      <FileName>Tools\StandardMapTools2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Utilities.IdleMonitor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="61.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYEAAAQgCQAAQEwgAAEEpCIAACIAAAJAAAUAQgAIiA=</HashCode>
+      <FileName>Utilities\IdleMonitor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Struct Name="SharpMap.Indexing.RTree.ComputationExtents" Collapsed="true">
+    <Position X="61.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAACAACABQAAQAAAAAAAAAAQAIAAA=</HashCode>
+      <FileName>Indexing\RTree\ComputationExtents.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SharpMap.Indexing.RTree.RestructuringHuristic" Collapsed="true">
+    <Position X="66.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAVAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAI=</HashCode>
+      <FileName>Indexing\RTree\RestructuringHeuristic.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SharpMap.Rendering.Rendering2D.Point2D" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="63" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YaZIoIQ5KQRMktAEzQNTuYIAAcQAQIiBgIHYaEmI8vo=</HashCode>
+      <FileName>Rendering\Rendering2D\Point2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Struct Name="SharpMap.Rendering.Rendering2D.Rectangle2D" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="64.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IaJCAAYAJYBCxgSFgAJTKEAQAUwcQYgBCgiMIQCIYvA=</HashCode>
+      <FileName>Rendering\Rendering2D\Rectangle2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Struct Name="SharpMap.Rendering.Rendering2D.Size2D" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="68.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oaZIoIQRLQDE0tQE7WNTqcIAAdAgRKmAQIHYaAmIhno=</HashCode>
+      <FileName>Rendering\Rendering2D\Size2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Struct Name="SharpMap.Styles.StyleColor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="70" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>a/o/AcR9QXv0Y7OmoR0R91WVHYRxxqSLmLRtvbUZl6E=</HashCode>
+      <FileName>Styles\StyleColor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Struct Name="SharpMap.Tools.ActionContext&lt;TMapView, TPoint&gt;" Collapsed="true">
+    <Position X="59.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQJAABAAAAAAAAAAAAAABgAAAAGAAAAAAAAA=</HashCode>
+      <FileName>Tools\ActionContext`1.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="SharpMap.Data.IAsyncProvider" Collapsed="true">
+    <Position X="16.75" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Data\IAsyncProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IFeatureAdapter" Collapsed="true">
+    <Position X="59.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAEAACBAAAIgAACAgAAAAAACAAAAA=</HashCode>
+      <FileName>Data\IFeatureAdapter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IFeatureDataReader" Collapsed="true">
+    <Position X="18.5" Y="26" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IFeatureDataReader.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IFeatureDataRecord" Collapsed="true">
+    <Position X="18.5" Y="24.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAQAAAAAAAAIAIAAAAAAAAAAAAAAEAAgAA=</HashCode>
+      <FileName>Data\IFeatureDataRecord.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IFeatureProvider" Collapsed="true">
+    <Position X="19" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABCAAAAAAASAAABAAAAAAAAAACAAAAg=</HashCode>
+      <FileName>Data\IFeatureProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IFeatureProvider&lt;TOid&gt;" Collapsed="true">
+    <Position X="19" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAACAAAAAAAAAAAAAAACAAAAACAAAAAA=</HashCode>
+      <FileName>Data\IFeatureProvider`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IProvider" Collapsed="true">
+    <Position X="19" Y="19" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAIAAgAAAAAEMAAAAgAACAAAAAAACAAAA=</HashCode>
+      <FileName>Data\IProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IRasterProvider" Collapsed="true">
+    <Position X="21.25" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IRasterProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.IWritableFeatureProvider&lt;TOid&gt;" Collapsed="true">
+    <Position X="19" Y="23.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IWritableFeatureProvider`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Data.Caching.IQueryCache" Collapsed="true">
+    <Position X="71.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAACAAAAQAAAAQAAAAAAAAAAAAAAAIAAAQAAA=</HashCode>
+      <FileName>Data\Caching\IQueryCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Expressions.IHasDynamicProperties" Collapsed="true">
+    <Position X="21.25" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAACEIAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\IHasDynamicProperties.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Layers.IFeatureLayer" Collapsed="true">
+    <Position X="23.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAICAAAAAhAIAAABAgACAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Layers\IFeatureLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Layers.ILayer" Collapsed="true">
+    <Position X="24.75" Y="19" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABJAgAAIAACgAoAAAACCAAEAAAAgABIABAAAQAgAAAA=</HashCode>
+      <FileName>Layers\ILayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Layers.IRasterLayer" Collapsed="true">
+    <Position X="25.75" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Layers\IRasterLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.IViewSelection&lt;TPoint, TSize, TViewRegion&gt;" Collapsed="true">
+    <Position X="64.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAgAAAAAQIAIAACAAAAAAAAAAAEAAAAAAQADAIAA=</HashCode>
+      <FileName>Presentation\IViewSelection`3.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.IAttributeView" Collapsed="true">
+    <Position X="9.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAEgAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Views\IAttributeView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.ILayerStyleView" Collapsed="true">
+    <Position X="0.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Views\ILayerStyleView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.ILayersView" Collapsed="true">
+    <Position X="3" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAgAABAAQKAAAAAAAAgAAAAAAQBAAEAAAAAACAAAA=</HashCode>
+      <FileName>Presentation\Views\ILayersView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.IMapToolView" Collapsed="true">
+    <Position X="70" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAoAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Views\IMapToolView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.IMapView2D" Collapsed="true">
+    <Position X="5.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAABEAAA5QAEABCCGAiIAKAAZAgMkCQEQgBAU4AA=</HashCode>
+      <FileName>Presentation\Views\IMapView2D.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.IToolsView" Collapsed="true">
+    <Position X="7.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Views\IToolsView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Presentation.Views.IView" Collapsed="true">
+    <Position X="5.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAMAAEAAAAAAAAAAEAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Presentation\Views\IView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IFeatureRenderer" Collapsed="true">
+    <Position X="19.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAgAAAAAAEAAAIA=</HashCode>
+      <FileName>Rendering\IFeatureRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IFeatureRenderer&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="19.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\IFeatureRenderer`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IGeometryRenderer&lt;TSymbol, TRenderObject&gt;" Collapsed="true">
+    <Position X="63" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABIAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAACAI=</HashCode>
+      <FileName>Rendering\IGeometryRenderer`2.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IHasEmpty" Collapsed="true">
+    <Position X="64.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\IHasEmpty.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.ILabel&lt;TPoint, TSize, TRectangle, TPath&gt;" Collapsed="true">
+    <Position X="66.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAEAAIAAAQAIAAAAAAABAAICAACgAA=</HashCode>
+      <FileName>Rendering\ILabel`4.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.ILabelRenderer&lt;TPoint, TSize, TRectangle, TRenderObject&gt;" Collapsed="true">
+    <Position X="68.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\ILabelRenderer`4.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IRasterRenderer&lt;TRectangle&gt;" Collapsed="true">
+    <Position X="12.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\IRasterRenderer`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IRenderer" Collapsed="true">
+    <Position X="16" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\IRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.ITextRenderer&lt;TPoint, TSize, TRectangle&gt;" Collapsed="true">
+    <Position X="15" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAEAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\ITextRenderer`3.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.IViewRectangle&lt;TPoint&gt;" Collapsed="true">
+    <Position X="63" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\IViewRectangle`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Rendering2D.IRasterRenderer2D" Collapsed="true">
+    <Position X="12.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\IRasterRenderer2D.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Rendering2D.IRasterRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="12.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\IRasterRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Rendering2D.ITextRenderer2D" Collapsed="true">
+    <Position X="15" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\ITextRenderer2D.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Rendering2D.ITextRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="15" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\ITextRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Rendering2D.IVectorRenderer2D" Collapsed="true">
+    <Position X="17.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\IVectorRenderer2D.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Rendering2D.IVectorRenderer2D&lt;TRenderObject&gt;" Collapsed="true">
+    <Position X="17.25" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Rendering2D\IVectorRenderer2D`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Rendering.Thematics.ITheme" Collapsed="true">
+    <Position X="61.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Thematics\ITheme.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Styles.IFeatureLayerStyle" Collapsed="true">
+    <Position X="61.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\IFeatureLayerStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Styles.IStyle" Collapsed="true">
+    <Position X="59.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAACAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\IStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Tools.IMapTool" Collapsed="true">
+    <Position X="10.75" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAIBAAAAAAAQAAAAAAAAIAAAAAQAAAAI=</HashCode>
+      <FileName>Tools\IMapTool.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Tools.IMapTool&lt;TMapView, TPoint&gt;" Collapsed="true">
+    <Position X="9.5" Y="21.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAEAAAAAAAAIAA=</HashCode>
+      <FileName>Tools\IMapTool`1.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SharpMap.Tools.IMapToolSet" Collapsed="true">
+    <Position X="11.75" Y="21.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAQBAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Tools\IMapToolSet.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="SharpMap.Data.FeatureQueryExecutionOptions" Collapsed="true">
+    <Position X="66.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAACAAAAAAQAAAAAAEAAAAAAAMEAAA=</HashCode>
+      <FileName>Data\FeatureQueryExecutionOptions.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Data.SchemaMergeAction" Collapsed="true">
+    <Position X="71.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAIAAAAEAAAAQAAAAAAAAAAAAAAAAAAABAAAGAACA=</HashCode>
+      <FileName>Data\SchemaMergeAction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Data.Providers.OgcStorageType" Collapsed="true">
+    <Position X="64.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Providers\OgcEnumerations.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Expressions.BinaryOperator" Collapsed="true">
+    <Position X="59.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICAAAAAAAAAAAAAAgAAAIAAAAAAAAAAgAAAAIAQBACA=</HashCode>
+      <FileName>Expressions\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Expressions.BinaryStringOperator" Collapsed="true">
+    <Position X="61.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQYAAA=</HashCode>
+      <FileName>Expressions\BinaryStringOperator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Expressions.CollectionOperator" Collapsed="true">
+    <Position X="63" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAIAAAAAQACA=</HashCode>
+      <FileName>Expressions\CollectionOperator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Expressions.SpatialOperation" Collapsed="true">
+    <Position X="59.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAgAAAAAAAIABAAAAAAAAAAAERCIA=</HashCode>
+      <FileName>Expressions\SpatialOperation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Expressions.UnaryOperator" Collapsed="true">
+    <Position X="71.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Expressions\UnaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Indexing.RTree.RestructureOpportunity" Collapsed="true">
+    <Position X="70" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAgEAAAA=</HashCode>
+      <FileName>Indexing\RTree\RestructureOpportunity.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Layers.MultipartGeometryLabelingBehavior" Collapsed="true">
+    <Position X="63" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAIAAAAAACAAAAAIAAAAAIAAA=</HashCode>
+      <FileName>Layers\MultipartGeometryLabelingBehavor.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Presentation.LayerAction" Collapsed="true">
+    <Position X="70" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAIAAAACAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Presentation\LayerActionEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Presentation.RenderPhase" Collapsed="true">
+    <Position X="66.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAEAAAI=</HashCode>
+      <FileName>Presentation\RenderPhase.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Rendering.RenderState" Collapsed="true">
+    <Position X="68.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAABI=</HashCode>
+      <FileName>Rendering\RenderState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.CollisionDetectionType" Collapsed="true">
+    <Position X="64.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAECAAA=</HashCode>
+      <FileName>Styles\CollisionDetectionType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.HorizontalAlignment" Collapsed="true">
+    <Position X="68.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAIAAA=</HashCode>
+      <FileName>Styles\HorizontalAlignment.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.LineDashCap" Collapsed="true">
+    <Position X="71.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAEAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Styles\LineDashCap.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.LineDashStyle" Collapsed="true">
+    <Position X="59.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAgAAAAAAAAAAAAAAAACAAAAAAoAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\LineDashStyle.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.StyleFontStyle" Collapsed="true">
+    <Position X="61.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAACAAAIAAAAAAEAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Styles\StyleFontStyle.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.StyleLineCap" Collapsed="true">
+    <Position X="63" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAChAAAAEAAAAAAAAAoAAAAgAAIAIIA=</HashCode>
+      <FileName>Styles\StyleLineCap.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.StyleLineJoin" Collapsed="true">
+    <Position X="64.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAIAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Styles\StyleLineJoin.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.StylePenAlignment" Collapsed="true">
+    <Position X="66.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAABAAAAAAAAAACACAAAAIAAA=</HashCode>
+      <FileName>Styles\StylePenAlignment.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.StyleRenderingMode" Collapsed="true">
+    <Position X="68.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAIAAAAAAEAAABAAAAAAEAAAA=</HashCode>
+      <FileName>Styles\StyleRenderingMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.StyleTextRenderingHint" Collapsed="true">
+    <Position X="70" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAgAAAAAAAEAAAAEAAAAAAAAAAAAAIBAAAAA=</HashCode>
+      <FileName>Styles\StyleTextRenderingHint.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Styles.VerticalAlignment" Collapsed="true">
+    <Position X="59.5" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Styles\VerticalAlignment.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Tools.MapToolSetChange" Collapsed="true">
+    <Position X="61.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Tools\MapToolSetChange.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="SharpMap.Data.FeatureDataRowChangeEventHandler" Collapsed="true">
+    <Position X="66.5" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Data\FeatureDataRowChangeEventHandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SharpMap.Data.Providers.ColumnLengthComputationDelegate" Collapsed="true">
+    <Position X="61.25" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Data\Providers\ColumnPropertyComputationDelegates.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SharpMap.Data.Providers.ColumnPrecisionComputationDelegate" Collapsed="true">
+    <Position X="63" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Data\Providers\ColumnPropertyComputationDelegates.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SharpMap.Data.Providers.ColumnScaleComputationDelegate" Collapsed="true">
+    <Position X="64.75" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Data\Providers\ColumnPropertyComputationDelegates.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SharpMap.Rendering.LabelFilterDelegate" Collapsed="true">
+    <Position X="68.25" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\LabelFilterDelegate.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SharpMap.Rendering.Thematics.CalculateStyleDelegate" Collapsed="true">
+    <Position X="59.5" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Thematics\GradientTheme.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
