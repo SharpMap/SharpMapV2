@@ -37,12 +37,13 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
                 string.Format("DECLARE {0} geometry\n SET {0} = geometry::STGeomFromWKB({1},{2})\n ",
                               declaredParamName,
                               CreateParameter(geom).ParameterName,
-                              geom.Srid.HasValue && geom.Srid.Value > 0
+                              Provider.ParseSrid(geom.Srid).HasValue && Provider.ParseSrid(geom.Srid).Value > 0
                                   ?
-                                      geom.Srid.Value
-                                  : !Provider.Srid.HasValue || Provider.Srid < 0
+                                      Provider.ParseSrid(geom.Srid).Value
+                                  : !Provider.ParseSrid(Provider.Srid).HasValue ||
+                                    Provider.ParseSrid(Provider.Srid).Value < 0
                                         ? 0
-                                        : Provider.Srid));
+                                        : Provider.ParseSrid(Provider.Srid)));
 
             builder.AppendFormat(" {0}.{1}.{2}({3}) = 1 ",
                                  Provider.Table,
@@ -53,7 +54,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
 
         private static string GetSpatialMethodName(SpatialOperation op)
         {
-            return string.Format("ST{0}", Enum.GetName(typeof(SpatialOperation), op));
+            return string.Format("ST{0}", Enum.GetName(typeof (SpatialOperation), op));
         }
 
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,

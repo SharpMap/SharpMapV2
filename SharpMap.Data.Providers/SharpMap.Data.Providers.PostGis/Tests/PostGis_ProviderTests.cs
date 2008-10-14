@@ -9,10 +9,10 @@ using NUnit.Framework;
 
 using SharpMap.Data;
 using SharpMap.Data.Providers;
-using SharpMap.Data.Providers.SpatiaLite2;
+using SharpMap.Data.Providers.Db.Expressions;
+using SharpMap.Data.Providers.PostGis;
 using SharpMap.Expressions;
 using SharpMap.Layers;
-using SharpMap.Data.Providers.Db.Expressions;
 
 using NetTopologySuite.Coordinates;
 using GisSharpBlog.NetTopologySuite.Geometries;
@@ -21,6 +21,8 @@ using GeoAPI.Geometries;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 
+using Npgsql;
+using NpgsqlTypes;
 /*
  *
  * These tests will not work with the current version of SharpMap 2.0
@@ -28,18 +30,43 @@ using GeoAPI.CoordinateSystems;
  *
  */
  
-namespace SharpMap.Tests.Data.Providers.SpatiaLite2
+namespace SharpMap.Tests.Data.Providers.PostGis
 {
     [TestFixture]
-    public class SpatiaLite2_ProviderTests
+    public class PostGis_ProviderTests
     {
         private static IGeometryFactory _geometryFactory;
+        private static String connectionString = 
+            "Server=127.0.0.1;Port=5432;" +
+            "Userid=obe;Password=obe;database=obe;" +
+            "Protocol=3;SSL=false;" +
+            "Pooling=true;MinPoolSize=1;MaxPoolSize=20;"+
+            "Encoding=UNICODE;Timeout=15;SslMode=Disable;" +
+            "Enlist=true;";
         
         //[TestFixtureSetUp]
-        static SpatiaLite2_ProviderTests()
+        static PostGis_ProviderTests()
         {
-            //Delete possibly existing database file
-            if (DBFile.Exists(@"test.sqlite")) DBFile.Delete(@"test.sqlite");
+            try
+            {
+                using (NpgsqlConnection cn = new NpgsqlConnection(connectionString))
+                {
+                    cn.Open();
+                    try
+                    {
+                        new NpgsqlCommand("DROP TABLE public.\"TestFeatureDataTable\";", cn).ExecuteNonQuery();
+                        //System.Diagnostics.Debug.Write(
+                        //    new NpgsqlCommand("SELECT ST_AsText(x.geom) FROM (SELECT ST_GeomFromText('POLYGON((-1 -1, 0 1, 1 -1, -1 -1))',-1) AS geom) AS x;", cn).ExecuteScalar());
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        System.Diagnostics.Trace.Write(ex.Message);
+                    }
+                }
+            }
+            catch
+            { }
+		
 
             BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
             _geometryFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
@@ -52,28 +79,27 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 
         public void RunTests()
         {
+            T11_JD_Test();
+
             T01_CreateTableFromFeatureDataTable();
-            T02_CreateGeometryLayerFromSpatiaLite2();
-            T03_MultipleSelects();
+            T02_CreateGeometryLayerFromPostGis();
+            T03_SomeSelects();
             T04_InsertInDataSource();
             T05_DeleteFromDataSource();
             T06_UpdateDataSource();
 
-            T11_JD_Test();
         }
+
         [Test]
         private void T11_JD_Test()
         {
-            return;
-            var search = new SpatiaLite2_Provider(_geometryFactory,
-                                                  @"Data Source=C:\VENUS\CodePlex\sharpMap\SharpMap\TestData\VRS2386_V11.sqlite", "main",
-                                                  "regions", "OID", "XGeometryX");
-
-            //search.SpatiaLiteIndexType = SpatiaLite2_IndexType.MBRCache;
+            var search = new PostGis_Provider<Int32>(_geometryFactory,
+                                                  connectionString, "public",
+                                                  "vw_osm_germany_line", "osm_id", "way");
 
             var binaryExpression =
-                new BinaryExpression(new PropertyNameExpression("VHG5"),
-                                     BinaryOperator.GreaterThan, new LiteralExpression<int>(6));
+                new BinaryExpression(new PropertyNameExpression("z_order"),
+                                     BinaryOperator.Equals, new LiteralExpression<int>(0));
 
             var providerProps =
                 new ProviderPropertiesExpression(
@@ -96,12 +122,12 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
-                            new OrderByExpression(new[] {"Einwohner DESC"}),
+                            new OrderByExpression(new[] {"z_order ASC"}),
                             new DataPageSizeExpression(10),
                             new DataPageNumberExpression(5) 
 
                         });
-            var ape = new AttributesProjectionExpression(new String[]{"OID" ,"Einwohner", "Erwerbstätige", "Beschäftigte"});
+            var ape = new AttributesProjectionExpression(new String[] { "osm_id", "name", "z_order", "way" });
 
             prov = new ProviderQueryExpression(providerProps, ape, null);
 
@@ -110,36 +136,34 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             numRows = 0;
             while (sfdr.Read()) numRows++;
             Assert.AreEqual(10, numRows);
+            System.Diagnostics.Debug.WriteLine("\r\n*** T11 passed!");
         }
 
         [Test]
         public void T01_CreateTableFromFeatureDataTable()
         {
             FeatureDataTable fdt = createFeatureDataTable();
-            SpatiaLite2_Provider.CreateDataTable(fdt, @"Data Source=test.sqlite");
+            PostGis_ProviderStatic.CreateDataTable<Int64>(fdt, connectionString);
 
-            SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
-                _geometryFactory, @"Data Source=test.sqlite", 
-                "main", fdt.TableName, fdt.PrimaryKey[0].ColumnName, 
-                SpatiaLite2_Provider.DefaultGeometryColumnName);
+            PostGis_Provider<Int64> prov = new PostGis_Provider<Int64>(
+                _geometryFactory, connectionString, 
+                "public", fdt.TableName, fdt.PrimaryKey[0].ColumnName, 
+                PostGis_ProviderStatic.DefaultGeometryColumnName);
             Assert.IsNotNull( prov );
-            Assert.AreEqual(@"Data Source=test.sqlite", prov.ConnectionString);
-            Assert.AreEqual("main", prov.TableSchema);
+            Assert.AreEqual(connectionString, prov.ConnectionString);
+            Assert.AreEqual("public", prov.TableSchema);
             Assert.AreEqual(fdt.TableName, prov.Table);
-            Assert.AreEqual(SpatiaLite2_Provider.DefaultSrid, prov.Srid);
-            Assert.AreEqual(fdt.PrimaryKey[0].ColumnName, prov.OidColumn);
-            Assert.AreEqual(SpatiaLite2_Provider.DefaultGeometryColumnName, prov.GeometryColumn);
-
-            Assert.IsTrue(prov.SpatiaLiteIndexType != SpatiaLite2_IndexType.None);
-            Assert.AreEqual(SpatiaLite2_Provider.DefaultSpatiaLiteIndexType, prov.SpatiaLiteIndexType);
+            Assert.AreEqual(PostGis_ProviderStatic.DefaultSrid, prov.Srid);
+            Assert.AreEqual(fdt.PrimaryKey[0].ColumnName.ToLower(), prov.OidColumn);
+            Assert.AreEqual(PostGis_ProviderStatic.DefaultGeometryColumnName, prov.GeometryColumn);
 
         }
 
         [Test]
-        public void T02_CreateGeometryLayerFromSpatiaLite2()
+        public void T02_CreateGeometryLayerFromPostGis()
         {
-            SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
-                _geometryFactory, @"Data Source=test.sqlite", "TestFeatureDataTable");
+            PostGis_Provider<Int64> prov = new PostGis_Provider<Int64>(
+                _geometryFactory, connectionString, "TestFeatureDataTable");
 
             SharpMap.Layers.GeometryLayer gl = new SharpMap.Layers.GeometryLayer("test", prov);
             Assert.IsNotNull( gl );
@@ -148,10 +172,10 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
         }
 
         [Test]
-        public void T03_MultipleSelects()
+        public void T03_SomeSelects()
         {
-            SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
-                _geometryFactory, @"Data Source=test.sqlite", "TestFeatureDataTable");
+            PostGis_Provider<Int64> prov = new PostGis_Provider<Int64>(
+                _geometryFactory, connectionString, "TestFeatureDataTable");
             GeometryLayer gl = new GeometryLayer("test", prov);
 
             gl.Select(new AllAttributesExpression());
@@ -171,10 +195,12 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             gl = new GeometryLayer(prov);
             gl.Select(
                 new SpatialBinaryExpression(
-                    new GeometryExpression(prov.GeometryFactory.WktReader.Read(("POLYGON((-1 -1, 0 1, 1 1, -1 -1))"))), 
+                    new GeometryExpression(prov.GeometryFactory.WktReader.Read(("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))"))), 
                     SpatialOperation.Contains, 
                     new ThisExpression())
                     );
+            //SELECT testfeaturedatatable.poid,testfeaturedatatable.label,ST_AsBinary(xgeometryx)::bytea AS xgeometryx FROM public.testfeaturedatatable   WHERE  ( ST_Contains( ST_GeomFromWKB(:iparam0, -1), xgeometryx ))
+            //SELECT testfeaturedatatable.poid,testfeaturedatatable.label,ST_AsBinary(xgeometryx)::bytea AS xgeometryx FROM public.testfeaturedatatable   WHERE  ( ST_Contains( ST_GeomFromText('POLYGON((-1 -1, 0 1, 1 -1, -1 -1))', -1), xgeometryx ))
             Assert.AreEqual(1, gl.Features.Rows.Count);
 
             gl = new GeometryLayer(prov);
@@ -184,16 +210,16 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
                     SpatialOperation.Touches, 
                     new ThisExpression())
                     ); 
-            Assert.AreEqual(1, gl.Features.Rows.Count, 1);
+            Assert.AreEqual(1, gl.Features.Rows.Count);
 
-            gl = new GeometryLayer(prov);
-            gl.Select(
-                new SpatialBinaryExpression(
-                    new ThisExpression(),
-                    SpatialOperation.Within,
-                    new GeometryExpression(prov.GeometryFactory.WktReader.Read(("POLYGON((-1 -1, 0 1, 1 1, -1 -1))"))))
-                    );
-            Assert.AreEqual(0, gl.Features.Rows.Count);
+            //gl = new GeometryLayer(prov);
+            //gl.Select(
+            //    new SpatialBinaryExpression(
+            //        new ThisExpression(),
+            //        SpatialOperation.Within,
+            //        new GeometryExpression(prov.GeometryFactory.WktReader.Read("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))")))
+            //        );
+            //Assert.AreEqual(0, gl.Features.Rows.Count);
 
         }
 
@@ -212,8 +238,8 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
         [Test]
         public void T05_DeleteFromDataSource()
         {
-            SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
-                _geometryFactory, @"Data Source=test.sqlite", "TestFeatureDataTable");
+            PostGis_Provider<Int64> prov = new PostGis_Provider<Int64>(
+                _geometryFactory, connectionString, "TestFeatureDataTable");
             
             GeometryLayer gl = new GeometryLayer(prov);
             gl.Select(new SpatialBinaryExpression(
@@ -238,8 +264,8 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
         
         public void T04_InsertInDataSource()
         {
-            SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
-                _geometryFactory, @"Data Source=test.sqlite", "TestFeatureDataTable");
+            PostGis_Provider<Int64> prov = new PostGis_Provider<Int64>(
+                _geometryFactory, connectionString, "TestFeatureDataTable");
 
             GeometryLayer gl = new GeometryLayer("test", prov);
             gl.Select(new AllAttributesExpression());
@@ -268,8 +294,8 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 
         private static FeatureDataTable createFeatureDataTable()
         {
-            FeatureDataTable<Int64> fdt = new FeatureDataTable<Int64>("TestFeatureDataTable", "OID", _geometryFactory);
-            DataColumn dc = fdt.Columns["OID"];
+            FeatureDataTable<Int64> fdt = new FeatureDataTable<Int64>("TestFeatureDataTable", "poid", _geometryFactory);
+            DataColumn dc = fdt.Columns["poid"];
             dc.AutoIncrementSeed = 1001;
             dc.AutoIncrementStep = 1;
             dc.AutoIncrement = true;
@@ -315,6 +341,29 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
         {
             return String.Format("Feature {0} with GeometryType {1}: {2}",
               fdr.GetOid(), fdr.Geometry.GeometryTypeName, fdr.Geometry.ToString());
+        }
+
+        [Test]
+        public void T99_GeometryFromBinary()
+        {
+            PostGis_Provider<Int64> prov = new PostGis_Provider<Int64>(
+                _geometryFactory, connectionString, "TestFeatureDataTable");
+            GeometryLayer gl = new GeometryLayer("test", prov);
+
+            gl.Select(new AllAttributesExpression());
+            using (NpgsqlConnection cn = new NpgsqlConnection(connectionString))
+            {
+                cn.Open();
+                NpgsqlCommand cm = new NpgsqlCommand(
+                    "SELECT ST_SRID( ST_GeomFromWKB(:p0::bytea, -1) )", cn);
+                NpgsqlParameter par = new NpgsqlParameter(":p0", DbType.Binary);
+                par.Value = prov.GeometryFactory.WktReader.Read("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))").AsBinary();
+                cm.Parameters.Add(par);
+                System.Diagnostics.Debug.Write(cm.ExecuteScalar());
+            }
+            
+            
+
         }
 
 }

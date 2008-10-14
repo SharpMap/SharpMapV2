@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1000]C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\PostGis_ProviderTests.nunit</TopNode>
+  <SelectedNode>[0-1002]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T01_CreateTableFromFeatureDataTable</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1000]C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\PostGis_ProviderTests.nunit" Expanded="true">
+      <Nodes>
+        <Node UniqueName="[0-1008]C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\bin\Debug_Net20\SharpMap.Data.Providers.PostGis.Tests.dll" Expanded="true">
+          <Nodes>
+            <Node UniqueName="[0-1009]SharpMap" Expanded="true">
+              <Nodes>
+                <Node UniqueName="[0-1010]SharpMap.Tests" Expanded="true">
+                  <Nodes>
+                    <Node UniqueName="[0-1011]SharpMap.Tests.Data" Expanded="true">
+                      <Nodes>
+                        <Node UniqueName="[0-1012]SharpMap.Tests.Data.Providers" Expanded="true">
+                          <Nodes>
+                            <Node UniqueName="[0-1013]SharpMap.Tests.Data.Providers.PostGis" Expanded="true">
+                              <Nodes>
+                                <Node UniqueName="[0-1001]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests" Expanded="true">
+                                  <Nodes>
+                                    <Node UniqueName="[0-1002]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T01_CreateTableFromFeatureDataTable" />
+                                    <Node UniqueName="[0-1003]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T02_CreateGeometryLayerFromSpatiaLite2" />
+                                    <Node UniqueName="[0-1004]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T03_MultipleSelects" />
+                                    <Node UniqueName="[0-1007]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T04_InsertInDataSource" />
+                                    <Node UniqueName="[0-1006]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T05_DeleteFromDataSource" />
+                                    <Node UniqueName="[0-1005]SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T06_UpdateDataSource" />
+                                  </Nodes>
+                                </Node>
+                              </Nodes>
+                            </Node>
+                          </Nodes>
+                        </Node>
+                      </Nodes>
+                    </Node>
+                  </Nodes>
+                </Node>
+              </Nodes>
+            </Node>
+          </Nodes>
+        </Node>
+      </Nodes>
+    </Node>
+  </Nodes>
+</VisualState>

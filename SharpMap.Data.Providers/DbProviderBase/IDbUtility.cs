@@ -12,6 +12,7 @@
  *  Author: John Diss 2008
  * 
  */
+using System;
 using System.Data;
 
 namespace SharpMap.Data.Providers.Db
@@ -26,5 +27,19 @@ namespace SharpMap.Data.Providers.Db
         IDbCommand CreateCommand();
         IDbDataAdapter CreateAdapter(IDbCommand cmd);
 
+
+        IDataParameter CreateParameter<TValue>(string parameterName, ParameterDirection parameterDirection);
+        IDataParameter CreateParameter(string parameterName, Type netType, ParameterDirection parameterDirection);
+    }
+
+    public interface IDbUtility<TDbType> : IDbUtility
+    {
+        string GetTypeString(TDbType dbType);
+        string GetTypeString(Type netType);
+
+        TDbType GetDbType<TValue>();
+        TDbType GetDbType(Type netType);
+        int GetDbSize(TDbType dbType);
+        IDataParameter CreateParameter(string parameterName, TDbType dbType, ParameterDirection parameterDirection);
     }
 }

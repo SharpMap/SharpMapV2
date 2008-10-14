@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Data;
 using GeoAPI.Geometries;
 
-namespace SharpMap.Data.Providers.Database
+namespace SharpMap.Data.Providers.Db
 {
     public class SpatialDbFeatureDataReader : IFeatureDataReader
     {

@@ -28,14 +28,13 @@ using System.Diagnostics;
 using System.Globalization;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
-using SharpMap.Data.Providers.Database;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class SpatialDbProviderBase<TOid>
-        : ProviderBase, IWritableFeatureProvider<TOid>
+        : ProviderBase, IWritableFeatureProvider<TOid>, ISpatialDbProvider
     {
         private String _geometryColumn = "Wkb_Geometry";
         private String _oidColumn = "Oid";
@@ -43,7 +42,7 @@ namespace SharpMap.Data.Providers.Db
 
         static SpatialDbProviderBase()
         {
-            AddDerivedProperties(typeof(SpatialDbProviderBase<TOid>));
+            AddDerivedProperties(typeof (SpatialDbProviderBase<TOid>));
         }
 
         protected SpatialDbProviderBase(IDbUtility dbUtility,
@@ -157,6 +156,8 @@ namespace SharpMap.Data.Providers.Db
             get { return ProviderStaticProperties.Find("TableSchema", false); }
         }
 
+        #region ISpatialDbProvider Members
+
         public String ConnectionString { get; set; }
 
         public String Table { get; set; }
@@ -191,7 +192,7 @@ namespace SharpMap.Data.Providers.Db
         public abstract String GeometryColumnConversionFormatString { get; }
         public abstract String GeomFromWkbFormatString { get; }
 
-        protected virtual String QualifiedTableName
+        public virtual String QualifiedTableName
         {
             get
             {
@@ -205,31 +206,33 @@ namespace SharpMap.Data.Providers.Db
 
         public ProviderPropertiesExpression DefaultProviderProperties { get; set; }
 
+        #endregion
+
         #region IWritableFeatureProvider<TOid> Members
 
         public void Insert(FeatureDataRow<TOid> feature)
         {
-            Insert((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
+            Insert((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
         }
 
         public void Insert(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            Insert((IEnumerable<FeatureDataRow>)features);
+            Insert((IEnumerable<FeatureDataRow>) features);
         }
 
         public void Update(FeatureDataRow<TOid> feature)
         {
-            Update((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
+            Update((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
         }
 
         public void Update(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            Update((IEnumerable<FeatureDataRow>)features);
+            Update((IEnumerable<FeatureDataRow>) features);
         }
 
         public void Delete(FeatureDataRow<TOid> feature)
         {
-            Delete(new[] { feature });
+            Delete(new[] {feature});
         }
 
         public void Delete(IEnumerable<FeatureDataRow<TOid>> features)
@@ -255,10 +258,10 @@ namespace SharpMap.Data.Providers.Db
                                         Enumerable.ToArray(
                                             Processor.Transform(featureIds,
                                                                 delegate(TOid o)
-                                                                {
-                                                                    return
-                                                                        compiler.CreateParameter(o).ParameterName;
-                                                                })))
+                                                                    {
+                                                                        return
+                                                                            compiler.CreateParameter(o).ParameterName;
+                                                                    })))
                             );
                     conn.Open();
                     foreach (IDataParameter p in compiler.ParameterCache.Values)
@@ -273,10 +276,11 @@ namespace SharpMap.Data.Providers.Db
         {
             foreach (IFeatureDataRecord fdr in
                 ExecuteFeatureDataReader(
-                    PrepareSelectCommand(new FeatureQueryExpression(new AttributesProjectionExpression(new[] { OidColumn }),
-                                                              (AttributeBinaryExpression)null, query))))
+                    PrepareSelectCommand(
+                        new FeatureQueryExpression(new AttributesProjectionExpression(new[] {OidColumn}),
+                                                   (AttributeBinaryExpression) null, query))))
             {
-                yield return (TOid)fdr.GetOid();
+                yield return (TOid) fdr.GetOid();
             }
         }
 
@@ -351,19 +355,19 @@ namespace SharpMap.Data.Providers.Db
 
         public Int32 GetFeatureCount()
         {
-            var attrs = new AttributesProjectionExpression(new[] { "Count(*)" });
+            var attrs = new AttributesProjectionExpression(new[] {"Count(*)"});
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
                 using (
                     IDbCommand cmd =
                         PrepareSelectCommand(DefinitionQuery == null
-                                           ? (Expression)attrs
-                                           : new QueryExpression(attrs, DefinitionQuery)))
+                                                 ? (Expression) attrs
+                                                 : new QueryExpression(attrs, DefinitionQuery)))
                 {
                     cmd.Connection = conn;
                     conn.Open();
-                    return (Int32)cmd.ExecuteScalar();
+                    return (Int32) cmd.ExecuteScalar();
                 }
             }
         }
@@ -408,7 +412,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected void GuardValueNotNull<T>(T value, string name)
         {
-            if (Equals(value, default(T)) || (typeof(T) == typeof(string)
+            if (Equals(value, default(T)) || (typeof (T) == typeof (string)
                                               && string.IsNullOrEmpty(value as string)))
                 throw new InvalidOperationException(string.Format("{0} cannot be null.", name));
         }
@@ -490,9 +494,9 @@ namespace SharpMap.Data.Providers.Db
                         foreach (FeatureDataRow row in features)
                         {
                             for (int i = 0; i < cmd.Parameters.Count - 1; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+                                ((IDataParameter) cmd.Parameters[i]).Value = row[i];
 
-                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            ((IDataParameter) cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
                             if (geometryType == OgcGeometryType.Unknown)
                                 geometryType = row.Geometry.GeometryType;
 
@@ -532,10 +536,10 @@ namespace SharpMap.Data.Providers.Db
                         foreach (FeatureDataRow row in features)
                         {
                             for (int i = 0; i < cmd.Parameters.Count - 2; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+                                ((IDataParameter) cmd.Parameters[i]).Value = row[i];
 
-                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
-                            ((IDataParameter)cmd.Parameters["@POldOid"]).Value =
+                            ((IDataParameter) cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            ((IDataParameter) cmd.Parameters["@POldOid"]).Value =
                                 row[OidColumn, DataRowVersion.Original];
 
                             try
@@ -581,7 +585,7 @@ namespace SharpMap.Data.Providers.Db
                 yield return
                     formatGeometryColumn &&
                     String.Equals(col, GeometryColumn, StringComparison.InvariantCultureIgnoreCase)
-                    ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col, col)
+                        ? String.Format(GeometryColumnConversionFormatString + " AS {1}", col, col)
                         : qualifyColumnNames
                               ? String.Format("{0}.[{1}]", QualifiedTableName, col)
                               : string.Format("[{0}]", col);
@@ -641,8 +645,18 @@ namespace SharpMap.Data.Providers.Db
             return cmd;
         }
 
+
+        public int? ParseSrid(string sridText)
+        {
+            int s;
+            if (int.TryParse(sridText, out s))
+                return s;
+            return null;
+        }
+
+
         protected virtual string GenerateSelectSql(IList<ProviderPropertyExpression> properties,
-                                             ExpressionTreeToSqlCompilerBase<TOid> compiler)
+                                                   ExpressionTreeToSqlCompilerBase<TOid> compiler)
         {
             int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
             int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
@@ -652,18 +666,28 @@ namespace SharpMap.Data.Providers.Db
 
 
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(
-                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                                     properties, new string[] { })));
+                                             Enumerable.ToArray(Processor.Transform(
+                                                                    GetProviderPropertyValue
+                                                                        <OrderByCollectionExpression,
+                                                                        CollectionExpression<OrderByExpression>>(
+                                                                        properties,
+                                                                        new CollectionExpression<OrderByExpression>(
+                                                                            new OrderByExpression[] {})),
+                                                                    o => o.ToString())));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                           FormatColumnNames(true, true,
+                                                                             compiler.ProjectedColumns.Count > 0
+                                                                                 ? compiler.ProjectedColumns
+                                                                                 : SelectAllColumnNames()
+                                                               )));
 
 
             return String.Format(" {0} SELECT {1} FROM {2} {3} {4} {5} {6}",
                                  compiler.SqlParamDeclarations,
-                                 String.IsNullOrEmpty(compiler.SqlColumns)
-                                     ? String.Join(",", Enumerable.ToArray(SelectAllColumnNames()))
-                                     : compiler.SqlColumns,
+                                 mainQueryColumns,
                                  QualifiedTableName,
                                  compiler.SqlJoinClauses,
                                  String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
@@ -672,8 +696,8 @@ namespace SharpMap.Data.Providers.Db
         }
 
         protected abstract string GenerateSelectSql(IList<ProviderPropertyExpression> properties,
-                                              ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
-                                              int pageNumber);
+                                                    ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
+                                                    int pageNumber);
 
 
         public static TValue GetProviderPropertyValue<TExpression, TValue>(
@@ -682,7 +706,7 @@ namespace SharpMap.Data.Providers.Db
         {
             foreach (ProviderPropertyExpression propertyExpression in expressions)
                 if (propertyExpression is TExpression)
-                    return ((TExpression)propertyExpression).PropertyValueExpression.Value;
+                    return ((TExpression) propertyExpression).PropertyValueExpression.Value;
             return defaultValue;
         }
 
@@ -748,7 +772,7 @@ namespace SharpMap.Data.Providers.Db
                 case "System.Object":
                     return DbType.Object;
                 case "System.Byte[]":
-                    return DbType.Binary; 
+                    return DbType.Binary;
                 case "System.DateTime":
                     return DbType.DateTime;
 
@@ -782,7 +806,7 @@ namespace SharpMap.Data.Providers.Db
 
             //Geometry
             sets.Add(string.Format("{0}", string.Format(GeomFromWkbFormatString, "@PGeo")));
-            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof(byte[])), ParameterDirection.Input));
+            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof (byte[])), ParameterDirection.Input));
 
             return String.Format("{0} VALUES({1})", columNames, string.Join(",", sets.ToArray()).Trim());
         }
@@ -802,14 +826,14 @@ namespace SharpMap.Data.Providers.Db
                 string.Format("[{0}]={1}",
                               GeometryColumn,
                               string.Format(GeomFromWkbFormatString, "@PGeo")));
-            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof(byte[])), ParameterDirection.Input));
+            cmd.Parameters.Add(DbUtility.CreateParameter("@PGeo", toDbType(typeof (byte[])), ParameterDirection.Input));
 
             return String.Join(",", sets.ToArray()).Trim();
         }
 
         protected virtual string WhereClause(IDbCommand cmd)
         {
-            cmd.Parameters.Add(DbUtility.CreateParameter("@POldOid", toDbType(typeof(TOid)),
+            cmd.Parameters.Add(DbUtility.CreateParameter("@POldOid", toDbType(typeof (TOid)),
                                                          ParameterDirection.Input));
             return string.Format("{0}=@POldOid", OidColumn);
         }

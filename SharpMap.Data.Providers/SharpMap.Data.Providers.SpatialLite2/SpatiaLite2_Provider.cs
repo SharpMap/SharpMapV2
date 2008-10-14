@@ -1,6 +1,7 @@
+#define EXPLAIN
 /*
  *  The attached / following is part of SharpMap.Data.Providers.SpatiaLite2
- *  SharpMap.Data.Providers.SpatiaLite2 is free software © 2008 Ingenieurgruppe IVV GmbH & Co. KG, 
+ *  SharpMap.Data.Providers.SpatiaLite2 is free software ï¿½ 2008 Ingenieurgruppe IVV GmbH & Co. KG, 
  *  www.ivv-aachen.de; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
  *  available from the Free Software Foundation, Inc., 
@@ -40,10 +41,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using GeoAPI.Geometries;
+using GeoAPI.DataStructures;
 using SharpMap.Data.Providers.Db;
+using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.SpatiaLite2;
 using SharpMap.Expressions;
-
+#if DEBUG
+using System.Diagnostics;
+#endif
 namespace SharpMap.Data.Providers
 {
 
@@ -69,7 +74,7 @@ namespace SharpMap.Data.Providers
     }
 
     public class SpatiaLite2_Provider
-        : SpatialDbProviderBase<Int64>
+        : SpatialDbProviderBase<Int64>, ISpatialDbProvider<SpatiaLite2_Utility>
     {
 
         #region Static Properties
@@ -121,7 +126,7 @@ namespace SharpMap.Data.Providers
         /// Used in SpatiaLite constructor if not SRID is specified.
         /// (e.g. 4326: 'WGS 84', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
         /// </summary>
-        public static Int32 DefaultSrid = 4326;
+        public static string DefaultSrid = "4326";
 
         /// <summary>
         /// Default name of the geometry column. Used in SpatiaLite constructor
@@ -207,7 +212,7 @@ namespace SharpMap.Data.Providers
                         _validGeometryType = parseGeometryType(dr.GetString(0));
 
                         //Srid
-                        Srid = (Int32)dr.GetInt64(1);
+                        Srid = dr.GetInt64(1).ToString();
                         if (geometryFactory.Srid == null)
                             geometryFactory.Srid = Srid;
                         else
@@ -390,37 +395,11 @@ namespace SharpMap.Data.Providers
             return dt;
         }
 
-        private void replaceObjectDataColumn(DataTable dt, DataColumn dcOld)
-        {
-            int index = dcOld.Ordinal;
-            dt.Columns.Remove(dcOld);
-
-            DataColumn dcNew = new DataColumn(dcOld.ColumnName, typeof(System.Byte[]), dcOld.Expression, dcOld.ColumnMapping);
-            dcNew.AutoIncrement = dcOld.AutoIncrement;
-            dcNew.AutoIncrementSeed = dcOld.AutoIncrementSeed;
-            dcNew.AutoIncrementStep = dcOld.AutoIncrementStep;
-            dcNew.Caption = dcOld.Caption;
-            dcNew.DefaultValue = dcOld.DefaultValue;
-            foreach (object prop in dcOld.ExtendedProperties)
-                dcNew.ExtendedProperties.Add(prop.GetHashCode(), prop);
-            dcNew.MaxLength = dcOld.MaxLength;
-            dcNew.Prefix = dcOld.Prefix;
-            dcNew.ReadOnly = dcOld.ReadOnly;
-            dcNew.Unique = dcOld.Unique;
-
-            dt.Columns.Add(dcNew);
-            dcNew.SetOrdinal(index);
-
-            dcOld.Dispose();
-            dcOld = null;
-        }
-
-
-        protected override ExpressionTreeToSqlCompilerBase<long> CreateSqlCompiler(Expression expression)
+        protected override ExpressionTreeToSqlCompilerBase<Int64> CreateSqlCompiler(Expression expression)
         {
             return new SpatiaLite2_ExpressionTreeToSqlCompiler(this,
                                                                expression,
-                                                                _spatialLiteIndexType);
+                                                               _spatialLiteIndexType);
         }
 
         public void Vacuum()
@@ -436,15 +415,17 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public OgcGeometryType ValidGeometryType
-        {
-            get { return _validGeometryType; }
-            private set
-            {
-                if (_validGeometryType == OgcGeometryType.Unknown)
-                    _validGeometryType = value;
-            }
-        }
+
+
+        //public override OgcGeometryType ValidGeometryType
+        //{
+        //    get { return _validGeometryType; }
+        //    protected set
+        //    {
+        //        if (_validGeometryType == OgcGeometryType.Unknown)
+        //            _validGeometryType = value;
+        //    }
+        //}
 
         private static SQLiteConnection initSpatialMetaData(String connectionString)
         {
@@ -504,7 +485,7 @@ namespace SharpMap.Data.Providers
             OgcGeometryType geometryType;
 
             SQLiteConnection conn = initSpatialMetaData(connectionString);
-            Int32 srid = featureDataTable.GeometryFactory.Srid == null ? DefaultSrid : (Int32)featureDataTable.GeometryFactory.Srid;
+            string srid = featureDataTable.GeometryFactory.Srid == null ? DefaultSrid : featureDataTable.GeometryFactory.Srid;
             if (conn != null)
             {
 
@@ -552,7 +533,37 @@ namespace SharpMap.Data.Providers
 
         public override void Insert(IEnumerable<FeatureDataRow> features)
         {
-            //Insert(features, "INSERT OR IGNORE");
+            OgcGeometryType geometryType = OgcGeometryType.Unknown;
+
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                if (conn.State == ConnectionState.Closed) conn.Open();
+                {
+                    using (IDbTransaction tran = conn.BeginTransaction())
+                    {
+                        IDbCommand cmd = DbUtility.CreateCommand();
+                        cmd.Connection = conn;
+                        cmd.Transaction = tran;
+
+                        cmd.CommandText = string.Format(
+                            "INSERT INTO {0} {1};", QualifiedTableName, InsertClause(cmd));
+
+                        foreach (FeatureDataRow row in features)
+                        {
+                            for (int i = 0; i < cmd.Parameters.Count - 1; i++)
+                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+
+                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            if (geometryType == OgcGeometryType.Unknown)
+                                geometryType = row.Geometry.GeometryType;
+
+                            if (row.Geometry.GeometryType == geometryType)
+                                cmd.ExecuteNonQuery();
+                        }
+                        tran.Commit();
+                    }
+                }
+            }
         }
 
         public override void Update(IEnumerable<FeatureDataRow> features)
@@ -567,7 +578,7 @@ namespace SharpMap.Data.Providers
             Int32 index = 0;
             foreach (DataColumn dc in dcc)
             {
-                columns[index++] = string.Format(" [{0}] {1}", dc.ColumnName, ToSQLiteTypeString(dc.DataType));
+                columns[index++] = string.Format(" [{0}] {1}", dc.ColumnName, SpatiaLite2_Utility.GetTypeString(dc.DataType));
             }
             index = 0;
 
@@ -633,53 +644,121 @@ namespace SharpMap.Data.Providers
             return ret;
         }
 
-        protected override DbType toDbType(Type type)
+        protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler)
         {
-            return ToSQLiteType(type);
-        }
+            int pageNumber = GetProviderPropertyValue<DataPageNumberExpression, int>(properties, -1);
+            int pageSize = GetProviderPropertyValue<DataPageSizeExpression, int>(properties, 0);
 
-        private static DbType ToSQLiteType(Type t)
-        {
-            switch (t.ToString())
+            string sql = "";
+            if (pageSize > 0 && pageNumber > -1)
+                sql = GenerateSelectSql(properties, compiler, pageSize, pageNumber);
+            else
             {
-                case "System.Byte": return DbType.Int64;
-                case "System.Boolean": return DbType.Int64;
-                case "System.Single": return DbType.Double;
-                case "System.Double": return DbType.Double;
-                case "System.Int16": return DbType.Int64;
-                case "System.Int32": return DbType.Int64;
-                case "System.Int64": return DbType.Int64;
-                case "System.DateTime": return DbType.DateTime;
-                case "System.Byte[]": return DbType.Binary;
-                case "System.String": return DbType.String;
-                default:
-                    throw (new NotSupportedException("Unsupported datatype '" + t.Name + "' found in datasource"));
-            }
-        }
 
-        static String ToSQLiteTypeString(Type dotNetType)
-        {
-            switch (dotNetType.FullName)
+                string mainQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                               FormatColumnNames(true, true,
+                                                                                 compiler.ProjectedColumns.Count > 0
+                                                                                     ? compiler.ProjectedColumns
+                                                                                     : SelectAllColumnNames())));
+
+                string orderByCols = String.Join(",",
+                                                 Enumerable.ToArray(Processor.Transform(
+                                                     GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
+                                                         properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString())));
+
+                string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+
+                sql =
+                 String.Format("SELECT {0} FROM {1} {2} {3} {4} {5}",
+                                           mainQueryColumns,
+                                           Table, //QualifiedTableName,
+                                           compiler.SqlJoinClauses,
+                                           String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                                     compiler.SqlWhereClause,
+                                     orderByClause);
+            }
+#if DEBUG && EXPLAIN
+            using (SQLiteConnection cn = (SQLiteConnection)DbUtility.CreateConnection(ConnectionString))
             {
-                case "System.Byte": return "INTEGER";
-                case "System.Boolean": return "INTEGER";
-                case "System.Single": return "REAL";
-                case "System.Double": return "REAL";
-                case "System.Int16": return "INTEGER";
-                case "System.Int32": return "INTEGER";
-                case "System.Int64": return "INTEGER";
-                case "System.DateTime": return "DATETIME";
-                case "System.Byte[]": return "BLOB";
-                case "System.String": return "TEXT";
-                case "GeoAPI.Geometries.IGeometry": return "BLOB";
-                default:
-                    throw (new NotSupportedException("Unsupported datatype '" + dotNetType.Name + "' found in datasource"));
-            }
-        }
+                if (cn.State == ConnectionState.Closed) cn.Open();
+                SQLiteCommand cm = new SQLiteCommand(String.Format("EXPLAIN {0}", sql), cn);
+                foreach (IDataParameter par in compiler.ParameterCache.Values)
+                    cm.Parameters.Add(par);
 
+                Debug.WriteLine("");
+                SQLiteDataReader dr = cm.ExecuteReader();
+                if (dr.HasRows)
+                    while (dr.Read())
+                    {
+                        Debug.WriteLine(String.Format("{0}; {1}; {2}; {3}; {4}; {5}; {6}; {7}",
+                            dr.GetValue(0), dr.GetValue(1), dr.GetValue(2), dr.GetValue(3),
+                            dr.GetValue(4), dr.GetValue(5), dr.GetValue(6), dr.GetValue(7)));
+                    }
+                Debug.WriteLine("");
+            }
+#endif
+            return sql;
+        }
         protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
         {
-            throw new NotImplementedException();
+            string orderByCols = String.Join(",",
+                                  Enumerable.ToArray(Processor.Transform(
+                                      GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
+                                          properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString())));
+
+            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+
+            int startRecord = (pageNumber * pageSize);
+            int endRecord = (pageNumber + 1) * pageSize - 1;
+
+            string mainQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                           FormatColumnNames(true, true,
+                                                                             compiler.ProjectedColumns.Count > 0
+                                                                                 ? compiler.ProjectedColumns
+                                                                                 : SelectAllColumnNames()
+                                                               )));
+
+            string subQueryColumns = string.Join(",", Enumerable.ToArray(
+                                                          FormatColumnNames(false, false,
+                                                                            compiler.ProjectedColumns.Count > 0
+                                                                                ? compiler.ProjectedColumns
+                                                                                : SelectAllColumnNames()
+                                                              )));
+
+
+            String sql = String.Format(
+            "CREATE TEMP TABLE tmp AS SELECT {0} FROM {1} {2} {3} {4} {5};" +
+            "SELECT {6} FROM tmp WHERE ROWID BETWEEN {7} AND {8};",
+                mainQueryColumns,
+                QualifiedTableName,
+                compiler.SqlJoinClauses,
+                String.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ", compiler.SqlWhereClause,
+                orderByClause,
+                subQueryColumns,
+                startRecord, endRecord);
+
+            return sql;
         }
+
+        protected IEnumerable<String> ToEnumerableOfDataColumnName(DataColumnCollection dcc)
+        {
+            foreach (DataColumn dc in dcc)
+                yield return dc.ColumnName;
+        }
+
+        public override IEnumerable<String> SelectAllColumnNames()
+        {
+            return
+                ToEnumerableOfDataColumnName(GetSchemaTable(true).Columns);
+        }
+
+        #region ISpatialDbProvider<SpatiaLite2_Utility> Members
+
+        public new SpatiaLite2_Utility DbUtility
+        {
+            get { return (SpatiaLite2_Utility)base.DbUtility; }
+        }
+
+        #endregion
     }
 }

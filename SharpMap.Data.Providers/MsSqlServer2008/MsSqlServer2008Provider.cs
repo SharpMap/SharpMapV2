@@ -77,7 +77,11 @@ namespace SharpMap.Data.Providers
 
         public override string GeomFromWkbFormatString
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return String.Format("geometry::STGeomFromWKB({0}, {1})", "{0}",
+                                     ParseSrid(Srid).HasValue ? ParseSrid(Srid).Value : 0);
+            }
         }
 
         public override IExtents GetExtents()
@@ -168,9 +172,15 @@ namespace SharpMap.Data.Providers
                 return GenerateSelectSql(properties, compiler, pageSize, pageNumber);
 
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(
-                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                                     properties, new string[] {})));
+                                             Enumerable.ToArray(Processor.Transform(
+                                                                    GetProviderPropertyValue
+                                                                        <OrderByCollectionExpression,
+                                                                        CollectionExpression<OrderByExpression>>(
+                                                                        properties,
+                                                                        new CollectionExpression<OrderByExpression>(
+                                                                            new OrderByExpression[] {})),
+                                                                    o => o.ToString())));
+
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
@@ -196,12 +206,19 @@ namespace SharpMap.Data.Providers
                                                     ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
                                                     int pageNumber)
         {
-            string orderByCols = string.Join(",",
-                                             Enumerable.ToArray(
-                                                 GetProviderPropertyValue<OrderByExpression, IEnumerable<string>>(
-                                                     properties, new string[] {})));
+            string orderByCols = String.Join(",",
+                                             Enumerable.ToArray(Processor.Transform(
+                                                                    GetProviderPropertyValue
+                                                                        <OrderByCollectionExpression,
+                                                                        CollectionExpression<OrderByExpression>>(
+                                                                        properties,
+                                                                        new CollectionExpression<OrderByExpression>(
+                                                                            new OrderByExpression[] {})),
+                                                                    o => o.ToString())));
+
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
+
             int startRecord = (pageNumber*pageSize) + 1;
             int endRecord = (pageNumber + 1)*pageSize;
 
@@ -224,7 +241,7 @@ namespace SharpMap.Data.Providers
                 @" {0};
 WITH CTE(rownumber, {8}) 
     AS 
-    (   SELECT ROW_NUMBER() OVER(ORDER BY {7} ASC) AS rownumber, {1}  
+    (   SELECT ROW_NUMBER() OVER(ORDER BY {7}) AS rownumber, {1}  
         FROM {2}{6} 
         {3} {4} {5} 
     ) 

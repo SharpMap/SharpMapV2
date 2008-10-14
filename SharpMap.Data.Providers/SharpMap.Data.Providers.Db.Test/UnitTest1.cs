@@ -69,7 +69,7 @@ namespace SharpMap.Data.Providers.Db.Test
                     new ProviderPropertyExpression[]
                         {
                             new WithNoLockExpression(true),
-                            new OrderByExpression(new[] {"PostCode"}),
+                            new OrderByCollectionExpression(new[] {"PostCode"}),
                             new ForceIndexExpression(true),
                             new IndexNamesExpression(new[] {"Index1", "Index2"})
                         });
@@ -113,7 +113,7 @@ namespace SharpMap.Data.Providers.Db.Test
                     new ProviderPropertyExpression[]
                         {
                             new WithNoLockExpression(true),
-                            new OrderByExpression(new[] {"PostCode"}),
+                            new OrderByCollectionExpression(new[] {"PostCode"}),
                             new ForceIndexExpression(true),
                             new IndexNamesExpression(new[] {"Index1", "Index2"}),
                             new DataPageSizeExpression(10),
@@ -138,7 +138,7 @@ namespace SharpMap.Data.Providers.Db.Test
                                                            ConfigurationManager.ConnectionStrings["mssqlspatial"].ConnectionString,
                                                            "ST",
                                                            "dbo",
-                                                           "BRoads", "OID", "the_geom")
+                                                           "BRoads", "OID", "WKB_Geometry")
             {
                 DefaultProviderProperties
                     = new ProviderPropertiesExpression(
@@ -161,7 +161,7 @@ namespace SharpMap.Data.Providers.Db.Test
                     new ProviderPropertyExpression[]
                         {
                             new WithNoLockExpression(true),
-                            new OrderByExpression(new[] {"NAME"}),
+                            new OrderByCollectionExpression(new[] {"NAME"}),
                             new ForceIndexExpression(true),
                             new IndexNamesExpression(new[] {"Index1", "Index2"}),
                             new DataPageSizeExpression(10),

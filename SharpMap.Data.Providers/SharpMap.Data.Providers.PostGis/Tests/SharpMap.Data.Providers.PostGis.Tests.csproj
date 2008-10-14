@@ -1,21 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="Exists('$(ProjectDir)..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
-    <GeoAPIProjectReference>true</GeoAPIProjectReference>
-  </PropertyGroup>
-  <PropertyGroup Condition="!Exists('$(ProjectDir)..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
-    <GeoAPIProjectReference>false</GeoAPIProjectReference>
-  </PropertyGroup>
   <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</ProjectGuid>
+    <ProjectGuid>{427384FB-A4EC-4CAB-AE72-C1A3D6835201}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharpMap.Data.Providers.Db</RootNamespace>
-    <AssemblyName>SharpMap.Data.Providers.Db</AssemblyName>
+    <RootNamespace>SharpMap.Data.Providers.PostGis.Tests</RootNamespace>
+    <AssemblyName>SharpMap.Data.Providers.PostGis.Tests</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,55 +57,66 @@
     <ErrorReport>prompt</ErrorReport>
     <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
-  <Choose>
-    <When Condition="'$(GeoAPIProjectReference)' == 'false'">
-      <ItemGroup>
-        <Reference Include="GeoAPI, Version=2.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
-          <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-          <Name>GeoAPI.Net</Name>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <ItemGroup>
+    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Programme\PostgreSQL\Npgsql2.0rtm-bin-ms.net\bin\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Programme\PostgreSQL\Npgsql2.0rtm-bin-ms.net\bin\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Programme\NUnit 2.4.8\bin\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core">
+    <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Expressions\DataPageNumberExpression.cs" />
-    <Compile Include="Expressions\DataPageSizeExpression.cs" />
-    <Compile Include="Expressions\ForceIndexExpression.cs" />
-    <Compile Include="Expressions\IndexNamesExpression.cs" />
-    <Compile Include="Expressions\OrderByCollectionExpression.cs" />
-    <Compile Include="Expressions\WithNoLockExpression.cs" />
-    <Compile Include="ExpressionTreeToSqlCompilerBase.cs" />
-    <Compile Include="IDbUtility.cs" />
-    <Compile Include="ISpatialDbProvider.cs" />
-    <Compile Include="SpatialDbProviderBase.cs" />
-    <Compile Include="SpatialDbFeatureDataReader.cs" />
+    <Compile Include="PostGis_ProviderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlServerDbUtility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
+    <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.csproj">
+      <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
+      <Name>ManagedBufferedCoordinate</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
+      <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
+      <Name>NetTopologySuite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Proj.Net\ProjNet\ProjNet.csproj">
+      <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
+      <Name>ProjNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
+      <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
+      <Name>SharpMap.Data.Providers.Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMap.Data.Providers.PostGis.csproj">
+      <Project>{7C533D86-BD73-4F55-AE8B-2D95D97C0436}</Project>
+      <Name>SharpMap.Data.Providers.PostGis</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

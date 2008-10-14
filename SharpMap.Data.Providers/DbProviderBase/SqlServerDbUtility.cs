@@ -18,9 +18,9 @@ using System.Data.SqlClient;
 
 namespace SharpMap.Data.Providers.Db
 {
-    public class SqlServerDbUtility : IDbUtility
+    public class SqlServerDbUtility : IDbUtility<SqlDbType>
     {
-        #region IDbUtility Members
+        #region IDbUtility<SqlDbType> Members
 
         public IDbConnection CreateConnection(string connectionString)
         {
@@ -41,6 +41,7 @@ namespace SharpMap.Data.Providers.Db
             return p;
         }
 
+
         public IDbCommand CreateCommand()
         {
             return new SqlCommand();
@@ -51,6 +52,76 @@ namespace SharpMap.Data.Providers.Db
             return new SqlDataAdapter((SqlCommand) cmd);
         }
 
+        public IDataParameter CreateParameter(string parameterName, Type netType,
+                                              ParameterDirection parameterDirection)
+        {
+            return CreateParameter(parameterName, GetDbType(netType), parameterDirection);
+        }
+
+        public IDataParameter CreateParameter(string parameterName, SqlDbType dbType,
+                                              ParameterDirection parameterDirection)
+        {
+            var p = new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName,
+                                     dbType, GetDbSize(dbType));
+            p.Direction = parameterDirection;
+            return p;
+        }
+
+        public IDataParameter CreateParameter<TValue>(string parameterName, ParameterDirection parameterDirection)
+        {
+            return CreateParameter(parameterName, GetDbType<TValue>(), parameterDirection);
+        }
+
+        string IDbUtility<SqlDbType>.GetTypeString(SqlDbType dbType)
+        {
+            return GetTypeString(dbType);
+        }
+
+        string IDbUtility<SqlDbType>.GetTypeString(Type netType)
+        {
+            return GetTypeString(netType);
+        }
+
+        SqlDbType IDbUtility<SqlDbType>.GetDbType<TValue>()
+        {
+            return GetDbType<TValue>();
+        }
+
+        SqlDbType IDbUtility<SqlDbType>.GetDbType(Type netType)
+        {
+            return GetDbType(netType);
+        }
+
+        int IDbUtility<SqlDbType>.GetDbSize(SqlDbType dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
         #endregion
+
+        public static SqlDbType GetDbType<TValue>()
+        {
+            return GetDbType(typeof (TValue));
+        }
+
+        public static SqlDbType GetDbType(Type netType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static int GetDbSize(SqlDbType dbType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static string GetTypeString(SqlDbType dbType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static string GetTypeString(Type netType)
+        {
+            return GetTypeString(GetDbType(netType));
+        }
     }
 }

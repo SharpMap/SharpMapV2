@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\PostGis_ProviderTests.nunit" total="1" failures="1" not-run="0" date="2008-10-08" time="16:21:44">
+  <environment nunit-version="2.4.8.0" clr-version="2.0.50727.3053" os-version="Microsoft Windows NT 5.1.2600 Service Pack 2" platform="Win32NT" cwd="C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\bin\Debug_Net20" machine-name="OBE01" user="obe" user-domain="IVV-AACHEN" />
+  <culture-info current-culture="de-DE" current-uiculture="de-DE" />
+  <test-suite name="C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\PostGis_ProviderTests.nunit" success="False" time="2.264" asserts="0">
+    <results>
+      <test-suite name="C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\bin\Debug_Net20\SharpMap.Data.Providers.PostGis.Tests.dll" success="False" time="2.248" asserts="0">
+        <results>
+          <test-suite name="SharpMap" success="False" time="2.248" asserts="0">
+            <results>
+              <test-suite name="Tests" success="False" time="2.248" asserts="0">
+                <results>
+                  <test-suite name="Data" success="False" time="2.248" asserts="0">
+                    <results>
+                      <test-suite name="Providers" success="False" time="2.248" asserts="0">
+                        <results>
+                          <test-suite name="PostGis" success="False" time="2.248" asserts="0">
+                            <results>
+                              <test-suite name="PostGis_ProviderTests" success="False" time="2.248" asserts="0">
+                                <results>
+                                  <test-case name="SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T01_CreateTableFromFeatureDataTable" executed="True" success="False" time="1.436" asserts="0">
+                                    <failure>
+                                      <message><![CDATA[Npgsql.NpgsqlException : ERROR: 42601: syntax error at or near ":"]]></message>
+                                      <stack-trace><![CDATA[bei Npgsql.NpgsqlState.<ProcessBackendResponses_Ver_3>d__a.MoveNext() in C:\projects\Npgsql2\src\Npgsql\NpgsqlState.cs:Zeile 831.
+bei Npgsql.ForwardsOnlyDataReader.GetNextResponseObject() in C:\projects\Npgsql2\src\Npgsql\NpgsqlDataReader.cs:Zeile 1118.
+bei Npgsql.ForwardsOnlyDataReader.GetNextRowDescription() in C:\projects\Npgsql2\src\Npgsql\NpgsqlDataReader.cs:Zeile 1136.
+bei Npgsql.ForwardsOnlyDataReader.NextResult() in C:\projects\Npgsql2\src\Npgsql\NpgsqlDataReader.cs:Zeile 1314.
+bei Npgsql.ForwardsOnlyDataReader..ctor(IEnumerable`1 dataEnumeration, CommandBehavior behavior, NpgsqlCommand command, NotificationThreadBlock threadBlock, Boolean synchOnReadError) in C:\projects\Npgsql2\src\Npgsql\NpgsqlDataReader.cs:Zeile 985.
+bei Npgsql.NpgsqlCommand.GetReader(CommandBehavior cb) in C:\projects\Npgsql2\src\Npgsql\NpgsqlCommand.cs:Zeile 570.
+bei Npgsql.NpgsqlCommand.ExecuteNonQuery() in C:\projects\Npgsql2\src\Npgsql\NpgsqlCommand.cs:Zeile 474.
+bei SharpMap.Data.Providers.Db.SpatialDbProviderBase`1.Insert(IEnumerable`1 features) in C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\DbProviderBase\SpatialDbProviderBase.cs:Zeile 451.
+bei SharpMap.Data.Providers.PostGis_Provider.CreateDataTable(FeatureDataTable featureDataTable, String schemaName, String tableName, String connectionString, String geometryColumnName, OgcGeometryType geometryType) in C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\PostGis_Provider.cs:Zeile 401.
+bei SharpMap.Data.Providers.PostGis_Provider.CreateDataTable(FeatureDataTable featureDataTable, String schemaName, String tableName, String connectionString, String geometryColumnName) in C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\PostGis_Provider.cs:Zeile 334.
+bei SharpMap.Data.Providers.PostGis_Provider.CreateDataTable(FeatureDataTable featureDataTable, String tableName, String connectionString) in C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\PostGis_Provider.cs:Zeile 329.
+bei SharpMap.Data.Providers.PostGis_Provider.CreateDataTable(FeatureDataTable featureDataTable, String connectionString) in C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\PostGis_Provider.cs:Zeile 324.
+bei SharpMap.Tests.Data.Providers.PostGis.PostGis_ProviderTests.T01_CreateTableFromFeatureDataTable() in C:\VENUS\CodePlex\sharpMap\SharpMap\SharpMap.Data.Providers\PostGisProvider_FromJohnDiss\Tests\PostGis_ProviderTests.cs:Zeile 76.
+]]></stack-trace>
+                                    </failure>
+                                  </test-case>
+                                </results>
+                              </test-suite>
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
