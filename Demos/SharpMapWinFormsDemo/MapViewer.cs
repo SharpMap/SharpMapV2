@@ -14,6 +14,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
@@ -207,8 +208,20 @@ namespace MapViewer
 
             ICommand mapLayersChangedCommand = new Command(CommandNames.MapLayersChanged);
 
-            Map.Layers.ListChanged +=
-                delegate { mapLayersChangedCommand.FireCommand(); };
+
+            ListChangedEventHandler mlc = null;
+            mlc = delegate(object o, ListChangedEventArgs e)
+                      {
+                          if (InvokeRequired)
+                          {
+                              Invoke(mlc, o, e);
+                              return;
+                          }
+                          mapLayersChangedCommand.FireCommand();
+                      };
+
+            Map.Layers.ListChanged += mlc;
+
             CommandManager.AddCommand(mapLayersChangedCommand);
 
             CommandManager.AddCommandHandler(
@@ -252,24 +265,61 @@ namespace MapViewer
         }
 
 
+
         private void AddLayer()
         {
             if (OpenFileDialog("Shapefiles|*.shp") == DialogResult.OK)
             {
-                var shp = new ShapeFileProvider(openFileDlg.FileName, GeometryServices.DefaultGeometryFactory, GeometryServices.CoordinateSystemFactory);
+                BackgroundWorker worker = new BackgroundWorker();
 
-                var lyr = new GeometryLayer(Guid.NewGuid().ToString(), shp);
-                shp.Open(false);
+                DoWorkEventHandler dlgt = null;
+                dlgt = (o, e) =>
+                                     {
 
-                Map.Layers.Add(lyr);
-                lyr.Style = new GeometryStyle();
 
-                if (Map.Layers.Count == 1)
-                {
-                    mapViewControl1.Map = Map;
-                    MapView.ZoomToExtents();
-                }
-                EnableDisableCommandsRequiringLayers();
+                                         var shp = new ShapeFileProvider(openFileDlg.FileName,
+                                                                         GeometryServices.DefaultGeometryFactory,
+                                                                         GeometryServices.CoordinateSystemFactory);
+
+                                         var lyr = new GeometryLayer(Guid.NewGuid().ToString(), shp);
+                                         shp.Open(false);
+
+
+                                         Map.Layers.Add(lyr);
+
+
+
+                                         lyr.Style = new GeometryStyle();
+
+                                         if (Map.Layers.Count == 1)
+                                         {
+                                             mapViewControl1.Map = Map;
+
+                                             Action a = null;
+                                             a = () =>
+                                                     {
+                                                         if (InvokeRequired)
+                                                         {
+                                                             Invoke(a);
+                                                             return;
+                                                         }
+                                                         MapView.ZoomToExtents();
+                                                     };
+                                         }
+                                         EnableDisableCommandsRequiringLayers();
+
+                                         ((BackgroundWorker)o).DoWork -= dlgt;
+                                     };
+                worker.DoWork += dlgt;
+
+                RunWorkerCompletedEventHandler finished = null;
+                finished = (o, e) =>
+                               {
+                                   ((BackgroundWorker)o).RunWorkerCompleted -= finished;
+                                   EnableDisableCommandsRequiringLayers();
+                               };
+                worker.RunWorkerCompleted += finished;
+                worker.RunWorkerAsync();
             }
         }
 

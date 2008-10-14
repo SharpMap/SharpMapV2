@@ -16,6 +16,7 @@ using System.Configuration;
 using System.Web;
 using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db.Expressions;
+using SharpMap.Data.Providers.MsSqlServer2008.Expressions;
 using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
@@ -114,23 +115,25 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                             new ProviderPropertyExpression[]
                                 {
                                     new WithNoLockExpression(true),
-                                    new ForceIndexExpression(true)
+                                    new ForceIndexExpression(true),
+                                    new IndexNamesExpression(new[] {"sidx_Streets_Geom"}),
+                                    new MsSqlServer2008ExtentsModeExpression(
+                                        SqlServer2008ExtentsMode.UseSqlSpatialTools)
                                 })
                     });
 
 
             var labellayer = new LabelLayer("streetslabel", labelprovider)
-            {
-                CollisionDetector = new LabelCollisionDetection2D(),
-
-            };
+                                 {
+                                     CollisionDetector = new LabelCollisionDetection2D(),
+                                 };
             labellayer.Enabled = true;
             labellayer.Features.IsSpatiallyIndexed = false;
             labellayer.MultipartGeometryLabelingBehaviour = MultipartGeometryLabelingBehavior.Largest;
 
-            LabelStyle lblstyle =
+            var lblstyle =
                 new LabelStyle(new StyleFont(new StyleFontFamily("Arial"), new Size2D(10, 10), StyleFontStyle.Bold),
-                                RandomStyle.RandomBrush());
+                               RandomStyle.RandomBrush());
             lblstyle.Enabled = true;
 
             lblstyle.LabelExpression = new PropertyNameExpression("NAME");
@@ -154,15 +157,18 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                         tbl,
                         "oid",
                         col)
-                    {
-                        DefaultProviderProperties
-                            = new ProviderPropertiesExpression(
-                            new ProviderPropertyExpression[]
-                                {
-                                    new WithNoLockExpression(true),
-                                    new ForceIndexExpression(true)
-                                })
-                    });
+                        {
+                            DefaultProviderProperties
+                                = new ProviderPropertiesExpression(
+                                new ProviderPropertyExpression[]
+                                    {
+                                        new WithNoLockExpression(true),
+                                        new ForceIndexExpression(true),
+                                        new IndexNamesExpression(new[] {"sidx_" + tbl + "_" + col}),
+                                        new MsSqlServer2008ExtentsModeExpression(
+                                            SqlServer2008ExtentsMode.UseSqlSpatialTools)
+                                    })
+                        });
 
                 //string col = "WKB_Geometry";
                 //var provider = new AppStateMonitoringFeatureProvider(
@@ -438,9 +444,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
                 m.AddLayer(layer);
             }
-
-
-
         }
     }
 }
