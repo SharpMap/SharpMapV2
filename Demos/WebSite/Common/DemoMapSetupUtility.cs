@@ -102,7 +102,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
             var labelprovider = new AppStateMonitoringFeatureProvider(
                 new MsSqlServer2008Provider<long>(
-                    new GeometryServices()[27700],
+                    new GeometryServices()["27700"],
                     ConfigurationManager.ConnectionStrings["db"].ConnectionString,
                     "dbo",
                     "STREETS",
@@ -148,7 +148,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
                 var provider = new AppStateMonitoringFeatureProvider(
                     new MsSqlServer2008Provider<long>(
-                        new GeometryServices()[27700],
+                        new GeometryServices()["27700"],
                         ConfigurationManager.ConnectionStrings["db"].ConnectionString,
                         "dbo",
                         tbl,
