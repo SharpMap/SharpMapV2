@@ -223,13 +223,9 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         public override ICoordinate Transform(ICoordinate coordinate)
         {
-            if (!IsInverse)
-            {
-                return DegreesToMeters(CoordinateFactory.Create3D(coordinate.ColumnCount));
-            }
-            {
-                return MetersToDegrees(CoordinateFactory.Create3D(coordinate.ColumnCount));
-            }
+            return !IsInverse 
+                ? DegreesToMeters(CoordinateFactory.Create3D(coordinate)) 
+                : MetersToDegrees(CoordinateFactory.Create3D(coordinate));
         }
 
         public Boolean EqualParams(IInfo obj)
