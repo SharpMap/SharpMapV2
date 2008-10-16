@@ -298,10 +298,10 @@ namespace ProjNet.CoordinateSystems.Projections
                                                                      3.0 * cs + 8.0 * _esp + 24.0 * ts))) / cosPhi));
 
                 transformed = p.ComponentCount < 3
-                                   ? CreateCoordinate(new Degrees(lon),
-                                                      new Degrees(lat))
-                                   : CreateCoordinate(new Degrees(lon),
-                                                      new Degrees(lat),
+                                   ? CreateCoordinate((Degrees)lon,
+                                                      (Degrees)lat)
+                                   : CreateCoordinate((Degrees)lon,
+                                                      (Degrees)lat,
                                                       (Double)p[2]);
             }
             else

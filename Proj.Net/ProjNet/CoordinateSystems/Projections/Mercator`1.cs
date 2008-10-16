@@ -46,6 +46,32 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Projections
 {
+
+    internal class InverseMercator<TCoordinate> : Mercator<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        public InverseMercator(IEnumerable<ProjectionParameter> parameters,
+                               ICoordinateFactory<TCoordinate> coordinateFactory)
+            : base(parameters, coordinateFactory)
+        {
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return "Inverse_" + base.Name;
+            }
+        }
+
+        public override Boolean IsInverse
+        {
+            get { return true; }
+        }
+    }
+
     /// <summary>
     /// Implements the Mercator projection.
     /// </summary>
@@ -71,7 +97,7 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private String _name;
+        private String _name;   
         private readonly Double _falseEasting;
         private readonly Double _falseNorthing;
         private readonly Radians _lon_center; //Center longitude (projection center)
@@ -242,7 +268,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public override string ProjectionClassName
         {
-            get { throw new System.NotImplementedException(); }
+            get { return _name; }
         }
 
         public override string Name
@@ -295,7 +321,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public override Boolean IsInverse
         {
-            get { throw new System.NotImplementedException(); }
+            get { return false; }
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)

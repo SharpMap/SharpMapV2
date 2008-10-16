@@ -44,7 +44,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             Inverse = transform;
         }
 
-        protected override string Name
+        protected override String Name
         {
             get
             {
@@ -52,7 +52,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             }
         }
 
-        public override bool IsInverse
+        public override Boolean IsInverse
         {
             get
             {
@@ -164,8 +164,8 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             const Double HalfPI = Math.PI * 0.5;
 
-            Double x = (Double) pnt[0];
-            Double y = (Double) pnt[1];
+            Double x = (Double)pnt[0];
+            Double y = (Double)pnt[1];
 
             if (x != 0.0)
             {
@@ -199,8 +199,8 @@ namespace ProjNet.CoordinateSystems.Transformations
                     else
                     {
                         /* center of earth */
-                        return CreateCoordinate(new Degrees(lon), 
-                                                (Degrees)new Radians(HalfPI), 
+                        return CreateCoordinate(new Degrees(lon),
+                                                (Degrees)new Radians(HalfPI),
                                                 -SemiMajor);
                     }
                 }
@@ -267,6 +267,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </remarks>
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
             foreach (TCoordinate point in points)
             {
                 yield return Transform(point);
@@ -275,7 +280,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
         {
-            throw new System.NotImplementedException();
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            return points.CoordinateSequenceFactory.Create(Transform(points));
         }
 
         public override Int32 SourceDimension
@@ -290,7 +300,9 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinate Transform(ICoordinate coordinate)
         {
-            throw new System.NotImplementedException();
+            return !IsInverse
+                       ? degreesToMeters(CoordinateFactory.Create(coordinate))
+                       : metersToDegrees(CoordinateFactory.Create(coordinate));
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
@@ -305,7 +317,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override Boolean IsInverse
         {
-            get { throw new System.NotImplementedException(); }
+            get { return false; }
         }
 
         /// <summary>
