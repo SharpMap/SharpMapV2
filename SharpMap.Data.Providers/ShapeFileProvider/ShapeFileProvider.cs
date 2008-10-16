@@ -2101,11 +2101,13 @@ namespace SharpMap.Data.Providers.ShapeFile
             //Debug.Assert(isCounterClockWise[i] == false); //jd: this line fails for the second outer shell of a multipolygon
             if (isCounterClockWise[i]) // we have reached the next outer shell
             {
-                i--;//decrement i
+                singlePoly.Add(rings[i]);
+                //i--;//decrement i
+
                 return singlePoly; //return the empty list.
             }
 
-            singlePoly.Add(rings[i++]);
+                singlePoly.Add(rings[i++]);
 
             while (i < isCounterClockWise.Length && isCounterClockWise[i])
             {
