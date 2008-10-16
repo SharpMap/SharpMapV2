@@ -209,18 +209,7 @@ namespace MapViewer
             ICommand mapLayersChangedCommand = new Command(CommandNames.MapLayersChanged);
 
 
-            ListChangedEventHandler mlc = null;
-            mlc = delegate(object o, ListChangedEventArgs e)
-                      {
-                          if (InvokeRequired)
-                          {
-                              Invoke(mlc, o, e);
-                              return;
-                          }
-                          mapLayersChangedCommand.FireCommand();
-                      };
-
-            Map.Layers.ListChanged += mlc;
+            Map.Layers.ListChanged += delegate { mapLayersChangedCommand.FireCommand(); };
 
             CommandManager.AddCommand(mapLayersChangedCommand);
 
@@ -270,56 +259,32 @@ namespace MapViewer
         {
             if (OpenFileDialog("Shapefiles|*.shp") == DialogResult.OK)
             {
-                BackgroundWorker worker = new BackgroundWorker();
-
-                DoWorkEventHandler dlgt = null;
-                dlgt = (o, e) =>
-                                     {
-
-
-                                         var shp = new ShapeFileProvider(openFileDlg.FileName,
-                                                                         GeometryServices.DefaultGeometryFactory,
-                                                                         GeometryServices.CoordinateSystemFactory);
-
-                                         var lyr = new GeometryLayer(Guid.NewGuid().ToString(), shp);
-                                         shp.Open(false);
-
-
-                                         Map.Layers.Add(lyr);
 
 
 
-                                         lyr.Style = new GeometryStyle();
+                var shp = new ShapeFileProvider(openFileDlg.FileName,
+                                                GeometryServices.DefaultGeometryFactory,
+                                                GeometryServices.CoordinateSystemFactory);
 
-                                         if (Map.Layers.Count == 1)
-                                         {
-                                             mapViewControl1.Map = Map;
+                var lyr = new GeometryLayer(Guid.NewGuid().ToString(), shp);
+                shp.Open(false);
+                
 
-                                             Action a = null;
-                                             a = () =>
-                                                     {
-                                                         if (InvokeRequired)
-                                                         {
-                                                             Invoke(a);
-                                                             return;
-                                                         }
-                                                         MapView.ZoomToExtents();
-                                                     };
-                                         }
-                                         EnableDisableCommandsRequiringLayers();
+                Map.Layers.Insert(0, lyr);
 
-                                         ((BackgroundWorker)o).DoWork -= dlgt;
-                                     };
-                worker.DoWork += dlgt;
 
-                RunWorkerCompletedEventHandler finished = null;
-                finished = (o, e) =>
-                               {
-                                   ((BackgroundWorker)o).RunWorkerCompleted -= finished;
-                                   EnableDisableCommandsRequiringLayers();
-                               };
-                worker.RunWorkerCompleted += finished;
-                worker.RunWorkerAsync();
+
+                lyr.Style = RandomStyle.RandomGeometryStyle();
+
+                if (Map.Layers.Count == 1)
+                {
+                    mapViewControl1.Map = Map;
+
+
+                    MapView.ZoomToExtents();
+
+                }
+                EnableDisableCommandsRequiringLayers();
             }
         }
 
