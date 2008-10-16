@@ -146,8 +146,8 @@ namespace MapViewer.Commands
             {
                 if (source is TCommandSource)
                 {
-                    if (predicate((TCommandSource)source))
-                        yield return (TCommandSource)source;
+                    if (predicate((TCommandSource) source))
+                        yield return (TCommandSource) source;
                 }
             }
         }
@@ -159,8 +159,8 @@ namespace MapViewer.Commands
             {
                 if (handler is TCommandHandler)
                 {
-                    if (predicate((TCommandHandler)handler))
-                        yield return (TCommandHandler)handler;
+                    if (predicate((TCommandHandler) handler))
+                        yield return (TCommandHandler) handler;
                 }
             }
         }
@@ -172,8 +172,8 @@ namespace MapViewer.Commands
             {
                 if (command is TCommand)
                 {
-                    if (predicate((TCommand)command))
-                        yield return (TCommand)command;
+                    if (predicate((TCommand) command))
+                        yield return (TCommand) command;
                 }
             }
         }

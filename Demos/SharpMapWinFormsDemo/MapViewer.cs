@@ -14,20 +14,16 @@
  */
 
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
-using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
 using MapViewer.Commands;
-using NetTopologySuite.Coordinates;
-using ProjNet.CoordinateSystems;
+using MapViewer.DataSource;
 using SharpMap;
-using SharpMap.Data.Providers.ShapeFile;
+using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
-using SharpMap.Styles;
+using SharpMap.Tools;
 using SharpMap.Utilities;
 
 namespace MapViewer
@@ -35,13 +31,17 @@ namespace MapViewer
     public partial class MapViewer : Form
     {
         private readonly CommandManager _commandManager = new CommandManager();
+        private readonly IGeometryServices GeometryServices = new GeometryServices();
         private readonly OpenFileDialog openFileDlg = new OpenFileDialog();
+        private readonly WorkQueue workQueue;
 
         private Map _map;
 
         public MapViewer()
         {
             InitializeComponent();
+            workQueue = new WorkQueue(this);
+            workQueue.Working += workQueue_Working;
             InitMap();
             InitCommands();
         }
@@ -72,11 +72,21 @@ namespace MapViewer
             get { return Map.Layers.Count > 0; }
         }
 
-        private readonly IGeometryServices GeometryServices = new GeometryServices();
+        private void workQueue_Working(object sender, WorkQueueProcessEventArgs e)
+        {
+            if (InvokeRequired)
+                Invoke(new Action<string>(UpdateStatus), e.Status);
+            else
+                UpdateStatus(e.Status);
+        }
+
+        private void UpdateStatus(string p)
+        {
+            toolStripStatusLabel1.Text = p;
+        }
 
         private void InitMap()
         {
-
             mapViewControl1.SuspendLayout();
             mapViewControl1.Size = splitVertical.Panel2.ClientSize;
             Map = new Map(GeometryServices.DefaultGeometryFactory);
@@ -214,9 +224,89 @@ namespace MapViewer
             CommandManager.AddCommand(mapLayersChangedCommand);
 
             CommandManager.AddCommandHandler(
-                new ActionCommandHandler(mapLayersChangedCommand, delegate { EnableDisableCommandsRequiringLayers(); }));
+                new ActionCommandHandler(mapLayersChangedCommand, EnableDisableCommandsRequiringLayers));
+
+            #region fixed zoom in /out
+
+            ICommand fixedZoomInCommand = new Command(CommandNames.FixedZoomIn);
+            CommandManager.AddCommand(fixedZoomInCommand);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(fixedZoomInButton,
+                                                                                            fixedZoomInCommand));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(fixedZoomInCommand, FixedZoomIn));
+
+
+            ICommand fixedZoomOutCommand = new Command(CommandNames.FixedZoomOut);
+            CommandManager.AddCommand(fixedZoomInCommand);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(fixedZoomOutButton,
+                                                                                            fixedZoomOutCommand));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(fixedZoomOutCommand, FixedZoomOut));
+
+            #endregion
+
+            ICommand enablePan = new Command(CommandNames.EnablePan);
+            CommandManager.AddCommand(enablePan);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(panButton, enablePan));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(enablePan, EnablePan));
+
+            ICommand zoomInMouse = new Command(CommandNames.ZoomInMouse);
+            CommandManager.AddCommand(zoomInMouse);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(zoomInButton, zoomInMouse));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(zoomInMouse, EnableZoomInMouse));
+
+
+            ICommand zoomOutMouse = new Command(CommandNames.ZoomOutMouse);
+            CommandManager.AddCommand(zoomOutMouse);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(zoomOutButton, zoomOutMouse));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(zoomOutMouse, EnableZoomOutMouse));
+
 
             EnableDisableCommandsRequiringLayers();
+        }
+
+        private void EnableZoomOutMouse()
+        {
+            Map.ActiveTool = StandardMapView2DMapTools.ZoomOut;
+        }
+
+        private void EnableZoomInMouse()
+        {
+            Map.ActiveTool = StandardMapView2DMapTools.ZoomIn;
+        }
+
+        private void EnablePan()
+        {
+            Map.ActiveTool = StandardMapView2DMapTools.Pan;
+        }
+
+        private void FixedZoomOut()
+        {
+            Zoom(1.2);
+        }
+
+        private void FixedZoomIn()
+        {
+            Zoom(0.8);
+        }
+
+        private void Zoom(double amount)
+        {
+            var ext = (IExtents2D) MapView.ViewEnvelope.Clone();
+            double dx, dy;
+            dx = ext.Width*amount/2;
+            dy = ext.Height*amount/2;
+            var c = (ICoordinate2D) ext.Center;
+
+            MapView.ZoomToWorldBounds(ext.Factory.CreateExtents2D(c.X - dx, c.Y - dy, c.X + dx, c.Y + dy));
+        }
+
+        private void InvokeIfRequired(Delegate dlgt)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(dlgt);
+                return;
+            }
+            dlgt.DynamicInvoke();
         }
 
         private void EnableDisableCommandsRequiringLayers()
@@ -227,6 +317,11 @@ namespace MapViewer
             CommandManager[CommandNames.EditLayerSymbology].Enabled = enable;
             CommandManager[CommandNames.RefreshMap].Enabled = enable;
             CommandManager[CommandNames.ClearLayers].Enabled = enable;
+            CommandManager[CommandNames.FixedZoomIn].Enabled = enable;
+            CommandManager[CommandNames.FixedZoomOut].Enabled = enable;
+            CommandManager[CommandNames.EnablePan].Enabled = enable;
+            CommandManager[CommandNames.ZoomInMouse].Enabled = enable;
+            CommandManager[CommandNames.ZoomOutMouse].Enabled = enable;
         }
 
         private void ZoomMapExtent()
@@ -238,7 +333,7 @@ namespace MapViewer
         private void ZoomLayerExtent(CommandEventArgs<ILayer> layerArgs)
         {
             if (layerArgs.Value != null)
-                MapView.ZoomToWorldBounds((IExtents2D)layerArgs.Value.Extents);
+                MapView.ZoomToWorldBounds((IExtents2D) layerArgs.Value.Extents);
         }
 
         private void EditLayerSymbology(CommandEventArgs<ILayer> layerArgs)
@@ -254,37 +349,39 @@ namespace MapViewer
         }
 
 
-
         private void AddLayer()
         {
-            if (OpenFileDialog("Shapefiles|*.shp") == DialogResult.OK)
+            var choose = new ChooseDataSource();
+            if (choose.ShowDialog() == DialogResult.OK)
             {
+                IFeatureProvider prov = choose.Provider;
 
 
+                workQueue.AddWorkItem(
+                    string.Format("Loading Datasource {0}", prov),
+                    delegate
+                        {
+                            var lyr =
+                                new GeometryLayer(
+                                    prov.ToString(),
+                                    prov);
 
-                var shp = new ShapeFileProvider(openFileDlg.FileName,
-                                                GeometryServices.DefaultGeometryFactory,
-                                                GeometryServices.CoordinateSystemFactory);
+                            prov.Open();
 
-                var lyr = new GeometryLayer(Guid.NewGuid().ToString(), shp);
-                shp.Open(false);
-                
+                            InvokeIfRequired(new Action(delegate
+                                                            {
+                                                                Map.Layers.Insert(0, lyr);
 
-                Map.Layers.Insert(0, lyr);
+                                                                lyr.Style =
+                                                                    RandomStyle.RandomGeometryStyle();
 
-
-
-                lyr.Style = RandomStyle.RandomGeometryStyle();
-
-                if (Map.Layers.Count == 1)
-                {
-                    mapViewControl1.Map = Map;
-
-
-                    MapView.ZoomToExtents();
-
-                }
-                EnableDisableCommandsRequiringLayers();
+                                                                if (Map.Layers.Count == 1)
+                                                                {
+                                                                    mapViewControl1.Map = Map;
+                                                                    MapView.ZoomToExtents();
+                                                                }
+                                                            }));
+                        }, delegate { EnableDisableCommandsRequiringLayers(); });
             }
         }
 
@@ -303,10 +400,15 @@ namespace MapViewer
             public const string ApplicationExit = "AppExit";
             public const string ClearLayers = "ClearLayers";
             public const string EditLayerSymbology = "EditLayerSymbology";
+            public const string EnablePan = "EnablePan";
+            public const string FixedZoomIn = "FixedZoomIn";
+            public const string FixedZoomOut = "FixedZoomOut";
             public const string MapLayersChanged = "MapLayersChanged";
             public const string RefreshMap = "RefreshMap";
             public const string ZoomFullExtent = "ZoomFullExtent";
+            public const string ZoomInMouse = "ZoomInMouse";
             public const string ZoomLayerExtent = "ZoomLayerExtent";
+            public const string ZoomOutMouse = "ZoomOutMouse";
         }
 
         #endregion

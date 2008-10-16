@@ -705,6 +705,9 @@ namespace SharpMap.Data.Providers.Db
             IEnumerable<ProviderPropertyExpression> expressions, TValue defaultValue)
             where TExpression : ProviderPropertyExpression<TValue>
         {
+            if (expressions == null)
+                return defaultValue;
+
             foreach (ProviderPropertyExpression propertyExpression in expressions)
                 if (propertyExpression is TExpression)
                     return ((TExpression)propertyExpression).PropertyValueExpression.Value;

@@ -1,17 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.Db
 {
     public interface ISpatialDbProvider
     {
+        String ConnectionString { get; set; }
+        String Table { get; set; }
+        String TableSchema { get; set; }
+        String GeometryColumn { get; set; }
+
+        /// <summary>
+        /// Name of column that contains the Object ID.
+        /// </summary>
+        String OidColumn { get; set; }
+
+        /// <summary>
+        /// Definition query used for limiting dataset (WHERE clause)
+        /// </summary>
+        PredicateExpression DefinitionQuery { get; set; }
+
         IDbUtility DbUtility { get; }
+        String GeometryColumnConversionFormatString { get; }
+        String GeomFromWkbFormatString { get; }
+        String QualifiedTableName { get; }
+        ProviderPropertiesExpression DefaultProviderProperties { get; set; }
     }
 
-    public interface ISpatialDbProvider<TDbUtility> 
-        : ISpatialDbProvider where TDbUtility : IDbUtility
+    public interface ISpatialDbProvider<TDbUtility> where TDbUtility : IDbUtility, new()
     {
-        new TDbUtility DbUtility { get; }
+         TDbUtility DbUtility { get; }
     }
 }

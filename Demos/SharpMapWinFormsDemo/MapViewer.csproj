@@ -134,6 +134,43 @@
     <Compile Include="Commands\IControlSource.cs" />
     <Compile Include="Commands\MenuItemCommandSource.cs" />
     <Compile Include="Commands\ToolStripMenuItemCommandSource.cs" />
+    <Compile Include="DataSource\ChooseDataSource.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\ChooseDataSource.Designer.cs">
+      <DependentUpon>ChooseDataSource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\ICreateDataProvider.cs" />
+    <Compile Include="DataSource\MsSqlSpatial.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\MsSqlSpatial.Designer.cs">
+      <DependentUpon>MsSqlSpatial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\PostGis.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\PostGis.Designer.cs">
+      <DependentUpon>PostGis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\Shapefile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\Shapefile.Designer.cs">
+      <DependentUpon>Shapefile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\SpatialLite.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\SpatialLite.Designer.cs">
+      <DependentUpon>SpatialLite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\SqlServer2008.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\SqlServer2008.Designer.cs">
+      <DependentUpon>SqlServer2008.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExitCommand.cs" />
     <Compile Include="MapViewer.cs">
       <SubType>Form</SubType>
@@ -143,6 +180,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DataSource\ChooseDataSource.resx">
+      <DependentUpon>ChooseDataSource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\MsSqlSpatial.resx">
+      <DependentUpon>MsSqlSpatial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\Shapefile.resx">
+      <DependentUpon>Shapefile.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MapViewer.resx">
       <DependentUpon>MapViewer.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -166,6 +212,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RandomStyle.cs" />
+    <Compile Include="WorkQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.csproj">
@@ -180,9 +227,29 @@
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
+      <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
+      <Name>SharpMap.Data.Providers.Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\MsSqlServer2008\SharpMap.Data.Providers.MsSqlServer2008.csproj">
+      <Project>{184C9D40-7999-46E4-8407-AD6480F75D87}</Project>
+      <Name>SharpMap.Data.Providers.MsSqlServer2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\MsSqlSpatial\SharpMap.Data.Providers.MsSqlSpatial.csproj">
+      <Project>{CEADC931-47FB-483C-A849-8B890FD6F0E1}</Project>
+      <Name>SharpMap.Data.Providers.MsSqlSpatial</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\SharpMap.Data.Providers.PostGis.csproj">
+      <Project>{7C533D86-BD73-4F55-AE8B-2D95D97C0436}</Project>
+      <Name>SharpMap.Data.Providers.PostGis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.SpatialLite2\SharpMap.Data.Providers.SpatiaLite2.csproj">
+      <Project>{1BDB6244-385F-4482-8AE7-CECE83508DE1}</Project>
+      <Name>SharpMap.Data.Providers.SpatiaLite2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Presentation\WinForms\SharpMap.Presentation.WinForms.csproj">
       <Project>{E7E3A53F-6B4D-423B-A10E-F0580B87FB81}</Project>

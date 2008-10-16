@@ -87,12 +87,12 @@ namespace SharpMap.Data.Providers
         public override IExtents GetExtents()
         {
 
-            bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(DefaultProviderProperties.ProviderProperties.Collection,
+            bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
                                      false);
 
             SqlServer2008ExtentsMode server2008ExtentsCalculationMode =
                 GetProviderPropertyValue<MsSqlServer2008ExtentsModeExpression, SqlServer2008ExtentsMode>(
-                    DefaultProviderProperties.ProviderProperties.Collection,
+                DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
                     SqlServer2008ExtentsMode.QueryIndividualFeatures);
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
@@ -148,6 +148,9 @@ namespace SharpMap.Data.Providers
                 {
                     while (r.Read())
                     {
+                        if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
+                            return GeometryFactory.CreateExtents(); 
+
                         xmin = r.GetDouble(0);
                         ymin = r.GetDouble(1);
                         xmax = r.GetDouble(2);

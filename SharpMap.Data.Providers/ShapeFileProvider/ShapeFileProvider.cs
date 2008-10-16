@@ -618,6 +618,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </param>
         public void Open(Boolean exclusive)
         {
+            _coordsysReadFromFile = false; //jd setting to false to stop error on second and subsequent open
             if (IsOpen)
             {
                 return;
@@ -2066,16 +2067,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             else
             {
                 IMultiPolygon mpoly = _geoFactory.CreateMultiPolygon();
-
-                for (Int32 i = 0; i < rings.Count; i++)
+                Int32 i;
+                for (i = 0; i < rings.Count; i++)
                 {
                     IPolygon poly;
                     List<ILinearRing> polyRings = getPolyRings(rings, isCounterClockWise, ref i);
 
-                    if (polyRings.Count == 0)// we reached the next outer shell (i has been decremented so carry on)
-                    {
-                        continue;
-                    }
                     if (polyRings.Count == 1)
                     {
                         poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings));
@@ -2089,6 +2086,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                     mpoly.Add(poly);
                 }
 
+                Assert.IsEquals(i, rings.Count);
+
                 return mpoly;
             }
         }
@@ -2099,21 +2098,21 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             // make sure the first ring is an exterior ring
             //Debug.Assert(isCounterClockWise[i] == false); //jd: this line fails for the second outer shell of a multipolygon
-            if (isCounterClockWise[i]) // we have reached the next outer shell
+            if (!isCounterClockWise[i]) // we have reached the next outer shell
             {
                 singlePoly.Add(rings[i]);
-                //i--;//decrement i
 
-                return singlePoly; //return the empty list.
+                i++;
             }
-
-                singlePoly.Add(rings[i++]);
 
             while (i < isCounterClockWise.Length && isCounterClockWise[i])
             {
                 singlePoly.Add(rings[i]);
                 i++;
             }
+
+            if (i < isCounterClockWise.Length - 1)
+                i--; //we need to create a new polyon so rewind to the outer shell
 
             return singlePoly;
         }

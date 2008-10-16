@@ -79,13 +79,16 @@ namespace SharpMap.Data.Providers
                     string.Format(
                         "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
                         GeometryColumn, TableSchema, Table,
-                        GetWithClause(DefaultProviderProperties.ProviderProperties.Collection));
+                        GetWithClause(DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection));
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
                 using (IDataReader r = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (r.Read())
                     {
+                        if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
+                            return GeometryFactory.CreateExtents();
+
                         double xmin = r.GetDouble(0);
                         double ymin = r.GetDouble(1);
                         double xmax = r.GetDouble(2);
@@ -99,6 +102,9 @@ namespace SharpMap.Data.Providers
 
         protected string GetWithClause(IEnumerable<ProviderPropertyExpression> providerPropertyExpressions)
         {
+            if (providerPropertyExpressions == null)
+                return "";
+
             bool withNoLock =
                 GetProviderPropertyValue<WithNoLockExpression, bool>(providerPropertyExpressions, false);
 

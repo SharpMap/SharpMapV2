@@ -86,13 +86,12 @@ namespace MapViewer
             vs.SelectSymbol = RandomSymbol();
 
 
-
             return vs;
         }
 
         private static Symbol2D RandomSymbol()
         {
-            return (Symbol2D)Symbols[random.Next(19)].Clone();
+            return (Symbol2D) Symbols[random.Next(19)].Clone();
         }
 
 
@@ -105,7 +104,7 @@ namespace MapViewer
         private static Stream RandomIcon(out Size2D sz)
         {
             sz = RandomSymbolSize();
-            var b = new Bitmap((int)sz.Width, (int)sz.Height);
+            var b = new Bitmap((int) sz.Width, (int) sz.Height);
 
             Graphics g = Graphics.FromImage(b);
             g.Clear(Color.Transparent);
@@ -117,9 +116,9 @@ namespace MapViewer
                 case 0:
                     {
                         StylePen p = RandomPen();
-                        g.DrawEllipse(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                      (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                      b.Height - (int)p.Width);
+                        g.DrawEllipse(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                      (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                      b.Height - (int) p.Width);
                         break;
                     }
                 case 1:
@@ -130,9 +129,9 @@ namespace MapViewer
                 case 2:
                     {
                         StylePen p = RandomPen();
-                        g.DrawRectangle(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                        (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                        b.Height - (int)p.Width);
+                        g.DrawRectangle(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                        (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                        b.Height - (int) p.Width);
                         break;
                     }
                 case 3:
@@ -142,18 +141,18 @@ namespace MapViewer
                     {
                         StylePen p = RandomPen();
                         g.FillEllipse(ViewConverter.Convert(RandomBrush()), 0, 0, b.Width, b.Height);
-                        g.DrawEllipse(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                      (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                      b.Height - (int)p.Width);
+                        g.DrawEllipse(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                      (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                      b.Height - (int) p.Width);
                         break;
                     }
                 case 5:
                     {
                         StylePen p = RandomPen();
                         g.FillRectangle(ViewConverter.Convert(RandomBrush()), 0, 0, b.Width, b.Height);
-                        g.DrawRectangle(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                        (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                        b.Height - (int)p.Width);
+                        g.DrawRectangle(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                        (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                        b.Height - (int) p.Width);
                         break;
                     }
             }

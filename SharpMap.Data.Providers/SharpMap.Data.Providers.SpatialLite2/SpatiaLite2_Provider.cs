@@ -304,6 +304,9 @@ namespace SharpMap.Data.Providers
                 {
                     while (r.Read())
                     {
+                        if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
+                            return GeometryFactory.CreateExtents();
+
                         xmin = r.GetDouble(0);// - 0.000000000001;
                         ymin = r.GetDouble(1);// - 0.000000000001;
                         xmax = r.GetDouble(2);// + 0.000000000001;

@@ -1,5 +1,4 @@
-﻿
-/*
+﻿/*
  *	This file is part of SharpMapMapViewer
  *  SharpMapMapViewer is free software © 2008 Newgrove Consultants Limited, 
  *  http://www.newgrove.com; you can redistribute it and/or modify it under the terms 
@@ -13,7 +12,7 @@
  *  Author: John Diss 2008
  * 
  */
-                
+
 using System;
 using MapViewer.Commands;
 

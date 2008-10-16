@@ -224,6 +224,9 @@ namespace SharpMap.Data.Providers
                 {
                     while (r.Read())
                     {
+                        if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
+                            return GeometryFactory.CreateExtents(); 
+
                         return GeometryFactory.CreateExtents2D(
                             r.GetDouble(0), r.GetDouble(1),
                             r.GetDouble(2), r.GetDouble(3));
