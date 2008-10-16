@@ -290,20 +290,20 @@ namespace MapViewer
 
         private void Zoom(double amount)
         {
-            var ext = (IExtents2D) MapView.ViewEnvelope.Clone();
+            var ext = (IExtents2D)MapView.ViewEnvelope.Clone();
             double dx, dy;
-            dx = ext.Width*amount/2;
-            dy = ext.Height*amount/2;
-            var c = (ICoordinate2D) ext.Center;
+            dx = ext.Width * amount / 2;
+            dy = ext.Height * amount / 2;
+            var c = (ICoordinate2D)ext.Center;
 
             MapView.ZoomToWorldBounds(ext.Factory.CreateExtents2D(c.X - dx, c.Y - dy, c.X + dx, c.Y + dy));
         }
 
-        private void InvokeIfRequired(Delegate dlgt)
+        private void InvokeIfRequired(Delegate dlgt, params object[] args)
         {
             if (InvokeRequired)
             {
-                Invoke(dlgt);
+                Invoke(dlgt, args);
                 return;
             }
             dlgt.DynamicInvoke();
@@ -333,7 +333,7 @@ namespace MapViewer
         private void ZoomLayerExtent(CommandEventArgs<ILayer> layerArgs)
         {
             if (layerArgs.Value != null)
-                MapView.ZoomToWorldBounds((IExtents2D) layerArgs.Value.Extents);
+                MapView.ZoomToWorldBounds((IExtents2D)layerArgs.Value.Extents);
         }
 
         private void EditLayerSymbology(CommandEventArgs<ILayer> layerArgs)
@@ -360,28 +360,28 @@ namespace MapViewer
                 workQueue.AddWorkItem(
                     string.Format("Loading Datasource {0}", prov),
                     delegate
-                        {
-                            var lyr =
-                                new GeometryLayer(
-                                    prov.ToString(),
-                                    prov);
+                    {
+                        var lyr =
+                            new GeometryLayer(
+                                prov.ToString(),
+                                prov);
 
-                            prov.Open();
+                        prov.Open();
 
-                            InvokeIfRequired(new Action(delegate
+                        InvokeIfRequired(new Action(delegate
+                                                        {
+                                                            Map.Layers.Insert(0, lyr);
+
+                                                            lyr.Style =
+                                                                RandomStyle.RandomGeometryStyle();
+
+                                                            if (Map.Layers.Count == 1)
                                                             {
-                                                                Map.Layers.Insert(0, lyr);
-
-                                                                lyr.Style =
-                                                                    RandomStyle.RandomGeometryStyle();
-
-                                                                if (Map.Layers.Count == 1)
-                                                                {
-                                                                    mapViewControl1.Map = Map;
-                                                                    MapView.ZoomToExtents();
-                                                                }
-                                                            }));
-                        }, delegate { EnableDisableCommandsRequiringLayers(); });
+                                                                mapViewControl1.Map = Map;
+                                                                MapView.ZoomToExtents();
+                                                            }
+                                                        }));
+                    }, delegate { EnableDisableCommandsRequiringLayers(); });
             }
         }
 
