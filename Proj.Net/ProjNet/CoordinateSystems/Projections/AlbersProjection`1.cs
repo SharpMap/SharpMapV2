@@ -266,12 +266,12 @@ namespace ProjNet.CoordinateSystems.Projections
             Double a = computeAlpha(lat);
             Double rho = computeRho(a);
             Double theta = _n * (lon - _centerLongitude);
-            lon = (Radians)(_falseEasting + rho * Math.Sin(theta));
-            lat = (Radians)(_falseNorthing + _rho0 - (rho * Math.Cos(theta)));
+            Double x = _falseEasting + rho * Math.Sin(theta);
+            Double y = _falseNorthing + _rho0 - (rho * Math.Cos(theta));
 
             return lonlat.ComponentCount == 2
-                       ? CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit)
-                       : CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit, (Double)lonlat[2]);
+                       ? CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit)
+                       : CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit, (Double)lonlat[2]);
         }
 
         public override string ProjectionClassName
@@ -301,7 +301,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Double q = (_c - Math.Pow(rho, 2) * Math.Pow(_n, 2) / Math.Pow(SemiMajor, 2)) / _n;
             //Double b = Math.Sin(q / (1 - ((1 - e_sq) / (2 * e)) * Math.Log((1 - e) / (1 + e))));
 
-            Double lat = Math.Asin(q * 0.5);
+            Radians lat = (Radians)Math.Asin(q * 0.5);
             Double preLat = Double.MaxValue;
             Int32 iterationCounter = 0;
 
@@ -311,9 +311,11 @@ namespace ProjNet.CoordinateSystems.Projections
                 Double sin = Math.Sin(lat);
                 Double e2sin2 = E2 * Math.Pow(sin, 2);
 
-                lat += (Math.Pow(1 - e2sin2, 2) / (2 * Math.Cos(lat))) *
-                       ((q / (1 - E2)) - sin / (1 - e2sin2) + 1 / (2 * E) *
-                                                          Math.Log((1 - E * sin) / (1 + E * sin)));
+                lat = (Radians)
+                      ((Math.Pow(1 - e2sin2, 2) / (2 * Math.Cos(lat))) *
+                        ((q / (1 - E2)) - sin / (1 - e2sin2) + 1 / (2 * E) *
+                            Math.Log((1 - E * sin) / (1 + E * sin))) + 
+                                lat);
 
                 iterationCounter++;
 
@@ -324,7 +326,7 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
             }
 
-            Double lon = _centerLongitude + (theta / _n);
+            Radians lon = (Radians)(_centerLongitude + (theta / _n));
 
             return p.ComponentCount == 2
                        ? CreateCoordinate((Degrees)lon, (Degrees)lat)

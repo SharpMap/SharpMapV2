@@ -339,7 +339,7 @@ namespace ProjNet.CoordinateSystems.Projections
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new Mercator<TCoordinate>(parameters, CoordinateFactory);
+            return new InverseMercator<TCoordinate>(parameters, CoordinateFactory);
         }
 
         #region Overrides of MathTransform<TCoordinate>
