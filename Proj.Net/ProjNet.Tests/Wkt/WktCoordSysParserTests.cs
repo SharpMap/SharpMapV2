@@ -109,20 +109,20 @@ namespace ProjNet.Tests.Converters.Wkt
 			Assert.AreEqual(6378137, pcs.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid.SemiMajorAxis);
 			Assert.AreEqual(298.257222101, pcs.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid.InverseFlattening);
 			Assert.AreEqual("EPSG", pcs.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid.Authority);
-			Assert.AreEqual(7019, pcs.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid.AuthorityCode);
+            Assert.AreEqual("7019", pcs.GeographicCoordinateSystem.HorizontalDatum.Ellipsoid.AuthorityCode);
 			Assert.AreEqual("EPSG", pcs.GeographicCoordinateSystem.HorizontalDatum.Authority);
-			Assert.AreEqual(6152, pcs.GeographicCoordinateSystem.HorizontalDatum.AuthorityCode);
+            Assert.AreEqual("6152", pcs.GeographicCoordinateSystem.HorizontalDatum.AuthorityCode);
 			Assert.AreEqual(new Wgs84ConversionInfo(725, 685, 536, 0, 0, 0, 0), pcs.GeographicCoordinateSystem.HorizontalDatum.Wgs84Parameters);
 			Assert.AreEqual("Greenwich", pcs.GeographicCoordinateSystem.PrimeMeridian.Name);
 			Assert.AreEqual(0, pcs.GeographicCoordinateSystem.PrimeMeridian.Longitude);
 			Assert.AreEqual("EPSG", pcs.GeographicCoordinateSystem.PrimeMeridian.Authority);
-			Assert.AreEqual(8901, pcs.GeographicCoordinateSystem.PrimeMeridian.AuthorityCode, "8901");
+            Assert.AreEqual("8901", pcs.GeographicCoordinateSystem.PrimeMeridian.AuthorityCode, "8901");
 			Assert.AreEqual("degree", pcs.GeographicCoordinateSystem.AngularUnit.Name);
 			Assert.AreEqual(0.0174532925199433, pcs.GeographicCoordinateSystem.AngularUnit.RadiansPerUnit);
 			Assert.AreEqual("EPSG", pcs.GeographicCoordinateSystem.AngularUnit.Authority);
-			Assert.AreEqual(9122, pcs.GeographicCoordinateSystem.AngularUnit.AuthorityCode);
+            Assert.AreEqual("9122", pcs.GeographicCoordinateSystem.AngularUnit.AuthorityCode);
 			Assert.AreEqual("EPSG", pcs.GeographicCoordinateSystem.Authority);
-			Assert.AreEqual(4152, pcs.GeographicCoordinateSystem.AuthorityCode, "4152");
+            Assert.AreEqual("4152", pcs.GeographicCoordinateSystem.AuthorityCode, "4152");
 			Assert.AreEqual("Lambert_Conformal_Conic_2SP", pcs.Projection.ProjectionClassName, "Projection Classname");
 
 			ProjectionParameter latitude_of_origin = pcs.Projection["latitude_of_origin"];
@@ -147,9 +147,9 @@ namespace ProjNet.Tests.Converters.Wkt
 			Assert.AreEqual("US survey foot", pcs.LinearUnit.Name);
 			Assert.AreEqual(0.304800609601219, pcs.LinearUnit.MetersPerUnit);
 			Assert.AreEqual("EPSG", pcs.LinearUnit.Authority);
-			Assert.AreEqual(9003, pcs.LinearUnit.AuthorityCode);
+            Assert.AreEqual("9003", pcs.LinearUnit.AuthorityCode);
 			Assert.AreEqual("EPSG", pcs.Authority);
-			Assert.AreEqual(2918, pcs.AuthorityCode);
+            Assert.AreEqual("2918", pcs.AuthorityCode);
 			Assert.AreEqual(wkt, pcs.Wkt);
 		}
 		/// <summary>

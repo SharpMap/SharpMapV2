@@ -141,7 +141,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             Double x = (v + h) * Math.Cos(lat) * Math.Cos(lon);
             Double y = (v + h) * Math.Cos(lat) * Math.Sin(lon);
             Double z = ((1 - e2) * v + h) * Math.Sin(lat);
-            return CreateCoordinate(x, y, z);
+            return CreateCoordinate3D(x, y, z);
         }
 
         /// <summary>
@@ -199,9 +199,9 @@ namespace ProjNet.CoordinateSystems.Transformations
                     else
                     {
                         /* center of earth */
-                        return CreateCoordinate(new Degrees(lon),
-                                                (Degrees)new Radians(HalfPI),
-                                                -SemiMajor);
+                        return CreateCoordinate3D(new Degrees(lon),
+                                                  (Degrees)new Radians(HalfPI),
+                                                  -SemiMajor);
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 lat = new Radians(Math.Atan(sinP1 / cosP1));
             }
 
-            return CreateCoordinate((Degrees)lon, (Degrees)lat, height);
+            return CreateCoordinate3D((Degrees)lon, (Degrees)lat, height);
         }
 
         /// <summary>
@@ -301,8 +301,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         public override ICoordinate Transform(ICoordinate coordinate)
         {
             return !IsInverse
-                       ? degreesToMeters(CoordinateFactory.Create(coordinate))
-                       : metersToDegrees(CoordinateFactory.Create(coordinate));
+                       ? degreesToMeters(CoordinateFactory.Create3D(coordinate))
+                       : metersToDegrees(CoordinateFactory.Create3D(coordinate));
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
