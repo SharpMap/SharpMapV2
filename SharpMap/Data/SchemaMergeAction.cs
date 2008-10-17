@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Data;
 
 namespace SharpMap.Data
 {
@@ -33,40 +34,55 @@ namespace SharpMap.Data
         None = 0,
 
         /// <summary>
-        /// Adds schema from the source to the target if it is missing.
+        /// Adds any non key columns (columns not in <see cref="DataTable.PrimaryKey"/>)
+        ///  from the source to the target if missing.
         /// </summary>
-		Add = 1,
+		AddNonKey = 1,
 
         /// <summary>
-        /// Adds schema from the source to the target if it is missing, and
-        /// adds any key information from the source to the target if it is missing.
+        /// Adds any key columns (columns in <see cref="DataTable.PrimaryKey"/>)
+        /// from the source to the target if missing.
         /// </summary>
-        AddWithKey = 5,
+        AddKey = 2,
+
+        /// <summary>
+        /// Adds all columns from the source to the target if missing.
+        /// </summary>
+        AddAll = 3,
+
+        /// <summary>
+        /// Adds all columns from the source to the target if missing, and
+        /// adds any key information from the source to the target if missing.
+        /// </summary>
+        AddWithKey = AddAll | Key,
 
         /// <summary>
         /// Replaces the schema in the target by converting columns to a type
         /// which supports both source data and target data, if possible.
         /// </summary>
-        Replace = 2,
+        Replace = 4,
 
         /// <summary>
-        /// Adds any key information from the source to the target if it is missing.
+        /// Merges the <see cref="DataTable.PrimaryKey"/> array.
         /// </summary>
-		Key = 4,
+		Key = 8,
 
         /// <summary>
-        /// Matches key columns if their type matches, regardless of the column names.
+        /// Matches <see cref="DataTable.PrimaryKey"/> columns if their type matches, 
+        /// regardless of the column names.
         /// </summary>
 		KeyByType = 32,
 
         /// <summary>
         /// Matches columns by their names in a case-insensitive manner.
         /// </summary>
-        CaseInsensitive = 8,
+        CaseInsensitive = 64,
 
         /// <summary>
-        /// Converts the source column to the target column type if a conversion exists.
+        /// Allows columns to be matched if the names are the same and the type of 
+        /// the source column has a conversion to the type of the target column, 
+        /// otherwise column types need to be identical to match.
         /// </summary>
-        ConvertTypes = 16
+        MatchIfConvertible = 16
 	}
 }

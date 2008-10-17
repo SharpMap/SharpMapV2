@@ -502,7 +502,7 @@ namespace SharpMap.Data
         /// <see langword="true"/> preserves them, <see langword="false"/> overwrites them.</param>
         public void Merge(FeatureDataTable features, Boolean preserveChanges)
         {
-            Merge(features, preserveChanges, SchemaMergeAction.Add);
+            Merge(features, preserveChanges, SchemaMergeAction.AddAll);
         }
 
         /// <summary>
@@ -556,12 +556,12 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="target">The target of the schema merge.</param>
         /// <remarks>
-        /// Calls <see cref="MergeSchema(FeatureDataTable, SchemaMergeAction)"/>
+        /// Calls <see cref="MergeSchemaTo(FeatureDataTable, SchemaMergeAction)"/>
         /// with SchemaMergeAction.Add | SchemaMergeAction.Key.
         /// </remarks>
-        public void MergeSchema(FeatureDataTable target)
+        public void MergeSchemaTo(FeatureDataTable target)
         {
-            MergeSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            MergeSchemaTo(target, SchemaMergeAction.AddWithKey);
         }
 
         /// <summary>
@@ -571,10 +571,39 @@ namespace SharpMap.Data
         /// <param name="schemaMergeAction">
         /// Option to specify how to merge the schemas.
         /// </param>
-        public void MergeSchema(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
+        public void MergeSchemaTo(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
         {
             FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
             merger.MergeSchema(this);
+        }
+
+        /// <summary>
+        /// Merges schema from a source <see cref="DataTable"/> 
+        /// to the <see cref="FeatureDataTable"/>,
+        /// adding columns and key information.
+        /// </summary>
+        /// <param name="source">The source of the schema merge.</param>
+        /// <remarks>
+        /// Calls <see cref="MergeSchemaFrom(FeatureDataTable, SchemaMergeAction)"/>
+        /// with SchemaMergeAction.Add | SchemaMergeAction.Key.
+        /// </remarks>
+        public void MergeSchemaFrom(DataTable source)
+        {
+            MergeSchemaFrom(source, SchemaMergeAction.AddWithKey);
+        }
+
+        /// <summary>
+        /// Merges schema to the <see cref="FeatureDataTable"/> from a source 
+        /// <see cref="DataTable"/>.
+        /// </summary>
+        /// <param name="source">The source of the schema merge.</param>
+        /// <param name="schemaMergeAction">
+        /// Option to specify how to merge the schemas.
+        /// </param>
+        public void MergeSchemaFrom(DataTable source, SchemaMergeAction schemaMergeAction)
+        {
+            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            merger.MergeSchema(source);
         }
 
         /// <summary>

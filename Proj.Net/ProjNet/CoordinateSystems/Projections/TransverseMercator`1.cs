@@ -332,30 +332,11 @@ namespace ProjNet.CoordinateSystems.Projections
             get { return false; }
         }
 
-        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override ICoordinateSequence Transform(ICoordinateSequence points)
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
             return new InverseTransverseMercator<TCoordinate>(parameters, CoordinateFactory, this);
         }
-
-        #region Overrides of MathTransform<TCoordinate>
-
-        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
     }
 }

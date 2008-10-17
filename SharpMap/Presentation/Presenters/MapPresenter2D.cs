@@ -925,9 +925,9 @@ namespace SharpMap.Presentation.Presenters
             switch (phase)
             {
                 case RenderPhase.Normal:
-                    SpatialBinaryExpression query 
-                        = SpatialBinaryExpression.Intersects(ViewEnvelopeInternal);
-                    IEnumerable<FeatureDataRow> features = layer.Features.Select(query);
+                    FeatureQueryExpression query = 
+                        FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
+                    IEnumerable<FeatureDataRow> features = layer.Select(query);
 
                     foreach (FeatureDataRow feature in features)
                     {

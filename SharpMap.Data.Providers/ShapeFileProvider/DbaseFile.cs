@@ -355,7 +355,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         internal void SetTableSchema(FeatureDataTable target, SchemaMergeAction mergeAction)
         {
-            _baseTable.MergeSchema(target, mergeAction);
+            _baseTable.MergeSchemaTo(target, mergeAction);
         }
 
         /// <summary>

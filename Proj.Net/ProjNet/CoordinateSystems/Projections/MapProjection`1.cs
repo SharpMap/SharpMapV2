@@ -204,9 +204,9 @@ namespace ProjNet.CoordinateSystems.Projections
                        : MetersToDegrees(point);
         }
 
-        public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> ord)
+        public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            foreach (TCoordinate coordinate in ord)
+            foreach (TCoordinate coordinate in points)
             {
                 yield return Transform(coordinate);
             }
@@ -223,9 +223,35 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </returns>
         public override ICoordinate Transform(ICoordinate coordinate)
         {
-            return !IsInverse 
-                ? DegreesToMeters(CoordinateFactory.Create3D(coordinate)) 
-                : MetersToDegrees(CoordinateFactory.Create3D(coordinate));
+            return coordinate.ContainsOrdinate(Ordinates.Z)
+                       ? Transform(CoordinateFactory.Create3D(coordinate))
+                       : Transform(CoordinateFactory.Create(coordinate));
+        }
+
+        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
+        {
+            foreach (ICoordinate coordinate in points)
+            {
+                yield return Transform(coordinate);
+            }
+        }
+
+        public override ICoordinateSequence Transform(ICoordinateSequence points)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        {
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            ICoordinateSequenceFactory<TCoordinate> factory =
+                points.CoordinateSequenceFactory;
+
+            return factory.Create(Transform(points as IEnumerable<TCoordinate>));
         }
 
         public Boolean EqualParams(IInfo obj)

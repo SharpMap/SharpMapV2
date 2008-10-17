@@ -245,9 +245,19 @@ namespace SharpMap.Layers
             }
         }
 
+        public IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query)
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion
 
         #region Layer overrides
+
+        public override IEnumerable Select(Expression query)
+        {
+            throw new System.NotImplementedException();
+        }
 
         protected override QueryExpression GetQueryFromSpatialBinaryExpression(SpatialBinaryExpression exp)
         {
@@ -262,11 +272,6 @@ namespace SharpMap.Layers
             MergeFeatures(features);
 
             _features.RestoreIndexEvents(true);
-        }
-
-        public override IEnumerable Select(Expression query)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 

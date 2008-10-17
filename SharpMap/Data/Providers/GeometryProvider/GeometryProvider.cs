@@ -446,7 +446,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         public void SetTableSchema(FeatureDataTable<UInt32> table)
         {
-            SetTableSchema(table, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            SetTableSchema(table, SchemaMergeAction.AddWithKey);
         }
 
         public void SetTableSchema(FeatureDataTable<UInt32> table, SchemaMergeAction schemaMergeAction)

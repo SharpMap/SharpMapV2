@@ -901,7 +901,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public void SetTableSchema(FeatureDataTable target)
         {
             checkOpen();
-            _dbaseFile.SetTableSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            _dbaseFile.SetTableSchema(target, SchemaMergeAction.AddWithKey);
         }
 
         #endregion
@@ -1050,7 +1050,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     "option enabled.");
             }
 
-            SetTableSchema(target, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            SetTableSchema(target, SchemaMergeAction.AddWithKey);
         }
 
         /// <summary>
@@ -1073,7 +1073,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="feature">Feature to append.</param>
         /// <exception cref="ShapeFileInvalidOperationException">
-        /// Thrown if method is called and the shapefile is closed. Check <see cref="IsOpen"/> before calling.
+        /// Thrown if method is called and the shapefile is closed. 
+        /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="feature"/> is null.

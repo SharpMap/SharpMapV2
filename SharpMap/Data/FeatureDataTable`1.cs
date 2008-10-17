@@ -340,7 +340,7 @@ namespace SharpMap.Data
         /// A new <see cref="FeatureDataRow"/> with the same schema as the table,
         /// with the given <paramref name="id"/>.
         /// </returns>
-        public FeatureDataRow NewRow(TOid id, Boolean isFullyLoaded)
+        public FeatureDataRow<TOid> NewRow(TOid id, Boolean isFullyLoaded)
         {
             FeatureDataRow<TOid> row = NewRow(id);
             row.IsFullyLoaded = isFullyLoaded;

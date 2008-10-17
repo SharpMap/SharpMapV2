@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Reflection.Emit;
 using System.Reflection;
 using GeoAPI.Geometries;
@@ -41,6 +42,7 @@ namespace SharpMap.Data
         private delegate DataColumn[] GetDataKeyColumnReferenceDelegate(Object dataKey);
         private delegate Object DataKeyGetSortIndex(Object dataKey, DataViewRowState rowState);
         private delegate Boolean GetDataKeyHasValue(Object dataKey);
+        private delegate DataColumn CloneDataColumn(DataColumn dataKey);
         #endregion
 
         #region Static fields
@@ -53,6 +55,7 @@ namespace SharpMap.Data
         private static readonly GetDataKeyFromUniqueConstraintDelegate _getDataKeyFromUniqueConstraint;
         private static readonly DataKeyGetSortIndex _dataKeyGetSortIndex;
         private static readonly GetDataKeyHasValue _getDataKeyHasValue;
+        private static readonly CloneDataColumn _cloneDataColumn;
         #endregion
 
         #region Static constructor
@@ -65,8 +68,9 @@ namespace SharpMap.Data
             _createDataKey = generateCreateDataKeyDelegate();
             _createEmptyDataKey = generateCreateEmptyDataKeyDelegate();
             _getDataKeyFromUniqueConstraint = generateGetDataKeyFromUniqueConstraintDelegate();
-            _dataKeyGetSortIndex = generateDataKeyGetSortIndex();
-            _getDataKeyHasValue = generateGetDataKeyHasValue();
+            _dataKeyGetSortIndex = generateDataKeyGetSortIndexDelegate();
+            _getDataKeyHasValue = generateGetDataKeyHasValueDelegate();
+            _cloneDataColumn = generateCloneDataColumnDelegate();
         }
         #endregion
 
@@ -80,6 +84,7 @@ namespace SharpMap.Data
         private Boolean _ignoreNamespaceForTableLookup;
         #endregion
 
+
         #region Object constructor
         internal FeatureMerger(FeatureDataSet target, Boolean preserveChanges, SchemaMergeAction mergeAction)
         {
@@ -88,10 +93,10 @@ namespace SharpMap.Data
 
         internal FeatureMerger(FeatureDataTable target, Boolean preserveChanges, SchemaMergeAction mergeAction)
         {
-            if ((SchemaMergeAction.ConvertTypes & mergeAction) != SchemaMergeAction.None)
-            {
-                throw new NotImplementedException("SchemaMergeAction.ConvertTypes is currently not supported.");
-            }
+            //if ((SchemaMergeAction.CoerceTypes & mergeAction) != SchemaMergeAction.None)
+            //{
+            //    throw new NotImplementedException("SchemaMergeAction.ConvertTypes is currently not supported.");
+            //}
 
             if ((SchemaMergeAction.KeyByType & mergeAction) != SchemaMergeAction.None)
             {
@@ -257,7 +262,7 @@ namespace SharpMap.Data
             }
         }
 
-        internal void MergeSchema(FeatureDataTable source)
+        internal void MergeSchema(DataTable source)
         {
             try
             {
@@ -287,7 +292,7 @@ namespace SharpMap.Data
         #region Private helper methods
         private void mergeSchemaIfNeeded(IFeatureDataRecord record, IGeometryFactory factory)
         {
-            if ((SchemaMergeAction & SchemaMergeAction.Add) != SchemaMergeAction.None)
+            if ((SchemaMergeAction & SchemaMergeAction.AddAll) != SchemaMergeAction.None)
             {
                 // HACK: Parsing and setting the schema should be less clunky here.
                 //       We probably need to just do the schema merge ourselves without 
@@ -380,7 +385,7 @@ namespace SharpMap.Data
                 }
             }
 
-            mergeExtendedProperties(source.ExtendedProperties, target.ExtendedProperties);
+            mergeExtendedProperties(source.ExtendedProperties, target.ExtendedProperties, SchemaMergeAction, PreserveChanges);
         }
 
         private static Object getDataKeySortIndex(Object rowLookupKey, DataViewRowState rowStateFilter)
@@ -441,19 +446,22 @@ namespace SharpMap.Data
             return _getDataKeyFromUniqueConstraint(uniqueConstraint);
         }
 
-        private void mergeExtendedProperties(IDictionary src, IDictionary dst)
+        private static void mergeExtendedProperties(IDictionary src, IDictionary dst, SchemaMergeAction mergeAction, Boolean preserveChanges)
         {
-            if (SchemaMergeAction != SchemaMergeAction.None)
+            if (mergeAction == SchemaMergeAction.None)
             {
-                foreach (DictionaryEntry entry in src)
+                return;
+            }
+
+            foreach (DictionaryEntry entry in src)
+            {
+                if (!preserveChanges || (!dst.Contains(entry.Key) || dst[entry.Key] == null))
                 {
-                    if (!PreserveChanges || (!dst.Contains(entry.Key) || dst[entry.Key] == null))
-                    {
-                        dst[entry.Key] = entry.Value;
-                    }
+                    dst[entry.Key] = entry.Value;
                 }
             }
         }
+
         #endregion
 
         #region Private static helpers
@@ -514,7 +522,7 @@ namespace SharpMap.Data
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
-            if ((Int32)(schemaMergeAction & SchemaMergeAction.Add) != 0)
+            if ((Int32)(schemaMergeAction & SchemaMergeAction.AddAll) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.Add;
             }
@@ -709,7 +717,7 @@ namespace SharpMap.Data
             return d;
         }
 
-        private static DataKeyGetSortIndex generateDataKeyGetSortIndex()
+        private static DataKeyGetSortIndex generateDataKeyGetSortIndexDelegate()
         {
             DynamicMethod dataKeyGetSortIndex = new DynamicMethod("FeatureMerger_DataKeyGetSortIndex_DynamicMethod",
                                                                 PublicStaticMethod,
@@ -742,7 +750,7 @@ namespace SharpMap.Data
             return d;
         }
 
-        private static GetDataKeyHasValue generateGetDataKeyHasValue()
+        private static GetDataKeyHasValue generateGetDataKeyHasValueDelegate()
         {
             DynamicMethod getDataKeyHasValue = new DynamicMethod(
                                                             "FeatureMerger_DataKey_get_HasValue_DynamicMethod",
@@ -773,6 +781,300 @@ namespace SharpMap.Data
 
             return d;
         }
+
+        private static CloneDataColumn generateCloneDataColumnDelegate()
+        {
+            DynamicMethod cloneDataColumn = new DynamicMethod(
+                                                            "DataColumn_Clone_DynamicMethod",
+                                                            PublicStaticMethod,
+                                                            CallingConventions.Standard,
+                                                            typeof(DataColumn),
+                                                            new Type[] { typeof(DataColumn) },
+                                                            typeof(DataColumn),
+                                                            false);
+
+            ILGenerator il = cloneDataColumn.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            MethodInfo cloneInfo = typeof(DataColumn).GetMethod("Clone", NonPublicInstance);
+            il.Emit(OpCodes.Call, cloneInfo);
+            il.Emit(OpCodes.Ret);
+
+            CloneDataColumn d = cloneDataColumn.CreateDelegate(typeof(CloneDataColumn))
+                as CloneDataColumn;
+
+            return d;
+        }
+        #endregion
+
+        #region Schema Merge Experimental
+
+        //private SchemaMap _schemaMap = new SchemaMap();
+
+        //private delegate Object Converter(Object input);
+
+        //private class SchemaMap
+        //{
+        //    private readonly List<SchemaMapColumnMatch> _columnMatches = new List<SchemaMapColumnMatch>();
+        //    private readonly List<SchemaMapKeyMatch> _keyMatches = new List<SchemaMapKeyMatch>();
+
+        //    public void AddColumnMatch(DataColumn src, DataColumn dst)
+        //    {
+        //        AddColumnMatch(src, dst, null);
+        //    }
+
+        //    public void AddColumnMatch(DataColumn src, DataColumn dst, Converter converter)
+        //    {
+        //        SchemaMapColumnMatch match = new SchemaMapColumnMatch(src, dst, converter);
+        //        _columnMatches.Add(match);
+        //    }
+
+        //    public void AddKeyMatch(DataColumn src, DataColumn dst)
+        //    {
+        //        SchemaMapKeyMatch match = new SchemaMapKeyMatch(src, dst);
+        //        _keyMatches.Add(match);
+        //    }
+
+        //    public SchemaMapColumnMatch GetColumnMatch(Int32 index)
+        //    {
+        //        return _columnMatches[index];
+        //    }
+
+        //    public SchemaMapKeyMatch GetKeyMatch(Int32 index)
+        //    {
+        //        return _keyMatches[index];
+        //    }
+        //}
+
+        //private class SchemaMapKeyMatch
+        //{
+        //    private readonly DataColumn _srcColumn;
+        //    private readonly DataColumn _dstColumn;
+
+        //    public SchemaMapKeyMatch(DataColumn src, DataColumn dst)
+        //    {
+        //        _srcColumn = src;
+        //        _dstColumn = dst;
+        //    }
+
+        //    public DataColumn Destination
+        //    {
+        //        get { return _dstColumn; }
+        //    }
+
+        //    public DataColumn Source
+        //    {
+        //        get { return _srcColumn; }
+        //    }
+        //}
+
+        //private class SchemaMapColumnMatch
+        //{
+        //    private readonly DataColumn _srcColumn;
+        //    private readonly DataColumn _dstColumn;
+        //    private readonly Converter _converter;
+
+        //    public SchemaMapColumnMatch(DataColumn src, DataColumn dst, Converter converter)
+        //    {
+        //        _srcColumn = src;
+        //        _converter = converter;
+        //        _dstColumn = dst;
+        //    }
+
+        //    public Converter Converter
+        //    {
+        //        get { return _converter; }
+        //    }
+
+        //    public DataColumn Destination
+        //    {
+        //        get { return _dstColumn; }
+        //    }
+
+        //    public DataColumn Source
+        //    {
+        //        get { return _srcColumn; }
+        //    }
+        //}
+
+        //private static DataTable mergeSchema(DataTable source, DataSet targetDataSet, DataTable target, SchemaMergeAction mergeAction, Boolean preserveChanges)
+        //{
+        //    Boolean ignoreCase = ((Int32)(mergeAction & SchemaMergeAction.CaseInsensitive) != 0);
+        //    DataTable targetTable = null;
+
+        //    if (targetDataSet != null)
+        //    {
+        //        if (tablesContain(targetDataSet, ignoreCase, source.TableName))
+        //        {
+        //            targetTable = targetDataSet.Namespace != source.Namespace
+        //                            ? targetDataSet.Tables[source.TableName]
+        //                            : targetDataSet.Tables[source.TableName, source.Namespace];
+        //        }
+        //    }
+        //    else
+        //    {
+        //        targetTable = target;
+        //    }
+
+        //    if (targetTable == null)    // This will be true when the targetDataSet doesn't have a table by the same name
+        //    {
+        //        throw new NotImplementedException("DataSet merges not yet implemented.");
+        //    }
+        //    else
+        //    {
+        //        if (mergeAction == SchemaMergeAction.None)
+        //        {
+        //            mergeExtendedProperties(source.ExtendedProperties, targetTable.ExtendedProperties, mergeAction, preserveChanges);
+        //            return targetTable;
+        //        }
+
+        //        Int32 initialTargetCount = targetTable.Columns.Count;
+        //        Boolean matchIfConvertible = (Int32)(mergeAction & SchemaMergeAction.MatchIfConvertible) != 0;
+        //        Boolean includeKey = (Int32)(mergeAction & SchemaMergeAction.Key) != 0;
+        //        Boolean add = (Int32)(mergeAction & SchemaMergeAction.AddAll) != 0;
+        //        Boolean replace = (Int32)(mergeAction & SchemaMergeAction.Replace) != 0;
+
+        //        for (int i = 0; i < source.Columns.Count; i++)
+        //        {
+        //            DataColumn src = source.Columns[i];
+        //            DataColumn dest = columnsContain(targetTable, source, src.ColumnName, src.DataType, ignoreCase, matchIfConvertible, includeKey)
+        //                                            ? targetTable.Columns[src.ColumnName]
+        //                                            : null;
+        //            if (dest == null)
+        //            {
+        //                // rematch using type coersion to System.Object to ensure match
+        //                dest = columnsContain(targetTable, src.ColumnName, typeof(Object), ignoreCase, true, includeKey)
+        //                                            ? targetTable.Columns[src.ColumnName]
+        //                                            : null;
+
+        //                if (dest != null && replace)
+        //                {
+        //                    // Find common type to convert to (widen for numeric and character data, cast up for objects)
+        //                    // Add new column with found type
+        //                    // Copy existing dest data to new column from old column
+        //                    // Remove original destination column
+        //                    throw new NotImplementedException("Schema replacement not yet implemented");
+        //                }
+        //            }
+
+        //            if (dest == null)
+        //            {
+        //                if (add)
+        //                {
+        //                    dest = _cloneDataColumn(src);
+        //                    targetTable.Columns.Add(dest);
+        //                }
+        //                else if (!isKey(source, src) || (includeKey && isKey(source, src)))
+        //                {
+        //                    // TODO: raise merge failed event
+        //                    throw new DataException("Merge failed, can't match column: " + src.ColumnName);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (matchIfConvertible)
+        //                {
+        //                    throw new NotImplementedException("Schema matching on convertible types not yet implemented");
+        //                }
+        //                else if (dest.DataType != src.DataType ||
+        //                        ((dest.DataType == typeof(DateTime)) &&
+        //                        (dest.DateTimeMode != src.DateTimeMode) &&
+        //                        ((dest.DateTimeMode & src.DateTimeMode) != DataSetDateTime.Unspecified)))
+        //                {
+        //                    throw new DataException("Merge failed, data type mismatch: " + src.ColumnName);
+        //                }
+
+        //                mergeExtendedProperties(src.ExtendedProperties, dest.ExtendedProperties, mergeAction, preserveChanges);
+        //            }
+
+        //            // Set expressions 
+        //            if (targetDataSet != null)
+        //            {
+        //                throw new NotImplementedException("DataSet merges not yet implemented.");
+        //                //for (int i = initialTargetCount; i < targetTable.Columns.Count; i++)
+        //                //{
+        //                //    targetTable.Columns[i].Expression = source.Columns[targetTable.Columns[i].ColumnName].Expression;
+        //                //}
+        //            }
+
+        //            // 
+        //            DataColumn[] targetKey = targetTable.PrimaryKey;
+        //            DataColumn[] sourceKey = source.PrimaryKey;
+
+        //            if (targetKey.Length != sourceKey.Length)
+        //            {
+        //                // special case when the target table does not have the PrimaryKey
+
+        //                if (targetKey.Length == 0)
+        //                {
+        //                    DataColumn[] key = new DataColumn[sourceKey.Length];
+
+        //                    for (Int32 i = 0; i < sourceKey.Length; i++)
+        //                    {
+        //                        key[i] = targetTable.Columns[sourceKey[i].ColumnName];
+        //                    }
+
+        //                    targetTable.PrimaryKey = key;
+        //                }
+        //                else if (sourceKey.Length != 0)
+        //                {
+        //                    targetDataSet.RaiseMergeFailed(targetTable, Res.GetString(Res.DataMerge_PrimaryKeyMismatch), missingSchemaAction);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                for (int i = 0; i < targetKey.Length; i++)
+        //                {
+        //                    if (String.Compare(targetKey[i].ColumnName, sourceKey[i].ColumnName, false, targetTable.Locale) != 0)
+        //                    {
+        //                        targetDataSet.RaiseMergeFailed(source,
+        //                            Res.GetString(Res.DataMerge_PrimaryKeyColumnsMismatch, targetKey[i].ColumnName, sourceKey[i].ColumnName),
+        //                            missingSchemaAction
+        //                    );
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        mergeExtendedProperties(source.ExtendedProperties, targetTable.ExtendedProperties, mergeAction, preserveChanges);
+        //    }
+
+        //    return targetTable;
+        //}
+
+        //private static Boolean isKey(DataTable table, DataColumn column)
+        //{
+        //    return Array.Exists(table.PrimaryKey, delegate(DataColumn find) { return ReferenceEquals(find, column); });
+        //}
+
+        //private static Boolean tablesContain(DataSet targetDataSet, Boolean ignoreCase, String name)
+        //{
+        //    StringComparer comparer = StringComparer.Create(targetDataSet.Locale ?? CultureInfo.CurrentCulture, ignoreCase);
+
+        //    foreach (DataTable table in targetDataSet.Tables)
+        //    {
+        //        if (comparer.Compare(table.TableName, name) == 0)
+        //        {
+        //            return true;
+        //        }
+        //    }
+
+        //    return false;
+        //}
+
+        //private static Boolean columnsContain(DataTable table, String columnName, Type columnType, Boolean ignoreCase, Boolean matchIfConvertible, Boolean includeKey)
+        //{
+        //    StringComparer comparer = StringComparer.Create(table.Locale ?? CultureInfo.CurrentCulture, ignoreCase);
+
+        //    foreach (DataColumn column in table.Columns)
+        //    {
+        //        if (comparer.Compare(column.ColumnName, columnName) == 0)
+        //        {
+        //            return true;
+        //        }
+        //    }
+
+        //    return false;
+        //}
         #endregion
     }
 }

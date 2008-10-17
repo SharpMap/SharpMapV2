@@ -149,7 +149,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         public void SetTableSchema(FeatureDataTable<Guid> table, SchemaMergeAction schemaMergeAction)
         {
-            _features.MergeSchema(table, schemaMergeAction);
+            _features.MergeSchemaTo(table, schemaMergeAction);
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         /// <param name="table">The FeatureDataTable to configure the schema of.</param>
         public void SetTableSchema(FeatureDataTable table)
         {
-            _features.MergeSchema(table);
+            _features.MergeSchemaTo(table);
         }
 
         #endregion
