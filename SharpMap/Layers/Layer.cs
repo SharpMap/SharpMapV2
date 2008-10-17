@@ -117,7 +117,7 @@ namespace SharpMap.Layers
         #region Instance fields
 
         private readonly ILayer _parent;
-        private ICoordinateTransformation _coordinateTransform;
+        //private ICoordinateTransformation _coordinateTransform;
         private String _layerName;
         private IStyle _style;
         private Boolean _disposed;
@@ -194,9 +194,9 @@ namespace SharpMap.Layers
             {
                 _asyncQuery = parent.AsyncQuery;
                 _geoFactory = geometryFactory;
-                _coordinateTransform = parent.CoordinateTransformation;
                 dataSource = parent.DataSource as IAsyncProvider ??
                              CreateAsyncProvider(parent.DataSource);
+                CoordinateTransformation = parent.CoordinateTransformation;
                 _loadedRegion = parent.LoadedRegion;
                 style = parent.Style;
             }
@@ -383,7 +383,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets the coordinate system of the layer.
         /// </summary>
-        public ICoordinateSystem CoordinateSystem
+        public ICoordinateSystem SpatialReference
         {
             get { return DataSource.SpatialReference; }
         }
@@ -394,17 +394,27 @@ namespace SharpMap.Layers
         /// </summary>
         public virtual ICoordinateTransformation CoordinateTransformation
         {
-            get { return _coordinateTransform; }
+            get { return DataSource.CoordinateTransformation; }
             set
             {
                 checkParent();
 
-                if (_coordinateTransform == value)
+                ICoordinateTransformation currentTransform =
+                    DataSource.CoordinateTransformation;
+
+                if (currentTransform == value)
                 {
                     return;
                 }
 
-                _coordinateTransform = value;
+                if (currentTransform != null && currentTransform.Source != SpatialReference)
+                {
+                    throw new InvalidOperationException("Coordinate transformation doesn't " +
+                                                        "have the same 'source' spatial reference " +
+                                                        "as this layer");
+                }
+
+                DataSource.CoordinateTransformation = value;
                 OnCoordinateTransformationChanged();
             }
         }
@@ -464,8 +474,8 @@ namespace SharpMap.Layers
             {
                 IExtents fullExtents = DataSource.GetExtents();
 
-                return CoordinateTransformation != null 
-                    ? CoordinateTransformation.Transform(fullExtents, GeometryFactory) 
+                return CoordinateTransformation != null
+                    ? CoordinateTransformation.Transform(fullExtents, GeometryFactory)
                     : fullExtents;
             }
         }
@@ -657,11 +667,11 @@ namespace SharpMap.Layers
 
             if (enumerable == null)
             {
-                QueryCache.AddExpressionResult(expression, results);   
+                QueryCache.AddExpressionResult(expression, results);
             }
             else
             {
-                QueryCache.AddExpressionResults(expression, enumerable);   
+                QueryCache.AddExpressionResults(expression, enumerable);
             }
         }
 

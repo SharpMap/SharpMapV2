@@ -19,9 +19,9 @@
 using System;
 using System.Data;
 using System.Reflection.Emit;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
 using GeoAPI.Indexing;
-using SharpMap.Data;
 using GeoAPI.Geometries;
 using System.Reflection;
 using SharpMap.Expressions;
@@ -72,6 +72,7 @@ namespace SharpMap.Data
         private Boolean _isGeometryModified = false;
         private IExtents _extents;
         private Boolean _isFullyLoaded;
+        private ICoordinateTransformation _coordinateTransform;
         #endregion
 
         #region Object constructor
@@ -353,6 +354,12 @@ namespace SharpMap.Data
         public virtual Type OidType
         {
             get { return HasOid ? Table.PrimaryKey[0].DataType : null; }
+        }
+
+        public ICoordinateTransformation CoordinateTransformation
+        {
+            get { return _coordinateTransform; }
+            set { _coordinateTransform = value; }
         }
 
         #endregion

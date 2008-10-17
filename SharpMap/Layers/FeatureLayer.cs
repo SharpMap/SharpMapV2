@@ -21,6 +21,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
+using GeoAPI.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
@@ -247,12 +248,9 @@ namespace SharpMap.Layers
 
         public IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query)
         {
-            FeatureDataTable tbl = new FeatureDataTable("features", GeometryFactory);
-            using (IFeatureDataReader rdr = DataSource.ExecuteFeatureQuery(query))
-            {
-                tbl.Load(rdr, LoadOption.Upsert, null);
-                return tbl;
-            }
+            if (query == null) throw new ArgumentNullException("query");
+
+            return Features.Select(query.SpatialPredicate);
         }
 
         #endregion
@@ -282,8 +280,30 @@ namespace SharpMap.Layers
 
         protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
         {
+            //if (CoordinateTransformation != null)
+            //{
+            //    features = transformFeatures(features);
+            //}
+
             _features.Merge(features, GeometryFactory);
         }
+
+        //private IEnumerable<IFeatureDataRecord> transformFeatures(IEnumerable<IFeatureDataRecord> features)
+        //{
+        //    foreach (IFeatureDataRecord feature in features)
+        //    {
+        //        // TODO: fix this assumption of an IFeatureDataRecord being a FeatureDataRow
+        //        FeatureDataRow row = feature as FeatureDataRow;
+        //        Assert.IsNotNull(feature);
+               
+        //        if (row.Geometry.SpatialReference != CoordinateTransformation.Target)
+        //        {
+        //            row.Geometry = CoordinateTransformation.Transform(feature.Geometry, GeometryFactory);
+        //        }
+
+        //        yield return row;
+        //    }
+        //}
 
         protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
         {

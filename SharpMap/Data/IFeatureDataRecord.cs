@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System.Data;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using System;
 
@@ -76,5 +77,7 @@ namespace SharpMap.Data
         ///// feature.
         ///// </summary>
         //DataColumn[] Schema { get; }
+
+        ICoordinateTransformation CoordinateTransformation { get; set; }
 	}
 }

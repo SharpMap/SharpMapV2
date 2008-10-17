@@ -39,11 +39,6 @@ namespace SharpMap.Layers
 		Boolean AsyncQuery { get; set; }
 
 		/// <summary>
-		/// The dataum, projection and coordinate system used for this layer.
-		/// </summary>
-		ICoordinateSystem CoordinateSystem { get; }
-
-		/// <summary>
 		/// Applies a coordinate transformation to the geometries in this layer.
 		/// </summary>
 		ICoordinateTransformation CoordinateTransformation { get; set; }
@@ -70,7 +65,12 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// Name of layer.
 		/// </summary>
-		String LayerName { get; set; }
+        String LayerName { get; set; }
+
+        /// <summary>
+        /// The dataum, projection and coordinate system used for this layer.
+        /// </summary>
+        ICoordinateSystem SpatialReference { get; }
 
 		/// <summary>
 		/// The spatial reference ID of the layer data source.

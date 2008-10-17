@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-using SharpMap.Data;
+using GeoAPI.CoordinateSystems.Transformations;
 using System.Data;
 using GeoAPI.Geometries;
 
@@ -30,6 +30,7 @@ namespace SharpMap.Data
     public class FeatureDataTableReader : IFeatureDataReader
     {
         private readonly FeatureDataTable _table;
+        private ICoordinateTransformation _coordinateTransform;
 
         public FeatureDataTableReader(FeatureDataTable table)
         {
@@ -61,6 +62,12 @@ namespace SharpMap.Data
         public Type OidType
         {
             get { throw new NotImplementedException(); }
+        }
+
+        public ICoordinateTransformation CoordinateTransformation
+        {
+            get { return _coordinateTransform; }
+            set { _coordinateTransform = value; }
         }
 
         public Boolean IsFullyLoaded

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.GeometryProvider
@@ -33,7 +34,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
         private GeometryProvider _provider;
         private readonly IExtents _bounds;
         private Int32 _currentIndex = -1;
-        private Boolean _isDisposed; 
+        private Boolean _isDisposed;
+        private ICoordinateTransformation _coordinateTransform;
         #endregion
 
         #region Object construction and disposal
@@ -347,6 +349,12 @@ namespace SharpMap.Data.Providers.GeometryProvider
         public Type OidType
         {
             get { throw new NotImplementedException(); }
+        }
+
+        public ICoordinateTransformation CoordinateTransformation
+        {
+            get { return _coordinateTransform; }
+            set { _coordinateTransform = value; }
         }
 
         #endregion

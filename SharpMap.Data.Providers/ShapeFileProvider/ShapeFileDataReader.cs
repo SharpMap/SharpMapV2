@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 
@@ -36,6 +37,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private IFeatureDataRecord _currentFeature;
         private Boolean _isDisposed;
         private readonly IEnumerator<UInt32> _objectEnumerator;
+        private ICoordinateTransformation _coordinateTransform;
         #endregion
 
         #region Object Construction / Disposal
@@ -173,6 +175,12 @@ namespace SharpMap.Data.Providers.ShapeFile
         public Type OidType
         {
             get { return typeof(UInt32); }
+        }
+
+        public ICoordinateTransformation CoordinateTransformation
+        {
+            get { return _coordinateTransform; }
+            set { _coordinateTransform = value; }
         }
 
         #endregion

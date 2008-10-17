@@ -824,6 +824,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 _currentReader = new ShapeFileDataReader(this, query, options);
                 _currentReader.Disposed += readerDisposed;
+                _currentReader.CoordinateTransformation = CoordinateTransformation;
                 return _currentReader;
             }
         }

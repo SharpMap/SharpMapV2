@@ -126,6 +126,7 @@
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
+    <Compile Include="Data\Providers\FeatureProviderBase.cs" />
     <Compile Include="Data\Providers\ProviderBase.cs" />
     <Compile Include="Data\SelectRequestedEventArgs.cs" />
     <Compile Include="Data\FeatureUniqueConstraint.cs" />

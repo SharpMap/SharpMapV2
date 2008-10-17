@@ -25,6 +25,24 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
+
+    public class InverseCoordinateTransformation<TCoordinate> : CoordinateTransformation<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        internal InverseCoordinateTransformation(CoordinateTransformation<TCoordinate> transform)
+            : base(transform.Target, 
+                   transform.Source, 
+                   transform.TransformType, 
+                   transform.MathTransform.Inverse, 
+                   transform.Name, 
+                   transform.Authority, 
+                   transform.AuthorityCode, 
+                   transform.AreaOfUse, 
+                   transform.Remarks) { }
+    }
+
     /// <summary>
     /// Describes a coordinate transformation. This class only describes a 
     /// coordinate transformation, it does not actually perform the transform 
@@ -45,6 +63,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly IMathTransform<TCoordinate> _mathTransform;
         private readonly String _name;
         private readonly String _remarks;
+        private ICoordinateTransformation<TCoordinate> _inverse;
 
         /// <summary>
         /// Initializes an instance of a CoordinateTransformation
@@ -123,7 +142,15 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public ICoordinateTransformation<TCoordinate> Inverse
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                if (_inverse == null)
+                {
+                    _inverse = new InverseCoordinateTransformation<TCoordinate>(this);
+                }
+
+                return _inverse;
+            }
         }
 
         public IExtents<TCoordinate> Transform(IExtents<TCoordinate> extents, 
@@ -150,9 +177,29 @@ namespace ProjNet.CoordinateSystems.Transformations
             return factory.CreatePoint(coordinate);
         }
 
+        public IExtents<TCoordinate> InverseTransform(IExtents<TCoordinate> extents, IGeometryFactory<TCoordinate> factory)
+        {
+            return Inverse.Transform(extents, factory);
+        }
+
+        public IGeometry<TCoordinate> InverseTransform(IGeometry<TCoordinate> geometry, IGeometryFactory<TCoordinate> factory)
+        {
+            return Inverse.Transform(geometry, factory);
+        }
+
+        public IPoint<TCoordinate> InverseTransform(IPoint<TCoordinate> point, IGeometryFactory<TCoordinate> factory)
+        {
+            return Inverse.Transform(point, factory);
+        }
+
         public TransformType TransformType
         {
             get { return _transformType; }
+        }
+
+        ICoordinateTransformation ICoordinateTransformation.Inverse
+        {
+            get { return Inverse; }
         }
 
         #endregion
@@ -193,6 +240,21 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             ICoordinate coordinate = MathTransform.Transform(point.Coordinate);
             return factory.CreatePoint(coordinate);
+        }
+
+        public IExtents InverseTransform(IExtents extents, IGeometryFactory factory)
+        {
+            return Inverse.Transform(extents, factory);
+        }
+
+        public IGeometry InverseTransform(IGeometry geometry, IGeometryFactory factory)
+        {
+            return Inverse.Transform(geometry, factory);
+        }
+
+        public IPoint InverseTransform(IPoint point, IGeometryFactory factory)
+        {
+            return Inverse.Transform(point, factory);
         }
 
         #endregion
