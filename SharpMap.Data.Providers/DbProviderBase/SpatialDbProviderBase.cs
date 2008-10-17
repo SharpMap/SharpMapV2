@@ -324,7 +324,7 @@ namespace SharpMap.Data.Providers.Db
 
         public void SetTableSchema(FeatureDataTable<TOid> table)
         {
-            SetTableSchema(table, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            SetTableSchema(table, SchemaMergeAction.AddAll | SchemaMergeAction.Key);
         }
 
         public void SetTableSchema(FeatureDataTable<TOid> table, SchemaMergeAction schemaAction)
@@ -337,7 +337,7 @@ namespace SharpMap.Data.Providers.Db
         public FeatureDataTable CreateNewTable()
         {
             var tbl = new FeatureDataTable<TOid>(OidColumn, GeometryFactory);
-            SetTableSchema(tbl, SchemaMergeAction.Add | SchemaMergeAction.Key);
+            SetTableSchema(tbl, SchemaMergeAction.AddAll | SchemaMergeAction.Key);
             return tbl;
         }
 

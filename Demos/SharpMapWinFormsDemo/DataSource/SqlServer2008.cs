@@ -47,7 +47,7 @@ namespace MapViewer.DataSource
             prts = prts[0].Split('.');
             schema = prts[0];
             tableName = prts[1];
-            IGeometryFactory f = new GeometryServices().DefaultGeometryFactory;
+            IGeometryFactory f = new GeometryServices()[tbSRID.Text];
 
             string conn = ServerConnectionString;
             conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
@@ -95,13 +95,13 @@ namespace MapViewer.DataSource
                 {
                     cmd.CommandText =
                         @"
-SELECT cols.name as OIDColumn,types.name as OIDType,sch.name as SchemaName,  tbls.[name] as TableName, 
+SELECT keys.COLUMN_NAME as OIDColumn,types.name as OIDType,sch.name as SchemaName,  tbls.[name] as TableName, 
 (select top 1 name from sys.columns where system_type_id = 240 and object_id = tbls.object_id) as GeometryColumn  
 FROM sys.tables tbls 
 inner join sys.columns cols on cols.object_id = tbls.object_id  
-inner join sys.index_columns keys on keys.object_id = cols.object_id and cols.column_id = keys.column_id
 inner join sys.types types on types.system_type_id = cols.system_type_id
 inner join sys.schemas sch on sch.schema_id = tbls.schema_id 
+inner join  INFORMATION_SCHEMA.KEY_COLUMN_USAGE keys on keys.TABLE_NAME = tbls.name and Keys.COLUMN_NAME = cols.name
 where tbls.object_id in (select object_id from sys.columns where system_type_id = 240)
 order by tbls.name";
                     cmd.CommandType = CommandType.Text;

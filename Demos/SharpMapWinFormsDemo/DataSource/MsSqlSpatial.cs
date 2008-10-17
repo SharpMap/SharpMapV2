@@ -54,7 +54,7 @@ namespace MapViewer.DataSource
 
                 conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
 
-                string[] prts = ((string) cbTable.SelectedItem).Split('|');
+                string[] prts = ((string)cbTable.SelectedItem).Split('|');
 
                 string geomColumn = prts[1];
 
@@ -63,7 +63,7 @@ namespace MapViewer.DataSource
                 string tableName = prts[1];
 
 
-                return new MsSqlSpatialProvider(new GeometryServices().DefaultGeometryFactory, conn, "ST", schema,
+                return new MsSqlSpatialProvider(new GeometryServices()[tbSRID.Text], conn, "ST", schema,
                                                 tableName, "oid", geomColumn);
             }
             return null;
@@ -108,7 +108,7 @@ namespace MapViewer.DataSource
                         using (SqlDataReader dr = cmd.ExecuteReader())
                         {
                             while (dr.Read())
-                                lst.Add((string) dr["name"]);
+                                lst.Add((string)dr["name"]);
                             cbDataBases.DataSource = lst;
                         }
                         return true;

@@ -247,7 +247,12 @@ namespace SharpMap.Layers
 
         public IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query)
         {
-            throw new System.NotImplementedException();
+            FeatureDataTable tbl = new FeatureDataTable("features", GeometryFactory);
+            using (IFeatureDataReader rdr = DataSource.ExecuteFeatureQuery(query))
+            {
+                tbl.Load(rdr, LoadOption.Upsert, null);
+                return tbl;
+            }
         }
 
         #endregion
@@ -304,12 +309,12 @@ namespace SharpMap.Layers
 
             QueryExpression query = e.Query;
 
-            if(!QueryCache.Contains(query))
+            if (!QueryCache.Contains(query))
             {
                 query = QueryCache.FilterQuery(query);
                 LoadLayerData(query);
             }
-        } 
+        }
         #endregion
     }
 }

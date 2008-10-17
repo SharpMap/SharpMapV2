@@ -42,14 +42,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.cbDataBases = new System.Windows.Forms.ComboBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbSRID = new System.Windows.Forms.TextBox();
             this.grpAuth.SuspendLayout();
             this.grpLogin.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Location = new System.Drawing.Point(11, 56);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 13);
             this.label1.TabIndex = 0;
@@ -59,7 +62,7 @@
             // 
             this.tbServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbServer.Location = new System.Drawing.Point(135, 9);
+            this.tbServer.Location = new System.Drawing.Point(134, 53);
             this.tbServer.Name = "tbServer";
             this.tbServer.Size = new System.Drawing.Size(213, 20);
             this.tbServer.TabIndex = 1;
@@ -71,7 +74,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpAuth.Controls.Add(this.rbTrusted);
             this.grpAuth.Controls.Add(this.rbSqlServer);
-            this.grpAuth.Location = new System.Drawing.Point(15, 35);
+            this.grpAuth.Location = new System.Drawing.Point(14, 79);
             this.grpAuth.Name = "grpAuth";
             this.grpAuth.Size = new System.Drawing.Size(333, 44);
             this.grpAuth.TabIndex = 5;
@@ -110,7 +113,7 @@
             this.grpLogin.Controls.Add(this.label3);
             this.grpLogin.Controls.Add(this.tbUName);
             this.grpLogin.Controls.Add(this.label2);
-            this.grpLogin.Location = new System.Drawing.Point(15, 86);
+            this.grpLogin.Location = new System.Drawing.Point(14, 130);
             this.grpLogin.Name = "grpLogin";
             this.grpLogin.Size = new System.Drawing.Size(333, 67);
             this.grpLogin.TabIndex = 6;
@@ -157,7 +160,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTable.FormattingEnabled = true;
-            this.cbTable.Location = new System.Drawing.Point(15, 221);
+            this.cbTable.Location = new System.Drawing.Point(14, 265);
             this.cbTable.Name = "cbTable";
             this.cbTable.Size = new System.Drawing.Size(327, 21);
             this.cbTable.TabIndex = 10;
@@ -165,7 +168,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 205);
+            this.label4.Location = new System.Drawing.Point(11, 249);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 13);
             this.label4.TabIndex = 8;
@@ -174,7 +177,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 156);
+            this.label5.Location = new System.Drawing.Point(11, 200);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 13);
             this.label5.TabIndex = 9;
@@ -186,16 +189,38 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDataBases.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDataBases.FormattingEnabled = true;
-            this.cbDataBases.Location = new System.Drawing.Point(15, 172);
+            this.cbDataBases.Location = new System.Drawing.Point(14, 216);
             this.cbDataBases.Name = "cbDataBases";
             this.cbDataBases.Size = new System.Drawing.Size(327, 21);
             this.cbDataBases.TabIndex = 7;
             this.cbDataBases.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.tbSRID);
+            this.groupBox1.Location = new System.Drawing.Point(14, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(333, 43);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Datasource Srid";
+            // 
+            // tbSRID
+            // 
+            this.tbSRID.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSRID.Location = new System.Drawing.Point(6, 17);
+            this.tbSRID.Name = "tbSRID";
+            this.tbSRID.Size = new System.Drawing.Size(321, 20);
+            this.tbSRID.TabIndex = 0;
+            // 
             // MsSqlSpatial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.cbDataBases);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -210,6 +235,8 @@
             this.grpAuth.PerformLayout();
             this.grpLogin.ResumeLayout(false);
             this.grpLogin.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -231,5 +258,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         protected System.Windows.Forms.ComboBox cbDataBases;
+        private System.Windows.Forms.GroupBox groupBox1;
+        protected System.Windows.Forms.TextBox tbSRID;
     }
 }
