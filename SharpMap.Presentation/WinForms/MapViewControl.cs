@@ -622,105 +622,105 @@ namespace SharpMap.Presentation.WinForms
                 {
                     continue;
                 }
-
-                switch (ro.State)
-                {
-                    case RenderState.Normal:
-                        if (ro.GdiPath != null)
-                        {
-                            if (ro.Line != null)
+               //gdi crashes when trying to draw objects at 0 width and height
+                    switch (ro.State)
+                    {
+                        case RenderState.Normal:
+                            if (ro.GdiPath != null)
                             {
-                                if (ro.Outline != null)
+                                if (ro.Line != null)
                                 {
-                                    g.DrawPath(ro.Outline, ro.GdiPath);
+                                    if (ro.Outline != null)
+                                    {
+                                        g.DrawPath(ro.Outline, ro.GdiPath);
+                                    }
+
+                                    g.DrawPath(ro.Line, ro.GdiPath);
                                 }
-
-                                g.DrawPath(ro.Line, ro.GdiPath);
-                            }
-                            else if (ro.Fill != null)
-                            {
-                                g.FillPath(ro.Fill, ro.GdiPath);
-
-                                if (ro.Outline != null)
+                                else if (ro.Fill != null)
                                 {
-                                    g.DrawPath(ro.Outline, ro.GdiPath);
-                                }
-                            }
-                        }
+                                    g.FillPath(ro.Fill, ro.GdiPath);
 
-                        if (ro.Text != null)
-                        {
-                            RectangleF newBounds = AdjustForLabel(g, ro);
-                            g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
-                            g.Transform = getGdiViewTransform();
-                        }
-
-                        break;
-                    case RenderState.Highlighted:
-                        if (ro.GdiPath != null)
-                        {
-                            if (ro.HighlightLine != null)
-                            {
-                                if (ro.HighlightOutline != null)
-                                {
-                                    g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-                                }
-
-                                g.DrawPath(ro.HighlightLine, ro.GdiPath);
-                            }
-                            else if (ro.HighlightFill != null)
-                            {
-                                g.FillPath(ro.HighlightFill, ro.GdiPath);
-
-                                if (ro.HighlightOutline != null)
-                                {
-                                    g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+                                    if (ro.Outline != null)
+                                    {
+                                        g.DrawPath(ro.Outline, ro.GdiPath);
+                                    }
                                 }
                             }
-                        }
 
-                        if (ro.Text != null)
-                        {
-                            RectangleF newBounds = AdjustForLabel(g, ro);
-                            g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
-                            g.Transform = getGdiViewTransform();
-                        }
-
-                        break;
-                    case RenderState.Selected:
-                        if (ro.GdiPath != null)
-                        {
-                            if (ro.SelectLine != null)
+                            if (ro.Text != null)
                             {
-                                if (ro.SelectOutline != null)
-                                {
-                                    g.DrawPath(ro.SelectOutline, ro.GdiPath);
-                                }
-
-                                g.DrawPath(ro.SelectLine, ro.GdiPath);
+                                RectangleF newBounds = AdjustForLabel(g, ro);
+                                g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
+                                g.Transform = getGdiViewTransform();
                             }
-                            else if (ro.SelectFill != null)
+
+                            break;
+                        case RenderState.Highlighted:
+                            if (ro.GdiPath != null)
                             {
-                                g.FillPath(ro.SelectFill, ro.GdiPath);
-
-                                if (ro.SelectOutline != null)
+                                if (ro.HighlightLine != null)
                                 {
-                                    g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                                    if (ro.HighlightOutline != null)
+                                    {
+                                        g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+                                    }
+
+                                    g.DrawPath(ro.HighlightLine, ro.GdiPath);
+                                }
+                                else if (ro.HighlightFill != null)
+                                {
+                                    g.FillPath(ro.HighlightFill, ro.GdiPath);
+
+                                    if (ro.HighlightOutline != null)
+                                    {
+                                        g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+                                    }
                                 }
                             }
-                        }
 
-                        if (ro.Text != null)
-                        {
-                            RectangleF newBounds = AdjustForLabel(g, ro);
-                            g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
-                            g.Transform = getGdiViewTransform();
-                        }
-                        break;
-                    case RenderState.Unknown:
-                    default:
-                        break;
-                }
+                            if (ro.Text != null)
+                            {
+                                RectangleF newBounds = AdjustForLabel(g, ro);
+                                g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
+                                g.Transform = getGdiViewTransform();
+                            }
+
+                            break;
+                        case RenderState.Selected:
+                            if (ro.GdiPath != null)
+                            {
+                                if (ro.SelectLine != null)
+                                {
+                                    if (ro.SelectOutline != null)
+                                    {
+                                        g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                                    }
+
+                                    g.DrawPath(ro.SelectLine, ro.GdiPath);
+                                }
+                                else if (ro.SelectFill != null)
+                                {
+                                    g.FillPath(ro.SelectFill, ro.GdiPath);
+
+                                    if (ro.SelectOutline != null)
+                                    {
+                                        g.DrawPath(ro.SelectOutline, ro.GdiPath);
+                                    }
+                                }
+                            }
+
+                            if (ro.Text != null)
+                            {
+                                RectangleF newBounds = AdjustForLabel(g, ro);
+                                g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
+                                g.Transform = getGdiViewTransform();
+                            }
+                            break;
+                        case RenderState.Unknown:
+                        default:
+                            break;
+                    }
 
                 if (ro.Image != null)
                 {

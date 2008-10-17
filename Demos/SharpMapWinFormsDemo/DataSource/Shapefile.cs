@@ -32,8 +32,9 @@ namespace MapViewer.DataSource
 
         public IFeatureProvider GetProvider()
         {
+            IGeometryServices svc = new GeometryServices();
             if (File.Exists(tbPath.Text))
-                return new ShapeFileProvider(tbPath.Text, new GeometryServices().DefaultGeometryFactory);
+                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, true);
             return null;
         }
 

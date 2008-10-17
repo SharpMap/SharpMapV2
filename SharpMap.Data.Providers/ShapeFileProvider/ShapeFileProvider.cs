@@ -2069,6 +2069,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 IMultiPolygon mpoly = _geoFactory.CreateMultiPolygon();
                 Int32 i;
+                int ringsProcessed = 0;
+
                 for (i = 0; i < rings.Count; i++)
                 {
                     IPolygon poly;
@@ -2083,12 +2085,14 @@ namespace SharpMap.Data.Providers.ShapeFile
                         poly = _geoFactory.CreatePolygon(Enumerable.First(polyRings),
                                                          Enumerable.Skip(polyRings, 1));
                     }
+                    ringsProcessed += polyRings.Count; 
 
                     mpoly.Add(poly);
                 }
 
-                Assert.IsEquals(i, rings.Count);
-
+#if DEBUG
+                Assert.IsEquals(ringsProcessed, rings.Count);
+#endif
                 return mpoly;
             }
         }
@@ -2112,7 +2116,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 i++;
             }
 
-            if (i < isCounterClockWise.Length - 1)
+            if (i < isCounterClockWise.Length )
                 i--; //we need to create a new polyon so rewind to the outer shell
 
             return singlePoly;

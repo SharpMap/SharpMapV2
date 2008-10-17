@@ -346,42 +346,45 @@ namespace MapViewer
                 if (l.DataSource.IsOpen)
                     l.DataSource.Close();
             Map.Layers.Clear();
+            mapViewControl1.Map = null; 
         }
 
 
         private void AddLayer()
         {
-            var choose = new ChooseDataSource();
-            if (choose.ShowDialog() == DialogResult.OK)
+            using (ChooseDataSource choose = new ChooseDataSource())
             {
-                IFeatureProvider prov = choose.Provider;
+                if (choose.ShowDialog() == DialogResult.OK)
+                {
+                    IFeatureProvider prov = choose.Provider;
+                  
 
+                    workQueue.AddWorkItem(
+                        string.Format("Loading Datasource {0}", prov),
+                        delegate
+                        {
+                            var lyr =
+                                new GeometryLayer(
+                                    prov.ToString(),
+                                    prov);
+                            
+                            prov.Open();
 
-                workQueue.AddWorkItem(
-                    string.Format("Loading Datasource {0}", prov),
-                    delegate
-                    {
-                        var lyr =
-                            new GeometryLayer(
-                                prov.ToString(),
-                                prov);
-
-                        prov.Open();
-
-                        InvokeIfRequired(new Action(delegate
-                                                        {
-                                                            Map.Layers.Insert(0, lyr);
-
-                                                            lyr.Style =
-                                                                RandomStyle.RandomGeometryStyle();
-
-                                                            if (Map.Layers.Count == 1)
+                            InvokeIfRequired(new Action(delegate
                                                             {
-                                                                mapViewControl1.Map = Map;
-                                                                MapView.ZoomToExtents();
-                                                            }
-                                                        }));
-                    }, delegate { EnableDisableCommandsRequiringLayers(); });
+                                                                Map.Layers.Insert(0, lyr);
+
+                                                                lyr.Style =
+                                                                    RandomStyle.RandomGeometryStyle();
+
+                                                                if (Map.Layers.Count == 1)
+                                                                {
+                                                                    mapViewControl1.Map = Map;
+                                                                    MapView.ZoomToExtents();
+                                                                }
+                                                            }));
+                        }, delegate { EnableDisableCommandsRequiringLayers(); });
+                }
             }
         }
 

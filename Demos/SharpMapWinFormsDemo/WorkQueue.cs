@@ -84,7 +84,7 @@ namespace MapViewer
 
             public Action WorkItem { get; protected set; }
 
-            public Action Callback { get; set; }
+            public Action Callback { get; protected set; }
         }
 
         #endregion
