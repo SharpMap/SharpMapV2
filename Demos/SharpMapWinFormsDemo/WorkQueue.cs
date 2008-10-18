@@ -15,12 +15,11 @@ namespace MapViewer
         public string Status { get; protected set; }
     }
 
-
     public class WorkQueue
     {
         private readonly Control _control;
-        private readonly Queue<WorkQueueItem> _queue = new Queue<WorkQueueItem>();
         private readonly BackgroundWorker _worker = new BackgroundWorker();
+        private readonly Queue<WorkItem> _workQ = new Queue<WorkItem>();
 
         public WorkQueue(Control control)
         {
@@ -28,63 +27,60 @@ namespace MapViewer
             _worker.DoWork += _worker_DoWork;
         }
 
+        public event EventHandler<WorkQueueProcessEventArgs> Working;
+
+        public void AddWorkItem(string statusText, Action workItem, Action callback)
+        {
+            lock (_workQ)
+                _workQ.Enqueue(new WorkItem(statusText, workItem, callback));
+            if (!_worker.IsBusy)
+                _worker.RunWorkerAsync();
+        }
+
         private void _worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (_queue.Count > 0)
+            while (_workQ.Count > 0)
             {
-                WorkQueueItem item;
-                lock (_queue)
-                    item = _queue.Dequeue();
+                WorkItem w;
+                lock (_workQ)
+                    w = _workQ.Dequeue();
+                OnProcessingItem(w.StatusText);
+                w.WorkAction();
 
-                OnWorking(item.StatusText);
-                item.WorkItem();
-
-                if (item.Callback != null)
+                if (w.CallBackAction != null)
                 {
                     if (_control.InvokeRequired)
-                        _control.Invoke(item.Callback);
+                        _control.Invoke(w.CallBackAction);
                     else
-                        item.Callback();
+                    {
+                        w.CallBackAction();
+                    }
                 }
             }
 
-            OnWorking("Finished");
+            OnProcessingItem("Finished Loading Data");
         }
 
-        private void OnWorking(string p)
+        private void OnProcessingItem(string p)
         {
             if (Working != null)
                 Working(this, new WorkQueueProcessEventArgs(p));
         }
 
-        public void AddWorkItem(string statusText, Action work, Action callback)
+        #region Nested type: WorkItem
+
+        private class WorkItem
         {
-            lock (_queue)
-                _queue.Enqueue(new WorkQueueItem(statusText, work, callback));
-
-            if (!_worker.IsBusy)
-                _worker.RunWorkerAsync();
-        }
-
-
-        public event EventHandler<WorkQueueProcessEventArgs> Working;
-
-        #region Nested type: WorkQueueItem
-
-        private class WorkQueueItem
-        {
-            public WorkQueueItem(string status, Action work, Action callback)
+            public WorkItem(string statusText, Action action, Action callback)
             {
-                StatusText = status;
-                WorkItem = work;
-                Callback = callback;
+                WorkAction = action;
+                CallBackAction = callback;
+                StatusText = statusText;
             }
 
             public string StatusText { get; protected set; }
-
-            public Action WorkItem { get; protected set; }
-
-            public Action Callback { get; protected set; }
+            public Action WorkAction { get; protected set; }
+            public Action CallBackAction { get; protected set; }
         }
 
         #endregion

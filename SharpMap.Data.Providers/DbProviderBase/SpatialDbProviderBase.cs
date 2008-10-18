@@ -599,7 +599,7 @@ namespace SharpMap.Data.Providers.Db
             cmd.Connection = conn;
             if (conn.State == ConnectionState.Closed) conn.Open();
             return new SpatialDbFeatureDataReader(GeometryFactory, cmd.ExecuteReader(CommandBehavior.CloseConnection),
-                                                  GeometryColumn, OidColumn);
+                                                  GeometryColumn, OidColumn) { CoordinateTransformation = CoordinateTransformation };
         }
 
         protected virtual Expression MergeQueries(Expression expr1, Expression expr2)

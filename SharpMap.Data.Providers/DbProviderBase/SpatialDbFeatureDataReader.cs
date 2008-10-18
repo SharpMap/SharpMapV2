@@ -294,5 +294,15 @@ namespace SharpMap.Data.Providers.Db
         }
 
         #endregion
+
+        #region IFeatureDataRecord Members
+
+
+        public GeoAPI.CoordinateSystems.Transformations.ICoordinateTransformation CoordinateTransformation
+        {
+            get; set;
+        }
+
+        #endregion
     }
 }

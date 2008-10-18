@@ -114,6 +114,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Reference Include="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\Externals\Npgsql.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>

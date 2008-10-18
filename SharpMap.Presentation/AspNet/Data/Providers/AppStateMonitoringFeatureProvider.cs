@@ -439,6 +439,18 @@ namespace SharpMap.Data.Providers
             }
 
             #endregion
+
+            #region IFeatureDataRecord Members
+
+
+            public ICoordinateTransformation CoordinateTransformation
+            {
+                get { return InnerReader.CoordinateTransformation; }
+                set { InnerReader.CoordinateTransformation = value; }
+
+            }
+
+            #endregion
         }
 
         #endregion
