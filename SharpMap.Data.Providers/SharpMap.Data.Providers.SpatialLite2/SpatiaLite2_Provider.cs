@@ -366,12 +366,12 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public override DataTable GetSchemaTable()
+        protected override DataTable BuildSchemaTable()
         {
-            return GetSchemaTable(false);
+            return BuildSchemaTable(false);
         }
 
-        public override DataTable GetSchemaTable(Boolean withGeometryColumn)
+        protected override DataTable BuildSchemaTable(Boolean withGeometryColumn)
         {
             DataTable dt = null;
             using (SQLiteConnection conn = new SQLiteConnection(ConnectionString))
@@ -751,7 +751,7 @@ namespace SharpMap.Data.Providers
 
         public override IEnumerable<String> SelectAllColumnNames()
         {
-            foreach (DataColumn dc in GetSchemaTable(true).Columns)
+            foreach (DataColumn dc in GetSchemaTable().Columns)
                 yield return dc.ColumnName;
         }
 

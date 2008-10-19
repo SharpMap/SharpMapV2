@@ -14,37 +14,49 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using MapViewer.Commands;
+using MapViewer.Controls;
 using MapViewer.DataSource;
+using MapViewer.MapActionHandler;
 using SharpMap;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Layers;
+using SharpMap.Presentation;
 using SharpMap.Presentation.Views;
+using SharpMap.Rendering.Rendering2D;
 using SharpMap.Tools;
 using SharpMap.Utilities;
 
 namespace MapViewer
 {
-    public partial class MapViewer : Form
+    public partial class MapViewerForm : Form
     {
         private readonly CommandManager _commandManager = new CommandManager();
+        private readonly IMapActionHandler AttributeQueryHandler = new MapActionHandler.MapActionHandler();
         private readonly IGeometryServices GeometryServices = new GeometryServices();
-        private readonly OpenFileDialog openFileDlg = new OpenFileDialog();
         private readonly WorkQueue workQueue;
+
 
         private Map _map;
 
-        public MapViewer()
+        public MapViewerForm()
         {
             InitializeComponent();
             workQueue = new WorkQueue(this);
             workQueue.Working += workQueue_Working;
             InitMap();
             InitCommands();
+            AttributeQueryHandler.End += AttributeQueryHandler_End;
+            AttributeQueryHandler.Begin += AttributeQueryHandler_Begin;
         }
+
+        private IMapActionHandler MapActionHandler { get; set; }
 
         public CommandManager CommandManager
         {
@@ -57,7 +69,7 @@ namespace MapViewer
             set
             {
                 _map = value;
-                layersGrid.DataSource = value.Layers;
+                layersTree1.Layers = value.Layers;
             }
         }
 
@@ -70,6 +82,35 @@ namespace MapViewer
         private bool HasLayers
         {
             get { return Map.Layers.Count > 0; }
+        }
+
+        private void AttributeQueryHandler_Begin(object sender, MapActionHandlerEventArgs e)
+        {
+            foreach (IFeatureLayer l in Map.SelectedLayers)
+                l.SelectedFilter = null;
+        }
+
+        private void AttributeQueryHandler_End(object sender, MapActionHandlerEventArgs e)
+        {
+            IFeatureLayer l =
+                Enumerable.FirstOrDefault(
+                    Processor.Transform(Enumerable.Select(Map.SelectedLayers, o => o as IFeatureLayer != null),
+                                        o => (IFeatureLayer)o));
+
+            if (l != null)
+            {
+                var tab = new QueryResultsTab(l.LayerName,
+                                              new FeatureDataView(l.SelectedFeatures.Table)
+                                                  {
+                                                      ViewDefinition =
+                                                          (FeatureQueryExpression)
+                                                          (l.SelectedFeatures.ViewDefinition == null
+                                                               ? null
+                                                               : l.SelectedFeatures.ViewDefinition.Clone())
+                                                  });
+                resultsTabControl.TabPages.Insert(0, tab);
+                resultsTabControl.SelectedTab = tab;
+            }
         }
 
         private void workQueue_Working(object sender, WorkQueueProcessEventArgs e)
@@ -91,6 +132,51 @@ namespace MapViewer
             mapViewControl1.Size = splitVertical.Panel2.ClientSize;
             Map = new Map(GeometryServices.DefaultGeometryFactory);
             mapViewControl1.ResumeLayout(false);
+            MapView.BeginAction += MapView_BeginAction;
+            MapView.EndAction += MapView_EndAction;
+            MapView.Hover += MapView_Hover;
+            Map.Layers.ListChanged += Layers_ListChanged;
+            queryLayerComboBox.SelectedIndexChanged += queryLayerComboBox_SelectedIndexChanged;
+        }
+
+        private void queryLayerComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Map.DeselectLayers(Map.SelectedLayers);
+
+            if (queryLayerComboBox.SelectedIndex > -1)
+                Map.SelectLayer((string)queryLayerComboBox.SelectedItem);
+        }
+
+        private void Layers_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                HandleMapLayerAdded(Map.Layers[e.NewIndex]);
+            }
+        }
+
+        private void HandleMapLayerAdded(ILayer iLayer)
+        {
+            queryLayerComboBox.Items.Add(iLayer.LayerName);
+        }
+
+
+        private void MapView_Hover(object sender, MapActionEventArgs<Point2D> e)
+        {
+            if (MapActionHandler != null)
+                MapActionHandler.HoverPoint = e.ActionPoint;
+        }
+
+        private void MapView_EndAction(object sender, MapActionEventArgs<Point2D> e)
+        {
+            if (MapActionHandler != null)
+                MapActionHandler.EndPoint = e.ActionPoint;
+        }
+
+        private void MapView_BeginAction(object sender, MapActionEventArgs<Point2D> e)
+        {
+            if (MapActionHandler != null)
+                MapActionHandler.BeginPoint = e.ActionPoint;
         }
 
         private void InitCommands()
@@ -243,6 +329,8 @@ namespace MapViewer
 
             #endregion
 
+            #region mouse pan and zoom
+
             ICommand enablePan = new Command(CommandNames.EnablePan);
             CommandManager.AddCommand(enablePan);
             CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(panButton, enablePan));
@@ -259,23 +347,56 @@ namespace MapViewer
             CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(zoomOutButton, zoomOutMouse));
             CommandManager.AddCommandHandler(new ActionCommandHandler(zoomOutMouse, EnableZoomOutMouse));
 
+            #endregion
+
+            #region Query
+
+            ICommand queryAdd = new Command(CommandNames.QueryAdd);
+
+            CommandManager.AddCommand(queryAdd);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(queryAddButton,
+                                                                                            queryAdd));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(queryAdd, EnableQueryAdd));
+
+            ICommand queryRemove = new Command(CommandNames.QueryRemove);
+            CommandManager.AddCommand(queryRemove);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripButton>(queryRemoveButton,
+                                                                                            queryRemove));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(queryRemove, EnableQueryRemove));
+
+            #endregion
 
             EnableDisableCommandsRequiringLayers();
+        }
+
+        private void EnableQueryRemove()
+        {
+            Map.ActiveTool = StandardMapView2DMapTools.QueryRemove;
+            MapActionHandler = null;
+        }
+
+        private void EnableQueryAdd()
+        {
+            Map.ActiveTool = StandardMapView2DMapTools.Query;
+            MapActionHandler = AttributeQueryHandler;
         }
 
         private void EnableZoomOutMouse()
         {
             Map.ActiveTool = StandardMapView2DMapTools.ZoomOut;
+            MapActionHandler = null;
         }
 
         private void EnableZoomInMouse()
         {
             Map.ActiveTool = StandardMapView2DMapTools.ZoomIn;
+            MapActionHandler = null;
         }
 
         private void EnablePan()
         {
             Map.ActiveTool = StandardMapView2DMapTools.Pan;
+            MapActionHandler = null;
         }
 
         private void FixedZoomOut()
@@ -285,7 +406,7 @@ namespace MapViewer
 
         private void FixedZoomIn()
         {
-            Zoom(0.8);
+            Zoom(1 / 1.2);
         }
 
         private void Zoom(double amount)
@@ -322,6 +443,8 @@ namespace MapViewer
             CommandManager[CommandNames.EnablePan].Enabled = enable;
             CommandManager[CommandNames.ZoomInMouse].Enabled = enable;
             CommandManager[CommandNames.ZoomOutMouse].Enabled = enable;
+            CommandManager[CommandNames.QueryAdd].Enabled = enable;
+            CommandManager[CommandNames.QueryRemove].Enabled = enable;
         }
 
         private void ZoomMapExtent()
@@ -342,32 +465,37 @@ namespace MapViewer
 
         private void ClearLayers()
         {
-            foreach (ILayer l in Map.Layers)
+            while (Map.Layers.Count > 0)
+            {
+                ILayer l = Map.Layers[0];
                 if (l.DataSource.IsOpen)
                     l.DataSource.Close();
+                Map.Layers.Remove(l);
+                l.DataSource.Dispose(); 
+                l.Dispose();
+            }
             Map.Layers.Clear();
-            mapViewControl1.Map = null; 
         }
 
 
         private void AddLayer()
         {
-            using (ChooseDataSource choose = new ChooseDataSource())
+            using (var choose = new ChooseDataSource())
             {
                 if (choose.ShowDialog() == DialogResult.OK)
                 {
                     IFeatureProvider prov = choose.Provider;
-                  
+                    string name = choose.ProviderName;
 
                     workQueue.AddWorkItem(
-                        string.Format("Loading Datasource {0}", prov),
+                        string.Format("Loading Datasource {0}", name),
                         delegate
                         {
                             var lyr =
                                 new GeometryLayer(
-                                    prov.ToString(),
+                                    name,
                                     prov);
-                            
+
                             prov.Open();
 
                             InvokeIfRequired(new Action(delegate
@@ -388,13 +516,6 @@ namespace MapViewer
             }
         }
 
-
-        private DialogResult OpenFileDialog(string filter)
-        {
-            openFileDlg.Filter = filter;
-            return openFileDlg.ShowDialog();
-        }
-
         #region Nested type: CommandNames
 
         public static class CommandNames
@@ -407,6 +528,8 @@ namespace MapViewer
             public const string FixedZoomIn = "FixedZoomIn";
             public const string FixedZoomOut = "FixedZoomOut";
             public const string MapLayersChanged = "MapLayersChanged";
+            public const string QueryAdd = "QueryAdd";
+            public const string QueryRemove = "QueryRemove";
             public const string RefreshMap = "RefreshMap";
             public const string ZoomFullExtent = "ZoomFullExtent";
             public const string ZoomInMouse = "ZoomInMouse";

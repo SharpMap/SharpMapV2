@@ -19,5 +19,6 @@ namespace MapViewer.DataSource
     internal interface ICreateDataProvider
     {
         IFeatureProvider GetProvider();
+        string ProviderName { get; }
     }
 }

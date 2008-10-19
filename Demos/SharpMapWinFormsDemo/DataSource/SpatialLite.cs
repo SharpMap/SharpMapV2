@@ -33,5 +33,15 @@ namespace MapViewer.DataSource
         }
 
         #endregion
+
+        #region ICreateDataProvider Members
+
+
+        public string ProviderName
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
     }
 }

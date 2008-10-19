@@ -28,7 +28,7 @@ namespace MapViewer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MapViewer());
+            Application.Run(new MapViewerForm());
         }
     }
 }

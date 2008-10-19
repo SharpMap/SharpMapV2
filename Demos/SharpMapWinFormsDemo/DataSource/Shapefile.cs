@@ -45,5 +45,15 @@ namespace MapViewer.DataSource
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 tbPath.Text = openFileDialog1.FileName;
         }
+
+        #region ICreateDataProvider Members
+
+
+        public string ProviderName
+        {
+            get { return Path.GetFileNameWithoutExtension(tbPath.Text); }
+        }
+
+        #endregion
     }
 }

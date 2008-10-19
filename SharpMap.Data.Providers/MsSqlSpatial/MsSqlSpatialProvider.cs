@@ -64,10 +64,10 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public override DataTable GetSchemaTable()
-        {
-            return base.GetSchemaTable(true);
-        }
+        //protected override DataTable BuildSchemaTable()
+        //{
+        //    return base.BuildSchemaTable(true);
+        //}
 
         public override IExtents GetExtents()
         {

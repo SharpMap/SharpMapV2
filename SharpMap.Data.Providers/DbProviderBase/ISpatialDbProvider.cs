@@ -3,7 +3,7 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.Db
 {
-    public interface ISpatialDbProvider
+    public interface ISpatialDbProvider : IFeatureProvider
     {
         String ConnectionString { get; set; }
         String Table { get; set; }
@@ -29,6 +29,6 @@ namespace SharpMap.Data.Providers.Db
 
     public interface ISpatialDbProvider<TDbUtility> where TDbUtility : IDbUtility, new()
     {
-         TDbUtility DbUtility { get; }
+        TDbUtility DbUtility { get; }
     }
 }

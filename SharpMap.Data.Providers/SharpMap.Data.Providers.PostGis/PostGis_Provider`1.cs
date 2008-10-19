@@ -260,12 +260,11 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public override DataTable GetSchemaTable()
+        protected override DataTable BuildSchemaTable()
         {
-            return GetSchemaTable(false);
+            return BuildSchemaTable(false);
         }
-
-        public override DataTable GetSchemaTable(Boolean withGeometryColumn)
+        protected override DataTable BuildSchemaTable(Boolean withGeometryColumn)
         {
             DataTable dt = null;
             using (NpgsqlConnection conn = new NpgsqlConnection(ConnectionString))
@@ -350,7 +349,7 @@ namespace SharpMap.Data.Providers
             var sets = new List<string>();
 
             //Columnnames
-            DataColumnCollection dcc = GetSchemaTable(false).Columns;
+            DataColumnCollection dcc = GetSchemaTable().Columns;
             foreach (DataColumn dc in dcc)
                 sets.Add(string.Format(" \"{0}\"", dc.ColumnName));
 
@@ -376,7 +375,7 @@ namespace SharpMap.Data.Providers
         {
             var sets = new List<string>();
             //Attribute
-            foreach (DataColumn dc in GetSchemaTable(false).Columns)
+            foreach (DataColumn dc in GetSchemaTable().Columns)
             {
                 IDataParameter param = null;
                 sets.Add(string.Format(" \"{0}\"=:{1}", dc.ColumnName, ParamForColumn(dc, out param)));
@@ -528,7 +527,7 @@ LIMIT {5};",
 
         public override IEnumerable<string> SelectAllColumnNames()
         {
-            foreach (DataColumn dc in GetSchemaTable(true).Columns)
+            foreach (DataColumn dc in GetSchemaTable().Columns)
                 yield return dc.ColumnName;
         }
 

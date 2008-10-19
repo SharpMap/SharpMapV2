@@ -1,6 +1,7 @@
-﻿namespace MapViewer
+﻿using MapViewer.Controls;
+namespace MapViewer
 {
-    partial class MapViewer
+    partial class MapViewerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +30,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MapViewer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MapViewerForm));
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.FileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,18 +48,18 @@
             this.splitVertical = new System.Windows.Forms.SplitContainer();
             this.LeftTabControl = new System.Windows.Forms.TabControl();
             this.layersTab = new System.Windows.Forms.TabPage();
-            this.layersGrid = new System.Windows.Forms.DataGrid();
+            this.layersTree1 = new LayersTree();
+            this.tabPageDataSource = new System.Windows.Forms.TabPage();
+            this.stylesTab = new System.Windows.Forms.TabPage();
+            this.splitHorizontal = new System.Windows.Forms.SplitContainer();
+            this.resultsTabControl = new System.Windows.Forms.TabControl();
+            this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
             this.layersContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearLayersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.layerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomLayerExtentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editSymbologyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPageDataSource = new System.Windows.Forms.TabPage();
-            this.stylesTab = new System.Windows.Forms.TabPage();
-            this.splitHorizontal = new System.Windows.Forms.SplitContainer();
-            this.resultsTabControl = new System.Windows.Forms.TabControl();
-            this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
             this.mapViewControlContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.layersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addLayerToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,18 +67,18 @@
             this.refreshMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fullExtentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.customToolsToolstrip = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.standardToolsToolstrip = new System.Windows.Forms.ToolStrip();
             this.fixedZoomInButton = new System.Windows.Forms.ToolStripButton();
             this.fixedZoomOutButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.queryLayerComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.queryRectangleButton = new System.Windows.Forms.ToolStripButton();
-            this.queryPolygonButton = new System.Windows.Forms.ToolStripButton();
+            this.queryRemoveButton = new System.Windows.Forms.ToolStripButton();
+            this.queryAddButton = new System.Windows.Forms.ToolStripButton();
             this.panButton = new System.Windows.Forms.ToolStripButton();
             this.zoomInButton = new System.Windows.Forms.ToolStripButton();
             this.zoomOutButton = new System.Windows.Forms.ToolStripButton();
+            this.customToolsToolstrip = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenu.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -86,16 +87,15 @@
             this.splitVertical.SuspendLayout();
             this.LeftTabControl.SuspendLayout();
             this.layersTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.layersGrid)).BeginInit();
-            this.layersContextMenu.SuspendLayout();
             this.splitHorizontal.Panel1.SuspendLayout();
             this.splitHorizontal.Panel2.SuspendLayout();
             this.splitHorizontal.SuspendLayout();
+            this.layersContextMenu.SuspendLayout();
             this.mapViewControlContextMenu.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
-            this.customToolsToolstrip.SuspendLayout();
             this.standardToolsToolstrip.SuspendLayout();
+            this.customToolsToolstrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -246,7 +246,7 @@
             // 
             // layersTab
             // 
-            this.layersTab.Controls.Add(this.layersGrid);
+            this.layersTab.Controls.Add(this.layersTree1);
             this.layersTab.Location = new System.Drawing.Point(4, 22);
             this.layersTab.Name = "layersTab";
             this.layersTab.Padding = new System.Windows.Forms.Padding(3);
@@ -255,16 +255,73 @@
             this.layersTab.Text = "Layers";
             this.layersTab.UseVisualStyleBackColor = true;
             // 
-            // layersGrid
+            // layersTree1
             // 
-            this.layersGrid.ContextMenuStrip = this.layersContextMenu;
-            this.layersGrid.DataMember = "";
-            this.layersGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layersGrid.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-            this.layersGrid.Location = new System.Drawing.Point(3, 3);
-            this.layersGrid.Name = "layersGrid";
-            this.layersGrid.Size = new System.Drawing.Size(323, 508);
-            this.layersGrid.TabIndex = 0;
+            this.layersTree1.CheckBoxes = true;
+            this.layersTree1.ContextMenuStrip = this.layersContextMenu;
+            this.layersTree1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layersTree1.Layers = null;
+            this.layersTree1.Location = new System.Drawing.Point(3, 3);
+            this.layersTree1.Name = "layersTree1";
+            this.layersTree1.Size = new System.Drawing.Size(323, 508);
+            this.layersTree1.TabIndex = 0;
+            // 
+            // tabPageDataSource
+            // 
+            this.tabPageDataSource.Location = new System.Drawing.Point(4, 22);
+            this.tabPageDataSource.Name = "tabPageDataSource";
+            this.tabPageDataSource.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDataSource.Size = new System.Drawing.Size(329, 514);
+            this.tabPageDataSource.TabIndex = 1;
+            this.tabPageDataSource.Text = "Data Sources";
+            this.tabPageDataSource.UseVisualStyleBackColor = true;
+            // 
+            // stylesTab
+            // 
+            this.stylesTab.Location = new System.Drawing.Point(4, 22);
+            this.stylesTab.Name = "stylesTab";
+            this.stylesTab.Padding = new System.Windows.Forms.Padding(3);
+            this.stylesTab.Size = new System.Drawing.Size(329, 514);
+            this.stylesTab.TabIndex = 2;
+            this.stylesTab.Text = "Styles";
+            this.stylesTab.UseVisualStyleBackColor = true;
+            // 
+            // splitHorizontal
+            // 
+            this.splitHorizontal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitHorizontal.Location = new System.Drawing.Point(0, 0);
+            this.splitHorizontal.Name = "splitHorizontal";
+            this.splitHorizontal.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitHorizontal.Panel1
+            // 
+            this.splitHorizontal.Panel1.Controls.Add(this.resultsTabControl);
+            // 
+            // splitHorizontal.Panel2
+            // 
+            this.splitHorizontal.Panel2.Controls.Add(this.mapViewControl1);
+            this.splitHorizontal.Size = new System.Drawing.Size(671, 540);
+            this.splitHorizontal.SplitterDistance = 110;
+            this.splitHorizontal.TabIndex = 1;
+            // 
+            // resultsTabControl
+            // 
+            this.resultsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resultsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.resultsTabControl.Name = "resultsTabControl";
+            this.resultsTabControl.SelectedIndex = 0;
+            this.resultsTabControl.Size = new System.Drawing.Size(671, 110);
+            this.resultsTabControl.TabIndex = 0;
+            // 
+            // mapViewControl1
+            // 
+            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
+            this.mapViewControl1.Name = "mapViewControl1";
+            this.mapViewControl1.Size = new System.Drawing.Size(671, 426);
+            this.mapViewControl1.TabIndex = 0;
+            this.mapViewControl1.Text = "mapViewControl1";
+            this.mapViewControl1.Title = "mapViewControl1";
             // 
             // layersContextMenu
             // 
@@ -307,63 +364,6 @@
             this.editSymbologyToolStripMenuItem.Name = "editSymbologyToolStripMenuItem";
             this.editSymbologyToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.editSymbologyToolStripMenuItem.Text = "Edit Symbology";
-            // 
-            // tabPageDataSource
-            // 
-            this.tabPageDataSource.Location = new System.Drawing.Point(4, 22);
-            this.tabPageDataSource.Name = "tabPageDataSource";
-            this.tabPageDataSource.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDataSource.Size = new System.Drawing.Size(305, 514);
-            this.tabPageDataSource.TabIndex = 1;
-            this.tabPageDataSource.Text = "Data Sources";
-            this.tabPageDataSource.UseVisualStyleBackColor = true;
-            // 
-            // stylesTab
-            // 
-            this.stylesTab.Location = new System.Drawing.Point(4, 22);
-            this.stylesTab.Name = "stylesTab";
-            this.stylesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.stylesTab.Size = new System.Drawing.Size(305, 514);
-            this.stylesTab.TabIndex = 2;
-            this.stylesTab.Text = "Styles";
-            this.stylesTab.UseVisualStyleBackColor = true;
-            // 
-            // splitHorizontal
-            // 
-            this.splitHorizontal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitHorizontal.Location = new System.Drawing.Point(0, 0);
-            this.splitHorizontal.Name = "splitHorizontal";
-            this.splitHorizontal.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitHorizontal.Panel1
-            // 
-            this.splitHorizontal.Panel1.Controls.Add(this.resultsTabControl);
-            // 
-            // splitHorizontal.Panel2
-            // 
-            this.splitHorizontal.Panel2.Controls.Add(this.mapViewControl1);
-            this.splitHorizontal.Size = new System.Drawing.Size(671, 540);
-            this.splitHorizontal.SplitterDistance = 110;
-            this.splitHorizontal.TabIndex = 1;
-            // 
-            // resultsTabControl
-            // 
-            this.resultsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.resultsTabControl.Location = new System.Drawing.Point(0, 0);
-            this.resultsTabControl.Name = "resultsTabControl";
-            this.resultsTabControl.SelectedIndex = 0;
-            this.resultsTabControl.Size = new System.Drawing.Size(671, 110);
-            this.resultsTabControl.TabIndex = 0;
-            // 
-            // mapViewControl1
-            // 
-            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
-            this.mapViewControl1.Name = "mapViewControl1";
-            this.mapViewControl1.Size = new System.Drawing.Size(671, 426);
-            this.mapViewControl1.TabIndex = 0;
-            this.mapViewControl1.Text = "mapViewControl1";
-            this.mapViewControl1.Title = "mapViewControl1";
             // 
             // mapViewControlContextMenu
             // 
@@ -416,7 +416,7 @@
             this.toolStripContainer1.ContentPanel.Controls.Add(this.standardToolsToolstrip);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.mainToolStrip);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.customToolsToolstrip);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1012, 26);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1012, 1);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Top;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
@@ -426,22 +426,6 @@
             this.toolStripContainer1.TabIndex = 4;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
-            // customToolsToolstrip
-            // 
-            this.customToolsToolstrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.customToolsToolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator2});
-            this.customToolsToolstrip.Location = new System.Drawing.Point(812, 0);
-            this.customToolsToolstrip.Name = "customToolsToolstrip";
-            this.customToolsToolstrip.Size = new System.Drawing.Size(18, 25);
-            this.customToolsToolstrip.TabIndex = 3;
-            this.customToolsToolstrip.Text = "toolStrip1";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
             // standardToolsToolstrip
             // 
             this.standardToolsToolstrip.Dock = System.Windows.Forms.DockStyle.None;
@@ -450,14 +434,14 @@
             this.fixedZoomOutButton,
             this.toolStripSeparator1,
             this.queryLayerComboBox,
-            this.queryRectangleButton,
-            this.queryPolygonButton,
+            this.queryRemoveButton,
+            this.queryAddButton,
             this.panButton,
             this.zoomInButton,
             this.zoomOutButton});
             this.standardToolsToolstrip.Location = new System.Drawing.Point(321, 1);
             this.standardToolsToolstrip.Name = "standardToolsToolstrip";
-            this.standardToolsToolstrip.Size = new System.Drawing.Size(631, 25);
+            this.standardToolsToolstrip.Size = new System.Drawing.Size(633, 25);
             this.standardToolsToolstrip.TabIndex = 4;
             this.standardToolsToolstrip.Text = "toolStrip1";
             // 
@@ -488,23 +472,21 @@
             this.queryLayerComboBox.Name = "queryLayerComboBox";
             this.queryLayerComboBox.Size = new System.Drawing.Size(121, 25);
             // 
-            // queryRectangleButton
+            // queryRemoveButton
             // 
-            this.queryRectangleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.queryRectangleButton.Image = ((System.Drawing.Image)(resources.GetObject("queryRectangleButton.Image")));
-            this.queryRectangleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.queryRectangleButton.Name = "queryRectangleButton";
-            this.queryRectangleButton.Size = new System.Drawing.Size(65, 22);
-            this.queryRectangleButton.Text = "Query Box";
+            this.queryRemoveButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.queryRemoveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.queryRemoveButton.Name = "queryRemoveButton";
+            this.queryRemoveButton.Size = new System.Drawing.Size(89, 22);
+            this.queryRemoveButton.Text = "Remove Query";
             // 
-            // queryPolygonButton
+            // queryAddButton
             // 
-            this.queryPolygonButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.queryPolygonButton.Image = ((System.Drawing.Image)(resources.GetObject("queryPolygonButton.Image")));
-            this.queryPolygonButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.queryPolygonButton.Name = "queryPolygonButton";
-            this.queryPolygonButton.Size = new System.Drawing.Size(90, 22);
-            this.queryPolygonButton.Text = "Query Polygon";
+            this.queryAddButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.queryAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.queryAddButton.Name = "queryAddButton";
+            this.queryAddButton.Size = new System.Drawing.Size(68, 22);
+            this.queryAddButton.Text = "Add Query";
             // 
             // panButton
             // 
@@ -534,7 +516,23 @@
             this.zoomOutButton.Size = new System.Drawing.Size(66, 22);
             this.zoomOutButton.Text = "Zoom Out";
             // 
-            // MapViewer
+            // customToolsToolstrip
+            // 
+            this.customToolsToolstrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.customToolsToolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator2});
+            this.customToolsToolstrip.Location = new System.Drawing.Point(812, 0);
+            this.customToolsToolstrip.Name = "customToolsToolstrip";
+            this.customToolsToolstrip.Size = new System.Drawing.Size(18, 25);
+            this.customToolsToolstrip.TabIndex = 3;
+            this.customToolsToolstrip.Text = "toolStrip1";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // MapViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -544,7 +542,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.mainMenu);
             this.MainMenuStrip = this.mainMenu;
-            this.Name = "MapViewer";
+            this.Name = "MapViewerForm";
             this.Text = "Map Viewer";
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
@@ -557,20 +555,19 @@
             this.splitVertical.ResumeLayout(false);
             this.LeftTabControl.ResumeLayout(false);
             this.layersTab.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.layersGrid)).EndInit();
-            this.layersContextMenu.ResumeLayout(false);
             this.splitHorizontal.Panel1.ResumeLayout(false);
             this.splitHorizontal.Panel2.ResumeLayout(false);
             this.splitHorizontal.ResumeLayout(false);
+            this.layersContextMenu.ResumeLayout(false);
             this.mapViewControlContextMenu.ResumeLayout(false);
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.ContentPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
-            this.customToolsToolstrip.ResumeLayout(false);
-            this.customToolsToolstrip.PerformLayout();
             this.standardToolsToolstrip.ResumeLayout(false);
             this.standardToolsToolstrip.PerformLayout();
+            this.customToolsToolstrip.ResumeLayout(false);
+            this.customToolsToolstrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -610,7 +607,6 @@
         private System.Windows.Forms.TabControl resultsTabControl;
         private System.Windows.Forms.TabControl LeftTabControl;
         private System.Windows.Forms.TabPage layersTab;
-        private System.Windows.Forms.DataGrid layersGrid;
         private System.Windows.Forms.TabPage tabPageDataSource;
         private System.Windows.Forms.TabPage stylesTab;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -621,11 +617,12 @@
         private System.Windows.Forms.ToolStripButton fixedZoomOutButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripComboBox queryLayerComboBox;
-        private System.Windows.Forms.ToolStripButton queryRectangleButton;
-        private System.Windows.Forms.ToolStripButton queryPolygonButton;
+        private System.Windows.Forms.ToolStripButton queryRemoveButton;
+        private System.Windows.Forms.ToolStripButton queryAddButton;
         private System.Windows.Forms.ToolStripButton panButton;
         private System.Windows.Forms.ToolStripButton zoomInButton;
         private System.Windows.Forms.ToolStripButton zoomOutButton;
+        private global::MapViewer.Controls.LayersTree layersTree1;
 
     }
 }

@@ -27,7 +27,7 @@ namespace SharpMap.Data.Providers
 {
     public class AsyncFeatureProviderAdapter : AsyncProviderAdapter, IFeatureProvider
     {
-        protected IFeatureProvider InnerFeatureProvider
+        public IFeatureProvider InnerFeatureProvider
         {
             get { return _innerProvider as IFeatureProvider; }
         }

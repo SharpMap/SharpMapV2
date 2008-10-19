@@ -33,6 +33,11 @@ namespace MapViewer.DataSource
             cbDataBases.MouseDown += cbDataBases_MouseDown;
         }
 
+        public string ProviderName
+        {
+            get { return ((string)cbTable.SelectedItem).Split('|')[0]; }
+        }
+
         protected string ServerConnectionString
         {
             get

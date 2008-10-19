@@ -90,7 +90,7 @@ namespace MapViewer.DataSource
             var message = new StringBuilder();
             if (string.IsNullOrEmpty(tbServer.Text))
             {
-                    message.AppendLine("Please specifiy a Server and Port to connect to");
+                message.AppendLine("Please specifiy a Server and Port to connect to");
                 ok = false;
             }
             else
@@ -98,7 +98,7 @@ namespace MapViewer.DataSource
                 if (!tbServer.Text.ToLower().Contains("server="))
                 {
                     message.Append("Please specifiy name or ip of the server!");
-                    ok=false;
+                    ok = false;
                 }
                 if (!tbServer.Text.ToLower().Contains("port="))
                 {
@@ -148,7 +148,7 @@ namespace MapViewer.DataSource
                 cm.CommandType = System.Data.CommandType.Text;
 
                 try
-                { 
+                {
                     var lst = new List<string>();
                     cn.Open();
                     using (NpgsqlDataReader dr = cm.ExecuteReader())
@@ -169,9 +169,9 @@ namespace MapViewer.DataSource
                                     lst.Add(dr.GetString(0));
                                 }
                             }
-                            catch( NpgsqlException ex )
-                            { 
-                                System.Diagnostics.Trace.Write( string.Format( "Database '{0}' is not a postgis database!", dr.GetString(0)));
+                            catch (NpgsqlException ex)
+                            {
+                                System.Diagnostics.Trace.Write(string.Format("Database '{0}' is not a postgis database!", dr.GetString(0)));
                             }
                             finally
                             {
@@ -182,7 +182,7 @@ namespace MapViewer.DataSource
                     cbDataBases.DataSource = lst;
                     return true;
                 }
-                catch ( NpgsqlException ex )
+                catch (NpgsqlException ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
@@ -202,14 +202,14 @@ namespace MapViewer.DataSource
                 conn += string.Format("Database={0};", cbDataBases.SelectedItem);
                 conn += "Enlist=true;";
 
-                var start = cbTables.Text.IndexOf('[')+ 1;
+                var start = cbTables.Text.IndexOf('[') + 1;
                 var length = cbTables.Text.IndexOf(']') - start;
-                string geomColumn = cbTables.Text.Substring(start, length);;
+                string geomColumn = cbTables.Text.Substring(start, length); ;
 
                 string schema = "public";
-                
+
                 string tableName = (string)cbTables.SelectedValue;
-                
+
                 string srid = lbSRID.Text.Substring(6);
                 GeoAPI.Geometries.IGeometryFactory gf = new GeometryServices()[srid];
 
@@ -217,15 +217,15 @@ namespace MapViewer.DataSource
 
                 List<String> columns = new List<string>();
                 List<OrderByExpression> orderby = new List<OrderByExpression>();
-                foreach(DataGridViewRow dgvr in dgvColumns.Rows)
+                foreach (DataGridViewRow dgvr in dgvColumns.Rows)
                 {
-                    if ( (bool)dgvr.Cells["Include"].Value ) columns.Add( (String)dgvr.Cells[2].Value );
-                    if ( dgvr.Cells["SortOrder"].Value != null )
+                    if ((bool)dgvr.Cells["Include"].Value) columns.Add((String)dgvr.Cells[2].Value);
+                    if (dgvr.Cells["SortOrder"].Value != null)
                         orderby.Add(new OrderByExpression((String)dgvr.Cells[1].Value, (System.Data.SqlClient.SortOrder)dgvr.Cells["SortOrder"].Value));
                 }
 
-                if ( !columns.Contains(oidColumnName))
-                    columns.Insert(0,oidColumnName);
+                if (!columns.Contains(oidColumnName))
+                    columns.Insert(0, oidColumnName);
                 columns.Insert(1, geomColumn);
 
                 ProviderPropertiesExpression ppe = null;
@@ -237,13 +237,13 @@ namespace MapViewer.DataSource
                             );
                     //,new AttributesProjectionExpression(columns)});
                 }
-                
+
                 AttributesProjectionExpression ape = new AttributesProjectionExpression(columns);
-                
+
                 IFeatureProvider prov = null;
-                
+
                 switch ((String)dgvColumns.Rows[oidcolumn].Cells[3].Value)
-                { 
+                {
                     case "bigint":
                         prov = new PostGis_Provider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
@@ -292,7 +292,7 @@ namespace MapViewer.DataSource
 
             if (cbDataBases.Text == lastDbQueried) return true;
             lastDbQueried = cbDataBases.Text;
-            
+
             var serverConnectionString = ServerConnectionString + string.Format("Database={0}", cbDataBases.Text);
             using (NpgsqlConnection cn = new NpgsqlConnection(serverConnectionString))
             {
@@ -341,7 +341,7 @@ $BODY$
                 //do function
                 cn.Open();
                 new NpgsqlCommand(select, (NpgsqlConnection)cn).ExecuteNonQuery();
-                
+
                 var cm = cn.CreateCommand();
                 cm.CommandText = "gis_table_and_columns";
                 cm.CommandType = CommandType.StoredProcedure;
@@ -354,7 +354,7 @@ $BODY$
                 //DataTable dt = datasetTableAndColumns.Tables[1];
                 //var dc = dt.Columns.Add("SortOrder", typeof(SortOrder));
                 //dc.DefaultValue = SortOrder.None;
-                
+
                 new NpgsqlCommand("DROP FUNCTION gis_table_and_columns();", cn).ExecuteNonQuery();
 
                 cbTables.Enabled = true;
@@ -395,12 +395,12 @@ $BODY$
                 dgvc.DataSource = Enum.GetNames(typeof(System.Data.SqlClient.SortOrder));//new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
                 dgvColumns.Columns.Add(dgvc);
 
-            dgvColumns.Columns[0].Visible = false;
-            dgvColumns.Columns[1].ReadOnly = true;
-            dgvColumns.Columns[2].ReadOnly = true;
-            dgvColumns.Columns[3].ReadOnly = false;
-            dgvColumns.Columns[4].Visible = false;
-            dgvColumns.Columns[5].ReadOnly = false;
+                dgvColumns.Columns[0].Visible = false;
+                dgvColumns.Columns[1].ReadOnly = true;
+                dgvColumns.Columns[2].ReadOnly = true;
+                dgvColumns.Columns[3].ReadOnly = false;
+                dgvColumns.Columns[4].Visible = false;
+                dgvColumns.Columns[5].ReadOnly = false;
             }
 
             setOidColumn(-1);
@@ -437,30 +437,40 @@ $BODY$
         {
             if (e.ColumnIndex != 2) return;
 
-            setOidColumn(e.RowIndex); 
+            setOidColumn(e.RowIndex);
         }
 
         private void setOidColumn(int rowindex)
         {
-            
+
             if (oidcolumn == rowindex) return;
             var fnt = dgvColumns.DefaultCellStyle.Font;
 
-                if (oidcolumn >= 0)
-                {
-                    dgvColumns.Rows[oidcolumn].Cells[2].Style.Font = 
-                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold);
+            if (oidcolumn >= 0)
+            {
+                dgvColumns.Rows[oidcolumn].Cells[2].Style.Font =
+                new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold);
 
-                    dgvColumns.Rows[oidcolumn].Cells[5].Value = false;
-                }
+                dgvColumns.Rows[oidcolumn].Cells[5].Value = false;
+            }
 
-                if (rowindex >= 0)
-                {
-                    dgvColumns.Rows[rowindex].Cells[2].Style.Font =
-                        new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular); ;
-                    dgvColumns.Rows[rowindex].Cells[5].Value = true;
-                }
-                oidcolumn = rowindex;
+            if (rowindex >= 0)
+            {
+                dgvColumns.Rows[rowindex].Cells[2].Style.Font =
+                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular); ;
+                dgvColumns.Rows[rowindex].Cells[5].Value = true;
+            }
+            oidcolumn = rowindex;
         }
+
+        #region ICreateDataProvider Members
+
+
+        public string ProviderName
+        {
+            get { return (string)cbTables.SelectedItem; }
+        }
+
+        #endregion
     }
 }

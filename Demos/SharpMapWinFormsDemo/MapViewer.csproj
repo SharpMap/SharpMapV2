@@ -138,6 +138,21 @@
     <Compile Include="Commands\IControlSource.cs" />
     <Compile Include="Commands\MenuItemCommandSource.cs" />
     <Compile Include="Commands\ToolStripMenuItemCommandSource.cs" />
+    <Compile Include="Controls\CustomTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LayersTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\QueryResults.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\QueryResults.Designer.cs">
+      <DependentUpon>QueryResults.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\QueryResultsTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataSource\ChooseDataSource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,14 +191,20 @@
       <DependentUpon>SqlServer2008.cs</DependentUpon>
     </Compile>
     <Compile Include="ExitCommand.cs" />
-    <Compile Include="MapViewer.cs">
+    <Compile Include="MapActionHandler\IMapActionHandler.cs" />
+    <Compile Include="MapActionHandler\MapActionHandlerBase.cs" />
+    <Compile Include="MapActionHandler\MapActionHandlerEventArgs.cs" />
+    <Compile Include="MapViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MapViewer.Designer.cs">
-      <DependentUpon>MapViewer.cs</DependentUpon>
+    <Compile Include="MapViewerForm.Designer.cs">
+      <DependentUpon>MapViewerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\QueryResults.resx">
+      <DependentUpon>QueryResults.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSource\ChooseDataSource.resx">
       <DependentUpon>ChooseDataSource.cs</DependentUpon>
     </EmbeddedResource>
@@ -193,8 +214,8 @@
     <EmbeddedResource Include="DataSource\Shapefile.resx">
       <DependentUpon>Shapefile.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MapViewer.resx">
-      <DependentUpon>MapViewer.cs</DependentUpon>
+    <EmbeddedResource Include="MapViewerForm.resx">
+      <DependentUpon>MapViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

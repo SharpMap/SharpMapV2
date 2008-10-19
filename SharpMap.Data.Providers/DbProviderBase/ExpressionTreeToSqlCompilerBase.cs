@@ -176,7 +176,7 @@ namespace SharpMap.Data.Providers.Db
         {
             Func<object, object, IDataParameter> dlgt;
             ///method sig for our delegate method. The method created is static and requires the first parameter to be a 
-            /// reference to the calling class
+            /// reference to an instance the calling class
             Type tValue = value.GetType();
 
             if (!_CreateParameterDelegateTypeMap.TryGetValue(tValue, out dlgt))

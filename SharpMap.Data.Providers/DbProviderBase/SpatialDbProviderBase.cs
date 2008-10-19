@@ -40,6 +40,8 @@ namespace SharpMap.Data.Providers.Db
         private String _oidColumn = "Oid";
         private String _tableSchema = "dbo";
 
+        private static Dictionary<TableCacheKey, DataTable> _cachedSchemas = new Dictionary<TableCacheKey, DataTable>();
+
         static SpatialDbProviderBase()
         {
             AddDerivedProperties(typeof(SpatialDbProviderBase<TOid>));
@@ -372,11 +374,47 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        // Note: maybe need to cache the results of this? It could get called pretty often
-        /// <remarks >maybe need to cache the results of this? It could get called pretty often</remarks>
-        public virtual DataTable GetSchemaTable()
+        public DataTable GetSchemaTable()
         {
             return GetSchemaTable(false);
+        }
+
+        public DataTable GetSchemaTable(bool forceCreateNew)
+        {
+            if (forceCreateNew)
+                RemoveCachedSchema();
+
+            TableCacheKey key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
+            DataTable tbl;
+            if (!_cachedSchemas.TryGetValue(key, out tbl))
+            {
+                DataTable tb = BuildSchemaTable();///this may take some time
+                lock (_cachedSchemas)
+                    if (!_cachedSchemas.TryGetValue(key, out tbl))//check again in case a matching schema has been created
+                    {
+                        _cachedSchemas.Add(key, tb);
+                        tbl = tb;
+                    }
+            }
+
+            return tbl.Clone();
+        }
+
+        protected void RemoveCachedSchema()
+        {
+            TableCacheKey key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
+            lock (_cachedSchemas)
+            {
+                if (_cachedSchemas.ContainsKey(key))
+                {
+                    _cachedSchemas.Remove(key);
+                }
+            }
+        }
+
+        protected virtual DataTable BuildSchemaTable()
+        {
+            return BuildSchemaTable(false);
         }
 
 
@@ -445,7 +483,7 @@ namespace SharpMap.Data.Providers.Db
                 storage.Add(item);
         }
 
-        public virtual DataTable GetSchemaTable(Boolean withGeometryColumn)
+        protected virtual DataTable BuildSchemaTable(Boolean withGeometryColumn)
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             using (IDbCommand cmd = DbUtility.CreateCommand())
@@ -573,6 +611,8 @@ namespace SharpMap.Data.Providers.Db
 
         public virtual IEnumerable<string> SelectAllColumnNames()
         {
+            yield return GeometryColumn;
+
             foreach (DataColumn c in GetSchemaTable().Columns)
                 yield return c.ColumnName;
         }
@@ -732,61 +772,6 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        ////this functionality has been moved to IDbUtility<DbType>
-
-        //protected virtual DbType toDbType(Type type)
-        //{
-        //    switch (type.FullName)
-        //    {
-        //        case "System.String":
-        //            return DbType.String;
-
-        //        case "System.Boolean":
-        //            return DbType.Boolean;
-        //        case "System.Guid":
-        //            return DbType.Guid;
-
-        //        case "System.Byte":
-        //            return DbType.Byte;
-        //        case "System.SByte":
-        //            return DbType.AnsiString;
-
-        //        case "System.Int16":
-        //            return DbType.Int16;
-        //        case "System.Int32":
-        //            return DbType.Int32;
-        //        case "System.Int64":
-        //            return DbType.Int64;
-
-        //        case "System.UInt16":
-        //            return DbType.UInt16;
-        //        case "System.UInt32":
-        //            return DbType.UInt32;
-        //        case "System.UInt64":
-        //            return DbType.UInt64;
-
-        //        case "System.Single":
-        //            return DbType.Single;
-        //        case "System.Double":
-        //            return DbType.Double;
-
-        //        case "System.Decimal":
-        //            return DbType.Decimal;
-        //        case "System.Currency":
-        //            return DbType.Currency;
-
-        //        case "System.Object":
-        //            return DbType.Object;
-        //        case "System.Byte[]":
-        //            return DbType.Binary;
-        //        case "System.DateTime":
-        //            return DbType.DateTime;
-
-        //        default:
-        //            throw new ArgumentException(string.Format("Do not know how to transorm '{0}' to DbType!",
-        //                                                      type.FullName));
-        //    }
-        //}
 
         #region Private helpers for Insert and Update
 
@@ -795,7 +780,7 @@ namespace SharpMap.Data.Providers.Db
             var sets = new List<string>();
 
             //Columnnames
-            DataColumnCollection dcc = GetSchemaTable(false).Columns;
+            DataColumnCollection dcc = GetSchemaTable().Columns;
             foreach (DataColumn dc in dcc)
                 sets.Add(string.Format(" [{0}]", dc.ColumnName));
 
@@ -821,7 +806,7 @@ namespace SharpMap.Data.Providers.Db
         {
             var sets = new List<string>();
             //Attribute
-            foreach (DataColumn dc in GetSchemaTable(false).Columns)
+            foreach (DataColumn dc in GetSchemaTable().Columns)
             {
                 IDataParameter param = null;
                 sets.Add(string.Format(" [{0}]={1}", dc.ColumnName, ParamForColumn(dc, out param)));
@@ -856,5 +841,49 @@ namespace SharpMap.Data.Providers.Db
         }
 
         #endregion
+
+
+        private struct TableCacheKey
+        {
+            private Type _providerType;
+
+            private string _tableName;
+            public string TableName
+            {
+                get { return _tableName; }
+            }
+
+            private string _connectionString;
+            public string ConnectionString
+            {
+                get { return _connectionString; }
+            }
+
+            public string Schema
+            {
+                get { return _schema; }
+            }
+
+            public Type ProviderType
+            {
+                get { return _providerType; }
+            }
+
+            private string _schema;
+
+            public TableCacheKey(Type providerType, string connectionString, string schema, string tblName)
+            {
+                _providerType = providerType;
+                _tableName = tblName;
+                _schema = schema;
+                _connectionString = connectionString;
+            }
+
+            public override int GetHashCode()
+            {
+                return _providerType.GetHashCode() ^ _connectionString.ToLower().GetHashCode() ^ _schema.ToLower().GetHashCode() ^
+                       _tableName.ToLower().GetHashCode();
+            }
+        }
     }
 }

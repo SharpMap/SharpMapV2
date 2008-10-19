@@ -50,7 +50,7 @@ namespace MapViewer.DataSource
 
         private void cbDataSource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (((string) cbDataSource.SelectedItem).ToLower())
+            switch (((string)cbDataSource.SelectedItem).ToLower())
             {
                 case "shapefile":
                     LoadShapefileBuilder();
@@ -84,8 +84,8 @@ namespace MapViewer.DataSource
                 c.Dispose();
             }
 
-            pContainer.Controls.Add((Control) builder);
-            ((Control) builder).Dock = DockStyle.Fill;
+            pContainer.Controls.Add((Control)builder);
+            ((Control)builder).Dock = DockStyle.Fill;
         }
 
         private void LoadSpatialLiteBuilder()
@@ -124,5 +124,15 @@ namespace MapViewer.DataSource
                 Close();
             }
         }
+
+        #region ICreateDataProvider Members
+
+
+        public string ProviderName
+        {
+            get { return Builder.ProviderName; }
+        }
+
+        #endregion
     }
 }

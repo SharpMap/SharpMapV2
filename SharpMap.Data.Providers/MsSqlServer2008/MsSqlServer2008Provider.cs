@@ -149,7 +149,7 @@ namespace SharpMap.Data.Providers
                     while (r.Read())
                     {
                         if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
-                            return GeometryFactory.CreateExtents(); 
+                            return GeometryFactory.CreateExtents();
 
                         xmin = r.GetDouble(0);
                         ymin = r.GetDouble(1);
@@ -293,12 +293,12 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         }
 
 
-        public override DataTable GetSchemaTable()
-        {
-            DataTable dt = base.GetSchemaTable(true);
-            dt.Columns[GeometryColumn].DataType = typeof(byte[]);
-            //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
-            return dt;
-        }
+        //protected override DataTable BuildSchemaTable()
+        //{
+        //    DataTable dt = base.BuildSchemaTable(true);
+        //    dt.Columns[GeometryColumn].DataType = typeof(byte[]);
+        //    //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
+        //    return dt;
+        //}
     }
 }
