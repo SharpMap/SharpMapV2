@@ -1,5 +1,5 @@
 ﻿/*
- *	This file is part of SharpMapMapViewer
+ *	This file is part of SharpMap.MapViewer
  *  SharpMapMapViewer is free software © 2008 Newgrove Consultants Limited, 
  *  http://www.newgrove.com; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
@@ -86,8 +86,6 @@ namespace MapViewer
 
         private void AttributeQueryHandler_Begin(object sender, MapActionHandlerEventArgs e)
         {
-            foreach (IFeatureLayer l in Map.SelectedLayers)
-                l.SelectedFilter = null;
         }
 
         private void AttributeQueryHandler_End(object sender, MapActionHandlerEventArgs e)
@@ -99,15 +97,34 @@ namespace MapViewer
 
             if (l != null)
             {
-                var tab = new QueryResultsTab(l.LayerName,
-                                              new FeatureDataView(l.SelectedFeatures.Table)
-                                                  {
-                                                      ViewDefinition =
-                                                          (FeatureQueryExpression)
-                                                          (l.SelectedFeatures.ViewDefinition == null
-                                                               ? null
-                                                               : l.SelectedFeatures.ViewDefinition.Clone())
-                                                  });
+
+
+                //jd: TODO: attempt to make a clone of the selected features
+                //so they don't change on requery.. all values always seem null though...
+                //FeatureDataView dv = new FeatureDataView(l.SelectedFeatures.Table);
+
+                //if (l.SelectedFeatures.AttributeFilter != null)
+                //    dv.AttributeFilter =
+                //        (AttributeBinaryExpression)
+                //        l.SelectedFeatures.AttributeFilter.Clone();
+
+                //if (l.SelectedFeatures.SpatialFilter != null)
+                //    dv.SpatialFilter =
+                //        (SpatialBinaryExpression)
+                //        l.SelectedFeatures.SpatialFilter.Clone();
+
+                //if (l.SelectedFeatures.OidFilter != null)
+                //    dv.OidFilter =
+                //        (OidCollectionExpression)
+                //        l.SelectedFeatures.OidFilter.Clone();
+
+                //if (l.SelectedFeatures.ViewDefinition != null)
+                //    dv.ViewDefinition =
+                //        (FeatureQueryExpression)
+                //        l.SelectedFeatures.ViewDefinition.Clone();
+
+
+                var tab = new QueryResultsTab(l.LayerName, l.SelectedFeatures);
                 resultsTabControl.TabPages.Insert(0, tab);
                 resultsTabControl.SelectedTab = tab;
             }
@@ -471,7 +488,7 @@ namespace MapViewer
                 if (l.DataSource.IsOpen)
                     l.DataSource.Close();
                 Map.Layers.Remove(l);
-                l.DataSource.Dispose(); 
+                l.DataSource.Dispose();
                 l.Dispose();
             }
             Map.Layers.Clear();

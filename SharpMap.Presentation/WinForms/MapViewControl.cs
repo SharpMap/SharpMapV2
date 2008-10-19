@@ -622,7 +622,6 @@ namespace SharpMap.Presentation.WinForms
                 {
                     continue;
                 }
-               //gdi crashes when trying to draw objects at 0 width and height
                     switch (ro.State)
                     {
                         case RenderState.Normal:

@@ -10,6 +10,8 @@
  *  See the GNU Lesser General Public License for the full details. 
  *  
  *  Author: John Diss 2008
+ *  
+ *  Also Felix Obermaier
  * 
  */
 using System;
@@ -202,16 +204,22 @@ namespace MapViewer.DataSource
                 conn += string.Format("Database={0};", cbDataBases.SelectedItem);
                 conn += "Enlist=true;";
 
-                var start = cbTables.Text.IndexOf('[') + 1;
-                var length = cbTables.Text.IndexOf(']') - start;
-                string geomColumn = cbTables.Text.Substring(start, length); ;
+                DataRowView drv = (DataRowView)cbTables.SelectedItem;
+                string schema = (string)drv["Schema"];
+                string tableName = (string)drv["TableName"];;
+                string geomColumn = (string)drv["GeometryColumn"];
+                int coordDimension = (int) drv["Dimension"];
+                string srid = ((int)drv["SRID"]).ToString();
+                string spatialReference = drv["SpatialReference"] == DBNull.Value 
+                    ?
+                    "" 
+                    :
+                    (string)drv["SpatialReference"];
 
-                string schema = "public";
-
-                string tableName = (string)cbTables.SelectedValue;
-
-                string srid = lbSRID.Text.Substring(6);
-                GeoAPI.Geometries.IGeometryFactory gf = new GeometryServices()[srid];
+                GeometryServices gs = new GeometryServices();
+                IGeometryFactory gf = gs[srid ];//, coordDimension];
+                if (!string.IsNullOrEmpty(spatialReference))
+                    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
 
                 string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells[2].Value;
 
@@ -260,6 +268,7 @@ namespace MapViewer.DataSource
                     default:
                         return null;
                 }
+
                 //jd commented temporarily to get a build
                 //((ISpatialDbProvider)prov).DefinitionQuery =
                 //    new ProviderQueryExpression(ppe, ape, null);
@@ -308,10 +317,14 @@ DECLARE
 BEGIN
 
 OPEN tbl FOR
-	SELECT  x.f_table_name AS ""TableName"", 
+	SELECT  x.f_table_schema AS ""Schema"", 
+		    x.f_table_name AS ""TableName"",
+		    x.f_geometry_column AS ""GeometryColumn"",
+		    x.coord_dimension as ""Dimension"",
 	        x.f_table_name || $lit$.[$lit$ || x.f_geometry_column || $lit$] ($lit$ || x.type || $lit$)$lit$ AS ""Label"",
-		    x.srid AS ""SRID""
-    FROM geometry_columns AS x;
+		    x.srid AS ""SRID"",
+		    y.srtext as ""SpatialReference""
+    FROM    geometry_columns AS x LEFT JOIN spatial_ref_sys as y on x.srid=y.srid;
 RETURN NEXT tbl;
 
 OPEN col FOR
@@ -350,10 +363,6 @@ $BODY$
                 datasetTableAndColumns = new DataSet();
                 da.Fill(datasetTableAndColumns);
                 cm.Transaction.Commit();
-
-                //DataTable dt = datasetTableAndColumns.Tables[1];
-                //var dc = dt.Columns.Add("SortOrder", typeof(SortOrder));
-                //dc.DefaultValue = SortOrder.None;
 
                 new NpgsqlCommand("DROP FUNCTION gis_table_and_columns();", cn).ExecuteNonQuery();
 
@@ -413,7 +422,7 @@ $BODY$
 
             dgvColumns.Enabled = true;
 
-            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView)cbTables.SelectedItem)[2]);
+            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView)cbTables.SelectedItem)["SRID"]);
         }
 
         private void cbDataBases_DataSourceChanged(object sender, EventArgs e)
@@ -468,7 +477,7 @@ $BODY$
 
         public string ProviderName
         {
-            get { return (string)cbTables.SelectedItem; }
+            get { return (string) ((DataRowView) cbTables.SelectedItem)["Label"]; }
         }
 
         #endregion
