@@ -100,8 +100,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PostGis_Provider`1.cs" />
     <Compile Include="PostGis_ExpressionTreeToSqlCompiler.cs" />
+    <Compile Include="PostGis_Provider.cs" />
     <Compile Include="PostGis_ProviderStatic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PostGis_SpatialUtility.cs" />
