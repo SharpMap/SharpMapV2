@@ -31,7 +31,7 @@
   <ItemGroup>
     <Reference Include="AjaxControlToolkit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\AjaxControlToolkit</HintPath>
+      <HintPath>..\..\ExternalReferences\AjaxControlToolkit\AjaxControlToolkit.DLL</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

@@ -1,18 +1,17 @@
-// README
-//
-// There are two steps to adding a property:
-//
-// 1. Create a member variable to store your property
-// 2. Add the get_ and set_ accessors for your property
-//
-// Remember that both are case sensitive!
-
-
-/// <reference name="MicrosoftAjaxTimer.debug.js" />
-/// <reference name="MicrosoftAjaxWebForms.debug.js" />
-/// <reference name="AjaxControlToolkit.ExtenderBase.BaseScripts.js" assembly="AjaxControlToolkit" />
-
-
+/*
+*  The attached / following is part of SharpMap.Presentation.Web.SharpLayers
+*  SharpMap.Presentation.Web.SharpLayers is free software © 2008 Newgrove Consultants Limited, 
+*  www.newgrove.com; you can redistribute it and/or modify it under the terms 
+*  of the current GNU Lesser General Public License (LGPL) as published by and 
+*  available from the Free Software Foundation, Inc., 
+*  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA: http://fsf.org/    
+*  This program is distributed without any warranty; 
+*  without even the implied warranty of merchantability or fitness for purpose.  
+*  See the GNU Lesser General Public License for the full details. 
+*  
+*  Author: John Diss 2008
+* 
+*/
 Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers');
 
 SharpMap.Presentation.Web.SharpLayers.MapHostBehavior = function(element) {

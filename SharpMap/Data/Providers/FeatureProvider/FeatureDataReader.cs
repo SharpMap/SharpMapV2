@@ -43,16 +43,16 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #region Object Construction / Disposal
 
-        internal FeatureDataReader(IGeometryFactory factory, 
-                                   FeatureDataTable source, 
-                                   FeatureQueryExpression query, 
+        internal FeatureDataReader(IGeometryFactory factory,
+                                   FeatureDataTable source,
+                                   FeatureQueryExpression query,
                                    FeatureQueryExecutionOptions options)
         {
             if (source == null) throw new ArgumentNullException("source");
 
             if (options != FeatureQueryExecutionOptions.FullFeature)
             {
-                throw new ArgumentException("Only QueryExecutionOptions.All is supported.", 
+                throw new ArgumentException("Only QueryExecutionOptions.All is supported.",
                                             "options");
             }
 
@@ -62,8 +62,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
             _table = source.Clone();
 
             foreach (FeatureDataRow row in source.Select(query.SpatialPredicate))
-			{
-				_table.ImportRow(row);
+            {
+                _table.ImportRow(row);
             }
         }
 
@@ -109,17 +109,17 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #endregion
 
-		#endregion
+        #endregion
 
-		#region IFeatureDataRecord Members
-		public IGeometry Geometry
-		{
-			get
-			{
-				checkDisposed();
-				checkReadState();
-				return _table[_currentRow].Geometry.Clone();
-			}
+        #region IFeatureDataRecord Members
+        public IGeometry Geometry
+        {
+            get
+            {
+                checkDisposed();
+                checkReadState();
+                return _table[_currentRow].Geometry.Clone();
+            }
         }
 
         public IExtents Extents
@@ -152,7 +152,7 @@ namespace SharpMap.Data.Providers.FeatureProvider
         {
             get { return true; }
         }
-		#endregion
+        #endregion
 
         #region IDataReader Members
 
@@ -465,25 +465,27 @@ namespace SharpMap.Data.Providers.FeatureProvider
 
         #endregion
 
-		#region IEnumerable<IFeatureDataRecord> Members
+        #region IEnumerable<IFeatureDataRecord> Members
 
-		public IEnumerator<IFeatureDataRecord> GetEnumerator()
+        public IEnumerator<IFeatureDataRecord> GetEnumerator()
         {
             while (Read())
             {
                 yield return this;
             }
-		}
+            Dispose(true);///jd: added to prevent "another reader is already active" type exception
 
-		#endregion
+        }
 
-		#region IEnumerable Members
+        #endregion
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-		}
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
