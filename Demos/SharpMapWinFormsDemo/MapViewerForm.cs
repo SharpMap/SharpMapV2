@@ -15,6 +15,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Data;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
 using GeoAPI.DataStructures;
@@ -43,6 +44,7 @@ namespace MapViewer
         private readonly WorkQueue workQueue;
 
 
+
         private Map _map;
 
         public MapViewerForm()
@@ -54,6 +56,8 @@ namespace MapViewer
             InitCommands();
             AttributeQueryHandler.End += AttributeQueryHandler_End;
             AttributeQueryHandler.Begin += AttributeQueryHandler_Begin;
+            layersView1.LayersContextMenu = layerContextMenu;
+            layersView1.ContextMenuStrip = layersContextMenu;
         }
 
         private IMapActionHandler MapActionHandler { get; set; }
@@ -69,7 +73,14 @@ namespace MapViewer
             set
             {
                 _map = value;
-                layersTree1.Layers = value.Layers;
+            }
+        }
+
+        public ILayersView LayersView
+        {
+            get
+            {
+                return layersView1;
             }
         }
 
@@ -101,30 +112,30 @@ namespace MapViewer
 
                 //jd: TODO: attempt to make a clone of the selected features
                 //so they don't change on requery.. all values always seem null though...
-                //FeatureDataView dv = new FeatureDataView(l.SelectedFeatures.Table);
+                FeatureDataView dv = new FeatureDataView(l.SelectedFeatures.Table);
 
-                //if (l.SelectedFeatures.AttributeFilter != null)
-                //    dv.AttributeFilter =
-                //        (AttributeBinaryExpression)
-                //        l.SelectedFeatures.AttributeFilter.Clone();
+                if (l.SelectedFeatures.AttributeFilter != null)
+                    dv.AttributeFilter =
+                        (AttributeBinaryExpression)
+                        l.SelectedFeatures.AttributeFilter.Clone();
 
-                //if (l.SelectedFeatures.SpatialFilter != null)
-                //    dv.SpatialFilter =
-                //        (SpatialBinaryExpression)
-                //        l.SelectedFeatures.SpatialFilter.Clone();
+                if (l.SelectedFeatures.SpatialFilter != null)
+                    dv.SpatialFilter =
+                        (SpatialBinaryExpression)
+                        l.SelectedFeatures.SpatialFilter.Clone();
 
-                //if (l.SelectedFeatures.OidFilter != null)
-                //    dv.OidFilter =
-                //        (OidCollectionExpression)
-                //        l.SelectedFeatures.OidFilter.Clone();
+                if (l.SelectedFeatures.OidFilter != null)
+                    dv.OidFilter =
+                        (OidCollectionExpression)
+                        l.SelectedFeatures.OidFilter.Clone();
 
-                //if (l.SelectedFeatures.ViewDefinition != null)
-                //    dv.ViewDefinition =
-                //        (FeatureQueryExpression)
-                //        l.SelectedFeatures.ViewDefinition.Clone();
+                if (l.SelectedFeatures.ViewDefinition != null)
+                    dv.ViewDefinition =
+                        (FeatureQueryExpression)
+                        l.SelectedFeatures.ViewDefinition.Clone();
 
 
-                var tab = new QueryResultsTab(l.LayerName, l.SelectedFeatures);
+                var tab = new QueryResultsTab(l.LayerName, dv);
                 resultsTabControl.TabPages.Insert(0, tab);
                 resultsTabControl.SelectedTab = tab;
             }
@@ -444,7 +455,7 @@ namespace MapViewer
                 Invoke(dlgt, args);
                 return;
             }
-            dlgt.DynamicInvoke();
+            dlgt.DynamicInvoke(args);
         }
 
         private void EnableDisableCommandsRequiringLayers()
@@ -525,6 +536,7 @@ namespace MapViewer
                                                                 if (Map.Layers.Count == 1)
                                                                 {
                                                                     mapViewControl1.Map = Map;
+                                                                    layersView1.Map = Map;
                                                                     MapView.ZoomToExtents();
                                                                 }
                                                             }));
@@ -555,5 +567,7 @@ namespace MapViewer
         }
 
         #endregion
+
+
     }
 }

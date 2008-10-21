@@ -118,6 +118,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\Externals\Npgsql.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.59.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
@@ -214,6 +215,11 @@
     <EmbeddedResource Include="DataSource\Shapefile.resx">
       <DependentUpon>Shapefile.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\SpatialLite.resx">
+      <DependentUpon>SpatialLite.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SpatialLite1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="MapViewerForm.resx">
       <DependentUpon>MapViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -222,6 +228,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\LayersView.resx">
+      <DependentUpon>LayersView.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -237,6 +246,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RandomStyle.cs" />
+    <Compile Include="Views\LayersView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\LayersView.Designer.cs">
+      <DependentUpon>LayersView.cs</DependentUpon>
+    </Compile>
     <Compile Include="WorkQueue.cs" />
   </ItemGroup>
   <ItemGroup>

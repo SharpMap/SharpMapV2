@@ -27,14 +27,49 @@ namespace MapViewer.Controls
 {
     public class CustomTreeView : TreeView
     {
+        public CustomTreeView()
+        {
+            NodeMouseClick += CustomTreeView_NodeMouseClick;
+            AfterCheck += CustomTreeView_AfterCheck;
+
+        }
+
         public event EventHandler<LayerEnabledChangeEventArgs> RequestLayerEnabledChange;
+        public event EventHandler<TreeNodeMouseClickEventArgs> LayerNodeClick;
+        public event EventHandler<TreeNodeMouseClickEventArgs> ProviderNodeClick;
+        public event EventHandler<TreeNodeMouseClickEventArgs> TransformNodeClick;
+        public event EventHandler<TreeNodeMouseClickEventArgs> CoordinateSystemNodeClick;
+
+
+        private void CustomTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node is LayerNode)
+            {
+                if (LayerNodeClick != null)
+                    LayerNodeClick(this, e);
+            }
+            else if (e.Node is ProviderNode)
+            {
+                if (ProviderNodeClick != null)
+                    ProviderNodeClick(this, e);
+            }
+            else if (e.Node is CoordinateSystemNode)
+            {
+                if (CoordinateSystemNodeClick != null)
+                    CoordinateSystemNodeClick(this, e);
+            }
+            else if (e.Node is CoordinateTransformNode)
+            {
+                if (TransformNodeClick != null)
+                    TransformNodeClick(this, e);
+            }
+        }
 
         protected void OnRequestLayerEnabledChange(LayerEnabledChangeEventArgs args)
         {
             if (RequestLayerEnabledChange != null)
                 RequestLayerEnabledChange(this, args);
 
-            AfterCheck += CustomTreeView_AfterCheck;
         }
 
         private void CustomTreeView_AfterCheck(object sender, TreeViewEventArgs e)
@@ -49,15 +84,16 @@ namespace MapViewer.Controls
 
         #region Nested type: CoordinateSystemNode
 
-        private class CoordinateSystemNode : CustomTreeNode
+        protected class CoordinateSystemNode : CustomTreeNode
         {
+            private ICoordinateSystem coordinateSystem;
+
             public CoordinateSystemNode(ICoordinateSystem cs)
                 : base(cs.Name)
             {
                 CoordinateSystem = cs;
             }
 
-            private ICoordinateSystem coordinateSystem;
             protected ICoordinateSystem CoordinateSystem
             {
                 get { return coordinateSystem; }
@@ -92,7 +128,7 @@ namespace MapViewer.Controls
             }
         }
 
-        private abstract class CoordinateSystemNode<TCoordinateSystem>
+        protected abstract class CoordinateSystemNode<TCoordinateSystem>
             : CoordinateSystemNode
             where TCoordinateSystem : ICoordinateSystem
         {
@@ -103,7 +139,7 @@ namespace MapViewer.Controls
 
             protected new TCoordinateSystem CoordinateSystem
             {
-                get { return (TCoordinateSystem)base.CoordinateSystem; }
+                get { return (TCoordinateSystem) base.CoordinateSystem; }
             }
         }
 
@@ -111,15 +147,16 @@ namespace MapViewer.Controls
 
         #region Nested type: CoordinateTransformNode
 
-        private class CoordinateTransformNode : CustomTreeNode
+        protected class CoordinateTransformNode : CustomTreeNode
         {
+            private ICoordinateTransformation transform;
+
             public CoordinateTransformNode(ICoordinateTransformation transform)
                 : base("Coordinate Transform")
             {
                 Transform = transform;
             }
 
-            private ICoordinateTransformation transform;
             private ICoordinateTransformation Transform
             {
                 get { return transform; }
@@ -165,7 +202,7 @@ namespace MapViewer.Controls
 
                 var type = new TreeNode("Transform Type");
                 Nodes.Add(type);
-                type.Nodes.Add(Enum.GetName(typeof(TransformType), Transform.TransformType));
+                type.Nodes.Add(Enum.GetName(typeof (TransformType), Transform.TransformType));
 
                 source.Nodes.Add(NodeFactory.CreateCoordinateSystemNode(Transform.Source));
 
@@ -179,7 +216,7 @@ namespace MapViewer.Controls
 
         #region Nested type: CustomTreeNode
 
-        private abstract class CustomTreeNode : TreeNode, IDisposable
+        protected abstract class CustomTreeNode : TreeNode, IDisposable
         {
             protected CustomTreeNode(string name)
                 : base(name)
@@ -189,7 +226,7 @@ namespace MapViewer.Controls
 
             public new CustomTreeView TreeView
             {
-                get { return (CustomTreeView)base.TreeView; }
+                get { return (CustomTreeView) base.TreeView; }
             }
 
             protected bool IsDisposed { get; set; }
@@ -218,7 +255,7 @@ namespace MapViewer.Controls
 
         #region Nested type: DbProviderNode
 
-        private class DbProviderNode : ProviderNode<ISpatialDbProvider>
+        protected class DbProviderNode : ProviderNode<ISpatialDbProvider>
         {
             public DbProviderNode(ISpatialDbProvider provider)
                 : base(provider)
@@ -249,7 +286,7 @@ namespace MapViewer.Controls
 
         #region Nested type: FeatureLayerNode
 
-        private class FeatureLayerNode
+        protected class FeatureLayerNode
             : LayerNode<IFeatureLayer>
         {
             public FeatureLayerNode(IFeatureLayer layer)
@@ -271,7 +308,7 @@ namespace MapViewer.Controls
 
         #region Nested type: GeographicCoordinateSystemNode
 
-        private class GeographicCoordinateSystemNode : CoordinateSystemNode<IGeographicCoordinateSystem>
+        protected class GeographicCoordinateSystemNode : CoordinateSystemNode<IGeographicCoordinateSystem>
         {
             public GeographicCoordinateSystemNode(IGeographicCoordinateSystem cs)
                 : base(cs)
@@ -292,7 +329,7 @@ namespace MapViewer.Controls
 
         #region Nested type: LabelLayerNode
 
-        private class LabelLayerNode
+        protected class LabelLayerNode
             : LayerNode<LabelLayer>
         {
             public LabelLayerNode(LabelLayer layer)
@@ -305,7 +342,7 @@ namespace MapViewer.Controls
 
         #region Nested type: LayerGroupNode
 
-        private class LayerGroupNode
+        protected class LayerGroupNode
             : LayerNode<LayerGroup>
         {
             public LayerGroupNode(LayerGroup grp)
@@ -329,7 +366,7 @@ namespace MapViewer.Controls
 
         #region Nested type: LayerNode
 
-        private abstract class LayerNode : CustomTreeNode
+        protected abstract class LayerNode : CustomTreeNode
         {
             private ILayer layer;
 
@@ -368,9 +405,7 @@ namespace MapViewer.Controls
                 if (!IsDisposed)
                 {
                     Layer.PropertyChanged -= Layer_PropertyChanged;
-
                 }
-
             }
 
             protected override void BuildChildNodes()
@@ -401,7 +436,7 @@ namespace MapViewer.Controls
             }
         }
 
-        private abstract class LayerNode<TLayer>
+        protected abstract class LayerNode<TLayer>
             : LayerNode where TLayer : ILayer
         {
             protected LayerNode(TLayer layer)
@@ -411,7 +446,7 @@ namespace MapViewer.Controls
 
             public new TLayer Layer
             {
-                get { return (TLayer)base.Layer; }
+                get { return (TLayer) base.Layer; }
             }
         }
 
@@ -424,17 +459,17 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode<TLayer>(TLayer layer)
                 where TLayer : ILayer
             {
-                if (IsAssignbleFrom(typeof(IFeatureLayer), layer.GetType()))
+                if (IsAssignbleFrom(typeof (IFeatureLayer), layer.GetType()))
                 {
-                    return new FeatureLayerNode((IFeatureLayer)layer);
+                    return new FeatureLayerNode((IFeatureLayer) layer);
                 }
-                if (IsAssignbleFrom(typeof(LayerGroup), layer.GetType()))
+                if (IsAssignbleFrom(typeof (LayerGroup), layer.GetType()))
                 {
-                    return new LayerGroupNode((LayerGroup)(object)layer);
+                    return new LayerGroupNode((LayerGroup) (object) layer);
                 }
-                if (IsAssignbleFrom(typeof(LabelLayer), layer.GetType()))
+                if (IsAssignbleFrom(typeof (LabelLayer), layer.GetType()))
                 {
-                    return new LabelLayerNode((LabelLayer)(object)layer);
+                    return new LabelLayerNode((LabelLayer) (object) layer);
                 }
 
                 throw new NotImplementedException();
@@ -443,13 +478,13 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode(ILayer layer)
             {
                 if (layer is IFeatureLayer)
-                    return CreateLayerNode((IFeatureLayer)layer);
+                    return CreateLayerNode((IFeatureLayer) layer);
 
                 if (layer is LayerGroup)
-                    return CreateLayerNode((LayerGroup)layer);
+                    return CreateLayerNode((LayerGroup) layer);
 
                 if (layer is LabelLayer)
-                    return CreateLayerNode((LabelLayer)layer);
+                    return CreateLayerNode((LabelLayer) layer);
 
                 throw new NotImplementedException();
             }
@@ -457,34 +492,34 @@ namespace MapViewer.Controls
             public static TreeNode CreateCoordinateSystemNode<TCoordinateSystem>(TCoordinateSystem cs)
                 where TCoordinateSystem : ICoordinateSystem
             {
-                if (IsAssignbleFrom(typeof(IGeographicCoordinateSystem), cs.GetType()))
-                    return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem)cs);
-                if (IsAssignbleFrom(typeof(IProjectedCoordinateSystem), cs.GetType()))
-                    return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem)cs);
+                if (IsAssignbleFrom(typeof (IGeographicCoordinateSystem), cs.GetType()))
+                    return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem) cs);
+                if (IsAssignbleFrom(typeof (IProjectedCoordinateSystem), cs.GetType()))
+                    return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem) cs);
                 return new CoordinateSystemNode(cs);
             }
 
             public static TreeNode CreateCoordinateSystemNode(ICoordinateSystem cs)
             {
                 if (cs is IProjectedCoordinateSystem)
-                    return CreateCoordinateSystemNode((IProjectedCoordinateSystem)cs);
+                    return CreateCoordinateSystemNode((IProjectedCoordinateSystem) cs);
 
                 if (cs is IGeographicCoordinateSystem)
-                    return CreateCoordinateSystemNode((IGeographicCoordinateSystem)cs);
+                    return CreateCoordinateSystemNode((IGeographicCoordinateSystem) cs);
 
                 return new CoordinateSystemNode(cs);
             }
 
             public static TreeNode CreateProviderNode<TProvider>(TProvider provider) where TProvider : IProvider
             {
-                if (IsAssignbleFrom(typeof(AsyncFeatureProviderAdapter), provider.GetType()))
-                    return CreateProviderNode(((AsyncFeatureProviderAdapter)(object)provider).InnerFeatureProvider);
+                if (IsAssignbleFrom(typeof (AsyncFeatureProviderAdapter), provider.GetType()))
+                    return CreateProviderNode(((AsyncFeatureProviderAdapter) (object) provider).InnerFeatureProvider);
 
-                if (IsAssignbleFrom(typeof(ShapeFileProvider), provider.GetType()))
-                    return new ShapeFileProviderNode((ShapeFileProvider)(object)provider);
+                if (IsAssignbleFrom(typeof (ShapeFileProvider), provider.GetType()))
+                    return new ShapeFileProviderNode((ShapeFileProvider) (object) provider);
 
-                if (IsAssignbleFrom(typeof(ISpatialDbProvider), provider.GetType()))
-                    return new DbProviderNode((ISpatialDbProvider)provider);
+                if (IsAssignbleFrom(typeof (ISpatialDbProvider), provider.GetType()))
+                    return new DbProviderNode((ISpatialDbProvider) provider);
 
                 throw new NotImplementedException();
             }
@@ -492,11 +527,11 @@ namespace MapViewer.Controls
             public static TreeNode CreateProviderNode(IProvider provider)
             {
                 if (provider is AsyncFeatureProviderAdapter)
-                    return CreateProviderNode(((AsyncFeatureProviderAdapter)provider).InnerFeatureProvider);
+                    return CreateProviderNode(((AsyncFeatureProviderAdapter) provider).InnerFeatureProvider);
                 if (provider is ShapeFileProvider)
-                    return CreateProviderNode((ShapeFileProvider)provider);
+                    return CreateProviderNode((ShapeFileProvider) provider);
                 if (provider is ISpatialDbProvider)
-                    return CreateProviderNode((ISpatialDbProvider)provider);
+                    return CreateProviderNode((ISpatialDbProvider) provider);
 
                 throw new NotImplementedException();
             }
@@ -536,15 +571,16 @@ namespace MapViewer.Controls
 
         #region Nested type: ProviderNode
 
-        private abstract class ProviderNode : CustomTreeNode
+        protected abstract class ProviderNode : CustomTreeNode
         {
+            private IProvider provider;
+
             protected ProviderNode(IProvider provider)
                 : base(provider.GetType().Name)
             {
                 Provider = provider;
             }
 
-            private IProvider provider;
             protected IProvider Provider
             {
                 get { return provider; }
@@ -591,7 +627,7 @@ namespace MapViewer.Controls
             }
         }
 
-        private abstract class ProviderNode<TProvider>
+        protected abstract class ProviderNode<TProvider>
             : ProviderNode
             where TProvider : IProvider
         {
@@ -602,7 +638,7 @@ namespace MapViewer.Controls
 
             protected new TProvider Provider
             {
-                get { return (TProvider)base.Provider; }
+                get { return (TProvider) base.Provider; }
             }
         }
 
@@ -610,7 +646,7 @@ namespace MapViewer.Controls
 
         #region Nested type: ShapeFileProviderNode
 
-        private class ShapeFileProviderNode : ProviderNode<ShapeFileProvider>
+        protected class ShapeFileProviderNode : ProviderNode<ShapeFileProvider>
         {
             public ShapeFileProviderNode(ShapeFileProvider shp)
                 : base(shp)

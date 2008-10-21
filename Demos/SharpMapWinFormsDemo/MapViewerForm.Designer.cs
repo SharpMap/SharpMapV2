@@ -1,4 +1,6 @@
-﻿using MapViewer.Controls;
+﻿
+
+using MapViewer.Controls;
 namespace MapViewer
 {
     partial class MapViewerForm
@@ -48,7 +50,7 @@ namespace MapViewer
             this.splitVertical = new System.Windows.Forms.SplitContainer();
             this.LeftTabControl = new System.Windows.Forms.TabControl();
             this.layersTab = new System.Windows.Forms.TabPage();
-            this.layersTree1 = new LayersTree();
+            this.layersView1 = new MapViewer.Views.LayersView();
             this.tabPageDataSource = new System.Windows.Forms.TabPage();
             this.stylesTab = new System.Windows.Forms.TabPage();
             this.splitHorizontal = new System.Windows.Forms.SplitContainer();
@@ -79,6 +81,7 @@ namespace MapViewer
             this.zoomOutButton = new System.Windows.Forms.ToolStripButton();
             this.customToolsToolstrip = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.layerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mainMenu.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -246,7 +249,7 @@ namespace MapViewer
             // 
             // layersTab
             // 
-            this.layersTab.Controls.Add(this.layersTree1);
+            this.layersTab.Controls.Add(this.layersView1);
             this.layersTab.Location = new System.Drawing.Point(4, 22);
             this.layersTab.Name = "layersTab";
             this.layersTab.Padding = new System.Windows.Forms.Padding(3);
@@ -255,16 +258,15 @@ namespace MapViewer
             this.layersTab.Text = "Layers";
             this.layersTab.UseVisualStyleBackColor = true;
             // 
-            // layersTree1
+            // layersView1
             // 
-            this.layersTree1.CheckBoxes = true;
-            this.layersTree1.ContextMenuStrip = this.layersContextMenu;
-            this.layersTree1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layersTree1.Layers = null;
-            this.layersTree1.Location = new System.Drawing.Point(3, 3);
-            this.layersTree1.Name = "layersTree1";
-            this.layersTree1.Size = new System.Drawing.Size(323, 508);
-            this.layersTree1.TabIndex = 0;
+            this.layersView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layersView1.LayersContextMenu = null;
+            this.layersView1.Location = new System.Drawing.Point(3, 3);
+            this.layersView1.Name = "layersView1";
+            this.layersView1.Size = new System.Drawing.Size(323, 508);
+            this.layersView1.TabIndex = 0;
+            this.layersView1.Title = "";
             // 
             // tabPageDataSource
             // 
@@ -327,21 +329,20 @@ namespace MapViewer
             // 
             this.layersContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addLayerToolStripMenuItem,
-            this.clearLayersToolStripMenuItem1,
-            this.layerToolStripMenuItem});
+            this.clearLayersToolStripMenuItem1});
             this.layersContextMenu.Name = "contextMenuStrip1";
-            this.layersContextMenu.Size = new System.Drawing.Size(138, 70);
+            this.layersContextMenu.Size = new System.Drawing.Size(153, 92);
             // 
             // addLayerToolStripMenuItem
             // 
             this.addLayerToolStripMenuItem.Name = "addLayerToolStripMenuItem";
-            this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addLayerToolStripMenuItem.Text = "Add Layer";
             // 
             // clearLayersToolStripMenuItem1
             // 
             this.clearLayersToolStripMenuItem1.Name = "clearLayersToolStripMenuItem1";
-            this.clearLayersToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
+            this.clearLayersToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.clearLayersToolStripMenuItem1.Text = "Clear Layers";
             // 
             // layerToolStripMenuItem
@@ -350,7 +351,7 @@ namespace MapViewer
             this.zoomLayerExtentToolStripMenuItem,
             this.editSymbologyToolStripMenuItem});
             this.layerToolStripMenuItem.Name = "layerToolStripMenuItem";
-            this.layerToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.layerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.layerToolStripMenuItem.Text = "Layer";
             // 
             // zoomLayerExtentToolStripMenuItem
@@ -532,6 +533,12 @@ namespace MapViewer
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // layerContextMenu
+            // 
+            this.layerContextMenu.Items.Add(this.layerToolStripMenuItem);
+            this.layerContextMenu.Name = "layerContextMenu";
+            this.layerContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
             // MapViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -622,7 +629,8 @@ namespace MapViewer
         private System.Windows.Forms.ToolStripButton panButton;
         private System.Windows.Forms.ToolStripButton zoomInButton;
         private System.Windows.Forms.ToolStripButton zoomOutButton;
-        private global::MapViewer.Controls.LayersTree layersTree1;
+        private MapViewer.Views.LayersView layersView1;
+        private System.Windows.Forms.ContextMenuStrip layerContextMenu;
 
     }
 }

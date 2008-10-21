@@ -12,6 +12,7 @@
  *  Author: John Diss 2008
  * 
  */
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using SharpMap.Layers;
@@ -20,12 +21,14 @@ namespace MapViewer.Controls
 {
     public class LayersTree : CustomTreeView
     {
+
+        private BindingList<ILayer> layers;
+
         public LayersTree()
         {
             CheckBoxes = true;
-        }
 
-        private BindingList<ILayer> layers;
+        }
 
         public BindingList<ILayer> Layers
         {
@@ -39,13 +42,19 @@ namespace MapViewer.Controls
             }
         }
 
+
+
         private void WireLayers(BindingList<ILayer> newLayers)
         {
             if (newLayers != null)
             {
                 newLayers.ListChanged += layers_ListChanged;
                 foreach (ILayer lyr in newLayers)
-                    Nodes.Add(NodeFactory.CreateLayerNode(lyr));
+                {
+                    TreeNode n = NodeFactory.CreateLayerNode(lyr);
+                    n.Checked = lyr.Enabled;
+                    Nodes.Add(n);
+                }
             }
             else
             {
@@ -57,7 +66,9 @@ namespace MapViewer.Controls
         {
             if (e.ListChangedType == ListChangedType.ItemAdded)
             {
-                Nodes.Insert(e.NewIndex, NodeFactory.CreateLayerNode(layers[e.NewIndex]));
+                TreeNode n = NodeFactory.CreateLayerNode(layers[e.NewIndex]);
+                n.Checked = layers[e.NewIndex].Enabled;
+                Nodes.Insert(e.NewIndex, n);
                 return;
             }
 
@@ -75,6 +86,7 @@ namespace MapViewer.Controls
         {
             if (layers != null)
                 layers.ListChanged -= layers_ListChanged;
+            Nodes.Clear();
         }
 
 

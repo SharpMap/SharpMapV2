@@ -13,35 +13,260 @@
  * 
  */
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Data;
+//using System.Data.SQLite;
+using System.Text;
 using SharpMap.Data;
+using SharpMap.Data.Providers;
+using SharpMap.Data.Providers.Db.Expressions;
+using SharpMap.Data.Providers.SpatiaLite2;
+using SharpMap.Expressions;
+using SharpMap.Utilities;
+using GeoAPI.Geometries;
 
 namespace MapViewer.DataSource
 {
     public partial class SpatialLite : UserControl, ICreateDataProvider
     {
+        private DataSet datasetTableAndColumns;
+        private int oidcolumn = -1;
+
         public SpatialLite()
         {
             InitializeComponent();
+            cbTables.MouseDown += cbTables_MouseDown;
         }
 
         #region ICreateDataProvider Members
 
         public IFeatureProvider GetProvider()
         {
-            throw new NotImplementedException();
+            if (EnsureTables())
+            {
+                string conn = ServerConnectionString;
+
+                DataRowView drv = (DataRowView)cbTables.SelectedItem;
+                string schema = (string)drv["Schema"];
+                string tableName = (string)drv["TableName"];;
+                string geomColumn = (string)drv["GeometryColumn"];
+                int coordDimension = (int)(long) drv["Dimension"];
+                string srid = ((long)drv["SRID"]).ToString();
+                string spatialReference = drv["SpatialReference"] == DBNull.Value 
+                    ?
+                    "" 
+                    :
+                    (string)drv["SpatialReference"];
+
+                GeometryServices gs = new GeometryServices();
+                IGeometryFactory gf = gs[srid ];//, coordDimension];
+                if (!string.IsNullOrEmpty(spatialReference))
+                    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
+
+                string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells[2].Value;
+
+                List<String> columns = new List<string>();
+                List<OrderByExpression> orderby = new List<OrderByExpression>();
+                foreach (DataGridViewRow dgvr in dgvColumns.Rows)
+                {
+                    if ((bool)dgvr.Cells["Include"].Value) columns.Add((String)dgvr.Cells[2].Value);
+                    if (dgvr.Cells["SortOrder"].Value != null)
+                        orderby.Add(new OrderByExpression((String)dgvr.Cells[1].Value, (System.Data.SqlClient.SortOrder)dgvr.Cells["SortOrder"].Value));
+                }
+
+                if (!columns.Contains(oidColumnName))
+                    columns.Insert(0, oidColumnName);
+                columns.Insert(1, geomColumn);
+
+                ProviderPropertiesExpression ppe = null;
+                if (orderby.Count > 0)
+                {
+                    ppe = new ProviderPropertiesExpression(
+                        new ProviderPropertyExpression[] { 
+                            new OrderByCollectionExpression(orderby)}
+                            );
+                    //,new AttributesProjectionExpression(columns)});
+                }
+
+                AttributesProjectionExpression ape = new AttributesProjectionExpression(columns);
+
+                IFeatureProvider prov =
+                    new SpatiaLite2_Provider(gf, conn, schema, tableName, oidColumnName, geomColumn); 
+
+                //jd commented temporarily to get a build
+                //((ISpatialDbProvider)prov).DefinitionQuery =
+                //    new ProviderQueryExpression(ppe, ape, null);
+
+                return prov;
+            }
+            return null;
         }
-
-        #endregion
-
-        #region ICreateDataProvider Members
-
 
         public string ProviderName
         {
-            get { throw new NotImplementedException(); }
+            get { return (string)((DataRowView)cbTables.SelectedItem)["Label"]; }
         }
 
         #endregion
+
+        private string ServerConnectionString
+        {
+            get 
+            { 
+                
+                string scs = string.Format("Data Source={0};", tbPath.Text);
+                if (!string.IsNullOrEmpty(tbPassword.Text))
+                    scs += string.Format("Password={0};", tbPassword.Text);
+                return scs;
+            }
+        }
+
+        private bool EnsureConnection()
+        {
+            bool ok = true;
+            var message = new StringBuilder();
+            if (string.IsNullOrEmpty(tbPath.Text))
+            {
+                message.AppendLine("Please specifiy path to SpatiaLite database file");
+                ok = false;
+            }
+
+            if (!ok)
+            {
+                MessageBox.Show(message.ToString(), "Errors", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return ok;
+            }
+
+            try
+            {
+                ok = SpatiaLite2_Provider.IsSpatiallyEnabled(ServerConnectionString);
+            }
+            catch(SpatiaLite2_Exception ex)
+            {
+                ok = false;
+                message.AppendFormat("Error connection to server {0}", ex.Message);
+            }
+
+            if (!ok)
+                MessageBox.Show(message.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return ok;
+        }
+
+        private bool EnsureTables()
+        {
+            if (cbTables.Items.Count == 0)
+            {
+                return GetTables();
+            }
+            return true;
+        }
+
+        private bool GetTables()
+        {
+
+            if (!EnsureConnection())
+                return false;
+
+            datasetTableAndColumns = 
+                SpatiaLite2_Provider.GetSpatiallyEnabledTables(ServerConnectionString);
+
+            if (datasetTableAndColumns == null) return false;
+
+            cbTables.Enabled = true;
+            cbTables.DataSource = datasetTableAndColumns.Tables[0];
+            cbTables.DisplayMember = "Label";
+            cbTables.ValueMember = "TableName";
+
+            return true;
+        }
+
+        private void bBrowse_Click(object sender, EventArgs e)
+        {
+            if (ofd.ShowDialog() == DialogResult.OK)
+                tbPath.Text = ofd.FileName;
+        }
+
+        private void cbTables_MouseDown(object sender, EventArgs e)
+        {
+        }
+
+        private void cbTables_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbTables.SelectedIndex < 0)
+            {
+                dgvColumns.DataSource = null;
+                return;
+            }
+
+            DataView dv = new DataView(
+                datasetTableAndColumns.Tables[1],
+                string.Format("TableName='{0}'", cbTables.SelectedValue.GetType() == typeof(String)
+                    ?
+                    cbTables.SelectedValue
+                    :
+                    datasetTableAndColumns.Tables[0].Rows[0][0]),
+                    "",
+                    DataViewRowState.CurrentRows);
+            dv.AllowDelete = false;
+            dv.AllowNew = false;
+
+            dgvColumns.DataSource = dv;
+            if (dgvColumns.Columns.Count < 6)
+            {
+                var dgvc = new DataGridViewComboBoxColumn();
+                dgvc.Name = "SortOrder";
+
+                dgvc.DataSource = Enum.GetNames(typeof(System.Data.SqlClient.SortOrder));//new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
+                dgvColumns.Columns.Add(dgvc);
+
+                dgvColumns.Columns[0].Visible = false;
+                dgvColumns.Columns[1].ReadOnly = true;
+                dgvColumns.Columns[2].ReadOnly = true;
+                dgvColumns.Columns[3].ReadOnly = false;
+                dgvColumns.Columns[4].Visible = false;
+                dgvColumns.Columns[5].ReadOnly = false;
+            }
+
+            setOidColumn(-1);
+            foreach (DataGridViewRow dgvr in dgvColumns.Rows)
+                if ((bool)dgvr.Cells[4].Value)
+                {
+                    setOidColumn(dgvr.Index);
+                    break;
+                }
+
+            dgvColumns.Enabled = true;
+
+            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView)cbTables.SelectedItem)["SRID"]);
+        }
+
+        private void setOidColumn(int rowindex)
+        {
+
+            if (oidcolumn == rowindex) return;
+            var fnt = dgvColumns.DefaultCellStyle.Font;
+
+            if (oidcolumn >= 0)
+            {
+                dgvColumns.Rows[oidcolumn].Cells[2].Style.Font =
+                new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold);
+
+                dgvColumns.Rows[oidcolumn].Cells[5].Value = false;
+            }
+
+            if (rowindex >= 0)
+            {
+                dgvColumns.Rows[rowindex].Cells[2].Style.Font =
+                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular); ;
+                dgvColumns.Rows[rowindex].Cells[5].Value = true;
+            }
+            oidcolumn = rowindex;
+        }
+
+        private void cbTables_MouseDown(object sender, MouseEventArgs e)
+        {
+            GetTables();
+        }
     }
 }
