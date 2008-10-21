@@ -1,0 +1,313 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMap.Presentation.Web.SharpLayers</RootNamespace>
+    <AssemblyName>SharpMap.Presentation.Web.SharpLayers</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\AjaxControlToolkit</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions.Design">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\AjaxControlToolkit.DLL" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OpenLayers\OpenLayers.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BuilderParamsBase.cs" />
+    <Compile Include="BuilderParamsJavascriptConverter.cs" />
+    <Compile Include="CollectionBase.cs" />
+    <Compile Include="ComponentBase.cs" />
+    <Compile Include="Controls\DrawFeature\DrawFeatureToolBuilderParams.cs" />
+    <Compile Include="Controls\DrawFeature\DrawFeatureTool.cs" />
+    <Compile Include="Controls\Edit\EditingToolsBuilderParams.cs" />
+    <Compile Include="Controls\Edit\EditingTools.cs" />
+    <Compile Include="Controls\IToolComponent.cs" />
+    <Compile Include="Controls\IToolBuilderParams.cs" />
+    <Compile Include="Controls\LayerSwitcher\LayerSwitcherTool.cs" />
+    <Compile Include="Controls\LayerSwitcher\LayerSwitcherToolBuilderParams.cs" />
+    <Compile Include="Controls\SelectFeature\SelectFeatureTool.cs" />
+    <Compile Include="Controls\SelectFeature\SelectFeatureToolBuilderParams.cs" />
+    <Compile Include="Controls\ToolBaseComponent.cs" />
+    <Compile Include="Controls\ToolBuilderParamsBase.cs" />
+    <Compile Include="HostBaseExtender.cs" />
+    <Compile Include="IHaveBuilderParams.cs" />
+    <Compile Include="IBuilderParams.cs" />
+    <Compile Include="IClientClass.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="IUICollectionItem.cs" />
+    <Compile Include="Layers\IFixedResolutionLayerOptions.cs" />
+    <Compile Include="Layers\IGridBasedLayerBuilderParams.cs" />
+    <Compile Include="Layers\ILayerComponent.cs" />
+    <Compile Include="Layers\ILayerBuilderParams.cs" />
+    <Compile Include="Layers\LayerBuilderParamsBase.cs" />
+    <Compile Include="Layers\LayerComponent.cs" />
+    <Compile Include="Layers\Tms\TmsLayerBuilderParams.cs" />
+    <Compile Include="Layers\Tms\TmsLayerComponent.cs" />
+    <Compile Include="Layers\TransitionEffects.cs" />
+    <Compile Include="Layers\Vector\VectorGeometryType.cs" />
+    <Compile Include="Layers\Vector\VectorLayerBuilderParams.cs" />
+    <Compile Include="Layers\Vector\VectorLayerComponent.cs" />
+    <Compile Include="Layers\Wms\WmsLayerBuilderParams.cs" />
+    <Compile Include="Layers\Wms\WmsLayerComponent.cs" />
+    <Compile Include="Layers\Wms\WmsLayer.cs" />
+    <Compile Include="Layers\Wms\WmsParameters.cs" />
+    <Compile Include="MapHostDesigner.cs" />
+    <Compile Include="MapHostExtender.cs" />
+    <Compile Include="MapHostBuilderParams.cs" />
+    <Compile Include="Bounds.cs" />
+    <Compile Include="Icon.cs" />
+    <Compile Include="MapUnits.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolution.cs" />
+    <Compile Include="ResourceUri.cs" />
+    <Compile Include="SharpLayersSerializationAttribute.cs" />
+    <Compile Include="LonLat.cs" />
+    <Compile Include="Pixel.cs" />
+    <Compile Include="SharpLayersSerializationFlags.cs" />
+    <Compile Include="Size.cs" />
+    <Compile Include="OpenLayersDesigner.cs" />
+    <Compile Include="OpenLayersExtender.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HostBaseBehavior.js" />
+    <EmbeddedResource Include="MapHostBehavior.js" />
+    <EmbeddedResource Include="OpenLayersBehavior.js" />
+    <EmbeddedResource Include="ComponentBase.js" />
+    <EmbeddedResource Include="Layers\Tms\TmsLayerComponent.js" />
+    <EmbeddedResource Include="Layers\LayerComponent.js" />
+    <EmbeddedResource Include="Layers\Wms\WmsLayerComponent.js" />
+    <EmbeddedResource Include="Layers\Vector\VectorLayerComponent.js" />
+    <EmbeddedResource Include="Controls\ToolBaseComponent.js" />
+    <EmbeddedResource Include="Controls\DrawFeature\DrawFeatureTool.js" />
+    <EmbeddedResource Include="Controls\Edit\EditingTools.js" />
+    <EmbeddedResource Include="Controls\LayerSwitcher\LayerSwitcherTool.js" />
+    <EmbeddedResource Include="Controls\SelectFeature\SelectFeatureTool.js" />
+    <Content Include="OpenLayers\Reference\Ajax.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes\Bounds.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes\Class.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes\Element.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes\LonLat.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes\Pixel.js" />
+    <Content Include="OpenLayers\Reference\BaseTypes\Size.js" />
+    <Content Include="OpenLayers\Reference\Console.js" />
+    <Content Include="OpenLayers\Reference\Control.js" />
+    <Content Include="OpenLayers\Reference\Control\ArgParser.js" />
+    <Content Include="OpenLayers\Reference\Control\Attribution.js" />
+    <Content Include="OpenLayers\Reference\Control\Button.js" />
+    <Content Include="OpenLayers\Reference\Control\DragFeature.js" />
+    <Content Include="OpenLayers\Reference\Control\DragPan.js" />
+    <Content Include="OpenLayers\Reference\Control\DrawFeature.js" />
+    <Content Include="OpenLayers\Reference\Control\EditingToolbar.js" />
+    <Content Include="OpenLayers\Reference\Control\KeyboardDefaults.js" />
+    <Content Include="OpenLayers\Reference\Control\LayerSwitcher.js" />
+    <Content Include="OpenLayers\Reference\Control\Measure.js" />
+    <Content Include="OpenLayers\Reference\Control\ModifyFeature.js" />
+    <Content Include="OpenLayers\Reference\Control\MouseDefaults.js" />
+    <Content Include="OpenLayers\Reference\Control\MousePosition.js" />
+    <Content Include="OpenLayers\Reference\Control\MouseToolbar.js" />
+    <Content Include="OpenLayers\Reference\Control\Navigation.js" />
+    <Content Include="OpenLayers\Reference\Control\NavigationHistory.js" />
+    <Content Include="OpenLayers\Reference\Control\NavToolbar.js" />
+    <Content Include="OpenLayers\Reference\Control\OverviewMap.js" />
+    <Content Include="OpenLayers\Reference\Control\Pan.js" />
+    <Content Include="OpenLayers\Reference\Control\Panel.js" />
+    <Content Include="OpenLayers\Reference\Control\PanPanel.js" />
+    <Content Include="OpenLayers\Reference\Control\PanZoom.js" />
+    <Content Include="OpenLayers\Reference\Control\PanZoomBar.js" />
+    <Content Include="OpenLayers\Reference\Control\Permalink.js" />
+    <Content Include="OpenLayers\Reference\Control\Scale.js" />
+    <Content Include="OpenLayers\Reference\Control\ScaleLine.js" />
+    <Content Include="OpenLayers\Reference\Control\SelectFeature.js" />
+    <Content Include="OpenLayers\Reference\Control\ZoomBox.js" />
+    <Content Include="OpenLayers\Reference\Control\ZoomIn.js" />
+    <Content Include="OpenLayers\Reference\Control\ZoomOut.js" />
+    <Content Include="OpenLayers\Reference\Control\ZoomPanel.js" />
+    <Content Include="OpenLayers\Reference\Control\ZoomToMaxExtent.js" />
+    <Content Include="OpenLayers\Reference\Events.js" />
+    <Content Include="OpenLayers\Reference\Feature.js" />
+    <Content Include="OpenLayers\Reference\Feature\Vector.js" />
+    <Content Include="OpenLayers\Reference\Feature\WFS.js" />
+    <Content Include="OpenLayers\Reference\Filter.js" />
+    <Content Include="OpenLayers\Reference\Filter\Comparison.js" />
+    <Content Include="OpenLayers\Reference\Filter\FeatureId.js" />
+    <Content Include="OpenLayers\Reference\Filter\Logical.js" />
+    <Content Include="OpenLayers\Reference\Filter\Spatial.js" />
+    <Content Include="OpenLayers\Reference\Format.js" />
+    <Content Include="OpenLayers\Reference\Format\Filter.js" />
+    <Content Include="OpenLayers\Reference\Format\Filter\v1.js" />
+    <Content Include="OpenLayers\Reference\Format\Filter\v1_0_0.js" />
+    <Content Include="OpenLayers\Reference\Format\GeoJSON.js" />
+    <Content Include="OpenLayers\Reference\Format\GeoRSS.js" />
+    <Content Include="OpenLayers\Reference\Format\GML.js" />
+    <Content Include="OpenLayers\Reference\Format\GML\Base.js" />
+    <Content Include="OpenLayers\Reference\Format\GML\v2.js" />
+    <Content Include="OpenLayers\Reference\Format\GML\v3.js" />
+    <Content Include="OpenLayers\Reference\Format\GPX.js" />
+    <Content Include="OpenLayers\Reference\Format\JSON.js" />
+    <Content Include="OpenLayers\Reference\Format\KML.js" />
+    <Content Include="OpenLayers\Reference\Format\OSM.js" />
+    <Content Include="OpenLayers\Reference\Format\SLD.js" />
+    <Content Include="OpenLayers\Reference\Format\SLD\v1.js" />
+    <Content Include="OpenLayers\Reference\Format\SLD\v1_0_0.js" />
+    <Content Include="OpenLayers\Reference\Format\Text.js" />
+    <Content Include="OpenLayers\Reference\Format\WFS.js" />
+    <Content Include="OpenLayers\Reference\Format\WKT.js" />
+    <Content Include="OpenLayers\Reference\Format\WMC.js" />
+    <Content Include="OpenLayers\Reference\Format\WMC\v1.js" />
+    <Content Include="OpenLayers\Reference\Format\WMC\v1_0_0.js" />
+    <Content Include="OpenLayers\Reference\Format\WMC\v1_1_0.js" />
+    <Content Include="OpenLayers\Reference\Format\XML.js" />
+    <Content Include="OpenLayers\Reference\Geometry.js" />
+    <Content Include="OpenLayers\Reference\Geometry\Collection.js" />
+    <Content Include="OpenLayers\Reference\Geometry\Curve.js" />
+    <Content Include="OpenLayers\Reference\Geometry\LinearRing.js" />
+    <Content Include="OpenLayers\Reference\Geometry\LineString.js" />
+    <Content Include="OpenLayers\Reference\Geometry\MultiLineString.js" />
+    <Content Include="OpenLayers\Reference\Geometry\MultiPoint.js" />
+    <Content Include="OpenLayers\Reference\Geometry\MultiPolygon.js" />
+    <Content Include="OpenLayers\Reference\Geometry\Point.js" />
+    <Content Include="OpenLayers\Reference\Geometry\Polygon.js" />
+    <Content Include="OpenLayers\Reference\Geometry\Rectangle.js" />
+    <Content Include="OpenLayers\Reference\Geometry\Surface.js" />
+    <Content Include="OpenLayers\Reference\Handler.js" />
+    <Content Include="OpenLayers\Reference\Handler\Box.js" />
+    <Content Include="OpenLayers\Reference\Handler\Click.js" />
+    <Content Include="OpenLayers\Reference\Handler\Drag.js" />
+    <Content Include="OpenLayers\Reference\Handler\Feature.js" />
+    <Content Include="OpenLayers\Reference\Handler\Hover.js" />
+    <Content Include="OpenLayers\Reference\Handler\Keyboard.js" />
+    <Content Include="OpenLayers\Reference\Handler\MouseWheel.js" />
+    <Content Include="OpenLayers\Reference\Handler\Path.js" />
+    <Content Include="OpenLayers\Reference\Handler\Point.js" />
+    <Content Include="OpenLayers\Reference\Handler\Polygon.js" />
+    <Content Include="OpenLayers\Reference\Handler\RegularPolygon.js" />
+    <Content Include="OpenLayers\Reference\Icon.js" />
+    <Content Include="OpenLayers\Reference\Lang.js" />
+    <Content Include="OpenLayers\Reference\Lang\cs-CZ.js" />
+    <Content Include="OpenLayers\Reference\Lang\de.js" />
+    <Content Include="OpenLayers\Reference\Lang\en-CA.js" />
+    <Content Include="OpenLayers\Reference\Lang\en.js" />
+    <Content Include="OpenLayers\Reference\Lang\fr.js" />
+    <Content Include="OpenLayers\Reference\Lang\it.js" />
+    <Content Include="OpenLayers\Reference\Lang\nb.js" />
+    <Content Include="OpenLayers\Reference\Lang\nl.js" />
+    <Content Include="OpenLayers\Reference\Lang\pt-BR.js" />
+    <Content Include="OpenLayers\Reference\Lang\sv-SE.js" />
+    <Content Include="OpenLayers\Reference\Lang\zh-CN.js" />
+    <Content Include="OpenLayers\Reference\Lang\zh-TW.js" />
+    <Content Include="OpenLayers\Reference\Layer.js" />
+    <Content Include="OpenLayers\Reference\Layer\Boxes.js" />
+    <Content Include="OpenLayers\Reference\Layer\EventPane.js" />
+    <Content Include="OpenLayers\Reference\Layer\FixedZoomLevels.js" />
+    <Content Include="OpenLayers\Reference\Layer\GeoRSS.js" />
+    <Content Include="OpenLayers\Reference\Layer\GML.js" />
+    <Content Include="OpenLayers\Reference\Layer\Google.js" />
+    <Content Include="OpenLayers\Reference\Layer\Grid.js" />
+    <Content Include="OpenLayers\Reference\Layer\HTTPRequest.js" />
+    <Content Include="OpenLayers\Reference\Layer\Image.js" />
+    <Content Include="OpenLayers\Reference\Layer\KaMap.js" />
+    <Content Include="OpenLayers\Reference\Layer\KaMapCache.js" />
+    <Content Include="OpenLayers\Reference\Layer\MapGuide.js" />
+    <Content Include="OpenLayers\Reference\Layer\MapServer.js" />
+    <Content Include="OpenLayers\Reference\Layer\MapServer\Untiled.js" />
+    <Content Include="OpenLayers\Reference\Layer\Markers.js" />
+    <Content Include="OpenLayers\Reference\Layer\MultiMap.js" />
+    <Content Include="OpenLayers\Reference\Layer\PointTrack.js" />
+    <Content Include="OpenLayers\Reference\Layer\SphericalMercator.js" />
+    <Content Include="OpenLayers\Reference\Layer\Text.js" />
+    <Content Include="OpenLayers\Reference\Layer\TileCache.js" />
+    <Content Include="OpenLayers\Reference\Layer\TMS.js" />
+    <Content Include="OpenLayers\Reference\Layer\Vector.js" />
+    <Content Include="OpenLayers\Reference\Layer\VirtualEarth.js" />
+    <Content Include="OpenLayers\Reference\Layer\WFS.js" />
+    <Content Include="OpenLayers\Reference\Layer\WMS.js" />
+    <Content Include="OpenLayers\Reference\Layer\WMS\Untiled.js" />
+    <Content Include="OpenLayers\Reference\Layer\WorldWind.js" />
+    <Content Include="OpenLayers\Reference\Layer\Yahoo.js" />
+    <Content Include="OpenLayers\Reference\Map.js" />
+    <Content Include="OpenLayers\Reference\Marker.js" />
+    <Content Include="OpenLayers\Reference\Marker\Box.js" />
+    <Content Include="OpenLayers\Reference\Popup.js" />
+    <Content Include="OpenLayers\Reference\Popup\Anchored.js" />
+    <Content Include="OpenLayers\Reference\Popup\AnchoredBubble.js" />
+    <Content Include="OpenLayers\Reference\Popup\Framed.js" />
+    <Content Include="OpenLayers\Reference\Popup\FramedCloud.js" />
+    <Content Include="OpenLayers\Reference\Projection.js" />
+    <Content Include="OpenLayers\Reference\Protocol.js" />
+    <Content Include="OpenLayers\Reference\Protocol\HTTP.js" />
+    <Content Include="OpenLayers\Reference\Protocol\SQL.js" />
+    <Content Include="OpenLayers\Reference\Protocol\SQL\Gears.js" />
+    <Content Include="OpenLayers\Reference\Renderer.js" />
+    <Content Include="OpenLayers\Reference\Renderer\Canvas.js" />
+    <Content Include="OpenLayers\Reference\Renderer\Elements.js" />
+    <Content Include="OpenLayers\Reference\Renderer\SVG.js" />
+    <Content Include="OpenLayers\Reference\Renderer\VML.js" />
+    <Content Include="OpenLayers\Reference\Request.js" />
+    <Content Include="OpenLayers\Reference\Request\XMLHttpRequest.js" />
+    <Content Include="OpenLayers\Reference\Rule.js" />
+    <Content Include="OpenLayers\Reference\SingleFile.js" />
+    <Content Include="OpenLayers\Reference\Strategy.js" />
+    <Content Include="OpenLayers\Reference\Strategy\BBOX.js" />
+    <Content Include="OpenLayers\Reference\Strategy\Cluster.js" />
+    <Content Include="OpenLayers\Reference\Strategy\Fixed.js" />
+    <Content Include="OpenLayers\Reference\Strategy\Paging.js" />
+    <Content Include="OpenLayers\Reference\Style.js" />
+    <Content Include="OpenLayers\Reference\StyleMap.js" />
+    <Content Include="OpenLayers\Reference\Tile.js" />
+    <Content Include="OpenLayers\Reference\Tile\Image.js" />
+    <Content Include="OpenLayers\Reference\Tile\WFS.js" />
+    <Content Include="OpenLayers\Reference\Tween.js" />
+    <Content Include="OpenLayers\Reference\Util.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

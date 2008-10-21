@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLayers", "SharpLayers\OpenLayers.csproj", "{55D8CA16-5284-45F3-8B6D-55DE4901D133}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers", "TestSharpLayers\TestSharpLayers.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.Web.SharpLayers", "SharpMap.Presentation.Web.SharpLayers\SharpMap.Presentation.Web.SharpLayers.csproj", "{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,14 +11,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{55D8CA16-5284-45F3-8B6D-55DE4901D133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55D8CA16-5284-45F3-8B6D-55DE4901D133}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55D8CA16-5284-45F3-8B6D-55DE4901D133}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55D8CA16-5284-45F3-8B6D-55DE4901D133}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
