@@ -161,7 +161,7 @@ namespace SharpMap.Data.Providers
         /// <value>true</value> if it is,
         /// <value>false</value> if it isn't.
         /// </returns>
-        static Boolean IsSpatiallyEnabled(String connectionString)
+        static public Boolean IsSpatiallyEnabled(String connectionString)
         {
             Boolean result = false;
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
@@ -184,6 +184,110 @@ namespace SharpMap.Data.Providers
             return result;
         }
 
+        public static DataSet GetSpatiallyEnabledTables( String connectionString )
+        {
+            DataSet ds = null;
+
+            using (SQLiteConnection cn = new SQLiteConnection(connectionString))
+            {
+                cn.Open();
+                createSQLiteInformationSchema(cn);
+
+                SQLiteCommand cm = cn.CreateCommand();
+                cm.CommandText = @"
+SELECT	'main' AS [Schema],
+        x.f_table_name AS [TableName], 
+        x.f_geometry_column AS [GeometryColumn], 
+        x.coord_dimension AS [Dimension], 
+	    x.f_table_name || '.' || x.f_geometry_column || ' (' || x.type || ')' AS [Label],
+        x.srid AS [SRID],
+        y.srtext as [SpatialReference]
+FROM [main].[geometry_columns] AS x LEFT JOIN [main].[spatial_ref_sys] as y on x.srid=y.srid;
+TYPES [varchar], [varchar], [varchar], [bool];
+SELECT  x.table_name as [TableName],
+        x.column_name as [ColumnName],
+        x.data_type as [DataType],
+        -1 AS [Include],
+        CASE
+            WHEN (x.PK = 1) THEN -1
+            ELSE 0
+        END AS [PK]
+FROM    information_schema_columns AS x 
+	        LEFT JOIN (SELECT z.f_table_name FROM geometry_columns AS z) AS cte ON cte.f_table_name=x.table_name
+	        LEFT JOIN geometry_columns AS y ON y.f_table_name=x.table_name
+WHERE cte.f_table_name=x.table_name AND ( RTRIM(x.column_name) <> RTRIM(y.f_geometry_column))
+ORDER BY [TableName], x.ordinal_position;";
+
+                SQLiteDataAdapter da = new SQLiteDataAdapter(cm);
+                ds = new DataSet();
+                da.Fill(ds);
+                Debug.Assert(ds.Tables.Count == 2);
+            }
+            return ds;
+        }
+
+        private static void createSQLiteInformationSchema(SQLiteConnection connection)
+        {
+            new SQLiteCommand(
+@"CREATE TEMP TABLE information_schema_columns (
+    table_name text, 
+    ordinal_position integer,
+    column_name text,
+    data_type text,
+    pk integer);", connection).ExecuteNonQuery();
+
+            SQLiteCommand insert = new SQLiteCommand(
+                "INSERT INTO information_schema_columns (table_name, ordinal_position, column_name, data_type, pk) VALUES(@P1, @P4, @P2, @P3, @P5);",
+                connection);
+            
+            insert.Parameters.Add(new SQLiteParameter("@P1", DbType.String));
+            insert.Parameters.Add(new SQLiteParameter("@P2", DbType.String));
+            insert.Parameters.Add(new SQLiteParameter("@P3", DbType.String));
+            insert.Parameters.Add(new SQLiteParameter("@P4", DbType.Int64));
+            insert.Parameters.Add(new SQLiteParameter("@P5", DbType.Int64));
+
+            
+            //Pragma
+            using (SQLiteConnection cn_pragma = (SQLiteConnection)connection.Clone())
+            {
+                SQLiteCommand pragma = new SQLiteCommand("PRAGMA table_info('@P1');", cn_pragma);
+                //pragma.CommandType = CommandType.StoredProcedure;
+                pragma.Parameters.Add("P1", DbType.String);
+
+                //itereate throuhg sqlite_master
+                using (SQLiteConnection cn_master = (SQLiteConnection)connection.Clone())
+                {
+                    //cn_master.Open();
+                    string select = @"
+SELECT tbl_name 
+FROM sqlite_master 
+WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' ) AND NOT( name like 'index_%' ) AND NOT (name in ('spatial_ref_sys', 'geometry_columns'));";
+                    SQLiteDataReader dr = new SQLiteCommand(
+                        select, cn_master
+                        ).ExecuteReader(CommandBehavior.CloseConnection);
+
+                    while (dr.Read())
+                    {
+                        //Get Column Info and ...
+                        String tableName = dr.GetString(0).Trim();
+                        pragma = new SQLiteCommand(string.Format("PRAGMA table_info('{0}');", tableName), cn_pragma); //.Parameters[0].Value = dr.GetString(0);
+                        using (SQLiteDataReader drts = pragma.ExecuteReader())
+                        {
+                            while (drts.Read())
+                            {
+                                //... insert it into temp table
+                                insert.Parameters[0].Value = tableName; ;
+                                insert.Parameters[1].Value = drts.GetString(1);
+                                insert.Parameters[2].Value = drts.GetString(2);
+                                insert.Parameters[3].Value = drts.GetInt64(0);
+                                insert.Parameters[4].Value = drts.GetInt64(5);
+                                insert.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public SpatiaLite2_Provider(IGeometryFactory geometryFactory, string connectionString, string tableName)
             : this(geometryFactory, connectionString, "main", tableName, DefaultOidColumnName, DefaultGeometryColumnName)
@@ -449,17 +553,26 @@ namespace SharpMap.Data.Providers
 
             new SQLiteCommand("SELECT InitSpatialMetaData();", conn).ExecuteNonQuery();
 
+            new SQLiteCommand("ALTER TABLE ADD COLUMN srtext text;", conn).ExecuteNonQuery();
+
             SQLiteCommand cmd = new SQLiteCommand(
-              "INSERT OR REPLACE INTO spatial_ref_sys (srid, auth_name, auth_srid, ref_sys_name, proj4text) VALUES (@P1, 'EPSG', @P1, @P2, @P3);", conn);
+              "INSERT OR REPLACE INTO spatial_ref_sys (srid, auth_name, auth_srid, ref_sys_name, proj4text, srtext) VALUES (@P1, @P2, @P3, @P4, @P5, @P6);", conn);
             cmd.Parameters.Add(new SQLiteParameter("@P1", DbType.Int64));
             cmd.Parameters.Add(new SQLiteParameter("@P2", DbType.String));
-            cmd.Parameters.Add(new SQLiteParameter("@P3", DbType.String));
+            cmd.Parameters.Add(new SQLiteParameter("@P3", DbType.Int64));
+            cmd.Parameters.Add(new SQLiteParameter("@P4", DbType.String));
+            cmd.Parameters.Add(new SQLiteParameter("@P5", DbType.String));
+            cmd.Parameters.Add(new SQLiteParameter("@P6", DbType.String));
 
+            SQLiteParameterCollection pars = cmd.Parameters;
             foreach (Proj4Reader.Proj4SpatialRefSys p4srs in Proj4Reader.GetSRIDs())
             {
-                cmd.Parameters[0].Value = p4srs.Srid;
-                cmd.Parameters[1].Value = p4srs.RefSysName;
-                cmd.Parameters[2].Value = p4srs.Proj4Text;
+                pars[0].Value = p4srs.Srid;
+                pars[1].Value = p4srs.AuthorityName;
+                pars[2].Value = p4srs.AuthoritySrid;
+                pars[3].Value = p4srs.RefSysName;
+                pars[4].Value = p4srs.Proj4Text;
+                pars[5].Value = p4srs.SrText;
 
                 cmd.ExecuteNonQuery();
             }
@@ -747,12 +860,6 @@ namespace SharpMap.Data.Providers
                 compiler.CreateParameter(endRecord).ParameterName);
 
             return sql;
-        }
-
-        public override IEnumerable<String> SelectAllColumnNames()
-        {
-            foreach (DataColumn dc in GetSchemaTable().Columns)
-                yield return dc.ColumnName;
         }
 
         #region ISpatialDbProvider<SpatiaLite2_Utility> Members

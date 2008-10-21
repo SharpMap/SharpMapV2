@@ -53,14 +53,16 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             internal readonly Int64 AuthoritySrid;
             internal readonly String RefSysName;
             internal readonly String Proj4Text;
+            internal readonly String SrText;
 
-            public Proj4SpatialRefSys(Int64 srid, String authorityName, Int64 authoritySrid, String refSysName, String proj4Text)
+            public Proj4SpatialRefSys(Int64 srid, String authorityName, Int64 authoritySrid, String refSysName, String proj4Text, String srText)
             {
                 Srid = srid;
                 AuthorityName = authorityName;
                 AuthoritySrid = authoritySrid;
                 RefSysName = refSysName;
                 Proj4Text = proj4Text;
+                SrText = srText;
             }
         }
 
@@ -87,8 +89,14 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     String name = ReadDoubleQuotedWord(tokenizer);
                     tokenizer.Read();
                     String proj4 = ReadDoubleQuotedWord(tokenizer);
+                    String srText = "";
+                    if (tokenizer.NextTokenType != TokenType.Eol)
+                    {
+                        tokenizer.Read();
+                        srText = ReadDoubleQuotedWord(tokenizer);
+                    }
 
-                    yield return new Proj4SpatialRefSys(srid, auth, asrid, name, proj4);
+                    yield return new Proj4SpatialRefSys(srid, auth, asrid, name, proj4, srText);
 
                 }
             }

@@ -525,12 +525,6 @@ LIMIT {5};",
             }
         }
 
-        public override IEnumerable<string> SelectAllColumnNames()
-        {
-            foreach (DataColumn dc in GetSchemaTable().Columns)
-                yield return dc.ColumnName;
-        }
-
         public override string QualifyColumnName(string column)
         {
             if (String.IsNullOrEmpty(column))
