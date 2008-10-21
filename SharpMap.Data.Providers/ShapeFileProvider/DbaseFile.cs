@@ -350,7 +350,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 foreach (DbaseField field in Header.Columns)
                 {
-                    dr.AddColumnValue(field.Ordinal, field.ColumnName, _reader.GetValue(oid, field));
+                    dr.AddColumnValue(field.Ordinal + 1, field.ColumnName, _reader.GetValue(oid, field));
                 }
 
                 return dr;
