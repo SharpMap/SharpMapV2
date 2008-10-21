@@ -125,6 +125,9 @@ namespace SharpMap.Presentation.Presenters
             View.ZoomToViewBoundsRequested += handleViewZoomToViewBoundsRequested;
             View.ZoomToWorldBoundsRequested += handleViewZoomToWorldBoundsRequested;
             View.ZoomToWorldWidthRequested += handleViewZoomToWorldWidthRequested;
+            IFeatureRenderer featureRenderer = GetRenderer<IFeatureRenderer, GeometryLayer>();
+            featureRenderer.Theme = map.Theme;
+            
             _selection.SelectionChanged += handleSelectionChanged;
 
             initializeViewMatrixes();

@@ -30,6 +30,7 @@ using NPack;
 using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Layers;
+using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 using SharpMap.Tools;
 
@@ -110,6 +111,7 @@ namespace SharpMap
         private ICoordinateSystem _spatialReference;
         private Boolean _disposed;
         private readonly String _defaultName;
+        private ITheme _theme;
 
         #endregion
 
@@ -977,6 +979,12 @@ namespace SharpMap
         public FeatureDataSet Features
         {
             get { throw new NotImplementedException(); }
+        }
+
+        public ITheme Theme
+        {
+            get { return _theme; }
+            set { _theme = value; }
         }
 
         #endregion

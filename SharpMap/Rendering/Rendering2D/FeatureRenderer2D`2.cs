@@ -107,8 +107,8 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 if (DefaultStyle == null)
                 {
-                    throw new InvalidOperationException(
-                        "Cannot render feature without style. Both Theme and DefaultStyle are null.");
+                    throw new InvalidOperationException("Cannot render feature without style. "+
+                                                        "Both Theme and DefaultStyle are null.");
                 }
 
                 style = DefaultStyle;

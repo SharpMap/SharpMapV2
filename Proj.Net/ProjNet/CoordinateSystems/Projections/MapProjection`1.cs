@@ -238,7 +238,17 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public override ICoordinateSequence Transform(ICoordinateSequence points)
         {
-            throw new System.NotImplementedException();
+            ICoordinateSequence<TCoordinate> typedPoints = points as ICoordinateSequence<TCoordinate>;
+
+            if (points != null)
+            {
+                return Transform(typedPoints);
+            }
+
+            ICoordinateSequenceFactory factory =
+                points.CoordinateSequenceFactory;
+
+            return factory.Create(Transform(points as IEnumerable<ICoordinate>));
         }
 
         public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
