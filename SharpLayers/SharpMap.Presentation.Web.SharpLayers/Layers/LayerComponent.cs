@@ -57,7 +57,5 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
                 yield return componentDescriptor;
             }
         }
-
-
     }
 }

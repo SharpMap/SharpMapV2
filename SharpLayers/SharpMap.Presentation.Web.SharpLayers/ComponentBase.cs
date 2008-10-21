@@ -15,7 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using AjaxControlToolkit;
@@ -24,10 +23,10 @@ using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [RequiredScript(typeof(OpenLayersExtender))]
+    [RequiredScript(typeof (OpenLayersExtender))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.ComponentBase",
         "SharpMap.Presentation.Web.SharpLayers.ComponentBase.js")]
-    [TargetControlType(typeof(Control))]
+    [TargetControlType(typeof (Control))]
     public abstract class ComponentBase : ScriptControl
     {
         private readonly Dictionary<string, Control> _findControlHelperCache = new Dictionary<string, Control>();
@@ -136,9 +135,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
             var descriptor = new ScriptComponentDescriptor(ScriptComponentName);
             descriptor.ID = ClientID;
             var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] { new BuilderParamsJavascriptConverter(FindControl) });
+            serializer.RegisterConverters(new[] {new BuilderParamsJavascriptConverter(FindControl)});
             descriptor.AddScriptProperty("builderParams", serializer.Serialize(BuilderParams));
-            return new[] { descriptor };
+            return new[] {descriptor};
         }
     }
 }

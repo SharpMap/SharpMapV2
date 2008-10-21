@@ -27,10 +27,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
     [ParseChildren(true, "LayerComponents")]
     [PersistChildren(true)]
     [RequiredScript("SharpMap.Presentation.Web.SharpLayers.OpenLayers.OpenLayers.js")]
-    [Designer(typeof(MapHostDesigner))]
+    [Designer(typeof (MapHostDesigner))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.MapHostBehavior",
         "SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.js")]
-    [TargetControlType(typeof(Panel))]
+    [TargetControlType(typeof (Panel))]
     public class MapHostExtender : HostBaseExtender<MapHostBuilderParams>
     {
         private readonly CollectionBase<ILayerComponent> _layerComponents =
@@ -69,26 +69,26 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         private void _layerComponents_ItemRemoved(object sender, CollectionBase<ILayerComponent>.ItemEventArgs e)
         {
-            if (Controls.Contains((Control)e.Item))
-                Controls.Remove((Control)e.Item);
+            if (Controls.Contains((Control) e.Item))
+                Controls.Remove((Control) e.Item);
         }
 
         private void _layerComponents_ItemAdded(object sender, CollectionBase<ILayerComponent>.ItemEventArgs e)
         {
-            if (!Controls.Contains((Control)e.Item))
-                Controls.Add((Control)e.Item);
+            if (!Controls.Contains((Control) e.Item))
+                Controls.Add((Control) e.Item);
         }
 
         private void _toolComponents_ItemRemoved(object sender, CollectionBase<IToolComponent>.ItemEventArgs e)
         {
-            if (Controls.Contains((Control)e.Item))
-                Controls.Add((Control)e.Item);
+            if (Controls.Contains((Control) e.Item))
+                Controls.Add((Control) e.Item);
         }
 
         private void _toolComponents_ItemAdded(object sender, CollectionBase<IToolComponent>.ItemEventArgs e)
         {
-            if (!Controls.Contains((Control)e.Item))
-                Controls.Remove((Control)e.Item);
+            if (!Controls.Contains((Control) e.Item))
+                Controls.Remove((Control) e.Item);
         }
 
         //private readonly ToolbarCollection _toolbars;
@@ -101,7 +101,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 Controls.Add(componentBase);
 
             foreach (IToolComponent toolComponent in Tools)
-                Controls.Add((Control)toolComponent);
+                Controls.Add((Control) toolComponent);
         }
 
         protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors(Control targetControl)
@@ -113,9 +113,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
         protected override void AddParsedSubObject(object obj)
         {
             if (obj as ILayerComponent != null)
-                LayerComponents.Add((ILayerComponent)obj);
+                LayerComponents.Add((ILayerComponent) obj);
             else if (obj as IToolComponent != null)
-                Tools.Add((IToolComponent)obj);
+                Tools.Add((IToolComponent) obj);
         }
     }
 

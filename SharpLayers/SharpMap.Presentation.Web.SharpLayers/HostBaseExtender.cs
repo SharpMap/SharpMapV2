@@ -12,11 +12,8 @@
  *  Author: John Diss 2008
  * 
  */
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using AjaxControlToolkit;
@@ -25,11 +22,11 @@ using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [RequiredScript(typeof(OpenLayersExtender))]
-    [RequiredScript(typeof(ComponentBase<>))]
+    [RequiredScript(typeof (OpenLayersExtender))]
+    [RequiredScript(typeof (ComponentBase<>))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior",
         "SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.js")]
-    [TargetControlType(typeof(Control))]
+    [TargetControlType(typeof (Control))]
     public class HostBaseExtender<TBuilderParams> : ExtenderControlBase, IHaveBuilderParams<TBuilderParams>
         where TBuilderParams : IBuilderParams
     {
@@ -53,16 +50,15 @@ namespace SharpMap.Presentation.Web.SharpLayers
         protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors(Control targetControl)
         {
             var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] { new BuilderParamsJavascriptConverter(FindControl) });
+            serializer.RegisterConverters(new[] {new BuilderParamsJavascriptConverter(FindControl)});
 
-            foreach (var descriptor in base.GetScriptDescriptors(targetControl))
+            foreach (ScriptDescriptor descriptor in base.GetScriptDescriptors(targetControl))
             {
                 if (descriptor is ScriptComponentDescriptor)
-                    ((ScriptComponentDescriptor)descriptor).AddScriptProperty("builderParams", serializer.Serialize(BuilderParams));
+                    ((ScriptComponentDescriptor) descriptor).AddScriptProperty("builderParams",
+                                                                               serializer.Serialize(BuilderParams));
                 yield return descriptor;
             }
         }
-
-       
     }
 }

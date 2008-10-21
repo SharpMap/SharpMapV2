@@ -20,8 +20,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
     {
         public Uri Uri { get; set; }
 
-
-
         #region IUICollectionItem Members
 
         public object GetValue()

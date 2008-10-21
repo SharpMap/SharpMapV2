@@ -22,7 +22,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
 {
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent",
         "SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.js")]
-    [TargetControlType(typeof(Control))]
+    [TargetControlType(typeof (Control))]
     public abstract class ToolBaseComponent<TBuilderParams> : ComponentBase<TBuilderParams>,
                                                               IToolComponent<TBuilderParams>
         where TBuilderParams : IToolBuilderParams
@@ -32,18 +32,17 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
         IToolBuilderParams IToolComponent.BuilderParams
         {
             get { return BuilderParams; }
-            set { BuilderParams = (TBuilderParams)value; }
+            set { BuilderParams = (TBuilderParams) value; }
         }
 
         #endregion
-
 
         protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors()
         {
             foreach (ScriptDescriptor descriptor in base.GetScriptDescriptors())
             {
                 if (descriptor is ScriptComponentDescriptor)
-                    ((ScriptComponentDescriptor)descriptor).AddComponentProperty("targetMapHost", Parent.ClientID);
+                    ((ScriptComponentDescriptor) descriptor).AddComponentProperty("targetMapHost", Parent.ClientID);
                 yield return descriptor;
             }
         }
@@ -52,6 +51,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
         {
             //base.RenderBeginTag(writer);
         }
+
         public override void RenderEndTag(HtmlTextWriter writer)
         {
             //base.RenderEndTag(writer);

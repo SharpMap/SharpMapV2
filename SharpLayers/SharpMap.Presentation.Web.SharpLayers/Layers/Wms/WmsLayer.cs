@@ -18,8 +18,6 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
     {
         public string Name { get; set; }
 
-
-
         #region IUICollectionItem Members
 
         public object GetValue()
