@@ -132,6 +132,11 @@ namespace SharpMap.Data.Providers.FeatureProvider
             throw new NotImplementedException();
         }
 
+        public IExtents GetExtentsByOid(Guid oid)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IGeometry GetGeometryByOid(Guid oid)
         {
             throw new NotImplementedException();

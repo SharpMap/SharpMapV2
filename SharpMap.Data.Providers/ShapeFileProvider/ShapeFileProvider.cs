@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
@@ -110,7 +111,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         #region Instance fields
-        private Predicate<FeatureDataRow> _filterDelegate;
+        private Predicate<IFeatureDataRecord> _filterDelegate;
         private Int32? _srid;
         private readonly String _filename;
         private DbaseFile _dbaseFile;
@@ -512,7 +513,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// Gets or sets a delegate used for filtering records from the shapefile.
         /// </summary>
-        public Predicate<FeatureDataRow> Filter
+        public Predicate<IFeatureDataRecord> Filter
         {
             get { return _filterDelegate; }
             set { _filterDelegate = value; }
@@ -909,13 +910,28 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region IFeatureLayerProvider<UInt32> Members
 
-        /// <summary>
-        /// Gets a feature row from the data source with the specified id.
-        /// </summary>
-        /// <param name="oid">Id of the feautre to return.</param>
-        /// <returns>
-        /// The feature corresponding to <paramref name="oid" />, or null if no feature is found.
-        /// </returns>
+        public IExtents GetExtentsByOid(UInt32 oid)
+        {
+            checkOpen();
+
+            IExtents result;
+
+            if (Filter != null) // Apply filtering
+            {
+                IFeatureDataRecord fdr = GetFeatureByOid(oid);
+
+                result = fdr != null
+                               ? fdr.Extents
+                               : null;
+            }
+            else
+            {
+                result = readExtents(oid);
+            }
+
+            return result;
+        }
+
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="ProviderBase.IsOpen"/> 
         /// before calling.
@@ -927,16 +943,16 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<UInt32> oids)
         {
-            FeatureDataTable<UInt32> table = CreateNewTable() as FeatureDataTable<UInt32>;
-            Assert.IsNotNull(table);
-            table.IsSpatiallyIndexed = false;
+            //FeatureDataTable<UInt32> table = CreateNewTable() as FeatureDataTable<UInt32>;
+            //Assert.IsNotNull(table);
+            //table.IsSpatiallyIndexed = false;
 
             foreach (UInt32 oid in oids)
             {
-                table.AddRow(getFeature(oid, table));
+                yield return getFeature(oid, null);
             }
 
-            return table;
+            //return table;
         }
 
         /// <summary>
@@ -1011,9 +1027,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             foreach (IdBounds key in keys)
             {
                 UInt32 id = key.Id;
-                IGeometry candidate = GetGeometryByOid(id);
 
-                if (isMatch(queryOp, isQueryLeft, candidate, query.SpatialExpression))
+                if (isMatch(queryOp, isQueryLeft, id, query.SpatialExpression))
                 {
                     yield return id;
                 }
@@ -1026,7 +1041,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (isDisjoint)
             {
-                foreach (IdBounds key in _spatialIndex.Query(_spatialIndex.Bounds))
+                foreach (IdBounds key in getAllKeys())
                 {
                     if (!idsInBounds.ContainsKey(key.Id))
                     {
@@ -1035,6 +1050,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
             }
         }
+
         /// <summary>
         /// Sets the schema of the given table to match the schema of the shapefile's attributes.
         /// </summary>
@@ -1458,23 +1474,30 @@ namespace SharpMap.Data.Providers.ShapeFile
             return byteCount / 2; // number of 16-bit words
         }
 
-        private static Boolean isMatch(SpatialOperation op,
-                                       Boolean isQueryLeft,
-                                       IGeometry geometry,
-                                       SpatialExpression spatialExpression)
+        private Boolean isMatch(SpatialOperation op,
+                                Boolean isQueryLeft,
+                                UInt32 id,
+                                SpatialExpression spatialExpression)
         {
             GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
 
+            IGeometry candidateGeometry = geometryExpression == null
+                                              ? null
+                                              : GetGeometryByOid(id);
+            IExtents candidateExtents = geometryExpression == null
+                                            ? GetExtentsByOid(id)
+                                            : candidateGeometry.Extents;
+
             if (geometryExpression != null)
             {
-                return SpatialBinaryExpression.IsMatch(op, isQueryLeft, geometry, geometryExpression.Geometry);
+                return SpatialBinaryExpression.IsMatch(op, isQueryLeft, candidateGeometry, geometryExpression.Geometry);
             }
 
             ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
 
             if (extentsExpression != null)
             {
-                return SpatialBinaryExpression.IsMatch(op, isQueryLeft, geometry.Extents, extentsExpression.Extents);
+                return SpatialBinaryExpression.IsMatch(op, isQueryLeft, candidateExtents, extentsExpression.Extents);
             }
 
             return true;
@@ -1496,22 +1519,49 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    }
         //}
 
-        private static IEnumerable<UInt32> getUint32IdsFromObjects(IEnumerable oids)
+        private IEnumerable<IdBounds> getAllKeys()
         {
-            foreach (Object oid in oids)
+            return _isIndexed
+                       ? getKeysFromSpatialIndex(_spatialIndex.Bounds)
+                       : getKeysFromShapefileIndex(GetExtents());
+        }
+
+        private IEnumerable<IdBounds> getKeysFromSpatialIndex(IExtents toIntersect)
+        {
+            return _spatialIndex.Query(toIntersect);
+        }
+
+        private IEnumerable<IdBounds> getKeysFromShapefileIndex(IExtents toIntersect)
+        {
+            foreach (KeyValuePair<UInt32, ShapeFileIndex.IndexEntry> entry in _shapeFileIndex)
             {
-                yield return (UInt32)oid;
+                UInt32 oid = entry.Key;
+
+                IExtents featureExtents = readExtents(oid);
+
+                if (toIntersect.Intersects(featureExtents))
+                {
+                    yield return new IdBounds(oid, featureExtents);
+                }
             }
         }
 
-        private IEnumerable<IFeatureDataRecord> getFeatureRecordsFromIds(IEnumerable<UInt32> ids,
-                                                                         FeatureDataTable<UInt32> table)
-        {
-            foreach (UInt32 id in ids)
-            {
-                yield return getFeature(id, table);
-            }
-        }
+        //private static IEnumerable<UInt32> getUint32IdsFromObjects(IEnumerable oids)
+        //{
+        //    foreach (Object oid in oids)
+        //    {
+        //        yield return (UInt32)oid;
+        //    }
+        //}
+
+        //private IEnumerable<IFeatureDataRecord> getFeatureRecordsFromIds(IEnumerable<UInt32> ids,
+        //                                                                 FeatureDataTable<UInt32> table)
+        //{
+        //    foreach (UInt32 id in ids)
+        //    {
+        //        yield return getFeature(id, table);
+        //    }
+        //}
 
         private FeatureDataTable<UInt32> getNewTable()
         {
@@ -1532,21 +1582,39 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown if method is called and the shapefile is closed.
         /// Check <see cref="ProviderBase.IsOpen"/> before calling.
         /// </exception>
-        private FeatureDataRow<UInt32> getFeature(UInt32 oid, FeatureDataTable<UInt32> table)
+        private IFeatureDataRecord getFeature(UInt32 oid, FeatureDataTable<UInt32> table)
         {
             checkOpen();
 
-            if (table == null)
+            IFeatureDataRecord dr;
+
+            if (table != null)
             {
-                table = !HasDbf
-                    ? FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, _geoFactory)
-                    : _dbaseFile.NewTable;
+                FeatureDataRow<UInt32> featureRecord = HasDbf
+                    ? _dbaseFile.GetAttributes(oid, null) as FeatureDataRow<UInt32>
+                    : table.NewRow(oid);
+
+                featureRecord.Geometry = readGeometry(oid);
+                dr = featureRecord;
             }
+            else
+            {
+                ShapeFileFeatureDataRecord featureRecord = HasDbf 
+                    ? _dbaseFile.GetAttributes(oid, null) as ShapeFileFeatureDataRecord
+                    : getOidOnlyFeatureRecord(oid);
 
-            FeatureDataRow<UInt32> dr = HasDbf ? _dbaseFile.GetAttributes(oid, table) : table.NewRow(oid);
-            dr.Geometry = readGeometry(oid);
-
+                featureRecord.Geometry = readGeometry(oid);
+                dr = featureRecord;
+            }
+           
             return Filter == null || Filter(dr) ? dr : null;
+        }
+
+        private static ShapeFileFeatureDataRecord getOidOnlyFeatureRecord(UInt32 oid)
+        {
+            ShapeFileFeatureDataRecord record = new ShapeFileFeatureDataRecord(0, 1);
+            record.AddColumnValue(0, ShapeFileConstants.IdColumnName, oid);
+            return record;
         }
 
         private void readerDisposed(Object sender, EventArgs e)

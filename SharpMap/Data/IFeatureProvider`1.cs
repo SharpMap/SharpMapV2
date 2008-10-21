@@ -33,6 +33,8 @@ namespace SharpMap.Data
         /// <returns>An enumeration of all matching features' object ids.</returns>
 	    IEnumerable<TOid> ExecuteOidQuery(SpatialBinaryExpression query);
 
+	    IExtents GetExtentsByOid(TOid oid);
+
 		/// <summary>
 		/// Returns the geometry corresponding to the object ID.
 		/// </summary>
@@ -40,11 +42,13 @@ namespace SharpMap.Data
 		/// <returns>The geometry corresponding to the <paramref name="oid"/>.</returns>
 		IGeometry GetGeometryByOid(TOid oid);
 
-		/// <summary>
-        /// Returns a <see cref="FeatureDataRow"/> based on an object id (OID).
-		/// </summary>
-		/// <param name="oid">The object id (OID) of the feature.</param>
-		/// <returns>The feature corresponding to the <paramref name="oid"/>.</returns>
+        /// <summary>
+        /// Gets a feature row from the data source with the specified id.
+        /// </summary>
+        /// <param name="oid">Id of the feautre to return.</param>
+        /// <returns>
+        /// The feature corresponding to <paramref name="oid" />, or null if no feature is found.
+        /// </returns>
         IFeatureDataRecord GetFeatureByOid(TOid oid);
 
         ///// <summary>

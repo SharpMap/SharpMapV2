@@ -434,6 +434,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
         }
 
+        public IExtents GetExtentsByOid(UInt32 oid)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IFeatureDataRecord GetFeatureByOid(UInt32 oid)
         {
             throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");

@@ -107,6 +107,7 @@
     <Compile Include="ShapeFileConstants.cs" />
     <Compile Include="ShapeFileDataReader.cs" />
     <Compile Include="ShapeFileException.cs" />
+    <Compile Include="ShapeFileFeatureDataRecord.cs" />
     <Compile Include="ShapeFileHeader.cs" />
     <Compile Include="ShapeFileIndex.cs" />
     <Compile Include="ShapeFileInvalidOperationException.cs" />

@@ -302,7 +302,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// null</exception>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
         /// object has been disposed</exception>
-        internal FeatureDataRow<UInt32> GetAttributes(UInt32 oid, FeatureDataTable<UInt32> table)
+        internal IFeatureDataRecord GetAttributes(UInt32 oid, FeatureDataTable<UInt32> table)
         {
             checkState();
 
@@ -318,33 +318,43 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                       "at index " + oid);
             }
 
-            if (ReferenceEquals(table, null))
-            {
-                throw new ArgumentNullException("table");
-            }
-
             if (_reader.IsRowDeleted(oid)) // is record marked deleted?
             {
                 return null;
             }
 
-            FeatureDataRow<UInt32> dr = table.NewRow(oid);
-
-            foreach (DbaseField field in Header.Columns)
+            if (table != null)
             {
-                try
-                {
-                    dr[field.ColumnName] = _reader.GetValue(oid, field);
-                }
-                catch (NotSupportedException)
-                {
-                    String message = String.Format("Column type {0} is not supported.", 
-                                                   field.DataType);
-                    throw new InvalidDbaseFileOperationException(message);
-                }
-            }
+                FeatureDataRow<UInt32> dr = table.NewRow(oid);
 
-            return dr;
+                foreach (DbaseField field in Header.Columns)
+                {
+                    try
+                    {
+                        dr[field.ColumnName] = _reader.GetValue(oid, field);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        String message = String.Format("Column type {0} is not supported.",
+                                                       field.DataType);
+                        throw new InvalidDbaseFileOperationException(message);
+                    }
+                }
+
+                return dr;
+            }
+            else
+            {
+                ShapeFileFeatureDataRecord dr = new ShapeFileFeatureDataRecord(0, Header.Columns.Count);
+                dr.AddColumnValue(0, ShapeFileConstants.IdColumnName, oid);
+
+                foreach (DbaseField field in Header.Columns)
+                {
+                    dr.AddColumnValue(field.Ordinal, field.ColumnName, _reader.GetValue(oid, field));
+                }
+
+                return dr;
+            }
         }
 
         internal DataTable GetSchemaTable()
