@@ -62,7 +62,6 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Default.aspx" />
     <Content Include="img\blank.gif" />
     <Content Include="img\close.gif" />
     <Content Include="img\drag-rectangle-off.png" />
@@ -118,13 +117,6 @@
     <Content Include="Webform1.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Default.aspx.cs">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Webform1.aspx.cs">
       <DependentUpon>Webform1.aspx</DependentUpon>
@@ -135,10 +127,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpLayers\SharpLayers.csproj">
-      <Project>{0DAF521B-A472-4E3E-91C1-5B10FD8DDAC6}</Project>
-      <Name>SharpLayers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SharpMap.Presentation.Web.SharpLayers\SharpMap.Presentation.Web.SharpLayers.csproj">
       <Project>{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}</Project>
       <Name>SharpMap.Presentation.Web.SharpLayers</Name>
