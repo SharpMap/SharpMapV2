@@ -36,14 +36,14 @@ namespace TestSharpLayers
                                 },
                         Units = MapUnits.m,
                         MaxExtent
-                            //= new OLBounds
+                            //= new Bounds
                             //      {
                             //          Left = -981932.997723,
                             //          Bottom = 6415360.178803,
                             //          Right = 240784.582575,
                             //          Top = 8610694.016157
                             //      },
-                            //= new OLBounds
+                            //= new Bounds
                             //      {
                             //          Left = -1167.99914774828,
                             //          Bottom = -82031.999329218,
@@ -57,8 +57,13 @@ namespace TestSharpLayers
                                       Right = 2219485.87,
                                       Top = 2219485.87
                                   },
-                        Resolutions = new[] { 8669.866667, 4334.933333, 2167.466667, 1083.733333, 541.8666667, 270.9333333, 135.4666667, 67.73333333, 33.86666667, 16.93333333, 8.466666667, 4.233333333, 2.116666667, 1.058333333, 0.529166667, 0.264583333 }
-
+                        Resolutions =
+                            new[]
+                                {
+                                    8669.866667, 4334.933333, 2167.466667, 1083.733333, 541.8666667, 270.9333333,
+                                    135.4666667, 67.73333333, 33.86666667, 16.93333333, 8.466666667, 4.233333333,
+                                    2.116666667, 1.058333333, 0.529166667, 0.264583333
+                                }
                     };
 
 
@@ -83,10 +88,10 @@ namespace TestSharpLayers
             //var tms = new TmsLayer
             //              {
             //                  Id = "tms",
-            //                  Name = "My TMS Layer",
+            //                  Name = "My TMS LayerComponent",
             //                  Options = new TmsLayerOptions
             //                                {
-            //                                    LayerName = "OS",
+            //                                    TileCatalogName = "OS",
             //                                    DisplayInLayerSwitcher = true,
             //                                    IsBaseLayer = true,
             //                                    Visibility = true,
@@ -134,7 +139,7 @@ namespace TestSharpLayers
             //var vectorLayer = new VectorLayer
             //                      {
             //                          Id = "vector1",
-            //                          Name = "my Vector Layer",
+            //                          Name = "my Vector LayerComponent",
             //                          Options = new VectorLayerOptions
             //                                        {
             //                                            Attribution = "You!",
@@ -182,7 +187,6 @@ namespace TestSharpLayers
 
             var panZoomBar = new PanZoomBar
                                  {
-
                                      Id = "myPanZoomBar",
                                      Options = new PanZoomBarOptions
                                                    {
@@ -200,20 +204,20 @@ namespace TestSharpLayers
             //var marker = new Marker
             //                 {
             //                     Id = "myMarker",
-            //                     LonLat = new OLLonLat
+            //                     LonLat = new LonLat
             //                                  {
             //                                      Lon = (Map1.Options.MaxExtent.Left + Map1.Options.MaxExtent.Right) / 2,
             //                                      Lat = (Map1.Options.MaxExtent.Bottom + Map1.Options.MaxExtent.Top) / 2
             //                                  },
-            //                     Icon = new OLIcon
+            //                     Icon = new Icon
             //                                {
-            //                                    Offset = new OLPixel
+            //                                    Offset = new Pixel
             //                                                 {
             //                                                     X = 0,
             //                                                     Y = 0
             //                                                 },
             //                                    Url = "img/marker-blue.png",
-            //                                    Size = new OLSize
+            //                                    Size = new Size
             //                                               {
             //                                                   Height = 25,
             //                                                   Width = 25
@@ -236,16 +240,16 @@ namespace TestSharpLayers
             //                                        }
             //                      };
 
-            //Map1.Layers.Add(g);
+            //Map1.LayerComponent.Add(g);
 
 
-            //Map1.Layers.Add(tms);
+            //Map1.LayerComponent.Add(tms);
 
             Map1.Layers.Add(wms);
 
-            //Map1.Layers.Add(vectorLayer);
+            //Map1.LayerComponent.Add(vectorLayer);
 
-            //Map1.Layers.Add(markerLayer);
+            //Map1.LayerComponent.Add(markerLayer);
 
             Map1.BaseLayerId = wms.Id;
 

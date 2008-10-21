@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=3.0.20820.16598, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharpMap.Presentation.Web.SharpLayers\bin\AjaxControlToolkit.DLL</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -82,7 +86,36 @@
     <Content Include="img\zoom-plus-mini.png" />
     <Content Include="img\zoom-world-mini.png" />
     <Content Include="img\zoombar.png" />
+    <Content Include="theme\default\framedCloud.css" />
+    <Content Include="theme\default\img\add_point_off.png" />
+    <Content Include="theme\default\img\add_point_on.png" />
+    <Content Include="theme\default\img\blank.gif" />
+    <Content Include="theme\default\img\close.gif" />
+    <Content Include="theme\default\img\drag-rectangle-off.png" />
+    <Content Include="theme\default\img\drag-rectangle-on.png" />
+    <Content Include="theme\default\img\draw_line_off.png" />
+    <Content Include="theme\default\img\draw_line_on.png" />
+    <Content Include="theme\default\img\draw_point_off.png" />
+    <Content Include="theme\default\img\draw_point_on.png" />
+    <Content Include="theme\default\img\draw_polygon_off.png" />
+    <Content Include="theme\default\img\draw_polygon_on.png" />
+    <Content Include="theme\default\img\editing_tool_bar.png" />
+    <Content Include="theme\default\img\move_feature_off.png" />
+    <Content Include="theme\default\img\move_feature_on.png" />
+    <Content Include="theme\default\img\overview_replacement.gif" />
+    <Content Include="theme\default\img\panning-hand-off.png" />
+    <Content Include="theme\default\img\panning-hand-on.png" />
+    <Content Include="theme\default\img\pan_off.png" />
+    <Content Include="theme\default\img\pan_on.png" />
+    <Content Include="theme\default\img\remove_point_off.png" />
+    <Content Include="theme\default\img\remove_point_on.png" />
+    <Content Include="theme\default\img\view_next_off.png" />
+    <Content Include="theme\default\img\view_next_on.png" />
+    <Content Include="theme\default\img\view_previous_off.png" />
+    <Content Include="theme\default\img\view_previous_on.png" />
+    <Content Include="theme\default\style.css" />
     <Content Include="Web.config" />
+    <Content Include="Webform1.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.cs">
@@ -93,11 +126,22 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Webform1.aspx.cs">
+      <DependentUpon>Webform1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Webform1.aspx.designer.cs">
+      <DependentUpon>Webform1.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpLayers\SharpLayers.csproj">
-      <Project>{55D8CA16-5284-45F3-8B6D-55DE4901D133}</Project>
+      <Project>{0DAF521B-A472-4E3E-91C1-5B10FD8DDAC6}</Project>
       <Name>SharpLayers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMap.Presentation.Web.SharpLayers\SharpMap.Presentation.Web.SharpLayers.csproj">
+      <Project>{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}</Project>
+      <Name>SharpMap.Presentation.Web.SharpLayers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
