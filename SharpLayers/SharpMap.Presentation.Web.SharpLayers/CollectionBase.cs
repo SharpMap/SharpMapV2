@@ -30,7 +30,8 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         private readonly EnsureUniqueDelegate _ensureUnique;
 
-        public CollectionBase(EnsureUniqueDelegate uniqueChecker) : this(uniqueChecker, null)
+        public CollectionBase(EnsureUniqueDelegate uniqueChecker)
+            : this(uniqueChecker, null)
         {
         }
 
@@ -43,7 +44,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         public T this[int i]
         {
-            get { return (T) List[i]; }
+            get { return (T)List[i]; }
             set { List[i] = value; }
         }
 
@@ -54,7 +55,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
         {
             foreach (T component in List)
                 if (component is TLookFor)
-                    yield return (TLookFor) component;
+                    yield return (TLookFor)component;
         }
 
         public virtual void Add(T item)
@@ -135,5 +136,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
         }
 
         #endregion
+    }
+
+    public class DuplicateNameException : Exception
+    {
+
     }
 }
