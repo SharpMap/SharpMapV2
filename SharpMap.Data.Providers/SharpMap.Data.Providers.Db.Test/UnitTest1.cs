@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using GeoAPI.Geometries;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
@@ -201,6 +202,60 @@ namespace SharpMap.Data.Providers.Db.Test
             object obj = search.ExecuteQuery(prov);
 
             Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void TestGetExtentsByOid()
+        {
+            var services = new GeometryServices();
+
+            var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                           ConfigurationManager.ConnectionStrings["sql2008"].ConnectionString,
+                                                           "dbo",
+                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
+            {
+                DefaultProviderProperties
+                    = new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                                         {
+                                             new WithNoLockExpression(true),
+                                             new ForceIndexExpression(true)
+                                         })
+            };
+
+
+            IExtents extents = search.GetExtentsByOid(1);
+            Assert.IsNotNull(extents);
+            Assert.IsFalse(extents.IsEmpty);
+
+        }
+
+        [TestMethod]
+        public void TestGetFeatureByOid()
+        {
+
+
+            var services = new GeometryServices();
+
+            var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                           ConfigurationManager.ConnectionStrings["sql2008"].ConnectionString,
+                                                           "dbo",
+                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
+            {
+                DefaultProviderProperties
+                    = new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                                         {
+                                             new WithNoLockExpression(true),
+                                             new ForceIndexExpression(true)
+                                         })
+            };
+
+
+            IFeatureDataRecord record = search.GetFeatureByOid(1);
+            Assert.IsNotNull(record);
+
+
         }
     }
 }

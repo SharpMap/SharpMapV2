@@ -30,13 +30,13 @@ namespace SharpMap.Data.Providers.Db
 {
     public class SpatialDbFeatureDataReader : IFeatureDataReader
     {
-        private readonly int _geomColumnIndex;
+        private readonly int _geomColumnIndex = -1;
         private readonly string _geometryColumn;
         private readonly IGeometryFactory _geomFactory;
         protected readonly IDataReader _internalReader;
         private readonly string _oidColumn;
 
-        private readonly int _oidColumnIndex;
+        private readonly int _oidColumnIndex = -1;
 
         protected internal SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
                                                       string geometryColumn, string oidColumn)
@@ -46,8 +46,21 @@ namespace SharpMap.Data.Providers.Db
             _geometryColumn = geometryColumn;
             _oidColumn = oidColumn;
 
-            _geomColumnIndex = GetOrdinal(geometryColumn);
-            _oidColumnIndex = GetOrdinal(oidColumn);
+
+            for (int i = 0; i < internalReader.FieldCount; i++)
+            {
+
+                string name = internalReader.GetName(i);
+                if (name == geometryColumn)
+                    _geomColumnIndex = i;
+
+                if (name == oidColumn)
+                    _oidColumnIndex = i;
+
+                if (_geomColumnIndex > -1 && _oidColumnIndex > -1)
+                    break;
+            }
+
         }
 
         #region private helper
@@ -266,6 +279,14 @@ namespace SharpMap.Data.Providers.Db
             get { return _oidColumnIndex > -1; }
         }
 
+        public bool HasGeometry
+        {
+            get
+            {
+                return _geomColumnIndex > -1;
+            }
+        }
+
         public bool IsFullyLoaded
         {
             get { return false; }
@@ -300,7 +321,8 @@ namespace SharpMap.Data.Providers.Db
 
         public GeoAPI.CoordinateSystems.Transformations.ICoordinateTransformation CoordinateTransformation
         {
-            get; set;
+            get;
+            set;
         }
 
         #endregion

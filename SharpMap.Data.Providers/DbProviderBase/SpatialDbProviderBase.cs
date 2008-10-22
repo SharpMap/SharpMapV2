@@ -288,39 +288,57 @@ namespace SharpMap.Data.Providers.Db
 
         public IGeometry GetGeometryByOid(TOid oid)
         {
-            //var exp
-            //    = new FeatureQueryExpression(
-            //        new AttributesProjectionExpression(
-            //            new[]
-            //                {
-            //                    String.Format(GeometryColumnConversionFormatString, GeometryColumn)
-            //                }),
-            //        new AttributeBinaryExpression(new PropertyNameExpression(OidColumn), BinaryOperator.Equals,
-            //                                      new LiteralExpression<TOid>(oid)),
-            //        null);
+            var exp
+                = new FeatureQueryExpression(
+                    new AttributesProjectionExpression(
+                        new[]
+                            {
+                               GeometryColumn
+                            }), null, null, new OidCollectionExpression(new[] { oid }));
 
-            //using (IFeatureDataReader reader = ExecuteFeatureDataReader(PrepareSelectCommand(exp)))
-            //{
-            //    foreach (IFeatureDataRecord fdr in reader)
-            //        return fdr.Geometry;
-            //}
+
+            using (IFeatureDataReader reader = ExecuteFeatureQuery(exp))
+            {
+                foreach (IFeatureDataRecord fdr in reader)
+                    return fdr.Geometry.Clone();
+            }
             return null;
         }
 
         public IFeatureDataRecord GetFeatureByOid(TOid oid)
         {
-            //var exp
-            //    = new FeatureQueryExpression(
-            //        new AttributesProjectionExpression(SelectAllColumnNames()),
-            //        new AttributeBinaryExpression(new PropertyNameExpression(OidColumn), BinaryOperator.Equals,
-            //                                      new LiteralExpression<TOid>(oid)),
-            //        null);
+            var exp
+                = new FeatureQueryExpression(
+                    new AllAttributesExpression(), null, null, new OidCollectionExpression(new[] { oid }));
 
-            //using (IFeatureDataReader reader = ExecuteFeatureDataReader(PrepareSelectCommand(exp)))
-            //{
-            //    foreach (IFeatureDataRecord fdr in reader)
-            //        return fdr;
-            //}
+            using (IFeatureDataReader reader = ExecuteFeatureQuery(exp))
+            {
+                FeatureDataTable fdt = new FeatureDataTable<TOid>("features", OidColumn, GeometryFactory);
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    string name = reader.GetName(i);
+                    if (name != OidColumn)
+                    {
+                        fdt.Columns.Add(name, reader.GetFieldType(i));
+                    }
+                }
+
+                foreach (IFeatureDataRecord fdr in reader)
+                {
+                    FeatureDataRow row = fdt.NewRow();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string name = reader.GetName(i);
+                        row[name] = reader[i];
+                    }
+                    if ((fdr as SpatialDbFeatureDataReader).HasGeometry)
+                        row.Geometry = reader.Geometry;
+
+                    fdt.AddRow(row);
+                    return row;
+                }
+            }
             return null;
         }
 
@@ -885,5 +903,28 @@ namespace SharpMap.Data.Providers.Db
                        _tableName.ToLower().GetHashCode();
             }
         }
+
+        #region IFeatureProvider<TOid> Members
+
+
+        public IExtents GetExtentsByOid(TOid oid)
+        {
+            FeatureQueryExpression query =
+                new FeatureQueryExpression(new AttributesProjectionExpression(new[] { GeometryColumn }),
+                                           null, null, new OidCollectionExpression(new[] { oid }));
+            using (IFeatureDataReader fdr = ExecuteFeatureQuery(query))
+            {
+                while (fdr.Read())
+                {
+                    return (IExtents)fdr.Geometry.Extents.Clone();
+                }
+            }
+            return GeometryFactory.CreateExtents();
+
+        }
+
+        #endregion
+
+
     }
 }
