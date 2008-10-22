@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.Db
@@ -48,8 +49,8 @@ namespace SharpMap.Data.Providers.Db
 
 
             for (int i = 0; i < internalReader.FieldCount; i++)
+                // note: GetOrdinal crashes if the column does not exist so loop through fields
             {
-
                 string name = internalReader.GetName(i);
                 if (name == geometryColumn)
                     _geomColumnIndex = i;
@@ -60,7 +61,6 @@ namespace SharpMap.Data.Providers.Db
                 if (_geomColumnIndex > -1 && _oidColumnIndex > -1)
                     break;
             }
-
         }
 
         #region private helper
@@ -74,6 +74,11 @@ namespace SharpMap.Data.Providers.Db
         }
 
         #endregion
+
+        public bool HasGeometry
+        {
+            get { return _geomColumnIndex > -1; }
+        }
 
         #region IFeatureDataReader Members
 
@@ -261,7 +266,7 @@ namespace SharpMap.Data.Providers.Db
             get
             {
                 if (_geomColumnIndex > -1)
-                    return _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+                    return _geomFactory.WkbReader.Read((byte[]) _internalReader[_geomColumnIndex]);
 
                 return null;
             }
@@ -279,14 +284,6 @@ namespace SharpMap.Data.Providers.Db
             get { return _oidColumnIndex > -1; }
         }
 
-        public bool HasGeometry
-        {
-            get
-            {
-                return _geomColumnIndex > -1;
-            }
-        }
-
         public bool IsFullyLoaded
         {
             get { return false; }
@@ -294,12 +291,11 @@ namespace SharpMap.Data.Providers.Db
 
         public Type OidType
         {
-            get { return typeof(long); }
+            get { return typeof (long); }
         }
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
         {
-
             while (_internalReader.Read())
                 yield return this;
         }
@@ -314,16 +310,7 @@ namespace SharpMap.Data.Providers.Db
             get { return Geometry.Extents; }
         }
 
-        #endregion
-
-        #region IFeatureDataRecord Members
-
-
-        public GeoAPI.CoordinateSystems.Transformations.ICoordinateTransformation CoordinateTransformation
-        {
-            get;
-            set;
-        }
+        public ICoordinateTransformation CoordinateTransformation { get; set; }
 
         #endregion
     }
