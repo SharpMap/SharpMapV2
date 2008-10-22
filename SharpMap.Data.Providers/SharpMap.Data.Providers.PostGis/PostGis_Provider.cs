@@ -102,7 +102,7 @@ namespace SharpMap.Data.Providers
                 try
                 {
                     columnName = (String)new NpgsqlCommand(
-                        String.Format("SELECT f_geometry_column FROM {0}.geometry_columns WHERE (f_table_name='{1}') LIMIT 1;", schemaName, tableName.ToLower()),
+                        String.Format("SELECT f_geometry_column FROM \"{0}\".\"geometry_columns\" WHERE (f_table_name='{1}') LIMIT 1;", schemaName, tableName),
                         cn).ExecuteScalar();
 
                 }

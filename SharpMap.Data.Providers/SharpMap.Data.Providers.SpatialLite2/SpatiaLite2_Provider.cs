@@ -553,7 +553,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
             new SQLiteCommand("SELECT InitSpatialMetaData();", conn).ExecuteNonQuery();
 
-            new SQLiteCommand("ALTER TABLE ADD COLUMN srtext text;", conn).ExecuteNonQuery();
+            new SQLiteCommand("ALTER TABLE spatial_ref_sys ADD COLUMN srtext text;", conn).ExecuteNonQuery();
 
             SQLiteCommand cmd = new SQLiteCommand(
               "INSERT OR REPLACE INTO spatial_ref_sys (srid, auth_name, auth_srid, ref_sys_name, proj4text, srtext) VALUES (@P1, @P2, @P3, @P4, @P5, @P6);", conn);
