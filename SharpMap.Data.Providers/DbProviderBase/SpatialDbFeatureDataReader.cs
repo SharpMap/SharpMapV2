@@ -49,7 +49,7 @@ namespace SharpMap.Data.Providers.Db
 
 
             for (int i = 0; i < internalReader.FieldCount; i++)
-                // note: GetOrdinal crashes if the column does not exist so loop through fields
+            // note: GetOrdinal crashes if the column does not exist so loop through fields
             {
                 string name = internalReader.GetName(i);
                 if (name == geometryColumn)
@@ -238,7 +238,14 @@ namespace SharpMap.Data.Providers.Db
 
         public int GetValues(object[] values)
         {
-            return _internalReader.GetValues(values);
+            ///TODO: need to remove the GeometryField from the returned array.
+            /// 
+
+            int i;
+            for (i = 0; i < FieldCount && i < values.Length; i++)
+                values[i] = GetValue(i);
+
+            return i;
         }
 
         public bool IsDBNull(int i)
@@ -266,7 +273,7 @@ namespace SharpMap.Data.Providers.Db
             get
             {
                 if (_geomColumnIndex > -1)
-                    return _geomFactory.WkbReader.Read((byte[]) _internalReader[_geomColumnIndex]);
+                    return _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
 
                 return null;
             }
@@ -291,7 +298,7 @@ namespace SharpMap.Data.Providers.Db
 
         public Type OidType
         {
-            get { return typeof (long); }
+            get { return typeof(long); }
         }
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
