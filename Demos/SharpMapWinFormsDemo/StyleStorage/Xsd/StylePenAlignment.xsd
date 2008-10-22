@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="StylePenAlignment" type="StylePenAlignment" />
+  <xs:simpleType name="StylePenAlignment">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Center" />
+      <xs:enumeration value="Inset" />
+      <xs:enumeration value="Outset" />
+      <xs:enumeration value="Left" />
+      <xs:enumeration value="Right" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

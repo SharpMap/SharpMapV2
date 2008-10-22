@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="RasterStyle" nillable="true" type="RasterStyle" />
+  <xs:complexType name="RasterStyle">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Style">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="ColorTransform" type="ColorMatrix" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Style">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="MinVisible" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="MaxVisible" type="xs:double" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Enabled" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ColorMatrix">
+    <xs:complexContent mixed="false">
+      <xs:extension base="AffineMatrix">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="R" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="G" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="B" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="A" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="RedShift" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="GreenShift" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="BlueShift" type="xs:double" />
+          <xs:element minOccurs="1" maxOccurs="1" name="AlphaShift" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AffineMatrix">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Matrix" />
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Matrix" />
+</xs:schema>

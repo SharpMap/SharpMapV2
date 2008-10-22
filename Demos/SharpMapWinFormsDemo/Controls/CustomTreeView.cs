@@ -22,6 +22,7 @@ using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Layers;
+using SharpMap.Styles;
 
 namespace MapViewer.Controls
 {
@@ -139,7 +140,7 @@ namespace MapViewer.Controls
 
             protected new TCoordinateSystem CoordinateSystem
             {
-                get { return (TCoordinateSystem) base.CoordinateSystem; }
+                get { return (TCoordinateSystem)base.CoordinateSystem; }
             }
         }
 
@@ -202,7 +203,7 @@ namespace MapViewer.Controls
 
                 var type = new TreeNode("Transform Type");
                 Nodes.Add(type);
-                type.Nodes.Add(Enum.GetName(typeof (TransformType), Transform.TransformType));
+                type.Nodes.Add(Enum.GetName(typeof(TransformType), Transform.TransformType));
 
                 source.Nodes.Add(NodeFactory.CreateCoordinateSystemNode(Transform.Source));
 
@@ -226,7 +227,7 @@ namespace MapViewer.Controls
 
             public new CustomTreeView TreeView
             {
-                get { return (CustomTreeView) base.TreeView; }
+                get { return (CustomTreeView)base.TreeView; }
             }
 
             protected bool IsDisposed { get; set; }
@@ -252,6 +253,42 @@ namespace MapViewer.Controls
         }
 
         #endregion
+
+
+
+        protected abstract class StyleNode<TStyle> : CustomTreeNode
+            where TStyle : IStyle
+        {
+            protected StyleNode(TStyle style, string name)
+                : base(name)
+            {
+                Style = style;
+            }
+
+            public TStyle Style { get; protected set; }
+
+            protected override void Dispose(bool Disposing)
+            {
+                if (!IsDisposed)
+                {
+                    Style = default(TStyle);
+                    IsDisposed = true;
+                }
+            }
+
+            protected override void BuildChildNodes()
+            {
+
+            }
+        }
+
+
+        protected class GeometryStyleNode : StyleNode<GeometryStyle>
+        {
+            public GeometryStyleNode(GeometryStyle style, string name)
+                : base(style, name)
+            { }
+        }
 
         #region Nested type: DbProviderNode
 
@@ -446,7 +483,7 @@ namespace MapViewer.Controls
 
             public new TLayer Layer
             {
-                get { return (TLayer) base.Layer; }
+                get { return (TLayer)base.Layer; }
             }
         }
 
@@ -459,17 +496,17 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode<TLayer>(TLayer layer)
                 where TLayer : ILayer
             {
-                if (IsAssignbleFrom(typeof (IFeatureLayer), layer.GetType()))
+                if (IsAssignbleFrom(typeof(IFeatureLayer), layer.GetType()))
                 {
-                    return new FeatureLayerNode((IFeatureLayer) layer);
+                    return new FeatureLayerNode((IFeatureLayer)layer);
                 }
-                if (IsAssignbleFrom(typeof (LayerGroup), layer.GetType()))
+                if (IsAssignbleFrom(typeof(LayerGroup), layer.GetType()))
                 {
-                    return new LayerGroupNode((LayerGroup) (object) layer);
+                    return new LayerGroupNode((LayerGroup)(object)layer);
                 }
-                if (IsAssignbleFrom(typeof (LabelLayer), layer.GetType()))
+                if (IsAssignbleFrom(typeof(LabelLayer), layer.GetType()))
                 {
-                    return new LabelLayerNode((LabelLayer) (object) layer);
+                    return new LabelLayerNode((LabelLayer)(object)layer);
                 }
 
                 throw new NotImplementedException();
@@ -478,13 +515,13 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode(ILayer layer)
             {
                 if (layer is IFeatureLayer)
-                    return CreateLayerNode((IFeatureLayer) layer);
+                    return CreateLayerNode((IFeatureLayer)layer);
 
                 if (layer is LayerGroup)
-                    return CreateLayerNode((LayerGroup) layer);
+                    return CreateLayerNode((LayerGroup)layer);
 
                 if (layer is LabelLayer)
-                    return CreateLayerNode((LabelLayer) layer);
+                    return CreateLayerNode((LabelLayer)layer);
 
                 throw new NotImplementedException();
             }
@@ -492,34 +529,34 @@ namespace MapViewer.Controls
             public static TreeNode CreateCoordinateSystemNode<TCoordinateSystem>(TCoordinateSystem cs)
                 where TCoordinateSystem : ICoordinateSystem
             {
-                if (IsAssignbleFrom(typeof (IGeographicCoordinateSystem), cs.GetType()))
-                    return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem) cs);
-                if (IsAssignbleFrom(typeof (IProjectedCoordinateSystem), cs.GetType()))
-                    return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem) cs);
+                if (IsAssignbleFrom(typeof(IGeographicCoordinateSystem), cs.GetType()))
+                    return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem)cs);
+                if (IsAssignbleFrom(typeof(IProjectedCoordinateSystem), cs.GetType()))
+                    return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem)cs);
                 return new CoordinateSystemNode(cs);
             }
 
             public static TreeNode CreateCoordinateSystemNode(ICoordinateSystem cs)
             {
                 if (cs is IProjectedCoordinateSystem)
-                    return CreateCoordinateSystemNode((IProjectedCoordinateSystem) cs);
+                    return CreateCoordinateSystemNode((IProjectedCoordinateSystem)cs);
 
                 if (cs is IGeographicCoordinateSystem)
-                    return CreateCoordinateSystemNode((IGeographicCoordinateSystem) cs);
+                    return CreateCoordinateSystemNode((IGeographicCoordinateSystem)cs);
 
                 return new CoordinateSystemNode(cs);
             }
 
             public static TreeNode CreateProviderNode<TProvider>(TProvider provider) where TProvider : IProvider
             {
-                if (IsAssignbleFrom(typeof (AsyncFeatureProviderAdapter), provider.GetType()))
-                    return CreateProviderNode(((AsyncFeatureProviderAdapter) (object) provider).InnerFeatureProvider);
+                if (IsAssignbleFrom(typeof(AsyncFeatureProviderAdapter), provider.GetType()))
+                    return CreateProviderNode(((AsyncFeatureProviderAdapter)(object)provider).InnerFeatureProvider);
 
-                if (IsAssignbleFrom(typeof (ShapeFileProvider), provider.GetType()))
-                    return new ShapeFileProviderNode((ShapeFileProvider) (object) provider);
+                if (IsAssignbleFrom(typeof(ShapeFileProvider), provider.GetType()))
+                    return new ShapeFileProviderNode((ShapeFileProvider)(object)provider);
 
-                if (IsAssignbleFrom(typeof (ISpatialDbProvider), provider.GetType()))
-                    return new DbProviderNode((ISpatialDbProvider) provider);
+                if (IsAssignbleFrom(typeof(ISpatialDbProvider), provider.GetType()))
+                    return new DbProviderNode((ISpatialDbProvider)provider);
 
                 throw new NotImplementedException();
             }
@@ -527,11 +564,11 @@ namespace MapViewer.Controls
             public static TreeNode CreateProviderNode(IProvider provider)
             {
                 if (provider is AsyncFeatureProviderAdapter)
-                    return CreateProviderNode(((AsyncFeatureProviderAdapter) provider).InnerFeatureProvider);
+                    return CreateProviderNode(((AsyncFeatureProviderAdapter)provider).InnerFeatureProvider);
                 if (provider is ShapeFileProvider)
-                    return CreateProviderNode((ShapeFileProvider) provider);
+                    return CreateProviderNode((ShapeFileProvider)provider);
                 if (provider is ISpatialDbProvider)
-                    return CreateProviderNode((ISpatialDbProvider) provider);
+                    return CreateProviderNode((ISpatialDbProvider)provider);
 
                 throw new NotImplementedException();
             }
@@ -638,7 +675,7 @@ namespace MapViewer.Controls
 
             protected new TProvider Provider
             {
-                get { return (TProvider) base.Provider; }
+                get { return (TProvider)base.Provider; }
             }
         }
 

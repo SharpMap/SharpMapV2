@@ -154,6 +154,15 @@
     <Compile Include="Controls\QueryResultsTab.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\StylesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\StylesControl.Designer.cs">
+      <DependentUpon>StylesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StylesTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataSource\ChooseDataSource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -206,6 +215,9 @@
     <EmbeddedResource Include="Controls\QueryResults.resx">
       <DependentUpon>QueryResults.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\StylesControl.resx">
+      <DependentUpon>StylesControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSource\ChooseDataSource.resx">
       <DependentUpon>ChooseDataSource.cs</DependentUpon>
     </EmbeddedResource>
@@ -224,6 +236,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\LayersView.resx">
+      <DependentUpon>LayersView.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -232,12 +247,35 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="StyleStorage\Xsd\CollisionDetectionType.xsd" />
+    <None Include="StyleStorage\Xsd\FeatureStyle.xsd" />
+    <None Include="StyleStorage\Xsd\HorizontalAlignment.xsd" />
+    <None Include="StyleStorage\Xsd\LabelStyle.xsd" />
+    <None Include="StyleStorage\Xsd\LineDashCap.xsd" />
+    <None Include="StyleStorage\Xsd\LineDashStyle.xsd" />
+    <None Include="StyleStorage\Xsd\RasterStyle.xsd" />
+    <None Include="StyleStorage\Xsd\SolidStyleBrush.xsd" />
+    <None Include="StyleStorage\Xsd\Style.xsd" />
+    <None Include="StyleStorage\Xsd\StyleBrush.xsd" />
+    <None Include="StyleStorage\Xsd\StyleColor.xsd" />
+    <None Include="StyleStorage\Xsd\StyleColorBlend.xsd" />
+    <None Include="StyleStorage\Xsd\StyleFont.xsd" />
+    <None Include="StyleStorage\Xsd\StyleFontFamily.xsd" />
+    <None Include="StyleStorage\Xsd\StyleFontStyle.xsd" />
+    <None Include="StyleStorage\Xsd\StyleLineCap.xsd" />
+    <None Include="StyleStorage\Xsd\StyleLineJoin.xsd" />
+    <None Include="StyleStorage\Xsd\StylePen.xsd" />
+    <None Include="StyleStorage\Xsd\StylePenAlignment.xsd" />
+    <None Include="StyleStorage\Xsd\StyleRenderingMode.xsd" />
+    <None Include="StyleStorage\Xsd\StyleTextRenderingHint.xsd" />
+    <None Include="StyleStorage\Xsd\VerticalAlignment.xsd" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RandomStyle.cs" />
+    <Compile Include="SLD\SldConverter.cs" />
     <Compile Include="Views\LayersView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -299,6 +337,10 @@
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="StyleStorage\Xml\test.xml" />
+    <Content Include="StyleStorage\Xsd\readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

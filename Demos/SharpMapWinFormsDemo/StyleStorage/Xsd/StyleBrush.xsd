@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="StyleBrush" nillable="true" type="StyleBrush" />
+  <xs:complexType name="StyleBrush" abstract="true">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Color" type="StyleColor" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StyleColor" />
+</xs:schema>

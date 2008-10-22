@@ -47,15 +47,6 @@ namespace MapViewer
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.splitVertical = new System.Windows.Forms.SplitContainer();
-            this.LeftTabControl = new System.Windows.Forms.TabControl();
-            this.layersTab = new System.Windows.Forms.TabPage();
-            this.layersView1 = new MapViewer.Views.LayersView();
-            this.tabPageDataSource = new System.Windows.Forms.TabPage();
-            this.stylesTab = new System.Windows.Forms.TabPage();
-            this.splitHorizontal = new System.Windows.Forms.SplitContainer();
-            this.resultsTabControl = new System.Windows.Forms.TabControl();
-            this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
             this.layersContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearLayersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,30 +73,48 @@ namespace MapViewer
             this.customToolsToolstrip = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.layerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.StylesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addStyleMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitVertical = new System.Windows.Forms.SplitContainer();
+            this.LeftTabControl = new System.Windows.Forms.TabControl();
+            this.layersTab = new System.Windows.Forms.TabPage();
+            this.layersView1 = new MapViewer.Views.LayersView();
+            this.tabPageDataSource = new System.Windows.Forms.TabPage();
+            this.stylesTab = new System.Windows.Forms.TabPage();
+            this.stylesControl1 = new MapViewer.Controls.StylesControl();
+            this.splitHorizontal = new System.Windows.Forms.SplitContainer();
+            this.resultsTabControl = new System.Windows.Forms.TabControl();
+            this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
             this.mainMenu.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.splitVertical.Panel1.SuspendLayout();
-            this.splitVertical.Panel2.SuspendLayout();
-            this.splitVertical.SuspendLayout();
-            this.LeftTabControl.SuspendLayout();
-            this.layersTab.SuspendLayout();
-            this.splitHorizontal.Panel1.SuspendLayout();
-            this.splitHorizontal.Panel2.SuspendLayout();
-            this.splitHorizontal.SuspendLayout();
             this.layersContextMenu.SuspendLayout();
             this.mapViewControlContextMenu.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.standardToolsToolstrip.SuspendLayout();
             this.customToolsToolstrip.SuspendLayout();
+            this.layerContextMenu.SuspendLayout();
+            this.StylesContextMenu.SuspendLayout();
+            this.splitVertical.Panel1.SuspendLayout();
+            this.splitVertical.Panel2.SuspendLayout();
+            this.splitVertical.SuspendLayout();
+            this.LeftTabControl.SuspendLayout();
+            this.layersTab.SuspendLayout();
+            this.stylesTab.SuspendLayout();
+            this.splitHorizontal.Panel1.SuspendLayout();
+            this.splitHorizontal.Panel2.SuspendLayout();
+            this.splitHorizontal.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
             // 
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileMenuItem,
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.stylesToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
             this.mainMenu.Size = new System.Drawing.Size(1012, 24);
@@ -218,131 +227,24 @@ namespace MapViewer
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
-            // splitVertical
-            // 
-            this.splitVertical.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitVertical.Location = new System.Drawing.Point(0, 50);
-            this.splitVertical.Name = "splitVertical";
-            // 
-            // splitVertical.Panel1
-            // 
-            this.splitVertical.Panel1.Controls.Add(this.LeftTabControl);
-            // 
-            // splitVertical.Panel2
-            // 
-            this.splitVertical.Panel2.Controls.Add(this.splitHorizontal);
-            this.splitVertical.Size = new System.Drawing.Size(1012, 540);
-            this.splitVertical.SplitterDistance = 337;
-            this.splitVertical.TabIndex = 3;
-            // 
-            // LeftTabControl
-            // 
-            this.LeftTabControl.Controls.Add(this.layersTab);
-            this.LeftTabControl.Controls.Add(this.tabPageDataSource);
-            this.LeftTabControl.Controls.Add(this.stylesTab);
-            this.LeftTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LeftTabControl.Location = new System.Drawing.Point(0, 0);
-            this.LeftTabControl.Name = "LeftTabControl";
-            this.LeftTabControl.SelectedIndex = 0;
-            this.LeftTabControl.Size = new System.Drawing.Size(337, 540);
-            this.LeftTabControl.TabIndex = 1;
-            // 
-            // layersTab
-            // 
-            this.layersTab.Controls.Add(this.layersView1);
-            this.layersTab.Location = new System.Drawing.Point(4, 22);
-            this.layersTab.Name = "layersTab";
-            this.layersTab.Padding = new System.Windows.Forms.Padding(3);
-            this.layersTab.Size = new System.Drawing.Size(329, 514);
-            this.layersTab.TabIndex = 0;
-            this.layersTab.Text = "Layers";
-            this.layersTab.UseVisualStyleBackColor = true;
-            // 
-            // layersView1
-            // 
-            this.layersView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layersView1.LayersContextMenu = null;
-            this.layersView1.Location = new System.Drawing.Point(3, 3);
-            this.layersView1.Name = "layersView1";
-            this.layersView1.Size = new System.Drawing.Size(323, 508);
-            this.layersView1.TabIndex = 0;
-            this.layersView1.Title = "";
-            // 
-            // tabPageDataSource
-            // 
-            this.tabPageDataSource.Location = new System.Drawing.Point(4, 22);
-            this.tabPageDataSource.Name = "tabPageDataSource";
-            this.tabPageDataSource.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDataSource.Size = new System.Drawing.Size(329, 514);
-            this.tabPageDataSource.TabIndex = 1;
-            this.tabPageDataSource.Text = "Data Sources";
-            this.tabPageDataSource.UseVisualStyleBackColor = true;
-            // 
-            // stylesTab
-            // 
-            this.stylesTab.Location = new System.Drawing.Point(4, 22);
-            this.stylesTab.Name = "stylesTab";
-            this.stylesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.stylesTab.Size = new System.Drawing.Size(329, 514);
-            this.stylesTab.TabIndex = 2;
-            this.stylesTab.Text = "Styles";
-            this.stylesTab.UseVisualStyleBackColor = true;
-            // 
-            // splitHorizontal
-            // 
-            this.splitHorizontal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitHorizontal.Location = new System.Drawing.Point(0, 0);
-            this.splitHorizontal.Name = "splitHorizontal";
-            this.splitHorizontal.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitHorizontal.Panel1
-            // 
-            this.splitHorizontal.Panel1.Controls.Add(this.resultsTabControl);
-            // 
-            // splitHorizontal.Panel2
-            // 
-            this.splitHorizontal.Panel2.Controls.Add(this.mapViewControl1);
-            this.splitHorizontal.Size = new System.Drawing.Size(671, 540);
-            this.splitHorizontal.SplitterDistance = 110;
-            this.splitHorizontal.TabIndex = 1;
-            // 
-            // resultsTabControl
-            // 
-            this.resultsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.resultsTabControl.Location = new System.Drawing.Point(0, 0);
-            this.resultsTabControl.Name = "resultsTabControl";
-            this.resultsTabControl.SelectedIndex = 0;
-            this.resultsTabControl.Size = new System.Drawing.Size(671, 110);
-            this.resultsTabControl.TabIndex = 0;
-            // 
-            // mapViewControl1
-            // 
-            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
-            this.mapViewControl1.Name = "mapViewControl1";
-            this.mapViewControl1.Size = new System.Drawing.Size(671, 426);
-            this.mapViewControl1.TabIndex = 0;
-            this.mapViewControl1.Text = "mapViewControl1";
-            this.mapViewControl1.Title = "mapViewControl1";
-            // 
             // layersContextMenu
             // 
             this.layersContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addLayerToolStripMenuItem,
             this.clearLayersToolStripMenuItem1});
             this.layersContextMenu.Name = "contextMenuStrip1";
-            this.layersContextMenu.Size = new System.Drawing.Size(153, 92);
+            this.layersContextMenu.Size = new System.Drawing.Size(138, 48);
             // 
             // addLayerToolStripMenuItem
             // 
             this.addLayerToolStripMenuItem.Name = "addLayerToolStripMenuItem";
-            this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addLayerToolStripMenuItem.Text = "Add Layer";
             // 
             // clearLayersToolStripMenuItem1
             // 
             this.clearLayersToolStripMenuItem1.Name = "clearLayersToolStripMenuItem1";
-            this.clearLayersToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.clearLayersToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
             this.clearLayersToolStripMenuItem1.Text = "Clear Layers";
             // 
             // layerToolStripMenuItem
@@ -351,7 +253,7 @@ namespace MapViewer
             this.zoomLayerExtentToolStripMenuItem,
             this.editSymbologyToolStripMenuItem});
             this.layerToolStripMenuItem.Name = "layerToolStripMenuItem";
-            this.layerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.layerToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.layerToolStripMenuItem.Text = "Layer";
             // 
             // zoomLayerExtentToolStripMenuItem
@@ -535,9 +437,155 @@ namespace MapViewer
             // 
             // layerContextMenu
             // 
-            this.layerContextMenu.Items.Add(this.layerToolStripMenuItem);
+            this.layerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.layerToolStripMenuItem});
             this.layerContextMenu.Name = "layerContextMenu";
-            this.layerContextMenu.Size = new System.Drawing.Size(61, 4);
+            this.layerContextMenu.Size = new System.Drawing.Size(103, 26);
+            // 
+            // StylesContextMenu
+            // 
+            this.StylesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addStyleMenuStripItem});
+            this.StylesContextMenu.Name = "StylesContextMenu";
+            this.StylesContextMenu.Size = new System.Drawing.Size(130, 26);
+            // 
+            // addStyleMenuStripItem
+            // 
+            this.addStyleMenuStripItem.Name = "addStyleMenuStripItem";
+            this.addStyleMenuStripItem.Size = new System.Drawing.Size(129, 22);
+            this.addStyleMenuStripItem.Text = "Add Styles";
+            // 
+            // stylesToolStripMenuItem
+            // 
+            this.stylesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addStylesToolStripMenuItem});
+            this.stylesToolStripMenuItem.Name = "stylesToolStripMenuItem";
+            this.stylesToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.stylesToolStripMenuItem.Text = "Styles";
+            // 
+            // addStylesToolStripMenuItem
+            // 
+            this.addStylesToolStripMenuItem.Name = "addStylesToolStripMenuItem";
+            this.addStylesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addStylesToolStripMenuItem.Text = "Add Styles";
+            // 
+            // splitVertical
+            // 
+            this.splitVertical.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitVertical.Location = new System.Drawing.Point(0, 50);
+            this.splitVertical.Name = "splitVertical";
+            // 
+            // splitVertical.Panel1
+            // 
+            this.splitVertical.Panel1.Controls.Add(this.LeftTabControl);
+            // 
+            // splitVertical.Panel2
+            // 
+            this.splitVertical.Panel2.Controls.Add(this.splitHorizontal);
+            this.splitVertical.Size = new System.Drawing.Size(1012, 540);
+            this.splitVertical.SplitterDistance = 337;
+            this.splitVertical.TabIndex = 3;
+            // 
+            // LeftTabControl
+            // 
+            this.LeftTabControl.Controls.Add(this.layersTab);
+            this.LeftTabControl.Controls.Add(this.tabPageDataSource);
+            this.LeftTabControl.Controls.Add(this.stylesTab);
+            this.LeftTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LeftTabControl.Location = new System.Drawing.Point(0, 0);
+            this.LeftTabControl.Name = "LeftTabControl";
+            this.LeftTabControl.SelectedIndex = 0;
+            this.LeftTabControl.Size = new System.Drawing.Size(337, 540);
+            this.LeftTabControl.TabIndex = 1;
+            // 
+            // layersTab
+            // 
+            this.layersTab.Controls.Add(this.layersView1);
+            this.layersTab.Location = new System.Drawing.Point(4, 22);
+            this.layersTab.Name = "layersTab";
+            this.layersTab.Padding = new System.Windows.Forms.Padding(3);
+            this.layersTab.Size = new System.Drawing.Size(329, 514);
+            this.layersTab.TabIndex = 0;
+            this.layersTab.Text = "Layers";
+            this.layersTab.UseVisualStyleBackColor = true;
+            // 
+            // layersView1
+            // 
+            this.layersView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layersView1.LayersContextMenu = null;
+            this.layersView1.Location = new System.Drawing.Point(3, 3);
+            this.layersView1.Name = "layersView1";
+            this.layersView1.SelectedLayers = ((System.Collections.Generic.IList<string>)(resources.GetObject("layersView1.SelectedLayers")));
+            this.layersView1.Size = new System.Drawing.Size(323, 508);
+            this.layersView1.TabIndex = 0;
+            this.layersView1.Title = "";
+            // 
+            // tabPageDataSource
+            // 
+            this.tabPageDataSource.Location = new System.Drawing.Point(4, 22);
+            this.tabPageDataSource.Name = "tabPageDataSource";
+            this.tabPageDataSource.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDataSource.Size = new System.Drawing.Size(329, 514);
+            this.tabPageDataSource.TabIndex = 1;
+            this.tabPageDataSource.Text = "Data Sources";
+            this.tabPageDataSource.UseVisualStyleBackColor = true;
+            // 
+            // stylesTab
+            // 
+            this.stylesTab.Controls.Add(this.stylesControl1);
+            this.stylesTab.Location = new System.Drawing.Point(4, 22);
+            this.stylesTab.Name = "stylesTab";
+            this.stylesTab.Padding = new System.Windows.Forms.Padding(3);
+            this.stylesTab.Size = new System.Drawing.Size(329, 514);
+            this.stylesTab.TabIndex = 2;
+            this.stylesTab.Text = "Styles";
+            this.stylesTab.UseVisualStyleBackColor = true;
+            // 
+            // stylesControl1
+            // 
+            this.stylesControl1.ContextMenuStrip = this.StylesContextMenu;
+            this.stylesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.stylesControl1.Location = new System.Drawing.Point(3, 3);
+            this.stylesControl1.Name = "stylesControl1";
+            this.stylesControl1.Size = new System.Drawing.Size(323, 508);
+            this.stylesControl1.TabIndex = 0;
+            // 
+            // splitHorizontal
+            // 
+            this.splitHorizontal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitHorizontal.Location = new System.Drawing.Point(0, 0);
+            this.splitHorizontal.Name = "splitHorizontal";
+            this.splitHorizontal.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitHorizontal.Panel1
+            // 
+            this.splitHorizontal.Panel1.Controls.Add(this.resultsTabControl);
+            // 
+            // splitHorizontal.Panel2
+            // 
+            this.splitHorizontal.Panel2.Controls.Add(this.mapViewControl1);
+            this.splitHorizontal.Size = new System.Drawing.Size(671, 540);
+            this.splitHorizontal.SplitterDistance = 110;
+            this.splitHorizontal.TabIndex = 1;
+            // 
+            // resultsTabControl
+            // 
+            this.resultsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resultsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.resultsTabControl.Name = "resultsTabControl";
+            this.resultsTabControl.SelectedIndex = 0;
+            this.resultsTabControl.Size = new System.Drawing.Size(671, 110);
+            this.resultsTabControl.TabIndex = 0;
+            // 
+            // mapViewControl1
+            // 
+            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
+            this.mapViewControl1.Name = "mapViewControl1";
+            this.mapViewControl1.Size = new System.Drawing.Size(671, 426);
+            this.mapViewControl1.TabIndex = 0;
+            this.mapViewControl1.Text = "mapViewControl1";
+            this.mapViewControl1.Title = "mapViewControl1";
             // 
             // MapViewerForm
             // 
@@ -557,14 +605,6 @@ namespace MapViewer
             this.mainToolStrip.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.splitVertical.Panel1.ResumeLayout(false);
-            this.splitVertical.Panel2.ResumeLayout(false);
-            this.splitVertical.ResumeLayout(false);
-            this.LeftTabControl.ResumeLayout(false);
-            this.layersTab.ResumeLayout(false);
-            this.splitHorizontal.Panel1.ResumeLayout(false);
-            this.splitHorizontal.Panel2.ResumeLayout(false);
-            this.splitHorizontal.ResumeLayout(false);
             this.layersContextMenu.ResumeLayout(false);
             this.mapViewControlContextMenu.ResumeLayout(false);
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
@@ -575,6 +615,17 @@ namespace MapViewer
             this.standardToolsToolstrip.PerformLayout();
             this.customToolsToolstrip.ResumeLayout(false);
             this.customToolsToolstrip.PerformLayout();
+            this.layerContextMenu.ResumeLayout(false);
+            this.StylesContextMenu.ResumeLayout(false);
+            this.splitVertical.Panel1.ResumeLayout(false);
+            this.splitVertical.Panel2.ResumeLayout(false);
+            this.splitVertical.ResumeLayout(false);
+            this.LeftTabControl.ResumeLayout(false);
+            this.layersTab.ResumeLayout(false);
+            this.stylesTab.ResumeLayout(false);
+            this.splitHorizontal.Panel1.ResumeLayout(false);
+            this.splitHorizontal.Panel2.ResumeLayout(false);
+            this.splitHorizontal.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -631,6 +682,11 @@ namespace MapViewer
         private System.Windows.Forms.ToolStripButton zoomOutButton;
         private MapViewer.Views.LayersView layersView1;
         private System.Windows.Forms.ContextMenuStrip layerContextMenu;
+        private StylesControl stylesControl1;
+        private System.Windows.Forms.ContextMenuStrip StylesContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem addStyleMenuStripItem;
+        private System.Windows.Forms.ToolStripMenuItem stylesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addStylesToolStripMenuItem;
 
     }
 }

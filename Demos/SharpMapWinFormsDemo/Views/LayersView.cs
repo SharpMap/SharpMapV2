@@ -106,14 +106,16 @@ namespace MapViewer.Views
             get
             {
                 var lst = new List<string>();
-                foreach (ILayer l in _presenter.Map.SelectedLayers)
-                    lst.Add(l.LayerName);
+                if (!DesignMode)
+                    foreach (ILayer l in _presenter.Map.SelectedLayers)
+                        lst.Add(l.LayerName);
                 return lst;
             }
             set
             {
-                if (LayersSelectionChangeRequested != null)
-                    LayersSelectionChangeRequested(this, new LayerActionEventArgs(value, LayerAction.Enabled));
+                if (!DesignMode)
+                    if (LayersSelectionChangeRequested != null)
+                        LayersSelectionChangeRequested(this, new LayerActionEventArgs(value, LayerAction.Enabled));
             }
         }
 

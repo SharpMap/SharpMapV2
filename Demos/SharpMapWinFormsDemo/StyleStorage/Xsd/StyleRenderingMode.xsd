@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="StyleRenderingMode" type="StyleRenderingMode" />
+  <xs:simpleType name="StyleRenderingMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Default" />
+      <xs:enumeration value="None" />
+      <xs:enumeration value="AntiAlias" />
+      <xs:enumeration value="HighQuality" />
+      <xs:enumeration value="HighSpeed" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

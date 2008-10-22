@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="StyleFont" nillable="true" type="StyleFont" />
+  <xs:complexType name="StyleFont">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Size" type="ArrayOfDouble" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Style" type="StyleFontStyle" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfDouble">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="double" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="StyleFontStyle">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Bold" />
+          <xs:enumeration value="Italic" />
+          <xs:enumeration value="Regular" />
+          <xs:enumeration value="Strikeout" />
+          <xs:enumeration value="Underline" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+</xs:schema>

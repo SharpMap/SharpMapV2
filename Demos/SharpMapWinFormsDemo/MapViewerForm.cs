@@ -14,8 +14,8 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
 using GeoAPI.DataStructures;
@@ -24,6 +24,7 @@ using MapViewer.Commands;
 using MapViewer.Controls;
 using MapViewer.DataSource;
 using MapViewer.MapActionHandler;
+using MapViewer.SLD;
 using SharpMap;
 using SharpMap.Data;
 using SharpMap.Expressions;
@@ -31,6 +32,7 @@ using SharpMap.Layers;
 using SharpMap.Presentation;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
 
@@ -39,13 +41,14 @@ namespace MapViewer
     public partial class MapViewerForm : Form
     {
         private readonly CommandManager _commandManager = new CommandManager();
+
+        private readonly BindingList<KeyValuePair<string, GeometryStyle>> _loadedStyles =
+            new BindingList<KeyValuePair<string, GeometryStyle>>();
+
         private readonly IMapActionHandler AttributeQueryHandler = new MapActionHandler.MapActionHandler();
         private readonly IGeometryServices GeometryServices = new GeometryServices();
         private readonly WorkQueue workQueue;
 
-
-
-        private Map _map;
 
         public MapViewerForm()
         {
@@ -58,6 +61,7 @@ namespace MapViewer
             AttributeQueryHandler.Begin += AttributeQueryHandler_Begin;
             layersView1.LayersContextMenu = layerContextMenu;
             layersView1.ContextMenuStrip = layersContextMenu;
+            stylesControl1.Styles = _loadedStyles; 
         }
 
         private IMapActionHandler MapActionHandler { get; set; }
@@ -67,21 +71,11 @@ namespace MapViewer
             get { return _commandManager; }
         }
 
-        public Map Map
-        {
-            get { return _map; }
-            set
-            {
-                _map = value;
-            }
-        }
+        public Map Map { get; set; }
 
         public ILayersView LayersView
         {
-            get
-            {
-                return layersView1;
-            }
+            get { return layersView1; }
         }
 
         public IMapView2D MapView
@@ -104,15 +98,11 @@ namespace MapViewer
             IFeatureLayer l =
                 Enumerable.FirstOrDefault(
                     Processor.Transform(Enumerable.Select(Map.SelectedLayers, o => o as IFeatureLayer != null),
-                                        o => (IFeatureLayer)o));
+                                        o => (IFeatureLayer) o));
 
             if (l != null)
             {
-
-
-                //jd: TODO: attempt to make a clone of the selected features
-                //so they don't change on requery.. all values always seem null though...
-                FeatureDataView dv = new FeatureDataView(l.SelectedFeatures.Table);
+                var dv = new FeatureDataView(l.SelectedFeatures.Table);
 
                 if (l.SelectedFeatures.AttributeFilter != null)
                     dv.AttributeFilter =
@@ -172,7 +162,7 @@ namespace MapViewer
             Map.DeselectLayers(Map.SelectedLayers);
 
             if (queryLayerComboBox.SelectedIndex > -1)
-                Map.SelectLayer((string)queryLayerComboBox.SelectedItem);
+                Map.SelectLayer((string) queryLayerComboBox.SelectedItem);
         }
 
         private void Layers_ListChanged(object sender, ListChangedEventArgs e)
@@ -394,8 +384,35 @@ namespace MapViewer
 
             #endregion
 
+            ICommand addStyle = new Command(CommandNames.AddStyle);
+            CommandManager.AddCommand(addStyle);
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripMenuItem>(addStyleMenuStripItem,
+                                                                                              addStyle));
+            CommandManager.AddCommandSource(new ToolStripItemCommandSource<ToolStripMenuItem>(
+                                                addStylesToolStripMenuItem,
+                                                addStyle));
+            CommandManager.AddCommandHandler(new ActionCommandHandler(addStyle, AddStyle));
+
+
             EnableDisableCommandsRequiringLayers();
         }
+
+        private void AddStyle()
+        {
+            using (var dlg = new OpenFileDialog())
+            {
+                dlg.Filter = "Styled Layer Descriptor Files|*.sld|Xml Documents|*.xml";
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    IDictionary<string, GeometryStyle> dict
+                        = new SldConverter().ParseFeatureStyleFromFile(dlg.FileName);
+
+                    foreach (var pair in dict)
+                        _loadedStyles.Add(pair);
+                }
+            }
+        }
+
 
         private void EnableQueryRemove()
         {
@@ -434,16 +451,16 @@ namespace MapViewer
 
         private void FixedZoomIn()
         {
-            Zoom(1 / 1.2);
+            Zoom(1/1.2);
         }
 
         private void Zoom(double amount)
         {
-            var ext = (IExtents2D)MapView.ViewEnvelope.Clone();
+            var ext = (IExtents2D) MapView.ViewEnvelope.Clone();
             double dx, dy;
-            dx = ext.Width * amount / 2;
-            dy = ext.Height * amount / 2;
-            var c = (ICoordinate2D)ext.Center;
+            dx = ext.Width*amount/2;
+            dy = ext.Height*amount/2;
+            var c = (ICoordinate2D) ext.Center;
 
             MapView.ZoomToWorldBounds(ext.Factory.CreateExtents2D(c.X - dx, c.Y - dy, c.X + dx, c.Y + dy));
         }
@@ -484,7 +501,7 @@ namespace MapViewer
         private void ZoomLayerExtent(CommandEventArgs<ILayer> layerArgs)
         {
             if (layerArgs.Value != null)
-                MapView.ZoomToWorldBounds((IExtents2D)layerArgs.Value.Extents);
+                MapView.ZoomToWorldBounds((IExtents2D) layerArgs.Value.Extents);
         }
 
         private void EditLayerSymbology(CommandEventArgs<ILayer> layerArgs)
@@ -518,29 +535,30 @@ namespace MapViewer
                     workQueue.AddWorkItem(
                         string.Format("Loading Datasource {0}", name),
                         delegate
-                        {
-                            var lyr =
-                                new GeometryLayer(
-                                    name,
-                                    prov);
+                            {
+                                var lyr =
+                                    new GeometryLayer(
+                                        name,
+                                        prov);
 
-                            prov.Open();
+                                prov.Open();
 
-                            InvokeIfRequired(new Action(delegate
-                                                            {
-                                                                Map.Layers.Insert(0, lyr);
 
-                                                                lyr.Style =
-                                                                    RandomStyle.RandomGeometryStyle();
-
-                                                                if (Map.Layers.Count == 1)
+                                InvokeIfRequired(new Action(delegate
                                                                 {
-                                                                    mapViewControl1.Map = Map;
-                                                                    layersView1.Map = Map;
-                                                                    MapView.ZoomToExtents();
-                                                                }
-                                                            }));
-                        }, delegate { EnableDisableCommandsRequiringLayers(); });
+                                                                    Map.Layers.Insert(0, lyr);
+
+                                                                    lyr.Style = RandomStyle.RandomGeometryStyle();
+                                                                    //lyr.Style = setGeometryStyle(lyr);
+
+                                                                    if (Map.Layers.Count == 1)
+                                                                    {
+                                                                        mapViewControl1.Map = Map;
+                                                                        layersView1.Map = Map;
+                                                                        MapView.ZoomToExtents();
+                                                                    }
+                                                                }));
+                            }, delegate { EnableDisableCommandsRequiringLayers(); });
                 }
             }
         }
@@ -550,6 +568,7 @@ namespace MapViewer
         public static class CommandNames
         {
             public const string AddLayer = "AddLayer";
+            public const string AddStyle = "AddStyle";
             public const string ApplicationExit = "AppExit";
             public const string ClearLayers = "ClearLayers";
             public const string EditLayerSymbology = "EditLayerSymbology";
@@ -567,7 +586,5 @@ namespace MapViewer
         }
 
         #endregion
-
-
     }
 }
