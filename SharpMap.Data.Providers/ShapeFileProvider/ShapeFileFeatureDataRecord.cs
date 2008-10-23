@@ -9,32 +9,42 @@ namespace SharpMap.Data.Providers.ShapeFile
     internal class ShapeFileFeatureDataRecord : IFeatureDataRecord
     {
         private readonly Dictionary<Int32, Object> _rowValues = new Dictionary<Int32, Object>();
-        private readonly Dictionary<Int32, String> _rowColumns = new Dictionary<Int32, String>();
+        //private readonly Dictionary<Int32, String> _rowColumns = new Dictionary<Int32, String>();
+        private readonly List<DbaseField> _rowColumns;
         private IGeometry _geometry;
-        private readonly Int32 _oidColumn;
-        private readonly Int32 _columnCount;
+        private readonly Int32 _oidColumn = 0;
+        private static readonly DbaseField _oidField = 
+            new DbaseField(null, ShapeFileConstants.IdColumnName, typeof(UInt32), 0, 0, 0, 0);
+        private  static readonly ShapeFileFeatureDataRecord _idOnlyRecord =
+            new ShapeFileFeatureDataRecord(new DbaseField[] { _oidField });
+        //private readonly Int32 _columnCount;
 
-        public ShapeFileFeatureDataRecord(Int32 oidColumn, Int32 columnCount)
+        public static DbaseField OidField
         {
-            if (oidColumn < 0 || oidColumn >= columnCount)
-            {
-                throw new ArgumentOutOfRangeException("oidColumn",
-                                                      oidColumn,
-                                                      "Parameter must be between 0 and 'columnCount'.");
-            }
-            _oidColumn = oidColumn;
-            _columnCount = columnCount;
+            get { return _oidField; }
         }
 
-        public void AddColumnValue(Int32 columnOrdinal, String columnName, Object value)
+        public static ShapeFileFeatureDataRecord IdOnlyRecord
         {
-            if (_rowValues.ContainsKey(columnOrdinal) || _rowColumns.ContainsKey(columnOrdinal))
+            get { return _idOnlyRecord; }
+        }
+
+        public ShapeFileFeatureDataRecord(IList<DbaseField> columns)
+        {
+            if (columns == null) throw new ArgumentNullException("columns");
+            _rowColumns = new List<DbaseField>(columns.Count + 1);
+            _rowColumns.Add(OidField);
+            _rowColumns.AddRange(columns);
+        }
+
+        public void SetColumnValue(Int32 columnOrdinal, Object value)
+        {
+            if (_rowValues.ContainsKey(columnOrdinal))
             {
                 throw new InvalidOperationException("Column with ordinal " + columnOrdinal + " already exists.");
             }
 
             _rowValues[columnOrdinal] = value;
-            _rowColumns[columnOrdinal] = columnName;
         }
 
         #region Implementation of IDataRecord
@@ -42,25 +52,19 @@ namespace SharpMap.Data.Providers.ShapeFile
         public string GetName(int i)
         {
             checkIndex(i);
-            return _rowColumns[i];
-        }
-
-        private void checkIndex(int i)
-        {
-            if (i < 0 || i >= _columnCount)
-            {
-                throw new IndexOutOfRangeException();
-            }
+            return _rowColumns[i].ColumnName;
         }
 
         public string GetDataTypeName(int i)
         {
-            throw new System.NotImplementedException();
+            checkIndex(i);
+            return _rowColumns[i].DataType.Name;
         }
 
         public Type GetFieldType(int i)
         {
-            throw new System.NotImplementedException();
+            checkIndex(i);
+            return _rowColumns[i].DataType;
         }
 
         public object GetValue(int i)
@@ -80,7 +84,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return 0;
             }
 
-            Int32 objectCount = Math.Min(values.Length, _columnCount);
+            Int32 objectCount = Math.Min(values.Length, _rowColumns.Count);
 
             List<KeyValuePair<Int32, Object>> sortedValues = new List<KeyValuePair<Int32, Object>>(_rowValues);
             sortedValues.Sort(delegate(KeyValuePair<Int32, Object> a, KeyValuePair<Int32, Object> b)
@@ -103,11 +107,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ArgumentNullException("name");
             }
 
-            foreach (KeyValuePair<int, string> column in _rowColumns)
+            foreach (DbaseField column in _rowColumns)
             {
-                if (name.Equals(column.Value))
+                if (name.Equals(column.ColumnName))
                 {
-                    return column.Key;
+                    return column.Ordinal;
                 }
             }
 
@@ -223,7 +227,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public int FieldCount
         {
-            get { return _columnCount; }
+            get { return _rowColumns.Count; }
         }
 
         object IDataRecord.this[int i]
@@ -291,5 +295,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         #endregion
+
+        private void checkIndex(int i)
+        {
+            if (i < 0 || i >= _rowColumns.Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
+        }
     }
 }

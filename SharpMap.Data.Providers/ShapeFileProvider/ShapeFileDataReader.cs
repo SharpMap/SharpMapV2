@@ -38,6 +38,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private Boolean _isDisposed;
         private readonly IEnumerator<UInt32> _objectEnumerator;
         private ICoordinateTransformation _coordinateTransform;
+        private readonly Int32 _fieldCount;
         #endregion
 
         #region Object Construction / Disposal
@@ -54,6 +55,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             _shapeFile = source;
             _options = options;
             _schemaTable = source.GetSchemaTable();
+            _fieldCount = _schemaTable.Rows.Count;
 
             // TODO: now that we are accessing the geometry each time, perhaps a feature
             // query here would save a disk access
@@ -158,7 +160,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             get
             {
-                checkDisposed();
                 return true;
             }
         }
@@ -245,8 +246,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             get
             {
-                checkDisposed();
-                return _schemaTable.Rows.Count;
+                return _fieldCount;
             }
         }
 
@@ -519,7 +519,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 yield return this;
             }
-            Dispose(true);///jd: added to prevent "another reader is already active" type exception
+
+            Dispose(true); //jd: added to prevent "another reader is already active" type exception
         }
 
         #endregion

@@ -223,6 +223,24 @@ namespace SharpMap.Rendering.Rendering2D
             }
         }
 
+        public void GetComponents(out DoubleComponent a, out DoubleComponent b)
+        {
+            a = _x;
+            b = _y;
+        }
+
+        public void GetComponents(out DoubleComponent a, out DoubleComponent b, out DoubleComponent c)
+        {
+            GetComponents(out a, out b);
+            c = Double.NaN;
+        }
+
+        public void GetComponents(out DoubleComponent a, out DoubleComponent b, out DoubleComponent c, out DoubleComponent d)
+        {
+            GetComponents(out a, out b, out c);
+            d = Double.NaN;
+        } 
+
         public Boolean IsEmpty
         {
             get { return !_hasValue; }

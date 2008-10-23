@@ -33,8 +33,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         private Int16 _headerLength;
         private Int16 _recordLength;
         private readonly Byte _languageDriver;
-        //private DbaseField[] _dbaseColumns;
-    	private readonly Dictionary<String, DbaseField> _dbaseColumns = new Dictionary<String, DbaseField>();
+    	private readonly Dictionary<String, DbaseField> _dbaseColumns 
+            = new Dictionary<String, DbaseField>();
+        private List<DbaseField> _columnList;
 
         internal DbaseHeader(Byte languageDriverCode, DateTime lastUpdate, UInt32 numberOfRecords)
         {
@@ -64,11 +65,20 @@ namespace SharpMap.Data.Providers.ShapeFile
             set { _numberOfRecords = value; }
         }
 
-        public ICollection<DbaseField> Columns
+        public IList<DbaseField> Columns
         {
-            get { return _dbaseColumns.Values; }
+            get
+            {
+                if (_columnList == null)
+                {
+                    _columnList = new List<DbaseField>(_dbaseColumns.Values);
+                }
+
+                return _columnList;
+            }
             set
             {
+                _columnList = null;
 				_dbaseColumns.Clear();
 
 				RecordLength = 1; // Deleted flag length
@@ -79,8 +89,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 					RecordLength += field.Length;
             	}
 
-                HeaderLength = (Int16)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count)
-                    + DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
+                HeaderLength = (Int16)((DbaseConstants.ColumnDescriptionLength * _dbaseColumns.Count) + 
+                    DbaseConstants.ColumnDescriptionOffset + 1 /* For terminator */);
             }
         }
 

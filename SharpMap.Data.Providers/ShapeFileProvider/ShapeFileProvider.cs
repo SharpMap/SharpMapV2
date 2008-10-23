@@ -130,6 +130,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly Boolean _hasDbf;
         private readonly IGeometryFactory _geoFactory;
         private readonly ICoordinateSystemFactory _coordSysFactory;
+        //private List<DbaseField> _oidFieldList = new List<DbaseField>();
         #endregion
 
         #region Object construction and disposal
@@ -620,6 +621,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public void Open(Boolean exclusive)
         {
             _coordsysReadFromFile = false; //jd setting to false to stop error on second and subsequent open
+           
             if (IsOpen)
             {
                 return;
@@ -1599,9 +1601,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else
             {
-                ShapeFileFeatureDataRecord featureRecord = HasDbf 
-                    ? _dbaseFile.GetAttributes(oid, null) as ShapeFileFeatureDataRecord
-                    : getOidOnlyFeatureRecord(oid);
+                ShapeFileFeatureDataRecord featureRecord = HasDbf
+                           ? _dbaseFile.GetAttributes(oid, null) as ShapeFileFeatureDataRecord
+                           : ShapeFileFeatureDataRecord.IdOnlyRecord;
 
                 featureRecord.Geometry = readGeometry(oid);
                 dr = featureRecord;
@@ -1610,12 +1612,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             return Filter == null || Filter(dr) ? dr : null;
         }
 
-        private static ShapeFileFeatureDataRecord getOidOnlyFeatureRecord(UInt32 oid)
-        {
-            ShapeFileFeatureDataRecord record = new ShapeFileFeatureDataRecord(0, 1);
-            record.AddColumnValue(0, ShapeFileConstants.IdColumnName, oid);
-            return record;
-        }
+        //private ShapeFileFeatureDataRecord getOidOnlyFeatureRecord(UInt32 oid)
+        //{
+        //    ShapeFileFeatureDataRecord record = new ShapeFileFeatureDataRecord(_oidFieldList);
+        //    record.SetColumnValue(0, oid);
+        //    return record;
+        //}
 
         private void readerDisposed(Object sender, EventArgs e)
         {

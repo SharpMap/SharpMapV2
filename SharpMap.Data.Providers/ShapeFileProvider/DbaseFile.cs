@@ -213,7 +213,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             DbaseFile file = new DbaseFile(fileName, geoFactory, false);
             Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
-            file.Header.Columns = DbaseSchema.GetFields(schema, file.Header);
+            file.Header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file.Header));
             file._headerIsParsed = true;
             file.Open();
             file.Save();
@@ -345,12 +345,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
             else
             {
-                ShapeFileFeatureDataRecord dr = new ShapeFileFeatureDataRecord(0, Header.Columns.Count);
-                dr.AddColumnValue(0, ShapeFileConstants.IdColumnName, oid);
+                ShapeFileFeatureDataRecord dr = new ShapeFileFeatureDataRecord(Header.Columns);
+                dr.SetColumnValue(0, oid);
 
                 foreach (DbaseField field in Header.Columns)
                 {
-                    dr.AddColumnValue(field.Ordinal + 1, field.ColumnName, _reader.GetValue(oid, field));
+                    dr.SetColumnValue(field.Ordinal + 1, _reader.GetValue(oid, field));
                 }
 
                 return dr;
@@ -387,8 +387,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (!_headerIsParsed && !_isOpen)
                 {
-                    Stream dbfStream = openDbfFileStream(true);
-                    syncReadHeader(dbfStream);
+                    using (Stream dbfStream = openDbfFileStream(true))
+                    {
+                        syncReadHeader(dbfStream);
+                    }
                 }
 
                 return _header;

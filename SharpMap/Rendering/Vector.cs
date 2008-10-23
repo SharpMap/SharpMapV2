@@ -83,23 +83,65 @@ namespace SharpMap.Rendering
         {
             get
             {
-                if (index < 0 || index >= ComponentCount)
-                {
-                    throw new ArgumentOutOfRangeException("index", index,
-                                                          "Indexer must be between 0 and ComponentCount.");
-                }
+                checkIndex(index);
 
                 return Components[index];
             }
             set
             {
-                if (index < 0 || index >= ComponentCount)
-                {
-                    throw new ArgumentOutOfRangeException("index", index,
-                                                          "Indexer must be between 0 and ComponentCount.");
-                }
+                checkIndex(index);
 
                 Components[index] = value;
+            }
+        }
+
+        private void checkIndex(int index)
+        {
+            if (index < 0 || index >= ComponentCount)
+            {
+                throw new ArgumentOutOfRangeException("index", index,
+                                                      "Indexer must be between 0 and ComponentCount.");
+            }
+        }
+
+        public void GetComponents(out DoubleComponent a, out DoubleComponent b)
+        {
+            Int32 count = ComponentCount;
+
+            a = b = Double.NaN;
+
+            if (count > 0)
+            {
+                a = _elements[0];
+            }
+
+            if (count > 1)
+            {
+                b = _elements[1];
+            }
+        }
+
+        public void GetComponents(out DoubleComponent a, out DoubleComponent b, out DoubleComponent c)
+        {
+            GetComponents(out a, out b);
+
+            c = Double.NaN;
+
+            if (ComponentCount > 2)
+            {
+                c = _elements[2];
+            }
+        }
+
+        public void GetComponents(out DoubleComponent a, out DoubleComponent b, out DoubleComponent c, out DoubleComponent d)
+        {
+            GetComponents(out a, out b, out c);
+
+            d = Double.NaN;
+
+            if (ComponentCount > 2)
+            {
+                d = _elements[3];
             }
         }
 
