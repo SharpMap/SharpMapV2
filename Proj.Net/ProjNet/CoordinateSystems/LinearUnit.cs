@@ -60,14 +60,6 @@ namespace ProjNet.CoordinateSystems
                                       "Also known as International metre. SI standard unit.");
             }
         }
-        /// <summary>
-        /// Returns the metres linear unit.
-        /// Also known as meter. SI standard unit.
-        /// </summary>
-        public static ILinearUnit Metre
-        {
-            get{ return Meter;}
-        }
 
         /// <summary>
         /// Returns the foot linear unit (1ft = 0.3048m).
