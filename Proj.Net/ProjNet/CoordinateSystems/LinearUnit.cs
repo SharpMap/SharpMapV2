@@ -50,7 +50,7 @@ namespace ProjNet.CoordinateSystems
 
         /// <summary>
         /// Returns the meters linear unit.
-        /// Also known as International meter. SI standard unit.
+        /// Also known as International metre. SI standard unit.
         /// </summary>
         public static ILinearUnit Meter
         {
@@ -59,6 +59,14 @@ namespace ProjNet.CoordinateSystems
                 return new LinearUnit(1.0, "metre", "EPSG", "9001", "m", String.Empty,
                                       "Also known as International metre. SI standard unit.");
             }
+        }
+        /// <summary>
+        /// Returns the metres linear unit.
+        /// Also known as meter. SI standard unit.
+        /// </summary>
+        public static ILinearUnit Metre
+        {
+            get{ return Meter;}
         }
 
         /// <summary>
