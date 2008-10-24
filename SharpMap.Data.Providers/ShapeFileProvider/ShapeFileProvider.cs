@@ -24,6 +24,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using GeoAPI.Coordinates;
@@ -76,14 +77,27 @@ namespace SharpMap.Data.Providers.ShapeFile
         private const String SharpMapShapeFileIndexFileExtension = ".#index-shp";
 
         #region IdBounds
+        [StructLayout(LayoutKind.Explicit)]
         struct IdBounds : IBoundable<IExtents>
         {
+            [FieldOffset(0)]
             private readonly UInt32 _id;
+            [FieldOffset(4)]
             private readonly IExtents _extents;
+            [FieldOffset(4)]
+            private readonly IFeatureDataRecord _feature;
+
+            public IdBounds(UInt32 id, IFeatureDataRecord feature)
+            {
+                _id = id;
+                _extents = null;
+                _feature = feature;
+            }
 
             public IdBounds(UInt32 id, IExtents extents)
             {
                 _id = id;
+                _feature = null;
                 _extents = extents;
             }
 
@@ -92,18 +106,23 @@ namespace SharpMap.Data.Providers.ShapeFile
                 get { return _id; }
             }
 
+            public IFeatureDataRecord Feature
+            {
+                get { return _feature; }
+            }
+
             #region IBoundable<IExtents> Members
 
             public IExtents Bounds
             {
-                get { return _extents; }
+                get { return _extents ?? Feature.Extents; }
             }
 
             public Boolean Intersects(IExtents bounds)
             {
                 if (bounds == null) throw new ArgumentNullException("bounds");
 
-                return bounds.Intersects(_extents);
+                return bounds.Intersects(Bounds);
             }
 
             #endregion
@@ -749,7 +768,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             (this as IDisposable).Dispose();
         }
 
-        public override object ExecuteQuery(Expression query)
+        public override Object ExecuteQuery(Expression query)
         {
             FeatureQueryExpression featureQuery = query as FeatureQueryExpression;
 
@@ -993,7 +1012,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <param name="query">Query expression for features.</param>
         /// <returns>
-        /// An enumeration of oids (object ids) which match the given <paramref name="query"/>.
+        /// An enumeration of oids (Object ids) which match the given <paramref name="query"/>.
         /// </returns>
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="ProviderBase.IsOpen"/> 
@@ -1030,7 +1049,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 UInt32 id = key.Id;
 
-                if (isMatch(queryOp, isQueryLeft, id, query.SpatialExpression))
+                if (isMatch(queryOp, isQueryLeft, key, query.SpatialExpression))
                 {
                     yield return id;
                 }
@@ -1478,16 +1497,18 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private Boolean isMatch(SpatialOperation op,
                                 Boolean isQueryLeft,
-                                UInt32 id,
+                                IdBounds idBounds,
                                 SpatialExpression spatialExpression)
         {
             GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
 
             IGeometry candidateGeometry = geometryExpression == null
                                               ? null
-                                              : GetGeometryByOid(id);
+                                              : idBounds.Feature == null
+                                                    ? GetGeometryByOid(idBounds.Id)
+                                                    : idBounds.Feature.Geometry;
             IExtents candidateExtents = geometryExpression == null
-                                            ? GetExtentsByOid(id)
+                                            ? idBounds.Bounds
                                             : candidateGeometry.Extents;
 
             if (geometryExpression != null)
@@ -1837,16 +1858,19 @@ namespace SharpMap.Data.Providers.ShapeFile
             _shapeFileReader.BaseStream.Seek(offset, SeekOrigin.Begin);
             UInt32 storedOid = ByteEncoder.GetBigEndian(_shapeFileReader.ReadUInt32());
 
+            // Skip content length
+            for (Int32 i = 0; i < ShapeFileConstants.ShapeRecordContentLengthByteLength; i++)
+            {
+                _shapeFileReader.ReadByte();
+            }
+
+            ShapeType recordType = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
+
             if (oid != storedOid)
             {
                 throw new ShapeFileIsInvalidException("Record #" + oid + " is stored with #" + storedOid);
             }
 
-            // Skip content length
-            _shapeFileReader.BaseStream.Seek(ShapeFileConstants.ShapeRecordContentLengthByteLength,
-                                             SeekOrigin.Current);
-
-            ShapeType recordType = (ShapeType)ByteEncoder.GetLittleEndian(_shapeFileReader.ReadInt32());
             return recordType;
         }
 

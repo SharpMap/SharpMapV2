@@ -118,7 +118,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// </summary>
 		/// <param name="obj">The field to compare to.</param>
 		/// <returns>True if the fields are equal, false otherwise.</returns>
-		public override Boolean Equals(object obj)
+		public override Boolean Equals(Object obj)
 		{
 			DbaseField other = obj as DbaseField;
 			return Equals(other);

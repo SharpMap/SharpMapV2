@@ -29,8 +29,12 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             #region Instance fields
             private readonly DbaseFile _dbaseFile;
+            private readonly UInt32 _rowCount;
             private BinaryReader _dbaseReader;
             private Boolean _isDisposed;
+            private UInt32 _currentRowId;
+            private readonly Object[] _currentRowValues;
+            private Boolean _isCurrentRowDeleted;
 
             #endregion
 
@@ -45,6 +49,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 _dbaseFile = file;
                 _dbaseReader = new BinaryReader(file.DataStream, file.Encoding);
+                _rowCount = file.Header.RecordCount;
+                _currentRowValues = new Object[_dbaseFile.Header.Columns.Count];
             }
 
             #region Dispose Pattern
@@ -55,7 +61,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             /// <summary>
-            /// Gets a value which indicates if this object is disposed: 
+            /// Gets a value which indicates if this Object is disposed: 
             /// <see langword="true"/> if it is, <see langword="false"/> otherwise
             /// </summary>
             /// <seealso cref="Dispose"/>
@@ -105,9 +111,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             internal Boolean IsRowDeleted(UInt32 row)
             {
-                Int64 rowOffset = _dbaseFile.ComputeByteOffsetToRecord(row);
-                _dbaseFile.DataStream.Seek(rowOffset, SeekOrigin.Begin);
-                return _dbaseReader.ReadChar() == DbaseConstants.DeletedIndicator;
+                ensureCurrentValues(row);
+                return _isCurrentRowDeleted;
             }
 
             /// <summary>
@@ -125,7 +130,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             /// </returns>
             /// <exception cref="ObjectDisposedException">
             /// Thrown when the method is called and 
-            /// object has been disposed.
+            /// Object has been disposed.
             /// </exception>
             /// <exception cref="InvalidDbaseFileOperationException">
             /// Thrown if this reader is 
@@ -136,76 +141,102 @@ namespace SharpMap.Data.Providers.ShapeFile
             /// Thrown if <paramref name="row"/> is 
             /// less than 0 or greater than <see cref="RecordCount"/> - 1.
             /// </exception>
-            internal object GetValue(UInt32 row, DbaseField column)
+            internal Object GetValue(UInt32 row, DbaseField column)
+            {
+                ensureCurrentValues(row);
+
+                if (_currentRowValues[column.Ordinal] is Exception)
+                {
+                    throw (Exception)_currentRowValues[column.Ordinal];
+                }
+
+                return _currentRowValues[column.Ordinal];
+            }
+
+            internal Object[] GetValues(UInt32 row)
             {
                 checkState();
 
+                checkRowIndex(row);
+
+                ensureCurrentValues(row);
+                Int32 length = _currentRowValues.Length;
+                Object[] values = new Object[length];
+                Array.Copy(_currentRowValues, values, length);
+                return values;
+            }
+
+            #region Private helper methods
+
+            private void ensureCurrentValues(UInt32 row)
+            {
+                if (row != _currentRowId)
+                {
+                    moveToRow(row);
+                    readDbfValues();
+                    _currentRowId = row;
+                }
+            }
+
+            private void moveToRow(UInt32 row)
+            {
                 DbaseHeader header = _dbaseFile.Header;
 
-                if (!_dbaseFile.IsOpen)
-                {
-                    throw new InvalidDbaseFileOperationException("An attempt was made to read " +
-                                                                 "from a closed DBF file");
-                }
+                // Compute the position in the file stream for the requested row
+                Int64 offset = header.HeaderLength + ((row - 1) * header.RecordLength);
 
-                if (row <= 0 || row > header.RecordCount)
+                // Seek to the computed offset
+                _dbaseFile.DataStream.Seek(offset, SeekOrigin.Begin);
+            }
+
+            private void checkRowIndex(UInt32 row)
+            {
+                if (row <= 0 || row > _rowCount)
                 {
                     throw new ArgumentOutOfRangeException("Invalid row requested " +
                                                           "at index " + row);
                 }
-
-                // Compute the position in the file stream for the requested row and column
-                Int64 offset = header.HeaderLength + ((row - 1) * header.RecordLength);
-                offset += column.Offset;
-
-                // Seek to the computed offset
-                _dbaseFile.DataStream.Seek(offset, SeekOrigin.Begin);
-
-                try
-                {
-                    return readDbfValue(column);
-                }
-                catch (NotSupportedException)
-                {
-                    String message = String.Format("Column type {0} is not supported.",
-                                                   column.DataType);
-                    throw new InvalidDbaseFileOperationException(message);
-                }
             }
-
-            #region Private helper methods
 
             private void checkState()
             {
                 if (_isDisposed)
                 {
                     throw new ObjectDisposedException("Attempt to access a disposed " +
-                                                      "DbaseReader object");
+                                                      "DbaseReader Object");
+                }
+
+                if (!_dbaseFile.IsOpen)
+                {
+                    throw new InvalidDbaseFileOperationException("An attempt was made to read " +
+                                                                 "from a closed DBF file");
                 }
             }
 
-            private object readDbfValue(DbaseField dbf)
+            private void readDbfValues()
             {
-                if (ReferenceEquals(dbf, null))
-                {
-                    throw new ArgumentNullException("dbf");
-                }
+                _isCurrentRowDeleted = _dbaseReader.ReadChar() == DbaseConstants.DeletedIndicator;
 
-                switch (Type.GetTypeCode(dbf.DataType))
+                foreach (DbaseField dbf in _dbaseFile.Header.Columns)
                 {
-                    case TypeCode.Boolean:
-                        Char tempChar = (Char)_dbaseReader.ReadByte();
-                        return ((tempChar == 'T') || (tempChar == 't') || (tempChar == 'Y') || (tempChar == 'y'));
+                    Object value;
 
-                    case TypeCode.DateTime:
-                        DateTime date;
-                        // Mono has not yet implemented DateTime.TryParseExact
+                    switch (Type.GetTypeCode(dbf.DataType))
+                    {
+                        case TypeCode.Boolean:
+                            Char tempChar = (Char) _dbaseReader.ReadByte();
+                            value = ((tempChar == 'T') || (tempChar == 't') || (tempChar == 'Y') || (tempChar == 'y'));
+                            break;
+                            
+                        case TypeCode.DateTime:
+                            DateTime date;
+                            // Mono has not yet implemented DateTime.TryParseExact
 #if !MONO
-                        return DateTime.TryParseExact(Encoding.UTF8.GetString((_dbaseReader.ReadBytes(8))),
-                                                      "yyyyMMdd", DbaseConstants.StorageNumberFormat,
-                                                      DateTimeStyles.None, out date)
-                                   ? (object)date
-                                   : DBNull.Value;
+                            value =  DateTime.TryParseExact(Encoding.UTF8.GetString((_dbaseReader.ReadBytes(8))),
+                                                          "yyyyMMdd", DbaseConstants.StorageNumberFormat,
+                                                          DateTimeStyles.None, out date)
+                                       ? (Object) date
+                                       : DBNull.Value;
 #else
 					    try 
 					    {
@@ -219,70 +250,86 @@ namespace SharpMap.Data.Providers.ShapeFile
 						    return DBNull.Value;
 					    }
 #endif
-                    case TypeCode.Double:
-                        String temp = Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
-                        Double dbl;
+                            break;
 
-                        return Double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl)
-                                   ? (object)dbl
-                                   : DBNull.Value;
+                        case TypeCode.Double:
+                            String temp =
+                                Encoding.UTF8.GetString(_dbaseReader.ReadBytes(dbf.Length)).Replace("\0", "").Trim();
+                            Double dbl;
 
-                    case TypeCode.Int16:
-                        String temp16 =
-                            Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
-                        Int16 i16;
+                            value = Double.TryParse(temp, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out dbl)
+                                       ? (Object) dbl
+                                       : DBNull.Value;
+                            break;
 
-                        return Int16.TryParse(temp16, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i16)
-                                   ? (object)i16
-                                   : DBNull.Value;
+                        case TypeCode.Int16:
+                            String temp16 =
+                                Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
+                            Int16 i16;
 
-                    case TypeCode.Int32:
-                        String temp32 =
-                            Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
-                        Int32 i32;
+                            value = Int16.TryParse(temp16, NumberStyles.Float, DbaseConstants.StorageNumberFormat,
+                                                  out i16)
+                                       ? (Object) i16
+                                       : DBNull.Value;
+                            break;
 
-                        return Int32.TryParse(temp32, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i32)
-                                   ? (object)i32
-                                   : DBNull.Value;
+                        case TypeCode.Int32:
+                            String temp32 =
+                                Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
+                            Int32 i32;
 
-                    case TypeCode.Int64:
-                        String temp64 =
-                            Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
-                        Int64 i64 = 0;
+                            value = Int32.TryParse(temp32, NumberStyles.Float, DbaseConstants.StorageNumberFormat,
+                                                  out i32)
+                                       ? (Object) i32
+                                       : DBNull.Value;
+                            break;
 
-                        return Int64.TryParse(temp64, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out i64)
-                                   ? (object)i64
-                                   : DBNull.Value;
+                        case TypeCode.Int64:
+                            String temp64 =
+                                Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length))).Replace("\0", "").Trim();
+                            Int64 i64 = 0;
 
-                    case TypeCode.Single:
-                        String temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
-                        Single f = 0;
+                            value = Int64.TryParse(temp64, NumberStyles.Float, DbaseConstants.StorageNumberFormat,
+                                                  out i64)
+                                       ? (Object) i64
+                                       : DBNull.Value;
+                            break;
 
-                        return Single.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f)
-                                   ? (object)f
-                                   : DBNull.Value;
+                        case TypeCode.Single:
+                            String temp4 = Encoding.UTF8.GetString((_dbaseReader.ReadBytes(dbf.Length)));
+                            Single f = 0;
 
-                    case TypeCode.String:
-                        {
-                            Byte[] chars = _dbaseReader.ReadBytes(dbf.Length);
-                            String value = _dbaseFile.Encoding.GetString(chars);
-                            return value.Replace("\0", "").Trim();
-                        }
+                            value = Single.TryParse(temp4, NumberStyles.Float, DbaseConstants.StorageNumberFormat, out f)
+                                       ? (Object) f
+                                       : DBNull.Value;
+                            break;
 
-                    case TypeCode.Char:
-                    case TypeCode.UInt16:
-                    case TypeCode.UInt32:
-                    case TypeCode.UInt64:
-                    case TypeCode.Byte:
-                    case TypeCode.DBNull:
-                    case TypeCode.Object:
-                    case TypeCode.SByte:
-                    case TypeCode.Empty:
-                    case TypeCode.Decimal:
-                    default:
-                        throw new NotSupportedException("Cannot parse DBase field '"
-                                                        + dbf.ColumnName + "' of type '" +
-                                                        dbf.DataType + "'");
+                        case TypeCode.String:
+                            {
+                                Byte[] chars = _dbaseReader.ReadBytes(dbf.Length);
+                                String s = _dbaseFile.Encoding.GetString(chars);
+                                value = s.Replace("\0", "").Trim();
+                            }
+                            break;
+
+                        case TypeCode.Char:
+                        case TypeCode.UInt16:
+                        case TypeCode.UInt32:
+                        case TypeCode.UInt64:
+                        case TypeCode.Byte:
+                        case TypeCode.DBNull:
+                        case TypeCode.Object:
+                        case TypeCode.SByte:
+                        case TypeCode.Empty:
+                        case TypeCode.Decimal:
+                        default:
+                            value = new NotSupportedException("Cannot parse DBase field '" + 
+                                                              dbf.ColumnName + "' of type '" +
+                                                              dbf.DataType + "'");
+                            break;
+                    }
+
+                    _currentRowValues[dbf.Ordinal] = value;
                 }
             }
             #endregion

@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures.Collections.Generic;
 using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
     internal class ShapeFileFeatureDataRecord : IFeatureDataRecord
     {
-        private readonly Dictionary<Int32, Object> _rowValues = new Dictionary<Int32, Object>();
+        //private readonly IDictionary<Int32, Object> _rowValues = new HybridDictionary<Int32, Object>();
+        private readonly IDictionary<Int32, Object> _rowValues = new Dictionary<Int32, Object>();
         //private readonly Dictionary<Int32, String> _rowColumns = new Dictionary<Int32, String>();
         private readonly List<DbaseField> _rowColumns;
         private IGeometry _geometry;
@@ -47,6 +49,14 @@ namespace SharpMap.Data.Providers.ShapeFile
             _rowValues[columnOrdinal] = value;
         }
 
+        public void SetColumnValues(Int32 startOrdinal, Int32 endOrdinal, Object[] values)
+        {
+            for (Int32 i = startOrdinal, j = 0; i < endOrdinal; i++, j++)
+            {
+                _rowValues[i] = values[j];
+            }
+        }
+
         #region Implementation of IDataRecord
 
         public string GetName(int i)
@@ -67,12 +77,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             return _rowColumns[i].DataType;
         }
 
-        public object GetValue(int i)
+        public Object GetValue(int i)
         {
             throw new System.NotImplementedException();
         }
 
-        public int GetValues(object[] values)
+        public int GetValues(Object[] values)
         {
             if (values == null)
             {
@@ -230,7 +240,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get { return _rowColumns.Count; }
         }
 
-        object IDataRecord.this[int i]
+        Object IDataRecord.this[int i]
         {
             get
             {
@@ -239,7 +249,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        object IDataRecord.this[string name]
+        Object IDataRecord.this[string name]
         {
             get { throw new System.NotImplementedException(); }
         }
@@ -259,7 +269,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get { return _geometry == null ? null : _geometry.Extents; }
         }
 
-        public object GetOid()
+        public Object GetOid()
         {
             return _rowValues[_oidColumn];
         }

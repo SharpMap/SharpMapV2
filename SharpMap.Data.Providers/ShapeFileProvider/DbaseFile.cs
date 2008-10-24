@@ -97,7 +97,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         /// <summary>
-        /// Gets a value which indicates if this object is disposed: 
+        /// Gets a value which indicates if this Object is disposed: 
         /// <see langword="true"/> if it is, <see langword="false"/> otherwise
         /// </summary>
         /// <seealso cref="Dispose"/>
@@ -173,7 +173,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <exception cref="ObjectDisposedException">
         /// Thrown when the property is 
-        /// fetched and/or set and object has been disposed.
+        /// fetched and/or set and Object has been disposed.
         /// </exception>
         internal Encoding Encoding
         {
@@ -267,7 +267,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <seealso cref="Dispose" />
         /// <exception cref="ObjectDisposedException">
         /// Thrown when the method is called and
-        /// object has been disposed.
+        /// Object has been disposed.
         /// </exception>
         public void Close()
         {
@@ -286,7 +286,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         /// <summary>
-        /// Gets the feature at the specified object ID
+        /// Gets the feature at the specified Object ID
         /// </summary>
         /// <param name="oid">Row index. Zero-based.</param>
         /// <param name="table">The feature table containing the schema used to 
@@ -301,7 +301,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="table"/> is 
         /// null</exception>
         /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
-        /// object has been disposed</exception>
+        /// Object has been disposed</exception>
         internal IFeatureDataRecord GetAttributes(UInt32 oid, FeatureDataTable<UInt32> table)
         {
             checkState();
@@ -347,11 +347,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 ShapeFileFeatureDataRecord dr = new ShapeFileFeatureDataRecord(Header.Columns);
                 dr.SetColumnValue(0, oid);
+                dr.SetColumnValues(1, Header.Columns.Count, _reader.GetValues(oid));
 
-                foreach (DbaseField field in Header.Columns)
-                {
-                    dr.SetColumnValue(field.Ordinal + 1, _reader.GetValue(oid, field));
-                }
+                //foreach (DbaseField field in Header.Columns)
+                //{
+                //    dr.SetColumnValue(field.Ordinal + 1, _reader.GetValue(oid, field));
+                //}
 
                 return dr;
             }
@@ -403,7 +404,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <exception cref="ObjectDisposedException">
         /// Thrown when the method is called 
-        /// and object has been disposed.
+        /// and Object has been disposed.
         /// </exception>
         internal void Open()
         {
@@ -418,7 +419,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         /// <exception cref="ObjectDisposedException">
         /// Thrown when the method is called 
-        /// and object has been disposed.
+        /// and Object has been disposed.
         /// </exception>
         internal void Open(Boolean exclusive)
         {
@@ -460,7 +461,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (_isDisposed)
             {
                 throw new ObjectDisposedException(
-                    "Attempt to access a disposed DbaseReader object");
+                    "Attempt to access a disposed DbaseReader Object");
             }
         }
 
@@ -508,13 +509,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         //            /// <returns>A <see cref="SharpMap.Indexing.BinaryTree.BinaryTree{T, UInt32}"/> data 
         //            /// structure indexing values in a column to a row index</returns>
         //            /// <exception cref="ObjectDisposedException">Thrown when the method is called and 
-        //            /// object has been disposed</exception>
+        //            /// Object has been disposed</exception>
         //            private BinaryTree<UInt32, TValue> createDbfIndex<TValue>(Int32 columnId) where TValue : IComparable<TValue>
         //            {
         //                if (_isDisposed)
         //                {
         //                    throw new ObjectDisposedException(
-        //                        "Attempt to access a disposed DbaseReader object");
+        //                        "Attempt to access a disposed DbaseReader Object");
         //                }
 
         //                BinaryTree<UInt32, TValue> tree = new BinaryTree<UInt32, TValue>();
@@ -546,7 +547,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    {
         //        FeatureDataRow dr = GetFeature(i,this.NewTable);
         //        Lucene.Net.Documents.Document doc = new Lucene.Net.Documents.Document();
-        //        // Add the object-id as a field, so that index can be maintained.
+        //        // Add the Object-id as a field, so that index can be maintained.
         //        // This field is not stored with document, it is indexed, but it is not
         //        // tokenized prior to indexing.
         //        //doc.Add(Lucene.Net.Documents.Field.UnIndexed("SharpMap_oid", i.ToString())); //Add OID index

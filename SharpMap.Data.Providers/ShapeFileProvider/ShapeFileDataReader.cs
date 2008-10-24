@@ -150,7 +150,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        public object GetOid()
+        public Object GetOid()
         {
             checkState();
             return _objectEnumerator.Current;
@@ -431,7 +431,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return Convert.ToString(_currentFeature[i]);
         }
 
-        public object GetValue(Int32 i)
+        public Object GetValue(Int32 i)
         {
             checkState();
             checkIndex(i);
@@ -439,7 +439,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return _currentFeature[i];
         }
 
-        public Int32 GetValues(object[] values)
+        public Int32 GetValues(Object[] values)
         {
             checkState();
 
@@ -463,7 +463,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return _currentFeature.IsDBNull(i);
         }
 
-        public object this[String name]
+        public Object this[String name]
         {
             get
             {
@@ -472,7 +472,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        public object this[Int32 i]
+        public Object this[Int32 i]
         {
             get
             {
@@ -520,7 +520,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 yield return this;
             }
 
-            Dispose(true); //jd: added to prevent "another reader is already active" type exception
+            Dispose(true); // jd: added to prevent "another reader is already active" type exception
         }
 
         #endregion
