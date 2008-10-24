@@ -92,11 +92,15 @@ namespace SharpMap.Data.Providers.Db
             get { return _internalReader.Depth; }
         }
 
+        private DataTable _schema;
         public DataTable GetSchemaTable()
         {
-            DataTable dt = _internalReader.GetSchemaTable();
-            if (_geomColumnIndex > -1) dt.Rows.RemoveAt(_geomColumnIndex);
-            return dt;
+            if (_schema == null)
+            {
+                _schema = _internalReader.GetSchemaTable().Copy();
+                if (_geomColumnIndex > -1) _schema.Rows.RemoveAt(_geomColumnIndex);
+            }
+            return _schema.Copy();
         }
 
         public bool IsClosed

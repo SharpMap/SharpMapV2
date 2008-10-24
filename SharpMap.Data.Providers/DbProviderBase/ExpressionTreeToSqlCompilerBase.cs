@@ -539,7 +539,9 @@ namespace SharpMap.Data.Providers.Db
         protected virtual string GetBinaryStringExpressionString(BinaryStringOperator binaryStringOperator,
                                                                  Expression right)
         {
-            if (right is LiteralExpression && Equals(null, ((LiteralExpression)right).Value))
+            if (right is LiteralExpression
+                && (Equals(null, ((LiteralExpression)right).Value)
+                    || Equals(string.Empty, ((LiteralExpression)right).Value)))
             {
                 switch (binaryStringOperator)
                 {
