@@ -21,6 +21,7 @@ using GeoAPI.Geometries;
 using SharpMap.Data;
 using System.Globalization;
 using SharpMap.Expressions;
+using SharpMap.Rendering.Thematics;
 
 namespace SharpMap.Layers
 {
@@ -67,5 +68,7 @@ namespace SharpMap.Layers
         Boolean AreFeaturesSelectable { get; set; }
 
         IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query);
+
+        ITheme Theme { get; set; }
     }
 }

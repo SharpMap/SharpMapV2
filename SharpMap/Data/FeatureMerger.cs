@@ -502,6 +502,7 @@ namespace SharpMap.Data
             }
         }
 
+        // FIX_PERF
         private static void setFeatureRowFromIFeatureDataRecord(IFeatureDataRecord srcFeature, 
                                                                 FeatureDataRow targetFeature)
         {

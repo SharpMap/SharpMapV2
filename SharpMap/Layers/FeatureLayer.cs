@@ -25,6 +25,7 @@ using GeoAPI.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
+using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 using System.Collections.Generic;
 
@@ -56,6 +57,7 @@ namespace SharpMap.Layers
         private readonly FeatureDataTable _features;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
+        private ITheme _theme;
         #endregion
 
         ///// <summary>
@@ -251,6 +253,12 @@ namespace SharpMap.Layers
             if (query == null) throw new ArgumentNullException("query");
 
             return Features.Select(query.SpatialPredicate);
+        }
+
+        public virtual ITheme Theme
+        {
+            get { return _theme; }
+            set { _theme = value; }
         }
 
         #endregion

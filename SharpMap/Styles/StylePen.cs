@@ -49,6 +49,14 @@ namespace SharpMap.Styles
 
         #region Object Constructors
         /// <summary>
+        /// Creates a new <see cref="StylePen"/> 
+        /// with a <see cref="Width"/> of 1.0 and <see cref="BackgroundBrush"/>
+        /// a solid <see cref="StyleColor.Black"/>.
+        /// </summary>
+        public StylePen()
+            : this(new SolidStyleBrush(StyleColor.Black), 1.0) { }
+
+        /// <summary>
         /// Creates a new <see cref="StylePen"/> with the given solid
         /// <paramref name="color"/> and <paramref name="width"/>.
         /// </summary>

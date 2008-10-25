@@ -101,21 +101,17 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>An enumeration of positioned render objects for display.</returns>
         public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature)
         {
-            TStyle style;
+            TStyle style = default(TStyle);
 
-            if (Theme == null)
+            if (Theme != null)
             {
                 if (DefaultStyle == null)
                 {
-                    throw new InvalidOperationException("Cannot render feature without style. "+
+                    throw new InvalidOperationException("Cannot render feature without style. " +
                                                         "Both Theme and DefaultStyle are null.");
                 }
 
                 style = DefaultStyle;
-            }
-            else
-            {
-                style = (TStyle) Theme.GetStyle(feature);
             }
 
             return RenderFeature(feature, style, RenderState.Normal, null);
@@ -127,8 +123,10 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="feature">The feature to render.</param>
         /// <param name="style">The style to use to render the feature.</param>
         /// <returns>An enumeration of positioned render objects for display.</returns>
-        public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, TStyle style,
-                                                        RenderState renderState, ILayer layer)
+        public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, 
+                                                        TStyle style,
+                                                        RenderState renderState, 
+                                                        ILayer layer)
         {
             Boolean cancel = false;
 
@@ -137,6 +135,16 @@ namespace SharpMap.Rendering.Rendering2D
             if (cancel)
             {
                 yield break;
+            }
+
+            if (style == default(TStyle) && Theme != null)
+            {
+                style = (TStyle)Theme.GetStyle(feature);
+            }
+            
+            if (style == default(TStyle))
+            {
+                throw new InvalidOperationException("Cannot render feature without a style.");
             }
 
             IEnumerable<TRenderObject> renderedObjects = DoRenderFeature(feature, style, renderState, layer);
@@ -252,7 +260,10 @@ namespace SharpMap.Rendering.Rendering2D
             return RenderFeature(feature);
         }
 
-        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer)
+        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, 
+                                                   IStyle style, 
+                                                   RenderState renderState, 
+                                                   ILayer layer)
         {
             return RenderFeature(feature, style as TStyle, renderState, layer);
         }
@@ -261,8 +272,10 @@ namespace SharpMap.Rendering.Rendering2D
 
         #region IFeatureRenderer<TRenderObject> Members
 
-        IEnumerable<TRenderObject> IFeatureRenderer<TRenderObject>.RenderFeature(
-            IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer)
+        IEnumerable<TRenderObject> IFeatureRenderer<TRenderObject>.RenderFeature(IFeatureDataRecord feature, 
+                                                                                 IStyle style, 
+                                                                                 RenderState renderState, 
+                                                                                 ILayer layer)
         {
             return RenderFeature(feature, style as TStyle, renderState, layer);
         }
