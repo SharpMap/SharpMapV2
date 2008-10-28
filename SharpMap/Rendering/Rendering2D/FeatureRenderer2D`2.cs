@@ -36,20 +36,13 @@ namespace SharpMap.Rendering.Rendering2D
         where TStyle : class, IStyle
     {
         private readonly VectorRenderer2D<TRenderObject> _vectorRenderer;
-        private ITheme _theme;
         private TStyle _defaultStyle;
 
         #region Object construction and disposal
 
         protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
-            : this(vectorRenderer, null)
-        {
-        }
-
-        protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, ITheme theme)
         {
             _vectorRenderer = vectorRenderer;
-            _theme = theme;
         }
 
         protected override void Dispose(Boolean disposing)
@@ -101,17 +94,12 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>An enumeration of positioned render objects for display.</returns>
         public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature)
         {
-            TStyle style = default(TStyle);
+            TStyle style = DefaultStyle;
 
-            if (Theme != null)
+            if (style == null)
             {
-                if (DefaultStyle == null)
-                {
-                    throw new InvalidOperationException("Cannot render feature without style. " +
-                                                        "Both Theme and DefaultStyle are null.");
-                }
-
-                style = DefaultStyle;
+                throw new InvalidOperationException("Cannot render feature without style. " +
+                                                    "DefaultStyle is null.");
             }
 
             return RenderFeature(feature, style, RenderState.Normal, null);
@@ -136,11 +124,6 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 yield break;
             }
-
-            if (style == default(TStyle) && Theme != null)
-            {
-                style = (TStyle)Theme.GetStyle(feature);
-            }
             
             if (style == default(TStyle))
             {
@@ -155,15 +138,6 @@ namespace SharpMap.Rendering.Rendering2D
             {
                 yield return renderObject;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the theme used to generate styles for rendered features.
-        /// </summary>
-        public ITheme Theme
-        {
-            get { return _theme; }
-            set { _theme = value; }
         }
 
         #endregion

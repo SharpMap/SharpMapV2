@@ -69,6 +69,9 @@ namespace SharpMap.Layers
 
         IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query);
 
+        /// <summary>
+        /// Gets or sets the theme used to generate styles for rendered features.
+        /// </summary>
         ITheme Theme { get; set; }
     }
 }

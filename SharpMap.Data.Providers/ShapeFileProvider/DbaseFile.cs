@@ -349,11 +349,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                 dr.SetColumnValue(0, oid);
                 dr.SetColumnValues(1, Header.Columns.Count, _reader.GetValues(oid));
 
-                //foreach (DbaseField field in Header.Columns)
-                //{
-                //    dr.SetColumnValue(field.Ordinal + 1, _reader.GetValue(oid, field));
-                //}
-
                 return dr;
             }
         }

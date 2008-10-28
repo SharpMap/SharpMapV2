@@ -125,8 +125,6 @@ namespace SharpMap.Presentation.Presenters
             View.ZoomToViewBoundsRequested += handleViewZoomToViewBoundsRequested;
             View.ZoomToWorldBoundsRequested += handleViewZoomToWorldBoundsRequested;
             View.ZoomToWorldWidthRequested += handleViewZoomToWorldWidthRequested;
-            IFeatureRenderer featureRenderer = GetRenderer<IFeatureRenderer, GeometryLayer>();
-            featureRenderer.Theme = map.Theme;
             
             _selection.SelectionChanged += handleSelectionChanged;
 
@@ -921,9 +919,9 @@ namespace SharpMap.Presentation.Presenters
             IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
 
             Debug.Assert(renderer != null);
-
             Debug.Assert(layer.Style is FeatureStyle);
-            FeatureStyle style = layer.Style as FeatureStyle;
+
+            FeatureStyle layerStyle = layer.Style as FeatureStyle;
 
             switch (phase)
             {
@@ -934,6 +932,8 @@ namespace SharpMap.Presentation.Presenters
 
                     foreach (FeatureDataRow feature in features)
                     {
+                        FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
+
                         IEnumerable renderedFeature = renderer.RenderFeature(feature,
                                                                              style,
                                                                              RenderState.Normal,
@@ -946,6 +946,7 @@ namespace SharpMap.Presentation.Presenters
 
                     foreach (FeatureDataRow selectedFeature in selectedRows)
                     {
+                        FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle);
                         IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
                                                                              style,
                                                                              RenderState.Selected,
@@ -958,6 +959,7 @@ namespace SharpMap.Presentation.Presenters
 
                     foreach (FeatureDataRow highlightedFeature in highlightedRows)
                     {
+                        FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle);
                         IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
                                                                              style,
                                                                              RenderState.Highlighted,
@@ -1466,6 +1468,21 @@ namespace SharpMap.Presentation.Presenters
             ListChangedType layerChangeType = e.ListChangedType;
 
             renderChangedLayer(featureLayer, layerChangeType, RenderPhase.Highlighted);
+        }
+
+        private static FeatureStyle getStyleForFeature(IFeatureLayer layer,
+                                                       FeatureDataRow feature,
+                                                       FeatureStyle layerStyle)
+        {
+            FeatureStyle style = layer.Theme == null
+                                     ? null
+                                     : layer.Theme.GetStyle(feature) as FeatureStyle;
+
+            if (style == null)
+            {
+                style = layerStyle;
+            }
+            return style;
         }
 
         private void renderChangedLayer(IFeatureLayer featureLayer,

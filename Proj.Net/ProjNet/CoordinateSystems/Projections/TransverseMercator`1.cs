@@ -42,6 +42,7 @@ using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.DataStructures;
 using GeoAPI.Units;
+using NPack;
 using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Projections
@@ -182,8 +183,10 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Point in projected meters</returns>
         public override TCoordinate DegreesToMeters(TCoordinate lonlat)
         {
-            Radians lon = (Radians)new Degrees((Double)lonlat[0]);
-            Radians lat = (Radians)new Degrees((Double)lonlat[1]);
+            DoubleComponent lonVal, latVal;
+            lonlat.GetComponents(out lonVal, out latVal);
+            Radians lon = (Radians)new Degrees((Double)lonVal);
+            Radians lat = (Radians)new Degrees((Double)latVal);
             Double semiMajor = SemiMajor;
 
             Double deltaLon = AdjustLongitude(lon - _centralMeridian);

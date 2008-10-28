@@ -981,12 +981,6 @@ namespace SharpMap
             get { throw new NotImplementedException(); }
         }
 
-        public ITheme Theme
-        {
-            get { return _theme; }
-            set { _theme = value; }
-        }
-
         #endregion
 
         #region Protected virtual members
