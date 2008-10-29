@@ -51,9 +51,8 @@ namespace SharpMap.Data
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
         /// match the given <paramref name="query"/>.
         /// </summary>
-        /// <param name="query">Spatial query to execute.</param>
+        /// <param name="query">Query used to retrieve features.</param>
         /// <param name="options">Options indicating which data to retrieve.</param>
-        /// <returns>An IFeatureDataReader to iterate over the results.</returns>
         IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options);
 
         /// <summary>

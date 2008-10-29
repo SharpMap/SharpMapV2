@@ -18,6 +18,7 @@
 using System;
 using System.Data;
 using System.Globalization;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 
@@ -95,6 +96,18 @@ namespace SharpMap.Data.Providers
         {
             SpatialBinaryExpression spatial = query.SpatialPredicate;
             GeometryExpression geoExpression = spatial.SpatialExpression as GeometryExpression;
+
+            ICoordinateSystem querySpatialReference = spatial.SpatialExpression.SpatialReference;
+
+            if (querySpatialReference == SpatialReference)
+            {
+                return query;
+            }
+
+            if (querySpatialReference != OriginalSpatialReference)
+            {
+                throw new InvalidOperationException("The query's spatial reference doesn't match the provider's.");
+            }
 
             if (geoExpression != null)
             {

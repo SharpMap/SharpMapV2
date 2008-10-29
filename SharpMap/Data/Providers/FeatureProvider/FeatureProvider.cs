@@ -72,8 +72,8 @@ namespace SharpMap.Data.Providers.FeatureProvider
         public FeatureProvider(IGeometryFactory factory, params DataColumn[] columns)
         {
             if (factory == null) throw new ArgumentNullException("factory");
-            SpatialReference = factory.SpatialReference;
-            Srid = factory.Srid;
+            OriginalSpatialReference = factory.SpatialReference;
+            OriginalSrid = factory.Srid;
             _geoFactory = factory;
             _features = new FeatureDataTable<Guid>(OidColumnName, GeometryFactory);
 

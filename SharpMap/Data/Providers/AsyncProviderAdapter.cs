@@ -164,9 +164,19 @@ namespace SharpMap.Data.Providers
             return _innerProvider.ExecuteQuery(query);
         }
 
+        public string OriginalSrid
+        {
+            get { return _innerProvider.OriginalSrid; }
+        }
+
         public IExtents GetExtents()
         {
             return _innerProvider.GetExtents();
+        }
+
+        public ICoordinateSystem OriginalSpatialReference
+        {
+            get { return _innerProvider.OriginalSpatialReference; }
         }
 
         public Boolean IsOpen

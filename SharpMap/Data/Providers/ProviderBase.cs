@@ -252,13 +252,23 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        /// <summary>
-        /// Gets or sets the coordinate system of the data source. 
-        /// </summary>
-        public virtual ICoordinateSystem SpatialReference
+        public ICoordinateSystem SpatialReference
         {
-            get { return _spatialReference;  }
-            protected set { _spatialReference = value; }
+            get { return CoordinateTransformation == null ? _spatialReference : CoordinateTransformation.Target; }
+        }
+
+        public virtual ICoordinateSystem OriginalSpatialReference
+        {
+            get { return _spatialReference; }
+            protected set
+            {
+                _spatialReference = value;
+
+                if (_spatialReference != null)
+                {
+                    _srid = _spatialReference.AuthorityCode;
+                }
+            }
         }
 
         public virtual Boolean IsOpen
@@ -272,6 +282,11 @@ namespace SharpMap.Data.Providers
         }
 
         public String Srid
+        {
+            get { return CoordinateTransformation == null ? OriginalSrid : CoordinateTransformation.Target.AuthorityCode; }
+        }
+
+        public string OriginalSrid
         {
             get { return _srid; }
             protected set { _srid = value; }
@@ -431,7 +446,7 @@ namespace SharpMap.Data.Providers
             return null;
         }
 
-        protected void OnPropertyChanged(PropertyDescriptor property)
+        protected virtual void OnPropertyChanged(PropertyDescriptor property)
         {
             if (property == null)
             {

@@ -36,10 +36,17 @@ namespace SharpMap.Data
         ICoordinateTransformation CoordinateTransformation { get; set; }
 
         /// <summary>
-        /// The dataum, projection and coordinate system used in this 
-        /// provider.
+        /// The dataum, projection and coordinate system which the data appears in
+        /// when queried.
         /// </summary>
         ICoordinateSystem SpatialReference { get; }
+
+        /// <summary>
+        /// The dataum, projection and coordinate system which the underlying data 
+        /// is stored as. This may be different from <see cref="SpatialReference"/> 
+        /// if <see cref="CoordinateTransformation"/> is set.
+        /// </summary>
+        ICoordinateSystem OriginalSpatialReference { get; }
 
         /// <summary>
         /// Returns true if the datasource is currently open.
@@ -51,6 +58,13 @@ namespace SharpMap.Data
         /// if one exists; <see langword="null"/> otherwise.
         /// </summary>
         String Srid { get; }
+
+        /// <summary>
+        /// Gets the spatial reference ID for the underlying data's 
+        /// <see cref="OriginalSpatialReference"/>, if one exists; 
+        /// <see langword="null"/> otherwise.
+        /// </summary>
+        String OriginalSrid { get; }
 
         /// <summary>
         /// Geometric extent of the entire dataset.

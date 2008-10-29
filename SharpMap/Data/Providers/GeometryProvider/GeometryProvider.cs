@@ -88,8 +88,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
         {
             if (geometry == null) throw new ArgumentNullException("geometry");
 
-            SpatialReference = geometry.SpatialReference;
-            Srid = geometry.Srid;
+            OriginalSpatialReference = geometry.SpatialReference;
+            OriginalSrid = geometry.Srid;
             _geoFactory = geometry.Factory;
             _geometries.Add(geometry);
         }
@@ -105,8 +105,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
             if (geometries == null) throw new ArgumentNullException("geometries");
 
             _geoFactory = Enumerable.First(geometries).Factory;
-            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
-            Srid = _geoFactory == null ? null : _geoFactory.Srid;
+            OriginalSpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            OriginalSrid = _geoFactory == null ? null : _geoFactory.Srid;
             _geometries.AddRange(geometries);
         }
 
@@ -126,8 +126,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
             }
 
             _geoFactory = feature.Geometry.Factory;
-            SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
-            Srid = _geoFactory == null ? null : _geoFactory.Srid;
+            OriginalSpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+            OriginalSrid = _geoFactory == null ? null : _geoFactory.Srid;
             _geometries.Add(feature.Geometry);
         }
 
@@ -149,8 +149,8 @@ namespace SharpMap.Data.Providers.GeometryProvider
                 if (_geoFactory == null)
                 {
                     _geoFactory = row.Geometry.Factory;
-                    SpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
-                    Srid = _geoFactory == null ? null : _geoFactory.Srid;
+                    OriginalSpatialReference = _geoFactory == null ? null : _geoFactory.SpatialReference;
+                    OriginalSrid = _geoFactory == null ? null : _geoFactory.Srid;
                 }
 
                 _geometries.Add(row.Geometry);

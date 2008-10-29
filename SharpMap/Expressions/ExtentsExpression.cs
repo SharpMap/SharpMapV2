@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 
 namespace SharpMap.Expressions
@@ -43,6 +44,11 @@ namespace SharpMap.Expressions
         public override IExtents Extents
         {
             get { return _extents; }
+        }
+
+        public override ICoordinateSystem SpatialReference
+        {
+            get { return _extents == null ? null : _extents.SpatialReference; }
         }
 
         public override Boolean Contains(Expression other)
