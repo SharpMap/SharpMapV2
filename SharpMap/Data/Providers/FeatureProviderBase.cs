@@ -79,7 +79,7 @@ namespace SharpMap.Data.Providers
 
         void IDisposable.Dispose()
         {
-            Close();
+            Dispose(true);
         }
 
         #endregion

@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.DataStructures;
-using SharpMap.Utilities;
 using System.IO;
 using GeoAPI.Geometries;
 
@@ -29,7 +28,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 	{
 	    private readonly IGeometryFactory _geoFactory;
 		private ShapeType _shapeType;
-		private IExtents _envelope;
+		private IExtents _extents;
 		private Int32 _fileLengthInWords;
 
 		public ShapeFileHeader(BinaryReader reader, IGeometryFactory geoFactory)
@@ -40,8 +39,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 		public override String ToString()
 		{
-			return String.Format("[ShapeFileHeader] ShapeType: {0}; Envelope: {1}; FileLengthInWords: {2}", 
-				ShapeType, Extents, FileLengthInWords);
+			return String.Format("Shapefile header - ShapeType: {0}; "+
+                                 "Envelope: {1}; FileLengthInWords: {2}", 
+                                 ShapeType, Extents, FileLengthInWords);
 		}
 
 		public ShapeType ShapeType
@@ -52,8 +52,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public IExtents Extents
 		{
-			get { return _envelope; }
-			set { _envelope = value; }
+			get { return _extents; }
+			set { _extents = value; }
 		}
 
 		public Int32 FileLengthInWords

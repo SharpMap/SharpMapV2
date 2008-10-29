@@ -746,7 +746,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                                    ? _spatialIndex.Bounds
                                    : _header.Extents;
 
-            return CoordinateTransformation == null ? extents : CoordinateTransformation.Transform(extents, GeometryFactory);
+            return CoordinateTransformation != null && CoordinateTransformation.Target != extents.SpatialReference
+                       ? CoordinateTransformation.Transform(extents, GeometryFactory)
+                       : extents;
         }
 
         private void initSpatialReference(ICoordinateSystem coordinateSystem)
@@ -1804,7 +1806,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (property == CoordinateTransformationProperty)
             {
+                GeometryFactory.SpatialReference = SpatialReference;
                 _coordTransform = CoordinateTransformation.MathTransform;
+                _header.Extents = CoordinateTransformation.Transform(_header.Extents, GeometryFactory);
             }
         }
         #endregion
