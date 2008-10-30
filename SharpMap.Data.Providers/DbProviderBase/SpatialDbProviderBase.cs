@@ -57,8 +57,8 @@ namespace SharpMap.Data.Providers.Db
         {
             DbUtility = dbUtility;
             GeometryFactory = geometryFactory;
-            SpatialReference = GeometryFactory.SpatialReference;
-            Srid = GeometryFactory.Srid;
+            OriginalSpatialReference = GeometryFactory.SpatialReference;
+            OriginalSrid = GeometryFactory.Srid;
 
             if (!String.IsNullOrEmpty(connectionString))
             {
