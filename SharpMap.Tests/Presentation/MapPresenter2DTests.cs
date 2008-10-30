@@ -30,8 +30,8 @@ namespace SharpMap.Tests.Presentation
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
+            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
+            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
         }
 
         #region Manual fakes
@@ -934,7 +934,7 @@ namespace SharpMap.Tests.Presentation
         public void PanTest()
         {
             TestView2D view;
-            _geoFactory.CoordinateFactory.BitResolution = 24;
+            //_geoFactory.CoordinateFactory.BitResolution = 24;
             TestPresenter2D mapPresenter = createPresenter(400, 800, out view);
 
             mapPresenter.ZoomToExtents();
@@ -1158,7 +1158,7 @@ namespace SharpMap.Tests.Presentation
             mapPresenter.ZoomToExtents();
 
             mapPresenter.ZoomToViewBounds(new Rectangle2D(300, 300, 900, 900));
-            BufferedCoordinate2D expectedCoord = (BufferedCoordinate2D)_geoFactory.CoordinateFactory.Create(72, 38);
+            BufferedCoordinate expectedCoord = (BufferedCoordinate)_geoFactory.CoordinateFactory.Create(72, 38);
             Assert.AreEqual(expectedCoord, mapPresenter.GeoCenter);
             Assert.AreEqual(72, mapPresenter.WorldWidth);
             Assert.AreEqual(72, mapPresenter.WorldHeight);

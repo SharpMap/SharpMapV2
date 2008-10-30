@@ -20,8 +20,8 @@ namespace SharpMap.Tests.Data
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
+            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
+            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
         }
 
         #region CreatingDataViewReturnsValidDataView
@@ -51,7 +51,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.Crosses, "", DataViewRowState.CurrentRows);
         }
 
@@ -65,7 +65,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.Contains, "", DataViewRowState.CurrentRows);
         }
 
@@ -79,7 +79,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.Equals, "", DataViewRowState.CurrentRows);
         }
 
@@ -93,7 +93,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.None, "", DataViewRowState.CurrentRows);
         }
 
@@ -107,7 +107,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.Overlaps, "", DataViewRowState.CurrentRows);
         }
 
@@ -121,7 +121,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.Touches, "", DataViewRowState.CurrentRows);
         }
 
@@ -135,7 +135,7 @@ namespace SharpMap.Tests.Data
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(data.GetExtents());
             IFeatureDataReader reader = data.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
-            Point<BufferedCoordinate2D> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate2D>;
+            Point<BufferedCoordinate> empty = _geoFactory.CreatePoint() as Point<BufferedCoordinate>;
             new FeatureDataView(table, empty, SpatialOperation.Within, "", DataViewRowState.CurrentRows);
         }
 

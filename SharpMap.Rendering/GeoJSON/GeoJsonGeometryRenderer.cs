@@ -36,16 +36,10 @@ namespace SharpMap.Rendering.GeoJson
         {
         }
 
-        public GeoJsonGeometryRenderer(VectorRenderer2D<TRenderObject> vectorRenderer, ITheme theme)
-            : base(vectorRenderer, theme)
-        {
-        }
-
-
         protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature,
-                                                                            GeoJsonGeometryStyle style,
-                                                                            RenderState state,
-                                                                            ILayer layer)
+                                                                      GeoJsonGeometryStyle style,
+                                                                      RenderState state,
+                                                                      ILayer layer)
         {
             if (feature == null) throw new ArgumentNullException("feature");
             if (style == null) throw new ArgumentNullException("style");

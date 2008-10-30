@@ -89,7 +89,7 @@
   <Choose>
     <When Condition="'$(NPackProjectReference)' == 'false'">
       <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
+        <Reference Include="NPack, Version=0.9.23543.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
         </Reference>

@@ -18,8 +18,8 @@ namespace SharpMap.Tests.Data
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
+            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
+            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace SharpMap.Tests.Data
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
             FeatureDataTable target = new FeatureDataTable(_geoFactory);
-            table.MergeSchema(target);
+            table.MergeSchemaTo(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }
@@ -162,7 +162,7 @@ namespace SharpMap.Tests.Data
             reader = provider.ExecuteFeatureQuery(query);
             target.Load(reader, LoadOption.OverwriteChanges, null);
 
-            table.MergeSchema(target);
+            table.MergeSchemaTo(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }
@@ -178,7 +178,7 @@ namespace SharpMap.Tests.Data
 
             FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("Oid", _geoFactory);
 
-            table.MergeSchema(target);
+            table.MergeSchemaTo(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }
@@ -195,7 +195,7 @@ namespace SharpMap.Tests.Data
 
             FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("GID", _geoFactory);
 
-            table.MergeSchema(target);
+            table.MergeSchemaTo(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }

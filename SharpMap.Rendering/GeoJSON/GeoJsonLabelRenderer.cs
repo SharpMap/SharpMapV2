@@ -32,11 +32,6 @@ namespace SharpMap.Rendering.GeoJson
         {
         }
 
-        public GeoJsonLabelRenderer(VectorRenderer2D<GeoJsonRenderObject> vectorRenderer, ITheme theme)
-            : base(vectorRenderer, theme)
-        {
-        }
-
         #region ILabelRenderer<Point2D,Size2D,Rectangle2D,GeoJsonRenderObject> Members
 
         public IEnumerable<GeoJsonRenderObject> RenderLabel(

@@ -160,6 +160,11 @@ namespace SharpMap.Data.Providers
             get { return InnerProvider.SpatialReference; }
         }
 
+        public ICoordinateSystem OriginalSpatialReference
+        {
+            get { return InnerProvider.OriginalSpatialReference; }
+        }
+
         public Boolean IsOpen
         {
             get { return InnerProvider.IsOpen; }
@@ -168,6 +173,11 @@ namespace SharpMap.Data.Providers
         public String Srid
         {
             get { return InnerProvider.Srid; }
+        }
+
+        public string OriginalSrid
+        {
+            get { return InnerProvider.OriginalSrid; }
         }
 
         public IExtents GetExtents()

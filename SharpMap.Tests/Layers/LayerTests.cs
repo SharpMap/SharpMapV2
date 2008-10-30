@@ -17,8 +17,8 @@ namespace SharpMap.Tests.Layers
         [TestFixtureSetUp]
         public void Setup()
         {
-            BufferedCoordinate2DSequenceFactory sequenceFactory = new BufferedCoordinate2DSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate2D>(sequenceFactory);
+            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
+            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
         }
 
         [Test]
