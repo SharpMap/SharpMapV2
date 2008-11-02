@@ -347,7 +347,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 ShapeFileFeatureDataRecord dr = new ShapeFileFeatureDataRecord(Header.Columns);
                 dr.SetColumnValue(0, oid);
-                dr.SetColumnValues(1, Header.Columns.Count, _reader.GetValues(oid));
+                dr.SetColumnValues(1, 1 + Header.Columns.Count, _reader.GetValues(oid));//jd: added 1 to Header.Columns.Count because we are offsetting the start index by one (OID is stored at zero)
 
                 return dr;
             }

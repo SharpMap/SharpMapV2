@@ -316,7 +316,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         _validGeometryType = parseGeometryType(dr.GetString(0));
 
                         //Srid
-                        Srid = dr.GetInt64(1).ToString();
+                        OriginalSrid = dr.GetInt64(1).ToString();
                         if (geometryFactory.Srid == null)
                             geometryFactory.Srid = Srid;
                         else

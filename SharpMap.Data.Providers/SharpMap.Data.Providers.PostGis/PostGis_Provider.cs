@@ -141,7 +141,7 @@ namespace SharpMap.Data.Providers
                         _validGeometryType = parseGeometryType(dr.GetString(0));
 
                         //Srid
-                        Srid = dr.GetInt32(1).ToString();
+                        OriginalSrid = dr.GetInt32(1).ToString();
                         if (geometryFactory.Srid == null)
                             geometryFactory.Srid = Srid;
                         else
@@ -154,7 +154,7 @@ namespace SharpMap.Data.Providers
                     {
                         dr.Close();
                         selectClause = string.Format("SELECT ST_SRID({0}) FROM {1}.{2} LIMIT 1;", geometryColumn, tableSchema, tableName);
-                        Srid = ((Int32)new NpgsqlCommand(selectClause, cn).ExecuteScalar()).ToString();
+                        OriginalSrid = ((Int32)new NpgsqlCommand(selectClause, cn).ExecuteScalar()).ToString();
                         _validGeometryType = OgcGeometryType.Geometry;
                     }
                 }
