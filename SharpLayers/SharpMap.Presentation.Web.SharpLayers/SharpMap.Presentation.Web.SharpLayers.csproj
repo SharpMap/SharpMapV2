@@ -60,6 +60,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions">
@@ -68,6 +69,7 @@
     <Reference Include="System.Web.Extensions.Design">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\AjaxControlToolkit.DLL" />
@@ -121,6 +123,8 @@
     <Compile Include="Icon.cs" />
     <Compile Include="MapUnits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\IProtocolBuilderParams.cs" />
+    <Compile Include="Protocol\ProtocolComponent.cs" />
     <Compile Include="Resolution.cs" />
     <Compile Include="ResourceUri.cs" />
     <Compile Include="SharpLayersSerializationAttribute.cs" />
@@ -130,6 +134,10 @@
     <Compile Include="Size.cs" />
     <Compile Include="OpenLayersDesigner.cs" />
     <Compile Include="OpenLayersExtender.cs" />
+    <Compile Include="Strategy\BBox\BBoxStrategyBuilderParams.cs" />
+    <Compile Include="Strategy\BBox\BBoxStrategyComponent.cs" />
+    <Compile Include="Strategy\IStrategyBuilderParams.cs" />
+    <Compile Include="Strategy\StrategyComponentBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HostBaseBehavior.js" />
@@ -322,6 +330,12 @@
     <Content Include="OpenLayers\Reference\Tile\WFS.js" />
     <Content Include="OpenLayers\Reference\Tween.js" />
     <Content Include="OpenLayers\Reference\Util.js" />
+    <Content Include="Protocol\ProtocolComponent.js" />
+    <EmbeddedResource Include="Strategy\BBox\BBoxStrategyComponent.js" />
+    <EmbeddedResource Include="Strategy\StrategyComponent.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Protocol\Http\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

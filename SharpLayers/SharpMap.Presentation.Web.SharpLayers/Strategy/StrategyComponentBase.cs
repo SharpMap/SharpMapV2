@@ -12,25 +12,17 @@
  *  Author: John Diss 2008
  * 
  */
-using SharpMap.Presentation.Web.SharpLayers.Strategy;
+using System.Web.UI;
+using AjaxControlToolkit;
 
-namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
+[assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.js", "text/javascript")]
+
+namespace SharpMap.Presentation.Web.SharpLayers.Strategy
 {
-    public class VectorLayerBuilderParams : LayerBuilderParamsBase
+    [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent",
+        "SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.js")]
+    public abstract class StrategyComponentBase<TStrategyBuilderParams>
+        : ComponentBase<TStrategyBuilderParams> where TStrategyBuilderParams : IStrategyBuilderParams
     {
-        private readonly CollectionBase<StrategyComponentBase<IStrategyBuilderParams>> _strategies =
-            new CollectionBase<StrategyComponentBase<IStrategyBuilderParams>>(
-                (item, check) => false);
-
-        [SharpLayersSerialization(SerializedName = "geometryType")]
-        public VectorGeometryType? LimitToGeometryType { get; set; }
-
-        public CollectionBase<StrategyComponentBase<IStrategyBuilderParams>> Strategies
-        {
-            get
-            {
-                return _strategies;
-            }
-        }
     }
 }
