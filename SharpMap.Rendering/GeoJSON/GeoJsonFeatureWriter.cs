@@ -80,6 +80,7 @@ namespace SharpMap.Rendering.GeoJson
         {
             sb.Append("{");
             sb.Append(JsonUtility.FormatJsonAttribute("type", "name"));
+            sb.Append(",");
             sb.Append("\"properties\":");
             sb.Append("{");
             sb.Append(JsonUtility.FormatJsonAttribute("name", name));

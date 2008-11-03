@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 using GeoAPI.DataStructures;
 
 namespace SharpMap.Rendering.GeoJson
@@ -24,7 +25,6 @@ namespace SharpMap.Rendering.GeoJson
     {
         private static readonly Type[] FloatingPointTypes = new[] { typeof(float), typeof(double), typeof(decimal) };
         private static readonly Type[] IntegralTypes = new[] { typeof(int), typeof(long), typeof(short) };
-
         public static string FormatJsonAttribute(string name, object value)
         {
             return string.Format("\"{0}\":{1}", name, FormatJsonValue(value));
@@ -72,7 +72,7 @@ namespace SharpMap.Rendering.GeoJson
 
 
             if (tval == typeof(string) || tval == typeof(Char))
-                return string.Format("\"{0}\"", v);
+                return string.Format("\"{0}\"", HttpUtility.HtmlEncode((string)v));
 
 
             ///todo : more complex classes

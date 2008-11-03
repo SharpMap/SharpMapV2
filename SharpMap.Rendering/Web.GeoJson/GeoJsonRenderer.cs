@@ -94,7 +94,10 @@ namespace SharpMap.Rendering.Web
         {
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
+
             sw.Write(Render(mapView, out mimeType));
+            sw.Flush();
+
             ms.Position = 0;
             return ms;
         }

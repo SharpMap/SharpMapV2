@@ -105,6 +105,8 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
         </Reference>
+        <Reference Include="System.Web" />
+        <Reference Include="System.Xml" />
       </ItemGroup>
     </When>
   </Choose>
@@ -118,6 +120,7 @@
     <Compile Include="GeoJsonRenderObject.cs" />
     <Compile Include="GeoJsonTextRenderer.cs" />
     <Compile Include="GeoJsonVectorRenderer.cs" />
+    <Compile Include="HttpUtility.cs" />
     <Compile Include="IGeometryPreProcessingStyle.cs" />
     <Compile Include="JsonUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
