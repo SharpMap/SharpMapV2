@@ -177,7 +177,7 @@ namespace SharpMap.Indexing.RTree
         /// Removes an item from the index.
         /// </summary>
         /// <param name="item">The item to remove.</param>
-        public virtual Boolean Remove(TItem item)
+        public override Boolean Remove(TItem item)
         {
             ISpatialIndexNode<IExtents, TItem> itemNode = findNodeForItem(item, Root);
 

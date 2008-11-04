@@ -286,5 +286,15 @@ namespace SharpMap.Indexing.RTree
         //}
 
         #endregion
+
+
+
+
+        #region ISpatialIndex<IExtents,TItem> Members
+
+
+        public abstract bool Remove(TItem item);
+
+        #endregion
     }
 }

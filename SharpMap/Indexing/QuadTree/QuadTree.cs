@@ -83,5 +83,15 @@ namespace SharpMap.Indexing.QuadTree
         }
 
         #endregion
+
+        #region ISpatialIndex<IExtents,TItem> Members
+
+
+        public bool Remove(TItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
