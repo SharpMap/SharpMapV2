@@ -30,6 +30,17 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
     },
     _layerBuilderDelegate: function() {
         var options = this.get_builderParams();
+        if (options["strategies"] != null) {
+            var strats = [];
+            for (var ndx in options.strategies) {
+                strats.push($olFactory.buildOpenLayersObject(options.strategies[ndx]));
+            }
+            options.strategies = strats;
+        }
+        if (options["protocol"] != null)
+            if (typeof options.protocol == "string")
+            options.protocol = $find(options.protocol).get_hostedItem();
+
         return new OpenLayers.Layer.Vector(this.get_name(), options);
     }
 

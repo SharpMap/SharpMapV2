@@ -3,7 +3,6 @@ Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers.Protocol');
 
 SharpMap.Presentation.Web.SharpLayers.Protocol.ProtocolComponent = function() {
     SharpMap.Presentation.Web.SharpLayers.Protocol.ProtocolComponent.initializeBase(this);
-
 }
 SharpMap.Presentation.Web.SharpLayers.Protocol.ProtocolComponent.prototype = {
     initialize: function() {

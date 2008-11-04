@@ -22,7 +22,18 @@ namespace SharpMap.Presentation.Web.SharpLayers.Strategy
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent",
         "SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.js")]
     public abstract class StrategyComponentBase<TStrategyBuilderParams>
-        : ComponentBase<TStrategyBuilderParams> where TStrategyBuilderParams : IStrategyBuilderParams
+        : ComponentBase<TStrategyBuilderParams>, IStrategyComponent where TStrategyBuilderParams : IStrategyBuilderParams
     {
+        IStrategyBuilderParams IStrategyComponent.BuilderParams
+        {
+            get
+            {
+                return BuilderParams;
+            }
+            set
+            {
+                BuilderParams = (TStrategyBuilderParams)value;
+            }
+        }
     }
 }

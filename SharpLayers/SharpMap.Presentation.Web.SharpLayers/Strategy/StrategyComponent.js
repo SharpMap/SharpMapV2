@@ -1,6 +1,8 @@
 ﻿Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers.Strategy');
 
 SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent = function() {
+    this._builderDelegate = Function.createDelegate(this, this._strategyBuilderDelegate);
+
     SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.initializeBase(this);
 }
 
@@ -11,6 +13,9 @@ SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.prototype = {
     },
     dispose: function() {
         SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.callBaseMethod(this, 'dispose');
+    },
+    buildObject: function() {
+        SharpMap.Presentation.Web.SharpLayers.Strategy.StrategyComponent.callBaseMethod(this, 'buildObject');
     }
 }
 

@@ -12,25 +12,42 @@
  *  Author: John Diss 2008
  * 
  */
+using System.ComponentModel;
+using System.Web.UI;
+using SharpMap.Presentation.Web.SharpLayers.Protocol;
 using SharpMap.Presentation.Web.SharpLayers.Strategy;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
 {
     public class VectorLayerBuilderParams : LayerBuilderParamsBase
     {
-        private readonly CollectionBase<StrategyComponentBase<IStrategyBuilderParams>> _strategies =
-            new CollectionBase<StrategyComponentBase<IStrategyBuilderParams>>(
+        private readonly CollectionBase<IStrategy> _strategies =
+            new CollectionBase<IStrategy>(
                 (item, check) => false);
 
         [SharpLayersSerialization(SerializedName = "geometryType")]
         public VectorGeometryType? LimitToGeometryType { get; set; }
 
-        public CollectionBase<StrategyComponentBase<IStrategyBuilderParams>> Strategies
+
+        [
+            SharpLayersSerialization(SerializedName = "strategies"),
+            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+            PersistenceMode(PersistenceMode.InnerProperty)
+        ]
+        public CollectionBase<IStrategy> Strategies
         {
             get
             {
                 return _strategies;
             }
+        }
+
+
+        [SharpLayersSerialization(SerializedName = "protocol", SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        public string Protocol
+        {
+            get;
+            set;
         }
     }
 }

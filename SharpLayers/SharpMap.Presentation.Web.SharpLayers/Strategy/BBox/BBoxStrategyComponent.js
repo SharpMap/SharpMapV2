@@ -11,6 +11,10 @@ SharpMap.Presentation.Web.SharpLayers.Strategy.BBox.BBoxStrategyComponent.protot
     },
     dispose: function() {
         SharpMap.Presentation.Web.SharpLayers.Strategy.BBox.BBoxStrategyComponent.callBaseMethod(this, 'dispose');
+    },
+    _strategyBuilderDelegate: function() {
+        var options = this.get_builderParams();
+        return new OpenLayers.Strategy.BBOX(options);
     }
 }
 

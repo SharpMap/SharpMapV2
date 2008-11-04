@@ -41,6 +41,8 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = 
             return $olFactory._buildSize(buildParams);
         case "OpenLayers.LonLat":
             return $olFactory._buildLonLat(buildParams);
+        case "OpenLayers.Strategy.BBOX":
+            return $olFactory._buildBBoxStrategy(buildParams);
         default:
             throw "Unknown Type" + typeToBuild;
     }
@@ -59,6 +61,10 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildPixel = function(b
 }
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildLonLat = function(buildParams) {
     return new OpenLayers.LonLat(buildParams.lon, buildParams.lat);
+}
+
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildBBoxStrategy = function(buildParams) {
+    return new OpenLayers.Strategy.BBOX(buildParams);
 }
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistryItem = function(msAjaxId, openLayersId, itemType) {

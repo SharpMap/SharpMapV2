@@ -8,8 +8,24 @@ namespace SharpMap.Presentation.Web.SharpLayers.Protocol
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Protocol.ProtocolComponent",
         "SharpMap.Presentation.Web.SharpLayers.Protocol.ProtocolComponent.js")]
     [TargetControlType(typeof(Control))]
-    public abstract class ProtocolComponent<TProtocolBuilderParams> : ComponentBase<TProtocolBuilderParams>
+    public abstract class ProtocolComponent<TProtocolBuilderParams> : ComponentBase<TProtocolBuilderParams>, IProtocolComponent<TProtocolBuilderParams>
         where TProtocolBuilderParams : IProtocolBuilderParams
     {
+        #region IProtocolComponent Members
+
+
+        IProtocolBuilderParams IProtocolComponent.BuilderParams
+        {
+            get
+            {
+                return BuilderParams;
+            }
+            set
+            {
+                BuilderParams = (TProtocolBuilderParams)value;
+            }
+        }
+
+        #endregion
     }
 }

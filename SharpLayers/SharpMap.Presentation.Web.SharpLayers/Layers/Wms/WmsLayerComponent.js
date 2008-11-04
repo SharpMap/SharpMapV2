@@ -14,8 +14,8 @@
 */
 Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers.Layers.Wms');
 
-SharpMap.Presentation.Web.SharpLayers.Layers.Wms.WmsLayerComponent = function(element) {
-    SharpMap.Presentation.Web.SharpLayers.Layers.Wms.WmsLayerComponent.initializeBase(this, [element]);
+SharpMap.Presentation.Web.SharpLayers.Layers.Wms.WmsLayerComponent = function() {
+    SharpMap.Presentation.Web.SharpLayers.Layers.Wms.WmsLayerComponent.initializeBase(this);
 
 }
 SharpMap.Presentation.Web.SharpLayers.Layers.Wms.WmsLayerComponent.prototype = {
