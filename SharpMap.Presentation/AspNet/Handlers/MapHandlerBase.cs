@@ -22,6 +22,7 @@ using SharpMap.Data.Providers;
 using SharpMap.Layers;
 using SharpMap.Presentation.AspNet.MVP;
 using SharpMap.Utilities;
+using GeoAPI.Diagnostics;
 
 namespace SharpMap.Presentation.AspNet.Handlers
 {
@@ -72,13 +73,17 @@ namespace SharpMap.Presentation.AspNet.Handlers
                         {
                             using (var outStream = new BinaryWriter(context.Response.OutputStream))
                             {
-                                outStream.Write(br.ReadBytes((Int32) s.Length), 0, (Int32) s.Length);
+
+                                outStream.Write(br.ReadBytes((Int32)s.Length), 0, (Int32)s.Length);
                             }
 
                             br.Close();
                         }
                     }
                 }
+                if (context.Response.IsClientConnected)
+                    context.Response.Flush();
+
             }
             catch (ClientDisconnectedException)
             {
@@ -86,10 +91,10 @@ namespace SharpMap.Presentation.AspNet.Handlers
             }
             catch (XmlFormatableExceptionBase ex)
             {
-                Debug.WriteLine(String.Format("{0}\n{1}", 
-                                              ex.InnerException == null 
-                                                    ? ex.Message 
-                                                    : ex.InnerException.Message, 
+                Debug.WriteLine(String.Format("{0}\n{1}",
+                                              ex.InnerException == null
+                                                    ? ex.Message
+                                                    : ex.InnerException.Message,
                                               ex.StackTrace));
 
                 if (context.Response.IsClientConnected)
@@ -283,7 +288,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             }
             catch (ClientDisconnectedException)
             {
-                if (s != null)
+                if (!(s == null))
                 {
                     s.Close();
                 }
@@ -427,7 +432,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             {
                 if ((l.DataSource is AppStateMonitoringFeatureProvider))
                 {
-                    ((AppStateMonitoringFeatureProvider) l.DataSource).Monitor = monitor;
+                    ((AppStateMonitoringFeatureProvider)l.DataSource).Monitor = monitor;
                 }
                 else if (l.DataSource is AsyncFeatureProviderAdapter)
                 {
@@ -590,10 +595,6 @@ namespace SharpMap.Presentation.AspNet.Handlers
         {
             UnwireEvents();
 
-            /* note access of member variable directly; 
-             * this is to prevent the class being created a fresh which can cause issues 
-             * with Dispatcher.CurrentDispatcher (Gdi Renderer in net3.5 mode) 
-             * when the finalizer is called when shutting down the process */
             if (_renderer != null)
             {
                 _renderer.Dispose();
