@@ -102,5 +102,23 @@ namespace TestSharpLayers {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent VectorLayerComponent1;
+        
+        /// <summary>
+        /// vector2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent vector2;
+        
+        /// <summary>
+        /// httpProtocol control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SharpMap.Presentation.Web.SharpLayers.Protocol.Http.HttpProtocolComponent httpProtocol;
     }
 }

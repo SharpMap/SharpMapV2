@@ -16,6 +16,12 @@
     TagPrefix="edit" %>
 <%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Controls.LayerSwitcher"
     TagPrefix="switch" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Protocol.Http"
+    TagPrefix="protocol" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Strategy"
+    TagPrefix="strategy" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Format"
+    TagPrefix="format" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -79,8 +85,22 @@
                         <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
                     </BuilderParams>
                 </vector:VectorLayerComponent>
+                <vector:VectorLayerComponent runat="server" ID="vector2">
+                    <BuilderParams Attribution="aaa" Protocol="httpProtocol">
+                        <Strategies>
+                            <strategy:BBoxStrategy runat="server" />
+                        </Strategies>
+                    </BuilderParams>
+                </vector:VectorLayerComponent>
             </LayerComponents>
         </cc1:MapHostExtender>
+        <protocol:HttpProtocolComponent FormatType="GeoJsonFormat" runat="server" ID="httpProtocol">
+            <BuilderParams Url="http://localhost">
+                <Formats>
+                    <format:GeoJsonFormat />
+                </Formats>
+            </BuilderParams>
+        </protocol:HttpProtocolComponent>
     </div>
     </form>
 </body>

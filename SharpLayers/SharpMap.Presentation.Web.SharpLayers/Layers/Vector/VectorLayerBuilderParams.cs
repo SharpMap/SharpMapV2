@@ -14,7 +14,6 @@
  */
 using System.ComponentModel;
 using System.Web.UI;
-using SharpMap.Presentation.Web.SharpLayers.Protocol;
 using SharpMap.Presentation.Web.SharpLayers.Strategy;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
@@ -36,18 +35,12 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
         ]
         public CollectionBase<IStrategy> Strategies
         {
-            get
-            {
-                return _strategies;
-            }
+            get { return _strategies; }
         }
 
 
-        [SharpLayersSerialization(SerializedName = "protocol", SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
-        public string Protocol
-        {
-            get;
-            set;
-        }
+        [SharpLayersSerialization(SerializedName = "protocol",
+            SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        public string Protocol { get; set; }
     }
 }

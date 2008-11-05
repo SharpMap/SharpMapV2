@@ -32,6 +32,8 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = 
     var typeToBuild = buildParams["typeToBuild"];
     if (typeToBuild == null)
         throw "Invalid build params";
+    delete buildParams.typeToBuild;
+    
     switch (typeToBuild) {
         case "OpenLayers.Bounds":
             return $olFactory._buildBounds(buildParams);
@@ -43,6 +45,8 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = 
             return $olFactory._buildLonLat(buildParams);
         case "OpenLayers.Strategy.BBOX":
             return $olFactory._buildBBoxStrategy(buildParams);
+        case "OpenLayers.Format.GeoJSON":
+            return $olFactory._buildGeoJsonFormat(buildParams);
         default:
             throw "Unknown Type" + typeToBuild;
     }
@@ -65,6 +69,10 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildLonLat = function(
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildBBoxStrategy = function(buildParams) {
     return new OpenLayers.Strategy.BBOX(buildParams);
+}
+
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildGeoJsonFormat = function(buildParams) {
+    return new OpenLayers.Format.GeoJSON(buildParams);
 }
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistryItem = function(msAjaxId, openLayersId, itemType) {

@@ -25,8 +25,6 @@ SharpMap.Presentation.Web.SharpLayers.Controls.DrawFeature.DrawFeatureTool.proto
     },
 
     dispose: function() {
-        // TODO: Add your cleanup code here
-
         SharpMap.Presentation.Web.SharpLayers.Controls.DrawFeature.DrawFeatureTool.callBaseMethod(this, 'dispose');
     },
     _toolBuilderDelegate: function() {
