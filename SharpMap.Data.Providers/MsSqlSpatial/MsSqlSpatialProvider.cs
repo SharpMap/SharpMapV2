@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
@@ -134,7 +135,7 @@ namespace SharpMap.Data.Providers
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] { })),
-                                                                    o => o.ToString())));
+                                                                    o => "[" + o.PropertyNameExpression.PropertyName + "] " + (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
@@ -161,14 +162,15 @@ namespace SharpMap.Data.Providers
                                                     int pageNumber)
         {
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Transform(
-                                                                    GetProviderPropertyValue
-                                                                        <OrderByCollectionExpression,
-                                                                        CollectionExpression<OrderByExpression>>(
-                                                                        properties,
-                                                                        new CollectionExpression<OrderByExpression>(
-                                                                            new[] { new OrderByExpression(OidColumn), })),
-                                                                    o => o.ToString())));
+                                             Enumerable.ToArray(
+                                                Processor.Transform(
+                                                    GetProviderPropertyValue
+                                                        <OrderByCollectionExpression,
+                                                        CollectionExpression<OrderByExpression>>(
+                                                        properties,
+                                                        new CollectionExpression<OrderByExpression>(
+                                                            new[] { new OrderByExpression(OidColumn), })),
+                                                    o => "[" + o.PropertyNameExpression.PropertyName + "] " + (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
