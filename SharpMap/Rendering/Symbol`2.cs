@@ -45,11 +45,12 @@ namespace SharpMap.Rendering
 
         protected Symbol()
         {
-            _symbolData = new MemoryStream(new Byte[] {0x0, 0x0, 0x0, 0x0});
+            _symbolData = new MemoryStream(new Byte[] { 0x0, 0x0, 0x0, 0x0 });
             initMatrixes();
         }
 
-        protected Symbol(TSize size) : this()
+        protected Symbol(TSize size)
+            : this()
         {
             _size = size;
         }
@@ -70,7 +71,7 @@ namespace SharpMap.Rendering
 
                 using (BinaryReader reader = new BinaryReader(symbolData))
                 {
-                    copy.Write(reader.ReadBytes((Int32) symbolData.Length), 0, (Int32) symbolData.Length);
+                    copy.Write(reader.ReadBytes((Int32)symbolData.Length), 0, (Int32)symbolData.Length);
                 }
 
                 symbolData = copy;
@@ -231,7 +232,7 @@ namespace SharpMap.Rendering
                 if (value == null) throw new ArgumentNullException("value");
                 setSymbolData(value);
             }
-        } 
+        }
         #endregion
 
         #region Protected properties
@@ -243,7 +244,7 @@ namespace SharpMap.Rendering
         {
             get
             {
-                CheckDisposed(); 
+                CheckDisposed();
                 return _rotationTransform;
             }
             set
@@ -269,7 +270,7 @@ namespace SharpMap.Rendering
             get
             {
 
-                CheckDisposed(); 
+                CheckDisposed();
                 return _scalingTransform;
             }
             set
@@ -307,7 +308,7 @@ namespace SharpMap.Rendering
         protected abstract IAffineMatrixD CreateIdentityMatrix();
         protected abstract IAffineMatrixD CreateMatrix(IMatrixD matrix);
         protected abstract TPoint GetOffset(IAffineMatrixD translationMatrix);
-        protected abstract void SetOffset(TPoint offset); 
+        protected abstract void SetOffset(TPoint offset);
         #endregion
 
         #region ICloneable Members
@@ -321,18 +322,21 @@ namespace SharpMap.Rendering
         public Symbol<TPoint, TSize> Clone()
         {
             Symbol<TPoint, TSize> clone = CreateNew(Size);
+            MemoryStream copy;
+            lock (_symbolData)
+            {
 
-            // Record the original position
-            Int64 streamPos = _symbolData.Position;
-            _symbolData.Seek(0, SeekOrigin.Begin);
+                // Record the original position
+                Int64 streamPos = _symbolData.Position;
+                _symbolData.Seek(0, SeekOrigin.Begin);
 
-            Byte[] buffer = new Byte[_symbolData.Length];
-            _symbolData.Read(buffer, 0, buffer.Length);
-            MemoryStream copy = new MemoryStream(buffer);
+                Byte[] buffer = new Byte[_symbolData.Length];
+                _symbolData.Read(buffer, 0, buffer.Length);
+                copy = new MemoryStream(buffer);
 
-            // Restore the original position
-            _symbolData.Position = streamPos;
-
+                // Restore the original position
+                _symbolData.Position = streamPos;
+            }
             clone.SymbolData = copy;
             clone._symbolDataHash = _symbolDataHash;
             clone.ColorTransform = ColorTransform.Clone();
