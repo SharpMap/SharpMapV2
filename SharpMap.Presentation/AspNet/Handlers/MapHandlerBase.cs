@@ -75,14 +75,13 @@ namespace SharpMap.Presentation.AspNet.Handlers
                             {
 
                                 outStream.Write(br.ReadBytes((Int32)s.Length), 0, (Int32)s.Length);
+                                outStream.Flush();
                             }
 
                             br.Close();
                         }
                     }
                 }
-                if (context.Response.IsClientConnected)
-                    context.Response.Flush();
 
             }
             catch (ClientDisconnectedException)
@@ -107,6 +106,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                     using (var sw = new StreamWriter(context.Response.OutputStream))
                     {
                         sw.Write(ex.XmlExceptionString);
+                        sw.Flush();
                     }
                 }
             }
@@ -128,6 +128,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 {
                     if (Context.Response.OutputStream != null)
                     {
+                        Context.Response.OutputStream.Flush();
                         Context.Response.OutputStream.Close();
                     }
                 }
