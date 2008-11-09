@@ -144,7 +144,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
         private readonly ShapeFileHeader _header;
         private readonly ShapeFileIndex _shapeFileIndex;
-        private ShapeFileDataReader _currentReader;
+        //private ShapeFileDataReader _currentReader;
         private readonly Object _readerSync = new Object();
         private readonly Boolean _hasDbf;
         //private readonly IGeometryFactory _geoFactory;
@@ -899,17 +899,17 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             lock (_readerSync)
             {
-                if (_currentReader != null)
-                {
-                    throw new ShapeFileInvalidOperationException("Can't open another ShapeFileDataReader " +
-                                                                 "on this ShapeFile, since another reader " +
-                                                                 "is already active.");
-                }
+                //if (_currentReader != null)
+                //{
+                //    throw new ShapeFileInvalidOperationException("Can't open another ShapeFileDataReader " +
+                //                                                 "on this ShapeFile, since another reader " +
+                //                                                 "is already active.");
+                //}
 
-                _currentReader = new ShapeFileDataReader(this, query, options);
-                _currentReader.Disposed += readerDisposed;
-                _currentReader.CoordinateTransformation = CoordinateTransformation;
-                return _currentReader;
+                ShapeFileDataReader reader = new ShapeFileDataReader(this, query, options);
+                //reader.Disposed += readerDisposed;
+                reader.CoordinateTransformation = CoordinateTransformation;
+                return reader;
             }
         }
 
@@ -1631,13 +1631,13 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    return record;
         //}
 
-        private void readerDisposed(Object sender, EventArgs e)
-        {
-            lock (_readerSync)
-            {
-                _currentReader = null;
-            }
-        }
+        //private void readerDisposed(Object sender, EventArgs e)
+        //{
+        //    lock (_readerSync)
+        //    {
+        //        _currentReader = null;
+        //    }
+        //}
 
         //private IEnumerable<IFeatureDataRecord> matchFeatureGeometry(IEnumerable<IdBounds> keys, 
         //                                                             IGeometry query,

@@ -283,12 +283,12 @@ namespace SharpMap.Layers
             MergeFeatures(features);
 
 
-            //jd:ensure the reader is closed - otherwise shapefile reader throws ShapeFileInvalidOperationException
-            // due to existing _currentReader
-            IFeatureDataReader fdr = features as IFeatureDataReader;
+            ////jd:ensure the reader is closed - otherwise shapefile reader throws ShapeFileInvalidOperationException
+            //// due to existing _currentReader
+            //IFeatureDataReader fdr = features as IFeatureDataReader;
 
-            if (fdr != null)
-                fdr.Close();
+            //if (fdr != null)
+            //    fdr.Close();
 
 
 
