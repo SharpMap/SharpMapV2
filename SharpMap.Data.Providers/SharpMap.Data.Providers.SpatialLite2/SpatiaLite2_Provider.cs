@@ -184,7 +184,7 @@ namespace SharpMap.Data.Providers
             return result;
         }
 
-        public static DataSet GetSpatiallyEnabledTables( String connectionString )
+        public static DataSet GetSpatiallyEnabledTables(String connectionString)
         {
             DataSet ds = null;
 
@@ -221,7 +221,9 @@ ORDER BY [TableName], x.ordinal_position;";
                 SQLiteDataAdapter da = new SQLiteDataAdapter(cm);
                 ds = new DataSet();
                 da.Fill(ds);
+#if DEBUG
                 Debug.Assert(ds.Tables.Count == 2);
+#endif
             }
             return ds;
         }
@@ -239,14 +241,14 @@ ORDER BY [TableName], x.ordinal_position;";
             SQLiteCommand insert = new SQLiteCommand(
                 "INSERT INTO information_schema_columns (table_name, ordinal_position, column_name, data_type, pk) VALUES(@P1, @P4, @P2, @P3, @P5);",
                 connection);
-            
+
             insert.Parameters.Add(new SQLiteParameter("@P1", DbType.String));
             insert.Parameters.Add(new SQLiteParameter("@P2", DbType.String));
             insert.Parameters.Add(new SQLiteParameter("@P3", DbType.String));
             insert.Parameters.Add(new SQLiteParameter("@P4", DbType.Int64));
             insert.Parameters.Add(new SQLiteParameter("@P5", DbType.Int64));
 
-            
+
             //Pragma
             using (SQLiteConnection cn_pragma = (SQLiteConnection)connection.Clone())
             {

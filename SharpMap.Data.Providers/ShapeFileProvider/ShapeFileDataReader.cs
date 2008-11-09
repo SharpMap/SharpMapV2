@@ -94,7 +94,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (disposing)
             {
-                _shapeFile.Close();
+                //jd:commented out because it closes the parent ShapefileProvider which 
+                //then causes an exception when a new query occurs e.g zoom in
+                //_shapeFile.Close();            
             }
 
             OnDisposed();
@@ -520,7 +522,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 yield return this;
             }
 
-            Dispose(true); // jd: added to prevent "another reader is already active" type exception
+            //Dispose(true); // jd: added to prevent "another reader is already active" type exception
         }
 
         #endregion

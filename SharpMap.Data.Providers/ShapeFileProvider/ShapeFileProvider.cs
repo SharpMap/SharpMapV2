@@ -243,6 +243,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (disposing)
             {
+
                 if (_dbaseFile != null)
                 {
                     _dbaseFile.Close();
@@ -272,6 +273,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                     _spatialIndex.Dispose();
                     _spatialIndex = null;
                 }
+
+
             }
 
             base.Close();
@@ -644,7 +647,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public void Open(Boolean exclusive)
         {
             _coordsysReadFromFile = false; // jd setting to false to stop error on second and subsequent open
-           
+
             if (IsOpen)
             {
                 return;
@@ -1617,7 +1620,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 featureRecord.Geometry = readGeometry(oid);
                 dr = featureRecord;
             }
-           
+
             return Filter == null || Filter(dr) ? dr : null;
         }
 
@@ -1842,8 +1845,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             Double y = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
 
             ICoordinate coord = _coordFactory.Create(x, y);
-            
-            return _coordTransform == null 
+
+            return _coordTransform == null
                             ? coord
                             : _coordTransform.Transform(coord);
         }
@@ -1937,8 +1940,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                     g = readMultiPointM();
                     break;
                 default:
-                    throw new ShapeFileUnsupportedGeometryException("ShapeFile type " + 
-                                                                    ShapeType + 
+                    throw new ShapeFileUnsupportedGeometryException("ShapeFile type " +
+                                                                    ShapeType +
                                                                     " not supported");
             }
 
@@ -2124,35 +2127,100 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
             }
 
+            Assert.IsNotEquals(polygonCount, 0);
+
+
+            Func<IEnumerable<ILinearRing>, IPolygon> dlgt = rngs => Enumerable.Count(rngs) == 1
+                                                      ? GeometryFactory.CreatePolygon(
+                                                            Enumerable.First(rngs))
+                                                      : GeometryFactory.CreatePolygon(
+                                                            Enumerable.First(rngs),
+                                                            Enumerable.Skip(rngs, 1));
+
+
             // We only have one polygon
             if (polygonCount == 1)
             {
-                return parts == 1
-                            ? GeometryFactory.CreatePolygon(rings[0])
-                            : GeometryFactory.CreatePolygon(Enumerable.First(rings), 
-                                                            Enumerable.Skip(rings, 1));
+                return dlgt(rings);
             }
+
 
             IMultiPolygon mpoly = GeometryFactory.CreateMultiPolygon();
-            Int32 ringIndex;
-            int ringsProcessed = 0;
+            List<ILinearRing> storage = null; //stores all the rings required to make one constituent polygon
 
-            for (ringIndex = 0; ringIndex < parts; ringIndex++)
+            int j = 0;
+            foreach (ILinearRing r in rings)
             {
-                List<ILinearRing> polyRings = getPolyRings(rings, counterClockWiseFlags, ref ringIndex);
-
-                IPolygon poly = polyRings.Count == 1
-                                    ? GeometryFactory.CreatePolygon(Enumerable.First(polyRings))
-                                    : GeometryFactory.CreatePolygon(Enumerable.First(polyRings),
-                                                                    Enumerable.Skip(polyRings, 1));
-                ringsProcessed += polyRings.Count;
-                ringIndex += polyRings.Count;
-
-                mpoly.Add(poly);
+                if (!counterClockWiseFlags[j])
+                {
+                    if (storage != null)
+                        mpoly.Add(dlgt(storage));// build the currently active polygon and add to the multipolygon;
+                    storage = new List<ILinearRing>(new[] { r });//start a new polygon
+                }
+                else
+                {
+                    //jd: My understanding is that the ILinearRings which are ClockWise are new Polygons 
+                    //and those that are CounterClockWise are holes in the previous 'new' polygon
+                    //hence storage should not be null here as there should have been an outer shell before any holes. 
+                    //BUT Sometimes in common public domain data I have found it is - hole follows hole but with no outer shell.. argggghhhh!
+                    if (storage != null)
+                        storage.Add(r);
+                    else
+                        Trace.Warning("Data", "Invalid ShapeData: a polygon with holes but no outer shell was parsed and has been ignored.");
+                }
+                j++;
             }
+            mpoly.Add(dlgt(storage)); //add the last constituent polygon to th multipolygon
+
+            //List<int> startIndexes = new List<int>();
+            //for (int i = 0; i < counterClockWiseFlags.Length; i++)
+            //{
+            //    if (!counterClockWiseFlags[i])
+            //        startIndexes.Add(i);
+            //}
+
+
+
+            //for (int i = 0; i < startIndexes.Count; i++)
+            //{
+            //    int startIndex = startIndexes[i];
+            //    int endIndex = i == startIndexes.Count - 1 ? rings.Length : startIndexes[i + 1];
+            //    int prings = (endIndex - startIndex) + 1;
+            //    int pholes = prings - 1;
+
+
+            //    List<ILinearRing> pr = new List<ILinearRing>(Enumerable.Take(Enumerable.Skip(rings, startIndex), prings));
+
+            //    mpoly.Add(prings > 1
+            //        ? GeometryFactory.CreatePolygon(Enumerable.First(pr), Enumerable.Skip(pr, 1))
+            //        : GeometryFactory.CreatePolygon(Enumerable.First(pr)));
+
+            //}
+
+
+
+
+
+            //Int32 ringIndex;
+            //int ringsProcessed = 0;
+
+            //for (ringIndex = 0; ringIndex < parts; ringIndex++)
+            //{
+            //    List<ILinearRing> polyRings = getPolyRings(rings, counterClockWiseFlags, ref ringIndex);
+
+            //    IPolygon poly = polyRings.Count == 1
+            //                        ? GeometryFactory.CreatePolygon(Enumerable.First(polyRings))
+            //                        : GeometryFactory.CreatePolygon(Enumerable.First(polyRings),
+            //                                                        Enumerable.Skip(polyRings, 1));
+            //    ringsProcessed += polyRings.Count;
+            //    ringIndex += polyRings.Count;
+
+            //    mpoly.Add(poly);
+            //}
 
 #if DEBUG
-            Assert.IsEquals(ringsProcessed, parts);
+            //Assert.IsEquals(ringsProcessed, parts);
+            Assert.IsEquals(polygonCount, mpoly.Count);
 #endif
             return mpoly;
         }
@@ -2176,7 +2244,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 i++;
             }
 
-            if (i < isCounterClockWise.Length )
+            if (i < isCounterClockWise.Length)
                 i--; //we need to create a new polyon so rewind to the outer shell
 
             return singlePoly;
