@@ -282,6 +282,16 @@ namespace SharpMap.Layers
             IEnumerable<IFeatureDataRecord> features = results as IEnumerable<IFeatureDataRecord>;
             MergeFeatures(features);
 
+
+            //jd:ensure the reader is closed - otherwise shapefile reader throws ShapeFileInvalidOperationException
+            // due to existing _currentReader
+            IFeatureDataReader fdr = features as IFeatureDataReader;
+
+            if (fdr != null)
+                fdr.Close();
+
+
+
             _features.RestoreIndexEvents(true);
         }
         #endregion
@@ -303,7 +313,7 @@ namespace SharpMap.Layers
         //        // TODO: fix this assumption of an IFeatureDataRecord being a FeatureDataRow
         //        FeatureDataRow row = feature as FeatureDataRow;
         //        Assert.IsNotNull(feature);
-               
+
         //        if (row.Geometry.SpatialReference != CoordinateTransformation.Target)
         //        {
         //            row.Geometry = CoordinateTransformation.Transform(feature.Geometry, GeometryFactory);
