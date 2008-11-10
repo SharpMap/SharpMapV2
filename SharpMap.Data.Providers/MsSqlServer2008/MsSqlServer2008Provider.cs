@@ -279,7 +279,6 @@ WHERE rownumber BETWEEN {9} AND {10} ",
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
                               GetProviderPropertyValue<ForceIndexExpression, bool>(properties, false);
-            ;
 
             if (!withNoLock && !forceIndex)
                 return "";

@@ -660,26 +660,11 @@ namespace SharpMap.Data.Providers.Db
                                                   GeometryColumn, OidColumn) { CoordinateTransformation = CoordinateTransformation };
         }
 
-        protected virtual Expression MergeQueries(Expression expr1, Expression expr2)
-        {
-            if (Equals(null, expr1))
-                return expr2;
-            if (Equals(null, expr2))
-                return expr1;
 
-            if (expr1 is QueryExpression && expr2 is QueryExpression)
-                return new BinaryExpression(expr1, BinaryOperator.And, expr2);
-
-            throw new NotImplementedException(string.Format("No merge routine for Expressions of Types {0} and {1}",
-                                                            expr1.GetType(),
-                                                            expr2.GetType()));
-        }
 
         protected virtual IDbCommand PrepareSelectCommand(Expression query)
         {
-            Expression exp = query;
-
-            MergeQueries(query, DefinitionQuery);
+            Expression exp = ExpressionMerger.MergeExpressions(query, DefinitionQuery);
 
             ExpressionTreeToSqlCompilerBase<TOid> compiler = CreateSqlCompiler(exp);
 
