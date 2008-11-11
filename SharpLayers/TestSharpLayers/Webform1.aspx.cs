@@ -56,7 +56,7 @@ namespace TestSharpLayers
                                                                               4.233333333,
                                                                               2.116666667, 1.058333333, 0.529166667,
                                                                               0.264583333
-                                                                          }.Select(o => new Resolution { Value = o }));
+                                                                          }.Select(o => new DoubleValue { Value = o }));
             Panel1_MapHostExtender.LayerComponents.FindByType<TmsLayerComponent>().First().BuilderParams
                 = new TmsLayerBuilderParams
                       {
@@ -76,7 +76,7 @@ namespace TestSharpLayers
             Panel1_MapHostExtender.LayerComponents.FindByType<TmsLayerComponent>().First().BuilderParams.TmsServerUrls.
                 AddRange(
                 ConfigurationManager.AppSettings["TmsServerUrl"].Split(',').Select(
-                    o => new ResourceUri { Uri = new Uri(o) }));
+                    o => new UriValue { Value = new Uri(o) }));
         }
     }
 }

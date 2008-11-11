@@ -19,7 +19,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
 {
     public class TmsLayerBuilderParams : LayerBuilderParamsBase, IGridBasedLayerBuilderParams
     {
-        private readonly CollectionBase<ResourceUri> _urls = new CollectionBase<ResourceUri>((a, b) => a.Uri != b.Uri);
+        private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>((a, b) => a.Value != b.Value);
 
         [SharpLayersSerialization(SerializedName = "layername")]
         public string TileCatalogName { get; set; }
@@ -30,7 +30,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
         [SharpLayersSerialization(SerializedName = "url"),
          DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
-        public CollectionBase<ResourceUri> TmsServerUrls
+        public CollectionBase<UriValue> TmsServerUrls
         {
             get { return _urls; }
         }

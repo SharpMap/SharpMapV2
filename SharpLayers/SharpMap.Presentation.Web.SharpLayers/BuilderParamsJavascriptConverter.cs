@@ -60,22 +60,22 @@ namespace SharpMap.Presentation.Web.SharpLayers
             Type t = obj.GetType();
 
             //dictionary.Add("type", t.FullName);
-            if (typeof (IClientClass).IsAssignableFrom(t))
+            if (typeof(IClientClass).IsAssignableFrom(t))
             {
-                dictionary.Add("typeToBuild", ((IClientClass) obj).ClientClassName);
+                dictionary.Add("typeToBuild", ((IClientClass)obj).ClientClassName);
             }
 
 
             IEnumerable<PropertyInfo> propertyInfos =
                 t.GetProperties().Where(
-                    o => o.GetCustomAttributes(typeof (SharpLayersSerializationAttribute), true).Length > 0);
+                    o => o.GetCustomAttributes(typeof(SharpLayersSerializationAttribute), true).Length > 0);
 
 
             foreach (PropertyInfo pi in propertyInfos)
             {
                 var serializationAttribute =
                     (SharpLayersSerializationAttribute)
-                    pi.GetCustomAttributes(typeof (SharpLayersSerializationAttribute), true).First();
+                    pi.GetCustomAttributes(typeof(SharpLayersSerializationAttribute), true).First();
 
                 string clientName =
                     serializationAttribute.SerializedName;
@@ -94,9 +94,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 {
                     dictionary.Add(clientName, v);
                 }
-                else if (propType == typeof (string))
+                else if (propType == typeof(string))
                 {
-                    var s = (string) v;
+                    var s = (string)v;
                     if (!string.IsNullOrEmpty(s))
                     {
                         if (SharpLayersSerializationFlags.GetComponent
@@ -104,7 +104,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
                         {
                             dictionary.Add(clientName,
                                            _findControlDelegate(s).ClientID);
-                                //note: frustratingly the client script needs to process the $find 
+                            //note: frustratingly the client script needs to process the $find 
                         }
                         else
                         {
@@ -112,29 +112,30 @@ namespace SharpMap.Presentation.Web.SharpLayers
                         }
                     }
                 }
-                else if (typeof (IDictionary).IsAssignableFrom(propType))
+                else if (typeof(IDictionary).IsAssignableFrom(propType))
                 {
                     throw new NotImplementedException();
                 }
-                else if (typeof (IEnumerable).IsAssignableFrom(propType))
+                else if (typeof(IEnumerable).IsAssignableFrom(propType))
                 {
                     var lst = new List<object>();
-                    var enumerable = (IEnumerable) v;
+                    var enumerable = (IEnumerable)v;
 
                     foreach (object o in enumerable)
                     {
                         if (!Equals(o, null))
                         {
                             Type elType = o.GetType();
-                            if (elType.IsPrimitive || elType.IsValueType || elType == typeof (string))
+                            if (elType.IsPrimitive || elType.IsValueType || elType == typeof(string))
                                 lst.Add(o);
                             else if (o as IUICollectionItem != null)
-                                lst.Add(((IUICollectionItem) o).GetValue());
+                                lst.Add(((IUICollectionItem)o).Value);
                             else
                                 lst.Add(Serialize(o, serializer));
                         }
                     }
-                    dictionary.Add(clientName, lst);
+                    if (lst.Count > 0)
+                        dictionary.Add(clientName, lst);
                 }
                 else
                 {

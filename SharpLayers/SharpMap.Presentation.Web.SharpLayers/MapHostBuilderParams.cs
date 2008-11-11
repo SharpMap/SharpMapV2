@@ -21,7 +21,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
     [Serializable]
     public class MapHostBuilderParams : BuilderParamsBase
     {
-        private readonly CollectionBase<Resolution> _resolutions = new CollectionBase<Resolution>((a, b) => a != b);
+        private readonly CollectionBase<DoubleValue> _resolutions = new CollectionBase<DoubleValue>((a, b) => a != b);
 
         [SharpLayersSerialization(SerializedName = "tileSize",
             SerializationFlags = SharpLayersSerializationFlags.CreateClientClass),
@@ -38,7 +38,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
         [SharpLayersSerialization(SerializedName = "resolutions"),
          DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
-        public CollectionBase<Resolution> Resolutions
+        public CollectionBase<DoubleValue> Resolutions
         {
             get { return _resolutions; }
         }

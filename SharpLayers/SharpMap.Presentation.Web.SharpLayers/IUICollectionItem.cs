@@ -16,6 +16,11 @@ namespace SharpMap.Presentation.Web.SharpLayers
 {
     public interface IUICollectionItem
     {
-        object GetValue();
+        object Value { get; set; }
+    }
+
+    public interface IUICollectionItem<T> : IUICollectionItem
+    {
+        new T Value { get; set; }
     }
 }

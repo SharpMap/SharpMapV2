@@ -19,10 +19,49 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
 {
     public class LayerBuilderParamsBase : ILayerBuilderParams
     {
-        //[SharpLayersSerialization(SerializedName = "name")]
-        //public string Name { get; set; }
+        private readonly CollectionBase<DoubleValue> _resolutions = new CollectionBase<DoubleValue>((a, b) => a != b);
+        private readonly CollectionBase<DoubleValue> _scales = new CollectionBase<DoubleValue>((a, b) => a != b);
 
         #region ILayerBuilderParams Members
+
+        [SharpLayersSerialization(SerializedName = "alwaysInRange")]
+        public bool AlwaysInRange { get; set; }
+
+
+        [SharpLayersSerialization(SerializedName = "resolutions"),
+         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
+        public CollectionBase<DoubleValue> Resolutions
+        {
+            get { return _resolutions; }
+        }
+
+
+        [SharpLayersSerialization(SerializedName = "scales"),
+         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
+        public CollectionBase<DoubleValue> Scales
+        {
+            get { return _scales; }
+        }
+
+        [SharpLayersSerialization(SerializedName = "minScale")]
+        public double? MinScale { get; set; }
+
+        [SharpLayersSerialization(SerializedName = "maxScale")]
+        public double? MaxScale { get; set; }
+
+        [SharpLayersSerialization(SerializedName = "minResolution")]
+        public double? MinResolution { get; set; }
+
+        [SharpLayersSerialization(SerializedName = "maxResolution")]
+        public double? MaxResolution { get; set; }
+
+        [SharpLayersSerialization(SerializedName = "gutter")]
+        public int? Gutter { get; set; }
+
+        //[SharpLayersSerialization(SerializedName = "name")]
+        //public string Value { get; set; }
 
         [SharpLayersSerialization(SerializedName = "isBaseLayer")]
         public bool IsBaseLayer { get; set; }

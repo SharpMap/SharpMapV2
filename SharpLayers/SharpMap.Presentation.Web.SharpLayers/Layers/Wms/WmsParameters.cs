@@ -21,8 +21,8 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
 {
     public class WmsParameters
     {
-        private readonly CollectionBase<WmsLayer> _layers = new CollectionBase<WmsLayer>((a, b) => a.Name != b.Name);
-        private readonly CollectionBase<ResourceUri> _urls = new CollectionBase<ResourceUri>((a, b) => a.Uri != b.Uri);
+        private readonly CollectionBase<StringValue> _layers = new CollectionBase<StringValue>((a, b) => a.Value != b.Value);
+        private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>((a, b) => a.Value != b.Value);
         private string _imageMimeType = "image/png";
         private bool _transaparent = true;
         private string _wmsVersion = "1.3.0";
@@ -39,7 +39,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
             PersistenceMode(PersistenceMode.InnerProperty)
         ]
-        public CollectionBase<ResourceUri> WmsServerUrls
+        public CollectionBase<UriValue> WmsServerUrls
         {
             get { return _urls; }
         }
@@ -49,7 +49,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
             PersistenceMode(PersistenceMode.InnerProperty)
         ]
-        public CollectionBase<WmsLayer> WmsLayerNames
+        public CollectionBase<StringValue> WmsLayerNames
         {
             get { return _layers; }
             //set { _layers = value; }

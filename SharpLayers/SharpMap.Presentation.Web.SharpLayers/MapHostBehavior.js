@@ -34,6 +34,9 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
 
     _mapBuilderDelegate: function() {
         var options = this.get_builderParams();
+        options.controls = [new OpenLayers.Control.Navigation(),
+                            new OpenLayers.Control.ArgParser(),
+                            new OpenLayers.Control.Attribution()];
         return new OpenLayers.Map(this.get_element(), options);
     }
 

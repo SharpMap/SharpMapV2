@@ -116,7 +116,7 @@
     <Compile Include="Layers\Vector\VectorLayerComponent.cs" />
     <Compile Include="Layers\Wms\WmsLayerBuilderParams.cs" />
     <Compile Include="Layers\Wms\WmsLayerComponent.cs" />
-    <Compile Include="Layers\Wms\WmsLayer.cs" />
+    <Compile Include="StringValue.cs" />
     <Compile Include="Layers\Wms\WmsParameters.cs" />
     <Compile Include="MapHostDesigner.cs" />
     <Compile Include="MapHostExtender.cs" />
@@ -130,8 +130,8 @@
     <Compile Include="Protocol\IProtocolComponent.cs" />
     <Compile Include="Protocol\IProtocolBuilderParams.cs" />
     <Compile Include="Protocol\ProtocolComponentBase.cs" />
-    <Compile Include="Resolution.cs" />
-    <Compile Include="ResourceUri.cs" />
+    <Compile Include="DoubleValue.cs" />
+    <Compile Include="UriValue.cs" />
     <Compile Include="SharpLayersSerializationAttribute.cs" />
     <Compile Include="LonLat.cs" />
     <Compile Include="Pixel.cs" />
@@ -141,6 +141,7 @@
     <Compile Include="OpenLayersExtender.cs" />
     <Compile Include="Strategy\BBoxStrategy.cs" />
     <Compile Include="Strategy\IStrategy.cs" />
+    <Compile Include="ValueBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HostBaseBehavior.js" />

@@ -61,20 +61,20 @@
                         <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
                         <WmsParameters WmsVersion="1.3.0" Crs="EPSG:27700">
                             <WmsLayerNames>
-                                <wms:WmsLayer Name="ARoads" />
-                                <wms:WmsLayer Name="BRoads" />
-                                <wms:WmsLayer Name="UnclassifiedRoads" />
-                                <wms:WmsLayer Name="PrimaryRoads" />
-                                <wms:WmsLayer Name="Streets" />
+                                <wms:StringValue Value="ARoads" />
+                                <wms:StringValue Value="BRoads" />
+                                <wms:StringValue Value="UnclassifiedRoads" />
+                                <wms:StringValue Value="PrimaryRoads" />
+                                <wms:StringValue Value="Streets" />
                             </WmsLayerNames>
                             <WmsServerUrls>
-                                <cc1:ResourceUri Uri="http://a.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:ResourceUri Uri="http://b.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:ResourceUri Uri="http://c.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:ResourceUri Uri="http://d.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:ResourceUri Uri="http://e.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:ResourceUri Uri="http://f.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:ResourceUri Uri="http://g.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://a.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://b.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://c.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://d.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://e.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://f.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://g.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
                             </WmsServerUrls>
                         </WmsParameters>
                     </BuilderParams>

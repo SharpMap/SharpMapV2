@@ -12,22 +12,10 @@
  *  Author: John Diss 2008
  * 
  */
-using System;
-
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [Serializable]
-    public class Resolution : IUICollectionItem
+    public class StringValue : ValueBase<string>
     {
-        public double Value { get; set; }
 
-        #region IUICollectionItem Members
-
-        public object GetValue()
-        {
-            return Value;
-        }
-
-        #endregion
     }
 }

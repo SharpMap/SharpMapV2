@@ -12,19 +12,12 @@
  *  Author: John Diss 2008
  * 
  */
-namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
+using System;
+
+namespace SharpMap.Presentation.Web.SharpLayers
 {
-    public class WmsLayer : IUICollectionItem
+    public class UriValue : ValueBase<Uri>
     {
-        public string Name { get; set; }
 
-        #region IUICollectionItem Members
-
-        public object GetValue()
-        {
-            return Name;
-        }
-
-        #endregion
     }
 }

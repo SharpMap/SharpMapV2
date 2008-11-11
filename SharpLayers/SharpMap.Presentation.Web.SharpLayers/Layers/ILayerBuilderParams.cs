@@ -33,5 +33,17 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
         bool WrapDateLine { get; set; }
 
         string Attribution { get; set; }
+
+        bool AlwaysInRange { get; set; }
+
+        double? MinScale { get; set; }
+
+        CollectionBase<DoubleValue> Resolutions { get; }
+        CollectionBase<DoubleValue> Scales { get; }
+
+        double? MaxScale { get; set; }
+        double? MinResolution { get; set; }
+        double? MaxResolution { get; set; }
+        int? Gutter { get; set; }
     }
 }
