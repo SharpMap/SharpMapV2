@@ -45,7 +45,7 @@ namespace SharpMap.Rendering.Web
             while (_renderQueue.Count > 0)
             {
                 sb.Append(_renderQueue.Dequeue().Json);
-                if (_renderQueue.Count > 1)
+                if (_renderQueue.Count > 0)
                     sb.Append(",");
             }
             sb.Append("]");
