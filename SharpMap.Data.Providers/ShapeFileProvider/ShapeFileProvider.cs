@@ -77,28 +77,21 @@ namespace SharpMap.Data.Providers.ShapeFile
         private const String SharpMapShapeFileIndexFileExtension = ".#index-shp";
 
         #region IdBounds
-        [StructLayout(LayoutKind.Explicit)]
         struct IdBounds : IBoundable<IExtents>
         {
-            [FieldOffset(0)]
             private readonly UInt32 _id;
-            [FieldOffset(4)]
-            private readonly IExtents _extents;
-            [FieldOffset(4)]
-            private readonly IFeatureDataRecord _feature;
+            private object _record;
 
             public IdBounds(UInt32 id, IFeatureDataRecord feature)
             {
                 _id = id;
-                _extents = null;
-                _feature = feature;
+                _record = feature;
             }
 
             public IdBounds(UInt32 id, IExtents extents)
             {
                 _id = id;
-                _feature = null;
-                _extents = extents;
+                _record = extents;
             }
 
             public UInt32 Id
@@ -108,14 +101,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             public IFeatureDataRecord Feature
             {
-                get { return _feature; }
+                get { return _record as IFeatureDataRecord; }
             }
 
             #region IBoundable<IExtents> Members
 
             public IExtents Bounds
             {
-                get { return _extents ?? Feature.Extents; }
+                get { return _record as IExtents ?? Feature.Extents; }
             }
 
             public Boolean Intersects(IExtents bounds)
