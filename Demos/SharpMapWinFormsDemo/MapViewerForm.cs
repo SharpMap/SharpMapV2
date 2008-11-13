@@ -61,7 +61,7 @@ namespace MapViewer
             AttributeQueryHandler.Begin += AttributeQueryHandler_Begin;
             layersView1.LayersContextMenu = layerContextMenu;
             layersView1.ContextMenuStrip = layersContextMenu;
-            stylesControl1.Styles = _loadedStyles; 
+            stylesControl1.Styles = _loadedStyles;
         }
 
         private IMapActionHandler MapActionHandler { get; set; }
@@ -98,7 +98,7 @@ namespace MapViewer
             IFeatureLayer l =
                 Enumerable.FirstOrDefault(
                     Processor.Transform(Enumerable.Select(Map.SelectedLayers, o => o as IFeatureLayer != null),
-                                        o => (IFeatureLayer) o));
+                                        o => (IFeatureLayer)o));
 
             if (l != null)
             {
@@ -162,7 +162,7 @@ namespace MapViewer
             Map.DeselectLayers(Map.SelectedLayers);
 
             if (queryLayerComboBox.SelectedIndex > -1)
-                Map.SelectLayer((string) queryLayerComboBox.SelectedItem);
+                Map.SelectLayer((string)queryLayerComboBox.SelectedItem);
         }
 
         private void Layers_ListChanged(object sender, ListChangedEventArgs e)
@@ -451,16 +451,16 @@ namespace MapViewer
 
         private void FixedZoomIn()
         {
-            Zoom(1/1.2);
+            Zoom(1 / 1.2);
         }
 
         private void Zoom(double amount)
         {
-            var ext = (IExtents2D) MapView.ViewEnvelope.Clone();
+            var ext = (IExtents2D)MapView.ViewEnvelope.Clone();
             double dx, dy;
-            dx = ext.Width*amount/2;
-            dy = ext.Height*amount/2;
-            var c = (ICoordinate2D) ext.Center;
+            dx = ext.Width * amount / 2;
+            dy = ext.Height * amount / 2;
+            var c = (ICoordinate2D)ext.Center;
 
             MapView.ZoomToWorldBounds(ext.Factory.CreateExtents2D(c.X - dx, c.Y - dy, c.X + dx, c.Y + dy));
         }
@@ -501,7 +501,7 @@ namespace MapViewer
         private void ZoomLayerExtent(CommandEventArgs<ILayer> layerArgs)
         {
             if (layerArgs.Value != null)
-                MapView.ZoomToWorldBounds((IExtents2D) layerArgs.Value.Extents);
+                MapView.ZoomToWorldBounds((IExtents2D)layerArgs.Value.Extents);
         }
 
         private void EditLayerSymbology(CommandEventArgs<ILayer> layerArgs)
@@ -535,30 +535,34 @@ namespace MapViewer
                     workQueue.AddWorkItem(
                         string.Format("Loading Datasource {0}", name),
                         delegate
-                            {
-                                var lyr =
-                                    new GeometryLayer(
-                                        name,
-                                        prov);
+                        {
+                            var lyr =
+                                new GeometryLayer(
+                                    name,
+                                    prov);
 
-                                prov.Open();
+                            prov.Open();
 
 
-                                InvokeIfRequired(new Action(delegate
+                            InvokeIfRequired(new Action(delegate
+                                                            {
+                                                                Map.Layers.Insert(0, lyr);
+
+                                                                lyr.Style = RandomStyle.RandomGeometryStyle();
+                                                                //lyr.Style = setGeometryStyle(lyr);
+
+                                                                if (Map.Layers.Count == 1)
                                                                 {
-                                                                    Map.Layers.Insert(0, lyr);
-
-                                                                    lyr.Style = RandomStyle.RandomGeometryStyle();
-                                                                    //lyr.Style = setGeometryStyle(lyr);
-
-                                                                    if (Map.Layers.Count == 1)
-                                                                    {
-                                                                        mapViewControl1.Map = Map;
-                                                                        layersView1.Map = Map;
-                                                                        MapView.ZoomToExtents();
-                                                                    }
-                                                                }));
-                            }, delegate { EnableDisableCommandsRequiringLayers(); });
+                                                                    mapViewControl1.Map = Map;
+                                                                    layersView1.Map = Map;
+                                                                    MapView.ZoomToExtents();
+                                                                }
+                                                            }));
+                        }, EnableDisableCommandsRequiringLayers
+                        , delegate(Exception ex)
+                              {
+                                  MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace));
+                              });
                 }
             }
         }

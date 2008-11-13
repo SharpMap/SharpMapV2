@@ -34,7 +34,7 @@ namespace MapViewer.DataSource
         {
             IGeometryServices svc = new GeometryServices();
             if (File.Exists(tbPath.Text))
-                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, true);
+                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false);
             return null;
         }
 

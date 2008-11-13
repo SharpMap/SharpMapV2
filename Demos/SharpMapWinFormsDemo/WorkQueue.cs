@@ -29,10 +29,10 @@ namespace MapViewer
 
         public event EventHandler<WorkQueueProcessEventArgs> Working;
 
-        public void AddWorkItem(string statusText, Action workItem, Action callback)
+        public void AddWorkItem(string statusText, Action workItem, Action successCallback, Action<Exception> errorCallback)
         {
             lock (_workQ)
-                _workQ.Enqueue(new WorkItem(statusText, workItem, callback));
+                _workQ.Enqueue(new WorkItem(statusText, workItem, successCallback, errorCallback));
             if (!_worker.IsBusy)
                 _worker.RunWorkerAsync();
         }
@@ -45,16 +45,34 @@ namespace MapViewer
                 lock (_workQ)
                     w = _workQ.Dequeue();
                 OnProcessingItem(w.StatusText);
-                w.WorkAction();
 
-                if (w.CallBackAction != null)
+                Exception ex = null;
+                try
+                {
+                    w.WorkAction();
+                }
+                catch (Exception exception)
+                {
+                    ex = exception;
+                }
+
+                if (ex != null)
+                {
+                    if (w.ErrorCallbackHandler != null)
+                    {
+                        if (_control.InvokeRequired)
+                            _control.Invoke(w.ErrorCallbackHandler, ex);
+                        else
+                            w.ErrorCallbackHandler(ex);
+                    }
+                }
+
+                else if (w.SuccessCallbackAction != null)
                 {
                     if (_control.InvokeRequired)
-                        _control.Invoke(w.CallBackAction);
+                        _control.Invoke(w.SuccessCallbackAction);
                     else
-                    {
-                        w.CallBackAction();
-                    }
+                        w.SuccessCallbackAction();
                 }
             }
 
@@ -71,16 +89,18 @@ namespace MapViewer
 
         private class WorkItem
         {
-            public WorkItem(string statusText, Action action, Action callback)
+            public WorkItem(string statusText, Action action, Action successCallback, Action<Exception> errorCallback)
             {
                 WorkAction = action;
-                CallBackAction = callback;
+                SuccessCallbackAction = successCallback;
                 StatusText = statusText;
+                ErrorCallbackHandler = errorCallback;
             }
 
             public string StatusText { get; protected set; }
             public Action WorkAction { get; protected set; }
-            public Action CallBackAction { get; protected set; }
+            public Action SuccessCallbackAction { get; protected set; }
+            public Action<Exception> ErrorCallbackHandler { get; protected set; }
         }
 
         #endregion
