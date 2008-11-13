@@ -17,14 +17,21 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.MsSqlServer2008;
 using SharpMap.Data.Providers.MsSqlServer2008.Expressions;
 using SharpMap.Expressions;
-
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 namespace SharpMap.Data.Providers
 {
     public enum SqlServer2008ExtentsMode
@@ -180,7 +187,7 @@ namespace SharpMap.Data.Providers
                 return GenerateSelectSql(properties, compiler, pageSize, pageNumber);
 
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Transform(
+                                             Enumerable.ToArray(Processor.Select(
                                                                     GetProviderPropertyValue
                                                                         <OrderByCollectionExpression,
                                                                         CollectionExpression<OrderByExpression>>(
@@ -215,7 +222,7 @@ namespace SharpMap.Data.Providers
                                                     int pageNumber)
         {
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Transform(
+                                             Enumerable.ToArray(Processor.Select(
                                                                     GetProviderPropertyValue
                                                                         <OrderByCollectionExpression,
                                                                         CollectionExpression<OrderByExpression>>(

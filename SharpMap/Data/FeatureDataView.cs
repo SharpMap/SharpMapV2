@@ -28,9 +28,14 @@ using SharpMap.Expressions;
 
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
 #else
-    using Enumerable= GeoAPI.DataStructures.Enumerable;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #endif
+
+
+
 
 namespace SharpMap.Data
 {
@@ -636,10 +641,10 @@ namespace SharpMap.Data
             // poor structuring of the OID values. Consider creating a local,
             // sorted index where a binary search can be performed.
             IEnumerable oids = _viewDefinition.OidPredicate.OidValues;
-  
+
             Int32 count = 0;
 
-            if (Enumerable.FirstOrDefault(oids) == null)
+            if (Enumerable.FirstOrDefault(Caster.Cast<object>(oids)) == null) //jd:added explicit type param to allow compiliation in net3.5
             {
                 return true;
             }

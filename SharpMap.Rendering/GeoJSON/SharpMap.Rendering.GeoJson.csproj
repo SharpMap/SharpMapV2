@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug35\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DOTNET35;DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -43,7 +43,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release35\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DOTNET35;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -75,6 +75,7 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Debug_Net35\NPack.dll</HintPath>
         </Reference>
+        <Reference Include="System.Core"/>
       </ItemGroup>
     </When>
   </Choose>
@@ -85,6 +86,7 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Release_Net35\NPack.dll</HintPath>
         </Reference>
+        <Reference Include="System.Core"/>
       </ItemGroup>
     </When>
   </Choose>
@@ -105,8 +107,6 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
         </Reference>
-        <Reference Include="System.Web" />
-        <Reference Include="System.Xml" />
       </ItemGroup>
     </When>
   </Choose>

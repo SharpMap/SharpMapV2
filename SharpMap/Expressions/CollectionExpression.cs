@@ -17,10 +17,13 @@
 
 using System;
 using System.Collections;
+
 #if DOTNET35
-using System.Linq;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
 #else
-using GeoAPI.DataStructures;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #endif
 
 namespace SharpMap.Expressions
@@ -44,9 +47,9 @@ namespace SharpMap.Expressions
             CollectionExpression ce = other as CollectionExpression;
 
             return ce != null &&
-                   Enumerable.All(_collection, delegate(Object item)
+                   Enumerable.All(Caster.Cast<object>(_collection), delegate(Object item)
                    {
-                       return Enumerable.Contains(ce._collection, item);
+                       return Enumerable.Contains(Caster.Cast<object>(ce._collection), item);
                    });
         }
 
@@ -54,12 +57,12 @@ namespace SharpMap.Expressions
         {
             CollectionExpression ce = other as CollectionExpression;
 
-            return ce != null && Enumerable.SequenceEqual(_collection, ce._collection);
+            return ce != null && Enumerable.SequenceEqual(Caster.Cast<object>(_collection), Caster.Cast<object>(ce._collection));
         }
 
         public override Expression Clone()
         {
-            return new CollectionExpression(Enumerable.ToArray(_collection));
+            return new CollectionExpression(Enumerable.ToArray(Caster.Cast<object>(_collection)));
         }
 
         #region IEnumerable Members
@@ -70,5 +73,9 @@ namespace SharpMap.Expressions
         }
 
         #endregion
+
+
+
+
     }
 }

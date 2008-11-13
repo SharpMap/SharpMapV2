@@ -41,7 +41,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using GeoAPI.Geometries;
-using GeoAPI.DataStructures;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.SpatiaLite2;
@@ -49,6 +48,17 @@ using SharpMap.Expressions;
 #if DEBUG
 using System.Diagnostics;
 #endif
+
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
+
 namespace SharpMap.Data.Providers
 {
 
@@ -785,7 +795,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                                                                                      : SelectAllColumnNames())));
 
                 string orderByCols = String.Join(",",
-                                                 Enumerable.ToArray(Processor.Transform(
+                                                 Enumerable.ToArray(Processor.Select(
                                                      GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
                                                          properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString("[{0}]"))));
 
@@ -825,7 +835,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
         protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties, ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize, int pageNumber)
         {
             string orderByCols = String.Join(",",
-                                  Enumerable.ToArray(Processor.Transform(
+                                  Enumerable.ToArray(Processor.Select(
                                       GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
                                           properties, new CollectionExpression<OrderByExpression>(new OrderByExpression[] { })), o => o.ToString("[{0}]"))));
 

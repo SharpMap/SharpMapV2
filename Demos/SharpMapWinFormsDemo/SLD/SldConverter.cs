@@ -4,10 +4,17 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml;
-using GeoAPI.DataStructures;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 namespace MapViewer.SLD
 {
     public class SldConverter
@@ -324,7 +331,7 @@ namespace MapViewer.SLD
                 {
                     string[] Numbers = strokeDasharray.Split(Char.Parse(" "));
 
-                    IEnumerable<float> dbls = Processor.Transform(Numbers, o => float.Parse(o));
+                    IEnumerable<float> dbls = Processor.Select(Numbers, o => float.Parse(o));
                     pen.DashPattern = Enumerable.ToArray(dbls);
                 }
 

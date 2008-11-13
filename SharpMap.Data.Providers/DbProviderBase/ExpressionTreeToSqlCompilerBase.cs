@@ -19,10 +19,15 @@ using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
-
+#if DOTNET35
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+    using Enumerable= GeoAPI.DataStructures.Enumerable;
+    using Caster =  GeoAPI.DataStructures.Caster;
+#endif
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class ExpressionTreeToSqlCompilerBase<TOid>

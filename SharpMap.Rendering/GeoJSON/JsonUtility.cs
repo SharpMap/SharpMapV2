@@ -17,8 +17,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using GeoAPI.DataStructures;
-
+#if DOTNET35
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 namespace SharpMap.Rendering.GeoJson
 {
     public static class JsonUtility

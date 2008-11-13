@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using MapViewer.Commands;
 using MapViewer.Controls;
@@ -35,7 +34,15 @@ using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
-
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 namespace MapViewer
 {
     public partial class MapViewerForm : Form
@@ -97,8 +104,8 @@ namespace MapViewer
         {
             IFeatureLayer l =
                 Enumerable.FirstOrDefault(
-                    Processor.Transform(Enumerable.Select(Map.SelectedLayers, o => o as IFeatureLayer != null),
-                                        o => (IFeatureLayer)o));
+                Caster.Cast<IFeatureLayer>(
+                    Processor.Where(Map.SelectedLayers, o => o as IFeatureLayer != null)));
 
             if (l != null)
             {

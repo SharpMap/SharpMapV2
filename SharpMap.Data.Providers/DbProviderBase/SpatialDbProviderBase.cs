@@ -26,11 +26,18 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
-
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class SpatialDbProviderBase<TOid>
@@ -258,7 +265,7 @@ namespace SharpMap.Data.Providers.Db
                             OidColumn,
                             String.Join(",",
                                         Enumerable.ToArray(
-                                            Processor.Transform(featureIds,
+                                           Processor.Select(featureIds,
                                                                 delegate(TOid o)
                                                                 {
                                                                     return
@@ -497,7 +504,7 @@ namespace SharpMap.Data.Providers.Db
 
         private static void AddToList<T>(IList<T> storage, T item, Func<T, T, bool> filter)
         {
-            if (Enumerable.Count(Enumerable.Select(storage, i => filter(i, item))) == 0)
+            if (Enumerable.Count(Processor.Where(storage, i => filter(i, item))) == 0)
                 storage.Add(item);
         }
 
@@ -710,7 +717,7 @@ namespace SharpMap.Data.Providers.Db
 
 
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Transform(
+                                             Enumerable.ToArray(Processor.Select(
                                                                     GetProviderPropertyValue
                                                                         <OrderByCollectionExpression,
                                                                         CollectionExpression<OrderByExpression>>(

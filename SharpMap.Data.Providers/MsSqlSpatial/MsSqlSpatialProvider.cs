@@ -16,12 +16,21 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.MsSqlSpatial;
 using SharpMap.Expressions;
+
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 
 namespace SharpMap.Data.Providers
 {
@@ -128,7 +137,7 @@ namespace SharpMap.Data.Providers
 
 
             string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Transform(
+                                             Enumerable.ToArray(Processor.Select(
                                                                     GetProviderPropertyValue
                                                                         <OrderByCollectionExpression,
                                                                         CollectionExpression<OrderByExpression>>(
@@ -163,7 +172,7 @@ namespace SharpMap.Data.Providers
         {
             string orderByCols = String.Join(",",
                                              Enumerable.ToArray(
-                                                Processor.Transform(
+                                                Processor.Select(
                                                     GetProviderPropertyValue
                                                         <OrderByCollectionExpression,
                                                         CollectionExpression<OrderByExpression>>(
