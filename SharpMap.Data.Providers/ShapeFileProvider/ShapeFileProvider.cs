@@ -80,7 +80,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         struct IdBounds : IBoundable<IExtents>
         {
             private readonly UInt32 _id;
-            private object _record;
+            private readonly Object _record;
 
             public IdBounds(UInt32 id, IFeatureDataRecord feature)
             {
@@ -90,7 +90,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             public IdBounds(UInt32 id, IExtents extents)
             {
-                _id = id;
+                _id = id; 
                 _record = extents;
             }
 
