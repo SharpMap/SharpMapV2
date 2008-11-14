@@ -92,7 +92,7 @@
     <Reference Include="System.XML" />
     <Reference Include="System.Data.SQLite, Version=1.0.59.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\SQLite.NET\bin\System.Data.SQLite.DLL</HintPath>
+      <HintPath>..\..\ExternalReferences\Debug_Common\System.Data.SQLite.DLL</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +133,6 @@
       <Name>SharpMap.Data.Providers.Db</Name>
     </ProjectReference>
   </ItemGroup>
-
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -167,7 +166,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content  Include="SQLite\libgeos-3-0-0.dll" />
+    <Content Include="SQLite\libgeos-3-0-0.dll" />
     <Content Include="SQLite\libgeos_c-1.dll" />
     <Content Include="SQLite\libiconv2.dll" />
     <Content Include="SQLite\libproj-0.dll" />
@@ -175,7 +174,6 @@
     <Content Include="SQLite\libsqlite3-1.dll" />
     <Content Include="SQLite\PROJ4.csv" />
   </ItemGroup>
-  
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
