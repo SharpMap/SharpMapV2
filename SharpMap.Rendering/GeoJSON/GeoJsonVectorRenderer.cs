@@ -27,14 +27,19 @@ namespace SharpMap.Rendering.GeoJson
                                                                      StylePen outline, StylePen highlightOutline,
                                                                      StylePen selectOutline, RenderState renderState)
         {
-            throw new NotImplementedException();
+
+            yield break;
+
+            //TODO:
         }
 
         public override IEnumerable<GeoJsonRenderObject> RenderPaths(IEnumerable<Path2D> paths, StylePen outline,
                                                                      StylePen highlightOutline, StylePen selectOutline,
                                                                      RenderState renderState)
         {
-            throw new NotImplementedException();
+            yield break;
+
+            //TODO:
         }
 
         public override IEnumerable<GeoJsonRenderObject> RenderPaths(IEnumerable<Path2D> paths, StyleBrush fill,
@@ -42,20 +47,28 @@ namespace SharpMap.Rendering.GeoJson
                                                                      StylePen outline, StylePen highlightOutline,
                                                                      StylePen selectOutline, RenderState renderState)
         {
-            throw new NotImplementedException();
+            yield break;
+
+            //TODO:
         }
 
         public override IEnumerable<GeoJsonRenderObject> RenderSymbols(IEnumerable<Point2D> locations,
                                                                        Symbol2D symbolData, RenderState renderState)
         {
-            throw new NotImplementedException();
+
+            yield break;
+
+            //TODO:
         }
 
         public override IEnumerable<GeoJsonRenderObject> RenderSymbols(IEnumerable<Point2D> locations,
                                                                        Symbol2D symbolData, ColorMatrix highlight,
                                                                        ColorMatrix select, RenderState renderState)
         {
-            throw new NotImplementedException();
+
+            yield break;
+
+            //TODO:
         }
 
         public override IEnumerable<GeoJsonRenderObject> RenderSymbols(IEnumerable<Point2D> locations,
@@ -63,7 +76,9 @@ namespace SharpMap.Rendering.GeoJson
                                                                        Symbol2D selectSymbolData,
                                                                        RenderState renderState)
         {
-            throw new NotImplementedException();
+            yield break;
+
+            //TODO:
         }
     }
 }

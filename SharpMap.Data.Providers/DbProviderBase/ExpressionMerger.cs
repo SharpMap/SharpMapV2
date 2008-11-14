@@ -42,9 +42,8 @@ namespace SharpMap.Data.Providers.Db
 
         private static Expression MergeFeatureQueryAndPredicateExpression(FeatureQueryExpression expression, PredicateExpression predicateExpression)
         {
-            return new FeatureQueryExpression(expression.Projection,
-                                              (BinaryExpression)MergePredicateExpressions(expression.Predicate, predicateExpression),
-                                              expression.SpatialPredicate, expression.OidPredicate);
+            return new FeatureQueryExpression((ProjectionExpression)expression.Projection,
+                                              (PredicateExpression)MergePredicateExpressions(expression.Predicate, predicateExpression));
         }
 
         private static Exception GetMergeException(Expression expr1, Expression expr2)

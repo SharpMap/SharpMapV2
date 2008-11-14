@@ -61,11 +61,11 @@
                         <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
                         <WmsParameters WmsVersion="1.3.0" Crs="EPSG:27700">
                             <WmsLayerNames>
-                                <wms:StringValue Value="ARoads" />
-                                <wms:StringValue Value="BRoads" />
-                                <wms:StringValue Value="UnclassifiedRoads" />
-                                <wms:StringValue Value="PrimaryRoads" />
-                                <wms:StringValue Value="Streets" />
+                                <cc1:StringValue Value="ARoads" />
+                                <cc1:StringValue Value="BRoads" />
+                                <cc1:StringValue Value="UnclassifiedRoads" />
+                                <cc1:StringValue Value="PrimaryRoads" />
+                                <cc1:StringValue Value="Streets" />
                             </WmsLayerNames>
                             <WmsServerUrls>
                                 <cc1:UriValue Value="http://a.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />

@@ -87,21 +87,37 @@ namespace SharpMap.Presentation.AspNet.MVP
             base.OnRenderedLayerPhase(layer, phase);
         }
 
-        protected override void CreateGeometryRenderer(Type renderObjectType)
+        protected override Type GeometryRendererType
         {
-            if (renderObjectType == typeof(GdiRenderObject))
-                base.CreateGeometryRenderer(renderObjectType);
-            else if (renderObjectType == typeof(GeoJsonRenderObject))
+            get
             {
-                Type basicGeometryRendererType = typeof(GeoJsonGeometryRenderer<>);
-                Type layerType = typeof(GeometryLayer);
-
-                CreateRendererForLayerType(basicGeometryRendererType,
-                                           renderObjectType,
-                                           layerType,
-                                           VectorRenderer);
+                return WebMapRenderer.GeometryRendererType;
             }
         }
+
+        protected override Type LabelRendererType
+        {
+            get
+            {
+                return WebMapRenderer.LabelRendererType;
+            }
+        }
+
+        //protected override void CreateGeometryRenderer(Type renderObjectType)
+        //{
+        //    if (renderObjectType == typeof(GdiRenderObject))
+        //        base.CreateGeometryRenderer(renderObjectType);
+        //    else if (renderObjectType == typeof(GeoJsonRenderObject))
+        //    {
+        //        Type basicGeometryRendererType = typeof(GeoJsonGeometryRenderer<>);
+        //        Type layerType = typeof(GeometryLayer);
+
+        //        CreateRendererForLayerType(basicGeometryRendererType,
+        //                                   renderObjectType,
+        //                                   layerType,
+        //                                   VectorRenderer);
+        //    }
+        //}
 
         protected override IRasterRenderer2D CreateRasterRenderer()
         {

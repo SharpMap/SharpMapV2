@@ -27,6 +27,8 @@ namespace SharpMap.Presentation.AspNet
         IRasterRenderer2D CreateRasterRenderer();
         IVectorRenderer2D CreateVectorRenderer();
         ITextRenderer2D CreateTextRenderer();
+        Type GeometryRendererType { get; }
+        Type LabelRendererType { get; }
         Type GetRenderObjectType();
         void ClearRenderQueue();
         void EnqueueRenderObject(object o);

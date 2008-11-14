@@ -479,6 +479,21 @@ namespace SharpMap.Rendering.Web
         }
 
         #endregion
+
+        #region IWebMapRenderer Members
+
+
+        public Type GeometryRendererType
+        {
+            get { return typeof(BasicGeometryRenderer2D<>); }
+        }
+
+        public Type LabelRendererType
+        {
+            get { return typeof(BasicLabelRenderer2D<>); }
+        }
+
+        #endregion
     }
 
     internal class WebGdiVectorRenderer : GdiVectorRenderer

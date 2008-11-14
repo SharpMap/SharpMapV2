@@ -114,5 +114,20 @@ namespace SharpMap.Rendering.Web
         }
 
         #endregion
+
+        #region IWebMapRenderer Members
+
+
+        public Type GeometryRendererType
+        {
+            get { return typeof(GeoJsonGeometryRenderer<>); }
+        }
+
+        public Type LabelRendererType
+        {
+            get { return typeof(BasicLabelRenderer2D<>); }
+        }
+
+        #endregion
     }
 }

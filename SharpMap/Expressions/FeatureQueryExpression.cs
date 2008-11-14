@@ -38,9 +38,9 @@ namespace SharpMap.Expressions
 
         public static FeatureQueryExpression Intersects(ProjectionExpression projection, IExtents extents)
         {
-            return new FeatureQueryExpression(projection, 
-                                              null, 
-                                              SpatialBinaryExpression.Intersects(extents), 
+            return new FeatureQueryExpression(projection,
+                                              null,
+                                              SpatialBinaryExpression.Intersects(extents),
                                               null);
         }
 
@@ -142,7 +142,7 @@ namespace SharpMap.Expressions
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
             // TODO: Well, this is crazy. We need an init() function, and perhaps some more static creator methods.
-            : base(projectionExpression, 
+            : base(projectionExpression,
                    attributeFilter == null
                         ? spatialFilter == null
                                 ? oidFilter
@@ -161,15 +161,15 @@ namespace SharpMap.Expressions
                                                                                 BinaryOperator.And,
                                                                                 spatialFilter))) { }
 
-        public FeatureQueryExpression(FeatureQueryExpression expressionToCopy, 
+        public FeatureQueryExpression(FeatureQueryExpression expressionToCopy,
                                       SpatialBinaryExpression replacementSpatialExpression)
-            : this(expressionToCopy.Projection, 
-                   expressionToCopy.SingleAttributePredicate, 
-                   replacementSpatialExpression, 
+            : this(expressionToCopy.Projection,
+                   expressionToCopy.SingleAttributePredicate,
+                   replacementSpatialExpression,
                    expressionToCopy.OidPredicate) { }
 
-        protected internal FeatureQueryExpression(ProjectionExpression projection,
-                                                  PredicateExpression predicate)
+        public FeatureQueryExpression(ProjectionExpression projection,
+                                                  PredicateExpression predicate)//jd: made public
             : base(projection, predicate) { }
 
         public SpatialBinaryExpression SpatialPredicate

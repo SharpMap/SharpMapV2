@@ -41,11 +41,47 @@ namespace SharpMap.Presentation.Presenters
     /// </summary>
     public abstract class MapPresenter2D : FeatureLayersListenerPresenter<IMapView2D>
     {
+        internal struct RendererKey
+        {
+            private Type renderObjectType;
+            public Type RenderObjectType
+            {
+                get { return renderObjectType; }
+                private set { renderObjectType = value; }
+            }
+
+            private Type rendererType;
+            public Type RendererType
+            {
+                get { return rendererType; }
+                private set { rendererType = value; }
+            }
+
+            public RendererKey(Type renderObject, Type renderType)
+                : this()
+            {
+                RenderObjectType = renderObject;
+                RendererType = renderType;
+            }
+            public override int GetHashCode()
+            {
+                return renderObjectType.GetHashCode() ^ rendererType.GetHashCode();
+            }
+        }
+
         #region Private static fields
         private static readonly Object _rendererInitSync = new Object();
-        private static Object _vectorRenderer;
-        private static Object _rasterRenderer;
-        private static Object _textRenderer;
+
+        ////jd : following as it causes issues with the web where there may 
+        //// be multiple renderer types in the same app e.g gdi and geojson
+
+        //private static Object _vectorRenderer;
+        //private static Object _rasterRenderer;
+        //private static Object _textRenderer;
+
+        private static readonly Dictionary<RendererKey, IRenderer> _rendererRegistry = new Dictionary<RendererKey, IRenderer>();
+
+
         #endregion
 
         #region Private instance fields
@@ -125,7 +161,7 @@ namespace SharpMap.Presentation.Presenters
             View.ZoomToViewBoundsRequested += handleViewZoomToViewBoundsRequested;
             View.ZoomToWorldBoundsRequested += handleViewZoomToWorldBoundsRequested;
             View.ZoomToWorldWidthRequested += handleViewZoomToWorldWidthRequested;
-            
+
             _selection.SelectionChanged += handleSelectionChanged;
 
             initializeViewMatrixes();
@@ -277,21 +313,42 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                if (Thread.VolatileRead(ref _rasterRenderer) == null)
+                IRenderer r;
+
+                Type renderObjectType = GetRenderObjectType();
+                Type tRenderer = typeof(IRasterRenderer2D);
+                RendererKey key = new RendererKey(renderObjectType, tRenderer);
+                if (!_rendererRegistry.TryGetValue(key, out r))
                 {
                     lock (_rendererInitSync)
                     {
-                        if (Thread.VolatileRead(ref _rasterRenderer) == null)
+                        if (!_rendererRegistry.TryGetValue(key, out r))
                         {
-                            IRenderer rasterRenderer = CreateRasterRenderer();
-                            Thread.VolatileWrite(ref _rasterRenderer, rasterRenderer);
+                            r = CreateRasterRenderer();
+                            _rendererRegistry.Add(key, r);
                         }
                     }
                 }
 
-                return _rasterRenderer as IRasterRenderer2D;
+                return r as IRasterRenderer2D;
+
+                //if (Thread.VolatileRead(ref _rasterRenderer) == null)
+                //{
+                //    lock (_rendererInitSync)
+                //    {
+                //        if (Thread.VolatileRead(ref _rasterRenderer) == null)
+                //        {
+                //            IRenderer rasterRenderer = CreateRasterRenderer();
+                //            Thread.VolatileWrite(ref _rasterRenderer, rasterRenderer);
+                //        }
+                //    }
+                //}
+
+                //return _rasterRenderer as IRasterRenderer2D;
             }
         }
+
+
 
         protected virtual Double RenderMaximumWorldWidth
         {
@@ -352,19 +409,39 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                if (Thread.VolatileRead(ref _vectorRenderer) == null)
+
+                IRenderer r;
+
+                Type renderObjectType = GetRenderObjectType();
+                Type tRenderer = typeof(IVectorRenderer2D);
+                RendererKey key = new RendererKey(renderObjectType, tRenderer);
+                if (!_rendererRegistry.TryGetValue(key, out r))
                 {
                     lock (_rendererInitSync)
                     {
-                        if (Thread.VolatileRead(ref _vectorRenderer) == null)
+                        if (!_rendererRegistry.TryGetValue(key, out r))
                         {
-                            IRenderer vectorRenderer = CreateVectorRenderer();
-                            Thread.VolatileWrite(ref _vectorRenderer, vectorRenderer);
+                            r = CreateVectorRenderer();
+                            _rendererRegistry.Add(key, r);
                         }
                     }
                 }
 
-                return _vectorRenderer as IVectorRenderer2D;
+                return r as IVectorRenderer2D;
+
+                //if (Thread.VolatileRead(ref _vectorRenderer) == null)
+                //{
+                //    lock (_rendererInitSync)
+                //    {
+                //        if (Thread.VolatileRead(ref _vectorRenderer) == null)
+                //        {
+                //            IRenderer vectorRenderer = CreateVectorRenderer();
+                //            Thread.VolatileWrite(ref _vectorRenderer, vectorRenderer);
+                //        }
+                //    }
+                //}
+
+                //return _vectorRenderer as IVectorRenderer2D;
             }
         }
 
@@ -372,19 +449,38 @@ namespace SharpMap.Presentation.Presenters
         {
             get
             {
-                if (Thread.VolatileRead(ref _textRenderer) == null)
+                IRenderer r;
+
+                Type renderObjectType = GetRenderObjectType();
+                Type tRenderer = typeof(ITextRenderer2D);
+                RendererKey key = new RendererKey(renderObjectType, tRenderer);
+                if (!_rendererRegistry.TryGetValue(key, out r))
                 {
                     lock (_rendererInitSync)
                     {
-                        if (Thread.VolatileRead(ref _textRenderer) == null)
+                        if (!_rendererRegistry.TryGetValue(key, out r))
                         {
-                            IRenderer textRenderer = CreateTextRenderer();
-                            Thread.VolatileWrite(ref _textRenderer, textRenderer);
+                            r = CreateTextRenderer();
+                            _rendererRegistry.Add(key, r);
                         }
                     }
                 }
 
-                return _textRenderer as ITextRenderer2D;
+                return r as ITextRenderer2D;
+
+                //if (Thread.VolatileRead(ref _textRenderer) == null)
+                //{
+                //    lock (_rendererInitSync)
+                //    {
+                //        if (Thread.VolatileRead(ref _textRenderer) == null)
+                //        {
+                //            IRenderer textRenderer = CreateTextRenderer();
+                //            Thread.VolatileWrite(ref _textRenderer, textRenderer);
+                //        }
+                //    }
+                //}
+
+                //return _textRenderer as ITextRenderer2D;
             }
         }
 
@@ -707,12 +803,22 @@ namespace SharpMap.Presentation.Presenters
 
         #region Protected members
 
+
+        protected virtual Type GeometryRendererType
+        {
+            get { return typeof(BasicGeometryRenderer2D<>); }
+        }
+
+        protected virtual Type LabelRendererType
+        {
+            get { return typeof(BasicLabelRenderer2D<>); }
+        }
+
         protected virtual void CreateGeometryRenderer(Type renderObjectType)
         {
-            Type basicGeometryRendererType = typeof(BasicGeometryRenderer2D<>);
             Type layerType = typeof(GeometryLayer);
 
-            CreateRendererForLayerType(basicGeometryRendererType,
+            CreateRendererForLayerType(GeometryRendererType,
                                        renderObjectType,
                                        layerType,
                                        VectorRenderer);
@@ -720,10 +826,9 @@ namespace SharpMap.Presentation.Presenters
 
         private void CreateLabelRenderer(Type renderObjectType)
         {
-            Type basicLabelRendererType = typeof(BasicLabelRenderer2D<>);
             Type layerType = typeof(LabelLayer);
 
-            CreateRendererForLayerType(basicLabelRendererType,
+            CreateRendererForLayerType(LabelRendererType,
                                        renderObjectType,
                                        layerType,
                                        TextRenderer,
@@ -926,7 +1031,7 @@ namespace SharpMap.Presentation.Presenters
             switch (phase)
             {
                 case RenderPhase.Normal:
-                    FeatureQueryExpression query = 
+                    FeatureQueryExpression query =
                         FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
                     IEnumerable<FeatureDataRow> features = layer.Select(query);
 
