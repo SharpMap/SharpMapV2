@@ -33,9 +33,18 @@ namespace SharpMap.Rendering.GeoJson
 
     public static class GeoJsonFeatureWriter
     {
-        public static void WriteFeature(StringBuilder sb, GeoJsonGeometryStyle style, IGeometry g,
-                                        IFeatureDataRecord feature)
+        public static string WriteFeature(GeoJsonGeometryStyle style, IFeatureDataRecord feature)
         {
+            StringBuilder sb = new StringBuilder();
+            WriteFeature(sb, style, feature);
+            return sb.ToString();
+        }
+
+        public static void WriteFeature(StringBuilder sb, GeoJsonGeometryStyle style, IFeatureDataRecord feature)
+        {
+            IGeometry g = style.PreProcessGeometries
+                                          ? style.GeometryPreProcessor(feature.Geometry)
+                                          : feature.Geometry;
             sb.Append("{");
 
             if (feature.HasOid)
@@ -51,7 +60,7 @@ namespace SharpMap.Rendering.GeoJson
             if (style.IncludeBBox)
             {
                 sb.Append("\"bbox\":");
-                WriteExtents(sb, g.Extents);
+                WriteExtents(sb, feature.Geometry.Extents);
                 sb.Append(",");
             }
 
@@ -86,6 +95,13 @@ namespace SharpMap.Rendering.GeoJson
             sb.Append(JsonUtility.FormatJsonAttribute("name", name));
             sb.Append("}");
             sb.Append("}");
+        }
+
+        public static string WriteGeometry(IGeometry g)
+        {
+            StringBuilder sb = new StringBuilder();
+            WriteGeometry(sb, g);
+            return sb.ToString();
         }
 
         public static void WriteGeometry(StringBuilder sb, IGeometry g)

@@ -34,6 +34,8 @@ namespace SharpMap.Rendering.GeoJson
         public GeoJsonGeometryRenderer(VectorRenderer2D<TRenderObject> vectorRenderer)
             : base(vectorRenderer)
         {
+            if (typeof(TRenderObject) != typeof(GeoJsonRenderObject))
+                throw new ArgumentException("TRenderObject must be of type GeoJsonRenderObject");
         }
 
         protected override IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature,
@@ -49,13 +51,11 @@ namespace SharpMap.Rendering.GeoJson
                 throw new InvalidOperationException("Feature must have a geometry to be rendered.");
             }
 
-            IGeometry geom = style.PreProcessGeometries
-                                 ? style.GeometryPreProcessor(feature.Geometry)
-                                 : feature.Geometry;
+         
 
             var sb = new StringBuilder();
 
-            GeoJsonFeatureWriter.WriteFeature(sb, style, geom, feature);
+            GeoJsonFeatureWriter.WriteFeature(sb, style,feature);
             yield return (TRenderObject)(object)(new GeoJsonRenderObject(sb.ToString())); /* oh dear - i feel very dirty now */
         }
     }
