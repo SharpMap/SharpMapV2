@@ -622,6 +622,9 @@ namespace SharpMap.Presentation.WinForms
                 {
                     continue;
                 }
+
+                try
+                {
                     switch (ro.State)
                     {
                         case RenderState.Normal:
@@ -720,6 +723,8 @@ namespace SharpMap.Presentation.WinForms
                         default:
                             break;
                     }
+                }
+                catch(OverflowException) {}
 
                 if (ro.Image != null)
                 {

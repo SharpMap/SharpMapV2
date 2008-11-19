@@ -95,19 +95,19 @@ namespace SharpMap.Data.Providers
         private FeatureQueryExpression transformQuery(FeatureQueryExpression query)
         {
             SpatialBinaryExpression spatial = query.SpatialPredicate;
-            GeometryExpression geoExpression = spatial.SpatialExpression as GeometryExpression;
-
             ICoordinateSystem querySpatialReference = spatial.SpatialExpression.SpatialReference;
 
-            if (querySpatialReference == SpatialReference)
+            if (querySpatialReference == OriginalSpatialReference)
             {
                 return query;
             }
 
-            if (querySpatialReference != OriginalSpatialReference)
-            {
-                throw new InvalidOperationException("The query's spatial reference doesn't match the provider's.");
-            }
+            //if (querySpatialReference != OriginalSpatialReference)
+            //{
+            //    throw new InvalidOperationException("The query's spatial reference doesn't match the provider's.");
+            //}
+
+            GeometryExpression geoExpression = spatial.SpatialExpression as GeometryExpression;
 
             if (geoExpression != null)
             {

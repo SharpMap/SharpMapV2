@@ -254,12 +254,20 @@ namespace SharpMap.Data.Providers
 
         public ICoordinateSystem SpatialReference
         {
-            get { return CoordinateTransformation == null ? _spatialReference : CoordinateTransformation.Target; }
+            get
+            {
+                return CoordinateTransformation == null 
+                    ? OriginalSpatialReference 
+                    : CoordinateTransformation.Target;
+            }
         }
 
         public virtual ICoordinateSystem OriginalSpatialReference
         {
-            get { return _spatialReference; }
+            get
+            {
+                return _spatialReference;
+            }
             protected set
             {
                 _spatialReference = value;

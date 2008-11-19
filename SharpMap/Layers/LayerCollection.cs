@@ -250,13 +250,20 @@ namespace SharpMap.Layers
         {
             base.ClearItems();
         }
+        // ReSharper restore RedundantOverridenMember
+#endif
 
         protected override void InsertItem(Int32 index, ILayer item)
         {
+            if (item.SpatialReference != _map.SpatialReference)
+            {
+                item.CoordinateTransformation =
+                    _map.CoordinateTransformFactory.CreateFromCoordinateSystems(item.SpatialReference,
+                                                                                _map.SpatialReference);
+            }
+
             base.InsertItem(index, item);
         }
-        // ReSharper restore RedundantOverridenMember
-#endif
 
         protected override void RemoveItem(Int32 index)
         {

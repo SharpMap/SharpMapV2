@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Globalization;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using NPack;
@@ -97,7 +98,7 @@ namespace SharpMap
 
         #region Fields
 
-        private readonly IGeometryFactory _geoFactory;
+        private IGeometryFactory _geoFactory;
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
@@ -111,7 +112,7 @@ namespace SharpMap
         private ICoordinateSystem _spatialReference;
         private Boolean _disposed;
         private readonly String _defaultName;
-        private ITheme _theme;
+        private ICoordinateTransformationFactory _coordTransformFactory;
 
         #endregion
 
@@ -121,12 +122,24 @@ namespace SharpMap
         /// Creates a new instance of a Map with a title describing 
         /// when the map was created.
         /// </summary>
-        public Map(IGeometryFactory geoFactory)
+        public Map(IGeometryFactory geoFactory, ICoordinateTransformationFactory coordTransformFactory)
             // I18N_UNSAFE
-            : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory)
+            : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory, coordTransformFactory)
         {
-            _emptyPoint = geoFactory.CreatePoint();
             _defaultName = _featureDataSet.DataSetName;
+        }
+
+        /// <summary>
+        /// Creates a new instance of a Map with the given title.
+        /// </summary>
+        public Map(String title, IGeometryFactory geoFactory, ICoordinateTransformationFactory coordTransformFactory)
+        {
+            _geoFactory = geoFactory;
+            _coordTransformFactory = coordTransformFactory;
+            _emptyPoint = _geoFactory.CreatePoint();
+            _layers = new LayerCollection(this);
+            _layers.ListChanged += handleLayersChanged;
+            _featureDataSet = new FeatureDataSet(title, geoFactory);
 
             // TODO: tool configuration should come from a config file and / or reflection
             IMapTool[] mapTools = new IMapTool[]
@@ -139,18 +152,6 @@ namespace SharpMap
 
             // I18N_UNSAFE
             Tools = new MapToolSet("Standard Map View Tools", mapTools);
-        }
-
-        /// <summary>
-        /// Creates a new instance of a Map with the given title.
-        /// </summary>
-        public Map(String title, IGeometryFactory geoFactory)
-        {
-            _geoFactory = geoFactory;
-            _emptyPoint = _geoFactory.CreatePoint();
-            _layers = new LayerCollection(this);
-            _layers.ListChanged += handleLayersChanged;
-            _featureDataSet = new FeatureDataSet(title, geoFactory);
         }
 
         #region Dispose Pattern
@@ -878,6 +879,12 @@ namespace SharpMap
             get { return _geoFactory; }
         }
 
+        public ICoordinateTransformationFactory CoordinateTransformFactory
+        {
+            get { return _coordTransformFactory; }
+            set { _coordTransformFactory = value; }
+        }
+
         /// <summary>
         /// Gets a collection of layers. 
         /// </summary>
@@ -1007,6 +1014,27 @@ namespace SharpMap
 
         private void onSpatialReferenceChanged()
         {
+            _geoFactory = _geoFactory.Clone();
+            _geoFactory.SpatialReference = SpatialReference;
+
+            foreach (ILayer layer in _layers)
+            {
+                if (!layer.SpatialReference.EqualParams(SpatialReference))
+                {
+                    if (layer.CoordinateTransformation != null)
+                    {
+                        // TODO: do we ever need to support multiple transforms?
+                        throw new InvalidOperationException("The layer already has a coordinate transform.");
+                    }
+
+                    layer.CoordinateTransformation
+                        = CoordinateTransformFactory.CreateFromCoordinateSystems(layer.SpatialReference, 
+                                                                                 SpatialReference);
+                }
+            }
+
+            _extents = null;
+
             raisePropertyChanged(SpatialReferenceProperty.Name);
         }
 
