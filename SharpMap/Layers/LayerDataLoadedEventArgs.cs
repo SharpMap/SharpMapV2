@@ -7,11 +7,18 @@ namespace SharpMap.Layers
     {
         private readonly Expression _expression;
         private readonly Object _result;
+        private readonly ILayer _layer;
 
-        public LayerDataLoadedEventArgs(Expression expression, Object result)
+        public LayerDataLoadedEventArgs(ILayer layer, Expression expression, Object result)
         {
             _expression = expression;
+            _layer = layer;
             _result = result;
+        }
+
+        public ILayer Layer
+        {
+            get { return _layer; }
         }
 
         public Expression Expression

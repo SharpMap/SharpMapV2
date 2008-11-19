@@ -238,6 +238,11 @@ namespace SharpMap
 
         #region Methods
 
+        public void AddLayer(IProvider provider)
+        {
+            throw new NotImplementedException("Possible future method...");
+        }
+
         /// <summary>
         /// Adds the given layer to the map, ordering it under all other layers.
         /// </summary>

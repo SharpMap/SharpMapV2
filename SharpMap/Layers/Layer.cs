@@ -711,7 +711,7 @@ namespace SharpMap.Layers
 
             if (e != null)
             {
-                e(this, new LayerDataLoadedEventArgs(expression, result));
+                e(this, new LayerDataLoadedEventArgs(this, expression, result));
             }
         }
 

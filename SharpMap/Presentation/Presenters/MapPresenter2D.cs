@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Data;
