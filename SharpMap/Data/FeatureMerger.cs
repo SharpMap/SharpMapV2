@@ -1,29 +1,15 @@
-﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
-//
-// This file is part of SharpMap.
-// SharpMap is free software; you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-// 
-// SharpMap is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-
-// You should have received a copy of the GNU Lesser General Public License
-// along with SharpMap; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+﻿#region Namespace imports
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
-using System.Reflection.Emit;
 using System.Reflection;
+using System.Reflection.Emit;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using SharpMap.Data;
-using System.Collections;
+
+#endregion
 
 namespace SharpMap.Data
 {
@@ -33,32 +19,87 @@ namespace SharpMap.Data
     internal sealed class FeatureMerger
     {
         #region Nested types
-        private delegate Object CreateMergerDelegate(DataTable target, Boolean preserveChanges, MissingSchemaAction action);
-        private delegate DataTable MergeSchemaDelegate(Object merger, DataTable source);
-        private delegate Object GetKeyIndexDelegate(DataTable table);
-        private delegate Object GetDataKeyFromUniqueConstraintDelegate(UniqueConstraint constraint);
-        private delegate Object CreateEmptyDataKeyDelegate();
-        private delegate Object CreateDataKeyDelegate(DataColumn[] columns, Boolean copyColumns);
-        private delegate DataColumn[] GetDataKeyColumnReferenceDelegate(Object dataKey);
-        private delegate Object DataKeyGetSortIndex(Object dataKey, DataViewRowState rowState);
-        private delegate Boolean GetDataKeyHasValue(Object dataKey);
+
+        #region Nested type: CloneDataColumn
+
         private delegate DataColumn CloneDataColumn(DataColumn dataKey);
+
+        #endregion
+
+        #region Nested type: CreateDataKeyDelegate
+
+        private delegate Object CreateDataKeyDelegate(DataColumn[] columns, Boolean copyColumns);
+
+        #endregion
+
+        #region Nested type: CreateEmptyDataKeyDelegate
+
+        private delegate Object CreateEmptyDataKeyDelegate();
+
+        #endregion
+
+        #region Nested type: CreateMergerDelegate
+
+        private delegate Object CreateMergerDelegate(
+            DataTable target, Boolean preserveChanges, MissingSchemaAction action);
+
+        #endregion
+
+        #region Nested type: DataKeyGetSortIndex
+
+        private delegate Object DataKeyGetSortIndex(Object dataKey, DataViewRowState rowState);
+
+        #endregion
+
+        #region Nested type: GetDataKeyColumnReferenceDelegate
+
+        private delegate DataColumn[] GetDataKeyColumnReferenceDelegate(Object dataKey);
+
+        #endregion
+
+        #region Nested type: GetDataKeyFromUniqueConstraintDelegate
+
+        private delegate Object GetDataKeyFromUniqueConstraintDelegate(UniqueConstraint constraint);
+
+        #endregion
+
+        #region Nested type: GetDataKeyHasValue
+
+        private delegate Boolean GetDataKeyHasValue(Object dataKey);
+
+        #endregion
+
+        #region Nested type: GetKeyIndexDelegate
+
+        private delegate Object GetKeyIndexDelegate(DataTable table);
+
+        #endregion
+
+        #region Nested type: MergeSchemaDelegate
+
+        private delegate DataTable MergeSchemaDelegate(Object merger, DataTable source);
+
+        #endregion
+
         #endregion
 
         #region Static fields
-        private static readonly CreateMergerDelegate _createMerger;
-        private static readonly MergeSchemaDelegate _mergeSchema;
-        private static readonly GetKeyIndexDelegate _getKeyIndex;
-        private static readonly GetDataKeyColumnReferenceDelegate _getDataKeyColumnReference;
+
+        private static readonly CloneDataColumn _cloneDataColumn;
         private static readonly CreateDataKeyDelegate _createDataKey;
         private static readonly CreateEmptyDataKeyDelegate _createEmptyDataKey;
-        private static readonly GetDataKeyFromUniqueConstraintDelegate _getDataKeyFromUniqueConstraint;
+        private static readonly CreateMergerDelegate _createMerger;
         private static readonly DataKeyGetSortIndex _dataKeyGetSortIndex;
+        private static readonly GetDataKeyColumnReferenceDelegate _getDataKeyColumnReference;
+        private static readonly GetDataKeyFromUniqueConstraintDelegate _getDataKeyFromUniqueConstraint;
         private static readonly GetDataKeyHasValue _getDataKeyHasValue;
-        private static readonly CloneDataColumn _cloneDataColumn;
+        private static readonly GetKeyIndexDelegate _getKeyIndex;
+        private static readonly MergeSchemaDelegate _mergeSchema;
+
         #endregion
 
         #region Static constructor
+
         static FeatureMerger()
         {
             _createMerger = generateCreateMergerDelegate();
@@ -72,26 +113,36 @@ namespace SharpMap.Data
             _getDataKeyHasValue = generateGetDataKeyHasValueDelegate();
             _cloneDataColumn = generateCloneDataColumnDelegate();
         }
+
         #endregion
 
         #region Instance fields
-        private readonly FeatureDataSet _targetDataSet;
-        private readonly FeatureDataTable _targetDataTable;
+
+        private readonly IGeometryFactory _geoFactory;
         private readonly Object _innerMerger;
+        private readonly Boolean _isTableStandalone;
         private readonly SchemaMergeAction _mergeAction;
         private readonly Boolean _preserveChanges;
-        private readonly Boolean _isTableStandalone;
-        private Boolean _ignoreNamespaceForTableLookup;
+        private readonly FeatureDataSet _targetDataSet;
+        private readonly FeatureDataTable _targetDataTable;
+        private readonly ICoordinateTransformation _transform;
         private ColumnMapper _columnMap;
+        private Boolean _ignoreNamespaceForTableLookup;
+
         #endregion
 
         #region Object constructor
+
         internal FeatureMerger(FeatureDataSet target, Boolean preserveChanges, SchemaMergeAction mergeAction)
         {
             throw new NotImplementedException();
         }
 
-        internal FeatureMerger(FeatureDataTable target, Boolean preserveChanges, SchemaMergeAction mergeAction)
+        internal FeatureMerger(FeatureDataTable target,
+                               ICoordinateTransformation transform,
+                               IGeometryFactory geoFactory,
+                               Boolean preserveChanges,
+                               SchemaMergeAction mergeAction)
         {
             //if ((SchemaMergeAction.CoerceTypes & mergeAction) != SchemaMergeAction.None)
             //{
@@ -110,169 +161,14 @@ namespace SharpMap.Data
 
             _isTableStandalone = true;
             _targetDataTable = target;
+            _transform = transform;
+            _geoFactory = geoFactory;
             _preserveChanges = preserveChanges;
             _mergeAction = mergeAction;
             _innerMerger = createInnerMerger(target, preserveChanges, mergeAction);
         }
+
         #endregion
-
-        internal void MergeFeature(IFeatureDataRecord record, IGeometryFactory factory)
-        {
-            if (record == null) throw new ArgumentNullException("record");
-
-            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 &&
-                                    (_targetDataTable.PrimaryKey.Length > 0);
-
-            mergeSchemaIfNeeded(record, factory);
-
-            FeatureDataRow targetFeature = null;
-
-            if (checkForTarget && record.HasOid)
-            {
-                targetFeature = _targetDataTable.Find(record.GetOid());
-            }
-
-            mergeFeature(_targetDataTable, record, targetFeature, _columnMap, PreserveChanges);
-        }
-
-        internal void MergeFeatures(FeatureDataTable source)
-        {
-            Boolean enforceConstraints = false;
-
-            if (!_isTableStandalone)
-            {
-                // If the source table's DataSet and the target tables' DataSet are 
-                // the same, there is nothing to do
-                if (source.DataSet == _targetDataSet)
-                {
-                    return;
-                }
-
-                // Store off the current state of constraint enforcement for the dataset
-                // so we can restore them later
-                enforceConstraints = _targetDataSet.EnforceConstraints;
-                _targetDataSet.EnforceConstraints = false;
-            }
-            else
-            {
-                // If the source table and the target tables are 
-                // the same, there is nothing to do
-                if (source == _targetDataTable)
-                {
-                    return;
-                }
-
-                _targetDataTable.SuspendEnforceConstraints = true;
-            }
-
-            if (_targetDataSet != null)
-            {
-                if ((source.DataSet == null) ||
-                    (source.DataSet.Namespace != _targetDataSet.Namespace))
-                {
-                    _ignoreNamespaceForTableLookup = true;
-                }
-            }
-            else if (((_targetDataTable.DataSet == null) || (source.DataSet == null)) ||
-                     (source.DataSet.Namespace != _targetDataTable.DataSet.Namespace))
-            {
-                _ignoreNamespaceForTableLookup = true;
-            }
-
-            MergeSchema(source);
-            mergeFeatureData(source);
-
-            FeatureDataTable targetTable = _targetDataTable ?? (_ignoreNamespaceForTableLookup
-                                                                    ? _targetDataSet.Tables[source.TableName]
-                                                                    : _targetDataSet.Tables[source.TableName, source.Namespace]);
-
-            if (targetTable != null)
-            {
-                targetTable.EvaluateExpressions();
-            }
-
-            if (!_isTableStandalone)
-            {
-                _targetDataSet.EnforceConstraints = enforceConstraints;
-            }
-            else
-            {
-                _targetDataTable.SuspendEnforceConstraints = false;
-
-                try
-                {
-                    if (_targetDataTable.EnforceConstraints)
-                    {
-                        _targetDataTable.EnableConstraints();
-                    }
-                }
-                catch (ConstraintException)
-                {
-                    if (_targetDataTable.DataSet != null)
-                    {
-                        _targetDataTable.DataSet.EnforceConstraints = false;
-                    }
-
-                    throw;
-                }
-            }
-        }
-
-        // TODO: MergeFeatures(FeatureDataTable) and MergeFeatures(IEnumerable<IFeatureDataRecord>) seem to overlap... try refactor
-        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> sourceFeatures,
-                                    IGeometryFactory factory)
-        {
-            if (sourceFeatures == null) throw new ArgumentNullException("sourceFeatures");
-
-            _targetDataTable.SuspendIndexEvents();
-
-            Boolean checkedSchema = false;
-            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 &&
-                                     (_targetDataTable.PrimaryKey.Length > 0);
-
-            try
-            {
-                foreach (IFeatureDataRecord srcFeature in sourceFeatures)
-                {
-                    if (!checkedSchema)
-                    {
-                        checkedSchema = true;
-
-                        mergeSchemaIfNeeded(srcFeature, factory);
-                    }
-
-                    FeatureDataRow targetFeature = null;
-
-                    if (checkForTarget && srcFeature.HasOid)
-                    {
-                        targetFeature = _targetDataTable.Find(srcFeature.GetOid());
-                    }
-
-                    mergeFeature(_targetDataTable, srcFeature, targetFeature, _columnMap, PreserveChanges);
-                }
-            }
-            finally
-            {
-                _targetDataTable.RestoreIndexEvents(true);
-            }
-        }
-
-        internal void MergeSchema(DataTable source)
-        {
-            try
-            {
-                _mergeSchema(_innerMerger, source);
-            }
-            catch (NullReferenceException ex)
-            {
-                if (source == null) throw;
-
-                if (source.PrimaryKey.Length > 0 && _targetDataTable.PrimaryKey.Length > 0)
-                {
-                    throw new DataException("Possible incompatible keys for merging schema", ex);
-                }
-            }
-        }
 
         internal Boolean PreserveChanges
         {
@@ -285,6 +181,7 @@ namespace SharpMap.Data
         }
 
         #region Private helper methods
+
         private void mergeSchemaIfNeeded(IFeatureDataRecord record, IGeometryFactory factory)
         {
             if ((SchemaMergeAction & SchemaMergeAction.AddAll) != SchemaMergeAction.None)
@@ -306,7 +203,6 @@ namespace SharpMap.Data
                 {
                     _columnMap = generateColumnMapper(schemaModel);
                     return;
-
                 }
 
                 for (Int32 i = 0; i < _targetDataTable.Columns.Count; i++)
@@ -320,62 +216,6 @@ namespace SharpMap.Data
             }
 
             _columnMap = generateDefaultColumnMapper();
-        }
-
-        private class ColumnMapper
-        {
-            private readonly Dictionary<Int32, Int32> _columnMap = new Dictionary<Int32, Int32>();
-            private readonly Object[] _sourceValues;
-            private readonly Object[] _targetValues;
-
-            public ColumnMapper(Int32 count)
-            {
-                _sourceValues = new Object[count];
-            }
-
-            public ColumnMapper(Int32 sourceColumnCount, Int32 targetColumnCount)
-            {
-                _sourceValues = new Object[sourceColumnCount];
-                _targetValues = new Object[targetColumnCount];
-            }
-
-            public void AddMapping(Int32 from, Int32 to)
-            {
-                _columnMap[from] = to;
-            }
-
-            public Object[] SourceValues
-            {
-                get { return _sourceValues; }
-            }
-
-            public Object[] TargetValues
-            {
-                get { return _targetValues ?? _sourceValues; }
-            }
-
-            private Boolean IsStraightMapping
-            {
-                get { return _targetValues == null; }
-            }
-
-            public Object[] Map()
-            {
-                if (!IsStraightMapping)
-                {
-                    for (Int32 sourceIndex = 0; sourceIndex < _sourceValues.Length; sourceIndex++)
-                    {
-                        Int32 targetIndex;
-
-                        if (_columnMap.TryGetValue(sourceIndex, out targetIndex))
-                        {
-                            _targetValues[targetIndex] = _sourceValues[sourceIndex];
-                        }
-                    }
-                }
-
-                return TargetValues;
-            }
         }
 
         private ColumnMapper generateDefaultColumnMapper()
@@ -473,7 +313,10 @@ namespace SharpMap.Data
                 }
             }
 
-            mergeExtendedProperties(source.ExtendedProperties, target.ExtendedProperties, SchemaMergeAction, PreserveChanges);
+            mergeExtendedProperties(source.ExtendedProperties,
+                                    target.ExtendedProperties,
+                                    SchemaMergeAction,
+                                    PreserveChanges);
         }
 
         private static Object getDataKeySortIndex(Object rowLookupKey, DataViewRowState rowStateFilter)
@@ -534,7 +377,10 @@ namespace SharpMap.Data
             return _getDataKeyFromUniqueConstraint(uniqueConstraint);
         }
 
-        private static void mergeExtendedProperties(IDictionary src, IDictionary dst, SchemaMergeAction mergeAction, Boolean preserveChanges)
+        private static void mergeExtendedProperties(IDictionary src,
+                                                    IDictionary dst,
+                                                    SchemaMergeAction mergeAction,
+                                                    Boolean preserveChanges)
         {
             if (mergeAction == SchemaMergeAction.None)
             {
@@ -550,9 +396,72 @@ namespace SharpMap.Data
             }
         }
 
+        private class ColumnMapper
+        {
+            private readonly Dictionary<Int32, Int32> _columnMap = new Dictionary<Int32, Int32>();
+            private readonly Object[] _sourceValues;
+            private readonly Object[] _targetValues;
+
+            public ColumnMapper(Int32 count)
+            {
+                _sourceValues = new Object[count];
+            }
+
+            public ColumnMapper(Int32 sourceColumnCount, Int32 targetColumnCount)
+            {
+                _sourceValues = new Object[sourceColumnCount];
+                _targetValues = new Object[targetColumnCount];
+            }
+
+            public Object[] SourceValues
+            {
+                get { return _sourceValues; }
+            }
+
+            public Object[] TargetValues
+            {
+                get { return _targetValues ?? _sourceValues; }
+            }
+
+            private Boolean IsStraightMapping
+            {
+                get { return _targetValues == null; }
+            }
+
+            public void AddMapping(Int32 from, Int32 to)
+            {
+                _columnMap[from] = to;
+            }
+
+            public Object[] Map()
+            {
+                if (!IsStraightMapping)
+                {
+                    for (Int32 sourceIndex = 0; sourceIndex < _sourceValues.Length; sourceIndex++)
+                    {
+                        Int32 targetIndex;
+
+                        if (_columnMap.TryGetValue(sourceIndex, out targetIndex))
+                        {
+                            _targetValues[targetIndex] = _sourceValues[sourceIndex];
+                        }
+                    }
+                }
+
+                return TargetValues;
+            }
+        }
+
         #endregion
 
         #region Private static helpers
+
+        private const BindingFlags NonPublicInstance = BindingFlags.NonPublic |
+                                                       BindingFlags.Instance;
+
+        private const MethodAttributes PublicStaticMethod = MethodAttributes.Public |
+                                                            MethodAttributes.Static;
+
         private static FeatureDataTable createModelFromFeature(IFeatureDataRecord srcFeature,
                                                                IGeometryFactory factory)
         {
@@ -571,12 +480,14 @@ namespace SharpMap.Data
                                          IFeatureDataRecord srcFeature,
                                          FeatureDataRow targetFeature,
                                          ColumnMapper columnMapper,
+                                         ICoordinateTransformation transform,
+                                         IGeometryFactory geoFactory,
                                          Boolean preserveChanges)
         {
             if (targetFeature == null)
             {
                 targetFeature = target.NewRow();
-                setFeatureRowFromIFeatureDataRecord(srcFeature, targetFeature, columnMapper);
+                setFeatureRowFromIFeatureDataRecord(srcFeature, targetFeature, columnMapper, transform, geoFactory);
                 target.AddRow(targetFeature);
             }
             else
@@ -587,14 +498,16 @@ namespace SharpMap.Data
                                                       "state not yet implemented.");
                 }
 
-                setFeatureRowFromIFeatureDataRecord(srcFeature, targetFeature, columnMapper);
+                setFeatureRowFromIFeatureDataRecord(srcFeature, targetFeature, columnMapper, transform, geoFactory);
             }
         }
 
         // FIX_PERF
         private static void setFeatureRowFromIFeatureDataRecord(IFeatureDataRecord srcFeature,
                                                                 FeatureDataRow targetFeature,
-                                                                ColumnMapper columnMapper)
+                                                                ColumnMapper columnMapper,
+                                                                ICoordinateTransformation transform,
+                                                                IGeometryFactory geoFactory)
         {
             //for (Int32 i = 0; i < srcFeature.FieldCount; i++)
             //{
@@ -602,9 +515,16 @@ namespace SharpMap.Data
             //    targetFeature[colName] = srcFeature.GetValue(i);
             //}
 
+            if (srcFeature.Geometry.SpatialReference.EqualParams(transform.Target))
+            {
+                transform = null;
+            }
+
             srcFeature.GetValues(columnMapper.SourceValues);
             targetFeature.ItemArray = columnMapper.Map();
-            targetFeature.Geometry = srcFeature.Geometry;
+            targetFeature.Geometry = transform == null
+                                         ? srcFeature.Geometry
+                                         : transform.Transform(srcFeature.Geometry, geoFactory);
             targetFeature.IsFullyLoaded = targetFeature.IsFullyLoaded || srcFeature.IsFullyLoaded;
         }
 
@@ -614,12 +534,12 @@ namespace SharpMap.Data
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
-            if ((Int32)(schemaMergeAction & SchemaMergeAction.AddAll) != 0)
+            if ((Int32) (schemaMergeAction & SchemaMergeAction.AddAll) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.Add;
             }
 
-            if ((Int32)(schemaMergeAction & SchemaMergeAction.Key) != 0)
+            if ((Int32) (schemaMergeAction & SchemaMergeAction.Key) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.AddWithKey;
             }
@@ -632,22 +552,19 @@ namespace SharpMap.Data
         //    return _getKeyIndex(table);
         //}
 
-        private const MethodAttributes PublicStaticMethod = MethodAttributes.Public |
-                                                            MethodAttributes.Static;
-        private const BindingFlags NonPublicInstance = BindingFlags.NonPublic |
-                                                       BindingFlags.Instance;
         private static CreateMergerDelegate generateCreateMergerDelegate()
         {
-            Type[] ctorParams = new Type[] { 
-                                             typeof(DataTable), 
-                                             typeof(Boolean), 
-                                             typeof(MissingSchemaAction) 
-                                           };
+            Type[] ctorParams = new[]
+                                    {
+                                        typeof (DataTable),
+                                        typeof (Boolean),
+                                        typeof (MissingSchemaAction)
+                                    };
 
             DynamicMethod createMergerMethod = new DynamicMethod("Merger_Create",
                                                                  PublicStaticMethod,
                                                                  CallingConventions.Standard,
-                                                                 typeof(Object),
+                                                                 typeof (Object),
                                                                  ctorParams,
                                                                  AdoNetInternalTypes.MergerType,
                                                                  false);
@@ -661,11 +578,11 @@ namespace SharpMap.Data
                                                                                  ctorParams,
                                                                                  null);
             il.Emit(OpCodes.Newobj, ctor);
-            il.Emit(OpCodes.Isinst, typeof(Object));
+            il.Emit(OpCodes.Isinst, typeof (Object));
             il.Emit(OpCodes.Ret);
 
             CreateMergerDelegate d
-                = (CreateMergerDelegate)createMergerMethod.CreateDelegate(typeof(CreateMergerDelegate));
+                = (CreateMergerDelegate) createMergerMethod.CreateDelegate(typeof (CreateMergerDelegate));
             return d;
         }
 
@@ -674,8 +591,8 @@ namespace SharpMap.Data
             DynamicMethod mergeSchemaMethod = new DynamicMethod("Merger_MergeSchema",
                                                                 PublicStaticMethod,
                                                                 CallingConventions.Standard,
-                                                                typeof(DataTable),
-                                                                new Type[] { typeof(Object), typeof(DataTable) },
+                                                                typeof (DataTable),
+                                                                new[] {typeof (Object), typeof (DataTable)},
                                                                 AdoNetInternalTypes.MergerType,
                                                                 false);
 
@@ -689,7 +606,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             MergeSchemaDelegate d
-                = (MergeSchemaDelegate)mergeSchemaMethod.CreateDelegate(typeof(MergeSchemaDelegate));
+                = (MergeSchemaDelegate) mergeSchemaMethod.CreateDelegate(typeof (MergeSchemaDelegate));
             return d;
         }
 
@@ -702,24 +619,24 @@ namespace SharpMap.Data
         private static GetDataKeyFromUniqueConstraintDelegate generateGetDataKeyFromUniqueConstraintDelegate()
         {
             DynamicMethod getDataKeyFromUniqueConstraintMethod = new DynamicMethod(
-                                                                "FeatureMerger_GetDataKeyFromUniqueConstraint",
-                                                                PublicStaticMethod,
-                                                                CallingConventions.Standard,
-                                                                typeof(Object),
-                                                                new Type[] { typeof(UniqueConstraint) },
-                                                                typeof(UniqueConstraint),
-                                                                false);
+                "FeatureMerger_GetDataKeyFromUniqueConstraint",
+                PublicStaticMethod,
+                CallingConventions.Standard,
+                typeof (Object),
+                new[] {typeof (UniqueConstraint)},
+                typeof (UniqueConstraint),
+                false);
 
             ILGenerator il = getDataKeyFromUniqueConstraintMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            PropertyInfo keyInfo = typeof(UniqueConstraint).GetProperty("Key", NonPublicInstance);
+            PropertyInfo keyInfo = typeof (UniqueConstraint).GetProperty("Key", NonPublicInstance);
             il.Emit(OpCodes.Call, keyInfo.GetGetMethod(true));
             il.Emit(OpCodes.Box, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ret);
 
             GetDataKeyFromUniqueConstraintDelegate d
-                = getDataKeyFromUniqueConstraintMethod.CreateDelegate(typeof(GetDataKeyFromUniqueConstraintDelegate))
-                    as GetDataKeyFromUniqueConstraintDelegate;
+                = getDataKeyFromUniqueConstraintMethod.CreateDelegate(typeof (GetDataKeyFromUniqueConstraintDelegate))
+                  as GetDataKeyFromUniqueConstraintDelegate;
 
             return d;
         }
@@ -727,12 +644,12 @@ namespace SharpMap.Data
         private static CreateEmptyDataKeyDelegate generateCreateEmptyDataKeyDelegate()
         {
             DynamicMethod createEmptyDataKeyMethod = new DynamicMethod("FeatureMerger_CreateEmptyDataKey",
-                                                                 PublicStaticMethod,
-                                                                 CallingConventions.Standard,
-                                                                 typeof(Object),
-                                                                 null,
-                                                                 AdoNetInternalTypes.DataKeyType,
-                                                                 false);
+                                                                       PublicStaticMethod,
+                                                                       CallingConventions.Standard,
+                                                                       typeof (Object),
+                                                                       null,
+                                                                       AdoNetInternalTypes.DataKeyType,
+                                                                       false);
 
             ILGenerator il = createEmptyDataKeyMethod.GetILGenerator();
             LocalBuilder newKeyLocal = il.DeclareLocal(AdoNetInternalTypes.DataKeyType);
@@ -743,8 +660,8 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             CreateEmptyDataKeyDelegate d
-                = createEmptyDataKeyMethod.CreateDelegate(typeof(CreateEmptyDataKeyDelegate))
-                    as CreateEmptyDataKeyDelegate;
+                = createEmptyDataKeyMethod.CreateDelegate(typeof (CreateEmptyDataKeyDelegate))
+                  as CreateEmptyDataKeyDelegate;
 
             return d;
         }
@@ -752,19 +669,19 @@ namespace SharpMap.Data
         private static CreateDataKeyDelegate generateCreateDataKeyDelegate()
         {
             DynamicMethod createDataKeyMethod = new DynamicMethod("FeatureMerger_CreateDataKey",
-                                                                 PublicStaticMethod,
-                                                                 CallingConventions.Standard,
-                                                                 typeof(Object),
-                                                                 new Type[] { typeof(DataColumn[]), typeof(Boolean) },
-                                                                 AdoNetInternalTypes.DataKeyType,
-                                                                 false);
+                                                                  PublicStaticMethod,
+                                                                  CallingConventions.Standard,
+                                                                  typeof (Object),
+                                                                  new[] {typeof (DataColumn[]), typeof (Boolean)},
+                                                                  AdoNetInternalTypes.DataKeyType,
+                                                                  false);
 
             ILGenerator il = createDataKeyMethod.GetILGenerator();
             LocalBuilder newDataKey = il.DeclareLocal(AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ldloca_S, newDataKey);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            Type[] ctorParams = new Type[] { typeof(DataColumn[]), typeof(Boolean) };
+            Type[] ctorParams = new[] {typeof (DataColumn[]), typeof (Boolean)};
             ConstructorInfo ctor = AdoNetInternalTypes.DataKeyType.GetConstructor(NonPublicInstance,
                                                                                   null,
                                                                                   ctorParams,
@@ -775,8 +692,8 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             CreateDataKeyDelegate d
-                = createDataKeyMethod.CreateDelegate(typeof(CreateDataKeyDelegate))
-                    as CreateDataKeyDelegate;
+                = createDataKeyMethod.CreateDelegate(typeof (CreateDataKeyDelegate))
+                  as CreateDataKeyDelegate;
 
             return d;
         }
@@ -784,13 +701,13 @@ namespace SharpMap.Data
         private static GetDataKeyColumnReferenceDelegate generateGetDataKeyColumnReferenceDelegate()
         {
             DynamicMethod getDataKeyColumnReferenceMethod = new DynamicMethod(
-                                                                "FeatureMerger_GetDataKeyColumnReference",
-                                                                PublicStaticMethod,
-                                                                CallingConventions.Standard,
-                                                                typeof(DataColumn[]),
-                                                                new Type[] { typeof(Object) },
-                                                                AdoNetInternalTypes.DataKeyType,
-                                                                false);
+                "FeatureMerger_GetDataKeyColumnReference",
+                PublicStaticMethod,
+                CallingConventions.Standard,
+                typeof (DataColumn[]),
+                new[] {typeof (Object)},
+                AdoNetInternalTypes.DataKeyType,
+                false);
 
             ILGenerator il = getDataKeyColumnReferenceMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
@@ -799,12 +716,12 @@ namespace SharpMap.Data
                                                                                             NonPublicInstance);
             MethodInfo getMethod = columnsReferenceInfo.GetGetMethod(true);
             il.Emit(OpCodes.Call, getMethod);
-            il.Emit(OpCodes.Isinst, typeof(Object));
+            il.Emit(OpCodes.Isinst, typeof (Object));
             il.Emit(OpCodes.Ret);
 
             GetDataKeyColumnReferenceDelegate d
-                = getDataKeyColumnReferenceMethod.CreateDelegate(typeof(GetDataKeyColumnReferenceDelegate))
-                    as GetDataKeyColumnReferenceDelegate;
+                = getDataKeyColumnReferenceMethod.CreateDelegate(typeof (GetDataKeyColumnReferenceDelegate))
+                  as GetDataKeyColumnReferenceDelegate;
 
             return d;
         }
@@ -812,19 +729,19 @@ namespace SharpMap.Data
         private static DataKeyGetSortIndex generateDataKeyGetSortIndexDelegate()
         {
             DynamicMethod dataKeyGetSortIndex = new DynamicMethod("FeatureMerger_DataKeyGetSortIndex_DynamicMethod",
-                                                                PublicStaticMethod,
-                                                                CallingConventions.Standard,
-                                                                typeof(Object),
-                                                                new Type[] { typeof(Object), typeof(DataViewRowState) },
-                                                                AdoNetInternalTypes.DataKeyType,
-                                                                false);
+                                                                  PublicStaticMethod,
+                                                                  CallingConventions.Standard,
+                                                                  typeof (Object),
+                                                                  new[] {typeof (Object), typeof (DataViewRowState)},
+                                                                  AdoNetInternalTypes.DataKeyType,
+                                                                  false);
 
             ILGenerator il = dataKeyGetSortIndex.GetILGenerator();
             LocalBuilder localKey = il.DeclareLocal(AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Stloc_0);
-            Type[] methodParams = new Type[] { typeof(DataViewRowState) };
+            Type[] methodParams = new[] {typeof (DataViewRowState)};
             MethodInfo getSortIndexInfo = AdoNetInternalTypes.DataKeyType.GetMethod("GetSortIndex",
                                                                                     NonPublicInstance,
                                                                                     null,
@@ -833,11 +750,11 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldloca_S, localKey);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Call, getSortIndexInfo);
-            il.Emit(OpCodes.Isinst, typeof(Object));
+            il.Emit(OpCodes.Isinst, typeof (Object));
             il.Emit(OpCodes.Ret);
 
-            DataKeyGetSortIndex d = dataKeyGetSortIndex.CreateDelegate(typeof(DataKeyGetSortIndex))
-                as DataKeyGetSortIndex;
+            DataKeyGetSortIndex d = dataKeyGetSortIndex.CreateDelegate(typeof (DataKeyGetSortIndex))
+                                    as DataKeyGetSortIndex;
 
             return d;
         }
@@ -845,13 +762,13 @@ namespace SharpMap.Data
         private static GetDataKeyHasValue generateGetDataKeyHasValueDelegate()
         {
             DynamicMethod getDataKeyHasValue = new DynamicMethod(
-                                                            "FeatureMerger_DataKey_get_HasValue_DynamicMethod",
-                                                            PublicStaticMethod,
-                                                            CallingConventions.Standard,
-                                                            typeof(Boolean),
-                                                            new Type[] { typeof(Object) },
-                                                            AdoNetInternalTypes.DataKeyType,
-                                                            false);
+                "FeatureMerger_DataKey_get_HasValue_DynamicMethod",
+                PublicStaticMethod,
+                CallingConventions.Standard,
+                typeof (Boolean),
+                new[] {typeof (Object)},
+                AdoNetInternalTypes.DataKeyType,
+                false);
 
             ILGenerator il = getDataKeyHasValue.GetILGenerator();
             LocalBuilder localKey = il.DeclareLocal(AdoNetInternalTypes.DataKeyType);
@@ -861,15 +778,15 @@ namespace SharpMap.Data
             PropertyInfo hasValueInfo = AdoNetInternalTypes.DataKeyType.GetProperty("HasValue",
                                                                                     NonPublicInstance,
                                                                                     null,
-                                                                                    typeof(Boolean),
+                                                                                    typeof (Boolean),
                                                                                     Type.EmptyTypes,
                                                                                     null);
             il.Emit(OpCodes.Ldloca_S, localKey);
             il.Emit(OpCodes.Call, hasValueInfo.GetGetMethod(true));
             il.Emit(OpCodes.Ret);
 
-            GetDataKeyHasValue d = getDataKeyHasValue.CreateDelegate(typeof(GetDataKeyHasValue))
-                as GetDataKeyHasValue;
+            GetDataKeyHasValue d = getDataKeyHasValue.CreateDelegate(typeof (GetDataKeyHasValue))
+                                   as GetDataKeyHasValue;
 
             return d;
         }
@@ -877,25 +794,26 @@ namespace SharpMap.Data
         private static CloneDataColumn generateCloneDataColumnDelegate()
         {
             DynamicMethod cloneDataColumn = new DynamicMethod(
-                                                            "DataColumn_Clone_DynamicMethod",
-                                                            PublicStaticMethod,
-                                                            CallingConventions.Standard,
-                                                            typeof(DataColumn),
-                                                            new Type[] { typeof(DataColumn) },
-                                                            typeof(DataColumn),
-                                                            false);
+                "DataColumn_Clone_DynamicMethod",
+                PublicStaticMethod,
+                CallingConventions.Standard,
+                typeof (DataColumn),
+                new[] {typeof (DataColumn)},
+                typeof (DataColumn),
+                false);
 
             ILGenerator il = cloneDataColumn.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            MethodInfo cloneInfo = typeof(DataColumn).GetMethod("Clone", NonPublicInstance);
+            MethodInfo cloneInfo = typeof (DataColumn).GetMethod("Clone", NonPublicInstance);
             il.Emit(OpCodes.Call, cloneInfo);
             il.Emit(OpCodes.Ret);
 
-            CloneDataColumn d = cloneDataColumn.CreateDelegate(typeof(CloneDataColumn))
-                as CloneDataColumn;
+            CloneDataColumn d = cloneDataColumn.CreateDelegate(typeof (CloneDataColumn))
+                                as CloneDataColumn;
 
             return d;
         }
+
         #endregion
 
         #region Schema Merge Experimental
@@ -1167,6 +1085,180 @@ namespace SharpMap.Data
 
         //    return false;
         //}
+
         #endregion
+
+        internal void MergeFeature(IFeatureDataRecord record, IGeometryFactory factory)
+        {
+            if (record == null)
+            {
+                throw new ArgumentNullException("record");
+            }
+
+            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 &&
+                                     (_targetDataTable.PrimaryKey.Length > 0);
+
+            mergeSchemaIfNeeded(record, factory);
+
+            FeatureDataRow targetFeature = null;
+
+            if (checkForTarget && record.HasOid)
+            {
+                targetFeature = _targetDataTable.Find(record.GetOid());
+            }
+
+            mergeFeature(_targetDataTable, record, targetFeature, _columnMap, _transform, _geoFactory, PreserveChanges);
+        }
+
+        internal void MergeFeatures(FeatureDataTable source)
+        {
+            Boolean enforceConstraints = false;
+
+            if (!_isTableStandalone)
+            {
+                // If the source table's DataSet and the target tables' DataSet are 
+                // the same, there is nothing to do
+                if (source.DataSet == _targetDataSet)
+                {
+                    return;
+                }
+
+                // Store off the current state of constraint enforcement for the dataset
+                // so we can restore them later
+                enforceConstraints = _targetDataSet.EnforceConstraints;
+                _targetDataSet.EnforceConstraints = false;
+            }
+            else
+            {
+                // If the source table and the target tables are 
+                // the same, there is nothing to do
+                if (source == _targetDataTable)
+                {
+                    return;
+                }
+
+                _targetDataTable.SuspendEnforceConstraints = true;
+            }
+
+            if (_targetDataSet != null)
+            {
+                if ((source.DataSet == null) ||
+                    (source.DataSet.Namespace != _targetDataSet.Namespace))
+                {
+                    _ignoreNamespaceForTableLookup = true;
+                }
+            }
+            else if (((_targetDataTable.DataSet == null) || (source.DataSet == null)) ||
+                     (source.DataSet.Namespace != _targetDataTable.DataSet.Namespace))
+            {
+                _ignoreNamespaceForTableLookup = true;
+            }
+
+            MergeSchema(source);
+            mergeFeatureData(source);
+
+            FeatureDataTable targetTable = _targetDataTable ?? (_ignoreNamespaceForTableLookup
+                                                                    ? _targetDataSet.Tables[source.TableName]
+                                                                    : _targetDataSet.Tables[
+                                                                          source.TableName, source.Namespace]);
+
+            if (targetTable != null)
+            {
+                targetTable.EvaluateExpressions();
+            }
+
+            if (!_isTableStandalone)
+            {
+                _targetDataSet.EnforceConstraints = enforceConstraints;
+            }
+            else
+            {
+                _targetDataTable.SuspendEnforceConstraints = false;
+
+                try
+                {
+                    if (_targetDataTable.EnforceConstraints)
+                    {
+                        _targetDataTable.EnableConstraints();
+                    }
+                }
+                catch (ConstraintException)
+                {
+                    if (_targetDataTable.DataSet != null)
+                    {
+                        _targetDataTable.DataSet.EnforceConstraints = false;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        // TODO: MergeFeatures(FeatureDataTable) and MergeFeatures(IEnumerable<IFeatureDataRecord>) seem to overlap... try refactor
+        internal void MergeFeatures(IEnumerable<IFeatureDataRecord> sourceFeatures)
+        {
+            if (sourceFeatures == null)
+            {
+                throw new ArgumentNullException("sourceFeatures");
+            }
+
+            _targetDataTable.SuspendIndexEvents();
+
+            Boolean checkedSchema = false;
+            Boolean checkForTarget = _targetDataTable.Rows.Count > 0 &&
+                                     (_targetDataTable.PrimaryKey.Length > 0);
+
+            try
+            {
+                foreach (IFeatureDataRecord srcFeature in sourceFeatures)
+                {
+                    if (!checkedSchema)
+                    {
+                        checkedSchema = true;
+
+                        mergeSchemaIfNeeded(srcFeature, _geoFactory);
+                    }
+
+                    FeatureDataRow targetFeature = null;
+
+                    if (checkForTarget && srcFeature.HasOid)
+                    {
+                        targetFeature = _targetDataTable.Find(srcFeature.GetOid());
+                    }
+
+                    mergeFeature(_targetDataTable,
+                                 srcFeature,
+                                 targetFeature,
+                                 _columnMap,
+                                 _transform,
+                                 _geoFactory,
+                                 PreserveChanges);
+                }
+            }
+            finally
+            {
+                _targetDataTable.RestoreIndexEvents(true);
+            }
+        }
+
+        internal void MergeSchema(DataTable source)
+        {
+            try
+            {
+                _mergeSchema(_innerMerger, source);
+            }
+            catch (NullReferenceException ex)
+            {
+                if (source == null)
+                {
+                    throw;
+                }
+
+                if (source.PrimaryKey.Length > 0 && _targetDataTable.PrimaryKey.Length > 0)
+                {
+                    throw new DataException("Possible incompatible keys for merging schema", ex);
+                }
+            }
+        }
     }
 }

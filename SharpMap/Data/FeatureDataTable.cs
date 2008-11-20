@@ -32,6 +32,7 @@ using GeoAPI.Indexing;
 using SharpMap.Expressions;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
+using GeoAPI.CoordinateSystems.Transformations;
 
 namespace SharpMap.Data
 {
@@ -520,7 +521,7 @@ namespace SharpMap.Data
                           Boolean preserveChanges,
                           SchemaMergeAction schemaMergeAction)
         {
-            FeatureMerger merger = new FeatureMerger(this, preserveChanges, schemaMergeAction);
+            FeatureMerger merger = new FeatureMerger(this, null, GeometryFactory, preserveChanges, schemaMergeAction);
             merger.MergeFeatures(features);
         }
 
@@ -533,21 +534,29 @@ namespace SharpMap.Data
                           IGeometryFactory factory,
                           SchemaMergeAction schemaMergeAction)
         {
-            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            FeatureMerger merger = new FeatureMerger(this, null, GeometryFactory, true, schemaMergeAction);
             merger.MergeFeature(record, factory);
         }
 
         public void Merge(IEnumerable<IFeatureDataRecord> records, IGeometryFactory factory)
         {
-            Merge(records, factory, SchemaMergeAction.AddWithKey);
+            Merge(records, null, factory);
+        }
+
+        public void Merge(IEnumerable<IFeatureDataRecord> records, 
+                          ICoordinateTransformation transform,
+                          IGeometryFactory factory)
+        {
+            Merge(records, transform, factory, SchemaMergeAction.AddWithKey);
         }
 
         public void Merge(IEnumerable<IFeatureDataRecord> records,
+                          ICoordinateTransformation transform,
                           IGeometryFactory factory,
                           SchemaMergeAction schemaMergeAction)
         {
-            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
-            merger.MergeFeatures(records, factory);
+            FeatureMerger merger = new FeatureMerger(this, transform, factory, true, schemaMergeAction);
+            merger.MergeFeatures(records);
         }
 
         /// <summary>
@@ -573,7 +582,7 @@ namespace SharpMap.Data
         /// </param>
         public void MergeSchemaTo(FeatureDataTable target, SchemaMergeAction schemaMergeAction)
         {
-            FeatureMerger merger = new FeatureMerger(target, true, schemaMergeAction);
+            FeatureMerger merger = new FeatureMerger(target, null, GeometryFactory, true, schemaMergeAction);
             merger.MergeSchema(this);
         }
 
@@ -602,7 +611,7 @@ namespace SharpMap.Data
         /// </param>
         public void MergeSchemaFrom(DataTable source, SchemaMergeAction schemaMergeAction)
         {
-            FeatureMerger merger = new FeatureMerger(this, true, schemaMergeAction);
+            FeatureMerger merger = new FeatureMerger(this, null, GeometryFactory, true, schemaMergeAction);
             merger.MergeSchema(source);
         }
 

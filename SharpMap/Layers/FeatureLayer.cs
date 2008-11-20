@@ -282,46 +282,14 @@ namespace SharpMap.Layers
             IEnumerable<IFeatureDataRecord> features = results as IEnumerable<IFeatureDataRecord>;
             MergeFeatures(features);
 
-
-            ////jd:ensure the reader is closed - otherwise shapefile reader throws ShapeFileInvalidOperationException
-            //// due to existing _currentReader
-            //IFeatureDataReader fdr = features as IFeatureDataReader;
-
-            //if (fdr != null)
-            //    fdr.Close();
-
-
-
             _features.RestoreIndexEvents(true);
         }
         #endregion
 
         protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
         {
-            //if (CoordinateTransformation != null)
-            //{
-            //    features = transformFeatures(features);
-            //}
-
-            _features.Merge(features, GeometryFactory);
+            _features.Merge(features, CoordinateTransformation, GeometryFactory);
         }
-
-        //private IEnumerable<IFeatureDataRecord> transformFeatures(IEnumerable<IFeatureDataRecord> features)
-        //{
-        //    foreach (IFeatureDataRecord feature in features)
-        //    {
-        //        // TODO: fix this assumption of an IFeatureDataRecord being a FeatureDataRow
-        //        FeatureDataRow row = feature as FeatureDataRow;
-        //        Assert.IsNotNull(feature);
-
-        //        if (row.Geometry.SpatialReference != CoordinateTransformation.Target)
-        //        {
-        //            row.Geometry = CoordinateTransformation.Transform(feature.Geometry, GeometryFactory);
-        //        }
-
-        //        yield return row;
-        //    }
-        //}
 
         protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
         {
