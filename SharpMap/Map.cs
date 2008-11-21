@@ -30,6 +30,7 @@ using GeoAPI.Geometries;
 using NPack;
 using NPack.Interfaces;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
@@ -811,6 +812,30 @@ namespace SharpMap
             lock (Layers.LayersChangeSync)
             {
                 unselectLayersInternal(layers);
+            }
+        }
+
+        public void SelectFeatures(ICoordinate min, ICoordinate max)
+        {
+            IExtents extents = _geoFactory.CreateExtents(min, max);
+            FeatureQueryExpression query = FeatureQueryExpression.Intersects(extents);
+            List<IFeatureLayer> layersWithSelection = new List<IFeatureLayer>();
+
+            foreach (IFeatureLayer layer in _layers)
+            {
+                if (layer == null || !layer.Enabled || !layer.AreFeaturesSelectable)
+                {
+                    continue;
+                }
+
+                layer.Features.SuspendIndexEvents();
+                layer.Select(query);
+                layersWithSelection.Add(layer);
+            }
+
+            foreach (IFeatureLayer layer in layersWithSelection)
+            {
+                layer.Features.RestoreIndexEvents(false);
             }
         }
 
