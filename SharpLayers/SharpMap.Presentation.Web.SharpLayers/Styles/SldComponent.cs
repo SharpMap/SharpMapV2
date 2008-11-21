@@ -15,18 +15,18 @@
 using System.Web.UI;
 using AjaxControlToolkit;
 
-[assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Styles.StyleMapComponent.js", "text/javascript")]
+[assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent.js", "text/javascript")]
 
 namespace SharpMap.Presentation.Web.SharpLayers.Styles
 {
-    [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Styles.StyleMapComponent",
-        "SharpMap.Presentation.Web.SharpLayers.Styles.StyleMapComponent.js")]
+    [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent",
+        "SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent.js")]
     [TargetControlType(typeof (Control))]
-    public class StyleMapComponent : ComponentBase<StyleMapBuilderParams>
+    public class SldComponent : ComponentBase<SldBuilderParams>
     {
         protected override string ScriptComponentName
         {
-            get { return "SharpMap.Presentation.Web.SharpLayers.Styles.StyleMapComponent"; }
+            get { return "SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent"; }
         }
     }
 }

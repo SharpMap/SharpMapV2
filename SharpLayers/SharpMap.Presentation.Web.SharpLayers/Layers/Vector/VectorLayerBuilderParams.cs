@@ -45,13 +45,12 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
 
 
 
-        [SharpLayersSerialization(SerializedName = "styleMap",
+        [SharpLayersSerialization(SerializedName = "sld",
            SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
-        public string StyleMap { get; set; }
+        public string Sld { get; set; }
 
+        [SharpLayersSerialization(SerializedName = "styleSelector")]
+        public string StyleSelector { get; set; }
 
-        //[SharpLayersSerialization(SerializedName = "style",
-        //   SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
-        //public string Style { get; set; }
     }
 }

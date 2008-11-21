@@ -2,7 +2,7 @@ using System.Web.UI;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Styles
 {
-    public class StyleMapBuilderParams : BuilderParamsBase
+    public class SldBuilderParams : BuilderParamsBase
     {
         [SharpLayersSerialization(SerializedName = "sldDocumentXml"),
         PersistenceMode(PersistenceMode.EncodedInnerDefaultProperty)]

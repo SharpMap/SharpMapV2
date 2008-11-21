@@ -131,8 +131,8 @@
     <Compile Include="Protocol\IProtocolBuilderParams.cs" />
     <Compile Include="Protocol\ProtocolComponentBase.cs" />
     <Compile Include="DoubleValue.cs" />
-    <Compile Include="Styles\StyleMapBuilderParams.cs" />
-    <Compile Include="Styles\StyleMapComponent.cs" />
+    <Compile Include="Styles\SldBuilderParams.cs" />
+    <Compile Include="Styles\SldComponent.cs" />
     <Compile Include="UriValue.cs" />
     <Compile Include="SharpLayersSerializationAttribute.cs" />
     <Compile Include="LonLat.cs" />
@@ -336,7 +336,7 @@
     <Content Include="OpenLayers\Reference\Tile\WFS.js" />
     <Content Include="OpenLayers\Reference\Tween.js" />
     <Content Include="OpenLayers\Reference\Util.js" />
-    <EmbeddedResource Include="Styles\StyleMapComponent.js" />
+    <EmbeddedResource Include="Styles\SldComponent.js" />
     <EmbeddedResource Include="Protocol\Http\HttpProtocolComponent.js" />
     <EmbeddedResource Include="Protocol\ProtocolComponent.js" />
   </ItemGroup>

@@ -119,7 +119,7 @@ namespace TestSharpLayers {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SharpMap.Presentation.Web.SharpLayers.Styles.StyleMapComponent stylemap1;
+        protected global::SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent stylemap1;
         
         /// <summary>
         /// httpProtocol control.
