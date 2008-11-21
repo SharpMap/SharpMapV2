@@ -514,10 +514,12 @@ namespace SharpMap.Data
             //    String colName = srcFeature.GetName(i);
             //    targetFeature[colName] = srcFeature.GetValue(i);
             //}
-
-            if (srcFeature.Geometry.SpatialReference.EqualParams(transform.Target))
+            if (transform != null)//jd: to prevent case when transform is null -  probably because a test was done earlier. need to check
             {
-                transform = null;
+                if (srcFeature.Geometry.SpatialReference.EqualParams(transform.Target))
+                {
+                    transform = null;
+                }
             }
 
             srcFeature.GetValues(columnMapper.SourceValues);

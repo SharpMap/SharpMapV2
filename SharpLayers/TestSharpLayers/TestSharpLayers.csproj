@@ -85,6 +85,7 @@
     <Content Include="img\zoom-plus-mini.png" />
     <Content Include="img\zoom-world-mini.png" />
     <Content Include="img\zoombar.png" />
+    <Content Include="mysld.xml" />
     <Content Include="theme\default\framedCloud.css" />
     <Content Include="theme\default\img\add_point_off.png" />
     <Content Include="theme\default\img\add_point_on.png" />

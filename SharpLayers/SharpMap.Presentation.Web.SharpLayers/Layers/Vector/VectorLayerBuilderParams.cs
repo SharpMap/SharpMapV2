@@ -42,5 +42,16 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
         [SharpLayersSerialization(SerializedName = "protocol",
             SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
         public string Protocol { get; set; }
+
+
+
+        [SharpLayersSerialization(SerializedName = "styleMap",
+           SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        public string StyleMap { get; set; }
+
+
+        //[SharpLayersSerialization(SerializedName = "style",
+        //   SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        //public string Style { get; set; }
     }
 }

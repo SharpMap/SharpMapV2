@@ -374,7 +374,7 @@ namespace SharpMap.Data.Providers.Db
         }
 
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
-        {
+        { 
             return ExecuteFeatureDataReader(PrepareSelectCommand(query));
         }
 

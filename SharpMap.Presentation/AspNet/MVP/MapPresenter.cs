@@ -190,7 +190,7 @@ namespace SharpMap.Presentation.AspNet.MVP
             Debug.Assert(renderer != null);
 
             Debug.Assert(layer.Style is FeatureStyle);
-            var style = layer.Style as FeatureStyle;
+            FeatureStyle layerStyle = layer.Style as FeatureStyle;
 
             switch (phase)
             {
@@ -201,6 +201,8 @@ namespace SharpMap.Presentation.AspNet.MVP
 
                     foreach (FeatureDataRow feature in features)
                     {
+                        FeatureStyle style = getStyleForFeature(layer, feature, layerStyle); 
+
                         IEnumerable renderedFeature = renderer.RenderFeature(feature,
                                                                              style,
                                                                              RenderState.Normal,
@@ -214,6 +216,8 @@ namespace SharpMap.Presentation.AspNet.MVP
 
                     foreach (FeatureDataRow selectedFeature in selectedRows)
                     {
+                        FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle); 
+
                         IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
                                                                              style,
                                                                              RenderState.Selected,
@@ -227,6 +231,8 @@ namespace SharpMap.Presentation.AspNet.MVP
 
                     foreach (FeatureDataRow highlightedFeature in highlightedRows)
                     {
+                        FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle); 
+
                         IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
                                                                              style,
                                                                              RenderState.Highlighted,

@@ -100,12 +100,17 @@ namespace MapViewer
         {
         }
 
+        //Note: currently the selected features are one select behind.
+        //e.g on drawing the first region all the layers features are returned
+        // on drawing the second region all the features matching the first region are returned etc..
         private void AttributeQueryHandler_End(object sender, MapActionHandlerEventArgs e)
         {
             IFeatureLayer l =
                 Enumerable.FirstOrDefault(
                 Caster.Cast<IFeatureLayer>(
                     Processor.Where(Map.SelectedLayers, o => o as IFeatureLayer != null)));
+
+            
 
             if (l != null)
             {
@@ -155,7 +160,7 @@ namespace MapViewer
         {
             mapViewControl1.SuspendLayout();
             mapViewControl1.Size = splitVertical.Panel2.ClientSize;
-            Map = new Map(GeometryServices.DefaultGeometryFactory);
+            Map = new Map(GeometryServices.DefaultGeometryFactory, GeometryServices.CoordinateTransformationFactory);
             mapViewControl1.ResumeLayout(false);
             MapView.BeginAction += MapView_BeginAction;
             MapView.EndAction += MapView_EndAction;
@@ -547,12 +552,18 @@ namespace MapViewer
                                 new GeometryLayer(
                                     name,
                                     prov);
-
+                            lyr.Features.IsSpatiallyIndexed = false; 
                             prov.Open();
 
 
                             InvokeIfRequired(new Action(delegate
                                                             {
+
+                                                                if (Map.Layers.Count == 0)
+                                                                {
+                                                                    Map.SpatialReference = lyr.SpatialReference;
+                                                                }
+
                                                                 Map.Layers.Insert(0, lyr);
 
                                                                 lyr.Style = RandomStyle.RandomGeometryStyle();
@@ -561,6 +572,7 @@ namespace MapViewer
                                                                 if (Map.Layers.Count == 1)
                                                                 {
                                                                     mapViewControl1.Map = Map;
+                                                                    
                                                                     layersView1.Map = Map;
                                                                     MapView.ZoomToExtents();
                                                                 }

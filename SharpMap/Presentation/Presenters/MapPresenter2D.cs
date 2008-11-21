@@ -1574,7 +1574,7 @@ namespace SharpMap.Presentation.Presenters
             renderChangedLayer(featureLayer, layerChangeType, RenderPhase.Highlighted);
         }
 
-        private static FeatureStyle getStyleForFeature(IFeatureLayer layer,
+        protected static FeatureStyle getStyleForFeature(IFeatureLayer layer,
                                                        FeatureDataRow feature,
                                                        FeatureStyle layerStyle)
         {

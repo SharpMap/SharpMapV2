@@ -144,7 +144,7 @@ namespace SharpMap.Layers
                         Int32 sortDirValue = (direction == ListSortDirection.Ascending
                                                   ? 1
                                                   : -1);
-                        
+
                         const StringComparison ignoreCase = StringComparison.CurrentCultureIgnoreCase;
 
                         Comparison<ILayer> comparison = delegate(ILayer lhs, ILayer rhs)
@@ -243,7 +243,7 @@ namespace SharpMap.Layers
         }
 
         #endregion
-        
+
 #if DEBUG
         // ReSharper disable RedundantOverridenMember
         protected override void ClearItems()
@@ -255,7 +255,8 @@ namespace SharpMap.Layers
 
         protected override void InsertItem(Int32 index, ILayer item)
         {
-            if (item.SpatialReference != _map.SpatialReference)
+            if (item.SpatialReference != _map.SpatialReference 
+                && !item.SpatialReference.EqualParams(_map.SpatialReference)) //jd:added EqualParams check
             {
                 item.CoordinateTransformation =
                     _map.CoordinateTransformFactory.CreateFromCoordinateSystems(item.SpatialReference,
@@ -278,7 +279,7 @@ namespace SharpMap.Layers
 
             base.RemoveItem(index);
         }
-        
+
 #if DEBUG
         // ReSharper disable RedundantOverridenMember
         protected override void SetItem(Int32 index, ILayer item)

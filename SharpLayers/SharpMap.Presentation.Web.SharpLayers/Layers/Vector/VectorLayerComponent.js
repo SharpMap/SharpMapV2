@@ -41,6 +41,10 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
             if (typeof options.protocol == "string")
             options.protocol = $find(options.protocol).get_hostedItem();
 
+        if (options["styleMap"] != null)
+            if (typeof options.styleMap == "string")
+            options.styleMap = $find(options.styleMap).get_hostedItem();
+
         return new OpenLayers.Layer.Vector(this.get_name(), options);
     }
 

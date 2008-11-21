@@ -143,14 +143,13 @@ namespace SharpMap.Data.Providers
 	    Min(Geom.STEnvelope().STPointN(1).STX)as MinX, 
 	    Min(Geom.STEnvelope().STPointN(1).STY) as MinY,  
 	    Max(Geom.STEnvelope().STPointN(3).STX) as MaxX, 
-	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY from {0}.{1} {2}",
+	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY FROM {0}.{1} {2}",
                                                                         TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                 }
 
                 cmd.CommandType = CommandType.Text;
-                double xmin, ymin, xmax, ymax;
                 conn.Open();
                 using (IDataReader r = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
@@ -159,10 +158,10 @@ namespace SharpMap.Data.Providers
                         if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
                             return GeometryFactory.CreateExtents();
 
-                        xmin = r.GetDouble(0);
-                        ymin = r.GetDouble(1);
-                        xmax = r.GetDouble(2);
-                        ymax = r.GetDouble(3);
+                        double xmin = r.GetDouble(0);
+                        double ymin = r.GetDouble(1);
+                        double xmax = r.GetDouble(2);
+                        double ymax = r.GetDouble(3);
                         return GeometryFactory.CreateExtents2D(xmin, ymin, xmax, ymax);
                     }
                 }

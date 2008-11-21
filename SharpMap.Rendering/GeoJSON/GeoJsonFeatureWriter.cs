@@ -60,7 +60,7 @@ namespace SharpMap.Rendering.GeoJson
             if (style.IncludeBBox)
             {
                 sb.Append("\"bbox\":");
-                WriteExtents(sb, feature.Geometry.Extents);
+                WriteExtents(sb, g.Extents);
                 sb.Append(",");
             }
 

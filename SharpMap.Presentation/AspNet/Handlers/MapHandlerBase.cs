@@ -322,7 +322,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
         /// </summary>
         public virtual void InitMap()
         {
-            Map = new Map(GeometryServices.DefaultGeometryFactory);
+            Map = new Map(GeometryServices.DefaultGeometryFactory, GeometryServices.CoordinateTransformationFactory );
         }
 
         /// <summary>

@@ -22,6 +22,8 @@
     TagPrefix="strategy" %>
 <%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Format"
     TagPrefix="format" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Styles"
+    TagPrefix="style" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -81,7 +83,7 @@
                 </wms:WmsLayerComponent>
                 <vector:VectorLayerComponent runat="server" ID="VectorLayerComponent1" Name="My Vector Layer">
                     <BuilderParams Attribution="Newgrove Vectors Inc" DisplayInLayerSwitcher="true" IsBaseLayer="false"
-                        Units="m" Visibility="true">
+                        Units="m" Visibility="true" StyleMap="stylemap1">
                         <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
                     </BuilderParams>
                 </vector:VectorLayerComponent>
@@ -94,6 +96,9 @@
                 </vector:VectorLayerComponent>
             </LayerComponents>
         </cc1:MapHostExtender>
+        <style:StyleMapComponent runat="server" ID="stylemap1">
+            <BuilderParams SldDocumentUri="mysld.xml" />
+        </style:StyleMapComponent>
         <protocol:HttpProtocolComponent FormatType="GeoJsonFormat" runat="server" ID="httpProtocol">
             <BuilderParams Url="http://localhost">
                 <Formats>
