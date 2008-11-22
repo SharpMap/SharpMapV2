@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers", "TestSharpLayers\TestSharpLayers.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers_IIS", "TestSharpLayers\TestSharpLayers_IIS.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.Web.SharpLayers", "SharpMap.Presentation.Web.SharpLayers\SharpMap.Presentation.Web.SharpLayers.csproj", "{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}"
 EndProject

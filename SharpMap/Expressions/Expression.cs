@@ -16,12 +16,36 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
     /// <summary>
     /// Represents an expression used to select or project data.
     /// </summary>
+    /// <remarks/>
+    [XmlInclude(typeof(MapItemType))]
+    [XmlInclude(typeof(InterpolationPointType))]
+    [XmlInclude(typeof(LiteralType))]
+    [XmlInclude(typeof(FunctionType1))]
+    [XmlInclude(typeof(PropertyNameExpression))]
+    [XmlInclude(typeof(BinaryOperatorType))]
+    [XmlInclude(typeof(FunctionType))]
+    [XmlInclude(typeof(RecodeType))]
+    [XmlInclude(typeof(InterpolateType))]
+    [XmlInclude(typeof(CategorizeType))]
+    [XmlInclude(typeof(StringLengthType))]
+    [XmlInclude(typeof(StringPositionType))]
+    [XmlInclude(typeof(TrimType))]
+    [XmlInclude(typeof(ChangeCaseType))]
+    [XmlInclude(typeof(ConcatenateType))]
+    [XmlInclude(typeof(SubstringType))]
+    [XmlInclude(typeof(FormatDateType))]
+    [XmlInclude(typeof(FormatNumberType))]
+    [Serializable()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/ogc", TypeName = "ExpressionType")]
     public abstract class Expression : IEquatable<Expression>
     {
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.AspNet", "SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj", "{1677C565-FA87-419F-B925-02A5CAA97E8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoAPI.Net", "GeoAPI\src\GeoAPI\GeoAPI.Net.csproj", "{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}"
@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.TestRunner
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoAPI.Tests", "GeoAPI\src\GeoAPI.Tests\GeoAPI.Tests.csproj", "{0761C598-52C7-4ABA-B024-64B31022E573}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers_Cassini", "SharpLayers\TestSharpLayers\TestSharpLayers_Cassini.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers_IIS", "SharpLayers\TestSharpLayers\TestSharpLayers_IIS.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer", "Demos\SharpMapWinFormsDemo\MapViewer.csproj", "{74FFC63E-9E93-47E0-B634-D39801ED9A71}"
 EndProject

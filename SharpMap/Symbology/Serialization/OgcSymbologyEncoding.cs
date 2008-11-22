@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Xml.Serialization;
 
 // 
@@ -358,73 +359,6 @@ namespace SharpMap.Symbology.Serialization
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName = "FunctionType", Namespace = "http://www.opengis.net/ogc")]
-    [System.Xml.Serialization.XmlRootAttribute("Function", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public partial class FunctionType1 : ExpressionType
-    {
-
-        private ExpressionType[] itemsField;
-
-        private ItemsChoiceType[] itemsElementNameField;
-
-        private string nameField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("Add", typeof(BinaryOperatorType), Order = 0)]
-        [System.Xml.Serialization.XmlElementAttribute("Div", typeof(BinaryOperatorType), Order = 0)]
-        [System.Xml.Serialization.XmlElementAttribute("Function", typeof(FunctionType1), Order = 0)]
-        [System.Xml.Serialization.XmlElementAttribute("Literal", typeof(LiteralType), Order = 0)]
-        [System.Xml.Serialization.XmlElementAttribute("Mul", typeof(BinaryOperatorType), Order = 0)]
-        [System.Xml.Serialization.XmlElementAttribute("PropertyName", typeof(PropertyNameType), Order = 0)]
-        [System.Xml.Serialization.XmlElementAttribute("Sub", typeof(BinaryOperatorType), Order = 0)]
-        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemsElementName")]
-        public ExpressionType[] Items
-        {
-            get
-            {
-                return this.itemsField;
-            }
-            set
-            {
-                this.itemsField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ItemsElementName", Order = 1)]
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public ItemsChoiceType[] ItemsElementName
-        {
-            get
-            {
-                return this.itemsElementNameField;
-            }
-            set
-            {
-                this.itemsElementNameField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/ogc")]
     [System.Xml.Serialization.XmlRootAttribute("Literal", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public partial class LiteralType : ExpressionType
@@ -444,98 +378,6 @@ namespace SharpMap.Symbology.Serialization
             set
             {
                 this.anyField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(MapItemType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(InterpolationPointType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(LiteralType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(FunctionType1))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(PropertyNameType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(BinaryOperatorType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(FunctionType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(RecodeType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(InterpolateType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(CategorizeType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(StringLengthType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(StringPositionType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(TrimType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ChangeCaseType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ConcatenateType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(SubstringType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(FormatDateType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(FormatNumberType))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/ogc")]
-    public abstract partial class ExpressionType
-    {
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/ogc")]
-    [System.Xml.Serialization.XmlRootAttribute("PropertyName", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public partial class PropertyNameType : ExpressionType
-    {
-
-        private string[] textField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
-        {
-            get
-            {
-                return this.textField;
-            }
-            set
-            {
-                this.textField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(RecodeType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(InterpolateType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(CategorizeType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(StringLengthType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(StringPositionType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(TrimType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ChangeCaseType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ConcatenateType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(SubstringType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(FormatDateType))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(FormatNumberType))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    public abstract partial class FunctionType : ExpressionType
-    {
-
-        private string fallbackValueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string fallbackValue
-        {
-            get
-            {
-                return this.fallbackValueField;
-            }
-            set
-            {
-                this.fallbackValueField = value;
             }
         }
     }

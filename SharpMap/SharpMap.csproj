@@ -175,6 +175,7 @@
     <Compile Include="Expressions\ExcludedOidCollectionExpression.cs" />
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\ExpressionParseException.cs" />
+    <Compile Include="Expressions\FunctionExpression.cs" />
     <Compile Include="Expressions\ProviderPropertiesExpression.cs" />
     <Compile Include="Expressions\ProviderQueryExpression.cs" />
     <Compile Include="Expressions\ExtentsExpression.cs" />

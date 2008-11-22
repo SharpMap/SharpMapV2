@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.TestRunner
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoAPI.Tests", "GeoAPI\src\GeoAPI.Tests\GeoAPI.Tests.csproj", "{0761C598-52C7-4ABA-B024-64B31022E573}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers", "SharpLayers\TestSharpLayers\TestSharpLayers.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers_Cassini", "SharpLayers\TestSharpLayers\TestSharpLayers_Cassini.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer", "Demos\SharpMapWinFormsDemo\MapViewer.csproj", "{74FFC63E-9E93-47E0-B634-D39801ED9A71}"
 EndProject

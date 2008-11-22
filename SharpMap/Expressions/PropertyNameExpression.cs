@@ -16,21 +16,37 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "PropertyNameType")]
+    [XmlRoot("PropertyName", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public sealed class PropertyNameExpression : Expression
     {
-        private readonly String _propertyName;
+        private String _propertyName;
+
+        public PropertyNameExpression() { }
 
         public PropertyNameExpression(String propertyName)
         {
             _propertyName = propertyName;
         }
 
+        [XmlText(typeof(String))]
         public String PropertyName
         {
             get { return _propertyName; }
+            set
+            {
+                if (_propertyName != null)
+                {
+                    throw new InvalidOperationException("PropertyNameExpression is read-only after setting.");
+                }
+
+                _propertyName = value;
+            }
         }
 
         public override Boolean Contains(Expression other)
