@@ -395,6 +395,7 @@
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
     <Compile Include="SharpMapVersion.cs" />
+    <Compile Include="Utilities\SridUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
