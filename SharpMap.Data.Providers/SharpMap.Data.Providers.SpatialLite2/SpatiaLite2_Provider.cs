@@ -41,6 +41,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using GeoAPI.Geometries;
+using Proj4Utility;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.SpatiaLite2;
@@ -327,7 +328,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         //valid geometry type
                         _validGeometryType = parseGeometryType(dr.GetString(0));
 
-                        //Srid
+                        //srid
                         OriginalSrid = dr.GetInt64(1).ToString();
                         if (geometryFactory.Srid == null)
                             geometryFactory.Srid = Srid;
@@ -577,7 +578,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             cmd.Parameters.Add(new SQLiteParameter("@P6", DbType.String));
 
             SQLiteParameterCollection pars = cmd.Parameters;
-            foreach (Proj4Reader.Proj4SpatialRefSys p4srs in Proj4Reader.GetSRIDs())
+            foreach (Proj4Reader.Proj4SpatialRefSys p4srs in Proj4Reader.GetSRIDs("PROJ4.tsv"))
             {
                 pars[0].Value = p4srs.Srid;
                 pars[1].Value = p4srs.AuthorityName;

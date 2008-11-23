@@ -96,14 +96,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Proj4Reader.cs" />
     <Compile Include="SpatiaLite2_Provider.cs" />
     <Compile Include="SpatiaLite2_ExpressionTreeToSqlCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpatiaLite2_SpatialUtility.cs" />
     <Compile Include="SpatiaLite2_Exception.cs" />
-    <Compile Include="TextTokenizer.cs" />
-    <Compile Include="TokenType.cs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(GeoAPIProjectReference)' == 'false'">
@@ -124,6 +121,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <ProjectReference Include="..\..\Proj4Utility\Proj4Utility.csproj">
+      <Project>{4AAC52D4-D27B-4A3A-9660-73A4E796207C}</Project>
+      <Name>Proj4Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
@@ -172,7 +173,11 @@
     <Content Include="SQLite\libproj-0.dll" />
     <Content Include="SQLite\libspatialite-2.dll" />
     <Content Include="SQLite\libsqlite3-1.dll" />
-    <Content Include="SQLite\PROJ4.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SQLite\PROJ4.tsv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -183,6 +188,6 @@
   <Target Name="BeforeBuild">
   </Target>-->
   <Target Name="AfterBuild">
-    <Copy ContinueOnError="false" DestinationFolder="$(TargetDir)" SourceFiles="SQLite\libgeos-3-0-0.dll;SQLite\libgeos_c-1.dll;SQLite\libiconv2.dll;SQLite\libproj-0.dll;SQLite\libspatialite-2.dll;SQLite\libsqlite3-1.dll;SQLite\PROJ4.csv" />
+    <Copy ContinueOnError="false" DestinationFolder="$(TargetDir)" SourceFiles="SQLite\libgeos-3-0-0.dll;SQLite\libgeos_c-1.dll;SQLite\libiconv2.dll;SQLite\libproj-0.dll;SQLite\libspatialite-2.dll;SQLite\libsqlite3-1.dll;SQLite\PROJ4.tsv" />
   </Target>
 </Project>

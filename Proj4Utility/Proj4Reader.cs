@@ -33,14 +33,23 @@
  *    http://sourceforge.net/projects/sqlite-dotnet2
  *    
  */
+
+/*
+ * 
+ * 
+ * Futher Modified by john diss
+ * 
+ * 
+ */
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
-namespace SharpMap.Data.Providers.SpatiaLite2
+namespace Proj4Utility
 {
-    internal class Proj4Reader
+    public class Proj4Reader
     {
         /// <summary>
         /// Content of PROJ4.csv file serves this structure
@@ -48,21 +57,51 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         public struct Proj4SpatialRefSys
         {
             //srid, auth_name, auth_srid, ref_sys_name, proj4text
-            internal readonly Int64 Srid;
-            internal readonly String AuthorityName;
-            internal readonly Int64 AuthoritySrid;
-            internal readonly String RefSysName;
-            internal readonly String Proj4Text;
-            internal readonly String SrText;
+            private readonly Int64 srid;
+            private readonly String authorityName;
+            private readonly Int64 authoritySrid;
+            private readonly String refSysName;
+            private readonly String proj4Text;
+            private readonly String srText;
 
             public Proj4SpatialRefSys(Int64 srid, String authorityName, Int64 authoritySrid, String refSysName, String proj4Text, String srText)
             {
-                Srid = srid;
-                AuthorityName = authorityName;
-                AuthoritySrid = authoritySrid;
-                RefSysName = refSysName;
-                Proj4Text = proj4Text;
-                SrText = srText;
+                this.srid = srid;
+                this.authorityName = authorityName;
+                this.authoritySrid = authoritySrid;
+                this.refSysName = refSysName;
+                this.proj4Text = proj4Text;
+                this.srText = srText;
+            }
+
+            public long Srid
+            {
+                get { return srid; }
+            }
+
+            public string AuthorityName
+            {
+                get { return authorityName; }
+            }
+
+            public long AuthoritySrid
+            {
+                get { return authoritySrid; }
+            }
+
+            public string RefSysName
+            {
+                get { return refSysName; }
+            }
+
+            public string Proj4Text
+            {
+                get { return proj4Text; }
+            }
+
+            public string SrText
+            {
+                get { return srText; }
             }
         }
 
@@ -70,31 +109,33 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         /// 
         /// </summary>
         /// <returns>IEnumerable(Proj4SpatialRefSys)</returns>
-        public static IEnumerable<Proj4SpatialRefSys> GetSRIDs()
+        public static IEnumerable<Proj4SpatialRefSys> GetSRIDs(TextReader sr)
         {
-            using (TextReader sr = File.OpenText("PROJ4.CSV"))
+            using (sr)
             {
                 while (!((StreamReader)sr).EndOfStream)
                 {
                     String line = sr.ReadLine();
-                    TextTokenizer tokenizer = new TextTokenizer(new StringReader(line), true);
 
-                    tokenizer.Read();
-                    Int64 srid = (Int64)tokenizer.CurrentTokenAsNumber;
-                    tokenizer.Read();
-                    String auth = ReadDoubleQuotedWord(tokenizer);
-                    tokenizer.Read();
-                    Int64 asrid = (Int64)tokenizer.CurrentTokenAsNumber;
-                    tokenizer.Read();
-                    String name = ReadDoubleQuotedWord(tokenizer);
-                    tokenizer.Read();
-                    String proj4 = ReadDoubleQuotedWord(tokenizer);
-                    String srText = "";
-                    if (tokenizer.NextTokenType != TokenType.Eol)
-                    {
-                        tokenizer.Read();
-                        srText = ReadDoubleQuotedWord(tokenizer);
-                    }
+                    //jd: original didnt seem to work.. the csv was not a csv and the tokenizer was splitting incorrectly - probably due to double double quoting.
+                    //so modified the file removed double double quotes and split on tab;
+
+
+                    string[] parts = line.Split('\t');
+
+
+                    Int64 srid = long.Parse(parts[0]);
+
+                    String auth = parts[1];
+
+                    Int64 asrid = long.Parse(parts[2]);
+
+                    String name = parts[3];
+
+                    String proj4 = parts[4];
+
+                    string srText = parts.Length > 5 ? parts[5] : "";
+
 
                     yield return new Proj4SpatialRefSys(srid, auth, asrid, name, proj4, srText);
 
@@ -102,20 +143,16 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             }
         }
 
-        private static String ReadDoubleQuotedWord(TextTokenizer tokenizer)
-        {
-            TokenType tt = tokenizer.Read();
-            if (tokenizer.CurrentToken == "\"") tokenizer.Read();
-            StringBuilder sb = new StringBuilder();
-            while (tokenizer.CurrentToken != "\"")
-            {
-                sb.Append(tokenizer.CurrentToken);
-                tokenizer.Read(false);
-            }
-            tokenizer.Read();
-            return sb.ToString();
 
+        public static IEnumerable<Proj4SpatialRefSys> GetSRIDs(string proj4FilePath)
+        {
+            return GetSRIDs(File.OpenText(proj4FilePath));
         }
+
+        public static IEnumerable<Proj4SpatialRefSys> GetSRIDs()
+        {
+            return GetSRIDs(new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("Proj4Utility.PROJ4.tsv")));
+        }
+
     }
 }
-

@@ -1,9 +1,11 @@
 ﻿using System.Configuration;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Data.Providers.Db.Test
 {
@@ -255,6 +257,24 @@ namespace SharpMap.Data.Providers.Db.Test
             IFeatureDataRecord record = search.GetFeatureByOid(1);
             Assert.IsNotNull(record);
 
+
+        }
+
+
+        [TestMethod]
+        public void TestSridMap()
+        {
+            SridMap map = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+
+            ICoordinateSystem cs = map.Process(27700, default(ICoordinateSystem));
+
+            Assert.IsNotNull(cs);
+
+
+
+            int? srid = map.Process(cs, (int?) null);
+
+            Assert.IsTrue(srid == 27700);
 
         }
     }
