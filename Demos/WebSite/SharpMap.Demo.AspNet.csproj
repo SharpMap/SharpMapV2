@@ -245,7 +245,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>52825</DevelopmentServerPort>
+          <DevelopmentServerPort>50322</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/SharpMapV2Demo</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

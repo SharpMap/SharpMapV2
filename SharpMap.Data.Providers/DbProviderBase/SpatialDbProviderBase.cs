@@ -34,6 +34,8 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
+using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 using Processor = GeoAPI.DataStructures.Processor;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
@@ -46,6 +48,16 @@ namespace SharpMap.Data.Providers.Db
         private String _geometryColumn = "Wkb_Geometry";
         private String _oidColumn = "Oid";
         private String _tableSchema = "dbo";
+
+        private static SridMap _sridMap = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+
+        public SridMap SridMap
+        {
+            get
+            {
+                return _sridMap;
+            }
+        }
 
         private static Dictionary<TableCacheKey, DataTable> _cachedSchemas = new Dictionary<TableCacheKey, DataTable>();
 
@@ -374,7 +386,7 @@ namespace SharpMap.Data.Providers.Db
         }
 
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
-        { 
+        {
             return ExecuteFeatureDataReader(PrepareSelectCommand(query));
         }
 
@@ -696,13 +708,9 @@ namespace SharpMap.Data.Providers.Db
         }
 
 
-        //TODO: enhance to remove possible "EPSG:" etc
         public int? ParseSrid(string sridText)
         {
-            int s;
-            if (int.TryParse(sridText, out s))
-                return s;
-            return null;
+            return SridMap.Process(sridText, (int?)null);
         }
 
 

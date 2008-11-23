@@ -15,9 +15,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         private readonly List<DbaseField> _rowColumns;
         private IGeometry _geometry;
         private readonly Int32 _oidColumn = 0;
-        private static readonly DbaseField _oidField = 
+        private static readonly DbaseField _oidField =
             new DbaseField(null, ShapeFileConstants.IdColumnName, typeof(UInt32), 0, 0, 0, 0);
-        private  static readonly ShapeFileFeatureDataRecord _idOnlyRecord =
+        private static readonly ShapeFileFeatureDataRecord _idOnlyRecord =
             new ShapeFileFeatureDataRecord(new DbaseField[] { _oidField });
         //private readonly Int32 _columnCount;
 
@@ -251,7 +251,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         Object IDataRecord.this[string name]
         {
-            get { throw new System.NotImplementedException(); }
+            get { return _rowValues[GetOrdinal(name)]; }
         }
 
         #endregion

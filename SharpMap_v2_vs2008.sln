@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Rendering.Gdi", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Rendering.Web.Gdi", "SharpMap.Rendering\Web.Gdi\SharpMap.Rendering.Web.Gdi.csproj", "{E49D450A-86DA-4CDE-8FC7-5A645165B615}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.AspNet.Demo", "Demos\WebSite\SharpMap.Presentation.AspNet.Demo.csproj", "{62E2FE54-8B03-4CC8-B348-DBB1C9D1E6F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Demo.AspNet", "Demos\WebSite\SharpMap.Demo.AspNet.csproj", "{62E2FE54-8B03-4CC8-B348-DBB1C9D1E6F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.Db", "SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj", "{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}"
 EndProject
@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoAPI.Tests", "GeoAPI\src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSharpLayers", "SharpLayers\TestSharpLayers\TestSharpLayers.csproj", "{B0CA0EB9-7F7C-4C55-98D5-EAE3D285189D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer", "Demos\SharpMapWinFormsDemo\MapViewer.csproj", "{74FFC63E-9E93-47E0-B634-D39801ED9A71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Demo.MapViewer", "Demos\SharpMapWinFormsDemo\SharpMap.Demo.MapViewer.csproj", "{74FFC63E-9E93-47E0-B634-D39801ED9A71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.WinForms", "SharpMap.Presentation\WinForms\SharpMap.Presentation.WinForms.csproj", "{E7E3A53F-6B4D-423B-A10E-F0580B87FB81}"
 EndProject
@@ -68,6 +68,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.Web.SharpLayers", "SharpLayers\SharpMap.Presentation.Web.SharpLayers\SharpMap.Presentation.Web.SharpLayers.csproj", "{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proj4Utility", "Proj4Utility\Proj4Utility.csproj", "{4AAC52D4-D27B-4A3A-9660-73A4E796207C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Demo.FeatureExporter", "Demos\SharpMap.Demo.FeatureExporter\SharpMap.Demo.FeatureExporter.csproj", "{A5F2DF47-F99C-4134-B4EF-79E876ED764C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo Projects", "Demo Projects", "{C4E00EF9-D274-4D44-914C-7F871C755734}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{BDE2BFBD-FD53-405D-B004-D03A42A2BA10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinForms", "WinForms", "{187C6524-E36F-477E-A6DD-AEEF83316903}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Console", "Console", "{11EA7250-D5DD-47B5-A172-0B00F0B5882A}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -446,8 +456,28 @@ Global
 		{4AAC52D4-D27B-4A3A-9660-73A4E796207C}.Release_Net35|Any CPU.Build.0 = Release|Any CPU
 		{4AAC52D4-D27B-4A3A-9660-73A4E796207C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AAC52D4-D27B-4A3A-9660-73A4E796207C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Debug_Net20|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Debug_Net20|Any CPU.Build.0 = Debug|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Debug_Net35|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Debug_Net35|Any CPU.Build.0 = Debug|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Release_Net20|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Release_Net20|Any CPU.Build.0 = Release|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Release_Net35|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Release_Net35|Any CPU.Build.0 = Release|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BDE2BFBD-FD53-405D-B004-D03A42A2BA10} = {C4E00EF9-D274-4D44-914C-7F871C755734}
+		{187C6524-E36F-477E-A6DD-AEEF83316903} = {C4E00EF9-D274-4D44-914C-7F871C755734}
+		{11EA7250-D5DD-47B5-A172-0B00F0B5882A} = {C4E00EF9-D274-4D44-914C-7F871C755734}
+		{62E2FE54-8B03-4CC8-B348-DBB1C9D1E6F7} = {BDE2BFBD-FD53-405D-B004-D03A42A2BA10}
+		{74FFC63E-9E93-47E0-B634-D39801ED9A71} = {187C6524-E36F-477E-A6DD-AEEF83316903}
+		{A5F2DF47-F99C-4134-B4EF-79E876ED764C} = {11EA7250-D5DD-47B5-A172-0B00F0B5882A}
 	EndGlobalSection
 EndGlobal
