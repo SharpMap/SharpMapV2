@@ -95,7 +95,6 @@ namespace SharpMap.Demo.FeatureExporter
             while (reader.Read())
             {
                 string exportFilePath = GenerateUniqueName(reader[colName].ToString());
-                //jd:currently broken....
                 using (
                     ShapeFileProvider export = ShapeFileProvider.Create(ExportDirectory, exportFilePath,
                                                                         Provider.ShapeType, Provider.CreateNewTable(),
