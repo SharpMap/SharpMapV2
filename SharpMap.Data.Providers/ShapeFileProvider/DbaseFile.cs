@@ -213,7 +213,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             DbaseFile file = new DbaseFile(fileName, geoFactory, false);
             Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
-
+ 
             file._header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file._header));
             file._headerIsParsed = true;
 

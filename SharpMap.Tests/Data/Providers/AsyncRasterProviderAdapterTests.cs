@@ -5,35 +5,39 @@ using System.Threading;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using NUnit.Framework;
+
 using Rhino.Mocks;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
+using Xunit;
 
 namespace SharpMap.Tests.Data.Providers
 {
-    [TestFixture]
+    
     public class AsyncRasterProviderAdapterTests
     {
         private Stream _returnStreamStub;
         private Int32 _sleepInterval;
 
-        [TearDown]
-        public void TearDown()
-        {
-            _returnStreamStub = null;
-            _sleepInterval = 0;
-        }
+        //[TearDown]
+        //public void TearDown()
+        //{
+        //    _returnStreamStub = null;
+        //    _sleepInterval = 0;
+        //}
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void ConstructorFailsOnNullProvider()
         {
-            AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(null);
+            Assert.Throws<ArgumentNullException>(delegate
+                                                     {
+                                                         AsyncRasterProviderAdapter adapter =
+                                                             new AsyncRasterProviderAdapter(null);
+                                                     });
         }
 
-        [Test]
+        [Fact]
         public void ConstructorSucceeds()
         {
             MockRepository mocks = new MockRepository();
@@ -42,7 +46,7 @@ namespace SharpMap.Tests.Data.Providers
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
         }
 
-        [Test]
+        [Fact]
         public void IProviderMethodsPassThroughAdapter()
         {
             MockRepository mocks = new MockRepository();
@@ -77,27 +81,28 @@ namespace SharpMap.Tests.Data.Providers
                     .Return(coordinateSystemStub);
                 //adapted.Srid = 1;
                 Expect.Call(adapted.Srid)
-                    .Return(2);
+                    .Return("2");
             }
+
             mocks.ReplayAll();
 
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
             adapter.Close();
-            Assert.AreEqual("connectionid", adapter.ConnectionId);
+            Assert.Equal("connectionid", adapter.ConnectionId);
             adapter.CoordinateTransformation = transformStub;
-            Assert.AreSame(transformStub, adapter.CoordinateTransformation);
-            Assert.AreSame(objectStub, adapter.ExecuteQuery(queryStub));
-            Assert.AreSame(extentsStub, adapter.GetExtents());
-            Assert.IsTrue(adapter.IsOpen);
+            Assert.Same(transformStub, adapter.CoordinateTransformation);
+            Assert.Same(objectStub, adapter.ExecuteQuery(queryStub));
+            Assert.Same(extentsStub, adapter.GetExtents());
+            Assert.True(adapter.IsOpen);
             adapter.Open();
-            Assert.AreSame(coordinateSystemStub, adapter.SpatialReference);
+            Assert.Same(coordinateSystemStub, adapter.SpatialReference);
             //adapter.Srid = 1;
-            Assert.AreEqual(2, adapter.Srid);
+            Assert.Equal("2", adapter.Srid);
 
             mocks.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void IDisposableMethodsPassThroughAdapter()
         {
             MockRepository mocks = new MockRepository();
@@ -115,7 +120,7 @@ namespace SharpMap.Tests.Data.Providers
             mocks.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void IRasterProviderMethodsPassThroughAdapter()
         {
             MockRepository mocks = new MockRepository();
@@ -135,13 +140,12 @@ namespace SharpMap.Tests.Data.Providers
             mocks.ReplayAll();
 
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
-            Assert.AreSame(streamStub, adapter.ExecuteRasterQuery(rasterQueryExpressionStub));
+            Assert.Same(streamStub, adapter.ExecuteRasterQuery(rasterQueryExpressionStub));
 
             mocks.VerifyAll();
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void BeginExecuteQueryThrowsOnInvalidExpression()
         {
             MockRepository mocks = new MockRepository();
@@ -150,11 +154,10 @@ namespace SharpMap.Tests.Data.Providers
                 MockRepository.GenerateStub<Expression>();
 
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
-            adapter.BeginExecuteQuery(expressionStub, null);
+            Assert.Throws<ArgumentException>(delegate { adapter.BeginExecuteQuery(expressionStub, null); });
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void EndExecuteQueryThrowsOnInvalidExpression()
         {
             MockRepository mocks = new MockRepository();
@@ -162,7 +165,7 @@ namespace SharpMap.Tests.Data.Providers
             AsyncResult result = new AsyncResult(null, this);
 
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
-            adapter.EndExecuteQuery(result);
+            Assert.Throws<ArgumentException>(delegate { adapter.EndExecuteQuery(result); });
         }
 
 
@@ -173,7 +176,7 @@ namespace SharpMap.Tests.Data.Providers
             return _returnStreamStub;
         }
 
-        [Test]
+        [Fact]
         public void BeginExecuteQueryCallBackNotification()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
@@ -198,19 +201,19 @@ namespace SharpMap.Tests.Data.Providers
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(RasterQueryExpressionStub, callBackRecorder.CallBack);
 
-            Assert.IsNotNull(ar);
-            Assert.IsFalse(ar.IsCompleted);
+            Assert.NotNull(ar);
+            Assert.False(ar.IsCompleted);
 
             Thread.Sleep(1000);
 
-            Assert.AreSame(ar, callBackRecorder.Result);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.AreSame(_returnStreamStub, adapter.EndExecuteQuery(ar));
+            Assert.Same(ar, callBackRecorder.Result);
+            Assert.True(ar.IsCompleted);
+            Assert.Same(_returnStreamStub, adapter.EndExecuteQuery(ar));
 
             mocks.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void BeginExecuteQueryPollingNotification()
         {
             MockRepository mocks = new MockRepository();
@@ -233,20 +236,20 @@ namespace SharpMap.Tests.Data.Providers
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(RasterQueryExpressionStub, null);
 
-            Assert.IsNotNull(ar);
-            Assert.IsFalse(ar.IsCompleted);
+            Assert.NotNull(ar);
+            Assert.False(ar.IsCompleted);
             while (!ar.IsCompleted)
             {
                 Thread.Sleep(350);
             }
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.AreSame(_returnStreamStub, adapter.EndExecuteQuery(ar));
+            Assert.True(ar.IsCompleted);
+            Assert.Same(_returnStreamStub, adapter.EndExecuteQuery(ar));
 
             mocks.VerifyAll();
         }
         
-        [Test]
+        [Fact]
         public void BeginExecuteQueryBlockUntilDone()
         {
             MockRepository mocks = new MockRepository();
@@ -269,15 +272,15 @@ namespace SharpMap.Tests.Data.Providers
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(RasterQueryExpressionStub, null);
 
-            Assert.IsNotNull(ar);
+            Assert.NotNull(ar);
 
             Stopwatch timer = Stopwatch.StartNew();
-            Assert.AreSame(_returnStreamStub, adapter.EndExecuteQuery(ar));
+            Assert.Same(_returnStreamStub, adapter.EndExecuteQuery(ar));
             timer.Stop();
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
-            Assert.IsTrue(timer.ElapsedMilliseconds > 500L);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
+            Assert.True(timer.ElapsedMilliseconds > 500L);
 
             mocks.VerifyAll();
         }
@@ -288,8 +291,7 @@ namespace SharpMap.Tests.Data.Providers
             throw new InvalidOperationException("Failure succeeded");
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void EndExecuteQueryThrowsTerminatingException()
         {
             MockRepository mocks = new MockRepository();
@@ -309,10 +311,9 @@ namespace SharpMap.Tests.Data.Providers
             AsyncRasterProviderAdapter adapter = new AsyncRasterProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(RasterQueryExpressionStub, null);
 
-            Assert.IsNotNull(ar);
+            Assert.NotNull(ar);
 
-            adapter.EndExecuteQuery(ar);
+            Assert.Throws<InvalidOperationException>(delegate { adapter.EndExecuteQuery(ar); });
         }
-
     }
 }

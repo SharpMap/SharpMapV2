@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
+
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
+using Xunit;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponent>;
@@ -13,17 +14,16 @@ namespace SharpMap.Tests.Rendering
 
     #region VectorRenderer2D
 
-    [TestFixture]
+    
     public class VectorRenderer2DTests
     {
-        [Test]
+        [Fact]
         public void CreateVectorRenderer2DTest()
         {
             TestVector2DRenderer r = new TestVector2DRenderer();
         }
 
-        [Test]
-        [Ignore]
+        [Fact(Skip = "Incomplete")]
         public void RenderPathWithOutlineOnly()
         {
             Point2D[] points = new Point2D[8];

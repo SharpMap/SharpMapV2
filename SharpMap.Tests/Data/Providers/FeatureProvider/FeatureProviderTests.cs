@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Data;
-using NUnit.Framework;
+using Xunit;
 using FProvider = SharpMap.Data.Providers.FeatureProvider.FeatureProvider;
 
 namespace SharpMap.Tests.Data.Providers.FeatureProvider
 {
-    [TestFixture]
+    
     public class FeatureProviderTests
     {
-        [Test]
-        [Ignore("Not implemented")]
+        [Fact(Skip = "Incomplete")]
         public void CreatingFeatureProviderWithNoSchema()
         {
             FProvider provider = new FProvider(null);
             DataTable schema = provider.GetSchemaTable();
-            Assert.AreEqual(0, schema.Rows);
+            Assert.Equal(0, schema.Rows.Count);
         }
 
-        [Test]
-        [Ignore("Not implemented")]
+        [Fact(Skip = "Incomplete")]
         public void CreatingFeatureProviderWithSchema()
         {
             DataColumn[] columns = new DataColumn[]
@@ -30,7 +28,7 @@ namespace SharpMap.Tests.Data.Providers.FeatureProvider
 
             FProvider provider = new FProvider(null, columns);
             DataTable schema = provider.GetSchemaTable();
-            Assert.AreEqual(3, schema.Rows);
+            Assert.Equal(3, schema.Rows.Count);
         }
     }
 }

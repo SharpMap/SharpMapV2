@@ -3,162 +3,160 @@ using System.Data;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
-using NUnit.Framework;
+
 using SharpMap.Data;
 using SharpMap.Data.Providers.FeatureProvider;
 using SharpMap.Expressions;
+using Xunit;
 
 namespace SharpMap.Tests.Data
 {
-    [TestFixture]
-    public class FeatureDataTableTests
+    public class FeatureDataTableTests : IUseFixture<FixtureFactories>
     {
-        private IGeometryFactory _geoFactory;
+        private FixtureFactories _factories;
 
-        [TestFixtureSetUp]
-        public void Setup()
+        public void SetFixture(FixtureFactories data)
         {
-            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
+            _factories = data;
         }
 
-        [Test]
+        [Fact]
         public void CreateTable()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            Assert.IsNotNull(table);
-            Assert.IsNull(table.DataSet);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            Assert.NotNull(table);
+            Assert.Null(table.DataSet);
         }
 
-        [Test]
+        [Fact]
         public void NewRowReturnsDetachedFeatureDataRow()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             FeatureDataRow row = table.NewRow();
-            Assert.IsNotNull(row);
-            Assert.AreEqual(0, table.Rows.Count);
-            Assert.AreEqual(DataRowState.Detached, row.RowState);
-            Assert.AreSame(table, row.Table);
+            Assert.NotNull(row);
+            Assert.Equal(0, table.Rows.Count);
+            Assert.Equal(DataRowState.Detached, row.RowState);
+            Assert.Same(table, row.Table);
         }
 
-        [Test]
+        [Fact]
         public void AddedRowChangesRowState()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
-            Assert.AreEqual(DataRowState.Added, row.RowState);
+            Assert.Equal(DataRowState.Added, row.RowState);
         }
 
-        [Test]
+        [Fact]
         public void AddedRowIncreasesRowCount()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
-            Assert.AreEqual(1, table.Rows.Count);
-            Assert.AreEqual(1, table.FeatureCount);
+            Assert.Equal(1, table.Rows.Count);
+            Assert.Equal(1, table.FeatureCount);
         }
 
-        [Test]
+        [Fact]
         public void AddedRowAppearsAsChange()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             FeatureDataTable changes = table.GetChanges();
-            Assert.AreEqual(1, changes.FeatureCount);
+            Assert.Equal(1, changes.FeatureCount);
         }
 
-        [Test]
+        [Fact]
         public void AcceptChangesAppearAsUnchanged()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             table.AcceptChanges();
-            Assert.AreEqual(DataRowState.Unchanged, row.RowState);
+            Assert.Equal(DataRowState.Unchanged, row.RowState);
         }
 
-        [Test]
+        [Fact]
         public void AcceptChangesReturnsNullChangesTable()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             FeatureDataRow row = table.NewRow();
             table.AddRow(row);
             table.AcceptChanges();
             FeatureDataTable changes = table.GetChanges();
-            Assert.IsNull(changes);
+            Assert.Null(changes);
         }
 
-        [Test]
+        [Fact]
         public void DefaultViewIsFeatureDataView()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
             DataView view = table.DefaultView;
-            Assert.IsNotNull(view);
-            Assert.IsInstanceOfType(typeof (FeatureDataView), view);
-            Assert.IsNull(view.DataViewManager);
-            Assert.AreEqual(String.Empty, view.Sort);
-            Assert.AreEqual(String.Empty, view.RowFilter);
-            Assert.AreEqual(0, view.Count);
-            Assert.AreSame(table, view.Table);
+            Assert.NotNull(view);
+            Assert.IsType(typeof (FeatureDataView), view);
+            Assert.Null(view.DataViewManager);
+            Assert.Equal(String.Empty, view.Sort);
+            Assert.Equal(String.Empty, view.RowFilter);
+            Assert.Equal(0, view.Count);
+            Assert.Same(table, view.Table);
             FeatureDataView featureView = view as FeatureDataView;
-            Assert.IsNotNull(featureView);
-            Assert.IsNull(featureView.SpatialFilter);
-            Assert.AreEqual(DataViewRowState.CurrentRows, view.RowStateFilter);
+            Assert.NotNull(featureView);
+            Assert.Null(featureView.SpatialFilter);
+            Assert.Equal(DataViewRowState.CurrentRows, view.RowStateFilter);
         }
 
-        [Test]
+        [Fact]
         public void LoadingTableFromReader()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
             table.Load(provider.ExecuteFeatureQuery(query));
         }
 
-        [Test]
+        [Fact]
         public void CloneToCopiesTableStructureAndNoData()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
             IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
-            FeatureDataTable clone = new FeatureDataTable(_geoFactory);
+            FeatureDataTable clone = new FeatureDataTable(_factories.GeoFactory);
             table.CloneTo(clone);
             DataTableHelper.AssertTableStructureIdentical(table, clone);
 
-            Assert.AreEqual(0, clone.Rows.Count);
+            Assert.Equal(0, clone.Rows.Count);
         }
 
-        [Test]
+        [Fact]
         public void MergeSchemaToSchemalessTargetShouldCreateIdenticalTable()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
             IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
-            FeatureDataTable target = new FeatureDataTable(_geoFactory);
+            FeatureDataTable target = new FeatureDataTable(_factories.GeoFactory);
             table.MergeSchemaTo(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }
 
-        [Test]
+        [Fact]
         public void MergeSchemaToIdenticalTableShouldRemainIdentical()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
             IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
-            FeatureDataTable target = new FeatureDataTable(_geoFactory);
+            FeatureDataTable target = new FeatureDataTable(_factories.GeoFactory);
             reader = provider.ExecuteFeatureQuery(query);
             target.Load(reader, LoadOption.OverwriteChanges, null);
 
@@ -167,33 +165,32 @@ namespace SharpMap.Tests.Data
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }
 
-        [Test]
+        [Fact]
         public void MergeSchemaToKeyedTableShouldKeepKeyButAddOtherColumns()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
             IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
-            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("Oid", _geoFactory);
+            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("Oid", _factories.GeoFactory);
 
             table.MergeSchemaTo(target);
 
             DataTableHelper.AssertTableStructureIdentical(table, target);
         }
 
-        [Test]
-        [Ignore("This functionality isn't implemented yet")]
+        [Fact(Skip = "Tested functionality incomplete")]
         public void MergeSchemaToKeyedTableWithDifferentKeyNameButSameTypeShouldKeepKeyButAddOtherColumns()
         {
-            FeatureDataTable table = new FeatureDataTable(_geoFactory);
-            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            FeatureDataTable table = new FeatureDataTable(_factories.GeoFactory);
+            FeatureProvider provider = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(provider.GetExtents());
             IFeatureDataReader reader = provider.ExecuteFeatureQuery(query);
             table.Load(reader, LoadOption.OverwriteChanges, null);
 
-            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("GID", _geoFactory);
+            FeatureDataTable<Guid> target = new FeatureDataTable<Guid>("GID", _factories.GeoFactory);
 
             table.MergeSchemaTo(target);
 

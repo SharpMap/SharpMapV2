@@ -1,66 +1,61 @@
 using System;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using NetTopologySuite.Coordinates;
-using NUnit.Framework;
 using Rhino.Mocks;
 using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Tools;
+using Xunit;
 
 namespace SharpMap.Tests
 {
-    [TestFixture]
-    public class MapTests
+    
+    public class MapTests : IUseFixture<FixtureFactories>
     {
-        private IGeometryFactory _geoFactory;
+        private FixtureFactories _factories;
 
-        [TestFixtureSetUp]
-        public void Setup()
+        public void SetFixture(FixtureFactories data)
         {
-            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
+            _factories = data;
         }
 
-        [Test]
+        [Fact]
         public void GetLayerByNameReturnsCorrectLayer()
         {
             MockRepository mocks = new MockRepository();
 
-            Map map = new Map(_geoFactory);
+            Map map = new Map(_factories.GeoFactory);
             IFeatureProvider dataSource = mocks.Stub<IFeatureProvider>();
-            dataSource.GeometryFactory = _geoFactory;
+            dataSource.GeometryFactory = _factories.GeoFactory;
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
             map.AddLayer(new GeometryLayer("Layer 2", dataSource));
 
             ILayer layer = map.GetLayerByName("Layer 2");
-            Assert.IsNotNull(layer);
-            Assert.AreEqual("Layer 2", layer.LayerName);
+            Assert.NotNull(layer);
+            Assert.Equal("Layer 2", layer.LayerName);
         }
 
-        [Test]
-        [ExpectedException(typeof (DuplicateLayerException))]
+        [Fact]
         public void DuplicateLayerNamesThrowsException()
         {
-            Map map = new Map(_geoFactory);
-            IFeatureProvider dataSource = DataSourceHelper.CreateFeatureDatasource(_geoFactory);
+            Map map = new Map(_factories.GeoFactory);
+            IFeatureProvider dataSource = DataSourceHelper.CreateFeatureDatasource(_factories.GeoFactory);
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3", dataSource));
             map.AddLayer(new GeometryLayer("Layer 2", dataSource));
-            map.AddLayer(new GeometryLayer("Layer 3", dataSource));
+            Assert.Throws<DuplicateLayerException>(delegate { map.AddLayer(new GeometryLayer("Layer 3", dataSource)); });
         }
 
-        [Test]
+        [Fact]
         public void FindLayerByPredicateReturnsMatchingLayers()
         {
             MockRepository mocks = new MockRepository();
 
-            Map map = new Map(_geoFactory);
+            Map map = new Map(_factories.GeoFactory);
             IFeatureProvider dataSource = mocks.Stub<IFeatureProvider>();
-            dataSource.GeometryFactory = _geoFactory;
+            dataSource.GeometryFactory = _factories.GeoFactory;
 
             map.AddLayer(new GeometryLayer("Layer 1", dataSource));
             map.AddLayer(new GeometryLayer("Layer 3a", dataSource));
@@ -71,52 +66,52 @@ namespace SharpMap.Tests
 
             foreach (ILayer layer in map.FindLayers("Layer 3"))
             {
-                Assert.IsTrue(layer.LayerName.StartsWith("Layer 3", StringComparison.CurrentCultureIgnoreCase));
+                Assert.True(layer.LayerName.StartsWith("Layer 3", StringComparison.CurrentCultureIgnoreCase));
                 count++;
             }
 
-            Assert.AreEqual(2, count);
+            Assert.Equal(2, count);
         }
 
-        [Test]
+        [Fact]
         public void EmptyMapDefaultsAreCorrect()
         {
-            Map map = new Map(_geoFactory);
-            IExtents emptyExtents = _geoFactory.CreateExtents();
-            IPoint emptyPoint = _geoFactory.CreatePoint();
-            Assert.AreEqual(emptyExtents, map.Extents);
+            Map map = new Map(_factories.GeoFactory);
+            IExtents emptyExtents = _factories.GeoFactory.CreateExtents();
+            IPoint emptyPoint = _factories.GeoFactory.CreatePoint();
+            Assert.Equal(emptyExtents, map.Extents);
             // changed to null from Point.Empty
-            Assert.AreEqual(emptyPoint.Coordinate, map.Center);
-            Assert.IsNotNull(map.Layers);
-            Assert.AreEqual(0, map.Layers.Count);
-            Assert.AreEqual(StandardMapView2DMapTools.None, map.ActiveTool);
-            Assert.IsNotNull(map.SelectedLayers);
+            Assert.Equal(emptyPoint.Coordinate, map.Center);
+            Assert.NotNull(map.Layers);
+            Assert.Equal(0, map.Layers.Count);
+            Assert.Equal(StandardMapView2DMapTools.None, map.ActiveTool);
+            Assert.NotNull(map.SelectedLayers);
         }
 
-        [Test]
+        [Fact]
         public void MapExtentsReflectTheUnderlyingLayersCorrectlyWhenUsingAddLayer()
         {
-            Map map = new Map(_geoFactory);
+            Map map = new Map(_factories.GeoFactory);
 
             GeometryLayer layer = new GeometryLayer("Geom layer", 
-                                                     DataSourceHelper.CreateGeometryDatasource(_geoFactory));
+                                                     DataSourceHelper.CreateGeometryDatasource(_factories.GeoFactory));
 
             map.AddLayer(layer);
             IExtents box = map.Extents;
-            Assert.AreEqual(_geoFactory.CreateExtents2D(0, 0, 120, 100), box);
+            Assert.Equal(_factories.GeoFactory.CreateExtents2D(0, 0, 120, 100), box);
         }
 
-        [Test]
+        [Fact]
         public void MapExtentsReflectTheUnderlyingLayersCorrectlyWhenUsingLayersAdd()
         {
-            Map map = new Map(_geoFactory);
+            Map map = new Map(_factories.GeoFactory);
 
             GeometryLayer layer = new GeometryLayer("Geom layer",
-                                                     DataSourceHelper.CreateGeometryDatasource(_geoFactory));
+                                                     DataSourceHelper.CreateGeometryDatasource(_factories.GeoFactory));
 
             map.Layers.Add(layer);
             IExtents box = map.Extents;
-            Assert.AreEqual(_geoFactory.CreateExtents2D(0, 0, 120, 100), box);   
+            Assert.Equal(_factories.GeoFactory.CreateExtents2D(0, 0, 120, 100), box);   
         }
     }
 }

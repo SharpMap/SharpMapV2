@@ -1598,7 +1598,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (table != null)
             {
                 FeatureDataRow<UInt32> featureRecord = HasDbf
-                    ? _dbaseFile.GetAttributes(oid, null) as FeatureDataRow<UInt32>
+                    // [rp] - should table get passed as the 2nd param here?
+                    ? _dbaseFile.GetAttributes(oid, table) as FeatureDataRow<UInt32>
                     : table.NewRow(oid);
 
                 featureRecord.Geometry = readGeometry(oid);
@@ -1839,9 +1840,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             ICoordinate coord = _coordFactory.Create(x, y);
 
-            return _coordTransform == null
-                            ? coord
-                            : _coordTransform.Transform(coord);
+            return CoordinateTransformation == null
+                       ? coord
+                       : CoordinateTransformation.MathTransform.Transform(coord);
         }
 
         private IExtents readExtents(UInt32 oid)
@@ -1869,8 +1870,66 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             ICoordinate min = readCoordinate();
             ICoordinate max = readCoordinate();
+
             return GeometryFactory.CreateExtents(min, max);
         }
+
+        //private ICoordinate readOriginalCoordinate()
+        //{
+        //    Double x = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+        //    Double y = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+
+        //    ICoordinate coord = _coordFactory.Create(x, y);
+
+        //    return coord;
+        //}
+
+        //private IExtents readExtents(UInt32 oid)
+        //{
+        //    return _coordTransform == null
+        //                    ? readExtents(oid, true)
+        //                    : readExtents(oid, false);
+        //}
+
+        //private IExtents readExtents(UInt32 oid, Boolean original)
+        //{
+        //    ShapeType recordType = moveToRecord(oid);
+
+        //    // Null geometries encode deleted lines, so OIDs remain consistent
+        //    if (recordType == ShapeType.Null)
+        //    {
+        //        return null;
+        //    }
+
+        //    if (recordType == ShapeType.Point ||
+        //        recordType == ShapeType.PointM ||
+        //        recordType == ShapeType.PointZ)
+        //    {
+        //        IPoint point = readPoint() as IPoint;
+        //        return point == null ? GeometryFactory.CreateExtents() : point.Extents;
+        //    }
+
+        //    //Double xMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+        //    //Double yMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+        //    //Double xMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+        //    //Double yMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+            
+        //    ICoordinate min;
+        //    ICoordinate max;
+
+        //    if (original)
+        //    {
+        //        min = readOriginalCoordinate();
+        //        max = readOriginalCoordinate();
+        //    }
+        //    else
+        //    {
+        //        min = readCoordinate();
+        //        max = readCoordinate();
+        //    }
+
+        //    return GeometryFactory.CreateExtents(min, max);
+        //}
 
         /// <summary>
         /// Reads and parses the geometry with ID 'oid' from the ShapeFile.
@@ -1880,7 +1939,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </remarks>
         /// <param name="oid">Object ID</param>
         /// <returns>
-        /// <see cref="GeoAPI.Geometries.IGeometry"/> instance from the ShapeFile corresponding to <paramref name="oid"/>.
+        /// <see cref="GeoAPI.Geometries.IGeometry"/> instance from the 
+        /// ShapeFile corresponding to <paramref name="oid"/>.
         /// </returns>
         private IGeometry readGeometry(UInt32 oid)
         {

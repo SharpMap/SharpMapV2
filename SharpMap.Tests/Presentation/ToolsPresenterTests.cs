@@ -3,28 +3,27 @@ using System.Collections;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
-using NUnit.Framework;
+
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using SharpMap.Presentation;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
+using Xunit;
 
 namespace SharpMap.Tests.Presentation
 {
-    [TestFixture]
-    public class ToolsPresenterTests
-    {
-        private IGeometryFactory _geoFactory;
 
-        [TestFixtureSetUp]
-        public void Setup()
+    public class ToolsPresenterTests : IUseFixture<FixtureFactories>
+    {
+        private FixtureFactories _factories;
+
+        public void SetFixture(FixtureFactories data)
         {
-            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
+            _factories = data;
         }
 
-        [Test]
+        [Fact]
         public void PresenterSetsTools()
         {
             MockRepository mocks = new MockRepository();
@@ -33,14 +32,14 @@ namespace SharpMap.Tests.Presentation
 
             mocks.ReplayAll();
 
-            Map map = new Map(_geoFactory);
+            Map map = new Map(_factories.GeoFactory);
             ToolsPresenter toolsPresenter = new ToolsPresenter(map, view);
 
-            Assert.IsNotNull(view.Tools);
-            Assert.AreNotEqual(0, view.Tools.Count);
+            Assert.NotNull(view.Tools);
+            Assert.NotEqual(0, view.Tools.Count);
         }
 
-        //[Test]
+        //[Fact]
         //public void ViewInitiatesToolSelectionChangeRequest()
         //{
         //    MockRepository mocks = new MockRepository();
@@ -61,7 +60,7 @@ namespace SharpMap.Tests.Presentation
         //    ToolChangeRequestedEventArgs requestArgs = new ToolChangeRequestedEventArgs(view.Tools[toolIndex]);
         //    toolChangeRequest.Raise(view, requestArgs);
 
-        //    Assert.AreSame(view.SelectedTool, view.Tools[toolIndex]);
+        //    Assert.Same(view.SelectedTool, view.Tools[toolIndex]);
         //}
     }
 }

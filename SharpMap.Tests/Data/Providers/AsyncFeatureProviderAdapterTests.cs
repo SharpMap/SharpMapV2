@@ -6,35 +6,39 @@ using System.Threading;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using NUnit.Framework;
+
 using Rhino.Mocks;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
+using Xunit;
 
 namespace SharpMap.Tests.Data.Providers
 {
-    [TestFixture]
+    
     public class AsyncFeatureProviderAdapterTests
     {
         private IFeatureDataReader _returnReaderStub;
         private Int32 _sleepInterval;
 
-        [TearDown]
-        public void TearDown()
-        {
-            _returnReaderStub = null;
-            _sleepInterval = 0;
-        }
+        //[TearDown]
+        //public void TearDown()
+        //{
+        //    _returnReaderStub = null;
+        //    _sleepInterval = 0;
+        //}
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void ConstructorFailsOnNullProvider()
         {
-            AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(null);
+            Assert.Throws<ArgumentNullException>(delegate
+                                                     {
+                                                         AsyncFeatureProviderAdapter adapter =
+                                                             new AsyncFeatureProviderAdapter(null);
+                                                     });
         }
 
-        [Test]
+        [Fact]
         public void ConstructorSucceeds()
         {
             MockRepository mocks = new MockRepository();
@@ -43,7 +47,7 @@ namespace SharpMap.Tests.Data.Providers
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
         }
 
-        [Test]
+        [Fact]
         public void IProviderMethodsPassThroughAdapter()
         {
             MockRepository mocks = new MockRepository();
@@ -78,27 +82,27 @@ namespace SharpMap.Tests.Data.Providers
                     .Return(coordinateSystemStub);
                 //adapted.Srid = 1;
                 Expect.Call(adapted.Srid)
-                    .Return(2);
+                    .Return("2");
             }
             mocks.ReplayAll();
 
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
             adapter.Close();
-            Assert.AreEqual("connectionid", adapter.ConnectionId);
+            Assert.Equal("connectionid", adapter.ConnectionId);
             adapter.CoordinateTransformation = transformStub;
-            Assert.AreSame(transformStub, adapter.CoordinateTransformation);
-            Assert.AreSame(objectStub, adapter.ExecuteQuery(queryStub));
-            Assert.AreSame(extentsStub, adapter.GetExtents());
-            Assert.IsTrue(adapter.IsOpen);
+            Assert.Same(transformStub, adapter.CoordinateTransformation);
+            Assert.Same(objectStub, adapter.ExecuteQuery(queryStub));
+            Assert.Same(extentsStub, adapter.GetExtents());
+            Assert.True(adapter.IsOpen);
             adapter.Open();
-            Assert.AreSame(coordinateSystemStub, adapter.SpatialReference);
+            Assert.Same(coordinateSystemStub, adapter.SpatialReference);
             //adapter.Srid = 1;
-            Assert.AreEqual(2, adapter.Srid);
+            Assert.Equal("2", adapter.Srid);
 
             mocks.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void IDisposableMethodsPassThroughAdapter()
         {
             MockRepository mocks = new MockRepository();
@@ -116,7 +120,7 @@ namespace SharpMap.Tests.Data.Providers
             mocks.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void IFeatureProviderMethodsPassThroughAdapter()
         {
             MockRepository mocks = new MockRepository();
@@ -160,23 +164,22 @@ namespace SharpMap.Tests.Data.Providers
             mocks.ReplayAll();
 
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
-            Assert.AreSame(featureDataTableStub, adapter.CreateNewTable());
-            Assert.AreSame(iFeatureDataReaderStub,
+            Assert.Same(featureDataTableStub, adapter.CreateNewTable());
+            Assert.Same(iFeatureDataReaderStub,
                 adapter.ExecuteFeatureQuery(featureQueryExpressionStub, featureQueryExecutionOptionsStub));
-            Assert.AreSame(iFeatureDataReaderStub,
+            Assert.Same(iFeatureDataReaderStub,
                 adapter.ExecuteFeatureQuery(featureQueryExpressionStub));
             adapter.GeometryFactory = iGeometryFactoryStub;
-            Assert.AreSame(iGeometryFactoryStub, adapter.GeometryFactory);
-            Assert.AreEqual(3, adapter.GetFeatureCount());
-            Assert.AreSame(dataTableStub, adapter.GetSchemaTable());
-            Assert.AreSame(cultureInfoStub, adapter.Locale);
+            Assert.Same(iGeometryFactoryStub, adapter.GeometryFactory);
+            Assert.Equal(3, adapter.GetFeatureCount());
+            Assert.Same(dataTableStub, adapter.GetSchemaTable());
+            Assert.Same(cultureInfoStub, adapter.Locale);
             adapter.SetTableSchema(featureDataTableStub);
 
             mocks.VerifyAll();
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void BeginExecuteQueryThrowsOnInvalidExpression()
         {
             MockRepository mocks = new MockRepository();
@@ -185,11 +188,10 @@ namespace SharpMap.Tests.Data.Providers
                 MockRepository.GenerateStub<Expression>();
 
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
-            adapter.BeginExecuteQuery(expressionStub, null);
+            Assert.Throws<ArgumentException>(delegate { adapter.BeginExecuteQuery(expressionStub, null); });
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void EndExecuteQueryThrowsOnInvalidExpression()
         {
             MockRepository mocks = new MockRepository();
@@ -197,7 +199,7 @@ namespace SharpMap.Tests.Data.Providers
             AsyncResult result = new AsyncResult(null, this);
 
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
-            adapter.EndExecuteQuery(result);
+            Assert.Throws<ArgumentException>(delegate { adapter.EndExecuteQuery(result); });
         }
 
         private delegate IFeatureDataReader ExecuteQueryDelegate(FeatureQueryExpression query);
@@ -207,7 +209,7 @@ namespace SharpMap.Tests.Data.Providers
             return _returnReaderStub;
         }
 
-        [Test]
+        [Fact]
         public void BeginExecuteQueryCallBackNotification()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
@@ -232,19 +234,19 @@ namespace SharpMap.Tests.Data.Providers
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(featureQueryExpressionStub, callBackRecorder.CallBack);
 
-            Assert.IsNotNull(ar);
-            Assert.IsFalse(ar.IsCompleted);
+            Assert.NotNull(ar);
+            Assert.False(ar.IsCompleted);
 
             Thread.Sleep(1000);
 
-            Assert.AreSame(ar, callBackRecorder.Result);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.AreSame(_returnReaderStub, adapter.EndExecuteQuery(ar));
+            Assert.Same(ar, callBackRecorder.Result);
+            Assert.True(ar.IsCompleted);
+            Assert.Same(_returnReaderStub, adapter.EndExecuteQuery(ar));
 
             mocks.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void BeginExecuteQueryPollingNotification()
         {
             MockRepository mocks = new MockRepository();
@@ -267,20 +269,20 @@ namespace SharpMap.Tests.Data.Providers
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(featureQueryExpressionStub, null);
 
-            Assert.IsNotNull(ar);
-            Assert.IsFalse(ar.IsCompleted);
+            Assert.NotNull(ar);
+            Assert.False(ar.IsCompleted);
             while (!ar.IsCompleted)
             {
                 Thread.Sleep(350);
             }
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.AreSame(_returnReaderStub, adapter.EndExecuteQuery(ar));
+            Assert.True(ar.IsCompleted);
+            Assert.Same(_returnReaderStub, adapter.EndExecuteQuery(ar));
 
             mocks.VerifyAll();
         }
         
-        [Test]
+        [Fact]
         public void BeginExecuteQueryBlockUntilDone()
         {
             MockRepository mocks = new MockRepository();
@@ -303,15 +305,15 @@ namespace SharpMap.Tests.Data.Providers
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(featureQueryExpressionStub, null);
 
-            Assert.IsNotNull(ar);
+            Assert.NotNull(ar);
 
             Stopwatch timer = Stopwatch.StartNew();
-            Assert.AreSame(_returnReaderStub, adapter.EndExecuteQuery(ar));
+            Assert.Same(_returnReaderStub, adapter.EndExecuteQuery(ar));
             timer.Stop();
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
-            Assert.IsTrue(timer.ElapsedMilliseconds > 500L);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
+            Assert.True(timer.ElapsedMilliseconds > 500L);
 
             mocks.VerifyAll();
         }
@@ -322,8 +324,7 @@ namespace SharpMap.Tests.Data.Providers
             throw new InvalidOperationException("Failure succeeded");
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void EndExecuteQueryThrowsTerminatingException()
         {
             MockRepository mocks = new MockRepository();
@@ -343,9 +344,9 @@ namespace SharpMap.Tests.Data.Providers
             AsyncFeatureProviderAdapter adapter = new AsyncFeatureProviderAdapter(adapted);
             IAsyncResult ar = adapter.BeginExecuteQuery(featureQueryExpressionStub, null);
 
-            Assert.IsNotNull(ar);
+            Assert.NotNull(ar);
 
-            adapter.EndExecuteQuery(ar);
+            Assert.Throws<InvalidOperationException>(delegate { adapter.EndExecuteQuery(ar); });
         }
 
     }

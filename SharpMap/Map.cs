@@ -118,9 +118,15 @@ namespace SharpMap
         #endregion
 
         #region Object Creation / Disposal
+        /// <summary>
+        /// Creates a new instance of a <see cref="Map"/> with a title describing 
+        /// when the map was created.
+        /// </summary>
+        public Map(IGeometryFactory geoFactory)
+            : this(geoFactory, null) { }
 
         /// <summary>
-        /// Creates a new instance of a Map with a title describing 
+        /// Creates a new instance of a <see cref="Map"/> with a title describing 
         /// when the map was created.
         /// </summary>
         public Map(IGeometryFactory geoFactory, ICoordinateTransformationFactory coordTransformFactory)
@@ -1058,7 +1064,7 @@ namespace SharpMap
                     }
 
                     layer.CoordinateTransformation
-                        = CoordinateTransformFactory.CreateFromCoordinateSystems(layer.SpatialReference, 
+                        = CoordinateTransformFactory.CreateFromCoordinateSystems(layer.SpatialReference,
                                                                                  SpatialReference);
                 }
             }
@@ -1218,7 +1224,7 @@ namespace SharpMap
                 const StringComparison ignoreCase = StringComparison.CurrentCultureIgnoreCase;
                 Predicate<ILayer> findDuplicate = delegate(ILayer match)
                                                   {
-                                                      return String.Compare(layer.LayerName, 
+                                                      return String.Compare(layer.LayerName,
                                                                             match.LayerName,
                                                                             ignoreCase) == 0;
                                                   };

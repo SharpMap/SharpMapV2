@@ -1,30 +1,29 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using NUnit.Framework;
+
 using SharpMap.Data.Providers;
+using Xunit;
 
 namespace SharpMap.Tests.Data.Providers
 {
-
-    [TestFixture]
     public class AsyncResultGenericTest
     {
-        [Test]
+        [Fact]
         public void Constructs()
         {
             AsyncResult<String> ar = new AsyncResult<String>(null, this);
         }
 
-        [Test]
+        [Fact]
         public void GetState()
         {
             AsyncResult<String> ar = new AsyncResult<String>(null, this);
 
-            Assert.AreSame(this, ar.AsyncState);
+            Assert.Same(this, ar.AsyncState);
         }
 
-        [Test]
+        [Fact]
         public void AsyncCallBackNotification()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
@@ -34,16 +33,15 @@ namespace SharpMap.Tests.Data.Providers
             IAsyncResult ar = task.BeginDoTask(callBackRecorder.CallBack, this);
             Thread.Sleep(2000);
 
-            Assert.AreSame(ar, callBackRecorder.Result);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.Same(ar, callBackRecorder.Result);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
             
             String actualResult = task.EndDoTask(ar);  // should not throw
-            Assert.AreSame(expectedResult, actualResult);
+            Assert.Same(expectedResult, actualResult);
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException),ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void AsyncCallBackNotificationWithException()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
@@ -53,15 +51,15 @@ namespace SharpMap.Tests.Data.Providers
             IAsyncResult ar = task.BeginDoTask(callBackRecorder.CallBack, this);
             Thread.Sleep(2000);
 
-            Assert.AreSame(ar, callBackRecorder.Result);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.Same(ar, callBackRecorder.Result);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
 
-            String actualResult = task.EndDoTask(ar);  // should throw
+            Assert.Throws<InvalidOperationException>(delegate { task.EndDoTask(ar); });
         }
 
 
-        [Test]
+        [Fact]
         public void AsyncPollingNotification()
         {
             String expectedResult = "Result we expected";
@@ -76,16 +74,15 @@ namespace SharpMap.Tests.Data.Providers
                 Thread.Sleep(500);
             }
 
-            Assert.Greater(count, 0);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.True(count > 0);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
 
             String actualResult = task.EndDoTask(ar);  // should not throw
-            Assert.AreSame(expectedResult, actualResult);
+            Assert.Same(expectedResult, actualResult);
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void AsyncPollingNotificationWithException()
         {
             InvalidOperationException terminatingException = new InvalidOperationException("Failure succeeded");
@@ -98,13 +95,13 @@ namespace SharpMap.Tests.Data.Providers
                 Thread.Sleep(500);
             }
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
 
-            String actualResult = task.EndDoTask(ar);  // should throw
+            Assert.Throws<InvalidOperationException>(delegate { task.EndDoTask(ar); });
         }
 
-        [Test]
+        [Fact]
         public void AsyncBlockUntilComplete()
         {
             String expectedResult = "Result we expected";
@@ -115,21 +112,20 @@ namespace SharpMap.Tests.Data.Providers
             String actualResult = task.EndDoTask(ar);
             timer.Stop();
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
-            Assert.AreSame(expectedResult, actualResult);
-            Assert.IsTrue(timer.ElapsedMilliseconds > 500L);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
+            Assert.Same(expectedResult, actualResult);
+            Assert.True(timer.ElapsedMilliseconds > 500L);
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void AsyncBlockUntilCompleteWithException()
         {
             InvalidOperationException terminatingException = new InvalidOperationException("Failure succeeded");
             AsynchronousTask<String> task = new AsynchronousTask<String>(1, terminatingException);
             IAsyncResult ar = task.BeginDoTask(null, this);
 
-            String actualResult = task.EndDoTask(ar);  // should throw
+            Assert.Throws<InvalidOperationException>(delegate { task.EndDoTask(ar); });
         }
 
     }

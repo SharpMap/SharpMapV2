@@ -24,6 +24,9 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers
 {
+    /// <summary>
+    /// Provides basic functionality for providers which access feature data.
+    /// </summary>
     public abstract class FeatureProviderBase : ProviderBase, IFeatureProvider
     {
         private IGeometryFactory _geoFactory;
@@ -97,7 +100,7 @@ namespace SharpMap.Data.Providers
             SpatialBinaryExpression spatial = query.SpatialPredicate;
             ICoordinateSystem querySpatialReference = spatial.SpatialExpression.SpatialReference;
 
-            if (querySpatialReference == OriginalSpatialReference)
+            if (querySpatialReference.EqualParams(SpatialReference))
             {
                 return query;
             }

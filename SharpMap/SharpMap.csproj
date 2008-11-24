@@ -101,10 +101,6 @@
           <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
           <Name>NPack</Name>
         </ProjectReference>
-        <ProjectReference Include="..\Proj4Utility\Proj4Utility.csproj">
-          <Project>{4AAC52D4-D27B-4A3A-9660-73A4E796207C}</Project>
-          <Name>Proj4Utility</Name>
-        </ProjectReference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -399,9 +395,6 @@
     <Compile Include="Indexing\RTree\DynamicRTree.cs" />
     <Compile Include="Utilities\IdleMonitor.cs" />
     <Compile Include="SharpMapVersion.cs" />
-    <Compile Include="Utilities\SridUtility\SridMapStrategyBase.cs" />
-    <Compile Include="Utilities\SridUtility\SridMapStrategy.cs" />
-    <Compile Include="Utilities\SridUtility\SridMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

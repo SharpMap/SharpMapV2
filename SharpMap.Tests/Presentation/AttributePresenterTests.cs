@@ -1,42 +1,38 @@
-using NUnit.Framework;
+
+
+using Xunit;
 
 namespace SharpMap.Tests.Presentation
 {
-    [TestFixture]
+    
     public class AttributePresenterTests
     {
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void AddFeaturesTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void RemoveFeaturesTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void ChangeAttributeTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void SortFeaturesTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void FilterFeaturesTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void SelectFeaturesTest()
         {
         }

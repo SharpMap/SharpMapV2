@@ -1,54 +1,48 @@
-using NUnit.Framework;
+
+
+using Xunit;
 
 namespace SharpMap.Tests.Presentation
 {
-    [TestFixture]
+    
     public class LayerPresenterTests
     {
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void AddLayerTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void AddLayersTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void RemoveLayerTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void RemoveLayersTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void RemoveAllLayersTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DisableLayerTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void EnableLayerTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void SelectLayersTest()
         {
         }

@@ -1,85 +1,84 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using NUnit.Framework;
+
 using SharpMap.Data.Providers;
+using Xunit;
 
 namespace SharpMap.Tests.Data.Providers
 {
-
-    [TestFixture]
     public class AsyncResultTest
     {
-        [Test]
+        [Fact]
         public void Constructs()
         {
             AsyncResult ar = new AsyncResult(null, this);
         }
 
-        [Test]
+        [Fact]
         public void GetState()
         {
             AsyncResult ar = new AsyncResult(null, this);
 
-            Assert.AreSame(this, ar.AsyncState);
+            Assert.Same(this, ar.AsyncState);
         }
 
-        [Test]
+        [Fact]
         public void CallBack()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
             AsyncResult ar = new AsyncResult(callBackRecorder.CallBack, this);
             ar.SetComplete();
 
-            Assert.AreSame(ar, callBackRecorder.Result);
+            Assert.Same(ar, callBackRecorder.Result);
         }
 
-        [Test]
+        [Fact]
         public void Incomplete()
         {
             AsyncResult ar = new AsyncResult(null, this);
 
-            Assert.IsFalse(ar.IsCompleted);
+            Assert.False(ar.IsCompleted);
         }
 
-        [Test]
+        [Fact]
         public void Completed()
         {
             AsyncResult ar = new AsyncResult(null, this);
             ar.SetComplete();
 
-            Assert.IsTrue(ar.IsCompleted);
+            Assert.True(ar.IsCompleted);
         }
 
-        [Test]
+        [Fact]
         public void CompletedSynchronouslyPropertyFalse()
         {
             AsyncResult ar = new AsyncResult(null, this);
             ar.SetComplete();
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
         }
 
-        [Test]
+        [Fact]
         public void CompletedSynchronouslyProperty()
         {
             AsyncResult ar = new AsyncResult(null, this);
             ar.SetComplete(true, null);
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsTrue(ar.CompletedSynchronously);
+            Assert.True(ar.IsCompleted);
+            Assert.True(ar.CompletedSynchronously);
         }
 
-        [Test]
+        [Fact]
         public void AsyncWaitHandle()
         {
             AsyncResult ar = new AsyncResult(null, this);
 
-            Assert.IsNotNull(ar.AsyncWaitHandle);
+            Assert.NotNull(ar.AsyncWaitHandle);
         }
 
-        [Test]
+        [Fact]
         public void AsyncCallBackNotification()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
@@ -88,15 +87,14 @@ namespace SharpMap.Tests.Data.Providers
             IAsyncResult ar = task.BeginDoTask(callBackRecorder.CallBack, this);
             Thread.Sleep(2000);
 
-            Assert.AreSame(ar, callBackRecorder.Result);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.Same(ar, callBackRecorder.Result);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
             
             task.EndDoTask(ar);  // should not throw
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException),ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void AsyncCallBackNotificationWithException()
         {
             CallBackHelper callBackRecorder = new CallBackHelper();
@@ -106,15 +104,15 @@ namespace SharpMap.Tests.Data.Providers
             IAsyncResult ar = task.BeginDoTask(callBackRecorder.CallBack, this);
             Thread.Sleep(2000);
 
-            Assert.AreSame(ar, callBackRecorder.Result);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
-        
-            task.EndDoTask(ar);  // should throw
+            Assert.Same(ar, callBackRecorder.Result);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
+
+            Assert.Throws<InvalidOperationException>(delegate { task.EndDoTask(ar); });
         }
 
 
-        [Test]
+        [Fact]
         public void AsyncPollingNotification()
         {
             AsynchronousTask task = new AsynchronousTask(1);
@@ -128,15 +126,14 @@ namespace SharpMap.Tests.Data.Providers
                 Thread.Sleep(500);
             }
 
-            Assert.Greater(count, 0);
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.True(count > 0);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
 
             task.EndDoTask(ar);  // should not throw
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void AsyncPollingNotificationWithException()
         {
             InvalidOperationException terminatingException = new InvalidOperationException("Failure succeeded");
@@ -149,13 +146,13 @@ namespace SharpMap.Tests.Data.Providers
                 Thread.Sleep(500);
             }
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
 
-            task.EndDoTask(ar);  // should throw
+            Assert.Throws<InvalidOperationException>(delegate { task.EndDoTask(ar); });
         }
 
-        [Test]
+        [Fact]
         public void AsyncBlockUntilComplete()
         {
             AsynchronousTask task = new AsynchronousTask(1);
@@ -165,20 +162,19 @@ namespace SharpMap.Tests.Data.Providers
             task.EndDoTask(ar);
             timer.Stop();
 
-            Assert.IsTrue(ar.IsCompleted);
-            Assert.IsFalse(ar.CompletedSynchronously);
-            Assert.IsTrue(timer.ElapsedMilliseconds > 500L);
+            Assert.True(ar.IsCompleted);
+            Assert.False(ar.CompletedSynchronously);
+            Assert.True(timer.ElapsedMilliseconds > 500L);
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Failure succeeded")]
+        [Fact]
         public void AsyncBlockUntilCompleteWithException()
         {
             InvalidOperationException terminatingException = new InvalidOperationException("Failure succeeded");
             AsynchronousTask task = new AsynchronousTask(1, terminatingException);
             IAsyncResult ar = task.BeginDoTask(null, this);
 
-            task.EndDoTask(ar);  // should throw
+            Assert.Throws<InvalidOperationException>(delegate { task.EndDoTask(ar); });
         }
 
     }

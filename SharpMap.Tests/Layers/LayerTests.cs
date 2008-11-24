@@ -3,33 +3,32 @@ using System.Collections.Generic;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
-using NUnit.Framework;
+
 using SharpMap.Data;
 using SharpMap.Layers;
+using Xunit;
 
 namespace SharpMap.Tests.Layers
 {
-    [TestFixture]
-    public class LayerTests
-    {
-        private IGeometryFactory _geoFactory;
 
-        [TestFixtureSetUp]
-        public void Setup()
+    public class LayerTests : IUseFixture<FixtureFactories>
+    {
+        private FixtureFactories _factories;
+
+        public void SetFixture(FixtureFactories data)
         {
-            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
+            _factories = data;
         }
 
-        [Test]
-        [Ignore("Test deferred until caching detection improved")]
+        [Fact(Skip = "Test deferred until caching detection improved")]
         public void LayerCachingTest()
         {
-            GeometryLayer layer1 = DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory);
-            GeometryLayer layer2 = DataSourceHelper.CreateFeatureFeatureLayer(_geoFactory);
+            IGeometryFactory geoFactory = _factories.GeoFactory;
+            GeometryLayer layer1 = DataSourceHelper.CreateFeatureFeatureLayer(geoFactory);
+            GeometryLayer layer2 = DataSourceHelper.CreateFeatureFeatureLayer(geoFactory);
 
-            IExtents box1 = _geoFactory.CreateExtents2D(0, 0, 10, 10);
-            IExtents box2 = _geoFactory.CreateExtents2D(35, 25, 45, 35);
+            IExtents box1 = geoFactory.CreateExtents2D(0, 0, 10, 10);
+            IExtents box2 = geoFactory.CreateExtents2D(35, 25, 45, 35);
 
             layer1.AsyncQuery = false;
             // Do query
@@ -37,7 +36,7 @@ namespace SharpMap.Tests.Layers
             layer2.AsyncQuery = false;
             // Do query
 
-            Assert.IsTrue(layer1.Features.Extents.Contains(box2), "Test validity check");
+            Assert.True(layer1.Features.Extents.Contains(box2), "Test validity check");
             // features intersecting box1 must have extents that contain box2
 
             // Do query
@@ -50,11 +49,11 @@ namespace SharpMap.Tests.Layers
                 return false;
             }
 
-            foreach (FeatureDataRow row1 in ((IEnumerable<FeatureDataRow>) view1))
+            foreach (FeatureDataRow row1 in ((IEnumerable<FeatureDataRow>)view1))
             {
                 Boolean notFound = true;
 
-                foreach (FeatureDataRow row2 in ((IEnumerable<FeatureDataRow>) view2))
+                foreach (FeatureDataRow row2 in ((IEnumerable<FeatureDataRow>)view2))
                 {
                     if (row1["FeatureName"] == row2["FeatureName"])
                     {

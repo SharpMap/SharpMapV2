@@ -3,28 +3,20 @@ using System.Collections.Generic;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
-using NUnit.Framework;
+
 using SharpMap.Data;
 using SharpMap.Expressions;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
+using Xunit;
 
 namespace SharpMap.Tests.Rendering
 {
     #region BasicGeometryRenderer2D
-
-    [TestFixture]
-    public class BasicGeometryRenderer2DTests
+    public class BasicGeometryRenderer2DTests : IUseFixture<FixtureFactories>
     {
-        private IGeometryFactory _geoFactory;
-
-        [TestFixtureSetUp]
-        public void Setup()
-        {
-            BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
-            _geoFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
-        }
+        private FixtureFactories _factories;
 
         #region Test stub types
 
@@ -146,16 +138,15 @@ namespace SharpMap.Tests.Rendering
 
         #endregion
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void RenderFeatureTest()
         {
-            IFeatureProvider provider = DataSourceHelper.CreateGeometryDatasource(_geoFactory);
+            IFeatureProvider provider = DataSourceHelper.CreateGeometryDatasource(_factories.GeoFactory);
             TestVectorRenderer vectorRenderer = new TestVectorRenderer();
             BasicGeometryRenderer2D<RenderObject> geometryRenderer =
                 new BasicGeometryRenderer2D<RenderObject>(vectorRenderer);
 
-            FeatureDataTable features = new FeatureDataTable(_geoFactory);
+            FeatureDataTable features = new FeatureDataTable(_factories.GeoFactory);
             IExtents extents = provider.GetExtents();
             FeatureQueryExpression query = new FeatureQueryExpression(extents.ToGeometry(),
                                                                       SpatialOperation.Intersects,
@@ -175,47 +166,44 @@ namespace SharpMap.Tests.Rendering
             }
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DrawMultiLineStringTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DrawLineStringTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DrawMultiPolygonTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DrawPolygonTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DrawPointTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DrawMultiPointTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
-        [ExpectedException(typeof (NotSupportedException))]
+        [Fact(Skip = "Incomplete")]
         public void UnsupportedGeometryTest()
         {
+        }
+
+        public void SetFixture(FixtureFactories data)
+        {
+            _factories = data;
         }
     }
 

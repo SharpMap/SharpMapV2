@@ -1,5 +1,6 @@
-using NUnit.Framework;
+
 using SharpMap.Rendering.Rendering2D;
+using Xunit;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using ITransformMatrixD = NPack.Interfaces.ITransformMatrix<NPack.DoubleComponent>;
@@ -9,42 +10,37 @@ namespace SharpMap.Tests.Rendering
 
     #region Symbol2D
 
-    [TestFixture]
+    
     public class Symbol2DTests
     {
-        [Test]
+        [Fact]
         public void SizeTest()
         {
             Symbol2D s1 = new Symbol2D(new Size2D(16, 16));
-            Assert.AreEqual(new Size2D(16, 16), s1.Size);
+            Assert.Equal(new Size2D(16, 16), s1.Size);
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void DataTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void OffsetTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void RotationTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void ScaleTest()
         {
         }
 
-        [Test]
-        [Ignore("Test not yet implemented")]
+        [Fact(Skip = "Incomplete")]
         public void CloneTest()
         {
         }

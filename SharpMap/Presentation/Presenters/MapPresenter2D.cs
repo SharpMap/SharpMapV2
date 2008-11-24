@@ -896,9 +896,6 @@ namespace SharpMap.Presentation.Presenters
         /// Gets a value indicating if all the parameters needed to compute a view
         /// have been set and the world-to-view matrix has been initilized.
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
         protected Boolean IsViewMatrixInitialized
         {
             get { return !_viewIsEmpty; }
