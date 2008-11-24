@@ -213,9 +213,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             DbaseFile file = new DbaseFile(fileName, geoFactory, false);
             Byte languageDriverCode = DbaseLocaleRegistry.GetLanguageDriverCode(culture, encoding);
             file._header = new DbaseHeader(languageDriverCode, DateTime.Now, 0);
- 
-            file.Header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file.Header));
+
+            file._header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file._header));
             file._headerIsParsed = true;
+
             file.Open();
             file.Save();
             return file;
@@ -277,7 +278,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         internal Int64 ComputeByteOffsetToRecord(UInt32 row)
         {
-            return Header.HeaderLength + ((row - 1) * Header.RecordLength);
+            return Header.HeaderLength + ((row) * Header.RecordLength);
         }
 
         internal void DeleteRow(UInt32 rowIndex)

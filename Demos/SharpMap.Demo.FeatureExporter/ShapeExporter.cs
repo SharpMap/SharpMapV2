@@ -65,7 +65,7 @@ namespace SharpMap.Demo.FeatureExporter
                     foreach (DataColumn c in tbl.Columns)
                         Console.WriteLine(c.ColumnName);
 
-                    Console.WriteLine("Please enter the ColumnName to base the files on\n");
+                    Console.WriteLine("Please enter the ColumnName to base the files on");
 
                     string colName = Console.ReadLine();
 
@@ -76,7 +76,7 @@ namespace SharpMap.Demo.FeatureExporter
                 }
             }
             else
-                Console.WriteLine("Invalid Path\n");
+                Console.WriteLine("Invalid Path");
 
             Console.WriteLine("Run again? Y to run again. Any other key to quit");
 
@@ -85,7 +85,7 @@ namespace SharpMap.Demo.FeatureExporter
 
         private void Export(string colName)
         {
-            ExportDirectory = Path.Combine(Path.GetDirectoryName(Provider.Filename), "Export");
+            ExportDirectory = Path.Combine(Path.GetDirectoryName(Provider.Filename), Path.GetFileNameWithoutExtension(Provider.Filename) + "_Export");
             if (!Directory.Exists(ExportDirectory))
                 Directory.CreateDirectory(ExportDirectory);
 
@@ -101,11 +101,11 @@ namespace SharpMap.Demo.FeatureExporter
                                                                         Provider.ShapeType, Provider.CreateNewTable(),
                                                                         Provider.GeometryFactory))
                 {
-                    export.Open();
                     export.IsSpatiallyIndexed = false;
+                    export.Open();
 
 
-                    var fdr = (FeatureDataRow<uint>) fdt.NewRow();
+                    var fdr = (FeatureDataRow<uint>)fdt.NewRow();
                     var vals = new object[fdt.Columns.Count];
 
                     reader.GetValues(vals);

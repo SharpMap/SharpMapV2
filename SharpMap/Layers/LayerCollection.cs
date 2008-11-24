@@ -255,8 +255,8 @@ namespace SharpMap.Layers
 
         protected override void InsertItem(Int32 index, ILayer item)
         {
-            if (item.SpatialReference != _map.SpatialReference 
-                && !item.SpatialReference.EqualParams(_map.SpatialReference)) //jd:added EqualParams check
+            if (item.SpatialReference != _map.SpatialReference
+                && (item.SpatialReference != null && !item.SpatialReference.EqualParams(_map.SpatialReference))) //jd:added EqualParams check
             {
                 item.CoordinateTransformation =
                     _map.CoordinateTransformFactory.CreateFromCoordinateSystems(item.SpatialReference,

@@ -118,7 +118,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                                     new ForceIndexExpression(true),
                                     new IndexNamesExpression(new[] {"sidx_Streets_Geom"}),
                                     new MsSqlServer2008ExtentsModeExpression(
-                                        SqlServer2008ExtentsMode.UseSqlSpatialTools)
+                                        SqlServer2008ExtentsMode.UseEnvelopeColumns)
                                 })
                     });
 
@@ -166,7 +166,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                                         new ForceIndexExpression(true),
                                         new IndexNamesExpression(new[] {"sidx_" + tbl + "_" + col}),
                                         new MsSqlServer2008ExtentsModeExpression(
-                                            SqlServer2008ExtentsMode.UseSqlSpatialTools)
+                                            SqlServer2008ExtentsMode.UseEnvelopeColumns)
                                     })
                         });
 
