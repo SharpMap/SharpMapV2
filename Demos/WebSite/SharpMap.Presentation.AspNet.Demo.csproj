@@ -224,6 +224,21 @@
     <Content Include="Maps\Wms.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\ManagedBufferedCoordinate2D.dll" />
+    <Content Include="bin\ManagedBufferedCoordinate2D.pdb" />
+    <Content Include="bin\ManagedBufferedCoordinate2D.xml" />
+    <Content Include="bin\NetTopologySuite.dll" />
+    <Content Include="bin\NetTopologySuite.pdb" />
+    <Content Include="bin\NetTopologySuite.xml" />
+    <Content Include="bin\NPack.dll" />
+    <Content Include="bin\NPack.pdb" />
+    <Content Include="bin\NPack.XML" />
+    <Content Include="bin\ProjNet.dll" />
+    <Content Include="bin\ProjNet.pdb" />
+    <Content Include="bin\ProjNet.xml" />
+    <Content Include="bin\SharpMap.Rendering.Gdi.dll" />
+    <Content Include="bin\SharpMap.Rendering.Gdi.pdb" />
+    <Content Include="bin\SharpMap.Rendering.Gdi.xml" />
     <Content Include="Maps\GeoJson.ashx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
