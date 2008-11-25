@@ -94,9 +94,9 @@ namespace SharpMap.Demo.FeatureExporter
             IFeatureDataReader reader = Provider.GetReader();
             while (reader.Read())
             {
-                string exportFilePath = GenerateUniqueName(reader[colName].ToString());
+                string layerName = GenerateUniqueName(reader[colName].ToString());
                 using (
-                    ShapeFileProvider export = ShapeFileProvider.Create(ExportDirectory, exportFilePath,
+                    ShapeFileProvider export = ShapeFileProvider.Create(ExportDirectory, layerName,
                                                                         Provider.ShapeType, Provider.CreateNewTable(),
                                                                         Provider.GeometryFactory, _geometryServices.CoordinateSystemFactory))
                 {
@@ -119,6 +119,9 @@ namespace SharpMap.Demo.FeatureExporter
 
         private string GenerateUniqueName(string p)
         {
+            if (string.IsNullOrEmpty(p))
+                p = "Null";
+
             string path = Path.Combine(ExportDirectory, string.Format("{0}.shp", p));
 
             if (!File.Exists(path))

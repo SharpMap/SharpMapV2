@@ -272,7 +272,22 @@ namespace SharpMap.Data.Providers.Db.Test
 
 
 
-            int? srid = map.Process(cs, (int?) null);
+            int? srid = map.Process(cs, (int?)null);
+
+            Assert.IsTrue(srid == 27700);
+
+        }
+
+        [TestMethod]
+        public void TestWktToSridMap()
+        {
+            string wkt = "PROJCS[\"British_National_Grid\",GEOGCS[\"GCS_OSGB_1936\",DATUM[\"D_OSGB_1936\",SPHEROID[\"Airy_1830\",6377563.396,299.3249646]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",400000],PARAMETER[\"False_Northing\",-100000],PARAMETER[\"Central_Meridian\",-2],PARAMETER[\"Scale_Factor\",0.999601272],PARAMETER[\"Latitude_Of_Origin\",49],UNIT[\"Meter\",1]]";
+
+            SridMap map = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+
+            int? srid = map.Process(wkt, (int?)null);
+
+            Assert.IsNotNull(srid);
 
             Assert.IsTrue(srid == 27700);
 
