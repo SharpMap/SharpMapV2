@@ -20,7 +20,7 @@ namespace SharpMap.Demo.FeatureExporter
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine("\nApplication demonstrating exporting features from a shapefile into new shapefiles\n\n");
+            Console.WriteLine("\nApplication demonstrating exporting features \nfrom a shapefile into new shapefiles using SharpMap v2\nCopyright Newgrove Consultants Ltd 2008");
 
             while (ShapeExporter.Run())
             {

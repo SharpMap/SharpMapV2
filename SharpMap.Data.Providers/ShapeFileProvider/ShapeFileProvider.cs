@@ -90,7 +90,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             public IdBounds(UInt32 id, IExtents extents)
             {
-                _id = id; 
+                _id = id;
                 _record = extents;
             }
 
@@ -334,7 +334,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public static ShapeFileProvider Create(String directory, String layerName,
                                                ShapeType type, FeatureDataTable schema,
-                                               IGeometryFactory geoFactory)
+                                               IGeometryFactory geoFactory, ICoordinateSystemFactory coordinateSystemFactory)
         {
             if (type == ShapeType.Null)
             {
@@ -349,8 +349,16 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             DirectoryInfo directoryInfo = new DirectoryInfo(directory);
 
-            return Create(directoryInfo, layerName, type, schema, geoFactory);
+            return Create(directoryInfo, layerName, type, schema, geoFactory, coordinateSystemFactory);
         }
+
+        public static ShapeFileProvider Create(String directory, String layerName,
+                                       ShapeType type, FeatureDataTable schema,
+                                       IGeometryFactory geoFactory)
+        {
+            return Create(directory, layerName, type, schema, geoFactory, null);
+        }
+
 
         /// <summary>
         /// Creates a new <see cref="ShapeFile"/> instance and .shp, .shx and, optionally, 
@@ -370,13 +378,20 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
                                                ShapeType type, FeatureDataTable model,
-                                               IGeometryFactory geoFactory)
+                                               IGeometryFactory geoFactory, ICoordinateSystemFactory coordinateSystemFactory)
         {
             CultureInfo culture = Thread.CurrentThread.CurrentCulture;
             Encoding encoding = Encoding.GetEncoding(culture.TextInfo.OEMCodePage);
-            return Create(directory, layerName, type, model, culture, encoding, geoFactory);
+            return Create(directory, layerName, type, model, culture, encoding, geoFactory, coordinateSystemFactory);
         }
 
+
+        public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
+                                              ShapeType type, FeatureDataTable model,
+                                              IGeometryFactory geoFactory)
+        {
+            return Create(directory, layerName, type, model, geoFactory, null);
+        }
 
         /// <summary>
         /// Creates a new <see cref="ShapeFile"/> instance and .shp, .shx and, optionally, 
@@ -403,7 +418,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
                                                ShapeType type, FeatureDataTable model,
                                                CultureInfo culture, Encoding encoding,
-                                               IGeometryFactory geoFactory)
+                                               IGeometryFactory geoFactory, ICoordinateSystemFactory coordinateSystemFactory)
         {
             if (String.IsNullOrEmpty(layerName))
             {
@@ -466,7 +481,13 @@ namespace SharpMap.Data.Providers.ShapeFile
                 file.Close();
             }
 
-            return new ShapeFileProvider(shapeFile, geoFactory);
+            if (geoFactory.SpatialReference != null)
+            {
+                string filePath = Path.Combine(directory.FullName, layerName + ".prj");
+                File.WriteAllText(filePath, geoFactory.SpatialReference.Wkt);
+            }
+
+            return new ShapeFileProvider(shapeFile, geoFactory, coordinateSystemFactory);
         }
 
         #endregion
@@ -1913,7 +1934,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    //Double yMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
         //    //Double xMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
         //    //Double yMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-            
+
         //    ICoordinate min;
         //    ICoordinate max;
 

@@ -65,11 +65,11 @@ namespace SharpMap.Demo.FeatureExporter
                     foreach (DataColumn c in tbl.Columns)
                         Console.WriteLine(c.ColumnName);
 
-                    Console.WriteLine("Please enter the ColumnName to base the files on");
+                    Console.WriteLine("Please enter the column name to base the exported file name on");
 
                     string colName = Console.ReadLine();
 
-                    if (tbl.Columns[colName] == null)
+                    if (!tbl.Columns.Contains(colName))
                         Console.WriteLine("Invalid Column");
                     else
                         exporter.Export(colName);
@@ -98,7 +98,7 @@ namespace SharpMap.Demo.FeatureExporter
                 using (
                     ShapeFileProvider export = ShapeFileProvider.Create(ExportDirectory, exportFilePath,
                                                                         Provider.ShapeType, Provider.CreateNewTable(),
-                                                                        Provider.GeometryFactory))
+                                                                        Provider.GeometryFactory, _geometryServices.CoordinateSystemFactory))
                 {
                     export.IsSpatiallyIndexed = false;
                     export.Open();
