@@ -32,7 +32,13 @@ namespace SharpMap.Styles
         /// The action to execute on the geometry if PreProcessGeometries == true (e.g simplify)
         /// </summary>
         public GeometryPreProcessor GeometryPreProcessor { get; set; }
+        private string _coordinateNumberFormatString = "{0:E}";
 
+        public string CoordinateNumberFormatString
+        {
+            get { return _coordinateNumberFormatString; }
+            set { _coordinateNumberFormatString = value; }
+        }
         #endregion
     }
 }

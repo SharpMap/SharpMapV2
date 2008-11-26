@@ -72,7 +72,7 @@ namespace SharpMap.Rendering.GeoJson
                 geom = feature.Geometry.Centroid;
 
             sb.Append("\"shape\":");
-            GeoJsonFeatureWriter.WriteGeometry(sb, geom);
+            GeoJsonFeatureWriter.WriteGeometry(sb, geom, style.CoordinateNumberFormatString);
             sb.Append("}");
 
 

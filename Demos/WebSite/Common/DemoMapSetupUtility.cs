@@ -42,8 +42,9 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             GeometryServices geometryServices = new GeometryServices();
             ShapeFileProvider shapeFile = new ShapeFileProvider(context.Server.MapPath("~/App_Data/Shapefiles/BCRoads.shp"),
                                                                 geometryServices.DefaultGeometryFactory,
-                                                                geometryServices.CoordinateSystemFactory);
+                                                                geometryServices.CoordinateSystemFactory, false);
             shapeFile.IsSpatiallyIndexed = false;
+
             AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(shapeFile);
 
             GeoJsonGeometryStyle style = RandomStyle.RandomGeometryStyle();
@@ -51,11 +52,12 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             style.IncludeAttributes = false;
             style.IncludeBBox = true;
             style.PreProcessGeometries = false;
+            style.CoordinateNumberFormatString = "{0:F}";
 
             GeometryLayer geometryLayer = new GeometryLayer("BCRoads", style, provider);
             geometryLayer.Features.IsSpatiallyIndexed = false;
-            provider.Open();
             m.AddLayer(geometryLayer);
+            provider.Open();
         }
 
         private static void setupMsSqlSpatial2008(Map m)

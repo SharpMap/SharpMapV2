@@ -38,6 +38,15 @@ namespace SharpMap.Styles
         public bool PreProcessGeometries { get; set; }
         public GeometryPreProcessor GeometryPreProcessor { get; set; }
 
+
+        private string _coordinateNumberFormatString = "{0:E}";
+
+        public string CoordinateNumberFormatString
+        {
+            get { return _coordinateNumberFormatString; }
+            set { _coordinateNumberFormatString = value; }
+        }
+
         #endregion
     }
 }

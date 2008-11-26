@@ -21,6 +21,7 @@ using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Styles;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Rendering.GeoJson
 {
@@ -60,7 +61,7 @@ namespace SharpMap.Rendering.GeoJson
             if (style.IncludeBBox)
             {
                 sb.Append("\"bbox\":");
-                WriteExtents(sb, g.Extents);
+                WriteExtents(sb, g.Extents, style.CoordinateNumberFormatString);
                 sb.Append(",");
             }
 
@@ -74,12 +75,12 @@ namespace SharpMap.Rendering.GeoJson
                 WriteNamedCrs(sb,
                               g.SpatialReference != null
                                   ? g.SpatialReference.Name
-                                  : "EPSG:" + g.Srid);
+                                  : "EPSG:" + SridMap.DefaultInstance.Process(g.SpatialReference, 0));
                 sb.Append(",");
             }
 
             sb.Append("\"geometry\":");
-            WriteGeometry(sb, g);
+            WriteGeometry(sb, g, style.CoordinateNumberFormatString);
 
             sb.Append("}");
             sb.AppendLine();
@@ -97,14 +98,14 @@ namespace SharpMap.Rendering.GeoJson
             sb.Append("}");
         }
 
-        public static string WriteGeometry(IGeometry g)
+        public static string WriteGeometry(IGeometry g, string coordinateNumberFormatString)
         {
             StringBuilder sb = new StringBuilder();
-            WriteGeometry(sb, g);
+            WriteGeometry(sb, g, coordinateNumberFormatString);
             return sb.ToString();
         }
 
-        public static void WriteGeometry(StringBuilder sb, IGeometry g)
+        public static void WriteGeometry(StringBuilder sb, IGeometry g, string coordinateNumberFormatString)
         {
             sb.Append("{");
             sb.Append(JsonUtility.FormatJsonAttribute("type", GetGeometryType(g)));
@@ -114,33 +115,33 @@ namespace SharpMap.Rendering.GeoJson
             if (g is IPoint)
             {
                 sb.Append("\"coordinates\":");
-                WritePointCoordinates(sb, (IPoint)g);
+                WritePointCoordinates(sb, (IPoint)g, coordinateNumberFormatString);
             }
             else if (g is ILineString)
             {
                 sb.Append("\"coordinates\":");
-                WriteLineStringCoordinates(sb, (ILineString)g);
+                WriteLineStringCoordinates(sb, (ILineString)g, coordinateNumberFormatString);
             }
 
             else if (g is IPolygon)
             {
                 sb.Append("\"coordinates\":");
-                WritePolygonCoordinates(sb, (IPolygon)g);
+                WritePolygonCoordinates(sb, (IPolygon)g, coordinateNumberFormatString);
             }
             else if (g is IMultiPoint)
             {
                 sb.Append("\"coordinates\":");
-                WriteMultiPointCoordinates(sb, (IMultiPoint)g);
+                WriteMultiPointCoordinates(sb, (IMultiPoint)g, coordinateNumberFormatString);
             }
             else if (g is IMultiLineString)
             {
                 sb.Append("\"coordinates\":");
-                WriteMultiLineStringCoordinates(sb, (IMultiLineString)g);
+                WriteMultiLineStringCoordinates(sb, (IMultiLineString)g, coordinateNumberFormatString);
             }
             else if (g is IMultiPolygon)
             {
                 sb.Append("\"coordinates\":");
-                WriteMultiPolygonCoordinates(sb, (IMultiPolygon)g);
+                WriteMultiPolygonCoordinates(sb, (IMultiPolygon)g, coordinateNumberFormatString);
             }
             else if (g is IGeometryCollection)
             {
@@ -148,7 +149,7 @@ namespace SharpMap.Rendering.GeoJson
                 sb.Append("[");
                 for (int i = 0; i < ((IGeometryCollection)g).Count; i++)
                 {
-                    WriteGeometry(sb, ((IGeometryCollection)g)[i]);
+                    WriteGeometry(sb, ((IGeometryCollection)g)[i], coordinateNumberFormatString);
                     if (i < ((IGeometryCollection)g).Count - 1)
                         sb.Append(",");
                 }
@@ -179,11 +180,15 @@ namespace SharpMap.Rendering.GeoJson
 
         }
 
-        private static void WriteExtents(StringBuilder sb, IExtents extents)
+        private static void WriteExtents(StringBuilder sb, IExtents extents, string coordinateFormatString)
         {
             sb.Append("[");
-            sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, string.Format("{0},{1},{2},{3}", extents.Min[Ordinates.X], extents.Min[Ordinates.Y],
-                                          extents.Max[Ordinates.X], extents.Max[Ordinates.Y]));
+            sb.AppendFormat(
+                string.Format("{0},{1},{2},{3}",
+                    string.Format(CultureInfo.InvariantCulture.NumberFormat, coordinateFormatString, extents.Min[Ordinates.X]),
+                    string.Format(CultureInfo.InvariantCulture.NumberFormat, coordinateFormatString, extents.Min[Ordinates.Y]),
+                    string.Format(CultureInfo.InvariantCulture.NumberFormat, coordinateFormatString, extents.Max[Ordinates.X]),
+                    string.Format(CultureInfo.InvariantCulture.NumberFormat, coordinateFormatString, extents.Max[Ordinates.Y])));
 
             sb.Append("]");
         }
@@ -208,71 +213,71 @@ namespace SharpMap.Rendering.GeoJson
         }
 
 
-        private static void WriteMultiPolygonCoordinates(StringBuilder sb, IMultiPolygon multiPolygon)
+        private static void WriteMultiPolygonCoordinates(StringBuilder sb, IMultiPolygon multiPolygon, string coordinateFormatString)
         {
             sb.Append("[");
             for (int i = 0; i < multiPolygon.Count; i++)
             {
-                WritePolygonCoordinates(sb, multiPolygon[i]);
+                WritePolygonCoordinates(sb, multiPolygon[i], coordinateFormatString);
                 if (i < multiPolygon.Count - 1)
                     sb.Append(",");
             }
             sb.Append("]");
         }
 
-        private static void WriteMultiLineStringCoordinates(StringBuilder sb, IMultiLineString multiLineString)
+        private static void WriteMultiLineStringCoordinates(StringBuilder sb, IMultiLineString multiLineString, string coordinateFormatString)
         {
             sb.Append("[");
             for (int i = 0; i < multiLineString.Count; i++)
             {
-                WriteLineStringCoordinates(sb, multiLineString[i]);
+                WriteLineStringCoordinates(sb, multiLineString[i], coordinateFormatString);
                 if (i < multiLineString.Count - 1)
                     sb.Append(",");
             }
             sb.Append("]");
         }
 
-        private static void WriteMultiPointCoordinates(StringBuilder sb, IMultiPoint multiPoint)
+        private static void WriteMultiPointCoordinates(StringBuilder sb, IMultiPoint multiPoint, string coordinateFormatString)
         {
             sb.Append("[");
             for (int i = 0; i < multiPoint.Count; i++)
             {
-                WritePointCoordinates(sb, multiPoint[i]);
+                WritePointCoordinates(sb, multiPoint[i], coordinateFormatString);
                 if (i < multiPoint.Count - 1)
                     sb.Append(",");
             }
             sb.Append("]");
         }
 
-        private static void WritePolygonCoordinates(StringBuilder sb, IPolygon polygon)
+        private static void WritePolygonCoordinates(StringBuilder sb, IPolygon polygon, string coordinateFormatString)
         {
             sb.Append("[");
-            WriteLineStringCoordinates(sb, polygon.ExteriorRing);
+            WriteLineStringCoordinates(sb, polygon.ExteriorRing, coordinateFormatString);
 
             foreach (ILinearRing lr in polygon.InteriorRings)
             {
                 sb.Append(",");
-                WriteLineStringCoordinates(sb, lr);
+                WriteLineStringCoordinates(sb, lr, coordinateFormatString);
             }
             sb.Append("]");
         }
 
 
-        private static void WriteLineStringCoordinates(StringBuilder sb, ILineString lineString)
+        private static void WriteLineStringCoordinates(StringBuilder sb, ILineString lineString, string coordinateFormatString)
         {
             sb.Append("[");
             for (int i = 0; i < lineString.PointCount; i++)
             {
-                WritePointCoordinates(sb, lineString.GetPoint(i));
+                WritePointCoordinates(sb, lineString.GetPoint(i), coordinateFormatString);
                 if (i < lineString.PointCount - 1)
                     sb.Append(",");
             }
             sb.Append("]");
         }
 
-        private static void WritePointCoordinates(StringBuilder sb, IPoint g)
+        private static void WritePointCoordinates(StringBuilder sb, IPoint g, string coordinateFormatString)
         {
-            sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, "[{0},{1}]", g[Ordinates.X], g[Ordinates.Y]);
+            sb.AppendFormat(CultureInfo.InvariantCulture.NumberFormat, "[{0},{1}]", string.Format(coordinateFormatString, g[Ordinates.X]), string.Format(coordinateFormatString, g[Ordinates.Y]));
         }
     }
 }
