@@ -16,6 +16,7 @@
 // This file Copyright Newgrove Consultants Ltd 2008
 // Author: John Diss
 
+using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 #if DOTNET35
@@ -37,6 +38,40 @@ namespace SharpMap.Utilities.SridUtility
     /// </summary>
     public class SridMap : ISridMap
     {
+        //jd: todo : move this somewhere better - perhaps an instance property on Map or via Dependency Injection?
+        private static SridMap _defaultInstance;
+        private static readonly object _mapLock = new object();
+        public static SridMap DefaultInstance
+        {
+            get
+            {
+                lock (_mapLock)
+                {
+                    if (_defaultInstance == null)
+                        throw new SridMapUninitializedException();
+                    return _defaultInstance;
+                }
+            }
+            set
+            {
+                lock (_mapLock)
+                    _defaultInstance = value;
+            }
+        }
+
+        public static bool DefaultInstanceSet
+        {
+            get
+            {
+                return _defaultInstance != null;
+            }
+        }
+
+        public class SridMapUninitializedException : Exception
+        {
+            public SridMapUninitializedException() : base("SridMap.DefaultIntance has not been set. It should be set once during the initialization of the Application.") { }
+        }
+
         private ICollection<SridMapStrategyBase> _strategies;
         public ICollection<SridMapStrategyBase> Strategies
         {

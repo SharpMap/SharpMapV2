@@ -39,6 +39,7 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
+using SharpMap.Utilities.SridUtility;
 using Processor = GeoAPI.DataStructures.Processor;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
@@ -56,6 +57,12 @@ namespace MapViewer
         private readonly IGeometryServices GeometryServices = new GeometryServices();
         private readonly WorkQueue workQueue;
 
+
+        static MapViewerForm()
+        {
+            //jd: hopefully a temporary measure
+            SridMap.DefaultInstance = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+        }
 
         public MapViewerForm()
         {
@@ -110,7 +117,7 @@ namespace MapViewer
                 Caster.Cast<IFeatureLayer>(
                     Processor.Where(Map.SelectedLayers, o => o as IFeatureLayer != null)));
 
-            
+
 
             if (l != null)
             {
@@ -552,7 +559,7 @@ namespace MapViewer
                                 new GeometryLayer(
                                     name,
                                     prov);
-                            lyr.Features.IsSpatiallyIndexed = false; 
+                            lyr.Features.IsSpatiallyIndexed = false;
                             prov.Open();
 
 
@@ -572,7 +579,7 @@ namespace MapViewer
                                                                 if (Map.Layers.Count == 1)
                                                                 {
                                                                     mapViewControl1.Map = Map;
-                                                                    
+
                                                                     layersView1.Map = Map;
                                                                     MapView.ZoomToExtents();
                                                                 }

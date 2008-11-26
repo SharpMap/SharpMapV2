@@ -29,7 +29,7 @@ namespace SharpMap.Rendering.GeoJson
     public static class JsonUtility
     {
         private static readonly Type[] FloatingPointTypes = new[] { typeof(float), typeof(double), typeof(decimal) };
-        private static readonly Type[] IntegralTypes = new[] { typeof(int), typeof(long), typeof(short) };
+        private static readonly Type[] IntegralTypes = new[] { typeof(UInt16), typeof(UInt32), typeof(UInt64), typeof(Int16), typeof(Int32), typeof(Int64) };
         public static string FormatJsonAttribute(string name, object value)
         {
             return string.Format("\"{0}\":{1}", name, FormatJsonValue(value));

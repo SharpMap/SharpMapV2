@@ -29,13 +29,13 @@ using System.Globalization;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
+using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using SharpMap.Utilities;
-using SharpMap.Utilities.SridUtility;
 using Processor = GeoAPI.DataStructures.Processor;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
@@ -49,17 +49,7 @@ namespace SharpMap.Data.Providers.Db
         private String _oidColumn = "Oid";
         private String _tableSchema = "dbo";
 
-        private static SridMap _sridMap = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
-
-        public SridMap SridMap
-        {
-            get
-            {
-                return _sridMap;
-            }
-        }
-
-        private static Dictionary<TableCacheKey, DataTable> _cachedSchemas = new Dictionary<TableCacheKey, DataTable>();
+        private static readonly Dictionary<TableCacheKey, DataTable> _cachedSchemas = new Dictionary<TableCacheKey, DataTable>();
 
         static SpatialDbProviderBase()
         {
@@ -528,21 +518,15 @@ namespace SharpMap.Data.Providers.Db
                 cmd.CommandText = string.Format("SELECT * FROM {0} ", QualifiedTableName);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
-                //conn.Open();
                 IDbDataAdapter da = DbUtility.CreateAdapter(cmd);
                 var ds = new DataSet();
                 da.FillSchema(ds, SchemaType.Source);
-                //conn.Close();
-                DataTable dt = ds.Tables["Table"];
+                DataTable dt = ds.Tables[0];
 
                 //remove geometry column from schema
                 if (!withGeometryColumn)
                 {
                     dt.Columns.Remove(GeometryColumn);
-                    //Int32 ordinal = dt.Columns[GeometryColumn].Ordinal;
-                    //dt.Columns.Remove(ordinal);
-                    //for (Int32 index = ordinal; index < dt.Rows.Count; index++)
-                    //  dt.Columns[ordinal].Ordinal = ordinal;
                 }
 
                 return dt;
@@ -710,7 +694,7 @@ namespace SharpMap.Data.Providers.Db
 
         public int? ParseSrid(string sridText)
         {
-            return SridMap.Process(sridText, (int?)null);
+            return SridMap.DefaultInstance.Process(sridText, (int?)null);
         }
 
 

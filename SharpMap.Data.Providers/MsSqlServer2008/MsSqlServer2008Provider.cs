@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -28,10 +29,9 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Processor = GeoAPI.DataStructures.Processor;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
+
 namespace SharpMap.Data.Providers
 {
     public enum SqlServer2008ExtentsMode
@@ -94,13 +94,14 @@ namespace SharpMap.Data.Providers
 
         public override IExtents GetExtents()
         {
-
-            bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
-                                     false);
+            bool withNoLock =
+                GetProviderPropertyValue<WithNoLockExpression, bool>(
+                    DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
+                    false);
 
             SqlServer2008ExtentsMode server2008ExtentsCalculationMode =
                 GetProviderPropertyValue<MsSqlServer2008ExtentsModeExpression, SqlServer2008ExtentsMode>(
-                DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
+                    DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
                     SqlServer2008ExtentsMode.QueryIndividualFeatures);
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
@@ -127,7 +128,6 @@ namespace SharpMap.Data.Providers
                         }
                     case SqlServer2008ExtentsMode.UseEnvelopeColumns:
                         {
-
                             cmd.CommandText = string.Format(
                                 "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
                                 GeometryColumn, TableSchema, Table,
@@ -144,7 +144,7 @@ namespace SharpMap.Data.Providers
 	    Min(Geom.STEnvelope().STPointN(1).STY) as MinY,  
 	    Max(Geom.STEnvelope().STPointN(3).STX) as MaxX, 
 	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY FROM {0}.{1} {2}",
-                                                                        TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
+                                    TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                 }
@@ -175,6 +175,18 @@ namespace SharpMap.Data.Providers
             return new MsSqlServer2008ExpressionTreeToSqlCompiler<TOid>(this, expression);
         }
 
+        protected override DataTable BuildSchemaTable(bool withGeometryColumn)
+        {
+            try
+            {
+                return base.BuildSchemaTable(withGeometryColumn);
+            }
+            catch (Exception ex)
+            {
+                throw new SchemaTableBuildException(ex);
+                    //jd: it took ages to work out this exception :(  hopefully it has saved you some time.
+            }
+        }
 
         protected override string GenerateSelectSql(IList<ProviderPropertyExpression> properties,
                                                     ExpressionTreeToSqlCompilerBase<TOid> compiler)
@@ -192,8 +204,10 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
-                                                                    o => "[" + o.PropertyNameExpression.PropertyName + "] " + (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                                            new OrderByExpression[] {})),
+                                                                    o =>
+                                                                    "[" + o.PropertyNameExpression.PropertyName + "] " +
+                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
 
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -227,14 +241,16 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
-                                                                            o => "[" + o.PropertyNameExpression.PropertyName + "] " + (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                                            new OrderByExpression[] {})),
+                                                                    o =>
+                                                                    "[" + o.PropertyNameExpression.PropertyName + "] " +
+                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
 
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
-            int startRecord = (pageNumber * pageSize) + 1;
-            int endRecord = (pageNumber + 1) * pageSize;
+            int startRecord = (pageNumber*pageSize) + 1;
+            int endRecord = (pageNumber + 1)*pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -280,7 +296,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
             IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
-                properties, new string[] { });
+                properties, new string[] {});
 
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
@@ -298,6 +314,19 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             return string.Format(" WITH(NOLOCK,INDEX({0})) ", string.Join(",", Enumerable.ToArray(indexNames)));
         }
 
+        #region Nested type: SchemaTableBuildException
+
+        public class SchemaTableBuildException : Exception
+        {
+            public SchemaTableBuildException(Exception ex)
+                : base(
+                    "An error occured while attempting to get the schema of the database table. Ensure that the Microsoft.SqlServer.Types assembly is installed in the GAC or bin directory of the host machine and check the inner exception.",
+                    ex)
+            {
+            }
+        }
+
+        #endregion
 
         //protected override DataTable BuildSchemaTable()
         //{

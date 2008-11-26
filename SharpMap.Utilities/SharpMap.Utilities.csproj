@@ -74,6 +74,10 @@
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharpMap\SharpMap.csproj">
+      <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
+      <Name>SharpMap</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

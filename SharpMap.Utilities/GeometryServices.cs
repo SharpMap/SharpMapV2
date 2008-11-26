@@ -21,6 +21,7 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Utilities
 {
@@ -121,9 +122,13 @@ namespace SharpMap.Utilities
                         factory = new GeometryFactory<BufferedCoordinate>(srid,
                             (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
                         factory.Srid = srid;
+                        factory.SpatialReference = SridMap.DefaultInstance.Process(factory.Srid,
+                                                                                   (ICoordinateSystem)null);
                         lock (_sridAwareGeometryFactories)
                             if (!_sridAwareGeometryFactories.ContainsKey(srid))
                                 _sridAwareGeometryFactories.Add(srid, factory);
+                            else
+                                _sridAwareGeometryFactories.TryGetValue(srid, out factory);
 
                     }
 

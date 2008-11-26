@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SharpMap.Presentation.AspNet.Caching;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Presentation.AspNet.WmsServer.Caching
 {
@@ -42,7 +43,10 @@ namespace SharpMap.Presentation.AspNet.WmsServer.Caching
 
             path = Path.Combine(path, layerKey.ToString());
 
-            path = Path.Combine(path, config.Crs.Replace(":", "_"));
+            int? srid = SridMap.DefaultInstance.Process(config.Crs, -1);
+            string crsString = srid.HasValue ? srid.ToString() : "unknown_srid";
+
+            path = Path.Combine(path, crsString);
 
             path = Path.Combine(path, string.Format("{0}x{1}", config.OutputSize.Width, config.OutputSize.Height));
 

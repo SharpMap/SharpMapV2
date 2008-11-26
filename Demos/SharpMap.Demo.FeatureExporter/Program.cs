@@ -13,6 +13,8 @@
  * 
  */
 using System;
+using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Demo.FeatureExporter
 {
@@ -21,6 +23,9 @@ namespace SharpMap.Demo.FeatureExporter
         private static void Main(string[] args)
         {
             Console.WriteLine("\nApplication demonstrating exporting features \nfrom a shapefile into new shapefiles using SharpMap v2\nCopyright Newgrove Consultants Ltd 2008");
+            
+            //jd: hopefully a temporary measure
+            SridMap.DefaultInstance = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
 
             while (ShapeExporter.Run())
             {

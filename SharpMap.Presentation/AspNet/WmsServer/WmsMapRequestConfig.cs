@@ -13,16 +13,22 @@
  * 
  */
 using System.Collections.Generic;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
+using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Presentation.AspNet.WmsServer
 {
     public class WmsMapRequestConfig : IMapRequestConfig
     {
+
+
+
         public Capabilities.WmsServiceDescription ServiceDescription { get; set; }
 
         public WmsMode WmsMode { get; set; }
@@ -47,9 +53,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
             if (WmsMode == WmsMode.Capabilites)
                 return;
 
-
-            if (Crs != "EPSG:" + map.Layers[0].Srid)
-                WmsException.ThrowWmsException(WmsExceptionCode.InvalidCRS, "CRS not supported");
+            map.SpatialReference = SridMap.DefaultInstance.Process(Crs, (ICoordinateSystem)null);
 
             foreach (ILayer l in map.Layers)
                 l.Enabled = false;

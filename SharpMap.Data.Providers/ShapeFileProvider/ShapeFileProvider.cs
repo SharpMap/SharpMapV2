@@ -805,10 +805,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             return ExecuteFeatureQuery(featureQuery);
         }
 
-        protected override PropertyDescriptorCollection GetClassProperties()
-        {
-            throw new System.NotImplementedException();
-        }
+
 
         /// <summary>
         /// Opens the data source

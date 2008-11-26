@@ -16,6 +16,7 @@
 // This file Copyright Newgrove Consultants Ltd 2008
 // Author: John Diss
 
+using System;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.DataStructures;
 
@@ -26,7 +27,8 @@ namespace SharpMap.Utilities.SridUtility
         IStrategy<ICoordinateSystem, int?>,
         IStrategy<string, int?>,
         IStrategy<int?, string>,
-        IStrategy<ICoordinateSystem, string>
+        IStrategy<ICoordinateSystem, string>,
+        IStrategy<string, ICoordinateSystem>
     {
         protected SridMapStrategyBase(int priority, ICoordinateSystemFactory coordSysFactory)
         {
@@ -124,6 +126,26 @@ namespace SharpMap.Utilities.SridUtility
             get;
             protected set;
         }
+
+        #endregion
+
+        #region IStrategy<string,ICoordinateSystem> Members
+
+
+        public bool Process(string input, out ICoordinateSystem output)
+        {
+            try
+            {
+                output = CoordinateSystemFactory.CreateFromWkt(input);
+                return true;
+            }
+            catch (Exception)
+            {
+                output = null;
+                return false;
+            }
+        }
+
 
         #endregion
     }
