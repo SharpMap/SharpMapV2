@@ -25,8 +25,8 @@ using SharpMap.Expressions;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-    using Enumerable= GeoAPI.DataStructures.Enumerable;
-    using Caster =  GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #endif
 namespace SharpMap.Data.Providers.Db
 {
@@ -373,6 +373,9 @@ namespace SharpMap.Data.Providers.Db
         protected virtual void VisitCollectionBinaryExpression(StringBuilder builder, CollectionBinaryExpression exp)
         {
             if (exp == null)
+                return;
+
+            if (Enumerable.Count(exp.Right.Collection) == 0)
                 return;
 
             var sb = new StringBuilder();

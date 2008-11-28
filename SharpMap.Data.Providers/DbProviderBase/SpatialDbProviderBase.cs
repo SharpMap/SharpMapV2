@@ -207,11 +207,17 @@ namespace SharpMap.Data.Providers.Db
         {
             get
             {
-                if (string.IsNullOrEmpty(TableSchema))
-                    return string.Format("[{0}]", Table);
-
-                return string.Format("[{0}].[{1}]", TableSchema, Table);
+                return QualifyTableName(TableSchema, Table);
             }
+        }
+
+
+        protected virtual string QualifyTableName(string schema, string table)
+        {
+            if (string.IsNullOrEmpty(schema))
+                return string.Format("[{0}]", table);
+
+            return string.Format("[{0}].[{1}]", schema, table);
         }
 
 
