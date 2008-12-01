@@ -128,9 +128,6 @@
     <Compile Include="IMapRequestConfigFactory`1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="README.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="SharpMap.Presentation.AspNet.cd" />
   </ItemGroup>
   <ItemGroup>

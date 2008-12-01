@@ -119,6 +119,7 @@ namespace SharpMap.Data.Providers.Db
 
         public bool Read()
         {
+            _currentGeometry = null;
             return _internalReader.Read();
         }
 
@@ -283,8 +284,10 @@ namespace SharpMap.Data.Providers.Db
             get
             {
                 if (HasGeometry)
-                    _currentGeometry = _currentGeometry ?? _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
-
+                {
+                    if (_currentGeometry == null)
+                        _currentGeometry = _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+                }
                 return _currentGeometry;
             }
         }
@@ -313,9 +316,8 @@ namespace SharpMap.Data.Providers.Db
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
         {
-            while (_internalReader.Read())
+            while (Read())
             {
-                _currentGeometry = null;
                 yield return this;
             }
         }
