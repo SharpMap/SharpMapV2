@@ -22,5 +22,8 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
 
         [SharpLayersSerialization(SerializedName = "transitionEffect")]
         TransitionEffects TransitionEffect { get; set; }
+
+        [SharpLayersSerialization(SerializedName = "buffer")]
+        int Buffer { get; set; }
     }
 }

@@ -17,7 +17,7 @@ using System.Web.UI;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
 {
-    public class WmsLayerBuilderParams : LayerBuilderParamsBase
+    public class WmsLayerBuilderParams : LayerBuilderParamsBase, IGridBasedLayerBuilderParams 
     {
         [
             SharpLayersSerialization(SerializedName = "params"),
@@ -41,5 +41,15 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
 
         [SharpLayersSerialization(SerializedName = "transitionEffect")]
         public TransitionEffects TransitionEffect { get; set; }
+
+        #region IGridBasedLayerBuilderParams Members
+
+        [SharpLayersSerialization(SerializedName = "buffer")]
+        public int Buffer
+        {
+            get; set;
+        }
+
+        #endregion
     }
 }

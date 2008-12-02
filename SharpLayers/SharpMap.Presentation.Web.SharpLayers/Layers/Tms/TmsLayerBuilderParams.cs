@@ -46,5 +46,15 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
         public TransitionEffects TransitionEffect { get; set; }
 
         #endregion
+
+        #region IGridBasedLayerBuilderParams Members
+
+        [SharpLayersSerialization(SerializedName = "buffer")]
+        public int Buffer
+        {
+            get; set;
+        }
+
+        #endregion
     }
 }

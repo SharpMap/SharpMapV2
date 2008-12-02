@@ -75,7 +75,7 @@ SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent.prototype = {
         this._sldInitDone = true;
         var h = this.get_events().getHandler('sldloaded');
         if (h)
-            h(this);
+            h(this, Sys.EventArgs.Empty);
     },
     get_initDone: function() {
         return this._sldInitDone;
