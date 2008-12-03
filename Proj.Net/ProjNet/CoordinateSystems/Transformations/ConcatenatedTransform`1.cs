@@ -22,6 +22,16 @@ using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems.Transformations;
 using NPack.Interfaces;
 
+#if DOTNET35
+using Caster = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Processor = System.Linq.Enumerable;
+#else
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Processor = GeoAPI.DataStructures.Processor;
+#endif
+
 namespace ProjNet.CoordinateSystems.Transformations
 {
     internal class ConcatenatedTransform<TCoordinate> : MathTransform<TCoordinate>
@@ -98,7 +108,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IMathTransform<TCoordinate> typedInverse = setAsInverse as IMathTransform<TCoordinate>;
-            IMathTransform inverse = new ConcatenatedTransform<TCoordinate>(_transforms, 
+            IMathTransform inverse = new ConcatenatedTransform<TCoordinate>(_transforms,
                                                                             CoordinateFactory,
                                                                             typedInverse);
             return inverse;
@@ -135,12 +145,17 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinate Transform(ICoordinate coordinate)
         {
-            throw new System.NotImplementedException();
+            foreach (ICoordinateTransformation<TCoordinate> ct in _transforms)
+            {
+                coordinate = ct.MathTransform.Transform(coordinate);
+            }
+            return coordinate;
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
         {
-            throw new System.NotImplementedException();
+            foreach (ICoordinate c in points)
+                yield return Transform(c);
         }
 
         public override ICoordinateSequence Transform(ICoordinateSequence points)
