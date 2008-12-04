@@ -568,7 +568,8 @@ namespace MapViewer
 
                                                                 if (Map.Layers.Count == 0)
                                                                 {
-                                                                    Map.SpatialReference = lyr.SpatialReference;
+                                                                    if (lyr.SpatialReference != null)
+                                                                        Map.SpatialReference = lyr.SpatialReference;
                                                                 }
 
                                                                 Map.Layers.Insert(0, lyr);

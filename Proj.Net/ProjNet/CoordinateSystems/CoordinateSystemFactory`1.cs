@@ -158,8 +158,8 @@ namespace ProjNet.CoordinateSystems
         }
 
         public ICompoundCoordinateSystem<TCoordinate> CreateCompoundCoordinateSystem(
-            ICoordinateSystem<TCoordinate> head, ICoordinateSystem<TCoordinate> tail, 
-            String name, String authority, String authorityCode, String alias, 
+            ICoordinateSystem<TCoordinate> head, ICoordinateSystem<TCoordinate> tail,
+            String name, String authority, String authorityCode, String alias,
             String abbreviation, String remarks)
         {
             throw new NotImplementedException();
@@ -292,8 +292,8 @@ namespace ProjNet.CoordinateSystems
         {
 
             return CreateFlattenedSphere(semiMajorAxis, inverseFlattening,
-                                         linearUnit, name, String.Empty, 
-                                         String.Empty, String.Empty, String.Empty, 
+                                         linearUnit, name, String.Empty,
+                                         String.Empty, String.Empty, String.Empty,
                                          String.Empty);
         }
 
@@ -680,9 +680,8 @@ namespace ProjNet.CoordinateSystems
                 };
 
             return new ProjectedCoordinateSystem<TCoordinate>(gcs, projection,
-                                                              linearUnit, info, name,
-                                                              String.Empty, String.Empty, String.Empty,
-                                                              String.Empty, String.Empty);
+                                                              linearUnit, info, name, authority, authorityCode, alias,
+                                                              remarks, abbreviation);
         }
 
         /// <summary>
@@ -724,7 +723,7 @@ namespace ProjNet.CoordinateSystems
                                             String authorityCode, String alias,
                                             String abbreviation, String remarks)
         {
-            return new Projection(wktProjectionClass, parameters, name, authority, 
+            return new Projection(wktProjectionClass, parameters, name, authority,
                                   authorityCode, alias, abbreviation, remarks);
         }
 
@@ -811,8 +810,8 @@ namespace ProjNet.CoordinateSystems
             TCoordinate max = _coordFactory.Create(180, 90);
             IExtents<TCoordinate> wgs84Extents = _geometryFactory.CreateExtents(min, max);
 
-            return CreateGeographicCoordinateSystem(wgs84Extents, 
-                                                    AngularUnit.Degrees, 
+            return CreateGeographicCoordinateSystem(wgs84Extents,
+                                                    AngularUnit.Degrees,
                                                     HorizontalDatum.Wgs84,
                                                     PrimeMeridian.Greenwich,
                                                     new AxisInfo(AxisOrientation.East, "Lon"),
@@ -899,7 +898,7 @@ namespace ProjNet.CoordinateSystems
         {
             return CreateGeographicCoordinateSystem(convert(extents), angularUnit,
                                                     datum, primeMeridian, axis0, axis1,
-                                                    name);
+                                                    name, authority, authorityCode, alias, abbreviation, remarks);
         }
 
 
@@ -930,11 +929,11 @@ namespace ProjNet.CoordinateSystems
 
         IProjectedCoordinateSystem ICoordinateSystemFactory.CreateProjectedCoordinateSystem(
             IGeographicCoordinateSystem gcs, IProjection projection, ILinearUnit linearUnit,
-            IAxisInfo axis0, IAxisInfo axis1, String name, String authority, 
+            IAxisInfo axis0, IAxisInfo axis1, String name, String authority,
             String authorityCode, String alias, String abbreviation, String remarks)
         {
             return CreateProjectedCoordinateSystem(convert(gcs), projection, linearUnit,
-                                                   axis0, axis1, name, authority, 
+                                                   axis0, axis1, name, authority,
                                                    authorityCode, alias, abbreviation,
                                                    remarks);
         }

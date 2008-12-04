@@ -65,7 +65,7 @@ namespace SharpMap.Utilities.SridUtility
                 output = string.Empty;
                 return false;
             }
-            output = input.Wkt;
+            output = !string.IsNullOrEmpty(input.Authority) && !string.IsNullOrEmpty(input.AuthorityCode) ? string.Format("{0}:{1}", input.Authority, input.AuthorityCode) : input.Wkt;
             return true;
         }
 
@@ -114,7 +114,12 @@ namespace SharpMap.Utilities.SridUtility
         /// <returns></returns>
         public virtual bool Process(string input, out int? output)
         {
-            return Process(CoordinateSystemFactory.CreateFromWkt(input), out output);
+            ICoordinateSystem cs;
+            if (Process(input, out cs))
+                return Process(cs, out output);
+
+            output = null;
+            return false;
         }
 
         #endregion
@@ -132,19 +137,7 @@ namespace SharpMap.Utilities.SridUtility
         #region IStrategy<string,ICoordinateSystem> Members
 
 
-        public bool Process(string input, out ICoordinateSystem output)
-        {
-            try
-            {
-                output = CoordinateSystemFactory.CreateFromWkt(input);
-                return true;
-            }
-            catch (Exception)
-            {
-                output = null;
-                return false;
-            }
-        }
+        public abstract bool Process(string input, out ICoordinateSystem output);
 
 
         #endregion

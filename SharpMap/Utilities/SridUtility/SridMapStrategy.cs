@@ -25,16 +25,115 @@ namespace SharpMap.Utilities.SridUtility
 {
     public class SridMapStrategy : SridMapStrategyBase
     {
-        protected readonly IDictionary<int, ICoordinateSystem> _map;
-        protected readonly IDictionary<int, int> _hashMap = new Dictionary<int, int>();
+        protected interface IKey
+        {
+            string Authority { get; set; }
+            object Code { get; set; }
+        }
 
-        public SridMapStrategy(int priority, ICoordinateSystemFactory csFactory, IDictionary<int, ICoordinateSystem> map)
+        protected interface IKey<TCode> : IKey
+        {
+            new TCode Code { get; set; }
+        }
+
+        private struct StringKey : IKey<String>
+        {
+
+            #region IKey<string> Members
+
+            public string Code
+            {
+                get;
+                set;
+            }
+
+            #endregion
+
+            #region IKey Members
+
+            public string Authority
+            {
+                get;
+                set;
+            }
+
+            object IKey.Code
+            {
+                get
+                {
+                    return Code;
+                }
+                set
+                {
+                    Code = (string)value;
+                }
+            }
+
+            #endregion
+        }
+
+        private struct LongKey : IKey<long>
+        {
+
+            #region IKey<long> Members
+
+            public long Code
+            {
+                get;
+                set;
+            }
+
+            #endregion
+
+            #region IKey Members
+
+            public string Authority
+            {
+                get;
+                set;
+            }
+
+            object IKey.Code
+            {
+                get
+                {
+                    return Code;
+                }
+                set
+                {
+                    Code = (long)value;
+                }
+            }
+
+            #endregion
+        }
+
+
+        protected readonly IEnumerable<ICoordinateSystem> _coordinateSystems;
+        protected readonly IDictionary<IKey, ICoordinateSystem> _map = new Dictionary<IKey, ICoordinateSystem>();
+        protected readonly IDictionary<int, IKey> _hashMap = new Dictionary<int, IKey>();
+
+        public SridMapStrategy(int priority, ICoordinateSystemFactory csFactory, IEnumerable<ICoordinateSystem> systems)
             : base(priority, csFactory)
         {
-            _map = map;
-            foreach (KeyValuePair<int, ICoordinateSystem> kvp in map)
+            _coordinateSystems = systems;
+            foreach (ICoordinateSystem cs in systems)
             {
-                _hashMap.Add(HashCoordSystem(kvp.Value), kvp.Key);
+                IKey key;
+                long code;
+                if (long.TryParse(cs.AuthorityCode, out code))
+                {
+                    key = new LongKey() { Authority = cs.Authority, Code = code };
+                }
+                else
+                {
+                    key = new StringKey() { Authority = cs.Authority, Code = cs.AuthorityCode };
+                }
+
+                _map.Add(key, cs);
+
+                _hashMap.Add(HashCoordSystem(cs), key);
+
             }
         }
 
@@ -84,16 +183,30 @@ namespace SharpMap.Utilities.SridUtility
             int hash = HashCoordSystem(input);
             if (_hashMap.ContainsKey(hash))
             {
-                output = _hashMap[hash];
-                return true;
+                IKey key = _hashMap[hash];
+                if (key is IKey<long>)
+                {
+                    output = (int)((IKey<long>)_hashMap[hash]).Code;
+                    return true;
+                }
+
+                //we found a matching hash but it has a string key.. hmmm
+                output = null;
+                return false;
+
             }
 
-            foreach (KeyValuePair<int, ICoordinateSystem> kvp in _map)
+            foreach (KeyValuePair<IKey, ICoordinateSystem> kvp in _map)
             {
                 if (kvp.Value.EqualParams(input))
                 {
-                    output = kvp.Key;
-                    return true;
+                    IKey key = kvp.Key;
+                    if (key is IKey<long>)
+                    {
+                        output = (int)((IKey<long>)key).Code;
+                        return true;
+                    }
+
                 }
             }
             output = null;
@@ -107,34 +220,77 @@ namespace SharpMap.Utilities.SridUtility
                 output = null;
                 return false;
             }
-            if (_map.ContainsKey(input.Value))
+
+            foreach (IKey<long> key in _map.Keys)
             {
-                output = _map[input.Value];
-                return true;
+                if (key.Code == (long)input)
+                {
+                    output = _map[key];
+                    return true;
+                }
             }
             output = null;
             return false;
         }
 
+        //TODO: add cases for URN codes
+        public override bool Process(string input, out ICoordinateSystem output)
+        {
+            string[] prts = input.Split(':');
+            if (prts.Length == 2)
+            {
+                IKey key;
+                long code;
+                if (long.TryParse(prts[1], out code))
+                {
+                    key = new LongKey() { Authority = prts[0], Code = code };
+                }
+                else
+                {
+                    key = new StringKey() { Authority = prts[0], Code = prts[1] };
+                }
+
+                if (_map.ContainsKey(key))
+                {
+                    output = _map[key];
+                    return true;
+                }
+            }
+            try
+            {
+                output = CoordinateSystemFactory.CreateFromWkt(input);
+                return true;
+            }
+            catch
+            {
+                output = null;
+                return false;
+            }
+
+        }
     }
 
 
     public class SridProj4Strategy : SridMapStrategy
     {
         public SridProj4Strategy(int priority, ICoordinateSystemFactory csFactory)
-            : base(priority, csFactory, GetDictionary(csFactory))
+            : base(priority, csFactory, GetList(csFactory))
         {
 
         }
 
-        private static IDictionary<int, ICoordinateSystem> GetDictionary(ICoordinateSystemFactory fact)
+        private static IEnumerable<ICoordinateSystem> GetList(ICoordinateSystemFactory fact)
         {
-            Dictionary<int, ICoordinateSystem> dict = new Dictionary<int, ICoordinateSystem>();
+            List<ICoordinateSystem> lst = new List<ICoordinateSystem>();
             foreach (Proj4Reader.Proj4SpatialRefSys sys in Proj4Reader.GetSRIDs())
             {
-                dict.Add((int)sys.Srid, fact.CreateFromWkt(sys.SrText));
+                string wkt = sys.SrText;
+
+
+                ICoordinateSystem cs = fact.CreateFromWkt(wkt);
+                lst.Add(cs);
             }
-            return dict;
+            return lst;
         }
     }
 }
