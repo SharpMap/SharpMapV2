@@ -23,7 +23,7 @@ using System.Globalization;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 
-namespace SharpMap.Data.Providers.FeatureProvider
+namespace SharpMap.Data.Providers
 {
     /// <summary>
     /// In-memory provider for arbitrary feature data.

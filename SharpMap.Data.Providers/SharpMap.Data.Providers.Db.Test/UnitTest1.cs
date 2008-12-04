@@ -1,5 +1,9 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -279,7 +283,14 @@ namespace SharpMap.Data.Providers.Db.Test
 
             ICoordinateSystem cs2 = map.Process("EPSG:27700", default(ICoordinateSystem));
 
-            Assert.IsTrue(ReferenceEquals(cs, cs2)); 
+            Assert.IsTrue(ReferenceEquals(cs, cs2));
+
+
+            string code = map.Process(cs2, "");
+
+            Debug.WriteLine(code);
+
+            Assert.IsTrue(code == "EPSG:27700");
 
         }
 
@@ -311,6 +322,29 @@ namespace SharpMap.Data.Providers.Db.Test
 
             Assert.IsTrue(srid == 27700);
 
+        }
+
+
+        [TestMethod]
+        public void TestGeometryProvider()
+        {
+            string wkt;
+            GeometryServices g = new GeometryServices();
+            GeometryProvider prov;
+
+            IGeometry geom = g.DefaultGeometryFactory.WktReader.Read(File.ReadAllText("D:\\geometries.txt"));
+
+            prov = new GeometryProvider(new[] { geom });
+
+
+            using (IFeatureDataReader fdr =
+                prov.ExecuteFeatureQuery(new FeatureQueryExpression(geom.Extents, SpatialOperation.Intersects)))
+            {
+                while (fdr.Read())
+                {
+                    Debug.WriteLine(fdr.Geometry.AsText());
+                }
+            }
         }
     }
 }

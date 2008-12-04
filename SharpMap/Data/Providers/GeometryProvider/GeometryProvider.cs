@@ -31,7 +31,7 @@ using Enumerable = System.Linq.Enumerable;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
-namespace SharpMap.Data.Providers.GeometryProvider
+namespace SharpMap.Data.Providers
 {
     /// <summary>
     /// Data source for storing a set of geometries in memory.
@@ -314,19 +314,19 @@ namespace SharpMap.Data.Providers.GeometryProvider
         }
 
         /// <summary>
-        /// Throws an NotSupportedException. 
+        /// jd:implementing because it is called via view presenters 
         /// </summary>
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
         {
-            throw new NotSupportedException();
+            return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.Geometries); 
         }
 
         /// <summary>
-        /// Throws an NotSupportedException. 
+        /// jd:implementing because it is called via view presenters 
         /// </summary>
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
         {
-            throw new NotSupportedException();
+            return new GeometryDataReader(this, query.SpatialPredicate.SpatialExpression.Extents);
         }
 
         public IGeometryFactory GeometryFactory

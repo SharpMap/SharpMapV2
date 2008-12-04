@@ -22,7 +22,7 @@ using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 
-namespace SharpMap.Data.Providers.FeatureProvider
+namespace SharpMap.Data.Providers
 {
     /// <summary>
     /// Provides a fast-forward, read-only data stream to feature data

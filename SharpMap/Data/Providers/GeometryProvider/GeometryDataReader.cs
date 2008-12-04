@@ -22,7 +22,7 @@ using System.Threading;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 
-namespace SharpMap.Data.Providers.GeometryProvider
+namespace SharpMap.Data.Providers
 {
     /// <summary>
     /// Provides a fast-forward, read-only data stream to geometry data
@@ -148,7 +148,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
             {
                 Interlocked.Increment(ref _currentIndex);
             } while (_currentIndex < _provider.Geometries.Count &&
-                     _bounds.Intersects(_provider.Geometries[_currentIndex].Extents));
+                     !_bounds.Intersects(_provider.Geometries[_currentIndex].Extents)); //jd:added ! - previously skipped over all records
 
             return _currentIndex < _provider.Geometries.Count;
         }
