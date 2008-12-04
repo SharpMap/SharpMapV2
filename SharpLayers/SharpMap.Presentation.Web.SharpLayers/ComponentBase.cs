@@ -23,39 +23,15 @@ using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [RequiredScript(typeof (OpenLayersExtender))]
+    [RequiredScript(typeof(OpenLayersExtender))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.ComponentBase",
         "SharpMap.Presentation.Web.SharpLayers.ComponentBase.js")]
-    [TargetControlType(typeof (Control))]
+    [TargetControlType(typeof(Control))]
     public abstract class ComponentBase : ScriptControl
     {
         private readonly Dictionary<string, Control> _findControlHelperCache = new Dictionary<string, Control>();
         protected abstract string ScriptComponentName { get; }
 
-
-        protected override void OnPreRender(EventArgs e)
-        {
-            if (!ScriptManager.GetCurrent(Page).IsInAsyncPostBack)
-                BuildOnClient();
-
-            base.OnPreRender(e);
-        }
-
-        protected virtual void BuildOnClient()
-        {
-//            string script = string.Format(CultureInfo.InvariantCulture,
-//                                          @"(function(){{
-//    var fn = function(){{
-//        SharpMap.Presentation.Web.SharpLayers.ComponentBase.buildViaServer('{0}');
-//        Sys.Application.remove_load(fn);
-//    }};
-//    Sys.Application.add_load(fn);
-//    }})();",
-//                                          ClientID);
-
-//            ScriptManager.RegisterStartupScript(this, typeof(HostBaseExtender<>), "buildOnClient" + ClientID, script,
-//                                                true);
-        }
 
 
         protected override IEnumerable<ScriptReference> GetScriptReferences()
@@ -135,9 +111,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
             var descriptor = new ScriptComponentDescriptor(ScriptComponentName);
             descriptor.ID = ClientID;
             var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] {new BuilderParamsJavascriptConverter(FindControl)});
+            serializer.RegisterConverters(new[] { new BuilderParamsJavascriptConverter(FindControl) });
             descriptor.AddScriptProperty("builderParams", serializer.Serialize(BuilderParams));
-            return new[] {descriptor};
+            return new[] { descriptor };
         }
     }
 }

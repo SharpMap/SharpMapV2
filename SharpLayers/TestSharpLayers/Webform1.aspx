@@ -83,7 +83,7 @@
                 </wms:WmsLayerComponent>
                 <vector:VectorLayerComponent runat="server" ID="VectorLayerComponent1" Name="My Vector Layer">
                     <BuilderParams Attribution="Newgrove Vectors Inc" DisplayInLayerSwitcher="true" IsBaseLayer="false"
-                        Units="m" Visibility="true" StyleMap="stylemap1">
+                        Units="m" Visibility="true">
                         <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
                     </BuilderParams>
                 </vector:VectorLayerComponent>
@@ -96,9 +96,9 @@
                 </vector:VectorLayerComponent>
             </LayerComponents>
         </cc1:MapHostExtender>
-        <style:StyleMapComponent runat="server" ID="stylemap1">
+        <style:SldComponent runat="server" ID="stylemap1">
             <BuilderParams SldDocumentUri="mysld.xml" />
-        </style:StyleMapComponent>
+        </style:SldComponent>
         <protocol:HttpProtocolComponent FormatType="GeoJsonFormat" runat="server" ID="httpProtocol">
             <BuilderParams Url="http://localhost">
                 <Formats>

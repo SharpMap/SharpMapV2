@@ -90,6 +90,12 @@
     <Compile Include="Controls\IToolBuilderParams.cs" />
     <Compile Include="Controls\LayerSwitcher\LayerSwitcherTool.cs" />
     <Compile Include="Controls\LayerSwitcher\LayerSwitcherToolBuilderParams.cs" />
+    <Compile Include="Controls\Nav\NavToolbar.cs" />
+    <Compile Include="Controls\Nav\NavToolbarBuilderParams.cs" />
+    <Compile Include="Controls\Overview\OverviewMap.cs" />
+    <Compile Include="Controls\Overview\OverviewMapBuilderParams.cs" />
+    <Compile Include="Controls\Scale\ScaleBar.cs" />
+    <Compile Include="Controls\Scale\ScaleBarBuilderParams.cs" />
     <Compile Include="Controls\SelectFeature\SelectFeatureTool.cs" />
     <Compile Include="Controls\SelectFeature\SelectFeatureToolBuilderParams.cs" />
     <Compile Include="Controls\ToolBaseComponent.cs" />
@@ -159,6 +165,9 @@
     <EmbeddedResource Include="Controls\Edit\EditingTools.js" />
     <EmbeddedResource Include="Controls\LayerSwitcher\LayerSwitcherTool.js" />
     <EmbeddedResource Include="Controls\SelectFeature\SelectFeatureTool.js" />
+    <EmbeddedResource Include="Controls\Nav\NavToolbar.js" />
+    <EmbeddedResource Include="Controls\Overview\OverviewMap.js" />
+    <EmbeddedResource Include="Controls\Scale\ScaleBar.js" />
     <Content Include="OpenLayers\Reference\Ajax.js" />
     <Content Include="OpenLayers\Reference\BaseTypes.js" />
     <Content Include="OpenLayers\Reference\BaseTypes\Bounds.js" />
