@@ -14,8 +14,8 @@ namespace SharpMap.Data.Providers.Db
             if (Equals(null, expr2))
                 return expr1;
 
-            if (expr1 is BinaryExpression && expr2 is BinaryExpression)
-                return MergePredicateExpressions((BinaryExpression)expr1, (BinaryExpression)expr2);
+            if (expr1 is PredicateExpression && expr2 is PredicateExpression)
+                return MergePredicateExpressions((PredicateExpression)expr1, (PredicateExpression)expr2);
 
             if (expr1 is QueryExpression && expr2 is QueryExpression)
                 return MergeQueryExpressions((QueryExpression)expr1, (QueryExpression)expr2);

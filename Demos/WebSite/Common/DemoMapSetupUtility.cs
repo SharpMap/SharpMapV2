@@ -23,6 +23,7 @@ using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Presentation.AspNet.Demo.Common
 {
@@ -129,9 +130,12 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
             //Array.Reverse(layernames);
 
+
+            string sridstr = SridMap.DefaultInstance.Process(27700, ""); 
+
             var labelprovider = new AppStateMonitoringFeatureProvider(
                 new MsSqlServer2008Provider<long>(
-                    new GeometryServices()["27700"],
+                    new GeometryServices()[sridstr],
                     ConfigurationManager.ConnectionStrings["db"].ConnectionString,
                     "dbo",
                     "STREETS",
@@ -178,7 +182,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
                 var provider = new AppStateMonitoringFeatureProvider(
                     new MsSqlServer2008Provider<long>(
-                        new GeometryServices()["27700"],
+                        new GeometryServices()[sridstr],
                         ConfigurationManager.ConnectionStrings["db"].ConnectionString,
                         "dbo",
                         tbl,

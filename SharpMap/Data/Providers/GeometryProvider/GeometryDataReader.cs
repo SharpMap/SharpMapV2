@@ -72,7 +72,7 @@ namespace SharpMap.Data.Providers
         }
 
         #endregion
-		#endregion
+        #endregion
 
         #region IFeatureDataRecord Members
 
@@ -90,14 +90,14 @@ namespace SharpMap.Data.Providers
                 return true;
             }
         }
-		
+
         public IGeometry Geometry
-		{
-			get
-			{
-				checkState();
-				return _provider.Geometries[_currentIndex].Clone();
-			}
+        {
+            get
+            {
+                checkState();
+                return _provider.Geometries[_currentIndex].Clone();
+            }
         }
 
         public IExtents Extents
@@ -113,7 +113,7 @@ namespace SharpMap.Data.Providers
         {
             get { return true; }
         }
-		#endregion
+        #endregion
 
         #region IDataReader Members
 
@@ -310,9 +310,14 @@ namespace SharpMap.Data.Providers
             return _currentIndex;
         }
 
+        /// <summary>
+        /// Does nothing and returns 0
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns>0</returns>
         public Int32 GetValues(Object[] values)
         {
-            throw new NotSupportedException();
+            return 0;//jd: this method is called via framework code so cannot throw InvalidOperation - we will just do nothing.
         }
 
         public Boolean IsDBNull(Int32 i)
@@ -348,7 +353,7 @@ namespace SharpMap.Data.Providers
 
         public Type OidType
         {
-            get { throw new NotImplementedException(); }
+            get { return typeof(int); }
         }
 
         public ICoordinateTransformation CoordinateTransformation
@@ -359,26 +364,26 @@ namespace SharpMap.Data.Providers
 
         #endregion
 
-		#region IEnumerable<IFeatureDataRecord> Members
+        #region IEnumerable<IFeatureDataRecord> Members
 
-		public IEnumerator<IFeatureDataRecord> GetEnumerator()
-		{
-            while(Read())
+        public IEnumerator<IFeatureDataRecord> GetEnumerator()
+        {
+            while (Read())
             {
                 yield return this;
             }
-           Dispose(true); ///jd: added to prevent "another reader is already active" type exception
+            //Dispose(true); ///jd: added to prevent "another reader is already active" type exception
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-		    return GetEnumerator();
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         #endregion
 
@@ -397,5 +402,5 @@ namespace SharpMap.Data.Providers
             if (i >= 1) throw new IndexOutOfRangeException("Column index is out of range.");
         }
         #endregion
-	}
+    }
 }

@@ -146,14 +146,8 @@ namespace SharpMap.Presentation.AspNet.WmsServer
 
             if (context.Request.Params["BBOX"] == null)
                 WmsException.ThrowWmsException("Invalid parameter BBOX");
-            int? srid = null;
-            int tsrid;
-            if (config.Crs.Length > 5)
-                if (int.TryParse(config.Crs.Substring(5), out tsrid))
-                    srid = tsrid;
 
-            //todo: ensure that this yields correct results. may need to use the whole crs string as srid
-            config.RealWorldBounds = UrlUtility.ParseExtents(new GeometryServices()[srid.ToString()],
+            config.RealWorldBounds = UrlUtility.ParseExtents(new GeometryServices()[config.Crs],
                                                              context.Request.Params["BBOX"]);
 
 

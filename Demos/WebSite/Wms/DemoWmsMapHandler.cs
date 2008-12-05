@@ -17,6 +17,7 @@ using SharpMap.Presentation.AspNet.Demo.Common;
 using SharpMap.Presentation.AspNet.WmsServer;
 using SharpMap.Presentation.AspNet.WmsServer.Caching;
 using SharpMap.Rendering.Web;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Presentation.AspNet.Demo.Wms
 {
@@ -30,6 +31,16 @@ namespace SharpMap.Presentation.AspNet.Demo.Wms
         protected override IWebMapRenderer CreateMapRenderer()
         {
             return new GdiImageRenderer();
+        }
+
+        /// <summary>
+        /// note: this is a temp hack!
+        /// </summary>
+        public override void InitMap()
+        {
+
+
+            Map = new Map(GeometryServices[SridMap.DefaultInstance.Process(27700, "")], GeometryServices.CoordinateTransformationFactory);
         }
 
         /// <summary>
