@@ -82,6 +82,8 @@
     <Compile Include="BuilderParamsJavascriptConverter.cs" />
     <Compile Include="CollectionBase.cs" />
     <Compile Include="ComponentBase.cs" />
+    <Compile Include="Controls\Containers\ToolPanel.cs" />
+    <Compile Include="Controls\Containers\ToolPanelBuilderParams.cs" />
     <Compile Include="Controls\DrawFeature\DrawFeatureToolBuilderParams.cs" />
     <Compile Include="Controls\DrawFeature\DrawFeatureTool.cs" />
     <Compile Include="Controls\Edit\EditingToolsBuilderParams.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Controls\ToolBaseComponent.cs" />
     <Compile Include="Controls\ToolBuilderParamsBase.cs" />
     <Compile Include="Format\GeoJsonFormat.cs" />
+    <Compile Include="Controls\GenericOLControl.cs" />
     <Compile Include="HostBaseExtender.cs" />
     <Compile Include="Format\IFormat.cs" />
     <Compile Include="IHaveBuilderParams.cs" />
@@ -168,6 +171,8 @@
     <EmbeddedResource Include="Controls\Nav\NavToolbar.js" />
     <EmbeddedResource Include="Controls\Overview\OverviewMap.js" />
     <EmbeddedResource Include="Controls\Scale\ScaleBar.js" />
+    <EmbeddedResource Include="Controls\Containers\ToolPanel.js" />
+    <EmbeddedResource Include="Controls\GenericOLControl.js" />
     <Content Include="OpenLayers\Reference\Ajax.js" />
     <Content Include="OpenLayers\Reference\BaseTypes.js" />
     <Content Include="OpenLayers\Reference\BaseTypes\Bounds.js" />
