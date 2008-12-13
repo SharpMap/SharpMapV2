@@ -40,6 +40,8 @@ namespace SharpMap.Presentation.AspNet.Handlers
         private WebMapView mapView;
 
 
+        public abstract string BaseSrid { get; }
+
         public IMapRequestConfigFactory ConfigFactory
         {
             get
@@ -322,7 +324,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
         /// </summary>
         public virtual void InitMap()
         {
-            Map = new Map(GeometryServices.DefaultGeometryFactory, GeometryServices.CoordinateTransformationFactory );
+            Map = new Map(GeometryServices[BaseSrid], GeometryServices.CoordinateTransformationFactory);
         }
 
         /// <summary>
